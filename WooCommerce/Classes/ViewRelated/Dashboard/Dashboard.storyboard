@@ -233,7 +233,7 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="tableView" destination="cH0-ne-ohw" id="T40-jU-vUP"/>
+                        <outlet property="tableView" destination="cH0-ne-ohw" id="WMq-s3-UmJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="w65-IK-CKC" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -247,30 +247,73 @@
                     <view key="view" contentMode="scaleToFill" id="EOU-z7-aBS">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Under Construction" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yAZ-jF-hAZ">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
                         <viewLayoutGuide key="safeArea" id="l2Q-VL-2yz"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <constraints>
-                            <constraint firstItem="l2Q-VL-2yz" firstAttribute="trailing" secondItem="yAZ-jF-hAZ" secondAttribute="trailing" id="IoK-Ca-RnF"/>
-                            <constraint firstItem="yAZ-jF-hAZ" firstAttribute="top" secondItem="l2Q-VL-2yz" secondAttribute="top" id="kZc-5O-iDD"/>
-                            <constraint firstItem="yAZ-jF-hAZ" firstAttribute="leading" secondItem="l2Q-VL-2yz" secondAttribute="leading" id="nCI-IL-b21"/>
-                            <constraint firstItem="l2Q-VL-2yz" firstAttribute="bottom" secondItem="yAZ-jF-hAZ" secondAttribute="bottom" id="uBc-a2-Cby"/>
-                        </constraints>
                     </view>
-                    <connections>
-                        <outlet property="temporaryLabel" destination="yAZ-jF-hAZ" id="2Uc-ZW-zKk"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ErC-sp-Qjr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="4192.8000000000002" y="2236.7316341829087"/>
+        </scene>
+        <!--Card Reader Settings Unknown View Controller-->
+        <scene sceneID="1hM-QM-F7H">
+            <objects>
+                <viewController storyboardIdentifier="CardReaderSettingsUnknownViewController" id="QbQ-It-W6j" customClass="CardReaderSettingsUnknownViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="OI1-Kx-TMr">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="wIN-aE-q96">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="H3D-HM-LVk"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="wIN-aE-q96" firstAttribute="top" secondItem="H3D-HM-LVk" secondAttribute="top" id="Jhc-e4-GIy"/>
+                            <constraint firstItem="wIN-aE-q96" firstAttribute="leading" secondItem="H3D-HM-LVk" secondAttribute="leading" id="oLF-Wz-7a3"/>
+                            <constraint firstItem="H3D-HM-LVk" firstAttribute="trailing" secondItem="wIN-aE-q96" secondAttribute="trailing" id="qD0-0x-GvW"/>
+                            <constraint firstItem="H3D-HM-LVk" firstAttribute="bottom" secondItem="wIN-aE-q96" secondAttribute="bottom" id="yfC-kN-EGt"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="wIN-aE-q96" id="Cyr-Hj-o4e"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="lvw-3c-XCx" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4929" y="2237"/>
+        </scene>
+        <!--Card Reader Settings Connected View Controller-->
+        <scene sceneID="A3p-G9-5R7">
+            <objects>
+                <viewController storyboardIdentifier="CardReaderSettingsConnectedViewController" id="2oW-u9-QsT" customClass="CardReaderSettingsConnectedViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="UZB-ng-w8d">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="apN-yh-UaI">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="DEX-1K-dv1"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="DEX-1K-dv1" firstAttribute="trailing" secondItem="apN-yh-UaI" secondAttribute="trailing" id="2Ai-FO-Fpm"/>
+                            <constraint firstItem="apN-yh-UaI" firstAttribute="leading" secondItem="DEX-1K-dv1" secondAttribute="leading" id="4Bk-xF-dRi"/>
+                            <constraint firstItem="apN-yh-UaI" firstAttribute="top" secondItem="DEX-1K-dv1" secondAttribute="top" id="KUs-Wf-pjk"/>
+                            <constraint firstItem="DEX-1K-dv1" firstAttribute="bottom" secondItem="apN-yh-UaI" secondAttribute="bottom" id="zHj-fm-gmj"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="apN-yh-UaI" id="E7Z-Xw-uZ5"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="feV-ex-aGN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5658" y="2237"/>
         </scene>
     </scenes>
     <resources>

@@ -6,7 +6,7 @@ public final class StripeCardReaderService: NSObject {
 
     private var discoveryCancellable: StripeTerminal.Cancelable?
 
-    private let discoveredReadersSubject = CurrentValueSubject<[CardReader], Never>([])
+    private var discoveredReadersSubject = CurrentValueSubject<[CardReader], Never>([])
     private let connectedReadersSubject = CurrentValueSubject<[CardReader], Never>([])
     private let serviceStatusSubject = CurrentValueSubject<CardReaderServiceStatus, Never>(.ready)
     private let discoveryStatusSubject = CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle)
@@ -169,6 +169,7 @@ extension StripeCardReaderService: CardReaderService {
 
                 if let reader = reader {
                     self.connectedReadersSubject.send([CardReader(reader: reader)])
+                    self.switchStatusToIdle()
                     promise(.success(()))
                 }
             }
@@ -346,7 +347,8 @@ private extension StripeCardReaderService {
     }
 
     func resetDiscoveredReadersSubject() {
-        discoveredReadersSubject.send([])
+        discoveredReadersSubject.send(completion: .finished)
+        discoveredReadersSubject = CurrentValueSubject<[CardReader], Never>([])
     }
 }
 
@@ -355,6 +357,7 @@ private extension StripeCardReaderService {
 private extension StripeCardReaderService {
     func switchStatusToIdle() {
         updateDiscoveryStatus(to: .idle)
+        resetDiscoveredReadersSubject()
     }
 
     func switchStatusToDiscovering() {

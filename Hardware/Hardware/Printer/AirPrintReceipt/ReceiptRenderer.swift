@@ -97,7 +97,7 @@ public extension ReceiptRenderer {
                         \(summaryTable())
                     </p>
                     <p>
-                        \(regulatoryItems())
+                        \(requiredItems())
                     </p>
                 </body>
             </html>
@@ -139,7 +139,7 @@ private extension ReceiptRenderer {
         return summaryContent
     }
 
-    private func regulatoryItems() -> String {
+    private func requiredItems() -> String {
         guard let emv = parameters.cardDetails.receipt else {
             return "<br/>"
         }

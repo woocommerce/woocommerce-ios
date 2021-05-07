@@ -90,12 +90,8 @@ private extension CardReaderSettingsConnectedViewController {
     }
 
     private func configureConnectedReader(cell: ConnectedReaderTableViewCell) {
-        guard let serialNumber = viewModel?.connectedReaderSerialNumber,
-              let batteryLevel = viewModel?.connectedReaderBatteryLevel else {
-            return
-        }
-        cell.serialNumberLabel?.text = serialNumber
-        cell.batteryLevelLabel?.text = batteryLevel
+        cell.serialNumberLabel?.text = viewModel?.connectedReaderSerialNumber
+        cell.batteryLevelLabel?.text = viewModel?.connectedReaderBatteryLevel
         cell.selectionStyle = .none
     }
 

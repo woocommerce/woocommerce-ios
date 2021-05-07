@@ -255,8 +255,7 @@ private extension SettingsViewController {
     func configurePlugins(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
         cell.accessoryType = .disclosureIndicator
-        cell.textLabel?.text = NSLocalizedString("Plugins", comment: "Navigates to Plugins screen."
-        )
+        cell.textLabel?.text = NSLocalizedString("Plugins", comment: "Navigates to Plugins screen.")
     }
 
     func configureSupport(cell: BasicTableViewCell) {

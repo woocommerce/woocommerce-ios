@@ -78,7 +78,7 @@ final class MockCardReaderService: CardReaderService {
         }
     }
 
-    func disconnect(_ reader: Hardware.CardReader) -> Future<Void, Error> {
+    func disconnect() -> Future<Void, Error> {
         Future() { promise in
             // This will be removed. We just want to pretend we are doing a roundtrip to the SDK for now.
             /// Delaying the effect of this method so that unit tests are actually async

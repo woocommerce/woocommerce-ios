@@ -4,10 +4,7 @@ import UIKit
 /// This view controller is used when a reader is currently connected. It assists
 /// the merchant in updating and/or disconnecting from the reader, as needed.
 ///
-/// TODO: This is just a placeholder for now. The implementation of this view controller will
-/// begin in earnest with #4056
-///
-final class CardReaderSettingsConnectedViewController: UIViewController {
+final class CardReaderSettingsConnectedViewController: UIViewController, CardReaderSettingsViewModelPresenter {
 
     /// Main TableView
     ///
@@ -21,6 +18,12 @@ final class CardReaderSettingsConnectedViewController: UIViewController {
     ///
     private var sections = [Section]()
 
+    /// Accept our viewmodel
+    ///
+    func configure(viewModel: CardReaderSettingsPresentedViewModel) {
+        self.viewModel = viewModel as? CardReaderSettingsConnectedViewModel
+    }
+
     // MARK: - Overridden Methods
 
     override func viewDidLoad() {
@@ -30,10 +33,6 @@ final class CardReaderSettingsConnectedViewController: UIViewController {
         configureNavigation()
         configureSections()
         configureTable()
-    }
-
-    func configure(viewModel: CardReaderSettingsConnectedViewModel) {
-        self.viewModel = viewModel
     }
 }
 
@@ -50,9 +49,10 @@ private extension CardReaderSettingsConnectedViewController {
     /// Setup the sections in this table view
     ///
     func configureSections() {
-        sections = [Section(title: nil,
+        sections = [Section(title: Localization.sectionHeaderTitle.uppercased(),
                             rows: [
-                                .temporaryHeader
+                                .connectedReader,
+                                .disconnectButton
                             ])]
     }
 
@@ -75,15 +75,29 @@ private extension CardReaderSettingsConnectedViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as TitleTableViewCell where row == .temporaryHeader:
-            configureHeader(cell: cell)
+        case let cell as ConnectedReaderTableViewCell where row == .connectedReader:
+            configureConnectedReader(cell: cell)
+        case let cell as ButtonTableViewCell where row == .disconnectButton:
+            configureButton(cell: cell)
         default:
             fatalError()
         }
     }
 
-    private func configureHeader(cell: TitleTableViewCell) {
-        cell.titleLabel?.text = Localization.temporaryHeader
+    private func configureConnectedReader(cell: ConnectedReaderTableViewCell) {
+        guard let serialNumber = viewModel?.connectedReaderSerialNumber,
+              let batteryLevel = viewModel?.connectedReaderBatteryLevel else {
+            return
+        }
+        cell.serialNumberLabel?.text = serialNumber
+        cell.batteryLevelLabel?.text = batteryLevel
+        cell.selectionStyle = .none
+    }
+
+    private func configureButton(cell: ButtonTableViewCell) {
+        cell.configure(title: Localization.buttonTitle) {
+            // TODO: Connect in 4057
+        }
         cell.selectionStyle = .none
     }
 }
@@ -135,6 +149,11 @@ extension CardReaderSettingsConnectedViewController: UITableViewDataSource {
 //
 extension CardReaderSettingsConnectedViewController: UITableViewDelegate {
 
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let row = rowAtIndexPath(indexPath)
+        return row.height
+    }
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
@@ -150,18 +169,23 @@ private struct Section {
 }
 
 private enum Row: CaseIterable {
-    case temporaryHeader
+    case connectedReader
+    case disconnectButton
 
     var type: UITableViewCell.Type {
         switch self {
-        case .temporaryHeader:
-            return TitleTableViewCell.self
+        case .connectedReader:
+            return ConnectedReaderTableViewCell.self
+        case .disconnectButton:
+            return ButtonTableViewCell.self
         }
     }
 
     var height: CGFloat {
         switch self {
-        case .temporaryHeader:
+        case .connectedReader:
+            return 60
+        case .disconnectButton:
             return UITableView.automaticDimension
         }
     }
@@ -177,12 +201,17 @@ private extension CardReaderSettingsConnectedViewController {
     enum Localization {
         static let title = NSLocalizedString(
             "Manage Card Reader",
-            comment: "Title for the connected reader screen in settings."
+            comment: "Settings > Manage Card Reader > Title for the reader connected screen in settings."
         )
 
-        static let temporaryHeader = NSLocalizedString(
-            "Connected Reader (Under Construction)",
-            comment: "Temporary Header, TODO remove"
+        static let sectionHeaderTitle = NSLocalizedString(
+            "Connected Reader",
+            comment: "Settings > Manage Card Reader > Connected Reader Table Section Heading"
+        )
+
+        static let buttonTitle = NSLocalizedString(
+            "Disconnect",
+            comment: "Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader"
         )
     }
 }

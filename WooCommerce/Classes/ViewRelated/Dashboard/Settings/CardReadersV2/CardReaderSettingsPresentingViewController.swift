@@ -37,6 +37,11 @@ final class CardReaderSettingsPresentingViewController: UIViewController {
             return
         }
 
+        guard let presenter = childViewController as? CardReaderSettingsViewModelPresenter else {
+            return
+        }
+        presenter.configure(viewModel: viewModelAndView!.viewModel)
+
         self.view.addSubview(childViewController.view)
         self.addChild(childViewController)
         childViewController.didMove(toParent: self)

@@ -1,7 +1,7 @@
 project: 
     file: ../../../Storage/Storage.xcodeproj
     target: 
-        name: Networking
+        name: Storage
 templates:
     - Models+Copiable.swifttemplate
 output: ../../../Storage/Storage/Model/Copiable/

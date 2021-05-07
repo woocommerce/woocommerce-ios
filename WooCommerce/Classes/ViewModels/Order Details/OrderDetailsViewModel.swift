@@ -425,6 +425,7 @@ extension OrderDetailsViewModel {
         ServiceLocator.stores.dispatch(action)
     }
 
+<<<<<<< HEAD
     func checkCardPaymentEligibility(onCompletion: (() -> Void)? = nil) {
         // For now, this defaults to the feature flag,
         // combined with the order payment method being cash on delivery
@@ -441,6 +442,14 @@ extension OrderDetailsViewModel {
             isOrderEligibleForCardPayment()
 
         onCompletion?()
+    }
+
+    func checkOrderAddOnFeatureSwitchState(onCompletion: (() -> Void)? = nil) {
+        let action = AppSettingsAction.loadOrderAddOnsSwitchState { [weak self] result in
+            self?.dataSource.showAddOns = (try? result.get()) ?? false
+            onCompletion?()
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 
     func deleteTracking(_ tracking: ShipmentTracking, onCompletion: @escaping (Error?) -> Void) {

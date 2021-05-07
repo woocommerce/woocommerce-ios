@@ -38,9 +38,7 @@ public final class SitePluginStore: Store {
 private extension SitePluginStore {
     func synchronizeSitePlugins(siteID: Int64, completionHandler: @escaping (Result<Void, Error>) -> Void) {
         remote.loadPlugins(for: siteID) { [weak self] result in
-            guard let self = self else {
-                return
-            }
+            guard let self = self else { return }
             switch result {
             case .success(let plugins):
                 self.upsertSitePluginsInBackground(siteID: siteID, readonlyPlugins: plugins, completionHandler: completionHandler)
@@ -85,10 +83,10 @@ private extension SitePluginStore {
             }()
 
             storagePlugin.update(with: readonlyPlugin)
-
-            // remove stale plugins
-            let currentPluginNames = readonlyPlugins.map(\.name)
-            storage.deleteStalePlugins(siteID: siteID, installedPluginNames: currentPluginNames)
         }
+
+        // remove stale plugins
+        let currentPluginNames = readonlyPlugins.map(\.name)
+        storage.deleteStalePlugins(siteID: siteID, installedPluginNames: currentPluginNames)
     }
 }

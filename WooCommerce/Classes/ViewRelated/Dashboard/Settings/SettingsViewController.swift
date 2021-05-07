@@ -381,7 +381,9 @@ private extension SettingsViewController {
         }
     }
 
-    func sitePluginsWasPressed() {}
+    func sitePluginsWasPressed() {
+        // TODO: Pending implementation for issue #4114
+    }
 
     func supportWasPressed() {
         ServiceLocator.analytics.track(.settingsContactSupportTapped)

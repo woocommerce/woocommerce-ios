@@ -247,7 +247,7 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
             guard let self = self else { return }
 
             let key = CreationEligibilityResultKey(siteID: siteID,
-                                                   orderID: siteID,
+                                                   orderID: orderID,
                                                    canCreatePaymentMethod: canCreatePaymentMethod,
                                                    canCreateCustomsForm: canCreateCustomsForm,
                                                    canCreatePackage: canCreatePackage)

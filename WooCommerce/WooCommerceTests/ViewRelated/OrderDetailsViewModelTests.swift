@@ -68,4 +68,79 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(orderID, order.orderID)
         XCTAssertEqual(status, .completed)
     }
+
+    // MARK: Shipping Labels feature flags
+
+    func test_checkShippingLabelCreationEligibility_returns_ineligible_when_shippingLabelsRelease2_is_disabled() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isShippingLabelsRelease2On: false)
+        ServiceLocator.setFeatureFlagService(featureFlagService)
+
+        // When
+        viewModel.checkShippingLabelCreationEligibility()
+
+        // Then
+        XCTAssertEqual(storesManager.receivedActions.count, 0)
+        XCTAssertFalse(viewModel.dataSource.isEligibleForShippingLabelCreation)
+    }
+
+    func test_checkShippingLabelCreationEligibility_dispatches_eligibility_check_without_client_features_when_only_shippingLabelsRelease2_is_enabled() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isShippingLabelsRelease2On: true)
+        ServiceLocator.setFeatureFlagService(featureFlagService)
+        XCTAssertEqual(storesManager.receivedActions.count, 0)
+
+        // When
+        viewModel.checkShippingLabelCreationEligibility()
+
+        // Then
+        XCTAssertEqual(storesManager.receivedActions.count, 1)
+
+        let action = try XCTUnwrap(storesManager.receivedActions.first as? ShippingLabelAction)
+        guard case let ShippingLabelAction.checkCreationEligibility(siteID: siteID,
+                                                                    orderID: orderID,
+                                                                    canCreatePaymentMethod: canCreatePaymentMethod,
+                                                                    canCreateCustomsForm: canCreateCustomsForm,
+                                                                    canCreatePackage: canCreatePackage,
+                                                                    onCompletion: _) = action else {
+            XCTFail("Expected \(action) to be \(ShippingLabelAction.self)")
+            return
+        }
+
+        XCTAssertEqual(siteID, order.siteID)
+        XCTAssertEqual(orderID, order.orderID)
+        XCTAssertFalse(canCreatePaymentMethod)
+        XCTAssertFalse(canCreateCustomsForm)
+        XCTAssertFalse(canCreatePackage)
+    }
+
+    func test_checkShippingLabelCreationEligibility_dispatches_eligibility_check_with_client_features_when_both_flags_are_enabled() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isShippingLabelsRelease2On: true, isShippingLabelsRelease3On: true)
+        ServiceLocator.setFeatureFlagService(featureFlagService)
+        XCTAssertEqual(storesManager.receivedActions.count, 0)
+
+        // When
+        viewModel.checkShippingLabelCreationEligibility()
+
+        // Then
+        XCTAssertEqual(storesManager.receivedActions.count, 1)
+
+        let action = try XCTUnwrap(storesManager.receivedActions.first as? ShippingLabelAction)
+        guard case let ShippingLabelAction.checkCreationEligibility(siteID: siteID,
+                                                                    orderID: orderID,
+                                                                    canCreatePaymentMethod: canCreatePaymentMethod,
+                                                                    canCreateCustomsForm: canCreateCustomsForm,
+                                                                    canCreatePackage: canCreatePackage,
+                                                                    onCompletion: _) = action else {
+            XCTFail("Expected \(action) to be \(ShippingLabelAction.self)")
+            return
+        }
+
+        XCTAssertEqual(siteID, order.siteID)
+        XCTAssertEqual(orderID, order.orderID)
+        XCTAssertTrue(canCreatePaymentMethod)
+        XCTAssertTrue(canCreateCustomsForm)
+        XCTAssertTrue(canCreatePackage)
+    }
 }

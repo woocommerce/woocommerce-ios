@@ -60,6 +60,7 @@ private extension CardReaderSettingsUnknownViewController {
     }
 
     func configureTable() {
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.dataSource = self
         tableView.delegate = self
         tableView.reloadData()

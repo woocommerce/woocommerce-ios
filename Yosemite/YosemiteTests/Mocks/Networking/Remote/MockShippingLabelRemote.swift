@@ -254,7 +254,7 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
             if let result = self.creationEligibilityResults[key] {
                 completion(result)
             } else {
-                XCTFail("\(String(describing:self)) Could not find Result for \(key)")
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
             }
         }
     }

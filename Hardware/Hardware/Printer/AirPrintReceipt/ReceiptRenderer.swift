@@ -2,7 +2,7 @@ import UIKit
 
 /// Renders a receipt in an AirPrint enabled printer.
 /// To be properly implemented in https://github.com/woocommerce/woocommerce-ios/issues/3978
-final class ReceiptRenderer: UIPrintPageRenderer {
+public final class ReceiptRenderer: UIPrintPageRenderer {
     private let lines: [ReceiptLineItem]
     private let parameters: CardPresentReceiptParameters
 
@@ -21,7 +21,7 @@ final class ReceiptRenderer: UIPrintPageRenderer {
                 .paragraphStyle: paragraph]
     }()
 
-    init(content: ReceiptContent) {
+    public init(content: ReceiptContent) {
         self.lines = content.lineItems
         self.parameters = content.parameters
 
@@ -32,7 +32,7 @@ final class ReceiptRenderer: UIPrintPageRenderer {
         configureFormatter()
     }
 
-    override func drawHeaderForPage(at pageIndex: Int, in headerRect: CGRect) {
+    override public func drawHeaderForPage(at pageIndex: Int, in headerRect: CGRect) {
         guard let siteName = parameters.storeName else {
             return
         }
@@ -43,7 +43,7 @@ final class ReceiptRenderer: UIPrintPageRenderer {
         receiptTitle.draw(in: headerRect, withAttributes: headerAttributes)
     }
 
-    override func drawFooterForPage(at pageIndex: Int, in footerRect: CGRect) {
+    override public func drawFooterForPage(at pageIndex: Int, in footerRect: CGRect) {
         guard let emv = parameters.cardDetails.receipt else {
             return
         }
@@ -63,25 +63,12 @@ final class ReceiptRenderer: UIPrintPageRenderer {
 }
 
 
-private extension ReceiptRenderer {
-    private func configureHeaderAndFooter() {
-        headerHeight = Constants.headerHeight
-        footerHeight = Constants.footerHeight
-    }
-
-    private func configureFormatter() {
-        let formatter = UIMarkupTextPrintFormatter(markupText: htmlContent())
-        formatter.perPageContentInsets = .init(top: Constants.headerHeight, left: Constants.marging, bottom: Constants.footerHeight, right: Constants.marging)
-
-        addPrintFormatter(formatter, startingAtPageAt: 0)
-    }
-
-
+public extension ReceiptRenderer {
     /// This is where the layout of the receipt can be customized.
     /// Customization can be done via embedded CSS.
     /// https://github.com/woocommerce/woocommerce-ios/issues/4033
     /// - Returns: A string containing the HTML that will be rendered to the receipt.
-    private func htmlContent() -> String {
+    func htmlContent() -> String {
         return """
             <html>
             <head>
@@ -109,9 +96,27 @@ private extension ReceiptRenderer {
                         <h3>\(Localization.summarySectionTitle.uppercased())</h3>
                         \(summaryTable())
                     </p>
+                    <p>
+                        \(requiredItems())
+                    </p>
                 </body>
             </html>
         """
+    }
+}
+
+
+private extension ReceiptRenderer {
+    private func configureHeaderAndFooter() {
+        headerHeight = Constants.headerHeight
+        footerHeight = Constants.footerHeight
+    }
+
+    private func configureFormatter() {
+        let formatter = UIMarkupTextPrintFormatter(markupText: htmlContent())
+        formatter.perPageContentInsets = .init(top: Constants.headerHeight, left: Constants.marging, bottom: Constants.footerHeight, right: Constants.marging)
+
+        addPrintFormatter(formatter, startingAtPageAt: 0)
     }
 
     private func summaryTable() -> String {
@@ -132,6 +137,20 @@ private extension ReceiptRenderer {
         summaryContent += "</table>"
 
         return summaryContent
+    }
+
+    private func requiredItems() -> String {
+        guard let emv = parameters.cardDetails.receipt else {
+            return "<br/>"
+        }
+
+        /// According to the documentation, only `Application name` and `AID`
+        /// are required in the US.
+        /// https://stripe.com/docs/terminal/checkout/receipts#custom
+        return """
+            \(Localization.applicationName): \(emv.applicationPreferredName)<br/>
+            \(Localization.aid): \(emv.dedicatedFileName)
+        """
     }
 }
 

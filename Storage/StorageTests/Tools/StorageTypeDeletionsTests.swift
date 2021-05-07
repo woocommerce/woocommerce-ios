@@ -37,7 +37,7 @@ class StorageTypeDeletionsTests: XCTestCase {
         XCTAssertEqual(activeGroups, initialGroups.dropLast())
     }
 
-    func test_deleteStalePlugins_deletes_plugins_not_included_in_currentPluginNames() throws {
+    func test_deleteStalePlugins_deletes_plugins_not_included_in_installedPluginNames() throws {
         // Given
         let plugin1 = createPlugin(name: "AAA")
         _ = createPlugin(name: "BBB")

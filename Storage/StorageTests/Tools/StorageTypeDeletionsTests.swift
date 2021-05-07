@@ -44,7 +44,7 @@ class StorageTypeDeletionsTests: XCTestCase {
         let plugin3 = createPlugin(name: "CCC")
 
         // When
-        storage.deleteStalePlugins(siteID: sampleSiteID, currentPluginNames: ["AAA", "CCC"])
+        storage.deleteStalePlugins(siteID: sampleSiteID, installedPluginNames: ["AAA", "CCC"])
 
         // Then
         let currentPlugins = storage.loadPlugins(siteID: sampleSiteID)

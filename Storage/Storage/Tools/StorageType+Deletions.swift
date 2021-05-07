@@ -119,11 +119,11 @@ public extension StorageType {
         }
     }
 
-    /// Deletes all of the stored `StalePlugin` entities with a specified `siteID` whose name is not included in `currentPluginNames` array.
+    /// Deletes all of the stored `SitePlugin` entities with a specified `siteID` whose name is not included in `currentPluginNames` array.
     ///
-    func deleteStalePlugins(siteID: Int64, currentPluginNames: [String]) {
+    func deleteStalePlugins(siteID: Int64, installedPluginNames: [String]) {
         let plugins = loadPlugins(siteID: siteID).filter {
-            !currentPluginNames.contains($0.name)
+            !installedPluginNames.contains($0.name)
         }
         plugins.forEach {
             deleteObject($0)

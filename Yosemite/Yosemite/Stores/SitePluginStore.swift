@@ -88,7 +88,7 @@ private extension SitePluginStore {
 
             // remove stale plugins
             let currentPluginNames = readonlyPlugins.map(\.name)
-            storage.deleteStalePlugins(siteID: siteID, currentPluginNames: currentPluginNames)
+            storage.deleteStalePlugins(siteID: siteID, installedPluginNames: currentPluginNames)
         }
     }
 }

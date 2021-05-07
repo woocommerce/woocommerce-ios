@@ -372,6 +372,8 @@ private extension SettingsViewController {
         }
     }
 
+    func sitePluginsWasPressed() {}
+
     func supportWasPressed() {
         ServiceLocator.analytics.track(.settingsContactSupportTapped)
         guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: HelpAndSupportViewController.self) else {
@@ -518,6 +520,8 @@ extension SettingsViewController: UITableViewDelegate {
         switch rowAtIndexPath(indexPath) {
         case .switchStore:
             switchStoreWasPressed()
+        case .plugins:
+            sitePluginsWasPressed()
         case .support:
             supportWasPressed()
         case .cardReaders:
@@ -561,6 +565,7 @@ private struct Section {
 private enum Row: CaseIterable {
     case selectedStore
     case switchStore
+    case plugins
     case support
     case cardReaders
     case logout
@@ -577,6 +582,8 @@ private enum Row: CaseIterable {
         case .selectedStore:
             return HeadlineLabelTableViewCell.self
         case .switchStore:
+            return BasicTableViewCell.self
+        case .plugins:
             return BasicTableViewCell.self
         case .support:
             return BasicTableViewCell.self

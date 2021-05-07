@@ -280,7 +280,7 @@ extension WooAnalyticsEvent {
     }
 }
 
-// MARK: - Variations
+// MARK: - Order Detail Add-ons
 //
 extension WooAnalyticsEvent {
     // Namespace

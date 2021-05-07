@@ -38,6 +38,9 @@ final class MockCardReaderService: CardReaderService {
     /// Boolean flag Indicates that clients have called the cancel method
     var didHitCancel = false
 
+    /// Boolean flag Indicates that clients have called the disconnect method
+    var didHitDisconnect = false
+
     /// Boolean flag Indicates that clients have provided a CardReaderConfigProvider
     var didReceiveAConfigurationProvider = false
 
@@ -79,9 +82,8 @@ final class MockCardReaderService: CardReaderService {
     }
 
     func disconnect() -> Future<Void, Error> {
-        Future() { promise in
-            // This will be removed. We just want to pretend we are doing a roundtrip to the SDK for now.
-            /// Delaying the effect of this method so that unit tests are actually async
+        didHitDisconnect = true
+        return Future() { promise in
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 promise(Result.success(()))
             }

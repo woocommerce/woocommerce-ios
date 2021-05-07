@@ -132,6 +132,10 @@ private extension SettingsViewController {
             comment: "My Store > Settings > Selected Store information section. " +
             "This is the heading listed above the information row that displays the store website and their username."
         ).uppercased()
+        let pluginsTitle = NSLocalizedString(
+            "Plugins",
+            comment: "My Store > Settings > Plugins section title"
+        ).uppercased()
         let storeSettingsTitle = NSLocalizedString(
             "Store Settings",
             comment: "My Store > Settings > Store Settings section title"
@@ -160,6 +164,11 @@ private extension SettingsViewController {
         sections = [
             Section(title: selectedStoreTitle, rows: storeRows, footerHeight: UITableView.automaticDimension),
         ]
+
+        // Plugins
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sitePlugins) {
+            sections.append(Section(title: pluginsTitle, rows: [.plugins], footerHeight: UITableView.automaticDimension))
+        }
 
         // Store Settings
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) {
@@ -203,6 +212,8 @@ private extension SettingsViewController {
             configureSelectedStore(cell: cell)
         case let cell as BasicTableViewCell where row == .switchStore:
             configureSwitchStore(cell: cell)
+        case let cell as BasicTableViewCell where row == .plugins:
+            configurePlugins(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
             configureSupport(cell: cell)
         case let cell as BasicTableViewCell where row == .cardReaders:
@@ -239,6 +250,12 @@ private extension SettingsViewController {
             "Switch Store",
             comment: "This action allows the user to change stores without logging out and logging back in again."
         )
+    }
+
+    func configurePlugins(cell: BasicTableViewCell) {
+        cell.selectionStyle = .default
+        cell.accessoryType = .disclosureIndicator
+        cell.textLabel?.text = NSLocalizedString("Plugins", comment: "Navigates to Plugins screen.")
     }
 
     func configureSupport(cell: BasicTableViewCell) {
@@ -361,6 +378,10 @@ private extension SettingsViewController {
                 self.refreshViewContent()
             }
         }
+    }
+
+    func sitePluginsWasPressed() {
+        // TODO: Pending implementation for issue #4114
     }
 
     func supportWasPressed() {
@@ -509,6 +530,8 @@ extension SettingsViewController: UITableViewDelegate {
         switch rowAtIndexPath(indexPath) {
         case .switchStore:
             switchStoreWasPressed()
+        case .plugins:
+            sitePluginsWasPressed()
         case .support:
             supportWasPressed()
         case .cardReaders:
@@ -552,6 +575,7 @@ private struct Section {
 private enum Row: CaseIterable {
     case selectedStore
     case switchStore
+    case plugins
     case support
     case cardReaders
     case logout
@@ -568,6 +592,8 @@ private enum Row: CaseIterable {
         case .selectedStore:
             return HeadlineLabelTableViewCell.self
         case .switchStore:
+            return BasicTableViewCell.self
+        case .plugins:
             return BasicTableViewCell.self
         case .support:
             return BasicTableViewCell.self

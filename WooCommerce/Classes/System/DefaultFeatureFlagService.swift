@@ -13,6 +13,8 @@ struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .addOnsI1:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .sitePlugins:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

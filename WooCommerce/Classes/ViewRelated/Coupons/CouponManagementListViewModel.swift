@@ -7,7 +7,7 @@ import class AutomatticTracks.CrashLogging
 struct CouponListCellViewModel {
     var title: String
     var subtitle: String
-    var accessiblityLabel: String
+    var accessibilityLabel: String
 }
 
 enum CouponListState {
@@ -118,14 +118,14 @@ final class CouponManagementListViewModel {
         couponViewModels = resultsController.fetchedObjects.map({ coupon in
             return CouponListCellViewModel(title: coupon.code,
                                            subtitle: coupon.description,
-                                           accessiblityLabel: coupon.description)
+                                           accessibilityLabel: coupon.description)
         })
     }
 
 
     // MARK: - ViewController actions
     //
-    /// The ViewController calls `viewDidLoad` to notify the view model it's ready to recieve results
+    /// The ViewController calls `viewDidLoad` to notify the view model it's ready to receive results
     ///
     func viewDidLoad() {
         syncingCoordinator.synchronizeFirstPage(reason: nil, onCompletion: nil)
@@ -168,11 +168,11 @@ extension CouponManagementListViewModel: SyncingCoordinatorDelegate {
 
     func handleCouponSyncResult(result: Result<Bool, Error>) {
         switch result {
-        case .failure(let error):
-            DDLogError("⛔️ Error synchronizing coupons: \(error)")
-
         case .success:
             DDLogInfo("Synchronized coupons")
+
+        case .failure(let error):
+            DDLogError("⛔️ Error synchronizing coupons: \(error)")
         }
 
         self.transitionToResultsUpdatedState(hasData: couponViewModels.isNotEmpty)

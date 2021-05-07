@@ -6,7 +6,6 @@ import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
 
 final class CouponManagementListViewModelTests: XCTestCase {
-
     private var mockStorageManager: MockStorageManager!
     private var mockStoresManager: MockStoresManager!
     private var mockSyncingCoordinator: MockSyncingCoordinator!
@@ -143,5 +142,4 @@ final class CouponManagementListViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(spyLatestStateLeft, .loading)
     }
-
 }

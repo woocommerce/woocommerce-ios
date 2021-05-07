@@ -2,8 +2,7 @@ import UIKit
 import WordPressUI
 
 final class CouponManagementViewController: UIViewController {
-
-    @IBOutlet private weak var tableView: UITableView?
+    @IBOutlet private weak var tableView: UITableView!
     private var viewModel: CouponManagementListViewModel!
 
     /// Set when an empty state view controller is displayed.
@@ -44,7 +43,7 @@ final class CouponManagementViewController: UIViewController {
         case .loading:
             displayPlaceholderCoupons()
         case .coupons:
-            tableView?.reloadData()
+            tableView.reloadData()
         case .empty:
             displayNoResultsOverlay()
         default:
@@ -57,20 +56,19 @@ final class CouponManagementViewController: UIViewController {
 // MARK: - View Configuration
 //
 private extension CouponManagementViewController {
-
     func configureNavigation() {
         title = Localization.title
     }
 
     func configureTableView() {
         registerTableViewCells()
-        tableView?.dataSource = self
-        tableView?.estimatedRowHeight = Constants.estimatedRowHeight
-        tableView?.rowHeight = UITableView.automaticDimension
+        tableView.dataSource = self
+        tableView.estimatedRowHeight = Constants.estimatedRowHeight
+        tableView.rowHeight = UITableView.automaticDimension
     }
 
     func registerTableViewCells() {
-        tableView?.registerNib(for: TitleBodyTableViewCell.self)
+        tableView.registerNib(for: TitleBodyTableViewCell.self)
     }
 }
 
@@ -84,14 +82,14 @@ extension CouponManagementViewController {
         let options = GhostOptions(displaysSectionHeader: false,
                                    reuseIdentifier: TitleBodyTableViewCell.reuseIdentifier,
                                    rowsPerSection: Constants.placeholderRowsPerSection)
-        tableView?.displayGhostContent(options: options,
+        tableView.displayGhostContent(options: options,
                                        style: .wooDefaultGhostStyle)
     }
 
     /// Removes the Placeholder Coupons
     ///
     func removePlaceholderCoupons() {
-        tableView?.removeGhostContent()
+        tableView.removeGhostContent()
     }
 }
 
@@ -121,13 +119,8 @@ extension CouponManagementViewController {
 
         emptyStateViewController.view.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(emptyStateViewController.view)
+        view.pinSubviewToAllEdges(emptyStateViewController.view)
 
-        NSLayoutConstraint.activate([
-            emptyStateViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            emptyStateViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            emptyStateViewController.view.topAnchor.constraint(equalTo: view.topAnchor),
-            emptyStateViewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
         emptyStateViewController.didMove(toParent: self)
     }
 
@@ -149,7 +142,6 @@ extension CouponManagementViewController {
 // MARK: - TableView Data Source
 //
 extension CouponManagementViewController: UITableViewDataSource {
-
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.couponViewModels.count
     }
@@ -166,28 +158,24 @@ extension CouponManagementViewController: UITableViewDataSource {
     func configure(_ cell: TitleBodyTableViewCell?, with cellViewModel: CouponListCellViewModel) {
         cell?.titleLabel.text = cellViewModel.title
         cell?.bodyLabel.text = cellViewModel.subtitle
-        cell?.accessibilityLabel = cellViewModel.accessiblityLabel
+        cell?.accessibilityLabel = cellViewModel.accessibilityLabel
     }
-
 }
 
 
 // MARK: - Nested Types
 //
 private extension CouponManagementViewController {
-
     enum Constants {
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
     }
-
 }
 
 
 // MARK: - Localization
 //
 private extension CouponManagementViewController {
-
     enum Localization {
         static let title = NSLocalizedString(
             "Coupons",
@@ -201,5 +189,4 @@ private extension CouponManagementViewController {
             "Market your products by adding a coupon to offer your customers a discount.",
             comment: "The details on the placeholder overlay when there are no coupons on the coupon management list")
     }
-
 }

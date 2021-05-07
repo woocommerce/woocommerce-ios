@@ -446,7 +446,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         // Given
         let remote = MockShippingLabelRemote()
         let orderID: Int64 = 22
-        let isFeatureFlagEnabled = true
+        let isFeatureFlagEnabled = false
         let expectedEligibility = true
         remote.whenCheckingCreationEligiblity(siteID: sampleSiteID,
                                               orderID: orderID,
@@ -477,6 +477,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let remote = MockShippingLabelRemote()
         let orderID: Int64 = 22
         let isFeatureFlagEnabled = false
+        let expectedEligibility = false
         remote.whenCheckingCreationEligiblity(siteID: sampleSiteID,
                                               orderID: orderID,
                                               canCreatePaymentMethod: isFeatureFlagEnabled,
@@ -498,7 +499,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(isEligibleForCreation, false)
+        XCTAssertEqual(isEligibleForCreation, expectedEligibility)
     }
 
     // MARK: `createPackage`

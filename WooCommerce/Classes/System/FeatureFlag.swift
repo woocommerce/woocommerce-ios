@@ -26,6 +26,10 @@ enum FeatureFlag: Int {
     ///
     case shippingLabelsRelease2
 
+    /// Shipping labels - release 3
+    ///
+    case shippingLabelsRelease3
+
     /// Product AddOns first iteration
     ///
     case addOnsI1

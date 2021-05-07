@@ -409,7 +409,42 @@ final class AppSettingsStoreTests: XCTestCase {
         let result = try XCTUnwrap(visibilityResult)
         XCTAssertTrue(result.isSuccess)
         XCTAssertFalse(try result.get())
+    }
 
+    func test_loadOrderAddOnsSwitchState_returns_false_on_new_generalAppSettings() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AppSettingsAction.loadOrderAddOnsSwitchState { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        let isEnabled = try result.get()
+        XCTAssertFalse(isEnabled)
+    }
+
+    func test_loadOrderAddOnsSwitchState_returns_true_after_updating_switch_state_as_true() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let updateAction = AppSettingsAction.setOrderAddOnsFeatureSwitchState(isEnabled: true, onCompletion: { _ in })
+        subject?.onAction(updateAction)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AppSettingsAction.loadOrderAddOnsSwitchState { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        let isEnabled = try result.get()
+        XCTAssertTrue(isEnabled)
     }
 }
 
@@ -423,7 +458,7 @@ private extension AppSettingsStoreTests {
 
     func createAppSettingAndGeneralFeedback(installationDate: Date?, feedbackStatus: FeedbackSettings.Status) -> (GeneralAppSettings, FeedbackSettings) {
         let feedback = FeedbackSettings(name: .general, status: feedbackStatus)
-        let settings = GeneralAppSettings(installationDate: installationDate, feedbacks: [feedback.name: feedback])
+        let settings = GeneralAppSettings(installationDate: installationDate, feedbacks: [feedback.name: feedback], isViewAddOnsSwitchEnabled: false)
         return (settings, feedback)
     }
 }

@@ -531,6 +531,8 @@ private extension OrderDetailsViewController {
             self?.paymentAlerts.tapOrInsertCard()
         } onClearMessage: { [weak self] in
             self?.paymentAlerts.removeCard()
+        } onProcessingMessage: { [weak self] in
+            self?.paymentAlerts.processingPayment()
         } onCompletion: { [weak self] result in
             guard let self = self else {
                 return

@@ -33,6 +33,11 @@ final class OrderDetailsPaymentAlerts {
         modalController?.setViewModel(viewModel)
     }
 
+    func processingPayment() {
+        let viewModel = processing()
+        modalController?.setViewModel(viewModel)
+    }
+
     func success(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void) {
         let viewModel = successViewModel(printReceipt: printReceipt, emailReceipt: emailReceipt)
         modalController?.setViewModel(viewModel)
@@ -60,6 +65,10 @@ private extension OrderDetailsPaymentAlerts {
 
     func remove() -> CardPresentPaymentsModalViewModel {
         CardPresentModalRemoveCard(name: name, amount: amount)
+    }
+
+    func processing() -> CardPresentPaymentsModalViewModel {
+        CardPresentModalProcessing(name: name, amount: amount)
     }
 
     func successViewModel(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {

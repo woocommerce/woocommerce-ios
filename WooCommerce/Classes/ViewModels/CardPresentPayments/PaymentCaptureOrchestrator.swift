@@ -11,6 +11,7 @@ final class PaymentCaptureOrchestrator {
     func collectPayment(for order: Order,
                         onPresentMessage: @escaping (String) -> Void,
                         onClearMessage: @escaping () -> Void,
+                        onProcessingMessage: @escaping () -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
 
         // TODO. Check that there is a reader currently connected
@@ -19,6 +20,7 @@ final class PaymentCaptureOrchestrator {
         collectPaymentWithCardReader(for: order,
                                      onPresentMessage: onPresentMessage,
                                      onClearMessage: onClearMessage,
+                                     onProcessingMessage: onProcessingMessage,
                                      onCompletion: onCompletion)
     }
 
@@ -42,6 +44,7 @@ private extension PaymentCaptureOrchestrator {
     func collectPaymentWithCardReader(for order: Order,
                                       onPresentMessage: @escaping (String) -> Void,
                                       onClearMessage: @escaping () -> Void,
+                                      onProcessingMessage: @escaping () -> Void,
                                       onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
         guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
             DDLogError("Error: attempted to collect payment for an order without valid total.")
@@ -71,6 +74,7 @@ private extension PaymentCaptureOrchestrator {
                                                                     break
                                                                 }
                                                              }, onCompletion: { [weak self] result in
+                                                                onProcessingMessage()
                                                                 self?.completePaymentIntentCapture(order: order,
                                                                                                  captureResult: result,
                                                                                                  onCompletion: onCompletion)

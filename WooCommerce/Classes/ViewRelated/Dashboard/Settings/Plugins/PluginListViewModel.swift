@@ -7,7 +7,7 @@ final class PluginListViewModel {
     ///
     private let storesManager: StoresManager
 
-    init(storesManager: StoresManager) {
+    init(storesManager: StoresManager = ServiceLocator.stores) {
         self.storesManager = storesManager
     }
 }

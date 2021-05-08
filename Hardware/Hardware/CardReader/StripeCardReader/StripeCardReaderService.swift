@@ -134,7 +134,6 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     public func clear() {
-        // 🧹
         Terminal.shared.clearCachedCredentials()
     }
 

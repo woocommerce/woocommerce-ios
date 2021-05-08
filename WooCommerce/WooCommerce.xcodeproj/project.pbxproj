@@ -1119,6 +1119,7 @@
 		D8F3A97F258865BD0085859B /* PasswordScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F3A97E258865BD0085859B /* PasswordScreen.swift */; };
 		D8F82AC522AF903700B67E4B /* IconsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F82AC422AF903700B67E4B /* IconsTests.swift */; };
 		DE8C94662646990000C94823 /* PluginListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8C94652646990000C94823 /* PluginListViewController.swift */; };
+		DE8C946E264699B600C94823 /* PluginListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8C946D264699B600C94823 /* PluginListViewModel.swift */; };
 		F93E8E5324087FDA0057FF21 /* BetaFeaturesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */; };
 		F93E8E5424087FDA0057FF21 /* BetaFeaturesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */; };
 		F93E8E5524087FDA0057FF21 /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5224087FDA0057FF21 /* SettingsScreen.swift */; };
@@ -2325,6 +2326,7 @@
 		D8F82AC422AF903700B67E4B /* IconsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = IconsTests.swift; path = WooCommerceTests/Extensions/IconsTests.swift; sourceTree = SOURCE_ROOT; };
 		D8FBFF1622D4CC2F006E3336 /* docs */ = {isa = PBXFileReference; lastKnownFileType = folder; name = docs; path = ../docs; sourceTree = "<group>"; };
 		DE8C94652646990000C94823 /* PluginListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginListViewController.swift; sourceTree = "<group>"; };
+		DE8C946D264699B600C94823 /* PluginListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginListViewModel.swift; sourceTree = "<group>"; };
 		F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BetaFeaturesScreen.swift; sourceTree = "<group>"; };
 		F93E8E5224087FDA0057FF21 /* SettingsScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
 		F93E8E5724087FE10057FF21 /* ProductsScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductsScreen.swift; sourceTree = "<group>"; };
@@ -5468,6 +5470,7 @@
 			isa = PBXGroup;
 			children = (
 				DE8C94652646990000C94823 /* PluginListViewController.swift */,
+				DE8C946D264699B600C94823 /* PluginListViewModel.swift */,
 			);
 			path = Plugins;
 			sourceTree = "<group>";
@@ -6551,6 +6554,7 @@
 				743EDD9F214B05350039071B /* TopEarnerStatsItem+Woo.swift in Sources */,
 				B5BBD6DE21B1703700E3207E /* PushNotificationsManager.swift in Sources */,
 				CE1EC8EC20B8A3FF009762BF /* LeftImageTableViewCell.swift in Sources */,
+				DE8C946E264699B600C94823 /* PluginListViewModel.swift in Sources */,
 				45E9A6E924DAE3B800A600E8 /* ProductReviewsDataSource.swift in Sources */,
 				02ADC7D02398C8EB008D4BED /* UIColor+SystemColors.swift in Sources */,
 				021125992578D9C20075AD2A /* ShippingLabelPrintingInstructionsView.swift in Sources */,

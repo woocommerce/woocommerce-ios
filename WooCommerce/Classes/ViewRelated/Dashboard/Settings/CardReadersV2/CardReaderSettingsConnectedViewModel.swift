@@ -9,6 +9,9 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     private var didGetConnectedReaders: Bool = false
     private var connectedReaders = [CardReader]()
 
+    var connectedReaderSerialNumber: String?
+    var connectedReaderBatteryLevel: String?
+
     init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?) {
 
         self.didChangeShouldShow = didChangeShouldShow
@@ -28,9 +31,29 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
             }
             self.didGetConnectedReaders = true
             self.connectedReaders = readers
+            self.updateProperties()
             self.reevaluateShouldShow()
         }
         ServiceLocator.stores.dispatch(action)
+    }
+
+    private func updateProperties() {
+        guard connectedReaders.count > 0 else {
+            connectedReaderSerialNumber = nil
+            connectedReaderBatteryLevel = nil
+            return
+        }
+
+        connectedReaderSerialNumber = connectedReaders[0].serial
+
+        guard let batteryLevel = connectedReaders[0].batteryLevel else {
+            connectedReaderBatteryLevel = Localization.unknownBatteryStatus
+            return
+        }
+
+        let batteryLevelPercent = Int(100 * batteryLevel)
+        let batteryLevelString = NumberFormatter.localizedString(from: batteryLevelPercent as NSNumber, number: .decimal)
+        connectedReaderBatteryLevel = String.localizedStringWithFormat(Localization.batteryLabelFormat, batteryLevelString)
     }
 
     /// Updates whether the view this viewModel is associated with should be shown or not
@@ -55,5 +78,26 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
         if didChange {
             didChangeShouldShow?(shouldShow)
         }
+    }
+}
+
+// MARK: - Localization
+//
+private extension CardReaderSettingsConnectedViewModel {
+    enum Localization {
+        static let title = NSLocalizedString(
+            "Connected Reader",
+            comment: "Settings > Manage Card Reader > Connected Reader Table Section Heading"
+        )
+
+        static let unknownBatteryStatus = NSLocalizedString(
+            "Unknown Battery Level",
+            comment: "Displayed in the unlikely event a card reader has an indeterminate battery status"
+        )
+
+        static let batteryLabelFormat = NSLocalizedString(
+            "%1$@%% Battery",
+            comment: "Card reader battery level as an integer percentage"
+        )
     }
 }

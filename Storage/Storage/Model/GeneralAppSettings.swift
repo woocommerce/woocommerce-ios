@@ -1,5 +1,5 @@
-
 import Foundation
+import Codegen
 
 /// An encodable/decodable data structure that can be used to save files. This contains
 /// miscellaneous app settings.
@@ -7,7 +7,7 @@ import Foundation
 /// Sometimes I wonder if `AppSettingsStore` should just use one plist file. Maybe things will
 /// be simpler?
 ///
-public struct GeneralAppSettings: Codable, Equatable {
+public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     /// The known `Date` that the app was installed.
     ///
     /// Note that this is not accurate because this property/setting was created when we have
@@ -20,9 +20,14 @@ public struct GeneralAppSettings: Codable, Equatable {
     /// Value: A `FeedbackSetting` to store the feedback state
     public let feedbacks: [FeedbackType: FeedbackSettings]
 
-    public init(installationDate: Date?, feedbacks: [FeedbackType: FeedbackSettings]) {
+    /// The state(`true` or `false`) for the view add-on beta feature switch.
+    ///
+    public let isViewAddOnsSwitchEnabled: Bool
+
+    public init(installationDate: Date?, feedbacks: [FeedbackType: FeedbackSettings], isViewAddOnsSwitchEnabled: Bool) {
         self.installationDate = installationDate
         self.feedbacks = feedbacks
+        self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled
     }
 
     /// Returns the status of a given feedback type. If the feedback is not stored in the feedback array. it is assumed that it has a pending status.
@@ -42,6 +47,6 @@ public struct GeneralAppSettings: Codable, Equatable {
             _, new in new
         }
 
-        return GeneralAppSettings(installationDate: installationDate, feedbacks: updatedFeedbacks)
+        return GeneralAppSettings(installationDate: installationDate, feedbacks: updatedFeedbacks, isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled)
     }
 }

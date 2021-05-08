@@ -153,6 +153,10 @@ public class AppSettingsStore: Store {
                                    onCompletion: onCompletion)
         case .resetProductsSettings:
             resetProductsSettings()
+        case .setOrderAddOnsFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
+            setOrderAddOnsFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
+        case .loadOrderAddOnsSwitchState(onCompletion: let onCompletion):
+            loadOrderAddOnsSwitchState(onCompletion: onCompletion)
         }
     }
 }
@@ -175,7 +179,7 @@ private extension AppSettingsStore {
                 return onCompletion(.success(false))
             }
 
-            let settingsToSave = GeneralAppSettings(installationDate: date, feedbacks: settings.feedbacks)
+            let settingsToSave = settings.copy(installationDate: date)
             try saveGeneralAppSettings(settingsToSave)
 
             onCompletion(.success(true))
@@ -208,10 +212,30 @@ private extension AppSettingsStore {
         })
     }
 
+    /// Sets the provided Order Add-Ons beta feature switch state into `GeneralAppSettings`
+    ///
+    func setOrderAddOnsFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings().copy(isViewAddOnsSwitchEnabled: isEnabled)
+            try saveGeneralAppSettings(settings)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+
+    }
+
+    /// Loads the current Order Add-Ons beta feature switch state from `GeneralAppSettings`
+    ///
+    func loadOrderAddOnsSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
+        let settings = loadOrCreateGeneralAppSettings()
+        onCompletion(.success(settings.isViewAddOnsSwitchEnabled))
+    }
+
     /// Load the `GeneralAppSettings` from file or create an empty one if it doesn't exist.
     func loadOrCreateGeneralAppSettings() -> GeneralAppSettings {
         guard let settings: GeneralAppSettings = try? fileStorage.data(for: generalAppSettingsFileURL) else {
-            return GeneralAppSettings(installationDate: nil, feedbacks: [:])
+            return GeneralAppSettings(installationDate: nil, feedbacks: [:], isViewAddOnsSwitchEnabled: false)
         }
 
         return settings

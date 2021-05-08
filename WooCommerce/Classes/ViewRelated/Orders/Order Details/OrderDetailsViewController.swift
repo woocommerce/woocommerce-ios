@@ -81,6 +81,7 @@ final class OrderDetailsViewController: UIViewController {
         syncTrackingsHidingAddButtonIfNecessary()
         checkShippingLabelCreationEligibility()
         checkCardPresentPaymentEligibility()
+        checkOrderAddOnFeatureSwitchState()
     }
 
     override func viewDidLayoutSubviews() {
@@ -321,6 +322,11 @@ extension OrderDetailsViewController {
             group.leave()
         }
 
+	group.enter()
+        checkOrderAddOnFeatureSwitchState {
+            group.leave()
+        }
+
         group.notify(queue: .main) { [weak self] in
             NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
             self?.refreshControl.endRefreshing()
@@ -378,6 +384,13 @@ private extension OrderDetailsViewController {
 
     func checkCardPresentPaymentEligibility(onCompletion: (() -> Void)? = nil) {
         viewModel.checkCardPaymentEligibility { [weak self] in
+            self?.reloadTableViewSectionsAndData()
+            onCompletion?()
+        }
+    }
+
+    func checkOrderAddOnFeatureSwitchState(onCompletion: (() -> Void)? = nil) {
+        viewModel.checkOrderAddOnFeatureSwitchState { [weak self] in
             self?.reloadTableViewSectionsAndData()
             onCompletion?()
         }

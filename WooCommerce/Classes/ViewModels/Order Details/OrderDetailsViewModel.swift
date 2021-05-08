@@ -443,6 +443,14 @@ extension OrderDetailsViewModel {
         onCompletion?()
     }
 
+    func checkOrderAddOnFeatureSwitchState(onCompletion: (() -> Void)? = nil) {
+        let action = AppSettingsAction.loadOrderAddOnsSwitchState { [weak self] result in
+            self?.dataSource.showAddOns = (try? result.get()) ?? false
+            onCompletion?()
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
     func deleteTracking(_ tracking: ShipmentTracking, onCompletion: @escaping (Error?) -> Void) {
         let siteID = order.siteID
         let orderID = order.orderID

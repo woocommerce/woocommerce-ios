@@ -408,7 +408,7 @@ private extension OrderDetailsViewController {
         }
     }
 
-    func syncOrderAfterPaymentCollection() {
+    func syncOrderAfterPaymentCollection(onCompletion: @escaping ()-> Void) {
         let group = DispatchGroup()
 
         group.enter()
@@ -423,6 +423,7 @@ private extension OrderDetailsViewController {
 
         group.notify(queue: .main) {
             NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
+            onCompletion()
         }
     }
 }
@@ -573,7 +574,9 @@ private extension OrderDetailsViewController {
                     // To be implemented.
                 })
             case .success(let receiptParameters):
-                self.syncOrderAfterPaymentCollection()
+                self.syncOrderAfterPaymentCollection {
+                    self.checkCardPresentPaymentEligibility()
+                }
 
                 self.paymentAlerts.success(printReceipt: {
                     self.viewModel.printReceipt(params: receiptParameters)

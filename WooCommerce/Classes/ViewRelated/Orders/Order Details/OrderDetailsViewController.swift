@@ -555,7 +555,7 @@ private extension OrderDetailsViewController {
                     // To be implemented.
                 })
             case .success(let receiptParameters):
-                self.pullToRefresh()
+                self.syncOrder()
                 self.paymentAlerts.success(printReceipt: {
                     self.viewModel.printReceipt(params: receiptParameters)
                 }, emailReceipt: {

@@ -322,7 +322,7 @@ extension OrderDetailsViewController {
             group.leave()
         }
 
-	group.enter()
+        group.enter()
         checkOrderAddOnFeatureSwitchState {
             group.leave()
         }
@@ -555,6 +555,7 @@ private extension OrderDetailsViewController {
                     // To be implemented.
                 })
             case .success(let receiptParameters):
+                self.pullToRefresh()
                 self.paymentAlerts.success(printReceipt: {
                     self.viewModel.printReceipt(params: receiptParameters)
                 }, emailReceipt: {

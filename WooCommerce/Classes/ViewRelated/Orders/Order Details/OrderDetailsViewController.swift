@@ -407,6 +407,24 @@ private extension OrderDetailsViewController {
             self?.reloadSections()
         }
     }
+
+    func syncOrderAfterPaymentCollection() {
+        let group = DispatchGroup()
+
+        group.enter()
+        syncOrder { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncNotes { _ in
+            group.leave()
+        }
+
+        group.notify(queue: .main) {
+            NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
+        }
+    }
 }
 
 
@@ -555,7 +573,8 @@ private extension OrderDetailsViewController {
                     // To be implemented.
                 })
             case .success(let receiptParameters):
-                self.syncOrder()
+                self.syncOrderAfterPaymentCollection()
+
                 self.paymentAlerts.success(printReceipt: {
                     self.viewModel.printReceipt(params: receiptParameters)
                 }, emailReceipt: {

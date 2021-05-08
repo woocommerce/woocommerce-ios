@@ -4,7 +4,7 @@ import UIKit
 /// This view controller is used when no readers are known or connected. It assists
 /// the merchant in connecting to a reader, often for the first time.
 ///
-final class CardReaderSettingsUnknownViewController: UIViewController {
+final class CardReaderSettingsUnknownViewController: UIViewController, CardReaderSettingsViewModelPresenter {
 
     /// Main TableView
     ///
@@ -18,6 +18,17 @@ final class CardReaderSettingsUnknownViewController: UIViewController {
     ///
     private var sections = [Section]()
 
+    /// Accept our viewmodel
+    ///
+    func configure(viewModel: CardReaderSettingsPresentedViewModel) {
+        self.viewModel = viewModel as? CardReaderSettingsUnknownViewModel
+
+        guard self.viewModel != nil else {
+            DDLogError("Unexpectedly unable to downcast to CardReaderSettingsUnknownViewModel")
+            return
+        }
+    }
+
     // MARK: - Overridden Methods
 
     override func viewDidLoad() {
@@ -27,10 +38,6 @@ final class CardReaderSettingsUnknownViewController: UIViewController {
         configureNavigation()
         configureSections()
         configureTable()
-    }
-
-    func configure(viewModel: CardReaderSettingsUnknownViewModel) {
-        self.viewModel = viewModel
     }
 }
 
@@ -186,6 +193,11 @@ extension CardReaderSettingsUnknownViewController: UITableViewDataSource {
 //
 extension CardReaderSettingsUnknownViewController: UITableViewDelegate {
 
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let row = rowAtIndexPath(indexPath)
+        return row.height
+    }
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
@@ -253,7 +265,7 @@ private extension CardReaderSettingsUnknownViewController {
     enum Localization {
         static let title = NSLocalizedString(
             "Manage Card Reader",
-            comment: "Title for the no-reader-connected screen in settings."
+            comment: "Settings > Manage Card Reader > Title for the no-reader-connected screen in settings."
         )
 
         static let connectYourCardReaderTitle = NSLocalizedString(

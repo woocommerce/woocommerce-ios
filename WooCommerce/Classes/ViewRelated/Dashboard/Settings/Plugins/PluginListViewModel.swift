@@ -5,7 +5,7 @@ final class PluginListViewModel {
 
     /// Whether synchronization failed and error state should be displayed
     ///
-    @Published var shouldShowErrorState: Bool = false
+    @Published var pluginListState: PluginListState = .results
 
     /// ID of the site to load plugins for
     ///
@@ -47,9 +47,17 @@ final class PluginListViewModel {
 
     /// Manually resync plugin list.
     ///
-    func resyncPlugins() {
+    func resyncPlugins(onComplete: @escaping () -> Void) {
+        pluginListState = .syncing
         let action = SitePluginAction.synchronizeSitePlugins(siteID: siteID) { [weak self] result in
-            self?.shouldShowErrorState = result.isFailure
+            guard let self = self else { return }
+            switch result {
+            case .success:
+                self.pluginListState = .results
+            case .failure:
+                self.pluginListState = .error
+            }
+            onComplete()
         }
         storesManager.dispatch(action)
     }
@@ -95,4 +103,16 @@ extension PluginListViewModel {
         let plugin = resultsController.object(at: indexPath)
         return PluginListCellViewModel(name: plugin.name, description: plugin.descriptionRaw)
     }
- }
+}
+
+// MARK: - Nested Types
+//
+extension PluginListViewModel {
+    /// States for the Plugin List screen
+    ///
+    enum PluginListState {
+        case results
+        case syncing
+        case error
+    }
+}

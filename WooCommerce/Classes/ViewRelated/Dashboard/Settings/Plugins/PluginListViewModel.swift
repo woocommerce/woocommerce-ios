@@ -101,7 +101,7 @@ extension PluginListViewModel {
     ///
     func cellModelForRow(at indexPath: IndexPath) -> PluginListCellViewModel {
         let plugin = resultsController.object(at: indexPath)
-        return PluginListCellViewModel(name: plugin.name, description: plugin.descriptionRaw)
+        return PluginListCellViewModel(name: plugin.name, description: plugin.descriptionRaw.removedHTMLTags)
     }
 }
 

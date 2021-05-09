@@ -17,6 +17,7 @@ class PluginListViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureNavigation()
         configureTableView()
         viewModel.activate()
     }
@@ -25,6 +26,10 @@ class PluginListViewController: UIViewController {
 // MARK: - UI configurations
 //
 private extension PluginListViewController {
+    func configureNavigation() {
+        title = NSLocalizedString("Plugins", comment: "Title of the Plugin List screen")
+    }
+
     func configureTableView() {
         tableView.registerNib(for: PluginTableViewCell.self)
         tableView.estimatedRowHeight = CGFloat(44)

@@ -1121,6 +1121,8 @@
 		DE8C94662646990000C94823 /* PluginListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8C94652646990000C94823 /* PluginListViewController.swift */; };
 		DE8C946E264699B600C94823 /* PluginListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8C946D264699B600C94823 /* PluginListViewModel.swift */; };
 		DEFD6D9F2647A20400E51E0D /* PluginListCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D9E2647A20400E51E0D /* PluginListCellModel.swift */; };
+		DEFD6DB92647ED0200E51E0D /* PluginTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6DB72647ED0200E51E0D /* PluginTableViewCell.swift */; };
+		DEFD6DBA2647ED0200E51E0D /* PluginTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DEFD6DB82647ED0200E51E0D /* PluginTableViewCell.xib */; };
 		F93E8E5324087FDA0057FF21 /* BetaFeaturesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */; };
 		F93E8E5424087FDA0057FF21 /* BetaFeaturesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */; };
 		F93E8E5524087FDA0057FF21 /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5224087FDA0057FF21 /* SettingsScreen.swift */; };
@@ -2329,6 +2331,8 @@
 		DE8C94652646990000C94823 /* PluginListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginListViewController.swift; sourceTree = "<group>"; };
 		DE8C946D264699B600C94823 /* PluginListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginListViewModel.swift; sourceTree = "<group>"; };
 		DEFD6D9E2647A20400E51E0D /* PluginListCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginListCellModel.swift; sourceTree = "<group>"; };
+		DEFD6DB72647ED0200E51E0D /* PluginTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginTableViewCell.swift; sourceTree = "<group>"; };
+		DEFD6DB82647ED0200E51E0D /* PluginTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PluginTableViewCell.xib; sourceTree = "<group>"; };
 		F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BetaFeaturesScreen.swift; sourceTree = "<group>"; };
 		F93E8E5224087FDA0057FF21 /* SettingsScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
 		F93E8E5724087FE10057FF21 /* ProductsScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductsScreen.swift; sourceTree = "<group>"; };
@@ -5482,6 +5486,8 @@
 			isa = PBXGroup;
 			children = (
 				DEFD6D9E2647A20400E51E0D /* PluginListCellModel.swift */,
+				DEFD6DB72647ED0200E51E0D /* PluginTableViewCell.swift */,
+				DEFD6DB82647ED0200E51E0D /* PluginTableViewCell.xib */,
 			);
 			path = PluginListCell;
 			sourceTree = "<group>";
@@ -5826,6 +5832,7 @@
 				45F627B7253603AE00894B86 /* ProductDownloadSettingsViewController.xib in Resources */,
 				571B850424CF7ECD00CF58A7 /* InAppFeedbackCardViewController.xib in Resources */,
 				B5D1AFB420BC445A00DB0E8C /* Images.xcassets in Resources */,
+				DEFD6DBA2647ED0200E51E0D /* PluginTableViewCell.xib in Resources */,
 				451B1741258B7EFB00836277 /* AddAttributeOptionsViewController.xib in Resources */,
 				CEE005F62076C4040079161F /* Orders.storyboard in Resources */,
 				CE85FD5C20F7A7740080B73E /* TableFooterView.xib in Resources */,
@@ -6299,6 +6306,7 @@
 				D8C11A5E22E2440400D4A88D /* OrderPaymentDetailsViewModel.swift in Sources */,
 				021E2A1E23AA24C600B1DE07 /* StringInputFormatter.swift in Sources */,
 				D8D15F83230A17A000D48B3F /* ServiceLocator.swift in Sources */,
+				DEFD6DB92647ED0200E51E0D /* PluginTableViewCell.swift in Sources */,
 				CE583A0421076C0100D73C1C /* NewNoteViewController.swift in Sources */,
 				CECC759723D607C900486676 /* OrderItemRefund+Woo.swift in Sources */,
 				0212275C244972660042161F /* BottomSheetListSelectorSectionHeaderView.swift in Sources */,

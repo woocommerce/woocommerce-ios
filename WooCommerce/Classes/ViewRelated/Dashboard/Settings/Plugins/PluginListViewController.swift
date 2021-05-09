@@ -2,6 +2,8 @@ import UIKit
 
 class PluginListViewController: UIViewController {
 
+    @IBOutlet private var tableView: UITableView!
+
     private let viewModel: PluginListViewModel
 
     init?(coder: NSCoder, viewModel: PluginListViewModel) {
@@ -12,7 +14,7 @@ class PluginListViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("⛔️ You must create this view controller with a view model!")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
     }

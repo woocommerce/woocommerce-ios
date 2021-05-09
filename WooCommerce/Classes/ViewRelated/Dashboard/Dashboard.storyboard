@@ -217,13 +217,28 @@
                     <view key="view" contentMode="scaleToFill" id="H3q-kl-QLM">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="utM-6u-Ld5">
+                                <rect key="frame" x="0.0" y="0.0" width="383" height="667"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="LSI-yY-JbA"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="utM-6u-Ld5" firstAttribute="top" secondItem="H3q-kl-QLM" secondAttribute="top" id="QWR-6Q-I77"/>
+                            <constraint firstItem="utM-6u-Ld5" firstAttribute="leading" secondItem="H3q-kl-QLM" secondAttribute="leading" id="YgJ-pC-d8b"/>
+                            <constraint firstAttribute="trailing" secondItem="utM-6u-Ld5" secondAttribute="trailing" id="ZZz-Re-GVc"/>
+                            <constraint firstAttribute="bottom" secondItem="utM-6u-Ld5" secondAttribute="bottom" id="mzo-ts-u2u"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="tableView" destination="utM-6u-Ld5" id="eVh-Av-wzE"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BoI-9E-doH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3370" y="1529"/>
+            <point key="canvasLocation" x="3368.8000000000002" y="1528.785607196402"/>
         </scene>
         <!--Card Reader Settings View Controller-->
         <scene sceneID="lIS-bL-sjX">
@@ -258,7 +273,7 @@
             <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <color red="0.0" green="0.46000000000000002" blue="0.89000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

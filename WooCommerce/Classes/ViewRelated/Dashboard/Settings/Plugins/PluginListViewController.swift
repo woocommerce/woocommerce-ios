@@ -6,6 +6,14 @@ class PluginListViewController: UIViewController {
 
     private let viewModel: PluginListViewModel
 
+    /// Pull To Refresh Support.
+    ///
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
+        return refreshControl
+    }()
+
     init?(coder: NSCoder, viewModel: PluginListViewModel) {
         self.viewModel = viewModel
         super.init(coder: coder)
@@ -35,8 +43,21 @@ private extension PluginListViewController {
         tableView.estimatedRowHeight = CGFloat(44)
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
+
+        tableView.addSubview(refreshControl)
         tableView.dataSource = self
         tableView.delegate = self
+    }
+}
+
+// MARK: - Actions
+//
+private extension PluginListViewController {
+    @objc
+    func pullToRefresh() {
+        viewModel.resyncPlugins { [weak self] in
+            self?.refreshControl.endRefreshing()
+        }
     }
 }
 

@@ -1123,6 +1123,7 @@
 		DEFD6D9F2647A20400E51E0D /* PluginListCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D9E2647A20400E51E0D /* PluginListCellModel.swift */; };
 		DEFD6DB92647ED0200E51E0D /* PluginTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6DB72647ED0200E51E0D /* PluginTableViewCell.swift */; };
 		DEFD6DBA2647ED0200E51E0D /* PluginTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DEFD6DB82647ED0200E51E0D /* PluginTableViewCell.xib */; };
+		DEFD6DC02648C14300E51E0D /* PluginListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6DBF2648C14300E51E0D /* PluginListViewModelTests.swift */; };
 		F93E8E5324087FDA0057FF21 /* BetaFeaturesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */; };
 		F93E8E5424087FDA0057FF21 /* BetaFeaturesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */; };
 		F93E8E5524087FDA0057FF21 /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5224087FDA0057FF21 /* SettingsScreen.swift */; };
@@ -2333,6 +2334,7 @@
 		DEFD6D9E2647A20400E51E0D /* PluginListCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginListCellModel.swift; sourceTree = "<group>"; };
 		DEFD6DB72647ED0200E51E0D /* PluginTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginTableViewCell.swift; sourceTree = "<group>"; };
 		DEFD6DB82647ED0200E51E0D /* PluginTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PluginTableViewCell.xib; sourceTree = "<group>"; };
+		DEFD6DBF2648C14300E51E0D /* PluginListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginListViewModelTests.swift; sourceTree = "<group>"; };
 		F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BetaFeaturesScreen.swift; sourceTree = "<group>"; };
 		F93E8E5224087FDA0057FF21 /* SettingsScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
 		F93E8E5724087FE10057FF21 /* ProductsScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductsScreen.swift; sourceTree = "<group>"; };
@@ -3249,6 +3251,7 @@
 		02E4FD7F2306AA770049610C /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				DEFD6DBE2648C12300E51E0D /* Plugins */,
 				576D9F2724DB81BF007B48F4 /* Stats V4 */,
 				02E4FD802306AA890049610C /* StatsTimeRangeBarViewModelTests.swift */,
 				0257285B230ACC7E00A288C4 /* StoreStatsV4ChartAxisHelperTests.swift */,
@@ -5492,6 +5495,14 @@
 			path = PluginListCell;
 			sourceTree = "<group>";
 		};
+		DEFD6DBE2648C12300E51E0D /* Plugins */ = {
+			isa = PBXGroup;
+			children = (
+				DEFD6DBF2648C14300E51E0D /* PluginListViewModelTests.swift */,
+			);
+			path = Plugins;
+			sourceTree = "<group>";
+		};
 		F4B77A83B2A3D94EA331691B /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -6849,6 +6860,7 @@
 				2667BFDD252F61C5008099D4 /* RefundShippingDetailsViewModelTests.swift in Sources */,
 				45DB7076261623410064A6CF /* ShippingLabelPackageDetailsViewModelTests.swift in Sources */,
 				021FAFCD2355621E00B99241 /* UIView+SubviewsAxisTests.swift in Sources */,
+				DEFD6DC02648C14300E51E0D /* PluginListViewModelTests.swift in Sources */,
 				74F3015A2200EC0800931B9E /* NSDecimalNumberWooTests.swift in Sources */,
 				D85136CD231E15B800DD0539 /* MockReviews.swift in Sources */,
 				D8053BCE231F98DA00CE60C2 /* ReviewAgeTests.swift in Sources */,

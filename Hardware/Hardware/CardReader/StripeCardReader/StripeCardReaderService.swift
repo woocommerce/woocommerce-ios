@@ -20,8 +20,6 @@ public final class StripeCardReaderService: NSObject {
     private let discoveredStripeReadersCache = StripeCardReaderDiscoveryCache()
 
     private var pendingSoftwareUpdate: ReaderSoftwareUpdate?
-
-    private var initialized: Bool = false
 }
 
 
@@ -63,7 +61,6 @@ extension StripeCardReaderService: CardReaderService {
 
     public func start(_ configProvider: CardReaderConfigProvider) {
         setConfigProvider(configProvider)
-        initialized = true
 
         let config = DiscoveryConfiguration(
             discoveryMethod: .bluetoothProximity,
@@ -112,13 +109,13 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     public func disconnect() -> Future<Void, Error> {
-        return Future() { [weak self] promise in
+        return Future() { promise in
             // Throw an error if the SDK has not been initialized.
             // This prevent a crash when logging out or switching stores before
             // the SDK has been initialized.
             // Why? https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(cpy)shared
             // `Before accessing the singleton for the first time, you must first call setTokenProvider: and setDelegate:.`
-            guard self?.initialized == true else {
+            guard Terminal.hasTokenProvider() else {
                 promise(.failure(CardReaderServiceError.disconnection()))
                 return
             }
@@ -152,7 +149,7 @@ extension StripeCardReaderService: CardReaderService {
         // the SDK has been initialized.
         // Why? https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(cpy)shared
         // `Before accessing the singleton for the first time, you must first call setTokenProvider: and setDelegate:.`
-        guard initialized == true else {
+        guard Terminal.hasTokenProvider() else {
             return
         }
 

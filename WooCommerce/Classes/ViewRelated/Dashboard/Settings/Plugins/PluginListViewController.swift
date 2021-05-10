@@ -12,7 +12,7 @@ class PluginListViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("⛔️ You must create this view controller with a view model!")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
     }

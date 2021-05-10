@@ -8,7 +8,7 @@ class PluginListViewController: UIViewController {
     @IBOutlet private var tableView: UITableView!
 
     private var cancellable: AnyCancellable?
-    
+
     /// Pull To Refresh Support.
     ///
     private lazy var refreshControl: UIRefreshControl = {

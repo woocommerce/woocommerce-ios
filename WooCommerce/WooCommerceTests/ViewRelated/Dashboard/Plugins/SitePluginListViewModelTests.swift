@@ -59,15 +59,15 @@ class PluginListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.cellModelForRow(at: IndexPath(row: 0, section: 1)).name, inactivePlugin2.name)
         XCTAssertEqual(viewModel.cellModelForRow(at: IndexPath(row: 1, section: 1)).name, inactivePlugin1.name)
     }
-    
+
     func test_resyncPlugins_dispatches_correct_action() {
         // Given
         let storesManager = MockPluginStoresManager(shouldSucceed: true)
         let viewModel = PluginListViewModel(siteID: sampleSiteID, storesManager: storesManager)
-        
+
         // When
         viewModel.resyncPlugins {}
-        
+
         // Then
         XCTAssertTrue(storesManager.invokedSynchronizePlugins)
         XCTAssertEqual(storesManager.invokedSynchronizePluginsWithSiteID, sampleSiteID)
@@ -123,15 +123,15 @@ final class MockPluginStoresManager: DefaultStoresManager {
     /// Whether synchronizePlugins action was triggered.
     ///
     var invokedSynchronizePlugins = false
-    
+
     /// The site ID that the `synchronizePlugins` action was triggered with.
     ///
     var invokedSynchronizePluginsWithSiteID: Int64 = 0
-    
+
     /// Whether the mock `synchronizePlugins` action handler should succeed.
     ///
     private let shouldSucceed: Bool
-    
+
     /// Delay time for completion block of the mock `synchronizePlugins` action.
     ///
     private let completionDelay: TimeInterval

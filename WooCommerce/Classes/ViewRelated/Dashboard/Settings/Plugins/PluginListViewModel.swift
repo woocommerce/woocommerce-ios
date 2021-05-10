@@ -64,8 +64,22 @@ extension PluginListViewModel {
     /// Title of table view section at specified index.
     ///
     func titleForSection(at index: Int) -> String? {
-        // TODO: update this
-        return nil
+        guard let rawStatus = resultsController.sections[safe: index]?.name else {
+            return nil
+        }
+        let pluginStatus = SitePluginStatusEnum(rawValue: rawStatus)
+        let sectionTitle: String
+        switch pluginStatus {
+        case .active:
+            sectionTitle = NSLocalizedString("Active Plugins", comment: "Title for table view section of active plugins")
+        case .inactive:
+            sectionTitle = NSLocalizedString("Inactive Plugins", comment: "Title for table view section of inactive plugins")
+        case .networkActive:
+            sectionTitle = NSLocalizedString("Network Active Plugins", comment: "Title for table view section of network active plugins")
+        case .unknown:
+            sectionTitle = "" // This case should not happen
+        }
+        return sectionTitle.capitalized
     }
 
     /// Number of rows in a specified table view section index.

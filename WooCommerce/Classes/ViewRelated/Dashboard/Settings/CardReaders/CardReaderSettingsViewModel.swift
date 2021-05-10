@@ -162,10 +162,17 @@ final class CardReaderSettingsViewModel: ObservableObject {
 
     /// Views can call this method to disconnect from the connected reader.
     func disconnectAndForget() {
-        // TODO dispatch an action to disconnect.
-        connectedReader = nil
-        activeView = .connectYourReader
-        activeAlert = .none
+        let action = CardPresentPaymentAction.disconnect { [weak self] result in
+            guard let self = self, result.isSuccess else {
+                return
+            }
+
+            self.connectedReader = nil
+            self.activeView = .connectYourReader
+            self.activeAlert = .none
+        }
+
+        ServiceLocator.stores.dispatch(action)
     }
 
     /// Called when a reader has been connected to.

@@ -127,6 +127,7 @@ extension StripeCardReaderService: CardReaderService {
                 }
 
                 if error == nil {
+                    self.connectedReadersSubject.send([])
                     promise(.success(()))
                 }
             }

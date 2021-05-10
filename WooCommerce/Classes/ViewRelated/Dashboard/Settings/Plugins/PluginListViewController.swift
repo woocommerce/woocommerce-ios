@@ -39,7 +39,9 @@ class PluginListViewController: UIViewController {
         configureNavigation()
         configureTableView()
         configureListStates()
-        viewModel.activate()
+        viewModel.activate { [weak self] in
+            self?.tableView.reloadData()
+        }
     }
 }
 
@@ -71,7 +73,6 @@ private extension PluginListViewController {
                     self.tableView.startGhostAnimation(style: .wooDefaultGhostStyle)
                 case .results:
                     self.tableView.stopGhostAnimation()
-                    self.tableView.reloadData()
                 case .error:
                     self.tableView.stopGhostAnimation()
                     self.displayErrorStateView()

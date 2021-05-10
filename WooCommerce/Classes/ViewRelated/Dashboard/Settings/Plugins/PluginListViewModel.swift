@@ -44,12 +44,14 @@ final class PluginListViewModel {
 
     /// Start fetching plugin data from local storage.
     ///
-    func activate() {
+    func activate(onDataChange: @escaping () -> Void) {
         do {
             try resultsController.performFetch()
         } catch {
             DDLogError("⛔️ Error fetching plugin list!")
         }
+
+        resultsController.onDidChangeContent = onDataChange
     }
 
     /// Manually resync plugin list.

@@ -440,7 +440,23 @@ extension OrderDetailsViewModel {
         dataSource.isEligibleForCardPresentPayment = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) &&
             isOrderEligibleForCardPayment()
 
-        onCompletion?()
+        let action = WCPayAction.loadAccount(siteID: order.siteID) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+
+            switch result {
+            case .failure:
+                self.dataSource.isEligibleForCardPresentPayment = false
+            case .success(let account):
+                self.dataSource.isEligibleForCardPresentPayment = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) &&
+                    self.isOrderEligibleForCardPayment() && account.canCollectPayments
+            }
+
+            onCompletion?()
+        }
+
+        ServiceLocator.stores.dispatch(action)
     }
 
     func checkOrderAddOnFeatureSwitchState(onCompletion: (() -> Void)? = nil) {

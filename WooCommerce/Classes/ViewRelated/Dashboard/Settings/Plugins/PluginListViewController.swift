@@ -18,6 +18,7 @@ class PluginListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigation()
+        configureTableView()
     }
 }
 
@@ -25,5 +26,12 @@ class PluginListViewController: UIViewController {
 private extension PluginListViewController {
     func configureNavigation() {
         title = NSLocalizedString("Plugins", comment: "Title of the Plugin List screen")
+    }
+
+    func configureTableView() {
+        tableView.registerNib(for: PluginTableViewCell.self)
+        tableView.estimatedRowHeight = CGFloat(44)
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.backgroundColor = .listBackground
     }
 }

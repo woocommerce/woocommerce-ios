@@ -38,4 +38,16 @@ final class PluginListViewModel {
         self.storesManager = storesManager
         self.storageManager = storageManager
     }
+    
+    /// Start fetching plugin data from local storage.
+    ///
+    func activate(onDataChanged: @escaping () -> Void) {
+        do {
+            try resultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Error fetching plugin list!")
+        }
+
+        resultsController.onDidChangeContent = onDataChanged
+    }
 }

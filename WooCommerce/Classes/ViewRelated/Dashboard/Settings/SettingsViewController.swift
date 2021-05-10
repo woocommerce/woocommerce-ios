@@ -382,8 +382,13 @@ private extension SettingsViewController {
 
     func sitePluginsWasPressed() {
         // TODO: do we need analytics to track tap here?
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            DDLogError("⛔️ Cannot find ID for current site to load plugins for!")
+            return
+        }
+        let viewModel = PluginListViewModel(siteID: siteID)
         let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: PluginListViewController.self, creator: { coder in
-            PluginListViewController(coder: coder, viewModel: PluginListViewModel())
+            PluginListViewController(coder: coder, viewModel: viewModel)
         })
         show(viewController, sender: self)
     }

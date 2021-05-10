@@ -67,3 +67,55 @@ private extension PluginListViewModelTests {
         plugin.update(with: readOnlyPlugin)
     }
 }
+
+final class MockPluginStoresManager: DefaultStoresManager {
+    /// Whether synchronizePlugins action was triggered.
+    ///
+    var invokedSynchronizePlugins = false
+    
+    /// The site ID that the `synchronizePlugins` action was triggered with.
+    ///
+    var invokedSynchronizePluginsWithSiteID: Int64 = 0
+    
+    /// Whether the mock `synchronizePlugins` action handler should succeed.
+    ///
+    private let shouldSucceed: Bool
+    
+    /// Delay time for completion block of the mock `synchronizePlugins` action.
+    ///
+    private let completionDelay: TimeInterval
+
+    enum MockPluginError: Error {
+        case mockError
+    }
+
+    init(shouldSucceed: Bool, completionDelay: TimeInterval = 0) {
+        self.shouldSucceed = shouldSucceed
+        self.completionDelay = completionDelay
+        let sessionManager = SessionManager.testingInstance
+        sessionManager.setStoreId(134)
+        super.init(sessionManager: sessionManager)
+    }
+
+    // MARK: - Overridden Methods
+    override func dispatch(_ action: Action) {
+        if let sitePluginAction = action as? SitePluginAction {
+            onPluginAction(sitePluginAction)
+        }
+    }
+
+    private func onPluginAction(_ action: SitePluginAction) {
+        switch action {
+        case .synchronizeSitePlugins(let siteID, let onCompletion):
+            invokedSynchronizePlugins = true
+            invokedSynchronizePluginsWithSiteID = siteID
+            DispatchQueue.main.asyncAfter(deadline: .now() + completionDelay) { [weak self] in
+                if self?.shouldSucceed == true {
+                    onCompletion(.success(()))
+                } else {
+                    onCompletion(.failure(MockPluginError.mockError))
+                }
+            }
+        }
+    }
+}

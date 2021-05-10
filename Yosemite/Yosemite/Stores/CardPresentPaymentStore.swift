@@ -104,16 +104,19 @@ private extension CardPresentPaymentStore {
     }
 
     func disconnect(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        cardReaderService.disconnect().sink(receiveCompletion: { error in
-            switch error {
-            case .failure(let error):
-                onCompletion(.failure(error))
-            default:
-                break
+        cardReaderService.disconnect().subscribe(Subscribers.Sink(
+            receiveCompletion: { error in
+                switch error {
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                default:
+                    break
+                }
+            },
+            receiveValue: { result in
+                onCompletion(.success(result))
             }
-        }, receiveValue: { (result) in
-            onCompletion(.success(result))
-        }).store(in: &cancellables)
+        ))
     }
 
     /// Calls the completion block everytime the list of known readers changes

@@ -69,6 +69,8 @@ extension StripeCardReaderService: CardReaderService {
 
         switchStatusToDiscovering()
 
+        Terminal.shared.delegate = self
+
         /**
          * https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)discoverReaders:delegate:completion:
          *
@@ -137,6 +139,7 @@ extension StripeCardReaderService: CardReaderService {
                 }
 
                 if error == nil {
+                    self.connectedReadersSubject.send([])
                     promise(.success(()))
                 }
             }
@@ -351,6 +354,15 @@ extension StripeCardReaderService: ReaderDisplayDelegate {
 extension StripeCardReaderService: ReaderSoftwareUpdateDelegate {
     public func terminal(_ terminal: Terminal, didReportReaderSoftwareUpdateProgress progress: Float) {
         softwareUpdateSubject.send(progress)
+    }
+}
+
+
+// MARK: - Terminal delegate
+extension StripeCardReaderService: TerminalDelegate {
+    public func terminal(_ terminal: Terminal, didReportUnexpectedReaderDisconnect reader: Reader) {
+        print("==== didReportUnexpectedReaderDisconnect ===")
+        connectedReadersSubject.send([])
     }
 }
 

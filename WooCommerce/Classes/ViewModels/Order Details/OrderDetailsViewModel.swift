@@ -443,6 +443,14 @@ extension OrderDetailsViewModel {
         onCompletion?()
     }
 
+    func checkOrderAddOnFeatureSwitchState(onCompletion: (() -> Void)? = nil) {
+        let action = AppSettingsAction.loadOrderAddOnsSwitchState { [weak self] result in
+            self?.dataSource.showAddOns = (try? result.get()) ?? false
+            onCompletion?()
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
     func deleteTracking(_ tracking: ShipmentTracking, onCompletion: @escaping (Error?) -> Void) {
         let siteID = order.siteID
         let orderID = order.orderID
@@ -483,10 +491,12 @@ extension OrderDetailsViewModel {
     /// that object outside of Yosemite.
     func collectPayment(onPresentMessage: @escaping (String) -> Void,
                         onClearMessage: @escaping () -> Void,
+                        onProcessingMessage: @escaping () -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
         paymentOrchestrator.collectPayment(for: order,
                                            onPresentMessage: onPresentMessage,
                                            onClearMessage: onClearMessage,
+                                           onProcessingMessage: onProcessingMessage,
                                            onCompletion: onCompletion)
     }
 

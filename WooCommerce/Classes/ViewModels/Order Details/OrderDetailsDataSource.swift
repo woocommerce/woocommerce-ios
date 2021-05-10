@@ -58,6 +58,11 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var onUIReloadRequired: (() -> Void)?
 
+    /// Indicates if the product cell will be configured with add on information or not.
+    /// Property provided while "view add-ons" feature is in development.
+    ///
+    var showAddOns = false
+
     /// Order shipment tracking list
     ///
     var orderTracking: [ShipmentTracking] {
@@ -165,22 +170,15 @@ final class OrderDetailsDataSource: NSObject {
         return AsyncDictionary()
     }()
 
-    /// Indicates if the product cell will be configured with add on information or not.
-    /// Set to the the value of the `addOnsI1` feature flag in it's default parameter.
-    ///
-    private let showAddOns: Bool
-
     private lazy var currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
     private let imageService: ImageService = ServiceLocator.imageService
 
     init(order: Order,
-         storageManager: StorageManagerType = ServiceLocator.storageManager,
-         showAddOns: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.addOnsI1)) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.storageManager = storageManager
         self.order = order
         self.couponLines = order.coupons
-        self.showAddOns = showAddOns
 
         super.init()
     }

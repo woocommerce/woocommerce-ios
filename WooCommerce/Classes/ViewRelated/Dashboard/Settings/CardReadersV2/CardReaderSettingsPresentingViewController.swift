@@ -3,10 +3,11 @@ import UIKit
 
 final class CardReaderSettingsPresentingViewController: UIViewController {
 
-    @IBOutlet weak var temporaryLabel: UILabel!
-
     /// An array of viewModels and related view classes
     private var viewModelsAndViews: CardReaderSettingsPrioritizedViewModelsProvider?
+
+    /// The view controller we are currently presenting
+    private var childViewController: UIViewController?
 
     /// Set our dependencies
     func configure(viewModelsAndViews: CardReaderSettingsPrioritizedViewModelsProvider) {
@@ -22,13 +23,31 @@ final class CardReaderSettingsPresentingViewController: UIViewController {
     }
 
     private func configureInitialState() {
+        /// To avoid child view controllers extending underneath the navigation bar
+        self.edgesForExtendedLayout = []
+
         onViewModelsPriorityChange(viewModelAndView: viewModelsAndViews?.priorityViewModelAndView)
     }
 
     private func onViewModelsPriorityChange(viewModelAndView: CardReaderSettingsViewModelAndView?) {
-        // For now, just update the label with the view identifer we should display
-        // A later PR will actually add presented views
-        temporaryLabel.text = viewModelAndView?.viewIdentifier ?? "Loading"
+        childViewController?.willMove(toParent: nil)
+        childViewController?.removeFromParent()
+        childViewController?.view.removeFromSuperview()
+
+        childViewController = self.storyboard!.instantiateViewController(withIdentifier: viewModelAndView!.viewIdentifier)
+
+        guard let childViewController = childViewController else {
+            return
+        }
+
+        guard let presenter = childViewController as? CardReaderSettingsViewModelPresenter else {
+            return
+        }
+        presenter.configure(viewModel: viewModelAndView!.viewModel)
+
+        self.view.addSubview(childViewController.view)
+        self.addChild(childViewController)
+        childViewController.didMove(toParent: self)
     }
 }
 

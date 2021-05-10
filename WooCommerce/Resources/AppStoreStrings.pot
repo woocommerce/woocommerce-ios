@@ -57,9 +57,13 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v6.5-whats-new"
+msgctxt "v6.6-whats-new"
 msgid ""
-"We're busy working on lots of exciting things, so just one little fix this time. We now fully support product images with non-latin characters in the filename. They'll load nicely and won't cause weird issues with your Media Library.\n"
+"Product variations only support one image, so if a product variation already has an image, you’ll see an option to replace or remove it but will not be able to add another one.\n"
+"\n"
+"We received reports of crashes when selecting images from the Media Library, which occurred with libraries that had a specific number of images. This issue has been fixed.\n"
+"\n"
+"We also improved an error message that displayed when a customer logged into a site with an offline device, an invalid SSL certificate, or a blocked XML-RPC. The updated messaging makes it easier for people to troubleshoot their login issue.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

@@ -44,7 +44,7 @@ class OrderAddOnListI1Tests: XCTestCase {
         // Then
         XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderDetailAddOnsViewed.rawValue])
 
-        let properties = try XCTUnwrap(analytics.receivedProperties.first?["add-ons"] as? String)
+        let properties = try XCTUnwrap(analytics.receivedProperties.first?["add_ons"] as? String)
         XCTAssertEqual(properties, "Topping,Fast Delivery,Soda (No Sugar),Engraving")
     }
 }

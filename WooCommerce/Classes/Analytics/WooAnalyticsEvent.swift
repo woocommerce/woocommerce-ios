@@ -289,7 +289,7 @@ extension WooAnalyticsEvent {
         ///
         private enum Keys {
             static let state = "state"
-            static let addOns = "add-ons"
+            static let addOns = "add_ons"
         }
 
         static func betaFeaturesSwitchToggled(isOn: Bool) -> WooAnalyticsEvent {

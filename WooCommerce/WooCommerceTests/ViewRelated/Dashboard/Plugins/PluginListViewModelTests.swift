@@ -37,13 +37,13 @@ class PluginListViewModelTests: XCTestCase {
         )
         insert(activePlugin)
 
-        let inactivePlugin1 = SitePlugin.fake().copy(siteID: sampleSiteID, status: .inactive, name: "AAA")
+        let inactivePlugin1 = SitePlugin.fake().copy(siteID: sampleSiteID, status: .inactive, name: "CCC")
         insert(inactivePlugin1)
 
-        let inactivePlugin2 = SitePlugin.fake().copy(siteID: sampleSiteID, status: .inactive, name: "CCC")
+        let inactivePlugin2 = SitePlugin.fake().copy(siteID: sampleSiteID, status: .inactive, name: "AAA")
         insert(inactivePlugin2)
 
-        let viewModel = PluginListViewModel(siteID: sampleSiteID)
+        let viewModel = PluginListViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
         viewModel.activate()
@@ -56,6 +56,8 @@ class PluginListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.numberOfRows(inSection: 1), 2)
         XCTAssertEqual(viewModel.cellModelForRow(at: IndexPath(row: 0, section: 0)).name, activePlugin.name)
         XCTAssertEqual(viewModel.cellModelForRow(at: IndexPath(row: 0, section: 0)).description, "Lorem ipsum random HTML content")
+        XCTAssertEqual(viewModel.cellModelForRow(at: IndexPath(row: 0, section: 1)).name, inactivePlugin2.name)
+        XCTAssertEqual(viewModel.cellModelForRow(at: IndexPath(row: 1, section: 1)).name, inactivePlugin1.name)
     }
 
     func test_resyncPlugins_dispatches_correct_action() {

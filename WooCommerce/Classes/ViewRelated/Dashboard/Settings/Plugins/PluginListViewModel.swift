@@ -4,6 +4,10 @@ import protocol Storage.StorageManagerType
 
 final class PluginListViewModel {
 
+    /// Current state of the plugin list
+    ///
+    @Published var pluginListState: PluginListState = .results
+
     /// ID of the site to load plugins for
     ///
     private let siteID: Int64
@@ -106,3 +110,15 @@ struct PluginListCellViewModel {
      let name: String
      let description: String
  }
+
+// MARK: - Nested Types
+//
+extension PluginListViewModel {
+    /// States for the Plugin List screen
+    ///
+    enum PluginListState {
+        case results
+        case syncing
+        case error
+    }
+}

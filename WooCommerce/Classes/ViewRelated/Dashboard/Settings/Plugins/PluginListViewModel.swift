@@ -15,6 +15,21 @@ final class PluginListViewModel {
     /// StorageManager to load plugins from storage
     ///
     private let storageManager: StorageManagerType
+    
+    /// Results controller for the plugin list
+    ///
+    private lazy var resultsController: ResultsController<StorageSitePlugin> = {
+        let storage = ServiceLocator.storageManager
+        let predicate = NSPredicate(format: "siteID = %ld", self.siteID)
+        let nameDescriptor = NSSortDescriptor(keyPath: \StorageSitePlugin.name, ascending: true)
+        let statusDescriptor = NSSortDescriptor(keyPath: \StorageSitePlugin.status, ascending: true)
+        return ResultsController<StorageSitePlugin>(
+            storageManager: storage,
+            sectionNameKeyPath: "status",
+            matching: predicate,
+            sortedBy: [statusDescriptor, nameDescriptor]
+        )
+    }()
 
     init(siteID: Int64,
          storesManager: StoresManager = ServiceLocator.stores,

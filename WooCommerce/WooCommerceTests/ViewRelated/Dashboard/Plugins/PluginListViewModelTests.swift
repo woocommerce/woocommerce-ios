@@ -75,26 +75,40 @@ class PluginListViewModelTests: XCTestCase {
 
     func test_resyncPlugins_updates_pluginListState_to_results_when_synchronization_succeeds() {
         // Given
-        let storesManager = MockPluginStoresManager(shouldSucceed: true)
+        let delay: TimeInterval = 1
+        let expect = expectation(description: "Plugin list state is updated correctly")
+        let storesManager = MockPluginStoresManager(shouldSucceed: true, completionDelay: 1)
         let viewModel = PluginListViewModel(siteID: sampleSiteID, storesManager: storesManager)
 
         // When
         viewModel.resyncPlugins {}
 
         // Then
-        XCTAssertEqual(viewModel.pluginListState, .results)
+        XCTAssertEqual(viewModel.pluginListState, .syncing)
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            XCTAssertEqual(viewModel.pluginListState, .results)
+            expect.fulfill()
+        }
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
 
     func test_resyncPlugins_updates_pluginListState_to_error_when_synchronization_fails() {
         // Given
-        let storesManager = MockPluginStoresManager(shouldSucceed: false)
+        let delay: TimeInterval = 1
+        let expect = expectation(description: "Plugin list state is updated correctly")
+        let storesManager = MockPluginStoresManager(shouldSucceed: false, completionDelay: delay)
         let viewModel = PluginListViewModel(siteID: sampleSiteID, storesManager: storesManager)
 
         // When
         viewModel.resyncPlugins {}
 
         // Then
-        XCTAssertEqual(viewModel.pluginListState, .error)
+        XCTAssertEqual(viewModel.pluginListState, .syncing)
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            XCTAssertEqual(viewModel.pluginListState, .error)
+            expect.fulfill()
+        }
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
 }
 
@@ -109,14 +123,16 @@ final class MockPluginStoresManager: DefaultStoresManager {
     var invokedSynchronizePlugins = false
     var invokedSynchronizePluginsWithSiteID: Int64 = 0
 
-    private var shouldSucceed = false
+    private let shouldSucceed: Bool
+    private let completionDelay: TimeInterval
 
     enum MockPluginError: Error {
         case mockError
     }
 
-    init(shouldSucceed: Bool) {
+    init(shouldSucceed: Bool, completionDelay: TimeInterval = 0) {
         self.shouldSucceed = shouldSucceed
+        self.completionDelay = completionDelay
         let sessionManager = SessionManager.testingInstance
         sessionManager.setStoreId(134)
         super.init(sessionManager: sessionManager)
@@ -134,10 +150,12 @@ final class MockPluginStoresManager: DefaultStoresManager {
         case .synchronizeSitePlugins(let siteID, let onCompletion):
             invokedSynchronizePlugins = true
             invokedSynchronizePluginsWithSiteID = siteID
-            if shouldSucceed {
-                onCompletion(.success(()))
-            } else {
-                onCompletion(.failure(MockPluginError.mockError))
+            DispatchQueue.main.asyncAfter(deadline: .now() + completionDelay) { [weak self] in
+                if self?.shouldSucceed == true {
+                    onCompletion(.success(()))
+                } else {
+                    onCompletion(.failure(MockPluginError.mockError))
+                }
             }
         }
     }

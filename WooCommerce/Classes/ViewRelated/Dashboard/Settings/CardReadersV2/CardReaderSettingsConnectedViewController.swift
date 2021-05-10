@@ -96,8 +96,8 @@ private extension CardReaderSettingsConnectedViewController {
     }
 
     private func configureButton(cell: ButtonTableViewCell) {
-        cell.configure(title: Localization.buttonTitle) {
-            // TODO: Connect in 4057
+        cell.configure(title: Localization.buttonTitle) { [weak self] in
+            self?.viewModel?.disconnectReader()
         }
         cell.selectionStyle = .none
     }

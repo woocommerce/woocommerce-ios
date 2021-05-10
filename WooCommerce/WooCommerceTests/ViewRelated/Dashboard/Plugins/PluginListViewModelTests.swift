@@ -53,11 +53,86 @@ class PluginListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.cellModelForRow(at: IndexPath(row: 0, section: 0)).name, activePlugin.name)
         XCTAssertEqual(viewModel.cellModelForRow(at: IndexPath(row: 0, section: 0)).description, "Lorem ipsum random HTML content")
     }
+
+    func test_resyncPlugins_dispatches_correct_action() {
+        // Given
+        let storesManager = MockPluginStoresManager(shouldSucceed: true)
+        let viewModel = PluginListViewModel(siteID: sampleSiteID, storesManager: storesManager)
+
+        // When
+        viewModel.resyncPlugins {}
+
+        // Then
+        XCTAssertTrue(storesManager.invokedSynchronizePlugins)
+        XCTAssertEqual(storesManager.invokedSynchronizePluginsWithSiteID, sampleSiteID)
+    }
+
+    func test_resyncPlugins_updates_pluginListState_to_results_when_synchronization_succeeds() {
+        // Given
+        let storesManager = MockPluginStoresManager(shouldSucceed: true)
+        let viewModel = PluginListViewModel(siteID: sampleSiteID, storesManager: storesManager)
+
+        // When
+        viewModel.resyncPlugins {}
+
+        // Then
+        XCTAssertEqual(viewModel.pluginListState, .results)
+    }
+
+    func test_resyncPlugins_updates_pluginListState_to_error_when_synchronization_fails() {
+        // Given
+        let storesManager = MockPluginStoresManager(shouldSucceed: false)
+        let viewModel = PluginListViewModel(siteID: sampleSiteID, storesManager: storesManager)
+
+        // When
+        viewModel.resyncPlugins {}
+
+        // Then
+        XCTAssertEqual(viewModel.pluginListState, .error)
+    }
 }
 
 private extension PluginListViewModelTests {
     func insert(_ readOnlyPlugin: Yosemite.SitePlugin) {
         let plugin = storage.insertNewObject(ofType: StorageSitePlugin.self)
         plugin.update(with: readOnlyPlugin)
+    }
+}
+
+final class MockPluginStoresManager: DefaultStoresManager {
+    var invokedSynchronizePlugins = false
+    var invokedSynchronizePluginsWithSiteID: Int64 = 0
+
+    private var shouldSucceed = false
+
+    enum MockPluginError: Error {
+        case mockError
+    }
+
+    init(shouldSucceed: Bool) {
+        self.shouldSucceed = shouldSucceed
+        let sessionManager = SessionManager.testingInstance
+        sessionManager.setStoreId(134)
+        super.init(sessionManager: sessionManager)
+    }
+
+    // MARK: - Overridden Methods
+    override func dispatch(_ action: Action) {
+        if let sitePluginAction = action as? SitePluginAction {
+            onPluginAction(sitePluginAction)
+        }
+    }
+
+    private func onPluginAction(_ action: SitePluginAction) {
+        switch action {
+        case .synchronizeSitePlugins(let siteID, let onCompletion):
+            invokedSynchronizePlugins = true
+            invokedSynchronizePluginsWithSiteID = siteID
+            if shouldSucceed {
+                onCompletion(.success(()))
+            } else {
+                onCompletion(.failure(MockPluginError.mockError))
+            }
+        }
     }
 }

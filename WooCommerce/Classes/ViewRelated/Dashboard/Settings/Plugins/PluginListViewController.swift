@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 
 class PluginListViewController: UIViewController {
@@ -6,6 +7,8 @@ class PluginListViewController: UIViewController {
 
     @IBOutlet private var tableView: UITableView!
 
+    private var cancellable: AnyCancellable?
+    
     /// Pull To Refresh Support.
     ///
     private lazy var refreshControl: UIRefreshControl = {
@@ -27,6 +30,7 @@ class PluginListViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureTableView()
+        configureListStates()
         viewModel.activate { [weak self] in
             self?.tableView.reloadData()
         }
@@ -48,6 +52,22 @@ private extension PluginListViewController {
         tableView.addSubview(refreshControl)
         tableView.dataSource = self
         tableView.delegate = self
+    }
+
+    func configureListStates() {
+        cancellable = viewModel.$pluginListState
+            .sink { [weak self] state in
+                guard let self = self else { return }
+                switch state {
+                case .syncing:
+                    self.tableView.startGhostAnimation(style: .wooDefaultGhostStyle)
+                case .results:
+                    self.tableView.stopGhostAnimation()
+                case .error:
+                    // TODO: show error state
+                    self.tableView.stopGhostAnimation()
+                }
+            }
     }
 }
 

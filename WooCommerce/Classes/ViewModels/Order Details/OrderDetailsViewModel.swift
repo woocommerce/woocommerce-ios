@@ -491,10 +491,12 @@ extension OrderDetailsViewModel {
     /// that object outside of Yosemite.
     func collectPayment(onPresentMessage: @escaping (String) -> Void,
                         onClearMessage: @escaping () -> Void,
+                        onProcessingMessage: @escaping () -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
         paymentOrchestrator.collectPayment(for: order,
                                            onPresentMessage: onPresentMessage,
                                            onClearMessage: onClearMessage,
+                                           onProcessingMessage: onProcessingMessage,
                                            onCompletion: onCompletion)
     }
 

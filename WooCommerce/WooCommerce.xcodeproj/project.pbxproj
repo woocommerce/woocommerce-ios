@@ -1061,6 +1061,7 @@
 		D81D9229222E7F0800FFA585 /* OrderStatusListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D81D9227222E7F0800FFA585 /* OrderStatusListViewController.xib */; };
 		D81F2D35225F0CF70084BF9C /* EmptyListMessageWithActionView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D81F2D34225F0CF70084BF9C /* EmptyListMessageWithActionView.xib */; };
 		D81F2D37225F0D160084BF9C /* EmptyListMessageWithActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81F2D36225F0D160084BF9C /* EmptyListMessageWithActionView.swift */; };
+		D82BB3AA26454F3300A82741 /* CardPresentModalProcessing.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82BB3A926454F3300A82741 /* CardPresentModalProcessing.swift */; };
 		D82DFB4A225F22D400EFE2CB /* UISearchBar+Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82DFB49225F22D400EFE2CB /* UISearchBar+Appearance.swift */; };
 		D82DFB4C225F303200EFE2CB /* EmptyListMessageWithActionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82DFB4B225F303200EFE2CB /* EmptyListMessageWithActionTests.swift */; };
 		D831E2DC230E0558000037D0 /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = D831E2DB230E0558000037D0 /* Authentication.swift */; };
@@ -2309,6 +2310,7 @@
 		D81D9227222E7F0800FFA585 /* OrderStatusListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderStatusListViewController.xib; sourceTree = "<group>"; };
 		D81F2D34225F0CF70084BF9C /* EmptyListMessageWithActionView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EmptyListMessageWithActionView.xib; sourceTree = "<group>"; };
 		D81F2D36225F0D160084BF9C /* EmptyListMessageWithActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyListMessageWithActionView.swift; sourceTree = "<group>"; };
+		D82BB3A926454F3300A82741 /* CardPresentModalProcessing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalProcessing.swift; sourceTree = "<group>"; };
 		D82DFB49225F22D400EFE2CB /* UISearchBar+Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UISearchBar+Appearance.swift"; sourceTree = "<group>"; };
 		D82DFB4B225F303200EFE2CB /* EmptyListMessageWithActionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EmptyListMessageWithActionTests.swift; path = WooCommerceTests/ViewRelated/EmptyListMessageWithActionTests.swift; sourceTree = SOURCE_ROOT; };
 		D831E2DB230E0558000037D0 /* Authentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authentication.swift; sourceTree = "<group>"; };
@@ -5597,6 +5599,7 @@
 				D8815B0C263861A400EDAD62 /* CardPresentModalSuccess.swift */,
 				D8815B122638686200EDAD62 /* CardPresentModalError.swift */,
 				D85806282642BA5400A8AB6C /* PaymentCaptureOrchestrator.swift */,
+				D82BB3A926454F3300A82741 /* CardPresentModalProcessing.swift */,
 			);
 			path = CardPresentPayments;
 			sourceTree = "<group>";
@@ -6534,6 +6537,7 @@
 				D8EF1E562605121C00380EA4 /* OrderPaymentMethod.swift in Sources */,
 				02A652FF246A908D00755A01 /* BottomSheetListSelectorPresenter.swift in Sources */,
 				D8CD710F237A49DB007148B9 /* UIColor+SemanticColors.swift in Sources */,
+				D82BB3AA26454F3300A82741 /* CardPresentModalProcessing.swift in Sources */,
 				0225C42C2477D0D500C5B4F0 /* ProductFormViewModel.swift in Sources */,
 				020F41E523163C0100776C4D /* TopBannerViewModel.swift in Sources */,
 				B541B2172189EED4008FE7C1 /* NSMutableAttributedString+Helpers.swift in Sources */,

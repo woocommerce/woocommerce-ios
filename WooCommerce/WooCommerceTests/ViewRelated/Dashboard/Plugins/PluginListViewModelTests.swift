@@ -7,8 +7,12 @@ class PluginListViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 134
 
+    /// Mock Storage: InMemory
+    ///
     private var storageManager: StorageManagerType!
 
+    /// View storage for tests
+    ///
     private var storage: StorageType {
         storageManager.viewStorage
     }
@@ -28,15 +32,15 @@ class PluginListViewModelTests: XCTestCase {
         let activePlugin = SitePlugin.fake().copy(
             siteID: sampleSiteID,
             status: .active,
-            name: "Active Plugin",
+            name: "BBB",
             descriptionRaw: "Lorem ipsum <strong>random HTML content</strong>"
         )
         insert(activePlugin)
 
-        let inactivePlugin1 = SitePlugin.fake().copy(siteID: sampleSiteID, status: .inactive, name: "Inactive Plugin 1")
+        let inactivePlugin1 = SitePlugin.fake().copy(siteID: sampleSiteID, status: .inactive, name: "AAA")
         insert(inactivePlugin1)
 
-        let inactivePlugin2 = SitePlugin.fake().copy(siteID: sampleSiteID, status: .inactive, name: "Inactive Plugin 2")
+        let inactivePlugin2 = SitePlugin.fake().copy(siteID: sampleSiteID, status: .inactive, name: "CCC")
         insert(inactivePlugin2)
 
         let viewModel = PluginListViewModel(siteID: sampleSiteID)

@@ -26,7 +26,7 @@ final class PluginListViewModel {
             storageManager: storage,
             sectionNameKeyPath: "status",
             matching: predicate,
-            sortedBy: [nameDescriptor, statusDescriptor]
+            sortedBy: [statusDescriptor, nameDescriptor]
         )
     }()
 

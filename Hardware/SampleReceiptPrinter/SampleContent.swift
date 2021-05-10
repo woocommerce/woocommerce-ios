@@ -13,6 +13,7 @@ extension CardPresentReceiptParameters {
         CardPresentReceiptParameters(
             amount: amount,
             currency: "USD",
+            date: .init(),
             storeName: "Test Store",
             cardDetails: .init(
                 last4: "1234",

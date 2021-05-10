@@ -42,6 +42,8 @@ public final class CardPresentPaymentStore: Store {
             cancelCardReaderDiscovery(completion: completion)
         case .connect(let reader, let completion):
             connect(reader: reader, onCompletion: completion)
+        case .disconnect(let completion):
+            disconnect(onCompletion: completion)
         case .observeKnownReaders(let completion):
             observeKnownReaders(onCompletion: completion)
         case .observeConnectedReaders(let completion):
@@ -99,6 +101,22 @@ private extension CardPresentPaymentStore {
         cardReaderService.connectedReaders.sink { connectedHardwareReaders in
             onCompletion(.success(connectedHardwareReaders))
         }.store(in: &cancellables)
+    }
+
+    func disconnect(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        cardReaderService.disconnect().subscribe(Subscribers.Sink(
+            receiveCompletion: { error in
+                switch error {
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                default:
+                    break
+                }
+            },
+            receiveValue: { result in
+                onCompletion(.success(result))
+            }
+        ))
     }
 
     /// Calls the completion block everytime the list of known readers changes

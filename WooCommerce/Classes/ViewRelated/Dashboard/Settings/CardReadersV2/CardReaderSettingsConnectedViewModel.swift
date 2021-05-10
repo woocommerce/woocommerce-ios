@@ -38,6 +38,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     }
 
     private func updateProperties() {
+
         guard connectedReaders.count > 0 else {
             connectedReaderSerialNumber = nil
             connectedReaderBatteryLevel = nil
@@ -54,6 +55,18 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
         let batteryLevelPercent = Int(100 * batteryLevel)
         let batteryLevelString = NumberFormatter.localizedString(from: batteryLevelPercent as NSNumber, number: .decimal)
         connectedReaderBatteryLevel = String.localizedStringWithFormat(Localization.batteryLabelFormat, batteryLevelString)
+    }
+
+    /// Dispatch a request to disconnect from a reader
+    ///
+    func disconnectReader() {
+        let action = CardPresentPaymentAction.disconnect() { result in
+            guard result.isSuccess else {
+                DDLogError("Unexpected error when disconnecting reader")
+                return
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 
     /// Updates whether the view this viewModel is associated with should be shown or not

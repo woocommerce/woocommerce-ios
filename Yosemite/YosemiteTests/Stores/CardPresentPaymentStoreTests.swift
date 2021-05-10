@@ -224,6 +224,21 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    func test_disconnect_action_hits_disconnect_in_service() {
+        let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
+                                                       storageManager: storageManager,
+                                                       network: network,
+                                                       cardReaderService: mockCardReaderService)
+
+        let action = CardPresentPaymentAction.disconnect(onCompletion: { result in
+            //
+        })
+
+        cardPresentStore.onAction(action)
+
+        XCTAssertTrue(mockCardReaderService.didHitDisconnect)
+    }
+
     func test_known_readers_array_initially_empty() {
         let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
                                                        storageManager: storageManager,

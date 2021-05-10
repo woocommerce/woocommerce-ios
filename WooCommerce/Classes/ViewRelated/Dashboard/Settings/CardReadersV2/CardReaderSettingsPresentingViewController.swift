@@ -23,6 +23,9 @@ final class CardReaderSettingsPresentingViewController: UIViewController {
     }
 
     private func configureInitialState() {
+        /// To avoid child view controllers extending underneath the navigation bar
+        self.edgesForExtendedLayout = []
+
         onViewModelsPriorityChange(viewModelAndView: viewModelsAndViews?.priorityViewModelAndView)
     }
 

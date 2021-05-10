@@ -217,13 +217,28 @@
                     <view key="view" contentMode="scaleToFill" id="H3q-kl-QLM">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="kJK-PY-qpa">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="LSI-yY-JbA"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="kJK-PY-qpa" firstAttribute="top" secondItem="H3q-kl-QLM" secondAttribute="top" id="PCb-cy-mxd"/>
+                            <constraint firstAttribute="bottom" secondItem="kJK-PY-qpa" secondAttribute="bottom" id="Wcm-dz-5qE"/>
+                            <constraint firstAttribute="trailing" secondItem="kJK-PY-qpa" secondAttribute="trailing" id="sGS-ew-4zM"/>
+                            <constraint firstItem="kJK-PY-qpa" firstAttribute="leading" secondItem="H3q-kl-QLM" secondAttribute="leading" id="ujc-5L-aOP"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="tableView" destination="kJK-PY-qpa" id="pUH-Tp-9xF"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BoI-9E-doH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3370" y="1529"/>
+            <point key="canvasLocation" x="3368.8000000000002" y="1528.785607196402"/>
         </scene>
         <!--Card Reader Settings View Controller-->
         <scene sceneID="lIS-bL-sjX">
@@ -258,7 +273,7 @@
             <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <color red="0.0" green="0.46000000000000002" blue="0.89000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

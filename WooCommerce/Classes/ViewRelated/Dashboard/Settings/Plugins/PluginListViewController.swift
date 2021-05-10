@@ -4,6 +4,8 @@ class PluginListViewController: UIViewController {
 
     private let viewModel: PluginListViewModel
 
+    @IBOutlet private var tableView: UITableView!
+    
     init?(coder: NSCoder, viewModel: PluginListViewModel) {
         self.viewModel = viewModel
         super.init(coder: coder)

@@ -63,6 +63,8 @@ final class PluginListViewModel {
     }
 }
 
+// MARK: - Table view data source
+//
 extension PluginListViewModel {
     /// Number of sections to display on the table view.
     ///
@@ -101,6 +103,8 @@ extension PluginListViewModel {
     ///
     func cellModelForRow(at indexPath: IndexPath) -> PluginListCellViewModel {
         let plugin = resultsController.object(at: indexPath)
+        // since raw description still randomly contains HTML tags
+        // it's best to remove it just to be sure
         return PluginListCellViewModel(name: plugin.name, description: plugin.descriptionRaw.removedHTMLTags)
     }
 }

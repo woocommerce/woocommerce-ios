@@ -36,31 +36,7 @@ public final class ReceiptRenderer: UIPrintPageRenderer {
 
         super.init()
 
-        configureHeaderAndFooter()
-
         configureFormatter()
-    }
-
-    override public func drawHeaderForPage(at pageIndex: Int, in headerRect: CGRect) {
-        receiptTitle.draw(in: headerRect, withAttributes: headerAttributes)
-    }
-
-    override public func drawFooterForPage(at pageIndex: Int, in footerRect: CGRect) {
-        guard let emv = parameters.cardDetails.receipt else {
-            return
-        }
-
-        /// According to the documentation, only `Application name` and `AID`
-        /// are required in the US.
-        /// https://stripe.com/docs/terminal/checkout/receipts#custom
-        let mandatoryInfo = """
-            \(Localization.applicationName): \(emv.applicationPreferredName)\n
-            \(Localization.aid): \(emv.dedicatedFileName)
-        """
-
-        let footerString = NSString(string: mandatoryInfo)
-
-        footerString.draw(in: footerRect, withAttributes: footerAttributes)
     }
 }
 
@@ -75,6 +51,8 @@ public extension ReceiptRenderer {
             <html>
             <head>
                 <style type="text/css">
+                    html { font-family: "Helvetica Neue", sans-serif; font-size: 12pt; }
+                    h1 { font-size: 24pt; }
                     h3 { color: #707070; margin:0; }
                     table { background-color:#F5F5F5; width:100%; color: #707070 }
                     table td:last-child { width: 30%; text-align: right; }
@@ -91,6 +69,7 @@ public extension ReceiptRenderer {
                 </style>
             </head>
                 <body>
+                    <h1>\(receiptTitle)</h1>
                     <p>
                         <h3>\(Localization.amountPaidSectionTitle.uppercased())</h3>
                         \(parameters.amount / 100) \(parameters.currency.uppercased())
@@ -118,14 +97,9 @@ public extension ReceiptRenderer {
 
 
 private extension ReceiptRenderer {
-    private func configureHeaderAndFooter() {
-        headerHeight = Constants.headerHeight
-        footerHeight = Constants.footerHeight
-    }
-
     private func configureFormatter() {
         let formatter = UIMarkupTextPrintFormatter(markupText: htmlContent())
-        formatter.perPageContentInsets = .init(top: Constants.headerHeight, left: Constants.marging, bottom: Constants.footerHeight, right: Constants.marging)
+        formatter.perPageContentInsets = .init(top: 0, left: Constants.margin, bottom: 0, right: Constants.margin)
 
         addPrintFormatter(formatter, startingAtPageAt: 0)
     }
@@ -182,9 +156,7 @@ private extension ReceiptRenderer {
 
 private extension ReceiptRenderer {
     enum Constants {
-        static let headerHeight: CGFloat = 80
-        static let footerHeight: CGFloat = 80
-        static let marging: CGFloat = 20
+        static let margin: CGFloat = 16
     }
 
     enum Localization {

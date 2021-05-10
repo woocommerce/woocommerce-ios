@@ -17,6 +17,14 @@ class PluginListViewController: UIViewController {
         return refreshControl
     }()
 
+    /// View Controller to display error state.
+    ///
+    private lazy var errorStateViewController = EmptyStateViewController(style: .basic)
+
+    /// Configurations for the error state view.
+    ///
+    private lazy var errorStateViewConfig = createErrorStateViewConfig()
+
     init?(coder: NSCoder, viewModel: PluginListViewModel) {
         self.viewModel = viewModel
         super.init(coder: coder)
@@ -60,12 +68,13 @@ private extension PluginListViewController {
                 guard let self = self else { return }
                 switch state {
                 case .syncing:
+                    self.removeErrorStateView()
                     self.tableView.startGhostAnimation(style: .wooDefaultGhostStyle)
                 case .results:
                     self.tableView.stopGhostAnimation()
                 case .error:
-                    // TODO: show error state
                     self.tableView.stopGhostAnimation()
+                    self.displayErrorStateView()
                 }
             }
     }
@@ -113,5 +122,59 @@ extension PluginListViewController: UITableViewDataSource {
 extension PluginListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+}
+
+// MARK: - Error state configuration
+//
+private extension PluginListViewController {
+    /// Displays the overlay when there is issue syncing site plugins.
+    ///
+    func displayErrorStateView() {
+        guard let errorStateView = errorStateViewController.view else {
+            return
+        }
+        errorStateViewController.configure(errorStateViewConfig)
+        addChild(errorStateViewController)
+
+        errorStateView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(errorStateView)
+
+        NSLayoutConstraint.activate([
+            errorStateView.leadingAnchor.constraint(equalTo: view.safeLeadingAnchor),
+            errorStateView.trailingAnchor.constraint(equalTo: view.safeTrailingAnchor),
+            errorStateView.topAnchor.constraint(equalTo: view.safeTopAnchor),
+            errorStateView.bottomAnchor.constraint(equalTo: view.safeBottomAnchor)
+        ])
+        errorStateViewController.didMove(toParent: self)
+    }
+
+    /// Removes `errorStateViewController` child view controller if applicable.
+    ///
+    func removeErrorStateView() {
+        guard errorStateViewController.parent == self else {
+            return
+        }
+        errorStateViewController.willMove(toParent: nil)
+        errorStateViewController.view.removeFromSuperview()
+        errorStateViewController.removeFromParent()
+    }
+
+    /// Creates configurations for the error state view.
+    ///
+    private func createErrorStateViewConfig() -> EmptyStateViewController.Config {
+        let message = NSLocalizedString("Something went wrong",
+                                        comment: "The text on the placeholder overlay when there is issue syncing site plugins")
+        let details = NSLocalizedString("There was a problem while trying to load plugins. Check your internet and try again.",
+                                        comment: "The details on the placeholder overlay when there is issue syncing site plugins")
+        let buttonTitle = NSLocalizedString("Try again",
+                                            comment: "Action to resync on the placeholder overlay when there is issue syncing site plugins")
+        return EmptyStateViewController.Config.withButton(
+            message: .init(string: message),
+            image: .pluginListError,
+            details: details,
+            buttonTitle: buttonTitle) { [weak self] button in
+            self?.resyncPlugins()
+        }
     }
 }

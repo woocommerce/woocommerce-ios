@@ -159,7 +159,7 @@ class DefaultStoresManager: StoresManager {
     @discardableResult
     func deauthenticate() -> StoresManager {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) {
-            let resetAction = CardPresentPaymentAction.restart
+            let resetAction = CardPresentPaymentAction.reset
 
             ServiceLocator.stores.dispatch(resetAction)
         }

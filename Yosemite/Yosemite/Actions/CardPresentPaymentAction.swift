@@ -54,5 +54,5 @@ public enum CardPresentPaymentAction: Action {
     /// 1. Disconnect from a connected reader
     /// 2. Clear all credentials, cached data
     /// 3. Reset all status indicators
-    case restart
+    case reset
 }

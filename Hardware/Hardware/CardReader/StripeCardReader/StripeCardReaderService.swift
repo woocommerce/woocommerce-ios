@@ -152,7 +152,7 @@ extension StripeCardReaderService: CardReaderService {
         guard Terminal.hasTokenProvider() else {
             return
         }
-
+        print("=== clearing")
         Terminal.shared.clearCachedCredentials()
     }
 

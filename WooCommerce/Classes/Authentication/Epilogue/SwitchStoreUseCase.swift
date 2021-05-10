@@ -69,7 +69,7 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) {
             group.enter()
-            let resetAction = CardPresentPaymentAction.restart
+            let resetAction = CardPresentPaymentAction.reset
 
             stores.dispatch(resetAction)
 

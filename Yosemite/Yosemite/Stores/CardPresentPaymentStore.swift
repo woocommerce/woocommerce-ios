@@ -58,8 +58,8 @@ public final class CardPresentPaymentStore: Store {
             checkForCardReaderUpdate(onData: data, onCompletion: completion)
         case .startCardReaderUpdate(onProgress: let progress, onCompletion: let completion):
             startCardReaderUpdate(onProgress: progress, onCompletion: completion)
-        case .restart:
-            restart()
+        case .reset:
+            reset()
         }
     }
 }
@@ -188,11 +188,10 @@ private extension CardPresentPaymentStore {
         }.store(in: &cancellables)
     }
 
-    func restart() {
+    func reset() {
         cardReaderService.disconnect().sink(receiveCompletion: { [weak self] _ in
             self?.cardReaderService.clear()
-        }, receiveValue: { [weak self] value in
-            self?.cardReaderService.clear()
+        }, receiveValue: {
         }).store(in: &cancellables)
     }
 }

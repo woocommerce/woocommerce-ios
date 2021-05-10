@@ -42,13 +42,6 @@ public final class ReceiptRenderer: UIPrintPageRenderer {
     }
 
     override public func drawHeaderForPage(at pageIndex: Int, in headerRect: CGRect) {
-        guard let siteName = parameters.storeName else {
-            return
-        }
-
-        let receiptTitle = String.localizedStringWithFormat(Localization.receiptFromFormat,
-                                                            siteName) as NSString
-
         receiptTitle.draw(in: headerRect, withAttributes: headerAttributes)
     }
 
@@ -176,6 +169,14 @@ private extension ReceiptRenderer {
             ".\(cardBrand.iconName)-icon { background-image: url(\"data:image/svg+xml;base64,\(cardBrand.iconData.base64EncodedString())\") }"
         }.joined(separator: "\n\n")
     }
+
+    private var receiptTitle: String {
+        guard let storeName = parameters.storeName else {
+            return Localization.receiptTitle
+        }
+
+        return .localizedStringWithFormat(Localization.receiptFromFormat, storeName)
+    }
 }
 
 
@@ -191,6 +192,12 @@ private extension ReceiptRenderer {
             "Receipt from %1$@",
             comment: "Title of receipt. Reads like Receipt from WooCommerce, Inc."
         )
+
+        static let receiptTitle = NSLocalizedString(
+            "Receipt",
+            comment: "Title of receipt."
+        )
+
 
         static let amountPaidSectionTitle = NSLocalizedString(
             "Amount paid",

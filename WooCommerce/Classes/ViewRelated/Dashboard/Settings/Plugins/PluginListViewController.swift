@@ -19,6 +19,9 @@ class PluginListViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureTableView()
+        viewModel.activate { [weak self] in
+            self?.tableView.reloadData()
+        }
     }
 }
 

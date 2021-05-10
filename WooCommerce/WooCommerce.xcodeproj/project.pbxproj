@@ -3559,14 +3559,14 @@
 			isa = PBXGroup;
 			children = (
 				3178C1F626409216000D771A /* CardReaderSettingsConnectedViewModel.swift */,
-				3188533B2639FE5800F66A9C /* CardReaderSettingsPresentedViewViewModel.swift */,
-				3142663E2645E2AB00500598 /* CardReaderSettingsViewModelPresenter.swift */,
-				318853352639FC9C00F66A9C /* CardReaderSettingsPresentingViewController.swift */,
-				31B19B66263B5E580099DAA6 /* CardReaderSettingsUnknownViewModel.swift */,
-				317F679726420E9D00BA2A7A /* CardReaderSettingsViewModelsOrderedList.swift */,
-				31EF399B26430C6D0093C6F6 /* CardReaderSettingsPrioritizedViewModelsProvider.swift */,
-				314265AB26459F7300500598 /* CardReaderSettingsUnknownViewController.swift */,
 				314265B02645A07800500598 /* CardReaderSettingsConnectedViewController.swift */,
+				3188533B2639FE5800F66A9C /* CardReaderSettingsPresentedViewViewModel.swift */,
+				318853352639FC9C00F66A9C /* CardReaderSettingsPresentingViewController.swift */,
+				31EF399B26430C6D0093C6F6 /* CardReaderSettingsPrioritizedViewModelsProvider.swift */,
+				31B19B66263B5E580099DAA6 /* CardReaderSettingsUnknownViewModel.swift */,
+				314265AB26459F7300500598 /* CardReaderSettingsUnknownViewController.swift */,
+				317F679726420E9D00BA2A7A /* CardReaderSettingsViewModelsOrderedList.swift */,
+				3142663E2645E2AB00500598 /* CardReaderSettingsViewModelPresenter.swift */,
 			);
 			path = CardReadersV2;
 			sourceTree = "<group>";

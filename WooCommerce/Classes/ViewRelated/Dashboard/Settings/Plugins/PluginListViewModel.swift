@@ -53,6 +53,23 @@ final class PluginListViewModel {
 
         resultsController.onDidChangeContent = onDataChanged
     }
+
+    /// Manually resync plugins.
+    ///
+    func resyncPlugins(onComplete: @escaping () -> Void) {
+        pluginListState = .syncing
+        let action = SitePluginAction.synchronizeSitePlugins(siteID: siteID) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success:
+                self.pluginListState = .results
+            case .failure:
+                self.pluginListState = .error
+            }
+            onComplete()
+        }
+        storesManager.dispatch(action)
+    }
 }
 
 // MARK: - Data source for plugin list

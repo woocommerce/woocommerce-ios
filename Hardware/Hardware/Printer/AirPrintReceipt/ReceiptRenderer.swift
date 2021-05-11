@@ -6,21 +6,6 @@ public final class ReceiptRenderer: UIPrintPageRenderer {
     private let lines: [ReceiptLineItem]
     private let parameters: CardPresentReceiptParameters
 
-    private let headerAttributes: [NSAttributedString.Key: Any] = {
-        let paragraph = NSMutableParagraphStyle()
-        paragraph.alignment = .center
-        return [.font: UIFont(name: "HelveticaNeue", size: 24) as Any,
-                .paragraphStyle: paragraph]
-    }()
-
-    private let footerAttributes: [NSAttributedString.Key: Any] = {
-        let paragraph = NSMutableParagraphStyle()
-        paragraph.alignment = .center
-
-        return [.font: UIFont(name: "HelveticaNeue", size: 12) as Any,
-                .paragraphStyle: paragraph]
-    }()
-
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
@@ -180,7 +165,6 @@ private extension ReceiptRenderer {
             "Receipt",
             comment: "Title of receipt."
         )
-
 
         static let amountPaidSectionTitle = NSLocalizedString(
             "Amount paid",

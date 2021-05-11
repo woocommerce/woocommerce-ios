@@ -257,8 +257,17 @@ private extension ShippingLabelFormViewController {
     }
 
     func displayPackageDetailsVC() {
-        let vc = ShippingLabelPackageDetailsViewController(order: viewModel.order, packagesResponse: viewModel.packagesResponse)
-        navigationController?.show(vc, sender: nil)
+        let vm = ShippingLabelPackageDetailsViewModel(order: viewModel.order,
+                                                      packagesResponse: viewModel.packagesResponse)
+        let packageDetails = ShippingLabelPackageDetails(viewModel: vm) { (selectedPackageID, totalPackageWeight) in
+            // TODO: handle selected package and total package weight
+            print(selectedPackageID, totalPackageWeight)
+        }
+
+        let hostingVC = UIHostingController(rootView: packageDetails)
+        hostingVC.title = Localization.navigationBarTitlePackageDetails
+
+        navigationController?.show(hostingVC, sender: nil)
     }
 }
 
@@ -336,5 +345,8 @@ private extension ShippingLabelFormViewController {
                                                               comment: "Title of the cell Payment Method inside Create Shipping Label form")
         static let continueButtonInCells = NSLocalizedString("Continue",
                                                              comment: "Continue button inside every cell inside Create Shipping Label form")
+        static let navigationBarTitlePackageDetails =
+            NSLocalizedString("Package Details",
+                              comment: "Navigation bar title of shipping label package details screen")
     }
 }

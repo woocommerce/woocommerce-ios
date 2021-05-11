@@ -86,6 +86,15 @@ public extension ReceiptRenderer {
                     table { background-color:#F5F5F5; width:100%; color: #707070 }
                     table td:last-child { width: 30%; text-align: right; }
                     table tr:last-child { color: #000000; }
+                    .card-icon {
+                       width: 24px;
+                       height: 17px;
+                       vertical-align: bottom;
+                       background-repeat: no-repeat;
+                       background-position-y: center;
+                       display: inline-block;
+                    }
+                    \(cardIconCSS())
                 </style>
             </head>
                 <body>
@@ -99,7 +108,7 @@ public extension ReceiptRenderer {
                     </p>
                     <p>
                         <h3>\(Localization.paymentMethodSectionTitle.uppercased())</h3>
-                        \(parameters.cardDetails.brand) - \(parameters.cardDetails.last4)
+                        <span class="card-icon \(parameters.cardDetails.brand.iconName)-icon"></span> - \(parameters.cardDetails.last4)
                     </p>
                     <p>
                         <h3>\(Localization.summarySectionTitle.uppercased())</h3>
@@ -160,6 +169,12 @@ private extension ReceiptRenderer {
             \(Localization.applicationName): \(emv.applicationPreferredName)<br/>
             \(Localization.aid): \(emv.dedicatedFileName)
         """
+    }
+
+    private func cardIconCSS() -> String {
+        CardBrand.allCases.map { (cardBrand) in
+            ".\(cardBrand.iconName)-icon { background-image: url(\"data:image/svg+xml;base64,\(cardBrand.iconData.base64EncodedString())\") }"
+        }.joined(separator: "\n\n")
     }
 }
 

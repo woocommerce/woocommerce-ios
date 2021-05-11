@@ -75,6 +75,13 @@
 		D8DF5F4E25DD9F91008AFE25 /* CardReaderType+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DF5F4D25DD9F91008AFE25 /* CardReaderType+Stripe.swift */; };
 		D8EDFE2A25EED21D003D2213 /* CardReaderConfigProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EDFE2925EED21D003D2213 /* CardReaderConfigProvider.swift */; };
 		E11986952643EDF00054285D /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11986942643EDF00054285D /* ServiceLocator.swift */; };
+		E1B6855826490E3D0077F8BF /* unknown.svg in Resources */ = {isa = PBXBuildFile; fileRef = E1B6855126490E3C0077F8BF /* unknown.svg */; };
+		E1B6855926490E3D0077F8BF /* discover.svg in Resources */ = {isa = PBXBuildFile; fileRef = E1B6855226490E3C0077F8BF /* discover.svg */; };
+		E1B6855A26490E3D0077F8BF /* mastercard.svg in Resources */ = {isa = PBXBuildFile; fileRef = E1B6855326490E3D0077F8BF /* mastercard.svg */; };
+		E1B6855B26490E3D0077F8BF /* diners.svg in Resources */ = {isa = PBXBuildFile; fileRef = E1B6855426490E3D0077F8BF /* diners.svg */; };
+		E1B6855C26490E3D0077F8BF /* amex.svg in Resources */ = {isa = PBXBuildFile; fileRef = E1B6855526490E3D0077F8BF /* amex.svg */; };
+		E1B6855D26490E3D0077F8BF /* visa.svg in Resources */ = {isa = PBXBuildFile; fileRef = E1B6855626490E3D0077F8BF /* visa.svg */; };
+		E1B6855E26490E3D0077F8BF /* jcb.svg in Resources */ = {isa = PBXBuildFile; fileRef = E1B6855726490E3D0077F8BF /* jcb.svg */; };
 		E1CFC14E2643E9EE0089F86F /* SampleReceiptPrinterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CFC14D2643E9EE0089F86F /* SampleReceiptPrinterApp.swift */; };
 		E1CFC1502643E9EE0089F86F /* ReceiptSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CFC14F2643E9EE0089F86F /* ReceiptSettingsView.swift */; };
 		E1CFC1662643EAA30089F86F /* SampleContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CFC1652643EAA30089F86F /* SampleContent.swift */; };
@@ -195,6 +202,13 @@
 		DB2B86965868C0EC25910D7D /* Pods-HardwareTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HardwareTests.release-alpha.xcconfig"; path = "Target Support Files/Pods-HardwareTests/Pods-HardwareTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		E11986942643EDF00054285D /* ServiceLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocator.swift; sourceTree = "<group>"; };
 		E15805FBEFD39C9C35DB54A6 /* Pods-PrinterPlayground.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PrinterPlayground.debug.xcconfig"; path = "Target Support Files/Pods-PrinterPlayground/Pods-PrinterPlayground.debug.xcconfig"; sourceTree = "<group>"; };
+		E1B6855126490E3C0077F8BF /* unknown.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = unknown.svg; sourceTree = "<group>"; };
+		E1B6855226490E3C0077F8BF /* discover.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = discover.svg; sourceTree = "<group>"; };
+		E1B6855326490E3D0077F8BF /* mastercard.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = mastercard.svg; sourceTree = "<group>"; };
+		E1B6855426490E3D0077F8BF /* diners.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = diners.svg; sourceTree = "<group>"; };
+		E1B6855526490E3D0077F8BF /* amex.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = amex.svg; sourceTree = "<group>"; };
+		E1B6855626490E3D0077F8BF /* visa.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = visa.svg; sourceTree = "<group>"; };
+		E1B6855726490E3D0077F8BF /* jcb.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = jcb.svg; sourceTree = "<group>"; };
 		E1CFC14B2643E9EE0089F86F /* SampleReceiptPrinter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SampleReceiptPrinter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1CFC14D2643E9EE0089F86F /* SampleReceiptPrinterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleReceiptPrinterApp.swift; sourceTree = "<group>"; };
 		E1CFC14F2643E9EE0089F86F /* ReceiptSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptSettingsView.swift; sourceTree = "<group>"; };
@@ -293,6 +307,7 @@
 				D88FDB0125DD216B00CB0DBD /* Hardware */,
 				D88FDB0C25DD216B00CB0DBD /* HardwareTests */,
 				E1CFC14C2643E9EE0089F86F /* SampleReceiptPrinter */,
+				E1AE0A0E264557D6001D947A /* Resources */,
 				D88FDB0025DD216B00CB0DBD /* Products */,
 				ADED522B787D093F499BD540 /* Pods */,
 				EF9EE401B2930AC16BD86FE2 /* Frameworks */,
@@ -393,6 +408,28 @@
 				D845BDDD262DAB8300A3E40F /* PaymentMethod+Stripe.swift */,
 			);
 			path = StripeCardReader;
+			sourceTree = "<group>";
+		};
+		E1AE0A0E264557D6001D947A /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				E1B6854E264908360077F8BF /* Card Icons */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		E1B6854E264908360077F8BF /* Card Icons */ = {
+			isa = PBXGroup;
+			children = (
+				E1B6855526490E3D0077F8BF /* amex.svg */,
+				E1B6855426490E3D0077F8BF /* diners.svg */,
+				E1B6855226490E3C0077F8BF /* discover.svg */,
+				E1B6855726490E3D0077F8BF /* jcb.svg */,
+				E1B6855326490E3D0077F8BF /* mastercard.svg */,
+				E1B6855126490E3C0077F8BF /* unknown.svg */,
+				E1B6855626490E3D0077F8BF /* visa.svg */,
+			);
+			path = "Card Icons";
 			sourceTree = "<group>";
 		};
 		E1CFC14C2643E9EE0089F86F /* SampleReceiptPrinter */ = {
@@ -537,6 +574,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1B6855E26490E3D0077F8BF /* jcb.svg in Resources */,
+				E1B6855826490E3D0077F8BF /* unknown.svg in Resources */,
+				E1B6855D26490E3D0077F8BF /* visa.svg in Resources */,
+				E1B6855B26490E3D0077F8BF /* diners.svg in Resources */,
+				E1B6855926490E3D0077F8BF /* discover.svg in Resources */,
+				E1B6855A26490E3D0077F8BF /* mastercard.svg in Resources */,
+				E1B6855C26490E3D0077F8BF /* amex.svg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

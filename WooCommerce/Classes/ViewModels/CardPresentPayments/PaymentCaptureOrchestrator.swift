@@ -17,11 +17,11 @@ final class PaymentCaptureOrchestrator {
         // TODO. Check that there is a reader currently connected
         // otherwise launch the discovery+pairing UI
         // https://github.com/woocommerce/woocommerce-ios/issues/4062
-        collectPaymentWithCardReader(for: order,
-                                     onPresentMessage: onPresentMessage,
-                                     onClearMessage: onClearMessage,
-                                     onProcessingMessage: onProcessingMessage,
-                                     onCompletion: onCompletion)
+        createPaymentParameters(for: order,
+                                onPresentMessage: onPresentMessage,
+                                onClearMessage: onClearMessage,
+                                onProcessingMessage: onProcessingMessage,
+                                onCompletion: onCompletion)
     }
 
     func printReceipt(for order: Order, params: CardPresentReceiptParameters) {
@@ -41,27 +41,53 @@ final class PaymentCaptureOrchestrator {
 
 
 private extension PaymentCaptureOrchestrator {
+    func createPaymentParameters(for order: Order,
+                                 onPresentMessage: @escaping (String) -> Void,
+                                 onClearMessage: @escaping () -> Void,
+                                 onProcessingMessage: @escaping () -> Void,
+                                 onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
+        let accountAction = WCPayAction.loadAccount(siteID: order.siteID) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+
+            guard let orderTotal = self.currencyFormatter.convertToDecimal(from: order.total) else {
+                DDLogError("Error: attempted to collect payment for an order without valid total.")
+                onCompletion(.failure(CardReaderServiceError.paymentCapture()))
+                return
+            }
+
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let account):
+                let paymentParameters = PaymentParameters(amount: orderTotal as Decimal,
+                                                          currency: order.currency,
+                                                          receiptDescription: "Receipt description.",
+                                                          statementDescription: account.statementDescriptor,
+                                                          receiptEmail: order.billingAddress?.email,
+                                                          metadata: [CardPresentReceiptParameters.MetadataKeys.store:
+                                                                        ServiceLocator.stores.sessionManager.defaultSite?.name as Any])
+                self.collectPaymentWithCardReader(for: order,
+                                                  with: paymentParameters,
+                                                  onPresentMessage: onPresentMessage,
+                                                  onClearMessage: onClearMessage,
+                                                  onProcessingMessage: onProcessingMessage,
+                                                  onCompletion: onCompletion)
+            }
+        }
+
+        ServiceLocator.stores.dispatch(accountAction)
+    }
+
     func collectPaymentWithCardReader(for order: Order,
+                                      with parameters: PaymentParameters,
                                       onPresentMessage: @escaping (String) -> Void,
                                       onClearMessage: @escaping () -> Void,
                                       onProcessingMessage: @escaping () -> Void,
                                       onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
-        guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
-            DDLogError("Error: attempted to collect payment for an order without valid total.")
-            onCompletion(.failure(CardReaderServiceError.paymentCapture()))
-            return
-        }
-
-        let paymentParameters = PaymentParameters(amount: orderTotal as Decimal,
-                                                  currency: order.currency,
-                                                  receiptDescription: "Receipt description.",
-                                                  statementDescription: "Statement description.",
-                                                  receiptEmail: order.billingAddress?.email,
-                                                  metadata: [CardPresentReceiptParameters.MetadataKeys.store:
-                                                                ServiceLocator.stores.sessionManager.defaultSite?.name as Any])
-
         let action = CardPresentPaymentAction.collectPayment(siteID: order.siteID,
-                                                             orderID: order.orderID, parameters: paymentParameters,
+                                                             orderID: order.orderID, parameters: parameters,
                                                              onCardReaderMessage: { (event) in
                                                                 switch event {
                                                                 case .displayMessage (let message):

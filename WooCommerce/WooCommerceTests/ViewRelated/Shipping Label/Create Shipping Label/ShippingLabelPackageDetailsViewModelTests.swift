@@ -179,6 +179,27 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedPackageID, "package-1")
         XCTAssertEqual(viewModel.selectedPackageName, "Small")
     }
+
+    func test_isPackageDetailsDoneButtonEnabled_returns_the_expected_value() {
+        // Given
+        let order = MockOrders().empty().copy(siteID: sampleSiteID)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+        let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
+                                                             packagesResponse: mockPackageResponse(),
+                                                             formatter: currencyFormatter,
+                                                             stores: stores,
+                                                             storageManager: storageManager,
+                                                             weightUnit: "kg")
+
+        XCTAssertFalse(viewModel.isPackageDetailsDoneButtonEnabled())
+
+        // When
+        viewModel.totalWeight = "10"
+        viewModel.selectedPackageID = "sample-package"
+
+        // Then
+        XCTAssertTrue(viewModel.isPackageDetailsDoneButtonEnabled())
+    }
 }
 
 // MARK: - Utils

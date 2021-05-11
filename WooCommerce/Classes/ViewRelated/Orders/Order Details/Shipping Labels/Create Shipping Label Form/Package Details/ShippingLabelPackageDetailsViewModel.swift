@@ -64,6 +64,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     }
     @Published private(set) var selectedCustomPackage: ShippingLabelCustomPackage?
     @Published private(set) var selectedPredefinedPackage: ShippingLabelPredefinedPackage?
+    @Published var totalWeight: String
 
     /// Returns if the custom packages header should be shown in Package List
     ///
@@ -85,6 +86,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         self.storageManager = storageManager
         self.weightUnit = weightUnit
         self.packagesResponse = packagesResponse
+        self.totalWeight = ""
         configureResultsControllers()
         syncProducts()
         syncProductVariations()

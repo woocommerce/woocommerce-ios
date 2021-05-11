@@ -71,8 +71,7 @@ public class Dispatcher {
 
         // Avoid silent failure when a store is not retained
         guard let processor = processors[action.identifier] else {
-            assertionFailure("⛔️ No processor found for \(action.identifier)!")
-            return
+            return DDLogWarn("⚠️ No processor found for \(action.identifier)!")
         }
         processor.onAction(action)
     }

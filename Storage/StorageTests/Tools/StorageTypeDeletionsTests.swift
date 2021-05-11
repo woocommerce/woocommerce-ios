@@ -24,9 +24,9 @@ class StorageTypeDeletionsTests: XCTestCase {
     func test_deleteStaleAddOnGroups_does_not_delete_active_addOns() throws {
         // Given
         let initialGroups: [AddOnGroup] = [
-            createAddOnGroup(groupID: 123),
-            createAddOnGroup(groupID: 1234),
-            createAddOnGroup(groupID: 12345)
+            createAddOnGroup(groupID: 123, name: "AAA"),
+            createAddOnGroup(groupID: 1234, name: "BBB"),
+            createAddOnGroup(groupID: 12345, name: "CCC")
         ]
 
         // When
@@ -55,10 +55,11 @@ class StorageTypeDeletionsTests: XCTestCase {
 private extension StorageTypeDeletionsTests {
     /// Inserts and creates an `AddOnGroup` ready to be used on tests.
     ///
-    func createAddOnGroup(groupID: Int64) -> AddOnGroup {
+    func createAddOnGroup(groupID: Int64, name: String) -> AddOnGroup {
         let addOnGroup = storage.insertNewObject(ofType: AddOnGroup.self)
         addOnGroup.siteID = sampleSiteID
         addOnGroup.groupID = groupID
+        addOnGroup.name = name
         return addOnGroup
     }
 

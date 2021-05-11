@@ -126,7 +126,7 @@ private extension BetaFeaturesViewController {
 
         // Change switch's state stored value
         cell.onChange = { isSwitchOn in
-            // TODO: Add analytics
+            ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailAddOns.betaFeaturesSwitchToggled(isOn: isSwitchOn))
 
             let action = AppSettingsAction.setOrderAddOnsFeatureSwitchState(isEnabled: isSwitchOn, onCompletion: { result in
                 // Roll back toggle if an error occurred

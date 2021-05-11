@@ -58,6 +58,9 @@ struct OrderAddOnListI1View: View {
         .sheet(isPresented: $viewModel.shouldShowSurvey) {
             Survey(source: .addOnsI1)
         }
+        .onAppear(perform: {
+            viewModel.trackAddOns()
+        })
     }
 }
 

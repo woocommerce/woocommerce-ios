@@ -147,6 +147,15 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     }
 }
 
+// MARK: - UI utils methods
+extension ShippingLabelPackageDetailsViewModel {
+
+    // Return true if the done button in the package details screen should be enabled
+    func isPackageDetailsDoneButtonEnabled() -> Bool {
+        return !selectedPackageID.isNilOrEmpty && totalWeight.isNotEmpty
+    }
+}
+
 // MARK: - Package Selection
 extension ShippingLabelPackageDetailsViewModel {
     func didSelectPackage(_ id: String) {

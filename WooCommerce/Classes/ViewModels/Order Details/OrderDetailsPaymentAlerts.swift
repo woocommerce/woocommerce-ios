@@ -9,18 +9,23 @@ final class OrderDetailsPaymentAlerts {
     private var name: String = ""
     private var amount: String = ""
 
-    func readerIsReady(from: UIViewController, title: String, amount: String) {
+    func preparing(from: UIViewController, title: String, amount: String) {
         self.name = title
         self.amount = amount
 
         // Initial presentation of the modal view controller. We need to provide
         // a customer name and an amount.
-        let viewModel = readerIsReady()
+        let viewModel = readerIsPreparing()
         let newAlert = CardPresentPaymentsModalViewController(viewModel: viewModel)
         modalController = newAlert
         modalController?.modalPresentationStyle = .custom
         modalController?.transitioningDelegate = AppDelegate.shared.tabBarController
         from.present(newAlert, animated: true)
+    }
+
+    func readerIsReady(from: UIViewController, title: String, amount: String) {
+        let viewModel = readerIsReady()
+        modalController?.setViewModel(viewModel)
     }
 
     func tapOrInsertCard() {
@@ -55,6 +60,10 @@ final class OrderDetailsPaymentAlerts {
 
 
 private extension OrderDetailsPaymentAlerts {
+    func readerIsPreparing() -> CardPresentPaymentsModalViewModel {
+        CardPresentModalPreparing(name: name, amount: amount)
+    }
+
     func readerIsReady() -> CardPresentPaymentsModalViewModel {
         CardPresentModalReaderIsReady(name: name, amount: amount)
     }

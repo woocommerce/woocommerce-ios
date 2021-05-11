@@ -555,9 +555,9 @@ private extension OrderDetailsViewController {
     }
 
     @objc private func collectPayment(at: IndexPath) {
-        paymentAlerts.readerIsReady(from: self,
-                                    title: viewModel.collectPaymentFrom,
-                                    amount: viewModel.order.total)
+        paymentAlerts.preparing(from: self,
+                                title: viewModel.collectPaymentFrom,
+                                amount: viewModel.order.total)
 
         viewModel.collectPayment { [weak self] readerEventMessage in
             self?.paymentAlerts.tapOrInsertCard()

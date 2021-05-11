@@ -11,6 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PluginListViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
+                <outlet property="tableView" destination="edE-Vr-cDS" id="Upa-qZ-Ktf"/>
                 <outlet property="view" destination="iN0-l3-epB" id="3KI-pP-qus"/>
             </connections>
         </placeholder>
@@ -18,9 +19,21 @@
         <view contentMode="scaleToFill" id="iN0-l3-epB">
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="edE-Vr-cDS">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="824"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                </tableView>
+            </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-            <point key="canvasLocation" x="51" y="52"/>
+            <constraints>
+                <constraint firstItem="edE-Vr-cDS" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="Wk7-tI-SAz"/>
+                <constraint firstItem="edE-Vr-cDS" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="cLj-06-QpF"/>
+                <constraint firstItem="edE-Vr-cDS" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="gkj-nx-Ez8"/>
+                <constraint firstItem="edE-Vr-cDS" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="zMw-qF-5Vs"/>
+            </constraints>
+            <point key="canvasLocation" x="50.724637681159422" y="51.5625"/>
         </view>
     </objects>
     <resources>

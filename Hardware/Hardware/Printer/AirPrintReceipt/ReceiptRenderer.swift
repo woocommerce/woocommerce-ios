@@ -32,6 +32,9 @@ public extension ReceiptRenderer {
     /// https://github.com/woocommerce/woocommerce-ios/issues/4033
     /// - Returns: A string containing the HTML that will be rendered to the receipt.
     func htmlContent() -> String {
+        let lineHeight = Constants.fontSize * 1.5
+        let iconHeight = lineHeight
+        let iconWidth = iconHeight * 4/3
         return """
             <html>
             <head>
@@ -52,38 +55,39 @@ public extension ReceiptRenderer {
                     footer {
                         font-size: \(Constants.footerFontSize)pt;
                         border-top: 1px solid #707070;
+                        margin-top: \(Constants.margin)pt;
+                        padding-top: \(Constants.margin)pt;
                     }
                     .card-icon {
-                       width: 24px;
-                       height: 17px;
-                       vertical-align: bottom;
+                       width: \(iconWidth)pt;
+                       height: \(iconHeight)pt;
+                       vertical-align: top;
                        background-repeat: no-repeat;
                        background-position-y: center;
                        display: inline-block;
                     }
+                    p { line-height: \(lineHeight)pt; margin: 0 0 \(Constants.margin / 2) 0; }
                     \(cardIconCSS())
                 </style>
             </head>
                 <body>
                     <header>
                         <h1>\(receiptTitle)</h1>
+                        <h3>\(Localization.amountPaidSectionTitle.uppercased())</h3>
                         <p>
-                            <h3>\(Localization.amountPaidSectionTitle.uppercased())</h3>
                             \(parameters.amount / 100) \(parameters.currency.uppercased())
                         </p>
+                        <h3>\(Localization.datePaidSectionTitle.uppercased())</h3>
                         <p>
-                            <h3>\(Localization.datePaidSectionTitle.uppercased())</h3>
                             \(dateFormatter.string(from: parameters.date))
                         </p>
+                        <h3>\(Localization.paymentMethodSectionTitle.uppercased())</h3>
                         <p>
-                            <h3>\(Localization.paymentMethodSectionTitle.uppercased())</h3>
                             <span class="card-icon \(parameters.cardDetails.brand.iconName)-icon"></span> - \(parameters.cardDetails.last4)
                         </p>
                     </header>
-                    <p>
-                        <h3>\(Localization.summarySectionTitle.uppercased())</h3>
-                        \(summaryTable())
-                    </p>
+                    <h3>\(Localization.summarySectionTitle.uppercased())</h3>
+                    \(summaryTable())
                     <footer>
                         <p>
                             \(requiredItems())

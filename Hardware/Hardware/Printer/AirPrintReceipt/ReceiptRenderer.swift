@@ -51,12 +51,19 @@ public extension ReceiptRenderer {
             <html>
             <head>
                 <style type="text/css">
-                    html { font-family: "Helvetica Neue", sans-serif; font-size: 12pt; }
-                    h1 { font-size: 24pt; }
+                    html { font-family: "Helvetica Neue", sans-serif; font-size: \(Constants.fontSize)pt; }
+                    header { margin-top: \(Constants.margin); }
+                    h1 { font-size: \(Constants.titleSize)pt; font-weight: 500; text-align: center; }
                     h3 { color: #707070; margin:0; }
-                    table { background-color:#F5F5F5; width:100%; color: #707070 }
+                    table {
+                        background-color:#F5F5F5;
+                        width:100%;
+                        color: #707070;
+                        margin: \(Constants.margin / 2)pt 0;
+                        padding: \(Constants.margin / 2)pt;
+                    }
                     table td:last-child { width: 30%; text-align: right; }
-                    table tr:last-child { color: #000000; }
+                    table tr:last-child { color: #000000; font-weight: bold; }
                     .card-icon {
                        width: 24px;
                        height: 17px;
@@ -69,19 +76,21 @@ public extension ReceiptRenderer {
                 </style>
             </head>
                 <body>
-                    <h1>\(receiptTitle)</h1>
-                    <p>
-                        <h3>\(Localization.amountPaidSectionTitle.uppercased())</h3>
-                        \(parameters.amount / 100) \(parameters.currency.uppercased())
-                    </p>
-                    <p>
-                        <h3>\(Localization.datePaidSectionTitle.uppercased())</h3>
-                        \(dateFormatter.string(from: parameters.date))
-                    </p>
-                    <p>
-                        <h3>\(Localization.paymentMethodSectionTitle.uppercased())</h3>
-                        <span class="card-icon \(parameters.cardDetails.brand.iconName)-icon"></span> - \(parameters.cardDetails.last4)
-                    </p>
+                    <header>
+                        <h1>\(receiptTitle)</h1>
+                        <p>
+                            <h3>\(Localization.amountPaidSectionTitle.uppercased())</h3>
+                            \(parameters.amount / 100) \(parameters.currency.uppercased())
+                        </p>
+                        <p>
+                            <h3>\(Localization.datePaidSectionTitle.uppercased())</h3>
+                            \(dateFormatter.string(from: parameters.date))
+                        </p>
+                        <p>
+                            <h3>\(Localization.paymentMethodSectionTitle.uppercased())</h3>
+                            <span class="card-icon \(parameters.cardDetails.brand.iconName)-icon"></span> - \(parameters.cardDetails.last4)
+                        </p>
+                    </header>
                     <p>
                         <h3>\(Localization.summarySectionTitle.uppercased())</h3>
                         \(summaryTable())
@@ -157,6 +166,8 @@ private extension ReceiptRenderer {
 private extension ReceiptRenderer {
     enum Constants {
         static let margin: CGFloat = 16
+        static let titleSize: CGFloat = 24
+        static let fontSize: CGFloat = 12
     }
 
     enum Localization {

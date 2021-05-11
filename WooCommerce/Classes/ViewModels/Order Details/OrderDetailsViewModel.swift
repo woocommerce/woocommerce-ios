@@ -134,6 +134,8 @@ final class OrderDetailsViewModel {
         return String.localizedStringWithFormat(Localization.emailSubjectWithStoreName, storeName)
     }
 
+    private var paymentsAccount: WCPayAccount? = nil
+
     /// Helpers
     ///
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
@@ -441,6 +443,7 @@ extension OrderDetailsViewModel {
             case .failure:
                 self.dataSource.isEligibleForCardPresentPayment = false
             case .success(let account):
+                self.paymentsAccount = account
                 self.dataSource.isEligibleForCardPresentPayment = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) &&
                     self.isOrderEligibleForCardPayment() && account.canCollectPayments
             }
@@ -502,6 +505,7 @@ extension OrderDetailsViewModel {
                         onProcessingMessage: @escaping () -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
         paymentOrchestrator.collectPayment(for: order,
+                                           paymentsAccount: paymentsAccount,
                                            onPresentMessage: onPresentMessage,
                                            onClearMessage: onClearMessage,
                                            onProcessingMessage: onProcessingMessage,

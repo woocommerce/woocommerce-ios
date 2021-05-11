@@ -9,6 +9,7 @@ final class PaymentCaptureOrchestrator {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
     func collectPayment(for order: Order,
+                        paymentsAccount: WCPayAccount?,
                         onPresentMessage: @escaping (String) -> Void,
                         onClearMessage: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
@@ -17,11 +18,12 @@ final class PaymentCaptureOrchestrator {
         // TODO. Check that there is a reader currently connected
         // otherwise launch the discovery+pairing UI
         // https://github.com/woocommerce/woocommerce-ios/issues/4062
-        createPaymentParameters(for: order,
-                                onPresentMessage: onPresentMessage,
-                                onClearMessage: onClearMessage,
-                                onProcessingMessage: onProcessingMessage,
-                                onCompletion: onCompletion)
+        collectPaymentWithCardReader(for: order,
+                                     paymentsAccount: paymentsAccount,
+                                     onPresentMessage: onPresentMessage,
+                                     onClearMessage: onClearMessage,
+                                     onProcessingMessage: onProcessingMessage,
+                                     onCompletion: onCompletion)
     }
 
     func printReceipt(for order: Order, params: CardPresentReceiptParameters) {
@@ -41,51 +43,17 @@ final class PaymentCaptureOrchestrator {
 
 
 private extension PaymentCaptureOrchestrator {
-    func createPaymentParameters(for order: Order,
-                                 onPresentMessage: @escaping (String) -> Void,
-                                 onClearMessage: @escaping () -> Void,
-                                 onProcessingMessage: @escaping () -> Void,
-                                 onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
-        let accountAction = WCPayAction.loadAccount(siteID: order.siteID) { [weak self] result in
-            guard let self = self else {
-                return
-            }
-
-            guard let orderTotal = self.currencyFormatter.convertToDecimal(from: order.total) else {
-                DDLogError("Error: attempted to collect payment for an order without valid total.")
-                onCompletion(.failure(CardReaderServiceError.paymentCapture()))
-                return
-            }
-
-            switch result {
-            case .failure(let error):
-                onCompletion(.failure(error))
-            case .success(let account):
-                let paymentParameters = PaymentParameters(amount: orderTotal as Decimal,
-                                                          currency: order.currency,
-                                                          receiptDescription: "Receipt description.",
-                                                          statementDescription: account.statementDescriptor,
-                                                          receiptEmail: order.billingAddress?.email,
-                                                          metadata: [CardPresentReceiptParameters.MetadataKeys.store:
-                                                                        ServiceLocator.stores.sessionManager.defaultSite?.name as Any])
-                self.collectPaymentWithCardReader(for: order,
-                                                  with: paymentParameters,
-                                                  onPresentMessage: onPresentMessage,
-                                                  onClearMessage: onClearMessage,
-                                                  onProcessingMessage: onProcessingMessage,
-                                                  onCompletion: onCompletion)
-            }
-        }
-
-        ServiceLocator.stores.dispatch(accountAction)
-    }
-
     func collectPaymentWithCardReader(for order: Order,
-                                      with parameters: PaymentParameters,
+                                      paymentsAccount: WCPayAccount?,
                                       onPresentMessage: @escaping (String) -> Void,
                                       onClearMessage: @escaping () -> Void,
                                       onProcessingMessage: @escaping () -> Void,
                                       onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
+        guard let parameters = paymentParameters(order: order, account: paymentsAccount) else {
+            DDLogError("Error: failed to create payment parameters for an order")
+            onCompletion(.failure(CardReaderServiceError.paymentCapture()))
+            return
+        }
         let action = CardPresentPaymentAction.collectPayment(siteID: order.siteID,
                                                              orderID: order.orderID, parameters: parameters,
                                                              onCardReaderMessage: { (event) in
@@ -151,5 +119,38 @@ private extension PaymentCaptureOrchestrator {
         }
 
         ServiceLocator.stores.dispatch(action)
+    }
+
+    func paymentParameters(order: Order, account: WCPayAccount?) -> PaymentParameters? {
+        guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
+            DDLogError("Error: attempted to collect payment for an order without a valid total.")
+            return nil
+        }
+
+        return PaymentParameters(amount: orderTotal as Decimal,
+                                                  currency: order.currency,
+                                                  receiptDescription: receiptDescription(),
+                                                  statementDescription: account?.statementDescriptor,
+                                                  receiptEmail: order.billingAddress?.email,
+                                                  metadata: [CardPresentReceiptParameters.MetadataKeys.store:
+                                                                ServiceLocator.stores.sessionManager.defaultSite?.name as Any])
+    }
+
+    func receiptDescription() -> String? {
+        guard let storeName = ServiceLocator.stores.sessionManager.defaultSite?.name else {
+            return nil
+        }
+
+        return String.localizedStringWithFormat(Localization.receiptDescription,
+                                                storeName)
+    }
+}
+
+private extension PaymentCaptureOrchestrator {
+    enum Localization {
+        static let receiptDescription = NSLocalizedString("Receipt from %1$@",
+                                                             comment: "Message included in emailed receipts."
+                                                                + "Reads as: Receipt from @{store name}"
+                                                                + "Parameters: %1$@ - store name")
     }
 }

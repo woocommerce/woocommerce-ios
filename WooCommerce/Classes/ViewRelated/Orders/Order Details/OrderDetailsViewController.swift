@@ -322,7 +322,7 @@ extension OrderDetailsViewController {
             group.leave()
         }
 
-	group.enter()
+        group.enter()
         checkOrderAddOnFeatureSwitchState {
             group.leave()
         }
@@ -405,6 +405,25 @@ private extension OrderDetailsViewController {
             }
 
             self?.reloadSections()
+        }
+    }
+
+    func syncOrderAfterPaymentCollection(onCompletion: @escaping ()-> Void) {
+        let group = DispatchGroup()
+
+        group.enter()
+        syncOrder { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncNotes { _ in
+            group.leave()
+        }
+
+        group.notify(queue: .main) {
+            NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
+            onCompletion()
         }
     }
 }
@@ -557,6 +576,10 @@ private extension OrderDetailsViewController {
                     // To be implemented.
                 })
             case .success(let receiptParameters):
+                self.syncOrderAfterPaymentCollection {
+                    self.checkCardPresentPaymentEligibility()
+                }
+
                 self.paymentAlerts.success(printReceipt: {
                     self.viewModel.printReceipt(params: receiptParameters)
                 }, emailReceipt: {

@@ -382,9 +382,7 @@ private extension SettingsViewController {
 
     func sitePluginsWasPressed() {
         // TODO: do we need analytics to track tap here?
-        let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: PluginListViewController.self, creator: { coder in
-            PluginListViewController(coder: coder, viewModel: PluginListViewModel())
-        })
+        let viewController = PluginListViewController(viewModel: PluginListViewModel())
         show(viewController, sender: self)
     }
 

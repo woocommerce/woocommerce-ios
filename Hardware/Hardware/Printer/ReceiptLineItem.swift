@@ -2,10 +2,12 @@
 /// To be implemented in https://github.com/woocommerce/woocommerce-ios/issues/3978
 public struct ReceiptLineItem {
     public let title: String
+    public let quantity: String
     public let amount: String
 
-    public init(title: String, amount: String) {
+    public init(title: String, quantity: String, amount: String) {
         self.title = title
+        self.quantity = quantity
         self.amount = amount
     }
 }

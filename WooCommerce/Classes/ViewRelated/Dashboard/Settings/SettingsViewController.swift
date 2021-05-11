@@ -381,7 +381,9 @@ private extension SettingsViewController {
     }
 
     func sitePluginsWasPressed() {
-        // TODO: Pending implementation for issue #4114
+        // TODO: do we need analytics to track tap here?
+        let viewController = PluginListViewController(viewModel: PluginListViewModel())
+        show(viewController, sender: self)
     }
 
     func supportWasPressed() {

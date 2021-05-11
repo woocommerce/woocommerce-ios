@@ -31,6 +31,12 @@ final class SettingsViewController: UIViewController {
         return nameAsString ?? String()
     }
 
+    /// Main Site's ID
+    ///
+    private var siteID: Int64? {
+        ServiceLocator.stores.sessionManager.defaultSite?.siteID
+    }
+
     /// Main Site's URL
     ///
     private var siteUrl: String {
@@ -56,10 +62,18 @@ final class SettingsViewController: UIViewController {
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
 
+    /// Flag indicating whether the currently selected store is eligible
+    /// for card present payments
+    private var canCollectPayments: Bool = false
+
     // MARK: - Overridden Methods
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        checkAvailabilityForPayments() { [weak self] in
+            self?.refreshViewContent()
+        }
 
         refreshResultsController()
         configureNavigation()
@@ -101,6 +115,32 @@ private extension SettingsViewController {
     func refreshResultsController() {
         try? resultsController.performFetch()
         sites = resultsController.fetchedObjects
+    }
+
+    func checkAvailabilityForPayments(onCompletion: @escaping () -> Void) {
+        guard let siteID = self.siteID else {
+            canCollectPayments = false
+            onCompletion()
+            return
+        }
+
+        let action = WCPayAction.loadAccount(siteID: siteID) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+
+            switch result {
+            case .failure:
+                self.canCollectPayments = false
+            case .success(let account):
+                self.canCollectPayments = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) &&
+                    account.canCollectPayments
+            }
+
+            onCompletion()
+        }
+
+        ServiceLocator.stores.dispatch(action)
     }
 
     func configureTableViewFooter() {
@@ -162,7 +202,7 @@ private extension SettingsViewController {
         ]
 
         // Store Settings
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) {
+        if canCollectPayments {
             sections.append(
                 Section(title: storeSettingsTitle,
                         rows: [.cardReaders, .cardReadersV2],

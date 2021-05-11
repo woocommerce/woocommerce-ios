@@ -15,6 +15,8 @@ public struct WCPayAccount: Decodable {
     /// A two character country code, e.g. `US`
     /// See https://stripe.com/docs/api/accounts/object#account_object-country
     public let country: String
+    /// A boolean flag indicating if this Account can collect card present payments
+    public let canCollectPayments: Bool
 
     public init(
         status: WCPayAccountStatusEnum,
@@ -34,6 +36,8 @@ public struct WCPayAccount: Decodable {
         self.defaultCurrency = defaultCurrency
         self.supportedCurrencies = supportedCurrencies
         self.country = country
+        /// Hardcoded until support for this property is available in WCPay
+        self.canCollectPayments = true
     }
 
     /// The public initializer for WCPay Account.

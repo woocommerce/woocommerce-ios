@@ -27,7 +27,7 @@ class PluginListViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_section_and_row_details_are_correct_after_activation() {
+    func test_data_source_is_correct_after_activation() {
         // Given
         let activePlugin = SitePlugin.fake().copy(
             siteID: sampleSiteID,
@@ -58,6 +58,66 @@ class PluginListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.cellModelForRow(at: IndexPath(row: 0, section: 0)).description, "Lorem ipsum random HTML content")
         XCTAssertEqual(viewModel.cellModelForRow(at: IndexPath(row: 0, section: 1)).name, inactivePlugin2.name)
         XCTAssertEqual(viewModel.cellModelForRow(at: IndexPath(row: 1, section: 1)).name, inactivePlugin1.name)
+    }
+
+    func test_data_source_is_correct_after_plugin_status_is_updated() {
+        // Given
+        let activePlugin = SitePlugin.fake().copy(
+            siteID: sampleSiteID,
+            status: .active,
+            name: "AAA"
+        )
+        insert(activePlugin)
+
+        let viewModel = PluginListViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let expect = expectation(description: "Section info is updated correctly.")
+        viewModel.activate {
+            expect.fulfill()
+        }
+        XCTAssertEqual(viewModel.numberOfSections, 1)
+        XCTAssertEqual(viewModel.titleForSection(at: 0), "Active Plugins")
+
+        // When
+        updateStorage(with: activePlugin.copy(status: .inactive))
+
+        // Then
+        waitForExpectations(timeout: Constants.expectationTimeout) { _ in
+            XCTAssertEqual(viewModel.numberOfSections, 1)
+            XCTAssertEqual(viewModel.titleForSection(at: 0), "Inactive Plugins")
+        }
+    }
+
+    func test_data_source_is_correct_after_plugin_is_deleted() {
+        // Given
+        let plugin1 = SitePlugin.fake().copy(
+            siteID: sampleSiteID,
+            status: .active,
+            name: "AAA"
+        )
+        insert(plugin1)
+
+        let plugin2 = SitePlugin.fake().copy(
+            siteID: sampleSiteID,
+            status: .active,
+            name: "BBB"
+        )
+        insert(plugin2)
+
+        let viewModel = PluginListViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let expect = expectation(description: "Data source is updated correctly.")
+        viewModel.activate {
+            expect.fulfill()
+        }
+        XCTAssertEqual(viewModel.numberOfRows(inSection: 0), 2)
+
+        // When
+        storage.deleteStalePlugins(siteID: sampleSiteID, installedPluginNames: [plugin2.name])
+
+        // Then
+        waitForExpectations(timeout: Constants.expectationTimeout) { _ in
+            XCTAssertEqual(viewModel.numberOfRows(inSection: 0), 1)
+            XCTAssertEqual(viewModel.cellModelForRow(at: IndexPath(row: 0, section: 0)).name, plugin2.name)
+        }
     }
 
     func test_resyncPlugins_dispatches_correct_action() {
@@ -116,6 +176,15 @@ private extension PluginListViewModelTests {
     func insert(_ readOnlyPlugin: Yosemite.SitePlugin) {
         let plugin = storage.insertNewObject(ofType: StorageSitePlugin.self)
         plugin.update(with: readOnlyPlugin)
+        storage.saveIfNeeded()
+    }
+
+    func updateStorage(with readOnlyPlugin: Yosemite.SitePlugin) {
+        guard let plugin = storage.loadPlugin(siteID: readOnlyPlugin.siteID, name: readOnlyPlugin.name) else {
+            return
+        }
+        plugin.update(with: readOnlyPlugin)
+        storage.saveIfNeeded()
     }
 }
 

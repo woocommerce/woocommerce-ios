@@ -5,6 +5,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
 
     private(set) var shouldShow: CardReaderSettingsTriState = .isUnknown
     var didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?
+    var didUpdate: (() -> Void)?
 
     private var didGetConnectedReaders: Bool = false
     private var connectedReaders = [CardReader]()
@@ -13,9 +14,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     var connectedReaderBatteryLevel: String?
 
     init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?) {
-
         self.didChangeShouldShow = didChangeShouldShow
-
         beginObservation()
     }
 
@@ -23,7 +22,6 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     /// connected readers.
     ///
     private func beginObservation() {
-
         // This completion should be called repeatedly as the list of connected readers changes
         let action = CardPresentPaymentAction.observeConnectedReaders() { [weak self] readers in
             guard let self = self else {
@@ -38,7 +36,6 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     }
 
     private func updateProperties() {
-
         guard connectedReaders.count > 0 else {
             connectedReaderSerialNumber = nil
             connectedReaderBatteryLevel = nil
@@ -73,7 +70,6 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     /// Notifes the viewModel owner if a change occurs via didChangeShouldShow
     ///
     private func reevaluateShouldShow() {
-
         var newShouldShow: CardReaderSettingsTriState = .isUnknown
 
         if !didGetConnectedReaders {

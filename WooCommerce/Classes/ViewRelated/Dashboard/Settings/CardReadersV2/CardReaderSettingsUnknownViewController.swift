@@ -74,8 +74,16 @@ private extension CardReaderSettingsUnknownViewController {
         /// Dismiss any pre-existing modal
         modalAlerts.dismiss()
 
-        if viewModel.discoveryState == .searching {
+        /// Show the new modal
+        switch viewModel.discoveryState {
+        case .searching:
             showSearchingModal()
+        case .connectingToReader:
+            showConnectingModal()
+        case .foundReader:
+            showFoundReaderModal()
+        default:
+            return
         }
     }
 
@@ -89,6 +97,22 @@ private extension CardReaderSettingsUnknownViewController {
         }
 
         modalAlerts.scanningForReader(from: self, cancel: viewModel.cancelReaderDiscovery)
+    }
+
+    func showConnectingModal() {
+        modalAlerts.connectingToReader(from: self)
+    }
+
+    func showFoundReaderModal() {
+        guard let viewModel = viewModel else {
+            return
+        }
+
+        guard let name = viewModel.foundReaderSerialNumber else {
+            return
+        }
+
+        modalAlerts.foundReader(from: self, name: name, connect: viewModel.connectToReader, continueSearch: viewModel.continueSearch)
     }
 }
 

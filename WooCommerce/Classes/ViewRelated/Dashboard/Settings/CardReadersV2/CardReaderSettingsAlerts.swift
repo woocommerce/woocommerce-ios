@@ -16,6 +16,24 @@ final class CardReaderSettingsAlerts {
         from.present(newAlert, animated: true)
     }
 
+    func connectingToReader(from: UIViewController) {
+        let viewModel = connectingToReader()
+        let newAlert = CardPresentPaymentsModalViewController(viewModel: viewModel)
+        modalController = newAlert
+        modalController?.modalPresentationStyle = .custom
+        modalController?.transitioningDelegate = AppDelegate.shared.tabBarController
+        from.present(newAlert, animated: true)
+    }
+
+    func foundReader(from: UIViewController, name: String, connect: @escaping () -> Void, continueSearch: @escaping () -> Void) {
+        let viewModel = foundReader(name: name, connect: connect, continueSearch: continueSearch)
+        let newAlert = CardPresentPaymentsModalViewController(viewModel: viewModel)
+        modalController = newAlert
+        modalController?.modalPresentationStyle = .custom
+        modalController?.transitioningDelegate = AppDelegate.shared.tabBarController
+        from.present(newAlert, animated: true)
+    }
+
     func dismiss() {
         modalController?.dismiss(animated: true, completion: nil)
     }
@@ -24,5 +42,13 @@ final class CardReaderSettingsAlerts {
 private extension CardReaderSettingsAlerts {
     func scanningForReader(cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalScanningForReader(cancel: cancel)
+    }
+
+    func connectingToReader() -> CardPresentPaymentsModalViewModel {
+        CardPresentModalConnectingToReader()
+    }
+
+    func foundReader(name: String, connect: @escaping () -> Void, continueSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalFoundReader(name: name, connect: connect, continueSearch: continueSearch)
     }
 }

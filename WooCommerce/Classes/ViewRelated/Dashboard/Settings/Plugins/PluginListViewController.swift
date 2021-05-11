@@ -1,18 +1,20 @@
 import UIKit
 
-class PluginListViewController: UIViewController {
+/// View Controller for the Plugin List Screen.
+///
+final class PluginListViewController: UIViewController {
 
     private let viewModel: PluginListViewModel
 
     @IBOutlet private var tableView: UITableView!
 
-    init?(coder: NSCoder, viewModel: PluginListViewModel) {
+    init(viewModel: PluginListViewModel) {
         self.viewModel = viewModel
-        super.init(coder: coder)
+        super.init(nibName: Self.nibName, bundle: nil)
     }
 
     required init?(coder: NSCoder) {
-        fatalError("⛔️ You must create this view controller with a view model!")
+        fatalError("init(coder:) has not been implemented")
     }
 
     override func viewDidLoad() {

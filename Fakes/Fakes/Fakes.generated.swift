@@ -999,6 +999,16 @@ extension ShippingLabelAddressVerification.ShipType {
         .origin
     }
 }
+extension ShippingLabelCreationEligibilityResponse {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ShippingLabelCreationEligibilityResponse {
+        .init(
+            isEligible: .fake(),
+            reason: .fake()
+        )
+    }
+}
 extension ShippingLabelCustomPackage {
     /// Returns a "ready to use" type filled with fake values.
     ///

@@ -23,10 +23,9 @@ extension UIStoryboard {
 //
 extension UIStoryboard {
     /// Returns a view controller from a Storyboard assuming the identifier is the same as the class name.
-    /// Accepts an optional creator to inject additional dependencies.
     ///
-    func instantiateViewController<T: UIViewController>(ofClass classType: T.Type, creator: ((NSCoder) -> T?)? = nil) -> T {
+    func instantiateViewController<T: NSObject>(ofClass classType: T.Type) -> T? {
         let identifier = classType.classNameWithoutNamespaces
-        return instantiateViewController(identifier: identifier, creator: creator)
+        return instantiateViewController(withIdentifier: identifier) as? T
     }
 }

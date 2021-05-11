@@ -41,10 +41,18 @@ public enum CardPresentPaymentAction: Action {
                         onCardReaderMessage: (CardReaderEvent) -> Void,
                         onCompletion: (Result<PaymentIntent, Error>) -> Void )
 
+    /// Check whether there is a software update available.
     case checkForCardReaderUpdate(onData: (Result<CardReaderSoftwareUpdate, Error>) -> Void,
                         onCompletion: () -> Void)
 
+    /// Update card reader firmware.
     case startCardReaderUpdate(onProgress: (Float) -> Void,
                         onCompletion: (Result<Void, Error>) -> Void)
 
+    /// Restarts the card present payments system
+    /// This might imply, but not be limited to:
+    /// 1. Disconnect from a connected reader
+    /// 2. Clear all credentials, cached data
+    /// 3. Reset all status indicators
+    case reset
 }

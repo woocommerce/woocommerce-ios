@@ -112,6 +112,16 @@ extension StripeCardReaderService: CardReaderService {
 
     public func disconnect() -> Future<Void, Error> {
         return Future() { promise in
+            // Throw an error if the SDK has not been initialized.
+            // This prevent a crash when logging out or switching stores before
+            // the SDK has been initialized.
+            // Why? https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(cpy)shared
+            // `Before accessing the singleton for the first time, you must first call setTokenProvider: and setDelegate:.`
+            guard Terminal.hasTokenProvider() else {
+                promise(.failure(CardReaderServiceError.disconnection()))
+                return
+            }
+
             // Throw an error if we try to disconnect from nothing
             guard Terminal.shared.connectionStatus == .connected else {
                 promise(.failure(CardReaderServiceError.disconnection()))
@@ -137,7 +147,15 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     public func clear() {
-        // 🧹
+        // Shortcircuit the SDK has not been initialized.
+        // This prevent a crash when logging out or switching stores before
+        // the SDK has been initialized.
+        // Why? https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(cpy)shared
+        // `Before accessing the singleton for the first time, you must first call setTokenProvider: and setDelegate:.`
+        guard Terminal.hasTokenProvider() else {
+            return
+        }
+        print("=== clearing")
         Terminal.shared.clearCachedCredentials()
     }
 

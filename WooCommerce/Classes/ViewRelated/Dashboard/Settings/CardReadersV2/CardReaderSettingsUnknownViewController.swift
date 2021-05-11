@@ -18,9 +18,11 @@ final class CardReaderSettingsUnknownViewController: UIViewController, CardReade
     ///
     private var sections = [Section]()
 
-    /// Alert modal, if any
+    /// Alert modal support
     ///
-    private var alert: UIAlertController?
+    private lazy var modalAlerts: CardReaderSettingsAlerts = {
+        CardReaderSettingsAlerts()
+    }()
 
     /// Accept our viewmodel and listen for changes on it
     ///
@@ -51,7 +53,7 @@ final class CardReaderSettingsUnknownViewController: UIViewController, CardReade
     ///
     override func viewWillDisappear(_ animated: Bool) {
         viewModel?.didUpdate = nil
-        alert?.dismiss(animated: false, completion: nil)
+        modalAlerts.dismiss()
         super.viewWillDisappear(animated)
     }
 }
@@ -70,7 +72,7 @@ private extension CardReaderSettingsUnknownViewController {
         }
 
         /// Dismiss any pre-existing modal
-        alert?.dismiss(animated: true, completion: nil)
+        modalAlerts.dismiss()
 
         if viewModel.discoveryState == .searching {
             showSearchingModal()
@@ -82,19 +84,11 @@ private extension CardReaderSettingsUnknownViewController {
     }
 
     func showSearchingModal() {
-        // TODO - replace with new, richer modals once they stabilize
-        alert = UIAlertController(
-            title: Localization.searchModalTitle,
-            message: Localization.searchModalSubtitle,
-            preferredStyle: UIAlertController.Style.alert
-        )
-        let cancelAction = UIAlertAction(title: Localization.searchModalCancelButton, style: .cancel) { UIAlertAction in
-            self.viewModel?.cancelReaderDiscovery()
+        guard let viewModel = viewModel else {
+            return
         }
-        alert?.addAction(cancelAction)
-        if alert != nil {
-            present(alert!, animated: true, completion: nil)
-        }
+
+        modalAlerts.scanningForReader(from: self, cancel: viewModel.cancelReaderDiscovery)
     }
 }
 
@@ -368,21 +362,6 @@ private extension CardReaderSettingsUnknownViewController {
         static let learnMore = NSLocalizedString(
             "Learn more about accepting payments with your mobile device and ordering card readers",
             comment: "Settings > Manage Card Reader > Connect > A prompt for new users to start accepting mobile payments"
-        )
-
-        static let searchModalTitle = NSLocalizedString(
-            "Scanning for readers",
-            comment: "Title for the modal dialog that appears when searching for a card reader"
-        )
-
-        static let searchModalSubtitle = NSLocalizedString(
-            "Turn on your reader by pressing its power button",
-            comment: "Subtitle for the modal dialog that appears when searching for a card reader"
-        )
-
-        static let searchModalCancelButton = NSLocalizedString(
-            "Cancel",
-            comment: "Label for a cancel button"
         )
     }
 }

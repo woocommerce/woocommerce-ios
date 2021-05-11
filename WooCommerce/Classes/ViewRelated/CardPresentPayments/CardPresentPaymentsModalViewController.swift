@@ -136,7 +136,7 @@ private extension CardPresentPaymentsModalViewController {
             configureActionButtonsView()
         }
 
-        if !shouldShowActionButtons() {
+        if shouldShowBottomLabels() {
             configureBottomLabels()
         }
     }
@@ -150,7 +150,6 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func configureBottomLabels() {
-        actionButtonsView.isHidden = true
         bottomLabels.isHidden = false
 
         configureBottomTitle()

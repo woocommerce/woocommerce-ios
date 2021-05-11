@@ -38,17 +38,21 @@ public extension ReceiptRenderer {
                 <style type="text/css">
                     html { font-family: "Helvetica Neue", sans-serif; font-size: \(Constants.fontSize)pt; }
                     header { margin-top: \(Constants.margin); }
-                    h1 { font-size: \(Constants.titleSize)pt; font-weight: 500; text-align: center; }
+                    h1 { font-size: \(Constants.titleFontSize)pt; font-weight: 500; text-align: center; }
                     h3 { color: #707070; margin:0; }
                     table {
                         background-color:#F5F5F5;
                         width:100%;
                         color: #707070;
-                        margin: \(Constants.margin / 2)pt 0;
+                        margin: \(Constants.margin / 2)pt 0 0 0;
                         padding: \(Constants.margin / 2)pt;
                     }
                     table td:last-child { width: 30%; text-align: right; }
                     table tr:last-child { color: #000000; font-weight: bold; }
+                    footer {
+                        font-size: \(Constants.footerFontSize)pt;
+                        border-top: 1px solid #707070;
+                    }
                     .card-icon {
                        width: 24px;
                        height: 17px;
@@ -80,9 +84,11 @@ public extension ReceiptRenderer {
                         <h3>\(Localization.summarySectionTitle.uppercased())</h3>
                         \(summaryTable())
                     </p>
-                    <p>
-                        \(requiredItems())
-                    </p>
+                    <footer>
+                        <p>
+                            \(requiredItems())
+                        </p>
+                    </footer>
                 </body>
             </html>
         """
@@ -151,8 +157,9 @@ private extension ReceiptRenderer {
 private extension ReceiptRenderer {
     enum Constants {
         static let margin: CGFloat = 16
-        static let titleSize: CGFloat = 24
+        static let titleFontSize: CGFloat = 24
         static let fontSize: CGFloat = 12
+        static let footerFontSize: CGFloat = 10
     }
 
     enum Localization {

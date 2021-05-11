@@ -69,7 +69,11 @@ public class Dispatcher {
     public func dispatch(_ action: Action) {
         assertMainThread()
 
-        processors[action.identifier]?.onAction(action)
+        // Avoid silent failure when a store is not retained
+        guard let processor = processors[action.identifier] else {
+            return DDLogWarn("⚠️ No processor found for \(action.identifier)!")
+        }
+        processor.onAction(action)
     }
 }
 

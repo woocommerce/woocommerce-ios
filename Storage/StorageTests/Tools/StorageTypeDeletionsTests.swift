@@ -24,9 +24,9 @@ class StorageTypeDeletionsTests: XCTestCase {
     func test_deleteStaleAddOnGroups_does_not_delete_active_addOns() throws {
         // Given
         let initialGroups: [AddOnGroup] = [
-            createAddOnGroup(groupID: 123),
-            createAddOnGroup(groupID: 1234),
-            createAddOnGroup(groupID: 12345)
+            createAddOnGroup(groupID: 123, name: "AAA"),
+            createAddOnGroup(groupID: 1234, name: "BBB"),
+            createAddOnGroup(groupID: 12345, name: "CCC")
         ]
 
         // When
@@ -36,15 +36,39 @@ class StorageTypeDeletionsTests: XCTestCase {
         let activeGroups = storage.loadAddOnGroups(siteID: sampleSiteID)
         XCTAssertEqual(activeGroups, initialGroups.dropLast())
     }
+
+    func test_deleteStalePlugins_deletes_plugins_not_included_in_installedPluginNames() throws {
+        // Given
+        let plugin1 = createPlugin(name: "AAA")
+        _ = createPlugin(name: "BBB")
+        let plugin3 = createPlugin(name: "CCC")
+
+        // When
+        storage.deleteStalePlugins(siteID: sampleSiteID, installedPluginNames: ["AAA", "CCC"])
+
+        // Then
+        let currentPlugins = storage.loadPlugins(siteID: sampleSiteID)
+        XCTAssertEqual(currentPlugins, [plugin1, plugin3])
+    }
 }
 
 private extension StorageTypeDeletionsTests {
     /// Inserts and creates an `AddOnGroup` ready to be used on tests.
     ///
-    func createAddOnGroup(groupID: Int64) -> AddOnGroup {
+    func createAddOnGroup(groupID: Int64, name: String) -> AddOnGroup {
         let addOnGroup = storage.insertNewObject(ofType: AddOnGroup.self)
         addOnGroup.siteID = sampleSiteID
         addOnGroup.groupID = groupID
+        addOnGroup.name = name
         return addOnGroup
+    }
+
+    /// Creates and inserts a `SitePlugin` entity with a given name
+    ///
+    func createPlugin(name: String) -> SitePlugin {
+        let plugin = storage.insertNewObject(ofType: SitePlugin.self)
+        plugin.siteID = sampleSiteID
+        plugin.name = name
+        return plugin
     }
 }

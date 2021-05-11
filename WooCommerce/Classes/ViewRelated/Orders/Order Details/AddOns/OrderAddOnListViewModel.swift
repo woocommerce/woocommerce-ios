@@ -24,20 +24,26 @@ final class OrderAddOnListI1ViewModel: ObservableObject {
     ///
     @Published var shouldShowSurvey: Bool = false
 
+    /// Analytics service
+    ///
+    private let analytics: Analytics
+
     /// Member-wise initializer, useful for `SwiftUI` previews
     ///
-    init(addOns: [OrderAddOnI1ViewModel]) {
+    init(addOns: [OrderAddOnI1ViewModel], analytics: Analytics = ServiceLocator.analytics) {
         self.addOns = addOns
+        self.analytics = analytics
     }
 
     /// Initializer: Converts order item attributes into add-on view models
     ///
-    init(attributes: [OrderItemAttribute]) {
+    init(attributes: [OrderItemAttribute], analytics: Analytics = ServiceLocator.analytics) {
         self.addOns = attributes.map { attribute in
             let name = Self.addOnName(from: attribute)
             let price = Self.addOnPrice(from: attribute, withDecodedName: name)
             return OrderAddOnI1ViewModel(id: attribute.metaID, title: name, content: attribute.value, price: price)
         }
+        self.analytics = analytics
     }
 
     /// Decodes the name of the add-on from the `attribute.name` property.
@@ -61,6 +67,16 @@ final class OrderAddOnListI1ViewModel: ObservableObject {
     private static func addOnPrice(from attribute: OrderItemAttribute, withDecodedName name: String) -> String {
         attribute.name.replacingOccurrences(of: name, with: "")     // "Topping (Spicy) ($30.00)" -> " ($30.00)"
             .trimmingCharacters(in: CharacterSet([" ", "(", ")"]))  // " ($30.00)" -> "$30.00"
+    }
+}
+
+// MARK: Inputs
+extension OrderAddOnListI1ViewModel {
+    /// Sends a track report to the displayed add-ons to the analytics service.
+    ///
+    func trackAddOns() {
+        let addOnNames = addOns.map { $0.title }
+        analytics.track(event: WooAnalyticsEvent.OrderDetailAddOns.orderAddOnsViewed(addOnNames: addOnNames))
     }
 }
 

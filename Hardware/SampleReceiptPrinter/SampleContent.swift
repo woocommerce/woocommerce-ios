@@ -3,7 +3,7 @@
 extension ReceiptLineItem {
     /// Generates a sample line item with the given number in the title
     static func sampleItem(number: Int) -> ReceiptLineItem {
-        ReceiptLineItem(title: "Sample product #\(number)", amount: "2500")
+        return ReceiptLineItem(title: "Sample product #\(number)", amount: "25")
     }
 }
 
@@ -13,6 +13,7 @@ extension CardPresentReceiptParameters {
         CardPresentReceiptParameters(
             amount: amount,
             currency: "USD",
+            date: .init(),
             storeName: "Test Store",
             cardDetails: .init(
                 last4: "1234",
@@ -42,7 +43,7 @@ extension ReceiptContent {
         let items = (1...items)
             .map(ReceiptLineItem.sampleItem)
         let amount = items
-            .map(\.amount)
+            .map { (Float($0.amount) ?? 0) * 100 }
             .compactMap(UInt.init)
             .reduce(0, +)
 

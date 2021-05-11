@@ -67,6 +67,15 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
         }
         stores.dispatch(reviewAction)
 
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) {
+            group.enter()
+            let resetAction = CardPresentPaymentAction.reset
+
+            stores.dispatch(resetAction)
+
+            group.leave()
+        }
+
         group.notify(queue: .main) {
             onCompletion()
         }

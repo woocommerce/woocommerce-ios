@@ -18,7 +18,11 @@ final class CardReaderSettingsUnknownViewController: UIViewController, CardReade
     ///
     private var sections = [Section]()
 
-    /// Accept our viewmodel
+    /// Alert modal, if any
+    ///
+    private var alert: UIAlertController?
+
+    /// Accept our viewmodel and listen for changes on it
     ///
     func configure(viewModel: CardReaderSettingsPresentedViewModel) {
         self.viewModel = viewModel as? CardReaderSettingsUnknownViewModel
@@ -27,6 +31,8 @@ final class CardReaderSettingsUnknownViewController: UIViewController, CardReade
             DDLogError("Unexpectedly unable to downcast to CardReaderSettingsUnknownViewModel")
             return
         }
+
+        self.viewModel?.didUpdate = onViewModelDidUpdate
     }
 
     // MARK: - Overridden Methods
@@ -38,6 +44,57 @@ final class CardReaderSettingsUnknownViewController: UIViewController, CardReade
         configureNavigation()
         configureSections()
         configureTable()
+    }
+
+    /// We're disappearing... stop listening to viewmodel changes to avoid a reference loop
+    /// and close any modal
+    ///
+    override func viewWillDisappear(_ animated: Bool) {
+        viewModel?.didUpdate = nil
+        alert?.dismiss(animated: false, completion: nil)
+        super.viewWillDisappear(animated)
+    }
+}
+
+// MARK: - View Updates
+//
+private extension CardReaderSettingsUnknownViewController {
+    func onViewModelDidUpdate() {
+        updateModal()
+        updateTable()
+    }
+
+    func updateModal() {
+        guard let viewModel = viewModel else {
+            return
+        }
+
+        /// Dismiss any pre-existing modal
+        alert?.dismiss(animated: true, completion: nil)
+
+        if viewModel.discoveryState == .searching {
+            showSearchingModal()
+        }
+    }
+
+    func updateTable() {
+        tableView.reloadData()
+    }
+
+    func showSearchingModal() {
+        // TODO - replace with new, richer modals once they stabilize
+        alert = UIAlertController(
+            title: Localization.searchModalTitle,
+            message: Localization.searchModalSubtitle,
+            preferredStyle: UIAlertController.Style.alert
+        )
+        let cancelAction = UIAlertAction(title: Localization.searchModalCancelButton, style: .cancel) { UIAlertAction in
+            self.viewModel?.cancelReaderDiscovery()
+        }
+        alert?.addAction(cancelAction)
+        if alert != nil {
+            present(alert!, animated: true, completion: nil)
+        }
     }
 }
 
@@ -135,7 +192,7 @@ private extension CardReaderSettingsUnknownViewController {
     private func configureButton(cell: ButtonTableViewCell) {
         let buttonTitle = Localization.connectButton
         cell.configure(title: buttonTitle) {
-            // TODO connect the connect button
+            self.viewModel?.startReaderDiscovery()
         }
         cell.selectionStyle = .none
     }
@@ -311,6 +368,21 @@ private extension CardReaderSettingsUnknownViewController {
         static let learnMore = NSLocalizedString(
             "Learn more about accepting payments with your mobile device and ordering card readers",
             comment: "Settings > Manage Card Reader > Connect > A prompt for new users to start accepting mobile payments"
+        )
+
+        static let searchModalTitle = NSLocalizedString(
+            "Scanning for readers",
+            comment: "Title for the modal dialog that appears when searching for a card reader"
+        )
+
+        static let searchModalSubtitle = NSLocalizedString(
+            "Turn on your reader by pressing its power button",
+            comment: "Subtitle for the modal dialog that appears when searching for a card reader"
+        )
+
+        static let searchModalCancelButton = NSLocalizedString(
+            "Cancel",
+            comment: "Label for a cancel button"
         )
     }
 }

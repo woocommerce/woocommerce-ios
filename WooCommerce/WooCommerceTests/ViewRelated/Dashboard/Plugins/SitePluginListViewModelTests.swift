@@ -46,7 +46,7 @@ class PluginListViewModelTests: XCTestCase {
         let viewModel = PluginListViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
-        viewModel.activate {}
+        viewModel.observePlugins {}
 
         // Then
         XCTAssertEqual(viewModel.numberOfSections, 2)

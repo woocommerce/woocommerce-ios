@@ -21,9 +21,7 @@ final class PluginListViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureTableView()
-        viewModel.activate { [weak self] in
-            self?.tableView.reloadData()
-        }
+        configureViewModel()
     }
 }
 
@@ -40,6 +38,12 @@ private extension PluginListViewController {
         tableView.backgroundColor = .listBackground
         tableView.allowsSelection = false
         tableView.dataSource = self
+    }
+
+    func configureViewModel() {
+        viewModel.observePlugins { [weak self] in
+            self?.tableView.reloadData()
+        }
     }
 }
 

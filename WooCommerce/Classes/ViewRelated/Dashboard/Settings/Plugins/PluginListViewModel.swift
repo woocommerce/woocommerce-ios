@@ -40,9 +40,9 @@ final class PluginListViewModel {
         self.storageManager = storageManager
     }
 
-    /// Start fetching plugin data from local storage.
+    /// Start fetching and observing plugin data from local storage.
     ///
-    func activate(onDataChanged: @escaping () -> Void) {
+    func observePlugins(onDataChanged: @escaping () -> Void) {
         do {
             try resultsController.performFetch()
         } catch {

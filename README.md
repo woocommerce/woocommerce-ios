@@ -108,6 +108,7 @@ Please, remember to not add this information on your commits and PRs.
     - [Beta Testing](https://woocommercehalo.wordpress.com/setup/join-ios-beta/)
 - Features
     - [In-app Feedback](docs/in-app-feedback.md)
+    - [Card Present Payments](docs/card-present-payments.md)
 
 ## 👏 Contributing
 

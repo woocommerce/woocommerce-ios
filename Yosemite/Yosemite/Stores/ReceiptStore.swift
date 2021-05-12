@@ -72,23 +72,30 @@ private extension ReceiptStore {
 
         let renderer = ReceiptRenderer(content: content)
 
+        let page = CGRect(x: 0, y: 0, width: 298, height: 500)
+        renderer.setValue(page, forKey: "paperRect")
+        renderer.setValue(page, forKey: "printableRect")
+
         let pdfData = NSMutableData()
         UIGraphicsBeginPDFContextToData(pdfData, .zero, nil)
         UIGraphicsBeginPDFPage()
-        renderer.drawPage(at: 0, in: UIGraphicsGetPDFContextBounds())
+        for i in 0..<renderer.numberOfPages {
+            UIGraphicsBeginPDFPage()
+            renderer.drawPage(at: i, in: UIGraphicsGetPDFContextBounds())
+        }
         UIGraphicsEndPDFContext()
 
         guard let outputURL = try? FileManager.default.url(for: .documentDirectory,
                                                            in: .userDomainMask,
                                                            appropriateFor: nil,
                                                            create: false)
-                .appendingPathComponent("output")
+                .appendingPathComponent("order-id-\(order.orderID)-receipt")
                 .appendingPathExtension("pdf")
             else {
             fatalError("Destination URL not created")
         }
 
         pdfData.write(to: outputURL, atomically: true)
-        Swift.print("open \(outputURL.path)") // command to open the generated file
+        Swift.print("new receipt saved: open \(outputURL.path)") // command to open the generated file
     }
 }

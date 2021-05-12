@@ -186,7 +186,7 @@ class PluginListViewModelTests: XCTestCase {
 
         let viewModel = PluginListViewModel(siteID: sampleSiteID, storageManager: storageManager)
         let expect = expectation(description: "Section info is updated correctly.")
-        viewModel.activate {
+        viewModel.observePlugins {
             expect.fulfill()
         }
         XCTAssertEqual(viewModel.numberOfSections, 1)
@@ -220,7 +220,7 @@ class PluginListViewModelTests: XCTestCase {
 
         let viewModel = PluginListViewModel(siteID: sampleSiteID, storageManager: storageManager)
         let expect = expectation(description: "Data source is updated correctly.")
-        viewModel.activate {
+        viewModel.observePlugins {
             expect.fulfill()
         }
         XCTAssertEqual(viewModel.numberOfRows(inSection: 0), 2)
@@ -241,49 +241,11 @@ class PluginListViewModelTests: XCTestCase {
         let viewModel = PluginListViewModel(siteID: sampleSiteID, storesManager: storesManager)
 
         // When
-        viewModel.resyncPlugins {}
+        viewModel.resyncPlugins { _ in }
 
         // Then
         XCTAssertTrue(storesManager.invokedSynchronizePlugins)
         XCTAssertEqual(storesManager.invokedSynchronizePluginsWithSiteID, sampleSiteID)
-    }
-
-    func test_resyncPlugins_updates_pluginListState_to_results_when_synchronization_succeeds() {
-        // Given
-        let delay: TimeInterval = 1
-        let expect = expectation(description: "Plugin list state is updated correctly")
-        let storesManager = MockPluginStoresManager(shouldSucceed: true, completionDelay: 1)
-        let viewModel = PluginListViewModel(siteID: sampleSiteID, storesManager: storesManager)
-
-        // When
-        viewModel.resyncPlugins {}
-
-        // Then
-        XCTAssertEqual(viewModel.pluginListState, .syncing)
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-            XCTAssertEqual(viewModel.pluginListState, .results)
-            expect.fulfill()
-        }
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
-    }
-
-    func test_resyncPlugins_updates_pluginListState_to_error_when_synchronization_fails() {
-        // Given
-        let delay: TimeInterval = 1
-        let expect = expectation(description: "Plugin list state is updated correctly")
-        let storesManager = MockPluginStoresManager(shouldSucceed: false, completionDelay: delay)
-        let viewModel = PluginListViewModel(siteID: sampleSiteID, storesManager: storesManager)
-
-        // When
-        viewModel.resyncPlugins {}
-
-        // Then
-        XCTAssertEqual(viewModel.pluginListState, .syncing)
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-            XCTAssertEqual(viewModel.pluginListState, .error)
-            expect.fulfill()
-        }
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
 }
 

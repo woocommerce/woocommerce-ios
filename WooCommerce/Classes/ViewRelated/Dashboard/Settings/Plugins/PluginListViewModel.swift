@@ -4,10 +4,6 @@ import protocol Storage.StorageManagerType
 
 final class PluginListViewModel {
 
-    /// Current state of the plugin list
-    ///
-    @Published var pluginListState: PluginListState = .results
-
     /// ID of the site to load plugins for
     ///
     private let siteID: Int64
@@ -58,18 +54,8 @@ final class PluginListViewModel {
 
     /// Manually resync plugins.
     ///
-    func resyncPlugins(onComplete: @escaping () -> Void) {
-        pluginListState = .syncing
-        let action = SitePluginAction.synchronizeSitePlugins(siteID: siteID) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success:
-                self.pluginListState = .results
-            case .failure:
-                self.pluginListState = .error
-            }
-            onComplete()
-        }
+    func resyncPlugins(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let action = SitePluginAction.synchronizeSitePlugins(siteID: siteID, onCompletion: onCompletion)
         storesManager.dispatch(action)
     }
 }
@@ -139,15 +125,3 @@ struct PluginListCellViewModel {
      let name: String
      let description: String
  }
-
-// MARK: - Nested Types
-//
-extension PluginListViewModel {
-    /// States for the Plugin List screen
-    ///
-    enum PluginListState {
-        case results
-        case syncing
-        case error
-    }
-}

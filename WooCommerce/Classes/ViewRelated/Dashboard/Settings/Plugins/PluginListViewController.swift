@@ -1,4 +1,3 @@
-import Combine
 import UIKit
 
 /// View Controller for the Plugin List Screen.
@@ -8,8 +7,6 @@ final class PluginListViewController: UIViewController {
     private let viewModel: PluginListViewModel
 
     @IBOutlet private var tableView: UITableView!
-
-    private var cancellable: AnyCancellable?
 
     /// Pull To Refresh Support.
     ///
@@ -40,7 +37,6 @@ final class PluginListViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureTableView()
-        configureListStates()
         configureViewModel()
     }
 }
@@ -66,31 +62,21 @@ private extension PluginListViewController {
             self?.tableView.reloadData()
         }
     }
-
-    func configureListStates() {
-        cancellable = viewModel.$pluginListState
-            .sink { [weak self] state in
-                guard let self = self else { return }
-                switch state {
-                case .syncing:
-                    self.removeErrorStateView()
-                    self.tableView.startGhostAnimation(style: .wooDefaultGhostStyle)
-                case .results:
-                    self.tableView.stopGhostAnimation()
-                case .error:
-                    self.tableView.stopGhostAnimation()
-                    self.displayErrorStateView()
-                }
-            }
-    }
 }
 
 // MARK: - Actions
 //
 private extension PluginListViewController {
     @objc func resyncPlugins() {
-        viewModel.resyncPlugins { [weak self] in
-            self?.refreshControl.endRefreshing()
+        removeErrorStateView()
+        tableView.startGhostAnimation(style: .wooDefaultGhostStyle)
+        viewModel.resyncPlugins { [weak self] result in
+            guard let self = self else { return }
+            self.refreshControl.endRefreshing()
+            self.tableView.stopGhostAnimation()
+            if result.isFailure {
+                self.displayErrorStateView()
+            }
         }
     }
 }

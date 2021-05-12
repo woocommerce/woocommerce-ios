@@ -79,7 +79,6 @@ private extension ReceiptStore {
             return
         }
 
-        Swift.print("==== output receipt URL ", outputURL)
         guard let receiptContent: ReceiptContent = try? fileStorage.data(for: outputURL) else {
             DDLogError("⛔️ Unable to load receipt metadata for order: \(order.orderID)")
             let error = ReceiptStoreError.fileError
@@ -115,34 +114,6 @@ private extension ReceiptStore {
         } catch {
             DDLogError("⛔️ Unable to save receipt for order id: \(order.orderID)")
         }
-
-//        let renderer = ReceiptRenderer(content: content)
-//
-//        let page = CGRect(x: 0, y: 0, width: 298, height: 500)
-//        renderer.setValue(page, forKey: "paperRect")
-//        renderer.setValue(page, forKey: "printableRect")
-//
-//        let pdfData = NSMutableData()
-//        UIGraphicsBeginPDFContextToData(pdfData, .zero, nil)
-//        UIGraphicsBeginPDFPage()
-//        for i in 0..<renderer.numberOfPages {
-//            UIGraphicsBeginPDFPage()
-//            renderer.drawPage(at: i, in: UIGraphicsGetPDFContextBounds())
-//        }
-//        UIGraphicsEndPDFContext()
-//
-//        guard let outputURL = try? FileManager.default.url(for: .documentDirectory,
-//                                                           in: .userDomainMask,
-//                                                           appropriateFor: nil,
-//                                                           create: false)
-//                .appendingPathComponent("order-id-\(order.orderID)-receipt")
-//                .appendingPathExtension("pdf")
-//            else {
-//            fatalError("Destination URL not created")
-//        }
-//
-//        pdfData.write(to: outputURL, atomically: true)
-//        Swift.print("new receipt saved: open \(outputURL.path)") // command to open the generated file
     }
 }
 

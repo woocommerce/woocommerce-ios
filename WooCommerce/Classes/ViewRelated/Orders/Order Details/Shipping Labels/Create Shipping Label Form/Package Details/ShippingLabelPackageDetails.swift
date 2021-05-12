@@ -61,7 +61,8 @@ struct ShippingLabelPackageDetails: View {
             presentation.wrappedValue.dismiss()
         }, label: {
             Text(Localization.doneButton)
-        }))
+        })
+        .disabled(!viewModel.isPackageDetailsDoneButtonEnabled()))
     }
 }
 

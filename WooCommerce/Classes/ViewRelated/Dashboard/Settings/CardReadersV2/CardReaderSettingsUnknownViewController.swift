@@ -53,7 +53,7 @@ final class CardReaderSettingsUnknownViewController: UIViewController, CardReade
     ///
     override func viewWillDisappear(_ animated: Bool) {
         viewModel?.didUpdate = nil
-        modalAlerts.dismiss()
+        dismissAnyModal()
         super.viewWillDisappear(animated)
     }
 }
@@ -71,10 +71,7 @@ private extension CardReaderSettingsUnknownViewController {
             return
         }
 
-        /// Dismiss any pre-existing modal
-        modalAlerts.dismiss()
-
-        /// Show the new modal
+        /// Show the new modal, if any
         switch viewModel.discoveryState {
         case .searching:
             showSearchingModal()
@@ -83,12 +80,16 @@ private extension CardReaderSettingsUnknownViewController {
         case .foundReader:
             showFoundReaderModal()
         default:
-            return
+            dismissAnyModal()
         }
     }
 
     func updateTable() {
         tableView.reloadData()
+    }
+
+    func dismissAnyModal() {
+        modalAlerts.dismiss()
     }
 
     func showSearchingModal() {

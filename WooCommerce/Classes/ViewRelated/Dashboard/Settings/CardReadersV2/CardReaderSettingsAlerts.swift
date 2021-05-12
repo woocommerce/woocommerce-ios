@@ -8,30 +8,23 @@ final class CardReaderSettingsAlerts {
     private var modalController: CardPresentPaymentsModalViewController?
 
     func scanningForReader(from: UIViewController, cancel: @escaping () -> Void) {
-        let viewModel = scanningForReader(cancel: cancel)
-        let newAlert = CardPresentPaymentsModalViewController(viewModel: viewModel)
-        modalController = newAlert
-        modalController?.modalPresentationStyle = .custom
-        modalController?.transitioningDelegate = AppDelegate.shared.tabBarController
-        from.present(newAlert, animated: true)
+        setViewModelAndPresent(from: from, viewModel: scanningForReader(cancel: cancel))
     }
 
     func connectingToReader(from: UIViewController) {
-        let viewModel = connectingToReader()
-        let newAlert = CardPresentPaymentsModalViewController(viewModel: viewModel)
-        modalController = newAlert
-        modalController?.modalPresentationStyle = .custom
-        modalController?.transitioningDelegate = AppDelegate.shared.tabBarController
-        from.present(newAlert, animated: true)
+        setViewModelAndPresent(from: from, viewModel: connectingToReader())
     }
 
-    func foundReader(from: UIViewController, name: String, connect: @escaping () -> Void, continueSearch: @escaping () -> Void) {
-        let viewModel = foundReader(name: name, connect: connect, continueSearch: continueSearch)
-        let newAlert = CardPresentPaymentsModalViewController(viewModel: viewModel)
-        modalController = newAlert
-        modalController?.modalPresentationStyle = .custom
-        modalController?.transitioningDelegate = AppDelegate.shared.tabBarController
-        from.present(newAlert, animated: true)
+    func foundReader(from: UIViewController,
+                     name: String,
+                     connect: @escaping () -> Void,
+                     continueSearch: @escaping () -> Void) {
+        setViewModelAndPresent(from: from,
+                               viewModel: foundReader(name: name,
+                                                      connect: connect,
+                                                      continueSearch: continueSearch
+                               )
+        )
     }
 
     func dismiss() {
@@ -50,5 +43,21 @@ private extension CardReaderSettingsAlerts {
 
     func foundReader(name: String, connect: @escaping () -> Void, continueSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalFoundReader(name: name, connect: connect, continueSearch: continueSearch)
+    }
+
+    func setViewModelAndPresent(from: UIViewController, viewModel: CardPresentPaymentsModalViewModel) {
+        guard modalController == nil else {
+            modalController?.setViewModel(viewModel)
+            return
+        }
+
+        modalController = CardPresentPaymentsModalViewController(viewModel: viewModel)
+        guard let modalController = modalController else {
+            return
+        }
+
+        modalController.modalPresentationStyle = .custom
+        modalController.transitioningDelegate = AppDelegate.shared.tabBarController
+        from.present(modalController, animated: true)
     }
 }

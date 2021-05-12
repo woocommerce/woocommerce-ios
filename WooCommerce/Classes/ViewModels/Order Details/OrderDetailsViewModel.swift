@@ -428,17 +428,6 @@ extension OrderDetailsViewModel {
                 print("==== no receipt parameters for order \(String(describing: self?.order.orderID)). moving on")
             }
         }
-//        let action = ShippingLabelAction.synchronizeShippingLabels(siteID: order.siteID, orderID: order.orderID) { result in
-//            switch result {
-//            case .success:
-//                ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .success))
-//                onCompletion?(nil)
-//            case .failure(let error):
-//                ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .failed(error: error)))
-//                DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
-//                onCompletion?(error)
-//            }
-//        }
         stores.dispatch(action)
     }
 

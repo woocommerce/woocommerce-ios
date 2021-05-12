@@ -324,6 +324,11 @@ extension OrderDetailsViewController {
         }
 
         group.enter()
+        syncSavedReceipts {_ in
+            group.leave()
+        }
+
+        group.enter()
         checkOrderAddOnFeatureSwitchState {
             group.leave()
         }
@@ -377,6 +382,10 @@ private extension OrderDetailsViewController {
     }
 
     func syncSavedReceipts(onCompletion: ((Error?) -> ())? = nil) {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) else {
+            return
+        }
+
         viewModel.syncSavedReceipts(onCompletion: onCompletion)
     }
 
@@ -423,6 +432,11 @@ private extension OrderDetailsViewController {
 
         group.enter()
         syncNotes { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncSavedReceipts { _ in
             group.leave()
         }
 

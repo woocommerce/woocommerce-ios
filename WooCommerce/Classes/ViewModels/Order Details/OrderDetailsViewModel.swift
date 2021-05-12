@@ -275,6 +275,9 @@ extension OrderDetailsViewModel {
             }
             productListVC.viewModel = self
             viewController.navigationController?.pushViewController(productListVC, animated: true)
+        case .seeReceipt:
+            print("==== See receipt tapped")
+            print("==== To be continued in #3981")
         case .refund:
             ServiceLocator.analytics.track(.orderDetailRefundDetailTapped)
             guard let refund = dataSource.refund(at: indexPath) else {
@@ -419,14 +422,12 @@ extension OrderDetailsViewModel {
     func syncSavedReceipts(onCompletion: ((Error?) -> ())? = nil) {
         let action = ReceiptAction.loadReceipt(order: order) { [weak self] result in
             switch result {
-            case .success(let parameters):
-                print("====== receipt parameters for order \(String(describing: self?.order.orderID))")
-                print(parameters)
-                print("////// recipt parameters loaded")
-                onCompletion?(nil)
+            case .success:
+                self?.dataSource.shouldShowReceipts = true
             case .failure:
-                print("==== no receipt parameters for order \(String(describing: self?.order.orderID)). moving on")
+                self?.dataSource.shouldShowReceipts = false
             }
+            onCompletion?(nil)
         }
         stores.dispatch(action)
     }

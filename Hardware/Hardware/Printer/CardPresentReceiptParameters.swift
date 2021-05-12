@@ -33,3 +33,13 @@ public struct CardPresentReceiptParameters: Codable {
 public extension CardPresentReceiptParameters {
     typealias MetadataKeys = PaymentIntent.MetadataKeys
 }
+
+extension CardPresentReceiptParameters {
+    enum CodingKeys: String, CodingKey {
+        case amount = "amount"
+        case currency = "currency"
+        case date = "date"
+        case storeName = "store_name"
+        case cardDetails = "card_details"
+    }
+}

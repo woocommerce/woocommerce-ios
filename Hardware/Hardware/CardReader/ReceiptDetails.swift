@@ -33,3 +33,15 @@ extension ReceiptDetails: Equatable {
             lhs.accountType == rhs.accountType
     }
 }
+
+extension ReceiptDetails {
+    enum CodingKeys: String, CodingKey {
+        case applicationPreferredName = "application_preferred_name"
+        case dedicatedFileName = "dedicated_file_name"
+        case authorizationResponseCode = "authorization_response_code"
+        case applicationCryptogram = "application_cryptogram"
+        case terminalVerificationResults = "terminal_verification_results"
+        case transactionStatusInformation = "transaction_status_information"
+        case accountType = "account_type"
+    }
+}

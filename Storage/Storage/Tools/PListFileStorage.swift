@@ -9,9 +9,15 @@ public final class PListFileStorage: FileStorage {
     public func data<T: Decodable>(for fileURL: URL) throws -> T {
         do {
             let data = try Data(contentsOf: fileURL)
+            print("=== data ")
+            print(data)
+            print("/// data ")
             let decoder = PropertyListDecoder()
             return try decoder.decode(T.self, from: data)
         } catch {
+            print("==== codable error")
+            print(error)
+            print("//// codable error")
             throw PListFileStorageErrors.fileReadFailed
         }
     }

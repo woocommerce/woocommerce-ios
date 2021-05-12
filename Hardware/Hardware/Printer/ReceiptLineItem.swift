@@ -11,3 +11,11 @@ public struct ReceiptLineItem: Codable {
         self.amount = amount
     }
 }
+
+extension ReceiptLineItem {
+    enum CodingKeys: String, CodingKey {
+        case title = "title"
+        case quantity = "quantity"
+        case amount = "amount"
+    }
+}

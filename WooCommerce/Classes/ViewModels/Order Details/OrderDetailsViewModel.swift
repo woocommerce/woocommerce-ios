@@ -416,6 +416,32 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
+    func syncSavedReceipts(onCompletion: ((Error?) -> ())? = nil) {
+        let action = ReceiptAction.loadReceipt(order: order) { result in
+            switch result {
+            case .success(let parameters):
+                print("====== recipt parameters loaded")
+                print(parameters)
+                print("////// recipt parameters loaded")
+                onCompletion?(nil)
+            case .failure:
+                print("==== no receipt. moving on")
+            }
+        }
+//        let action = ShippingLabelAction.synchronizeShippingLabels(siteID: order.siteID, orderID: order.orderID) { result in
+//            switch result {
+//            case .success:
+//                ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .success))
+//                onCompletion?(nil)
+//            case .failure(let error):
+//                ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .failed(error: error)))
+//                DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
+//                onCompletion?(error)
+//            }
+//        }
+        stores.dispatch(action)
+    }
+
     func checkShippingLabelCreationEligibility(onCompletion: (() -> Void)? = nil) {
         let isFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsRelease2)
         let action = ShippingLabelAction.checkCreationEligibility(siteID: order.siteID,

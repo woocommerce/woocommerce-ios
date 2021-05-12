@@ -7,13 +7,15 @@ import Hardware
 //
 public class ReceiptStore: Store {
     private let receiptPrinterService: PrinterService
+    private let fileStorage: FileStorage
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.writerDerivedStorage
     }()
 
-    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, receiptPrinterService: PrinterService) {
+    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, receiptPrinterService: PrinterService, fileStorage: FileStorage) {
         self.receiptPrinterService = receiptPrinterService
+        self.fileStorage = fileStorage
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -63,6 +65,29 @@ private extension ReceiptStore {
 
     func loadReceipt(order: Order, onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
 
+        guard let outputURL = try? FileManager.default.url(for: .documentDirectory,
+                                                           in: .userDomainMask,
+                                                           appropriateFor: nil,
+                                                           create: false)
+                .appendingPathComponent(fileName(order: order))
+                .appendingPathExtension("plist")
+        else {
+            DDLogError("⛔️ Unable to create file url for receipt for order id: \(order.orderID)")
+
+            let error = ReceiptStoreError.fileNotFound
+            onCompletion(.failure(error))
+            return
+        }
+
+        guard let receiptParameters: CardPresentReceiptParameters = try? fileStorage.data(for: outputURL) else {
+            DDLogError("⛔️ Unabl to load receipt metadata for order: \(order.orderID)")
+            let error = ReceiptStoreError.fileError
+            onCompletion(.failure(error))
+
+            return
+        }
+
+        onCompletion(.success(receiptParameters))
     }
 
     func saveReceipt(order: Order, parameters: CardPresentReceiptParameters) {
@@ -74,19 +99,20 @@ private extension ReceiptStore {
                                                            in: .userDomainMask,
                                                            appropriateFor: nil,
                                                            create: false)
-                .appendingPathComponent("order-id-\(order.orderID)-receipt")
+                .appendingPathComponent(fileName(order: order))
                 .appendingPathExtension("plist")
         else {
-            fatalError("Destination URL not created")
+            DDLogError("⛔️ Unable to create file for receipt for order id: \(order.orderID)")
+
+            return
         }
 
-        let storage = PListFileStorage()
 
         do {
-            try storage.write(content, to: outputURL)
+            try fileStorage.write(content, to: outputURL)
             Swift.print("new receipt saved: open \(outputURL.path)") // command to open the generated file
         } catch {
-            Swift.print("==== error")
+            DDLogError("⛔️ Unable to save receipt for order id: \(order.orderID)")
         }
 
 //        let renderer = ReceiptRenderer(content: content)
@@ -117,4 +143,15 @@ private extension ReceiptStore {
 //        pdfData.write(to: outputURL, atomically: true)
 //        Swift.print("new receipt saved: open \(outputURL.path)") // command to open the generated file
     }
+}
+
+private extension ReceiptStore {
+    func fileName(order: Order) -> String {
+        "order-id-\(order.orderID)-receipt"
+    }
+}
+
+public enum ReceiptStoreError: Error {
+    case fileNotFound
+    case fileError
 }

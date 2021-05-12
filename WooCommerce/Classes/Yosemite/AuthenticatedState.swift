@@ -65,7 +65,8 @@ class AuthenticatedState: StoresManagerState {
             ReceiptStore(dispatcher: dispatcher,
                          storageManager: storageManager,
                          network: network,
-                         receiptPrinterService: ServiceLocator.receiptPrinterService)
+                         receiptPrinterService: ServiceLocator.receiptPrinterService,
+                         fileStorage: PListFileStorage())
         ]
 
         startListeningToNotifications()

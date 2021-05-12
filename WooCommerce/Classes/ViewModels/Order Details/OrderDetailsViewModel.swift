@@ -275,6 +275,9 @@ extension OrderDetailsViewModel {
             }
             productListVC.viewModel = self
             viewController.navigationController?.pushViewController(productListVC, animated: true)
+        case .seeReceipt:
+            print("==== See receipt tapped")
+            print("==== To be continued in #3981")
         case .refund:
             ServiceLocator.analytics.track(.orderDetailRefundDetailTapped)
             guard let refund = dataSource.refund(at: indexPath) else {

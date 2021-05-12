@@ -80,7 +80,7 @@ private extension ReceiptStore {
         }
 
         Swift.print("==== output receipt URL ", outputURL)
-        guard let receiptParameters: CardPresentReceiptParameters = try? fileStorage.data(for: outputURL) else {
+        guard let receiptContent: ReceiptContent = try? fileStorage.data(for: outputURL) else {
             DDLogError("⛔️ Unable to load receipt metadata for order: \(order.orderID)")
             let error = ReceiptStoreError.fileError
             onCompletion(.failure(error))
@@ -88,7 +88,7 @@ private extension ReceiptStore {
             return
         }
 
-        onCompletion(.success(receiptParameters))
+        onCompletion(.success(receiptContent.parameters))
     }
 
     func saveReceipt(order: Order, parameters: CardPresentReceiptParameters) {

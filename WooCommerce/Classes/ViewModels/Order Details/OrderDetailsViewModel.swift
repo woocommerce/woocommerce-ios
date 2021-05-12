@@ -419,14 +419,12 @@ extension OrderDetailsViewModel {
     func syncSavedReceipts(onCompletion: ((Error?) -> ())? = nil) {
         let action = ReceiptAction.loadReceipt(order: order) { [weak self] result in
             switch result {
-            case .success(let parameters):
-                print("====== receipt parameters for order \(String(describing: self?.order.orderID))")
-                print(parameters)
-                print("////// recipt parameters loaded")
-                onCompletion?(nil)
+            case .success:
+                self?.dataSource.shouldShowReceipts = true
             case .failure:
-                print("==== no receipt parameters for order \(String(describing: self?.order.orderID)). moving on")
+                self?.dataSource.shouldShowReceipts = false
             }
+            onCompletion?(nil)
         }
         stores.dispatch(action)
     }

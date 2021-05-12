@@ -75,17 +75,18 @@ extension PluginListViewModel {
             return nil
         }
         let pluginStatus = SitePluginStatusEnum(rawValue: rawStatus)
-        let sectionTitle: String
-        switch pluginStatus {
-        case .active:
-            sectionTitle = Localization.activeSectionTitle
-        case .inactive:
-            sectionTitle = Localization.inactiveSectionTitle
-        case .networkActive:
-            sectionTitle = Localization.networkActiveSectionTitle
-        case .unknown:
-            sectionTitle = "" // This case should not happen
-        }
+        let sectionTitle: String = {
+            switch pluginStatus {
+            case .active:
+                return Localization.activeSectionTitle
+            case .inactive:
+                return Localization.inactiveSectionTitle
+            case .networkActive:
+                return Localization.networkActiveSectionTitle
+            case .unknown:
+                return "" // This case should not happen
+            }
+        }()
         return sectionTitle.capitalized
     }
 

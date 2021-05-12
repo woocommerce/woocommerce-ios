@@ -90,19 +90,20 @@ private extension CardPresentPaymentStore {
         cardReaderService.cancelDiscovery()
     }
 
-    func connect(reader: Yosemite.CardReader, onCompletion: @escaping (Result<[Yosemite.CardReader], Error>) -> Void) {
+    func connect(reader: Yosemite.CardReader, onCompletion: @escaping (Result<Yosemite.CardReader, Error>) -> Void) {
         // We tiptoe around this for now. We will get into error handling later:
         // https://github.com/woocommerce/woocommerce-ios/issues/3734
         // https://github.com/woocommerce/woocommerce-ios/issues/3741
-        cardReaderService.connect(reader).sink(receiveCompletion: { error in
-        }, receiveValue: { (result) in
-        }).store(in: &cancellables)
-
-        // Dispatch completion block everytime the service published a new
-        // collection of connected readers
-        cardReaderService.connectedReaders.sink { connectedHardwareReaders in
-            onCompletion(.success(connectedHardwareReaders))
-        }.store(in: &cancellables)
+        cardReaderService.connect(reader)
+            .subscribe(Subscribers.Sink(receiveCompletion: { (completion) in
+                if case let .failure(underlyingError) = completion {
+                    onCompletion(.failure(underlyingError))
+                }
+                // We don't want to propagate successful completion since we already did that by
+                // calling onCompletion when a value was received.
+            }, receiveValue: { (reader) in
+                onCompletion(.success(reader))
+            }))
     }
 
     func disconnect(onCompletion: @escaping (Result<Void, Error>) -> Void) {

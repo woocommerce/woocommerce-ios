@@ -73,7 +73,7 @@ private extension ReceiptStore {
         }
 
         guard let receiptContent: ReceiptContent = try? fileStorage.data(for: outputURL) else {
-            DDLogError("⛔️ Unable to load receipt metadata for order: \(order.orderID)")
+            DDLogWarn("⛔️ Unable to load receipt metadata for order: \(order.orderID)")
             let error = ReceiptStoreError.fileError
             onCompletion(.failure(error))
 

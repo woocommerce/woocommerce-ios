@@ -1,4 +1,5 @@
 import UIKit
+import WordPressUI
 
 /// View Controller for the Plugin List Screen.
 ///
@@ -7,6 +8,10 @@ final class PluginListViewController: UIViewController {
     private let viewModel: PluginListViewModel
 
     @IBOutlet private var tableView: UITableView!
+
+    /// Separate table view for ghost animation.
+    ///
+    private let ghostTableView = UITableView(frame: .zero, style: .grouped)
 
     /// Pull To Refresh Support.
     ///
@@ -37,6 +42,7 @@ final class PluginListViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureTableView()
+        configureGhostTableView()
         configureViewModel()
     }
 }
@@ -57,6 +63,30 @@ private extension PluginListViewController {
         tableView.dataSource = self
     }
 
+    func configureGhostTableView() {
+        ghostTableView.registerNib(for: HeadlineLabelTableViewCell.self)
+        ghostTableView.translatesAutoresizingMaskIntoConstraints = false
+        ghostTableView.backgroundColor = .listBackground
+        ghostTableView.isScrollEnabled = false
+        ghostTableView.isHidden = true
+
+        view.addSubview(ghostTableView)
+        view.pinSubviewToSafeArea(ghostTableView)
+    }
+
+    func startGhostAnimation() {
+        let options = GhostOptions(reuseIdentifier: HeadlineLabelTableViewCell.reuseIdentifier, rowsPerSection: [10])
+        ghostTableView.displayGhostContent(options: options, style: .wooDefaultGhostStyle)
+        ghostTableView.startGhostAnimation()
+        ghostTableView.isHidden = false
+    }
+
+    func stopGhostAnimation() {
+        ghostTableView.isHidden = true
+        ghostTableView.stopGhostAnimation()
+        ghostTableView.removeGhostContent()
+    }
+
     func configureViewModel() {
         viewModel.observePlugins { [weak self] in
             self?.tableView.reloadData()
@@ -69,11 +99,11 @@ private extension PluginListViewController {
 private extension PluginListViewController {
     @objc func resyncPlugins() {
         removeErrorStateView()
-        tableView.startGhostAnimation(style: .wooDefaultGhostStyle)
+        startGhostAnimation()
         viewModel.resyncPlugins { [weak self] result in
             guard let self = self else { return }
             self.refreshControl.endRefreshing()
-            self.tableView.stopGhostAnimation()
+            self.stopGhostAnimation()
             if result.isFailure {
                 self.displayErrorStateView()
             }

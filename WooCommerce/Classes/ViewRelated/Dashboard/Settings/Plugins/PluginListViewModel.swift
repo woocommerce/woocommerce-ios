@@ -21,7 +21,7 @@ final class PluginListViewModel {
     private lazy var resultsController: ResultsController<StorageSitePlugin> = {
         let predicate = NSPredicate(format: "siteID = %ld", self.siteID)
         let nameDescriptor = NSSortDescriptor(keyPath: \StorageSitePlugin.name, ascending: true)
-        // Results needs to be grouped in sections so sorting by section is required.
+        // Results need to be grouped in sections so sorting by section is required.
         // Make sure this sort descriptor is first in the list to make grouping works.
         let statusDescriptor = NSSortDescriptor(keyPath: \StorageSitePlugin.status, ascending: true)
         return ResultsController<StorageSitePlugin>(

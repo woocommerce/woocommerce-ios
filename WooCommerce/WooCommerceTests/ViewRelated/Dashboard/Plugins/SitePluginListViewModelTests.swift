@@ -27,7 +27,7 @@ class PluginListViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_numberOfSections_is_correct_for_active_and_no_inactive_plugins() {
+    func test_numberOfSections_is_correct_when_there_are_only_active_plugins() {
         // Given
         let activePlugin = SitePlugin.fake().copy(siteID: sampleSiteID, status: .active, name: "BBB")
         insert(activePlugin)
@@ -41,7 +41,7 @@ class PluginListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.numberOfSections, 1)
     }
 
-    func test_numberOfSections_is_correct_for_inactive_and_no_active_plugins() {
+    func test_numberOfSections_is_correct_when_there_are_only_inactive_plugins() {
         // Given
         let inactivePlugin = SitePlugin.fake().copy(siteID: sampleSiteID, status: .inactive, name: "CCC")
         insert(inactivePlugin)
@@ -55,7 +55,7 @@ class PluginListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.numberOfSections, 1)
     }
 
-    func test_numberOfSections_is_correct_for_active_and_inactive_plugins() {
+    func test_numberOfSections_is_correct_when_there_are_active_inactive_and_networkActive_plugins() {
         // Given
         let activePlugin = SitePlugin.fake().copy(siteID: sampleSiteID, status: .active, name: "BBB")
         insert(activePlugin)

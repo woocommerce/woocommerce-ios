@@ -12,7 +12,7 @@ public enum CardPresentPaymentAction: Action {
     /// Connect to a specific CardReader.
     /// Stops Card Reader discovery
     ///
-    case connect(reader: CardReader, onCompletion: (Result<[CardReader], Error>) -> Void)
+    case connect(reader: CardReader, onCompletion: (Result<CardReader, Error>) -> Void)
 
     /// Disconnect from currently connected Reader
     ///

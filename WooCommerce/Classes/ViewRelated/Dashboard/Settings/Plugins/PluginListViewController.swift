@@ -41,9 +41,7 @@ final class PluginListViewController: UIViewController {
         configureNavigation()
         configureTableView()
         configureListStates()
-        viewModel.activate { [weak self] in
-            self?.tableView.reloadData()
-        }
+        configureViewModel()
     }
 }
 
@@ -54,14 +52,19 @@ private extension PluginListViewController {
     }
 
     func configureTableView() {
-        tableView.registerNib(for: PluginTableViewCell.self)
+        tableView.registerNib(for: HeadlineLabelTableViewCell.self)
         tableView.estimatedRowHeight = CGFloat(44)
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
-
         tableView.addSubview(refreshControl)
+        tableView.allowsSelection = false
         tableView.dataSource = self
-        tableView.delegate = self
+    }
+
+    func configureViewModel() {
+        viewModel.observePlugins { [weak self] in
+            self?.tableView.reloadData()
+        }
     }
 
     func configureListStates() {
@@ -104,9 +107,11 @@ extension PluginListViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(PluginTableViewCell.self, for: indexPath)
+        let cell = tableView.dequeueReusableCell(HeadlineLabelTableViewCell.self, for: indexPath)
         let cellModel = viewModel.cellModelForRow(at: indexPath)
-        cell.update(viewModel: cellModel)
+        cell.update(style: .bodyWithLineLimit(count: 2),
+                    headline: cellModel.name,
+                    body: cellModel.description)
         return cell
     }
 
@@ -116,14 +121,6 @@ extension PluginListViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension
-    }
-}
-
-// MARK: - UITableViewDelegate conformance
-//
-extension PluginListViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 

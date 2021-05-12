@@ -25,6 +25,8 @@ final class PluginListViewModel {
     private lazy var resultsController: ResultsController<StorageSitePlugin> = {
         let predicate = NSPredicate(format: "siteID = %ld", self.siteID)
         let nameDescriptor = NSSortDescriptor(keyPath: \StorageSitePlugin.name, ascending: true)
+        // Results need to be grouped in sections so sorting by section is required.
+        // Make sure this sort descriptor is first in the list to make grouping works.
         let statusDescriptor = NSSortDescriptor(keyPath: \StorageSitePlugin.status, ascending: true)
         return ResultsController<StorageSitePlugin>(
             storageManager: storageManager,
@@ -42,9 +44,9 @@ final class PluginListViewModel {
         self.storageManager = storageManager
     }
 
-    /// Start fetching plugin data from local storage.
+    /// Start fetching and observing plugin data from local storage.
     ///
-    func activate(onDataChanged: @escaping () -> Void) {
+    func observePlugins(onDataChanged: @escaping () -> Void) {
         do {
             try resultsController.performFetch()
         } catch {
@@ -91,11 +93,11 @@ extension PluginListViewModel {
         let sectionTitle: String
         switch pluginStatus {
         case .active:
-            sectionTitle = NSLocalizedString("Active Plugins", comment: "Title for table view section of active plugins")
+            sectionTitle = Localization.activeSectionTitle
         case .inactive:
-            sectionTitle = NSLocalizedString("Inactive Plugins", comment: "Title for table view section of inactive plugins")
+            sectionTitle = Localization.inactiveSectionTitle
         case .networkActive:
-            sectionTitle = NSLocalizedString("Network Active Plugins", comment: "Title for table view section of network active plugins")
+            sectionTitle = Localization.networkActiveSectionTitle
         case .unknown:
             sectionTitle = "" // This case should not happen
         }
@@ -118,6 +120,16 @@ extension PluginListViewModel {
             name: plugin.name,
             description: plugin.descriptionRaw.removedHTMLTags
         )
+    }
+}
+
+// MARK: - Localization
+//
+private extension PluginListViewModel {
+    enum Localization {
+        static let activeSectionTitle = NSLocalizedString("Active Plugins", comment: "Title for table view section of active plugins")
+        static let inactiveSectionTitle = NSLocalizedString("Inactive Plugins", comment: "Title for table view section of inactive plugins")
+        static let networkActiveSectionTitle = NSLocalizedString("Network Active Plugins", comment: "Title for table view section of network active plugins")
     }
 }
 

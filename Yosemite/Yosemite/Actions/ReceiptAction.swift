@@ -9,8 +9,8 @@ public enum ReceiptAction: Action {
     case generateContent(order: Order, parameters: CardPresentReceiptParameters, onContent: (String) -> Void)
 
     /// Saves the metadata necessary to render a receipt
-    case saveReceipt(orderID: Int64, parameters: CardPresentReceiptParameters)
+    case saveReceipt(order: Order, parameters: CardPresentReceiptParameters)
 
     /// Loads the metadata necessary to render a receipt
-    case loadReceipt(orderID: Int64, onCompletion: (Result<CardPresentReceiptParameters, Error>) -> Void)
+    case loadReceipt(order: Order, onCompletion: (Result<CardPresentReceiptParameters, Error>) -> Void)
 }

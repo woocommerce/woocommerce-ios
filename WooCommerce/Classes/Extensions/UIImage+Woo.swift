@@ -336,10 +336,22 @@ extension UIImage {
         return UIImage(named: "woo-payments-card")!
     }
 
-    /// Card Reader with radio waves
+    /// Searching for Card Reader, Card Reader with radio waves
     ///
     static var cardReaderScanning: UIImage {
         return UIImage(named: "card-reader-scanning")!
+    }
+
+    /// Found Card Reader
+    ///
+    static var cardReaderFound: UIImage {
+        return UIImage(named: "card-reader-found")!
+    }
+
+    /// Connecting to Card Reader, Card Reader with radio waves
+    ///
+    static var cardReaderConnecting: UIImage {
+        return UIImage(named: "card-reader-connecting")!
     }
 
     /// Files Download Icon

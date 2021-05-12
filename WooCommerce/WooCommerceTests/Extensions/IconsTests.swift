@@ -222,6 +222,14 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.cardReaderScanning)
     }
 
+    func test_payment_card_reader_found_image() {
+        XCTAssertNotNil(UIImage.cardReaderFound)
+    }
+
+    func test_payment_card_reader_connecting_image() {
+        XCTAssertNotNil(UIImage.cardReaderConnecting)
+    }
+
     func test_payment_card_image() {
         XCTAssertNotNil(UIImage.cardPresentImage)
     }

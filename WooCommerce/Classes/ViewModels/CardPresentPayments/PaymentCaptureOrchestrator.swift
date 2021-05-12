@@ -41,10 +41,6 @@ final class PaymentCaptureOrchestrator {
     }
 
     func saveReceipt(for order: Order, params: CardPresentReceiptParameters) {
-//        let action = ReceiptAction.print(order: order, parameters: params)
-//
-//        ServiceLocator.stores.dispatch(action)
-
         let action = ReceiptAction.saveReceipt(order: order, parameters: params)
 
         ServiceLocator.stores.dispatch(action)

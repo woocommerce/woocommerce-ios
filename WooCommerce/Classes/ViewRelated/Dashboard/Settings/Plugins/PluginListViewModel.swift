@@ -56,6 +56,12 @@ final class PluginListViewModel {
 // MARK: - Data source for plugin list
 //
 extension PluginListViewModel {
+    /// Title for the Plugin List screen
+    ///
+    var pluginListTitle: String {
+        Localization.pluginListTitle
+    }
+
     /// Number of sections to display on the table view.
     ///
     var numberOfSections: Int {
@@ -106,6 +112,7 @@ extension PluginListViewModel {
 //
 private extension PluginListViewModel {
     enum Localization {
+        static let pluginListTitle = NSLocalizedString("Plugins", comment: "Title of the Plugin List screen")
         static let activeSectionTitle = NSLocalizedString("Active Plugins", comment: "Title for table view section of active plugins")
         static let inactiveSectionTitle = NSLocalizedString("Inactive Plugins", comment: "Title for table view section of inactive plugins")
         static let networkActiveSectionTitle = NSLocalizedString("Network Active Plugins", comment: "Title for table view section of network active plugins")

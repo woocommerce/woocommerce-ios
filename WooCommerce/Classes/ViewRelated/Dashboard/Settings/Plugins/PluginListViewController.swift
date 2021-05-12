@@ -28,7 +28,7 @@ final class PluginListViewController: UIViewController {
 // MARK: - UI Configurations
 private extension PluginListViewController {
     func configureNavigation() {
-        title = NSLocalizedString("Plugins", comment: "Title of the Plugin List screen")
+        title = viewModel.pluginListTitle
     }
 
     func configureTableView() {

@@ -99,11 +99,11 @@ extension PluginListViewModel {
     ///
     func cellModelForRow(at indexPath: IndexPath) -> PluginListCellViewModel {
         let plugin = resultsController.object(at: indexPath)
-        // The description can sometimes contain HTML tags
-        // so it's best to be extra safe by removing those tags
+        // Plugin name and description can sometimes contain HTML tags and entities
+        // so it's best to be extra safe by removing them
         return PluginListCellViewModel(
-            name: plugin.name,
-            description: plugin.descriptionRaw.removedHTMLTags
+            name: plugin.name.strippedHTML,
+            description: plugin.descriptionRaw.strippedHTML
         )
     }
 }

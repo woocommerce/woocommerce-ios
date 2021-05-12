@@ -25,6 +25,9 @@ final class ShippingLabelFormViewModel {
     private(set) var originAddress: ShippingLabelAddress?
     private(set) var destinationAddress: ShippingLabelAddress?
     private(set) var packagesResponse: ShippingLabelPackagesResponse?
+    private(set) var selectedPackageID: String?
+    private(set) var totalPackageWeight: String?
+
 
     private let stores: StoresManager
 
@@ -76,6 +79,17 @@ final class ShippingLabelFormViewModel {
         destinationAddress = address
         let dateState: ShippingLabelFormViewController.DataState = validated ? .validated : .pending
         updateRowState(type: .shipTo, dataState: dateState, displayMode: .editable)
+    }
+
+    func handlePackageDetailsValueChanges(selectedPackageID: String?, totalPackageWeight: String?) {
+        self.selectedPackageID = selectedPackageID
+        self.totalPackageWeight = totalPackageWeight
+
+        guard !selectedPackageID.isNilOrEmpty && !totalPackageWeight.isNilOrEmpty else {
+            updateRowState(type: .packageDetails, dataState: .pending, displayMode: .editable)
+            return
+        }
+        updateRowState(type: .packageDetails, dataState: .validated, displayMode: .editable)
     }
 
     private static func generateInitialSections() -> [Section] {

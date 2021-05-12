@@ -259,9 +259,8 @@ private extension ShippingLabelFormViewController {
     func displayPackageDetailsVC() {
         let vm = ShippingLabelPackageDetailsViewModel(order: viewModel.order,
                                                       packagesResponse: viewModel.packagesResponse)
-        let packageDetails = ShippingLabelPackageDetails(viewModel: vm) { (selectedPackageID, totalPackageWeight) in
-            // TODO: handle selected package and total package weight
-            print(selectedPackageID, totalPackageWeight)
+        let packageDetails = ShippingLabelPackageDetails(viewModel: vm) { [weak self] (selectedPackageID, totalPackageWeight) in
+            self?.viewModel.handlePackageDetailsValueChanges(selectedPackageID: selectedPackageID, totalPackageWeight: totalPackageWeight)
         }
 
         let hostingVC = UIHostingController(rootView: packageDetails)

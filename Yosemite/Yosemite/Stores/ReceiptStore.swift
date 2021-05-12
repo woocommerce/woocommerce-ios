@@ -65,7 +65,8 @@ private extension ReceiptStore {
 
     func loadReceipt(order: Order, onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
 
-        guard let outputURL = try? fileURL(order: order) else {
+        guard let outputURL = try? fileURL(order: order),
+              FileManager.default.fileExists(atPath: outputURL.path) else {
             let error = ReceiptStoreError.fileNotFound
             onCompletion(.failure(error))
             return

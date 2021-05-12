@@ -279,3 +279,25 @@ extension WooAnalyticsEvent {
         }
     }
 }
+
+// MARK: - Order Detail Add-ons
+//
+extension WooAnalyticsEvent {
+    // Namespace
+    enum OrderDetailAddOns {
+        /// Common event keys
+        ///
+        private enum Keys {
+            static let state = "state"
+            static let addOns = "add_ons"
+        }
+
+        static func betaFeaturesSwitchToggled(isOn: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .settingsBetaFeaturesOrderAddOnsToggled, properties: [Keys.state: isOn ? "on" : "off"])
+        }
+
+        static func orderAddOnsViewed(addOnNames: [String]) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderDetailAddOnsViewed, properties: [Keys.addOns: addOnNames.joined(separator: ",")])
+        }
+    }
+}

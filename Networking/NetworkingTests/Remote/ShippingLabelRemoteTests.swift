@@ -245,6 +245,51 @@ final class ShippingLabelRemoteTests: XCTestCase {
         // Then
         XCTAssertNotNil(result.failure)
     }
+
+    func test_checkCreationEligibility_returns_true_on_success() throws {
+        // Given
+        let orderID: Int64 = 321
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/\(orderID)/creation_eligibility", filename: "shipping-label-eligibility-success")
+
+        // When
+        let result: Result<ShippingLabelCreationEligibilityResponse, Error> = waitFor { promise in
+            remote.checkCreationEligibility(siteID: self.sampleSiteID,
+                                            orderID: orderID,
+                                            canCreatePaymentMethod: false,
+                                            canCreateCustomsForm: false,
+                                            canCreatePackage: false) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let response = try XCTUnwrap(result.get())
+        XCTAssertEqual(response.isEligible, true)
+    }
+
+    func test_checkCreationEligibility_returns_reason_on_failure() throws {
+        // Given
+        let orderID: Int64 = 321
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/\(orderID)/creation_eligibility", filename: "shipping-label-eligibility-failure")
+
+        // When
+        let result: Result<ShippingLabelCreationEligibilityResponse, Error> = waitFor { promise in
+            remote.checkCreationEligibility(siteID: self.sampleSiteID,
+                                            orderID: orderID,
+                                            canCreatePaymentMethod: false,
+                                            canCreateCustomsForm: false,
+                                            canCreatePackage: false) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let response = try XCTUnwrap(result.get())
+        XCTAssertEqual(response.isEligible, false)
+        XCTAssertEqual(response.reason, "no_selected_payment_method_and_user_cannot_manage_payment_methods")
+    }
 }
 
 private extension ShippingLabelRemoteTests {

@@ -387,39 +387,47 @@ private extension SettingsViewController {
             return
         }
         let viewModel = PluginListViewModel(siteID: siteID)
-        let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: PluginListViewController.self, creator: { coder in
-            PluginListViewController(coder: coder, viewModel: viewModel)
-        })
+        let viewController = PluginListViewController(viewModel: viewModel)
         show(viewController, sender: self)
     }
 
     func supportWasPressed() {
         ServiceLocator.analytics.track(.settingsContactSupportTapped)
-        let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: HelpAndSupportViewController.self)
+        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: HelpAndSupportViewController.self) else {
+            fatalError("Cannot instantiate `HelpAndSupportViewController` from Dashboard storyboard")
+        }
         show(viewController, sender: self)
     }
 
     func cardReadersWasPressed() {
         ServiceLocator.analytics.track(.settingsCardReadersTapped)
-        let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsViewController.self)
+        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsViewController.self) else {
+            fatalError("Cannot instantiate `CardReaderSettingsViewController` from Dashboard storyboard")
+        }
         show(viewController, sender: self)
     }
 
     func privacyWasPressed() {
         ServiceLocator.analytics.track(.settingsPrivacySettingsTapped)
-        let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: PrivacySettingsViewController.self)
+        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: PrivacySettingsViewController.self) else {
+            fatalError("Cannot instantiate `PrivacySettingsViewController` from Dashboard storyboard")
+        }
         show(viewController, sender: self)
     }
 
     func aboutWasPressed() {
         ServiceLocator.analytics.track(.settingsAboutLinkTapped)
-        let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: AboutViewController.self)
+        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: AboutViewController.self) else {
+            fatalError("Cannot instantiate `AboutViewController` from Dashboard storyboard")
+        }
         show(viewController, sender: self)
     }
 
     func licensesWasPressed() {
         ServiceLocator.analytics.track(.settingsLicensesLinkTapped)
-        let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: LicensesViewController.self)
+        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: LicensesViewController.self) else {
+            fatalError("Cannot instantiate `LicensesViewController` from Dashboard storyboard")
+        }
         show(viewController, sender: self)
     }
 

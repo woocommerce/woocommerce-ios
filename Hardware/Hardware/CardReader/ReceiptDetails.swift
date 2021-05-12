@@ -1,5 +1,5 @@
 /// Receipt details associated with a card present transaction.
-public struct ReceiptDetails {
+public struct ReceiptDetails: Codable {
     /// Also known as “Application Name”. Required on EMV receipts.
     public let applicationPreferredName: String
 

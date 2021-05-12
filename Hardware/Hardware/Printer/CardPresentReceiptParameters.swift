@@ -1,6 +1,6 @@
 /// Encapsulates the information necessary to print a receipt for a
 /// card present payment
-public struct CardPresentReceiptParameters {
+public struct CardPresentReceiptParameters: Codable {
     /// The total amount
     public let amount: UInt
 

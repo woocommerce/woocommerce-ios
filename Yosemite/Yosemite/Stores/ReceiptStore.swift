@@ -70,32 +70,51 @@ private extension ReceiptStore {
 
         let content = ReceiptContent(parameters: parameters, lineItems: lineItems)
 
-        let renderer = ReceiptRenderer(content: content)
-
-        let page = CGRect(x: 0, y: 0, width: 298, height: 500)
-        renderer.setValue(page, forKey: "paperRect")
-        renderer.setValue(page, forKey: "printableRect")
-
-        let pdfData = NSMutableData()
-        UIGraphicsBeginPDFContextToData(pdfData, .zero, nil)
-        UIGraphicsBeginPDFPage()
-        for i in 0..<renderer.numberOfPages {
-            UIGraphicsBeginPDFPage()
-            renderer.drawPage(at: i, in: UIGraphicsGetPDFContextBounds())
-        }
-        UIGraphicsEndPDFContext()
-
         guard let outputURL = try? FileManager.default.url(for: .documentDirectory,
                                                            in: .userDomainMask,
                                                            appropriateFor: nil,
                                                            create: false)
                 .appendingPathComponent("order-id-\(order.orderID)-receipt")
-                .appendingPathExtension("pdf")
-            else {
+                .appendingPathExtension("plist")
+        else {
             fatalError("Destination URL not created")
         }
 
-        pdfData.write(to: outputURL, atomically: true)
-        Swift.print("new receipt saved: open \(outputURL.path)") // command to open the generated file
+        let storage = PListFileStorage()
+
+        do {
+            try storage.write(content, to: outputURL)
+            Swift.print("new receipt saved: open \(outputURL.path)") // command to open the generated file
+        } catch {
+            Swift.print("==== error")
+        }
+
+//        let renderer = ReceiptRenderer(content: content)
+//
+//        let page = CGRect(x: 0, y: 0, width: 298, height: 500)
+//        renderer.setValue(page, forKey: "paperRect")
+//        renderer.setValue(page, forKey: "printableRect")
+//
+//        let pdfData = NSMutableData()
+//        UIGraphicsBeginPDFContextToData(pdfData, .zero, nil)
+//        UIGraphicsBeginPDFPage()
+//        for i in 0..<renderer.numberOfPages {
+//            UIGraphicsBeginPDFPage()
+//            renderer.drawPage(at: i, in: UIGraphicsGetPDFContextBounds())
+//        }
+//        UIGraphicsEndPDFContext()
+//
+//        guard let outputURL = try? FileManager.default.url(for: .documentDirectory,
+//                                                           in: .userDomainMask,
+//                                                           appropriateFor: nil,
+//                                                           create: false)
+//                .appendingPathComponent("order-id-\(order.orderID)-receipt")
+//                .appendingPathExtension("pdf")
+//            else {
+//            fatalError("Destination URL not created")
+//        }
+//
+//        pdfData.write(to: outputURL, atomically: true)
+//        Swift.print("new receipt saved: open \(outputURL.path)") // command to open the generated file
     }
 }

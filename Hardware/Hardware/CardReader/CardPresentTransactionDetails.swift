@@ -1,5 +1,5 @@
 /// An object representing details from a transaction using a card_present payment method.
-public struct CardPresentTransactionDetails {
+public struct CardPresentTransactionDetails: Codable {
     /// The last 4 digits of the card.
     public let last4: String
 

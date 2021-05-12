@@ -72,11 +72,11 @@ extension PluginListViewModel {
         let sectionTitle: String
         switch pluginStatus {
         case .active:
-            sectionTitle = NSLocalizedString("Active Plugins", comment: "Title for table view section of active plugins")
+            sectionTitle = Localization.activeSectionTitle
         case .inactive:
-            sectionTitle = NSLocalizedString("Inactive Plugins", comment: "Title for table view section of inactive plugins")
+            sectionTitle = Localization.inactiveSectionTitle
         case .networkActive:
-            sectionTitle = NSLocalizedString("Network Active Plugins", comment: "Title for table view section of network active plugins")
+            sectionTitle = Localization.networkActiveSectionTitle
         case .unknown:
             sectionTitle = "" // This case should not happen
         }
@@ -99,6 +99,16 @@ extension PluginListViewModel {
             name: plugin.name,
             description: plugin.descriptionRaw.removedHTMLTags
         )
+    }
+}
+
+// MARK: - Localization
+//
+private extension PluginListViewModel {
+    enum Localization {
+        static let activeSectionTitle = NSLocalizedString("Active Plugins", comment: "Title for table view section of active plugins")
+        static let inactiveSectionTitle = NSLocalizedString("Inactive Plugins", comment: "Title for table view section of inactive plugins")
+        static let networkActiveSectionTitle = NSLocalizedString("Network Active Plugins", comment: "Title for table view section of network active plugins")
     }
 }
 

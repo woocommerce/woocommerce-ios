@@ -175,7 +175,7 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
-    public func connect(_ reader: CardReader) -> Future <Void, Error> {
+    public func connect(_ reader: CardReader) -> Future <CardReader, Error> {
         return Future() { [weak self] promise in
 
             guard let self = self else {
@@ -207,7 +207,7 @@ extension StripeCardReaderService: CardReaderService {
                 if let reader = reader {
                     self.connectedReadersSubject.send([CardReader(reader: reader)])
                     self.switchStatusToIdle()
-                    promise(.success(()))
+                    promise(.success(CardReader(reader: reader)))
                 }
             }
         }

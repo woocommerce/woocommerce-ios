@@ -38,8 +38,8 @@ private extension PluginListViewController {
         tableView.estimatedRowHeight = CGFloat(44)
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
+        tableView.allowsSelection = false
         tableView.dataSource = self
-        tableView.delegate = self
     }
 }
 
@@ -69,13 +69,5 @@ extension PluginListViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension
-    }
-}
-
-// MARK: - UITableViewDelegate conformance
-//
-extension PluginListViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
     }
 }

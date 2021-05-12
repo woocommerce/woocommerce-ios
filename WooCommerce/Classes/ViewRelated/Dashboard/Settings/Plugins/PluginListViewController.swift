@@ -34,7 +34,7 @@ private extension PluginListViewController {
     }
 
     func configureTableView() {
-        tableView.registerNib(for: PluginTableViewCell.self)
+        tableView.registerNib(for: HeadlineLabelTableViewCell.self)
         tableView.estimatedRowHeight = CGFloat(44)
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
@@ -55,9 +55,11 @@ extension PluginListViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(PluginTableViewCell.self, for: indexPath)
+        let cell = tableView.dequeueReusableCell(HeadlineLabelTableViewCell.self, for: indexPath)
         let cellModel = viewModel.cellModelForRow(at: indexPath)
-        cell.update(viewModel: cellModel)
+        cell.update(style: .bodyWithLineLimit(count: 2),
+                    headline: cellModel.name,
+                    body: cellModel.description)
         return cell
     }
 

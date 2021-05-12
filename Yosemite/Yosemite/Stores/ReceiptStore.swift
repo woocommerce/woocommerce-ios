@@ -66,6 +66,29 @@ private extension ReceiptStore {
     }
 
     func saveReceipt(order: Order, parameters: CardPresentReceiptParameters) {
+        let lineItems = order.items.map { ReceiptLineItem(title: $0.name, quantity: $0.quantity.description, amount: $0.price.stringValue)}
 
+        let content = ReceiptContent(parameters: parameters, lineItems: lineItems)
+
+        let renderer = ReceiptRenderer(content: content)
+
+        let pdfData = NSMutableData()
+        UIGraphicsBeginPDFContextToData(pdfData, .zero, nil)
+        UIGraphicsBeginPDFPage()
+        renderer.drawPage(at: 0, in: UIGraphicsGetPDFContextBounds())
+        UIGraphicsEndPDFContext()
+
+        guard let outputURL = try? FileManager.default.url(for: .documentDirectory,
+                                                           in: .userDomainMask,
+                                                           appropriateFor: nil,
+                                                           create: false)
+                .appendingPathComponent("output")
+                .appendingPathExtension("pdf")
+            else {
+            fatalError("Destination URL not created")
+        }
+
+        pdfData.write(to: outputURL, atomically: true)
+        Swift.print("open \(outputURL.path)") // command to open the generated file
     }
 }

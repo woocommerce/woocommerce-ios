@@ -36,6 +36,10 @@ public class ReceiptStore: Store {
             print(order: order, parameters: info)
         case .generateContent(let order, let info, let onContent):
             generateContent(order: order, parameters: info, onContent: onContent)
+        case .loadReceipt(let orderID, let onCompletion):
+            loadReceipt(orderID: orderID, onCompletion: onCompletion)
+        case .saveReceipt(let orderID, let info):
+            saveReceipt(orderID: orderID, parameters: info)
         }
     }
 }
@@ -55,5 +59,13 @@ private extension ReceiptStore {
         let content = ReceiptContent(parameters: parameters, lineItems: lineItems)
         let renderer = ReceiptRenderer(content: content)
         onContent(renderer.htmlContent())
+    }
+
+    func loadReceipt(orderID: Int64, onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
+
+    }
+
+    func saveReceipt(orderID: Int64, parameters: CardPresentReceiptParameters) {
+
     }
 }

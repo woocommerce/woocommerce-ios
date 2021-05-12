@@ -102,6 +102,20 @@ final class ShippingLabelFormViewModel {
         return [Section(rows: rows)]
     }
 
+    // Return the body of the Package Details cell
+    //
+    func getPackageDetailsBody() -> String {
+        guard let packagesResponse = packagesResponse,
+              let selectedPackageID = selectedPackageID,
+              let totalPackageWeight = totalPackageWeight else {
+            return Localization.packageDetailsPlaceholder
+        }
+
+        let packageTitle = searchCustomPackage(id: selectedPackageID)?.title ?? searchPredefinedPackage(id: selectedPackageID)?.title ?? ""
+        let packageWeight = totalPackageWeight + " " + packagesResponse.storeOptions.dimensionUnit
+
+        return packageTitle + "\n" + String.localizedStringWithFormat(Localization.totalPackageWeight, packageWeight)
+    }
 }
 
 // MARK: - State Machine
@@ -196,6 +210,42 @@ private extension ShippingLabelFormViewModel {
             state.isValidatingDestinationAddress = validating
         }
     }
+
+    // Search the custom package based on the id
+    //
+    private func searchCustomPackage(id: String?) -> ShippingLabelCustomPackage? {
+        guard let packagesResponse = packagesResponse,
+              let packageID = id else {
+            return nil
+        }
+
+        for customPackage in packagesResponse.customPackages {
+            if customPackage.title == packageID {
+                return customPackage
+            }
+        }
+
+        return nil
+    }
+
+    // Search the predefined package based on the id
+    //
+    private func searchPredefinedPackage(id: String?) -> ShippingLabelPredefinedPackage? {
+        guard let packagesResponse = packagesResponse,
+              let packageID = id else {
+            return nil
+        }
+
+        for option in packagesResponse.predefinedOptions {
+            for predefinedPackage in option.predefinedPackages {
+                if predefinedPackage.id == packageID {
+                    return predefinedPackage
+                }
+            }
+        }
+
+        return nil
+    }
 }
 
 // MARK: - Remote API
@@ -261,5 +311,14 @@ extension ShippingLabelFormViewModel {
         case suggestedAddress
         case validationError(ShippingLabelAddressValidationError)
         case genericError(Error)
+    }
+}
+
+private extension ShippingLabelFormViewModel {
+    enum Localization {
+        static let packageDetailsPlaceholder = NSLocalizedString("Select the type of packaging you'd like to ship your items in",
+                                                                 comment: "Placeholder in Shipping Label form for the Package Details row.")
+        static let totalPackageWeight = NSLocalizedString("Total package weight: %1$@",
+                                                          comment: "Total package weight label in Shipping Label form. %1$@ is a placeholder for the weight")
     }
 }

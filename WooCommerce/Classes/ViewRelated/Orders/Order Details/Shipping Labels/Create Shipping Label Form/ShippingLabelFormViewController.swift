@@ -100,6 +100,9 @@ extension ShippingLabelFormViewController: UITableViewDelegate {
             displayEditAddressFormVC(address: viewModel.originAddress, validationError: nil, type: .origin)
         case Row(type: .shipTo, dataState: .validated, displayMode: .editable):
             displayEditAddressFormVC(address: viewModel.destinationAddress, validationError: nil, type: .destination)
+        case Row(type: .packageDetails, dataState: .validated, displayMode: .editable):
+            displayPackageDetailsVC(selectedPackageID: viewModel.selectedPackageID,
+                                    totalPackageWeight: viewModel.totalPackageWeight)
         default:
             break
         }
@@ -188,9 +191,10 @@ private extension ShippingLabelFormViewController {
         cell.configure(state: row.cellState,
                        icon: .productPlaceholderImage,
                        title: Localization.packageDetailsCellTitle,
-                       body: "To be implemented",
+                       body: viewModel.getPackageDetailsBody(),
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
-            self?.displayPackageDetailsVC()
+            self?.displayPackageDetailsVC(selectedPackageID: self?.viewModel.selectedPackageID,
+                                          totalPackageWeight: self?.viewModel.totalPackageWeight)
         }
     }
 
@@ -256,9 +260,11 @@ private extension ShippingLabelFormViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
 
-    func displayPackageDetailsVC() {
+    func displayPackageDetailsVC(selectedPackageID: String?, totalPackageWeight: String?) {
         let vm = ShippingLabelPackageDetailsViewModel(order: viewModel.order,
-                                                      packagesResponse: viewModel.packagesResponse)
+                                                      packagesResponse: viewModel.packagesResponse,
+                                                      selectedPackageID: selectedPackageID,
+                                                      totalWeight: totalPackageWeight)
         let packageDetails = ShippingLabelPackageDetails(viewModel: vm) { [weak self] (selectedPackageID, totalPackageWeight) in
             self?.viewModel.handlePackageDetailsValueChanges(selectedPackageID: selectedPackageID, totalPackageWeight: totalPackageWeight)
         }

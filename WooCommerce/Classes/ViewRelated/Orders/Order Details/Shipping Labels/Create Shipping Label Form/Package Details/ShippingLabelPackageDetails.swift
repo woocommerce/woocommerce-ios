@@ -89,7 +89,9 @@ struct ShippingLabelPackageDetails_Previews: PreviewProvider {
     static var previews: some View {
 
         let viewModel = ShippingLabelPackageDetailsViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder(),
-                                                             packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails())
+                                                             packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails(),
+                                                             selectedPackageID: nil,
+                                                             totalWeight: nil)
 
         ShippingLabelPackageDetails(viewModel: viewModel, completion: { (selectedPackageID, totalPackageWeight) in
         })

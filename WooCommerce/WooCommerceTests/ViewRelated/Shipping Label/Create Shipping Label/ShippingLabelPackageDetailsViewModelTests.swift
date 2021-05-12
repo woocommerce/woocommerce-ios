@@ -35,6 +35,8 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
+                                                             selectedPackageID: nil,
+                                                             totalWeight: nil,
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager)
 
@@ -63,6 +65,8 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
+                                                             selectedPackageID: nil,
+                                                             totalWeight: nil,
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
                                                              weightUnit: "kg")
@@ -102,6 +106,8 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
+                                                             selectedPackageID: nil,
+                                                             totalWeight: nil,
                                                              formatter: currencyFormatter,
                                                              stores: stores,
                                                              storageManager: storageManager,
@@ -131,6 +137,8 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
+                                                             selectedPackageID: nil,
+                                                             totalWeight: nil,
                                                              formatter: currencyFormatter,
                                                              stores: stores,
                                                              storageManager: storageManager,
@@ -153,6 +161,8 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
+                                                             selectedPackageID: nil,
+                                                             totalWeight: nil,
                                                              formatter: currencyFormatter,
                                                              stores: stores,
                                                              storageManager: storageManager,
@@ -170,6 +180,8 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
+                                                             selectedPackageID: nil,
+                                                             totalWeight: nil,
                                                              formatter: currencyFormatter,
                                                              stores: stores,
                                                              storageManager: storageManager,
@@ -186,6 +198,8 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
+                                                             selectedPackageID: nil,
+                                                             totalWeight: nil,
                                                              formatter: currencyFormatter,
                                                              stores: stores,
                                                              storageManager: storageManager,

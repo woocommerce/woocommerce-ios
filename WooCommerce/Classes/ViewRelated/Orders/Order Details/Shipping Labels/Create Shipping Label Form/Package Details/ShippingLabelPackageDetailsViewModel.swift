@@ -74,6 +74,8 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
 
     init(order: Order,
          packagesResponse: ShippingLabelPackagesResponse?,
+         selectedPackageID: String?,
+         totalWeight: String?,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -86,7 +88,8 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         self.storageManager = storageManager
         self.weightUnit = weightUnit
         self.packagesResponse = packagesResponse
-        self.totalWeight = ""
+        self.selectedPackageID = selectedPackageID
+        self.totalWeight = totalWeight ?? ""
         configureResultsControllers()
         syncProducts()
         syncProductVariations()
@@ -204,10 +207,10 @@ extension ShippingLabelPackageDetailsViewModel {
         }
     }
 
-    /// Sets the last selected package, if any, as the default selected package
+    /// Sets the package passed through the init method, or set the last selected package, if any, as the default selected package
     ///
     func setDefaultPackage() {
-        guard let selectedPackageID = resultsControllers?.accountSettings?.lastSelectedPackageID else {
+        guard let selectedPackageID = selectedPackageID ?? resultsControllers?.accountSettings?.lastSelectedPackageID else {
             return
         }
         didSelectPackage(selectedPackageID)

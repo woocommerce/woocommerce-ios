@@ -142,8 +142,8 @@ final class CardReaderSettingsViewModel: ObservableObject {
 
         let action = CardPresentPaymentAction.connect(reader: foundReaders[0], onCompletion: { [weak self] result in
             switch result {
-            case .success(let cardReaders):
-                self?.didConnectToReader(cardReaders: cardReaders)
+            case .success(let cardReader):
+                self?.didConnectToReader(cardReader: cardReader)
             case .failure(let error):
                 DDLogWarn(error.localizedDescription)
                 // TODO failure message to the user?
@@ -176,15 +176,10 @@ final class CardReaderSettingsViewModel: ObservableObject {
     }
 
     /// Called when a reader has been connected to.
-    private func didConnectToReader(cardReaders: [CardReader]) -> Void {
+    private func didConnectToReader(cardReader: CardReader) -> Void {
         activeAlert = .none
-        guard cardReaders.count > 0 else {
-            // TODO log unexpected failure
-            return
-        }
-
         activeView = .connectedToReader
-        self.connectedReader = cardReaders[0]
+        self.connectedReader = cardReader
     }
 
     /// Views can call this method to initiate a software update on the connected reader.

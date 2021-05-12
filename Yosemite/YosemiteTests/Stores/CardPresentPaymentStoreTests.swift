@@ -206,14 +206,8 @@ final class CardPresentPaymentStoreTests: XCTestCase {
             switch result {
             case .failure:
                 XCTFail()
-            case .success(let connectedReaders):
-                // This could be called with an empty collection of readers.
-                // So we do not make the test fail if connectedReaders is Empty
-                guard !connectedReaders.isEmpty else {
-                    return
-                }
-
-                XCTAssertTrue(connectedReaders.contains(reader))
+            case .success(let connectedReader):
+                XCTAssertEqual(connectedReader, reader)
 
                 expectation.fulfill()
             }

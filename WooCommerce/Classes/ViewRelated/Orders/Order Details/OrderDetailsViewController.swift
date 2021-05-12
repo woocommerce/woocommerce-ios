@@ -78,6 +78,7 @@ final class OrderDetailsViewController: UIViewController {
         syncProductVariations()
         syncRefunds()
         syncShippingLabels()
+        syncSavedReceipts()
         syncTrackingsHidingAddButtonIfNecessary()
         checkShippingLabelCreationEligibility()
         checkCardPresentPaymentEligibility()
@@ -373,6 +374,10 @@ private extension OrderDetailsViewController {
 
     func syncShippingLabels(onCompletion: ((Error?) -> ())? = nil) {
         viewModel.syncShippingLabels(onCompletion: onCompletion)
+    }
+
+    func syncSavedReceipts(onCompletion: ((Error?) -> ())? = nil) {
+        viewModel.syncSavedReceipts(onCompletion: onCompletion)
     }
 
     func checkShippingLabelCreationEligibility(onCompletion: (() -> Void)? = nil) {

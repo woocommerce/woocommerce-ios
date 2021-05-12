@@ -1,6 +1,6 @@
 /// Encapsulates the information necessary to print a receipt for a
 /// card present payment
-public struct CardPresentReceiptParameters {
+public struct CardPresentReceiptParameters: Codable {
     /// The total amount
     public let amount: UInt
 
@@ -32,4 +32,14 @@ public struct CardPresentReceiptParameters {
 
 public extension CardPresentReceiptParameters {
     typealias MetadataKeys = PaymentIntent.MetadataKeys
+}
+
+extension CardPresentReceiptParameters {
+    enum CodingKeys: String, CodingKey {
+        case amount = "amount"
+        case currency = "currency"
+        case date = "date"
+        case storeName = "store_name"
+        case cardDetails = "card_details"
+    }
 }

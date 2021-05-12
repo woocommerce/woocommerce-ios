@@ -1,5 +1,5 @@
 /// The various card brands for a card.
-public enum CardBrand: CaseIterable {
+public enum CardBrand: String, CaseIterable, Codable {
     /// Visa card
     case visa
 

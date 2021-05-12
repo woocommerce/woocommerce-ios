@@ -416,6 +416,21 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
+    func syncSavedReceipts(onCompletion: ((Error?) -> ())? = nil) {
+        let action = ReceiptAction.loadReceipt(order: order) { [weak self] result in
+            switch result {
+            case .success(let parameters):
+                print("====== receipt parameters for order \(String(describing: self?.order.orderID))")
+                print(parameters)
+                print("////// recipt parameters loaded")
+                onCompletion?(nil)
+            case .failure:
+                print("==== no receipt parameters for order \(String(describing: self?.order.orderID)). moving on")
+            }
+        }
+        stores.dispatch(action)
+    }
+
     func checkShippingLabelCreationEligibility(onCompletion: (() -> Void)? = nil) {
         let isFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsRelease2)
         let action = ShippingLabelAction.checkCreationEligibility(siteID: order.siteID,

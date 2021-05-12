@@ -65,15 +65,7 @@ private extension ReceiptStore {
 
     func loadReceipt(order: Order, onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
 
-        guard let outputURL = try? FileManager.default.url(for: .documentDirectory,
-                                                           in: .userDomainMask,
-                                                           appropriateFor: nil,
-                                                           create: false)
-                .appendingPathComponent(fileName(order: order))
-                .appendingPathExtension("plist")
-        else {
-            DDLogError("⛔️ Unable to create file url for receipt for order id: \(order.orderID)")
-
+        guard let outputURL = try? fileURL(order: order) else {
             let error = ReceiptStoreError.fileNotFound
             onCompletion(.failure(error))
             return
@@ -95,13 +87,7 @@ private extension ReceiptStore {
 
         let content = ReceiptContent(parameters: parameters, lineItems: lineItems)
 
-        guard let outputURL = try? FileManager.default.url(for: .documentDirectory,
-                                                           in: .userDomainMask,
-                                                           appropriateFor: nil,
-                                                           create: false)
-                .appendingPathComponent(fileName(order: order))
-                .appendingPathExtension("plist")
-        else {
+        guard let outputURL = try? fileURL(order: order) else {
             DDLogError("⛔️ Unable to create file for receipt for order id: \(order.orderID)")
 
             return
@@ -118,12 +104,24 @@ private extension ReceiptStore {
 }
 
 private extension ReceiptStore {
+    func fileURL(order: Order) throws -> URL {
+        return try FileManager.default.url(for: .documentDirectory,
+                                                           in: .userDomainMask,
+                                                           appropriateFor: nil,
+                                                           create: false)
+                .appendingPathComponent(fileName(order: order))
+                .appendingPathExtension("plist")
+    }
+
     func fileName(order: Order) -> String {
         "order-id-\(order.orderID)-receipt"
     }
 }
 
 public enum ReceiptStoreError: Error {
+    /// Signals that the file containing the receipt metadata does not exist
     case fileNotFound
+    /// There was an error reading the content of the file containing the
+    /// receipt metadata
     case fileError
 }

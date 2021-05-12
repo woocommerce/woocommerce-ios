@@ -417,15 +417,15 @@ extension OrderDetailsViewModel {
     }
 
     func syncSavedReceipts(onCompletion: ((Error?) -> ())? = nil) {
-        let action = ReceiptAction.loadReceipt(order: order) { result in
+        let action = ReceiptAction.loadReceipt(order: order) { [weak self] result in
             switch result {
             case .success(let parameters):
-                print("====== recipt parameters loaded")
+                print("====== receipt parameters for order \(String(describing: self?.order.orderID))")
                 print(parameters)
                 print("////// recipt parameters loaded")
                 onCompletion?(nil)
             case .failure:
-                print("==== no receipt. moving on")
+                print("==== no receipt parameters for order \(String(describing: self?.order.orderID)). moving on")
             }
         }
 //        let action = ShippingLabelAction.synchronizeShippingLabels(siteID: order.siteID, orderID: order.orderID) { result in

@@ -235,20 +235,72 @@ class PluginListViewModelTests: XCTestCase {
         }
     }
 
-    func test_resyncPlugins_dispatches_correct_action() {
+    func test_resyncPlugins_dispatches_synchronizeSitePlugins_action_with_correct_siteID() {
         // Given
-        let storesManager = MockPluginStoresManager(shouldSucceed: true)
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        var triggeredSiteID: Int64?
+        storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
+            switch action {
+            case .synchronizeSitePlugins(let siteID, _):
+                triggeredSiteID = siteID
+            }
+        }
         let viewModel = PluginListViewModel(siteID: sampleSiteID, storesManager: storesManager)
 
         // When
         viewModel.resyncPlugins { _ in }
 
         // Then
-        XCTAssertTrue(storesManager.invokedSynchronizePlugins)
-        XCTAssertEqual(storesManager.invokedSynchronizePluginsWithSiteID, sampleSiteID)
+        XCTAssertEqual(triggeredSiteID, sampleSiteID)
+    }
+
+    func test_resyncPlugins_returns_success_when_synchronizeSitePlugins_action_completes_successfully() {
+        // Given
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
+            switch action {
+            case .synchronizeSitePlugins(_, let completion):
+                completion(.success(()))
+            }
+        }
+        let viewModel = PluginListViewModel(siteID: sampleSiteID, storesManager: storesManager)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            viewModel.resyncPlugins { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_resyncPlugins_returns_error_when_synchronizeSitePlugins_action_fails() {
+        // Given
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
+            switch action {
+            case .synchronizeSitePlugins(_, let completion):
+                completion(.failure(MockPluginError.mockError))
+            }
+        }
+        let viewModel = PluginListViewModel(siteID: sampleSiteID, storesManager: storesManager)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            viewModel.resyncPlugins { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
     }
 }
 
+// MARK: - Storage helpers
+//
 private extension PluginListViewModelTests {
     func insert(_ readOnlyPlugin: Yosemite.SitePlugin) {
         let plugin = storage.insertNewObject(ofType: StorageSitePlugin.self)
@@ -265,54 +317,10 @@ private extension PluginListViewModelTests {
     }
 }
 
-final class MockPluginStoresManager: DefaultStoresManager {
-    /// Whether synchronizePlugins action was triggered.
-    ///
-    var invokedSynchronizePlugins = false
-
-    /// The site ID that the `synchronizePlugins` action was triggered with.
-    ///
-    var invokedSynchronizePluginsWithSiteID: Int64 = 0
-
-    /// Whether the mock `synchronizePlugins` action handler should succeed.
-    ///
-    private let shouldSucceed: Bool
-
-    /// Delay time for completion block of the mock `synchronizePlugins` action.
-    ///
-    private let completionDelay: TimeInterval
-
+// MARK: - Mock types
+//
+private extension PluginListViewModelTests {
     enum MockPluginError: Error {
         case mockError
-    }
-
-    init(shouldSucceed: Bool, completionDelay: TimeInterval = 0) {
-        self.shouldSucceed = shouldSucceed
-        self.completionDelay = completionDelay
-        let sessionManager = SessionManager.testingInstance
-        sessionManager.setStoreId(134)
-        super.init(sessionManager: sessionManager)
-    }
-
-    // MARK: - Overridden Methods
-    override func dispatch(_ action: Action) {
-        if let sitePluginAction = action as? SitePluginAction {
-            onPluginAction(sitePluginAction)
-        }
-    }
-
-    private func onPluginAction(_ action: SitePluginAction) {
-        switch action {
-        case .synchronizeSitePlugins(let siteID, let onCompletion):
-            invokedSynchronizePlugins = true
-            invokedSynchronizePluginsWithSiteID = siteID
-            DispatchQueue.main.asyncAfter(deadline: .now() + completionDelay) { [weak self] in
-                if self?.shouldSucceed == true {
-                    onCompletion(.success(()))
-                } else {
-                    onCompletion(.failure(MockPluginError.mockError))
-                }
-            }
-        }
     }
 }

@@ -2,17 +2,14 @@
 
 This project provides abstractions that allow us to integrate with external hardware in a way that those integrations fit within the high level architecture of the WooCommerce iOS app.
 
-In the context of the three-tier architecture of the WooCommerce iOS app, Hardware fulfills the role of the data transfer layer in between the application business logic ([Yosemite](YOSEMITE.md)) and external hardware (like card readers or printers). From a functional point of view, Hardware is similar in behaviour to [Networking](NETWORKING.md), the only difference is that Networking transfer information back and forth between the app and remote services, while Hardware tranfers info back and forth between the app and external Hardware.
-
-## High level class diagram
+In the context of the three-tier architecture of the WooCommerce iOS app, Hardware fulfills the role of the data transfer layer in between the application business logic ([Yosemite](YOSEMITE.md)) and external hardware (like card readers or printers). From a functional point of view, Hardware is similar in behaviour to [Networking](NETWORKING.md), the only difference is that Networking transfer information back and forth between the app and remote services, while Hardware transfers info back and forth between the app and external Hardware.
 
 ## Public interfaces
-
 * CardReaderService: Abstracts the integration with a Card Reader, it is the public API that provides access to a Card Reader and its associated operations.
 * CardReaderConfigProvider: Abstraction provided by Hardware so that clients of the library can model a way to provide a connection token. 
+* PrinterService: Abstracts the logic necessary to print receipts. The default implementation of this service integrates with AirPrint.
 
 ## Model objects
-
 * CardReader: Models a Card Reader. This is the public struct that clients of Hardware are expected to consume. CardReader is meant to be inmutable. 
 * CardReaderEvent: An event emitted by a connected reader.
 * CardReaderEventType: The types of events emitted by a connected reader.
@@ -24,10 +21,14 @@ In the context of the three-tier architecture of the WooCommerce iOS app, Hardwa
 * CardReaderServiceError. Models errors thrown by the CardReaderService. See Error Handling for more info.
 * PaymentIntent. A PaymentIntent tracks the process of collecting a payment from your customer. There should be only one payment intent for each order. It aggregates a collection of Charges.
 * Charge. Represents a charge, including the PaymentMethod
-* Paymentmethod. The payment method associated with the charge. If it is of type card present, it will have an associated value of type CardPresentDetails
+* PaymentMethod. The payment method associated with the charge. If it is of type card present, it will have an associated value of type CardPresentDetails
+* ReceiptContent. The data that will be used to generate a receipt.
+* ReceiptLineItem. Each of the line items in a receipt
+* CardPresentReceiptParameters. Encapsulates the information necessary to print a receipt for a card present payment. 
+* CardPresentTransactionDetails. Metadata provided by the payment processor
+* 
 
 ## Integration with Stripe Terminal
-
 The initial release of Hardware provides an integration with the [Stripe Terminal SDK](https://github.com/stripe/stripe-terminal-ios). That integration is encapsulated in `StripeCardReaderService`, and implementation of `CardReaderService` that is internal (in terms of Swift's access modifiers) to Hardware.
 
 There are some interesting quirks in our implementation of the integration with the Stripe SDK that are worth mentioning.
@@ -70,6 +71,14 @@ Once the reader discovery process starts yielding results, those results are pro
 
 When the user selects a reader to connect to, we pass that public model object back to the `CardReaderService`, via the `connect()` method. At that point, for the integration with the Stripe Terminal SDK, we will look into the internal cache of discovered readers, find the one that matches the serial number of the parameter provided, and attempt a connection with the StripeTerminal.CardReader found.
 
+### Disconnecting from a card reader
+
+There are to ways a client and a card reader can disconnect: either by a user-initiated action, or because the reader has gone offline.
+
+The disconnection is initiated by a user by just calling the `disconnect()` method in `CardReaderService` This is an async operation.
+
+Card Readers can shut down as well after a certain time being inactive. In that case, the integration with the Stripe Terminal SDK will catch the disconnection and publish a new array of connected readers (empty) via the `connectedReaders` publisher.
+
 ### Processing a payment
 
 Collecting a payment is a three step process that needs to be performed in this specific sequence:
@@ -82,7 +91,7 @@ For more details, see [Stripe's documentation](https://stripe.com/docs/terminal/
 
 This process is abstracted away by the CardReaderService, meaning that clients of the service do not need to know that the process requires three steps. 
 
-The status of the payment collection procress is notified to the UI via a `CardReaderEvent`. This model object wraps a `CardReaderEventType`, which will allow a view model or view controller to decide how it needs to react to said event, and a user facing message. This message is, in the integraton with the Stripe SDK, most likely being generated [by the Stripe SDK itself](https://stripe.dev/stripe-terminal-ios/docs/Protocols/SCPReaderDisplayDelegate.html#/c:objc(pl)SCPReaderDisplayDelegate(im)terminal:didRequestReaderDisplayMessage:) so it might be wise to ignore it, as it can be a tad vague. But it is there anyway.
+The status of the payment collection proress is notified to the UI via a `CardReaderEvent`. This model object wraps a `CardReaderEventType`, which will allow a view model or view controller to decide how it needs to react to said event, and a user facing message. This message is, in the integraton with the Stripe SDK, most likely being generated [by the Stripe SDK itself](https://stripe.dev/stripe-terminal-ios/docs/Protocols/SCPReaderDisplayDelegate.html#/c:objc(pl)SCPReaderDisplayDelegate(im)terminal:didRequestReaderDisplayMessage:) so it might be wise to ignore it, as it can be a tad vague. But it is there anyway.
 
 ### Error handling
 
@@ -115,12 +124,19 @@ public enum CardReaderServiceError: Error {
 
 This way, clients of the service can switch on the CardReaderServiceError in order to understand what part of the process went wrong, and then extract the underlying error to understand why the operation failed.
 
-### Printing receipts.
+### Switching accounts or stores
 
+In order to switch accounts or to just reset the integration with the Stripe Terminal SDK it is necessary to first disconnect from connected readers, via a call to `disconnect()` and, after that call is completed, call `clear()`. 
+
+The method `clear()` will reset the integration, clear all the caches, and will make the Stripe Terminal ready to fetch a new connection token.
+
+## Printing receipts.
 Receipts can be customized, as long as we list some required information. When accepting in-person payments with EMV chip cards, card networks require us to include several fields on the receipts we provide to customers. Those fields are included as part of the PaymentIntent object (to be more specific, the CardReaderDetails object), once the payment is processed. For more information, see Stripe's documentation: [Custom receipts](https://stripe.com/docs/terminal/checkout/receipts#custom)
 
-Printing receipts is supported via a public interface called `ReceiptPrinterService`. This interfaace provides, at this moment, a single public method `printRecetip(content: ReceiptContent)`.
+Printing receipts is supported via a public interface called `ReceiptPrinterService`. This interface provides, at this moment, a single public method `printReceipt(content: ReceiptContent)`.
 
 `ReceiptContent` wraps the information that needs to be rendered in the receipt. This information is a mix of the contents of the Order and the fields we get from the Stripe Terminal SDK after the payment has been collected. Some of those fields obtained from Stripe are required, in order to meet the card network rules and local regulatory requirements. For more info, check [Stripe's documentation](https://stripe.com/docs/terminal/checkout/receipts#custom)
 
 ReceiptContent provides as well an array of items, modelled by `ReceiptLineItem`, in case we want to add itemized content to the receipt.
+
+The actual rendering of the receipt is performed, at the time of writing this document, by a class called ReceiptRenderer. This class, in its initial implementation, renders the receipt as HTML, applying styles via CSS.

@@ -387,8 +387,7 @@ extension UIImage {
     /// Plugins error
     ///
     static var pluginListError: UIImage {
-        return UIImage(named: "woo-plugins-error")!
-            .imageFlippedForRightToLeftLayoutDirection()
+        return UIImage(named: "woo-plugins-error")!.imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Mail Icon

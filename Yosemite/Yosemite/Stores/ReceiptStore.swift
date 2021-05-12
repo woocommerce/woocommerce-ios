@@ -109,12 +109,12 @@ private extension ReceiptStore {
                                                            in: .userDomainMask,
                                                            appropriateFor: nil,
                                                            create: false)
-                .appendingPathComponent(fileName(order: order))
+            .appendingPathComponent(fileName(order: order))
                 .appendingPathExtension("plist")
     }
 
     func fileName(order: Order) -> String {
-        "order-id-\(order.orderID)-receipt"
+        "site-\(order.siteID)-order-id-\(order.orderID)-receipt"
     }
 }
 

@@ -1120,6 +1120,7 @@
 		D8F82AC522AF903700B67E4B /* IconsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F82AC422AF903700B67E4B /* IconsTests.swift */; };
 		DE8C94662646990000C94823 /* PluginListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8C94652646990000C94823 /* PluginListViewController.swift */; };
 		DE8C946E264699B600C94823 /* PluginListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8C946D264699B600C94823 /* PluginListViewModel.swift */; };
+		DEFD6E61264990FB00E51E0D /* SitePluginListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6E60264990FB00E51E0D /* SitePluginListViewModelTests.swift */; };
 		DEFD6E86264ABFB700E51E0D /* PluginListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DEFD6E85264ABFB700E51E0D /* PluginListViewController.xib */; };
 		F93E8E5324087FDA0057FF21 /* BetaFeaturesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */; };
 		F93E8E5424087FDA0057FF21 /* BetaFeaturesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */; };
@@ -2328,6 +2329,7 @@
 		D8FBFF1622D4CC2F006E3336 /* docs */ = {isa = PBXFileReference; lastKnownFileType = folder; name = docs; path = ../docs; sourceTree = "<group>"; };
 		DE8C94652646990000C94823 /* PluginListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginListViewController.swift; sourceTree = "<group>"; };
 		DE8C946D264699B600C94823 /* PluginListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginListViewModel.swift; sourceTree = "<group>"; };
+		DEFD6E60264990FB00E51E0D /* SitePluginListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginListViewModelTests.swift; sourceTree = "<group>"; };
 		DEFD6E85264ABFB700E51E0D /* PluginListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PluginListViewController.xib; sourceTree = "<group>"; };
 		F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BetaFeaturesScreen.swift; sourceTree = "<group>"; };
 		F93E8E5224087FDA0057FF21 /* SettingsScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
@@ -3245,6 +3247,7 @@
 		02E4FD7F2306AA770049610C /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				DEFD6E5F264990DD00E51E0D /* Plugins */,
 				576D9F2724DB81BF007B48F4 /* Stats V4 */,
 				02E4FD802306AA890049610C /* StatsTimeRangeBarViewModelTests.swift */,
 				0257285B230ACC7E00A288C4 /* StoreStatsV4ChartAxisHelperTests.swift */,
@@ -5478,6 +5481,14 @@
 			path = Plugins;
 			sourceTree = "<group>";
 		};
+		DEFD6E5F264990DD00E51E0D /* Plugins */ = {
+			isa = PBXGroup;
+			children = (
+				DEFD6E60264990FB00E51E0D /* SitePluginListViewModelTests.swift */,
+			);
+			path = Plugins;
+			sourceTree = "<group>";
+		};
 		F4B77A83B2A3D94EA331691B /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -6976,6 +6987,7 @@
 				262A2C2B2537A3330086C1BE /* MockRefunds.swift in Sources */,
 				027F240C258371150021DB06 /* RefundShippingLabelViewModelTests.swift in Sources */,
 				D85136DD231E613900DD0539 /* ReviewsViewModelTests.swift in Sources */,
+				DEFD6E61264990FB00E51E0D /* SitePluginListViewModelTests.swift in Sources */,
 				02B2C831249C4C8D0040C83C /* TextFieldTextAlignmentTests.swift in Sources */,
 				D85B833D2230DC9D002168F3 /* StringWooTests.swift in Sources */,
 				02BC5AA524D27F8900C43326 /* ProductVariationFormViewModel+UpdatesTests.swift in Sources */,

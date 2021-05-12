@@ -15,6 +15,9 @@ final class HeadlineLabelTableViewCell: UITableViewCell {
         /// Normal body title with a margin against the body. The title uses body style while
         /// the body uses secondary style.
         case regular
+        /// Title with body style and body with secondary style.
+        /// No margin between the labels. Body has specified line limit count.
+        case bodyWithLineLimit(count: Int)
 
         fileprivate static let `default` = Self.compact
     }
@@ -60,6 +63,12 @@ private extension HeadlineLabelTableViewCell {
             headlineLabel?.applyBodyStyle()
             bodyLabel?.applySecondaryBodyStyle()
             headlineToBodyConstraint.constant = Dimensions.margin
+        case .bodyWithLineLimit(let numberOfLines):
+            headlineLabel?.applyBodyStyle()
+            bodyLabel?.applySecondaryBodyStyle()
+            bodyLabel?.numberOfLines = numberOfLines
+            bodyLabel?.lineBreakMode = .byTruncatingTail
+            headlineToBodyConstraint.constant = 0
         }
 
         setNeedsLayout()

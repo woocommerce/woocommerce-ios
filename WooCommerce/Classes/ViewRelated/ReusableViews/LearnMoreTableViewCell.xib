@@ -4,6 +4,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -24,25 +25,31 @@
                         </constraints>
                         <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </button>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ot5-CO-8GF">
-                        <rect key="frame" x="60" y="30" width="334" height="14.5"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                        <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <nil key="highlightedColor"/>
-                    </label>
+                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu." textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="pn2-lW-lwh">
+                        <rect key="frame" x="60" y="12.5" width="334" height="49.5"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="textColor" systemColor="secondaryLabelColor"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                    </textView>
                 </subviews>
                 <constraints>
                     <constraint firstItem="zTM-KS-b6r" firstAttribute="centerY" secondItem="LCt-GL-faI" secondAttribute="centerY" id="1dG-Vh-eS9"/>
-                    <constraint firstItem="Ot5-CO-8GF" firstAttribute="leading" secondItem="zTM-KS-b6r" secondAttribute="trailing" constant="20" id="7aG-39-Efb"/>
-                    <constraint firstAttribute="trailing" secondItem="Ot5-CO-8GF" secondAttribute="trailing" constant="20" id="8Om-ew-KS1"/>
-                    <constraint firstItem="Ot5-CO-8GF" firstAttribute="centerY" secondItem="LCt-GL-faI" secondAttribute="centerY" id="TyM-r2-SNX"/>
+                    <constraint firstItem="pn2-lW-lwh" firstAttribute="leading" secondItem="zTM-KS-b6r" secondAttribute="trailing" constant="20" id="43S-tV-U7j"/>
+                    <constraint firstAttribute="trailing" secondItem="pn2-lW-lwh" secondAttribute="trailing" constant="20" id="Bdc-wc-k5A"/>
+                    <constraint firstItem="pn2-lW-lwh" firstAttribute="centerY" secondItem="LCt-GL-faI" secondAttribute="centerY" id="k2q-pU-Hcm"/>
                     <constraint firstItem="zTM-KS-b6r" firstAttribute="leading" secondItem="LCt-GL-faI" secondAttribute="leading" constant="20" id="ocx-j6-qGN"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
-                <outlet property="learnMoreLabel" destination="Ot5-CO-8GF" id="Xip-4J-wAO"/>
+                <outlet property="learnMoreTextView" destination="pn2-lW-lwh" id="A5r-mE-9rz"/>
             </connections>
             <point key="canvasLocation" x="37.681159420289859" y="103.79464285714285"/>
         </tableViewCell>
     </objects>
+    <resources>
+        <systemColor name="secondaryLabelColor">
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
 </document>

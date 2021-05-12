@@ -1,7 +1,6 @@
 import UIKit
 
-/// A table view cell that, when tapped, opens a URL where users can "learn more" about something.
+/// A table view cell with linkable text prompting users to learn more
 class LearnMoreTableViewCell: UITableViewCell {
-
-    @IBOutlet weak var learnMoreLabel: UILabel!
+    @IBOutlet weak var learnMoreTextView: UITextView!
 }

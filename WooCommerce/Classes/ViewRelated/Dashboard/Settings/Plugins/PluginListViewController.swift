@@ -154,13 +154,7 @@ private extension PluginListViewController {
 
         errorStateView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(errorStateView)
-
-        NSLayoutConstraint.activate([
-            errorStateView.leadingAnchor.constraint(equalTo: view.safeLeadingAnchor),
-            errorStateView.trailingAnchor.constraint(equalTo: view.safeTrailingAnchor),
-            errorStateView.topAnchor.constraint(equalTo: view.safeTopAnchor),
-            errorStateView.bottomAnchor.constraint(equalTo: view.safeBottomAnchor)
-        ])
+        view.pinSubviewToSafeArea(errorStateView)
         errorStateViewController.didMove(toParent: self)
     }
 

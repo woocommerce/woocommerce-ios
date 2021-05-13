@@ -389,15 +389,15 @@ extension OrderDetailsViewModel {
     }
 
     func checkShippingLabelCreationEligibility(onCompletion: (() -> Void)? = nil) {
-        // No orders are eligible for shipping label creation unless Release 2 flag is enabled
+        // No orders are eligible for shipping label creation unless Release 2 flag (Milestone 2 & 3 features) is enabled
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsRelease2) else {
             dataSource.isEligibleForShippingLabelCreation = false
             onCompletion?()
             return
         }
 
-        // Check shipping label creation eligibility remotely, according to client features under Release 3 feature flag
-        let isFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsRelease3)
+        // Check shipping label creation eligibility remotely, according to client features available in Shipping Labels Milestone 4
+        let isFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsM4)
         let action = ShippingLabelAction.checkCreationEligibility(siteID: order.siteID,
                                                                   orderID: order.orderID,
                                                                   canCreatePaymentMethod: isFeatureFlagEnabled,

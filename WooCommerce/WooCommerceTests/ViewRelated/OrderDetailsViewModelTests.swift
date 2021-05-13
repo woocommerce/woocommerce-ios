@@ -116,7 +116,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
     func test_checkShippingLabelCreationEligibility_dispatches_eligibility_check_with_client_features_when_both_flags_are_enabled() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isShippingLabelsRelease2On: true, isShippingLabelsRelease3On: true)
+        let featureFlagService = MockFeatureFlagService(isShippingLabelsRelease2On: true, isShippingLabelsM4On: true)
         ServiceLocator.setFeatureFlagService(featureFlagService)
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 

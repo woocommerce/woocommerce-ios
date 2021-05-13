@@ -175,11 +175,141 @@ class PluginListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.cellModelForRow(at: IndexPath(row: 0, section: 0)).name, "BBB & CCC")
         XCTAssertEqual(viewModel.cellModelForRow(at: IndexPath(row: 0, section: 0)).description, "Lorem ipsum random HTML content")
     }
+
+    func test_section_info_is_correct_after_plugin_status_is_updated() {
+        // Given
+        let activePlugin = SitePlugin.fake().copy(siteID: sampleSiteID, status: .active, name: "AAA")
+        insert(activePlugin)
+
+        let viewModel = PluginListViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        XCTAssertEqual(viewModel.numberOfSections, 1)
+        XCTAssertEqual(viewModel.titleForSection(at: 0), "Active Plugins")
+
+        // When
+        let pluginsChanged: Bool = waitFor { promise in
+            viewModel.observePlugins {
+                promise(true)
+            }
+            self.updateStorage(with: activePlugin.copy(status: .inactive))
+        }
+
+        // Then
+        XCTAssertTrue(pluginsChanged)
+        XCTAssertEqual(viewModel.numberOfSections, 1)
+        XCTAssertEqual(viewModel.titleForSection(at: 0), "Inactive Plugins")
+    }
+
+    func test_cellModel_is_correct_after_plugin_is_deleted() {
+        // Given
+        let plugin1 = SitePlugin.fake().copy(siteID: sampleSiteID, status: .active, name: "AAA")
+        insert(plugin1)
+
+        let plugin2 = SitePlugin.fake().copy(siteID: sampleSiteID, status: .active, name: "BBB")
+        insert(plugin2)
+
+        let viewModel = PluginListViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        XCTAssertEqual(viewModel.numberOfRows(inSection: 0), 2)
+
+        // When
+        let pluginsChanged: Bool = waitFor { promise in
+            viewModel.observePlugins {
+                promise(true)
+            }
+            self.storage.deleteStalePlugins(siteID: self.sampleSiteID, installedPluginNames: [plugin2.name])
+        }
+
+        // Then
+        XCTAssertTrue(pluginsChanged)
+        XCTAssertEqual(viewModel.numberOfRows(inSection: 0), 1)
+        XCTAssertEqual(viewModel.cellModelForRow(at: IndexPath(row: 0, section: 0)).name, plugin2.name)
+    }
+
+    func test_resyncPlugins_dispatches_synchronizeSitePlugins_action_with_correct_siteID() {
+        // Given
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        var triggeredSiteID: Int64?
+        storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
+            switch action {
+            case .synchronizeSitePlugins(let siteID, _):
+                triggeredSiteID = siteID
+            }
+        }
+        let viewModel = PluginListViewModel(siteID: sampleSiteID, storesManager: storesManager)
+
+        // When
+        viewModel.resyncPlugins { _ in }
+
+        // Then
+        XCTAssertEqual(triggeredSiteID, sampleSiteID)
+    }
+
+    func test_resyncPlugins_returns_success_when_synchronizeSitePlugins_action_completes_successfully() {
+        // Given
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
+            switch action {
+            case .synchronizeSitePlugins(_, let completion):
+                completion(.success(()))
+            }
+        }
+        let viewModel = PluginListViewModel(siteID: sampleSiteID, storesManager: storesManager)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            viewModel.resyncPlugins { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_resyncPlugins_returns_error_when_synchronizeSitePlugins_action_fails() {
+        // Given
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
+            switch action {
+            case .synchronizeSitePlugins(_, let completion):
+                completion(.failure(MockPluginError.mockError))
+            }
+        }
+        let viewModel = PluginListViewModel(siteID: sampleSiteID, storesManager: storesManager)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            viewModel.resyncPlugins { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
 }
 
+// MARK: - Storage helpers
+//
 private extension PluginListViewModelTests {
     func insert(_ readOnlyPlugin: Yosemite.SitePlugin) {
         let plugin = storage.insertNewObject(ofType: StorageSitePlugin.self)
         plugin.update(with: readOnlyPlugin)
+        storage.saveIfNeeded()
+    }
+
+    func updateStorage(with readOnlyPlugin: Yosemite.SitePlugin) {
+        guard let plugin = storage.loadPlugin(siteID: readOnlyPlugin.siteID, name: readOnlyPlugin.name) else {
+            return
+        }
+        plugin.update(with: readOnlyPlugin)
+        storage.saveIfNeeded()
+    }
+}
+
+// MARK: - Mock types
+//
+private extension PluginListViewModelTests {
+    enum MockPluginError: Error {
+        case mockError
     }
 }

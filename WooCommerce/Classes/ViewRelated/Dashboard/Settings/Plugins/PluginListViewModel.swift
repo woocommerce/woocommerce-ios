@@ -24,12 +24,19 @@ final class PluginListViewModel {
         // Results need to be grouped in sections so sorting by section is required.
         // Make sure this sort descriptor is first in the list to make grouping works.
         let statusDescriptor = NSSortDescriptor(keyPath: \StorageSitePlugin.status, ascending: true)
-        return ResultsController<StorageSitePlugin>(
+        let resultsController = ResultsController<StorageSitePlugin>(
             storageManager: storageManager,
             sectionNameKeyPath: "status",
             matching: predicate,
             sortedBy: [statusDescriptor, nameDescriptor]
         )
+
+        do {
+            try resultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Error fetching plugin list!")
+        }
+        return resultsController
     }()
 
     init(siteID: Int64,
@@ -43,13 +50,14 @@ final class PluginListViewModel {
     /// Start fetching and observing plugin data from local storage.
     ///
     func observePlugins(onDataChanged: @escaping () -> Void) {
-        do {
-            try resultsController.performFetch()
-        } catch {
-            DDLogError("⛔️ Error fetching plugin list!")
-        }
-
         resultsController.onDidChangeContent = onDataChanged
+    }
+
+    /// Manually resync plugins.
+    ///
+    func resyncPlugins(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let action = SitePluginAction.synchronizeSitePlugins(siteID: siteID, onCompletion: onCompletion)
+        storesManager.dispatch(action)
     }
 }
 
@@ -60,6 +68,24 @@ extension PluginListViewModel {
     ///
     var pluginListTitle: String {
         Localization.pluginListTitle
+    }
+
+    /// Message for the error state of the Plugin List screen.
+    ///
+    var errorStateMessage: String {
+        Localization.errorStateMessage
+    }
+
+    /// Details for the error state of the Plugin List screen.
+    ///
+    var errorStateDetails: String {
+        Localization.errorStateDetails
+    }
+
+    /// Action title for the error state of the Plugin List screen.
+    ///
+    var errorStateActionTitle: String {
+        Localization.errorStateAction
     }
 
     /// Number of sections to display on the table view.
@@ -117,6 +143,12 @@ private extension PluginListViewModel {
         static let activeSectionTitle = NSLocalizedString("Active Plugins", comment: "Title for table view section of active plugins")
         static let inactiveSectionTitle = NSLocalizedString("Inactive Plugins", comment: "Title for table view section of inactive plugins")
         static let networkActiveSectionTitle = NSLocalizedString("Network Active Plugins", comment: "Title for table view section of network active plugins")
+        static let errorStateMessage = NSLocalizedString("Something went wrong",
+                                                         comment: "The text on the placeholder overlay when there is issue syncing site plugins")
+        static let errorStateDetails = NSLocalizedString("There was a problem while trying to load plugins. Check your internet and try again.",
+                                                         comment: "The details on the placeholder overlay when there is issue syncing site plugins")
+        static let errorStateAction = NSLocalizedString("Try again",
+                                                        comment: "Action to resync on the placeholder overlay when there is issue syncing site plugins")
     }
 }
 

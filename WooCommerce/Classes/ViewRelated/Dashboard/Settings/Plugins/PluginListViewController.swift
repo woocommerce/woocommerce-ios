@@ -1,4 +1,5 @@
 import UIKit
+import WordPressUI
 
 /// View Controller for the Plugin List Screen.
 ///
@@ -7,6 +8,26 @@ final class PluginListViewController: UIViewController {
     private let viewModel: PluginListViewModel
 
     @IBOutlet private var tableView: UITableView!
+
+    /// Separate table view for ghost animation.
+    ///
+    private let ghostTableView = UITableView(frame: .zero, style: .grouped)
+
+    /// Pull To Refresh Support.
+    ///
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(resyncPlugins), for: .valueChanged)
+        return refreshControl
+    }()
+
+    /// View Controller to display error state.
+    ///
+    private lazy var errorStateViewController = EmptyStateViewController(style: .basic)
+
+    /// Configurations for the error state view.
+    ///
+    private lazy var errorStateViewConfig = createErrorStateViewConfig()
 
     init(viewModel: PluginListViewModel) {
         self.viewModel = viewModel
@@ -21,6 +42,7 @@ final class PluginListViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureTableView()
+        configureGhostTableView()
         configureViewModel()
     }
 }
@@ -36,13 +58,55 @@ private extension PluginListViewController {
         tableView.estimatedRowHeight = CGFloat(44)
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
+        tableView.addSubview(refreshControl)
         tableView.allowsSelection = false
         tableView.dataSource = self
+    }
+
+    func configureGhostTableView() {
+        ghostTableView.registerNib(for: HeadlineLabelTableViewCell.self)
+        ghostTableView.translatesAutoresizingMaskIntoConstraints = false
+        ghostTableView.backgroundColor = .listBackground
+        ghostTableView.isScrollEnabled = false
+        ghostTableView.isHidden = true
+
+        view.addSubview(ghostTableView)
+        view.pinSubviewToAllEdges(ghostTableView)
+    }
+
+    func startGhostAnimation() {
+        let options = GhostOptions(reuseIdentifier: HeadlineLabelTableViewCell.reuseIdentifier, rowsPerSection: [10])
+        ghostTableView.displayGhostContent(options: options, style: .wooDefaultGhostStyle)
+        ghostTableView.startGhostAnimation()
+        ghostTableView.isHidden = false
+    }
+
+    func stopGhostAnimation() {
+        ghostTableView.isHidden = true
+        ghostTableView.stopGhostAnimation()
+        ghostTableView.removeGhostContent()
     }
 
     func configureViewModel() {
         viewModel.observePlugins { [weak self] in
             self?.tableView.reloadData()
+        }
+    }
+}
+
+// MARK: - Actions
+//
+private extension PluginListViewController {
+    @objc func resyncPlugins() {
+        removeErrorStateView()
+        startGhostAnimation()
+        viewModel.resyncPlugins { [weak self] result in
+            guard let self = self else { return }
+            self.refreshControl.endRefreshing()
+            self.stopGhostAnimation()
+            if result.isFailure {
+                self.displayErrorStateView()
+            }
         }
     }
 }
@@ -71,5 +135,50 @@ extension PluginListViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension
+    }
+}
+
+// MARK: - Error state configuration
+//
+private extension PluginListViewController {
+    /// Displays the overlay when there is issue syncing site plugins.
+    ///
+    func displayErrorStateView() {
+        guard let errorStateView = errorStateViewController.view else {
+            return
+        }
+        errorStateViewController.configure(errorStateViewConfig)
+        addChild(errorStateViewController)
+
+        errorStateView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(errorStateView)
+        view.pinSubviewToAllEdges(errorStateView)
+        errorStateViewController.didMove(toParent: self)
+    }
+
+    /// Removes `errorStateViewController` child view controller if applicable.
+    ///
+    func removeErrorStateView() {
+        guard errorStateViewController.parent == self else {
+            return
+        }
+        errorStateViewController.willMove(toParent: nil)
+        errorStateViewController.view.removeFromSuperview()
+        errorStateViewController.removeFromParent()
+    }
+
+    /// Creates configurations for the error state view.
+    ///
+    private func createErrorStateViewConfig() -> EmptyStateViewController.Config {
+        let message = viewModel.errorStateMessage
+        let details = viewModel.errorStateDetails
+        let buttonTitle = viewModel.errorStateActionTitle
+        return EmptyStateViewController.Config.withButton(
+            message: .init(string: message),
+            image: .pluginListError,
+            details: details,
+            buttonTitle: buttonTitle) { [weak self] button in
+            self?.resyncPlugins()
+        }
     }
 }

@@ -576,8 +576,9 @@ private extension OrderDetailsViewController {
     @objc private func collectPayment(at: IndexPath) {
         viewModel.isReadyToCollectPayment { [weak self] isReady in
             if isReady {
-                self?.dismiss(animated: false, completion: nil)
-                self?.collectPaymentForCurrentOrder()
+                self?.dismiss(animated: false, completion: {
+                    self?.collectPaymentForCurrentOrder()
+                })
             } else {
                 self?.connectToCardReader()
             }

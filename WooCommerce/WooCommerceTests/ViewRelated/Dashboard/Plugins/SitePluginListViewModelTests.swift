@@ -178,11 +178,7 @@ class PluginListViewModelTests: XCTestCase {
 
     func test_section_info_is_correct_after_plugin_status_is_updated() {
         // Given
-        let activePlugin = SitePlugin.fake().copy(
-            siteID: sampleSiteID,
-            status: .active,
-            name: "AAA"
-        )
+        let activePlugin = SitePlugin.fake().copy(siteID: sampleSiteID, status: .active, name: "AAA")
         insert(activePlugin)
 
         let viewModel = PluginListViewModel(siteID: sampleSiteID, storageManager: storageManager)
@@ -205,18 +201,10 @@ class PluginListViewModelTests: XCTestCase {
 
     func test_cellModel_is_correct_after_plugin_is_deleted() {
         // Given
-        let plugin1 = SitePlugin.fake().copy(
-            siteID: sampleSiteID,
-            status: .active,
-            name: "AAA"
-        )
+        let plugin1 = SitePlugin.fake().copy(siteID: sampleSiteID, status: .active, name: "AAA")
         insert(plugin1)
 
-        let plugin2 = SitePlugin.fake().copy(
-            siteID: sampleSiteID,
-            status: .active,
-            name: "BBB"
-        )
+        let plugin2 = SitePlugin.fake().copy(siteID: sampleSiteID, status: .active, name: "BBB")
         insert(plugin2)
 
         let viewModel = PluginListViewModel(siteID: sampleSiteID, storageManager: storageManager)

@@ -54,4 +54,7 @@ public enum CardPresentPaymentAction: Action {
     /// 2. Clear all credentials, cached data
     /// 3. Reset all status indicators
     case reset
+
+    /// Checks if the store is ready to collect a payment
+    case isReadyToCollectPayment(onCompletion: (Bool) -> Void)
 }

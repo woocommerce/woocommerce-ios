@@ -518,6 +518,12 @@ extension OrderDetailsViewModel {
         stores.dispatch(deleteTrackingAction)
     }
 
+    func isReadyToCollectPayment(onCompletion: @escaping (Bool) -> Void) {
+        let checkConnectedAction = CardPresentPaymentAction.isReadyToCollectPayment(onCompletion: onCompletion)
+
+        ServiceLocator.stores.dispatch(checkConnectedAction)
+    }
+
     /// We are passing the ReceiptParameters as part of the completon block
     /// We do so at this point for testing purposes.
     /// When we implement persistance, the receipt metadata would be persisted
@@ -527,12 +533,13 @@ extension OrderDetailsViewModel {
                         onClearMessage: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
-        paymentOrchestrator.collectPayment(for: order,
-                                           paymentsAccount: paymentsAccount,
+        paymentOrchestrator.collectPayment(for: self.order,
+                                           paymentsAccount: self.paymentsAccount,
                                            onPresentMessage: onPresentMessage,
                                            onClearMessage: onClearMessage,
                                            onProcessingMessage: onProcessingMessage,
                                            onCompletion: onCompletion)
+
     }
 
     func printReceipt(params: CardPresentReceiptParameters) {

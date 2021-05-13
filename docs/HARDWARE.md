@@ -91,7 +91,7 @@ For more details, see [Stripe's documentation](https://stripe.com/docs/terminal/
 
 This process is abstracted away by the CardReaderService, meaning that clients of the service do not need to know that the process requires three steps. 
 
-The status of the payment collection proress is notified to the UI via a `CardReaderEvent`. This model object wraps a `CardReaderEventType`, which will allow a view model or view controller to decide how it needs to react to said event, and a user facing message. This message is, in the integraton with the Stripe SDK, most likely being generated [by the Stripe SDK itself](https://stripe.dev/stripe-terminal-ios/docs/Protocols/SCPReaderDisplayDelegate.html#/c:objc(pl)SCPReaderDisplayDelegate(im)terminal:didRequestReaderDisplayMessage:) so it might be wise to ignore it, as it can be a tad vague. But it is there anyway.
+The status of the payment collection process is notified to the UI via a `CardReaderEvent`. This model object wraps a `CardReaderEventType`, which will allow a view model or view controller to decide how it needs to react to said event, and a user facing message. This message is, in the integraton with the Stripe SDK, most likely being generated [by the Stripe SDK itself](https://stripe.dev/stripe-terminal-ios/docs/Protocols/SCPReaderDisplayDelegate.html#/c:objc(pl)SCPReaderDisplayDelegate(im)terminal:didRequestReaderDisplayMessage:) so it might be wise to ignore it, as it can be a tad vague. But it is there anyway.
 
 ### Error handling
 

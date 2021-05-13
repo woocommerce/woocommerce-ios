@@ -51,4 +51,4 @@ There is a caveat here: when we initiate the process to capture a payment, we wi
 
 Leaving that aside, we still offer the option to print or email a receipt right after the payment has been collected and processed. 
 
-Orders that have been processed via a Card Present Payment will also offer the option to see a receipt after the fact. 
+Orders that have been processed via a Card Present Payment will also offer the option to see a receipt after the fact. For beta 1, receipts are saved locally only, and will not survive a reinstall.

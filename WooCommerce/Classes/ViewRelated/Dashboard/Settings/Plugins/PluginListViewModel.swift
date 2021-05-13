@@ -70,6 +70,24 @@ extension PluginListViewModel {
         Localization.pluginListTitle
     }
 
+    /// Message for the error state of the Plugin List screen.
+    ///
+    var errorStateMessage: String {
+        Localization.errorStateMessage
+    }
+
+    /// Details for the error state of the Plugin List screen.
+    ///
+    var errorStateDetails: String {
+        Localization.errorStateDetails
+    }
+
+    /// Action title for the error state of the Plugin List screen.
+    ///
+    var errorStateActionTitle: String {
+        Localization.errorStateAction
+    }
+
     /// Number of sections to display on the table view.
     ///
     var numberOfSections: Int {
@@ -125,6 +143,12 @@ private extension PluginListViewModel {
         static let activeSectionTitle = NSLocalizedString("Active Plugins", comment: "Title for table view section of active plugins")
         static let inactiveSectionTitle = NSLocalizedString("Inactive Plugins", comment: "Title for table view section of inactive plugins")
         static let networkActiveSectionTitle = NSLocalizedString("Network Active Plugins", comment: "Title for table view section of network active plugins")
+        static let errorStateMessage = NSLocalizedString("Something went wrong",
+                                                         comment: "The text on the placeholder overlay when there is issue syncing site plugins")
+        static let errorStateDetails = NSLocalizedString("There was a problem while trying to load plugins. Check your internet and try again.",
+                                                         comment: "The details on the placeholder overlay when there is issue syncing site plugins")
+        static let errorStateAction = NSLocalizedString("Try again",
+                                                        comment: "Action to resync on the placeholder overlay when there is issue syncing site plugins")
     }
 }
 

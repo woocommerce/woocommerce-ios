@@ -170,12 +170,9 @@ private extension PluginListViewController {
     /// Creates configurations for the error state view.
     ///
     private func createErrorStateViewConfig() -> EmptyStateViewController.Config {
-        let message = NSLocalizedString("Something went wrong",
-                                        comment: "The text on the placeholder overlay when there is issue syncing site plugins")
-        let details = NSLocalizedString("There was a problem while trying to load plugins. Check your internet and try again.",
-                                        comment: "The details on the placeholder overlay when there is issue syncing site plugins")
-        let buttonTitle = NSLocalizedString("Try again",
-                                            comment: "Action to resync on the placeholder overlay when there is issue syncing site plugins")
+        let message = viewModel.errorStateMessage
+        let details = viewModel.errorStateDetails
+        let buttonTitle = viewModel.errorStateActionTitle
         return EmptyStateViewController.Config.withButton(
             message: .init(string: message),
             image: .pluginListError,

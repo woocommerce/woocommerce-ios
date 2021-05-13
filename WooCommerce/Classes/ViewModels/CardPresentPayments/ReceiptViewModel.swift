@@ -18,6 +18,8 @@ final class ReceiptViewModel {
     }
 
     func printReceipt() {
-        print("===== hitting print")
+        let action = ReceiptAction.print(order: order, parameters: receipt)
+
+        ServiceLocator.stores.dispatch(action)
     }
 }

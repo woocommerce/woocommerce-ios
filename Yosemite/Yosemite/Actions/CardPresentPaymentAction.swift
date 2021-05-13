@@ -42,8 +42,7 @@ public enum CardPresentPaymentAction: Action {
                         onCompletion: (Result<PaymentIntent, Error>) -> Void )
 
     /// Check whether there is a software update available.
-    case checkForCardReaderUpdate(onData: (Result<CardReaderSoftwareUpdate, Error>) -> Void,
-                        onCompletion: () -> Void)
+    case checkForCardReaderUpdate(onCompletion: (Result<CardReaderSoftwareUpdate?, Error>) -> Void)
 
     /// Update card reader firmware.
     case startCardReaderUpdate(onProgress: (Float) -> Void,

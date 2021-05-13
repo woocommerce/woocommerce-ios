@@ -34,7 +34,11 @@ final class CardReaderSettingsPresentingViewController: UIViewController {
         childViewController?.removeFromParent()
         childViewController?.view.removeFromSuperview()
 
-        childViewController = self.storyboard!.instantiateViewController(withIdentifier: viewModelAndView!.viewIdentifier)
+        guard let viewModelAndView = viewModelAndView else {
+            return
+        }
+
+        childViewController = self.storyboard!.instantiateViewController(withIdentifier: viewModelAndView.viewIdentifier)
 
         guard let childViewController = childViewController else {
             return
@@ -43,7 +47,7 @@ final class CardReaderSettingsPresentingViewController: UIViewController {
         guard let presenter = childViewController as? CardReaderSettingsViewModelPresenter else {
             return
         }
-        presenter.configure(viewModel: viewModelAndView!.viewModel)
+        presenter.configure(viewModel: viewModelAndView.viewModel)
 
         self.view.addSubview(childViewController.view)
         self.addChild(childViewController)

@@ -48,9 +48,11 @@ final class CardReaderSettingsViewModelsOrderedList: CardReaderSettingsPrioritiz
     }
 
     private func reevaluatePriorityViewModelAndView() {
-        guard let newPriorityViewModelAndView = viewModelsAndViews.first(
+        let newPriorityViewModelAndView = viewModelsAndViews.first(
             where: { $0.viewModel.shouldShow == .isTrue }
-        ), newPriorityViewModelAndView != priorityViewModelAndView else {
+        )
+
+        guard newPriorityViewModelAndView != priorityViewModelAndView else {
             return
         }
 

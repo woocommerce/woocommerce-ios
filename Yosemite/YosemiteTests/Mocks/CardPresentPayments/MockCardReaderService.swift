@@ -110,9 +110,7 @@ final class MockCardReaderService: CardReaderService {
         }
     }
 
-    func installUpdate() -> Future<Void, Error> {
-        Future() { promise in
-            // To be implemented
-        }
+    func installUpdate() -> AnyPublisher<Float, Error> {
+        Empty<Float, Error>().eraseToAnyPublisher()
     }
 }

@@ -178,20 +178,18 @@ private extension CardPresentPaymentStore {
 
     func startCardReaderUpdate(onProgress: @escaping (Float) -> Void,
                         onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        cardReaderService.installUpdate().sink(receiveCompletion: { value in
-            switch value {
-            case .failure(let error):
-                onCompletion(.failure(error))
-            case .finished:
-                onCompletion(.success(()))
-            }
-        }, receiveValue: {
-            onCompletion(.success(()))
-        }).store(in: &cancellables)
-        // Observe update progress events fired by the card reader
-        cardReaderService.softwareUpdateEvents.sink { progress in
-            onProgress(progress)
-        }.store(in: &cancellables)
+        cardReaderService.installUpdate()
+            .subscribe(Subscribers.Sink(
+                receiveCompletion: { value in
+                    switch value {
+                    case .failure(let error):
+                        onCompletion(.failure(error))
+                    case .finished:
+                        onCompletion(.success(()))
+                    }
+                },
+                receiveValue: onProgress
+            ))
     }
 
     func reset() {

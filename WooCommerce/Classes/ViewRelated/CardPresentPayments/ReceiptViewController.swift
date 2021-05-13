@@ -19,7 +19,7 @@ final class ReceiptViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        configureBackground()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -30,6 +30,10 @@ final class ReceiptViewController: UIViewController {
 }
 
 private extension ReceiptViewController {
+    func configureBackground() {
+        view.backgroundColor = .systemBackground
+    }
+
     func syncReceiptContent() {
         viewModel.generateContent { [weak self] content in
             self?.webView.loadHTMLString(content, baseURL: nil)

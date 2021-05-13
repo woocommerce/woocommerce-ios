@@ -18,12 +18,20 @@ final class PaymentCaptureOrchestrator {
         // TODO. Check that there is a reader currently connected
         // otherwise launch the discovery+pairing UI
         // https://github.com/woocommerce/woocommerce-ios/issues/4062
-        collectPaymentWithCardReader(for: order,
-                                     paymentsAccount: paymentsAccount,
-                                     onPresentMessage: onPresentMessage,
-                                     onClearMessage: onClearMessage,
-                                     onProcessingMessage: onProcessingMessage,
-                                     onCompletion: onCompletion)
+
+        let checkConnectedAction = CardPresentPaymentAction.isReadyToCollectPayment { isReady in
+            print("===== is ready ", isReady)
+        }
+
+        ServiceLocator.stores.dispatch(checkConnectedAction)
+
+
+//        collectPaymentWithCardReader(for: order,
+//                                     paymentsAccount: paymentsAccount,
+//                                     onPresentMessage: onPresentMessage,
+//                                     onClearMessage: onClearMessage,
+//                                     onProcessingMessage: onProcessingMessage,
+//                                     onCompletion: onCompletion)
     }
 
     func printReceipt(for order: Order, params: CardPresentReceiptParameters) {

@@ -60,6 +60,8 @@ public final class CardPresentPaymentStore: Store {
             startCardReaderUpdate(onProgress: progress, onCompletion: completion)
         case .reset:
             reset()
+        case .isReadyToCollectPayment(onCompletion: let completion):
+            isReadyToCollectPayment(onCompletion: completion)
         }
     }
 }
@@ -202,6 +204,14 @@ private extension CardPresentPaymentStore {
                         },
                         receiveValue: { _ in }
             ))
+    }
+
+    func isReadyToCollectPayment(onCompletion: @escaping (Bool) -> Void) {
+        cardReaderService.connectedReaders.subscribe(Subscribers.Sink(receiveCompletion: { _ in
+
+        }, receiveValue: { value in
+            onCompletion(value.count > 0)
+        }))
     }
 }
 

@@ -520,12 +520,28 @@ extension OrderDetailsViewModel {
                         onClearMessage: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
-        paymentOrchestrator.collectPayment(for: order,
-                                           paymentsAccount: paymentsAccount,
-                                           onPresentMessage: onPresentMessage,
-                                           onClearMessage: onClearMessage,
-                                           onProcessingMessage: onProcessingMessage,
-                                           onCompletion: onCompletion)
+        // TODO. Check that there is a reader currently connected
+        // otherwise launch the discovery+pairing UI
+        // https://github.com/woocommerce/woocommerce-ios/issues/4062
+
+        let checkConnectedAction = CardPresentPaymentAction.isReadyToCollectPayment { [weak self] isReady in
+            guard let self = self else {
+                return
+            }
+
+            if isReady {
+                self.paymentOrchestrator.collectPayment(for: self.order,
+                                                        paymentsAccount: self.paymentsAccount,
+                                                        onPresentMessage: onPresentMessage,
+                                                        onClearMessage: onClearMessage,
+                                                        onProcessingMessage: onProcessingMessage,
+                                                        onCompletion: onCompletion)
+            } else {
+                self.connectToReader()
+            }
+        }
+
+        ServiceLocator.stores.dispatch(checkConnectedAction)
     }
 
     func printReceipt(params: CardPresentReceiptParameters) {
@@ -551,6 +567,10 @@ private extension OrderDetailsViewModel {
         let paymentMethod = OrderPaymentMethod(rawValue: order.paymentMethodID)
 
         return paymentMethod == .cod || paymentMethod == .none
+    }
+
+    func connectToReader() {
+        print("==== start connecting to a reader")
     }
 }
 

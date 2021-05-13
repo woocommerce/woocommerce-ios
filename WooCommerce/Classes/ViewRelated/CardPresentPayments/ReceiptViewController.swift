@@ -19,6 +19,7 @@ final class ReceiptViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        configureToolbar()
         configureBackground()
     }
 
@@ -30,6 +31,13 @@ final class ReceiptViewController: UIViewController {
 }
 
 private extension ReceiptViewController {
+    func configureToolbar() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: .print,
+                                                            style: .plain,
+                                                            target: self,
+                                                            action: #selector(printReceipt))
+    }
+
     func configureBackground() {
         view.backgroundColor = .systemBackground
     }
@@ -38,5 +46,9 @@ private extension ReceiptViewController {
         viewModel.generateContent { [weak self] content in
             self?.webView.loadHTMLString(content, baseURL: nil)
         }
+    }
+
+    @objc func printReceipt() {
+        viewModel.printReceipt()
     }
 }

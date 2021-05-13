@@ -32,7 +32,7 @@ public protocol CardReaderService {
     func start(_ configProvider: CardReaderConfigProvider)
 
     /// Cancels the discovery process.
-    func cancelDiscovery()
+    func cancelDiscovery() -> Future <Void, Error>
 
     /// Connects to a card reader
     /// - Parameter reader: The card reader we want to connect to.

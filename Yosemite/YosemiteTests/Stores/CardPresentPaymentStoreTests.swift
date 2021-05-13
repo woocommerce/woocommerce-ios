@@ -137,7 +137,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                                        network: network,
                                                        cardReaderService: mockCardReaderService)
 
-        let action = CardPresentPaymentAction.cancelCardReaderDiscovery { newStatus in
+        let action = CardPresentPaymentAction.cancelCardReaderDiscovery { result in
             //
         }
 
@@ -156,8 +156,8 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         let expectation = self.expectation(description: "Cancelling discovery published idle as discoveryStatus")
 
-        let action = CardPresentPaymentAction.cancelCardReaderDiscovery { newStatus in
-            if newStatus == .idle {
+        let action = CardPresentPaymentAction.cancelCardReaderDiscovery { result in
+            if result.isSuccess {
                 expectation.fulfill()
             }
         }
@@ -181,9 +181,9 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         cardPresentStore.onAction(startDiscoveryAction)
 
-        let action = CardPresentPaymentAction.cancelCardReaderDiscovery { newStatus in
+        let action = CardPresentPaymentAction.cancelCardReaderDiscovery { result in
             print("=== hitting cancellation completion")
-            if newStatus == .idle {
+            if result.isSuccess {
                 expectation.fulfill()
             }
         }

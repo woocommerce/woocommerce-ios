@@ -2,9 +2,9 @@
 ## Project scope
 * Support payments using the Stripe SDK for US-based merchants that are already WCPay customers
 * The mobile apps should support:
-	* Discovering card readers.
-	* Connecting a card reader to a mobile device.
-	* Collecting payment from a customer on a cash-on-delivery order.
+	* Discover card readers.
+	* Connect a card reader to a mobile device.
+	* Collect payment from a customer on a cash-on-delivery order.
 	* Print a receipt
 	* E-mail a receipt.
 	* Update a card reader firmware.

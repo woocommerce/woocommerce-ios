@@ -25,8 +25,7 @@ In the context of the three-tier architecture of the WooCommerce iOS app, Hardwa
 * ReceiptContent. The data that will be used to generate a receipt.
 * ReceiptLineItem. Each of the line items in a receipt
 * CardPresentReceiptParameters. Encapsulates the information necessary to print a receipt for a card present payment. 
-* CardPresentTransactionDetails. Metadata provided by the payment processor
-* 
+* CardPresentTransactionDetails. Metadata provided by the payment processor.
 
 ## Integration with Stripe Terminal
 The initial release of Hardware provides an integration with the [Stripe Terminal SDK](https://github.com/stripe/stripe-terminal-ios). That integration is encapsulated in `StripeCardReaderService`, and implementation of `CardReaderService` that is internal (in terms of Swift's access modifiers) to Hardware.

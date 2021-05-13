@@ -28,11 +28,6 @@ public enum CardPresentPaymentAction: Action {
     /// have 1 or 2) will be persisted across application sessions.
     case observeKnownReaders(onCompletion: ([CardReader]) -> Void)
 
-    /// Calls the completion block everytime the list of connected readers changes
-    /// with an array of connected readers.
-    ///
-    case observeConnectedReaders(onCompletion: ([CardReader]) -> Void)
-
     /// Collected payment for an order.
     ///
     case collectPayment(siteID: Int64,

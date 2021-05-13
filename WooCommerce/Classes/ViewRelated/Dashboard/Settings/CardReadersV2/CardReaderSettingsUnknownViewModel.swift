@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import Yosemite
 
 enum CardReaderSettingsUnknownViewModelDiscoveryState {
@@ -20,6 +21,8 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
     private var siteID: Int64 = Int64.min
 
     private var foundReader: CardReader?
+
+    private var cancellables: Set<AnyCancellable> = []
 
     var discoveryState: CardReaderSettingsUnknownViewModelDiscoveryState = .notSearching
     var foundReaderSerialNumber: String?
@@ -44,15 +47,15 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
         }
         ServiceLocator.stores.dispatch(knownAction)
 
-        // This completion should be called repeatedly as the list of connected readers changes
-        let connectedAction = CardPresentPaymentAction.observeConnectedReaders() { [weak self] readers in
-            guard let self = self else {
-                return
+        ServiceLocator.cardReaderService.connectedReaders
+            .sink { [weak self] readers in
+                guard let self = self else {
+                    return
+                }
+                self.noConnectedReaders = readers.isEmpty ? .isTrue : .isFalse
+                self.reevaluateShouldShow()
             }
-            self.noConnectedReaders = readers.isEmpty ? .isTrue : .isFalse
-            self.reevaluateShouldShow()
-        }
-        ServiceLocator.stores.dispatch(connectedAction)
+            .store(in: &cancellables)
     }
 
     private func updateProperties() {

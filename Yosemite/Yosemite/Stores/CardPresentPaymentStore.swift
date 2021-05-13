@@ -13,8 +13,6 @@ public final class CardPresentPaymentStore: Store {
 
     private let remote: WCPayRemote
 
-    private var cancellables: Set<AnyCancellable> = []
-
     public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, cardReaderService: CardReaderService) {
         self.cardReaderService = cardReaderService
         self.remote = WCPayRemote(network: network)
@@ -46,8 +44,6 @@ public final class CardPresentPaymentStore: Store {
             disconnect(onCompletion: completion)
         case .observeKnownReaders(let completion):
             observeKnownReaders(onCompletion: completion)
-        case .observeConnectedReaders(let completion):
-            observeConnectedReaders(onCompletion: completion)
         case .collectPayment(let siteID, let orderID, let parameters, let event, let completion):
             collectPayment(siteID: siteID,
                            orderID: orderID,
@@ -134,15 +130,6 @@ private extension CardPresentPaymentStore {
     func observeKnownReaders(onCompletion: @escaping ([Yosemite.CardReader]) -> Void) {
         // TODO: Hook up to storage (see #3559) - for now, we return an empty array
         onCompletion([])
-    }
-
-    /// Calls the completion block everytime the list of connected readers changes
-    ///
-    func observeConnectedReaders(onCompletion: @escaping ([Yosemite.CardReader]) -> Void) {
-        cardReaderService.connectedReaders.sink { _ in
-        } receiveValue: { readers in
-            onCompletion(readers)
-        }.store(in: &cancellables)
     }
 
     func collectPayment(siteID: Int64,

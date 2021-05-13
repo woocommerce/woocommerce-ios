@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import Yosemite
 
 final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedViewModel {
@@ -9,6 +10,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
 
     private var didGetConnectedReaders: Bool = false
     private var connectedReaders = [CardReader]()
+    private var cancellables: Set<AnyCancellable> = []
 
     var connectedReaderSerialNumber: String?
     var connectedReaderBatteryLevel: String?
@@ -22,17 +24,17 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     /// connected readers.
     ///
     private func beginObservation() {
-        // This completion should be called repeatedly as the list of connected readers changes
-        let action = CardPresentPaymentAction.observeConnectedReaders() { [weak self] readers in
-            guard let self = self else {
-                return
+        ServiceLocator.cardReaderService.connectedReaders
+            .sink { [weak self] readers in
+                guard let self = self else {
+                    return
+                }
+                self.didGetConnectedReaders = true
+                self.connectedReaders = readers
+                self.updateProperties()
+                self.reevaluateShouldShow()
             }
-            self.didGetConnectedReaders = true
-            self.connectedReaders = readers
-            self.updateProperties()
-            self.reevaluateShouldShow()
-        }
-        ServiceLocator.stores.dispatch(action)
+            .store(in: &cancellables)
     }
 
     private func updateProperties() {

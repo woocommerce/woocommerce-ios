@@ -163,16 +163,17 @@ private extension CardPresentPaymentStore {
     }
 
     func checkForCardReaderUpdate(onCompletion: @escaping (Result<CardReaderSoftwareUpdate?, Error>) -> Void) {
-        cardReaderService.checkForUpdate().sink(receiveCompletion: { value in
-            switch value {
-            case .failure(let error):
-                onCompletion(.failure(error))
-            case .finished:
-                onCompletion(.success(nil))
-            }
-        }, receiveValue: {softwareUpdate in
-            onCompletion(.success(softwareUpdate))
-        }).store(in: &cancellables)
+        cardReaderService.checkForUpdate()
+            .subscribe(Subscribers.Sink { value in
+                switch value {
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                case .finished:
+                    onCompletion(.success(nil))
+                }
+            } receiveValue: {softwareUpdate in
+                onCompletion(.success(softwareUpdate))
+            })
     }
 
     func startCardReaderUpdate(onProgress: @escaping (Float) -> Void,

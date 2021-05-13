@@ -24,12 +24,19 @@ final class PluginListViewModel {
         // Results need to be grouped in sections so sorting by section is required.
         // Make sure this sort descriptor is first in the list to make grouping works.
         let statusDescriptor = NSSortDescriptor(keyPath: \StorageSitePlugin.status, ascending: true)
-        return ResultsController<StorageSitePlugin>(
+        let resultsController = ResultsController<StorageSitePlugin>(
             storageManager: storageManager,
             sectionNameKeyPath: "status",
             matching: predicate,
             sortedBy: [statusDescriptor, nameDescriptor]
         )
+
+        do {
+            try resultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Error fetching plugin list!")
+        }
+        return resultsController
     }()
 
     init(siteID: Int64,
@@ -43,12 +50,6 @@ final class PluginListViewModel {
     /// Start fetching and observing plugin data from local storage.
     ///
     func observePlugins(onDataChanged: @escaping () -> Void) {
-        do {
-            try resultsController.performFetch()
-        } catch {
-            DDLogError("⛔️ Error fetching plugin list!")
-        }
-
         resultsController.onDidChangeContent = onDataChanged
     }
 

@@ -186,21 +186,21 @@ class PluginListViewModelTests: XCTestCase {
         insert(activePlugin)
 
         let viewModel = PluginListViewModel(siteID: sampleSiteID, storageManager: storageManager)
-        let expect = expectation(description: "Section info is updated correctly.")
-        viewModel.observePlugins {
-            expect.fulfill()
-        }
         XCTAssertEqual(viewModel.numberOfSections, 1)
         XCTAssertEqual(viewModel.titleForSection(at: 0), "Active Plugins")
 
         // When
-        updateStorage(with: activePlugin.copy(status: .inactive))
+        let pluginsChanged: Bool = waitFor { promise in
+            viewModel.observePlugins {
+                promise(true)
+            }
+            self.updateStorage(with: activePlugin.copy(status: .inactive))
+        }
 
         // Then
-        waitForExpectations(timeout: Constants.expectationTimeout) { _ in
-            XCTAssertEqual(viewModel.numberOfSections, 1)
-            XCTAssertEqual(viewModel.titleForSection(at: 0), "Inactive Plugins")
-        }
+        XCTAssertTrue(pluginsChanged)
+        XCTAssertEqual(viewModel.numberOfSections, 1)
+        XCTAssertEqual(viewModel.titleForSection(at: 0), "Inactive Plugins")
     }
 
     func test_cellModel_is_correct_after_plugin_is_deleted() {
@@ -220,20 +220,20 @@ class PluginListViewModelTests: XCTestCase {
         insert(plugin2)
 
         let viewModel = PluginListViewModel(siteID: sampleSiteID, storageManager: storageManager)
-        let expect = expectation(description: "Data source is updated correctly.")
-        viewModel.observePlugins {
-            expect.fulfill()
-        }
         XCTAssertEqual(viewModel.numberOfRows(inSection: 0), 2)
 
         // When
-        storage.deleteStalePlugins(siteID: sampleSiteID, installedPluginNames: [plugin2.name])
+        let pluginsChanged: Bool = waitFor { promise in
+            viewModel.observePlugins {
+                promise(true)
+            }
+            self.storage.deleteStalePlugins(siteID: self.sampleSiteID, installedPluginNames: [plugin2.name])
+        }
 
         // Then
-        waitForExpectations(timeout: Constants.expectationTimeout) { _ in
-            XCTAssertEqual(viewModel.numberOfRows(inSection: 0), 1)
-            XCTAssertEqual(viewModel.cellModelForRow(at: IndexPath(row: 0, section: 0)).name, plugin2.name)
-        }
+        XCTAssertTrue(pluginsChanged)
+        XCTAssertEqual(viewModel.numberOfRows(inSection: 0), 1)
+        XCTAssertEqual(viewModel.cellModelForRow(at: IndexPath(row: 0, section: 0)).name, plugin2.name)
     }
 
     func test_resyncPlugins_dispatches_synchronizeSitePlugins_action_with_correct_siteID() {

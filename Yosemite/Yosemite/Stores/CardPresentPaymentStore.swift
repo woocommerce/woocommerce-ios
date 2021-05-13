@@ -193,10 +193,13 @@ private extension CardPresentPaymentStore {
     }
 
     func reset() {
-        cardReaderService.disconnect().sink(receiveCompletion: { [weak self] _ in
-            self?.cardReaderService.clear()
-        }, receiveValue: {
-        }).store(in: &cancellables)
+        cardReaderService.disconnect()
+            .subscribe(Subscribers.Sink(
+                        receiveCompletion: { [weak self] _ in
+                            self?.cardReaderService.clear()
+                        },
+                        receiveValue: { _ in }
+            ))
     }
 }
 

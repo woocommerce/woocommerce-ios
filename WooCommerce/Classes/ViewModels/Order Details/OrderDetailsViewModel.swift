@@ -281,7 +281,7 @@ extension OrderDetailsViewModel {
             guard let receipt = receipt else {
                 return
             }
-            let viewModel = ReceiptViewModel(receipt: receipt)
+            let viewModel = ReceiptViewModel(order: order, receipt: receipt)
             let receiptViewController = ReceiptViewController(viewModel: viewModel)
             viewController.navigationController?.pushViewController(receiptViewController, animated: true)
         case .refund:

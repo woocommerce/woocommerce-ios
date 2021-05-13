@@ -21,4 +21,18 @@ final class ReceiptViewController: UIViewController {
 
         // Do any additional setup after loading the view.
     }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        syncReceiptContent()
+    }
+}
+
+private extension ReceiptViewController {
+    func syncReceiptContent() {
+        viewModel.generateContent { [weak self] content in
+            self?.webView.loadHTMLString(content, baseURL: nil)
+        }
+    }
 }

@@ -160,6 +160,10 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     public func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error> {
+        // The documentation for this protocol method promises that this will produce either
+        // a single value or it will fail.
+        // This isn't enforced by the type system, but it is guaranteed as long as all the
+        // steps produce a Future.
         return createPaymentIntent(parameters)
             .flatMap { intent in
                 self.collectPaymentMethod(intent: intent)

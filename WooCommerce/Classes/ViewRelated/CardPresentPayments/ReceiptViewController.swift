@@ -2,6 +2,8 @@ import UIKit
 import WebKit
 import Yosemite
 
+
+/// Previews a receipt
 final class ReceiptViewController: UIViewController {
     @IBOutlet private weak var webView: WKWebView!
 

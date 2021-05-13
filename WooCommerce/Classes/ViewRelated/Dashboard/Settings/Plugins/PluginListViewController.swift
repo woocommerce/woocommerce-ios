@@ -50,7 +50,7 @@ final class PluginListViewController: UIViewController {
 // MARK: - UI Configurations
 private extension PluginListViewController {
     func configureNavigation() {
-        title = NSLocalizedString("Plugins", comment: "Title of the Plugin List screen")
+        title = viewModel.pluginListTitle
     }
 
     func configureTableView() {
@@ -125,9 +125,7 @@ extension PluginListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(HeadlineLabelTableViewCell.self, for: indexPath)
         let cellModel = viewModel.cellModelForRow(at: indexPath)
-        cell.update(style: .bodyWithLineLimit(count: 2),
-                    headline: cellModel.name,
-                    body: cellModel.description)
+        cell.update(style: .bodyWithLineLimit(count: 2), headline: cellModel.name, body: cellModel.description)
         return cell
     }
 

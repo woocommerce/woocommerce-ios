@@ -135,7 +135,7 @@ class PluginListViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.cellModelForRow(at: IndexPath(row: 0, section: 0)).name, activePlugin.name)
-        XCTAssertEqual(viewModel.cellModelForRow(at: IndexPath(row: 0, section: 0)).description, "Lorem ipsum random HTML content")
+        XCTAssertEqual(viewModel.cellModelForRow(at: IndexPath(row: 0, section: 0)).description, activePlugin.descriptionRaw)
     }
 
     func test_plugins_are_sorted_by_name_in_a_section() {
@@ -156,12 +156,12 @@ class PluginListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.cellModelForRow(at: IndexPath(row: 1, section: 0)).name, inactivePlugin1.name)
     }
 
-    func test_cellModel_description_html_tags_are_removed() {
+    func test_cellModel_html_tags_and_entites_are_removed() {
         // Given
         let activePlugin = SitePlugin.fake().copy(
             siteID: sampleSiteID,
             status: .active,
-            name: "BBB",
+            name: "BBB &amp; CCC",
             descriptionRaw: "Lorem ipsum random <strong>HTML</strong> <i>content</i>"
         )
         insert(activePlugin)
@@ -172,6 +172,7 @@ class PluginListViewModelTests: XCTestCase {
         viewModel.observePlugins {}
 
         // Then
+        XCTAssertEqual(viewModel.cellModelForRow(at: IndexPath(row: 0, section: 0)).name, "BBB & CCC")
         XCTAssertEqual(viewModel.cellModelForRow(at: IndexPath(row: 0, section: 0)).description, "Lorem ipsum random HTML content")
     }
 

@@ -63,6 +63,12 @@ final class PluginListViewModel {
 // MARK: - Data source for plugin list
 //
 extension PluginListViewModel {
+    /// Title for the Plugin List screen
+    ///
+    var pluginListTitle: String {
+        Localization.pluginListTitle
+    }
+
     /// Number of sections to display on the table view.
     ///
     var numberOfSections: Int {
@@ -76,17 +82,18 @@ extension PluginListViewModel {
             return nil
         }
         let pluginStatus = SitePluginStatusEnum(rawValue: rawStatus)
-        let sectionTitle: String
-        switch pluginStatus {
-        case .active:
-            sectionTitle = Localization.activeSectionTitle
-        case .inactive:
-            sectionTitle = Localization.inactiveSectionTitle
-        case .networkActive:
-            sectionTitle = Localization.networkActiveSectionTitle
-        case .unknown:
-            sectionTitle = "" // This case should not happen
-        }
+        let sectionTitle: String = {
+            switch pluginStatus {
+            case .active:
+                return Localization.activeSectionTitle
+            case .inactive:
+                return Localization.inactiveSectionTitle
+            case .networkActive:
+                return Localization.networkActiveSectionTitle
+            case .unknown:
+                return "" // This case should not happen
+            }
+        }()
         return sectionTitle.capitalized
     }
 
@@ -100,11 +107,11 @@ extension PluginListViewModel {
     ///
     func cellModelForRow(at indexPath: IndexPath) -> PluginListCellViewModel {
         let plugin = resultsController.object(at: indexPath)
-        // The description can sometimes contain HTML tags
-        // so it's best to be extra safe by removing those tags
+        // Plugin name and description can sometimes contain HTML tags and entities
+        // so it's best to be extra safe by removing them
         return PluginListCellViewModel(
-            name: plugin.name,
-            description: plugin.descriptionRaw.removedHTMLTags
+            name: plugin.name.strippedHTML,
+            description: plugin.descriptionRaw.strippedHTML
         )
     }
 }
@@ -113,6 +120,7 @@ extension PluginListViewModel {
 //
 private extension PluginListViewModel {
     enum Localization {
+        static let pluginListTitle = NSLocalizedString("Plugins", comment: "Title of the Plugin List screen")
         static let activeSectionTitle = NSLocalizedString("Active Plugins", comment: "Title for table view section of active plugins")
         static let inactiveSectionTitle = NSLocalizedString("Inactive Plugins", comment: "Title for table view section of inactive plugins")
         static let networkActiveSectionTitle = NSLocalizedString("Network Active Plugins", comment: "Title for table view section of network active plugins")

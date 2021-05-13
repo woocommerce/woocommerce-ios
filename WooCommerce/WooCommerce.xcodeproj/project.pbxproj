@@ -1159,6 +1159,9 @@
 		D8CD710F237A49DB007148B9 /* UIColor+SemanticColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CD710E237A49DB007148B9 /* UIColor+SemanticColors.swift */; };
 		D8D15F83230A17A000D48B3F /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D15F82230A17A000D48B3F /* ServiceLocator.swift */; };
 		D8D15F85230A18AB00D48B3F /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D15F84230A18AB00D48B3F /* Analytics.swift */; };
+		D8EE9692264D328A0033B2F9 /* ReceiptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EE9690264D328A0033B2F9 /* ReceiptViewController.swift */; };
+		D8EE9693264D328A0033B2F9 /* ReceiptViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D8EE9691264D328A0033B2F9 /* ReceiptViewController.xib */; };
+		D8EE9698264D3CCB0033B2F9 /* ReceiptViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EE9697264D3CCB0033B2F9 /* ReceiptViewModel.swift */; };
 		D8EF1E562605121C00380EA4 /* OrderPaymentMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EF1E552605121C00380EA4 /* OrderPaymentMethod.swift */; };
 		D8F01DD325DEDC1C00CE70BE /* StripeCardReaderIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F01DD225DEDC1C00CE70BE /* StripeCardReaderIntegrationTests.swift */; };
 		D8F3A973258862BE0085859B /* PrologueScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F3A972258862BE0085859B /* PrologueScreen.swift */; };
@@ -2414,6 +2417,9 @@
 		D8CD710E237A49DB007148B9 /* UIColor+SemanticColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+SemanticColors.swift"; sourceTree = "<group>"; };
 		D8D15F82230A17A000D48B3F /* ServiceLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocator.swift; sourceTree = "<group>"; };
 		D8D15F84230A18AB00D48B3F /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
+		D8EE9690264D328A0033B2F9 /* ReceiptViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptViewController.swift; sourceTree = "<group>"; };
+		D8EE9691264D328A0033B2F9 /* ReceiptViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReceiptViewController.xib; sourceTree = "<group>"; };
+		D8EE9697264D3CCB0033B2F9 /* ReceiptViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptViewModel.swift; sourceTree = "<group>"; };
 		D8EF1E552605121C00380EA4 /* OrderPaymentMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderPaymentMethod.swift; sourceTree = "<group>"; };
 		D8F01DD225DEDC1C00CE70BE /* StripeCardReaderIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeCardReaderIntegrationTests.swift; sourceTree = "<group>"; };
 		D8F3A972258862BE0085859B /* PrologueScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrologueScreen.swift; sourceTree = "<group>"; };
@@ -5604,6 +5610,8 @@
 			children = (
 				D8815ADD26383EE600EDAD62 /* CardPresentPaymentsModalViewController.swift */,
 				D8815ADE26383EE700EDAD62 /* CardPresentPaymentsModalViewController.xib */,
+				D8EE9690264D328A0033B2F9 /* ReceiptViewController.swift */,
+				D8EE9691264D328A0033B2F9 /* ReceiptViewController.xib */,
 			);
 			path = CardPresentPayments;
 			sourceTree = "<group>";
@@ -5622,6 +5630,7 @@
 				311D21E7264AEDB900102316 /* CardPresentModalScanningForReader.swift */,
 				31B0551D264B3C7A00134D87 /* CardPresentModalFoundReader.swift */,
 				31B05522264B3C8900134D87 /* CardPresentModalConnectingToReader.swift */,
+				D8EE9697264D3CCB0033B2F9 /* ReceiptViewModel.swift */,
 			);
 			path = CardPresentPayments;
 			sourceTree = "<group>";
@@ -6009,6 +6018,7 @@
 				CE227099228F180B00C0626C /* WooBasicTableViewCell.xib in Resources */,
 				93BCF01F20DC2CE200EBF7A1 /* bash_secrets.tpl in Resources */,
 				02162727237963AF000208D2 /* ProductFormViewController.xib in Resources */,
+				D8EE9693264D328A0033B2F9 /* ReceiptViewController.xib in Resources */,
 				B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */,
 				CE2A9FCF23C4F2C8002BEC1C /* RefundedProductsViewController.xib in Resources */,
 				4590CEE5249BA46700949F05 /* AddProductCategoryViewController.xib in Resources */,
@@ -6605,6 +6615,7 @@
 				B5F8B7E02194759100DAB7E2 /* ReviewDetailsViewController.swift in Sources */,
 				262A098B2628C51D0033AD20 /* OrderAddOnListViewModel.swift in Sources */,
 				0262DA5323A238460029AF30 /* UnitInputTableViewCell.swift in Sources */,
+				D8EE9692264D328A0033B2F9 /* ReceiptViewController.swift in Sources */,
 				02E4FD7C2306A04C0049610C /* StatsTimeRangeBarView.swift in Sources */,
 				D8810086257DCCF0008DE6F2 /* WordPressComSiteInfo+Woo.swift in Sources */,
 				45E3C8F325E7D30300102E84 /* ShippingLabelAddress+Woo.swift in Sources */,
@@ -6918,6 +6929,7 @@
 				02ADC7CC239762E0008D4BED /* PaginatedListSelectorViewProperties.swift in Sources */,
 				26CCBE0B2523B3650073F94D /* RefundProductsTotalTableViewCell.swift in Sources */,
 				0229ED00258767BC00C336F8 /* ShippingLabelPrintingStepContentView.swift in Sources */,
+				D8EE9698264D3CCB0033B2F9 /* ReceiptViewModel.swift in Sources */,
 				CE1CCB4B20570B1F000EE3AC /* OrderTableViewCell.swift in Sources */,
 				748AD087219F481B00023535 /* UIView+Animation.swift in Sources */,
 				02564A8A246CDF6100D6DB2A /* ProductsTopBannerFactory.swift in Sources */,

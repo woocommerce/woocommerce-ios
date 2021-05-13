@@ -445,6 +445,12 @@ extension UIImage {
         return UIImage.gridicon(.money, size: CGSize(width: 24, height: 24))
     }
 
+    /// Print Icon
+    ///
+    static var print: UIImage {
+        return UIImage.gridicon(.print)
+    }
+
     /// Product Deleted Icon
     ///
     static var productDeletedImage: UIImage {

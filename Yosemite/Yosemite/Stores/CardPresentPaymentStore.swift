@@ -54,8 +54,8 @@ public final class CardPresentPaymentStore: Store {
                            parameters: parameters,
                            onCardReaderMessage: event,
                            onCompletion: completion)
-        case .checkForCardReaderUpdate(onData: let data, onCompletion: let completion):
-            checkForCardReaderUpdate(onData: data, onCompletion: completion)
+        case .checkForCardReaderUpdate(onCompletion: let completion):
+            checkForCardReaderUpdate(onCompletion: completion)
         case .startCardReaderUpdate(onProgress: let progress, onCompletion: let completion):
             startCardReaderUpdate(onProgress: progress, onCompletion: completion)
         case .reset:
@@ -164,36 +164,34 @@ private extension CardPresentPaymentStore {
             })
     }
 
-    func checkForCardReaderUpdate(onData: @escaping (Result<CardReaderSoftwareUpdate, Error>) -> Void,
-                        onCompletion: @escaping () -> Void) {
-        cardReaderService.checkForUpdate().sink(receiveCompletion: { value in
-            switch value {
-            case .failure(let error):
-                onData(.failure(error))
-            case .finished:
-                onCompletion()
-            }
-        }, receiveValue: {softwareUpdate in
-            onData(.success(softwareUpdate))
-        }).store(in: &cancellables)
+    func checkForCardReaderUpdate(onCompletion: @escaping (Result<CardReaderSoftwareUpdate?, Error>) -> Void) {
+        cardReaderService.checkForUpdate()
+            .subscribe(Subscribers.Sink { value in
+                switch value {
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                case .finished:
+                    onCompletion(.success(nil))
+                }
+            } receiveValue: {softwareUpdate in
+                onCompletion(.success(softwareUpdate))
+            })
     }
 
     func startCardReaderUpdate(onProgress: @escaping (Float) -> Void,
                         onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        cardReaderService.installUpdate().sink(receiveCompletion: { value in
-            switch value {
-            case .failure(let error):
-                onCompletion(.failure(error))
-            case .finished:
-                onCompletion(.success(()))
-            }
-        }, receiveValue: {
-            onCompletion(.success(()))
-        }).store(in: &cancellables)
-        // Observe update progress events fired by the card reader
-        cardReaderService.softwareUpdateEvents.sink { progress in
-            onProgress(progress)
-        }.store(in: &cancellables)
+        cardReaderService.installUpdate()
+            .subscribe(Subscribers.Sink(
+                receiveCompletion: { value in
+                    switch value {
+                    case .failure(let error):
+                        onCompletion(.failure(error))
+                    case .finished:
+                        onCompletion(.success(()))
+                    }
+                },
+                receiveValue: onProgress
+            ))
     }
 
     func reset() {

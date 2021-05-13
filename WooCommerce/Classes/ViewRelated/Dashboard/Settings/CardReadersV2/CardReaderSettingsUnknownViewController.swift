@@ -217,8 +217,14 @@ private extension CardReaderSettingsUnknownViewController {
     }
 
     private func configureLearnMore(cell: LearnMoreTableViewCell) {
-        cell.learnMoreLabel.text = Localization.learnMore
+        cell.learnMoreTextView.attributedText = Localization.learnMore
+        cell.learnMoreTextView.tintColor = .textLink
+        cell.learnMoreTextView.delegate = self
         cell.selectionStyle = .none
+    }
+
+    private func urlWasPressed(url: URL) {
+        WebviewHelper.launch(url, with: self)
     }
 }
 
@@ -244,7 +250,7 @@ extension CardReaderSettingsUnknownViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return UITableView.automaticDimension
+        return CGFloat.leastNormalMagnitude
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
@@ -270,14 +276,11 @@ extension CardReaderSettingsUnknownViewController: UITableViewDataSource {
 extension CardReaderSettingsUnknownViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let row = rowAtIndexPath(indexPath)
-        return row.height
+        UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-
-        // TODO: Connect the connect button to the view model
     }
 }
 
@@ -316,22 +319,19 @@ private enum Row: CaseIterable {
         }
     }
 
-    var height: CGFloat {
-        switch self {
-        case .connectHeader,
-             .connectButton,
-             .connectImage:
-            return UITableView.automaticDimension
-        case .connectHelpHintChargeReader,
-             .connectHelpHintTurnOnReader,
-             .connectHelpHintEnableBluetooth,
-             .connectLearnMore:
-            return 70
-        }
-    }
-
     var reuseIdentifier: String {
         return type.reuseIdentifier
+    }
+}
+
+// MARK: - UITextViewDelegate Conformance
+//
+extension CardReaderSettingsUnknownViewController: UITextViewDelegate {
+
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL,
+                  in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        urlWasPressed(url: URL)
+        return false
     }
 }
 
@@ -384,9 +384,23 @@ private extension CardReaderSettingsUnknownViewController {
             comment: "Settings > Manage Card Reader > Connect > A button to begin a search for a reader"
         )
 
-        static let learnMore = NSLocalizedString(
-            "Learn more about accepting payments with your mobile device and ordering card readers",
-            comment: "Settings > Manage Card Reader > Connect > A prompt for new users to start accepting mobile payments"
-        )
+        static var learnMore: NSAttributedString {
+            let learnMoreText = NSLocalizedString(
+                "<a href=\"https://woocommerce.com/payments\">Learn more</a> about accepting payments with your mobile device and ordering card readers",
+                comment: "A label prompting users to learn more about card readers with an embedded hyperlink"
+            )
+
+            let learnMoreAttributes: [NSAttributedString.Key: Any] = [
+                .font: StyleManager.footerLabelFont,
+                .foregroundColor: UIColor.textSubtle
+            ]
+
+            let learnMoreAttrText = NSMutableAttributedString()
+            learnMoreAttrText.append(learnMoreText.htmlToAttributedString)
+            let range = NSRange(location: 0, length: learnMoreAttrText.length)
+            learnMoreAttrText.addAttributes(learnMoreAttributes, range: range)
+
+            return learnMoreAttrText
+        }
     }
 }

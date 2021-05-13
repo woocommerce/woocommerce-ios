@@ -87,7 +87,7 @@ final class CardReaderSettingsConnectView: NSObject {
     }
 
     private func configureLearnMore(cell: LearnMoreTableViewCell) {
-        cell.learnMoreLabel.text = Localization.learnMore
+        cell.learnMoreTextView.text = Localization.learnMore
         cell.selectionStyle = .none
     }
 }

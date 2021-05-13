@@ -276,8 +276,7 @@ extension CardReaderSettingsUnknownViewController: UITableViewDataSource {
 extension CardReaderSettingsUnknownViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let row = rowAtIndexPath(indexPath)
-        return row.height
+        UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -317,20 +316,6 @@ private enum Row: CaseIterable {
             return ButtonTableViewCell.self
         case .connectLearnMore:
             return LearnMoreTableViewCell.self
-        }
-    }
-
-    var height: CGFloat {
-        switch self {
-        case .connectHeader,
-             .connectButton,
-             .connectImage:
-            return UITableView.automaticDimension
-        case .connectHelpHintChargeReader,
-             .connectHelpHintTurnOnReader,
-             .connectHelpHintEnableBluetooth,
-             .connectLearnMore:
-            return 70
         }
     }
 

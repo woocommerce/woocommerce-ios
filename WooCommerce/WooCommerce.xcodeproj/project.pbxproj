@@ -455,8 +455,6 @@
 		26FE09E124DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09E024DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift */; };
 		26FE09E424DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09E324DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift */; };
 		26FF455F24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FF455E24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift */; };
-		31186FF325DF220B001A28D3 /* CardReaderSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31186FF225DF220B001A28D3 /* CardReaderSettingsViewModel.swift */; };
-		3118700725E06758001A28D3 /* CardReaderSettingsConnectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3118700625E06758001A28D3 /* CardReaderSettingsConnectView.swift */; };
 		311D21E8264AEDB900102316 /* CardPresentModalScanningForReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311D21E7264AEDB900102316 /* CardPresentModalScanningForReader.swift */; };
 		311D21ED264AF0E700102316 /* CardReaderSettingsAlerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311D21EC264AF0E700102316 /* CardReaderSettingsAlerts.swift */; };
 		31316F9C25CB20FD00D9F129 /* OrderStatusListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31316F9B25CB20FD00D9F129 /* OrderStatusListViewModel.swift */; };
@@ -476,7 +474,6 @@
 		318109EE25E5B8FF00EE0BE7 /* NumberedListItemTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 318109ED25E5B8FF00EE0BE7 /* NumberedListItemTableViewCell.xib */; };
 		318853362639FC9C00F66A9C /* CardReaderSettingsPresentingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318853352639FC9C00F66A9C /* CardReaderSettingsPresentingViewController.swift */; };
 		3188533C2639FE5800F66A9C /* CardReaderSettingsPresentedViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3188533B2639FE5800F66A9C /* CardReaderSettingsPresentedViewViewModel.swift */; };
-		318A9E9125D302370032C245 /* CardReaderSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318A9E9025D302370032C245 /* CardReaderSettingsViewController.swift */; };
 		31B0551E264B3C7A00134D87 /* CardPresentModalFoundReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B0551D264B3C7A00134D87 /* CardPresentModalFoundReader.swift */; };
 		31B05523264B3C8900134D87 /* CardPresentModalConnectingToReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B05522264B3C8900134D87 /* CardPresentModalConnectingToReader.swift */; };
 		31B19B67263B5E580099DAA6 /* CardReaderSettingsUnknownViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B19B66263B5E580099DAA6 /* CardReaderSettingsUnknownViewModel.swift */; };
@@ -484,7 +481,6 @@
 		31F21B02263C8E150035B50A /* CardReaderSettingsUnknownViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F21B01263C8E150035B50A /* CardReaderSettingsUnknownViewModelTests.swift */; };
 		31F21B5A263CB41A0035B50A /* MockCardPresentPaymentsStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F21B59263CB41A0035B50A /* MockCardPresentPaymentsStoresManager.swift */; };
 		31F21B60263CB78A0035B50A /* MockCardReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F21B5F263CB78A0035B50A /* MockCardReader.swift */; };
-		31F92DDB25E85CC800DE04DF /* CardReaderSettingsConnectedReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F92DDA25E85CC800DE04DF /* CardReaderSettingsConnectedReaderView.swift */; };
 		31F92DE125E85F6A00DE04DF /* ConnectedReaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F92DE025E85F6A00DE04DF /* ConnectedReaderTableViewCell.swift */; };
 		31FE28C225E6D338003519F2 /* LearnMoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31FE28C125E6D338003519F2 /* LearnMoreTableViewCell.swift */; };
 		31FE28C825E6D384003519F2 /* LearnMoreTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31FE28C725E6D384003519F2 /* LearnMoreTableViewCell.xib */; };
@@ -1700,8 +1696,6 @@
 		26FE09E324DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppFeedbackCardViewControllerTests.swift; sourceTree = "<group>"; };
 		26FF455E24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecatedStatsDashboardViewController.swift; sourceTree = "<group>"; };
 		2719B6FD1E6FE78A76B6AC74 /* Pods-WooCommerceTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
-		31186FF225DF220B001A28D3 /* CardReaderSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsViewModel.swift; sourceTree = "<group>"; };
-		3118700625E06758001A28D3 /* CardReaderSettingsConnectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsConnectView.swift; sourceTree = "<group>"; };
 		311D21E7264AEDB900102316 /* CardPresentModalScanningForReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalScanningForReader.swift; sourceTree = "<group>"; };
 		311D21EC264AF0E700102316 /* CardReaderSettingsAlerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsAlerts.swift; sourceTree = "<group>"; };
 		31316F9B25CB20FD00D9F129 /* OrderStatusListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusListViewModel.swift; sourceTree = "<group>"; };
@@ -1721,7 +1715,6 @@
 		318109ED25E5B8FF00EE0BE7 /* NumberedListItemTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NumberedListItemTableViewCell.xib; sourceTree = "<group>"; };
 		318853352639FC9C00F66A9C /* CardReaderSettingsPresentingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsPresentingViewController.swift; sourceTree = "<group>"; };
 		3188533B2639FE5800F66A9C /* CardReaderSettingsPresentedViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsPresentedViewViewModel.swift; sourceTree = "<group>"; };
-		318A9E9025D302370032C245 /* CardReaderSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsViewController.swift; sourceTree = "<group>"; };
 		31B0551D264B3C7A00134D87 /* CardPresentModalFoundReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalFoundReader.swift; sourceTree = "<group>"; };
 		31B05522264B3C8900134D87 /* CardPresentModalConnectingToReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalConnectingToReader.swift; sourceTree = "<group>"; };
 		31B19B66263B5E580099DAA6 /* CardReaderSettingsUnknownViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsUnknownViewModel.swift; sourceTree = "<group>"; };
@@ -1729,7 +1722,6 @@
 		31F21B01263C8E150035B50A /* CardReaderSettingsUnknownViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsUnknownViewModelTests.swift; sourceTree = "<group>"; };
 		31F21B59263CB41A0035B50A /* MockCardPresentPaymentsStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCardPresentPaymentsStoresManager.swift; sourceTree = "<group>"; };
 		31F21B5F263CB78A0035B50A /* MockCardReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCardReader.swift; sourceTree = "<group>"; };
-		31F92DDA25E85CC800DE04DF /* CardReaderSettingsConnectedReaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsConnectedReaderView.swift; sourceTree = "<group>"; };
 		31F92DE025E85F6A00DE04DF /* ConnectedReaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectedReaderTableViewCell.swift; sourceTree = "<group>"; };
 		31FE28C125E6D338003519F2 /* LearnMoreTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnMoreTableViewCell.swift; sourceTree = "<group>"; };
 		31FE28C725E6D384003519F2 /* LearnMoreTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LearnMoreTableViewCell.xib; sourceTree = "<group>"; };
@@ -3581,6 +3573,7 @@
 		318853452639FE7F00F66A9C /* CardReadersV2 */ = {
 			isa = PBXGroup;
 			children = (
+				31F92DFE25E86F4500DE04DF /* CardReaderTableViewCells */,
 				311D21EC264AF0E700102316 /* CardReaderSettingsAlerts.swift */,
 				3178C1F626409216000D771A /* CardReaderSettingsConnectedViewModel.swift */,
 				314265B02645A07800500598 /* CardReaderSettingsConnectedViewController.swift */,
@@ -3593,18 +3586,6 @@
 				3142663E2645E2AB00500598 /* CardReaderSettingsViewModelPresenter.swift */,
 			);
 			path = CardReadersV2;
-			sourceTree = "<group>";
-		};
-		318A9E8F25D301C60032C245 /* CardReaders */ = {
-			isa = PBXGroup;
-			children = (
-				318A9E9025D302370032C245 /* CardReaderSettingsViewController.swift */,
-				31186FF225DF220B001A28D3 /* CardReaderSettingsViewModel.swift */,
-				3118700625E06758001A28D3 /* CardReaderSettingsConnectView.swift */,
-				31F92DDA25E85CC800DE04DF /* CardReaderSettingsConnectedReaderView.swift */,
-				31F92DFE25E86F4500DE04DF /* CardReaderTableViewCells */,
-			);
-			path = CardReaders;
 			sourceTree = "<group>";
 		};
 		31F21B07263C8E1F0035B50A /* CardReaderSettings */ = {
@@ -5384,7 +5365,6 @@
 				DE8C9464264698E800C94823 /* Plugins */,
 				74C6FEA321C2F189009286B6 /* About */,
 				02D4564A231D059E008CF0A9 /* Beta features */,
-				318A9E8F25D301C60032C245 /* CardReaders */,
 				318853452639FE7F00F66A9C /* CardReadersV2 */,
 				CE27257A219249B5002B22EB /* Help */,
 				CE22E3F821714639005A6BEF /* Privacy */,
@@ -6383,7 +6363,6 @@
 				456CB50D2444BFAC00992A05 /* ProductPurchaseNoteViewController.swift in Sources */,
 				029F29FC24D94106004751CA /* EditableProductVariationModel.swift in Sources */,
 				0218B4EC242E06F00083A847 /* MediaType+WPMediaType.swift in Sources */,
-				3118700725E06758001A28D3 /* CardReaderSettingsConnectView.swift in Sources */,
 				D8815AE726383FD600EDAD62 /* CardPresentPaymentsModalViewModel.swift in Sources */,
 				0216271E2375044D000208D2 /* AztecFormatBar+Update.swift in Sources */,
 				026CF63A237E9ABE009563D4 /* ProductVariationsViewController.swift in Sources */,
@@ -6489,7 +6468,6 @@
 				CE22E3F72170E23C005A6BEF /* PrivacySettingsViewController.swift in Sources */,
 				021125482577CC650075AD2A /* ShippingLabelDetailsViewModel.swift in Sources */,
 				316837DA25CCA90C00E36B2F /* OrderStatusListDataSource.swift in Sources */,
-				318A9E9125D302370032C245 /* CardReaderSettingsViewController.swift in Sources */,
 				57C5FF7A25091A350074EC26 /* OrderListSyncActionUseCase.swift in Sources */,
 				B58B4AB32108F01700076FDD /* DefaultNoticePresenter.swift in Sources */,
 				4512055224655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.swift in Sources */,
@@ -6715,7 +6693,6 @@
 				933A27372222354600C2143A /* Logging.swift in Sources */,
 				0290E26F238E3CE400B5C466 /* ListSelectorViewController.swift in Sources */,
 				B5D1AFB820BC510200DB0E8C /* UIImage+Woo.swift in Sources */,
-				31F92DDB25E85CC800DE04DF /* CardReaderSettingsConnectedReaderView.swift in Sources */,
 				B5980A6121AC878900EBF596 /* UIDevice+Woo.swift in Sources */,
 				02521E11243DC3C400DC7810 /* CancellableMedia.swift in Sources */,
 				CCCC29E325E576810046B96F /* RenameAttributesViewController.swift in Sources */,
@@ -6890,7 +6867,6 @@
 				02279587237A50C900787C63 /* AztecHeaderFormatBarCommand.swift in Sources */,
 				025C006B2550DE4700FAC222 /* BarcodeScannerViewController.swift in Sources */,
 				A6557218258B7510008AE7CA /* OrderListCellViewModel.swift in Sources */,
-				31186FF325DF220B001A28D3 /* CardReaderSettingsViewModel.swift in Sources */,
 				D8915DC12372C8AC00F63762 /* ColorStudio.swift in Sources */,
 				F997174523DC068500592D8E /* XLPagerStrip+AccessibilityIdentifier.swift in Sources */,
 				D8C2A28B231931D100F503E9 /* ReviewViewModel.swift in Sources */,

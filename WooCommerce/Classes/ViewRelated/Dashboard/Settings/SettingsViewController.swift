@@ -214,7 +214,7 @@ private extension SettingsViewController {
         if canCollectPayments {
             sections.append(
                 Section(title: storeSettingsTitle,
-                        rows: [.cardReaders, .cardReadersV2],
+                        rows: [.cardReadersV2],
                         footerHeight: UITableView.automaticDimension)
             )
         }
@@ -260,8 +260,6 @@ private extension SettingsViewController {
             configurePlugins(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
             configureSupport(cell: cell)
-        case let cell as BasicTableViewCell where row == .cardReaders:
-            configureCardReaders(cell: cell)
         case let cell as BasicTableViewCell where row == .cardReadersV2:
             configureCardReadersV2(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
@@ -310,16 +308,10 @@ private extension SettingsViewController {
         cell.textLabel?.text = NSLocalizedString("Help & Support", comment: "Contact Support Action")
     }
 
-    func configureCardReaders(cell: BasicTableViewCell) {
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Manage Card Reader", comment: "Navigates to Card Reader management screen")
-    }
-
     func configureCardReadersV2(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Manage Card Reader (V2)", comment: "Navigates to Card Reader management screen")
+        cell.textLabel?.text = NSLocalizedString("Manage Card Reader", comment: "Navigates to Card Reader management screen")
     }
 
     func configurePrivacy(cell: BasicTableViewCell) {
@@ -446,14 +438,6 @@ private extension SettingsViewController {
         ServiceLocator.analytics.track(.settingsContactSupportTapped)
         guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: HelpAndSupportViewController.self) else {
             fatalError("Cannot instantiate `HelpAndSupportViewController` from Dashboard storyboard")
-        }
-        show(viewController, sender: self)
-    }
-
-    func cardReadersWasPressed() {
-        ServiceLocator.analytics.track(.settingsCardReadersTapped)
-        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsViewController.self) else {
-            fatalError("Cannot instantiate `CardReaderSettingsViewController` from Dashboard storyboard")
         }
         show(viewController, sender: self)
     }
@@ -603,8 +587,6 @@ extension SettingsViewController: UITableViewDelegate {
             sitePluginsWasPressed()
         case .support:
             supportWasPressed()
-        case .cardReaders:
-            cardReadersWasPressed()
         case .cardReadersV2:
             cardReadersV2WasPressed()
         case .privacy:
@@ -648,7 +630,6 @@ private enum Row: CaseIterable {
     case switchStore
     case plugins
     case support
-    case cardReaders
     case cardReadersV2
     case logout
     case privacy
@@ -668,8 +649,6 @@ private enum Row: CaseIterable {
         case .plugins:
             return BasicTableViewCell.self
         case .support:
-            return BasicTableViewCell.self
-        case .cardReaders:
             return BasicTableViewCell.self
         case .cardReadersV2:
             return BasicTableViewCell.self

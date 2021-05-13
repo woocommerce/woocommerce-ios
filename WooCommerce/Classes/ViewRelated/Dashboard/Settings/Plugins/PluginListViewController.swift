@@ -152,7 +152,7 @@ private extension PluginListViewController {
 
         errorStateView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(errorStateView)
-        view.pinSubviewToSafeArea(errorStateView)
+        view.pinSubviewToAllEdges(errorStateView)
         errorStateViewController.didMove(toParent: self)
     }
 

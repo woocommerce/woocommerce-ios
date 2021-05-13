@@ -71,7 +71,7 @@ private extension PluginListViewController {
         ghostTableView.isHidden = true
 
         view.addSubview(ghostTableView)
-        view.pinSubviewToSafeArea(ghostTableView)
+        view.pinSubviewToAllEdges(ghostTableView)
     }
 
     func startGhostAnimation() {

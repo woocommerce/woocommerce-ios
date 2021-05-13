@@ -207,8 +207,8 @@ private extension CardPresentPaymentStore {
     }
 
     func isReadyToCollectPayment(onCompletion: @escaping (Bool) -> Void) {
-        cardReaderService.connectedReaders.subscribe(Subscribers.Sink(receiveCompletion: { _ in
-
+        cardReaderService.connectedReaders.subscribe(Subscribers.Sink(receiveCompletion: { value in
+            print("==== received completion ", value)
         }, receiveValue: { value in
             onCompletion(value.count > 0)
         }))

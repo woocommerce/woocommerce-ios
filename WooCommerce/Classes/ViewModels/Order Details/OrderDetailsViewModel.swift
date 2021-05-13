@@ -511,6 +511,12 @@ extension OrderDetailsViewModel {
         stores.dispatch(deleteTrackingAction)
     }
 
+    func isReadyToCollectPayment(onCompletion: @escaping (Bool) -> Void) {
+        let checkConnectedAction = CardPresentPaymentAction.isReadyToCollectPayment(onCompletion: onCompletion)
+
+        ServiceLocator.stores.dispatch(checkConnectedAction)
+    }
+
     /// We are passing the ReceiptParameters as part of the completon block
     /// We do so at this point for testing purposes.
     /// When we implement persistance, the receipt metadata would be persisted
@@ -520,28 +526,13 @@ extension OrderDetailsViewModel {
                         onClearMessage: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
-        // TODO. Check that there is a reader currently connected
-        // otherwise launch the discovery+pairing UI
-        // https://github.com/woocommerce/woocommerce-ios/issues/4062
+        paymentOrchestrator.collectPayment(for: self.order,
+                                           paymentsAccount: self.paymentsAccount,
+                                           onPresentMessage: onPresentMessage,
+                                           onClearMessage: onClearMessage,
+                                           onProcessingMessage: onProcessingMessage,
+                                           onCompletion: onCompletion)
 
-        let checkConnectedAction = CardPresentPaymentAction.isReadyToCollectPayment { [weak self] isReady in
-            guard let self = self else {
-                return
-            }
-
-            if isReady {
-                self.paymentOrchestrator.collectPayment(for: self.order,
-                                                        paymentsAccount: self.paymentsAccount,
-                                                        onPresentMessage: onPresentMessage,
-                                                        onClearMessage: onClearMessage,
-                                                        onProcessingMessage: onProcessingMessage,
-                                                        onCompletion: onCompletion)
-            } else {
-                self.connectToReader()
-            }
-        }
-
-        ServiceLocator.stores.dispatch(checkConnectedAction)
     }
 
     func printReceipt(params: CardPresentReceiptParameters) {
@@ -567,10 +558,6 @@ private extension OrderDetailsViewModel {
         let paymentMethod = OrderPaymentMethod(rawValue: order.paymentMethodID)
 
         return paymentMethod == .cod || paymentMethod == .none
-    }
-
-    func connectToReader() {
-        print("==== start connecting to a reader")
     }
 }
 

@@ -574,6 +574,17 @@ private extension OrderDetailsViewController {
     }
 
     @objc private func collectPayment(at: IndexPath) {
+        viewModel.isReadyToCollectPayment { [weak self] isReady in
+            if isReady {
+                self?.dismiss(animated: false, completion: nil)
+                self?.collectPaymentForCurrentOrder()
+            } else {
+                self?.connectToCardReader()
+            }
+        }
+    }
+
+    private func collectPaymentForCurrentOrder() {
         paymentAlerts.readerIsReady(from: self,
                                     title: viewModel.collectPaymentFrom,
                                     amount: viewModel.order.total)
@@ -609,6 +620,17 @@ private extension OrderDetailsViewController {
                 )
             }
         }
+    }
+
+    private func connectToCardReader() {
+        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsPresentingViewController.self) else {
+            fatalError("Cannot instantiate `CardReaderSettingsPresentingViewController` from Dashboard storyboard")
+        }
+
+        let viewModelsAndViews = CardReaderSettingsViewModelsOrderedList()
+        viewController.configure(viewModelsAndViews: viewModelsAndViews)
+
+        present(viewController, animated: true, completion: nil)
     }
 
     private func itemAddOnsButtonTapped(addOns: [OrderItemAttribute]) {

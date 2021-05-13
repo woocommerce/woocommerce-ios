@@ -408,6 +408,12 @@ extension UIImage {
         return UIImage(named: "woo-wp-no-site")!.imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Plugins error
+    ///
+    static var pluginListError: UIImage {
+        return UIImage(named: "woo-plugins-error")!.imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Mail Icon
     ///
     static var mailImage: UIImage {

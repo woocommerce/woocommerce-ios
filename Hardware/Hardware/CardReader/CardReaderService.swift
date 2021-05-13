@@ -46,6 +46,7 @@ public protocol CardReaderService {
     func clear()
 
     /// Captures a payment after collecting a payment method succeeds.
+    /// The returned publisher will behave as a Future, eventually producing a single value and finishing, or failing.
     func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error>
 
     /// Cancels a a PaymentIntent

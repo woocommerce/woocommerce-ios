@@ -143,21 +143,23 @@ private extension CardPresentPaymentStore {
                         parameters: PaymentParameters,
                         onCardReaderMessage: @escaping (CardReaderEvent) -> Void,
                         onCompletion: @escaping (Result<PaymentIntent, Error>) -> Void) {
-        cardReaderService.capturePayment(parameters).sink { error in
-            switch error {
-            case .failure(let error):
-                onCompletion(.failure(error))
-            default:
-                break
-            }
-        } receiveValue: { intent in
-            onCompletion(.success(intent))
-        }.store(in: &cancellables)
-
         // Observe status events fired by the card reader
-        cardReaderService.readerEvents.sink { event in
+        let readerEventsSubscription = cardReaderService.readerEvents.sink { event in
             onCardReaderMessage(event)
-        }.store(in: &cancellables)
+        }
+
+        cardReaderService.capturePayment(parameters)
+            .subscribe(Subscribers.Sink { error in
+                readerEventsSubscription.cancel()
+                switch error {
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                default:
+                    break
+                }
+            } receiveValue: { intent in
+                onCompletion(.success(intent))
+            })
     }
 
     func checkForCardReaderUpdate(onData: @escaping (Result<CardReaderSoftwareUpdate, Error>) -> Void,

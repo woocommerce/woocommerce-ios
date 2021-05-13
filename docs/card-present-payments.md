@@ -33,7 +33,7 @@ The mobile apps obtain the token from the endpoint `payments/connection_tokens`.
 In order to obtain a payment intent, the mobile app needs to discover and connect to a card reader first.
 
 Once the discovery and connection process is completed, we can collect a payment. To do so, we rely on the Stripe Terminal SDK, which will execute three operations in sequence: 
-1. Create a payment  intent. This is the initial step of the process. The Stripe Terminal SDK transitions into a mode where it is ready to start collecting a payment. To do so, it creates a payment intent, which will be getting updated as the payment collection process advances.
+1. Create a payment intent. This is the initial step of the process. The Stripe Terminal SDK transitions into a mode where it is ready to start collecting a payment. To do so, it creates a payment intent, which will be getting updated as the payment collection process advances.
 2. Collect a payment method. We collect a payment method by asking users to tap/insert/swipe their cards. 
 3. Process the payment. This is a somewhat obscure operation, where we assume the Terminal SDK submits all the information it has collected so far to Stripe. This information will have to be matched with what the mobile app provides in the next phase.
 

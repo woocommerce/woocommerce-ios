@@ -20,6 +20,8 @@ class DeauthenticatedState: StoresManagerState {
     ///
     func onAction(_ action: Action) { }
 
+    /// Provides access to publisher for the underlying stores
+    ///
     func publisher<Object, Publisher: Combine.Publisher, Output, Failure>(
         keyPath: KeyPath<Object, Publisher>
     ) -> Publisher? where Publisher.Output == Output, Publisher.Failure == Failure {

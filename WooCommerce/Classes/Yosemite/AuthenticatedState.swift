@@ -105,6 +105,11 @@ class AuthenticatedState: StoresManagerState {
         dispatcher.dispatch(action)
     }
 
+    /// Provides access to publisher for the underlying stores
+    ///
+    /// - Note: This can only return at most one publisher, so if there are several stores with the
+    ///  same `Object` type, it will use the first
+    ///
     func publisher<Object, Publisher: Combine.Publisher, Output, Failure>(
         keyPath: KeyPath<Object, Publisher>
     ) -> Publisher? where Publisher.Output == Output, Publisher.Failure == Failure {

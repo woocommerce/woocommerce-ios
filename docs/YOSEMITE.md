@@ -34,6 +34,8 @@ Each subclass of `Store` registers a processor with the `Dispatcher`. To registe
 
 That set of actions is declared in an implementation of the `Action` protocol. We will look at `Action` in details in the next section, but for now,  it is important to note that there is a one to one relationship between each subclass of `Store` and a corresponding implementation of the `Action` protocol. (i.e. for `AccountStore` we would also have a `AccountAction`).
 
+Stores can also expose `Combine` publishers for read-only access to data that's not persisted in Core Data. For accessing managed objects, the preferred method is to rely on `EntityListener` or `ResultsControllers`. Any publishers exposed by a store can be accessed through the `publishers(keyPath:)` method of the `StoresManagerState`.
+
 At the moment, we provide the following subclasses of `Store`:
 * `AccountStore`. Registers `AccountAction` with the `Dispatcher`.  It implements the business logic necessary to manage an account (load an account, load a site, synchronise account information…)
 * `AppSettingsStore`. Registers and responds to actions declared in `AppSettingsAction`. It implements the logic to save and retrieve application settings.

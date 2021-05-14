@@ -20,6 +20,8 @@ public final class StripeCardReaderService: NSObject {
     private let discoveredStripeReadersCache = StripeCardReaderDiscoveryCache()
 
     private var pendingSoftwareUpdate: ReaderSoftwareUpdate?
+
+    private var activePaymentIntent: StripeTerminal.PaymentIntent? = nil
 }
 
 
@@ -172,10 +174,25 @@ extension StripeCardReaderService: CardReaderService {
             }.eraseToAnyPublisher()
     }
 
-    public func cancelPaymentIntent(_ intent: PaymentIntent) -> Future<PaymentIntent, Error> {
-        return Future() { promise in
-            // Attack the Stripe SDK and cancel a PaymentIntent.
-            // To be implemented
+    public func cancelPaymentIntent() -> Future<Void, Error> {
+        return Future() { [weak self] promise in
+            guard let self = self,
+                  let activePaymentIntent = self.activePaymentIntent else {
+                promise(.failure(CardReaderServiceError.paymentCancellation()))
+                return
+            }
+
+            Terminal.shared.cancelPaymentIntent(activePaymentIntent) { (intent, error) in
+                if let error = error {
+                    let underlyingError = UnderlyingError(with: error)
+                    promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: underlyingError)))
+                }
+
+                if let _ = intent {
+                    self.activePaymentIntent = nil
+                    promise(.success(()))
+                }
+            }
         }
     }
 
@@ -291,7 +308,7 @@ extension StripeCardReaderService: CardReaderService {
 // MARK: - Payment collection
 private extension StripeCardReaderService {
     func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<StripeTerminal.PaymentIntent, Error> {
-        return Future() { promise in
+        return Future() { [weak self] promise in
             // Shortcircuit if we have an inconsistent set of parameters
             guard let parameters = parameters.toStripe() else {
                 promise(.failure(CardReaderServiceError.intentCreation()))
@@ -303,6 +320,8 @@ private extension StripeCardReaderService {
                     let underlyingError = UnderlyingError(with: error)
                     promise(.failure(CardReaderServiceError.intentCreation(underlyingError: underlyingError)))
                 }
+
+                self?.activePaymentIntent = intent
 
                 if let intent = intent {
                     promise(.success(intent))
@@ -330,8 +349,10 @@ private extension StripeCardReaderService {
     }
 
     func processPayment(intent: StripeTerminal.PaymentIntent) -> Future<PaymentIntent, Error> {
-        return Future() { promise in
+        return Future() { [weak self] promise in
             Terminal.shared.processPayment(intent) { (intent, error) in
+                self?.activePaymentIntent = intent
+
                 if let error = error {
                     let underlyingError = UnderlyingError(with: error)
                     promise(.failure(CardReaderServiceError.paymentCapture(underlyingError: underlyingError)))

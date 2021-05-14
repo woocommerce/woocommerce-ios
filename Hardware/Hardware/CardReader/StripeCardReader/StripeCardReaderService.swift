@@ -87,7 +87,7 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     public func cancelDiscovery() -> Future <Void, Error> {
-        Future { promise in
+        Future { [weak self] promise in
             /**
              *https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)discoverReaders:delegate:completion:
              *
@@ -98,11 +98,11 @@ extension StripeCardReaderService: CardReaderService {
              * discovering mode before attempting a cancellation
              *
              */
-            guard self.discoveryStatusSubject.value == .discovering else {
+            guard self?.discoveryStatusSubject.value == .discovering else {
                 return promise(.success(()))
             }
 
-            self.discoveryCancellable?.cancel { [weak self] error in
+            self?.discoveryCancellable?.cancel { [weak self] error in
                 guard let error = error else {
                     self?.switchStatusToIdle()
                     return promise(.success(()))

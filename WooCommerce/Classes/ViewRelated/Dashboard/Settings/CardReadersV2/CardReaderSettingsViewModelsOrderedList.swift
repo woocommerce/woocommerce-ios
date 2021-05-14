@@ -25,7 +25,9 @@ final class CardReaderSettingsViewModelsOrderedList: CardReaderSettingsPrioritiz
         viewModelsAndViews.append(
             CardReaderSettingsViewModelAndView(
                 viewModel: CardReaderSettingsUnknownViewModel(
-                    didChangeShouldShow: onDidChangeShouldShow
+                    didChangeShouldShow: { [weak self] state in
+                        self?.onDidChangeShouldShow(state)
+                    }
                 ),
                 viewIdentifier: "CardReaderSettingsUnknownViewController"
             )
@@ -33,7 +35,9 @@ final class CardReaderSettingsViewModelsOrderedList: CardReaderSettingsPrioritiz
         viewModelsAndViews.append(
             CardReaderSettingsViewModelAndView(
                 viewModel: CardReaderSettingsConnectedViewModel(
-                    didChangeShouldShow: onDidChangeShouldShow
+                    didChangeShouldShow: { [weak self] state in
+                        self?.onDidChangeShouldShow(state)
+                    }
                 ),
                 viewIdentifier: "CardReaderSettingsConnectedViewController"
             )

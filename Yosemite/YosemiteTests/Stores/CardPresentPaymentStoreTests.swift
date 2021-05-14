@@ -250,4 +250,19 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    func test_cancel_oayment_action_hits_cancel_in_service() {
+        let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
+                                                       storageManager: storageManager,
+                                                       network: network,
+                                                       cardReaderService: mockCardReaderService)
+
+        let action = CardPresentPaymentAction.cancelPayment(onCompletion: { error in
+            //
+        })
+
+        cardPresentStore.onAction(action)
+
+        XCTAssertTrue(mockCardReaderService.didHitCancelPayment)
+    }
 }

@@ -1,5 +1,4 @@
 import Foundation
-import Codegen
 
 /// Represents the package selected that will be sent in Shipping Labels Carriers and Rates endpoint.
 ///

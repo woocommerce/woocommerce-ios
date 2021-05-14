@@ -1,5 +1,4 @@
 import Foundation
-import Codegen
 
 /// Represents the rate for a specific shipping carrier
 ///

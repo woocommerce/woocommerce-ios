@@ -19,11 +19,9 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
     }
 
     func test_did_change_should_show_returns_false_if_no_connected_readers() {
-        let mockCardReaderService = MockCardReaderService()
-        ServiceLocator.setCardReader(mockCardReaderService)
-
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             knownReaders: [],
+            connectedReaders: [],
             sessionManager: SessionManager.testingInstance
         )
         ServiceLocator.setStores(mockStoresManager)
@@ -38,12 +36,9 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
     }
 
     func test_did_change_should_show_returns_true_if_a_reader_is_connected() {
-        let mockCardReaderService = MockCardReaderService()
-        mockCardReaderService.connectedReadersSubject.send([MockCardReader.bbposChipper2XBT()])
-        ServiceLocator.setCardReader(mockCardReaderService)
-
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             knownReaders: [],
+            connectedReaders: [MockCardReader.bbposChipper2XBT()],
             sessionManager: SessionManager.testingInstance
         )
         ServiceLocator.setStores(mockStoresManager)

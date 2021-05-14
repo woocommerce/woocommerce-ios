@@ -35,7 +35,7 @@ class DefaultStoresManager: StoresManager {
 
     /// Active StoresManager State.
     ///
-    private var state: StoresManagerState {
+    @Published private var state: StoresManagerState {
         willSet {
             state.willLeave()
         }
@@ -49,6 +49,23 @@ class DefaultStoresManager: StoresManager {
     ///
     var isAuthenticated: Bool {
         return state is AuthenticatedState
+    }
+
+    /// Indicates if there is any connected card reader
+    ///
+    var connectedCardReaders: AnyPublisher<[CardReader], Never> {
+        $state
+            // When the state changes, obtain the connectedReaders publisher from it
+            .map { state in
+                state.publisher(keyPath: \CardPresentPaymentStore.connectedReaders)
+            }
+            // If the state didn't have a publisher, we'll assume there is no connected
+            // reader and emit an empty value
+            .replaceNil(with: Just([]).eraseToAnyPublisher())
+            // Flatten the stream of publishers and emit the connected reader values from
+            // the latest publisher instead
+            .switchToLatest()
+            .eraseToAnyPublisher()
     }
 
     @Published private var isLoggedIn: Bool = false
@@ -424,6 +441,12 @@ protocol StoresManagerState {
     /// Executed whenever an Action is received.
     ///
     func onAction(_ action: Action)
+
+    /// Provides access to publisher for the underlying stores
+    ///
+    func publisher<Object, Publisher: Combine.Publisher, Output, Failure>(
+        keyPath: KeyPath<Object, Publisher>
+    ) -> Publisher? where Publisher.Output == Output, Publisher.Failure == Failure
 }
 
 

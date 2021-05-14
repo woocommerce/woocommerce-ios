@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import Yosemite
 import Networking
 import Storage
@@ -102,6 +103,15 @@ class AuthenticatedState: StoresManagerState {
     ///
     func onAction(_ action: Action) {
         dispatcher.dispatch(action)
+    }
+
+    func publisher<Object, Publisher: Combine.Publisher, Output, Failure>(
+        keyPath: KeyPath<Object, Publisher>
+    ) -> Publisher? where Publisher.Output == Output, Publisher.Failure == Failure {
+        guard let service = services.first(where: { $0 is Object }) as? Object else {
+            return nil
+        }
+        return service[keyPath: keyPath]
     }
 }
 

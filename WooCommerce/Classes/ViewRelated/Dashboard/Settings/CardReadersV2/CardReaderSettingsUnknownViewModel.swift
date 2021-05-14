@@ -47,7 +47,7 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
         }
         ServiceLocator.stores.dispatch(knownAction)
 
-        ServiceLocator.cardReaderService.connectedReaders
+        ServiceLocator.stores.connectedCardReaders
             .sink { [weak self] readers in
                 guard let self = self else {
                     return

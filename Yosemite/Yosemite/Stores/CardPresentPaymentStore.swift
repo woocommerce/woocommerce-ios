@@ -60,6 +60,13 @@ public final class CardPresentPaymentStore: Store {
     }
 }
 
+// MARK: - Publishers
+//
+public extension CardPresentPaymentStore {
+    var connectedReaders: AnyPublisher<[CardReader], Never> {
+        cardReaderService.connectedReaders
+    }
+}
 
 // MARK: - Services
 //

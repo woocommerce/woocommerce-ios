@@ -41,6 +41,10 @@ public protocol StoresManager {
     ///
     var isAuthenticated: Bool { get }
 
+    /// Indicates if there is any connected card reader
+    ///
+    var connectedCardReaders: AnyPublisher<[CardReader], Never> { get }
+
     /// Publishes signal that indicates if the user is currently logged in with credentials.
     ///
     var isLoggedInPublisher: AnyPublisher<Bool, Never> { get }

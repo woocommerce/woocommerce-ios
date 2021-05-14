@@ -24,7 +24,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     /// connected readers.
     ///
     private func beginObservation() {
-        ServiceLocator.cardReaderService.connectedReaders
+        ServiceLocator.stores.connectedCardReaders
             .sink { [weak self] readers in
                 guard let self = self else {
                     return

@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import Yosemite
 
 
@@ -18,4 +19,10 @@ class DeauthenticatedState: StoresManagerState {
     /// NO-OP: During deauth method, we're not running any actions.
     ///
     func onAction(_ action: Action) { }
+
+    func publisher<Object, Publisher: Combine.Publisher, Output, Failure>(
+        keyPath: KeyPath<Object, Publisher>
+    ) -> Publisher? where Publisher.Output == Output, Publisher.Failure == Failure {
+        nil
+    }
 }

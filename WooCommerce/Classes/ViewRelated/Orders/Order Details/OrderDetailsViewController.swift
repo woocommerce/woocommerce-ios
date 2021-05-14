@@ -78,6 +78,7 @@ final class OrderDetailsViewController: UIViewController {
         syncProductVariations()
         syncRefunds()
         syncShippingLabels()
+        syncSavedReceipts()
         syncTrackingsHidingAddButtonIfNecessary()
         checkShippingLabelCreationEligibility()
         checkCardPresentPaymentEligibility()
@@ -323,6 +324,11 @@ extension OrderDetailsViewController {
         }
 
         group.enter()
+        syncSavedReceipts {_ in
+            group.leave()
+        }
+
+        group.enter()
         checkOrderAddOnFeatureSwitchState {
             group.leave()
         }
@@ -375,6 +381,14 @@ private extension OrderDetailsViewController {
         viewModel.syncShippingLabels(onCompletion: onCompletion)
     }
 
+    func syncSavedReceipts(onCompletion: ((Error?) -> ())? = nil) {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) else {
+            return
+        }
+
+        viewModel.syncSavedReceipts(onCompletion: onCompletion)
+    }
+
     func checkShippingLabelCreationEligibility(onCompletion: (() -> Void)? = nil) {
         viewModel.checkShippingLabelCreationEligibility { [weak self] in
             self?.reloadTableViewSectionsAndData()
@@ -418,6 +432,11 @@ private extension OrderDetailsViewController {
 
         group.enter()
         syncNotes { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncSavedReceipts { _ in
             group.leave()
         }
 
@@ -555,6 +574,18 @@ private extension OrderDetailsViewController {
     }
 
     @objc private func collectPayment(at: IndexPath) {
+        viewModel.isReadyToCollectPayment { [weak self] isReady in
+            if isReady {
+                self?.dismiss(animated: false, completion: {
+                    self?.collectPaymentForCurrentOrder()
+                })
+            } else {
+                self?.connectToCardReader()
+            }
+        }
+    }
+
+    private func collectPaymentForCurrentOrder() {
         paymentAlerts.readerIsReady(from: self,
                                     title: viewModel.collectPaymentFrom,
                                     amount: viewModel.order.total)
@@ -590,6 +621,17 @@ private extension OrderDetailsViewController {
                 )
             }
         }
+    }
+
+    private func connectToCardReader() {
+        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsPresentingViewController.self) else {
+            fatalError("Cannot instantiate `CardReaderSettingsPresentingViewController` from Dashboard storyboard")
+        }
+
+        let viewModelsAndViews = CardReaderSettingsViewModelsOrderedList()
+        viewController.configure(viewModelsAndViews: viewModelsAndViews)
+
+        present(viewController, animated: true, completion: nil)
     }
 
     private func itemAddOnsButtonTapped(addOns: [OrderItemAttribute]) {

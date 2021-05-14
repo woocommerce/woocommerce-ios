@@ -14,41 +14,6 @@ final class PaymentCaptureOrchestrator {
                         onClearMessage: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
-
-        // TODO. Check that there is a reader currently connected
-        // otherwise launch the discovery+pairing UI
-        // https://github.com/woocommerce/woocommerce-ios/issues/4062
-        collectPaymentWithCardReader(for: order,
-                                     paymentsAccount: paymentsAccount,
-                                     onPresentMessage: onPresentMessage,
-                                     onClearMessage: onClearMessage,
-                                     onProcessingMessage: onProcessingMessage,
-                                     onCompletion: onCompletion)
-    }
-
-    func printReceipt(for order: Order, params: CardPresentReceiptParameters) {
-        let action = ReceiptAction.print(order: order, parameters: params)
-
-        ServiceLocator.stores.dispatch(action)
-    }
-
-    func emailReceipt(for order: Order, params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {
-        let action = ReceiptAction.generateContent(order: order, parameters: params) { emailContent in
-            onContent(emailContent)
-        }
-
-        ServiceLocator.stores.dispatch(action)
-    }
-}
-
-
-private extension PaymentCaptureOrchestrator {
-    func collectPaymentWithCardReader(for order: Order,
-                                      paymentsAccount: WCPayAccount?,
-                                      onPresentMessage: @escaping (String) -> Void,
-                                      onClearMessage: @escaping () -> Void,
-                                      onProcessingMessage: @escaping () -> Void,
-                                      onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
         guard let parameters = paymentParameters(order: order, account: paymentsAccount) else {
             DDLogError("Error: failed to create payment parameters for an order")
             onCompletion(.failure(CardReaderServiceError.paymentCapture()))
@@ -77,6 +42,29 @@ private extension PaymentCaptureOrchestrator {
         ServiceLocator.stores.dispatch(action)
     }
 
+    func printReceipt(for order: Order, params: CardPresentReceiptParameters) {
+        let action = ReceiptAction.print(order: order, parameters: params)
+
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    func emailReceipt(for order: Order, params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {
+        let action = ReceiptAction.generateContent(order: order, parameters: params) { emailContent in
+            onContent(emailContent)
+        }
+
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    func saveReceipt(for order: Order, params: CardPresentReceiptParameters) {
+        let action = ReceiptAction.saveReceipt(order: order, parameters: params)
+
+        ServiceLocator.stores.dispatch(action)
+    }
+}
+
+
+private extension PaymentCaptureOrchestrator {
     func completePaymentIntentCapture(order: Order,
                                     captureResult: Result<PaymentIntent, Error>,
                                     onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
@@ -86,19 +74,19 @@ private extension PaymentCaptureOrchestrator {
             onCompletion(.failure(error))
         case .success(let paymentIntent):
             submitPaymentIntent(siteID: order.siteID,
-                                orderID: order.orderID,
+                                order: order,
                                 paymentIntent: paymentIntent,
                                 onCompletion: onCompletion)
         }
     }
 
     func submitPaymentIntent(siteID: Int64,
-                             orderID: Int64,
+                             order: Order,
                              paymentIntent: PaymentIntent,
                              onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
         let action = WCPayAction.captureOrderPayment(siteID: siteID,
-                                                     orderID: orderID,
-                                                     paymentIntentID: paymentIntent.id) { result in
+                                                     orderID: order.orderID,
+                                                     paymentIntentID: paymentIntent.id) { [weak self] result in
 
             guard let receiptParameters = paymentIntent.receiptParameters() else {
                 let error = CardReaderServiceError.paymentCapture()
@@ -111,6 +99,7 @@ private extension PaymentCaptureOrchestrator {
 
             switch result {
             case .success:
+                self?.saveReceipt(for: order, params: receiptParameters)
                 onCompletion(.success(receiptParameters))
             case .failure(let error):
                 onCompletion(.failure(error))

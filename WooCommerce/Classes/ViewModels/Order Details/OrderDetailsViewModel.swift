@@ -136,6 +136,8 @@ final class OrderDetailsViewModel {
 
     private var paymentsAccount: WCPayAccount? = nil
 
+    private var receipt: CardPresentReceiptParameters? = nil
+
     /// Helpers
     ///
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
@@ -275,6 +277,13 @@ extension OrderDetailsViewModel {
             }
             productListVC.viewModel = self
             viewController.navigationController?.pushViewController(productListVC, animated: true)
+        case .seeReceipt:
+            guard let receipt = receipt else {
+                return
+            }
+            let viewModel = ReceiptViewModel(order: order, receipt: receipt)
+            let receiptViewController = ReceiptViewController(viewModel: viewModel)
+            viewController.navigationController?.pushViewController(receiptViewController, animated: true)
         case .refund:
             ServiceLocator.analytics.track(.orderDetailRefundDetailTapped)
             guard let refund = dataSource.refund(at: indexPath) else {
@@ -416,6 +425,20 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
+    func syncSavedReceipts(onCompletion: ((Error?) -> ())? = nil) {
+        let action = ReceiptAction.loadReceipt(order: order) { [weak self] result in
+            switch result {
+            case .success(let parameters):
+                self?.receipt = parameters
+                self?.dataSource.shouldShowReceipts = true
+            case .failure:
+                self?.dataSource.shouldShowReceipts = false
+            }
+            onCompletion?(nil)
+        }
+        stores.dispatch(action)
+    }
+
     func checkShippingLabelCreationEligibility(onCompletion: (() -> Void)? = nil) {
         let isFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsRelease2)
         let action = ShippingLabelAction.checkCreationEligibility(siteID: order.siteID,
@@ -495,6 +518,12 @@ extension OrderDetailsViewModel {
         stores.dispatch(deleteTrackingAction)
     }
 
+    func isReadyToCollectPayment(onCompletion: @escaping (Bool) -> Void) {
+        let checkConnectedAction = CardPresentPaymentAction.isReadyToCollectPayment(onCompletion: onCompletion)
+
+        ServiceLocator.stores.dispatch(checkConnectedAction)
+    }
+
     /// We are passing the ReceiptParameters as part of the completon block
     /// We do so at this point for testing purposes.
     /// When we implement persistance, the receipt metadata would be persisted
@@ -504,12 +533,13 @@ extension OrderDetailsViewModel {
                         onClearMessage: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
-        paymentOrchestrator.collectPayment(for: order,
-                                           paymentsAccount: paymentsAccount,
+        paymentOrchestrator.collectPayment(for: self.order,
+                                           paymentsAccount: self.paymentsAccount,
                                            onPresentMessage: onPresentMessage,
                                            onClearMessage: onClearMessage,
                                            onProcessingMessage: onProcessingMessage,
                                            onCompletion: onCompletion)
+
     }
 
     func printReceipt(params: CardPresentReceiptParameters) {

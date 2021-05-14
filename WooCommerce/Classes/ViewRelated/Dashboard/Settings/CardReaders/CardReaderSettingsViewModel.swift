@@ -188,13 +188,13 @@ final class CardReaderSettingsViewModel: ObservableObject {
             switch result {
             case .failure(let error):
                 print("===== error checking for updates ", error)
-            case .success(let update):
+            case .success(.some(let update)):
                 print("=== there is an update available")
                 print("=== version ", update.deviceSoftwareVersion)
                 print("=== estimated time ", update.estimatedUpdateTime)
+            case .success(.none):
+                print("=== check for updates completed")
             }
-        } onCompletion: {
-            print("=== check for updates completed")
         }
 
         ServiceLocator.stores.dispatch(action)

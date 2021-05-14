@@ -54,12 +54,14 @@ public final class CardPresentPaymentStore: Store {
                            parameters: parameters,
                            onCardReaderMessage: event,
                            onCompletion: completion)
-        case .checkForCardReaderUpdate(onData: let data, onCompletion: let completion):
-            checkForCardReaderUpdate(onData: data, onCompletion: completion)
+        case .checkForCardReaderUpdate(onCompletion: let completion):
+            checkForCardReaderUpdate(onCompletion: completion)
         case .startCardReaderUpdate(onProgress: let progress, onCompletion: let completion):
             startCardReaderUpdate(onProgress: progress, onCompletion: completion)
         case .reset:
             reset()
+        case .isReadyToCollectPayment(onCompletion: let completion):
+            isReadyToCollectPayment(onCompletion: completion)
         }
     }
 }
@@ -150,60 +152,71 @@ private extension CardPresentPaymentStore {
                         parameters: PaymentParameters,
                         onCardReaderMessage: @escaping (CardReaderEvent) -> Void,
                         onCompletion: @escaping (Result<PaymentIntent, Error>) -> Void) {
-        cardReaderService.capturePayment(parameters).sink { error in
-            switch error {
-            case .failure(let error):
-                onCompletion(.failure(error))
-            default:
-                break
-            }
-        } receiveValue: { intent in
-            onCompletion(.success(intent))
-        }.store(in: &cancellables)
-
         // Observe status events fired by the card reader
-        cardReaderService.readerEvents.sink { event in
+        let readerEventsSubscription = cardReaderService.readerEvents.sink { event in
             onCardReaderMessage(event)
-        }.store(in: &cancellables)
+        }
+
+        cardReaderService.capturePayment(parameters)
+            .subscribe(Subscribers.Sink { error in
+                readerEventsSubscription.cancel()
+                switch error {
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                default:
+                    break
+                }
+            } receiveValue: { intent in
+                onCompletion(.success(intent))
+            })
     }
 
-    func checkForCardReaderUpdate(onData: @escaping (Result<CardReaderSoftwareUpdate, Error>) -> Void,
-                        onCompletion: @escaping () -> Void) {
-        cardReaderService.checkForUpdate().sink(receiveCompletion: { value in
-            switch value {
-            case .failure(let error):
-                onData(.failure(error))
-            case .finished:
-                onCompletion()
-            }
-        }, receiveValue: {softwareUpdate in
-            onData(.success(softwareUpdate))
-        }).store(in: &cancellables)
+    func checkForCardReaderUpdate(onCompletion: @escaping (Result<CardReaderSoftwareUpdate?, Error>) -> Void) {
+        cardReaderService.checkForUpdate()
+            .subscribe(Subscribers.Sink { value in
+                switch value {
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                case .finished:
+                    onCompletion(.success(nil))
+                }
+            } receiveValue: {softwareUpdate in
+                onCompletion(.success(softwareUpdate))
+            })
     }
 
     func startCardReaderUpdate(onProgress: @escaping (Float) -> Void,
                         onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        cardReaderService.installUpdate().sink(receiveCompletion: { value in
-            switch value {
-            case .failure(let error):
-                onCompletion(.failure(error))
-            case .finished:
-                onCompletion(.success(()))
-            }
-        }, receiveValue: {
-            onCompletion(.success(()))
-        }).store(in: &cancellables)
-        // Observe update progress events fired by the card reader
-        cardReaderService.softwareUpdateEvents.sink { progress in
-            onProgress(progress)
-        }.store(in: &cancellables)
+        cardReaderService.installUpdate()
+            .subscribe(Subscribers.Sink(
+                receiveCompletion: { value in
+                    switch value {
+                    case .failure(let error):
+                        onCompletion(.failure(error))
+                    case .finished:
+                        onCompletion(.success(()))
+                    }
+                },
+                receiveValue: onProgress
+            ))
     }
 
     func reset() {
-        cardReaderService.disconnect().sink(receiveCompletion: { [weak self] _ in
-            self?.cardReaderService.clear()
-        }, receiveValue: {
-        }).store(in: &cancellables)
+        cardReaderService.disconnect()
+            .subscribe(Subscribers.Sink(
+                        receiveCompletion: { [weak self] _ in
+                            self?.cardReaderService.clear()
+                        },
+                        receiveValue: { _ in }
+            ))
+    }
+
+    func isReadyToCollectPayment(onCompletion: @escaping (Bool) -> Void) {
+        cardReaderService.connectedReaders.subscribe(Subscribers.Sink(receiveCompletion: { value in
+            print("==== received completion ", value)
+        }, receiveValue: { value in
+            onCompletion(value.count > 0)
+        }))
     }
 }
 

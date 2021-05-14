@@ -210,6 +210,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.loginNoWordPressError)
     }
 
+    func test_plugin_list_error_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.pluginListError)
+    }
+
     func testMailImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.mailImage)
     }
@@ -222,6 +226,14 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.cardReaderScanning)
     }
 
+    func test_payment_card_reader_found_image() {
+        XCTAssertNotNil(UIImage.cardReaderFound)
+    }
+
+    func test_payment_card_reader_connecting_image() {
+        XCTAssertNotNil(UIImage.cardReaderConnecting)
+    }
+
     func test_payment_card_image() {
         XCTAssertNotNil(UIImage.cardPresentImage)
     }
@@ -232,6 +244,10 @@ final class IconsTests: XCTestCase {
 
     func test_payment_error_image() {
         XCTAssertNotNil(UIImage.paymentErrorImage)
+    }
+
+    func test_print_icon_in_not_nil() {
+        XCTAssertNotNil(UIImage.print)
     }
 
     func testPlusImageIconIsNotNil() {

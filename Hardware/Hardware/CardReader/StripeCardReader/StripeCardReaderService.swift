@@ -163,6 +163,10 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     public func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error> {
+        // The documentation for this protocol method promises that this will produce either
+        // a single value or it will fail.
+        // This isn't enforced by the type system, but it is guaranteed as long as all the
+        // steps produce a Future.
         return createPaymentIntent(parameters)
             .flatMap { intent in
                 self.collectPaymentMethod(intent: intent)
@@ -238,20 +242,22 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
-    public func installUpdate() -> Future<Void, Error> {
-        return Future() { [weak self] promise in
-            guard let self = self,
-                  let pendingUpdate = self.pendingSoftwareUpdate else {
-                promise(.failure(CardReaderServiceError.softwareUpdate()))
-                return
-            }
+    public func installUpdate() -> AnyPublisher<Float, Error> {
+        // Before we do anything, make sure there is a pending software update
+        guard let pendingUpdate = self.pendingSoftwareUpdate else {
+            return Fail(outputType: Float.self, failure: CardReaderServiceError.softwareUpdate()).eraseToAnyPublisher()
+        }
 
+        // We create a future for the asynchronous call to installUpdate.
+        // Since Combine doesn't offer enough options to combine values and completion events,
+        // this publishes a true value when the update is completed.
+        let installFuture = Future<Bool, Error> { promise in
             // If the update succeeds the completion block is called with nil
             // https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)installUpdate:delegate:completion:
             Terminal.shared.installUpdate(pendingUpdate, delegate: self) { [weak self] error in
                 if error == nil {
                     self?.pendingSoftwareUpdate = nil
-                    promise(.success(()))
+                    promise(.success(true))
                 }
 
                 if let error = error {
@@ -260,6 +266,27 @@ extension StripeCardReaderService: CardReaderService {
                 }
             }
         }
+
+        // We want to combine the completion from the previous future with the progress events
+        // coming from the delegate through softwareUpdateSubject.
+        // To do this, we prepend an initial false value for `updateFinished`, and while that
+        // is the latest value, we will republish progress events from softwareUpdateSubject.
+        // Once we get a true value from the `installFuture` completion, we'll transform that
+        // into an empty sequence so our publisher can finish.
+        return installFuture
+            .prepend(false)
+            .map { [softwareUpdateSubject] updateFinished -> AnyPublisher<Float, Error> in
+                if updateFinished {
+                    return Empty()
+                        .eraseToAnyPublisher()
+                } else {
+                    return softwareUpdateSubject
+                        .setFailureType(to: Error.self)
+                        .eraseToAnyPublisher()
+                }
+            }
+            .switchToLatest()
+            .eraseToAnyPublisher()
     }
 }
 

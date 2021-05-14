@@ -1,5 +1,5 @@
 /// An object representing details from a transaction using a card_present payment method.
-public struct CardPresentTransactionDetails {
+public struct CardPresentTransactionDetails: Codable {
     /// The last 4 digits of the card.
     public let last4: String
 
@@ -41,5 +41,19 @@ extension CardPresentTransactionDetails: Equatable {
             lhs.generatedCard == rhs.generatedCard &&
             lhs.receipt == rhs.receipt &&
             lhs.emvAuthData == rhs.emvAuthData
+    }
+}
+
+extension CardPresentTransactionDetails {
+    enum CodingKeys: String, CodingKey {
+        case last4 = "last_4"
+        case expMonth = "exp_month"
+        case expYear = "exp_year"
+        case cardholderName = "cardholder_name"
+        case brand = "brand"
+        case fingerprint = "fingerprint"
+        case generatedCard = "generated_card"
+        case receipt = "receipt"
+        case emvAuthData = "emv_auth_data"
     }
 }

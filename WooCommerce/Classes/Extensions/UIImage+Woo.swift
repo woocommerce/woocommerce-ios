@@ -336,10 +336,22 @@ extension UIImage {
         return UIImage(named: "woo-payments-card")!
     }
 
-    /// Card Reader with radio waves
+    /// Searching for Card Reader, Card Reader with radio waves
     ///
     static var cardReaderScanning: UIImage {
         return UIImage(named: "card-reader-scanning")!
+    }
+
+    /// Found Card Reader
+    ///
+    static var cardReaderFound: UIImage {
+        return UIImage(named: "card-reader-found")!
+    }
+
+    /// Connecting to Card Reader, Card Reader with radio waves
+    ///
+    static var cardReaderConnecting: UIImage {
+        return UIImage(named: "card-reader-connecting")!
     }
 
     /// Files Download Icon
@@ -396,6 +408,12 @@ extension UIImage {
         return UIImage(named: "woo-wp-no-site")!.imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Plugins error
+    ///
+    static var pluginListError: UIImage {
+        return UIImage(named: "woo-plugins-error")!.imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Mail Icon
     ///
     static var mailImage: UIImage {
@@ -425,6 +443,12 @@ extension UIImage {
     ///
     static var priceImage: UIImage {
         return UIImage.gridicon(.money, size: CGSize(width: 24, height: 24))
+    }
+
+    /// Print Icon
+    ///
+    static var print: UIImage {
+        return UIImage.gridicon(.print)
     }
 
     /// Product Deleted Icon

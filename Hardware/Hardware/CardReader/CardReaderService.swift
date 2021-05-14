@@ -46,6 +46,7 @@ public protocol CardReaderService {
     func clear()
 
     /// Captures a payment after collecting a payment method succeeds.
+    /// The returned publisher will behave as a Future, eventually producing a single value and finishing, or failing.
     func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error>
 
     /// Cancels a a PaymentIntent
@@ -57,5 +58,8 @@ public protocol CardReaderService {
 
     /// Triggers a software update. This method requires that checkForUpdates
     /// has been completed successfully
-    func installUpdate() -> Future<Void, Error>
+    ///
+    /// The returned publisher will periodically publish the fraction of progress during the software update
+    /// and it will complete when it's finished, unless there is any error.
+    func installUpdate() -> AnyPublisher<Float, Error>
 }

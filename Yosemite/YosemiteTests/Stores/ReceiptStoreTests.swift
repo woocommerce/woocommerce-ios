@@ -53,7 +53,8 @@ final class ReceiptStoreTests: XCTestCase {
         let receiptStore = ReceiptStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
-                                        receiptPrinterService: receiptPrinterService)
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
 
         let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters)
 
@@ -69,7 +70,8 @@ final class ReceiptStoreTests: XCTestCase {
         let receiptStore = ReceiptStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
-                                        receiptPrinterService: receiptPrinterService)
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
 
         let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters)
 

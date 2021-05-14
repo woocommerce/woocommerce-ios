@@ -177,10 +177,9 @@ private extension CardPresentPaymentStore {
             .subscribe(Subscribers.Sink(receiveCompletion: { value in
             switch value {
             case .failure(let error):
-                print("==== error cancelling ", error)
                 onCompletion?(.failure(error))
             case .finished:
-                onCompletion?(.success(()))
+                break
             }
         }, receiveValue: {
             onCompletion?(.success(()))

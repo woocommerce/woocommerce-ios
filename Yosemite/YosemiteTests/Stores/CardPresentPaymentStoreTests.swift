@@ -182,7 +182,6 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         cardPresentStore.onAction(startDiscoveryAction)
 
         let action = CardPresentPaymentAction.cancelCardReaderDiscovery { newStatus in
-            print("=== hitting cancellation completion")
             if newStatus == .idle {
                 expectation.fulfill()
             }
@@ -257,12 +256,15 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                                        network: network,
                                                        cardReaderService: mockCardReaderService)
 
-        let action = CardPresentPaymentAction.cancelPayment(onCompletion: { error in
-            //
+        let expectation = self.expectation(description: "Cancel payment hits the service")
+
+        let action = CardPresentPaymentAction.cancelPayment(onCompletion: { [weak self] error in
+            XCTAssertTrue(self?.mockCardReaderService.didHitCancelPayment == true)
+            expectation.fulfill()
         })
 
         cardPresentStore.onAction(action)
 
-        XCTAssertTrue(mockCardReaderService.didHitCancelPayment)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 }

@@ -102,8 +102,9 @@ final class MockCardReaderService: CardReaderService {
     }
 
     func cancelPaymentIntent() -> Future<Void, Error> {
-        Future() { promise in
+        Future() { [weak self] promise in
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                self?.didHitCancelPayment = true
                 promise(Result.success(()))
             }
         }

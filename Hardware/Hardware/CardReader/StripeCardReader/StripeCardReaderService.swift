@@ -359,8 +359,6 @@ private extension StripeCardReaderService {
     func processPayment(intent: StripeTerminal.PaymentIntent) -> Future<PaymentIntent, Error> {
         return Future() { [weak self] promise in
             Terminal.shared.processPayment(intent) { (intent, error) in
-                self?.activePaymentIntent = intent
-
                 if let error = error {
                     let underlyingError = UnderlyingError(with: error)
                     promise(.failure(CardReaderServiceError.paymentCapture(underlyingError: underlyingError)))
@@ -368,6 +366,7 @@ private extension StripeCardReaderService {
 
                 if let intent = intent {
                     promise(.success(PaymentIntent(intent: intent)))
+                    self?.activePaymentIntent = nil
                 }
             }
         }

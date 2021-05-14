@@ -1046,7 +1046,7 @@
 				451A97CC260A01A40059D135 /* ShippingLabelStoreOptions.swift */,
 				451A97D4260A069B0059D135 /* Custom package */,
 				451A97E3260B63030059D135 /* Predefined package */,
-				4595827B264D5B3F000A4413 /* ShippingLabelPackageSelected.swift */,
+				456930A5264EA4E2009ED69D /* Carriers and Rates */,
 			);
 			path = Packages;
 			sourceTree = "<group>";
@@ -1066,6 +1066,14 @@
 				451A97E4260B631E0059D135 /* ShippingLabelPredefinedPackage.swift */,
 			);
 			path = "Predefined package";
+			sourceTree = "<group>";
+		};
+		456930A5264EA4E2009ED69D /* Carriers and Rates */ = {
+			isa = PBXGroup;
+			children = (
+				4595827B264D5B3F000A4413 /* ShippingLabelPackageSelected.swift */,
+			);
+			path = "Carriers and Rates";
 			sourceTree = "<group>";
 		};
 		45AE58142306ADA8001901E3 /* Refund */ = {

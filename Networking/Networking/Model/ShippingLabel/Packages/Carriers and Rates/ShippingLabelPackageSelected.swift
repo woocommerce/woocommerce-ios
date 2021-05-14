@@ -7,7 +7,6 @@ public struct ShippingLabelPackageSelected: Equatable {
 
     /// The id will be always "default_box"
     public let id: String = "default_box"
-
     public let boxID: String
     public let length: Double
     public let width: Double
@@ -45,6 +44,20 @@ public struct ShippingLabelPackageSelected: Equatable {
 
 // MARK: Codable
 extension ShippingLabelPackageSelected: Codable {
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        let boxID = try container.decode(String.self, forKey: .boxID)
+        let length = try container.decode(Double.self, forKey: .length)
+        let width = try container.decode(Double.self, forKey: .width)
+        let height = try container.decode(Double.self, forKey: .height)
+        let weight = try container.decode(Double.self, forKey: .weight)
+        let isLetter = try container.decode(Bool.self, forKey: .isLetter)
+
+        self.init(boxID: boxID, length: length, width: width, height: height, weight: weight, isLetter: isLetter)
+    }
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 

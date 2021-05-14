@@ -1,5 +1,5 @@
 import UIKit
-
+import Yosemite
 
 /// Modal presented when the card reader requests customers to remove the card
 final class CardPresentModalRemoveCard: CardPresentPaymentsModalViewModel {
@@ -11,7 +11,7 @@ final class CardPresentModalRemoveCard: CardPresentPaymentsModalViewModel {
     private let amount: String
 
     let textMode: PaymentsModalTextMode = .reducedBottomInfo
-    let actionsMode: PaymentsModalActionsMode = .none
+    let actionsMode: PaymentsModalActionsMode = .oneAction
 
     var topTitle: String {
         name
@@ -23,7 +23,7 @@ final class CardPresentModalRemoveCard: CardPresentPaymentsModalViewModel {
 
     let image: UIImage = .cardPresentImage
 
-    let primaryButtonTitle: String? = nil
+    let primaryButtonTitle: String? = Localization.cancel
 
     let secondaryButtonTitle: String? = nil
 
@@ -39,7 +39,11 @@ final class CardPresentModalRemoveCard: CardPresentPaymentsModalViewModel {
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        //
+        let action = CardPresentPaymentAction.cancelPayment(onCompletion: nil)
+
+        ServiceLocator.stores.dispatch(action)
+
+        viewController?.dismiss(animated: true, completion: nil)
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
@@ -56,6 +60,11 @@ private extension CardPresentModalRemoveCard {
         static let removeCard = NSLocalizedString(
             "Please remove card",
             comment: "Label asking users to remove card. Presented to users when a payment is in the process of being collected"
+        )
+
+        static let cancel = NSLocalizedString(
+            "Cancel",
+            comment: "Button to cancel a payment"
         )
     }
 }

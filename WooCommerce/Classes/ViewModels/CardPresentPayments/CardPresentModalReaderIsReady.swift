@@ -1,4 +1,5 @@
 import UIKit
+import Yosemite
 
 /// The card reader is ready.
 final class CardPresentModalReaderIsReady: CardPresentPaymentsModalViewModel {
@@ -10,7 +11,7 @@ final class CardPresentModalReaderIsReady: CardPresentPaymentsModalViewModel {
     private let amount: String
 
     let textMode: PaymentsModalTextMode = .fullInfo
-    let actionsMode: PaymentsModalActionsMode = .none
+    let actionsMode: PaymentsModalActionsMode = .oneAction
 
     var topTitle: String {
         name
@@ -22,7 +23,7 @@ final class CardPresentModalReaderIsReady: CardPresentPaymentsModalViewModel {
 
     let image: UIImage = .cardPresentImage
 
-    let primaryButtonTitle: String? = nil
+    let primaryButtonTitle: String? = Localization.cancel
 
     let secondaryButtonTitle: String? = nil
 
@@ -38,7 +39,11 @@ final class CardPresentModalReaderIsReady: CardPresentPaymentsModalViewModel {
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        //
+        let action = CardPresentPaymentAction.cancelPayment(onCompletion: nil)
+
+        ServiceLocator.stores.dispatch(action)
+
+        viewController?.dismiss(animated: true, completion: nil)
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
@@ -60,6 +65,11 @@ private extension CardPresentModalReaderIsReady {
         static let tapInsertOrSwipe = NSLocalizedString(
             "Tap, insert or swipe to pay",
             comment: "Indicates the action expected from a user. Presented to users when payment collection starts"
+        )
+
+        static let cancel = NSLocalizedString(
+            "Cancel",
+            comment: "Button to cancel a payment"
         )
     }
 }

@@ -5,6 +5,7 @@ import StripeTerminal
 public final class StripeCardReaderService: NSObject {
 
     private var discoveryCancellable: StripeTerminal.Cancelable?
+    private var paymentCancellable: StripeTerminal.Cancelable?
 
     private var discoveredReadersSubject = CurrentValueSubject<[CardReader], Never>([])
     private let connectedReadersSubject = CurrentValueSubject<[CardReader], Never>([])
@@ -182,17 +183,21 @@ extension StripeCardReaderService: CardReaderService {
                 return
             }
 
-            Terminal.shared.cancelPaymentIntent(activePaymentIntent) { (intent, error) in
-                if let error = error {
-                    let underlyingError = UnderlyingError(with: error)
-                    promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: underlyingError)))
-                }
+            self.paymentCancellable?.cancel({ error in
+                if error == nil {
+                    Terminal.shared.cancelPaymentIntent(activePaymentIntent) { (intent, error) in
+                        if let error = error {
+                            let underlyingError = UnderlyingError(with: error)
+                            promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: underlyingError)))
+                        }
 
-                if let _ = intent {
-                    self.activePaymentIntent = nil
-                    promise(.success(()))
+                        if let _ = intent {
+                            self.activePaymentIntent = nil
+                            promise(.success(()))
+                        }
+                    }
                 }
-            }
+            })
         }
     }
 
@@ -332,7 +337,10 @@ private extension StripeCardReaderService {
 
     func collectPaymentMethod(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {
         return Future() { [weak self] promise in
-            Terminal.shared.collectPaymentMethod(intent, delegate: self) { (intent, error) in
+            /// Collect Payment method returns a cancellable
+            /// Because we are chainging promises, we need to retain a reference
+            /// to this cancellable if we want to cancel 
+            self?.paymentCancellable = Terminal.shared.collectPaymentMethod(intent, delegate: self) { (intent, error) in
                 // Notify clients that the card, no matter it tapped or inserted, is not needed anymore.
                 self?.sendReaderEvent(.cardRemoved)
 

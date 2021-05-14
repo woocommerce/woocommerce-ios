@@ -184,6 +184,12 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func configurePrimaryButton() {
+        guard shouldShowActionButtons() else {
+            primaryButton.isHidden = true
+            return
+        }
+
+        primaryButton.isHidden = false
         primaryButton.setTitle(viewModel.primaryButtonTitle, for: .normal)
         primaryButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapPrimaryButton()

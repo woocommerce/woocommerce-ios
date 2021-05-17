@@ -210,8 +210,8 @@ private extension CardReaderSettingsUnknownViewController {
 
     private func configureButton(cell: ButtonTableViewCell) {
         let buttonTitle = Localization.connectButton
-        cell.configure(title: buttonTitle) {
-            self.viewModel?.startReaderDiscovery()
+        cell.configure(title: buttonTitle) { [weak self] in
+            self?.viewModel?.startReaderDiscovery()
         }
         cell.selectionStyle = .none
     }

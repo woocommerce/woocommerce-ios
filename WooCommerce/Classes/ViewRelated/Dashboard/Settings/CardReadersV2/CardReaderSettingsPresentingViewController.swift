@@ -12,7 +12,9 @@ final class CardReaderSettingsPresentingViewController: UIViewController {
     /// Set our dependencies
     func configure(viewModelsAndViews: CardReaderSettingsPrioritizedViewModelsProvider) {
         self.viewModelsAndViews = viewModelsAndViews
-        self.viewModelsAndViews?.onPriorityChanged = onViewModelsPriorityChange
+        self.viewModelsAndViews?.onPriorityChanged = { [weak self] viewModelAndView in
+            self?.onViewModelsPriorityChange(viewModelAndView: viewModelAndView)
+        }
     }
 
     override func viewDidLoad() {

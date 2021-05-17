@@ -53,6 +53,13 @@ public final class ShippingLabelStore: Store {
             checkCreationEligibility(siteID: siteID, orderID: orderID, isFeatureFlagEnabled: isFeatureFlagEnabled, onCompletion: onCompletion)
         case .createPackage(let siteID, let customPackage, let completion):
             createPackage(siteID: siteID, customPackage: customPackage, completion: completion)
+        case .loadCarriersAndRates(let siteID, let orderID, let originAddress, let destinationAddress, let packages, let completion):
+            loadCarriersAndRates(siteID: siteID,
+                                 orderID: orderID,
+                                 originAddress: originAddress,
+                                 destinationAddress: destinationAddress,
+                                 packages: packages,
+                                 completion: completion)
         case .synchronizeShippingLabelAccountSettings(let siteID, let completion):
             synchronizeShippingLabelAccountSettings(siteID: siteID, completion: completion)
         }
@@ -127,6 +134,20 @@ private extension ShippingLabelStore {
                        customPackage: ShippingLabelCustomPackage,
                        completion: @escaping (Result<Bool, Error>) -> Void) {
         remote.createPackage(siteID: siteID, customPackage: customPackage, completion: completion)
+    }
+
+    func loadCarriersAndRates(siteID: Int64,
+                              orderID: Int64,
+                              originAddress: ShippingLabelAddress,
+                              destinationAddress: ShippingLabelAddress,
+                              packages: [ShippingLabelPackageSelected],
+                              completion: @escaping (Result<ShippingLabelCarriersAndRates, Error>) -> Void) {
+        remote.loadCarriersAndRates(siteID: siteID,
+                                    orderID: orderID,
+                                    originAddress: originAddress,
+                                    destinationAddress: destinationAddress,
+                                    packages: packages,
+                                    completion: completion)
     }
 
     func synchronizeShippingLabelAccountSettings(siteID: Int64,

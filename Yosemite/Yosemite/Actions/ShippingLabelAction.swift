@@ -42,6 +42,15 @@ public enum ShippingLabelAction: Action {
                        customPackage: ShippingLabelCustomPackage,
                        completion: (Result<Bool, Error>) -> Void)
 
+    /// Fetch list of shipping carriers and their rates
+    ///
+    case loadCarriersAndRates(siteID: Int64,
+                              orderID: Int64,
+                              originAddress: ShippingLabelAddress,
+                              destinationAddress: ShippingLabelAddress,
+                              packages: [ShippingLabelPackageSelected],
+                              completion: (Result<ShippingLabelCarriersAndRates, Error>) -> Void)
+
     /// Loads account-level shipping label settings for a store.
     ///
     case synchronizeShippingLabelAccountSettings(siteID: Int64,

@@ -18,9 +18,10 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="b8B-E4-1cG">
-                        <rect key="frame" x="30" y="19" width="32" height="33"/>
+                        <rect key="frame" x="30" y="19.5" width="32" height="32"/>
                         <color key="backgroundColor" systemColor="systemGray5Color"/>
                         <constraints>
+                            <constraint firstAttribute="width" secondItem="b8B-E4-1cG" secondAttribute="height" multiplier="32:32" id="71A-ms-0Es"/>
                             <constraint firstAttribute="width" constant="32" id="KU0-Pg-Zp2"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
@@ -43,11 +44,10 @@
                 <constraints>
                     <constraint firstItem="uTV-ZV-8LG" firstAttribute="top" secondItem="N2W-yf-dgL" secondAttribute="top" constant="10" id="2ec-4H-7e3"/>
                     <constraint firstAttribute="trailing" secondItem="uTV-ZV-8LG" secondAttribute="trailing" constant="30" id="D3n-oR-tyS"/>
+                    <constraint firstItem="b8B-E4-1cG" firstAttribute="centerY" secondItem="N2W-yf-dgL" secondAttribute="centerY" id="E5a-7R-RJ0"/>
                     <constraint firstItem="uTV-ZV-8LG" firstAttribute="leading" secondItem="b8B-E4-1cG" secondAttribute="trailing" constant="19" id="FVE-Xj-vsD"/>
-                    <constraint firstAttribute="bottom" secondItem="b8B-E4-1cG" secondAttribute="bottom" constant="19" id="HyR-K3-dEJ"/>
                     <constraint firstItem="b8B-E4-1cG" firstAttribute="leading" secondItem="N2W-yf-dgL" secondAttribute="leading" constant="30" id="RNX-PQ-BLs"/>
                     <constraint firstAttribute="bottom" secondItem="uTV-ZV-8LG" secondAttribute="bottom" constant="10" id="jMj-VA-tCn"/>
-                    <constraint firstItem="b8B-E4-1cG" firstAttribute="top" secondItem="N2W-yf-dgL" secondAttribute="top" constant="19" id="kTc-6F-H5c"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>

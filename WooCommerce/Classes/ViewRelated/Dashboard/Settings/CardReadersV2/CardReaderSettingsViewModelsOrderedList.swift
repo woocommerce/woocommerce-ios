@@ -25,7 +25,9 @@ final class CardReaderSettingsViewModelsOrderedList: CardReaderSettingsPrioritiz
         viewModelsAndViews.append(
             CardReaderSettingsViewModelAndView(
                 viewModel: CardReaderSettingsUnknownViewModel(
-                    didChangeShouldShow: onDidChangeShouldShow
+                    didChangeShouldShow: { [weak self] state in
+                        self?.onDidChangeShouldShow(state)
+                    }
                 ),
                 viewIdentifier: "CardReaderSettingsUnknownViewController"
             )
@@ -33,7 +35,9 @@ final class CardReaderSettingsViewModelsOrderedList: CardReaderSettingsPrioritiz
         viewModelsAndViews.append(
             CardReaderSettingsViewModelAndView(
                 viewModel: CardReaderSettingsConnectedViewModel(
-                    didChangeShouldShow: onDidChangeShouldShow
+                    didChangeShouldShow: { [weak self] state in
+                        self?.onDidChangeShouldShow(state)
+                    }
                 ),
                 viewIdentifier: "CardReaderSettingsConnectedViewController"
             )
@@ -48,9 +52,11 @@ final class CardReaderSettingsViewModelsOrderedList: CardReaderSettingsPrioritiz
     }
 
     private func reevaluatePriorityViewModelAndView() {
-        guard let newPriorityViewModelAndView = viewModelsAndViews.first(
+        let newPriorityViewModelAndView = viewModelsAndViews.first(
             where: { $0.viewModel.shouldShow == .isTrue }
-        ), newPriorityViewModelAndView != priorityViewModelAndView else {
+        )
+
+        guard newPriorityViewModelAndView != priorityViewModelAndView else {
             return
         }
 

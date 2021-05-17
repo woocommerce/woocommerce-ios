@@ -125,6 +125,14 @@ final class MockShippingLabelRemote {
         createPackageResults[key] = result
     }
 
+    /// Set the value passed to the `completion` block if `loadCarriersAndRates` is called.
+    func whenLoadCarriersAndRates(siteID: Int64,
+                           thenReturn result: Result<ShippingLabelCarriersAndRates, Error>) {
+
+        let key = LoadCarriersAndRatesKey(siteID: siteID)
+        loadCarriersAndRatesResults[key] = result
+    }
+
     /// Set the value passed to the `completion` block if `createPackage` is called.
     func whenLoadShippingLabelAccountSettings(siteID: Int64,
                                        thenReturn result: Result<ShippingLabelAccountSettings, Error>) {

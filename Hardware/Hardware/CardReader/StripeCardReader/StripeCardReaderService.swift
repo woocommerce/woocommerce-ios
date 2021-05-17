@@ -171,11 +171,16 @@ extension StripeCardReaderService: CardReaderService {
         // This isn't enforced by the type system, but it is guaranteed as long as all the
         // steps produce a Future.
         return createPaymentIntent(parameters)
+            .print("==== create intent")
             .flatMap { intent in
                 self.collectPaymentMethod(intent: intent)
-            }.flatMap { intent in
+            }
+            .print("==== collect payment method")
+            .flatMap { intent in
                 self.processPayment(intent: intent)
-            }.eraseToAnyPublisher()
+            }
+            .print("==== process payment")
+            .eraseToAnyPublisher()
     }
 
     public func cancelPaymentIntent() -> Future<Void, Error> {
@@ -186,16 +191,21 @@ extension StripeCardReaderService: CardReaderService {
                 return
             }
 
-            self.paymentCancellable?.cancel({ error in
+            print("==== cancelling payment intent ", activePaymentIntent)
+            print("==== payment cancellable ", self.paymentCancellable)
+            self.paymentCancellable?.cancel({ [weak self] error in
+                print("==== paymentCancellable cancelled with error ", error)
                 if error == nil {
+                    self?.paymentCancellable = nil
                     Terminal.shared.cancelPaymentIntent(activePaymentIntent) { (intent, error) in
+                        print("==== cancell payment intent completed ", error)
                         if let error = error {
                             let underlyingError = UnderlyingError(with: error)
                             promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: underlyingError)))
                         }
 
                         if let _ = intent {
-                            self.activePaymentIntent = nil
+                            self?.activePaymentIntent = nil
                             promise(.success(()))
                         }
                     }
@@ -348,8 +358,17 @@ private extension StripeCardReaderService {
                 self?.sendReaderEvent(.cardRemoved)
 
                 if let error = error {
+                    print("===== collect payment method error ", error)
                     let underlyingError = UnderlyingError(with: error)
-                    promise(.failure(CardReaderServiceError.paymentMethodCollection(underlyingError: underlyingError)))
+                    /// the completion block for collectPaymentMethod will be called
+                    /// with error Canceled when collectPaymentMethod is canceled
+                    /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)collectPaymentMethod:delegate:completion:
+
+                    if underlyingError != .commandCancelled {
+                        print("==== collect payment method was cancelled")
+                        promise(.failure(CardReaderServiceError.paymentMethodCollection(underlyingError: underlyingError)))
+                    }
+
                 }
 
                 if let intent = intent {

@@ -28,7 +28,9 @@ final class CardReaderSettingsAlerts {
     }
 
     func dismiss() {
-        modalController?.dismiss(animated: true, completion: nil)
+        modalController?.dismiss(animated: true, completion: { [weak self] in
+            self?.modalController = nil
+        })
     }
 }
 

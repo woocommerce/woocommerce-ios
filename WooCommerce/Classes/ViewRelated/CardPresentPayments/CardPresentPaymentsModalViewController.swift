@@ -38,6 +38,7 @@ final class CardPresentPaymentsModalViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        setButtonsActions()
         styleContent()
         populateContent()
     }
@@ -176,6 +177,21 @@ private extension CardPresentPaymentsModalViewController {
         imageView.image = viewModel.image
     }
 
+    func setButtonsActions() {
+        print("===== setting button actions")
+        primaryButton.on(.touchUpInside) { [weak self] _ in
+            self?.didTapPrimaryButton()
+        }
+
+        secondaryButton.on(.touchUpInside) { [weak self] _ in
+            self?.didTapSecondaryButton()
+        }
+
+        auxiliaryButton.on(.touchUpInside) { [weak self] _ in
+            self?.didTapAuxiliaryButton()
+        }
+    }
+
     func configureActionButtonsView() {
         actionButtonsView.isHidden = false
         bottomLabels.isHidden = true
@@ -197,9 +213,6 @@ private extension CardPresentPaymentsModalViewController {
 
         primaryButton.isHidden = false
         primaryButton.setTitle(viewModel.primaryButtonTitle, for: .normal)
-        primaryButton.on(.touchUpInside) { [weak self] _ in
-            self?.didTapPrimaryButton()
-        }
     }
 
     func configureSecondaryButton() {
@@ -210,9 +223,6 @@ private extension CardPresentPaymentsModalViewController {
 
         secondaryButton.isHidden = false
         secondaryButton.setTitle(viewModel.secondaryButtonTitle, for: .normal)
-        secondaryButton.on(.touchUpInside) { [weak self] _ in
-            self?.didTapSecondaryButton()
-        }
     }
 
     func configureAuxiliaryButton() {
@@ -223,9 +233,6 @@ private extension CardPresentPaymentsModalViewController {
 
         auxiliaryButton.isHidden = false
         auxiliaryButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
-        auxiliaryButton.on(.touchUpInside) { [weak self] _ in
-            self?.didTapAuxiliaryButton()
-        }
     }
 }
 
@@ -264,15 +271,15 @@ private extension CardPresentPaymentsModalViewController {
 
 // MARK: - Actions
 private extension CardPresentPaymentsModalViewController {
-    func didTapPrimaryButton() {
+    @objc func didTapPrimaryButton() {
         viewModel.didTapPrimaryButton(in: self)
     }
 
-    func didTapSecondaryButton() {
+    @objc func didTapSecondaryButton() {
         viewModel.didTapSecondaryButton(in: self)
     }
 
-    func didTapAuxiliaryButton() {
+    @objc func didTapAuxiliaryButton() {
         viewModel.didTapAuxiliaryButton(in: self)
     }
 }

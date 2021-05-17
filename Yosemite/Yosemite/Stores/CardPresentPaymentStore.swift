@@ -166,7 +166,6 @@ private extension CardPresentPaymentStore {
             readerEventsSubscription.cancel()
             switch error {
             case .failure(let error):
-                print("==== error collcitn payment ", error)
                 onCompletion(.failure(error))
             default:
                 break

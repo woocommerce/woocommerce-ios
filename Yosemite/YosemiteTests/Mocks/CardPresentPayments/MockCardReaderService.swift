@@ -45,7 +45,7 @@ final class MockCardReaderService: CardReaderService {
     var didReceiveAConfigurationProvider = false
 
     /// Boolean flag Indicates that clients have called the cancel payment method
-    var didHitCancelPayment = false
+    var didTapCancelPayment = false
 
     private let connectedReadersSubject = CurrentValueSubject<[CardReader], Never>([])
     private let discoveryStatusSubject = CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle)
@@ -107,7 +107,7 @@ final class MockCardReaderService: CardReaderService {
     func cancelPaymentIntent() -> Future<Void, Error> {
         Future() { [weak self] promise in
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                self?.didHitCancelPayment = true
+                self?.didTapCancelPayment = true
                 promise(Result.success(()))
             }
         }

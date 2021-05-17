@@ -171,16 +171,11 @@ extension StripeCardReaderService: CardReaderService {
         // This isn't enforced by the type system, but it is guaranteed as long as all the
         // steps produce a Future.
         return createPaymentIntent(parameters)
-            .print("==== create intent")
             .flatMap { intent in
                 self.collectPaymentMethod(intent: intent)
-            }
-            .print("==== collect payment method")
-            .flatMap { intent in
+            }.flatMap { intent in
                 self.processPayment(intent: intent)
-            }
-            .print("==== process payment")
-            .eraseToAnyPublisher()
+            }.eraseToAnyPublisher()
     }
 
     public func cancelPaymentIntent() -> Future<Void, Error> {
@@ -191,14 +186,10 @@ extension StripeCardReaderService: CardReaderService {
                 return
             }
 
-            print("==== cancelling payment intent ", activePaymentIntent)
-            print("==== payment cancellable ", self.paymentCancellable)
             self.paymentCancellable?.cancel({ [weak self] error in
-                print("==== paymentCancellable cancelled with error ", error)
                 if error == nil {
                     self?.paymentCancellable = nil
                     Terminal.shared.cancelPaymentIntent(activePaymentIntent) { (intent, error) in
-                        print("==== cancell payment intent completed ", error)
                         if let error = error {
                             let underlyingError = UnderlyingError(with: error)
                             promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: underlyingError)))
@@ -351,10 +342,10 @@ private extension StripeCardReaderService {
     func collectPaymentMethod(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {
         return Future() { [weak self] promise in
             /// Collect Payment method returns a cancellable
-            /// Because we are chainging promises, we need to retain a reference
+            /// Because we are chaining promises, we need to retain a reference
             /// to this cancellable if we want to cancel 
             self?.paymentCancellable = Terminal.shared.collectPaymentMethod(intent, delegate: self) { (intent, error) in
-                // Notify clients that the card, no matter it tapped or inserted, is not needed anymore.
+                // Notify clients that the card, no matter if tapped or inserted, is not needed anymore.
                 self?.sendReaderEvent(.cardRemoved)
 
                 if let error = error {

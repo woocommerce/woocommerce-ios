@@ -43,19 +43,21 @@ private extension AddProductCoordinator {
         let title = NSLocalizedString("Select a product type",
                                       comment: "Message title of bottom sheet for selecting a product type to create a product")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
-        let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { selectedProductType in
-            ServiceLocator.analytics.track(.addProductTypeSelected, withProperties: ["product_type": selectedProductType.rawValue])
+        let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { selectedBottomSheetProductType in
+            ServiceLocator.analytics.track(.addProductTypeSelected, withProperties: ["product_type": selectedBottomSheetProductType.productType.rawValue])
             self.navigationController.dismiss(animated: true)
-            self.presentProductForm(productType: selectedProductType)
+            self.presentProductForm(bottomSheetProductType: selectedBottomSheetProductType)
         }
-        command.data = [.simple, .variable, .grouped, .affiliate]
+        command.data = [.physical, .virtual, .variable, .grouped, .affiliate]
         let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
         productTypesListPresenter.show(from: navigationController, sourceView: sourceView, sourceBarButtonItem: sourceBarButtonItem, arrowDirections: .any)
     }
 
-    func presentProductForm(productType: ProductType) {
-        guard let product = ProductFactory().createNewProduct(type: productType, siteID: siteID) else {
-            assertionFailure("Unable to create product of type: \(productType)")
+    func presentProductForm(bottomSheetProductType: BottomSheetProductType) {
+        guard let product = ProductFactory().createNewProduct(type: bottomSheetProductType.productType,
+                                                              isVirtual: bottomSheetProductType.isVirtual,
+                                                              siteID: siteID) else {
+            assertionFailure("Unable to create product of type: \(bottomSheetProductType)")
             return
         }
         let model = EditableProductModel(product: product)

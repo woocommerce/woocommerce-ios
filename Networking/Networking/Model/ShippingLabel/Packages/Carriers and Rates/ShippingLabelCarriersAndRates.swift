@@ -23,9 +23,9 @@ extension ShippingLabelCarriersAndRates: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let defaultRates = try container.decode([ShippingLabelCarrierRate].self, forKey: .defaultRates)
-        let signatureRequired = try container.decode([ShippingLabelCarrierRate].self, forKey: .signatureRequired)
-        let adultSignatureRequired = try container.decode([ShippingLabelCarrierRate].self, forKey: .adultSignatureRequired)
+        let defaultRates = try container.decode(ShippingLabelRatesEnvelope.self, forKey: .defaultRates).rates
+        let signatureRequired = try container.decode(ShippingLabelRatesEnvelope.self, forKey: .signatureRequired).rates
+        let adultSignatureRequired = try container.decode(ShippingLabelRatesEnvelope.self, forKey: .adultSignatureRequired).rates
 
 
         self.init(defaultRates: defaultRates,
@@ -38,5 +38,13 @@ extension ShippingLabelCarriersAndRates: Codable {
         case defaultRates = "default"
         case signatureRequired = "signature_required"
         case adultSignatureRequired = "adult_signature_required"
+    }
+}
+
+private struct ShippingLabelRatesEnvelope: Decodable {
+    let rates: [ShippingLabelCarrierRate]
+
+    private enum CodingKeys: String, CodingKey {
+        case rates
     }
 }

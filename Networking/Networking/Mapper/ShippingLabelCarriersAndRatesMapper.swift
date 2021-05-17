@@ -8,7 +8,6 @@ struct ShippingLabelCarriersAndRatesMapper: Mapper {
     ///
     func map(response: Data) throws -> ShippingLabelCarriersAndRates {
         let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         return try decoder.decode(ShippingLabelDataEnvelope.self, from: response).data.rates.defaultBox
     }
 }

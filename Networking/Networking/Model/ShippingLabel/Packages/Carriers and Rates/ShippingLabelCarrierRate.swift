@@ -17,7 +17,6 @@ public struct ShippingLabelCarrierRate: Equatable {
     public let isPickupFree: Bool
     public let deliveryDays: Int64
     public let deliveryDateGuaranteed: Bool
-    public let deliveryDate: Date?
 
     public init(title: String,
                 insurance: Int64,
@@ -31,8 +30,7 @@ public struct ShippingLabelCarrierRate: Equatable {
                 isSelected: Bool,
                 isPickupFree: Bool,
                 deliveryDays: Int64,
-                deliveryDateGuaranteed: Bool,
-                deliveryDate: Date?) {
+                deliveryDateGuaranteed: Bool) {
         self.title = title
         self.insurance = insurance
         self.retailRate = retailRate
@@ -46,7 +44,6 @@ public struct ShippingLabelCarrierRate: Equatable {
         self.isPickupFree = isPickupFree
         self.deliveryDays = deliveryDays
         self.deliveryDateGuaranteed = deliveryDateGuaranteed
-        self.deliveryDate = deliveryDate
     }
 }
 
@@ -69,7 +66,6 @@ extension ShippingLabelCarrierRate: Codable {
         let isPickupFree = try container.decode(Bool.self, forKey: .isPickupFree)
         let deliveryDays = try container.decode(Int64.self, forKey: .deliveryDays)
         let deliveryDateGuaranteed = try container.decode(Bool.self, forKey: .deliveryDateGuaranteed)
-        let deliveryDate = try container.decodeIfPresent(Date.self, forKey: .deliveryDate)
 
 
         self.init(title: title,
@@ -84,8 +80,7 @@ extension ShippingLabelCarrierRate: Codable {
                   isSelected: isSelected,
                   isPickupFree: isPickupFree,
                   deliveryDays: deliveryDays,
-                  deliveryDateGuaranteed: deliveryDateGuaranteed,
-                  deliveryDate: deliveryDate)
+                  deliveryDateGuaranteed: deliveryDateGuaranteed)
     }
 
 
@@ -103,6 +98,5 @@ extension ShippingLabelCarrierRate: Codable {
         case isPickupFree = "free_pickup"
         case deliveryDays = "delivery_days"
         case deliveryDateGuaranteed = "delivery_date_guaranteed"
-        case deliveryDate = "delivery_date"
     }
 }

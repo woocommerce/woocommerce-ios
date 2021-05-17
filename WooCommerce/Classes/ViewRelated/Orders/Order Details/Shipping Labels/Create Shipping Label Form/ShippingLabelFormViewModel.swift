@@ -112,7 +112,9 @@ final class ShippingLabelFormViewModel {
         }
 
         let packageTitle = searchCustomPackage(id: selectedPackageID)?.title ?? searchPredefinedPackage(id: selectedPackageID)?.title ?? ""
-        let packageWeight = totalPackageWeight + " " + packagesResponse.storeOptions.dimensionUnit
+
+        let formatter = WeightFormatter(weightUnit: packagesResponse.storeOptions.weightUnit)
+        let packageWeight = formatter.formatWeight(weight: totalPackageWeight)
 
         return packageTitle + "\n" + String.localizedStringWithFormat(Localization.totalPackageWeight, packageWeight)
     }

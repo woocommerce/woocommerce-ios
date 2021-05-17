@@ -1,13 +1,53 @@
 import Yosemite
 
-private extension ProductType {
+/// Represents the product types available when creating or editing products.
+///
+public enum BottomSheetProductType: Hashable {
+    case physical
+    case virtual
+    case grouped
+    case affiliate
+    case variable
+    case custom(String) // in case there are extensions modifying product types
+
+    /// ProductType
+    ///
+    var productType: ProductType {
+        switch self {
+        case .physical, .virtual:
+            return .simple
+        case .variable:
+            return .variable
+        case .grouped:
+            return .grouped
+        case .affiliate:
+            return .affiliate
+        case .custom(let title):
+            return .custom(title)
+        }
+    }
+
+    /// Whether product is virtual
+    ///
+    var isVirtual: Bool {
+        switch self {
+        case .virtual:
+            return true
+        default:
+            return false
+        }
+    }
+
     /// Title shown on the action sheet.
     ///
     var actionSheetTitle: String {
         switch self {
-        case .simple:
-            return NSLocalizedString("Simple product",
-                                     comment: "Action sheet option when the user wants to change the Product type to simple product")
+        case .physical:
+            return NSLocalizedString("Simple physical product",
+                                     comment: "Action sheet option when the user wants to change the Product type to simple physical product")
+        case .virtual:
+            return NSLocalizedString("Simple virtual product",
+                                     comment: "Action sheet option when the user wants to change the Product type to simple virtual product")
         case .variable:
             return NSLocalizedString("Variable product",
                                      comment: "Action sheet option when the user wants to change the Product type to varible product")
@@ -26,9 +66,12 @@ private extension ProductType {
     ///
     var actionSheetDescription: String {
         switch self {
-        case .simple:
+        case .physical:
             return NSLocalizedString("A unique item to sell",
-                                     comment: "Description of the Action sheet option when the user wants to change the Product type to simple product")
+                                     comment: "Description of the Action sheet option when the user wants to change the Product type to simple physical product")
+        case .virtual:
+            return NSLocalizedString("A unique item to sell",
+                                     comment: "Description of the Action sheet option when the user wants to change the Product type to simple virtual product")
         case .variable:
             return NSLocalizedString("A product with variations like color or size",
                                      comment: "Description of the Action sheet option when the user wants to change the Product type to variable product")
@@ -47,7 +90,7 @@ private extension ProductType {
     ///
     var actionSheetImage: UIImage {
         switch self {
-        case .simple:
+        case .physical, .virtual:
             return UIImage.productImage
         case .variable:
             return UIImage.variationsImage
@@ -64,21 +107,22 @@ private extension ProductType {
 /// `BottomSheetListSelectorCommand` for selecting a product type for the selected Product.
 ///
 final class ProductTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCommand {
-    typealias Model = ProductType
+    typealias Model = BottomSheetProductType
     typealias Cell = ImageAndTitleAndTextTableViewCell
 
-    var data: [ProductType] = [
-        .simple,
+    var data: [BottomSheetProductType] = [
+        .physical,
+        .virtual,
         .variable,
         .grouped,
         .affiliate
     ]
 
-    var selected: ProductType? = nil
+    var selected: BottomSheetProductType? = nil
 
-    private let onSelection: (ProductType) -> Void
+    private let onSelection: (BottomSheetProductType) -> Void
 
-    init(selected: ProductType?, onSelection: @escaping (ProductType) -> Void) {
+    init(selected: BottomSheetProductType?, onSelection: @escaping (BottomSheetProductType) -> Void) {
         self.onSelection = onSelection
 
         /// Remove from `data` the selected product type, so that it is not shown in the list.
@@ -87,7 +131,7 @@ final class ProductTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCo
         }
     }
 
-    func configureCell(cell: ImageAndTitleAndTextTableViewCell, model: ProductType) {
+    func configureCell(cell: ImageAndTitleAndTextTableViewCell, model: BottomSheetProductType) {
         let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: model.actionSheetTitle,
                                                                     text: model.actionSheetDescription,
                                                                     image: model.actionSheetImage,
@@ -97,11 +141,11 @@ final class ProductTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCo
         cell.updateUI(viewModel: viewModel)
     }
 
-    func handleSelectedChange(selected: ProductType) {
+    func handleSelectedChange(selected: BottomSheetProductType) {
         onSelection(selected)
     }
 
-    func isSelected(model: ProductType) -> Bool {
+    func isSelected(model: BottomSheetProductType) -> Bool {
         return model == selected
     }
 }

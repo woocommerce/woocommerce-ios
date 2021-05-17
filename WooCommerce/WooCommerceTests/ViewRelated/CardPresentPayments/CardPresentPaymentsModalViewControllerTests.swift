@@ -97,30 +97,6 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
         XCTAssertTrue(viewModel.secondaryButtonTapped)
     }
 
-    func test_viewcontroller_propagates_tap_in_primary_button_is_not_initialized_in_full_info_mode() throws {
-        let viewModel = ModalViewModel(textMode: .fullInfo, actionsMode: .none)
-        let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
-
-        _ = try XCTUnwrap(viewController.view)
-
-        let primaryButton = viewController.getPrimaryActionButton()
-        primaryButton.sendActions(for: .touchUpInside)
-
-        XCTAssertFalse(viewModel.primaryButtonTapped)
-    }
-
-    func test_viewcontroller_propagates_tap_in_secondary_button_is_not_initialized_in_full_info_mode() throws {
-        let viewModel = ModalViewModel(textMode: .fullInfo, actionsMode: .none)
-        let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
-
-        _ = try XCTUnwrap(viewController.view)
-
-        let secondaryButton = viewController.getSecondaryActionButton()
-        secondaryButton.sendActions(for: .touchUpInside)
-
-        XCTAssertFalse(viewModel.secondaryButtonTapped)
-    }
-
     func test_viewcontroller_hides_bottom_subtitle_label_in_reduced_bottom_info_mode() throws {
         let viewModel = ModalViewModel(textMode: .reducedBottomInfo, actionsMode: .none)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)

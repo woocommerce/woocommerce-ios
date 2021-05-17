@@ -49,9 +49,8 @@ public protocol CardReaderService {
     /// The returned publisher will behave as a Future, eventually producing a single value and finishing, or failing.
     func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error>
 
-    /// Cancels a a PaymentIntent
-    /// If the cancel request succeeds, the promise will be called with the updated PaymentIntent object with status Canceled
-    func cancelPaymentIntent(_ intent: PaymentIntent) -> Future<PaymentIntent, Error>
+    /// Cancels a PaymentIntent
+    func cancelPaymentIntent() -> Future<Void, Error>
 
     /// Checks for firmware updates.
     func checkForUpdate() -> Future<CardReaderSoftwareUpdate, Error>

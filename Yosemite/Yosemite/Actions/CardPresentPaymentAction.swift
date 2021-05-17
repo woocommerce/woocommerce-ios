@@ -39,7 +39,10 @@ public enum CardPresentPaymentAction: Action {
                         orderID: Int64,
                         parameters: PaymentParameters,
                         onCardReaderMessage: (CardReaderEvent) -> Void,
-                        onCompletion: (Result<PaymentIntent, Error>) -> Void )
+                        onCompletion: (Result<PaymentIntent, Error>) -> Void)
+
+    /// Cancels an active attempt to collect a payment.
+    case cancelPayment(onCompletion: ((Result<Void, Error>) -> Void)?)
 
     /// Check whether there is a software update available.
     case checkForCardReaderUpdate(onCompletion: (Result<CardReaderSoftwareUpdate?, Error>) -> Void)

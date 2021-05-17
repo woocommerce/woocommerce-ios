@@ -1,5 +1,5 @@
 import UIKit
-
+import Yosemite
 
 /// Modal presented when the card reader requests customers to remove the card
 final class CardPresentModalRemoveCard: CardPresentPaymentsModalViewModel {

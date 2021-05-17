@@ -1,5 +1,5 @@
 import UIKit
-
+import Yosemite
 
 /// Modal presented when the card reader requests customers to tap/insert/swipe the card
 final class CardPresentModalTapCard: CardPresentPaymentsModalViewModel {
@@ -11,7 +11,7 @@ final class CardPresentModalTapCard: CardPresentPaymentsModalViewModel {
     private let amount: String
 
     let textMode: PaymentsModalTextMode = .fullInfo
-    let actionsMode: PaymentsModalActionsMode = .none
+    let actionsMode: PaymentsModalActionsMode = .oneAction
 
     var topTitle: String {
         name
@@ -23,7 +23,7 @@ final class CardPresentModalTapCard: CardPresentPaymentsModalViewModel {
 
     let image: UIImage = .cardPresentImage
 
-    let primaryButtonTitle: String? = nil
+    let primaryButtonTitle: String? = Localization.cancel
 
     let secondaryButtonTitle: String? = nil
 
@@ -39,7 +39,11 @@ final class CardPresentModalTapCard: CardPresentPaymentsModalViewModel {
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        //
+        let action = CardPresentPaymentAction.cancelPayment(onCompletion: nil)
+
+        ServiceLocator.stores.dispatch(action)
+
+        viewController?.dismiss(animated: true, completion: nil)
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
@@ -61,6 +65,11 @@ private extension CardPresentModalTapCard {
         static let tapInsertOrSwipe = NSLocalizedString(
             "Tap, insert or swipe to pay",
             comment: "Label asking users to present a card. Presented to users when a payment is going to be collected"
+        )
+
+        static let cancel = NSLocalizedString(
+            "Cancel",
+            comment: "Button to cancel a payment"
         )
     }
 }

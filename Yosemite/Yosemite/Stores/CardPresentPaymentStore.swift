@@ -15,6 +15,9 @@ public final class CardPresentPaymentStore: Store {
 
     private var cancellables: Set<AnyCancellable> = []
 
+    /// We need to be able to cancel the process of collecting a payment.
+    private var paymentCancellable: AnyCancellable? = nil
+
     public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, cardReaderService: CardReaderService) {
         self.cardReaderService = cardReaderService
         self.remote = WCPayRemote(network: network)
@@ -54,6 +57,8 @@ public final class CardPresentPaymentStore: Store {
                            parameters: parameters,
                            onCardReaderMessage: event,
                            onCompletion: completion)
+        case .cancelPayment(let completion):
+            cancelPayment(onCompletion: completion)
         case .checkForCardReaderUpdate(onCompletion: let completion):
             checkForCardReaderUpdate(onCompletion: completion)
         case .startCardReaderUpdate(onProgress: let progress, onCompletion: let completion):
@@ -157,18 +162,34 @@ private extension CardPresentPaymentStore {
             onCardReaderMessage(event)
         }
 
-        cardReaderService.capturePayment(parameters)
-            .subscribe(Subscribers.Sink { error in
-                readerEventsSubscription.cancel()
-                switch error {
-                case .failure(let error):
-                    onCompletion(.failure(error))
-                default:
-                    break
-                }
-            } receiveValue: { intent in
-                onCompletion(.success(intent))
-            })
+        paymentCancellable = cardReaderService.capturePayment(parameters).sink { error in
+            readerEventsSubscription.cancel()
+            switch error {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            default:
+                break
+            }
+        } receiveValue: { intent in
+            onCompletion(.success(intent))
+        }
+    }
+
+    func cancelPayment(onCompletion: ((Result<Void, Error>) -> Void)?) {
+        paymentCancellable?.cancel()
+        paymentCancellable = nil
+
+        cardReaderService.cancelPaymentIntent()
+            .subscribe(Subscribers.Sink(receiveCompletion: { value in
+            switch value {
+            case .failure(let error):
+                onCompletion?(.failure(error))
+            case .finished:
+                break
+            }
+        }, receiveValue: {
+            onCompletion?(.success(()))
+        }))
     }
 
     func checkForCardReaderUpdate(onCompletion: @escaping (Result<CardReaderSoftwareUpdate?, Error>) -> Void) {

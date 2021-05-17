@@ -35,6 +35,10 @@ final class MockShippingLabelRemote {
         let siteID: Int64
     }
 
+    private struct LoadCarriersAndRatesKey: Hashable {
+        let siteID: Int64
+    }
+
     private struct LoadAccountSettingsResultKey: Hashable {
         let siteID: Int64
     }
@@ -64,6 +68,9 @@ final class MockShippingLabelRemote {
 
     /// The results to return based on the given arguments in `createPackage`
     private var createPackageResults = [CreatePackageResultKey: Result<Bool, Error>]()
+
+    /// The results to return based on the given arguments in `loadCarriersAndRates`
+    private var loadCarriersAndRatesResults = [LoadCarriersAndRatesKey: Result<ShippingLabelCarriersAndRates, Error>]()
 
     /// The results to return based on the given arguments in `loadShippingLabelAccountSettings`
     private var loadAccountSettings = [LoadAccountSettingsResultKey: Result<ShippingLabelAccountSettings, Error>]()
@@ -217,6 +224,24 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
 
             let key = CreatePackageResultKey(siteID: siteID)
             if let result = self.createPackageResults[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func loadCarriersAndRates(siteID: Int64,
+                              orderID: Int64,
+                              originAddress: ShippingLabelAddress,
+                              destinationAddress: ShippingLabelAddress,
+                              packages: [ShippingLabelPackageSelected],
+                              completion: @escaping (Result<ShippingLabelCarriersAndRates, Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            let key = LoadCarriersAndRatesKey(siteID: siteID)
+
+            if let result = self.loadCarriersAndRatesResults[key] {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")

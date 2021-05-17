@@ -7,7 +7,7 @@ public enum CardPresentPaymentAction: Action {
 
     /// Cancels the Card Reader discovery process.
     ///
-    case cancelCardReaderDiscovery(onCompletion: (CardReaderServiceDiscoveryStatus) -> Void)
+    case cancelCardReaderDiscovery(onCompletion: (Result<Void, Error>) -> Void)
 
     /// Connect to a specific CardReader.
     /// Stops Card Reader discovery

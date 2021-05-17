@@ -24,11 +24,11 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
 
         readerService.discoveredReaders.sink { completion in
             readerService.cancelDiscovery()
-            receivedReaders.fulfill()
+                .fulfillOnCompletion(expectation: receivedReaders)
         } receiveValue: { readers in
             if readers.count > 0 {
                 readerService.cancelDiscovery()
-                receivedReaders.fulfill()
+                    .fulfillOnCompletion(expectation: receivedReaders)
             }
         }.store(in: &cancellables)
 
@@ -47,7 +47,7 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
 
         readerService.discoveredReaders.sink { completion in
             readerService.cancelDiscovery()
-            discoveredReaders.fulfill()
+                .fulfillOnCompletion(expectation: discoveredReaders)
         } receiveValue: { readers in
             // The Stripe Terminal SDK published an empty list of discovered readers first
             // and it will continue publishing as new readers are discovered.
@@ -58,14 +58,14 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
             }
             // There should be at least one non nil reader
             guard let _ = readers.first else {
-                readerService.cancelDiscovery()
+                readerService.cancelDiscovery().discard()
                 XCTFail()
                 return
             }
 
             // We blisfully ignore the actual values received (for now)
             readerService.cancelDiscovery()
-            discoveredReaders.fulfill()
+                .fulfillOnCompletion(expectation: discoveredReaders)
         }.store(in: &cancellables)
 
         readerService.start(MockTokenProvider())
@@ -81,19 +81,19 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
 
         readerService.discoveredReaders.dropFirst(1).sink { completion in
             readerService.cancelDiscovery()
-            discoveredReaders.fulfill()
+                .fulfillOnCompletion(expectation: discoveredReaders)
         } receiveValue: { readers in
             // There should be at least one non nil reader
             guard let firstReader = readers.first else {
                 return
             }
             discoveredReaders.fulfill()
-            readerService.cancelDiscovery()
+            readerService.cancelDiscovery().discard()
             readerService.connect(firstReader).sink { completion in
-                readerService.cancelDiscovery()
+                readerService.cancelDiscovery().discard()
             } receiveValue: { _ in
                 readerService.cancelDiscovery()
-                connectedToReader.fulfill()
+                    .fulfillOnCompletion(expectation: connectedToReader)
             }.store(in: &self.cancellables)
 
         }.store(in: &cancellables)
@@ -114,5 +114,22 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
 private final class MockTokenProvider: CardReaderConfigProvider {
     func fetchToken(completion: @escaping(String?, Error?) -> Void) {
         completion("a token", nil)
+    }
+}
+
+private extension Publisher {
+    func fulfillOnCompletion(expectation: XCTestExpectation) {
+        subscribe(Subscribers.Sink(
+                    receiveCompletion: { _ in
+                        expectation.fulfill()
+                    },
+                    receiveValue: { _ in }
+        ))
+    }
+    func discard() {
+        subscribe(Subscribers.Sink(
+                    receiveCompletion: { _ in },
+                    receiveValue: { _ in }
+        ))
     }
 }

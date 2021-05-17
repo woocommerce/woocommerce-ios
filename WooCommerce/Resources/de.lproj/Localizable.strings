@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-04-28 11:54:03+0000 */
+/* Translation-Revision-Date: 2021-05-12 12:54:50+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -149,6 +149,9 @@
 /* No comment provided by engineer. */
 "A refund will not be issued to the customer. You will need to manually issue the refund through Stripe." = "Der Kunde erhält keine Rückerstattung. Du musst die Rückerstattung manuell über Stripe ausstellen.";
 
+/* Message explaining that the site may have an invalid SSL certificate. */
+"A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "Es konnte keine sichere Verbindung zu deiner Website hergestellt werden. Bitte vergewissere dich, dass deine Website über ein gültiges SSL-Zertifikat verfügt.";
+
 /* Description of the Action sheet option when the user wants to change the Product type to simple product */
 "A unique item to sell" = "Ein einzelner Artikel zum Verkaufen";
 
@@ -179,6 +182,9 @@
 /* A button title used for a shipment tracking unit test
    A button title used for a unit test - Action for adding a Products' downloadable files' info remotely - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
 "Add" = "Hinzufügen";
+
+/* Title on empty state button when the product has no attributes and variations */
+"Add Attributes" = "Attribute hinzufügen";
 
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
@@ -213,8 +219,7 @@
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
 "Add Tracking" = "Verfolgung hinzufügen";
 
-/* Action to add new variation on the variations list
-   Title on add variation button when there are no variations */
+/* Title on empty state button when the product has attributes but no variations */
 "Add Variation" = "Variante hinzufügen";
 
 /* Accessibility label for the 'Add a note' button
@@ -260,9 +265,6 @@
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "Füge Gewicht und Maße hinzu.";
-
-/* Title on the variations list screen when there are no variations */
-"Add your first variation" = "Erste Variante hinzufügen";
 
 /* Text field address in Shipping Label Address Validation */
 "Address" = "Adresse";
@@ -661,6 +663,9 @@
    Text on the button that starts shipping label creation */
 "Create Shipping Label" = "Versandetikett erstellen";
 
+/* Title on the variations list screen when there are no variations */
+"Create your first variation" = "Erste Variante erstellen";
+
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "Produkte erstellen";
 
@@ -753,7 +758,7 @@
 "Discount" = "Rabatt";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - Title of the button to dismiss the banner notice in the add-ons view */
 "Dismiss" = "Überspringen";
 
 /* Display label for the product's inventory backorders setting option */
@@ -766,7 +771,7 @@
 "Don't have an account? _Sign up_" = "Du hast noch kein Konto? _Registrieren_";
 
 /* Action title to select products to add to a grouped product from search results
-   Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files */
+   Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files */
 "Done" = "Fertig";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -880,7 +885,8 @@
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "Stelle sicher, dass die **Firmware deines Druckers auf dem aktuellen Stand ist**. Informationen zu Updates findest du in der Dokumentation zu deinem Drucker.";
 
-/* Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
+/* Action button linking to instructions for enter another store.Presented when logging in with a site address that appears to be invalid.
+   Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
 "Enter Another Store" = "Anderen Store eingeben";
 
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
@@ -1028,6 +1034,12 @@
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Erfahre, wie erfolgreich Produkte in deinem Shop sind";
 
+/* Action to generate attributes on the Product Attributes screen */
+"Generate" = "Erstellen";
+
+/* Action to add new variation on the variations list */
+"Generate New Variation" = "Neue Variation erstellen";
+
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "Variation erstellen";
 
@@ -1046,6 +1058,9 @@
 
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "Hole Konto-Informationen";
+
+/* Title of the button to give feedback about the add-ons feature */
+"Give Feedback" = "Feedback geben";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    The title of the button to give feedback about shipping labels features on the banner in order details - Title on the navigation bar for the products feedback survey */
@@ -1150,6 +1165,9 @@
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Bei Deaktivierung wird der Hinweis privat";
+
+/* The text below the order add-ons list indicating that the content could be stale. */
+"If renaming an add-on in your web dashboard, please note that previous orders will no longer show that add-on within the app." = "Achtung: Wenn du ein Add-on in deinem Web-Dashboard umbenennst, wird es in der App in den vorherigen Bestellungen nicht mehr angezeigt.";
 
 /* Header text when reprinting a shipping label */
 "If there was a printing error when you purchased the label, you can print it again." = "Sollte der Ausdruck beim Kauf des Etiketts fehlerhaft sein, kannst du es erneut ausdrucken.";
@@ -1334,8 +1352,8 @@
    Log In button label. - View title during the log in process. */
 "Log In" = "Anmelden";
 
-/* Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
-   Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
+/* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
+   Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation - Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log In With Another Account" = "Mit einem anderen Konto anmelden";
 
 /* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
@@ -1594,6 +1612,9 @@
 
 /* Accessibility label for 1 password button */
 "One Password button" = "1Password-Button";
+
+/* Helper text above photo list in Product images screen */
+"Only one photo can be displayed by variation" = "Für eine Variante kann immer nur ein Foto angezeigt werden.";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Geräte-Einstellungen öffnen";
@@ -2712,9 +2733,6 @@
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "Die Variation konnte nicht generiert werden.";
 
-/* Message explaining that a site is not a WordPress site. Reads like 'The website awebsite.com you'll is not a WordPress site... */
-"The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "Die Website ist keine WordPress-Website. Damit wir uns mit ihr verbinden können, muss WordPress auf der Website installiert sein.";
-
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "Es gab ein Problem beim Blockieren der Beiträge dieser spezifischen Website.";
 
@@ -2791,6 +2809,9 @@
 
 /* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "An";
+
+/* Subtitle on the variations list screen when there are no variations and attributes */
+"To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "Um eine Variation hinzuzufügen, musst du zuerst deren Attribute festlegen (d. h. Farbe, Größe).";
 
 /* Footer of text field section in Add Attribute screen */
 "To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "Um eine Variation zu erstellen, musst du zuerst deren Attribute festlegen (d. h. Farbe, Größe).";
@@ -3076,6 +3097,9 @@
    Button on bottom of shipping label package card to show shipping details */
 "View Shipment Details" = "Sendungsdetails anzeigen";
 
+/* Title of the banner notice in the add-ons view */
+"View add-ons from your device!" = "Sieh dir Add-ons über dein Gerät an!";
+
 /* The action to update downloadable files settings for a product */
 "View downloadable file settings" = "Herunterladbare Dateieinstellungen anzeigen";
 
@@ -3125,6 +3149,9 @@
 /* The info of the shipping labels top banner in order details */
 "We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "Wir arbeiten daran, es dir einfacher zu machen, Versandetiketten direkt über den Gerät zu drucken! Wenn du in deiner Store-Administration mit WooCommerce Shipping Versandetiketten für eine Bestellung erstellt hast, kannst du diese in deinen Bestelldetails hier drucken.";
 
+/* Content of the banner notice in the add-ons view */
+"We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "Wir arbeiten daran, es dir einfacher zu machen,  Produkt-Add-ons direkt auf deinem Gerät zu sehen! Im Moment siehst du die Add-ons für deine Bestellung. Du kannst diese Add-ons in deinem Web-Dashboard erstellen und bearbeiten.";
+
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "Die Analysen deines Shops können nicht angezeigt werden.";
 
@@ -3136,6 +3163,9 @@
 
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "Wir verwenden andere Werkzeuge zum Tracking, darunter auch welche von Drittanbietern. Hier erhältst du weitere Informationen und Tipps, wie du sie kontrollierst.";
+
+/* Message explaining that WordPress was not detected. */
+"We were not able to detect a WordPress site at the address you entered. Please make sure WordPress is installed and that you are running the latest available version." = "An der von dir eingegeben Adresse konnten wir keine WordPress-Website finden. Bitte stelle sicher, dass WordPress installiert ist und du über die aktuelle Version verfügst.";
 
 /* Banner caption in Shipping Label Address Validation when the origin address can't be verified. */
 "We were unable to automatically verify the origin address." = "Die Ursprungsadresse konnte nicht automatisch verifiziert werden.";

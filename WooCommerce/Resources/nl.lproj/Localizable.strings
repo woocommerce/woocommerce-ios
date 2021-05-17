@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-04-28 13:54:04+0000 */
+/* Translation-Revision-Date: 2021-05-12 14:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -120,7 +120,7 @@
 "- %1$d item" = "- %1$d artikel";
 
 /* Number of items in packages in Shipping Labels in plural form. Reads like - 10 items */
-"- %1$d items" = "- %1$d items";
+"- %1$d items" = "- %1$d artikelen";
 
 /* Navigation bar title for selecting multiple products when one product has been selected. */
 "1 Product Selected" = "1 product geselecteerd";
@@ -148,6 +148,9 @@
 
 /* No comment provided by engineer. */
 "A refund will not be issued to the customer. You will need to manually issue the refund through Stripe." = "De klant ontvangt geen terugbetaling. Je moet handmatig terugbetalen via Stripe.";
+
+/* Message explaining that the site may have an invalid SSL certificate. */
+"A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "Er kon geen beveiligde verbinding met de site tot stand worden gebracht. Zorg ervoor dat je site over een geldig SSL-certificaat beschikt.";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple product */
 "A unique item to sell" = "Een uniek artikel om te verkopen";
@@ -179,6 +182,9 @@
 /* A button title used for a shipment tracking unit test
    A button title used for a unit test - Action for adding a Products' downloadable files' info remotely - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
 "Add" = "Voeg toe";
+
+/* Title on empty state button when the product has no attributes and variations */
+"Add Attributes" = "Eigenschappen toevoegen";
 
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
@@ -213,8 +219,7 @@
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
 "Add Tracking" = "Tracking toevoegen";
 
-/* Action to add new variation on the variations list
-   Title on add variation button when there are no variations */
+/* Title on empty state button when the product has attributes but no variations */
 "Add Variation" = "Variatie toevoegen";
 
 /* Accessibility label for the 'Add a note' button
@@ -260,9 +265,6 @@
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "Gewicht en afmetingen toevoegen";
-
-/* Title on the variations list screen when there are no variations */
-"Add your first variation" = "Voeg je eerste variatie toe";
 
 /* Text field address in Shipping Label Address Validation */
 "Address" = "Adres";
@@ -570,7 +572,7 @@
 "Connecting to WordPress.com" = "Verbinden met WordPress.com";
 
 /* Contact Customer action in Shipping Label Address Validation. */
-"Contact Customer" = "Contact Customer";
+"Contact Customer" = "Contact opnemen met klant";
 
 /* Section header title for contact details in billing information */
 "Contact Details" = "Contactgegevens";
@@ -661,6 +663,9 @@
    Text on the button that starts shipping label creation */
 "Create Shipping Label" = "Verzendlabel aanmaken";
 
+/* Title on the variations list screen when there are no variations */
+"Create your first variation" = "Je eerste variatie maken";
+
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "Producten aanmaken";
 
@@ -729,7 +734,7 @@
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "Bepaalt de positie van de producten in de catalogus. Hoe lager de waarde van het cijfer, hoe hoger het artikel in de productlijst wordt weergegeven. Je kunt ook negatieve waarden gebruiken";
 
 /* Instructions after a Magic Link was sent, but email is incorrect. */
-"Didn't mean to create a new account? Go back to re-enter your email address." = "Didn't mean to create a new account? Go back to re-enter your email address.";
+"Didn't mean to create a new account? Go back to re-enter your email address." = "Heb je per ongeluk een nieuw account aangemaakt? Ga terug om je e-mailadres opnieuw in te voeren.";
 
 /* Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit] */
 "Dimensions: %1$@ x %2$@ %3$@" = "Afmetingen: %1$@ x %2$@%3$@";
@@ -753,7 +758,7 @@
 "Discount" = "Korting";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - Title of the button to dismiss the banner notice in the add-ons view */
 "Dismiss" = "Afbreken";
 
 /* Display label for the product's inventory backorders setting option */
@@ -766,7 +771,7 @@
 "Don't have an account? _Sign up_" = "Heb je geen account? _Aanmelden_";
 
 /* Action title to select products to add to a grouped product from search results
-   Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files */
+   Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files */
 "Done" = "Klaar";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -844,7 +849,7 @@
 "Edit Products" = "Producten bewerken";
 
 /* Caption displayed in promotional screens shown during the login flow. */
-"Edit and add new products from anywhere" = "Edit and add new products from anywhere";
+"Edit and add new products from anywhere" = "Bewerk en voeg nieuwe producten toe ongeacht waar je bent";
 
 /* Email address text field placeholder */
 "Email" = "E-mail";
@@ -880,7 +885,8 @@
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "Zorg dat je **printerfirmware up-to-date is**. Bekijk de documentatie van je printer voor instructies over bijwerken.";
 
-/* Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
+/* Action button linking to instructions for enter another store.Presented when logging in with a site address that appears to be invalid.
+   Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
 "Enter Another Store" = "Een andere winkel invoeren";
 
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
@@ -938,7 +944,7 @@
 "Enter your password instead." = "Voer je wachtwoord in.";
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
-"Error in finding the address in Apple Maps" = "Error in finding the address in Apple Maps";
+"Error in finding the address in Apple Maps" = "Er is een fout opgetreden bij het vinden van het adres op Apple Maps";
 
 /* Alert title when there is an error requesting shipping label document for reprinting */
 "Error previewing shipping label" = "Fout bij voorbeeldweergave verzendlabel";
@@ -1011,7 +1017,7 @@
 "Find your store address" = "Zoek het adres van je winkel";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
-"Follow your favorite sites and discover new blogs." = "Follow your favorite sites and discover new blogs.";
+"Follow your favorite sites and discover new blogs." = "Volg je favoriete sites en ontdek nieuwe blogs.";
 
 /* User role badge */
 "Follower" = "Volger";
@@ -1027,6 +1033,12 @@
 
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Krijg inzicht in hoe goed producten op je site presteren";
+
+/* Action to generate attributes on the Product Attributes screen */
+"Generate" = "Genereren";
+
+/* Action to add new variation on the variations list */
+"Generate New Variation" = "Nieuwe variatie genereren";
 
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "Variatie aan het genereren";
@@ -1046,6 +1058,9 @@
 
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "Account informatie ophalen";
+
+/* Title of the button to give feedback about the add-ons feature */
+"Give Feedback" = "Geef feedback";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    The title of the button to give feedback about shipping labels features on the banner in order details - Title on the navigation bar for the products feedback survey */
@@ -1146,10 +1161,13 @@
 "I Like It" = "Ik vind dit leuk";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
-"ITEMS TO FULFILL" = "ITEMS TO FULFILL";
+"ITEMS TO FULFILL" = "ARTIKELEN OM TE VOLTOOIEN";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Als deze functie is uitgeschakeld, is de opmerking privé";
+
+/* The text below the order add-ons list indicating that the content could be stale. */
+"If renaming an add-on in your web dashboard, please note that previous orders will no longer show that add-on within the app." = "Als je de naam van een extra optie wijzigt in je webdashboard, onthoud dan dat eerder bestellingen deze extra optie niet langer zullen weergeven in de app.";
 
 /* Header text when reprinting a shipping label */
 "If there was a printing error when you purchased the label, you can print it again." = "Als er een afdrukfout heeft plaatsgevonden toen je het label hebt aangeschaft, dan kan je het opnieuw afdrukken.";
@@ -1334,8 +1352,8 @@
    Log In button label. - View title during the log in process. */
 "Log In" = "Inloggen";
 
-/* Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
-   Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
+/* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
+   Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation - Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log In With Another Account" = "Log in met een ander account";
 
 /* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
@@ -1393,7 +1411,7 @@
 "Manage your Jetpack-powered site on the go — you've got WordPress in your pocket." = "Beheer je Jetpack-site waar je ook bent. Je draagt WordPress altijd met je mee.";
 
 /* Caption displayed in promotional screens shown during the login flow. */
-"Manage your store orders on the go " = "Manage your store orders on the go ";
+"Manage your store orders on the go " = "Beheer je winkelbestellingen onderweg ";
 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "Handmatige offsets";
@@ -1436,7 +1454,7 @@
 "Minimum value %@, maximum value %@" = "Minimale waarde %1$@, maximale waarde %2$@";
 
 /* Caption displayed in promotional screens shown during the login flow. */
-"Monitor and approve your product reviews" = "Monitor and approve your product reviews";
+"Monitor and approve your product reviews" = "Volg en keur je productbeoordelingen goed";
 
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
@@ -1595,6 +1613,9 @@
 /* Accessibility label for 1 password button */
 "One Password button" = "1Password-knop";
 
+/* Helper text above photo list in Product images screen */
+"Only one photo can be displayed by variation" = "Er kan slechts één foto worden weergegeven per variatie";
+
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Open Apparaatinstellingen";
 
@@ -1603,7 +1624,7 @@
 "Open Mail" = "Open e-mail";
 
 /* Open Map action in Shipping Label Address Validation. */
-"Open Map" = "Open Map";
+"Open Map" = "Kaart openen";
 
 /* Navigates to screen about open source licenses */
 "Open Source Licenses" = "Bronlicenties openen";
@@ -1676,13 +1697,13 @@
 "Out of stock" = "Niet op voorraad";
 
 /* Header section package details in Shipping Label Package Detail */
-"PACKAGE DETAILS" = "PACKAGE DETAILS";
+"PACKAGE DETAILS" = "PAKKETGEGEVENS";
 
 /* Product section title */
 "PRODUCT" = "PRODUCT";
 
 /* Package term in Shipping Labels. Reads like Package 1 */
-"Package %1$d" = "Package %1$d";
+"Package %1$d" = "Pakket %1$d";
 
 /* Order shipping label package section title format. The number indicates the index of the shipping label package. */
 "Package %d" = "Pakket %d";
@@ -1693,7 +1714,7 @@
 
 /* Package Selected screen title in Shipping Label flow
    Title of the row for selecting a package in Shipping Label Package Detail screen */
-"Package Selected" = "Package Selected";
+"Package Selected" = "Geselecteerd pakket";
 
 /* The title for the customer payment cell */
 "Paid" = "Betaald";
@@ -2484,7 +2505,7 @@
 "Subtotal" = "Subtotaal";
 
 /* Title of the footer in Shipping Label Package Detail screen */
-"Sum of products and package weight" = "Sum of products and package weight";
+"Sum of products and package weight" = "Totaalaantal producten en gewicht van pakket";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Winkel wijzigen";
@@ -2665,7 +2686,7 @@
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Het certificaat voor deze server is ongeldig. Je maakt mogelijk verbinding met een server die zich voordoet als “%@”, wat je vertrouwelijke informatie in gevaar kan brengen.\n\nWil je het certificaat toch vertrouwen?";
 
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
-"The phone number is not valid or you can't call the customer from this device." = "The phone number is not valid or you can't call the customer from this device.";
+"The phone number is not valid or you can't call the customer from this device." = "Het telefoonnummer is ongeldig, of je kunt de klant niet vanaf dit apparaat bellen.";
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "De prijs van dit product. Bewerkbaar.";
@@ -2711,9 +2732,6 @@
 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "De variatie kon niet worden gegenereerd .";
-
-/* Message explaining that a site is not a WordPress site. Reads like 'The website awebsite.com you'll is not a WordPress site... */
-"The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "De website is geen WordPress-website. Om er verbinding mee te kunnen maken, moet WordPress geïnstalleerd zijn.";
 
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "Er is een probleem opgetreden bij het blokkeren van berichten van de opgegeven site.";
@@ -2792,6 +2810,9 @@
 /* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "Aan";
 
+/* Subtitle on the variations list screen when there are no variations and attributes */
+"To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "Om een variatie toe te voegen moet je de eigenschappen (bv. 'kleur', 'maat') eerst instellen";
+
 /* Footer of text field section in Add Attribute screen */
 "To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "Om een variatie te maken moet je de eigenschappen (bv. 'kleur', 'maat') eerst instellen.";
 
@@ -2833,13 +2854,13 @@
 "Total orders: %ld" = "Totaalaantal bestellingen: %ld";
 
 /* Title of the row for adding the package weight in Shipping Label Package Detail screen */
-"Total package weight" = "Total package weight";
+"Total package weight" = "Totaal pakketgewicht";
 
 /* Track shipment button title */
 "Track Shipment" = "Verzending volgen";
 
 /* Caption displayed in promotional screens shown during the login flow. */
-"Track sales and high performing products" = "Track sales and high performing products";
+"Track sales and high performing products" = "Volg verkoopcijfers en goedpresterende producten";
 
 /* Track shipment of a shipping label from the shipping label tracking more menu action sheet */
 "Track shipment" = "Verzending tracken";
@@ -2952,7 +2973,7 @@
 "Unknown media type" = "Onbekend mediatype";
 
 /* Back button title when the product doesn't have a name */
-"Unnamed product" = "Unnamed product";
+"Unnamed product" = "Product zonder naam";
 
 /* Accessibility label for unordered list button on formatting toolbar. */
 "Unordered List" = "Ongeordende lijst";
@@ -3076,6 +3097,9 @@
    Button on bottom of shipping label package card to show shipping details */
 "View Shipment Details" = "Verzendingsgegevens bekijken";
 
+/* Title of the banner notice in the add-ons view */
+"View add-ons from your device!" = "Bekijk extra opties vanaf je apparaat!";
+
 /* The action to update downloadable files settings for a product */
 "View downloadable file settings" = "Downloadbare bestandinstellingen bekijken";
 
@@ -3125,6 +3149,9 @@
 /* The info of the shipping labels top banner in order details */
 "We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "We zijn bezig om het eenvoudiger voor je te maken om verzendlabels rechtstreeks vanaf je apparaat af te drukken! Als je met WooCommerce Shipping labels voor een bestelling hebt aangemaakt bij je winkelbeheer, kan je ze voorlopig hier, bij je bestelgegevens, afdrukken.";
 
+/* Content of the banner notice in the add-ons view */
+"We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "We zijn bezig om het eenvoudiger voor je te maken om extra opties voor je product vanaf je apparaat te bekijken! Voor nu kun je de extra opties voor je bestellingen weergeven. Je kunt deze extra opties maken en bewerken vanaf je webdashboard.";
+
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "We kunnen de analyses van je winkel niet weergeven";
 
@@ -3136,6 +3163,9 @@
 
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "We gebruiken ook andere tracking-tools, waaronder een aantal van derden. Bekijk meer informatie over deze tools en hoe je ze kunt beheren.";
+
+/* Message explaining that WordPress was not detected. */
+"We were not able to detect a WordPress site at the address you entered. Please make sure WordPress is installed and that you are running the latest available version." = "We konden geen WordPress-site vinden op het door jou ingevoerde adres. Zorg ervoor dat WordPress is geïnstalleerd en dat je beschikt over de meest recente versie.";
 
 /* Banner caption in Shipping Label Address Validation when the origin address can't be verified. */
 "We were unable to automatically verify the origin address." = "We kunnen het oorspronkelijke verzendadres niet automatisch verifiëren.";
@@ -3231,7 +3261,7 @@
 "Yesterday" = "Gisteren";
 
 /* The info of the top banner on the Products tab. */
-"You can now create and manage product variations!" = "You can now create and manage product variations!";
+"You can now create and manage product variations!" = "Je kunt nu productvariaties aanmaken en beheren!";
 
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "Je kan een terugbetaling aanvragen voor een verzendlabel dat niet is gebruikt om een pakket te verzenden.\nHet duurt minimaal 14 dagen voordat dit is verwerkt.";

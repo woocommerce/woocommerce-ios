@@ -1,1 +1,5 @@
-Nous travaillons sur de nombreuses nouveautés fascinantes pour l’instant. Un seul petit correctif est actuellement disponible. Les images de produits dont le nom comprend des caractères non latins sont désormais prises en charge. Elles se chargeront sans problème et ne provoqueront plus d’erreurs inattendues dans votre bibliothèque de médias.
+Les variantes de produit ne prennent en charge qu’une seule image. Ainsi, si la variante d’un produit comprend déjà une image, une option permettant de la remplacer ou de la supprimer apparaît. Par contre, vous ne pouvez pas en ajouter une autre.
+
+Nous avons reçu des rapports d’incidents survenant lors de la sélection des images à partir de la bibliothèque de médias et concernant les bibliothèques possédant un nombre spécifique d’images. Ce problème a été résolu.
+
+Nous avons également amélioré un message d’erreur qui apparaissait lorsqu’un client se connectait à un site avec un appareil hors ligne, un certificat SSL non valide ou un XML-RPC bloqué. Le message mis à jour simplifie la résolution du problème de connexion par les utilisateurs eux-mêmes.

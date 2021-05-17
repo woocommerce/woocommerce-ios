@@ -149,6 +149,9 @@
 /* No comment provided by engineer. */
 "A refund will not be issued to the customer. You will need to manually issue the refund through Stripe." = "Pengembalian dana tidak akan diberikan kepada pelanggan. Anda akan perlu meminta pengembalian dana secara manual melalui Stripe.";
 
+/* Message explaining that the site may have an invalid SSL certificate. */
+"A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate.";
+
 /* Description of the Action sheet option when the user wants to change the Product type to simple product */
 "A unique item to sell" = "Item khusus yang akan dijual";
 
@@ -179,6 +182,9 @@
 /* A button title used for a shipment tracking unit test
    A button title used for a unit test - Action for adding a Products' downloadable files' info remotely - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
 "Add" = "Tambah";
+
+/* Title on empty state button when the product has no attributes and variations */
+"Add Attributes" = "Add Attributes";
 
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
@@ -213,8 +219,7 @@
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
 "Add Tracking" = "Tambahkan Pelacakan";
 
-/* Action to add new variation on the variations list
-   Title on add variation button when there are no variations */
+/* Title on empty state button when the product has attributes but no variations */
 "Add Variation" = "Tambahkan Variasi";
 
 /* Accessibility label for the 'Add a note' button
@@ -260,9 +265,6 @@
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "Tambahkan berat dan dimensi";
-
-/* Title on the variations list screen when there are no variations */
-"Add your first variation" = "Tambahkan variasi pertama Anda";
 
 /* Text field address in Shipping Label Address Validation */
 "Address" = "Alamat";
@@ -661,6 +663,9 @@
    Text on the button that starts shipping label creation */
 "Create Shipping Label" = "Buat Label Pengiriman";
 
+/* Title on the variations list screen when there are no variations */
+"Create your first variation" = "Create your first variation";
+
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "Membuat produk";
 
@@ -753,7 +758,7 @@
 "Discount" = "Diskon";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - Title of the button to dismiss the banner notice in the add-ons view */
 "Dismiss" = "Hentikan";
 
 /* Display label for the product's inventory backorders setting option */
@@ -766,7 +771,7 @@
 "Don't have an account? _Sign up_" = "Belum memiliki akun? _Daftar_";
 
 /* Action title to select products to add to a grouped product from search results
-   Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files */
+   Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files */
 "Done" = "Selesai";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -880,7 +885,8 @@
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "Pastikan **firmware mesin cetak Anda sudah paling mutakhir**. Lihat dokumentasi mesin cetak Anda untuk instruksi melakukan pembaruan.";
 
-/* Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
+/* Action button linking to instructions for enter another store.Presented when logging in with a site address that appears to be invalid.
+   Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
 "Enter Another Store" = "Masukkan Toko Lainnya";
 
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
@@ -1028,6 +1034,12 @@
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Dapatkan informasi mengenai performa produk di toko Anda";
 
+/* Action to generate attributes on the Product Attributes screen */
+"Generate" = "Generate";
+
+/* Action to add new variation on the variations list */
+"Generate New Variation" = "Generate New Variation";
+
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "Membuat Variasi";
 
@@ -1046,6 +1058,9 @@
 
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "Mencari informasi akun";
+
+/* Title of the button to give feedback about the add-ons feature */
+"Give Feedback" = "Give Feedback";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    The title of the button to give feedback about shipping labels features on the banner in order details - Title on the navigation bar for the products feedback survey */
@@ -1150,6 +1165,9 @@
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Jika dinonaktifkan, catatan akan diatur sebagai pribadi";
+
+/* The text below the order add-ons list indicating that the content could be stale. */
+"If renaming an add-on in your web dashboard, please note that previous orders will no longer show that add-on within the app." = "If renaming an add-on in your web dashboard, please note that previous orders will no longer show that add-on within the app.";
 
 /* Header text when reprinting a shipping label */
 "If there was a printing error when you purchased the label, you can print it again." = "Jika terjadi kesalahan mencetak saat Anda membeli label, Anda dapat mencetaknya kembali.";
@@ -1334,8 +1352,8 @@
    Log In button label. - View title during the log in process. */
 "Log In" = "Masuk";
 
-/* Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
-   Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
+/* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
+   Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation - Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log In With Another Account" = "Login Dengan Akun Lain";
 
 /* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
@@ -1594,6 +1612,9 @@
 
 /* Accessibility label for 1 password button */
 "One Password button" = "Tombol 1Password";
+
+/* Helper text above photo list in Product images screen */
+"Only one photo can be displayed by variation" = "Only one photo can be displayed by variation";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Buka pengaturan perangkat";
@@ -2712,9 +2733,6 @@
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "Variasi tidak dapat dibuat.";
 
-/* Message explaining that a site is not a WordPress site. Reads like 'The website awebsite.com you'll is not a WordPress site... */
-"The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "Situs web ini bukan situs WordPress. Agar kami dapat terhubung ke situs tersebut, situs harus menggunakan WordPress.";
-
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "Terjadi kesalahan saat memblokir pos dari situs yang telah ditentukan.";
 
@@ -2791,6 +2809,9 @@
 
 /* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "ke";
+
+/* Subtitle on the variations list screen when there are no variations and attributes */
+"To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first";
 
 /* Footer of text field section in Add Attribute screen */
 "To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "Untuk membuat variasi, Anda perlu mengatur atributnya (yaitu \"Warna\", \"Ukuran\") terlebih dahulu";
@@ -3076,6 +3097,9 @@
    Button on bottom of shipping label package card to show shipping details */
 "View Shipment Details" = "Lihat Detail Pengiriman";
 
+/* Title of the banner notice in the add-ons view */
+"View add-ons from your device!" = "View add-ons from your device!";
+
 /* The action to update downloadable files settings for a product */
 "View downloadable file settings" = "Lihat pengaturan untuk file yang dapat diunduh";
 
@@ -3125,6 +3149,9 @@
 /* The info of the shipping labels top banner in order details */
 "We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "Kami berusaha mempermudah agar Anda dapat mencetak label pengiriman langsung dari perangkat Anda! Untuk saat ini, jika telah membuat label untuk sebuah pesanan di admin toko dengan WooCommerce Shipping, Anda dapat mencetak detail Pesanan di sini.";
 
+/* Content of the banner notice in the add-ons view */
+"We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard.";
+
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "Kami tidak dapat menampilkan analisis toko Anda";
 
@@ -3136,6 +3163,9 @@
 
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "Kami menggunakan alat pelacakan lainnya, termasuk beberapa dari pihak ketiga. Baca tentang hal ini dan cara mengontrolnya.";
+
+/* Message explaining that WordPress was not detected. */
+"We were not able to detect a WordPress site at the address you entered. Please make sure WordPress is installed and that you are running the latest available version." = "We were not able to detect a WordPress site at the address you entered. Please make sure WordPress is installed and that you are running the latest available version.";
 
 /* Banner caption in Shipping Label Address Validation when the origin address can't be verified. */
 "We were unable to automatically verify the origin address." = "Kami tidak dapat memverifikasi alamat pengirim secara otomatis.";

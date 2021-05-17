@@ -1,8 +1,9 @@
 import Foundation
+import Codegen
 
 /// Represents the package selected that will be sent in Shipping Labels Carriers and Rates endpoint.
 ///
-public struct ShippingLabelPackageSelected: Equatable {
+public struct ShippingLabelPackageSelected: Equatable, GeneratedFakeable {
 
     /// The id will be always "default_box"
     public let id: String = "default_box"

@@ -1023,6 +1023,20 @@ extension ShippingLabelCustomPackage {
         )
     }
 }
+extension ShippingLabelPackageSelected {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ShippingLabelPackageSelected {
+        .init(
+            boxID: .fake(),
+            length: .fake(),
+            width: .fake(),
+            height: .fake(),
+            weight: .fake(),
+            isLetter: .fake()
+        )
+    }
+}
 extension ShippingLabelPackagesResponse {
     /// Returns a "ready to use" type filled with fake values.
     ///

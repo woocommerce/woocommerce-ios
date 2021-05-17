@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import CocoaLumberjack
 import Storage
 import Yosemite
@@ -61,6 +62,10 @@ final class ServiceLocator {
     /// Support for external Card Readers
     ///
     private static var _cardReader: CardReaderService = StripeCardReaderService()
+
+    /// Publisher for connected Card Readers
+    ///
+    private static var _connectedCardReaders: AnyPublisher<[CardReader], Never>? = nil
 
     /// Support for printing receipts
     ///
@@ -172,6 +177,12 @@ final class ServiceLocator {
     static var receiptPrinterService: PrinterService {
         _receiptPrinter
     }
+
+    /// Provides access to the connected card reader.
+    /// - Returns: A publisher of [CardReader].
+    static var connectedCardReaders: AnyPublisher<[CardReader], Never> {
+        return _connectedCardReaders ?? cardReaderService.connectedReaders
+    }
 }
 
 
@@ -273,6 +284,14 @@ extension ServiceLocator {
         }
 
         _receiptPrinter = mock
+    }
+
+    static func setConnectedReaders(_ mock: AnyPublisher<[CardReader], Never>?) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _connectedCardReaders = mock
     }
 }
 

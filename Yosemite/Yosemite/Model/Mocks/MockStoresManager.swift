@@ -148,10 +148,6 @@ public class MockStoresManager: StoresManager {
         true
     }
 
-    public var connectedCardReaders: AnyPublisher<[CardReader], Never> {
-        CurrentValueSubject([]).eraseToAnyPublisher()
-    }
-
     public var needsDefaultStore: Bool {
         sessionManager.defaultStoreID == nil
     }

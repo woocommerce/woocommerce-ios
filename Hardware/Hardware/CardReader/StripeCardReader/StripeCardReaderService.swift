@@ -89,27 +89,30 @@ extension StripeCardReaderService: CardReaderService {
         })
     }
 
-    public func cancelDiscovery() {
-        /**
-         *https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)discoverReaders:delegate:completion:
-         *
-         * The discovery process will stop on its own when the terminal
-         * successfully connects to a reader, if the command is
-         * canceled, or if a discovery error occurs.
-         * So it does not hurt to check that we are actually in
-         * discovering mode before attempting a cancellation
-         *
-         */
-        guard discoveryStatusSubject.value == .discovering else {
-            return
-        }
-
-        discoveryCancellable?.cancel { [weak self] error in
-            guard let error = error else {
-                self?.switchStatusToIdle()
-                return
+    public func cancelDiscovery() -> Future <Void, Error> {
+        Future { [weak self] promise in
+            /**
+             *https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)discoverReaders:delegate:completion:
+             *
+             * The discovery process will stop on its own when the terminal
+             * successfully connects to a reader, if the command is
+             * canceled, or if a discovery error occurs.
+             * So it does not hurt to check that we are actually in
+             * discovering mode before attempting a cancellation
+             *
+             */
+            guard self?.discoveryStatusSubject.value == .discovering else {
+                return promise(.success(()))
             }
-            self?.internalError(error)
+
+            self?.discoveryCancellable?.cancel { [weak self] error in
+                guard let error = error else {
+                    self?.switchStatusToIdle()
+                    return promise(.success(()))
+                }
+                self?.internalError(error)
+                promise(.failure(error))
+            }
         }
     }
 

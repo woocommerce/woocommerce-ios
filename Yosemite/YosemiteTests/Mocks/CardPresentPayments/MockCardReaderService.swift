@@ -64,12 +64,15 @@ final class MockCardReaderService: CardReaderService {
         }
     }
 
-    func cancelDiscovery() {
+    func cancelDiscovery() -> Future<Void, Error> {
         didHitCancel = true
 
         /// Delaying the effect of this method so that unit tests are actually async
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {[weak self] in
-            self?.discoveryStatusSubject.send(.idle)
+        return Future { promise in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {[weak self] in
+                self?.discoveryStatusSubject.send(.idle)
+                promise(.success(()))
+            }
         }
     }
 

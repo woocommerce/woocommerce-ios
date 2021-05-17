@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-04-30 09:54:03+0000 */
+/* Translation-Revision-Date: 2021-05-13 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -149,6 +149,9 @@
 /* No comment provided by engineer. */
 "A refund will not be issued to the customer. You will need to manually issue the refund through Stripe." = "不會發放退款給顧客。 你需要透過 Stripe 手動退款。";
 
+/* Message explaining that the site may have an invalid SSL certificate. */
+"A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "無法與該網站建立安全連線。 請確認你的網站具有效的 SSL 憑證。";
+
 /* Description of the Action sheet option when the user wants to change the Product type to simple product */
 "A unique item to sell" = "獨特的銷售商品";
 
@@ -179,6 +182,9 @@
 /* A button title used for a shipment tracking unit test
    A button title used for a unit test - Action for adding a Products' downloadable files' info remotely - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
 "Add" = "新增";
+
+/* Title on empty state button when the product has no attributes and variations */
+"Add Attributes" = "新增屬性";
 
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
@@ -213,8 +219,7 @@
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
 "Add Tracking" = "新增追蹤";
 
-/* Action to add new variation on the variations list
-   Title on add variation button when there are no variations */
+/* Title on empty state button when the product has attributes but no variations */
 "Add Variation" = "新增款式";
 
 /* Accessibility label for the 'Add a note' button
@@ -260,9 +265,6 @@
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "新增重量和尺寸";
-
-/* Title on the variations list screen when there are no variations */
-"Add your first variation" = "新增第一個款式";
 
 /* Text field address in Shipping Label Address Validation */
 "Address" = "地址";
@@ -661,6 +663,9 @@
    Text on the button that starts shipping label creation */
 "Create Shipping Label" = "建立運送標籤";
 
+/* Title on the variations list screen when there are no variations */
+"Create your first variation" = "建立第一個款式";
+
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "正在建立商品";
 
@@ -753,7 +758,7 @@
 "Discount" = "折扣";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - Title of the button to dismiss the banner notice in the add-ons view */
 "Dismiss" = "關閉";
 
 /* Display label for the product's inventory backorders setting option */
@@ -766,7 +771,7 @@
 "Don't have an account? _Sign up_" = "還沒有帳號？_註冊_";
 
 /* Action title to select products to add to a grouped product from search results
-   Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files */
+   Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files */
 "Done" = "完成";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -880,7 +885,8 @@
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "請確認你的**印表機韌體是最新的版本**。 如需瞭解如何更新，請參閱印表機的說明文件。";
 
-/* Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
+/* Action button linking to instructions for enter another store.Presented when logging in with a site address that appears to be invalid.
+   Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
 "Enter Another Store" = "輸入其他商店";
 
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
@@ -1028,6 +1034,12 @@
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "深入瞭解產品在商店上的成效";
 
+/* Action to generate attributes on the Product Attributes screen */
+"Generate" = "產生";
+
+/* Action to add new variation on the variations list */
+"Generate New Variation" = "產生新款式";
+
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "正在產生款式";
 
@@ -1046,6 +1058,9 @@
 
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "取得帳號資訊";
+
+/* Title of the button to give feedback about the add-ons feature */
+"Give Feedback" = "提供意見回饋";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    The title of the button to give feedback about shipping labels features on the banner in order details - Title on the navigation bar for the products feedback survey */
@@ -1150,6 +1165,9 @@
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "若停用，此備註將變成私人狀態";
+
+/* The text below the order add-ons list indicating that the content could be stale. */
+"If renaming an add-on in your web dashboard, please note that previous orders will no longer show that add-on within the app." = "請注意，如果你在網路控制台為附加元件重新命名，應用程式內將不再顯示先前訂單的附加元件。";
 
 /* Header text when reprinting a shipping label */
 "If there was a printing error when you purchased the label, you can print it again." = "如果購買標籤時發生列印錯誤，可以重新列印。";
@@ -1334,8 +1352,8 @@
    Log In button label. - View title during the log in process. */
 "Log In" = "登入";
 
-/* Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
-   Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
+/* Action button that will restart the login flow.Presented when logging in with a site address that appears to be invalid.
+   Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation - Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log In With Another Account" = "使用其他帳號登入";
 
 /* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
@@ -1594,6 +1612,9 @@
 
 /* Accessibility label for 1 password button */
 "One Password button" = "One Password 按鈕";
+
+/* Helper text above photo list in Product images screen */
+"Only one photo can be displayed by variation" = "每個款式只能顯示一張相片";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "開啟裝置設定";
@@ -2712,9 +2733,6 @@
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "無法產生該款式。";
 
-/* Message explaining that a site is not a WordPress site. Reads like 'The website awebsite.com you'll is not a WordPress site... */
-"The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "這不是 WordPress 網站。 若需要我們連結網站，網站必須安裝 WordPress。";
-
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "封鎖指定網站的文章時發生問題。";
 
@@ -2791,6 +2809,9 @@
 
 /* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "至";
+
+/* Subtitle on the variations list screen when there are no variations and attributes */
+"To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "若要新增款式，你需要先設定其屬性 (即「顏色」、「尺寸」)";
 
 /* Footer of text field section in Add Attribute screen */
 "To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "若要建立款式，你需要先設定其屬性 (即「顏色」、「尺寸」)";
@@ -3076,6 +3097,9 @@
    Button on bottom of shipping label package card to show shipping details */
 "View Shipment Details" = "檢視貨件詳細資訊";
 
+/* Title of the banner notice in the add-ons view */
+"View add-ons from your device!" = "查看裝置的附加元件！";
+
 /* The action to update downloadable files settings for a product */
 "View downloadable file settings" = "查看可下載的檔案設定";
 
@@ -3125,6 +3149,9 @@
 /* The info of the shipping labels top banner in order details */
 "We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "我們致力讓你以更輕鬆的方式直接從裝置列印郵寄標籤！ 如果你已經使用 WooCommerce Shipping 在商店管理員中為訂單建立標籤，就可以在此處的「訂單詳細資料」中列印。";
 
+/* Content of the banner notice in the add-ons view */
+"We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "我們正努力讓你能更輕鬆查看裝置的產品附加元件！ 你現在可以查看訂單的附加元件。 你可以在 Web 控制台中建立和編輯這些附加元件。";
+
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "我們無法顯示你的商店分析資料";
 
@@ -3136,6 +3163,9 @@
 
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "我們會使用其他的追蹤工具，包括由第三方所提供的追蹤工具。瞭解相關資訊及其控制方式。";
+
+/* Message explaining that WordPress was not detected. */
+"We were not able to detect a WordPress site at the address you entered. Please make sure WordPress is installed and that you are running the latest available version." = "我們在你輸入的位址偵測不到 WordPress 網站。 請確認已安裝 WordPress，而且正在執行最新的可用版本。";
 
 /* Banner caption in Shipping Label Address Validation when the origin address can't be verified. */
 "We were unable to automatically verify the origin address." = "我們無法自動驗證原始地址。";

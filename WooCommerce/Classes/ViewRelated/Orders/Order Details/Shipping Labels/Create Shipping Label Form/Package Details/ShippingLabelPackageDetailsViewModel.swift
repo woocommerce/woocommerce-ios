@@ -64,6 +64,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     }
     @Published private(set) var selectedCustomPackage: ShippingLabelCustomPackage?
     @Published private(set) var selectedPredefinedPackage: ShippingLabelPredefinedPackage?
+    @Published var totalWeight: String
 
     /// Returns if the custom packages header should be shown in Package List
     ///
@@ -73,6 +74,8 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
 
     init(order: Order,
          packagesResponse: ShippingLabelPackagesResponse?,
+         selectedPackageID: String?,
+         totalWeight: String?,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -85,6 +88,8 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         self.storageManager = storageManager
         self.weightUnit = weightUnit
         self.packagesResponse = packagesResponse
+        self.selectedPackageID = selectedPackageID
+        self.totalWeight = totalWeight ?? ""
         configureResultsControllers()
         syncProducts()
         syncProductVariations()
@@ -145,6 +150,15 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     }
 }
 
+// MARK: - UI utils methods
+extension ShippingLabelPackageDetailsViewModel {
+
+    // Return true if the done button in the package details screen should be enabled
+    func isPackageDetailsDoneButtonEnabled() -> Bool {
+        return !selectedPackageID.isNilOrEmpty && totalWeight.isNotEmpty
+    }
+}
+
 // MARK: - Package Selection
 extension ShippingLabelPackageDetailsViewModel {
     func didSelectPackage(_ id: String) {
@@ -193,10 +207,10 @@ extension ShippingLabelPackageDetailsViewModel {
         }
     }
 
-    /// Sets the last selected package, if any, as the default selected package
+    /// Sets the package passed through the init method, or set the last selected package, if any, as the default selected package
     ///
     func setDefaultPackage() {
-        guard let selectedPackageID = resultsControllers?.accountSettings?.lastSelectedPackageID else {
+        guard let selectedPackageID = selectedPackageID ?? resultsControllers?.accountSettings?.lastSelectedPackageID else {
             return
         }
         didSelectPackage(selectedPackageID)

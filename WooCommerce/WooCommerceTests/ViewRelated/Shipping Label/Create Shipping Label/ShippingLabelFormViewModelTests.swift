@@ -83,6 +83,22 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertEqual(shippingLabelFormViewModel.destinationAddress, expectedShippingAddress)
     }
 
+    func test_handlePackageDetailsValueChanges_returns_updated_data() {
+        // Given
+        let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                                    originAddress: nil,
+                                                                    destinationAddress: nil)
+        let expectedPackageID = "my-package-id"
+        let expectedPackageWeight = "55"
+
+        // When
+        shippingLabelFormViewModel.handlePackageDetailsValueChanges(selectedPackageID: expectedPackageID, totalPackageWeight: expectedPackageWeight)
+
+        // Then
+        XCTAssertEqual(shippingLabelFormViewModel.selectedPackageID, expectedPackageID)
+        XCTAssertEqual(shippingLabelFormViewModel.totalPackageWeight, expectedPackageWeight)
+    }
+
     func test_sections_returns_updated_rows_after_validating_origin_address() {
         // Given
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),

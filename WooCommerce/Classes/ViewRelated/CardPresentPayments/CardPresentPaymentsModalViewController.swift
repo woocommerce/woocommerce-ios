@@ -178,7 +178,6 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func setButtonsActions() {
-        print("===== setting button actions")
         primaryButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapPrimaryButton()
         }

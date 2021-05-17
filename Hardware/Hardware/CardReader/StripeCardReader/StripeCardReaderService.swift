@@ -358,15 +358,18 @@ private extension StripeCardReaderService {
                 self?.sendReaderEvent(.cardRemoved)
 
                 if let error = error {
-                    print("===== collect payment method error ", error)
                     let underlyingError = UnderlyingError(with: error)
                     /// the completion block for collectPaymentMethod will be called
                     /// with error Canceled when collectPaymentMethod is canceled
                     /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)collectPaymentMethod:delegate:completion:
 
                     if underlyingError != .commandCancelled {
-                        print("==== collect payment method was cancelled")
+                        print("==== collect payment method was not cancelled. this is an actual error ", underlyingError)
                         promise(.failure(CardReaderServiceError.paymentMethodCollection(underlyingError: underlyingError)))
+                    }
+
+                    if underlyingError == .commandCancelled {
+                        print("==== collect payment method cancelled. this is an error we ignore ", error)
                     }
 
                 }

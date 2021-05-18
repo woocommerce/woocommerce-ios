@@ -29,6 +29,7 @@ final class ReceiptViewModel {
 
     /// Prints the receipt
     func printReceipt() {
+        ServiceLocator.analytics.track(.receiptPrintTapped)
         let action = ReceiptAction.print(order: order, parameters: receipt)
 
         ServiceLocator.stores.dispatch(action)

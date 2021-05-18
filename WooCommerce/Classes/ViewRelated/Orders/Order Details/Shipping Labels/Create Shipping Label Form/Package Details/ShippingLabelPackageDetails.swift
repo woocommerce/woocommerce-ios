@@ -4,9 +4,16 @@ import Yosemite
 struct ShippingLabelPackageDetails: View {
     @ObservedObject private var viewModel: ShippingLabelPackageDetailsViewModel
     @State private var showingAddPackage = false
+    @Environment(\.presentationMode) var presentation
 
-    init(viewModel: ShippingLabelPackageDetailsViewModel) {
+    /// Completion callback
+    ///
+    typealias Completion = (_ selectedPackageID: String?, _ totalPackageWeight: String?) -> Void
+    private let onCompletion: Completion
+
+    init(viewModel: ShippingLabelPackageDetailsViewModel, completion: @escaping Completion) {
         self.viewModel = viewModel
+        onCompletion = completion
     }
 
     var body: some View {
@@ -38,7 +45,7 @@ struct ShippingLabelPackageDetails: View {
 
                 TitleAndTextFieldRow(title: Localization.totalPackageWeight,
                                      placeholder: "0",
-                                     text: .constant(""),
+                                     text: $viewModel.totalWeight,
                                      symbol: viewModel.weightUnit,
                                      keyboardType: .decimalPad)
                 Divider()
@@ -49,6 +56,13 @@ struct ShippingLabelPackageDetails: View {
             .background(Color(.systemBackground))
         }
         .background(Color(.listBackground))
+        .navigationBarItems(trailing: Button(action: {
+            onCompletion(viewModel.selectedPackageID, viewModel.totalWeight)
+            presentation.wrappedValue.dismiss()
+        }, label: {
+            Text(Localization.doneButton)
+        })
+        .disabled(!viewModel.isPackageDetailsDoneButtonEnabled()))
     }
 }
 
@@ -62,6 +76,7 @@ private extension ShippingLabelPackageDetails {
                                                           comment: "Title of the row for adding the package weight in Shipping Label Package Detail screen")
         static let footer = NSLocalizedString("Sum of products and package weight",
                                               comment: "Title of the footer in Shipping Label Package Detail screen")
+        static let doneButton = NSLocalizedString("Done", comment: "Done navigation button in the Package Details screen in Shipping Label flow")
     }
 
     enum Constants {
@@ -74,14 +89,18 @@ struct ShippingLabelPackageDetails_Previews: PreviewProvider {
     static var previews: some View {
 
         let viewModel = ShippingLabelPackageDetailsViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder(),
-                                                             packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails())
+                                                             packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails(),
+                                                             selectedPackageID: nil,
+                                                             totalWeight: nil)
 
-        ShippingLabelPackageDetails(viewModel: viewModel)
-            .environment(\.colorScheme, .light)
-            .previewDisplayName("Light")
+        ShippingLabelPackageDetails(viewModel: viewModel, completion: { (selectedPackageID, totalPackageWeight) in
+        })
+        .environment(\.colorScheme, .light)
+        .previewDisplayName("Light")
 
-        ShippingLabelPackageDetails(viewModel: viewModel)
-            .environment(\.colorScheme, .dark)
-            .previewDisplayName("Dark")
+        ShippingLabelPackageDetails(viewModel: viewModel, completion: { (selectedPackageID, totalPackageWeight) in
+        })
+        .environment(\.colorScheme, .dark)
+        .previewDisplayName("Dark")
     }
 }

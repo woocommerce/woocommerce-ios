@@ -100,6 +100,9 @@ extension ShippingLabelFormViewController: UITableViewDelegate {
             displayEditAddressFormVC(address: viewModel.originAddress, validationError: nil, type: .origin)
         case Row(type: .shipTo, dataState: .validated, displayMode: .editable):
             displayEditAddressFormVC(address: viewModel.destinationAddress, validationError: nil, type: .destination)
+        case Row(type: .packageDetails, dataState: .validated, displayMode: .editable):
+            displayPackageDetailsVC(selectedPackageID: viewModel.selectedPackageID,
+                                    totalPackageWeight: viewModel.totalPackageWeight)
         default:
             break
         }
@@ -188,9 +191,10 @@ private extension ShippingLabelFormViewController {
         cell.configure(state: row.cellState,
                        icon: .productPlaceholderImage,
                        title: Localization.packageDetailsCellTitle,
-                       body: "To be implemented",
+                       body: viewModel.getPackageDetailsBody(),
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
-            self?.displayPackageDetailsVC()
+            self?.displayPackageDetailsVC(selectedPackageID: self?.viewModel.selectedPackageID,
+                                          totalPackageWeight: self?.viewModel.totalPackageWeight)
         }
     }
 
@@ -256,9 +260,19 @@ private extension ShippingLabelFormViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
 
-    func displayPackageDetailsVC() {
-        let vc = ShippingLabelPackageDetailsViewController(order: viewModel.order, packagesResponse: viewModel.packagesResponse)
-        navigationController?.show(vc, sender: nil)
+    func displayPackageDetailsVC(selectedPackageID: String?, totalPackageWeight: String?) {
+        let vm = ShippingLabelPackageDetailsViewModel(order: viewModel.order,
+                                                      packagesResponse: viewModel.packagesResponse,
+                                                      selectedPackageID: selectedPackageID,
+                                                      totalWeight: totalPackageWeight)
+        let packageDetails = ShippingLabelPackageDetails(viewModel: vm) { [weak self] (selectedPackageID, totalPackageWeight) in
+            self?.viewModel.handlePackageDetailsValueChanges(selectedPackageID: selectedPackageID, totalPackageWeight: totalPackageWeight)
+        }
+
+        let hostingVC = UIHostingController(rootView: packageDetails)
+        hostingVC.title = Localization.navigationBarTitlePackageDetails
+
+        navigationController?.show(hostingVC, sender: nil)
     }
 }
 
@@ -336,5 +350,8 @@ private extension ShippingLabelFormViewController {
                                                               comment: "Title of the cell Payment Method inside Create Shipping Label form")
         static let continueButtonInCells = NSLocalizedString("Continue",
                                                              comment: "Continue button inside every cell inside Create Shipping Label form")
+        static let navigationBarTitlePackageDetails =
+            NSLocalizedString("Package Details",
+                              comment: "Navigation bar title of shipping label package details screen")
     }
 }

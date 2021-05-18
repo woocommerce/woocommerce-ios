@@ -1,1 +1,5 @@
-Estamos trabalhando em diversas novidades, então fizemos apenas uma pequena correção. Agora oferecemos suporte total a imagens de produtos com caracteres não latinos no nome do arquivo. Elas serão carregadas normalmente e não causarão problemas na sua Biblioteca de mídia.
+As variações de produto aceitam apenas uma imagem. Por isso, se uma variação já tiver uma imagem, você verá uma opção de substituir ou remover, mas não poderá adicionar outra.
+
+Recebemos relatórios de falhas na seleção de imagens na Biblioteca de mídia, ocorridas em bibliotecas que tinham um número específico de imagens. O problema já foi corrigido.
+
+Também aprimoramos uma mensagem de erro exibida quando um cliente fazia login em um site com um dispositivo offline, um certificado SSL inválido ou um XML-RPC bloqueado. A atualização de mensagem facilita a solução de problemas de login.

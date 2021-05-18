@@ -22,9 +22,13 @@ enum FeatureFlag: Int {
     ///
     case reviews
 
-    /// Shipping labels - release 2
+    /// Shipping labels - Milestones 2 & 3
     ///
-    case shippingLabelsRelease2
+    case shippingLabelsM2M3
+
+    /// Shipping labels - Milestone 4
+    ///
+    case shippingLabelsM4
 
     /// Product AddOns first iteration
     ///

@@ -48,7 +48,7 @@ private extension AddProductCoordinator {
             self.navigationController.dismiss(animated: true)
             self.presentProductForm(bottomSheetProductType: selectedBottomSheetProductType)
         }
-        command.data = [.physical, .virtual, .variable, .grouped, .affiliate]
+        command.data = [.simple(isVirtual: false), .simple(isVirtual: true), .variable, .grouped, .affiliate]
         let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
         productTypesListPresenter.show(from: navigationController, sourceView: sourceView, sourceBarButtonItem: sourceBarButtonItem, arrowDirections: .any)
     }

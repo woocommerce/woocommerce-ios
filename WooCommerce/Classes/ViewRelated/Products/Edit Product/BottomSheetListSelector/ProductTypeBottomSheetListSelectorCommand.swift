@@ -4,8 +4,7 @@ import Yosemite
 /// This includes the remote `ProductType`, whether the product type is virtual, and strings/images shown in the bottom sheet.
 ///
 public enum BottomSheetProductType: Hashable {
-    case physical
-    case virtual
+    case simple(isVirtual: Bool)
     case grouped
     case affiliate
     case variable
@@ -15,7 +14,7 @@ public enum BottomSheetProductType: Hashable {
     ///
     var productType: ProductType {
         switch self {
-        case .physical, .virtual:
+        case .simple:
             return .simple
         case .variable:
             return .variable
@@ -32,8 +31,8 @@ public enum BottomSheetProductType: Hashable {
     ///
     var isVirtual: Bool {
         switch self {
-        case .virtual:
-            return true
+        case .simple(let isVirtual):
+            return isVirtual
         default:
             return false
         }
@@ -43,12 +42,14 @@ public enum BottomSheetProductType: Hashable {
     ///
     var actionSheetTitle: String {
         switch self {
-        case .physical:
+        case .simple(let isVirtual):
+            if isVirtual {
+                return NSLocalizedString("Simple virtual product",
+                                         comment: "Action sheet option when the user wants to change the Product type to simple virtual product")
+            } else {
             return NSLocalizedString("Simple physical product",
                                      comment: "Action sheet option when the user wants to change the Product type to simple physical product")
-        case .virtual:
-            return NSLocalizedString("Simple virtual product",
-                                     comment: "Action sheet option when the user wants to change the Product type to simple virtual product")
+            }
         case .variable:
             return NSLocalizedString("Variable product",
                                      comment: "Action sheet option when the user wants to change the Product type to varible product")
@@ -67,12 +68,14 @@ public enum BottomSheetProductType: Hashable {
     ///
     var actionSheetDescription: String {
         switch self {
-        case .physical:
+        case .simple(let isVirtual):
+            if isVirtual {
+                return NSLocalizedString("A unique item to sell",
+                                    comment: "Description of the Action sheet option when the user wants to change the Product type to simple virtual product")
+            } else {
             return NSLocalizedString("A unique item to sell",
                                     comment: "Description of the Action sheet option when the user wants to change the Product type to simple physical product")
-        case .virtual:
-            return NSLocalizedString("A unique item to sell",
-                                     comment: "Description of the Action sheet option when the user wants to change the Product type to simple virtual product")
+            }
         case .variable:
             return NSLocalizedString("A product with variations like color or size",
                                      comment: "Description of the Action sheet option when the user wants to change the Product type to variable product")
@@ -91,7 +94,7 @@ public enum BottomSheetProductType: Hashable {
     ///
     var actionSheetImage: UIImage {
         switch self {
-        case .physical, .virtual:
+        case .simple:
             return UIImage.productImage
         case .variable:
             return UIImage.variationsImage
@@ -103,6 +106,21 @@ public enum BottomSheetProductType: Hashable {
             return UIImage.productImage
         }
     }
+
+    init(productType: ProductType, isVirtual: Bool) {
+        switch productType {
+        case .simple:
+            self = .simple(isVirtual: isVirtual)
+        case .variable:
+            self = .variable
+        case .affiliate:
+            self = .affiliate
+        case .grouped:
+            self = .grouped
+        case .custom(let string):
+            self = .custom(string)
+        }
+    }
 }
 
 /// `BottomSheetListSelectorCommand` for selecting a product type for the selected Product.
@@ -112,8 +130,8 @@ final class ProductTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCo
     typealias Cell = ImageAndTitleAndTextTableViewCell
 
     var data: [BottomSheetProductType] = [
-        .physical,
-        .virtual,
+        .simple(isVirtual: false),
+        .simple(isVirtual: true),
         .variable,
         .grouped,
         .affiliate

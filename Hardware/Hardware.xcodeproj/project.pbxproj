@@ -87,6 +87,7 @@
 		E1CFC1662643EAA30089F86F /* SampleContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CFC1652643EAA30089F86F /* SampleContent.swift */; };
 		E1CFC16D2643EBCB0089F86F /* Hardware.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D88FDAFF25DD216B00CB0DBD /* Hardware.framework */; };
 		E1CFC16E2643EBCB0089F86F /* Hardware.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D88FDAFF25DD216B00CB0DBD /* Hardware.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		E1E4FA2F2653CFD5007B9D4F /* PrintingResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E4FA2E2653CFD5007B9D4F /* PrintingResult.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -214,6 +215,7 @@
 		E1CFC14F2643E9EE0089F86F /* ReceiptSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptSettingsView.swift; sourceTree = "<group>"; };
 		E1CFC1562643E9EE0089F86F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E1CFC1652643EAA30089F86F /* SampleContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleContent.swift; sourceTree = "<group>"; };
+		E1E4FA2E2653CFD5007B9D4F /* PrintingResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintingResult.swift; sourceTree = "<group>"; };
 		E9F0AC202B287C1221EA2C99 /* Pods_Hardware.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Hardware.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F45592A33DEE569C9775EEE7 /* Pods-PrinterPlayground.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PrinterPlayground.release.xcconfig"; path = "Target Support Files/Pods-PrinterPlayground/Pods-PrinterPlayground.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -285,6 +287,7 @@
 			children = (
 				D845BE57262ED81D00A3E40F /* AirPrintReceipt */,
 				D845BE53262ED7CC00A3E40F /* PrinterService.swift */,
+				E1E4FA2E2653CFD5007B9D4F /* PrintingResult.swift */,
 				D8652CB6262F389800350F37 /* ReceiptLineItem.swift */,
 				D8652CBA262F390F00350F37 /* ReceiptContent.swift */,
 				D8652E292630520300350F37 /* CardPresentReceiptParameters.swift */,
@@ -727,6 +730,7 @@
 				D81AE86425E6B77F00D9CFD3 /* CardReaderServiceError.swift in Sources */,
 				D8DF5F4E25DD9F91008AFE25 /* CardReaderType+Stripe.swift in Sources */,
 				D89B8F1225DDCBCD0001C726 /* Charge+Stripe.swift in Sources */,
+				E1E4FA2F2653CFD5007B9D4F /* PrintingResult.swift in Sources */,
 				D80B465A260E1E160092EDC0 /* StatementDescriptor.swift in Sources */,
 				D8DF5F4A25DD9F7A008AFE25 /* CardReader+Stripe.swift in Sources */,
 				D88FDB2A25DD21B000CB0DBD /* PaymentStatus.swift in Sources */,

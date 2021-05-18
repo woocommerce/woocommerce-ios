@@ -114,6 +114,7 @@ public typealias CardReaderServiceDiscoveryStatus = Hardware.CardReaderServiceDi
 public typealias CardReaderServiceError = Hardware.CardReaderServiceError
 public typealias PaymentParameters = Hardware.PaymentIntentParameters
 public typealias PaymentIntent = Hardware.PaymentIntent
+public typealias PrintingResult = Hardware.PrintingResult
 public typealias CardPresentReceiptParameters = Hardware.CardPresentReceiptParameters
 public typealias WCPayAccount = Networking.WCPayAccount
 

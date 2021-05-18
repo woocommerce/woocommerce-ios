@@ -201,6 +201,18 @@ public enum WooAnalyticsStat: String {
     case shipmentTrackingMenuAction = "shipment_tracking_menu_action"
     case shippingLabelsAPIRequest = "shipping_label_api_request"
 
+    // MARK: Receipt Events
+    //
+    case receiptViewTapped                      = "receipt_view_tapped"
+    case receiptEmailTapped                     = "receipt_email_tapped"
+    case receiptEmailFailed                     = "receipt_email_failed"
+    case receiptEmailCanceled                   = "receipt_email_canceled"
+    case receiptEmailSuccess                    = "receipt_email_success"
+    case receiptPrintTapped                     = "receipt_print_tapped"
+    case receiptPrintFailed                     = "receipt_print_failed"
+    case receiptPrintCanceled                   = "receipt_print_canceled"
+    case receiptPrintSuccess                    = "receipt_print_success"
+
     // MARK: Push Notifications Events
     //
     case pushNotificationReceived               = "push_notification_received"

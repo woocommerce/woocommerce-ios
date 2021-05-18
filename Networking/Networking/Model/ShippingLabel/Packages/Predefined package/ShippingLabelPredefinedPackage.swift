@@ -23,6 +23,21 @@ public struct ShippingLabelPredefinedPackage: Equatable, GeneratedFakeable, Iden
         self.isLetter = isLetter
         self.dimensions = dimensions
     }
+
+    public func getLength() -> Double {
+        let firstComponent = dimensions.components(separatedBy: " x ").first ?? ""
+        return Double(firstComponent) ?? 0
+    }
+
+    public func getWidth() -> Double {
+        let secondComponent = dimensions.components(separatedBy: " x ")[safe: 1] ?? ""
+        return Double(secondComponent) ?? 0
+    }
+
+    public func getHeight() -> Double {
+        let lastComponent = dimensions.components(separatedBy: " x ").last ?? ""
+        return Double(lastComponent) ?? 0
+    }
 }
 
 // MARK: Decodable

@@ -34,13 +34,27 @@ public enum ShippingLabelAction: Action {
 
     /// Checks whether an order is eligible for shipping label creation.
     ///
-    case checkCreationEligibility(siteID: Int64, orderID: Int64, isFeatureFlagEnabled: Bool, onCompletion: (_ isEligible: Bool) -> Void)
+    case checkCreationEligibility(siteID: Int64,
+                                  orderID: Int64,
+                                  canCreatePaymentMethod: Bool,
+                                  canCreateCustomsForm: Bool,
+                                  canCreatePackage: Bool,
+                                  onCompletion: (_ isEligible: Bool) -> Void)
 
     /// Creates a custom package with provided package details.
     ///
     case createPackage(siteID: Int64,
                        customPackage: ShippingLabelCustomPackage,
                        completion: (Result<Bool, Error>) -> Void)
+
+    /// Fetch list of shipping carriers and their rates
+    ///
+    case loadCarriersAndRates(siteID: Int64,
+                              orderID: Int64,
+                              originAddress: ShippingLabelAddress,
+                              destinationAddress: ShippingLabelAddress,
+                              packages: [ShippingLabelPackageSelected],
+                              completion: (Result<ShippingLabelCarriersAndRates, Error>) -> Void)
 
     /// Loads account-level shipping label settings for a store.
     ///

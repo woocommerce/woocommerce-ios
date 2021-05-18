@@ -11,6 +11,9 @@ final class ShippingLabelRemoteTests: XCTestCase {
     /// Dummy Site ID
     private let sampleSiteID: Int64 = 1234
 
+    /// Dummy Order ID
+    private let sampleOrderID: Int64 = 1234
+
     override func setUp() {
         super.setUp()
         network.removeAllSimulatedResponses()
@@ -214,6 +217,43 @@ final class ShippingLabelRemoteTests: XCTestCase {
         XCTAssertEqual(result.failure as? DotcomError, expectedError)
     }
 
+    func test_loadCarriersAndRates_parses_success_response() throws {
+        // Given
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/\(sampleOrderID)/rates", filename: "shipping-label-carriers-and-rates-success")
+        let expectedDefaultRate = sampleShippingLabelCarrierRate()
+
+        // When
+        let result: Result<ShippingLabelCarriersAndRates, Error> = waitFor { promise in
+            remote.loadCarriersAndRates(siteID: self.sampleSiteID,
+                                        orderID: self.sampleOrderID,
+                                        originAddress: ShippingLabelAddress.fake(), destinationAddress: ShippingLabelAddress.fake(),
+                                        packages: [ShippingLabelPackageSelected.fake()]) { (result) in
+                promise(result)
+            }
+        }
+
+        // Then
+        let successResponse = try XCTUnwrap(result.get())
+        XCTAssertEqual(successResponse.defaultRates.first, expectedDefaultRate)
+    }
+
+    func test_loadCarriersAndRates_returns_error_on_failure() throws {
+        // Given
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/\(sampleOrderID)/rates", filename: "generic_error")
+
+        // When
+        let result: Result<ShippingLabelAccountSettings, Error> = waitFor { promise in
+            remote.loadShippingLabelAccountSettings(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
+
     func test_loadShippingLabelAccountSettings_returns_settings_on_success() throws {
         // Given
         let remote = ShippingLabelRemote(network: network)
@@ -317,5 +357,23 @@ private extension ShippingLabelRemoteTests {
                                           dimensions: "10 x 10 x 10",
                                           boxWeight: 5,
                                           maxWeight: 1)
+    }
+
+    func sampleShippingLabelCarrierRate() -> ShippingLabelCarrierRate {
+        let rate = ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
+                                            insurance: 0,
+                                            retailRate: 40.060000000000002,
+                                            rate: 40.060000000000002,
+                                            rateID: "rate_a8a29d5f34984722942f466c30ea27ef",
+                                            serviceID: "ParcelSelect",
+                                            carrierID: "usps",
+                                            shipmentID: "shp_e0e3c2f4606c4b198d0cbd6294baed56",
+                                            hasTracking: true,
+                                            isSelected: false,
+                                            isPickupFree: true,
+                                            deliveryDays: 2,
+                                            deliveryDateGuaranteed: false)
+
+        return rate
     }
 }

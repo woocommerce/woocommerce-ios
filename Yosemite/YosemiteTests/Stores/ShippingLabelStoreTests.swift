@@ -20,6 +20,7 @@ final class ShippingLabelStoreTests: XCTestCase {
     }
 
     private let sampleSiteID: Int64 = 123
+    private let sampleOrderID: Int64 = 2345
     private let sampleShippingLabelID: Int64 = 1234
 
     // MARK: - Overridden Methods
@@ -442,23 +443,64 @@ final class ShippingLabelStoreTests: XCTestCase {
 
     // MARK: `checkCreationEligibility`
 
-    func test_checkCreationEligibility_returns_feature_flag_value() throws {
+    func test_checkCreationEligibility_returns_eligibility_on_success() throws {
         // Given
-        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remote = MockShippingLabelRemote()
+        let orderID: Int64 = 22
+        let isFeatureFlagEnabled = false
+        let expectedEligibility = true
+        remote.whenCheckingCreationEligiblity(siteID: sampleSiteID,
+                                              orderID: orderID,
+                                              canCreatePaymentMethod: isFeatureFlagEnabled,
+                                              canCreateCustomsForm: isFeatureFlagEnabled,
+                                              canCreatePackage: isFeatureFlagEnabled,
+                                              thenReturn: .success(ShippingLabelCreationEligibilityResponse(isEligible: expectedEligibility, reason: nil)))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let isFeatureFlagEnabled = false
         let isEligibleForCreation: Bool = waitFor { promise in
             let action = ShippingLabelAction.checkCreationEligibility(siteID: self.sampleSiteID,
-                                                                      orderID: 134,
-                                                                      isFeatureFlagEnabled: isFeatureFlagEnabled) { isEligible in
+                                                                      orderID: orderID,
+                                                                      canCreatePaymentMethod: isFeatureFlagEnabled,
+                                                                      canCreateCustomsForm: isFeatureFlagEnabled,
+                                                                      canCreatePackage: isFeatureFlagEnabled) { isEligible in
                 promise(isEligible)
             }
             store.onAction(action)
         }
 
         // Then
-        XCTAssertEqual(isEligibleForCreation, isFeatureFlagEnabled)
+        XCTAssertEqual(isEligibleForCreation, expectedEligibility)
+    }
+
+    func test_checkCreationEligibility_returns_false_on_failure() throws {
+        // Given
+        let remote = MockShippingLabelRemote()
+        let orderID: Int64 = 22
+        let isFeatureFlagEnabled = false
+        let expectedEligibility = false
+        remote.whenCheckingCreationEligiblity(siteID: sampleSiteID,
+                                              orderID: orderID,
+                                              canCreatePaymentMethod: isFeatureFlagEnabled,
+                                              canCreateCustomsForm: isFeatureFlagEnabled,
+                                              canCreatePackage: isFeatureFlagEnabled,
+                                              thenReturn: .failure(NetworkError.notFound))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let isEligibleForCreation: Bool = waitFor { promise in
+            let action = ShippingLabelAction.checkCreationEligibility(siteID: self.sampleSiteID,
+                                                                      orderID: orderID,
+                                                                      canCreatePaymentMethod: isFeatureFlagEnabled,
+                                                                      canCreateCustomsForm: isFeatureFlagEnabled,
+                                                                      canCreatePackage: isFeatureFlagEnabled) { isEligible in
+                promise(isEligible)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(isEligibleForCreation, expectedEligibility)
     }
 
     // MARK: `createPackage`
@@ -493,6 +535,54 @@ final class ShippingLabelStoreTests: XCTestCase {
         // When
         let result: Result<Bool, Error> = waitFor { promise in
             let action = ShippingLabelAction.createPackage(siteID: self.sampleSiteID, customPackage: self.sampleShippingLabelCustomPackage()) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
+
+    // MARK: `loadCarriersAndRates`
+
+    func test_loadCarriersAndRates_returns_success_response() throws {
+        // Given
+        let remote = MockShippingLabelRemote()
+        remote.whenLoadCarriersAndRates(siteID: sampleSiteID, thenReturn: .success(sampleShippingLabelCarriersAndRates()))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<ShippingLabelCarriersAndRates, Error> = waitFor { promise in
+            let action = ShippingLabelAction.loadCarriersAndRates(siteID: self.sampleSiteID,
+                                                                  orderID: self.sampleOrderID,
+                                                                  originAddress: ShippingLabelAddress.fake(),
+                                                                  destinationAddress: ShippingLabelAddress.fake(),
+                                                                  packages: [ShippingLabelPackageSelected.fake()]) { (result) in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_loadCarriersAndRates_returns_error_on_failure() throws {
+        // Given
+        let remote = MockShippingLabelRemote()
+        let expectedError = NetworkError.notFound
+        remote.whenLoadCarriersAndRates(siteID: sampleSiteID, thenReturn: .failure(expectedError))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<ShippingLabelCarriersAndRates, Error> = waitFor { promise in
+            let action = ShippingLabelAction.loadCarriersAndRates(siteID: self.sampleSiteID,
+                                                                  orderID: self.sampleOrderID,
+                                                                  originAddress: ShippingLabelAddress.fake(),
+                                                                  destinationAddress: ShippingLabelAddress.fake(),
+                                                                  packages: [ShippingLabelPackageSelected.fake()]) { (result) in
                 promise(result)
             }
             store.onAction(action)
@@ -665,5 +755,29 @@ private extension ShippingLabelStoreTests {
                                             isEmailReceiptsEnabled: true,
                                             paperSize: .label,
                                             lastSelectedPackageID: "small_flat_box")
+    }
+
+    func sampleShippingLabelCarriersAndRates() -> ShippingLabelCarriersAndRates {
+        return ShippingLabelCarriersAndRates(defaultRates: [sampleShippingLabelCarrierRate()],
+                                             signatureRequired: [],
+                                             adultSignatureRequired: [])
+    }
+
+    func sampleShippingLabelCarrierRate() -> ShippingLabelCarrierRate {
+        let rate = ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
+                                            insurance: 0,
+                                            retailRate: 40.060000000000002,
+                                            rate: 40.060000000000002,
+                                            rateID: "rate_a8a29d5f34984722942f466c30ea27ef",
+                                            serviceID: "ParcelSelect",
+                                            carrierID: "usps",
+                                            shipmentID: "shp_e0e3c2f4606c4b198d0cbd6294baed56",
+                                            hasTracking: true,
+                                            isSelected: false,
+                                            isPickupFree: true,
+                                            deliveryDays: 2,
+                                            deliveryDateGuaranteed: false)
+
+        return rate
     }
 }

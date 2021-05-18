@@ -10,6 +10,15 @@ final class ShippingLabelCarriersAndRatesViewModel: ObservableObject {
     private let packages: [ShippingLabelPackageSelected]
     private let stores: StoresManager
 
+    enum SyncStatus {
+        case loading
+        case success
+        case error
+        case none
+    }
+
+    @Published private(set) var syncStatus: SyncStatus = .none
+
     /// The rows observed by the main view `ShippingLabelCarriersAndRates`
     ///
     @Published private(set) var rows: [ShippingLabelCarrierRow] = []
@@ -32,6 +41,7 @@ final class ShippingLabelCarriersAndRatesViewModel: ObservableObject {
 private extension ShippingLabelCarriersAndRatesViewModel {
 
     func syncCarriersAndRates() {
+        syncStatus = .loading
         let action = ShippingLabelAction.loadCarriersAndRates(siteID: order.siteID,
                                                               orderID: order.orderID,
                                                               originAddress: originAddress,
@@ -49,8 +59,10 @@ private extension ShippingLabelCarriersAndRatesViewModel {
                     tempRows.append(row)
                 }
                 self?.rows = tempRows
-            case .failure(let _):
+                self?.syncStatus = .success
+            case .failure:
                 self?.rows = []
+                self?.syncStatus = .error
             }
         }
         stores.dispatch(action)

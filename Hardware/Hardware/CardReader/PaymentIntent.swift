@@ -92,33 +92,13 @@ public extension PaymentIntent {
     ) -> [AnyHashable: Any] {
         var metadata = [AnyHashable: Any]()
 
-        if store != nil {
-            metadata[PaymentIntent.MetadataKeys.store] = store
-        }
-
-        if customerName != nil {
-            metadata[PaymentIntent.MetadataKeys.customerName] = customerName
-        }
-
-        if customerEmail != nil {
-            metadata[PaymentIntent.MetadataKeys.customerEmail] = customerEmail
-        }
-
-        if siteURL != nil {
-            metadata[PaymentIntent.MetadataKeys.siteURL] = siteURL
-        }
-
-        if orderID != nil {
-            metadata[PaymentIntent.MetadataKeys.orderID] = orderID
-        }
-
-        if orderKey != nil {
-            metadata[PaymentIntent.MetadataKeys.orderKey] = orderKey
-        }
-
-        if paymentType != nil {
-            metadata[PaymentIntent.MetadataKeys.paymentType] = paymentType?.rawValue
-        }
+        metadata[PaymentIntent.MetadataKeys.store] = store
+        metadata[PaymentIntent.MetadataKeys.customerName] = customerName
+        metadata[PaymentIntent.MetadataKeys.customerEmail] = customerEmail
+        metadata[PaymentIntent.MetadataKeys.siteURL] = siteURL
+        metadata[PaymentIntent.MetadataKeys.orderID] = orderID
+        metadata[PaymentIntent.MetadataKeys.orderKey] = orderKey
+        metadata[PaymentIntent.MetadataKeys.paymentType] = paymentType?.rawValue
 
         return metadata
     }

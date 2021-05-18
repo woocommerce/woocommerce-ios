@@ -70,10 +70,10 @@ public enum BottomSheetProductType: Hashable {
         switch self {
         case .simple(let isVirtual):
             if isVirtual {
-                return NSLocalizedString("A unique item to sell",
+                return NSLocalizedString("A unique digital product like services, downloadable books, music or videos",
                                     comment: "Description of the Action sheet option when the user wants to change the Product type to simple virtual product")
             } else {
-            return NSLocalizedString("A unique item to sell",
+                return NSLocalizedString("A unique physical product that you may have to ship to the customer",
                                     comment: "Description of the Action sheet option when the user wants to change the Product type to simple physical product")
             }
         case .variable:
@@ -94,8 +94,12 @@ public enum BottomSheetProductType: Hashable {
     ///
     var actionSheetImage: UIImage {
         switch self {
-        case .simple:
-            return UIImage.productImage
+        case .simple(let isVirtual):
+            if isVirtual {
+                return UIImage.cloudOutlineImage
+            } else {
+                return UIImage.productImage
+            }
         case .variable:
             return UIImage.variationsImage
         case .grouped:

@@ -3,6 +3,7 @@
 6.7
 -----
 - [**] Add-Ons: Order add-ons are now available as a beta feature. To try it, enable it from settings! [https://github.com/woocommerce/woocommerce-ios/pull/4119]
+- [**] Products: Added the option to create and edit a virtual product directly from the product detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/4214]
 
 6.6
 -----

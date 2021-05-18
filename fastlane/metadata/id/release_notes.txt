@@ -1,1 +1,5 @@
-Kami sedang fokus menangani banyak hal menarik, jadi kali ini hanya ada satu perbaikan kecil saja. Sekarang kami sepenuhnya mendukung gambar produk dengan karakter non-latin pada nama file-nya.  Gambar tersebut bisa dimuat dengan lancar tanpa menimbulkan masalah pada Pustaka Media Anda.
+Variasi produk hanya mendukung satu gambar sehingga saat sebuah variasi produk memiliki satu gambar, Anda akan melihat opsi untuk mengganti atau menghapusnya tetapi tidak dapat menambahkan gambar lagi.
+
+Kami menerima laporan atas terjadinya crash saat memilih gambar dari Pustaka Media, yang terjadi pada pustaka dengan sejumlah gambar tertentu. Masalah ini telah diperbaiki.
+
+Kami juga meningkatkan pesan kesalahan yang ditampilkan saat pelanggan masuk ke situs dengan perangkat luring, sertifikat SSL yang tidak valid, atau XML-RPC yang diblokir, Pesan yang telah diperbarui mempermudah orang-orang untuk memecahkan masalah login.

@@ -203,8 +203,8 @@ private extension ShippingLabelFormViewController {
                        icon: .priceImage,
                        title: Localization.shippingCarrierAndRatesCellTitle,
                        body: "To be implemented",
-                       buttonTitle: Localization.continueButtonInCells) {
-
+                       buttonTitle: Localization.continueButtonInCells) { [weak self] in
+            self?.displayCarriersAndRatesVC()
         }
     }
 
@@ -271,6 +271,23 @@ private extension ShippingLabelFormViewController {
 
         let hostingVC = UIHostingController(rootView: packageDetails)
         hostingVC.title = Localization.navigationBarTitlePackageDetails
+
+        navigationController?.show(hostingVC, sender: nil)
+    }
+
+    func displayCarriersAndRatesVC() {
+        guard let originAddress = viewModel.originAddress,
+              let destinationAddress = viewModel.destinationAddress,
+              let selectedPackage = viewModel.selectedPackage else {
+            return
+        }
+
+        let vm = ShippingLabelCarriersAndRatesViewModel(order: viewModel.order,
+                                                        originAddress: originAddress, destinationAddress: destinationAddress,
+                                                        packages: [selectedPackage])
+
+        let hostingVC = UIHostingController(rootView: ShippingLabelCarriersAndRates(viewModel: vm))
+        hostingVC.title = Localization.navigationBarTitleCarriersAndRates
 
         navigationController?.show(hostingVC, sender: nil)
     }
@@ -353,5 +370,8 @@ private extension ShippingLabelFormViewController {
         static let navigationBarTitlePackageDetails =
             NSLocalizedString("Package Details",
                               comment: "Navigation bar title of shipping label package details screen")
+        static let navigationBarTitleCarriersAndRates =
+            NSLocalizedString("Carrier and Rates",
+                              comment: "Navigation bar title of shipping label carrier and rates screen")
     }
 }

@@ -1,15 +1,42 @@
 import SwiftUI
+import Yosemite
 
 struct ShippingLabelCarriersAndRates: View {
+
+    @ObservedObject private var viewModel: ShippingLabelCarriersAndRatesViewModel
+
+    init(viewModel: ShippingLabelCarriersAndRatesViewModel) {
+        self.viewModel = viewModel
+    }
+
     var body: some View {
         LazyVStack {
-
+            ForEach(viewModel.rows) { carrierRow in
+                Divider().padding(.leading, 80)
+                carrierRow
+            }
         }
     }
 }
 
 struct ShippingLabelCarriersAndRates_Previews: PreviewProvider {
     static var previews: some View {
-        ShippingLabelCarriersAndRates()
+
+        let shippingAddress = ShippingLabelAddress(company: "Automattic Inc.",
+
+                                                   name: "Paolo",
+                                                   phone: "01234567",
+                                                   country: "USA",
+                                                   state: "CA",
+                                                   address1: "Woo Street",
+                                                   address2: "",
+                                                   city: "San Francisco",
+                                                   postcode: "90210")
+
+        let vm = ShippingLabelCarriersAndRatesViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder(),
+                                                        originAddress: shippingAddress,
+                                                        destinationAddress: shippingAddress,
+                                                        packages: [])
+        ShippingLabelCarriersAndRates(viewModel: vm)
     }
 }

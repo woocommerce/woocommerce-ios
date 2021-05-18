@@ -1,19 +1,22 @@
 import SwiftUI
 
-struct ShippingLabelCarrierRow: View {
+struct ShippingLabelCarrierRow: View, Identifiable {
 
+    let id = UUID()
     let title: String
     let subtitle: String
     let price: String
-    let image: UIImage
+    let image: UIImage?
 
     var body: some View {
         HStack(spacing: Constants.hStackSpacing) {
-            ZStack {
-                Image(uiImage: image).frame(width: Constants.imageSize, height: Constants.imageSize)
+            if let image = image {
+                ZStack {
+                    Image(uiImage: image).frame(width: Constants.imageSize, height: Constants.imageSize)
+                }
+                .frame(width: Constants.zStackWidth)
+                .padding(.leading, Constants.padding)
             }
-            .frame(width: Constants.zStackWidth)
-            .padding(.leading, Constants.padding)
             VStack(alignment: .leading,
                    spacing: Constants.vStackSpacing) {
                 HStack {

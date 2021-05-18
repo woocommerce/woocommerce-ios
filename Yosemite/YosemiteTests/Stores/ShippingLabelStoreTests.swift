@@ -20,6 +20,7 @@ final class ShippingLabelStoreTests: XCTestCase {
     }
 
     private let sampleSiteID: Int64 = 123
+    private let sampleOrderID: Int64 = 2345
     private let sampleShippingLabelID: Int64 = 1234
 
     // MARK: - Overridden Methods
@@ -544,6 +545,54 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
+    // MARK: `loadCarriersAndRates`
+
+    func test_loadCarriersAndRates_returns_success_response() throws {
+        // Given
+        let remote = MockShippingLabelRemote()
+        remote.whenLoadCarriersAndRates(siteID: sampleSiteID, thenReturn: .success(sampleShippingLabelCarriersAndRates()))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<ShippingLabelCarriersAndRates, Error> = waitFor { promise in
+            let action = ShippingLabelAction.loadCarriersAndRates(siteID: self.sampleSiteID,
+                                                                  orderID: self.sampleOrderID,
+                                                                  originAddress: ShippingLabelAddress.fake(),
+                                                                  destinationAddress: ShippingLabelAddress.fake(),
+                                                                  packages: [ShippingLabelPackageSelected.fake()]) { (result) in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_loadCarriersAndRates_returns_error_on_failure() throws {
+        // Given
+        let remote = MockShippingLabelRemote()
+        let expectedError = NetworkError.notFound
+        remote.whenLoadCarriersAndRates(siteID: sampleSiteID, thenReturn: .failure(expectedError))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<ShippingLabelCarriersAndRates, Error> = waitFor { promise in
+            let action = ShippingLabelAction.loadCarriersAndRates(siteID: self.sampleSiteID,
+                                                                  orderID: self.sampleOrderID,
+                                                                  originAddress: ShippingLabelAddress.fake(),
+                                                                  destinationAddress: ShippingLabelAddress.fake(),
+                                                                  packages: [ShippingLabelPackageSelected.fake()]) { (result) in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
+
     // MARK: `synchronizeShippingLabelAccountSettings`
 
     func test_synchronizeShippingLabelAccountSettings_persists_account_settings_on_success() throws {
@@ -706,5 +755,29 @@ private extension ShippingLabelStoreTests {
                                             isEmailReceiptsEnabled: true,
                                             paperSize: .label,
                                             lastSelectedPackageID: "small_flat_box")
+    }
+
+    func sampleShippingLabelCarriersAndRates() -> ShippingLabelCarriersAndRates {
+        return ShippingLabelCarriersAndRates(defaultRates: [sampleShippingLabelCarrierRate()],
+                                             signatureRequired: [],
+                                             adultSignatureRequired: [])
+    }
+
+    func sampleShippingLabelCarrierRate() -> ShippingLabelCarrierRate {
+        let rate = ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
+                                            insurance: 0,
+                                            retailRate: 40.060000000000002,
+                                            rate: 40.060000000000002,
+                                            rateID: "rate_a8a29d5f34984722942f466c30ea27ef",
+                                            serviceID: "ParcelSelect",
+                                            carrierID: "usps",
+                                            shipmentID: "shp_e0e3c2f4606c4b198d0cbd6294baed56",
+                                            hasTracking: true,
+                                            isSelected: false,
+                                            isPickupFree: true,
+                                            deliveryDays: 2,
+                                            deliveryDateGuaranteed: false)
+
+        return rate
     }
 }

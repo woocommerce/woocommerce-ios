@@ -7,18 +7,20 @@ final class ProductTypeBottomSheetListSelectorCommandTests: XCTestCase {
 
     func test_callback_is_called_on_selection() {
         // Arrange
-        var selectedActions = [ProductType]()
-        let command = ProductTypeBottomSheetListSelectorCommand(selected: .simple) { (selected) in
+        var selectedActions = [BottomSheetProductType]()
+        let command = ProductTypeBottomSheetListSelectorCommand(selected: .simple(isVirtual: false)) { (selected) in
             selectedActions.append(selected)
         }
 
         // Action
+        command.handleSelectedChange(selected: .simple(isVirtual: true))
         command.handleSelectedChange(selected: .grouped)
         command.handleSelectedChange(selected: .variable)
         command.handleSelectedChange(selected: .affiliate)
 
         // Assert
-        let expectedActions: [ProductType] = [
+        let expectedActions: [BottomSheetProductType] = [
+            .simple(isVirtual: true),
             .grouped,
             .variable,
             .affiliate

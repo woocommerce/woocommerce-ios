@@ -116,13 +116,35 @@ private extension PaymentCaptureOrchestrator {
             return nil
         }
 
+        var customerName: String?
+
+        if let firstName = order.billingAddress?.firstName {
+            customerName = firstName
+        }
+
+        if let lastName = order.billingAddress?.lastName {
+            if customerName == nil {
+                customerName = lastName
+            } else {
+                customerName? += " " + lastName
+            }
+        }
+
+        let metadata = PaymentIntent.initMetadata(
+            store: ServiceLocator.stores.sessionManager.defaultSite?.name,
+            customerName: customerName,
+            customerEmail: order.billingAddress?.email,
+            siteURL: ServiceLocator.stores.sessionManager.defaultSite?.url,
+            orderID: order.orderID,
+            paymentType: PaymentIntent.PaymentTypes.single
+        )
+
         return PaymentParameters(amount: orderTotal as Decimal,
                                                   currency: order.currency,
                                                   receiptDescription: receiptDescription(),
                                                   statementDescription: account?.statementDescriptor,
                                                   receiptEmail: order.billingAddress?.email,
-                                                  metadata: [CardPresentReceiptParameters.MetadataKeys.store:
-                                                                ServiceLocator.stores.sessionManager.defaultSite?.name as Any])
+                                                  metadata: metadata)
     }
 
     func receiptDescription() -> String? {

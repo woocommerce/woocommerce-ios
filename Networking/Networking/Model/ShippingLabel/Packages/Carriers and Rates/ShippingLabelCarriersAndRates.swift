@@ -1,6 +1,6 @@
 import Foundation
 
-/// Represents the rate for a specific shipping carrier
+/// Represents the rate for all the Shipping Carriers
 ///
 public struct ShippingLabelCarriersAndRates: Equatable {
 

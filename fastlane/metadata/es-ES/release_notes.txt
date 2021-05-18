@@ -1,1 +1,5 @@
-Estamos ocupados trabajando en muchas cosas emocionantes, así que, esta vez, solo podemos aportar una pequeña corrección. Ahora, las imágenes de productos que contengan caracteres no latinos en el nombre del archivo son totalmente compatibles.  Se cargarán correctamente y no causarán problemas a tu biblioteca multimedia.
+Las variaciones de producto solo admiten una imagen. Si una variación ya tiene una imagen, verás una opción para sustituirla o eliminarla, pero no podrás añadir otra nueva.
+
+Hemos recibido informes de fallos al seleccionar imágenes de la biblioteca multimedia, que se producían con bibliotecas que tenían un número concreto de imágenes. El problema se ha corregido.
+
+También hemos mejorado un mensaje de error que se mostraba cuando un cliente accedía a un sitio con un dispositivo sin conexión, un certificado SSL no válido o un XML-RPC bloqueado. Con los nuevos mensajes, es más sencillo resolver los problemas de acceso.

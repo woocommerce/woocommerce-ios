@@ -1,1 +1,5 @@
-Heyecan verici şey bir çok üzerinde çalışmalarımız devam ediyor, bu yüzden bu sefer sadece küçük bir düzeltme var. Artık dosya adında latin olmayan karakterler içeren ürün resimlerini tam olarak destekliyoruz. Sorunsuz bir şekilde yükleniyorlar ve Medya Kitaplığınızda tuhaf sorunlara neden olmuyorlar.
+Ürün varyasyonları yalnızca bir resmi destekler; bu nedenle eğer bir ürün varyasyonunun zaten bir resmi varsa onu değiştirme veya kaldırma seçeneği görürsünüz, ancak başka bir tane ekleyemezsiniz.
+
+Medya Kitaplığından görüntü seçerken, belirli sayıda görsele sahip kitaplıklarda kilitlenme durumları olduğu bildirilmişti. Bu sorunu düzelttik.
+
+Ayrıca, bir müşteri çevrimdışı bir cihaz, geçersiz bir SSL sertifikası veya engellenmiş bir XML-RPC ile bir siteye otrum açtığında görüntülenen hata mesajını da iyileştirdik. Güncellenen mesajlaşma, kişilerin oturum açma sorunlarını gidermesini kolaylaştırır.

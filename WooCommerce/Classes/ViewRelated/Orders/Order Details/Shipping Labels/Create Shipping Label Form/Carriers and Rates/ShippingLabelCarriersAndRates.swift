@@ -10,10 +10,12 @@ struct ShippingLabelCarriersAndRates: View {
     }
 
     var body: some View {
-        LazyVStack {
-            ForEach(viewModel.rows) { carrierRow in
-                Divider().padding(.leading, 80)
-                carrierRow
+        ScrollView {
+            LazyVStack {
+                ForEach(viewModel.rows) { carrierRow in
+                    carrierRow
+                    Divider().padding(.leading, 80)
+                }
             }
         }
     }

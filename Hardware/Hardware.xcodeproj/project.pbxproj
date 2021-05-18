@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		311889EB2653286B0080AEA2 /* PaymentIntentMetadataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311889EA2653286B0080AEA2 /* PaymentIntentMetadataTests.swift */; };
 		5A747BE9FA06EC8752A35752 /* Pods_HardwareTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1DC5B6141B8184FAC29B0A4 /* Pods_HardwareTests.framework */; };
 		8FFAA245E257B9EB98E2FCBD /* Pods_SampleReceiptPrinter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AFA997D6786C67B0A061854 /* Pods_SampleReceiptPrinter.framework */; };
 		C5D2CB7D21CEE28FEBF18BF6 /* Pods_Hardware.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F0AC202B287C1221EA2C99 /* Pods_Hardware.framework */; };
@@ -125,6 +126,7 @@
 		0C16E0AAFF5A7B364BD4E171 /* Pods-Hardware.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hardware.release-alpha.xcconfig"; path = "Target Support Files/Pods-Hardware/Pods-Hardware.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		1CC96A71F2937BCB7432766F /* Pods-HardwareTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HardwareTests.debug.xcconfig"; path = "Target Support Files/Pods-HardwareTests/Pods-HardwareTests.debug.xcconfig"; sourceTree = "<group>"; };
 		2AFA997D6786C67B0A061854 /* Pods_SampleReceiptPrinter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SampleReceiptPrinter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		311889EA2653286B0080AEA2 /* PaymentIntentMetadataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentIntentMetadataTests.swift; sourceTree = "<group>"; };
 		3CF9348BADD5E0518080A61A /* Pods-Hardware.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hardware.debug.xcconfig"; path = "Target Support Files/Pods-Hardware/Pods-Hardware.debug.xcconfig"; sourceTree = "<group>"; };
 		47BDD50287B7B0CF8D769BFC /* Pods-PrinterPlayground.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PrinterPlayground.release-alpha.xcconfig"; path = "Target Support Files/Pods-PrinterPlayground/Pods-PrinterPlayground.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		9726331F55A9621F2F887E13 /* Pods-Hardware.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hardware.release.xcconfig"; path = "Target Support Files/Pods-Hardware/Pods-Hardware.release.xcconfig"; sourceTree = "<group>"; };
@@ -346,6 +348,7 @@
 				D88303DA25E450E700C877F9 /* PaymentIntentTests.swift */,
 				D81AE85D25E6A89F00D9CFD3 /* StripeCardReaderCacheTests.swift */,
 				D854FC25260A6B5800A219CD /* ErrorCodesTests.swift */,
+				311889EA2653286B0080AEA2 /* PaymentIntentMetadataTests.swift */,
 				D80B4651260E19590092EDC0 /* PaymentIntentParametersTests.swift */,
 				D845BDFE262DDA6A00A3E40F /* ReceiptDetailsTests.swift */,
 				D845BE02262DDBF500A3E40F /* CardBrandTests.swift */,
@@ -773,6 +776,7 @@
 				D892F21025E3F4C0001D7134 /* MockStripeCardReader.swift in Sources */,
 				D88303DB25E450E700C877F9 /* PaymentIntentTests.swift in Sources */,
 				D845BE03262DDBF500A3E40F /* CardBrandTests.swift in Sources */,
+				311889EB2653286B0080AEA2 /* PaymentIntentMetadataTests.swift in Sources */,
 				D845BDFB262DD97E00A3E40F /* MockStripeReceiptDetails.swift in Sources */,
 				D845BDF5262DD67E00A3E40F /* MockStripeCardPresentDetails.swift in Sources */,
 				D88303D125E44B2500C877F9 /* ChargeTests.swift in Sources */,

@@ -66,16 +66,16 @@ public extension PaymentIntent {
 }
 
 public extension PaymentIntent {
-    enum PaymentTypes {
+    enum PaymentTypes: String {
         /// A payment that IS NOT associated with an order containing a subscription
         /// This key is also used by the plugin when it creates payment intents.
         ///
-        public static let single = "single"
+        case single = "single"
 
         /// A payment that IS associated with an order containing a subscription
         /// This key is also used by the plugin when it creates payment intents.
         ///
-        public static let recurring = "recurring"
+        case recurring = "recurring"
     }
 }
 
@@ -88,7 +88,7 @@ public extension PaymentIntent {
                           siteURL: String? = nil,
                           orderID: Int64? = nil,
                           orderKey: String? = nil,
-                          paymentType: String? = nil
+                          paymentType: PaymentTypes? = nil
     ) -> [AnyHashable: Any] {
         var metadata = [AnyHashable: Any]()
 
@@ -117,7 +117,7 @@ public extension PaymentIntent {
         }
 
         if paymentType != nil {
-            metadata[PaymentIntent.MetadataKeys.paymentType] = paymentType
+            metadata[PaymentIntent.MetadataKeys.paymentType] = paymentType?.rawValue
         }
 
         return metadata

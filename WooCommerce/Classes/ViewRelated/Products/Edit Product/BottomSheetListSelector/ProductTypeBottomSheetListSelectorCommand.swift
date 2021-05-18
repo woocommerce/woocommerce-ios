@@ -1,6 +1,7 @@
 import Yosemite
 
 /// Represents the product types available when creating or editing products.
+/// This includes the remote `ProductType`, whether the product type is virtual, and strings/images shown in the bottom sheet.
 ///
 public enum BottomSheetProductType: Hashable {
     case physical
@@ -10,7 +11,7 @@ public enum BottomSheetProductType: Hashable {
     case variable
     case custom(String) // in case there are extensions modifying product types
 
-    /// ProductType
+    /// Remote ProductType
     ///
     var productType: ProductType {
         switch self {
@@ -68,7 +69,7 @@ public enum BottomSheetProductType: Hashable {
         switch self {
         case .physical:
             return NSLocalizedString("A unique item to sell",
-                                     comment: "Description of the Action sheet option when the user wants to change the Product type to simple physical product")
+                                    comment: "Description of the Action sheet option when the user wants to change the Product type to simple physical product")
         case .virtual:
             return NSLocalizedString("A unique item to sell",
                                      comment: "Description of the Action sheet option when the user wants to change the Product type to simple virtual product")

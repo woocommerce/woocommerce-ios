@@ -389,8 +389,8 @@ extension OrderDetailsViewModel {
     }
 
     func checkShippingLabelCreationEligibility(onCompletion: (() -> Void)? = nil) {
-        // No orders are eligible for shipping label creation unless Release 2 flag (Milestone 2 & 3 features) is enabled
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsRelease2) else {
+        // No orders are eligible for shipping label creation unless feature flag for Milestones 2 & 3 is enabled
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsM2M3) else {
             dataSource.isEligibleForShippingLabelCreation = false
             onCompletion?()
             return

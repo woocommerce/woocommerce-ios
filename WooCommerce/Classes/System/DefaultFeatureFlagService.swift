@@ -9,7 +9,7 @@ struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .largeTitles:
             return true
-        case .shippingLabelsRelease2:
+        case .shippingLabelsM2M3:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsM4:
             return buildConfig == .localDeveloper || buildConfig == .alpha

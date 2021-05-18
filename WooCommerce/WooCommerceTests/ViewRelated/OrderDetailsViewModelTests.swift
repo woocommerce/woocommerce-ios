@@ -71,9 +71,9 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
     // MARK: Shipping Labels feature flags
 
-    func test_checkShippingLabelCreationEligibility_returns_ineligible_when_shippingLabelsRelease2_is_disabled() throws {
+    func test_checkShippingLabelCreationEligibility_returns_ineligible_when_shippingLabelsM2M3_is_disabled() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isShippingLabelsRelease2On: false)
+        let featureFlagService = MockFeatureFlagService(isShippingLabelsM2M3On: false)
         ServiceLocator.setFeatureFlagService(featureFlagService)
 
         // When
@@ -84,9 +84,9 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.dataSource.isEligibleForShippingLabelCreation)
     }
 
-    func test_checkShippingLabelCreationEligibility_dispatches_eligibility_check_without_client_features_when_only_shippingLabelsRelease2_is_enabled() throws {
+    func test_checkShippingLabelCreationEligibility_dispatches_eligibility_check_without_client_features_when_only_shippingLabelsM2M3_is_enabled() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isShippingLabelsRelease2On: true)
+        let featureFlagService = MockFeatureFlagService(isShippingLabelsM2M3On: true)
         ServiceLocator.setFeatureFlagService(featureFlagService)
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
@@ -116,7 +116,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
     func test_checkShippingLabelCreationEligibility_dispatches_eligibility_check_with_client_features_when_both_flags_are_enabled() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isShippingLabelsRelease2On: true, isShippingLabelsM4On: true)
+        let featureFlagService = MockFeatureFlagService(isShippingLabelsM2M3On: true, isShippingLabelsM4On: true)
         ServiceLocator.setFeatureFlagService(featureFlagService)
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 

@@ -1,4 +1,6 @@
 import Yosemite
+import PassKit
+
 /// Orchestrates the sequence of actions required to capture a payment:
 /// 1. Check if there is a card reader connected
 /// 2. Launch the reader discovering and pairing UI if there is no reader connected
@@ -19,6 +21,16 @@ final class PaymentCaptureOrchestrator {
             onCompletion(.failure(CardReaderServiceError.paymentCapture()))
             return
         }
+
+        if !PKPassLibrary.isSuppressingAutomaticPassPresentation() {
+            PKPassLibrary.requestAutomaticPassPresentationSuppression() { result in
+                guard result == .success else {
+                    DDLogWarn("Automatic Pass (Apple Pay) Presentation Suppression failed. Reason: \(result.rawValue)")
+                    return
+                }
+            }
+        }
+
         let action = CardPresentPaymentAction.collectPayment(siteID: order.siteID,
                                                              orderID: order.orderID, parameters: parameters,
                                                              onCardReaderMessage: { (event) in

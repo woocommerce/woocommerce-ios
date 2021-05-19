@@ -20,7 +20,7 @@ final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel
 
     let image: UIImage = .paymentErrorImage
 
-    let primaryButtonTitle: String? = Localization.tryAgain
+    let primaryButtonTitle: String? = Localization.dismiss
 
     let secondaryButtonTitle: String? = nil
 
@@ -50,12 +50,12 @@ private extension CardPresentModalNonRetryableError {
     enum Localization {
         static let paymentFailed = NSLocalizedString(
             "Payment failed",
-            comment: "Error message. Presented to users after a collecting a payment fails"
+            comment: "Error message. Presented to users after collecting a payment fails"
         )
 
-        static let tryAgain = NSLocalizedString(
+        static let dismiss = NSLocalizedString(
             "Dismiss",
-            comment: "Button to try to dismiss. Presented to users after a collecting a payment fails"
+            comment: "Button to dismiss. Presented to users after collecting a payment fails"
         )
     }
 }

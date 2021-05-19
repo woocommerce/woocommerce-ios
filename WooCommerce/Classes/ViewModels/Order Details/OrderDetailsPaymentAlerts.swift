@@ -48,6 +48,11 @@ final class OrderDetailsPaymentAlerts {
         modalController?.setViewModel(viewModel)
     }
 
+    func nonRetryableError(error: Error) {
+        let viewModel = nonRetryableErrorViewModel(amount: amount, error: error)
+        modalController?.setViewModel(viewModel)
+    }
+
     func dismiss() {
         modalController?.dismiss(animated: true, completion: nil)
     }
@@ -77,5 +82,9 @@ private extension OrderDetailsPaymentAlerts {
 
     func errorViewModel(amount: String, error: Error, tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalError(amount: amount, error: error, primaryAction: tryAgain)
+    }
+
+    func nonRetryableErrorViewModel(amount: String, error: Error) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalNonRetryableError(amount: amount, error: error)
     }
 }

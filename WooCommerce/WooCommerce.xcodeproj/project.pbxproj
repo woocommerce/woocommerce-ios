@@ -1049,6 +1049,7 @@
 		CEEC9B6021E79CAA0055EEF0 /* FeatureFlagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B5F21E79CAA0055EEF0 /* FeatureFlagTests.swift */; };
 		CEEC9B6421E7AB850055EEF0 /* AppRatingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B6221E79EE00055EEF0 /* AppRatingManager.swift */; };
 		CEEC9B6621E7C5200055EEF0 /* AppRatingManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B6521E7C5200055EEF0 /* AppRatingManagerTests.swift */; };
+		D802541F2655137A001B2CC1 /* CardPresentModalNonRetryableError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D802541E2655137A001B2CC1 /* CardPresentModalNonRetryableError.swift */; };
 		D8053BCE231F98DA00CE60C2 /* ReviewAgeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8053BCD231F98DA00CE60C2 /* ReviewAgeTests.swift */; };
 		D810F8F82639EDE900437C67 /* CardPresentPaymentsModalViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D810F8F72639EDE900437C67 /* CardPresentPaymentsModalViewControllerTests.swift */; };
 		D8149F562251EE300006A245 /* UITextField+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8149F552251EE300006A245 /* UITextField+Helpers.swift */; };
@@ -2304,6 +2305,7 @@
 		CEEC9B5F21E79CAA0055EEF0 /* FeatureFlagTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagTests.swift; sourceTree = "<group>"; };
 		CEEC9B6221E79EE00055EEF0 /* AppRatingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingManager.swift; sourceTree = "<group>"; };
 		CEEC9B6521E7C5200055EEF0 /* AppRatingManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingManagerTests.swift; sourceTree = "<group>"; };
+		D802541E2655137A001B2CC1 /* CardPresentModalNonRetryableError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalNonRetryableError.swift; sourceTree = "<group>"; };
 		D8053BCD231F98DA00CE60C2 /* ReviewAgeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewAgeTests.swift; sourceTree = "<group>"; };
 		D810F8F72639EDE900437C67 /* CardPresentPaymentsModalViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsModalViewControllerTests.swift; sourceTree = "<group>"; };
 		D8149F552251EE300006A245 /* UITextField+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Helpers.swift"; sourceTree = "<group>"; };
@@ -5602,6 +5604,7 @@
 				D8815B062638606B00EDAD62 /* CardPresentModalRemoveCard.swift */,
 				D8815B0C263861A400EDAD62 /* CardPresentModalSuccess.swift */,
 				D8815B122638686200EDAD62 /* CardPresentModalError.swift */,
+				D802541E2655137A001B2CC1 /* CardPresentModalNonRetryableError.swift */,
 				D85806282642BA5400A8AB6C /* PaymentCaptureOrchestrator.swift */,
 				D82BB3A926454F3300A82741 /* CardPresentModalProcessing.swift */,
 				311D21E7264AEDB900102316 /* CardPresentModalScanningForReader.swift */,
@@ -6358,6 +6361,7 @@
 				025C00BA25514A7100FAC222 /* BarcodeScannerFrameScaler.swift in Sources */,
 				02913E9723A774E600707A0C /* DecimalInputFormatter.swift in Sources */,
 				456CB50D2444BFAC00992A05 /* ProductPurchaseNoteViewController.swift in Sources */,
+				D802541F2655137A001B2CC1 /* CardPresentModalNonRetryableError.swift in Sources */,
 				029F29FC24D94106004751CA /* EditableProductVariationModel.swift in Sources */,
 				0218B4EC242E06F00083A847 /* MediaType+WPMediaType.swift in Sources */,
 				D8815AE726383FD600EDAD62 /* CardPresentPaymentsModalViewModel.swift in Sources */,

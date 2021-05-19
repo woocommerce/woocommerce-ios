@@ -552,6 +552,10 @@ extension OrderDetailsViewModel {
 
     }
 
+    func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        paymentOrchestrator.cancelPayment(onCompletion: onCompletion)
+    }
+
     func printReceipt(params: CardPresentReceiptParameters) {
         paymentOrchestrator.printReceipt(for: order, params: params)
     }

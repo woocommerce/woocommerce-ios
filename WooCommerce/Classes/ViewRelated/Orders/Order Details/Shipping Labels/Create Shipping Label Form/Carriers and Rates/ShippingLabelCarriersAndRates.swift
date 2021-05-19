@@ -16,10 +16,10 @@ struct ShippingLabelCarriersAndRates: View {
                 case .loading:
                     ForEach(viewModel.ghostRows) { ghostRow in
                         ghostRow
+                            .redacted(reason: .placeholder)
+                            .shimmering()
                         Divider().padding(.leading, Constants.dividerPadding)
                     }
-                    .redacted(reason: .placeholder)
-                    .shimmering()
                 case .success:
                     ForEach(viewModel.rows) { carrierRow in
                         carrierRow

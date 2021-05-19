@@ -1,7 +1,5 @@
 import XCTest
-import TestKit
 @testable import WooCommerce
-@testable import Yosemite
 
 final class CardPresentModalRemoveCardTests: XCTestCase {
     private var viewModel: CardPresentModalRemoveCard!
@@ -28,8 +26,8 @@ final class CardPresentModalRemoveCardTests: XCTestCase {
         XCTAssertEqual(viewModel.topSubtitle, Expectations.amount)
     }
 
-    func test_primary_button_title_is_not_nil() {
-        XCTAssertNotNil(viewModel.primaryButtonTitle)
+    func test_primary_button_title_is_nil() {
+        XCTAssertNil(viewModel.primaryButtonTitle)
     }
 
     func test_secondary_button_title_is_nil() {
@@ -44,8 +42,8 @@ final class CardPresentModalRemoveCardTests: XCTestCase {
         XCTAssertNotNil(viewModel.bottomTitle)
     }
 
-    func test_bottom_subTitle_is_not_nil() {
-        XCTAssertNotNil(viewModel.bottomSubtitle)
+    func test_bottom_subTitle_is_nil() {
+        XCTAssertNil(viewModel.bottomSubtitle)
     }
 }
 

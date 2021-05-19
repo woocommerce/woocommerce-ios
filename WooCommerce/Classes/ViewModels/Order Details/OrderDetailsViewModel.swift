@@ -278,6 +278,7 @@ extension OrderDetailsViewModel {
             productListVC.viewModel = self
             viewController.navigationController?.pushViewController(productListVC, animated: true)
         case .seeReceipt:
+            ServiceLocator.analytics.track(.receiptViewTapped)
             guard let receipt = receipt else {
                 return
             }
@@ -557,10 +558,12 @@ extension OrderDetailsViewModel {
     }
 
     func printReceipt(params: CardPresentReceiptParameters) {
+        ServiceLocator.analytics.track(.receiptPrintTapped)
         paymentOrchestrator.printReceipt(for: order, params: params)
     }
 
     func emailReceipt(params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {
+        ServiceLocator.analytics.track(.receiptEmailTapped)
         paymentOrchestrator.emailReceipt(for: order, params: params, onContent: onContent)
     }
 }

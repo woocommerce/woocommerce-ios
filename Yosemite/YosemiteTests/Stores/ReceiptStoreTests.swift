@@ -56,7 +56,7 @@ final class ReceiptStoreTests: XCTestCase {
                                         receiptPrinterService: receiptPrinterService,
                                         fileStorage: MockInMemoryStorage())
 
-        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters)
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
 
         receiptStore.onAction(action)
 
@@ -73,7 +73,7 @@ final class ReceiptStoreTests: XCTestCase {
                                         receiptPrinterService: receiptPrinterService,
                                         fileStorage: MockInMemoryStorage())
 
-        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters)
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
 
         receiptStore.onAction(action)
 

@@ -15,7 +15,7 @@ public final class AirPrintReceiptPrinterService: PrinterService {
 
     public init() { }
 
-    public func printReceipt(content: ReceiptContent) {
+    public func printReceipt(content: ReceiptContent, completion: @escaping (PrintingResult) -> Void) {
         let printController = UIPrintInteractionController.shared
 
         printController.printInfo = printInfo
@@ -23,6 +23,18 @@ public final class AirPrintReceiptPrinterService: PrinterService {
         let renderer = ReceiptRenderer(content: content)
         printController.printPageRenderer = renderer
 
-        printController.present(animated: true, completionHandler: nil)
+        printController.present(animated: true) { (controller, completed, error) in
+            switch (completed, error) {
+            case (_, .some(let error)):
+                // Printing failed
+                completion(.failure(error))
+            case (true, .none):
+                // Successful print job
+                completion(.success)
+            case (false, .none):
+                // User canceled the print job
+                completion(.cancel)
+            }
+        }
     }
 }

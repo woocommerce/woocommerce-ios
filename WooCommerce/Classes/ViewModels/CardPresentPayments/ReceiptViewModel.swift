@@ -29,8 +29,17 @@ final class ReceiptViewModel {
 
     /// Prints the receipt
     func printReceipt() {
-        let action = ReceiptAction.print(order: order, parameters: receipt)
-
+        ServiceLocator.analytics.track(.receiptPrintTapped)
+        let action = ReceiptAction.print(order: order, parameters: receipt) { (result) in
+            switch result {
+            case .success:
+                ServiceLocator.analytics.track(.receiptPrintSuccess)
+            case .cancel:
+                ServiceLocator.analytics.track(.receiptPrintCanceled)
+            case .failure(let error):
+                ServiceLocator.analytics.track(.receiptPrintFailed, withError: error)
+            }
+        }
         ServiceLocator.stores.dispatch(action)
     }
 }

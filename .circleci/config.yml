@@ -71,16 +71,6 @@ jobs:
       - run:
           name: Build for Testing
           command: bundle exec fastlane build_for_testing device:'<< parameters.device >>' ios-version:'<< parameters.ios-version >>'
-      - run:
-          name: Test for nested Frameworks
-          command: |
-            NESTED_FMKS=$(find DerivedData/Build/Products/Debug-iphonesimulator/WooCommerce.app/Frameworks/*.framework -name Frameworks) 
-            if [ -n "$NESTED_FMKS" ]; then
-              echo "Found some nested frameworks inside Frameworks/*/Frameworks subdirectories. Such a configuration is invalid and will be rejected by TestFlight"
-              echo "Please fix by choosing 'Do Not Embed' for the nested framework in the Xcode project of the parent framework containing it"
-              echo $NESTED_FMKS
-              exit 1
-            fi 
       - persist_to_workspace:
           root: ./
           paths:

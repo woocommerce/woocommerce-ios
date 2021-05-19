@@ -74,7 +74,6 @@ private extension CardPresentModalSuccessTests {
 private final class Closures {
     var didTapPrint = false
     var didTapEmail = false
-    var didTapNoThanks = false
 
     func printReceipt() -> () -> Void {
         return { [weak self] in

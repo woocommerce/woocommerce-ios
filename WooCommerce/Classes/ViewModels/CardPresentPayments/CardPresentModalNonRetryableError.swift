@@ -9,7 +9,7 @@ final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel
     /// The error returned by the stack
     private let error: Error
 
-    let textMode: PaymentsModalTextMode = .noBottomInfo
+    let textMode: PaymentsModalTextMode = .reducedBottomInfo
     let actionsMode: PaymentsModalActionsMode = .oneAction
 
     let topTitle: String = Localization.paymentFailed

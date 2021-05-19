@@ -46,12 +46,16 @@ struct ShippingLabelPaymentMethods: View {
 
 private extension ShippingLabelPaymentMethods {
     enum Localization {
-        static let paymentMethodsHeader = NSLocalizedString("Payment Method Selected", comment: "Header for list of payment methods in Payment Method screen")
-        static let paymentMethodsFooter = NSLocalizedString("Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>",
-                                                            comment: "Footer for list of payment methods in Payment Method screen. Placeholders: %1$@ - username, %2$@ - email address")
-        static let emailReceipt = NSLocalizedString("Email the label purchase receipts to %1$@ (%2$@) at %3$@",
-                                                    comment: "Label for the email receipts toggle in Payment Method screen. Reads as: Email the label purchase receipts to {Full Name} ({username}) at {email address}")
         static let doneButton = NSLocalizedString("Done", comment: "Done navigation button in the Shipping Label Payment Method screen")
+        static let paymentMethodsHeader = NSLocalizedString("Payment Method Selected", comment: "Header for list of payment methods in Payment Method screen")
+        static let paymentMethodsFooter = NSLocalizedString(
+            "Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>",
+            comment: "Footer for list of payment methods in Payment Method screen. Placeholders: %1$@ - username, %2$@ - email address"
+        )
+        static let emailReceipt = NSLocalizedString(
+            "Email the label purchase receipts to %1$@ (%2$@) at %3$@",
+            comment: "Label for the email receipts toggle in Payment Method screen. Reads as: Email the label purchase receipts to {Full Name} ({username}) at {email address}"
+        )
     }
 
     enum Constants {

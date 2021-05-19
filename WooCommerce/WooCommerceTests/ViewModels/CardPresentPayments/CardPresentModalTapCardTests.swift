@@ -48,7 +48,7 @@ final class CardPresentModalTapCardTests: XCTestCase {
         XCTAssertNotNil(viewModel.bottomSubtitle)
     }
 
-    func test_primary_button_dispatched_canel_action() throws {
+    func test_primary_button_dispatched_cancel_action() throws {
         let storesManager = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         storesManager.reset()
 

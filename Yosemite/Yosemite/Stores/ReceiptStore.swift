@@ -34,8 +34,8 @@ public class ReceiptStore: Store {
         }
 
         switch action {
-        case .print(let order, let info):
-            print(order: order, parameters: info)
+        case .print(let order, let info, let completion):
+            print(order: order, parameters: info, completion: completion)
         case .generateContent(let order, let info, let onContent):
             generateContent(order: order, parameters: info, onContent: onContent)
         case .loadReceipt(let order, let onCompletion):
@@ -48,11 +48,11 @@ public class ReceiptStore: Store {
 
 
 private extension ReceiptStore {
-    func print(order: Order, parameters: CardPresentReceiptParameters) {
+    func print(order: Order, parameters: CardPresentReceiptParameters, completion: @escaping (PrintingResult) -> Void) {
         let lineItems = order.items.map { ReceiptLineItem(title: $0.name, quantity: $0.quantity.description, amount: $0.price.stringValue)}
 
         let content = ReceiptContent(parameters: parameters, lineItems: lineItems)
-        receiptPrinterService.printReceipt(content: content)
+        receiptPrinterService.printReceipt(content: content, completion: completion)
     }
 
     func generateContent(order: Order, parameters: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {

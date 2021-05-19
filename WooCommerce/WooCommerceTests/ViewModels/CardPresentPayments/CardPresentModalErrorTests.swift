@@ -44,12 +44,6 @@ final class CardPresentModalErrorTests: XCTestCase {
     func test_bottom_subTitle_is_nil() {
         XCTAssertNil(viewModel.bottomSubtitle)
     }
-
-    func test_primary_button_action_calls_closure() {
-        viewModel.didTapPrimaryButton(in: nil)
-
-        XCTAssertTrue(closures.didTapPrimary)
-    }
 }
 
 

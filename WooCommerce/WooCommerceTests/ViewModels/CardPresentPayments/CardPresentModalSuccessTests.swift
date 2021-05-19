@@ -77,13 +77,13 @@ private final class Closures {
     var didTapNoThanks = false
 
     func printReceipt() -> () -> Void {
-        { [weak self] in
+        return { [weak self] in
             self?.didTapPrint = true
         }
     }
 
     func emailReceipt() -> () -> Void {
-        { [weak self] in
+        return { [weak self] in
             self?.didTapEmail = true
         }
     }

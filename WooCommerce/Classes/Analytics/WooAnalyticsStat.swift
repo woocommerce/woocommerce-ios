@@ -213,6 +213,13 @@ public enum WooAnalyticsStat: String {
     case receiptPrintCanceled                   = "receipt_print_canceled"
     case receiptPrintSuccess                    = "receipt_print_success"
 
+    // MARK: Payment Events
+    //
+    case collectPaymentTapped                   = "card_present_collect_payment_tapped"
+    case collectPaymentCanceled                 = "card_present_collect_payment_canceled"
+    case collectPaymentFailed                   = "card_present_collect_payment_failed"
+    case collectPaymentSuccess                  = "card_present_collect_payment_success"
+
     // MARK: Push Notifications Events
     //
     case pushNotificationReceived               = "push_notification_received"

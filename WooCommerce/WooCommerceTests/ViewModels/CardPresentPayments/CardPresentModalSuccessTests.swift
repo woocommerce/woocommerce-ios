@@ -1,0 +1,90 @@
+import XCTest
+@testable import WooCommerce
+
+final class CardPresentModalSuccessTests: XCTestCase {
+    private var viewModel: CardPresentModalSuccess!
+    private var closures: Closures!
+
+    override func setUp() {
+        super.setUp()
+        closures = Closures()
+        viewModel = CardPresentModalSuccess(amount: Expectations.amount, printReceipt: closures.printReceipt(), emailReceipt: closures.emailReceipt())
+    }
+
+    override func tearDown() {
+        viewModel = nil
+        closures = nil
+        super.tearDown()
+    }
+
+    func test_viewmodel_provides_expected_image() {
+        XCTAssertEqual(viewModel.image, Expectations.image)
+    }
+
+    func test_topTitle_is_not_nil() {
+        XCTAssertNotNil(viewModel.topTitle)
+    }
+
+    func test_topSubtitle_provides_expected_title() {
+        XCTAssertEqual(viewModel.topSubtitle, Expectations.amount)
+    }
+
+    func test_primary_button_title_is_not_nil() {
+        XCTAssertNotNil(viewModel.primaryButtonTitle)
+    }
+
+    func test_secondary_button_title_is_not_nil() {
+        XCTAssertNotNil(viewModel.secondaryButtonTitle)
+    }
+
+    func test_auxiliary_button_title_is_not_nil() {
+        XCTAssertNotNil(viewModel.auxiliaryButtonTitle)
+    }
+
+    func test_bottom_title_is_nil() {
+        XCTAssertNil(viewModel.bottomTitle)
+    }
+
+    func test_bottom_subTitle_is_nil() {
+        XCTAssertNil(viewModel.bottomSubtitle)
+    }
+
+    func test_primary_button_action_calls_closure() {
+        viewModel.didTapPrimaryButton(in: nil)
+
+        XCTAssertTrue(closures.didTapPrint)
+    }
+
+    func test_secondary_button_action_calls_closure() {
+        viewModel.didTapSecondaryButton(in: nil)
+
+        XCTAssertTrue(closures.didTapEmail)
+    }
+}
+
+
+private extension CardPresentModalSuccessTests {
+    enum Expectations {
+        static var amount = "amount"
+        static var image = UIImage.celebrationImage
+    }
+}
+
+
+private final class Closures {
+    var didTapPrint = false
+    var didTapEmail = false
+    var didTapNoThanks = false
+
+    func printReceipt() -> () -> Void {
+        { [weak self] in
+            self?.didTapPrint = true
+        }
+    }
+
+    func emailReceipt() -> () -> Void {
+        { [weak self] in
+            self?.didTapEmail = true
+        }
+    }
+}

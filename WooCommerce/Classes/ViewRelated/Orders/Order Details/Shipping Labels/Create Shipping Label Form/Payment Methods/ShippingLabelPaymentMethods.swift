@@ -61,7 +61,6 @@ private extension ShippingLabelPaymentMethods {
     enum Constants {
         static let dividerPadding: CGFloat = 48
         static let spacerHeight: CGFloat = 24
-        static let rowPadding: CGFloat = 16
     }
 }
 

@@ -42,6 +42,11 @@ final class PaymentCaptureOrchestrator {
         ServiceLocator.stores.dispatch(action)
     }
 
+    func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let action = CardPresentPaymentAction.cancelPayment(onCompletion: onCompletion)
+        ServiceLocator.stores.dispatch(action)
+    }
+
     func printReceipt(for order: Order, params: CardPresentReceiptParameters) {
         let action = ReceiptAction.print(order: order, parameters: params) { (result) in
             switch result {

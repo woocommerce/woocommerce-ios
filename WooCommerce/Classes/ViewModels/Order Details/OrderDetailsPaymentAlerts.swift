@@ -48,6 +48,22 @@ final class OrderDetailsPaymentAlerts {
         modalController?.setViewModel(viewModel)
     }
 
+    func nonRetryableError(from: UIViewController?, error: Error) {
+        let viewModel = nonRetryableErrorViewModel(amount: amount, error: error)
+
+        guard modalController == nil else {
+            modalController?.setViewModel(viewModel)
+            return
+        }
+
+        let newAlert = CardPresentPaymentsModalViewController(viewModel: viewModel)
+
+        modalController = newAlert
+        modalController?.modalPresentationStyle = .custom
+        modalController?.transitioningDelegate = AppDelegate.shared.tabBarController
+        from?.present(newAlert, animated: true)
+    }
+
     func dismiss() {
         modalController?.dismiss(animated: true, completion: nil)
     }
@@ -77,5 +93,9 @@ private extension OrderDetailsPaymentAlerts {
 
     func errorViewModel(amount: String, error: Error, tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalError(amount: amount, error: error, primaryAction: tryAgain)
+    }
+
+    func nonRetryableErrorViewModel(amount: String, error: Error) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalNonRetryableError(amount: amount, error: error)
     }
 }

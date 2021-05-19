@@ -553,6 +553,10 @@ extension OrderDetailsViewModel {
 
     }
 
+    func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        paymentOrchestrator.cancelPayment(onCompletion: onCompletion)
+    }
+
     func printReceipt(params: CardPresentReceiptParameters) {
         ServiceLocator.analytics.track(.receiptPrintTapped)
         paymentOrchestrator.printReceipt(for: order, params: params)

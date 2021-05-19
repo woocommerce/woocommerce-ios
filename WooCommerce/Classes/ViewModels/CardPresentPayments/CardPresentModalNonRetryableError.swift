@@ -1,16 +1,13 @@
 import UIKit
 
-/// Modal presented on error
-final class CardPresentModalError: CardPresentPaymentsModalViewModel {
+/// Modal presented on error. Does not provide a retry action.
+final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel {
 
     /// Amount charged
     private let amount: String
 
     /// The error returned by the stack
     private let error: Error
-
-    /// A closure to execute when the primary button is tapped
-    private let primaryAction: () -> Void
 
     let textMode: PaymentsModalTextMode = .reducedBottomInfo
     let actionsMode: PaymentsModalActionsMode = .oneAction
@@ -23,7 +20,7 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
 
     let image: UIImage = .paymentErrorImage
 
-    let primaryButtonTitle: String? = Localization.tryAgain
+    let primaryButtonTitle: String? = Localization.dismiss
 
     let secondaryButtonTitle: String? = nil
 
@@ -35,16 +32,13 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
 
     let bottomSubtitle: String? = nil
 
-    init(amount: String, error: Error, primaryAction: @escaping () -> Void) {
+    init(amount: String, error: Error) {
         self.amount = amount
         self.error = error
-        self.primaryAction = primaryAction
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        viewController?.dismiss(animated: true, completion: {[weak self] in
-            self?.primaryAction()
-        })
+        viewController?.dismiss(animated: true)
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) { }
@@ -52,16 +46,16 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
 }
 
-private extension CardPresentModalError {
+private extension CardPresentModalNonRetryableError {
     enum Localization {
         static let paymentFailed = NSLocalizedString(
             "Payment failed",
-            comment: "Error message. Presented to users after a collecting a payment fails"
+            comment: "Error message. Presented to users after collecting a payment fails"
         )
 
-        static let tryAgain = NSLocalizedString(
-            "Try collecting payment again",
-            comment: "Button to try to collect a payment again. Presented to users after a collecting a payment fails"
+        static let dismiss = NSLocalizedString(
+            "Dismiss",
+            comment: "Button to dismiss. Presented to users after collecting a payment fails"
         )
     }
 }

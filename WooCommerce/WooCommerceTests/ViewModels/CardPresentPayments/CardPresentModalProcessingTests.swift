@@ -1,12 +1,12 @@
 import XCTest
 @testable import WooCommerce
 
-final class CardPresentModalNonRetryableErrorTests: XCTestCase {
-    private var viewModel: CardPresentModalNonRetryableError!
+final class CardPresentModalProcessingTests: XCTestCase {
+    private var viewModel: CardPresentModalProcessing!
 
     override func setUp() {
         super.setUp()
-        viewModel = CardPresentModalNonRetryableError(amount: Expectations.amount, error: Expectations.error)
+        viewModel = CardPresentModalProcessing(name: Expectations.name, amount: Expectations.amount)
     }
 
     override func tearDown() {
@@ -26,8 +26,8 @@ final class CardPresentModalNonRetryableErrorTests: XCTestCase {
         XCTAssertEqual(viewModel.topSubtitle, Expectations.amount)
     }
 
-    func test_primary_button_title_is_not_nil() {
-        XCTAssertNotNil(viewModel.primaryButtonTitle)
+    func test_primary_button_title_is_nil() {
+        XCTAssertNil(viewModel.primaryButtonTitle)
     }
 
     func test_secondary_button_title_is_nil() {
@@ -48,16 +48,10 @@ final class CardPresentModalNonRetryableErrorTests: XCTestCase {
 }
 
 
-private extension CardPresentModalNonRetryableErrorTests {
+private extension CardPresentModalProcessingTests {
     enum Expectations {
+        static var name = "name"
         static var amount = "amount"
-        static var image = UIImage.paymentErrorImage
-        static let error = MockError()
-    }
-
-    final class MockError: Error {
-        var localizedDescription: String {
-            "description"
-        }
+        static var image = UIImage.cardPresentImage
     }
 }

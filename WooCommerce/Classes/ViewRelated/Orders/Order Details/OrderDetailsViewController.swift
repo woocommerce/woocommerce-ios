@@ -624,10 +624,10 @@ private extension OrderDetailsViewController {
     }
 
     private func retryCollectPayment() {
-        self.viewModel.cancelPayment { [weak self] result in
+        viewModel.cancelPayment { [weak self] result in
             switch result {
             case .failure(let error):
-                self?.paymentAlerts.nonRetryableError(error: error)
+                self?.paymentAlerts.nonRetryableError(from: self, error: error)
             case .success:
                 self?.collectPaymentForCurrentOrder()
             }

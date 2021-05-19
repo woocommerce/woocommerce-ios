@@ -55,7 +55,7 @@ final class OrderDetailsPaymentAlerts {
             modalController?.setViewModel(viewModel)
             return
         }
-        
+
         let newAlert = CardPresentPaymentsModalViewController(viewModel: viewModel)
 
         modalController = newAlert

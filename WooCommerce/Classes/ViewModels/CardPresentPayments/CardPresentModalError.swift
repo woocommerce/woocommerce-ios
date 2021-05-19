@@ -12,7 +12,7 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
     /// A closure to execute when the primary button is tapped
     private let primaryAction: () -> Void
 
-    let textMode: PaymentsModalTextMode = .noBottomInfo
+    let textMode: PaymentsModalTextMode = .reducedBottomInfo
     let actionsMode: PaymentsModalActionsMode = .oneAction
 
     let topTitle: String = Localization.paymentFailed
@@ -42,8 +42,9 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        primaryAction()
-        viewController?.dismiss(animated: true)
+        viewController?.dismiss(animated: true, completion: {[weak self] in
+            self?.primaryAction()
+        })
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) { }

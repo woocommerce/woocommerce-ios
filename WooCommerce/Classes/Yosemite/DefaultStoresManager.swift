@@ -338,8 +338,8 @@ private extension DefaultStoresManager {
             return
         }
 
-        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { (_, error) in
-            if let error = error {
+        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { result in
+            if case let .failure(error) = result {
                 DDLogError("⛔️ Could not successfully fetch order statuses for siteID \(siteID): \(error)")
             }
         }

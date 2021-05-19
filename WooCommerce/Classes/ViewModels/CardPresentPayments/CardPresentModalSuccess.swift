@@ -41,8 +41,9 @@ final class CardPresentModalSuccess: CardPresentPaymentsModalViewModel {
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        printReceiptAction()
-        viewController?.dismiss(animated: true)
+        viewController?.dismiss(animated: true, completion: { [weak self] in
+            self?.printReceiptAction()
+        })
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {

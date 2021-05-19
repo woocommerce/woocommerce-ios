@@ -1,6 +1,6 @@
 import UIKit
 
-/// Modal presented on error
+/// Modal presented on error. Does not provide a retry action.
 final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel {
 
     /// Amount charged

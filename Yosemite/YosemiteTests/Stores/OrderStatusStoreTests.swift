@@ -73,7 +73,7 @@ class OrderStatusStoreTests: XCTestCase {
 
     /// Verifies that OrderStatusAction.retrieveOrderStatuses returns success on valid response.
     ///
-    func testRetrieveOrderStatusesReturnsExpectedStatuses() throws {
+    func test_retrieveOrderStatuses_returns_expected_statuses() throws {
         // Given
         let orderStatusStore = OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "reports/orders/totals", filename: "report-orders")
@@ -95,7 +95,7 @@ class OrderStatusStoreTests: XCTestCase {
 
     /// Verifies that OrderStatusAction.retrieveOrderStatuses returns an error, whenever there is an error response.
     ///
-    func testRetrieveOrderStatusesReturnsErrorUponResponseError() {
+    func test_retrieveOrderStatuses_returns_error_upon_response_error() {
         // Given
         let orderStatusStore = OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "reports/orders/totals", filename: "generic_error")
@@ -114,7 +114,7 @@ class OrderStatusStoreTests: XCTestCase {
 
     /// Verifies that OrderStatusAction.retrieveOrderStatuses returns an error, whenever there is not backend response.
     ///
-    func testRetrieveOrderStatusesReturnsErrorUponEmptyResponse() {
+    func test_retrieveOrderStatuses_returns_error_upon_empty_response() {
         // Given
         let orderStatusStore = OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -132,7 +132,7 @@ class OrderStatusStoreTests: XCTestCase {
 
     /// Verifies that OrderStatusAction.retrieveOrderStatuses effectively persists any retrieved statuses.
     ///
-    func testRetrieveOrderStatusesEffectivelyPersistsRetrievedOrderStatuses() {
+    func test_retrieveOrderStatuses_effectively_persists_retrieved_OrderStatuses() {
         // Given
         let orderStatusStore = OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "reports/orders/totals", filename: "report-orders")
@@ -154,7 +154,7 @@ class OrderStatusStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredStatusesInBackground` does not produce duplicate entries.
     ///
-    func testUpdateRetrieveOrderStatusesEffectivelyUpdatesPreexistantOrderStatuses() {
+    func test_upsertStatuses_effectively_updates_preexistant_OrderStatuses() {
         let orderStatusStore = OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderStatus.self), 0)
 
@@ -191,7 +191,7 @@ class OrderStatusStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredStatusesInBackground` removes deleted entities.
     ///
-    func testUpdateRetrieveShipmentTrackingListEffectivelyRemovesDeletedShipmentTrackingData() {
+    func test_upsertStatuses_effectively_removes_deleted_OrderStatuses() {
         let orderStatusStore = OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderStatus.self), 0)
 

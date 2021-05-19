@@ -25,7 +25,7 @@ class ReportRemoteTests: XCTestCase {
 
     /// Verifies that `loadOrdersTotals` properly parses the successful response
     ///
-    func testLoadOrdersTotalsReturnsSuccess() throws {
+    func test_loadOrdersTotals_returns_success() throws {
         // Given
         let remote = ReportRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "reports/orders/totals", filename: "report-orders")
@@ -45,7 +45,7 @@ class ReportRemoteTests: XCTestCase {
 
     /// Verifies that `loadOrdersTotals` correctly returns a Dotcom Error, whenever the request failed.
     ///
-    func testLoadOrdersTotalsProperlyParsesErrorResponses() {
+    func test_loadOrdersTotals_properly_parses_error_responses() {
         // Given
         let remote = ReportRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "reports/orders/totals", filename: "generic_error")

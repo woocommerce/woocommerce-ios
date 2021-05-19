@@ -1058,6 +1058,7 @@
 		D802548726552E07001B2CC1 /* CardPresentModalNonRetryableErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D802548626552E07001B2CC1 /* CardPresentModalNonRetryableErrorTests.swift */; };
 		D802548C26552F41001B2CC1 /* CardPresentModalProcessingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D802548B26552F41001B2CC1 /* CardPresentModalProcessingTests.swift */; };
 		D802549126552FE1001B2CC1 /* CardPresentModalScanningForReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D802549026552FE1001B2CC1 /* CardPresentModalScanningForReaderTests.swift */; };
+		D8025496265530E0001B2CC1 /* CardPresentModalFoundReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8025495265530E0001B2CC1 /* CardPresentModalFoundReaderTests.swift */; };
 		D8053BCE231F98DA00CE60C2 /* ReviewAgeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8053BCD231F98DA00CE60C2 /* ReviewAgeTests.swift */; };
 		D810F8F82639EDE900437C67 /* CardPresentPaymentsModalViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D810F8F72639EDE900437C67 /* CardPresentPaymentsModalViewControllerTests.swift */; };
 		D8149F562251EE300006A245 /* UITextField+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8149F552251EE300006A245 /* UITextField+Helpers.swift */; };
@@ -2322,6 +2323,7 @@
 		D802548626552E07001B2CC1 /* CardPresentModalNonRetryableErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalNonRetryableErrorTests.swift; sourceTree = "<group>"; };
 		D802548B26552F41001B2CC1 /* CardPresentModalProcessingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalProcessingTests.swift; sourceTree = "<group>"; };
 		D802549026552FE1001B2CC1 /* CardPresentModalScanningForReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalScanningForReaderTests.swift; sourceTree = "<group>"; };
+		D8025495265530E0001B2CC1 /* CardPresentModalFoundReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalFoundReaderTests.swift; sourceTree = "<group>"; };
 		D8053BCD231F98DA00CE60C2 /* ReviewAgeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewAgeTests.swift; sourceTree = "<group>"; };
 		D810F8F72639EDE900437C67 /* CardPresentPaymentsModalViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsModalViewControllerTests.swift; sourceTree = "<group>"; };
 		D8149F552251EE300006A245 /* UITextField+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Helpers.swift"; sourceTree = "<group>"; };
@@ -5548,6 +5550,7 @@
 				D802548626552E07001B2CC1 /* CardPresentModalNonRetryableErrorTests.swift */,
 				D802548B26552F41001B2CC1 /* CardPresentModalProcessingTests.swift */,
 				D802549026552FE1001B2CC1 /* CardPresentModalScanningForReaderTests.swift */,
+				D8025495265530E0001B2CC1 /* CardPresentModalFoundReaderTests.swift */,
 			);
 			path = CardPresentPayments;
 			sourceTree = "<group>";
@@ -7168,6 +7171,7 @@
 				B56C721421B5BBC000E5E85B /* MockStoresManager.swift in Sources */,
 				26B119C024D0C69500FED5C7 /* SurveyViewControllerTests.swift in Sources */,
 				D8AB131E225DC25F002BB5D1 /* MockOrders.swift in Sources */,
+				D8025496265530E0001B2CC1 /* CardPresentModalFoundReaderTests.swift in Sources */,
 				D85136D5231E40B500DD0539 /* ProductReviewTableViewCellTests.swift in Sources */,
 				45FBDF2B238BF8A300127F77 /* ProductImageCollectionViewCellTests.swift in Sources */,
 				D89C009A25B4EEA4000E4683 /* WrongAccountErrorViewModelTests.swift in Sources */,

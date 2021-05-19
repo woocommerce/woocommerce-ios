@@ -15,7 +15,6 @@ struct ShippingLabelCarrierRow: View, Identifiable {
                     Image(uiImage: image).frame(width: Constants.imageSize, height: Constants.imageSize)
                 }
                 .frame(width: Constants.zStackWidth)
-                .padding(.leading, Constants.padding)
             }
             VStack(alignment: .leading,
                    spacing: Constants.vStackSpacing) {
@@ -29,9 +28,9 @@ struct ShippingLabelCarrierRow: View, Identifiable {
                 Text(subtitle)
                     .footnoteStyle()
             }
-            .padding(.trailing, Constants.padding)
         }
         .padding([.top, .bottom], Constants.hStackPadding)
+        .padding([.leading, .trailing], Constants.padding)
         .frame(minHeight: Constants.height)
         .contentShape(Rectangle())
     }
@@ -56,5 +55,13 @@ struct ShippingLabelCarrierRow_Previews: PreviewProvider {
                                 price: "$2.49",
                                 image: UIImage(named: "shipping-label-ups-logo")!)
             .previewLayout(.fixed(width: 375, height: 60))
+            .previewDisplayName("With Image")
+
+        ShippingLabelCarrierRow(title: "UPS Ground",
+                                subtitle: "3 business days",
+                                price: "$2.49",
+                                image: nil)
+            .previewLayout(.fixed(width: 375, height: 60))
+            .previewDisplayName("Without Image")
     }
 }

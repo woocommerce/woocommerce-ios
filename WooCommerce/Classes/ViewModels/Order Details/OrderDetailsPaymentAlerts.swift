@@ -50,8 +50,13 @@ final class OrderDetailsPaymentAlerts {
 
     func nonRetryableError(from: UIViewController?, error: Error) {
         let viewModel = nonRetryableErrorViewModel(amount: amount, error: error)
+
+        guard modalController == nil else {
+            modalController?.setViewModel(viewModel)
+            return
+        }
+        
         let newAlert = CardPresentPaymentsModalViewController(viewModel: viewModel)
-        modalController?.setViewModel(viewModel)
 
         modalController = newAlert
         modalController?.modalPresentationStyle = .custom

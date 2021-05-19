@@ -12,12 +12,28 @@ struct ShippingLabelCarriersAndRates: View {
     var body: some View {
         ScrollView {
             LazyVStack {
-                ForEach(viewModel.rows) { carrierRow in
-                    carrierRow
-                    Divider().padding(.leading, 80)
+                switch viewModel.syncStatus {
+                case .loading:
+                    ForEach(viewModel.ghostRows) { ghostRow in
+                        ghostRow
+                        Divider().padding(.leading, Constants.dividerPadding)
+                    }
+                    .redacted(reason: .placeholder)
+                    .shimmering()
+                case .success:
+                    ForEach(viewModel.rows) { carrierRow in
+                        carrierRow
+                        Divider().padding(.leading, Constants.dividerPadding)
+                    }
+                default:
+                    EmptyView()
                 }
             }
         }
+    }
+
+    enum Constants {
+        static let dividerPadding: CGFloat = 80
     }
 }
 

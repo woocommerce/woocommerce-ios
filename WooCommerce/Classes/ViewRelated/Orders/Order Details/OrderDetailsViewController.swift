@@ -663,6 +663,16 @@ private extension OrderDetailsViewController {
 
 extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        switch result {
+        case .cancelled:
+            ServiceLocator.analytics.track(.receiptEmailCanceled)
+        case .sent, .saved:
+            ServiceLocator.analytics.track(.receiptEmailSuccess)
+        case .failed:
+            ServiceLocator.analytics.track(.receiptEmailFailed, withError: error ?? UnknownEmailError())
+        @unknown default:
+            assertionFailure("MFMailComposeViewController finished with an unknown result type")
+        }
         controller.dismiss(animated: true)
     }
 }
@@ -905,4 +915,8 @@ private extension OrderDetailsViewController {
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
     }
+
+    /// Mailing a receipt failed but the SDK didn't return a more specific error
+    ///
+    struct UnknownEmailError: Error {}
 }

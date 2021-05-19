@@ -65,7 +65,7 @@ final class CardPresentModalTapCardTests: XCTestCase {
         case .cancelPayment(onCompletion: _):
             XCTAssertTrue(true)
         default:
-            XCTFail("Primary button does not dispatch .cancelPayment action")
+            XCTFail("Primary button failed to dispatch .cancelPayment action")
         }
     }
 }

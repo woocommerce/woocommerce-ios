@@ -590,6 +590,7 @@ private extension OrderDetailsViewController {
                                     title: viewModel.collectPaymentFrom,
                                     amount: viewModel.order.total)
 
+        ServiceLocator.analytics.track(.collectPaymentTapped)
         viewModel.collectPayment { [weak self] readerEventMessage in
             self?.paymentAlerts.tapOrInsertCard()
         } onClearMessage: { [weak self] in
@@ -603,10 +604,12 @@ private extension OrderDetailsViewController {
 
             switch result {
             case .failure(let error):
+                ServiceLocator.analytics.track(.collectPaymentFailed, withError: error)
                 self.paymentAlerts.error(error: error, tryAgain: {
                     self.retryCollectPayment()
                 })
             case .success(let receiptParameters):
+                ServiceLocator.analytics.track(.collectPaymentSuccess)
                 self.syncOrderAfterPaymentCollection {
                     self.checkCardPresentPaymentEligibility()
                 }

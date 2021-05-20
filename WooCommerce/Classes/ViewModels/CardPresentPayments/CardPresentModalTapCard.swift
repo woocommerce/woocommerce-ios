@@ -39,6 +39,7 @@ final class CardPresentModalTapCard: CardPresentPaymentsModalViewModel {
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
+        ServiceLocator.analytics.track(.collectPaymentCanceled)
         let action = CardPresentPaymentAction.cancelPayment(onCompletion: nil)
 
         ServiceLocator.stores.dispatch(action)

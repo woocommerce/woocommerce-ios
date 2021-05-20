@@ -62,16 +62,12 @@ private extension ShippingLabelCarriersViewModel {
             guard let self = self else { return }
             switch result {
             case .success(let response):
-                var tempRows: [ShippingLabelCarrierRow] = []
-                for rate in response.defaultRates {
-                    let row = ShippingLabelCarrierRow(title: rate.title,
-                                                     subtitle: "\(rate.deliveryDays) business days",
-                                                     price: "\(rate.retailRate)",
-                                                     image:
-                                                        UIImage(named: "shipping-label-ups-logo")!)
-                    tempRows.append(row)
+                self.rows = response.defaultRates.map { rate in
+                    ShippingLabelCarrierRow(title: rate.title,
+                                            subtitle: "\(rate.deliveryDays) business days",
+                                            price: "\(rate.retailRate)",
+                                            image: UIImage(named: "shipping-label-ups-logo")!)
                 }
-                self.rows = tempRows
                 self.syncStatus = .success
             case .failure:
                 self.rows = []

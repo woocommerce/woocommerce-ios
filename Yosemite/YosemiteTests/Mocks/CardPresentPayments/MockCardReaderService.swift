@@ -8,7 +8,7 @@ final class MockCardReaderService: CardReaderService {
         CurrentValueSubject<[Hardware.CardReader], Never>([]).eraseToAnyPublisher()
     }
 
-    var connectedReaders: AnyPublisher<[Hardware.CardReader], Never> {
+    var connectedReaders: AnyPublisher<[Hardware.CardReader], Error> {
         connectedReadersSubject.eraseToAnyPublisher()
     }
 

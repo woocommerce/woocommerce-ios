@@ -5,7 +5,7 @@ public protocol CardReaderService {
 
     // MARK: - Queries
     /// The publisher that emits the list of discovered readers whenever the service discovers a new reader.
-    var discoveredReaders: AnyPublisher<[CardReader], Never> { get }
+    var discoveredReaders: AnyPublisher<[CardReader], Error> { get }
 
     /// The Publisher that emits the connected readers
     var connectedReaders: AnyPublisher<[CardReader], Never> { get }

@@ -71,9 +71,16 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
         updateProperties()
         didUpdate?()
 
-        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: siteID) { [weak self] cardReaders in
-            self?.didDiscoverReaders(cardReaders: cardReaders)
-        }
+        ServiceLocator.analytics.track(.cardReaderDiscoveryTapped)
+        let action = CardPresentPaymentAction.startCardReaderDiscovery(
+            siteID: siteID,
+            onReaderDiscovered: { [weak self] cardReaders in
+                self?.didDiscoverReaders(cardReaders: cardReaders)
+            },
+            onError: { error in
+                ServiceLocator.analytics.track(.cardReaderDiscoveryFailed, withError: error)
+            })
+
         ServiceLocator.stores.dispatch(action)
     }
 
@@ -85,10 +92,12 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
             return
         }
 
-        /// Just in case we were called with an empty set
+        /// The publisher for discovered readers can return an initial empty value. We'll want to ignore that.
         guard cardReaders.count > 0 else {
             return
         }
+
+        ServiceLocator.analytics.track(.cardReaderDiscoveredReader)
 
         /// This viewmodel and view supports single reader discovery only.
         /// TODO: Add another viewmodel and view to handle multiple discovered readers.

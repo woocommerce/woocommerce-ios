@@ -4,11 +4,11 @@ import Combine
 
 /// Supports tests for CardPresentPaymentStore
 final class MockCardReaderService: CardReaderService {
-    var discoveredReaders: AnyPublisher<[Hardware.CardReader], Never> {
-        CurrentValueSubject<[Hardware.CardReader], Never>([]).eraseToAnyPublisher()
+    var discoveredReaders: AnyPublisher<[Hardware.CardReader], Error> {
+        CurrentValueSubject<[Hardware.CardReader], Error>([]).eraseToAnyPublisher()
     }
 
-    var connectedReaders: AnyPublisher<[Hardware.CardReader], Error> {
+    var connectedReaders: AnyPublisher<[Hardware.CardReader], Never> {
         connectedReadersSubject.eraseToAnyPublisher()
     }
 

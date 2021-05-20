@@ -61,9 +61,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                                        network: network,
                                                        cardReaderService: mockCardReaderService)
 
-        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID) { discoveredReaders in
-            //
-        }
+        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID, onReaderDiscovered: { _ in }, onError: { _ in })
 
         cardPresentStore.onAction(action)
 
@@ -78,9 +76,13 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         let expectation = self.expectation(description: "Readers discovered")
 
-        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID) { discoveredReaders in
-            expectation.fulfill()
-        }
+        let action = CardPresentPaymentAction.startCardReaderDiscovery(
+            siteID: sampleSiteID,
+            onReaderDiscovered: { _ in
+                expectation.fulfill()
+            },
+            onError: { _ in }
+        )
 
         cardPresentStore.onAction(action)
 
@@ -93,9 +95,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                                        network: network,
                                                        cardReaderService: mockCardReaderService)
 
-        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID) { discoveredReaders in
-            //
-        }
+        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID, onReaderDiscovered: { _ in }, onError: { _ in })
 
         cardPresentStore.onAction(action)
 
@@ -119,12 +119,16 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "payments/connection_tokens", filename: "generic_error")
 
-        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID) { discoveredReaders in
-            XCTAssertTrue(self.mockCardReaderService.didReceiveAConfigurationProvider)
-            if discoveredReaders.count == 0 {
-                expectation.fulfill()
-            }
-        }
+        let action = CardPresentPaymentAction.startCardReaderDiscovery(
+            siteID: sampleSiteID,
+            onReaderDiscovered: { discoveredReaders in
+                XCTAssertTrue(self.mockCardReaderService.didReceiveAConfigurationProvider)
+                if discoveredReaders.count == 0 {
+                    expectation.fulfill()
+                }
+            },
+            onError: { _ in }
+        )
 
         cardPresentStore.onAction(action)
 
@@ -175,9 +179,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         let expectation = self.expectation(description: "Cancelling discovery changes discoveryStatus to idle")
 
-        let startDiscoveryAction = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID) { _ in
-
-        }
+        let startDiscoveryAction = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID, onReaderDiscovered: { _ in }, onError: { _ in })
 
         cardPresentStore.onAction(startDiscoveryAction)
 

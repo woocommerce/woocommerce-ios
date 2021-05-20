@@ -31,27 +31,23 @@ final class ShippingLabelFormViewModel {
             return nil
         }
 
-        for customPackage in packagesResponse.customPackages {
-            if customPackage.title == selectedPackageID {
-                return ShippingLabelPackageSelected(boxID: customPackage.title,
-                                                    length: customPackage.getLength(),
-                                                    width: customPackage.getWidth(),
-                                                    height: customPackage.getHeight(),
-                                                    weight: customPackage.getWidth(),
-                                                    isLetter: customPackage.isLetter)
-            }
+        if let customPackage = packagesResponse.customPackages.first(where: { $0.title == selectedPackageID }) {
+            return ShippingLabelPackageSelected(boxID: customPackage.title,
+                                                length: customPackage.getLength(),
+                                                width: customPackage.getWidth(),
+                                                height: customPackage.getHeight(),
+                                                weight: customPackage.getWidth(),
+                                                isLetter: customPackage.isLetter)
         }
 
         for option in packagesResponse.predefinedOptions {
-            for predefinedPackage in option.predefinedPackages {
-                if predefinedPackage.id == selectedPackageID {
+            if let predefinedPackage = option.predefinedPackages.first(where: { $0.id == selectedPackageID }) {
                     return ShippingLabelPackageSelected(boxID: predefinedPackage.id,
                                                         length: predefinedPackage.getLength(),
                                                         width: predefinedPackage.getWidth(),
                                                         height: predefinedPackage.getHeight(),
                                                         weight: predefinedPackage.getWidth(),
                                                         isLetter: predefinedPackage.isLetter)
-                }
             }
         }
 

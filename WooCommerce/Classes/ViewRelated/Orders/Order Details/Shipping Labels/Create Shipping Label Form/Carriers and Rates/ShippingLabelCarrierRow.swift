@@ -38,7 +38,7 @@ struct ShippingLabelCarrierRow: View, Identifiable {
         }
         .padding([.top, .bottom], Constants.hStackPadding)
         .padding([.leading, .trailing], Constants.padding)
-        .frame(minHeight: Constants.height)
+        .frame(minHeight: Constants.minHeight)
         .contentShape(Rectangle())
     }
 }
@@ -49,7 +49,7 @@ private extension ShippingLabelCarrierRow {
         static let vStackSpacing: CGFloat = 8
         static let hStackSpacing: CGFloat = 25
         static let hStackPadding: CGFloat = 10
-        static let height: CGFloat = 60
+        static let minHeight: CGFloat = 60
         static let imageSize: CGFloat = 40
         static let padding: CGFloat = 16
     }

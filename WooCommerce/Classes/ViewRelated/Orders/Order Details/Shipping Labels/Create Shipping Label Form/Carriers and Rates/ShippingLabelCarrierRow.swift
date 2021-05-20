@@ -70,5 +70,14 @@ struct ShippingLabelCarrierRow_Previews: PreviewProvider {
                                 image: nil)
             .previewLayout(.fixed(width: 375, height: 60))
             .previewDisplayName("Without Image")
+
+        ShippingLabelCarrierRow(title: "UPS Ground",
+                                subtitle: "3 business days",
+                                price: "$2.49",
+                                image: nil)
+            .frame(maxWidth: 375, minHeight: 60)
+            .previewLayout(.sizeThatFits)
+            .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+            .previewDisplayName("Large Font Size Roar!")
     }
 }

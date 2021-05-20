@@ -140,7 +140,7 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
             /// Nothing to do here because, when the observed connectedReaders mutates, the
             /// connected view will be shown automatically.
             switch result {
-            case .success(_):
+            case .success:
                 ServiceLocator.analytics.track(.cardReaderConnectionSuccess)
             case .failure(let error):
                 ServiceLocator.analytics.track(.cardReaderConnectionFailed, withError: error)

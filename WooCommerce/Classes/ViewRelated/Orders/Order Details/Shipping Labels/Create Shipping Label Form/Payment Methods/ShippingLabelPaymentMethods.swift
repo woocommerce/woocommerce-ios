@@ -14,8 +14,10 @@ struct ShippingLabelPaymentMethods: View {
                     .textCase(.uppercase)
 
                 ForEach(viewModel.paymentMethods, id: \.paymentMethodID) { method in
-                    let selected = method == viewModel.selectedPaymentMethod
-                    SelectableItemRow(title: "\(method.cardType.rawValue.capitalized) ****\(method.cardDigits)", subtitle: method.name, selected: selected)
+                    let selected = method.paymentMethodID == viewModel.selectedPaymentMethodID
+                    SelectableItemRow(title: "\(method.cardType.rawValue.capitalized) ****\(method.cardDigits)",
+                                      subtitle: method.name,
+                                      selected: selected)
                         .background(Color(.systemBackground))
                     Divider().padding(.leading, Constants.dividerPadding)
                 }
@@ -70,7 +72,7 @@ struct ShippingLabelPaymentMethods_Previews: PreviewProvider {
     static var previews: some View {
 
         let viewModel = ShippingLabelPaymentMethodsViewModel(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings(),
-                                                             selectedPaymentMethod: ShippingLabelPaymentMethodsViewModel.samplePaymentMethods()[0])
+                                                             selectedPaymentMethodID: ShippingLabelPaymentMethodsViewModel.samplePaymentMethodID)
 
         ShippingLabelPaymentMethods(viewModel: viewModel)
     }

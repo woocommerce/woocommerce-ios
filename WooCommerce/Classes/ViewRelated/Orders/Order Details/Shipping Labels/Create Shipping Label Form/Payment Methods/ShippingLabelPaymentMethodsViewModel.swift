@@ -8,7 +8,7 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
 
     private var accountSettings: ShippingLabelAccountSettings?
 
-    var selectedPaymentMethod: ShippingLabelPaymentMethod?
+    var selectedPaymentMethodID: Int64
     var isEmailReceiptsEnabled: Bool
 
     var paymentMethods: [ShippingLabelPaymentMethod] {
@@ -32,9 +32,9 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
     }
 
     init(accountSettings: ShippingLabelAccountSettings?,
-         selectedPaymentMethod: ShippingLabelPaymentMethod?) {
+         selectedPaymentMethodID: Int64) {
         self.accountSettings = accountSettings
-        self.selectedPaymentMethod = selectedPaymentMethod
+        self.selectedPaymentMethodID = selectedPaymentMethodID
         self.isEmailReceiptsEnabled = accountSettings?.isEmailReceiptsEnabled ?? false
     }
 }
@@ -42,6 +42,8 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
 // MARK: - Methods for rendering a SwiftUI Preview
 //
 extension ShippingLabelPaymentMethodsViewModel {
+
+    static let samplePaymentMethodID: Int64 = 11743265
 
     static func sampleAccountSettings() -> ShippingLabelAccountSettings {
         return ShippingLabelAccountSettings(siteID: 1234,

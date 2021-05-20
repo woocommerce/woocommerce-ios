@@ -9,6 +9,7 @@ struct TitleAndToggleRow: View {
     var body: some View {
         Toggle(title, isOn: $isOn)
             .bodyStyle()
+            .toggleStyle(SwitchToggleStyle.init(tint: Color(.primary)))
             .padding(Constants.padding)
     }
 }
@@ -23,10 +24,10 @@ struct TitleAndToggleRow_Previews: PreviewProvider {
     static var previews: some View {
         TitleAndToggleRow(title: "Toggle this setting", isOn: .constant(false))
             .previewLayout(.fixed(width: 375, height: 100))
-            .previewDisplayName("Single line of text")
+            .previewDisplayName("Single line, toggle off")
 
         TitleAndToggleRow(title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas dictum ullamcorper enim.", isOn: .constant(true))
             .previewLayout(.fixed(width: 375, height: 100))
-            .previewDisplayName("Multiple lines of text")
+            .previewDisplayName("Multi-line, toggle on")
     }
 }

@@ -24,15 +24,12 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
     @Published private(set) var rows: [ShippingLabelCarrierRow] = []
 
     var ghostRows: [ShippingLabelCarrierRow] {
-        var tempRows: [ShippingLabelCarrierRow] = []
-        for _ in 0..<3 {
-            let row = ShippingLabelCarrierRow(title: "Ghost title",
-                                              subtitle: "Ghost subtitle",
-                                              price: "Ghost price",
-                                              image: nil)
-            tempRows.append(row)
+        return Array(0..<3).map { _ in
+            ShippingLabelCarrierRow(title: "Ghost title",
+                                    subtitle: "Ghost subtitle",
+                                    price: "Ghost price",
+                                    image: nil)
         }
-        return tempRows
     }
 
     init(order: Order,

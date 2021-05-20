@@ -6,17 +6,36 @@ import protocol Storage.StorageManagerType
 ///
 final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
 
-    @Published private(set) var accountSettings: ShippingLabelAccountSettings
-    @Published private(set) var paymentMethods: [ShippingLabelPaymentMethod]
+    private var accountSettings: ShippingLabelAccountSettings?
+
     var selectedPaymentMethod: ShippingLabelPaymentMethod?
     var isEmailReceiptsEnabled: Bool
 
-    init(accountSettings: ShippingLabelAccountSettings,
-         selectedPaymentMethod: ShippingLabelPaymentMethod) {
+    var paymentMethods: [ShippingLabelPaymentMethod] {
+        accountSettings?.paymentMethods ?? []
+    }
+
+    var storeOwnerUsername: String {
+        accountSettings?.storeOwnerUsername ?? ""
+    }
+
+    var storeOwnerDisplayName: String {
+        accountSettings?.storeOwnerDisplayName ?? ""
+    }
+
+    var storeOwnerWPcomUsername: String {
+        accountSettings?.storeOwnerWpcomUsername ?? ""
+    }
+
+    var storeOwnerWPcomEmail: String {
+        accountSettings?.storeOwnerWpcomEmail ?? ""
+    }
+
+    init(accountSettings: ShippingLabelAccountSettings?,
+         selectedPaymentMethod: ShippingLabelPaymentMethod?) {
         self.accountSettings = accountSettings
-        self.paymentMethods = accountSettings.paymentMethods
-        self.isEmailReceiptsEnabled = accountSettings.isEmailReceiptsEnabled
         self.selectedPaymentMethod = selectedPaymentMethod
+        self.isEmailReceiptsEnabled = accountSettings?.isEmailReceiptsEnabled ?? false
     }
 }
 

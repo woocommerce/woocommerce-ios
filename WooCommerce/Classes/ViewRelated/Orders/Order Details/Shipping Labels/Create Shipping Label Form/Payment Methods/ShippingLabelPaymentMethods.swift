@@ -31,7 +31,7 @@ struct ShippingLabelPaymentMethods: View {
 
                 TitleAndToggleRow(title: String.localizedStringWithFormat(Localization.emailReceipt,
                                                                           settings.storeOwnerDisplayName,
-                                                                          settings.storeOwnerWpcomUsername,
+                                                                          settings.storeOwnerUsername,
                                                                           settings.storeOwnerWpcomEmail),
                                   isOn: $viewModel.isEmailReceiptsEnabled)
                     .background(Color(.systemBackground))

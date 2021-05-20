@@ -59,6 +59,7 @@ private extension ShippingLabelCarriersViewModel {
                                                               originAddress: originAddress,
                                                               destinationAddress: destinationAddress,
                                                               packages: packages) { [weak self] (result) in
+            guard let self = self else { return }
             switch result {
             case .success(let response):
                 var tempRows: [ShippingLabelCarrierRow] = []
@@ -70,11 +71,11 @@ private extension ShippingLabelCarriersViewModel {
                                                         UIImage(named: "shipping-label-ups-logo")!)
                     tempRows.append(row)
                 }
-                self?.rows = tempRows
-                self?.syncStatus = .success
+                self.rows = tempRows
+                self.syncStatus = .success
             case .failure:
-                self?.rows = []
-                self?.syncStatus = .error
+                self.rows = []
+                self.syncStatus = .error
             }
         }
         stores.dispatch(action)

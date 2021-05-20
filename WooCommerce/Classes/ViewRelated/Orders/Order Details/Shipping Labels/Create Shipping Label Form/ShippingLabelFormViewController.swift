@@ -282,11 +282,11 @@ private extension ShippingLabelFormViewController {
             return
         }
 
-        let vm = ShippingLabelCarriersAndRatesViewModel(order: viewModel.order,
+        let vm = ShippingLabelCarriersViewModel(order: viewModel.order,
                                                         originAddress: originAddress, destinationAddress: destinationAddress,
                                                         packages: [selectedPackage])
 
-        let hostingVC = UIHostingController(rootView: ShippingLabelCarriersAndRates(viewModel: vm))
+        let hostingVC = UIHostingController(rootView: ShippingLabelCarriers(viewModel: vm))
         hostingVC.title = Localization.navigationBarTitleCarriersAndRates
 
         navigationController?.show(hostingVC, sender: nil)

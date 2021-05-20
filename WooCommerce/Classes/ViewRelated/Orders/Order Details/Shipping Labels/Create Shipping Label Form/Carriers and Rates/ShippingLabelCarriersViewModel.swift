@@ -2,7 +2,7 @@ import UIKit
 import SwiftUI
 import Yosemite
 
-final class ShippingLabelCarriersAndRatesViewModel: ObservableObject {
+final class ShippingLabelCarriersViewModel: ObservableObject {
 
     private let order: Order
     private let originAddress: ShippingLabelAddress
@@ -50,7 +50,7 @@ final class ShippingLabelCarriersAndRatesViewModel: ObservableObject {
 }
 
 // MARK: - API Requests
-private extension ShippingLabelCarriersAndRatesViewModel {
+private extension ShippingLabelCarriersViewModel {
 
     func syncCarriersAndRates() {
         syncStatus = .loading

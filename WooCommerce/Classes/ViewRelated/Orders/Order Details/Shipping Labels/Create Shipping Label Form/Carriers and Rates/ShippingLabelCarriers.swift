@@ -1,11 +1,11 @@
 import SwiftUI
 import Yosemite
 
-struct ShippingLabelCarriersAndRates: View {
+struct ShippingLabelCarriers: View {
 
-    @ObservedObject private var viewModel: ShippingLabelCarriersAndRatesViewModel
+    @ObservedObject private var viewModel: ShippingLabelCarriersViewModel
 
-    init(viewModel: ShippingLabelCarriersAndRatesViewModel) {
+    init(viewModel: ShippingLabelCarriersViewModel) {
         self.viewModel = viewModel
     }
 
@@ -37,7 +37,7 @@ struct ShippingLabelCarriersAndRates: View {
     }
 }
 
-struct ShippingLabelCarriersAndRates_Previews: PreviewProvider {
+struct ShippingLabelCarriers_Previews: PreviewProvider {
     static var previews: some View {
 
         let shippingAddress = ShippingLabelAddress(company: "Automattic Inc.",
@@ -51,10 +51,10 @@ struct ShippingLabelCarriersAndRates_Previews: PreviewProvider {
                                                    city: "San Francisco",
                                                    postcode: "90210")
 
-        let vm = ShippingLabelCarriersAndRatesViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder(),
+        let vm = ShippingLabelCarriersViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder(),
                                                         originAddress: shippingAddress,
                                                         destinationAddress: shippingAddress,
                                                         packages: [])
-        ShippingLabelCarriersAndRates(viewModel: vm)
+        ShippingLabelCarriers(viewModel: vm)
     }
 }

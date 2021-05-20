@@ -6010,8 +6010,8 @@
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Nested frameworks (i.e. having a Frameworks/ folder inside *.app/Frameworks/.framework) is invalid and will make the build be rejected during TestFlight validation. But this can happen especially due to an Xcode 12.4 UI bug when linking binary frameworks to the project which always embed the binary (bug that is fixed in Xcode 12.5)\n\nNESTED_FMKS=$(find \"${TARGET_BUILD_DIR}\"/WooCommerce.app/Frameworks/*.framework/Frameworks -name '*.framework') \nif [ -z \"$NESTED_FMKS\" ]; then\n    echo \"✅ No nested framework found, you're good to go!\"\nelse\n    for f in $NESTED_FMKS; do\n        nested=$(basename $f)\n        parent=$(basename $(dirname $(dirname $f)) .framework)\n        echo \"error: Found nested framework in $f -- Such a configuration is invalid and will be rejected by TestFlight. Please fix by choosing 'Do Not Embed' for the nested framework \\`$nested\\` within the \\`$parent\\` Xcode project containing it. You might need to use Xcode 12.5 to fix this, due to an Xcode 12.4 bug – see paNNhX-ee-p2\"\n    done\n    exit 1\nfi \n";
+			shellPath = "/bin/sh -euo pipefail";
+			shellScript = "${PROJECT_DIR}/../Scripts/check-nested-frameworks.sh\n";
 			showEnvVarsInLog = 0;
 		};
 		57CCFFD4249D2A5700825FCF /* SwiftLint */ = {

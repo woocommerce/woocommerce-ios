@@ -78,8 +78,7 @@ private extension PaymentCaptureOrchestrator {
                                     captureResult: Result<PaymentIntent, Error>,
                                     onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
         switch captureResult {
-        case .failure:
-            let error = CardReaderServiceError.paymentCapture()
+        case .failure(let error):
             onCompletion(.failure(error))
         case .success(let paymentIntent):
             submitPaymentIntent(siteID: order.siteID,

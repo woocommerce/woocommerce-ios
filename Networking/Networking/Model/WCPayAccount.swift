@@ -15,8 +15,8 @@ public struct WCPayAccount: Decodable {
     /// A two character country code, e.g. `US`
     /// See https://stripe.com/docs/api/accounts/object#account_object-country
     public let country: String
-    /// A boolean flag indicating if this Account can collect card present payments
-    public let canCollectPayments: Bool
+    /// A boolean flag indicating if this Account is eligible for card present payments
+    public let isCardPresentEligible: Bool
 
     public init(
         status: WCPayAccountStatusEnum,
@@ -26,7 +26,8 @@ public struct WCPayAccount: Decodable {
         statementDescriptor: String,
         defaultCurrency: String,
         supportedCurrencies: [String],
-        country: String
+        country: String,
+        isCardPresentEligible: Bool
     ) {
         self.status = status
         self.hasPendingRequirements = hasPendingRequirements
@@ -37,7 +38,7 @@ public struct WCPayAccount: Decodable {
         self.supportedCurrencies = supportedCurrencies
         self.country = country
         /// Hardcoded until support for this property is available in WCPay
-        self.canCollectPayments = true
+        self.isCardPresentEligible = true
     }
 
     /// The public initializer for WCPay Account.
@@ -53,6 +54,7 @@ public struct WCPayAccount: Decodable {
         let defaultCurrency = try currencyContainer.decode(String.self, forKey: .defaultCurrency)
         let supportedCurrencies = try currencyContainer.decode([String].self, forKey: .supported)
         let country = try container.decode(String.self, forKey: .country)
+        let cardPresentEligible = try container.decodeIfPresent(Bool.self, forKey: .cardPresentEligible) ?? false
 
         self.init(
             status: status,
@@ -62,7 +64,8 @@ public struct WCPayAccount: Decodable {
             statementDescriptor: statementDescriptor,
             defaultCurrency: defaultCurrency,
             supportedCurrencies: supportedCurrencies,
-            country: country
+            country: country,
+            isCardPresentEligible: cardPresentEligible
         )
     }
 }
@@ -76,7 +79,8 @@ public extension WCPayAccount {
         statementDescriptor: "",
         defaultCurrency: "",
         supportedCurrencies: [],
-        country: ""
+        country: "",
+        isCardPresentEligible: false
     )
 }
 
@@ -89,6 +93,7 @@ private extension WCPayAccount {
         case statementDescriptor = "statement_descriptor"
         case storeCurrencies = "store_currencies"
         case country = "country"
+        case cardPresentEligible = "card_present_eligible"
     }
 
     enum CurrencyCodingKeys: String, CodingKey {

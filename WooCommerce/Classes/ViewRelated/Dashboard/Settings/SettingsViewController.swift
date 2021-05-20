@@ -134,7 +134,7 @@ private extension SettingsViewController {
                 self.canCollectPayments = false
             case .success(let account):
                 self.canCollectPayments = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) &&
-                    account.canCollectPayments
+                    account.isCardPresentEligible
             }
 
             onCompletion()

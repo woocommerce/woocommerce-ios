@@ -287,8 +287,6 @@ private extension ShippingLabelFormViewController {
                                                         packages: [selectedPackage])
 
         let hostingVC = UIHostingController(rootView: ShippingLabelCarriers(viewModel: vm))
-        hostingVC.title = Localization.navigationBarTitleCarriersAndRates
-
         navigationController?.show(hostingVC, sender: nil)
     }
 }
@@ -370,8 +368,5 @@ private extension ShippingLabelFormViewController {
         static let navigationBarTitlePackageDetails =
             NSLocalizedString("Package Details",
                               comment: "Navigation bar title of shipping label package details screen")
-        static let navigationBarTitleCarriersAndRates =
-            NSLocalizedString("Carrier and Rates",
-                              comment: "Navigation bar title of shipping label carrier and rates screen")
     }
 }

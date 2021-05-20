@@ -30,10 +30,19 @@ struct ShippingLabelCarriers: View {
                 }
             }
         }
+        .navigationTitle(Localization.titleView)
     }
 
     enum Constants {
         static let dividerPadding: CGFloat = 80
+    }
+}
+
+private extension ShippingLabelCarriers {
+    enum Localization {
+        static let titleView = NSLocalizedString("Carrier and Rates",
+
+                                                 comment: "Navigation bar title of shipping label carrier and rates screen")
     }
 }
 

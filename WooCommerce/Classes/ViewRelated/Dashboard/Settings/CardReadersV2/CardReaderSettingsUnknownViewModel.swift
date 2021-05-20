@@ -135,9 +135,16 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
         updateProperties()
         didUpdate?()
 
-        let action = CardPresentPaymentAction.connect(reader: foundReader) { _ in
+        ServiceLocator.analytics.track(.cardReaderConnectionTapped)
+        let action = CardPresentPaymentAction.connect(reader: foundReader) { result in
             /// Nothing to do here because, when the observed connectedReaders mutates, the
             /// connected view will be shown automatically.
+            switch result {
+            case .success(_):
+                ServiceLocator.analytics.track(.cardReaderConnectionSuccess)
+            case .failure(let error):
+                ServiceLocator.analytics.track(.cardReaderConnectionFailed, withError: error)
+            }
         }
         ServiceLocator.stores.dispatch(action)
     }

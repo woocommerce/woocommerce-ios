@@ -148,7 +148,6 @@ public enum WooAnalyticsStat: String {
     case cardReaderConnectionFailed             = "card_reader_connection_failed"
     case cardReaderConnectionSuccess            = "card_reader_connection_success"
     case cardReaderDisconnectTapped             = "card_reader_disconnect_tapped"
-    case cardReaderDisconnectUnexpected         = "card_reader_disconnect_unexpected"
 
     // MARK: Order View Events
     //

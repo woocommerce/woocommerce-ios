@@ -57,6 +57,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     /// Dispatch a request to disconnect from a reader
     ///
     func disconnectReader() {
+        ServiceLocator.analytics.track(.cardReaderDisconnectTapped)
         let action = CardPresentPaymentAction.disconnect() { result in
             guard result.isSuccess else {
                 DDLogError("Unexpected error when disconnecting reader")

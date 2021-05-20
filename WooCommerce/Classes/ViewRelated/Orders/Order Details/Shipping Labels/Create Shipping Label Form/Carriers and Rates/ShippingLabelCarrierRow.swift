@@ -2,11 +2,18 @@ import SwiftUI
 
 struct ShippingLabelCarrierRow: View, Identifiable {
 
-    let id = UUID()
-    let title: String
-    let subtitle: String
-    let price: String
-    let image: UIImage?
+    internal let id = UUID()
+    private let title: String
+    private let subtitle: String
+    private let price: String
+    private let image: UIImage?
+
+    init(title: String, subtitle: String, price: String, image: UIImage? = nil) {
+        self.title = title
+        self.subtitle = subtitle
+        self.price = price
+        self.image = image
+    }
 
     var body: some View {
         HStack(spacing: Constants.hStackSpacing) {

@@ -49,8 +49,13 @@ public final class ShippingLabelStore: Store {
             validateAddress(siteID: siteID, address: address, completion: completion)
         case .packagesDetails(let siteID, let completion):
             packagesDetails(siteID: siteID, completion: completion)
-        case .checkCreationEligibility(let siteID, let orderID, let isFeatureFlagEnabled, let onCompletion):
-            checkCreationEligibility(siteID: siteID, orderID: orderID, isFeatureFlagEnabled: isFeatureFlagEnabled, onCompletion: onCompletion)
+        case .checkCreationEligibility(let siteID, let orderID, let canCreatePaymentMethod, let canCreateCustomsForm, let canCreatePackage, let onCompletion):
+            checkCreationEligibility(siteID: siteID,
+                                     orderID: orderID,
+                                     canCreatePaymentMethod: canCreatePaymentMethod,
+                                     canCreateCustomsForm: canCreateCustomsForm,
+                                     canCreatePackage: canCreatePackage,
+                                     onCompletion: onCompletion)
         case .createPackage(let siteID, let customPackage, let completion):
             createPackage(siteID: siteID, customPackage: customPackage, completion: completion)
         case .loadCarriersAndRates(let siteID, let orderID, let originAddress, let destinationAddress, let packages, let completion):
@@ -125,9 +130,32 @@ private extension ShippingLabelStore {
         remote.packagesDetails(siteID: siteID, completion: completion)
     }
 
-    func checkCreationEligibility(siteID: Int64, orderID: Int64, isFeatureFlagEnabled: Bool, onCompletion: @escaping (_ isEligible: Bool) -> Void) {
-        // TODO-2971: implement shipping label creation eligibility check, hopefully with the new `/creation_eligibility` endpoint.
-        onCompletion(isFeatureFlagEnabled)
+    func checkCreationEligibility(siteID: Int64,
+                                  orderID: Int64,
+                                  canCreatePaymentMethod: Bool,
+                                  canCreateCustomsForm: Bool,
+                                  canCreatePackage: Bool,
+                                  onCompletion: @escaping (_ isEligible: Bool) -> Void) {
+        remote.checkCreationEligibility(siteID: siteID,
+                                        orderID: orderID,
+                                        canCreatePaymentMethod: canCreatePaymentMethod,
+                                        canCreateCustomsForm: canCreateCustomsForm,
+                                        canCreatePackage: canCreatePackage) { result in
+            switch result {
+            case .success(let eligibility):
+                if !eligibility.isEligible {
+                    if let reason = eligibility.reason {
+                        DDLogError("Order \(orderID) not eligible for shipping label creation: \(reason)")
+                    } else {
+                        DDLogError("Order \(orderID) not eligible for shipping label creation")
+                    }
+                }
+                onCompletion(eligibility.isEligible)
+            case .failure(let error):
+                DDLogError("⛔️ Error checking shipping label creation eligibility for order \(orderID): \(error)")
+                onCompletion(false)
+            }
+        }
     }
 
     func createPackage(siteID: Int64,

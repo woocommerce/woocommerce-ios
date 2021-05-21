@@ -443,23 +443,64 @@ final class ShippingLabelStoreTests: XCTestCase {
 
     // MARK: `checkCreationEligibility`
 
-    func test_checkCreationEligibility_returns_feature_flag_value() throws {
+    func test_checkCreationEligibility_returns_eligibility_on_success() throws {
         // Given
-        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remote = MockShippingLabelRemote()
+        let orderID: Int64 = 22
+        let isFeatureFlagEnabled = false
+        let expectedEligibility = true
+        remote.whenCheckingCreationEligiblity(siteID: sampleSiteID,
+                                              orderID: orderID,
+                                              canCreatePaymentMethod: isFeatureFlagEnabled,
+                                              canCreateCustomsForm: isFeatureFlagEnabled,
+                                              canCreatePackage: isFeatureFlagEnabled,
+                                              thenReturn: .success(ShippingLabelCreationEligibilityResponse(isEligible: expectedEligibility, reason: nil)))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let isFeatureFlagEnabled = false
         let isEligibleForCreation: Bool = waitFor { promise in
             let action = ShippingLabelAction.checkCreationEligibility(siteID: self.sampleSiteID,
-                                                                      orderID: 134,
-                                                                      isFeatureFlagEnabled: isFeatureFlagEnabled) { isEligible in
+                                                                      orderID: orderID,
+                                                                      canCreatePaymentMethod: isFeatureFlagEnabled,
+                                                                      canCreateCustomsForm: isFeatureFlagEnabled,
+                                                                      canCreatePackage: isFeatureFlagEnabled) { isEligible in
                 promise(isEligible)
             }
             store.onAction(action)
         }
 
         // Then
-        XCTAssertEqual(isEligibleForCreation, isFeatureFlagEnabled)
+        XCTAssertEqual(isEligibleForCreation, expectedEligibility)
+    }
+
+    func test_checkCreationEligibility_returns_false_on_failure() throws {
+        // Given
+        let remote = MockShippingLabelRemote()
+        let orderID: Int64 = 22
+        let isFeatureFlagEnabled = false
+        let expectedEligibility = false
+        remote.whenCheckingCreationEligiblity(siteID: sampleSiteID,
+                                              orderID: orderID,
+                                              canCreatePaymentMethod: isFeatureFlagEnabled,
+                                              canCreateCustomsForm: isFeatureFlagEnabled,
+                                              canCreatePackage: isFeatureFlagEnabled,
+                                              thenReturn: .failure(NetworkError.notFound))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let isEligibleForCreation: Bool = waitFor { promise in
+            let action = ShippingLabelAction.checkCreationEligibility(siteID: self.sampleSiteID,
+                                                                      orderID: orderID,
+                                                                      canCreatePaymentMethod: isFeatureFlagEnabled,
+                                                                      canCreateCustomsForm: isFeatureFlagEnabled,
+                                                                      canCreatePackage: isFeatureFlagEnabled) { isEligible in
+                promise(isEligible)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(isEligibleForCreation, expectedEligibility)
     }
 
     // MARK: `createPackage`

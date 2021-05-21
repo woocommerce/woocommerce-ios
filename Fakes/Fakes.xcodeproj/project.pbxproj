@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		26106B3D25FA4F6C0000DF30 /* ProductFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26106B3C25FA4F6C0000DF30 /* ProductFactory.swift */; };
 		263E383C2641FED600260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E383B2641FED600260D3B /* Codegen */; };
-		263E383D2641FED600260D3B /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 263E383B2641FED600260D3B /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		26CA6D2625F6C87800B01F48 /* Fakes.h in Headers */ = {isa = PBXBuildFile; fileRef = 26CA6D2425F6C87800B01F48 /* Fakes.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		26CA6D2F25F6C8FC00B01F48 /* Fake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CA6D2D25F6C8FB00B01F48 /* Fake.swift */; };
 		26CA6D3025F6C8FC00B01F48 /* Fakes.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CA6D2E25F6C8FC00B01F48 /* Fakes.generated.swift */; };
@@ -23,7 +22,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				263E383D2641FED600260D3B /* Codegen in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;

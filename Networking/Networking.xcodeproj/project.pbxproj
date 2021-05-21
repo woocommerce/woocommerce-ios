@@ -435,7 +435,6 @@
 		D8736B5C22F083C500A14A29 /* OrderCount.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B5B22F083C500A14A29 /* OrderCount.swift */; };
 		D8736B5E22F0849700A14A29 /* OrderCountItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B5D22F0849700A14A29 /* OrderCountItem.swift */; };
 		D8736B6022F0887900A14A29 /* OrderCountMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B5F22F0887900A14A29 /* OrderCountMapper.swift */; };
-		D8736B6222F089E200A14A29 /* orders-count.json in Resources */ = {isa = PBXBuildFile; fileRef = D8736B6122F089E200A14A29 /* orders-count.json */; };
 		D87F6151226591E10031A13B /* NullNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F6150226591E10031A13B /* NullNetwork.swift */; };
 		D88D5A41230BC5DA007B6E01 /* reviews-all.json in Resources */ = {isa = PBXBuildFile; fileRef = D88D5A40230BC5DA007B6E01 /* reviews-all.json */; };
 		D88D5A43230BC668007B6E01 /* reviews-single.json in Resources */ = {isa = PBXBuildFile; fileRef = D88D5A42230BC668007B6E01 /* reviews-single.json */; };
@@ -936,7 +935,6 @@
 		D8736B5B22F083C500A14A29 /* OrderCount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCount.swift; sourceTree = "<group>"; };
 		D8736B5D22F0849700A14A29 /* OrderCountItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCountItem.swift; sourceTree = "<group>"; };
 		D8736B5F22F0887900A14A29 /* OrderCountMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCountMapper.swift; sourceTree = "<group>"; };
-		D8736B6122F089E200A14A29 /* orders-count.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "orders-count.json"; sourceTree = "<group>"; };
 		D87F6150226591E10031A13B /* NullNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NullNetwork.swift; sourceTree = "<group>"; };
 		D88D5A40230BC5DA007B6E01 /* reviews-all.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "reviews-all.json"; sourceTree = "<group>"; };
 		D88D5A42230BC668007B6E01 /* reviews-single.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "reviews-single.json"; sourceTree = "<group>"; };
@@ -1439,7 +1437,6 @@
 				B554FA8C2180B59700C54DFF /* notifications-load-hashes.json */,
 				B5C6FCD520A3768900A4F8E4 /* order.json */,
 				02C254D62563999200A04423 /* order-shipping-labels.json */,
-				D8736B6122F089E200A14A29 /* orders-count.json */,
 				B559EBA920A0B5CD00836CD4 /* orders-load-all.json */,
 				573B448C242422DB00E71ADC /* orders-load-all-2.json */,
 				74C8F06520EEB76400B6EDC9 /* order-notes.json */,
@@ -1909,7 +1906,6 @@
 				D8FBFF2422D52815006E3336 /* order-stats-v4-daily.json in Resources */,
 				CEC4BF91234E40B5008D9195 /* refund-single.json in Resources */,
 				2683D70E24456DB8002A1589 /* categories-empty.json in Resources */,
-				D8736B6222F089E200A14A29 /* orders-count.json in Resources */,
 				0272E3F5254AA48F00436277 /* order-with-line-item-attributes.json in Resources */,
 				02AAD53F250092A400BA1E26 /* product-add-or-delete.json in Resources */,
 				D823D90B22376EFE00C90817 /* shipment_tracking_delete.json in Resources */,

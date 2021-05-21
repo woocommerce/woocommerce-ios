@@ -16,6 +16,9 @@ struct ShippingLabelCarrierRowViewModel: Identifiable {
 
     let extraInfo: String
 
+    let displaySignatureRequired: Bool
+    let displayAdultSignatureRequired: Bool
+
     init(selected: Bool = false,
          signatureSelected: Bool = false,
          adultSignatureSelected: Bool = false,
@@ -52,6 +55,9 @@ struct ShippingLabelCarrierRowViewModel: Identifiable {
         }
 
         extraInfo = extras.joined(separator: ", ")
+
+        displaySignatureRequired = signatureRate != nil
+        displayAdultSignatureRequired = adultSignatureRate != nil
     }
 
     enum Localization {

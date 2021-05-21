@@ -35,7 +35,19 @@ struct ShippingLabelCarrierRow: View {
                 if viewModel.selected {
                     Text(viewModel.extraInfo)
                         .footnoteStyle()
+                    VStack {
+                        if !viewModel.displaySignatureRequired {
+                            HStack (spacing: Constants.padding) {
+                                let image: UIImage = UIImage.plusImage.imageWithTintColor(UIColor.primary)!
+                                Image(uiImage: image)
+                                    .frame(width: Constants.checkboxSize, height: Constants.checkboxSize)
+                                Text("Test")
+                            }.listItemTint(.primary)
+                        }
+                        if viewModel.displayAdultSignatureRequired {
 
+                        }
+                    }
                 }
             }
         }
@@ -54,6 +66,7 @@ private extension ShippingLabelCarrierRow {
         static let minHeight: CGFloat = 60
         static let imageSize: CGFloat = 40
         static let padding: CGFloat = 16
+        static let checkboxSize: CGFloat = 16
     }
 }
 

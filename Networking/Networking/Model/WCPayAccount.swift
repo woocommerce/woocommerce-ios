@@ -37,8 +37,7 @@ public struct WCPayAccount: Decodable {
         self.defaultCurrency = defaultCurrency
         self.supportedCurrencies = supportedCurrencies
         self.country = country
-        /// Hardcoded until support for this property is available in WCPay
-        self.isCardPresentEligible = true
+        self.isCardPresentEligible = isCardPresentEligible
     }
 
     /// The public initializer for WCPay Account.

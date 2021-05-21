@@ -79,14 +79,13 @@ struct ShippingLabelCarrierRowViewModel: Identifiable {
         price = currencyFormatter.formatAmount(Decimal(rate.retailRate)) ?? ""
 
         carrierLogo = CarrierLogo(rawValue: rate.carrierID)?.image()
-
     }
 
     enum Localization {
         static let businessDaySingular =
-            NSLocalizedString("%1$@ business day", comment: "Singular format of number of business day in Shipping Labels > Carrier and Rates")
+            NSLocalizedString("%1$d business day", comment: "Singular format of number of business day in Shipping Labels > Carrier and Rates")
         static let businessDaysPlural =
-            NSLocalizedString("%1$@ business days", comment: "Plural format of number of business days in Shipping Labels > Carrier and Rates")
+            NSLocalizedString("%1$d business days", comment: "Plural format of number of business days in Shipping Labels > Carrier and Rates")
     }
 
     enum CarrierLogo: String {

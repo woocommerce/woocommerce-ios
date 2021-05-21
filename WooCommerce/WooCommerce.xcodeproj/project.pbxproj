@@ -1118,7 +1118,6 @@
 		D8610BF7256F5F0900A5DF27 /* ULErrorViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8610BF6256F5F0900A5DF27 /* ULErrorViewControllerTests.swift */; };
 		D8610CE2257099E100A5DF27 /* FancyAlertViewController+UnifiedLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8610CE1257099E100A5DF27 /* FancyAlertViewController+UnifiedLogin.swift */; };
 		D8610D762570AE1F00A5DF27 /* NotWPErrorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8610D752570AE1F00A5DF27 /* NotWPErrorViewModel.swift */; };
-		D8652E522630BD4800350F37 /* FancyAlertViewController+Payments.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8652E512630BD4800350F37 /* FancyAlertViewController+Payments.swift */; };
 		D8652E582630BFF500350F37 /* OrderDetailsPaymentAlerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8652E572630BFF500350F37 /* OrderDetailsPaymentAlerts.swift */; };
 		D8736B5122EB69E300A14A29 /* OrderDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B5022EB69E300A14A29 /* OrderDetailsViewModelTests.swift */; };
 		D8736B5322EF4F5900A14A29 /* NotificationsBadgeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B5222EF4F5900A14A29 /* NotificationsBadgeController.swift */; };
@@ -2388,7 +2387,6 @@
 		D8610BF6256F5F0900A5DF27 /* ULErrorViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ULErrorViewControllerTests.swift; sourceTree = "<group>"; };
 		D8610CE1257099E100A5DF27 /* FancyAlertViewController+UnifiedLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FancyAlertViewController+UnifiedLogin.swift"; sourceTree = "<group>"; };
 		D8610D752570AE1F00A5DF27 /* NotWPErrorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotWPErrorViewModel.swift; sourceTree = "<group>"; };
-		D8652E512630BD4800350F37 /* FancyAlertViewController+Payments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FancyAlertViewController+Payments.swift"; sourceTree = "<group>"; };
 		D8652E572630BFF500350F37 /* OrderDetailsPaymentAlerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsPaymentAlerts.swift; sourceTree = "<group>"; };
 		D8736B5022EB69E300A14A29 /* OrderDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OrderDetailsViewModelTests.swift; path = WooCommerceTests/ViewRelated/OrderDetailsViewModelTests.swift; sourceTree = SOURCE_ROOT; };
 		D8736B5222EF4F5900A14A29 /* NotificationsBadgeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsBadgeController.swift; sourceTree = "<group>"; };
@@ -4201,7 +4199,6 @@
 				743E271F21AEF20100D6DC82 /* FancyAlertViewController+Upgrade.swift */,
 				CE0F17D122A8308900964A63 /* FancyAlertController+PurchaseNote.swift */,
 				D8610CE1257099E100A5DF27 /* FancyAlertViewController+UnifiedLogin.swift */,
-				D8652E512630BD4800350F37 /* FancyAlertViewController+Payments.swift */,
 			);
 			path = "Fancy Alerts";
 			sourceTree = "<group>";
@@ -6390,7 +6387,6 @@
 				31B05523264B3C8900134D87 /* CardPresentModalConnectingToReader.swift in Sources */,
 				025FA38B2522CB4D0054CA57 /* AppCoordinator.swift in Sources */,
 				02CEBB8024C9869E002EDF35 /* ProductFormActionsFactoryProtocol.swift in Sources */,
-				D8652E522630BD4800350F37 /* FancyAlertViewController+Payments.swift in Sources */,
 				CE21B3E020FFC59700A259D5 /* ProductDetailsTableViewCell.swift in Sources */,
 				B509FED121C041DF000076A9 /* Locale+Woo.swift in Sources */,
 				B5DB01B52114AB2D00A4F797 /* CrashLogging.swift in Sources */,

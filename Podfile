@@ -71,7 +71,6 @@ target 'WooCommerce' do
   pod 'Charts', '~> 3.6.0'
   pod 'ZendeskSupportSDK', '~> 5.0'
   pod 'Kingfisher', '~> 5.11.0'
-  pod 'StripeTerminal', '~> 1.4.0'
   pod 'Wormholy', '~> 1.6.4', :configurations => ['Debug']
 
   # Unit Tests
@@ -88,7 +87,6 @@ end
 #
 def yosemite_pods
   pod 'Alamofire', '~> 4.8'
-  pod 'StripeTerminal', '~> 1.4.0'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
 
@@ -164,37 +162,6 @@ end
 target 'StorageTests' do
   project 'Storage/Storage.xcodeproj'
   storage_pods
-end
-
-# Hardware Layer:
-# =================
-#
-def hardware_pods
-  pod 'StripeTerminal', '~> 1.4.0'
-end
-
-# Hardware Target:
-# ==================
-#
-target 'Hardware' do
-  project 'Hardware/Hardware.xcodeproj'
-  hardware_pods
-end
-
-# Unit Tests
-# ==========
-#
-target 'HardwareTests' do
-  project 'Hardware/Hardware.xcodeproj'
-  hardware_pods
-end
-
-# SampleReceiptPrinter Target:
-# ==================
-#
-target 'SampleReceiptPrinter' do
-  project 'Hardware/Hardware.xcodeproj'
-  hardware_pods
 end
 
 # Workarounds:

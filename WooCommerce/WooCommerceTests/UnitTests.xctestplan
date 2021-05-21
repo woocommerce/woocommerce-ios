@@ -64,6 +64,7 @@
       }
     },
     {
+      "enabled" : false,
       "target" : {
         "containerPath" : "container:..\/Hardware\/Hardware.xcodeproj",
         "identifier" : "D88FDB0725DD216B00CB0DBD",

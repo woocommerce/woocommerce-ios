@@ -6,7 +6,7 @@ struct DefaultFeatureFlagService: FeatureFlagService {
         case .barcodeScanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .cardPresentPayments:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return false
         case .largeTitles:
             return true
         case .shippingLabelsM2M3:

@@ -90,12 +90,6 @@ final class ServiceLocatorTests: XCTestCase {
        XCTAssertNotNil(ServiceLocator.cardReaderService)
    }
 
-    func test_card_reader_service_defaults_to_Stripe() {
-       let cardReader = ServiceLocator.cardReaderService
-
-        XCTAssertTrue(cardReader is StripeCardReaderService)
-   }
-
     func test_ServiceLocator_provides_receipt_printer() {
        XCTAssertNotNil(ServiceLocator.receiptPrinterService)
    }

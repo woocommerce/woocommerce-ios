@@ -60,7 +60,7 @@ final class ServiceLocator {
 
     /// Support for external Card Readers
     ///
-    private static var _cardReader: CardReaderService = StripeCardReaderService()
+    private static var _cardReader: CardReaderService = NullCardReaderService()
 
     /// Support for printing receipts
     ///

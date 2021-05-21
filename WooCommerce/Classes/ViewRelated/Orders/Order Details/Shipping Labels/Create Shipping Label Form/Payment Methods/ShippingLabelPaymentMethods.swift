@@ -18,6 +18,9 @@ struct ShippingLabelPaymentMethods: View {
                     SelectableItemRow(title: "\(method.cardType.rawValue.capitalized) ****\(method.cardDigits)",
                                       subtitle: method.name,
                                       selected: selected)
+                        .onTapGesture {
+                            viewModel.didSelectPaymentMethod(withID: method.paymentMethodID)
+                        }
                         .background(Color(.systemBackground))
                     Divider().padding(.leading, Constants.dividerPadding)
                 }

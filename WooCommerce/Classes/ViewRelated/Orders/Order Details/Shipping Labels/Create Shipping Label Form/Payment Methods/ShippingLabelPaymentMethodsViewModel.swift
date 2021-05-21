@@ -8,7 +8,7 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
 
     private var accountSettings: ShippingLabelAccountSettings?
 
-    var selectedPaymentMethodID: Int64
+    @Published var selectedPaymentMethodID: Int64
     var isEmailReceiptsEnabled: Bool
 
     var paymentMethods: [ShippingLabelPaymentMethod] {
@@ -36,6 +36,10 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
         self.accountSettings = accountSettings
         self.selectedPaymentMethodID = selectedPaymentMethodID
         self.isEmailReceiptsEnabled = accountSettings?.isEmailReceiptsEnabled ?? false
+    }
+
+    func didSelectPaymentMethod(withID paymentMethodID: Int64) {
+        selectedPaymentMethodID = paymentMethodID
     }
 }
 

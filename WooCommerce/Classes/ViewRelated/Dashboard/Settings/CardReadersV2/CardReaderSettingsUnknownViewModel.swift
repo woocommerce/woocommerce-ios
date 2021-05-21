@@ -141,6 +141,7 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
             /// connected view will be shown automatically.
             switch result {
             case .success(let reader):
+                // If the reader does not have a battery, or the battery level is unknown, it will be nil
                 let properties = reader.batteryLevel
                     .map { ["battery_level": $0] }
                 ServiceLocator.analytics.track(.cardReaderConnectionSuccess, withProperties: properties)

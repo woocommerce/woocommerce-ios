@@ -121,6 +121,17 @@ final class ShippingLabelFormViewModel {
         updateRowState(type: .packageDetails, dataState: .validated, displayMode: .editable)
     }
 
+    func handlePaymentMethodValueChanges(selectedPaymentMethodID: Int64, editable: Bool) {
+        self.selectedPaymentMethodID = selectedPaymentMethodID
+        let displayMode: ShippingLabelFormViewController.DisplayMode = editable ? .editable : .disabled
+
+        guard selectedPaymentMethodID != 0 else {
+            updateRowState(type: .paymentMethod, dataState: .pending, displayMode: displayMode)
+            return
+        }
+        updateRowState(type: .paymentMethod, dataState: .validated, displayMode: displayMode)
+    }
+
     private static func generateInitialSections() -> [Section] {
         let shipFrom = Row(type: .shipFrom, dataState: .pending, displayMode: .editable)
         let shipTo = Row(type: .shipTo, dataState: .pending, displayMode: .disabled)
@@ -333,13 +344,7 @@ extension ShippingLabelFormViewModel {
             switch result {
             case .success(let value):
                 self.shippingLabelAccountSettings = value
-
-                // Set the selected payment method and update the payment method row's data state
-                // If there is no selected payment method, the API returns an ID of 0
-                if value.selectedPaymentMethodID != 0 {
-                    self.selectedPaymentMethodID = value.selectedPaymentMethodID
-                    self.updateRowState(type: .paymentMethod, dataState: .validated, displayMode: .disabled)
-                }
+                self.handlePaymentMethodValueChanges(selectedPaymentMethodID: value.selectedPaymentMethodID, editable: false)
             case .failure:
                 DDLogError("⛔️ Error synchronizing shipping label account settings")
                 return

@@ -11,9 +11,14 @@ struct ShippingLabelCarrierRow: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: Constants.hStackSpacing) {
-            if let image = viewModel.carrierLogo {
+            if viewModel.selected {
+                Image(uiImage: .checkmarkStyledImage)
+                    .frame(width: Constants.imageSize, height: Constants.imageSize)
+            }
+            else if let image = viewModel.carrierLogo {
                 VStack {
-                    Image(uiImage: image).frame(width: Constants.imageSize, height: Constants.imageSize)
+                    Image(uiImage: image)
+                        .frame(width: Constants.imageSize, height: Constants.imageSize)
                 }
             }
             VStack(alignment: .leading,
@@ -27,6 +32,11 @@ struct ShippingLabelCarrierRow: View {
                 }
                 Text(viewModel.subtitle)
                     .footnoteStyle()
+                if viewModel.selected {
+                    Text(viewModel.extraInfo)
+                        .footnoteStyle()
+
+                }
             }
         }
         .padding([.top, .bottom], Constants.hStackPadding)
@@ -44,65 +54,6 @@ private extension ShippingLabelCarrierRow {
         static let minHeight: CGFloat = 60
         static let imageSize: CGFloat = 40
         static let padding: CGFloat = 16
-    }
-}
-
-struct ShippingLabelCarrierRowViewModel: Identifiable {
-    internal let id = UUID()
-    let selected: Bool
-    let rate: ShippingLabelCarrierRate
-    let signatureRate: ShippingLabelCarrierRate?
-    let adultSignatureRate: ShippingLabelCarrierRate?
-
-    let title: String
-    let subtitle: String
-    let price: String
-    var carrierLogo: UIImage?
-
-    init(selected: Bool,
-         rate: ShippingLabelCarrierRate,
-         signatureRate: ShippingLabelCarrierRate? = nil,
-         adultSignatureRate: ShippingLabelCarrierRate? = nil,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
-        self.selected = selected
-        self.rate = rate
-        self.signatureRate = signatureRate
-        self.adultSignatureRate = adultSignatureRate
-
-        title = rate.title
-        let formatString = rate.deliveryDays == 1 ? Localization.businessDaySingular : Localization.businessDaysPlural
-        subtitle = String(format: formatString, rate.deliveryDays)
-
-        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        price = currencyFormatter.formatAmount(Decimal(rate.retailRate)) ?? ""
-
-        carrierLogo = CarrierLogo(rawValue: rate.carrierID)?.image()
-    }
-
-    enum Localization {
-        static let businessDaySingular =
-            NSLocalizedString("%1$d business day", comment: "Singular format of number of business day in Shipping Labels > Carrier and Rates")
-        static let businessDaysPlural =
-            NSLocalizedString("%1$d business days", comment: "Plural format of number of business days in Shipping Labels > Carrier and Rates")
-    }
-
-    enum CarrierLogo: String {
-        case ups
-        case usps
-        case dhlExpress = "dhlexpress"
-        case dhlEcommerce = "dhlecommerce"
-        case dhlEcommerceAsia = "dhlecommerceasia"
-
-        func image() -> UIImage? {
-            switch self {
-            case .ups:
-                return UIImage(named: "shipping-label-ups-logo")
-            case .usps:
-                return UIImage(named: "shipping-label-usps-logo")
-            case .dhlExpress, .dhlEcommerce, .dhlEcommerceAsia:
-                return UIImage(named: "shipping-label-fedex-logo")
-            }
-        }
     }
 }
 

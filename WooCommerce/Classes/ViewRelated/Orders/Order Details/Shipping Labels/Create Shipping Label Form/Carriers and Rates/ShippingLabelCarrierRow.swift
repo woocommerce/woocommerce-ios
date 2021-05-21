@@ -1,23 +1,16 @@
 import SwiftUI
 
-struct ShippingLabelCarrierRow: View, Identifiable {
+struct ShippingLabelCarrierRow: View {
 
-    internal let id = UUID()
-    private let title: String
-    private let subtitle: String
-    private let price: String
-    private let image: UIImage?
+    private let viewModel: ShippingLabelCarrierRowViewModel
 
-    init(title: String, subtitle: String, price: String, image: UIImage? = nil) {
-        self.title = title
-        self.subtitle = subtitle
-        self.price = price
-        self.image = image
+    init(_ viewModel: ShippingLabelCarrierRowViewModel) {
+        self.viewModel = viewModel
     }
 
     var body: some View {
         HStack(spacing: Constants.hStackSpacing) {
-            if let image = image {
+            if let image = viewModel.image {
                 ZStack {
                     Image(uiImage: image).frame(width: Constants.imageSize, height: Constants.imageSize)
                 }
@@ -26,13 +19,13 @@ struct ShippingLabelCarrierRow: View, Identifiable {
             VStack(alignment: .leading,
                    spacing: Constants.vStackSpacing) {
                 HStack {
-                    Text(title)
+                    Text(viewModel.title)
                         .bodyStyle()
                     Spacer()
-                    Text(price)
+                    Text(viewModel.price)
                         .bodyStyle()
                 }
-                Text(subtitle)
+                Text(viewModel.subtitle)
                     .footnoteStyle()
             }
         }
@@ -55,26 +48,35 @@ private extension ShippingLabelCarrierRow {
     }
 }
 
+struct ShippingLabelCarrierRowViewModel: Identifiable {
+    internal let id = UUID()
+    let title: String
+    let subtitle: String
+    let price: String
+    let image: UIImage?
+}
+
 struct ShippingLabelCarrierRow_Previews: PreviewProvider {
     static var previews: some View {
-        ShippingLabelCarrierRow(title: "UPS Ground",
-                                subtitle: "3 business days",
-                                price: "$2.49",
-                                image: UIImage(named: "shipping-label-ups-logo")!)
+        let viewModelWithImage = ShippingLabelCarrierRowViewModel(title: "UPS Ground",
+                                                         subtitle: "3 business days",
+                                                         price: "$2.49",
+                                                         image: UIImage(named: "shipping-label-ups-logo")!)
+
+        let viewModelWithoutImage = ShippingLabelCarrierRowViewModel(title: "UPS Ground",
+                                                         subtitle: "3 business days",
+                                                         price: "$2.49",
+                                                         image: nil)
+
+        ShippingLabelCarrierRow(viewModelWithImage)
             .previewLayout(.fixed(width: 375, height: 60))
             .previewDisplayName("With Image")
 
-        ShippingLabelCarrierRow(title: "UPS Ground",
-                                subtitle: "3 business days",
-                                price: "$2.49",
-                                image: nil)
+        ShippingLabelCarrierRow(viewModelWithoutImage)
             .previewLayout(.fixed(width: 375, height: 60))
             .previewDisplayName("Without Image")
 
-        ShippingLabelCarrierRow(title: "UPS Ground",
-                                subtitle: "3 business days",
-                                price: "$2.49",
-                                image: nil)
+        ShippingLabelCarrierRow(viewModelWithoutImage)
             .frame(maxWidth: 375, minHeight: 60)
             .previewLayout(.sizeThatFits)
             .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)

@@ -14,15 +14,15 @@ struct ShippingLabelCarriers: View {
             LazyVStack {
                 switch viewModel.syncStatus {
                 case .loading:
-                    ForEach(viewModel.ghostRows) { ghostRow in
-                        ghostRow
+                    ForEach(viewModel.ghostRows) { ghostRowVM in
+                        ShippingLabelCarrierRow(ghostRowVM)
                             .redacted(reason: .placeholder)
                             .shimmering()
                         Divider().padding(.leading, Constants.dividerPadding)
                     }
                 case .success:
-                    ForEach(viewModel.rows) { carrierRow in
-                        carrierRow
+                    ForEach(viewModel.rows) { carrierRowVM in
+                        ShippingLabelCarrierRow(carrierRowVM)
                         Divider().padding(.leading, Constants.dividerPadding)
                     }
                 default:

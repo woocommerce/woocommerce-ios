@@ -19,16 +19,16 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
 
     @Published private(set) var syncStatus: SyncStatus = .none
 
-    /// The rows observed by the main view `ShippingLabelCarriersAndRates`
+    /// The rows view models observed by the main view `ShippingLabelCarriers`
     ///
-    @Published private(set) var rows: [ShippingLabelCarrierRow] = []
+    @Published private(set) var rows: [ShippingLabelCarrierRowViewModel] = []
 
-    var ghostRows: [ShippingLabelCarrierRow] {
+    var ghostRows: [ShippingLabelCarrierRowViewModel] {
         return Array(0..<3).map { _ in
-            ShippingLabelCarrierRow(title: "Ghost title",
-                                    subtitle: "Ghost subtitle",
-                                    price: "Ghost price",
-                                    image: nil)
+            ShippingLabelCarrierRowViewModel(title: "Ghost title",
+                                             subtitle: "Ghost subtitle",
+                                             price: "Ghost price",
+                                             image: nil)
         }
     }
 
@@ -60,10 +60,10 @@ private extension ShippingLabelCarriersViewModel {
             switch result {
             case .success(let response):
                 self.rows = response.defaultRates.map { rate in
-                    ShippingLabelCarrierRow(title: rate.title,
-                                            subtitle: "\(rate.deliveryDays) business days",
-                                            price: "\(rate.retailRate)",
-                                            image: UIImage(named: "shipping-label-ups-logo")!)
+                    ShippingLabelCarrierRowViewModel(title: rate.title,
+                                                     subtitle: "\(rate.deliveryDays) business days",
+                                                     price: "\(rate.retailRate)",
+                                                     image: UIImage(named: "shipping-label-ups-logo")!)
                 }
                 self.syncStatus = .success
             case .failure:

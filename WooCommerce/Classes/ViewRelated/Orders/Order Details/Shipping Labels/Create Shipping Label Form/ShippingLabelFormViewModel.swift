@@ -301,15 +301,17 @@ extension ShippingLabelFormViewModel {
     ///
     func syncShippingLabelAccountSettings() {
         let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: order.siteID) { [weak self] result in
+            guard let self = self else { return }
+
             switch result {
             case .success(let value):
-                self?.shippingLabelAccountSettings = value
+                self.shippingLabelAccountSettings = value
 
                 // Set the selected payment method and update the payment method row's data state
                 // If there is no selected payment method, the API returns an ID of 0
                 if value.selectedPaymentMethodID != 0 {
-                    self?.selectedPaymentMethodID = value.selectedPaymentMethodID
-                    self?.updateRowState(type: .paymentMethod, dataState: .validated, displayMode: .disabled)
+                    self.selectedPaymentMethodID = value.selectedPaymentMethodID
+                    self.updateRowState(type: .paymentMethod, dataState: .validated, displayMode: .disabled)
                 }
             case .failure:
                 DDLogError("⛔️ Error synchronizing shipping label account settings")

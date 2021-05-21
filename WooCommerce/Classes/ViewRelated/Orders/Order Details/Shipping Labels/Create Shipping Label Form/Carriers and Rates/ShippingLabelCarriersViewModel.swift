@@ -23,6 +23,8 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
     ///
     @Published private(set) var rows: [ShippingLabelCarrierRowViewModel] = []
 
+    /// View models of the ghost rows used during the loading process.
+    ///
     var ghostRows: [ShippingLabelCarrierRowViewModel] {
         return Array(0..<3).map { _ in
             ShippingLabelCarrierRowViewModel(title: "Ghost title",

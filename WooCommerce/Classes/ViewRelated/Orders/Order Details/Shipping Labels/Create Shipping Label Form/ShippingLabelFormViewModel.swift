@@ -121,17 +121,11 @@ final class ShippingLabelFormViewModel {
         return packageTitle + "\n" + String.localizedStringWithFormat(Localization.totalPackageWeight, packageWeight)
     }
 
-    /// Returns the selected payment method, based on its ID
-    ///
-    func getSelectedPaymentMethod(withID paymentMethodID: Int64) -> ShippingLabelPaymentMethod? {
-        return shippingLabelAccountSettings?.paymentMethods.first(where: { $0.paymentMethodID == paymentMethodID })
-    }
-
     /// Returns the body of the Payment Methods cell.
-    /// If there is a selected payment method, those details are displayed. Otherwise, a prompt to add a credit card is displayed.
+    /// Displays the payment method details if one is selected. Otherwise, displays a prompt to add a credit card.
     ///
     func getPaymentMethodBody() -> String {
-        guard let selectedPaymentMethod = getSelectedPaymentMethod(withID: selectedPaymentMethodID) else {
+        guard let selectedPaymentMethod = shippingLabelAccountSettings?.paymentMethods.first(where: { $0.paymentMethodID == selectedPaymentMethodID }) else {
             return Localization.paymentMethodPlaceholder
         }
 
@@ -311,6 +305,7 @@ extension ShippingLabelFormViewModel {
             case .success(let value):
                 self?.shippingLabelAccountSettings = value
 
+                // Set the selected payment method and update the payment method row's data state
                 // If there is no selected payment method, the API returns an ID of 0
                 if value.selectedPaymentMethodID != 0 {
                     self?.selectedPaymentMethodID = value.selectedPaymentMethodID

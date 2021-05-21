@@ -23,11 +23,21 @@ private extension TitleAndToggleRow {
 struct TitleAndToggleRow_Previews: PreviewProvider {
     static var previews: some View {
         TitleAndToggleRow(title: "Toggle this setting", isOn: .constant(false))
-            .previewLayout(.fixed(width: 375, height: 100))
+            .previewLayout(.sizeThatFits)
             .previewDisplayName("Single line, toggle off")
 
         TitleAndToggleRow(title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas dictum ullamcorper enim.", isOn: .constant(true))
-            .previewLayout(.fixed(width: 375, height: 100))
+            .previewLayout(.sizeThatFits)
             .previewDisplayName("Multi-line, toggle on")
+
+        TitleAndToggleRow(title: "Toggle this setting", isOn: .constant(true))
+            .previewLayout(.sizeThatFits)
+            .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+            .previewDisplayName("Accessibility: Large Font Size")
+
+        TitleAndToggleRow(title: "Toggle this setting", isOn: .constant(true))
+            .previewLayout(.sizeThatFits)
+            .environment(\.layoutDirection, .rightToLeft)
+            .previewDisplayName("Localization: Right-to-Left Layout")
     }
 }

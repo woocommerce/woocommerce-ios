@@ -80,5 +80,19 @@ struct ShippingLabelPaymentMethods_Previews: PreviewProvider {
                                                              selectedPaymentMethodID: ShippingLabelPaymentMethodsViewModel.samplePaymentMethodID)
 
         ShippingLabelPaymentMethods(viewModel: viewModel)
+            .colorScheme(.light)
+            .previewDisplayName("Light mode")
+
+        ShippingLabelPaymentMethods(viewModel: viewModel)
+            .colorScheme(.dark)
+            .previewDisplayName("Dark Mode")
+
+        ShippingLabelPaymentMethods(viewModel: viewModel)
+            .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+            .previewDisplayName("Accessibility: Large Font Size")
+
+        ShippingLabelPaymentMethods(viewModel: viewModel)
+            .environment(\.layoutDirection, .rightToLeft)
+            .previewDisplayName("Localization: Right-to-Left Layout")
     }
 }

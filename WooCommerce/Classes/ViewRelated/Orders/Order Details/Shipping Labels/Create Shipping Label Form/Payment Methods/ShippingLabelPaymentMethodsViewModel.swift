@@ -9,7 +9,7 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
     private var accountSettings: ShippingLabelAccountSettings?
 
     @Published var selectedPaymentMethodID: Int64
-    var isEmailReceiptsEnabled: Bool
+    @Published var isEmailReceiptsEnabled: Bool
 
     var paymentMethods: [ShippingLabelPaymentMethod] {
         accountSettings?.paymentMethods ?? []

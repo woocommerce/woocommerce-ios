@@ -281,9 +281,7 @@ private extension ShippingLabelFormViewController {
         let vm = ShippingLabelPaymentMethodsViewModel(accountSettings: viewModel.shippingLabelAccountSettings,
                                                       selectedPaymentMethodID: viewModel.selectedPaymentMethodID)
         let paymentMethod = ShippingLabelPaymentMethods(viewModel: vm)
-
         let hostingVC = UIHostingController(rootView: paymentMethod)
-        hostingVC.title = Localization.paymentMethodCellTitle
 
         navigationController?.show(hostingVC, sender: nil)
     }

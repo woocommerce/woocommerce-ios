@@ -42,6 +42,7 @@ struct ShippingLabelPaymentMethods: View {
             }
         }
         .background(Color(.listBackground))
+        .navigationBarTitle(Localization.navigationBarTitle)
         .navigationBarItems(trailing: Button(action: {}, label: {
             Text(Localization.doneButton)
         }))
@@ -50,6 +51,7 @@ struct ShippingLabelPaymentMethods: View {
 
 private extension ShippingLabelPaymentMethods {
     enum Localization {
+        static let navigationBarTitle = NSLocalizedString("Payment Method", comment: "Navigation bar title in the Shipping Label Payment Method screen")
         static let doneButton = NSLocalizedString("Done", comment: "Done navigation button in the Shipping Label Payment Method screen")
         static let paymentMethodsHeader = NSLocalizedString("Payment Method Selected", comment: "Header for list of payment methods in Payment Method screen")
         static let paymentMethodsFooter =

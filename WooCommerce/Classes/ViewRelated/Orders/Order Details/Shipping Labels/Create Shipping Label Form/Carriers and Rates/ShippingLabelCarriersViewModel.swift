@@ -30,7 +30,7 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
             ShippingLabelCarrierRowViewModel(title: "Ghost title",
                                              subtitle: "Ghost subtitle",
                                              price: "Ghost price",
-                                             image: nil)
+                                             carrier: "ups")
         }
     }
 
@@ -65,7 +65,7 @@ private extension ShippingLabelCarriersViewModel {
                     ShippingLabelCarrierRowViewModel(title: rate.title,
                                                      subtitle: "\(rate.deliveryDays) business days",
                                                      price: "\(rate.retailRate)",
-                                                     image: UIImage(named: "shipping-label-ups-logo")!)
+                                                     carrier: rate.carrierID)
                 }
                 self.syncStatus = .success
             case .failure:

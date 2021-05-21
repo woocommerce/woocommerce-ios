@@ -4,13 +4,20 @@ struct ShippingLabelCarrierRow: View {
 
     private let viewModel: ShippingLabelCarrierRowViewModel
 
+    var carrierLogo: UIImage? {
+        guard let carrier = viewModel.carrier else {
+            return nil
+        }
+        return CarrierLogo(rawValue: carrier)?.image()
+    }
+
     init(_ viewModel: ShippingLabelCarrierRowViewModel) {
         self.viewModel = viewModel
     }
 
     var body: some View {
         HStack(spacing: Constants.hStackSpacing) {
-            if let image = viewModel.image {
+            if let image = carrierLogo {
                 ZStack {
                     Image(uiImage: image).frame(width: Constants.imageSize, height: Constants.imageSize)
                 }
@@ -46,6 +53,25 @@ private extension ShippingLabelCarrierRow {
         static let imageSize: CGFloat = 40
         static let padding: CGFloat = 16
     }
+
+    enum CarrierLogo: String {
+        case ups
+        case usps
+        case dhlExpress = "dhlexpress"
+        case dhlEcommerce = "dhlecommerce"
+        case dhlEcommerceAsia = "dhlecommerceasia"
+
+        func image() -> UIImage? {
+            switch self {
+            case .ups:
+                return UIImage(named: "shipping-label-ups-logo")
+            case .usps:
+                return UIImage(named: "shipping-label-usps-logo")
+            case .dhlExpress, .dhlEcommerce, .dhlEcommerceAsia:
+                return UIImage(named: "shipping-label-fedex-logo")
+            }
+        }
+    }
 }
 
 struct ShippingLabelCarrierRowViewModel: Identifiable {
@@ -53,7 +79,7 @@ struct ShippingLabelCarrierRowViewModel: Identifiable {
     let title: String
     let subtitle: String
     let price: String
-    let image: UIImage?
+    let carrier: String?
 }
 
 struct ShippingLabelCarrierRow_Previews: PreviewProvider {
@@ -61,12 +87,12 @@ struct ShippingLabelCarrierRow_Previews: PreviewProvider {
         let viewModelWithImage = ShippingLabelCarrierRowViewModel(title: "UPS Ground",
                                                          subtitle: "3 business days",
                                                          price: "$2.49",
-                                                         image: UIImage(named: "shipping-label-ups-logo")!)
+                                                         carrier: "usps")
 
         let viewModelWithoutImage = ShippingLabelCarrierRowViewModel(title: "UPS Ground",
                                                          subtitle: "3 business days",
                                                          price: "$2.49",
-                                                         image: nil)
+                                                         carrier: nil)
 
         ShippingLabelCarrierRow(viewModelWithImage)
             .previewLayout(.fixed(width: 375, height: 60))

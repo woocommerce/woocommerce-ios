@@ -74,7 +74,7 @@ private extension WCPayRemote {
     enum AccountParameterValues {
         static let fieldValues: String = """
             status,has_pending_requirements,has_overdue_requirements,current_deadline,\
-            statement_descriptor,store_currencies,country
+            statement_descriptor,store_currencies,country,card_present_eligible
             """
     }
 

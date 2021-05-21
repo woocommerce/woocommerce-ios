@@ -7,7 +7,7 @@ public final class StripeCardReaderService: NSObject {
     private var discoveryCancellable: StripeTerminal.Cancelable?
     private var paymentCancellable: StripeTerminal.Cancelable?
 
-    private var discoveredReadersSubject = CurrentValueSubject<[CardReader], Never>([])
+    private var discoveredReadersSubject = CurrentValueSubject<[CardReader], Error>([])
     private let connectedReadersSubject = CurrentValueSubject<[CardReader], Never>([])
     private let serviceStatusSubject = CurrentValueSubject<CardReaderServiceStatus, Never>(.ready)
     private let discoveryStatusSubject = CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle)
@@ -30,7 +30,7 @@ public final class StripeCardReaderService: NSObject {
 extension StripeCardReaderService: CardReaderService {
 
     // MARK: - CardReaderService conformance. Queries
-    public var discoveredReaders: AnyPublisher<[CardReader], Never> {
+    public var discoveredReaders: AnyPublisher<[CardReader], Error> {
         discoveredReadersSubject.eraseToAnyPublisher()
     }
 
@@ -85,7 +85,7 @@ extension StripeCardReaderService: CardReaderService {
                 return
             }
 
-            self?.internalError(error)
+            self?.switchStatusToFault(error: error)
         })
     }
 
@@ -463,9 +463,12 @@ private extension StripeCardReaderService {
         }
     }
 
-    func resetDiscoveredReadersSubject() {
+    func resetDiscoveredReadersSubject(error: Error? = nil) {
+        if let error = error {
+            discoveredReadersSubject.send(completion: .failure(error))
+        }
         discoveredReadersSubject.send(completion: .finished)
-        discoveredReadersSubject = CurrentValueSubject<[CardReader], Never>([])
+        discoveredReadersSubject = CurrentValueSubject<[CardReader], Error>([])
     }
 }
 
@@ -481,8 +484,9 @@ private extension StripeCardReaderService {
         updateDiscoveryStatus(to: .discovering)
     }
 
-    func switchStatusToFault() {
+    func switchStatusToFault(error: Error) {
         updateDiscoveryStatus(to: .fault)
+        resetDiscoveredReadersSubject(error: error)
     }
 
     func updateDiscoveryStatus(to newStatus: CardReaderServiceDiscoveryStatus) {

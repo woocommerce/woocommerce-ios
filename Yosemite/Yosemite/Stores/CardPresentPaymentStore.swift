@@ -39,8 +39,8 @@ public final class CardPresentPaymentStore: Store {
         }
 
         switch action {
-        case .startCardReaderDiscovery(let siteID, let completion):
-            startCardReaderDiscovery(siteID: siteID, completion: completion)
+        case .startCardReaderDiscovery(let siteID, let onReaderDiscovered, let onError):
+            startCardReaderDiscovery(siteID: siteID, onReaderDiscovered: onReaderDiscovered, onError: onError)
         case .cancelCardReaderDiscovery(let completion):
             cancelCardReaderDiscovery(completion: completion)
         case .connect(let reader, let completion):
@@ -75,7 +75,7 @@ public final class CardPresentPaymentStore: Store {
 // MARK: - Services
 //
 private extension CardPresentPaymentStore {
-    func startCardReaderDiscovery(siteID: Int64, completion: @escaping (_ readers: [CardReader]) -> Void) {
+    func startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: @escaping (_ readers: [CardReader]) -> Void, onError: @escaping (Error) -> Void) {
         cardReaderService.start(WCPayTokenProvider(siteID: siteID, remote: self.remote))
 
         // Over simplification. This is the point where we would receive
@@ -84,8 +84,15 @@ private extension CardPresentPaymentStore {
         // For now we are sending the data up to the UI directly
         cardReaderService.discoveredReaders
             .subscribe(Subscribers.Sink(
-                receiveCompletion: { _ in },
-                receiveValue: completion
+                receiveCompletion: { result in
+                    switch result {
+                    case .finished: break
+                    case .failure(let error):
+                        onError(error)
+                    }
+                    print("completion")
+                },
+                receiveValue: onReaderDiscovered
             ))
     }
 

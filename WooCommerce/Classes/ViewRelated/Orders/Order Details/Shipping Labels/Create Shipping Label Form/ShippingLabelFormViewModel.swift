@@ -26,6 +26,33 @@ final class ShippingLabelFormViewModel {
     private(set) var destinationAddress: ShippingLabelAddress?
     private(set) var packagesResponse: ShippingLabelPackagesResponse?
     private(set) var selectedPackageID: String?
+    var selectedPackage: ShippingLabelPackageSelected? {
+        guard let packagesResponse = packagesResponse else {
+            return nil
+        }
+
+        if let customPackage = packagesResponse.customPackages.first(where: { $0.title == selectedPackageID }) {
+            return ShippingLabelPackageSelected(boxID: customPackage.title,
+                                                length: customPackage.getLength(),
+                                                width: customPackage.getWidth(),
+                                                height: customPackage.getHeight(),
+                                                weight: customPackage.getWidth(),
+                                                isLetter: customPackage.isLetter)
+        }
+
+        for option in packagesResponse.predefinedOptions {
+            if let predefinedPackage = option.predefinedPackages.first(where: { $0.id == selectedPackageID }) {
+                    return ShippingLabelPackageSelected(boxID: predefinedPackage.id,
+                                                        length: predefinedPackage.getLength(),
+                                                        width: predefinedPackage.getWidth(),
+                                                        height: predefinedPackage.getHeight(),
+                                                        weight: predefinedPackage.getWidth(),
+                                                        isLetter: predefinedPackage.isLetter)
+            }
+        }
+
+        return nil
+    }
     private(set) var totalPackageWeight: String?
 
 

@@ -26,12 +26,15 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
     /// View models of the ghost rows used during the loading process.
     ///
     var ghostRows: [ShippingLabelCarrierRowViewModel] {
-        return Array(0..<3).map { _ in
-            ShippingLabelCarrierRowViewModel(title: "Ghost title",
-                                             subtitle: "Ghost subtitle",
-                                             price: "Ghost price",
-                                             carrier: "ups")
-        }
+        
+        return []
+//        return Array(0..<3).map { _ in
+//            ShippingLabelCarrierRowViewModel(selected: false,
+//                                             title: "Ghost title",
+//                                             subtitle: "Ghost subtitle",
+//                                             price: "Ghost price",
+//                                             carrier: "ups")
+//        }
     }
 
     init(order: Order,
@@ -62,10 +65,8 @@ private extension ShippingLabelCarriersViewModel {
             switch result {
             case .success(let response):
                 self.rows = response.defaultRates.map { rate in
-                    ShippingLabelCarrierRowViewModel(title: rate.title,
-                                                     subtitle: "\(rate.deliveryDays) business days",
-                                                     price: "\(rate.retailRate)",
-                                                     carrier: rate.carrierID)
+                    ShippingLabelCarrierRowViewModel(selected: false,
+                                                     rate: rate)
                 }
                 self.syncStatus = .success
             case .failure:

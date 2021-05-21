@@ -10,12 +10,11 @@ struct ShippingLabelCarrierRow: View {
     }
 
     var body: some View {
-        HStack(spacing: Constants.hStackSpacing) {
+        HStack(alignment: .top, spacing: Constants.hStackSpacing) {
             if let image = viewModel.carrierLogo {
-                ZStack {
+                VStack {
                     Image(uiImage: image).frame(width: Constants.imageSize, height: Constants.imageSize)
                 }
-                .frame(width: Constants.zStackWidth)
             }
             VStack(alignment: .leading,
                    spacing: Constants.vStackSpacing) {
@@ -39,7 +38,6 @@ struct ShippingLabelCarrierRow: View {
 
 private extension ShippingLabelCarrierRow {
     enum Constants {
-        static let zStackWidth: CGFloat = 48
         static let vStackSpacing: CGFloat = 8
         static let hStackSpacing: CGFloat = 25
         static let hStackPadding: CGFloat = 10

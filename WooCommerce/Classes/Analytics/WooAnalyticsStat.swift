@@ -139,6 +139,16 @@ public enum WooAnalyticsStat: String {
     case settingsLogoutConfirmation             = "settings_logout_confirmation_dialog_result"
     case settingsWereHiringTapped               = "settings_we_are_hiring_button_tapped"
 
+    // MARK: Card Reader Connection Events
+    //
+    case cardReaderDiscoveryTapped              = "card_reader_discovery_tapped"
+    case cardReaderDiscoveryFailed              = "card_reader_discovery_failed"
+    case cardReaderDiscoveredReader             = "card_reader_discovery_reader_discovered"
+    case cardReaderConnectionTapped             = "card_reader_connection_tapped"
+    case cardReaderConnectionFailed             = "card_reader_connection_failed"
+    case cardReaderConnectionSuccess            = "card_reader_connection_success"
+    case cardReaderDisconnectTapped             = "card_reader_disconnect_tapped"
+
     // MARK: Order View Events
     //
     case ordersSelected                         = "main_tab_orders_selected"

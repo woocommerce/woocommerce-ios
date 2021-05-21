@@ -71,9 +71,16 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
         updateProperties()
         didUpdate?()
 
-        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: siteID) { [weak self] cardReaders in
-            self?.didDiscoverReaders(cardReaders: cardReaders)
-        }
+        ServiceLocator.analytics.track(.cardReaderDiscoveryTapped)
+        let action = CardPresentPaymentAction.startCardReaderDiscovery(
+            siteID: siteID,
+            onReaderDiscovered: { [weak self] cardReaders in
+                self?.didDiscoverReaders(cardReaders: cardReaders)
+            },
+            onError: { error in
+                ServiceLocator.analytics.track(.cardReaderDiscoveryFailed, withError: error)
+            })
+
         ServiceLocator.stores.dispatch(action)
     }
 
@@ -85,10 +92,12 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
             return
         }
 
-        /// Just in case we were called with an empty set
+        /// The publisher for discovered readers can return an initial empty value. We'll want to ignore that.
         guard cardReaders.count > 0 else {
             return
         }
+
+        ServiceLocator.analytics.track(.cardReaderDiscoveredReader)
 
         /// This viewmodel and view supports single reader discovery only.
         /// TODO: Add another viewmodel and view to handle multiple discovered readers.
@@ -126,9 +135,16 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
         updateProperties()
         didUpdate?()
 
-        let action = CardPresentPaymentAction.connect(reader: foundReader) { _ in
+        ServiceLocator.analytics.track(.cardReaderConnectionTapped)
+        let action = CardPresentPaymentAction.connect(reader: foundReader) { result in
             /// Nothing to do here because, when the observed connectedReaders mutates, the
             /// connected view will be shown automatically.
+            switch result {
+            case .success:
+                ServiceLocator.analytics.track(.cardReaderConnectionSuccess)
+            case .failure(let error):
+                ServiceLocator.analytics.track(.cardReaderConnectionFailed, withError: error)
+            }
         }
         ServiceLocator.stores.dispatch(action)
     }

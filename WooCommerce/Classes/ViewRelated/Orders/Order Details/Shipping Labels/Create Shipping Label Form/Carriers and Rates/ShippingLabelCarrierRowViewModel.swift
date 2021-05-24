@@ -1,13 +1,14 @@
+import SwiftUI
 import Yosemite
 
 struct ShippingLabelCarrierRowViewModel: Identifiable {
     internal let id = UUID()
-    let selected: Bool
-    let signatureSelected: Bool
-    let adultSignatureSelected: Bool
-    let rate: ShippingLabelCarrierRate
-    let signatureRate: ShippingLabelCarrierRate?
-    let adultSignatureRate: ShippingLabelCarrierRate?
+    @Binding var selected: Bool
+    @Binding var signatureSelected: Bool
+    @Binding var adultSignatureSelected: Bool
+    private let rate: ShippingLabelCarrierRate
+    private let signatureRate: ShippingLabelCarrierRate?
+    private let adultSignatureRate: ShippingLabelCarrierRate?
 
     let title: String
     let subtitle: String
@@ -18,17 +19,19 @@ struct ShippingLabelCarrierRowViewModel: Identifiable {
 
     let displaySignatureRequired: Bool
     let displayAdultSignatureRequired: Bool
+    let signatureRequiredText: String
+    let adultSignatureRequiredText: String
 
-    init(selected: Bool = false,
-         signatureSelected: Bool = false,
-         adultSignatureSelected: Bool = false,
+    init(selected: Binding<Bool> = .constant(false),
+         signatureSelected: Binding<Bool> = .constant(false),
+         adultSignatureSelected: Binding<Bool> = .constant(false),
          rate: ShippingLabelCarrierRate,
          signatureRate: ShippingLabelCarrierRate? = nil,
          adultSignatureRate: ShippingLabelCarrierRate? = nil,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
-        self.selected = selected
-        self.signatureSelected = signatureSelected
-        self.adultSignatureSelected = adultSignatureSelected
+        _selected = selected
+        _signatureSelected = signatureSelected
+        _adultSignatureSelected = adultSignatureSelected
         self.rate = rate
         self.signatureRate = signatureRate
         self.adultSignatureRate = adultSignatureRate
@@ -58,6 +61,21 @@ struct ShippingLabelCarrierRowViewModel: Identifiable {
 
         displaySignatureRequired = signatureRate != nil
         displayAdultSignatureRequired = adultSignatureRate != nil
+
+        if displaySignatureRequired, let signatureRate = signatureRate {
+            let amount = currencyFormatter.formatAmount(Decimal(signatureRate.retailRate - rate.retailRate)) ?? ""
+              signatureRequiredText = String(format: Localization.signatureRequired, amount)
+        } else {
+            signatureRequiredText = ""
+        }
+
+        if displayAdultSignatureRequired, let adultSignatureRate = adultSignatureRate {
+            let amount = currencyFormatter.formatAmount(Decimal(adultSignatureRate.retailRate - rate.retailRate)) ?? ""
+            adultSignatureRequiredText = String(format: Localization.adultSignatureRequired, amount)
+        }
+        else {
+            adultSignatureRequiredText = ""
+        }
     }
 }
 
@@ -73,6 +91,10 @@ private extension ShippingLabelCarrierRowViewModel {
                                                  comment: "Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates")
         static let freePickup = NSLocalizedString("Eligible for free pickup",
                                                   comment: "Carrier eligible for free pickup in Shipping Labels > Carrier and Rates")
+        static let signatureRequired = NSLocalizedString("Signature required (+%1$@)",
+                                                         comment: "Signature required in Shipping Labels > Carrier and Rates")
+        static let adultSignatureRequired = NSLocalizedString("Adult signature required (+%1$@)",
+                                                              comment: "Adult signature required in Shipping Labels > Carrier and Rates")
     }
 
     enum CarrierLogo: String {

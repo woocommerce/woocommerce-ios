@@ -3,10 +3,10 @@ import Yosemite
 
 struct ShippingLabelCarrierRow: View {
 
-    private let viewModel: ShippingLabelCarrierRowViewModel
+    @State private var viewModel: ShippingLabelCarrierRowViewModel
 
     init(_ viewModel: ShippingLabelCarrierRowViewModel) {
-        self.viewModel = viewModel
+        _viewModel = State(initialValue: viewModel)
     }
 
     var body: some View {
@@ -35,17 +35,28 @@ struct ShippingLabelCarrierRow: View {
                 if viewModel.selected {
                     Text(viewModel.extraInfo)
                         .footnoteStyle()
-                    VStack {
-                        if !viewModel.displaySignatureRequired {
+                    VStack(alignment: .leading, spacing: Constants.vStackSpacing) {
+                        if viewModel.displaySignatureRequired {
                             HStack (spacing: Constants.padding) {
-                                let image: UIImage = UIImage.plusImage.imageWithTintColor(UIColor.primary)!
+                                let image: UIImage = viewModel.signatureSelected ? UIImage.checkmarkImage : UIImage.plusImage
                                 Image(uiImage: image)
                                     .frame(width: Constants.checkboxSize, height: Constants.checkboxSize)
-                                Text("Test")
-                            }.listItemTint(.primary)
+                                    .foregroundColor(Color(.accent))
+                                Text(viewModel.signatureRequiredText)
+                                    .foregroundColor(Color(.accent))
+                                    .secondaryBodyStyle()
+                            }
                         }
                         if viewModel.displayAdultSignatureRequired {
-
+                            HStack (spacing: Constants.padding) {
+                                let image: UIImage = viewModel.adultSignatureSelected ? UIImage.checkmarkImage : UIImage.plusImage
+                                Image(uiImage: image)
+                                    .frame(width: Constants.checkboxSize, height: Constants.checkboxSize)
+                                    .foregroundColor(Color(.accent))
+                                Text(viewModel.adultSignatureRequiredText)
+                                    .foregroundColor(Color(.accent))
+                                    .secondaryBodyStyle()
+                            }
                         }
                     }
                 }
@@ -66,7 +77,7 @@ private extension ShippingLabelCarrierRow {
         static let minHeight: CGFloat = 60
         static let imageSize: CGFloat = 40
         static let padding: CGFloat = 16
-        static let checkboxSize: CGFloat = 16
+        static let checkboxSize: CGFloat = 10
     }
 }
 
@@ -74,13 +85,13 @@ struct ShippingLabelCarrierRow_Previews: PreviewProvider {
     static var previews: some View {
         let sampleRate = ShippingLabelCarrierRow_Previews.sampleRate()
         let sampleRateEmptyCarrierID = ShippingLabelCarrierRow_Previews.sampleRate(carrierID: "")
-        let viewModelWithImage = ShippingLabelCarrierRowViewModel(selected: false, rate: sampleRate)
+        let viewModelWithImage = ShippingLabelCarrierRowViewModel(selected: .constant(false), rate: sampleRate)
 
         ShippingLabelCarrierRow(viewModelWithImage)
             .previewLayout(.fixed(width: 375, height: 60))
             .previewDisplayName("With Image")
 
-        let viewModelWithoutImage = ShippingLabelCarrierRowViewModel(selected: false,
+        let viewModelWithoutImage = ShippingLabelCarrierRowViewModel(selected: .constant(false),
                                                                      rate: sampleRateEmptyCarrierID)
 
         ShippingLabelCarrierRow(viewModelWithoutImage)
@@ -93,19 +104,24 @@ struct ShippingLabelCarrierRow_Previews: PreviewProvider {
             .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
             .previewDisplayName("Large Font Size Roar!")
 
-        let viewModelSelected = ShippingLabelCarrierRowViewModel(selected: true, rate: sampleRate)
-
+        let signatureRate = ShippingLabelCarrierRow_Previews.sampleRate(rate: 45.060000000000002)
+        let adultSignatureRate = ShippingLabelCarrierRow_Previews.sampleRate(rate: 49.060000000000002)
+        let viewModelSelected = ShippingLabelCarrierRowViewModel(selected: .constant(true),
+                                                                 signatureSelected: .constant(true),
+                                                                 rate: sampleRate,
+                                                                 signatureRate: signatureRate,
+                                                                 adultSignatureRate: adultSignatureRate)
         ShippingLabelCarrierRow(viewModelSelected)
             .frame(maxWidth: 375, minHeight: 60)
             .previewLayout(.sizeThatFits)
             .previewDisplayName("Selected")
     }
 
-    private static func sampleRate(carrierID: String = "usps") -> ShippingLabelCarrierRate {
+    private static func sampleRate(carrierID: String = "usps", rate: Double = 40.060000000000002) -> ShippingLabelCarrierRate {
         return ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
                                         insurance: 0,
-                                        retailRate: 40.060000000000002,
-                                        rate: 40.060000000000002,
+                                        retailRate: rate,
+                                        rate: rate,
                                         rateID: "rate_a8a29d5f34984722942f466c30ea27ef",
                                         serviceID: "ParcelSelect",
                                         carrierID: "usps",

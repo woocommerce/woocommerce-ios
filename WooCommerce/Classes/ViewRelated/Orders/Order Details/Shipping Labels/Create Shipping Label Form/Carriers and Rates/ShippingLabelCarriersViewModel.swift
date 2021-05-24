@@ -64,7 +64,7 @@ private extension ShippingLabelCarriersViewModel {
             switch result {
             case .success(let response):
                 self.rows = response.defaultRates.map { rate in
-                    ShippingLabelCarrierRowViewModel(selected: false,
+                    ShippingLabelCarrierRowViewModel(selected: .constant(false),
                                                      rate: rate)
                 }
                 self.syncStatus = .success

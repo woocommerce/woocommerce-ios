@@ -85,13 +85,13 @@ struct ShippingLabelCarrierRow_Previews: PreviewProvider {
     static var previews: some View {
         let sampleRate = ShippingLabelCarrierRow_Previews.sampleRate()
         let sampleRateEmptyCarrierID = ShippingLabelCarrierRow_Previews.sampleRate(carrierID: "")
-        let viewModelWithImage = ShippingLabelCarrierRowViewModel(selected: .constant(false), rate: sampleRate)
+        let viewModelWithImage = ShippingLabelCarrierRowViewModel(selected: false, rate: sampleRate)
 
         ShippingLabelCarrierRow(viewModelWithImage)
             .previewLayout(.fixed(width: 375, height: 60))
             .previewDisplayName("With Image")
 
-        let viewModelWithoutImage = ShippingLabelCarrierRowViewModel(selected: .constant(false),
+        let viewModelWithoutImage = ShippingLabelCarrierRowViewModel(selected: false,
                                                                      rate: sampleRateEmptyCarrierID)
 
         ShippingLabelCarrierRow(viewModelWithoutImage)
@@ -106,8 +106,8 @@ struct ShippingLabelCarrierRow_Previews: PreviewProvider {
 
         let signatureRate = ShippingLabelCarrierRow_Previews.sampleRate(rate: 45.060000000000002)
         let adultSignatureRate = ShippingLabelCarrierRow_Previews.sampleRate(rate: 49.060000000000002)
-        let viewModelSelected = ShippingLabelCarrierRowViewModel(selected: .constant(true),
-                                                                 signatureSelected: .constant(true),
+        let viewModelSelected = ShippingLabelCarrierRowViewModel(selected: true,
+                                                                 signatureSelected: true,
                                                                  rate: sampleRate,
                                                                  signatureRate: signatureRate,
                                                                  adultSignatureRate: adultSignatureRate)

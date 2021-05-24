@@ -23,28 +23,38 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
     ///
     @Published private(set) var rows: [ShippingLabelCarrierRowViewModel] = []
 
+    private let selectedRate: ShippingLabelCarrierRate?
+    private let selectedSignatureRate: ShippingLabelCarrierRate?
+    private let selectedAdultSignatureRate: ShippingLabelCarrierRate?
+
     /// View models of the ghost rows used during the loading process.
     ///
     var ghostRows: [ShippingLabelCarrierRowViewModel] {
         return []
-//        return Array(0..<3).map { _ in
-//            ShippingLabelCarrierRowViewModel(selected: false,
-//                                             title: "Ghost title",
-//                                             subtitle: "Ghost subtitle",
-//                                             price: "Ghost price",
-//                                             carrier: "ups")
-//        }
+        //        return Array(0..<3).map { _ in
+        //            ShippingLabelCarrierRowViewModel(selected: false,
+        //                                             title: "Ghost title",
+        //                                             subtitle: "Ghost subtitle",
+        //                                             price: "Ghost price",
+        //                                             carrier: "ups")
+        //        }
     }
 
     init(order: Order,
          originAddress: ShippingLabelAddress,
          destinationAddress: ShippingLabelAddress,
          packages: [ShippingLabelPackageSelected],
+         selectedRate: ShippingLabelCarrierRate? = nil,
+         selectedSignatureRate: ShippingLabelCarrierRate? = nil,
+         selectedAdultSignatureRate: ShippingLabelCarrierRate? = nil,
          stores: StoresManager = ServiceLocator.stores) {
         self.order = order
         self.originAddress = originAddress
         self.destinationAddress = destinationAddress
         self.packages = packages
+        self.selectedRate = selectedRate
+        self.selectedSignatureRate = selectedSignatureRate
+        self.selectedAdultSignatureRate = selectedAdultSignatureRate
         self.stores = stores
         syncCarriersAndRates()
     }
@@ -64,12 +74,15 @@ private extension ShippingLabelCarriersViewModel {
             switch result {
             case .success(let response):
                 self.rows = response.defaultRates.map { rate in
-                    ShippingLabelCarrierRowViewModel(selected: .constant(false),
-                                                     signatureSelected: .constant(false),
-                                                     adultSignatureSelected: .constant(false),
-                                                     rate: rate,
-                                                     signatureRate: response.signatureRequired.first { rate.title == $0.title },
-                                                     adultSignatureRate: response.adultSignatureRequired.first { rate.title == $0.title })
+                    let signature = response.signatureRequired.first { rate.title == $0.title }
+                    let adultSignature = response.adultSignatureRequired.first { rate.title == $0.title }
+
+                    return ShippingLabelCarrierRowViewModel(selected: rate.title == self.selectedRate?.title,
+                                                            signatureSelected: self.selectedSignatureRate?.title == signature?.title,
+                                                            adultSignatureSelected: self.selectedSignatureRate?.title == adultSignature?.title,
+                                                            rate: rate,
+                                                            signatureRate: signature,
+                                                            adultSignatureRate: adultSignature)
                 }
                 self.syncStatus = .success
             case .failure:

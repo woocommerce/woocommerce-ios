@@ -3,9 +3,9 @@ import Yosemite
 
 struct ShippingLabelCarrierRowViewModel: Identifiable {
     internal let id = UUID()
-    @Binding var selected: Bool
-    @Binding var signatureSelected: Bool
-    @Binding var adultSignatureSelected: Bool
+    let selected: Bool
+    let signatureSelected: Bool
+    let adultSignatureSelected: Bool
     private let rate: ShippingLabelCarrierRate
     private let signatureRate: ShippingLabelCarrierRate?
     private let adultSignatureRate: ShippingLabelCarrierRate?
@@ -22,16 +22,16 @@ struct ShippingLabelCarrierRowViewModel: Identifiable {
     let signatureRequiredText: String
     let adultSignatureRequiredText: String
 
-    init(selected: Binding<Bool> = .constant(false),
-         signatureSelected: Binding<Bool> = .constant(false),
-         adultSignatureSelected: Binding<Bool> = .constant(false),
+    init(selected: Bool = false,
+         signatureSelected: Bool = false,
+         adultSignatureSelected: Bool = false,
          rate: ShippingLabelCarrierRate,
          signatureRate: ShippingLabelCarrierRate? = nil,
          adultSignatureRate: ShippingLabelCarrierRate? = nil,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
-        _selected = selected
-        _signatureSelected = signatureSelected
-        _adultSignatureSelected = adultSignatureSelected
+        self.selected = selected
+        self.signatureSelected = signatureSelected
+        self.adultSignatureSelected = adultSignatureSelected
         self.rate = rate
         self.signatureRate = signatureRate
         self.adultSignatureRate = adultSignatureRate

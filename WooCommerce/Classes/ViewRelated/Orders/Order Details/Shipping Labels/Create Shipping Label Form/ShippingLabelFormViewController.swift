@@ -103,6 +103,8 @@ extension ShippingLabelFormViewController: UITableViewDelegate {
         case Row(type: .packageDetails, dataState: .validated, displayMode: .editable):
             displayPackageDetailsVC(selectedPackageID: viewModel.selectedPackageID,
                                     totalPackageWeight: viewModel.totalPackageWeight)
+        case Row(type: .paymentMethod, dataState: .validated, displayMode: .editable):
+            displayPaymentMethodVC()
         default:
             break
         }
@@ -212,9 +214,9 @@ private extension ShippingLabelFormViewController {
         cell.configure(state: row.cellState,
                        icon: .creditCardImage,
                        title: Localization.paymentMethodCellTitle,
-                       body: "To be implemented",
+                       body: viewModel.getPaymentMethodBody(),
                        buttonTitle: Localization.continueButtonInCells) {
-
+            // To be implemented as part of the "Add new payment method" flow
         }
     }
 
@@ -287,6 +289,15 @@ private extension ShippingLabelFormViewController {
                                                         packages: [selectedPackage])
 
         let hostingVC = UIHostingController(rootView: ShippingLabelCarriers(viewModel: vm))
+        navigationController?.show(hostingVC, sender: nil)
+    }
+
+    func displayPaymentMethodVC() {
+        let vm = ShippingLabelPaymentMethodsViewModel(accountSettings: viewModel.shippingLabelAccountSettings,
+                                                      selectedPaymentMethodID: viewModel.selectedPaymentMethodID)
+        let paymentMethod = ShippingLabelPaymentMethods(viewModel: vm)
+        let hostingVC = UIHostingController(rootView: paymentMethod)
+
         navigationController?.show(hostingVC, sender: nil)
     }
 }

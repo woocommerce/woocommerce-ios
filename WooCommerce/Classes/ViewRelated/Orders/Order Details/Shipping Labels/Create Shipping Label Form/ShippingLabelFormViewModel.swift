@@ -54,6 +54,8 @@ final class ShippingLabelFormViewModel {
         return nil
     }
     private(set) var totalPackageWeight: String?
+    private(set) var shippingLabelAccountSettings: ShippingLabelAccountSettings?
+    private(set) var selectedPaymentMethodID: Int64 = 0
 
 
     private let stores: StoresManager
@@ -119,6 +121,17 @@ final class ShippingLabelFormViewModel {
         updateRowState(type: .packageDetails, dataState: .validated, displayMode: .editable)
     }
 
+    func handlePaymentMethodValueChanges(selectedPaymentMethodID: Int64, editable: Bool) {
+        self.selectedPaymentMethodID = selectedPaymentMethodID
+        let displayMode: ShippingLabelFormViewController.DisplayMode = editable ? .editable : .disabled
+
+        guard selectedPaymentMethodID != 0 else {
+            updateRowState(type: .paymentMethod, dataState: .pending, displayMode: displayMode)
+            return
+        }
+        updateRowState(type: .paymentMethod, dataState: .validated, displayMode: displayMode)
+    }
+
     private static func generateInitialSections() -> [Section] {
         let shipFrom = Row(type: .shipFrom, dataState: .pending, displayMode: .editable)
         let shipTo = Row(type: .shipTo, dataState: .pending, displayMode: .disabled)
@@ -144,6 +157,17 @@ final class ShippingLabelFormViewModel {
         let packageWeight = formatter.formatWeight(weight: totalPackageWeight)
 
         return packageTitle + "\n" + String.localizedStringWithFormat(Localization.totalPackageWeight, packageWeight)
+    }
+
+    /// Returns the body of the Payment Methods cell.
+    /// Displays the payment method details if one is selected. Otherwise, displays a prompt to add a credit card.
+    ///
+    func getPaymentMethodBody() -> String {
+        guard let selectedPaymentMethod = shippingLabelAccountSettings?.paymentMethods.first(where: { $0.paymentMethodID == selectedPaymentMethodID }) else {
+            return Localization.paymentMethodPlaceholder
+        }
+
+        return String.localizedStringWithFormat(Localization.paymentMethodLabel, selectedPaymentMethod.cardDigits)
     }
 }
 
@@ -314,8 +338,14 @@ extension ShippingLabelFormViewModel {
     /// Syncs account settings specific to shipping labels, such as the last selected package and payment methods.
     ///
     func syncShippingLabelAccountSettings() {
-        let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: order.siteID) { result in
-            if result.isFailure {
+        let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: order.siteID) { [weak self] result in
+            guard let self = self else { return }
+
+            switch result {
+            case .success(let value):
+                self.shippingLabelAccountSettings = value
+                self.handlePaymentMethodValueChanges(selectedPaymentMethodID: value.selectedPaymentMethodID, editable: false)
+            case .failure:
                 DDLogError("⛔️ Error synchronizing shipping label account settings")
             }
         }
@@ -349,5 +379,10 @@ private extension ShippingLabelFormViewModel {
                                                                  comment: "Placeholder in Shipping Label form for the Package Details row.")
         static let totalPackageWeight = NSLocalizedString("Total package weight: %1$@",
                                                           comment: "Total package weight label in Shipping Label form. %1$@ is a placeholder for the weight")
+        static let paymentMethodPlaceholder = NSLocalizedString("Add a new credit card",
+                                                                comment: "Placeholder in Shipping Label form for the Payment Method row.")
+        static let paymentMethodLabel =
+            NSLocalizedString("Credit card ending in %1$@",
+                              comment: "Selected credit card in Shipping Label form. %1$@ is a placeholder for the last four digits of the credit card.")
     }
 }

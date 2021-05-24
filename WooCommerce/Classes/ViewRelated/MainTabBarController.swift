@@ -369,6 +369,9 @@ private extension MainTabBarController {
             return
         }
 
+        // Update view model with `siteID` to query correct Orders Status
+        viewModel.configureOrdersStatusesListener(for: siteID)
+
         // Initialize each tab's root view controller
         let dashboardViewController = createDashboardViewController(siteID: siteID)
         dashboardNavigationController.viewControllers = [dashboardViewController]

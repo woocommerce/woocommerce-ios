@@ -16,25 +16,24 @@ struct ShippingLabelCarrierRow: View {
                     .frame(width: Constants.imageSize, height: Constants.imageSize)
             }
             else if let image = viewModel.carrierLogo {
-                VStack {
-                    Image(uiImage: image)
-                        .frame(width: Constants.imageSize, height: Constants.imageSize)
-                }
+                Image(uiImage: image)
+                    .frame(width: Constants.imageSize, height: Constants.imageSize)
             }
             VStack(alignment: .leading,
                    spacing: Constants.vStackSpacing) {
-                VStack {
-                HStack {
-                    Text(viewModel.title)
-                        .bodyStyle()
-                    Spacer()
-                    Text(viewModel.price)
-                        .bodyStyle()
-                }
-                Text(viewModel.subtitle)
-                    .footnoteStyle()
-                Text(viewModel.extraInfo)
-                    .footnoteStyle()
+                VStack(alignment: .leading,
+                       spacing: Constants.vStackSpacing) {
+                    HStack {
+                        Text(viewModel.title)
+                            .bodyStyle()
+                        Spacer()
+                        Text(viewModel.price)
+                            .bodyStyle()
+                    }
+                    Text(viewModel.subtitle)
+                        .footnoteStyle()
+                    Text(viewModel.extraInfo)
+                        .footnoteStyle()
                 }
                 .contentShape(Rectangle())
                 .onTapGesture {
@@ -106,7 +105,7 @@ struct ShippingLabelCarrierRow_Previews: PreviewProvider {
                                                                   completion: {_, _, _ in })
 
         ShippingLabelCarrierRow(viewModelWithImage)
-            .previewLayout(.fixed(width: 375, height: 60))
+            .previewLayout(.fixed(width: 375, height: 130))
             .previewDisplayName("With Image")
 
         let viewModelWithoutImage = ShippingLabelCarrierRowViewModel(selected: false,
@@ -114,7 +113,7 @@ struct ShippingLabelCarrierRow_Previews: PreviewProvider {
                                                                      completion: {_, _, _ in })
 
         ShippingLabelCarrierRow(viewModelWithoutImage)
-            .previewLayout(.fixed(width: 375, height: 60))
+            .previewLayout(.fixed(width: 375, height: 130))
             .previewDisplayName("Without Image")
 
         ShippingLabelCarrierRow(viewModelWithoutImage)

@@ -47,6 +47,16 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
     }
 }
 
+// MARK: - UI utils methods
+extension ShippingLabelPaymentMethodsViewModel {
+
+    /// Return true if the done button should be enabled (if a new payment method ID was selected)
+    ///
+    func isDoneButtonEnabled() -> Bool {
+        return selectedPaymentMethodID != accountSettings?.selectedPaymentMethodID
+    }
+}
+
 // MARK: - Methods for rendering a SwiftUI Preview
 //
 extension ShippingLabelPaymentMethodsViewModel {

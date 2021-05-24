@@ -284,9 +284,6 @@
 		D831E2E6230E7149000037D0 /* ProductReview+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D831E2E5230E7149000037D0 /* ProductReview+ReadOnlyConvertible.swift */; };
 		D831E2E8230E74EF000037D0 /* ProductReviewStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D831E2E7230E74EF000037D0 /* ProductReviewStoreTests.swift */; };
 		D849A1452320E565006CB84F /* ProductReview+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = D849A1442320E565006CB84F /* ProductReview+ReadOnlyType.swift */; };
-		D8736B6D22F0CE0900A14A29 /* OrderCount+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B6C22F0CE0900A14A29 /* OrderCount+ReadOnlyConvertible.swift */; };
-		D8736B6F22F0CE5200A14A29 /* OrderCountItem+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B6E22F0CE5200A14A29 /* OrderCountItem+ReadOnlyConvertible.swift */; };
-		D8736B7322F1F41B00A14A29 /* OrderCount+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B7222F1F41B00A14A29 /* OrderCount+ReadOnlyType.swift */; };
 		D87F614A22657A690031A13B /* AppSettingsAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F614922657A690031A13B /* AppSettingsAction.swift */; };
 		D87F614C22657B150031A13B /* AppSettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F614B22657B150031A13B /* AppSettingsStore.swift */; };
 		D87F615E2265B1BC0031A13B /* AppSettingsStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F615D2265B1BC0031A13B /* AppSettingsStoreTests.swift */; };
@@ -621,9 +618,6 @@
 		D831E2E5230E7149000037D0 /* ProductReview+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductReview+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		D831E2E7230E74EF000037D0 /* ProductReviewStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReviewStoreTests.swift; sourceTree = "<group>"; };
 		D849A1442320E565006CB84F /* ProductReview+ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductReview+ReadOnlyType.swift"; sourceTree = "<group>"; };
-		D8736B6C22F0CE0900A14A29 /* OrderCount+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderCount+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
-		D8736B6E22F0CE5200A14A29 /* OrderCountItem+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderCountItem+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
-		D8736B7222F1F41B00A14A29 /* OrderCount+ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderCount+ReadOnlyType.swift"; sourceTree = "<group>"; };
 		D87F614922657A690031A13B /* AppSettingsAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsAction.swift; sourceTree = "<group>"; };
 		D87F614B22657B150031A13B /* AppSettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsStore.swift; sourceTree = "<group>"; };
 		D87F615D2265B1BC0031A13B /* AppSettingsStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsStoreTests.swift; sourceTree = "<group>"; };
@@ -1004,8 +998,6 @@
 				2685C10C263C900500D9EE97 /* AddOnGroup+ReadOnlyConvertible.swift */,
 				74B2601E2188A92A0041793A /* Note+ReadOnlyConvertible.swift */,
 				74D7F29A20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift */,
-				D8736B6C22F0CE0900A14A29 /* OrderCount+ReadOnlyConvertible.swift */,
-				D8736B6E22F0CE5200A14A29 /* OrderCountItem+ReadOnlyConvertible.swift */,
 				74685D4F20F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift */,
 				D88E234425AE0EB90023F3B1 /* OrderFeeLine+ReadOnlyConvertible.swift */,
 				74685D4D20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift */,
@@ -1065,7 +1057,6 @@
 				B52E002F211A439E00700FDE /* Account+ReadOnlyType.swift */,
 				74B260202188B5F30041793A /* Note+ReadOnlyType.swift */,
 				B52E0031211A440D00700FDE /* Order+ReadOnlyType.swift */,
-				D8736B7222F1F41B00A14A29 /* OrderCount+ReadOnlyType.swift */,
 				74858DB321C02B5A00754F3E /* OrderNote+ReadOnlyType.swift */,
 				CE3B7AD82229C3570050FE4B /* OrderStatus+ReadOnlyType.swift */,
 				74937501224968F8007D85D1 /* Product+ReadOnlyType.swift */,
@@ -1644,7 +1635,6 @@
 				CE01014F2368C41600783459 /* Refund+ReadOnlyType.swift in Sources */,
 				24163BA8257F41C500F94EC3 /* SessionManagerProtocol.swift in Sources */,
 				DEFD6D9326443A4000E51E0D /* SitePluginAction.swift in Sources */,
-				D8736B6D22F0CE0900A14A29 /* OrderCount+ReadOnlyConvertible.swift in Sources */,
 				0271E1662509CF0100633F7A /* AnyError.swift in Sources */,
 				45ED6096257E7472007B4AC6 /* ProductAttributeStore.swift in Sources */,
 				02FF054D23D983F30058E6E7 /* MediaFileManager.swift in Sources */,
@@ -1695,7 +1685,6 @@
 				261CF1ED255B37B40090D8D3 /* PaymentGatewayAction.swift in Sources */,
 				74685D5020F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift in Sources */,
 				74A7689020D45F9300F9D437 /* OrderAction.swift in Sources */,
-				D8736B6F22F0CE5200A14A29 /* OrderCountItem+ReadOnlyConvertible.swift in Sources */,
 				D88E234525AE0EB90023F3B1 /* OrderFeeLine+ReadOnlyConvertible.swift in Sources */,
 				2665034D2620E0A90079A159 /* ProductAddOnOption+ReadOnlyConvertible.swift in Sources */,
 				02FF055323D983F30058E6E7 /* URL+Media.swift in Sources */,
@@ -1735,7 +1724,6 @@
 				261CF1C9255B2C7B0090D8D3 /* PaymentGateway+ReadOnlyConvertible.swift in Sources */,
 				7455D4672141B57600FA8C1F /* TopEarnerStats+ReadOnlyConvertible.swift in Sources */,
 				B56C1EBE20EABD2B00D749F9 /* ResultsController.swift in Sources */,
-				D8736B7322F1F41B00A14A29 /* OrderCount+ReadOnlyType.swift in Sources */,
 				02BA23C222EEEABC009539E7 /* AvailabilityStore.swift in Sources */,
 				CE4FD4542350FC0100A16B31 /* OrderItemRefund+ReadOnlyConvertible.swift in Sources */,
 				247CE7D02582E1C100F9D9D1 /* MockSessionManager.swift in Sources */,

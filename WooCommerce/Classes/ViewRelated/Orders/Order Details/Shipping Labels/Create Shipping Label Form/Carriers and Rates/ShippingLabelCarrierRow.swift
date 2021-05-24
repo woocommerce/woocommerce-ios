@@ -15,7 +15,6 @@ struct ShippingLabelCarrierRow: View {
             HStack(alignment: .top, spacing: Constants.hStackSpacing) {
                 if viewModel.selected {
                     Image(uiImage: .checkmarkStyledImage)
-                        .resizable()
                         .frame(width: Constants.imageSize, height: Constants.imageSize)
                 }
                 else if let image = viewModel.carrierLogo {

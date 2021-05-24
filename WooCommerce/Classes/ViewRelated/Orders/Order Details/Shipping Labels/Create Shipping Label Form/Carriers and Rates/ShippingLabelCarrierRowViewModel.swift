@@ -59,7 +59,9 @@ struct ShippingLabelCarrierRowViewModel: Identifiable {
         displaySignatureRequired = signatureRate != nil
         displayAdultSignatureRequired = adultSignatureRate != nil
     }
+}
 
+private extension ShippingLabelCarrierRowViewModel {
     enum Localization {
         static let businessDaySingular =
             NSLocalizedString("%1$d business day", comment: "Singular format of number of business day in Shipping Labels > Carrier and Rates")

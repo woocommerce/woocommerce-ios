@@ -33,8 +33,8 @@ final class MainTabViewModel {
     /// Setup: ResultsController for `processing` OrderStatus updates
     ///
     func configureOrdersStatusesListener(for siteID: Int64) {
-        statusResultsController = updateStatusResultsController(siteID: siteID)
-        configureResultsController()
+        statusResultsController = createStatusResultsController(siteID: siteID)
+        configureStatusResultsController()
     }
 
     /// Callback to be executed when this view model receives new data
@@ -65,14 +65,14 @@ private extension MainTabViewModel {
 
     /// Construct `ResultsController` with `siteID`
     ///
-    func updateStatusResultsController(siteID: Int64) -> ResultsController<StorageOrderStatus> {
+    func createStatusResultsController(siteID: Int64) -> ResultsController<StorageOrderStatus> {
         let predicate = NSPredicate(format: "siteID == %lld AND slug == %@", siteID, OrderStatusEnum.processing.rawValue)
         return ResultsController<StorageOrderStatus>(storageManager: ServiceLocator.storageManager, matching: predicate, sortedBy: [])
     }
 
     /// Connect hooks on `ResultsController` and query cached data
     ///
-    func configureResultsController() {
+    func configureStatusResultsController() {
         statusResultsController?.onDidChangeObject = { [weak self] (updatedOrdersStatus, _, _, _) in
             self?.processBadgeCount(updatedOrdersStatus)
         }

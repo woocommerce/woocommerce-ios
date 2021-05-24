@@ -3,10 +3,10 @@ import Yosemite
 
 struct ShippingLabelCarrierRow: View {
 
-    @State private var viewModel: ShippingLabelCarrierRowViewModel
+    private var viewModel: ShippingLabelCarrierRowViewModel
 
     init(_ viewModel: ShippingLabelCarrierRowViewModel) {
-        _viewModel = State(initialValue: viewModel)
+        self.viewModel = viewModel
     }
 
     var body: some View {
@@ -23,6 +23,7 @@ struct ShippingLabelCarrierRow: View {
             }
             VStack(alignment: .leading,
                    spacing: Constants.vStackSpacing) {
+                VStack {
                 HStack {
                     Text(viewModel.title)
                         .bodyStyle()
@@ -32,30 +33,45 @@ struct ShippingLabelCarrierRow: View {
                 }
                 Text(viewModel.subtitle)
                     .footnoteStyle()
+                Text(viewModel.extraInfo)
+                    .footnoteStyle()
+                }
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    viewModel.handleSelection()
+                }
                 if viewModel.selected {
-                    Text(viewModel.extraInfo)
-                        .footnoteStyle()
                     VStack(alignment: .leading, spacing: Constants.vStackSpacing) {
                         if viewModel.displaySignatureRequired {
                             HStack (spacing: Constants.padding) {
                                 let image: UIImage = viewModel.signatureSelected ? UIImage.checkmarkImage : UIImage.plusImage
                                 Image(uiImage: image)
+                                    .resizable()
                                     .frame(width: Constants.checkboxSize, height: Constants.checkboxSize)
                                     .foregroundColor(Color(.accent))
                                 Text(viewModel.signatureRequiredText)
                                     .foregroundColor(Color(.accent))
                                     .secondaryBodyStyle()
                             }
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                viewModel.handleSignatureSelection()
+                            }
                         }
                         if viewModel.displayAdultSignatureRequired {
                             HStack (spacing: Constants.padding) {
                                 let image: UIImage = viewModel.adultSignatureSelected ? UIImage.checkmarkImage : UIImage.plusImage
                                 Image(uiImage: image)
+                                    .resizable()
                                     .frame(width: Constants.checkboxSize, height: Constants.checkboxSize)
                                     .foregroundColor(Color(.accent))
                                 Text(viewModel.adultSignatureRequiredText)
                                     .foregroundColor(Color(.accent))
                                     .secondaryBodyStyle()
+                            }
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                viewModel.handleAdultSignatureSelection()
                             }
                         }
                     }
@@ -77,7 +93,7 @@ private extension ShippingLabelCarrierRow {
         static let minHeight: CGFloat = 60
         static let imageSize: CGFloat = 40
         static let padding: CGFloat = 16
-        static let checkboxSize: CGFloat = 10
+        static let checkboxSize: CGFloat = 16
     }
 }
 
@@ -85,14 +101,17 @@ struct ShippingLabelCarrierRow_Previews: PreviewProvider {
     static var previews: some View {
         let sampleRate = ShippingLabelCarrierRow_Previews.sampleRate()
         let sampleRateEmptyCarrierID = ShippingLabelCarrierRow_Previews.sampleRate(carrierID: "")
-        let viewModelWithImage = ShippingLabelCarrierRowViewModel(selected: false, rate: sampleRate)
+        let viewModelWithImage = ShippingLabelCarrierRowViewModel(selected: false,
+                                                                  rate: sampleRate,
+                                                                  completion: {_, _, _ in })
 
         ShippingLabelCarrierRow(viewModelWithImage)
             .previewLayout(.fixed(width: 375, height: 60))
             .previewDisplayName("With Image")
 
         let viewModelWithoutImage = ShippingLabelCarrierRowViewModel(selected: false,
-                                                                     rate: sampleRateEmptyCarrierID)
+                                                                     rate: sampleRateEmptyCarrierID,
+                                                                     completion: {_, _, _ in })
 
         ShippingLabelCarrierRow(viewModelWithoutImage)
             .previewLayout(.fixed(width: 375, height: 60))
@@ -110,7 +129,8 @@ struct ShippingLabelCarrierRow_Previews: PreviewProvider {
                                                                  signatureSelected: true,
                                                                  rate: sampleRate,
                                                                  signatureRate: signatureRate,
-                                                                 adultSignatureRate: adultSignatureRate)
+                                                                 adultSignatureRate: adultSignatureRate,
+                                                                 completion: {_, _, _ in })
         ShippingLabelCarrierRow(viewModelSelected)
             .frame(maxWidth: 375, minHeight: 60)
             .previewLayout(.sizeThatFits)

@@ -23,9 +23,9 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
     ///
     @Published private(set) var rows: [ShippingLabelCarrierRowViewModel] = []
 
-    private let selectedRate: ShippingLabelCarrierRate?
-    private let selectedSignatureRate: ShippingLabelCarrierRate?
-    private let selectedAdultSignatureRate: ShippingLabelCarrierRate?
+    @Published private var selectedRate: ShippingLabelCarrierRate?
+    @Published private var selectedSignatureRate: ShippingLabelCarrierRate?
+    @Published private var selectedAdultSignatureRate: ShippingLabelCarrierRate?
 
     /// View models of the ghost rows used during the loading process.
     ///
@@ -58,6 +58,25 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
         self.stores = stores
         syncCarriersAndRates()
     }
+
+    func generateRows(response: ShippingLabelCarriersAndRates) {
+        self.rows = response.defaultRates.map { rate in
+            let signature = response.signatureRequired.first { rate.title == $0.title }
+            let adultSignature = response.adultSignatureRequired.first { rate.title == $0.title }
+
+            return ShippingLabelCarrierRowViewModel(selected: rate.title == selectedRate?.title,
+                                                    signatureSelected: selectedSignatureRate?.title == signature?.title,
+                                                    adultSignatureSelected: selectedAdultSignatureRate?.title == adultSignature?.title,
+                                                    rate: rate,
+                                                    signatureRate: signature,
+                                                    adultSignatureRate: adultSignature) { [weak self] (rate, signature, adultSignature) in
+                self?.selectedRate = rate
+                self?.selectedSignatureRate = signature
+                self?.selectedAdultSignatureRate = adultSignature
+                self?.generateRows(response: response)
+            }
+        }
+    }
 }
 
 // MARK: - API Requests
@@ -73,17 +92,7 @@ private extension ShippingLabelCarriersViewModel {
             guard let self = self else { return }
             switch result {
             case .success(let response):
-                self.rows = response.defaultRates.map { rate in
-                    let signature = response.signatureRequired.first { rate.title == $0.title }
-                    let adultSignature = response.adultSignatureRequired.first { rate.title == $0.title }
-
-                    return ShippingLabelCarrierRowViewModel(selected: rate.title == self.selectedRate?.title,
-                                                            signatureSelected: self.selectedSignatureRate?.title == signature?.title,
-                                                            adultSignatureSelected: self.selectedSignatureRate?.title == adultSignature?.title,
-                                                            rate: rate,
-                                                            signatureRate: signature,
-                                                            adultSignatureRate: adultSignature)
-                }
+                self.generateRows(response: response)
                 self.syncStatus = .success
             case .failure:
                 self.rows = []

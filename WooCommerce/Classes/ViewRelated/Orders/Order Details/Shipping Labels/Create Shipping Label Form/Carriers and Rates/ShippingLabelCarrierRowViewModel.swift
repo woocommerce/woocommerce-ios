@@ -22,19 +22,28 @@ struct ShippingLabelCarrierRowViewModel: Identifiable {
     let signatureRequiredText: String
     let adultSignatureRequiredText: String
 
+    /// Completion callback
+    ///
+    typealias Completion = (_ selected: ShippingLabelCarrierRate,
+                            _ signatureRateSelected: ShippingLabelCarrierRate?,
+                            _ adultSignatureRateSelected: ShippingLabelCarrierRate?) -> Void
+    private let onCompletion: Completion
+
     init(selected: Bool = false,
          signatureSelected: Bool = false,
          adultSignatureSelected: Bool = false,
          rate: ShippingLabelCarrierRate,
          signatureRate: ShippingLabelCarrierRate? = nil,
          adultSignatureRate: ShippingLabelCarrierRate? = nil,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         completion: @escaping Completion) {
         self.selected = selected
         self.signatureSelected = signatureSelected
         self.adultSignatureSelected = adultSignatureSelected
         self.rate = rate
         self.signatureRate = signatureRate
         self.adultSignatureRate = adultSignatureRate
+        onCompletion = completion
 
         title = rate.title
         let formatString = rate.deliveryDays == 1 ? Localization.businessDaySingular : Localization.businessDaysPlural
@@ -76,6 +85,26 @@ struct ShippingLabelCarrierRowViewModel: Identifiable {
         else {
             adultSignatureRequiredText = ""
         }
+    }
+
+    func handleSelection() {
+        onCompletion(rate, nil, nil)
+    }
+
+    func handleSignatureSelection() {
+        guard !signatureSelected else {
+            onCompletion(rate, nil, nil)
+            return
+        }
+        onCompletion(rate, signatureRate, nil)
+    }
+
+    func handleAdultSignatureSelection() {
+        guard !adultSignatureSelected else {
+            onCompletion(rate, nil, nil)
+            return
+        }
+        onCompletion(rate, nil, adultSignatureRate)
     }
 }
 

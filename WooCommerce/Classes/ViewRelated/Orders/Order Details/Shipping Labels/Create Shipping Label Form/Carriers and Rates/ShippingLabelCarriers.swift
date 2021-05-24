@@ -1,5 +1,6 @@
 import SwiftUI
 import Yosemite
+import Shimmer
 
 struct ShippingLabelCarriers: View {
 

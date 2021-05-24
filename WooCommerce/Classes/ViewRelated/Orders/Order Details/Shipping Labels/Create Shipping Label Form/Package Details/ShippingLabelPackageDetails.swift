@@ -18,7 +18,7 @@ struct ShippingLabelPackageDetails: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 0) {
+            LazyVStack(spacing: 0) {
                 ShippingLabelPackageNumberRow(packageNumber: 1, numberOfItems: viewModel.itemsRows.count)
 
                 ListHeaderView(text: Localization.itemsToFulfillHeader, alignment: .left)

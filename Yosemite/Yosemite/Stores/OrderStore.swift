@@ -56,8 +56,6 @@ public class OrderStore: Store {
                               onCompletion: onCompletion)
         case .updateOrder(let siteID, let orderID, let statusKey, let onCompletion):
             updateOrder(siteID: siteID, orderID: orderID, status: statusKey, onCompletion: onCompletion)
-        case .countProcessingOrders(let siteID, let onCompletion):
-            countProcessingOrders(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -255,21 +253,6 @@ private extension OrderStore {
             onCompletion(error)
         }
     }
-
-    func countProcessingOrders(siteID: Int64, onCompletion: @escaping (OrderCount?, Error?) -> Void) {
-        let status = OrderStatusEnum.processing.rawValue
-
-        remote.countOrders(for: siteID, statusKey: status) { [weak self] (orderCount, error) in
-            guard let orderCount = orderCount else {
-                onCompletion(nil, error)
-                return
-            }
-
-            self?.upsertOrderCountInBackground(siteID: siteID, readOnlyOrderCount: orderCount) {
-                onCompletion(orderCount, nil)
-            }
-        }
-    }
 }
 
 
@@ -398,42 +381,5 @@ private extension OrderStore {
                                     in storage: StorageType) {
         let useCase = OrdersUpsertUseCase(storage: storage)
         useCase.upsert(readOnlyOrders, insertingSearchResults: insertingSearchResults)
-    }
-
-}
-
-
-// MARK: - Storage: Order count
-//
-private extension OrderStore {
-
-    /// Updates the stored OrderCount with the new OrderCount fetched from the remote
-    ///
-    private func upsertOrderCountInBackground(siteID: Int64, readOnlyOrderCount: Networking.OrderCount, onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            guard let self = self else {
-                return
-            }
-            self.updateOrderCountResults(siteID: siteID, readOnlyOrderCount: readOnlyOrderCount, in: derivedStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
-    }
-
-    private func updateOrderCountResults(siteID: Int64, readOnlyOrderCount: Networking.OrderCount, in storage: StorageType) {
-        storage.deleteAllObjects(ofType: Storage.OrderCountItem.self)
-        storage.deleteAllObjects(ofType: Storage.OrderCount.self)
-
-        let newOrderCount = storage.insertNewObject(ofType: Storage.OrderCount.self)
-        newOrderCount.update(with: readOnlyOrderCount)
-
-        for item in readOnlyOrderCount.items {
-            let newOrderCountItem = storage.insertNewObject(ofType: Storage.OrderCountItem.self)
-            newOrderCountItem.update(with: item)
-            newOrderCount.addToItems(newOrderCountItem)
-        }
     }
 }

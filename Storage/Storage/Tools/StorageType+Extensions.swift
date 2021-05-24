@@ -100,13 +100,6 @@ public extension StorageType {
 
     // MARK: - Stats
 
-    /// Retrieves the Stored OrderCount.
-    ///
-    func loadOrderCount(siteID: Int64) -> OrderCount? {
-        let predicate = \OrderCount.siteID == siteID
-        return firstObject(ofType: OrderCount.self, matching: predicate)
-    }
-
     /// Retrieves the Stored TopEarnerStats.
     ///
     func loadTopEarnerStats(date: String, granularity: String) -> TopEarnerStats? {

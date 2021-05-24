@@ -7,8 +7,7 @@ struct ShippingLabelPackageList: View {
 
     var body: some View {
         ScrollView {
-            /// `List` doesn't allow us to change easily some UI things, like the separators. So, we used `VStack`.
-            VStack(spacing: 0) {
+            LazyVStack(spacing: 0) {
 
                 /// Custom Packages
                 ///
@@ -42,7 +41,7 @@ struct ShippingLabelPackageList: View {
             .background(Color(.systemBackground))
         }
         .background(Color(.listBackground))
-        .navigationBarTitle(Text(Localization.title), displayMode: .inline)
+        .navigationTitle(Localization.title)
         .navigationBarItems(trailing: Button(action: {
             viewModel.confirmPackageSelection()
             presentation.wrappedValue.dismiss()

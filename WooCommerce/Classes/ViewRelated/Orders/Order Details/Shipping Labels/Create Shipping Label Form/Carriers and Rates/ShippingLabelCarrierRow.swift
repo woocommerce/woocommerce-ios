@@ -10,17 +10,19 @@ struct ShippingLabelCarrierRow: View {
     }
 
     var body: some View {
-        HStack(alignment: .top, spacing: Constants.hStackSpacing) {
-            if viewModel.selected {
-                Image(uiImage: .checkmarkStyledImage)
-                    .frame(width: Constants.imageSize, height: Constants.imageSize)
-            }
-            else if let image = viewModel.carrierLogo {
-                Image(uiImage: image)
-                    .frame(width: Constants.imageSize, height: Constants.imageSize)
-            }
-            VStack(alignment: .leading,
-                   spacing: Constants.vStackSpacing) {
+        VStack(alignment: .leading,
+               spacing: Constants.vStackSpacing) {
+            HStack(alignment: .top, spacing: Constants.hStackSpacing) {
+                if viewModel.selected {
+                    Image(uiImage: .checkmarkStyledImage)
+                        .resizable()
+                        .frame(width: Constants.imageSize, height: Constants.imageSize)
+                }
+                else if let image = viewModel.carrierLogo {
+                    Image(uiImage: image)
+                        .resizable()
+                        .frame(width: Constants.imageSize, height: Constants.imageSize)
+                }
                 VStack(alignment: .leading,
                        spacing: Constants.vStackSpacing) {
                     HStack {
@@ -35,11 +37,14 @@ struct ShippingLabelCarrierRow: View {
                     Text(viewModel.extraInfo)
                         .footnoteStyle()
                 }
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    viewModel.handleSelection()
-                }
-                if viewModel.selected {
+            }
+            .contentShape(Rectangle())
+            .onTapGesture {
+                viewModel.handleSelection()
+            }
+            if viewModel.selected {
+                HStack {
+                    Spacer().frame(width: Constants.leadingSpaceSignature)
                     VStack(alignment: .leading, spacing: Constants.vStackSpacing) {
                         if viewModel.displaySignatureRequired {
                             HStack (spacing: Constants.padding) {
@@ -93,6 +98,7 @@ private extension ShippingLabelCarrierRow {
         static let imageSize: CGFloat = 40
         static let padding: CGFloat = 16
         static let checkboxSize: CGFloat = 16
+        static let leadingSpaceSignature: CGFloat = 72
     }
 }
 

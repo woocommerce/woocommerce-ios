@@ -12,6 +12,6 @@
             ]
         },
         "country": "US",
-        "card_present_eligible": true
+        "card_present_eligible": false
     }
 }

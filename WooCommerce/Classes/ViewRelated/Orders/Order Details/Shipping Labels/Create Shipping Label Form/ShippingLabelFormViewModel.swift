@@ -347,7 +347,6 @@ extension ShippingLabelFormViewModel {
                 self.handlePaymentMethodValueChanges(selectedPaymentMethodID: value.selectedPaymentMethodID, editable: false)
             case .failure:
                 DDLogError("⛔️ Error synchronizing shipping label account settings")
-                return
             }
         }
         stores.dispatch(action)

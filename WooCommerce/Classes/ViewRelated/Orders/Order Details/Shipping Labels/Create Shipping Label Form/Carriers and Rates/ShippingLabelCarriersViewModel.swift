@@ -65,7 +65,11 @@ private extension ShippingLabelCarriersViewModel {
             case .success(let response):
                 self.rows = response.defaultRates.map { rate in
                     ShippingLabelCarrierRowViewModel(selected: .constant(false),
-                                                     rate: rate)
+                                                     signatureSelected: .constant(false),
+                                                     adultSignatureSelected: .constant(false),
+                                                     rate: rate,
+                                                     signatureRate: response.signatureRequired.first { rate.title == $0.title },
+                                                     adultSignatureRate: response.adultSignatureRequired.first { rate.title == $0.title })
                 }
                 self.syncStatus = .success
             case .failure:

@@ -1,5 +1,8 @@
 // MARK: - CardPresentPaymentAction: Defines all of the Actions supported by the CardPresentPaymentStore.
 //
+
+import Combine
+
 public enum CardPresentPaymentAction: Action {
     /// Start the Card Reader discovery process.
     ///
@@ -57,4 +60,6 @@ public enum CardPresentPaymentAction: Action {
     /// 2. Clear all credentials, cached data
     /// 3. Reset all status indicators
     case reset
+
+    case isReadyToCollectPayment(onCompletion: (AnyPublisher<[CardReader], Never>) -> Void)
 }

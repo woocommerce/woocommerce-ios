@@ -216,7 +216,7 @@ extension ProductVariationFormViewModel {
                                                          parentProductSKU: parentProductSKU)
     }
 
-    func updateProductType(productType: ProductType) {
+    func updateProductType(productType: BottomSheetProductType) {
         // no-op
     }
 

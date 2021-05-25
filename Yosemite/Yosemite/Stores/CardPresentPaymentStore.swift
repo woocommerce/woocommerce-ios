@@ -65,8 +65,8 @@ public final class CardPresentPaymentStore: Store {
             startCardReaderUpdate(onProgress: progress, onCompletion: completion)
         case .reset:
             reset()
-        case .isReadyToCollectPayment(onCompletion: let completion):
-            isReadyToCollectPayment(onCompletion: completion)
+        case .checkCardReaderConnected(onCompletion: let completion):
+            checkCardReaderConnected(onCompletion: completion)
         }
     }
 }
@@ -239,7 +239,7 @@ private extension CardPresentPaymentStore {
             ))
     }
 
-    func isReadyToCollectPayment(onCompletion: (AnyPublisher<[CardReader], Never>) -> Void) {
+    func checkCardReaderConnected(onCompletion: (AnyPublisher<[CardReader], Never>) -> Void) {
         let publisher = cardReaderService.connectedReaders
                      // We only emit values when there is no reader connected, including an initial value
                      .prefix(while: { cardReaders in

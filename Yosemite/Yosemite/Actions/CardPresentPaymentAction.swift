@@ -61,5 +61,5 @@ public enum CardPresentPaymentAction: Action {
     /// 3. Reset all status indicators
     case reset
 
-    case isReadyToCollectPayment(onCompletion: (AnyPublisher<[CardReader], Never>) -> Void)
+    case checkCardReaderConnected(onCompletion: (AnyPublisher<[CardReader], Never>) -> Void)
 }

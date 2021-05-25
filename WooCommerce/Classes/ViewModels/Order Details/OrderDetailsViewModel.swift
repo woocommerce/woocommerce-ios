@@ -533,7 +533,7 @@ extension OrderDetailsViewModel {
     /// Returns a publisher that emits an initial value if there is no reader connected and completes as soon as a
     /// reader connects.
     func cardReaderAvailable(onCompletion: @escaping (AnyPublisher<[CardReader], Never>) -> Void) {
-        let action = CardPresentPaymentAction.isReadyToCollectPayment { publisher in
+        let action = CardPresentPaymentAction.checkCardReaderConnected { publisher in
             onCompletion(publisher)
         }
 

@@ -65,8 +65,6 @@ public final class CardPresentPaymentStore: Store {
             startCardReaderUpdate(onProgress: progress, onCompletion: completion)
         case .reset:
             reset()
-        case .isReadyToCollectPayment(onCompletion: let completion):
-            isReadyToCollectPayment(onCompletion: completion)
         }
     }
 }
@@ -237,30 +235,6 @@ private extension CardPresentPaymentStore {
                         },
                         receiveValue: { _ in }
             ))
-    }
-
-    func isReadyToCollectPayment(onCompletion: @escaping (Bool) -> Void) {
-        // This is a bit more convoluted than it should be if we had a `prefix(until:)` operator
-        //
-        // We only want to republish events until a reader is connected. Since we can't specify that directly,
-        // we can use a Subject to flag when we have connected the first reader, then use the
-        // `prefix(untilOutputFrom:)` operator to finish when that happens.
-        let foundReaderSubject = PassthroughSubject<Void, Never>()
-
-        cardReaderService.connectedReaders
-            // Publish true if a reader is connected
-            .map { $0.count > 0 }
-            .prefix(untilOutputFrom: foundReaderSubject)
-            .subscribe(
-                Subscribers.Sink(
-                    receiveCompletion: { _ in },
-                    receiveValue: { foundReader in
-                        onCompletion(foundReader)
-                        if foundReader {
-                            foundReaderSubject.send(())
-                            foundReaderSubject.send(completion: .finished)
-                        }
-                    }))
     }
 }
 

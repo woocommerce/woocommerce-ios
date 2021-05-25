@@ -68,6 +68,7 @@ final class ShippingLabelFormViewModel {
     private(set) var totalPackageWeight: String?
     private(set) var shippingLabelAccountSettings: ShippingLabelAccountSettings?
     private(set) var selectedPaymentMethodID: Int64 = 0
+    private(set) var isEmailReceiptsEnabled: Bool?
 
 
     private let stores: StoresManager
@@ -147,8 +148,9 @@ final class ShippingLabelFormViewModel {
         updateRowState(type: .shippingCarrierAndRates, dataState: .validated, displayMode: .editable)
     }
 
-    func handlePaymentMethodValueChanges(selectedPaymentMethodID: Int64, editable: Bool) {
+    func handlePaymentMethodValueChanges(selectedPaymentMethodID: Int64, isEmailReceiptsEnabled: Bool, editable: Bool) {
         self.selectedPaymentMethodID = selectedPaymentMethodID
+        self.isEmailReceiptsEnabled = isEmailReceiptsEnabled
         let displayMode: ShippingLabelFormViewController.DisplayMode = editable ? .editable : .disabled
 
         guard selectedPaymentMethodID != 0 else {
@@ -394,7 +396,9 @@ extension ShippingLabelFormViewModel {
             switch result {
             case .success(let value):
                 self.shippingLabelAccountSettings = value
-                self.handlePaymentMethodValueChanges(selectedPaymentMethodID: value.selectedPaymentMethodID, editable: false)
+                self.handlePaymentMethodValueChanges(selectedPaymentMethodID: value.selectedPaymentMethodID,
+                                                     isEmailReceiptsEnabled: value.isEmailReceiptsEnabled,
+                                                     editable: false)
             case .failure:
                 DDLogError("⛔️ Error synchronizing shipping label account settings")
             }

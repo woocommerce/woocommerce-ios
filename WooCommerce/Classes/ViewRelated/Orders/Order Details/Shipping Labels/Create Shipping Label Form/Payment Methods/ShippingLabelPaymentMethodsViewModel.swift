@@ -53,7 +53,9 @@ extension ShippingLabelPaymentMethodsViewModel {
     /// Return true if the done button should be enabled (if a new payment method ID was selected)
     ///
     func isDoneButtonEnabled() -> Bool {
-        return selectedPaymentMethodID != accountSettings?.selectedPaymentMethodID
+        let isPaymentMethodChanged = selectedPaymentMethodID != accountSettings?.selectedPaymentMethodID
+        let isEmailReceiptsChanged = isEmailReceiptsEnabled != accountSettings?.isEmailReceiptsEnabled
+        return isPaymentMethodChanged || isEmailReceiptsChanged
     }
 }
 

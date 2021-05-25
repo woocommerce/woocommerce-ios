@@ -60,8 +60,8 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
             let adultSignature = response.adultSignatureRequired.first { rate.title == $0.title }
 
             return ShippingLabelCarrierRowViewModel(selected: rate.title == selectedRate?.title,
-                                                    signatureSelected: selectedSignatureRate?.title == signature?.title,
-                                                    adultSignatureSelected: selectedAdultSignatureRate?.title == adultSignature?.title,
+                                                    signatureSelected: selectedSignatureRate?.title == signature?.title && signature != nil,
+                                                    adultSignatureSelected: selectedAdultSignatureRate?.title == adultSignature?.title && adultSignature != nil,
                                                     rate: rate,
                                                     signatureRate: signature,
                                                     adultSignatureRate: adultSignature) { [weak self] (rate, signature, adultSignature) in

@@ -5641,6 +5641,7 @@
 				B7A94351C1ADC31EA528B895 /* [CP] Embed Pods Frameworks */,
 				CE1445302188ED0300A991D8 /* Zendesk Strip Frameworks */,
 				59DF5B32D7C07692EC8B4C59 /* [CP] Copy Pods Resources */,
+				095040D72655531C001D08FA /* Check for nested frameworks */,
 			);
 			buildRules = (
 			);
@@ -6032,6 +6033,25 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		095040D72655531C001D08FA /* Check for nested frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Check for nested frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = "/bin/sh -euo pipefail";
+			shellScript = "${PROJECT_DIR}/../Scripts/check-nested-frameworks.sh\n";
+			showEnvVarsInLog = 0;
+		};
 		57CCFFD4249D2A5700825FCF /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;

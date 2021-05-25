@@ -3,7 +3,7 @@ import Yosemite
 
 struct ShippingLabelCarrierRow: View {
 
-    private var viewModel: ShippingLabelCarrierRowViewModel
+    private let viewModel: ShippingLabelCarrierRowViewModel
 
     init(_ viewModel: ShippingLabelCarrierRowViewModel) {
         self.viewModel = viewModel

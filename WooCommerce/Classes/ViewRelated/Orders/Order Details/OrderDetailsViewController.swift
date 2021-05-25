@@ -4,6 +4,7 @@ import Contacts
 import Yosemite
 import SafariServices
 import MessageUI
+import Combine
 
 // MARK: - OrderDetailsViewController: Displays the details for a given Order.
 //
@@ -46,6 +47,11 @@ final class OrderDetailsViewController: UIViewController {
     private lazy var paymentAlerts: OrderDetailsPaymentAlerts = {
         OrderDetailsPaymentAlerts()
     }()
+
+    /// Subscription that listens for connected readers while we are trying to connect to one to capture payment
+    /// We need to cancel that subscription if the process is canceled by the user or when we connect to a reader.
+    ///
+    private var cardReaderAvailableSubscription: Combine.Cancellable? = nil
 
     // MARK: - View Lifecycle
 
@@ -574,15 +580,25 @@ private extension OrderDetailsViewController {
     }
 
     @objc private func collectPayment(at: IndexPath) {
-        viewModel.isReadyToCollectPayment { [weak self] isReady in
-            if isReady {
-                self?.dismiss(animated: false, completion: {
-                    self?.collectPaymentForCurrentOrder()
+        cardReaderAvailableSubscription = ServiceLocator.cardReaderService.connectedReaders
+            // We only emit values when there is no reader connected, including an initial value
+            .prefix(while: { cardReaders in
+                cardReaders.count == 0
+            })
+            // Remove duplicates since we don't want to present the connection modal twice
+            .removeDuplicates()
+            // Beyond this point, the publisher should emit an empty initial value once
+            // and then finish when a reader is connected.
+            .sink(
+                receiveCompletion: { [weak self] result in
+                    self?.dismiss(animated: false, completion: {
+                        self?.collectPaymentForCurrentOrder()
+                    })
+                    self?.cardReaderAvailableSubscription = nil
+                },
+                receiveValue: { [weak self] _ in
+                    self?.connectToCardReader()
                 })
-            } else {
-                self?.connectToCardReader()
-            }
-        }
     }
 
     private func collectPaymentForCurrentOrder() {
@@ -644,8 +660,14 @@ private extension OrderDetailsViewController {
 
         let viewModelsAndViews = CardReaderSettingsViewModelsOrderedList()
         viewController.configure(viewModelsAndViews: viewModelsAndViews)
+        viewController.presentationController?.delegate = self
 
-        present(viewController, animated: true, completion: nil)
+        present(viewController, animated: true)
+    }
+
+    private func cancelObservingCardReader() {
+        cardReaderAvailableSubscription?.cancel()
+        cardReaderAvailableSubscription = nil
     }
 
     private func itemAddOnsButtonTapped(addOns: [OrderItemAttribute]) {
@@ -752,6 +774,12 @@ extension OrderDetailsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return viewModel.dataSource.viewForHeaderInSection(section, tableView: tableView)
+    }
+}
+
+extension OrderDetailsViewController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        cancelObservingCardReader()
     }
 }
 

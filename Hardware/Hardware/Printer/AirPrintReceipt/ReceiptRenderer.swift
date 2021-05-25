@@ -75,7 +75,7 @@ public extension ReceiptRenderer {
                         <h1>\(receiptTitle)</h1>
                         <h3>\(Localization.amountPaidSectionTitle.uppercased())</h3>
                         <p>
-                            \(parameters.amount / 100) \(parameters.currency.uppercased())
+                            \(formattedAmount()) \(parameters.currency.uppercased())
                         </p>
                         <h3>\(Localization.datePaidSectionTitle.uppercased())</h3>
                         <p>
@@ -108,13 +108,15 @@ private extension ReceiptRenderer {
         addPrintFormatter(formatter, startingAtPageAt: 0)
     }
 
-    private func summaryTable() -> String {
+    private func formattedAmount() -> String {
         // We should use CurrencyFormatter instead for consistency
         let formatter = NumberFormatter()
         formatter.minimumFractionDigits = 2
         formatter.maximumFractionDigits = 2
-        let amount = formatter.string(for: parameters.amount / 100) ?? ""
+        return formatter.string(for: parameters.amount / 100) ?? ""
+    }
 
+    private func summaryTable() -> String {
         var summaryContent = "<table>"
         for line in lines {
             summaryContent += "<tr><td>\(line.title) × \(line.quantity)</td><td>\(line.amount) \(parameters.currency.uppercased())</td></tr>"
@@ -125,7 +127,7 @@ private extension ReceiptRenderer {
                                     \(Localization.amountPaidSectionTitle)
                                 </td>
                                 <td>
-                                    \(amount) \(parameters.currency.uppercased())
+                                    \(formattedAmount()) \(parameters.currency.uppercased())
                                 </td>
                             </tr>
                             """

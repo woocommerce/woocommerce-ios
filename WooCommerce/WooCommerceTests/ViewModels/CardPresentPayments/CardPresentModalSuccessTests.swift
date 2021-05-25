@@ -56,7 +56,7 @@ final class CardPresentModalSuccessTests: XCTestCase {
     }
 
     func test_secondary_button_action_calls_closure() {
-        viewModel.didTapSecondaryButton(in: nil)
+        viewModel.didTapSecondaryButton(in: UIViewController())
 
         XCTAssertTrue(closures.didTapEmail)
     }

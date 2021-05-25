@@ -3,6 +3,7 @@ import UIKit
 import Gridicons
 import Yosemite
 import MessageUI
+import Combine
 
 final class OrderDetailsViewModel {
     private let paymentOrchestrator = PaymentCaptureOrchestrator()
@@ -527,6 +528,21 @@ extension OrderDetailsViewModel {
         }
 
         stores.dispatch(deleteTrackingAction)
+    }
+
+    /// Returns a publisher that emits an initial value if there is no reader connected and completes as soon as a
+    /// reader connects.
+    func cardReaderAvailable() -> AnyPublisher<[CardReader], Never> {
+        ServiceLocator.cardReaderService.connectedReaders
+            // We only emit values when there is no reader connected, including an initial value
+            .prefix(while: { cardReaders in
+                cardReaders.count == 0
+            })
+            // Remove duplicates since we don't want to present the connection modal twice
+            .removeDuplicates()
+            // Beyond this point, the publisher should emit an empty initial value once
+            // and then finish when a reader is connected.
+            .eraseToAnyPublisher()
     }
 
     /// We are passing the ReceiptParameters as part of the completon block

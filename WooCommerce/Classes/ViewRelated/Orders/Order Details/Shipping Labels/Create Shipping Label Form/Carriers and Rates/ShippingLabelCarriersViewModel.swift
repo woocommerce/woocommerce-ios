@@ -19,13 +19,13 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
 
     @Published private(set) var syncStatus: SyncStatus = .none
 
-    /// The rows view models observed by the main view `ShippingLabelCarriers`
-    ///
-    @Published private(set) var rows: [ShippingLabelCarrierRowViewModel] = []
-
     @Published private var selectedRate: ShippingLabelCarrierRate?
     @Published private var selectedSignatureRate: ShippingLabelCarrierRate?
     @Published private var selectedAdultSignatureRate: ShippingLabelCarrierRate?
+
+    /// The rows view models observed by the main view `ShippingLabelCarriers`
+    ///
+    @Published private(set) var rows: [ShippingLabelCarrierRowViewModel] = []
 
     /// View models of the ghost rows used during the loading process.
     ///

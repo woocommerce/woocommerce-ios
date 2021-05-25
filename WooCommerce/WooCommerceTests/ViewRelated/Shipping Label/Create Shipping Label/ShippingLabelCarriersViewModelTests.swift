@@ -48,62 +48,10 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
 
 private extension ShippingLabelCarriersViewModelTests {
     func sampleShippingLabelCarriersAndRates() -> ShippingLabelCarriersAndRates {
-        return ShippingLabelCarriersAndRates(defaultRates: [sampleCarrierRate(), sampleCarrierRate(title: "UPS")],
-                                             signatureRequired: [sampleSignatureRate()],
-                                             adultSignatureRequired: [sampleAdultSignatureRate()])
-    }
-
-    func sampleCarrierRate(title: String = "USPS - Parcel Select Mail") -> ShippingLabelCarrierRate {
-        let rate = ShippingLabelCarrierRate(title: title,
-                                            insurance: 0,
-                                            retailRate: 40.060000000000002,
-                                            rate: 40.060000000000002,
-                                            rateID: "rate_a8a29d5f34984722942f466c30ea27ef",
-                                            serviceID: "ParcelSelect",
-                                            carrierID: "usps",
-                                            shipmentID: "shp_e0e3c2f4606c4b198d0cbd6294baed56",
-                                            hasTracking: true,
-                                            isSelected: false,
-                                            isPickupFree: true,
-                                            deliveryDays: 2,
-                                            deliveryDateGuaranteed: false)
-
-        return rate
-    }
-
-    func sampleSignatureRate() -> ShippingLabelCarrierRate {
-        let rate = ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
-                                            insurance: 0,
-                                            retailRate: 45.060000000000002,
-                                            rate: 45.060000000000002,
-                                            rateID: "rate_a8a29d5f34984722942f466c30ea27ef",
-                                            serviceID: "ParcelSelect",
-                                            carrierID: "usps",
-                                            shipmentID: "shp_e0e3c2f4606c4b198d0cbd6294baed56",
-                                            hasTracking: true,
-                                            isSelected: false,
-                                            isPickupFree: true,
-                                            deliveryDays: 2,
-                                            deliveryDateGuaranteed: false)
-
-        return rate
-    }
-
-    func sampleAdultSignatureRate() -> ShippingLabelCarrierRate {
-        let rate = ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
-                                            insurance: 0,
-                                            retailRate: 50.060000000000002,
-                                            rate: 50.060000000000002,
-                                            rateID: "rate_a8a29d5f34984722942f466c30ea27ef",
-                                            serviceID: "ParcelSelect",
-                                            carrierID: "usps",
-                                            shipmentID: "shp_e0e3c2f4606c4b198d0cbd6294baed56",
-                                            hasTracking: true,
-                                            isSelected: false,
-                                            isPickupFree: true,
-                                            deliveryDays: 2,
-                                            deliveryDateGuaranteed: false)
-
-        return rate
+        return ShippingLabelCarriersAndRates(defaultRates: [MockShippingLabelCarrierRate.makeRate(), MockShippingLabelCarrierRate.makeRate(title: "UPS")],
+                                             signatureRequired: [MockShippingLabelCarrierRate.makeRate(title: "UPS",
+                                                                                                       rate: 45.060000000000002)],
+                                             adultSignatureRequired: [MockShippingLabelCarrierRate.makeRate(title: "UPS",
+                                                                                                            rate: 50.060000000000002)])
     }
 }

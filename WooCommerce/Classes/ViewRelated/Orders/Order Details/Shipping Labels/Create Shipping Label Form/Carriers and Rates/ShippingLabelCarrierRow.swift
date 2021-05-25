@@ -148,7 +148,7 @@ struct ShippingLabelCarrierRow_Previews: PreviewProvider {
                                         rate: rate,
                                         rateID: "rate_a8a29d5f34984722942f466c30ea27ef",
                                         serviceID: "ParcelSelect",
-                                        carrierID: "usps",
+                                        carrierID: carrierID,
                                         shipmentID: "shp_e0e3c2f4606c4b198d0cbd6294baed56",
                                         hasTracking: true,
                                         isSelected: false,

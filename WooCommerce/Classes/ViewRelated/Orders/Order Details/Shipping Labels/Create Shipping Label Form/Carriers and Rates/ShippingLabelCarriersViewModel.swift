@@ -30,14 +30,9 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
     /// View models of the ghost rows used during the loading process.
     ///
     var ghostRows: [ShippingLabelCarrierRowViewModel] {
-        return []
-        //        return Array(0..<3).map { _ in
-        //            ShippingLabelCarrierRowViewModel(selected: false,
-        //                                             title: "Ghost title",
-        //                                             subtitle: "Ghost subtitle",
-        //                                             price: "Ghost price",
-        //                                             carrier: "ups")
-        //        }
+        return Array(0..<3).map { _ in
+            ShippingLabelCarrierRowViewModel(rate: sampleGhostRate()) { (_, _, _) in }
+        }
     }
 
     init(order: Order,
@@ -100,5 +95,24 @@ private extension ShippingLabelCarriersViewModel {
             }
         }
         stores.dispatch(action)
+    }
+}
+
+// MARK: - Utils {
+private extension ShippingLabelCarriersViewModel {
+    private func sampleGhostRate() -> ShippingLabelCarrierRate {
+        return ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
+                                        insurance: 0,
+                                        retailRate: 40.060000000000002,
+                                        rate: 40.060000000000002,
+                                        rateID: "rate_a8a29d5f34984722942f466c30ea27ef",
+                                        serviceID: "ParcelSelect",
+                                        carrierID: "usps",
+                                        shipmentID: "shp_e0e3c2f4606c4b198d0cbd6294baed56",
+                                        hasTracking: true,
+                                        isSelected: false,
+                                        isPickupFree: true,
+                                        deliveryDays: 2,
+                                        deliveryDateGuaranteed: false)
     }
 }

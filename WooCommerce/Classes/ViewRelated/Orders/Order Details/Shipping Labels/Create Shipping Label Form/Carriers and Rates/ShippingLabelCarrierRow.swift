@@ -35,6 +35,7 @@ struct ShippingLabelCarrierRow: View {
                         .footnoteStyle()
                     Text(viewModel.extraInfo)
                         .footnoteStyle()
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
             .contentShape(Rectangle())

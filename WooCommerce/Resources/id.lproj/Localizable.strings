@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-04-27 11:54:04+0000 */
+/* Translation-Revision-Date: 2021-05-19 11:32:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -150,7 +150,7 @@
 "A refund will not be issued to the customer. You will need to manually issue the refund through Stripe." = "Pengembalian dana tidak akan diberikan kepada pelanggan. Anda akan perlu meminta pengembalian dana secara manual melalui Stripe.";
 
 /* Message explaining that the site may have an invalid SSL certificate. */
-"A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate.";
+"A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "Koneksi aman ke situs tidak dapat dibuat. Harap pastikan bahwa situs Anda memiliki sertifikat SSL yang valid.";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple product */
 "A unique item to sell" = "Item khusus yang akan dijual";
@@ -173,6 +173,9 @@
 /* Application's Active State */
 "Active" = "Aktif";
 
+/* Title for table view section of active plugins */
+"Active Plugins" = "Active Plugins";
+
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "Aktif, Pembaruan Otomatis tidak aktif";
 
@@ -184,7 +187,7 @@
 "Add" = "Tambah";
 
 /* Title on empty state button when the product has no attributes and variations */
-"Add Attributes" = "Add Attributes";
+"Add Attributes" = "Tambahkan Atribut";
 
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
@@ -664,10 +667,7 @@
 "Create Shipping Label" = "Buat Label Pengiriman";
 
 /* Title on the variations list screen when there are no variations */
-"Create your first variation" = "Create your first variation";
-
-/* My Store > Settings > Experimental features > Products */
-"Creating products" = "Membuat produk";
+"Create your first variation" = "Buat variasi pertama Anda";
 
 /* Credit card payment method for shipping label. */
 "Credit card" = "Kartu Kredit";
@@ -1035,10 +1035,10 @@
 "Gain insights into how products are performing on your store" = "Dapatkan informasi mengenai performa produk di toko Anda";
 
 /* Action to generate attributes on the Product Attributes screen */
-"Generate" = "Generate";
+"Generate" = "Buat";
 
 /* Action to add new variation on the variations list */
-"Generate New Variation" = "Generate New Variation";
+"Generate New Variation" = "Buat Variasi Baru";
 
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "Membuat Variasi";
@@ -1060,7 +1060,7 @@
 "Getting account information" = "Mencari informasi akun";
 
 /* Title of the button to give feedback about the add-ons feature */
-"Give Feedback" = "Give Feedback";
+"Give Feedback" = "Berikan Masukan";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    The title of the button to give feedback about shipping labels features on the banner in order details - Title on the navigation bar for the products feedback survey */
@@ -1167,7 +1167,7 @@
 "If disabled the note will be private" = "Jika dinonaktifkan, catatan akan diatur sebagai pribadi";
 
 /* The text below the order add-ons list indicating that the content could be stale. */
-"If renaming an add-on in your web dashboard, please note that previous orders will no longer show that add-on within the app." = "If renaming an add-on in your web dashboard, please note that previous orders will no longer show that add-on within the app.";
+"If renaming an add-on in your web dashboard, please note that previous orders will no longer show that add-on within the app." = "Jika ingin mengubah nama add-on pada dasbor web, harap perhatikan bahwa pesanan sebelumnya tidak akan menampilkan add-on tersebut dalam aplikasi.";
 
 /* Header text when reprinting a shipping label */
 "If there was a printing error when you purchased the label, you can print it again." = "Jika terjadi kesalahan mencetak saat Anda membeli label, Anda dapat mencetaknya kembali.";
@@ -1196,6 +1196,9 @@
 
 /* Application's Inactive State */
 "Inactive" = "Nonaktif";
+
+/* Title for table view section of inactive plugins */
+"Inactive Plugins" = "Inactive Plugins";
 
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "Tidak aktif, Pembaruan Otomatis tidak aktif";
@@ -1512,6 +1515,9 @@
 /* The title for the net amount paid cell */
 "Net Payment" = "Pembayaran Bersih";
 
+/* Title for table view section of network active plugins */
+"Network Active Plugins" = "Network Active Plugins";
+
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "Nama Atribut Baru";
 
@@ -1614,7 +1620,7 @@
 "One Password button" = "Tombol 1Password";
 
 /* Helper text above photo list in Product images screen */
-"Only one photo can be displayed by variation" = "Only one photo can be displayed by variation";
+"Only one photo can be displayed by variation" = "Foto yang dapat ditampilkan hanya satu per variasi.";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Buka pengaturan perangkat";
@@ -1834,6 +1840,10 @@
 
 /* Text on the loading view of the product downloadable file screen indicating the user to wait */
 "Please wait..." = "Harap tunggu...";
+
+/* My Store > Settings > Plugins section title
+   Navigates to Plugins screen. - Title of the Plugin List screen */
+"Plugins" = "Plugin";
 
 /* Text field postcode in Shipping Label Address Validation */
 "Postcode" = "Kode pos";
@@ -2391,6 +2401,9 @@
    Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "Seseorang";
 
+/* The text on the placeholder overlay when there is issue syncing site plugins */
+"Something went wrong" = "Something went wrong";
+
 /* Notice format when a shipping label refund request fails. */
 "Something went wrong with the refund. Please try again." = "Ada masalah dengan pengembalian dananya. Harap coba lagi.";
 
@@ -2636,8 +2649,8 @@
 /* Opens the Terms of Service web page */
 "Terms of Service" = "Ketentuan Layanan";
 
-/* My Store > Settings > Experimental features > Products */
-"Test out the new product creation as we get ready to launch" = "Coba pembuatan produk baru karena kami siap rilis";
+/* Cell description on the beta features screen to enable the order add-ons feature */
+"Test out viewing Order Add-Ons as we get ready to launch" = "Test out viewing Order Add-Ons as we get ready to launch";
 
 /* Button title
    The button's title text to send a 2FA code via SMS text message. */
@@ -2739,6 +2752,9 @@
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "Terjadi masalah saat menghapus blokir untuk situs tertentu.";
 
+/* The details on the placeholder overlay when there is issue syncing site plugins */
+"There was a problem while trying to load plugins. Check your internet and try again." = "There was a problem while trying to load plugins. Check your internet and try again.";
+
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "Terjadi error saat meminta pengembalian dana";
 
@@ -2811,7 +2827,7 @@
 "To" = "ke";
 
 /* Subtitle on the variations list screen when there are no variations and attributes */
-"To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first";
+"To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "Untuk menambahkan variasi, Anda perlu mengatur atributnya (yaitu \"Warna\", \"Ukuran\") terlebih dahulu";
 
 /* Footer of text field section in Add Attribute screen */
 "To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "Untuk membuat variasi, Anda perlu mengatur atributnya (yaitu \"Warna\", \"Ukuran\") terlebih dahulu";
@@ -2888,6 +2904,9 @@
 
 /* Button to trigger connection to another account in store picker */
 "Try With Another Account" = "Coba dengan Akun Lain";
+
+/* Action to resync on the placeholder overlay when there is issue syncing site plugins */
+"Try again" = "Coba lagi";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Coba dengan email lain";
@@ -3080,7 +3099,8 @@
 /* Displays the version of the App */
 "Version %@" = "Versi %@";
 
-/* Title of the button on the order detail item to navigate to add-ons */
+/* Cell title on the beta features screen to enable the order add-ons feature
+   Title of the button on the order detail item to navigate to add-ons */
 "View Add-Ons" = "Lihat Add-On";
 
 /* View application log cell title */
@@ -3098,7 +3118,7 @@
 "View Shipment Details" = "Lihat Detail Pengiriman";
 
 /* Title of the banner notice in the add-ons view */
-"View add-ons from your device!" = "View add-ons from your device!";
+"View add-ons from your device!" = "Lihat add-on dari perangkat Anda!";
 
 /* The action to update downloadable files settings for a product */
 "View downloadable file settings" = "Lihat pengaturan untuk file yang dapat diunduh";
@@ -3150,7 +3170,7 @@
 "We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "Kami berusaha mempermudah agar Anda dapat mencetak label pengiriman langsung dari perangkat Anda! Untuk saat ini, jika telah membuat label untuk sebuah pesanan di admin toko dengan WooCommerce Shipping, Anda dapat mencetak detail Pesanan di sini.";
 
 /* Content of the banner notice in the add-ons view */
-"We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard.";
+"We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "Kami berusaha agar Anda bisa lebih mudah melihat add-on produk dari perangkat Anda! Untuk sekarang, Anda akan dapat melihat add-on untuk pesanan Anda. Anda dapat membuat dan menyunting add-on ini pada dasbor web Anda.";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "Kami tidak dapat menampilkan analisis toko Anda";
@@ -3165,7 +3185,7 @@
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "Kami menggunakan alat pelacakan lainnya, termasuk beberapa dari pihak ketiga. Baca tentang hal ini dan cara mengontrolnya.";
 
 /* Message explaining that WordPress was not detected. */
-"We were not able to detect a WordPress site at the address you entered. Please make sure WordPress is installed and that you are running the latest available version." = "We were not able to detect a WordPress site at the address you entered. Please make sure WordPress is installed and that you are running the latest available version.";
+"We were not able to detect a WordPress site at the address you entered. Please make sure WordPress is installed and that you are running the latest available version." = "Kami tidak dapat mendeteksi situs WordPress di alamat yang Anda masukkan. Pastikan WordPress terinstal dan Anda menggunakan versi terbaru yang tersedia.";
 
 /* Banner caption in Shipping Label Address Validation when the origin address can't be verified. */
 "We were unable to automatically verify the origin address." = "Kami tidak dapat memverifikasi alamat pengirim secara otomatis.";

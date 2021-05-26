@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-05-13 13:54:04+0000 */
+/* Translation-Revision-Date: 2021-05-26 11:54:03+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -172,6 +172,9 @@
 
 /* Application's Active State */
 "Active" = "Активно";
+
+/* Title for table view section of active plugins */
+"Active Plugins" = "Активные плагины";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "Активен, автообновление выключено";
@@ -665,9 +668,6 @@
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "Создайте первый вариант";
-
-/* My Store > Settings > Experimental features > Products */
-"Creating products" = "Создание продуктов";
 
 /* Credit card payment method for shipping label. */
 "Credit card" = "Банковская карта";
@@ -1197,6 +1197,9 @@
 /* Application's Inactive State */
 "Inactive" = "Неактивно";
 
+/* Title for table view section of inactive plugins */
+"Inactive Plugins" = "Неактивные плагины";
+
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "Неактивен, автообновления выключено";
 
@@ -1511,6 +1514,9 @@
 
 /* The title for the net amount paid cell */
 "Net Payment" = "Чистая выплата";
+
+/* Title for table view section of network active plugins */
+"Network Active Plugins" = "Активные сетевые плагины";
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "Название нового атрибута";
@@ -1834,6 +1840,10 @@
 
 /* Text on the loading view of the product downloadable file screen indicating the user to wait */
 "Please wait..." = "Подождите...";
+
+/* My Store > Settings > Plugins section title
+   Navigates to Plugins screen. - Title of the Plugin List screen */
+"Plugins" = "Плагины";
 
 /* Text field postcode in Shipping Label Address Validation */
 "Postcode" = "Почтовый индекс";
@@ -2391,6 +2401,9 @@
    Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "Кто-то";
 
+/* The text on the placeholder overlay when there is issue syncing site plugins */
+"Something went wrong" = "Что-то пошло не так";
+
 /* Notice format when a shipping label refund request fails. */
 "Something went wrong with the refund. Please try again." = "В процессе возврата что-то пошло не так. Повторите попытку.";
 
@@ -2636,8 +2649,8 @@
 /* Opens the Terms of Service web page */
 "Terms of Service" = "Условия предоставления услуг";
 
-/* My Store > Settings > Experimental features > Products */
-"Test out the new product creation as we get ready to launch" = "Оцените новую процедуру создания продуктов, которая готова к запуску";
+/* Cell description on the beta features screen to enable the order add-ons feature */
+"Test out viewing Order Add-Ons as we get ready to launch" = "Протестируйте наши дополнительные модули заказов в процессе подготовки к запуску";
 
 /* Button title
    The button's title text to send a 2FA code via SMS text message. */
@@ -2738,6 +2751,9 @@
 
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "При снятии блокировки для указанного веб-сайта произошла ошибка.";
+
+/* The details on the placeholder overlay when there is issue syncing site plugins */
+"There was a problem while trying to load plugins. Check your internet and try again." = "При попытке загрузить плагины возникли проблемы. Проверьте подключение к Интернету и повторите попытку.";
 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "При возврате средств произошла ошибка";
@@ -2888,6 +2904,9 @@
 
 /* Button to trigger connection to another account in store picker */
 "Try With Another Account" = "Использовать другую учётную запись";
+
+/* Action to resync on the placeholder overlay when there is issue syncing site plugins */
+"Try again" = "Попробуйте снова";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Попробуйте с другим email";
@@ -3080,7 +3099,8 @@
 /* Displays the version of the App */
 "Version %@" = "Версия %@";
 
-/* Title of the button on the order detail item to navigate to add-ons */
+/* Cell title on the beta features screen to enable the order add-ons feature
+   Title of the button on the order detail item to navigate to add-ons */
 "View Add-Ons" = "Просмотреть дополнения";
 
 /* View application log cell title */

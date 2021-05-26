@@ -71,10 +71,11 @@ extension ProductListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = itemAtIndexPath(indexPath)
         let product = lookUpProduct(by: item.productOrVariationID)
+        let showAddOnsButton = shouldShowDisplayAddOnButton(item: item, product: product)
         let itemViewModel = ProductDetailsCellViewModel(item: item,
                                                         currency: viewModel.order.currency,
                                                         product: product,
-                                                        hasAddOns: false)
+                                                        hasAddOns: showAddOnsButton)
         let cell = tableView.dequeueReusableCell(PickListTableViewCell.self, for: indexPath)
         cell.selectionStyle = .default
         cell.configure(item: itemViewModel, imageService: imageService)
@@ -118,6 +119,18 @@ private extension ProductListViewController {
 
     func lookUpProduct(by productID: Int64) -> Product? {
         return products?.filter({ $0.productID == productID }).first
+    }
+
+    /// Returns `true` if the add-on feature is enabled and if the order item has add-ons associated with it.
+    ///
+    func shouldShowDisplayAddOnButton(item: OrderItem, product: Product?) -> Bool {
+        guard let product = product, viewModel.dataSource.showAddOns else {
+            return false
+        }
+
+        let globalAddOns = viewModel.dataSource.addOnGroups
+        let useCase = AddOnCrossreferenceUseCase(orderItemAttributes: item.attributes, product: product, addOnGroups: globalAddOns)
+        return useCase.addOnsAttributes().isNotEmpty
     }
 
     /// Displays the product details screen for the provided OrderItem

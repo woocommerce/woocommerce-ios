@@ -1,5 +1,6 @@
 import Combine
 import StripeTerminal
+import CoreBluetooth
 
 /// The adapter wrapping the Stripe Terminal SDK
 public final class StripeCardReaderService: NSObject {
@@ -62,13 +63,17 @@ extension StripeCardReaderService: CardReaderService {
 
     // MARK: - CardReaderService conformance. Commands
 
-    public func start(_ configProvider: CardReaderConfigProvider) {
+    public func start(_ configProvider: CardReaderConfigProvider) throws {
         setConfigProvider(configProvider)
 
         let config = DiscoveryConfiguration(
             discoveryMethod: .bluetoothProximity,
             simulated: false
         )
+
+        guard CBCentralManager.authorization != .denied else {
+            throw CardReaderServiceError.bluetoothDenied
+        }
 
         switchStatusToDiscovering()
 

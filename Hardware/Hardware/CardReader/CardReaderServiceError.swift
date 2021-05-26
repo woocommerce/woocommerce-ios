@@ -29,6 +29,9 @@ public enum CardReaderServiceError: Error {
 
     /// Error thrown while updating the reader firmware
     case softwareUpdate(underlyingError: UnderlyingError = .internalServiceError)
+
+    /// The user has denied the app permission to use Bluetooth
+    case bluetoothDenied
 }
 
 

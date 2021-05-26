@@ -76,7 +76,11 @@ public final class CardPresentPaymentStore: Store {
 //
 private extension CardPresentPaymentStore {
     func startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: @escaping (_ readers: [CardReader]) -> Void, onError: @escaping (Error) -> Void) {
-        cardReaderService.start(WCPayTokenProvider(siteID: siteID, remote: self.remote))
+        do {
+            try cardReaderService.start(WCPayTokenProvider(siteID: siteID, remote: self.remote))
+        } catch {
+            return onError(error)
+        }
 
         // Over simplification. This is the point where we would receive
         // new data via the CardReaderService's stream of discovered readers

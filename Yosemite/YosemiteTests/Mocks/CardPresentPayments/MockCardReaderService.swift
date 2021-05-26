@@ -55,7 +55,7 @@ final class MockCardReaderService: CardReaderService {
 
     }
 
-    func start(_ configProvider: CardReaderConfigProvider) {
+    func start(_ configProvider: CardReaderConfigProvider) throws {
         didHitStart = true
         didReceiveAConfigurationProvider = true
 

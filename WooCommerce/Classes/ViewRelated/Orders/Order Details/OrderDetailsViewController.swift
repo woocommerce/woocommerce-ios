@@ -580,30 +580,17 @@ private extension OrderDetailsViewController {
     }
 
     @objc private func collectPayment(at: IndexPath) {
-        viewModel.cardReaderAvailable { [weak self] publisher in
-            self?.cardReaderAvailableSubscription = publisher
-                        .sink(
-                            receiveCompletion: { [weak self] result in
-                                self?.dismiss(animated: false, completion: {
-                                    self?.collectPaymentForCurrentOrder()
-                                })
-                                self?.cardReaderAvailableSubscription = nil
-                            },
-                            receiveValue: { [weak self] _ in
-                                self?.connectToCardReader()
-                            })
-        }
-//        cardReaderAvailableSubscription = viewModel.cardReaderAvailable()
-//            .sink(
-//                receiveCompletion: { [weak self] result in
-//                    self?.dismiss(animated: false, completion: {
-//                        self?.collectPaymentForCurrentOrder()
-//                    })
-//                    self?.cardReaderAvailableSubscription = nil
-//                },
-//                receiveValue: { [weak self] _ in
-//                    self?.connectToCardReader()
-//                })
+        cardReaderAvailableSubscription = viewModel.cardReaderAvailable()
+            .sink(
+                receiveCompletion: { [weak self] result in
+                    self?.dismiss(animated: false, completion: {
+                        self?.collectPaymentForCurrentOrder()
+                    })
+                    self?.cardReaderAvailableSubscription = nil
+                },
+                receiveValue: { [weak self] _ in
+                    self?.connectToCardReader()
+                })
     }
 
     private func collectPaymentForCurrentOrder() {

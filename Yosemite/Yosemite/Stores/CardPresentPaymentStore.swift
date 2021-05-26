@@ -241,15 +241,15 @@ private extension CardPresentPaymentStore {
 
     func checkCardReaderConnected(onCompletion: (AnyPublisher<[CardReader], Never>) -> Void) {
         let publisher = cardReaderService.connectedReaders
-                     // We only emit values when there is no reader connected, including an initial value
-                     .prefix(while: { cardReaders in
-                         cardReaders.count == 0
-                     })
-                     // Remove duplicates since we don't want to present the connection modal twice
-                     .removeDuplicates()
-                     // Beyond this point, the publisher should emit an empty initial value once
-                     // and then finish when a reader is connected.
-                     .eraseToAnyPublisher()
+            // We only emit values when there is no reader connected, including an initial value
+            .prefix(while: { cardReaders in
+                cardReaders.count == 0
+            })
+            // Remove duplicates since we don't want to present the connection modal twice
+            .removeDuplicates()
+            // Beyond this point, the publisher should emit an empty initial value once
+            // and then finish when a reader is connected.
+            .eraseToAnyPublisher()
 
         onCompletion(publisher)
     }

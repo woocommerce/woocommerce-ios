@@ -5,9 +5,21 @@ import Shimmer
 struct ShippingLabelCarriers: View {
 
     @ObservedObject private var viewModel: ShippingLabelCarriersViewModel
+    @Environment(\.presentationMode) var presentation
 
-    init(viewModel: ShippingLabelCarriersViewModel) {
+    /// Completion callback
+    ///
+    typealias Completion = (_ selectedRate: ShippingLabelCarrierRate?,
+
+                            _ selectedSignatureRate: ShippingLabelCarrierRate?,
+
+                            _ selectedAdultSignatureRate: ShippingLabelCarrierRate?) -> Void
+    private let onCompletion: Completion
+
+    init(viewModel: ShippingLabelCarriersViewModel,
+         completion: @escaping Completion) {
         self.viewModel = viewModel
+        onCompletion = completion
     }
 
     var body: some View {
@@ -32,6 +44,15 @@ struct ShippingLabelCarriers: View {
             }
         }
         .navigationTitle(Localization.titleView)
+        .navigationBarItems(trailing: Button(action: {
+            onCompletion(viewModel.getSelectedRates().selectedRate,
+                         viewModel.getSelectedRates().selectedSignatureRate,
+                         viewModel.getSelectedRates().selectedAdultSignatureRate)
+            presentation.wrappedValue.dismiss()
+        }, label: {
+            Text(Localization.doneButton)
+        })
+        .disabled(!viewModel.isDoneButtonEnabled()))
     }
 
     enum Constants {
@@ -44,6 +65,7 @@ private extension ShippingLabelCarriers {
         static let titleView = NSLocalizedString("Carrier and Rates",
 
                                                  comment: "Navigation bar title of shipping label carrier and rates screen")
+        static let doneButton = NSLocalizedString("Done", comment: "Done navigation button in shipping label carrier and rates screen")
     }
 }
 
@@ -62,9 +84,10 @@ struct ShippingLabelCarriers_Previews: PreviewProvider {
                                                    postcode: "90210")
 
         let vm = ShippingLabelCarriersViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder(),
-                                                        originAddress: shippingAddress,
-                                                        destinationAddress: shippingAddress,
-                                                        packages: [])
-        ShippingLabelCarriers(viewModel: vm)
+                                                originAddress: shippingAddress,
+                                                destinationAddress: shippingAddress,
+                                                packages: [])
+        ShippingLabelCarriers(viewModel: vm) { (_, _, _) in
+        }
     }
 }

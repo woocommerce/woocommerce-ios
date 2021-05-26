@@ -72,6 +72,22 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
             }
         }
     }
+
+    /// Return true if the done button should be enabled
+    ///
+    func isDoneButtonEnabled() -> Bool {
+        return selectedRate != nil
+    }
+
+    /// Return the selected rates
+    ///
+    func getSelectedRates() -> (selectedRate: ShippingLabelCarrierRate?,
+                                selectedSignatureRate: ShippingLabelCarrierRate?,
+                                selectedAdultSignatureRate: ShippingLabelCarrierRate?) {
+        return (selectedRate: selectedRate,
+                selectedSignatureRate: selectedSignatureRate,
+                selectedAdultSignatureRate: selectedAdultSignatureRate)
+    }
 }
 
 // MARK: - API Requests

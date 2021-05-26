@@ -283,10 +283,16 @@ private extension ShippingLabelFormViewController {
         }
 
         let vm = ShippingLabelCarriersViewModel(order: viewModel.order,
-                                                        originAddress: originAddress, destinationAddress: destinationAddress,
-                                                        packages: [selectedPackage])
+                                                originAddress: originAddress,
+                                                destinationAddress: destinationAddress,
+                                                packages: [selectedPackage])
 
-        let hostingVC = UIHostingController(rootView: ShippingLabelCarriers(viewModel: vm))
+        let carriersView = ShippingLabelCarriers(viewModel: vm) { (selectedRate,
+                                                                   selectedSignatureRate,
+                                                                   selectedAdultSignatureRate) in
+
+        }
+        let hostingVC = UIHostingController(rootView: carriersView)
         navigationController?.show(hostingVC, sender: nil)
     }
 }

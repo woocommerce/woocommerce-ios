@@ -1,8 +1,7 @@
 import AudioToolbox
 import UIKit
 
-/// Plays a sound and provides taptic feedback when a payment capture has been completed successfully
-/// https://www.youtube.com/watch?v=ewRjZoRtu0Y
+/// Plays a sound and provides haptic feedback when a payment capture has been completed successfully
 final class PaymentCaptureCelebration: NSObject {
     private var soundID: SystemSoundID = 0
 

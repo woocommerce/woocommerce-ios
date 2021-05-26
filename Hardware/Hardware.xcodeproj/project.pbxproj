@@ -867,7 +867,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -926,7 +926,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -944,6 +944,7 @@
 			baseConfigurationReference = 3CF9348BADD5E0518080A61A /* Pods-Hardware.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
@@ -971,6 +972,7 @@
 			baseConfigurationReference = 9726331F55A9621F2F887E13 /* Pods-Hardware.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
@@ -997,6 +999,7 @@
 			baseConfigurationReference = 1CC96A71F2937BCB7432766F /* Pods-HardwareTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = HardwareTests/Info.plist;
@@ -1017,6 +1020,7 @@
 			baseConfigurationReference = C61D1642BE09D1A1AD6AA9FA /* Pods-HardwareTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = HardwareTests/Info.plist;
@@ -1078,7 +1082,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -1096,6 +1100,7 @@
 			baseConfigurationReference = 0C16E0AAFF5A7B364BD4E171 /* Pods-Hardware.release-alpha.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
@@ -1122,6 +1127,7 @@
 			baseConfigurationReference = DB2B86965868C0EC25910D7D /* Pods-HardwareTests.release-alpha.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = HardwareTests/Info.plist;
@@ -1141,6 +1147,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AE60F16D43C20AD4523A61A5 /* Pods-SampleReceiptPrinter.debug.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				ENABLE_PREVIEWS = YES;
@@ -1161,6 +1168,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 02351FF56149ADCD11338B19 /* Pods-SampleReceiptPrinter.release.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				ENABLE_PREVIEWS = YES;
@@ -1181,6 +1189,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C810BBAD03E7D4ECFD29D7AC /* Pods-SampleReceiptPrinter.release-alpha.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				ENABLE_PREVIEWS = YES;

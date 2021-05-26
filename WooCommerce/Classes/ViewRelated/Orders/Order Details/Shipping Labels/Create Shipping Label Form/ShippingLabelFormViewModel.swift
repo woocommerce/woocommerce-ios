@@ -22,10 +22,22 @@ final class ShippingLabelFormViewModel {
 
     let siteID: Int64
     private(set) var order: Order
+
+    /// Address
+    ///
     private(set) var originAddress: ShippingLabelAddress?
     private(set) var destinationAddress: ShippingLabelAddress?
+
+    /// Packages
+    ///
     private(set) var packagesResponse: ShippingLabelPackagesResponse?
     private(set) var selectedPackageID: String?
+
+    /// Carrier and Rates
+    ///
+    private(set) var selectedRate: ShippingLabelCarrierRate?
+    private(set) var selectedSignatureRate: ShippingLabelCarrierRate?
+    private(set) var selectedAdultSignatureRate: ShippingLabelCarrierRate?
     var selectedPackage: ShippingLabelPackageSelected? {
         guard let packagesResponse = packagesResponse else {
             return nil
@@ -117,6 +129,14 @@ final class ShippingLabelFormViewModel {
             return
         }
         updateRowState(type: .packageDetails, dataState: .validated, displayMode: .editable)
+    }
+
+    func handleCarrierAndRatesValueChanges(selectedRate: ShippingLabelCarrierRate?,
+                                           selectedSignatureRate: ShippingLabelCarrierRate?,
+                                           selectedAdultSignatureRate: ShippingLabelCarrierRate?) {
+        self.selectedRate = selectedRate
+        self.selectedSignatureRate = selectedSignatureRate
+        self.selectedAdultSignatureRate = selectedAdultSignatureRate
     }
 
     private static func generateInitialSections() -> [Section] {

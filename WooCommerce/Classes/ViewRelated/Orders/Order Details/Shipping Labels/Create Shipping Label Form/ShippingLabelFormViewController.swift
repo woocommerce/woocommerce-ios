@@ -287,9 +287,12 @@ private extension ShippingLabelFormViewController {
                                                 destinationAddress: destinationAddress,
                                                 packages: [selectedPackage])
 
-        let carriersView = ShippingLabelCarriers(viewModel: vm) { (selectedRate,
-                                                                   selectedSignatureRate,
-                                                                   selectedAdultSignatureRate) in
+        let carriersView = ShippingLabelCarriers(viewModel: vm) { [weak self] (selectedRate,
+                                                                               selectedSignatureRate,
+                                                                               selectedAdultSignatureRate) in
+            self?.viewModel.handleCarrierAndRatesValueChanges(selectedRate: selectedRate,
+                                                              selectedSignatureRate: selectedSignatureRate,
+                                                              selectedAdultSignatureRate: selectedAdultSignatureRate)
 
         }
         let hostingVC = UIHostingController(rootView: carriersView)

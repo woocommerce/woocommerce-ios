@@ -99,6 +99,26 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertEqual(shippingLabelFormViewModel.totalPackageWeight, expectedPackageWeight)
     }
 
+    func test_handleCarrierAndRatesValueChanges_returns_updated_data() {
+        // Given
+        let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                                    originAddress: nil,
+                                                                    destinationAddress: nil)
+        XCTAssertNil(shippingLabelFormViewModel.selectedRate)
+        XCTAssertNil(shippingLabelFormViewModel.selectedSignatureRate)
+        XCTAssertNil(shippingLabelFormViewModel.selectedAdultSignatureRate)
+
+        // When
+        shippingLabelFormViewModel.handleCarrierAndRatesValueChanges(selectedRate: MockShippingLabelCarrierRate.makeRate(),
+                                                                     selectedSignatureRate: MockShippingLabelCarrierRate.makeRate(title: "UPS"),
+                                                                     selectedAdultSignatureRate: nil)
+
+        // Then
+        XCTAssertEqual(shippingLabelFormViewModel.selectedRate, MockShippingLabelCarrierRate.makeRate())
+        XCTAssertEqual(shippingLabelFormViewModel.selectedSignatureRate, MockShippingLabelCarrierRate.makeRate(title: "UPS"))
+        XCTAssertNil(shippingLabelFormViewModel.selectedAdultSignatureRate)
+    }
+
     func test_sections_returns_updated_rows_after_validating_origin_address() {
         // Given
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),

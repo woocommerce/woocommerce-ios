@@ -4,6 +4,7 @@ import Yosemite
 enum CardReaderSettingsUnknownViewModelDiscoveryState {
     case notSearching
     case searching
+    case failed(Error)
     case foundReader
     case connectingToReader
 }
@@ -77,7 +78,10 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
             onReaderDiscovered: { [weak self] cardReaders in
                 self?.didDiscoverReaders(cardReaders: cardReaders)
             },
-            onError: { error in
+            onError: { [weak self] error in
+                self?.discoveryState = .failed(error)
+                self?.updateProperties()
+                self?.didUpdate?()
                 ServiceLocator.analytics.track(.cardReaderDiscoveryFailed, withError: error)
             })
 
@@ -88,7 +92,7 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
     ///
     func didDiscoverReaders(cardReaders: [CardReader]) {
         /// If we are already presenting a foundReader alert to the user, ignore the found reader
-        guard discoveryState != .foundReader else {
+        guard case .searching = discoveryState else {
             return
         }
 

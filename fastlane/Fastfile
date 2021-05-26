@@ -17,9 +17,26 @@ def get_required_env(key)
   ENV[key]
 end
 
+def check_toolkit_update
+  plugin_name = 'fastlane-plugin-wpmreleasetoolkit'
+  UI.message('Checking for new version of the release toolkit...')
+  sh('bundle', 'outdated', plugin_name, '--porcelain') do |status, _, _|
+    break if status.success?
+
+    UI.important('The Release Toolkit you are using seems to be outdated. We suggest you to update to the latest version ASAP.')
+    if UI.interactive? && UI.confirm("Run \`bundle update #{plugin_name}\` now?")
+      sh('bundle', 'update', plugin_name)
+      UI.abort_with_message!("#{plugin_name} updated. Please restart your previous invocation of the \`#{lane_context[SharedValues::LANE_NAME]}\` lane to use the new toolkit.")
+    end
+  end
+end
+
 before_all do |lane|
   # Skip these checks/steps for test lane (not needed for testing)
   next if lane == :test_without_building
+
+  # Ensure we use the latest version of the toolkit
+  check_toolkit_update unless is_ci || ENV['FASTLANE_SKIP_TOOLKIT_UPDATE_CHECK']
 
   # Check that the env files exist
   unless is_ci || File.file?(USER_ENV_FILE_PATH)

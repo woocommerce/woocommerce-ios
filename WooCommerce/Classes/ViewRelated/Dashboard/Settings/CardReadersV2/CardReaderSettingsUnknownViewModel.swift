@@ -22,7 +22,11 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
 
     private var foundReader: CardReader?
 
-    var discoveryState: CardReaderSettingsUnknownViewModelDiscoveryState = .notSearching
+    var discoveryState: CardReaderSettingsUnknownViewModelDiscoveryState = .notSearching {
+        didSet {
+            didUpdate?()
+        }
+    }
     var foundReaderSerialNumber: String? {
         foundReader?.serial
     }
@@ -62,7 +66,6 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
     ///
     func startReaderDiscovery() {
         discoveryState = .searching
-        didUpdate?()
 
         ServiceLocator.analytics.track(.cardReaderDiscoveryTapped)
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
@@ -72,7 +75,6 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
             },
             onError: { [weak self] error in
                 self?.discoveryState = .failed(error)
-                self?.didUpdate?()
                 ServiceLocator.analytics.track(.cardReaderDiscoveryFailed, withError: error)
             })
 
@@ -102,14 +104,12 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
 
         foundReader = cardReader
         discoveryState = .foundReader
-        didUpdate?()
     }
 
     /// Dispatch a request to cancel reader discovery
     ///
     func cancelReaderDiscovery() {
         discoveryState = .notSearching
-        didUpdate?()
 
         let action = CardPresentPaymentAction.cancelCardReaderDiscovery() { _ in
         }
@@ -125,7 +125,6 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
         }
 
         discoveryState = .connectingToReader
-        didUpdate?()
 
         ServiceLocator.analytics.track(.cardReaderConnectionTapped)
         let action = CardPresentPaymentAction.connect(reader: foundReader) { result in
@@ -149,7 +148,6 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
     func continueSearch() {
         discoveryState = .searching
         foundReader = nil
-        didUpdate?()
     }
 
     /// Updates whether the view this viewModel is associated with should be shown or not

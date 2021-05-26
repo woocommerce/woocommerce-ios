@@ -71,7 +71,7 @@ extension ProductListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = itemAtIndexPath(indexPath)
         let product = lookUpProduct(by: item.productOrVariationID)
-        let addOns = itemAddOnsAttributes(item: item, product: product)
+        let addOns = itemAddOnsAttributes(item: item)
         let itemViewModel = ProductDetailsCellViewModel(item: item,
                                                         currency: viewModel.order.currency,
                                                         product: product,
@@ -127,8 +127,8 @@ private extension ProductListViewController {
     /// Returns the item attributes that can be identified as add-ons attributes.
     /// If the "view add-ons" feature is disabled an empty array will be returned.
     ///
-    func itemAddOnsAttributes(item: OrderItem, product: Product?) -> [OrderItemAttribute] {
-        guard let product = product, viewModel.dataSource.showAddOns else {
+    func itemAddOnsAttributes(item: OrderItem) -> [OrderItemAttribute] {
+        guard let product = lookUpProduct(by: item.productID), viewModel.dataSource.showAddOns else {
             return []
         }
 

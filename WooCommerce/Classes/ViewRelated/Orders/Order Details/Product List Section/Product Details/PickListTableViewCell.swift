@@ -112,6 +112,7 @@ extension PickListTableViewCell {
                                                        completion: nil)
         name = item.name
         quantity = item.quantity
+        viewAddOnsStackView.isHidden = !item.hasAddOns
 
         guard let skuText = item.sku else {
             skuLabel.isHidden = true
@@ -119,7 +120,6 @@ extension PickListTableViewCell {
         }
 
         sku = skuText
-        viewAddOnsStackView.isHidden = !item.hasAddOns
     }
 }
 

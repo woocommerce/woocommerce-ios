@@ -1,5 +1,0 @@
-Productvariaties ondersteunen slechts een afbeelding, dus als een productvariatie al een afbeelding heeft, wordt de optie weergegeven om deze te vervangen of te verwijderen. Je kunt geen extra afbeeldingen toevoegen.
-
-We hebben meldingen ontvangen van crashes tijdens het selecteren van afbeeldingen uit de mediabibliotheek. Dit probleem deed zich voor bij bibliotheken met een specifiek aantal afbeeldingen. Dit probleem is verholpen.
-
-We hebben ook een foutmelding verbeterd die werd getoond wanneer een klant inlogde bij een site met een offline-apparaat, een ongeldig SSL-certificaat of een geblokkeerde XML-RPC. De vernieuwde melding maakt het eenvoudiger om hun login-probleem op te lossen.

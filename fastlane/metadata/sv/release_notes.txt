@@ -1,5 +1,3 @@
-Produktvariationer har endast stöd för en bild, så om en produktvariation redan har en bild kommer du att ha möjlighet att byta ut eller ta bort den, men du kommer inte att kunna lägga till ytterligare en bild.
+Om du använder tillägget WooCommerce-produkttillägg (skapat av WooCommerce) och har velat se den informationen när du visar en beställning så kan du känna dig nöjd! Vi har lagt till experimentellt stöd i appen för att visa dessa tillägg i beställningar. Om du vill testa kan du bege dig till Experimentella funktioner i Inställningarna och aktivera det. Skicka oss gärna din feedback om upplevelsen!
 
-Vi har fått rapporter om krascher vid val av bilder från mediabiblioteket. Dessa krascher uppstod med bibliotek som hade ett specifikt antal bilder. Detta problem har åtgärdats.
-
-Vi har också förbättrat ett felmeddelande som visades när en kund loggade in på en webbplats med en offline-enhet, ett ogiltigt SSL-certifikat eller ett blockerat XML-RPC. Det uppdaterade meddelandet gör det enklare att felsöka inloggningsproblemet.
+I versionen efter den här kommer vi även att ändra så vi endast stöder iOS 14 eller senare. Om du vill fortsätta att få uppdateringar av WooCommerce-appen måste du uppgradera enheten till iOS 14.

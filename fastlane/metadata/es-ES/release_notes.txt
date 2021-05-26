@@ -1,5 +1,3 @@
-Las variaciones de producto solo admiten una imagen. Si una variación ya tiene una imagen, verás una opción para sustituirla o eliminarla, pero no podrás añadir otra nueva.
+Si utilizas la extensión WooCommerce Product Add-ons (creada por WooCommerce) y estabas deseando poder ver toda esa información al visualizar un pedido, ¡tus deseos se han hecho realidad! Hemos añadido compatibilidad experimental a la aplicación para que muestre esos complementos en los pedidos. Si quieres probarla, ve a Funciones experimentales en la Configuración para activarla. Envíanos tus comentarios contándonos cómo ha sido tu experiencia.
 
-Hemos recibido informes de fallos al seleccionar imágenes de la biblioteca multimedia, que se producían con bibliotecas que tenían un número concreto de imágenes. El problema se ha corregido.
-
-También hemos mejorado un mensaje de error que se mostraba cuando un cliente accedía a un sitio con un dispositivo sin conexión, un certificado SSL no válido o un XML-RPC bloqueado. Con los nuevos mensajes, es más sencillo resolver los problemas de acceso.
+Además, el próximo lanzamiento después de este solo será compatible con iOS 14 o versiones posteriores. Si quieres seguir recibiendo las actualizaciones de la aplicación de WooCommerce, actualiza tu dispositivo a iOS 14.

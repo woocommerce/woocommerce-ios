@@ -202,7 +202,7 @@ private extension ShippingLabelFormViewController {
         cell.configure(state: row.cellState,
                        icon: .priceImage,
                        title: Localization.shippingCarrierAndRatesCellTitle,
-                       body: "To be implemented",
+                       body: viewModel.getCarrierAndRatesBody(),
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
             self?.displayCarriersAndRatesVC()
         }

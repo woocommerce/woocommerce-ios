@@ -137,6 +137,12 @@ final class ShippingLabelFormViewModel {
         self.selectedRate = selectedRate
         self.selectedSignatureRate = selectedSignatureRate
         self.selectedAdultSignatureRate = selectedAdultSignatureRate
+
+        guard selectedRate != nil else {
+            updateRowState(type: .shippingCarrierAndRates, dataState: .pending, displayMode: .editable)
+            return
+        }
+        updateRowState(type: .shippingCarrierAndRates, dataState: .validated, displayMode: .editable)
     }
 
     private static func generateInitialSections() -> [Section] {
@@ -164,6 +170,28 @@ final class ShippingLabelFormViewModel {
         let packageWeight = formatter.formatWeight(weight: totalPackageWeight)
 
         return packageTitle + "\n" + String.localizedStringWithFormat(Localization.totalPackageWeight, packageWeight)
+    }
+
+    func getCarrierAndRatesBody() -> String {
+        guard let selectedRate = selectedRate else {
+            return Localization.carrierAndRatesPlaceholder
+        }
+
+        var rate: Double = selectedRate.retailRate
+        if let selectedSignatureRate = selectedSignatureRate {
+            rate = selectedSignatureRate.retailRate
+        }
+        else if let selectedAdultSignatureRate = selectedAdultSignatureRate {
+            rate = selectedAdultSignatureRate.retailRate
+        }
+
+        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+        let price = currencyFormatter.formatAmount(Decimal(rate)) ?? ""
+
+        let formatString = selectedRate.deliveryDays == 1 ? Localization.businessDaySingular : Localization.businessDaysPlural
+        let shippingDays = String(format: formatString, selectedRate.deliveryDays)
+
+        return selectedRate.title + "\n" + price + " - " + shippingDays
     }
 }
 
@@ -369,5 +397,11 @@ private extension ShippingLabelFormViewModel {
                                                                  comment: "Placeholder in Shipping Label form for the Package Details row.")
         static let totalPackageWeight = NSLocalizedString("Total package weight: %1$@",
                                                           comment: "Total package weight label in Shipping Label form. %1$@ is a placeholder for the weight")
+        static let carrierAndRatesPlaceholder = NSLocalizedString("Select your shipping carrier and rates",
+                                                                  comment: "Placeholder in Shipping Label form for the Carrier and Rates row.")
+        static let businessDaySingular = NSLocalizedString("%1$d business day",
+                                                           comment: "Singular format of number of business day in Shipping Labels > Carrier and Rates")
+        static let businessDaysPlural = NSLocalizedString("%1$d business days",
+                                                          comment: "Plural format of number of business days in Shipping Labels > Carrier and Rates")
     }
 }

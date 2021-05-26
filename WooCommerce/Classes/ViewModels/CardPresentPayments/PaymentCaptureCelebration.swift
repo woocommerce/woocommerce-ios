@@ -1,16 +1,10 @@
-import AVFoundation
+import AudioToolbox
 import UIKit
 
 /// Plays a sound and provides taptic feedback when a payment capture has been completed successfully
 /// https://www.youtube.com/watch?v=ewRjZoRtu0Y
 final class PaymentCaptureCelebration: NSObject {
-    private var audioPlayer: AVAudioPlayer?
-    private var hapticGenerator: UINotificationFeedbackGenerator? = {
-        let generator = UINotificationFeedbackGenerator()
-        generator.prepare()
-
-        return generator
-    }()
+    private var soundID: SystemSoundID = 0
 
     func celebrate() {
         playSound()
@@ -25,25 +19,13 @@ private extension PaymentCaptureCelebration {
         }
 
         let url = URL(fileURLWithPath: path)
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: url)
-            audioPlayer?.delegate = self
-            audioPlayer?.play()
-        } catch {
-            DDLogError("Error: failed to play sound on payment capture completion")
-        }
-
+        AudioServicesCreateSystemSoundID(url as CFURL, &soundID)
+        AudioServicesPlaySystemSound(soundID)
     }
 
     func shakeDevice() {
-        hapticGenerator?.notificationOccurred(.success)
-    }
-}
-
-
-extension PaymentCaptureCelebration: AVAudioPlayerDelegate {
-    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        audioPlayer = nil
-        hapticGenerator = nil
+        let generator = UINotificationFeedbackGenerator()
+        generator.prepare()
+        generator.notificationOccurred(.success)
     }
 }

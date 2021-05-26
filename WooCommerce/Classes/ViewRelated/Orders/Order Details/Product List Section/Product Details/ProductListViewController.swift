@@ -71,14 +71,17 @@ extension ProductListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = itemAtIndexPath(indexPath)
         let product = lookUpProduct(by: item.productOrVariationID)
-        let showAddOnsButton = shouldShowDisplayAddOnButton(item: item, product: product)
+        let addOns = itemAddOnsAttributes(item: item, product: product)
         let itemViewModel = ProductDetailsCellViewModel(item: item,
                                                         currency: viewModel.order.currency,
                                                         product: product,
-                                                        hasAddOns: showAddOnsButton)
+                                                        hasAddOns: addOns.isNotEmpty)
         let cell = tableView.dequeueReusableCell(PickListTableViewCell.self, for: indexPath)
         cell.selectionStyle = .default
         cell.configure(item: itemViewModel, imageService: imageService)
+        cell.onViewAddOnsTouchUp = { [weak self] in
+            self?.itemAddOnsButtonTapped(addOns: addOns)
+        }
 
         return cell
     }
@@ -121,16 +124,16 @@ private extension ProductListViewController {
         return products?.filter({ $0.productID == productID }).first
     }
 
-    /// Returns `true` if the add-on feature is enabled and if the order item has add-ons associated with it.
+    /// Returns the item attributes that can be identified as add-ons attributes.
+    /// If the "view add-ons" feature is disabled an empty array will be returned.
     ///
-    func shouldShowDisplayAddOnButton(item: OrderItem, product: Product?) -> Bool {
+    func itemAddOnsAttributes(item: OrderItem, product: Product?) -> [OrderItemAttribute] {
         guard let product = product, viewModel.dataSource.showAddOns else {
-            return false
+            return []
         }
 
         let globalAddOns = viewModel.dataSource.addOnGroups
-        let useCase = AddOnCrossreferenceUseCase(orderItemAttributes: item.attributes, product: product, addOnGroups: globalAddOns)
-        return useCase.addOnsAttributes().isNotEmpty
+        return AddOnCrossreferenceUseCase(orderItemAttributes: item.attributes, product: product, addOnGroups: globalAddOns).addOnsAttributes()
     }
 
     /// Displays the product details screen for the provided OrderItem
@@ -141,6 +144,13 @@ private extension ProductListViewController {
                                                                forceReadOnly: true)
         let navController = WooNavigationController(rootViewController: loaderViewController)
         present(navController, animated: true, completion: nil)
+    }
+
+    private func itemAddOnsButtonTapped(addOns: [OrderItemAttribute]) {
+        let addOnsViewModel = OrderAddOnListI1ViewModel(attributes: addOns)
+        let addOnsController = OrderAddOnsListViewController(viewModel: addOnsViewModel)
+        let navigationController = WooNavigationController(rootViewController: addOnsController)
+        present(navigationController, animated: true, completion: nil)
     }
 }
 

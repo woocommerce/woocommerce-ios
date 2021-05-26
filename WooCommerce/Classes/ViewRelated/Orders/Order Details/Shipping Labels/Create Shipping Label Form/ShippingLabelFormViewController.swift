@@ -103,6 +103,10 @@ extension ShippingLabelFormViewController: UITableViewDelegate {
         case Row(type: .packageDetails, dataState: .validated, displayMode: .editable):
             displayPackageDetailsVC(selectedPackageID: viewModel.selectedPackageID,
                                     totalPackageWeight: viewModel.totalPackageWeight)
+        case Row(type: .shippingCarrierAndRates, dataState: .validated, displayMode: .editable):
+            displayCarriersAndRatesVC(selectedRate: viewModel.selectedRate,
+                                      selectedSignatureRate: viewModel.selectedSignatureRate,
+                                      selectedAdultSignatureRate: viewModel.selectedAdultSignatureRate)
         default:
             break
         }
@@ -204,7 +208,9 @@ private extension ShippingLabelFormViewController {
                        title: Localization.shippingCarrierAndRatesCellTitle,
                        body: viewModel.getCarrierAndRatesBody(),
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
-            self?.displayCarriersAndRatesVC()
+            self?.displayCarriersAndRatesVC(selectedRate: self?.viewModel.selectedRate,
+                                            selectedSignatureRate: self?.viewModel.selectedSignatureRate,
+                                            selectedAdultSignatureRate: self?.viewModel.selectedAdultSignatureRate)
         }
     }
 
@@ -275,7 +281,9 @@ private extension ShippingLabelFormViewController {
         navigationController?.show(hostingVC, sender: nil)
     }
 
-    func displayCarriersAndRatesVC() {
+    func displayCarriersAndRatesVC(selectedRate: ShippingLabelCarrierRate?,
+                                   selectedSignatureRate: ShippingLabelCarrierRate?,
+                                   selectedAdultSignatureRate: ShippingLabelCarrierRate?) {
         guard let originAddress = viewModel.originAddress,
               let destinationAddress = viewModel.destinationAddress,
               let selectedPackage = viewModel.selectedPackage else {
@@ -285,7 +293,10 @@ private extension ShippingLabelFormViewController {
         let vm = ShippingLabelCarriersViewModel(order: viewModel.order,
                                                 originAddress: originAddress,
                                                 destinationAddress: destinationAddress,
-                                                packages: [selectedPackage])
+                                                packages: [selectedPackage],
+                                                selectedRate: selectedRate,
+                                                selectedSignatureRate: selectedSignatureRate,
+                                                selectedAdultSignatureRate: selectedAdultSignatureRate)
 
         let carriersView = ShippingLabelCarriers(viewModel: vm) { [weak self] (selectedRate,
                                                                                selectedSignatureRate,

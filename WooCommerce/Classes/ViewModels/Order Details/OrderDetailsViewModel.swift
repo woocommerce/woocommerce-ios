@@ -3,6 +3,7 @@ import UIKit
 import Gridicons
 import Yosemite
 import MessageUI
+import Combine
 
 final class OrderDetailsViewModel {
     private let paymentOrchestrator = PaymentCaptureOrchestrator()
@@ -529,10 +530,18 @@ extension OrderDetailsViewModel {
         stores.dispatch(deleteTrackingAction)
     }
 
-    func isReadyToCollectPayment(onCompletion: @escaping (Bool) -> Void) {
-        let checkConnectedAction = CardPresentPaymentAction.isReadyToCollectPayment(onCompletion: onCompletion)
+    /// Returns a publisher that emits an initial value if there is no reader connected and completes as soon as a
+    /// reader connects.
+    func cardReaderAvailable() -> AnyPublisher<[CardReader], Never> {
+        Future<AnyPublisher<[CardReader], Never>, Never> { [stores] promise in
+            let action = CardPresentPaymentAction.checkCardReaderConnected(onCompletion: { publisher in
+                promise(.success(publisher))
+            })
 
-        ServiceLocator.stores.dispatch(checkConnectedAction)
+            stores.dispatch(action)
+        }
+        .switchToLatest()
+        .eraseToAnyPublisher()
     }
 
     /// We are passing the ReceiptParameters as part of the completon block

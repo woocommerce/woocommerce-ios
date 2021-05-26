@@ -70,7 +70,7 @@ GH_ORG_NAME="woocommerce"
   desc "Creates a new release branch from the current develop"
   lane :code_freeze do | options |
     old_version = ios_codefreeze_prechecks(options)
-    
+
     ios_bump_version_release()
     new_version = ios_get_app_version()
     ios_update_release_notes(new_version: new_version)
@@ -130,8 +130,8 @@ GH_ORG_NAME="woocommerce"
       "app_store_screenshot-5" => File.join(source_metadata_folder, "promo_screenshot_5.txt"),
     }
 
-    ios_update_metadata_source(po_file_path: prj_folder + "/WooCommerce/Resources/AppStoreStrings.pot", 
-      source_files: files, 
+    ios_update_metadata_source(po_file_path: prj_folder + "/WooCommerce/Resources/AppStoreStrings.pot",
+      source_files: files,
       release_version: options[:version])
   end
 
@@ -164,7 +164,7 @@ GH_ORG_NAME="woocommerce"
   #####################################################################################
   # new_hotfix_release
   # -----------------------------------------------------------------------------------
-  # This lane creates the release branch for a new hotfix release. 
+  # This lane creates the release branch for a new hotfix release.
   # -----------------------------------------------------------------------------------
   # Usage:
   # bundle exec fastlane new_hotfix_release [skip_confirm:<skip confirm>] [version:<version>]
@@ -182,13 +182,13 @@ GH_ORG_NAME="woocommerce"
   #####################################################################################
   # finalize_hotfix_release
   # -----------------------------------------------------------------------------------
-  # This lane finalizes the hotfix branch. 
+  # This lane finalizes the hotfix branch.
   # -----------------------------------------------------------------------------------
   # Usage:
   # bundle exec fastlane finalize_hotfix_release [skip_confirm:<skip confirm>]
   #
   # Example:
-  # bundle exec fastlane finalize_hotfix_release skip_confirm:true  
+  # bundle exec fastlane finalize_hotfix_release skip_confirm:true
   #####################################################################################
   desc "Creates a new hotfix branch from the given tag"
   lane :finalize_hotfix_release do | options |
@@ -200,15 +200,15 @@ GH_ORG_NAME="woocommerce"
   #####################################################################################
   # finalize_release
   # -----------------------------------------------------------------------------------
-  # This lane finalize a release: updates store metadata, pushes the final tag and  
+  # This lane finalize a release: updates store metadata, pushes the final tag and
   # cleans all the temp ones
   # -----------------------------------------------------------------------------------
   # Usage:
-  # bundle exec fastlane finalize_release [skip_confirm:<skip confirm>] [version:<version>] 
+  # bundle exec fastlane finalize_release [skip_confirm:<skip confirm>] [version:<version>]
   #
   # Example:
-  # bundle exec fastlane finalize_release 
-  # bundle exec fastlane finalize_release skip_confirm:true 
+  # bundle exec fastlane finalize_release
+  # bundle exec fastlane finalize_release skip_confirm:true
   #####################################################################################
   desc "Removes all the temp tags and puts the final one"
   lane :finalize_release do | options |
@@ -234,20 +234,20 @@ GH_ORG_NAME="woocommerce"
   #####################################################################################
   # build_and_upload_release
   # -----------------------------------------------------------------------------------
-  # This lane builds the app and uploads it for distribution 
+  # This lane builds the app and uploads it for distribution
   # -----------------------------------------------------------------------------------
   # Usage:
   # bundle exec fastlane build_and_upload_release [skip_confirm:<skip confirm>]
   #  [create_gh_release:<create release on GH>]
   #
   # Example:
-  # bundle exec fastlane build_and_upload_release 
-  # bundle exec fastlane build_and_upload_release skip_confirm:true 
+  # bundle exec fastlane build_and_upload_release
+  # bundle exec fastlane build_and_upload_release skip_confirm:true
   # bundle exec fastlane build_and_upload_release create_gh_release:true
   #####################################################################################
   desc "Builds and uploads for distribution"
   lane :build_and_upload_release do | options |
-    ios_build_prechecks(skip_confirm: options[:skip_confirm], 
+    ios_build_prechecks(skip_confirm: options[:skip_confirm],
       internal: false,
       external: true)
     ios_build_preflight()
@@ -265,8 +265,8 @@ GH_ORG_NAME="woocommerce"
   #####################################################################################
   lane :trigger_beta_build do | options |
     circleci_trigger_job(
-      circle_ci_token: ENV["CIRCLE_CI_AUTH_TOKEN"], 
-      repository: REPOSITORY_NAME, 
+      circle_ci_token: ENV["CIRCLE_CI_AUTH_TOKEN"],
+      repository: REPOSITORY_NAME,
       organization: GH_ORG_NAME,
       branch: options[:branch_to_build],
       job_params: {"beta_build" => true}
@@ -284,8 +284,8 @@ GH_ORG_NAME="woocommerce"
   #####################################################################################
   lane :trigger_release_build do | options |
     circleci_trigger_job(
-      circle_ci_token: ENV["CIRCLE_CI_AUTH_TOKEN"], 
-      repository: REPOSITORY_NAME, 
+      circle_ci_token: ENV["CIRCLE_CI_AUTH_TOKEN"],
+      repository: REPOSITORY_NAME,
       organization: GH_ORG_NAME,
       branch: options[:branch_to_build],
       job_params: {"release_build" => true}
@@ -295,15 +295,15 @@ GH_ORG_NAME="woocommerce"
   #####################################################################################
   # build_and_upload_itc
   # -----------------------------------------------------------------------------------
-  # This lane builds the app and upload it for external distribution  
+  # This lane builds the app and upload it for external distribution
   # -----------------------------------------------------------------------------------
   # Usage:
   # bundle exec fastlane build_and_upload_itc [skip_confirm:<skip confirm>] [create_release:<Create release on GH> ]
   #
   # Example:
-  # bundle exec fastlane build_and_upload_itc 
-  # bundle exec fastlane build_and_upload_itc skip_confirm:true 
-  # bundle exec fastlane build_and_upload_itc create_release:true 
+  # bundle exec fastlane build_and_upload_itc
+  # bundle exec fastlane build_and_upload_itc skip_confirm:true
+  # bundle exec fastlane build_and_upload_itc create_release:true
   #####################################################################################
   desc "Builds and uploads for distribution"
   lane :build_and_upload_itc do | options |
@@ -313,12 +313,12 @@ GH_ORG_NAME="woocommerce"
     appstore_code_signing
 
     gym(scheme: "WooCommerce", workspace: "./WooCommerce.xcworkspace",
-      clean: true, export_team_id: get_required_env("EXT_EXPORT_TEAM_ID"), 
+      clean: true, export_team_id: get_required_env("EXT_EXPORT_TEAM_ID"),
       export_options: {
         method: "app-store"
       }
     )
-    
+
     testflight(skip_waiting_for_build_processing: true)
     sh("cd .. && rm WooCommerce.ipa")
 
@@ -335,27 +335,27 @@ GH_ORG_NAME="woocommerce"
       zip(path: lane_context[SharedValues::XCODEBUILD_ARCHIVE], output_path: archive_zip_path)
 
       version = ios_get_app_version()
-      create_release(repository:GHHELPER_REPO, 
-        version: version, 
+      create_release(repository:GHHELPER_REPO,
+        version: version,
         release_notes_file_path:'./WooCommerce/Resources/release_notes.txt',
         release_assets:"#{archive_zip_path}"
       )
 
-      sh("rm #{archive_zip_path}") 
+      sh("rm #{archive_zip_path}")
     end
   end
 
   #####################################################################################
   # build_and_upload_installable_build
   # -----------------------------------------------------------------------------------
-  # This lane builds the app and upload it for adhoc testing 
+  # This lane builds the app and upload it for adhoc testing
   # -----------------------------------------------------------------------------------
   # Usage:
   # bundle exec fastlane build_and_upload_installable_build [version_long:<version_long>]
   #
   # Example:
-  # bundle exec fastlane build_and_upload_installable_build 
-  # bundle exec fastlane build_and_upload_installable_build build_number:123 
+  # bundle exec fastlane build_and_upload_installable_build
+  # bundle exec fastlane build_and_upload_installable_build build_number:123
   #####################################################################################
   desc "Builds and uploads an installable build"
   lane :build_and_upload_installable_build do | options |
@@ -386,17 +386,17 @@ GH_ORG_NAME="woocommerce"
       export_options: { method: "enterprise", iCloudContainerEnvironment: 'Production' })
 
     sh("mv ../build/WooCommerce.ipa \"../build/WooCommerce Alpha.ipa\"")
-    
+
     # NOTE: "ipa" parameter is deprecated in appcenter_upload 1.6.0, but there's a bug in the action that
-    # makes the default gym output override the "file" parameter. 
+    # makes the default gym output override the "file" parameter.
     appcenter_upload(
       api_token: get_required_env("APPCENTER_API_TOKEN"),
       owner_name: "automattic",
-      owner_type: "organization", 
+      owner_type: "organization",
       app_name: "WooCommerce-Installable-Builds",
       ipa: "build/WooCommerce Alpha.ipa",
       destinations: "All-users-of-WooCommerce-Installable-Builds",
-      notify_testers: false 
+      notify_testers: false
     )
 
     # Install SentryCLI prior to trying to upload dSYMs
@@ -425,7 +425,7 @@ GH_ORG_NAME="woocommerce"
   # This lane builds the app for testing
   # -----------------------------------------------------------------------------------
   # Usage:
-  # bundle exec fastlane build_for_testing 
+  # bundle exec fastlane build_for_testing
   #####################################################################################
   desc "Build for Testing"
   lane :build_for_testing do | options |
@@ -442,10 +442,10 @@ GH_ORG_NAME="woocommerce"
 
   ########################################################################
   # Screenshot Lanes
-  ########################################################################  
+  ########################################################################
   desc "Build Screenshots"
   lane :build_screenshots do
-    
+
     # Ensure we're using the latest Pods
     sh('bundle exec pod install --verbose')
 
@@ -595,7 +595,7 @@ GH_ORG_NAME="woocommerce"
 
     metadata_locales = glotpress_locales
 
-    gp_downloadmetadata(project_url: "https://translate.wordpress.com/projects/woocommerce%2Fwoocommerce-ios%2Frelease-notes/", 
+    gp_downloadmetadata(project_url: "https://translate.wordpress.com/projects/woocommerce%2Fwoocommerce-ios%2Frelease-notes/",
       target_files: files,
       locales: metadata_locales,
       source_locale: "en-US",
@@ -613,7 +613,7 @@ GH_ORG_NAME="woocommerce"
       "zh-tw" => "zh-Hant"
     }.each do |source, destination|
       source_dir = File.join(Dir.pwd, "metadata", source)
-      Dir.children(source_dir).each do |file| 
+      Dir.children(source_dir).each do |file|
         source_file = File.join(source_dir, file)
         destination_file = File.join(Dir.pwd, "metadata", destination, file)
         FileUtils.mv(source_file, destination_file)
@@ -661,7 +661,7 @@ GH_ORG_NAME="woocommerce"
      metadata_directory = File.join(Dir.pwd, "metadata")
      output_directory = File.join(Dir.pwd, "/promo_screenshots")
 
-     # Run screenshots generator tool 
+     # Run screenshots generator tool
      promo_screenshots(
        orig_folder: original_screenshot_directory,
        metadata_folder: metadata_directory,
@@ -676,14 +676,14 @@ GH_ORG_NAME="woocommerce"
   #####################################################################################
   # update_certs_and_profiles
   # -----------------------------------------------------------------------------------
-  # This lane downloads all the required certs and profiles and, 
+  # This lane downloads all the required certs and profiles and,
   # if not run on CI it creates the missing ones.
   # -----------------------------------------------------------------------------------
   # Usage:
-  # bundle exec fastlane update_certs_and_profiles 
+  # bundle exec fastlane update_certs_and_profiles
   #
   # Example:
-  # bundle exec fastlane update_certs_and_profiles 
+  # bundle exec fastlane update_certs_and_profiles
   #####################################################################################
   lane :update_certs_and_profiles do | options |
     alpha_code_signing
@@ -711,7 +711,7 @@ GH_ORG_NAME="woocommerce"
 
   ########################################################################
   # Helper Lanes
-  ########################################################################  
+  ########################################################################
   desc "Get a list of pull requests from the `milestone`"
   lane :get_pullrequests_list do | options |
     get_prs_list(repository:GHHELPER_REPO, milestone:"#{options[:milestone]}", report_path:"#{File.expand_path('~')}/wcios_prs_list.txt")
@@ -731,7 +731,7 @@ GH_ORG_NAME="woocommerce"
     begin
       FileUtils.rm_f(path)
       file = File.new(path, "w")
-      file.write(contents) 
+      file.write(contents)
     rescue IOError => e
       UI.crash(e)
     ensure
@@ -799,7 +799,7 @@ end
     }.first
 
     UI.user_error!("Unable to find .xctestrun file") unless testPlanPath != nil and File.exists? (testPlanPath)
-    
+
     multi_scan(
       workspace: "WooCommerce.xcworkspace",
       scheme: "WooCommerce",

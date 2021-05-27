@@ -595,6 +595,51 @@ extension ShippingLabel {
     }
 }
 
+extension ShippingLabelAccountSettings {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        canManagePayments: CopiableProp<Bool> = .copy,
+        canEditSettings: CopiableProp<Bool> = .copy,
+        storeOwnerDisplayName: CopiableProp<String> = .copy,
+        storeOwnerUsername: CopiableProp<String> = .copy,
+        storeOwnerWpcomUsername: CopiableProp<String> = .copy,
+        storeOwnerWpcomEmail: CopiableProp<String> = .copy,
+        paymentMethods: CopiableProp<[ShippingLabelPaymentMethod]> = .copy,
+        selectedPaymentMethodID: CopiableProp<Int64> = .copy,
+        isEmailReceiptsEnabled: CopiableProp<Bool> = .copy,
+        paperSize: CopiableProp<ShippingLabelPaperSize> = .copy,
+        lastSelectedPackageID: CopiableProp<String> = .copy
+    ) -> ShippingLabelAccountSettings {
+        let siteID = siteID ?? self.siteID
+        let canManagePayments = canManagePayments ?? self.canManagePayments
+        let canEditSettings = canEditSettings ?? self.canEditSettings
+        let storeOwnerDisplayName = storeOwnerDisplayName ?? self.storeOwnerDisplayName
+        let storeOwnerUsername = storeOwnerUsername ?? self.storeOwnerUsername
+        let storeOwnerWpcomUsername = storeOwnerWpcomUsername ?? self.storeOwnerWpcomUsername
+        let storeOwnerWpcomEmail = storeOwnerWpcomEmail ?? self.storeOwnerWpcomEmail
+        let paymentMethods = paymentMethods ?? self.paymentMethods
+        let selectedPaymentMethodID = selectedPaymentMethodID ?? self.selectedPaymentMethodID
+        let isEmailReceiptsEnabled = isEmailReceiptsEnabled ?? self.isEmailReceiptsEnabled
+        let paperSize = paperSize ?? self.paperSize
+        let lastSelectedPackageID = lastSelectedPackageID ?? self.lastSelectedPackageID
+
+        return ShippingLabelAccountSettings(
+            siteID: siteID,
+            canManagePayments: canManagePayments,
+            canEditSettings: canEditSettings,
+            storeOwnerDisplayName: storeOwnerDisplayName,
+            storeOwnerUsername: storeOwnerUsername,
+            storeOwnerWpcomUsername: storeOwnerWpcomUsername,
+            storeOwnerWpcomEmail: storeOwnerWpcomEmail,
+            paymentMethods: paymentMethods,
+            selectedPaymentMethodID: selectedPaymentMethodID,
+            isEmailReceiptsEnabled: isEmailReceiptsEnabled,
+            paperSize: paperSize,
+            lastSelectedPackageID: lastSelectedPackageID
+        )
+    }
+}
+
 extension ShippingLabelAddress {
     public func copy(
         company: CopiableProp<String> = .copy,

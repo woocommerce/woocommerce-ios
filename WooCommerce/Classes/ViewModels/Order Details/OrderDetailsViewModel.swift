@@ -3,9 +3,10 @@ import UIKit
 import Gridicons
 import Yosemite
 import MessageUI
+import Combine
 
 final class OrderDetailsViewModel {
-    private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+    private let paymentOrchestrator = PaymentCaptureOrchestrator()
     private let stores: StoresManager
 
     private(set) var order: Order
@@ -83,6 +84,16 @@ final class OrderDetailsViewModel {
         }
     }
 
+    /// Name of the user we will be collecting car present payments from
+    ///
+    var collectPaymentFrom: String {
+        guard let name = order.billingAddress?.firstName else {
+            return "Collect payment"
+        }
+
+        return "Collect payment from \(name)"
+    }
+
     /// Closure to be executed when the UI needs to be reloaded.
     /// That could happen, for example, when new incoming data is detected
     ///
@@ -107,6 +118,26 @@ final class OrderDetailsViewModel {
             dataSource.onShippingLabelMoreMenuTapped = onShippingLabelMoreMenuTapped
         }
     }
+
+    /// The customer's email address, if available
+    ///
+    var customerEmail: String? {
+        order.billingAddress?.email
+    }
+
+    /// Subject for the email containing a receipt generated after a card present payment has been captured
+    ///
+    var paymentReceiptEmailSubject: String {
+        guard let storeName = stores.sessionManager.defaultSite?.name else {
+            return Localization.emailSubjectWithoutStoreName
+        }
+
+        return String.localizedStringWithFormat(Localization.emailSubjectWithStoreName, storeName)
+    }
+
+    private var paymentsAccount: WCPayAccount? = nil
+
+    private var receipt: CardPresentReceiptParameters? = nil
 
     /// Helpers
     ///
@@ -247,6 +278,14 @@ extension OrderDetailsViewModel {
             }
             productListVC.viewModel = self
             viewController.navigationController?.pushViewController(productListVC, animated: true)
+        case .seeReceipt:
+            ServiceLocator.analytics.track(.receiptViewTapped)
+            guard let receipt = receipt else {
+                return
+            }
+            let viewModel = ReceiptViewModel(order: order, receipt: receipt)
+            let receiptViewController = ReceiptViewController(viewModel: viewModel)
+            viewController.navigationController?.pushViewController(receiptViewController, animated: true)
         case .refund:
             ServiceLocator.analytics.track(.orderDetailRefundDetailTapped)
             guard let refund = dataSource.refund(at: indexPath) else {
@@ -388,6 +427,20 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
+    func syncSavedReceipts(onCompletion: ((Error?) -> ())? = nil) {
+        let action = ReceiptAction.loadReceipt(order: order) { [weak self] result in
+            switch result {
+            case .success(let parameters):
+                self?.receipt = parameters
+                self?.dataSource.shouldShowReceipts = true
+            case .failure:
+                self?.dataSource.shouldShowReceipts = false
+            }
+            onCompletion?(nil)
+        }
+        stores.dispatch(action)
+    }
+
     func checkShippingLabelCreationEligibility(onCompletion: (() -> Void)? = nil) {
         // No orders are eligible for shipping label creation unless feature flag for Milestones 2 & 3 is enabled
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsM2M3) else {
@@ -407,6 +460,33 @@ extension OrderDetailsViewModel {
             onCompletion?()
         }
         stores.dispatch(action)
+    }
+
+    func checkCardPaymentEligibility(onCompletion: (() -> Void)? = nil) {
+        // Orders are eligible for card present payment if:
+        // the status is pending or on hold
+        // and
+        // the payment method is none or cash on delivery
+        // and
+        // if the account is eligible for card present payments
+        let action = WCPayAction.loadAccount(siteID: order.siteID) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+
+            switch result {
+            case .failure:
+                self.dataSource.isEligibleForCardPresentPayment = false
+            case .success(let account):
+                self.paymentsAccount = account
+                self.dataSource.isEligibleForCardPresentPayment = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) &&
+                    self.isOrderEligibleForCardPayment() && account.isCardPresentEligible
+            }
+
+            onCompletion?()
+        }
+
+        ServiceLocator.stores.dispatch(action)
     }
 
     func checkOrderAddOnFeatureSwitchState(onCompletion: (() -> Void)? = nil) {
@@ -448,5 +528,78 @@ extension OrderDetailsViewModel {
         }
 
         stores.dispatch(deleteTrackingAction)
+    }
+
+    /// Returns a publisher that emits an initial value if there is no reader connected and completes as soon as a
+    /// reader connects.
+    func cardReaderAvailable() -> AnyPublisher<[CardReader], Never> {
+        Future<AnyPublisher<[CardReader], Never>, Never> { [stores] promise in
+            let action = CardPresentPaymentAction.checkCardReaderConnected(onCompletion: { publisher in
+                promise(.success(publisher))
+            })
+
+            stores.dispatch(action)
+        }
+        .switchToLatest()
+        .eraseToAnyPublisher()
+    }
+
+    /// We are passing the ReceiptParameters as part of the completon block
+    /// We do so at this point for testing purposes.
+    /// When we implement persistance, the receipt metadata would be persisted
+    /// to Storage, associated to an order. We would not need to propagate
+    /// that object outside of Yosemite.
+    func collectPayment(onPresentMessage: @escaping (String) -> Void,
+                        onClearMessage: @escaping () -> Void,
+                        onProcessingMessage: @escaping () -> Void,
+                        onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
+        paymentOrchestrator.collectPayment(for: self.order,
+                                           paymentsAccount: self.paymentsAccount,
+                                           onPresentMessage: onPresentMessage,
+                                           onClearMessage: onClearMessage,
+                                           onProcessingMessage: onProcessingMessage,
+                                           onCompletion: onCompletion)
+
+    }
+
+    func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        paymentOrchestrator.cancelPayment(onCompletion: onCompletion)
+    }
+
+    func printReceipt(params: CardPresentReceiptParameters) {
+        ServiceLocator.analytics.track(.receiptPrintTapped)
+        paymentOrchestrator.printReceipt(for: order, params: params)
+    }
+
+    func emailReceipt(params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {
+        ServiceLocator.analytics.track(.receiptEmailTapped)
+        paymentOrchestrator.emailReceipt(for: order, params: params, onContent: onContent)
+    }
+}
+
+
+private extension OrderDetailsViewModel {
+    func isOrderEligibleForCardPayment() -> Bool {
+        return isOrderStatusEligibleForCardPayment() && isOrderPaymentMethodEligibleForCardPayment()
+    }
+
+    func isOrderStatusEligibleForCardPayment() -> Bool {
+        (order.status == .pending || order.status == .onHold || order.status == .processing)
+    }
+
+    func isOrderPaymentMethodEligibleForCardPayment() -> Bool {
+        let paymentMethod = OrderPaymentMethod(rawValue: order.paymentMethodID)
+
+        return paymentMethod == .cod || paymentMethod == .none
+    }
+}
+
+
+private extension OrderDetailsViewModel {
+    enum Localization {
+        static let emailSubjectWithStoreName = NSLocalizedString("Your receipt from %1$@",
+                                                                 comment: "Subject of email sent with a card present payment receipt")
+        static let emailSubjectWithoutStoreName = NSLocalizedString("Your receipt",
+                                                                    comment: "Subject of email sent with a card present payment receipt")
     }
 }

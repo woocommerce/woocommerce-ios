@@ -1,0 +1,223 @@
+import UIKit
+
+/// Renders a receipt in an AirPrint enabled printer.
+/// To be properly implemented in https://github.com/woocommerce/woocommerce-ios/issues/3978
+public final class ReceiptRenderer: UIPrintPageRenderer {
+    private let lines: [ReceiptLineItem]
+    private let parameters: CardPresentReceiptParameters
+
+    private let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        formatter.locale = Locale.current
+
+        return formatter
+    }()
+
+    public init(content: ReceiptContent) {
+        self.lines = content.lineItems
+        self.parameters = content.parameters
+
+        super.init()
+
+        configureFormatter()
+    }
+}
+
+
+public extension ReceiptRenderer {
+    /// This is where the layout of the receipt can be customized.
+    /// Customization can be done via embedded CSS.
+    /// https://github.com/woocommerce/woocommerce-ios/issues/4033
+    /// - Returns: A string containing the HTML that will be rendered to the receipt.
+    func htmlContent() -> String {
+        let lineHeight = Constants.fontSize * 1.5
+        let iconHeight = lineHeight
+        let iconWidth = iconHeight * 4/3
+        return """
+            <html>
+            <head>
+                <style type="text/css">
+                    html { font-family: "Helvetica Neue", sans-serif; font-size: \(Constants.fontSize)pt; }
+                    header { margin-top: \(Constants.margin); }
+                    h1 { font-size: \(Constants.titleFontSize)pt; font-weight: 500; text-align: center; }
+                    h3 { color: #707070; margin:0; }
+                    table {
+                        background-color:#F5F5F5;
+                        width:100%;
+                        color: #707070;
+                        margin: \(Constants.margin / 2)pt 0 0 0;
+                        padding: \(Constants.margin / 2)pt;
+                    }
+                    table td:last-child { width: 30%; text-align: right; }
+                    table tr:last-child { color: #000000; font-weight: bold; }
+                    footer {
+                        font-size: \(Constants.footerFontSize)pt;
+                        border-top: 1px solid #707070;
+                        margin-top: \(Constants.margin)pt;
+                        padding-top: \(Constants.margin)pt;
+                    }
+                    .card-icon {
+                       width: \(iconWidth)pt;
+                       height: \(iconHeight)pt;
+                       vertical-align: top;
+                       background-repeat: no-repeat;
+                       background-position-y: center;
+                       display: inline-block;
+                    }
+                    p { line-height: \(lineHeight)pt; margin: 0 0 \(Constants.margin / 2) 0; }
+                    \(cardIconCSS())
+                </style>
+            </head>
+                <body>
+                    <header>
+                        <h1>\(receiptTitle)</h1>
+                        <h3>\(Localization.amountPaidSectionTitle.uppercased())</h3>
+                        <p>
+                            \(formattedAmount()) \(parameters.currency.uppercased())
+                        </p>
+                        <h3>\(Localization.datePaidSectionTitle.uppercased())</h3>
+                        <p>
+                            \(dateFormatter.string(from: parameters.date))
+                        </p>
+                        <h3>\(Localization.paymentMethodSectionTitle.uppercased())</h3>
+                        <p>
+                            <span class="card-icon \(parameters.cardDetails.brand.iconName)-icon"></span> - \(parameters.cardDetails.last4)
+                        </p>
+                    </header>
+                    <h3>\(Localization.summarySectionTitle.uppercased())</h3>
+                    \(summaryTable())
+                    <footer>
+                        <p>
+                            \(requiredItems())
+                        </p>
+                    </footer>
+                </body>
+            </html>
+        """
+    }
+}
+
+
+private extension ReceiptRenderer {
+    private func configureFormatter() {
+        let formatter = UIMarkupTextPrintFormatter(markupText: htmlContent())
+        formatter.perPageContentInsets = .init(top: 0, left: Constants.margin, bottom: 0, right: Constants.margin)
+
+        addPrintFormatter(formatter, startingAtPageAt: 0)
+    }
+
+    private func formattedAmount() -> String {
+        // We should use CurrencyFormatter instead for consistency
+        let formatter = NumberFormatter()
+        formatter.minimumFractionDigits = 2
+        formatter.maximumFractionDigits = 2
+        return formatter.string(for: parameters.amount / 100) ?? ""
+    }
+
+    private func summaryTable() -> String {
+        var summaryContent = "<table>"
+        for line in lines {
+            summaryContent += "<tr><td>\(line.title) × \(line.quantity)</td><td>\(line.amount) \(parameters.currency.uppercased())</td></tr>"
+        }
+        summaryContent += """
+                            <tr>
+                                <td>
+                                    \(Localization.amountPaidSectionTitle)
+                                </td>
+                                <td>
+                                    \(formattedAmount()) \(parameters.currency.uppercased())
+                                </td>
+                            </tr>
+                            """
+        summaryContent += "</table>"
+
+        return summaryContent
+    }
+
+    private func requiredItems() -> String {
+        guard let emv = parameters.cardDetails.receipt else {
+            return "<br/>"
+        }
+
+        /// According to the documentation, only `Application name` and `AID`
+        /// are required in the US.
+        /// https://stripe.com/docs/terminal/checkout/receipts#custom
+        return """
+            \(Localization.applicationName): \(emv.applicationPreferredName)<br/>
+            \(Localization.aid): \(emv.dedicatedFileName)
+        """
+    }
+
+    private func cardIconCSS() -> String {
+        CardBrand.allCases.map { (cardBrand) in
+            ".\(cardBrand.iconName)-icon { background-image: url(\"data:image/svg+xml;base64,\(cardBrand.iconData.base64EncodedString())\") }"
+        }.joined(separator: "\n\n")
+    }
+
+    private var receiptTitle: String {
+        guard let storeName = parameters.storeName else {
+            return Localization.receiptTitle
+        }
+
+        return .localizedStringWithFormat(Localization.receiptFromFormat, storeName)
+    }
+}
+
+
+private extension ReceiptRenderer {
+    enum Constants {
+        static let margin: CGFloat = 16
+        static let titleFontSize: CGFloat = 24
+        static let fontSize: CGFloat = 12
+        static let footerFontSize: CGFloat = 10
+    }
+
+    enum Localization {
+        static let receiptFromFormat = NSLocalizedString(
+            "Receipt from %1$@",
+            comment: "Title of receipt. Reads like Receipt from WooCommerce, Inc."
+        )
+
+        static let receiptTitle = NSLocalizedString(
+            "Receipt",
+            comment: "Title of receipt."
+        )
+
+        static let amountPaidSectionTitle = NSLocalizedString(
+            "Amount paid",
+            comment: "Title of 'Amount Paid' section in the receipt"
+        )
+
+        static let datePaidSectionTitle = NSLocalizedString(
+            "Date paid",
+            comment: "Title of 'Date Paid' section in the receipt"
+        )
+
+        static let paymentMethodSectionTitle = NSLocalizedString(
+            "Payment method",
+            comment: "Title of 'Payment method' section in the receipt"
+        )
+
+        static let summarySectionTitle = NSLocalizedString(
+            "Summary",
+            comment: "Title of 'Summary' section in the receipt"
+        )
+
+        static let applicationName = NSLocalizedString(
+            "Application name",
+            comment: "Reads as 'Application name'. Part of the mandatory data in receipts"
+        )
+
+        static let aid = NSLocalizedString(
+            "AID",
+            comment: "Reads as 'AID'. Part of the mandatory data in receipts"
+        )
+
+        static let accountType = NSLocalizedString(
+            "Account Type",
+            comment: "Reads as 'Account Type'. Part of the mandatory data in receipts"
+        )
+    }
+}

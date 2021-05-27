@@ -139,6 +139,16 @@ public enum WooAnalyticsStat: String {
     case settingsLogoutConfirmation             = "settings_logout_confirmation_dialog_result"
     case settingsWereHiringTapped               = "settings_we_are_hiring_button_tapped"
 
+    // MARK: Card Reader Connection Events
+    //
+    case cardReaderDiscoveryTapped              = "card_reader_discovery_tapped"
+    case cardReaderDiscoveryFailed              = "card_reader_discovery_failed"
+    case cardReaderDiscoveredReader             = "card_reader_discovery_reader_discovered"
+    case cardReaderConnectionTapped             = "card_reader_connection_tapped"
+    case cardReaderConnectionFailed             = "card_reader_connection_failed"
+    case cardReaderConnectionSuccess            = "card_reader_connection_success"
+    case cardReaderDisconnectTapped             = "card_reader_disconnect_tapped"
+
     // MARK: Order View Events
     //
     case ordersSelected                         = "main_tab_orders_selected"
@@ -200,6 +210,25 @@ public enum WooAnalyticsStat: String {
     case shippingLabelReprintRequested = "shipping_label_print_requested"
     case shipmentTrackingMenuAction = "shipment_tracking_menu_action"
     case shippingLabelsAPIRequest = "shipping_label_api_request"
+
+    // MARK: Receipt Events
+    //
+    case receiptViewTapped                      = "receipt_view_tapped"
+    case receiptEmailTapped                     = "receipt_email_tapped"
+    case receiptEmailFailed                     = "receipt_email_failed"
+    case receiptEmailCanceled                   = "receipt_email_canceled"
+    case receiptEmailSuccess                    = "receipt_email_success"
+    case receiptPrintTapped                     = "receipt_print_tapped"
+    case receiptPrintFailed                     = "receipt_print_failed"
+    case receiptPrintCanceled                   = "receipt_print_canceled"
+    case receiptPrintSuccess                    = "receipt_print_success"
+
+    // MARK: Payment Events
+    //
+    case collectPaymentTapped                   = "card_present_collect_payment_tapped"
+    case collectPaymentCanceled                 = "card_present_collect_payment_canceled"
+    case collectPaymentFailed                   = "card_present_collect_payment_failed"
+    case collectPaymentSuccess                  = "card_present_collect_payment_success"
 
     // MARK: Push Notifications Events
     //

@@ -336,6 +336,30 @@ extension UIImage {
         .gridicon(.infoOutline, size: CGSize(width: 20, height: 20))
     }
 
+    /// Credit card tapping on a card reader
+    ///
+    static var cardPresentImage: UIImage {
+        return UIImage(named: "woo-payments-card")!
+    }
+
+    /// Searching for Card Reader, Card Reader with radio waves
+    ///
+    static var cardReaderScanning: UIImage {
+        return UIImage(named: "card-reader-scanning")!
+    }
+
+    /// Found Card Reader
+    ///
+    static var cardReaderFound: UIImage {
+        return UIImage(named: "card-reader-found")!
+    }
+
+    /// Connecting to Card Reader, Card Reader with radio waves
+    ///
+    static var cardReaderConnecting: UIImage {
+        return UIImage(named: "card-reader-connecting")!
+    }
+
     /// Files Download Icon
     ///
     static var cloudImage: UIImage {
@@ -409,10 +433,28 @@ extension UIImage {
         return ellipsisImage.imageWithTintColor(tintColor)!
     }
 
+    /// Payment celebration
+    ///
+    static var celebrationImage: UIImage {
+        return UIImage(named: "woo-celebration")!
+    }
+
+    /// Payment error
+    ///
+    static var paymentErrorImage: UIImage {
+        return UIImage(named: "woo-payments-error")!
+    }
+
     /// Price Icon
     ///
     static var priceImage: UIImage {
         return UIImage.gridicon(.money, size: CGSize(width: 24, height: 24))
+    }
+
+    /// Print Icon
+    ///
+    static var print: UIImage {
+        return UIImage.gridicon(.print)
     }
 
     /// Product Deleted Icon

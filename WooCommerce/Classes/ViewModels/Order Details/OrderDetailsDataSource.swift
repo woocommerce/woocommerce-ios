@@ -42,6 +42,14 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var isEligibleForShippingLabelCreation: Bool = false
 
+    /// Whether the order is eligible for card present payment.
+    ///
+    var isEligibleForCardPresentPayment: Bool = false
+
+    /// Whether the order has a receipt associated.
+    ///
+    var shouldShowReceipts: Bool = false
+
     /// Closure to be executed when the cell was tapped.
     ///
     var onCellAction: ((CellActionType, IndexPath?) -> Void)?
@@ -290,6 +298,8 @@ private extension OrderDetailsDataSource {
             configureOrderNote(cell: cell, at: indexPath)
         case let cell as LedgerTableViewCell:
             configurePayment(cell: cell)
+        case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .seeReceipt:
+            configureSeeReceipt(cell: cell)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .customerPaid:
             configureCustomerPaid(cell: cell)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .refund:
@@ -300,6 +310,8 @@ private extension OrderDetailsDataSource {
             configureShippingLabelProduct(cell: cell, at: indexPath)
         case let cell as ProductDetailsTableViewCell where row == .aggregateOrderItem:
             configureAggregateOrderItem(cell: cell, at: indexPath)
+        case let cell as ButtonTableViewCell where row == .collectCardPaymentButton:
+            configureCollectPaymentButton(cell: cell, at: indexPath)
         case let cell as ButtonTableViewCell where row == .shippingLabelCreateButton:
             configureCreateShippingLabelButton(cell: cell, at: indexPath)
         case let cell as ButtonTableViewCell where row == .markCompleteButton(style: .primary, showsBottomSpacing: true),
@@ -438,6 +450,14 @@ private extension OrderDetailsDataSource {
         cell.selectionStyle = .default
     }
 
+    private func configureSeeReceipt(cell: TwoColumnHeadlineFootnoteTableViewCell) {
+        cell.setLeftTitleToLinkStyle(true)
+        cell.leftText = Titles.seeReceipt
+        cell.rightText = nil
+        cell.hideFootnote()
+        cell.hideSeparator()
+    }
+
     private func configureRefund(cell: TwoColumnHeadlineFootnoteTableViewCell, at indexPath: IndexPath) {
         let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell
         let condensedRefund = condensedRefunds[index]
@@ -467,6 +487,15 @@ private extension OrderDetailsDataSource {
         cell.leftText = Titles.netAmount
         cell.rightText = paymentViewModel.netAmount
         cell.hideFootnote()
+    }
+
+    private func configureCollectPaymentButton(cell: ButtonTableViewCell, at indexPath: IndexPath) {
+        cell.configure(style: .primary,
+                       title: Titles.collectPayment,
+                       bottomSpacing: ButtonTableViewCell.Constants.defaultBottomSpacing) {
+            self.onCellAction?(.collectPayment, indexPath)
+        }
+        cell.hideSeparator()
     }
 
     private func configureCreateShippingLabelButton(cell: ButtonTableViewCell, at indexPath: IndexPath) {
@@ -920,7 +949,15 @@ extension OrderDetailsDataSource {
                 rows.append(.netAmount)
             }
 
-            if !isRefundedStatus {
+            if isEligibleForCardPresentPayment {
+                rows.append(.collectCardPaymentButton)
+            }
+
+            if shouldShowReceipts {
+                rows.append(.seeReceipt)
+            }
+
+            if !isRefundedStatus && !isEligibleForCardPresentPayment {
                 rows.append(.issueRefundButton)
             }
 
@@ -1136,8 +1173,10 @@ extension OrderDetailsDataSource {
         static let refunded = NSLocalizedString("Refunded",
                                                 comment: "The title for the refunded amount cell")
         static let netAmount = NSLocalizedString("Net Payment", comment: "The title for the net amount paid cell")
+        static let collectPayment = NSLocalizedString("Collect Payment", comment: "Text on the button that starts collecting a card present payment.")
         static let createShippingLabel = NSLocalizedString("Create Shipping Label", comment: "Text on the button that starts shipping label creation")
         static let reprintShippingLabel = NSLocalizedString("Reprint Shipping Label", comment: "Text on the button that reprints a shipping label")
+        static let seeReceipt = NSLocalizedString("See Receipt", comment: "Text on the button to see a saved receipt")
     }
 
     enum Icons {
@@ -1275,10 +1314,12 @@ extension OrderDetailsDataSource {
         case billingDetail
         case payment
         case customerPaid
+        case seeReceipt
         case refund
         case netAmount
         case tracking
         case trackingAdd
+        case collectCardPaymentButton
         case shippingLabelCreateButton
         case shippingLabelCreationInfo(showsSeparator: Bool)
         case shippingLabelDetail
@@ -1318,6 +1359,8 @@ extension OrderDetailsDataSource {
                 return LedgerTableViewCell.reuseIdentifier
             case .customerPaid:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
+            case .seeReceipt:
+                return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
             case .refund:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
             case .netAmount:
@@ -1326,6 +1369,8 @@ extension OrderDetailsDataSource {
                 return OrderTrackingTableViewCell.reuseIdentifier
             case .trackingAdd:
                 return LeftImageTableViewCell.reuseIdentifier
+            case .collectCardPaymentButton:
+                return ButtonTableViewCell.reuseIdentifier
             case .shippingLabelCreateButton:
                 return ButtonTableViewCell.reuseIdentifier
             case .shippingLabelCreationInfo:
@@ -1357,6 +1402,7 @@ extension OrderDetailsDataSource {
         case tracking
         case summary
         case issueRefund
+        case collectPayment
         case reprintShippingLabel(shippingLabel: ShippingLabel)
         case createShippingLabel
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)

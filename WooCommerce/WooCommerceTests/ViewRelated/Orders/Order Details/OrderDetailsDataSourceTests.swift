@@ -126,6 +126,34 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(row(row: .markCompleteButton(style: .primary, showsBottomSpacing: true), in: productsSection))
         XCTAssertNil(row(row: .markCompleteButton(style: .secondary, showsBottomSpacing: false), in: productsSection))
     }
+
+    func test_collect_payment_button_is_visible_and_primary_style_if_order_is_eligible_for_cash_on_delivery() throws {
+        // Given
+        let order = makeOrder()
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+
+        // When
+        dataSource.isEligibleForCardPresentPayment = true
+        dataSource.reloadSections()
+
+        // Then
+        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        XCTAssertNotNil(row(row: .collectCardPaymentButton, in: paymentSection))
+    }
+
+    func test_collect_payment_button_is_not_visible_if_order_is_processing_and_order_is_not_eligible_for_cash_on_delivery() throws {
+        // Given
+        let order = makeOrder()
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+
+        // When
+        dataSource.isEligibleForCardPresentPayment = false
+        dataSource.reloadSections()
+
+        // Then
+        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
+    }
 }
 
 // MARK: - Test Data

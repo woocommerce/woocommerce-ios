@@ -67,6 +67,8 @@ public final class ShippingLabelStore: Store {
                                  completion: completion)
         case .synchronizeShippingLabelAccountSettings(let siteID, let completion):
             synchronizeShippingLabelAccountSettings(siteID: siteID, completion: completion)
+        case .updateShippingLabelAccountSettings(let siteID, let settings, let completion):
+            updateShippingLabelAccountSettings(siteID: siteID, settings: settings, completion: completion)
         }
     }
 }
@@ -192,6 +194,12 @@ private extension ShippingLabelStore {
                 }
             }
         }
+    }
+
+    func updateShippingLabelAccountSettings(siteID: Int64,
+                                            settings: ShippingLabelAccountSettings,
+                                            completion: @escaping (Result<Bool, Error>) -> Void) {
+        remote.updateShippingLabelAccountSettings(siteID: siteID, settings: settings, completion: completion)
     }
 }
 

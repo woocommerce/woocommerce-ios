@@ -1,6 +1,7 @@
 import Foundation
 import Networking
 import Storage
+import Hardware
 
 
 
@@ -25,8 +26,6 @@ public typealias NoteBlock = Networking.NoteBlock
 public typealias NoteMedia = Networking.NoteMedia
 public typealias NoteRange = Networking.NoteRange
 public typealias Order = Networking.Order
-public typealias OrderCount = Networking.OrderCount
-public typealias OrderCountItem = Networking.OrderCountItem
 public typealias OrderItem = Networking.OrderItem
 public typealias OrderItemAttribute = Networking.OrderItemAttribute
 public typealias OrderItemTax = Networking.OrderItemTax
@@ -109,6 +108,16 @@ public typealias TopEarnerStats = Networking.TopEarnerStats
 public typealias TopEarnerStatsItem = Networking.TopEarnerStatsItem
 public typealias WooAPIVersion = Networking.WooAPIVersion
 public typealias StoredProductSettings = Networking.StoredProductSettings
+public typealias CardReader = Hardware.CardReader
+public typealias CardReaderEvent = Hardware.CardReaderEvent
+public typealias CardReaderSoftwareUpdate = Hardware.CardReaderSoftwareUpdate
+public typealias CardReaderServiceDiscoveryStatus = Hardware.CardReaderServiceDiscoveryStatus
+public typealias CardReaderServiceError = Hardware.CardReaderServiceError
+public typealias PaymentParameters = Hardware.PaymentIntentParameters
+public typealias PaymentIntent = Hardware.PaymentIntent
+public typealias PrintingResult = Hardware.PrintingResult
+public typealias CardPresentReceiptParameters = Hardware.CardPresentReceiptParameters
+public typealias WCPayAccount = Networking.WCPayAccount
 
 
 // MARK: - Exported Storage Symbols

@@ -601,6 +601,34 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "SitePlugin"), 1)
         XCTAssertEqual(insertedPlugin, plugin)
     }
+
+    func test_migrating_from_50_to_51_removes_OrderCount_entities() throws {
+        // Arrange
+        let sourceContainer = try startPersistentContainer("Model 50")
+        let sourceContext = sourceContainer.viewContext
+
+        let orderCount = insertOrderCount(to: sourceContext)
+        let orderCountItem1 = insertOrderCountItem(slug: "processing", to: sourceContext)
+        let orderCountItem2 = insertOrderCountItem(slug: "completed", to: sourceContext)
+        orderCount.mutableSetValue(forKey: "items").add(orderCountItem1)
+        orderCount.mutableSetValue(forKey: "items").add(orderCountItem2)
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "OrderCount"), 1)
+        XCTAssertEqual(try sourceContext.count(entityName: "OrderCountItem"), 2)
+
+        let sourceEntitiesNames = sourceContainer.managedObjectModel.entitiesByName.keys
+        XCTAssertTrue(sourceEntitiesNames.contains("OrderCount"))
+        XCTAssertTrue(sourceEntitiesNames.contains("OrderCountItem"))
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 51")
+        let targetEntitiesNames = targetContainer.managedObjectModel.entitiesByName.keys
+
+        // Assert
+        XCTAssertFalse(targetEntitiesNames.contains("OrderCount"))
+        XCTAssertFalse(targetEntitiesNames.contains("OrderCountItem"))
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -918,6 +946,22 @@ private extension MigrationTests {
             "requiresWPVersion": "",
             "requiresPHPVersion": "",
             "textDomain": ""
+        ])
+    }
+
+    @discardableResult
+    func insertOrderCount(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "OrderCount", properties: [
+            "siteID": 123
+        ])
+    }
+
+    @discardableResult
+    func insertOrderCountItem(slug: String, to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "OrderCountItem", properties: [
+            "slug": slug,
+            "name": slug,
+            "total": 6
         ])
     }
 }

@@ -56,7 +56,17 @@ class AuthenticatedState: StoresManagerState {
             SitePluginStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SitePostStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            TaxClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+            TaxClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            WCPayStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            CardPresentPaymentStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    cardReaderService: ServiceLocator.cardReaderService),
+            ReceiptStore(dispatcher: dispatcher,
+                         storageManager: storageManager,
+                         network: network,
+                         receiptPrinterService: ServiceLocator.receiptPrinterService,
+                         fileStorage: PListFileStorage())
         ]
 
         startListeningToNotifications()

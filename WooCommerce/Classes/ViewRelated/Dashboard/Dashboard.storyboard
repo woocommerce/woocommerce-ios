@@ -2,9 +2,9 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -209,37 +209,88 @@
             </objects>
             <point key="canvasLocation" x="2265" y="1525"/>
         </scene>
-        <!--Card Reader Settings View Controller-->
-        <scene sceneID="lIS-bL-sjX">
+        <!--Card Reader Settings Presenting View Controller-->
+        <scene sceneID="NEs-n8-mBS">
             <objects>
-                <viewController storyboardIdentifier="CardReaderSettingsViewController" id="6GD-rA-i7i" customClass="CardReaderSettingsViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="pCM-3y-65z">
+                <viewController storyboardIdentifier="CardReaderSettingsPresentingViewController" id="PIe-XS-6gZ" customClass="CardReaderSettingsPresentingViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="EOU-z7-aBS">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="l2Q-VL-2yz"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ErC-sp-Qjr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4192.8000000000002" y="2236.7316341829087"/>
+        </scene>
+        <!--Card Reader Settings Unknown View Controller-->
+        <scene sceneID="1hM-QM-F7H">
+            <objects>
+                <viewController storyboardIdentifier="CardReaderSettingsUnknownViewController" id="QbQ-It-W6j" customClass="CardReaderSettingsUnknownViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="OI1-Kx-TMr">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Coming soon" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kRA-oz-aZ3">
-                                <rect key="frame" x="137" y="323" width="101" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="wIN-aE-q96">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
                         </subviews>
-                        <viewLayoutGuide key="safeArea" id="CPz-be-GKr"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="H3D-HM-LVk"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="kRA-oz-aZ3" firstAttribute="centerY" secondItem="pCM-3y-65z" secondAttribute="centerY" id="Stl-O0-vG2"/>
-                            <constraint firstItem="kRA-oz-aZ3" firstAttribute="centerX" secondItem="pCM-3y-65z" secondAttribute="centerX" id="nnB-xe-iBh"/>
+                            <constraint firstItem="wIN-aE-q96" firstAttribute="top" secondItem="H3D-HM-LVk" secondAttribute="top" id="Jhc-e4-GIy"/>
+                            <constraint firstItem="wIN-aE-q96" firstAttribute="leading" secondItem="H3D-HM-LVk" secondAttribute="leading" id="oLF-Wz-7a3"/>
+                            <constraint firstItem="H3D-HM-LVk" firstAttribute="trailing" secondItem="wIN-aE-q96" secondAttribute="trailing" id="qD0-0x-GvW"/>
+                            <constraint firstItem="H3D-HM-LVk" firstAttribute="bottom" secondItem="wIN-aE-q96" secondAttribute="bottom" id="yfC-kN-EGt"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="tableView" destination="wIN-aE-q96" id="Cyr-Hj-o4e"/>
+                    </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="w65-IK-CKC" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="lvw-3c-XCx" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3385" y="2237"/>
+            <point key="canvasLocation" x="4929" y="2237"/>
+        </scene>
+        <!--Card Reader Settings Connected View Controller-->
+        <scene sceneID="A3p-G9-5R7">
+            <objects>
+                <viewController storyboardIdentifier="CardReaderSettingsConnectedViewController" id="2oW-u9-QsT" customClass="CardReaderSettingsConnectedViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="UZB-ng-w8d">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="apN-yh-UaI">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="DEX-1K-dv1"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="DEX-1K-dv1" firstAttribute="trailing" secondItem="apN-yh-UaI" secondAttribute="trailing" id="2Ai-FO-Fpm"/>
+                            <constraint firstItem="apN-yh-UaI" firstAttribute="leading" secondItem="DEX-1K-dv1" secondAttribute="leading" id="4Bk-xF-dRi"/>
+                            <constraint firstItem="apN-yh-UaI" firstAttribute="top" secondItem="DEX-1K-dv1" secondAttribute="top" id="KUs-Wf-pjk"/>
+                            <constraint firstItem="DEX-1K-dv1" firstAttribute="bottom" secondItem="apN-yh-UaI" secondAttribute="bottom" id="zHj-fm-gmj"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="apN-yh-UaI" id="E7Z-Xw-uZ5"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="feV-ex-aGN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5658" y="2237"/>
         </scene>
     </scenes>
     <resources>
         <systemColor name="groupTableViewBackgroundColor">
             <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
     </resources>
 </document>

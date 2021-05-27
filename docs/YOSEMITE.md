@@ -38,16 +38,18 @@ At the moment, we provide the following subclasses of `Store`:
 * `AccountStore`. Registers `AccountAction` with the `Dispatcher`.  It implements the business logic necessary to manage an account (load an account, load a site, synchronise account information…)
 * `AppSettingsStore`. Registers and responds to actions declared in `AppSettingsAction`. It implements the logic to save and retrieve application settings.
 * `CommentStore`.  Registers and responds to actions declared in `CommentAction` It implements the business logic pertaining comments.
+* `CardPresentPaymentsStore`. Registers and responds to actions declared in `CardPresentPaymentsAction`. It imple ents the logic to collect payments with external card readers. 
 * `NotificationStore`. Registers  and responds to`NotificationAction` 
 * `OrderStore`. Registers `OrderAction` with the `Dispatcher` and responds to the actions declared in it.
 * `OrderNoteStore`. Business logic pertaining order notes. Registers and responds to operation declared in `OrderNoteAction`
 * `OrderStatusStore`. Business logic related to order payment statuses, implementing operations declared in `OrderStatusAction`
+* `ReceiptStore` registers and respond to operations declared in `ReceiptAction`, providing support for storing and printing card present payment receipts.
 * `SettingStore` registers and responds to operations declared in `SettingAction`
 * `StatsStore` responds to operations declared in `StatsAction`, providing support for the order stats.
 * `StatsStoreV4` responds to operations declared in `StatsActionV4`, providing support for the order stats based on the V4 API, yet to be integrated in the UI.
 * `ShipmentStore` implements support for the operations declared in `ShipmentAction`
 * `TaxClassesStore` implements support for the operations declared in `TaxClassesAction`
-* Finally, `StatStore`implements the logic to present statistics, supporting operations declared in `StatsAction`
+* `StatStore`implements the logic to present statistics, supporting operations declared in `StatsAction`
 
 ## Operations with domain level concerns. Action
 As mentioned in the precious section, there is an implementation of the `Action` protocol per domain level concern. 

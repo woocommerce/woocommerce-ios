@@ -87,7 +87,7 @@ protocol ProductFormViewModelProtocol {
                                  backordersSetting: ProductBackordersSetting?,
                                  stockStatus: ProductStockStatus?)
 
-    func updateProductType(productType: ProductType)
+    func updateProductType(productType: BottomSheetProductType)
 
     func updateShippingSettings(weight: String?, dimensions: ProductDimensions, shippingClass: String?, shippingClassID: Int64?)
 

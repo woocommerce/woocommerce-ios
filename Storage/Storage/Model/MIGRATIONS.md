@@ -2,6 +2,11 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 51 (Release 6.8.0.0)
+- @ealeksandrov 2021-05-21
+- Removed `OrderCount` entity
+- Removed `OrderCountItem` entity
+
 ## Model 50 (Release 6.7.0.0)
 - @itsmeichigo 2021-05-05
 - Added `SitePlugin` entity.

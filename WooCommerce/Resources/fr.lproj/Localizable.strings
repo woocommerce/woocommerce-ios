@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-05-12 16:54:43+0000 */
+/* Translation-Revision-Date: 2021-05-19 11:32:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -172,6 +172,9 @@
 
 /* Application's Active State */
 "Active" = "Actif";
+
+/* Title for table view section of active plugins */
+"Active Plugins" = "Active Plugins";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "Actif, mises à jour automatiques désactivées";
@@ -665,9 +668,6 @@
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "Créer votre première variante";
-
-/* My Store > Settings > Experimental features > Products */
-"Creating products" = "Création des produits";
 
 /* Credit card payment method for shipping label. */
 "Credit card" = "Carte de crédit";
@@ -1197,6 +1197,9 @@
 /* Application's Inactive State */
 "Inactive" = "Inactif";
 
+/* Title for table view section of inactive plugins */
+"Inactive Plugins" = "Inactive Plugins";
+
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "Inactif, mises à jour automatiques désactivées";
 
@@ -1511,6 +1514,9 @@
 
 /* The title for the net amount paid cell */
 "Net Payment" = "Paiement net";
+
+/* Title for table view section of network active plugins */
+"Network Active Plugins" = "Network Active Plugins";
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "Nom du nouvel attribut";
@@ -1834,6 +1840,10 @@
 
 /* Text on the loading view of the product downloadable file screen indicating the user to wait */
 "Please wait..." = "Veuillez patienter";
+
+/* My Store > Settings > Plugins section title
+   Navigates to Plugins screen. - Title of the Plugin List screen */
+"Plugins" = "Extensions";
 
 /* Text field postcode in Shipping Label Address Validation */
 "Postcode" = "Code Postal";
@@ -2391,6 +2401,9 @@
    Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "Quelqu'un";
 
+/* The text on the placeholder overlay when there is issue syncing site plugins */
+"Something went wrong" = "Something went wrong";
+
 /* Notice format when a shipping label refund request fails. */
 "Something went wrong with the refund. Please try again." = "Un problème est survenu lors du remboursement. Veuillez réessayer.";
 
@@ -2636,8 +2649,8 @@
 /* Opens the Terms of Service web page */
 "Terms of Service" = "Conditions d’utilisation";
 
-/* My Store > Settings > Experimental features > Products */
-"Test out the new product creation as we get ready to launch" = "Essayer la création des nouveaux produits dès que nous sommes prêts pour le lancement";
+/* Cell description on the beta features screen to enable the order add-ons feature */
+"Test out viewing Order Add-Ons as we get ready to launch" = "Test out viewing Order Add-Ons as we get ready to launch";
 
 /* Button title
    The button's title text to send a 2FA code via SMS text message. */
@@ -2738,6 +2751,9 @@
 
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "Un problème est survenu lors de la suppression du bloc du site spécifié.";
+
+/* The details on the placeholder overlay when there is issue syncing site plugins */
+"There was a problem while trying to load plugins. Check your internet and try again." = "There was a problem while trying to load plugins. Check your internet and try again.";
 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "Une erreur est survenue lors de l’émission du remboursement";
@@ -2888,6 +2904,9 @@
 
 /* Button to trigger connection to another account in store picker */
 "Try With Another Account" = "Essayer un autre compte";
+
+/* Action to resync on the placeholder overlay when there is issue syncing site plugins */
+"Try again" = "Réessayez ";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Essayer avec une autre adresse de messagerie";
@@ -3080,7 +3099,8 @@
 /* Displays the version of the App */
 "Version %@" = "Version %@";
 
-/* Title of the button on the order detail item to navigate to add-ons */
+/* Cell title on the beta features screen to enable the order add-ons feature
+   Title of the button on the order detail item to navigate to add-ons */
 "View Add-Ons" = "Voir les modules";
 
 /* View application log cell title */

@@ -31,6 +31,12 @@ final class SettingsViewController: UIViewController {
         return nameAsString ?? String()
     }
 
+    /// Main Site's ID
+    ///
+    private var siteID: Int64? {
+        ServiceLocator.stores.sessionManager.defaultSite?.siteID
+    }
+
     /// Main Site's URL
     ///
     private var siteUrl: String {
@@ -56,10 +62,18 @@ final class SettingsViewController: UIViewController {
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
 
+    /// Flag indicating whether the currently selected store is eligible
+    /// for card present payments
+    private var canCollectPayments: Bool = false
+
     // MARK: - Overridden Methods
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        checkAvailabilityForPayments() { [weak self] in
+            self?.refreshViewContent()
+        }
 
         refreshResultsController()
         configureNavigation()
@@ -101,6 +115,32 @@ private extension SettingsViewController {
     func refreshResultsController() {
         try? resultsController.performFetch()
         sites = resultsController.fetchedObjects
+    }
+
+    func checkAvailabilityForPayments(onCompletion: @escaping () -> Void) {
+        guard let siteID = self.siteID else {
+            canCollectPayments = false
+            onCompletion()
+            return
+        }
+
+        let action = WCPayAction.loadAccount(siteID: siteID) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+
+            switch result {
+            case .failure:
+                self.canCollectPayments = false
+            case .success(let account):
+                self.canCollectPayments = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) &&
+                    account.isCardPresentEligible
+            }
+
+            onCompletion()
+        }
+
+        ServiceLocator.stores.dispatch(action)
     }
 
     func configureTableViewFooter() {
@@ -171,8 +211,12 @@ private extension SettingsViewController {
         }
 
         // Store Settings
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) {
-            sections.append(Section(title: storeSettingsTitle, rows: [.cardReaders], footerHeight: UITableView.automaticDimension))
+        if canCollectPayments {
+            sections.append(
+                Section(title: storeSettingsTitle,
+                        rows: [.cardReadersV2],
+                        footerHeight: UITableView.automaticDimension)
+            )
         }
 
         // Help & Feedback
@@ -216,8 +260,8 @@ private extension SettingsViewController {
             configurePlugins(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
             configureSupport(cell: cell)
-        case let cell as BasicTableViewCell where row == .cardReaders:
-            configureCardReaders(cell: cell)
+        case let cell as BasicTableViewCell where row == .cardReadersV2:
+            configureCardReadersV2(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
             configurePrivacy(cell: cell)
         case let cell as BasicTableViewCell where row == .betaFeatures:
@@ -264,7 +308,7 @@ private extension SettingsViewController {
         cell.textLabel?.text = NSLocalizedString("Help & Support", comment: "Contact Support Action")
     }
 
-    func configureCardReaders(cell: BasicTableViewCell) {
+    func configureCardReadersV2(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Manage Card Reader", comment: "Navigates to Card Reader management screen")
@@ -398,11 +442,14 @@ private extension SettingsViewController {
         show(viewController, sender: self)
     }
 
-    func cardReadersWasPressed() {
+    func cardReadersV2WasPressed() {
         ServiceLocator.analytics.track(.settingsCardReadersTapped)
-        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsViewController.self) else {
-            fatalError("Cannot instantiate `CardReaderSettingsViewController` from Dashboard storyboard")
+        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsPresentingViewController.self) else {
+            fatalError("Cannot instantiate `CardReaderSettingsPresentingViewController` from Dashboard storyboard")
         }
+
+        let viewModelsAndViews = CardReaderSettingsViewModelsOrderedList()
+        viewController.configure(viewModelsAndViews: viewModelsAndViews)
         show(viewController, sender: self)
     }
 
@@ -540,8 +587,8 @@ extension SettingsViewController: UITableViewDelegate {
             sitePluginsWasPressed()
         case .support:
             supportWasPressed()
-        case .cardReaders:
-            cardReadersWasPressed()
+        case .cardReadersV2:
+            cardReadersV2WasPressed()
         case .privacy:
             privacyWasPressed()
         case .betaFeatures:
@@ -583,7 +630,7 @@ private enum Row: CaseIterable {
     case switchStore
     case plugins
     case support
-    case cardReaders
+    case cardReadersV2
     case logout
     case privacy
     case betaFeatures
@@ -603,7 +650,7 @@ private enum Row: CaseIterable {
             return BasicTableViewCell.self
         case .support:
             return BasicTableViewCell.self
-        case .cardReaders:
+        case .cardReadersV2:
             return BasicTableViewCell.self
         case .logout:
             return BasicTableViewCell.self

@@ -2,6 +2,7 @@ import Foundation
 import CocoaLumberjack
 import Storage
 import Yosemite
+import Hardware
 
 /// Provides global dependencies.
 ///
@@ -56,6 +57,14 @@ final class ServiceLocator {
     /// Cocoalumberjack DDLog
     ///
     private static var _fileLogger: Logs = DDFileLogger()
+
+    /// Support for external Card Readers
+    ///
+    private static var _cardReader: CardReaderService = StripeCardReaderService()
+
+    /// Support for printing receipts
+    ///
+    private static var _receiptPrinter: PrinterService = AirPrintReceiptPrinterService()
 
     // MARK: - Getters
 
@@ -150,6 +159,19 @@ final class ServiceLocator {
     /// The main object to use for presenting SMS (`MessageUI`) ViewControllers.
     ///
     static let messageComposerPresenter = MessageComposerPresenter()
+
+
+    /// Provides the access point to the CardReaderService.
+    /// - Returns: An implementation of the CardReaderService protocol.
+    static var cardReaderService: CardReaderService {
+        _cardReader
+    }
+
+    /// Provides the access point to the ReceiptPrinterService.
+    /// - Returns: An implementation of the ReceiptPrinterService protocol.
+    static var receiptPrinterService: PrinterService {
+        _receiptPrinter
+    }
 }
 
 
@@ -235,6 +257,22 @@ extension ServiceLocator {
         }
 
         _fileLogger = mock
+    }
+
+    static func setCardReader(_ mock: CardReaderService) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _cardReader = mock
+    }
+
+    static func setReceiptPrinter(_ mock: PrinterService) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _receiptPrinter = mock
     }
 }
 

@@ -66,6 +66,8 @@ final class ShippingLabelFormViewModel {
         return nil
     }
     private(set) var totalPackageWeight: String?
+    private(set) var shippingLabelAccountSettings: ShippingLabelAccountSettings?
+    private(set) var selectedPaymentMethodID: Int64 = 0
 
 
     private let stores: StoresManager
@@ -144,6 +146,17 @@ final class ShippingLabelFormViewModel {
         }
         updateRowState(type: .shippingCarrierAndRates, dataState: .validated, displayMode: .editable)
     }
+  
+    func handlePaymentMethodValueChanges(selectedPaymentMethodID: Int64, editable: Bool) {
+        self.selectedPaymentMethodID = selectedPaymentMethodID
+        let displayMode: ShippingLabelFormViewController.DisplayMode = editable ? .editable : .disabled
+
+        guard selectedPaymentMethodID != 0 else {
+            updateRowState(type: .paymentMethod, dataState: .pending, displayMode: displayMode)
+            return
+        }
+        updateRowState(type: .paymentMethod, dataState: .validated, displayMode: displayMode)
+    }
 
     private static func generateInitialSections() -> [Section] {
         let shipFrom = Row(type: .shipFrom, dataState: .pending, displayMode: .editable)
@@ -155,8 +168,8 @@ final class ShippingLabelFormViewModel {
         return [Section(rows: rows)]
     }
 
-    // Return the body of the Package Details cell
-    //
+    /// Return the body of the Package Details cell
+    ///
     func getPackageDetailsBody() -> String {
         guard let packagesResponse = packagesResponse,
               let selectedPackageID = selectedPackageID,
@@ -172,6 +185,8 @@ final class ShippingLabelFormViewModel {
         return packageTitle + "\n" + String.localizedStringWithFormat(Localization.totalPackageWeight, packageWeight)
     }
 
+    /// Returns the body of the selected Carrier and Rates.
+    ///
     func getCarrierAndRatesBody() -> String {
         guard let selectedRate = selectedRate else {
             return Localization.carrierAndRatesPlaceholder
@@ -192,6 +207,16 @@ final class ShippingLabelFormViewModel {
         let shippingDays = String(format: formatString, selectedRate.deliveryDays)
 
         return selectedRate.title + "\n" + price + " - " + shippingDays
+
+    /// Returns the body of the Payment Methods cell.
+    /// Displays the payment method details if one is selected. Otherwise, displays a prompt to add a credit card.
+    ///
+    func getPaymentMethodBody() -> String {
+        guard let selectedPaymentMethod = shippingLabelAccountSettings?.paymentMethods.first(where: { $0.paymentMethodID == selectedPaymentMethodID }) else {
+            return Localization.paymentMethodPlaceholder
+        }
+
+        return String.localizedStringWithFormat(Localization.paymentMethodLabel, selectedPaymentMethod.cardDigits)
     }
 }
 
@@ -362,8 +387,14 @@ extension ShippingLabelFormViewModel {
     /// Syncs account settings specific to shipping labels, such as the last selected package and payment methods.
     ///
     func syncShippingLabelAccountSettings() {
-        let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: order.siteID) { result in
-            if result.isFailure {
+        let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: order.siteID) { [weak self] result in
+            guard let self = self else { return }
+
+            switch result {
+            case .success(let value):
+                self.shippingLabelAccountSettings = value
+                self.handlePaymentMethodValueChanges(selectedPaymentMethodID: value.selectedPaymentMethodID, editable: false)
+            case .failure:
                 DDLogError("⛔️ Error synchronizing shipping label account settings")
             }
         }
@@ -403,5 +434,10 @@ private extension ShippingLabelFormViewModel {
                                                            comment: "Singular format of number of business day in Shipping Labels > Carrier and Rates")
         static let businessDaysPlural = NSLocalizedString("%1$d business days",
                                                           comment: "Plural format of number of business days in Shipping Labels > Carrier and Rates")
+        static let paymentMethodPlaceholder = NSLocalizedString("Add a new credit card",
+                                                                comment: "Placeholder in Shipping Label form for the Payment Method row.")
+        static let paymentMethodLabel =
+            NSLocalizedString("Credit card ending in %1$@",
+                              comment: "Selected credit card in Shipping Label form. %1$@ is a placeholder for the last four digits of the credit card.")
     }
 }

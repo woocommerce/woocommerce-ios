@@ -83,6 +83,7 @@ Please, remember to not add this information on your commits and PRs.
     - [Networking](docs/NETWORKING.md)
     - [Storage](docs/STORAGE.md)
     - [Yosemite](docs/YOSEMITE.md)
+    - [Hardware](HARDWARE.md)    
 - Coding Guidelines
     - [Coding Style](docs/coding-style-guide.md)
     - [Naming Conventions](docs/naming-conventions.md)
@@ -103,9 +104,11 @@ Please, remember to not add this information on your commits and PRs.
         - [Custom Properties](docs/tracking-events.md#custom-properties)
 - Testing
     - [UI Tests](docs/UI-TESTS.md)
+    - [Testing Card Present Payments](docs/stripe-tests.md)
     - [Beta Testing](https://woocommercehalo.wordpress.com/setup/join-ios-beta/)
 - Features
     - [In-app Feedback](docs/in-app-feedback.md)
+    - [Card Present Payments](docs/card-present-payments.md)
 
 ## 👏 Contributing
 

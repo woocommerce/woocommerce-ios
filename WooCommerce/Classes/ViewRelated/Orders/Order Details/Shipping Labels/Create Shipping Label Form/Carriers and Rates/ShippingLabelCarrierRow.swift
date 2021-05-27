@@ -3,7 +3,7 @@ import Yosemite
 
 struct ShippingLabelCarrierRow: View {
 
-    private var viewModel: ShippingLabelCarrierRowViewModel
+    private let viewModel: ShippingLabelCarrierRowViewModel
 
     init(_ viewModel: ShippingLabelCarrierRowViewModel) {
         self.viewModel = viewModel
@@ -35,6 +35,7 @@ struct ShippingLabelCarrierRow: View {
                         .footnoteStyle()
                     Text(viewModel.extraInfo)
                         .footnoteStyle()
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
             .contentShape(Rectangle())

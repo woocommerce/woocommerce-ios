@@ -4,6 +4,7 @@ import Yosemite
 enum CardReaderSettingsUnknownViewModelDiscoveryState {
     case notSearching
     case searching
+    case failed(Error)
     case foundReader
     case connectingToReader
 }
@@ -21,8 +22,14 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
 
     private var foundReader: CardReader?
 
-    var discoveryState: CardReaderSettingsUnknownViewModelDiscoveryState = .notSearching
-    var foundReaderSerialNumber: String?
+    var discoveryState: CardReaderSettingsUnknownViewModelDiscoveryState = .notSearching {
+        didSet {
+            didUpdate?()
+        }
+    }
+    var foundReaderSerialNumber: String? {
+        foundReader?.serial
+    }
 
     init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?) {
         self.didChangeShouldShow = didChangeShouldShow
@@ -55,21 +62,10 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
         ServiceLocator.stores.dispatch(connectedAction)
     }
 
-    private func updateProperties() {
-        guard let foundReader = foundReader else {
-            foundReaderSerialNumber = nil
-            return
-        }
-
-        foundReaderSerialNumber = foundReader.serial
-    }
-
     /// Dispatch a request to start reader discovery
     ///
     func startReaderDiscovery() {
         discoveryState = .searching
-        updateProperties()
-        didUpdate?()
 
         ServiceLocator.analytics.track(.cardReaderDiscoveryTapped)
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
@@ -77,7 +73,8 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
             onReaderDiscovered: { [weak self] cardReaders in
                 self?.didDiscoverReaders(cardReaders: cardReaders)
             },
-            onError: { error in
+            onError: { [weak self] error in
+                self?.discoveryState = .failed(error)
                 ServiceLocator.analytics.track(.cardReaderDiscoveryFailed, withError: error)
             })
 
@@ -88,7 +85,7 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
     ///
     func didDiscoverReaders(cardReaders: [CardReader]) {
         /// If we are already presenting a foundReader alert to the user, ignore the found reader
-        guard discoveryState != .foundReader else {
+        guard case .searching = discoveryState else {
             return
         }
 
@@ -107,16 +104,12 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
 
         foundReader = cardReader
         discoveryState = .foundReader
-        updateProperties()
-        didUpdate?()
     }
 
     /// Dispatch a request to cancel reader discovery
     ///
     func cancelReaderDiscovery() {
         discoveryState = .notSearching
-        updateProperties()
-        didUpdate?()
 
         let action = CardPresentPaymentAction.cancelCardReaderDiscovery() { _ in
         }
@@ -132,8 +125,6 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
         }
 
         discoveryState = .connectingToReader
-        updateProperties()
-        didUpdate?()
 
         ServiceLocator.analytics.track(.cardReaderConnectionTapped)
         let action = CardPresentPaymentAction.connect(reader: foundReader) { result in
@@ -157,8 +148,6 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
     func continueSearch() {
         discoveryState = .searching
         foundReader = nil
-        updateProperties()
-        didUpdate?()
     }
 
     /// Updates whether the view this viewModel is associated with should be shown or not

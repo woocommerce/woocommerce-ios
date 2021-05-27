@@ -29,7 +29,7 @@ public protocol CardReaderService {
 
     /// Starts the service.
     /// That could imply, for example, that the reader discovery process starts
-    func start(_ configProvider: CardReaderConfigProvider)
+    func start(_ configProvider: CardReaderConfigProvider) throws
 
     /// Cancels the discovery process.
     func cancelDiscovery() -> Future <Void, Error>

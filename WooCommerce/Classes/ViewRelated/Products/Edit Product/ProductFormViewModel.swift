@@ -225,7 +225,7 @@ extension ProductFormViewModel {
                                                                      taxClass: taxClass?.slug))
     }
 
-    func updateProductType(productType: ProductType) {
+    func updateProductType(productType: BottomSheetProductType) {
         /// The property `manageStock` is set to `false` if the new `productType` is `affiliate`
         /// because it seems there is a small bug in APIs that doesn't allow us to change type from a product with
         /// manage stock enabled to external product type. More info: PR-2665
@@ -234,7 +234,9 @@ extension ProductFormViewModel {
         if productType == .affiliate {
             manageStock = false
         }
-        product = EditableProductModel(product: product.product.copy(productTypeKey: productType.rawValue, manageStock: manageStock))
+        product = EditableProductModel(product: product.product.copy(productTypeKey: productType.productType.rawValue,
+                                                                     virtual: productType.isVirtual,
+                                                                     manageStock: manageStock))
     }
 
     func updateInventorySettings(sku: String?,

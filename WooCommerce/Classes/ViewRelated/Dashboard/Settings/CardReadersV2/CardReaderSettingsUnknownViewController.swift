@@ -79,6 +79,8 @@ private extension CardReaderSettingsUnknownViewController {
             showConnectingModal()
         case .foundReader:
             showFoundReaderModal()
+        case .failed(let error):
+            showDiscoveryErrorModal(error: error)
         default:
             dismissAnyModal()
         }
@@ -98,6 +100,12 @@ private extension CardReaderSettingsUnknownViewController {
         }
 
         modalAlerts.scanningForReader(from: self, cancel: viewModel.cancelReaderDiscovery)
+    }
+
+    func showDiscoveryErrorModal(error: Error) {
+        modalAlerts.scanningFailed(from: self, error: error) { [weak self] in
+            self?.dismissAnyModal()
+        }
     }
 
     func showConnectingModal() {

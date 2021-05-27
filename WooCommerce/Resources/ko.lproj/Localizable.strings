@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-05-12 10:54:10+0000 */
+/* Translation-Revision-Date: 2021-05-19 11:32:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -172,6 +172,9 @@
 
 /* Application's Active State */
 "Active" = "활성";
+
+/* Title for table view section of active plugins */
+"Active Plugins" = "Active Plugins";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "활성화, 자동 업데이트 끄기";
@@ -665,9 +668,6 @@
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "첫 번째 변형 생성";
-
-/* My Store > Settings > Experimental features > Products */
-"Creating products" = "제품 만들기";
 
 /* Credit card payment method for shipping label. */
 "Credit card" = "신용카드";
@@ -1197,6 +1197,9 @@
 /* Application's Inactive State */
 "Inactive" = "비활성";
 
+/* Title for table view section of inactive plugins */
+"Inactive Plugins" = "Inactive Plugins";
+
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "비활성화, 자동 업데이트 끄기";
 
@@ -1511,6 +1514,9 @@
 
 /* The title for the net amount paid cell */
 "Net Payment" = "순 결제";
+
+/* Title for table view section of network active plugins */
+"Network Active Plugins" = "Network Active Plugins";
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "새 속성 이름";
@@ -1834,6 +1840,10 @@
 
 /* Text on the loading view of the product downloadable file screen indicating the user to wait */
 "Please wait..." = "기다려주세요...";
+
+/* My Store > Settings > Plugins section title
+   Navigates to Plugins screen. - Title of the Plugin List screen */
+"Plugins" = "플러그인";
 
 /* Text field postcode in Shipping Label Address Validation */
 "Postcode" = "우편 번호";
@@ -2391,6 +2401,9 @@
    Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "다른 사람";
 
+/* The text on the placeholder overlay when there is issue syncing site plugins */
+"Something went wrong" = "Something went wrong";
+
 /* Notice format when a shipping label refund request fails. */
 "Something went wrong with the refund. Please try again." = "환불에 문제가 발생했습니다. 다시 시도하세요.";
 
@@ -2636,8 +2649,8 @@
 /* Opens the Terms of Service web page */
 "Terms of Service" = "서비스 약관";
 
-/* My Store > Settings > Experimental features > Products */
-"Test out the new product creation as we get ready to launch" = "출시 준비가 완료되면 새 제품 생성을 테스트하세요.";
+/* Cell description on the beta features screen to enable the order add-ons feature */
+"Test out viewing Order Add-Ons as we get ready to launch" = "Test out viewing Order Add-Ons as we get ready to launch";
 
 /* Button title
    The button's title text to send a 2FA code via SMS text message. */
@@ -2738,6 +2751,9 @@
 
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "지정된 사이트의 차단을 제거하는 중 문제가 발생했습니다.";
+
+/* The details on the placeholder overlay when there is issue syncing site plugins */
+"There was a problem while trying to load plugins. Check your internet and try again." = "There was a problem while trying to load plugins. Check your internet and try again.";
 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "환불 발행 중 오류 발생";
@@ -2888,6 +2904,9 @@
 
 /* Button to trigger connection to another account in store picker */
 "Try With Another Account" = "다른 계정으로 시도";
+
+/* Action to resync on the placeholder overlay when there is issue syncing site plugins */
+"Try again" = "다시 시도";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "다른 이메일로 시도";
@@ -3080,7 +3099,8 @@
 /* Displays the version of the App */
 "Version %@" = "버전 %@";
 
-/* Title of the button on the order detail item to navigate to add-ons */
+/* Cell title on the beta features screen to enable the order add-ons feature
+   Title of the button on the order detail item to navigate to add-ons */
 "View Add-Ons" = "애드온 보기";
 
 /* View application log cell title */

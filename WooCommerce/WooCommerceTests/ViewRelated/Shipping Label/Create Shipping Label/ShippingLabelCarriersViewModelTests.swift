@@ -44,6 +44,32 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
         XCTAssertEqual(row2?.signatureRequiredText, "")
         XCTAssertEqual(row2?.adultSignatureRequiredText, "")
     }
+
+    func test_isDoneButtonEnabled_returns_the_expected_value() {
+        // Given
+        let viewModel = ShippingLabelCarriersViewModel(order: MockOrders().sampleOrder(),
+                                                       originAddress: MockShippingLabelAddress.sampleAddress(),
+                                                       destinationAddress: MockShippingLabelAddress.sampleAddress(),
+                                                       packages: [],
+                                                       selectedRate: MockShippingLabelCarrierRate.makeRate())
+
+        // Then
+        XCTAssertEqual(viewModel.isDoneButtonEnabled(), true)
+    }
+
+    func test_getSelectedRates_returns_the_expected_value() {
+        // Given
+        let viewModel = ShippingLabelCarriersViewModel(order: MockOrders().sampleOrder(),
+                                                       originAddress: MockShippingLabelAddress.sampleAddress(),
+                                                       destinationAddress: MockShippingLabelAddress.sampleAddress(),
+                                                       packages: [],
+                                                       selectedRate: MockShippingLabelCarrierRate.makeRate())
+
+        // Then
+        XCTAssertEqual(viewModel.getSelectedRates().selectedRate, MockShippingLabelCarrierRate.makeRate())
+        XCTAssertEqual(viewModel.getSelectedRates().selectedSignatureRate, nil)
+        XCTAssertEqual(viewModel.getSelectedRates().selectedAdultSignatureRate, nil)
+    }
 }
 
 private extension ShippingLabelCarriersViewModelTests {

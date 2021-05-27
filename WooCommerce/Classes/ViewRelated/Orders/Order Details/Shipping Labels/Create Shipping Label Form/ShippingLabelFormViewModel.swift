@@ -22,10 +22,22 @@ final class ShippingLabelFormViewModel {
 
     let siteID: Int64
     private(set) var order: Order
+
+    /// Address
+    ///
     private(set) var originAddress: ShippingLabelAddress?
     private(set) var destinationAddress: ShippingLabelAddress?
+
+    /// Packages
+    ///
     private(set) var packagesResponse: ShippingLabelPackagesResponse?
     private(set) var selectedPackageID: String?
+
+    /// Carrier and Rates
+    ///
+    private(set) var selectedRate: ShippingLabelCarrierRate?
+    private(set) var selectedSignatureRate: ShippingLabelCarrierRate?
+    private(set) var selectedAdultSignatureRate: ShippingLabelCarrierRate?
     var selectedPackage: ShippingLabelPackageSelected? {
         guard let packagesResponse = packagesResponse else {
             return nil
@@ -121,6 +133,20 @@ final class ShippingLabelFormViewModel {
         updateRowState(type: .packageDetails, dataState: .validated, displayMode: .editable)
     }
 
+    func handleCarrierAndRatesValueChanges(selectedRate: ShippingLabelCarrierRate?,
+                                           selectedSignatureRate: ShippingLabelCarrierRate?,
+                                           selectedAdultSignatureRate: ShippingLabelCarrierRate?) {
+        self.selectedRate = selectedRate
+        self.selectedSignatureRate = selectedSignatureRate
+        self.selectedAdultSignatureRate = selectedAdultSignatureRate
+
+        guard selectedRate != nil else {
+            updateRowState(type: .shippingCarrierAndRates, dataState: .pending, displayMode: .editable)
+            return
+        }
+        updateRowState(type: .shippingCarrierAndRates, dataState: .validated, displayMode: .editable)
+    }
+
     func handlePaymentMethodValueChanges(selectedPaymentMethodID: Int64, editable: Bool) {
         self.selectedPaymentMethodID = selectedPaymentMethodID
         let displayMode: ShippingLabelFormViewController.DisplayMode = editable ? .editable : .disabled
@@ -142,8 +168,8 @@ final class ShippingLabelFormViewModel {
         return [Section(rows: rows)]
     }
 
-    // Return the body of the Package Details cell
-    //
+    /// Returns the body of the Package Details cell
+    ///
     func getPackageDetailsBody() -> String {
         guard let packagesResponse = packagesResponse,
               let selectedPackageID = selectedPackageID,
@@ -157,6 +183,30 @@ final class ShippingLabelFormViewModel {
         let packageWeight = formatter.formatWeight(weight: totalPackageWeight)
 
         return packageTitle + "\n" + String.localizedStringWithFormat(Localization.totalPackageWeight, packageWeight)
+    }
+
+    /// Returns the body of the selected Carrier and Rates.
+    ///
+    func getCarrierAndRatesBody() -> String {
+        guard let selectedRate = selectedRate else {
+            return Localization.carrierAndRatesPlaceholder
+        }
+
+        var rate: Double = selectedRate.retailRate
+        if let selectedSignatureRate = selectedSignatureRate {
+            rate = selectedSignatureRate.retailRate
+        }
+        else if let selectedAdultSignatureRate = selectedAdultSignatureRate {
+            rate = selectedAdultSignatureRate.retailRate
+        }
+
+        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+        let price = currencyFormatter.formatAmount(Decimal(rate)) ?? ""
+
+        let formatString = selectedRate.deliveryDays == 1 ? Localization.businessDaySingular : Localization.businessDaysPlural
+        let shippingDays = String(format: formatString, selectedRate.deliveryDays)
+
+        return selectedRate.title + "\n" + price + " - " + shippingDays
     }
 
     /// Returns the body of the Payment Methods cell.
@@ -379,6 +429,12 @@ private extension ShippingLabelFormViewModel {
                                                                  comment: "Placeholder in Shipping Label form for the Package Details row.")
         static let totalPackageWeight = NSLocalizedString("Total package weight: %1$@",
                                                           comment: "Total package weight label in Shipping Label form. %1$@ is a placeholder for the weight")
+        static let carrierAndRatesPlaceholder = NSLocalizedString("Select your shipping carrier and rates",
+                                                                  comment: "Placeholder in Shipping Label form for the Carrier and Rates row.")
+        static let businessDaySingular = NSLocalizedString("%1$d business day",
+                                                           comment: "Singular format of number of business day in Shipping Labels > Carrier and Rates")
+        static let businessDaysPlural = NSLocalizedString("%1$d business days",
+                                                          comment: "Plural format of number of business days in Shipping Labels > Carrier and Rates")
         static let paymentMethodPlaceholder = NSLocalizedString("Add a new credit card",
                                                                 comment: "Placeholder in Shipping Label form for the Payment Method row.")
         static let paymentMethodLabel =

@@ -8,6 +8,8 @@ import Yosemite
 final class PaymentCaptureOrchestrator {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
+    private let celebration = PaymentCaptureCelebration()
+
     func collectPayment(for order: Order,
                         paymentsAccount: WCPayAccount?,
                         onPresentMessage: @escaping (String) -> Void,
@@ -112,6 +114,7 @@ private extension PaymentCaptureOrchestrator {
 
             switch result {
             case .success:
+                self?.celebrate()
                 self?.saveReceipt(for: order, params: receiptParameters)
                 onCompletion(.success(receiptParameters))
             case .failure(let error):
@@ -167,6 +170,10 @@ private extension PaymentCaptureOrchestrator {
 
         return String.localizedStringWithFormat(Localization.receiptDescription,
                                                 storeName)
+    }
+
+    func celebrate() {
+        celebration.celebrate()
     }
 }
 

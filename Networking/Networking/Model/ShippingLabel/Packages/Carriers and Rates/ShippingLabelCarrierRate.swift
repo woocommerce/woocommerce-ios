@@ -5,7 +5,7 @@ import Foundation
 public struct ShippingLabelCarrierRate: Equatable {
 
     public let title: String
-    public let insurance: Int64
+    public let insurance: Double
     public let retailRate: Double
     public let rate: Double
     public let rateID: String
@@ -19,7 +19,7 @@ public struct ShippingLabelCarrierRate: Equatable {
     public let deliveryDateGuaranteed: Bool
 
     public init(title: String,
-                insurance: Int64,
+                insurance: Double,
                 retailRate: Double,
                 rate: Double,
                 rateID: String,
@@ -54,7 +54,7 @@ extension ShippingLabelCarrierRate: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let title = try container.decode(String.self, forKey: .title)
-        let insurance = try container.decode(Int64.self, forKey: .insurance)
+        let insurance = try container.decode(Double.self, forKey: .insurance)
         let retailRate = try container.decode(Double.self, forKey: .retailRate)
         let rate = try container.decode(Double.self, forKey: .rate)
         let rateID = try container.decode(String.self, forKey: .rateID)

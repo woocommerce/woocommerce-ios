@@ -68,4 +68,5 @@ private extension CardPresentModalScanningFailed {
             "Dismiss",
             comment: "Button to dismiss the alert presented when finding a reader to connect to fails"
         )
+    }
 }

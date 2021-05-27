@@ -10,6 +10,7 @@ enum ProductFormEditAction: Equatable {
     case productType(editable: Bool)
     case inventorySettings(editable: Bool)
     case shippingSettings(editable: Bool)
+    case addOns(editable: Bool)
     case categories(editable: Bool)
     case tags(editable: Bool)
     case shortDescription(editable: Bool)
@@ -35,11 +36,14 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let product: EditableProductModel
     private let formType: ProductFormType
     private let editable: Bool
+    private let addOnsFeatureEnabled: Bool
 
-    init(product: EditableProductModel, formType: ProductFormType) {
+    // TODO: Remove default parameter
+    init(product: EditableProductModel, formType: ProductFormType, addOnsFeatureEnabled: Bool = true) {
         self.product = product
         self.formType = formType
         self.editable = formType != .readonly
+        self.addOnsFeatureEnabled = addOnsFeatureEnabled
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -98,6 +102,7 @@ private extension ProductFormActionsFactory {
             shouldShowReviewsRow ? .reviews: nil,
             shouldShowShippingSettingsRow ? .shippingSettings(editable: editable): nil,
             .inventorySettings(editable: canEditInventorySettingsRow),
+            .addOns(editable: editable),
             .categories(editable: editable),
             .tags(editable: editable),
             shouldShowDownloadableProduct ? .downloadableFiles(editable: editable): nil,
@@ -119,6 +124,7 @@ private extension ProductFormActionsFactory {
             shouldShowReviewsRow ? .reviews: nil,
             shouldShowExternalURLRow ? .externalURL(editable: editable): nil,
             shouldShowSKURow ? .sku(editable: editable): nil,
+            .addOns(editable: editable),
             .categories(editable: editable),
             .tags(editable: editable),
             .shortDescription(editable: editable),
@@ -137,6 +143,7 @@ private extension ProductFormActionsFactory {
             .groupedProducts(editable: editable),
             shouldShowReviewsRow ? .reviews: nil,
             shouldShowSKURow ? .sku(editable: editable): nil,
+            .addOns(editable: editable),
             .categories(editable: editable),
             .tags(editable: editable),
             .shortDescription(editable: editable),
@@ -156,6 +163,7 @@ private extension ProductFormActionsFactory {
             shouldShowReviewsRow ? .reviews: nil,
             .shippingSettings(editable: editable),
             .inventorySettings(editable: canEditInventorySettingsRow),
+            .addOns(editable: editable),
             .categories(editable: editable),
             .tags(editable: editable),
             .shortDescription(editable: editable),
@@ -174,6 +182,7 @@ private extension ProductFormActionsFactory {
             shouldShowReviewsRow ? .reviews: nil,
             .inventorySettings(editable: false),
             .categories(editable: editable),
+            .addOns(editable: editable),
             .tags(editable: editable),
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
@@ -209,6 +218,8 @@ private extension ProductFormActionsFactory {
         case .shippingSettings:
             return product.weight.isNilOrEmpty == false ||
                 product.dimensions.height.isNotEmpty || product.dimensions.width.isNotEmpty || product.dimensions.length.isNotEmpty
+        case .addOns:
+            return addOnsFeatureEnabled && product.hasAddOns
         case .categories:
             return product.product.categories.isNotEmpty
         case .tags:

@@ -146,7 +146,7 @@ final class ShippingLabelFormViewModel {
         }
         updateRowState(type: .shippingCarrierAndRates, dataState: .validated, displayMode: .editable)
     }
-  
+
     func handlePaymentMethodValueChanges(selectedPaymentMethodID: Int64, editable: Bool) {
         self.selectedPaymentMethodID = selectedPaymentMethodID
         let displayMode: ShippingLabelFormViewController.DisplayMode = editable ? .editable : .disabled
@@ -168,7 +168,7 @@ final class ShippingLabelFormViewModel {
         return [Section(rows: rows)]
     }
 
-    /// Return the body of the Package Details cell
+    /// Returns the body of the Package Details cell
     ///
     func getPackageDetailsBody() -> String {
         guard let packagesResponse = packagesResponse,
@@ -207,6 +207,7 @@ final class ShippingLabelFormViewModel {
         let shippingDays = String(format: formatString, selectedRate.deliveryDays)
 
         return selectedRate.title + "\n" + price + " - " + shippingDays
+    }
 
     /// Returns the body of the Payment Methods cell.
     /// Displays the payment method details if one is selected. Otherwise, displays a prompt to add a credit card.

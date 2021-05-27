@@ -199,7 +199,18 @@ private extension ShippingLabelStore {
     func updateShippingLabelAccountSettings(siteID: Int64,
                                             settings: ShippingLabelAccountSettings,
                                             completion: @escaping (Result<Bool, Error>) -> Void) {
-        remote.updateShippingLabelAccountSettings(siteID: siteID, settings: settings, completion: completion)
+        remote.updateShippingLabelAccountSettings(siteID: siteID, settings: settings) { [weak self] result in
+            guard let self = self else { return }
+
+            switch result {
+            case .success(let success):
+                self.upsertShippingLabelAccountSettingsInBackground(siteID: siteID, accountSettings: settings) {
+                    completion(.success(success))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
 }
 

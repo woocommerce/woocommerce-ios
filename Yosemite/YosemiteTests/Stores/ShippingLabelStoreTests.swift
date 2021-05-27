@@ -638,6 +638,52 @@ final class ShippingLabelStoreTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
+
+    // MARK: `updateShippingLabelAccountSettings`
+
+    func test_updateShippingLabelAccountSettings_returns_success_response() throws {
+        // Given
+        let settings = ShippingLabelAccountSettings.fake().copy()
+        let remote = MockShippingLabelRemote()
+        remote.whenUpdateShippingLabelAccountSettings(siteID: sampleSiteID,
+                                                      settings: settings,
+                                                      thenReturn: .success(true))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = ShippingLabelAction.updateShippingLabelAccountSettings(siteID: self.sampleSiteID, settings: settings) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_updateShippingLabelAccountSettings_returns_error_on_failure() throws {
+        // Given
+        let settings = ShippingLabelAccountSettings.fake().copy()
+        let remote = MockShippingLabelRemote()
+        let expectedError = NetworkError.notFound
+        remote.whenUpdateShippingLabelAccountSettings(siteID: sampleSiteID,
+                                                      settings: settings,
+                                                      thenReturn: .failure(expectedError))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = ShippingLabelAction.updateShippingLabelAccountSettings(siteID: self.sampleSiteID, settings: settings) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
 }
 
 private extension ShippingLabelStoreTests {

@@ -54,8 +54,10 @@ final class CardPresentPaymentsModalViewController: UIViewController {
 
         if traitCollection.containsTraits(in: UITraitCollection(verticalSizeClass: .compact)) {
             mainStackView.axis = .horizontal
+            mainStackView.distribution = .fillProportionally
         } else {
             mainStackView.axis = .vertical
+            mainStackView.distribution = .fill
         }
     }
 }

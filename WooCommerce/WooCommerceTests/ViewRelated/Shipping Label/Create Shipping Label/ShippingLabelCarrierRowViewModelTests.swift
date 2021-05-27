@@ -20,13 +20,13 @@ final class ShippingLabelCarrierRowViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.adultSignatureSelected, false)
         XCTAssertEqual(viewModel.title, "USPS - Parcel Select Mail")
         XCTAssertEqual(viewModel.subtitle, "2 business days")
-        XCTAssertEqual(viewModel.price, "$40.33")
+        XCTAssertEqual(viewModel.price, "$45,99")
         XCTAssertEqual(viewModel.carrierLogo, UIImage(named: "shipping-label-usps-logo"))
         XCTAssertEqual(viewModel.extraInfo, "Includes USPS tracking, Eligible for free pickup")
         XCTAssertEqual(viewModel.displaySignatureRequired, true)
         XCTAssertEqual(viewModel.displayAdultSignatureRequired, true)
-        XCTAssertEqual(viewModel.signatureRequiredText, "Signature required (+$5.66)")
-        XCTAssertEqual(viewModel.adultSignatureRequiredText, "Adult signature required (+$11.00)")
+        XCTAssertEqual(viewModel.signatureRequiredText, "Signature required (+$5,66)")
+        XCTAssertEqual(viewModel.adultSignatureRequiredText, "Adult signature required (+$11,00)")
     }
 
     func test_handleSelection_return_expected_values() throws {

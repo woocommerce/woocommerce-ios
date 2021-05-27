@@ -10,18 +10,18 @@ final class CardPresentModalScanningFailed: CardPresentPaymentsModalViewModel {
     /// A closure to execute when the primary button is tapped
     private let primaryAction: () -> Void
 
-    let textMode: PaymentsModalTextMode = .reducedBottomInfo
-    let actionsMode: PaymentsModalActionsMode = .oneAction
+    let textMode: PaymentsModalTextMode = .fullInfo
+    let actionsMode: PaymentsModalActionsMode = .twoAction
 
-    let topTitle: String = Localization.connectionFailed
+    let topTitle: String = Localization.bluetoothRequired
 
     var topSubtitle: String? = nil
 
     let image: UIImage = .paymentErrorImage
 
-    let primaryButtonTitle: String? = Localization.dismiss
+    let primaryButtonTitle: String? = Localization.openDeviceSettings
 
-    let secondaryButtonTitle: String? = nil
+    let secondaryButtonTitle: String? = Localization.dismiss
 
     let auxiliaryButtonTitle: String? = nil
 
@@ -42,21 +42,31 @@ final class CardPresentModalScanningFailed: CardPresentPaymentsModalViewModel {
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
+        guard let targetURL = URL(string: UIApplication.openSettingsURLString) else {
+            return
+        }
+        UIApplication.shared.open(targetURL)
+    }
+
+    func didTapSecondaryButton(in viewController: UIViewController?) {
         viewController?.dismiss(animated: true, completion: {[weak self] in
             self?.primaryAction()
         })
     }
-
-    func didTapSecondaryButton(in viewController: UIViewController?) { }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
 }
 
 private extension CardPresentModalScanningFailed {
     enum Localization {
-        static let connectionFailed = NSLocalizedString(
-            "Reader connection failed",
-            comment: "Error message. Presented to users when finding a reader to connect to fails"
+        static let bluetoothRequired = NSLocalizedString(
+            "Bluetooth permission required",
+            comment: "Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions"
+        )
+
+        static let openDeviceSettings = NSLocalizedString(
+            "Open Device Settings",
+            comment: "Opens iOS's Device Settings for the app"
         )
 
         static let dismiss = NSLocalizedString(
@@ -65,7 +75,7 @@ private extension CardPresentModalScanningFailed {
         )
 
         static let bluetoothDenied = NSLocalizedString(
-            "Bluetooth permission was denied",
+            "This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this.",
             comment: "Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions")
     }
 }

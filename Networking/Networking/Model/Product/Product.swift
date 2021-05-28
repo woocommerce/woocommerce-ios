@@ -385,7 +385,10 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
         let menuOrder = try container.decode(Int.self, forKey: .menuOrder)
 
-        let addOns = try container.decodeIfPresent(ProductAddOnEnvelope.self, forKey: .metadata)?.revolve() ?? []
+        // In some isolated cases, it appears to be some malformed meta-data that causes this line to throw hence the whole product decoding to throw.
+        // Since add-ons are optional, `try?` will be used to prevent the whole decoding to stop.
+        // https://github.com/woocommerce/woocommerce-ios/issues/4205
+        let addOns = (try? container.decodeIfPresent(ProductAddOnEnvelope.self, forKey: .metadata)?.revolve()) ?? []
 
         self.init(siteID: siteID,
                   productID: productID,

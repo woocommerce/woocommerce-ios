@@ -346,6 +346,72 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
+
+    func test_actions_for_products_with_add_ons_while_feature_is_enabled() {
+        // Given
+        let products = [
+            Fixtures.physicalSimpleProductWithImages.copy(addOns: [ProductAddOn.fake()]),
+            Fixtures.affiliateProduct.copy(addOns: [ProductAddOn.fake()]),
+            Fixtures.groupedProduct.copy(addOns: [ProductAddOn.fake()]),
+            Fixtures.variableProductWithVariations.copy(addOns: [ProductAddOn.fake()]),
+            Fixtures.nonCoreProductWithPrice.copy(addOns: [ProductAddOn.fake()])
+        ]
+
+        products.forEach { product in
+            let model = EditableProductModel(product: product)
+
+            // When
+            let factory = ProductFormActionsFactory(product: model, formType: .edit, addOnsFeatureEnabled: true)
+
+            // Then
+            let containsAddOnAction = factory.settingsSectionActions().contains(ProductFormEditAction.addOns(editable: true))
+            XCTAssertTrue(containsAddOnAction)
+        }
+    }
+
+    func test_actions_for_products_with_add_ons_while_feature_is_disabled() {
+        // Given
+        let products = [
+            Fixtures.physicalSimpleProductWithImages.copy(addOns: [ProductAddOn.fake()]),
+            Fixtures.affiliateProduct.copy(addOns: [ProductAddOn.fake()]),
+            Fixtures.groupedProduct.copy(addOns: [ProductAddOn.fake()]),
+            Fixtures.variableProductWithVariations.copy(addOns: [ProductAddOn.fake()]),
+            Fixtures.nonCoreProductWithPrice.copy(addOns: [ProductAddOn.fake()])
+        ]
+
+        products.forEach { product in
+            let model = EditableProductModel(product: product)
+
+            // When
+            let factory = ProductFormActionsFactory(product: model, formType: .edit, addOnsFeatureEnabled: false)
+
+            // Then
+            let containsAddOnAction = factory.settingsSectionActions().contains(ProductFormEditAction.addOns(editable: true))
+            XCTAssertFalse(containsAddOnAction)
+        }
+    }
+
+    func test_actions_for_products_with_no_add_ons_while_feature_is_enabled() {
+        // Given
+        let products = [
+            Fixtures.physicalSimpleProductWithImages.copy(addOns: []),
+            Fixtures.affiliateProduct.copy(addOns: []),
+            Fixtures.groupedProduct.copy(addOns: []),
+            Fixtures.variableProductWithVariations.copy(addOns: []),
+            Fixtures.nonCoreProductWithPrice.copy(addOns: [])
+        ]
+
+        products.forEach { product in
+            let model = EditableProductModel(product: product)
+
+            // When
+            let factory = ProductFormActionsFactory(product: model, formType: .edit, addOnsFeatureEnabled: false)
+
+            // Then
+            let containsAddOnAction = factory.settingsSectionActions().contains(ProductFormEditAction.addOns(editable: true))
+            XCTAssertFalse(containsAddOnAction)
+        }
+    }
 }
 
 private extension ProductFormActionsFactoryTests {

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-05-19 11:32:05+0000 */
+/* Translation-Revision-Date: 2021-05-26 16:54:49+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -174,7 +174,7 @@
 "Active" = "Actief";
 
 /* Title for table view section of active plugins */
-"Active Plugins" = "Active Plugins";
+"Active Plugins" = "Actieve plug-ins";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "Actief, auto-updates uit";
@@ -1198,7 +1198,7 @@
 "Inactive" = "Inactief";
 
 /* Title for table view section of inactive plugins */
-"Inactive Plugins" = "Inactive Plugins";
+"Inactive Plugins" = "Inactieve plug-ins";
 
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "Inactief, auto-updates uit";
@@ -1516,7 +1516,7 @@
 "Net Payment" = "Netto betaling";
 
 /* Title for table view section of network active plugins */
-"Network Active Plugins" = "Network Active Plugins";
+"Network Active Plugins" = "Netwerk actieve plug-ins";
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "Nieuwe naam van eigenschap";
@@ -2402,7 +2402,7 @@
 "Someone" = "Iemand";
 
 /* The text on the placeholder overlay when there is issue syncing site plugins */
-"Something went wrong" = "Something went wrong";
+"Something went wrong" = "Er is iets fout gegaan";
 
 /* Notice format when a shipping label refund request fails. */
 "Something went wrong with the refund. Please try again." = "Er is iets fout gegaan tijdens de terugbetaling. Probeer het nog eens.";
@@ -2650,7 +2650,7 @@
 "Terms of Service" = "Servicevoorwaarden";
 
 /* Cell description on the beta features screen to enable the order add-ons feature */
-"Test out viewing Order Add-Ons as we get ready to launch" = "Test out viewing Order Add-Ons as we get ready to launch";
+"Test out viewing Order Add-Ons as we get ready to launch" = "Test onze Add-ons bestelling bekijken terwijl we ons voorbereiden op de lancering";
 
 /* Button title
    The button's title text to send a 2FA code via SMS text message. */
@@ -2753,7 +2753,7 @@
 "There was a problem removing the block for specified site." = "Er is een probleem opgetreden bij het opheffen van de blokkering voor opgegeven site.";
 
 /* The details on the placeholder overlay when there is issue syncing site plugins */
-"There was a problem while trying to load plugins. Check your internet and try again." = "There was a problem while trying to load plugins. Check your internet and try again.";
+"There was a problem while trying to load plugins. Check your internet and try again." = "Er is een probleem opgetreden bij het laden van plug-ins. Controleer je internetverbinding en probeer het nog een keer.";
 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "Er is een fout opgetreden tijdens de terugbetaling";

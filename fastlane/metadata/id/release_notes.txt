@@ -1,0 +1,3 @@
+Anda pengguna ekstensi WooCommerce Product Add-ons (buatan WooCommerce) dan sudah lama menantikan fitur perincian add-on saat melihat pesanan? Tak perlu lagi menunggu! Dukungan eksperimental untuk menampilkan add-on tersebut di pesanan telah kami tambahkan ke aplikasi. Untuk mencobanya, buka Fitur Eksperimental di Pengaturan, lalu nyalakan fitur tersebut. Silakan kirim masukan tentang pengalaman Anda.
+
+Setelah rilis yang ini, kami hanya akan mendukung iOS 14 atau yang lebih baru. Untuk terus mendapatkan pembaruan aplikasi WooCommerce, silakan upgrade perangkat Anda ke iOS 14.

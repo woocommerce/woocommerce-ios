@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-05-19 11:32:05+0000 */
+/* Translation-Revision-Date: 2021-05-26 14:54:06+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -174,7 +174,7 @@
 "Active" = "Actif";
 
 /* Title for table view section of active plugins */
-"Active Plugins" = "Active Plugins";
+"Active Plugins" = "Extensions actives";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "Actif, mises à jour automatiques désactivées";
@@ -1198,7 +1198,7 @@
 "Inactive" = "Inactif";
 
 /* Title for table view section of inactive plugins */
-"Inactive Plugins" = "Inactive Plugins";
+"Inactive Plugins" = "Extensions inactives";
 
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "Inactif, mises à jour automatiques désactivées";
@@ -1516,7 +1516,7 @@
 "Net Payment" = "Paiement net";
 
 /* Title for table view section of network active plugins */
-"Network Active Plugins" = "Network Active Plugins";
+"Network Active Plugins" = "Extensions actives de réseau";
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "Nom du nouvel attribut";
@@ -2402,7 +2402,7 @@
 "Someone" = "Quelqu'un";
 
 /* The text on the placeholder overlay when there is issue syncing site plugins */
-"Something went wrong" = "Something went wrong";
+"Something went wrong" = "Un problème est survenu";
 
 /* Notice format when a shipping label refund request fails. */
 "Something went wrong with the refund. Please try again." = "Un problème est survenu lors du remboursement. Veuillez réessayer.";
@@ -2650,7 +2650,7 @@
 "Terms of Service" = "Conditions d’utilisation";
 
 /* Cell description on the beta features screen to enable the order add-ons feature */
-"Test out viewing Order Add-Ons as we get ready to launch" = "Test out viewing Order Add-Ons as we get ready to launch";
+"Test out viewing Order Add-Ons as we get ready to launch" = "Tester l’affichage des modules de commande peu avant le lancement";
 
 /* Button title
    The button's title text to send a 2FA code via SMS text message. */
@@ -2753,7 +2753,7 @@
 "There was a problem removing the block for specified site." = "Un problème est survenu lors de la suppression du bloc du site spécifié.";
 
 /* The details on the placeholder overlay when there is issue syncing site plugins */
-"There was a problem while trying to load plugins. Check your internet and try again." = "There was a problem while trying to load plugins. Check your internet and try again.";
+"There was a problem while trying to load plugins. Check your internet and try again." = "Un problème est survenu lors de la tentative de chargement des extensions. Vérifiez votre connexion internet et réessayez.";
 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "Une erreur est survenue lors de l’émission du remboursement";

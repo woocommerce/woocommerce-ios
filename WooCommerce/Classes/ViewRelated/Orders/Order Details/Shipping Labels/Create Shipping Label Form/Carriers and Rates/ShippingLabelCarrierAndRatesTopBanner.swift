@@ -8,10 +8,20 @@ struct ShippingLabelCarrierAndRatesTopBanner: UIViewRepresentable {
     ///
     private let width: CGFloat
 
+    /// Shipping method
+    ///
+    private let shippingMethod: String
+
+    /// Shipping cost
+    ///
+    private let shippingCost: String
+
     /// Create a view with the desired `width`. Needed to calculate a correct view `height` later.
     ///
-    init(width: CGFloat) {
+    init(width: CGFloat, shippingMethod: String, shippingCost: String) {
         self.width = width
+        self.shippingMethod = shippingMethod
+        self.shippingCost = shippingCost
     }
 
     func makeCoordinator() -> Coordinator {
@@ -20,7 +30,7 @@ struct ShippingLabelCarrierAndRatesTopBanner: UIViewRepresentable {
 
     func makeUIView(context: Context) -> UIView {
         let viewModel = TopBannerViewModel(title: nil,
-                                           infoText: Localization.title,
+                                           infoText: String(format: Localization.title, shippingMethod, shippingCost),
                                            icon: .infoOutlineImage,
                                            topButton: .none,
                                            actionButtons: [],

@@ -25,7 +25,11 @@ struct ShippingLabelCarriers: View {
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
-                ShippingLabelCarrierAndRatesTopBanner(width: geometry.size.width)
+                if viewModel.shouldDisplayTopBanner {
+                    ShippingLabelCarrierAndRatesTopBanner(width: geometry.size.width,
+                                                          shippingMethod: viewModel.shippingMethod,
+                                                          shippingCost: viewModel.shippingCost)
+                }
                 LazyVStack {
                     switch viewModel.syncStatus {
                     case .loading:

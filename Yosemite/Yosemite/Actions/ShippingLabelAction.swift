@@ -60,4 +60,10 @@ public enum ShippingLabelAction: Action {
     ///
     case synchronizeShippingLabelAccountSettings(siteID: Int64,
                                                  completion: (Result<ShippingLabelAccountSettings, Error>) -> Void)
+
+    /// Updates account-level shipping label settings for a store.
+    ///
+    case updateShippingLabelAccountSettings(siteID: Int64,
+                                            settings: ShippingLabelAccountSettings,
+                                            completion: (Result<Bool, Error>) -> Void)
 }

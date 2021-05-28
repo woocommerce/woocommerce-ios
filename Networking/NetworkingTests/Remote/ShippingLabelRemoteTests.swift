@@ -286,6 +286,41 @@ final class ShippingLabelRemoteTests: XCTestCase {
         XCTAssertNotNil(result.failure)
     }
 
+    func test_updateShippingLabelAccountSettings_returns_true_on_success() throws {
+        // Given
+        let settings = ShippingLabelAccountSettings.fake().copy()
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "account/settings", filename: "generic_success")
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            remote.updateShippingLabelAccountSettings(siteID: self.sampleSiteID, settings: settings) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let response = try result.get()
+        XCTAssertTrue(response)
+    }
+
+    func test_updateShippingLabelAccountSettings_returns_error_on_failure() throws {
+        // Given
+        let settings = ShippingLabelAccountSettings.fake().copy()
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "account/settings", filename: "generic_error")
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            remote.updateShippingLabelAccountSettings(siteID: self.sampleSiteID, settings: settings) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
+
     func test_checkCreationEligibility_returns_true_on_success() throws {
         // Given
         let orderID: Int64 = 321

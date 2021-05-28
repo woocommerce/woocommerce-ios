@@ -27,6 +27,9 @@ public protocol ShippingLabelRemoteProtocol {
                               completion: @escaping (Result<ShippingLabelCarriersAndRates, Error>) -> Void)
     func loadShippingLabelAccountSettings(siteID: Int64,
                                           completion: @escaping (Result<ShippingLabelAccountSettings, Error>) -> Void)
+    func updateShippingLabelAccountSettings(siteID: Int64,
+                                            settings: ShippingLabelAccountSettings,
+                                            completion: @escaping (Result<Bool, Error>) -> Void)
     func checkCreationEligibility(siteID: Int64,
                                   orderID: Int64,
                                   canCreatePaymentMethod: Bool,
@@ -179,6 +182,23 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+    /// Updates account-level shipping label settings for a store.
+    /// - Parameters:
+    ///     - siteID: Remote ID of the site.
+    ///     - settings: The shipping label account settings to update remotely.
+    ///     - completion: Closure to be executed upon completion.
+    public func updateShippingLabelAccountSettings(siteID: Int64, settings: ShippingLabelAccountSettings, completion: @escaping (Result<Bool, Error>) -> Void) {
+        let parameters: [String: Any] = [
+            ParameterKey.selectedPaymentMethodID: settings.selectedPaymentMethodID,
+            ParameterKey.emailReceipts: settings.isEmailReceiptsEnabled,
+            ParameterKey.paperSize: settings.paperSize.rawValue
+        ]
+        let path = Path.accountSettings
+        let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .post, siteID: siteID, path: path, parameters: parameters)
+        let mapper = SuccessResultMapper()
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
     /// Checks eligibility for shipping label creation.
     /// - Parameters:
     ///     - siteID: Remote ID of the site.
@@ -226,5 +246,7 @@ private extension ShippingLabelRemote {
         static let originAddress = "origin"
         static let destinationAddress = "destination"
         static let packages = "packages"
+        static let selectedPaymentMethodID = "selected_payment_method_id"
+        static let emailReceipts = "email_receipts"
     }
 }

@@ -34,6 +34,34 @@ public enum CardReaderServiceError: Error {
     case bluetoothDenied
 }
 
+extension CardReaderServiceError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .connection(let underlyingError):
+            return underlyingError.errorDescription
+        case .discovery(let underlyingError):
+            return underlyingError.errorDescription
+        case .disconnection(let underlyingError):
+            return underlyingError.errorDescription
+        case .intentCreation(let underlyingError):
+            return underlyingError.errorDescription
+        case .paymentMethodCollection(let underlyingError):
+            return underlyingError.errorDescription
+        case .paymentCapture(let underlyingError):
+            return underlyingError.errorDescription
+        case .paymentCancellation(let underlyingError):
+            return underlyingError.errorDescription
+        case .softwareUpdate(let underlyingError):
+            return underlyingError.errorDescription
+        case .bluetoothDenied:
+            return NSLocalizedString(
+                "This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this.",
+                comment: "Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions"
+            )
+        }
+    }
+}
+
 
 /// Underlying error. Models the specific error that made a given
 /// interaction with the SDK fail.

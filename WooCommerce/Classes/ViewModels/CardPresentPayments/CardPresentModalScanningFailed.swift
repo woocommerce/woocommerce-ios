@@ -26,12 +26,7 @@ final class CardPresentModalScanningFailed: CardPresentPaymentsModalViewModel {
     let auxiliaryButtonTitle: String? = nil
 
     var bottomTitle: String? {
-        switch error {
-        case CardReaderServiceError.bluetoothDenied:
-            return Localization.bluetoothDenied
-        default:
-            return nil
-        }
+        error.localizedDescription
     }
 
     let bottomSubtitle: String? = nil
@@ -73,9 +68,5 @@ private extension CardPresentModalScanningFailed {
             "Dismiss",
             comment: "Button to dismiss the alert presented when finding a reader to connect to fails"
         )
-
-        static let bluetoothDenied = NSLocalizedString(
-            "This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this.",
-            comment: "Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions")
     }
 }

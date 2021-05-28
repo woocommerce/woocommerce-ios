@@ -1,0 +1,3 @@
+Si vous utilisez l’extension WooCommerce Product Add-ons (conçue par WooCommerce) et que vous vouliez voir ces détails lors de l’affichage d’une commande, n’attendez plus ! Nous avons ajouté la prise en charge expérimentale à l’application pour afficher ces modules dans les commandes. Pour l’essayer, accédez à Fonctionnalités expérimentales dans Réglages afin de l’activer. Envoyez-nous vos commentaires sur votre expérience !
+
+De plus, nous allons prendre en charge iOS 14 ou une version ultérieure uniquement avec la prochaine version. Pour continuer à recevoir des mises à jour pour l’application WooCommerce, veuillez mettre votre appareil à niveau vers iOS 14.

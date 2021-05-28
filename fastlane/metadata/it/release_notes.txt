@@ -1,0 +1,3 @@
+Se stai utilizzando l'estensione WooCommerce Product Add-Ons (realizzata da WooCommerce) e da tempo desideri vedere quei dettagli in un ordine, non devi più aspettare. Abbiamo aggiunto all'app un supporto sperimentale per mostrare quegli componenti aggiuntivi negli ordini. Per fare una prova, vai a Funzionalità in fase sperimentale in Impostazioni e abilita l'opzione. Inviaci un feedback riguardante la tua esperienza.
+
+Ci stiamo anche organizzando per supportare iOS 14 o versioni successive a partire dal prossimo rilascio. Per continuare a ricevere aggiornamenti relativi all'app WooCommerce, esegui l'aggiornamento del dispositivo a iOS 14.

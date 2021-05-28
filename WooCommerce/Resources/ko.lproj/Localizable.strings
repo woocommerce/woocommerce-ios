@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-05-19 11:32:05+0000 */
+/* Translation-Revision-Date: 2021-05-28 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -174,7 +174,7 @@
 "Active" = "활성";
 
 /* Title for table view section of active plugins */
-"Active Plugins" = "Active Plugins";
+"Active Plugins" = "활성화 플러그인";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "활성화, 자동 업데이트 끄기";
@@ -1198,7 +1198,7 @@
 "Inactive" = "비활성";
 
 /* Title for table view section of inactive plugins */
-"Inactive Plugins" = "Inactive Plugins";
+"Inactive Plugins" = "비활성화 플러그인";
 
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "비활성화, 자동 업데이트 끄기";
@@ -1516,7 +1516,7 @@
 "Net Payment" = "순 결제";
 
 /* Title for table view section of network active plugins */
-"Network Active Plugins" = "Network Active Plugins";
+"Network Active Plugins" = "네트워크 활성화 플러그인";
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "새 속성 이름";
@@ -2402,7 +2402,7 @@
 "Someone" = "다른 사람";
 
 /* The text on the placeholder overlay when there is issue syncing site plugins */
-"Something went wrong" = "Something went wrong";
+"Something went wrong" = "문제가 발생했습니다";
 
 /* Notice format when a shipping label refund request fails. */
 "Something went wrong with the refund. Please try again." = "환불에 문제가 발생했습니다. 다시 시도하세요.";
@@ -2650,7 +2650,7 @@
 "Terms of Service" = "서비스 약관";
 
 /* Cell description on the beta features screen to enable the order add-ons feature */
-"Test out viewing Order Add-Ons as we get ready to launch" = "Test out viewing Order Add-Ons as we get ready to launch";
+"Test out viewing Order Add-Ons as we get ready to launch" = "출시 준비가 끝나면 주문 애드온 테스트해 보기";
 
 /* Button title
    The button's title text to send a 2FA code via SMS text message. */
@@ -2753,7 +2753,7 @@
 "There was a problem removing the block for specified site." = "지정된 사이트의 차단을 제거하는 중 문제가 발생했습니다.";
 
 /* The details on the placeholder overlay when there is issue syncing site plugins */
-"There was a problem while trying to load plugins. Check your internet and try again." = "There was a problem while trying to load plugins. Check your internet and try again.";
+"There was a problem while trying to load plugins. Check your internet and try again." = "플러그인 로드를 시도하는 동안 문제가 발생했습니다. 인터넷을 확인하고 다시 시도하세요.";
 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "환불 발행 중 오류 발생";

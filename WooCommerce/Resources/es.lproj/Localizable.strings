@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-05-25 14:54:04+0000 */
+/* Translation-Revision-Date: 2021-05-27 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -2650,7 +2650,7 @@
 "Terms of Service" = "Condiciones del servicio";
 
 /* Cell description on the beta features screen to enable the order add-ons feature */
-"Test out viewing Order Add-Ons as we get ready to launch" = "Prueba la visualización de Order Add-Ons mientras nos preparamos para publicarla";
+"Test out viewing Order Add-Ons as we get ready to launch" = "Prueba la visualización de Complementos del pedido mientras preparamos la publicación";
 
 /* Button title
    The button's title text to send a 2FA code via SMS text message. */

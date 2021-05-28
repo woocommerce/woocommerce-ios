@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-05-19 11:32:05+0000 */
+/* Translation-Revision-Date: 2021-05-28 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -174,7 +174,7 @@
 "Active" = "有効";
 
 /* Title for table view section of active plugins */
-"Active Plugins" = "Active Plugins";
+"Active Plugins" = "使用中のプラグイン";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "プラグイン有効化中。自動更新オフ。";
@@ -1198,7 +1198,7 @@
 "Inactive" = "停止中";
 
 /* Title for table view section of inactive plugins */
-"Inactive Plugins" = "Inactive Plugins";
+"Inactive Plugins" = "停止中のプラグイン";
 
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "プラグイン無効化中。自動更新オフ。";
@@ -1516,7 +1516,7 @@
 "Net Payment" = "支払額 (正味)";
 
 /* Title for table view section of network active plugins */
-"Network Active Plugins" = "Network Active Plugins";
+"Network Active Plugins" = "ネットワークが有効なプラグイン";
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "新規属性名";
@@ -2402,7 +2402,7 @@
 "Someone" = "だれか";
 
 /* The text on the placeholder overlay when there is issue syncing site plugins */
-"Something went wrong" = "Something went wrong";
+"Something went wrong" = "問題が発生しました。";
 
 /* Notice format when a shipping label refund request fails. */
 "Something went wrong with the refund. Please try again." = "返金処理でエラーが発生しました。 もう一度お試しください。";
@@ -2650,7 +2650,7 @@
 "Terms of Service" = "利用規約";
 
 /* Cell description on the beta features screen to enable the order add-ons feature */
-"Test out viewing Order Add-Ons as we get ready to launch" = "Test out viewing Order Add-Ons as we get ready to launch";
+"Test out viewing Order Add-Ons as we get ready to launch" = "起動の準備ができたら、注文アドオンの表示をテストします";
 
 /* Button title
    The button's title text to send a 2FA code via SMS text message. */
@@ -2753,7 +2753,7 @@
 "There was a problem removing the block for specified site." = "指定したサイトのブロックを解除する際に問題が発生しました。";
 
 /* The details on the placeholder overlay when there is issue syncing site plugins */
-"There was a problem while trying to load plugins. Check your internet and try again." = "There was a problem while trying to load plugins. Check your internet and try again.";
+"There was a problem while trying to load plugins. Check your internet and try again." = "プラグインを読み込む際に問題が発生しました。 インターネット接続を確認して再度お試しください。";
 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "返金の実行中にエラーが発生しました";

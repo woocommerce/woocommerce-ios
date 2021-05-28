@@ -192,6 +192,7 @@ private extension TopBannerView {
         // Style buttons
         actionButtons.forEach { button in
             button.applyLinkButtonStyle()
+            button.titleLabel?.adjustsFontSizeToFitWidth = true
             button.backgroundColor = backgroundColor(for: viewModel.type)
             buttonsStackView.addArrangedSubview(button)
         }

@@ -40,6 +40,15 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     private let productNameSubject: PublishSubject<String> = PublishSubject<String>()
     private let isUpdateEnabledSubject: PublishSubject<Bool>
 
+    /// Returns `true` if the `Add-ons` beta feature switch is enabled. `False` otherwise.
+    /// Assigning this value will recreate the `actionsFactory` property.
+    ///
+    private var isAddOnsFeatureEnabled: Bool = false {
+        didSet {
+            updateActionsFactory()
+        }
+    }
+
     /// The product model before any potential edits; reset after a remote update.
     private var originalProduct: EditableProductModel {
         didSet {
@@ -64,8 +73,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
             }
 
             updateFormTypeIfNeeded(oldProduct: oldValue.product)
-            actionsFactory = ProductFormActionsFactory(product: product,
-                                                       formType: formType)
+            updateActionsFactory()
             productSubject.send(product)
         }
     }
@@ -138,8 +146,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.productImageActionHandler = productImageActionHandler
         self.originalProduct = product
         self.product = product
-        self.actionsFactory = ProductFormActionsFactory(product: product,
-                                                        formType: formType)
+        self.actionsFactory = ProductFormActionsFactory(product: product, formType: formType)
         self.isUpdateEnabledSubject = PublishSubject<Bool>()
         self.stores = stores
 
@@ -148,6 +155,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
                 self?.isUpdateEnabledSubject.send(true)
             }
         }
+
+        queryAddOnsFeatureState()
     }
 
     deinit {
@@ -442,5 +451,27 @@ private extension ProductFormViewModel {
     func isNameTheOnlyChange(oldProduct: EditableProductModel, newProduct: EditableProductModel) -> Bool {
         let oldProductWithNewName = EditableProductModel(product: oldProduct.product.copy(name: newProduct.name))
         return oldProductWithNewName == newProduct && newProduct.name != oldProduct.name
+    }
+}
+
+// MARK: Beta feature handling
+//
+private extension ProductFormViewModel {
+    /// Query the latest `Add-ons` beta feature state.
+    ///
+    func queryAddOnsFeatureState() {
+        let action = AppSettingsAction.loadOrderAddOnsSwitchState { [weak self] result in
+            guard let self = self, case .success(let addOnsEnabled) = result else {
+                return
+            }
+            self.isAddOnsFeatureEnabled = addOnsEnabled
+        }
+        stores.dispatch(action)
+    }
+
+    /// Recreates `actionsFactory` with the latest `product`, `formType`, and `isAddOnsFeatureEnabled` information.
+    ///
+    func updateActionsFactory() {
+        actionsFactory = ProductFormActionsFactory(product: product, formType: formType, addOnsFeatureEnabled: isAddOnsFeatureEnabled)
     }
 }

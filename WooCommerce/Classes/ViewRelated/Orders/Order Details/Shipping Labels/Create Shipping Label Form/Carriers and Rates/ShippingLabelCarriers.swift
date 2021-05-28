@@ -23,36 +23,39 @@ struct ShippingLabelCarriers: View {
     }
 
     var body: some View {
-        ScrollView {
-            LazyVStack {
-                switch viewModel.syncStatus {
-                case .loading:
-                    ForEach(viewModel.ghostRows) { ghostRowVM in
-                        ShippingLabelCarrierRow(ghostRowVM)
-                            .redacted(reason: .placeholder)
-                            .shimmering()
-                        Divider().padding(.leading, Constants.dividerPadding)
+        GeometryReader { geometry in
+            ScrollView {
+                ShippingLabelCarrierAndRatesTopBanner(width: geometry.size.width)
+                LazyVStack {
+                    switch viewModel.syncStatus {
+                    case .loading:
+                        ForEach(viewModel.ghostRows) { ghostRowVM in
+                            ShippingLabelCarrierRow(ghostRowVM)
+                                .redacted(reason: .placeholder)
+                                .shimmering()
+                            Divider().padding(.leading, Constants.dividerPadding)
+                        }
+                    case .success:
+                        ForEach(viewModel.rows) { carrierRowVM in
+                            ShippingLabelCarrierRow(carrierRowVM)
+                            Divider().padding(.leading, Constants.dividerPadding)
+                        }
+                    default:
+                        EmptyView()
                     }
-                case .success:
-                    ForEach(viewModel.rows) { carrierRowVM in
-                        ShippingLabelCarrierRow(carrierRowVM)
-                        Divider().padding(.leading, Constants.dividerPadding)
-                    }
-                default:
-                    EmptyView()
                 }
             }
+            .navigationTitle(Localization.titleView)
+            .navigationBarItems(trailing: Button(action: {
+                onCompletion(viewModel.getSelectedRates().selectedRate,
+                             viewModel.getSelectedRates().selectedSignatureRate,
+                             viewModel.getSelectedRates().selectedAdultSignatureRate)
+                presentation.wrappedValue.dismiss()
+            }, label: {
+                Text(Localization.doneButton)
+            })
+            .disabled(!viewModel.isDoneButtonEnabled()))
         }
-        .navigationTitle(Localization.titleView)
-        .navigationBarItems(trailing: Button(action: {
-            onCompletion(viewModel.getSelectedRates().selectedRate,
-                         viewModel.getSelectedRates().selectedSignatureRate,
-                         viewModel.getSelectedRates().selectedAdultSignatureRate)
-            presentation.wrappedValue.dismiss()
-        }, label: {
-            Text(Localization.doneButton)
-        })
-        .disabled(!viewModel.isDoneButtonEnabled()))
     }
 
     enum Constants {

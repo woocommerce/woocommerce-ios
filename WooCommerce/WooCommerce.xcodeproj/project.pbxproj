@@ -486,6 +486,7 @@
 		31FE28C825E6D384003519F2 /* LearnMoreTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31FE28C725E6D384003519F2 /* LearnMoreTableViewCell.xib */; };
 		4506BD712461965300FE6377 /* ProductVisibilityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4506BD6F2461965300FE6377 /* ProductVisibilityViewController.swift */; };
 		4506BD722461965300FE6377 /* ProductVisibilityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4506BD702461965300FE6377 /* ProductVisibilityViewController.xib */; };
+		4508BF622660E34A00707869 /* ShippingLabelCarrierAndRatesTopBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4508BF612660E34A00707869 /* ShippingLabelCarrierAndRatesTopBanner.swift */; };
 		450C2CB024CF006A00D570DD /* ProductTagsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450C2CAF24CF006A00D570DD /* ProductTagsDataSource.swift */; };
 		450C2CB324D0803000D570DD /* ProductSettingsRowsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450C2CB224D0803000D570DD /* ProductSettingsRowsTests.swift */; };
 		450C2CB624D1ABB200D570DD /* ProductImagesGalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450C2CB424D1ABB100D570DD /* ProductImagesGalleryViewController.swift */; };
@@ -1749,6 +1750,7 @@
 		33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release.xcconfig"; sourceTree = "<group>"; };
 		4506BD6F2461965300FE6377 /* ProductVisibilityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVisibilityViewController.swift; sourceTree = "<group>"; };
 		4506BD702461965300FE6377 /* ProductVisibilityViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductVisibilityViewController.xib; sourceTree = "<group>"; };
+		4508BF612660E34A00707869 /* ShippingLabelCarrierAndRatesTopBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCarrierAndRatesTopBanner.swift; sourceTree = "<group>"; };
 		450C2CAF24CF006A00D570DD /* ProductTagsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagsDataSource.swift; sourceTree = "<group>"; };
 		450C2CB224D0803000D570DD /* ProductSettingsRowsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsRowsTests.swift; sourceTree = "<group>"; };
 		450C2CB424D1ABB100D570DD /* ProductImagesGalleryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesGalleryViewController.swift; sourceTree = "<group>"; };
@@ -3791,6 +3793,7 @@
 				45693188265403A1009ED69D /* ShippingLabelCarriersViewModel.swift */,
 				456931832653E9F1009ED69D /* ShippingLabelCarrierRow.swift */,
 				45455EF926580B5D00BBB0C4 /* ShippingLabelCarrierRowViewModel.swift */,
+				4508BF612660E34A00707869 /* ShippingLabelCarrierAndRatesTopBanner.swift */,
 			);
 			path = "Carriers and Rates";
 			sourceTree = "<group>";
@@ -6991,6 +6994,7 @@
 				B5980A6321AC879F00EBF596 /* Bundle+Woo.swift in Sources */,
 				B59D1EE5219080B4009D1978 /* Note+Woo.swift in Sources */,
 				02913E9523A774C500707A0C /* UnitInputFormatter.swift in Sources */,
+				4508BF622660E34A00707869 /* ShippingLabelCarrierAndRatesTopBanner.swift in Sources */,
 				451B1747258BD7B600836277 /* AddAttributeOptionsViewModel.swift in Sources */,
 				02F49ADC23BF3A0100FA0BFA /* ErrorSectionHeaderView.swift in Sources */,
 				3178C1F726409216000D771A /* CardReaderSettingsConnectedViewModel.swift in Sources */,

@@ -130,7 +130,7 @@ In order to switch accounts or to just reset the integration with the Stripe Ter
 The method `clear()` will reset the integration, clear all the caches, and will make the Stripe Terminal ready to fetch a new connection token.
 
 ## Printing receipts.
-Receipts can be customized, as long as we list some required information. When accepting in-person payments with EMV chip cards, card networks require us to include several fields on the receipts we provide to customers. Those fields are included as part of the PaymentIntent object (to be more specific, the CardReaderDetails object), once the payment is processed. For more information, see Stripe's documentation: [Custom receipts](https://stripe.com/docs/terminal/checkout/receipts#custom)
+Receipts can be customized, as long as we list some required information. When accepting in-person payments with EMV chip cards, card networks require us to include several fields on the receipts we provide to customers. Those fields are included as part of the PaymentIntent object (to be more specific, the CardReaderDetails object), once the payment is processed. For more information, see Stripe's documentation: [Custom receipts](https://stripe.com/docs/terminal/checkout/receipts#custom).
 
 Printing receipts is supported via a public interface called `ReceiptPrinterService`. This interface provides, at this moment, a single public method `printReceipt(content: ReceiptContent)`.
 

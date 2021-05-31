@@ -8,6 +8,7 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
     private let originAddress: ShippingLabelAddress
     private let destinationAddress: ShippingLabelAddress
     private let packages: [ShippingLabelPackageSelected]
+    private let currencySettings: CurrencySettings
     private let stores: StoresManager
     var shouldDisplayTopBanner: Bool {
         guard let shippingTotal = Double(order.shippingTotal) else {
@@ -27,7 +28,7 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
     /// We use this value in the top banner of the view.
     ///
     var shippingCost: String {
-        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         return currencyFormatter.formatAmount(order.shippingTotal) ?? ""
     }
 
@@ -63,6 +64,7 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
          selectedRate: ShippingLabelCarrierRate? = nil,
          selectedSignatureRate: ShippingLabelCarrierRate? = nil,
          selectedAdultSignatureRate: ShippingLabelCarrierRate? = nil,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          stores: StoresManager = ServiceLocator.stores) {
         self.order = order
         self.originAddress = originAddress
@@ -71,6 +73,7 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
         self.selectedRate = selectedRate
         self.selectedSignatureRate = selectedSignatureRate
         self.selectedAdultSignatureRate = selectedAdultSignatureRate
+        self.currencySettings = currencySettings
         self.stores = stores
         syncCarriersAndRates()
     }
@@ -85,7 +88,8 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
                                                     adultSignatureSelected: selectedAdultSignatureRate?.title == adultSignature?.title && adultSignature != nil,
                                                     rate: rate,
                                                     signatureRate: signature,
-                                                    adultSignatureRate: adultSignature) { [weak self] (rate, signature, adultSignature) in
+                                                    adultSignatureRate: adultSignature,
+                                                    currencySettings: currencySettings) { [weak self] (rate, signature, adultSignature) in
                 self?.selectedRate = rate
                 self?.selectedSignatureRate = signature
                 self?.selectedAdultSignatureRate = adultSignature

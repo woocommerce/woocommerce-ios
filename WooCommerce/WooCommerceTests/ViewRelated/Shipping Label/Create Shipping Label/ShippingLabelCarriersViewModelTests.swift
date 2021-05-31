@@ -9,7 +9,8 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
         let viewModel = ShippingLabelCarriersViewModel(order: MockOrders().sampleOrder(),
                                                        originAddress: MockShippingLabelAddress.sampleAddress(),
                                                        destinationAddress: MockShippingLabelAddress.sampleAddress(),
-                                                       packages: [])
+                                                       packages: [],
+                                                       currencySettings: CurrencySettings())
         XCTAssertEqual(viewModel.rows.count, 0)
 
         // When
@@ -22,13 +23,13 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
         XCTAssertEqual(row?.adultSignatureSelected, false)
         XCTAssertEqual(row?.title, "USPS - Parcel Select Mail")
         XCTAssertEqual(row?.subtitle, "2 business days")
-        XCTAssertEqual(row?.price, "$40,06")
+        XCTAssertEqual(row?.price, "$40.06")
         XCTAssertEqual(row?.carrierLogo, UIImage(named: "shipping-label-usps-logo"))
         XCTAssertEqual(row?.extraInfo, "Includes USPS tracking, Eligible for free pickup")
         XCTAssertEqual(row?.displaySignatureRequired, true)
         XCTAssertEqual(row?.displayAdultSignatureRequired, true)
-        XCTAssertEqual(row?.signatureRequiredText, "Signature required (+$5,00)")
-        XCTAssertEqual(row?.adultSignatureRequiredText, "Adult signature required (+$10,00)")
+        XCTAssertEqual(row?.signatureRequiredText, "Signature required (+$5.00)")
+        XCTAssertEqual(row?.adultSignatureRequiredText, "Adult signature required (+$10.00)")
 
         let row2 = viewModel.rows.last
         XCTAssertEqual(row2?.selected, false)
@@ -36,7 +37,7 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
         XCTAssertEqual(row2?.adultSignatureSelected, false)
         XCTAssertEqual(row2?.title, "UPS")
         XCTAssertEqual(row2?.subtitle, "2 business days")
-        XCTAssertEqual(row2?.price, "$40,06")
+        XCTAssertEqual(row2?.price, "$40.06")
         XCTAssertEqual(row2?.carrierLogo, UIImage(named: "shipping-label-usps-logo"))
         XCTAssertEqual(row2?.extraInfo, "Includes USPS tracking, Eligible for free pickup")
         XCTAssertEqual(row2?.displaySignatureRequired, false)
@@ -51,7 +52,8 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
                                                        originAddress: MockShippingLabelAddress.sampleAddress(),
                                                        destinationAddress: MockShippingLabelAddress.sampleAddress(),
                                                        packages: [],
-                                                       selectedRate: MockShippingLabelCarrierRate.makeRate())
+                                                       selectedRate: MockShippingLabelCarrierRate.makeRate(),
+                                                       currencySettings: CurrencySettings())
 
         // Then
         XCTAssertEqual(viewModel.isDoneButtonEnabled(), true)
@@ -63,7 +65,8 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
                                                        originAddress: MockShippingLabelAddress.sampleAddress(),
                                                        destinationAddress: MockShippingLabelAddress.sampleAddress(),
                                                        packages: [],
-                                                       selectedRate: MockShippingLabelCarrierRate.makeRate())
+                                                       selectedRate: MockShippingLabelCarrierRate.makeRate(),
+                                                       currencySettings: CurrencySettings())
 
         // Then
         XCTAssertEqual(viewModel.getSelectedRates().selectedRate, MockShippingLabelCarrierRate.makeRate())
@@ -77,7 +80,8 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
                                                        originAddress: MockShippingLabelAddress.sampleAddress(),
                                                        destinationAddress: MockShippingLabelAddress.sampleAddress(),
                                                        packages: [],
-                                                       selectedRate: MockShippingLabelCarrierRate.makeRate())
+                                                       selectedRate: MockShippingLabelCarrierRate.makeRate(),
+                                                       currencySettings: CurrencySettings())
 
         // Then
         XCTAssertEqual(viewModel.shouldDisplayTopBanner, true)
@@ -95,7 +99,8 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
                                                        originAddress: MockShippingLabelAddress.sampleAddress(),
                                                        destinationAddress: MockShippingLabelAddress.sampleAddress(),
                                                        packages: [],
-                                                       selectedRate: MockShippingLabelCarrierRate.makeRate())
+                                                       selectedRate: MockShippingLabelCarrierRate.makeRate(),
+                                                       currencySettings: CurrencySettings())
 
         // Then
         XCTAssertEqual(viewModel.shippingMethod, "Flat rate")
@@ -113,10 +118,11 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
                                                        originAddress: MockShippingLabelAddress.sampleAddress(),
                                                        destinationAddress: MockShippingLabelAddress.sampleAddress(),
                                                        packages: [],
-                                                       selectedRate: MockShippingLabelCarrierRate.makeRate())
+                                                       selectedRate: MockShippingLabelCarrierRate.makeRate(),
+                                                       currencySettings: CurrencySettings())
 
         // Then
-        XCTAssertEqual(viewModel.shippingCost, "$10,00")
+        XCTAssertEqual(viewModel.shippingCost, "$10.00")
     }
 }
 

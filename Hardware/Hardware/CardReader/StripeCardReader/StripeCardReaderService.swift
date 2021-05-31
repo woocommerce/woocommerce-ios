@@ -68,10 +68,12 @@ extension StripeCardReaderService: CardReaderService {
 
         let config = DiscoveryConfiguration(
             discoveryMethod: .bluetoothProximity,
-            simulated: false
+            simulated: shouldUseSimulatedCardReader
         )
 
-        guard CBCentralManager.authorization != .denied else {
+        // If we're using the simulated reader, we don't want to check for Bluetooth permissions
+        // as the simulator won't have Bluetooth available.
+        guard shouldUseSimulatedCardReader || CBCentralManager.authorization != .denied else {
             throw CardReaderServiceError.bluetoothDenied
         }
 
@@ -503,5 +505,17 @@ private extension StripeCardReaderService {
 private extension StripeCardReaderService {
     func internalError(_ error: Error) {
         // Empty for now. Will be implemented later
+    }
+}
+
+// MARK: - Debugging configuration
+//
+private extension StripeCardReaderService {
+    var shouldUseSimulatedCardReader: Bool {
+        #if DEBUG
+        return ProcessInfo.processInfo.arguments.contains("-simulate-stripe-card-reader")
+        #else
+        return false
+        #endif
     }
 }

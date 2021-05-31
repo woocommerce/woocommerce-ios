@@ -25,11 +25,6 @@ struct ShippingLabelCarriers: View {
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
-                if viewModel.shouldDisplayTopBanner {
-                    ShippingLabelCarrierAndRatesTopBanner(width: geometry.size.width,
-                                                          shippingMethod: viewModel.shippingMethod,
-                                                          shippingCost: viewModel.shippingCost)
-                }
                 LazyVStack {
                     switch viewModel.syncStatus {
                     case .loading:
@@ -40,6 +35,11 @@ struct ShippingLabelCarriers: View {
                             Divider().padding(.leading, Constants.dividerPadding)
                         }
                     case .success:
+                        if viewModel.shouldDisplayTopBanner {
+                            ShippingLabelCarrierAndRatesTopBanner(width: geometry.size.width,
+                                                                  shippingMethod: viewModel.shippingMethod,
+                                                                  shippingCost: viewModel.shippingCost)
+                        }
                         ForEach(viewModel.rows) { carrierRowVM in
                             ShippingLabelCarrierRow(carrierRowVM)
                             Divider().padding(.leading, Constants.dividerPadding)
@@ -59,6 +59,15 @@ struct ShippingLabelCarriers: View {
                 Text(Localization.doneButton)
             })
             .disabled(!viewModel.isDoneButtonEnabled()))
+
+            if viewModel.syncStatus == .error {
+                ZStack(alignment: .center) {
+                    EmptyState(title: Localization.emptyStateTitle,
+                               description: Localization.emptyStateDescription,
+                               image: .productErrorImage)
+                }
+                .frame(width: geometry.size.width, height: geometry.size.height, alignment: .center)
+            }
         }
     }
 
@@ -73,6 +82,11 @@ private extension ShippingLabelCarriers {
 
                                                  comment: "Navigation bar title of shipping label carrier and rates screen")
         static let doneButton = NSLocalizedString("Done", comment: "Done navigation button in shipping label carrier and rates screen")
+        static let emptyStateTitle = NSLocalizedString("No shipping rates available",
+                                                       comment: "Error state title in shipping label carrier and rates screen")
+        static let emptyStateDescription = NSLocalizedString("Please double check your package dimensions and weight" +
+                                                                "or try using a different package in Package Details.",
+                                                             comment: "Error state description in shipping label carrier and rates screen")
     }
 }
 

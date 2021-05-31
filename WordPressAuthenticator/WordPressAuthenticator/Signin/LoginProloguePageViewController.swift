@@ -15,20 +15,6 @@ class LoginProloguePageViewController: UIPageViewController {
         dataSource = self
         delegate = self
 
-        if WordPressAuthenticator.shared.configuration.enableUnifiedCarousel {
-            pages.append(LoginProloguePromoViewController(as: .intro))
-            pages.append(LoginProloguePromoViewController(as: .editor))
-            pages.append(LoginProloguePromoViewController(as: .comments))
-            pages.append(LoginProloguePromoViewController(as: .analytics))
-            pages.append(LoginProloguePromoViewController(as: .discover))
-        } else {
-            pages.append(LoginProloguePromoViewController(as: .post))
-            pages.append(LoginProloguePromoViewController(as: .stats))
-            pages.append(LoginProloguePromoViewController(as: .reader))
-            pages.append(LoginProloguePromoViewController(as: .notifications))
-            pages.append(LoginProloguePromoViewController(as: .jetpack))
-        }
-
         setViewControllers([pages[0]], direction: .forward, animated: false)
         view.backgroundColor = WordPressAuthenticator.shared.style.prologueBackgroundColor
 

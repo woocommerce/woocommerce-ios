@@ -110,7 +110,7 @@ import WordPressKit
     /// Indicates if the specified ViewController belongs to the Authentication Flow, or not.
     ///
     public class func isAuthenticationViewController(_ viewController: UIViewController) -> Bool {
-        return viewController is LoginPrologueViewController || viewController is NUXViewControllerBase
+        return viewController is NUXViewControllerBase
     }
 
     /// Indicates if the received URL is a Google Authentication Callback.
@@ -176,11 +176,7 @@ import WordPressKit
             assertionFailure("Cannot instantiate initial login controller from Login.storyboard")
             return nil
         }
-        if let childController = controller.children.first as? LoginPrologueViewController {
-            childController.loginFields.restrictToWPCom = restrictToWPCom
-            childController.showCancel = showCancel
-            childController.onLoginButtonTapped = onLoginButtonTapped
-        }
+
         controller.modalPresentationStyle = .fullScreen
         return controller
     }

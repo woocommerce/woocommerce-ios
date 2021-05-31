@@ -44,6 +44,13 @@ struct ShippingLabelCarriers: View {
                             ShippingLabelCarrierRow(carrierRowVM)
                             Divider().padding(.leading, Constants.dividerPadding)
                         }
+                    case .error:
+                        VStack(alignment: .center) {
+                            EmptyState(title: Localization.emptyStateTitle,
+                                       description: Localization.emptyStateDescription,
+                                       image: .productErrorImage)
+                        }
+                        .frame(width: geometry.size.width, height: geometry.size.height, alignment: .center)
                     default:
                         EmptyView()
                     }
@@ -59,15 +66,6 @@ struct ShippingLabelCarriers: View {
                 Text(Localization.doneButton)
             })
             .disabled(!viewModel.isDoneButtonEnabled()))
-
-            if viewModel.syncStatus == .error {
-                ZStack(alignment: .center) {
-                    EmptyState(title: Localization.emptyStateTitle,
-                               description: Localization.emptyStateDescription,
-                               image: .productErrorImage)
-                }
-                .frame(width: geometry.size.width, height: geometry.size.height, alignment: .center)
-            }
         }
     }
 

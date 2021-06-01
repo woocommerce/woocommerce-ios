@@ -35,11 +35,9 @@ struct ShippingLabelCarriers: View {
                             Divider().padding(.leading, Constants.dividerPadding)
                         }
                     case .success:
-                        if viewModel.shouldDisplayTopBanner {
-                            ShippingLabelCarrierAndRatesTopBanner(width: geometry.size.width,
-                                                                  shippingMethod: viewModel.shippingMethod,
-                                                                  shippingCost: viewModel.shippingCost)
-                        }
+                        ShippingLabelCarrierAndRatesTopBanner(width: geometry.size.width,
+                                                              shippingMethod: viewModel.shippingMethod,
+                                                              shippingCost: viewModel.shippingCost).renderedIf(viewModel.shouldDisplayTopBanner)
                         ForEach(viewModel.rows) { carrierRowVM in
                             ShippingLabelCarrierRow(carrierRowVM)
                             Divider().padding(.leading, Constants.dividerPadding)

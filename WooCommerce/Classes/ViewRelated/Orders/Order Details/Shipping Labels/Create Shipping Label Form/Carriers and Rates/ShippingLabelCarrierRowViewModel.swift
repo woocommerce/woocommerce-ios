@@ -51,15 +51,15 @@ struct ShippingLabelCarrierRowViewModel: Identifiable {
 
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
 
-        var tempPrice: String = ""
-        tempPrice = currencyFormatter.formatAmount(Decimal(rate.retailRate)) ?? ""
-        if signatureSelected, let signatureRate = signatureRate {
-            tempPrice = currencyFormatter.formatAmount(Decimal(signatureRate.retailRate)) ?? ""
-        }
-        else if adultSignatureSelected, let adultSignatureRate = adultSignatureRate {
-            tempPrice = currencyFormatter.formatAmount(Decimal(adultSignatureRate.retailRate)) ?? ""
-        }
-        price = tempPrice
+        price = {
+            if signatureSelected, let signatureRate = signatureRate {
+                    return currencyFormatter.formatAmount(Decimal(signatureRate.retailRate)) ?? ""
+                }
+                if adultSignatureSelected, let adultSignatureRate = adultSignatureRate {
+                    return currencyFormatter.formatAmount(Decimal(adultSignatureRate.retailRate)) ?? ""
+                }
+            return currencyFormatter.formatAmount(Decimal(rate.retailRate)) ?? ""
+        }()
 
         carrierLogo = CarrierLogo(rawValue: rate.carrierID)?.image()
 

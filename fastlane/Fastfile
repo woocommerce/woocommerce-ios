@@ -6,7 +6,7 @@ unless FastlaneCore::Helper.bundler?
 end
 
 USER_ENV_FILE_PATH = File.join(Dir.home, '.wcios-env.default')
-PROJECT_ENV_FILE_PATH = File.expand_path(File.join(Dir.pwd, '../.configure-files/project.env'))
+PROJECT_ENV_FILE_PATH = File.join(Dir.home, '.configure', 'woocommerce-ios', 'secrets', 'project.env')
 
 # Use this instead of getting values from ENV directly
 # It will throw an error if the requested value is missing

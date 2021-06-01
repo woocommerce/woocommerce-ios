@@ -1189,6 +1189,7 @@
 		DE8C946E264699B600C94823 /* PluginListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8C946D264699B600C94823 /* PluginListViewModel.swift */; };
 		DEFD6E61264990FB00E51E0D /* SitePluginListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6E60264990FB00E51E0D /* SitePluginListViewModelTests.swift */; };
 		DEFD6E86264ABFB700E51E0D /* PluginListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DEFD6E85264ABFB700E51E0D /* PluginListViewController.xib */; };
+		E16715CB26663B0B00326230 /* CardPresentModalSuccessWithoutEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16715CA26663B0B00326230 /* CardPresentModalSuccessWithoutEmail.swift */; };
 		E1BE703A265E6F47006CA4D9 /* CardPresentModalScanningFailed.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BE7039265E6F47006CA4D9 /* CardPresentModalScanningFailed.swift */; };
 		F93E8E5324087FDA0057FF21 /* BetaFeaturesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */; };
 		F93E8E5424087FDA0057FF21 /* BetaFeaturesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */; };
@@ -2465,6 +2466,7 @@
 		DE8C946D264699B600C94823 /* PluginListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginListViewModel.swift; sourceTree = "<group>"; };
 		DEFD6E60264990FB00E51E0D /* SitePluginListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginListViewModelTests.swift; sourceTree = "<group>"; };
 		DEFD6E85264ABFB700E51E0D /* PluginListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PluginListViewController.xib; sourceTree = "<group>"; };
+		E16715CA26663B0B00326230 /* CardPresentModalSuccessWithoutEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalSuccessWithoutEmail.swift; sourceTree = "<group>"; };
 		E1BE7039265E6F47006CA4D9 /* CardPresentModalScanningFailed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalScanningFailed.swift; sourceTree = "<group>"; };
 		F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BetaFeaturesScreen.swift; sourceTree = "<group>"; };
 		F93E8E5224087FDA0057FF21 /* SettingsScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
@@ -5690,6 +5692,7 @@
 				D8815B0026385E3F00EDAD62 /* CardPresentModalTapCard.swift */,
 				D8815B062638606B00EDAD62 /* CardPresentModalRemoveCard.swift */,
 				D8815B0C263861A400EDAD62 /* CardPresentModalSuccess.swift */,
+				E16715CA26663B0B00326230 /* CardPresentModalSuccessWithoutEmail.swift */,
 				D8815B122638686200EDAD62 /* CardPresentModalError.swift */,
 				D802541E2655137A001B2CC1 /* CardPresentModalNonRetryableError.swift */,
 				D85806282642BA5400A8AB6C /* PaymentCaptureOrchestrator.swift */,
@@ -7061,6 +7064,7 @@
 				B541B21A2189F3A2008FE7C1 /* StringFormatter.swift in Sources */,
 				0279F0DF252DC12D0098D7DE /* ProductLoaderViewControllerModel+Init.swift in Sources */,
 				45A0E4CB2566B56000D4E8C3 /* NumberOfLinkedProductsTableViewCell.swift in Sources */,
+				E16715CB26663B0B00326230 /* CardPresentModalSuccessWithoutEmail.swift in Sources */,
 				CC4D1D8625E6CDDE00B6E4E7 /* RenameAttributesViewModel.swift in Sources */,
 				CC69236226010946002FB669 /* LoginProloguePages.swift in Sources */,
 				D817586422BDD81600289CFE /* OrderDetailsDataSource.swift in Sources */,

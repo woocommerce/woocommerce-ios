@@ -69,6 +69,10 @@ jobs:
           name: Copy Secrets
           command: bundle exec fastlane run configure_apply
       - run:
+          name: TEST LANE
+          command: |
+            bundle exec fastlane test_lane
+      - run:
           name: Build for Testing
           command: bundle exec fastlane build_for_testing device:'<< parameters.device >>' ios-version:'<< parameters.ios-version >>'
       - persist_to_workspace:

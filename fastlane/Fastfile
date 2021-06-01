@@ -6,7 +6,8 @@ unless FastlaneCore::Helper.bundler?
 end
 
 USER_ENV_FILE_PATH = File.join(Dir.home, '.wcios-env.default')
-PROJECT_ENV_FILE_PATH = File.join(Dir.home, '.configure', 'woocommerce-ios', 'secrets', 'project.env')
+SECRETS_DIR = File.join(Dir.home, '.configure', 'woocommerce-ios', 'secrets')
+PROJECT_ENV_FILE_PATH = File.join(SECRETS_DIR, 'project.env')
 
 # Use this instead of getting values from ENV directly
 # It will throw an error if the requested value is missing
@@ -322,7 +323,10 @@ GH_ORG_NAME="woocommerce"
       }
     )
 
-    testflight(skip_waiting_for_build_processing: true)
+    testflight(
+      skip_waiting_for_build_processing: true,
+      api_key_path: File.join(SECRETS_DIR, 'app_store_connect_fastlane_api_key.json')
+    )
     sh("cd .. && rm WooCommerce.ipa")
 
     sentry_upload_dsym(

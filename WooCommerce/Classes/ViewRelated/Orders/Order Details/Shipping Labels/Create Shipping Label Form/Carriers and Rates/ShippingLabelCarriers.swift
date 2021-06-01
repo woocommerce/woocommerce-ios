@@ -48,7 +48,10 @@ struct ShippingLabelCarriers: View {
                                        description: Localization.emptyStateDescription,
                                        image: .productErrorImage)
                         }
-                        .frame(width: geometry.size.width, height: geometry.size.height, alignment: .center)
+                        .frame(width: geometry.size.width,
+                               alignment: .center)
+                        .position(x: geometry.size.width/2,
+                                  y: geometry.size.height/2)
                     default:
                         EmptyView()
                     }

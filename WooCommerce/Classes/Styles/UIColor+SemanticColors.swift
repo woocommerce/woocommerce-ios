@@ -48,6 +48,12 @@ extension UIColor {
                        dark: .withColorStudio(.orange, shade: .shade90))
     }
 
+    /// Info. Green with Shade 40
+    ///
+    static var info: UIColor {
+        return .withColorStudio(.green, shade: .shade40)
+    }
+
     /// Blue. Blue-50 (< iOS 13 and Light Mode) and Blue-30 (Dark Mode)
     ///
     static var blue: UIColor {

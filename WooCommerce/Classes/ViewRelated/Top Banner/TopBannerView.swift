@@ -229,7 +229,7 @@ private extension TopBannerView {
         case .warning:
             iconImageView.tintColor = .warning
         case .info:
-            iconImageView.tintColor = .withColorStudio(.green, shade: .shade40)
+            iconImageView.tintColor = .info
         }
         backgroundColor = backgroundColor(for: type)
     }

@@ -148,16 +148,7 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
         foundReader = nil
         discoveryState = .cancellingSearch
         cancelReaderDiscovery { [weak self] in
-            // Horrible, terrible workaround.
-            // And yet, it is the classic "dispatch to the next run cycle".
-            // It looks like the Terminal SDK signals that the discovery process has
-            // been cancelled when the SDK has not completely transitioned to an idle state.
-            // If we call startReaderDiscovery inmediately, the SDK will fire an error
-            // because the reader is busy with the first discovery operation (the one that
-            // it has signaled as cancelled)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                self?.startReaderDiscovery()
-            }
+            self?.startReaderDiscovery()
         }
     }
 

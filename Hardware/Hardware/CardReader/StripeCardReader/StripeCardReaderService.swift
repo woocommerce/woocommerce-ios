@@ -112,20 +112,24 @@ extension StripeCardReaderService: CardReaderService {
                 return promise(.success(()))
             }
 
-            // This completion block, apparently, is called when
-            // the SDK has not really transitioned to an idle state
+            // The completion block for cancel, apparently, is called when
+            // the SDK has not really transitioned to an idle state.
             // Clients might need to dispatch operations that rely on this completion block
             // to start a second operation on the card reader.
             // (for example, starting an operation after discovery has been cancelled)
             //
             self?.discoveryCancellable?.cancel { [weak self] error in
-                guard let error = error else {
-                    self?.switchStatusToIdle()
-                    return promise(.success(()))
-                }
+                // Horrible, terrible workaround.
+                // And yet, it is the classic "dispatch to the next run cycle".
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    guard let error = error else {
+                        self?.switchStatusToIdle()
+                        return promise(.success(()))
+                    }
 
-                self?.internalError(error)
-                promise(.failure(error))
+                    self?.internalError(error)
+                    promise(.failure(error))
+                }
             }
         }
     }

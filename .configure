@@ -15,7 +15,7 @@
     },
     {
       "file": "iOS/WCiOS/project.env",
-      "destination": ".configure-files/project.env",
+      "destination": "~/.configure/woocommerce-ios/secrets/project.env",
       "encrypt": true
     },
     {

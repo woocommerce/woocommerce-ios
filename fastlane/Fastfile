@@ -4,7 +4,7 @@ fastlane_require 'dotenv'
 UI.user_error!('Please run fastlane via `bundle exec`') unless FastlaneCore::Helper.bundler?
 
 USER_ENV_FILE_PATH = File.join(Dir.home, '.wcios-env.default')
-PROJECT_ENV_FILE_PATH = File.expand_path(File.join(Dir.pwd, '../.configure-files/project.env'))
+PROJECT_ENV_FILE_PATH = File.join(Dir.home, '.configure', 'woocommerce-ios', 'secrets', 'project.env')
 
 # Constants
 FASTLANE_DIR = __dir__

@@ -21,7 +21,7 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
     /// We use this value in the top banner of the view.
     ///
     var shippingMethod: String {
-        order.shippingLines.first?.methodTitle ?? ""
+        order.shippingLines.first?.methodTitle.strippedHTML ?? ""
     }
 
     /// We use the first `shipping_line` and we use directly the property `method_title` which is the the same behaviour of the web client.

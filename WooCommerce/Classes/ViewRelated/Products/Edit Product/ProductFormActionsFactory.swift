@@ -35,11 +35,13 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let product: EditableProductModel
     private let formType: ProductFormType
     private let editable: Bool
+    private let hasNoPriceSet: Bool
 
-    init(product: EditableProductModel, formType: ProductFormType) {
+    init(product: EditableProductModel, formType: ProductFormType, hasNoPriceSet: Bool) {
         self.product = product
         self.formType = formType
         self.editable = formType != .readonly
+        self.hasNoPriceSet = hasNoPriceSet
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -150,9 +152,11 @@ private extension ProductFormActionsFactory {
         let shouldShowReviewsRow = product.reviewsAllowed
         let canEditProductType = formType != .add && editable
         let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
+        let shouldShowNoPriceWarningRow = editable && hasNoPriceSet
 
         let actions: [ProductFormEditAction?] = [
             .variations,
+            shouldShowNoPriceWarningRow ? .noPriceWarning : nil,
             shouldShowReviewsRow ? .reviews: nil,
             .shippingSettings(editable: editable),
             .inventorySettings(editable: canEditInventorySettingsRow),
@@ -233,6 +237,9 @@ private extension ProductFormActionsFactory {
         // Variable products only.
         case .variations:
             // The variations row is always visible in the settings section for a variable product.
+            return true
+        case .noPriceWarning:
+            // Always visible when available
             return true
         default:
             return false

@@ -11,8 +11,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
 
         // Assert
         XCTAssertTrue(factory.settingsSectionActions().contains(.priceSettings(editable: true)))
@@ -24,8 +23,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
 
         // Assert
         XCTAssertTrue(factory.settingsSectionActions().contains(.priceSettings(editable: true)))
@@ -39,8 +37,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
 
         // Assert
         XCTAssertTrue(factory.settingsSectionActions().contains(.inventorySettings(editable: true)))
@@ -53,8 +50,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
 
         // Assert
         XCTAssertFalse(factory.settingsSectionActions().contains(.inventorySettings(editable: true)))
@@ -69,8 +65,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
 
         // Assert
         XCTAssertTrue(factory.settingsSectionActions().contains(.shippingSettings(editable: true)))
@@ -83,8 +78,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
 
         // Assert
         XCTAssertFalse(factory.settingsSectionActions().contains(.shippingSettings(editable: true)))
@@ -99,8 +93,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
 
         // Assert
         XCTAssertTrue(factory.settingsSectionActions().contains(.categories(editable: true)))
@@ -113,8 +106,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
 
         // Assert
         XCTAssertFalse(factory.settingsSectionActions().contains(.categories(editable: true)))
@@ -129,8 +121,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
 
         // Assert
         XCTAssertTrue(factory.settingsSectionActions().contains(.shortDescription(editable: true)))
@@ -143,8 +134,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
 
         // Assert
         XCTAssertFalse(factory.settingsSectionActions().contains(.shortDescription(editable: true)))
@@ -159,8 +149,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
 
         // Assert
         XCTAssertTrue(factory.settingsSectionActions().contains(.downloadableFiles(editable: true)))
@@ -172,8 +161,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
 
         // Assert
         XCTAssertFalse(factory.settingsSectionActions().contains(.downloadableFiles(editable: true)))

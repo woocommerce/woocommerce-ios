@@ -11,8 +11,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -39,8 +38,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -67,8 +65,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -94,8 +91,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -120,8 +116,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -148,8 +143,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -176,8 +170,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -203,8 +196,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -227,8 +219,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -250,8 +241,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -277,8 +267,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -304,8 +293,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -327,8 +315,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -345,6 +332,19 @@ final class ProductFormActionsFactoryTests: XCTestCase {
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
+    }
+
+    func test_actions_for_variable_product_with_no_price_contains_noPriceWarning_action() {
+        // Given
+        let product = Fixtures.variableProductWithVariations.copy(addOns: [ProductAddOn.fake()])
+        let model = EditableProductModel(product: product)
+
+        // When
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: true)
+
+        // Then
+        let containsWarningAction = factory.settingsSectionActions().contains(ProductFormEditAction.noPriceWarning)
+        XCTAssertTrue(containsWarningAction)
     }
 }
 

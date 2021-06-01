@@ -64,8 +64,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
             }
 
             updateFormTypeIfNeeded(oldProduct: oldValue.product)
-            actionsFactory = ProductFormActionsFactory(product: product,
-                                                       formType: formType)
+            actionsFactory = ProductFormActionsFactory(product: product, formType: formType, hasNoPriceSet: false)
             productSubject.send(product)
         }
     }
@@ -138,8 +137,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.productImageActionHandler = productImageActionHandler
         self.originalProduct = product
         self.product = product
-        self.actionsFactory = ProductFormActionsFactory(product: product,
-                                                        formType: formType)
+        self.actionsFactory = ProductFormActionsFactory(product: product, formType: formType, hasNoPriceSet: false)
         self.isUpdateEnabledSubject = PublishSubject<Bool>()
         self.stores = stores
 

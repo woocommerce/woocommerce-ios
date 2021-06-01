@@ -1,3 +1,4 @@
+import MessageUI
 import UIKit
 import WordPressUI
 
@@ -88,7 +89,11 @@ private extension OrderDetailsPaymentAlerts {
     }
 
     func successViewModel(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalSuccess(amount: amount, printReceipt: printReceipt, emailReceipt: emailReceipt)
+        if MFMailComposeViewController.canSendMail() {
+            return CardPresentModalSuccess(amount: amount, printReceipt: printReceipt, emailReceipt: emailReceipt)
+        } else {
+            return CardPresentModalSuccessWithoutEmail(amount: amount, printReceipt: printReceipt)
+        }
     }
 
     func errorViewModel(amount: String, error: Error, tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {

@@ -10,7 +10,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .readonly, hasNoPriceSet: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .readonly)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.name(editable: false)]
@@ -23,7 +23,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .readonly, hasNoPriceSet: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .readonly)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: false), .name(editable: false), .description(editable: false)]
@@ -50,7 +50,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true),
@@ -70,7 +70,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .readonly, hasNoPriceSet: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .readonly)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: false), .name(editable: false), .description(editable: false)]
@@ -97,7 +97,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .readonly, hasNoPriceSet: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .readonly)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: false), .name(editable: false), .description(editable: false)]
@@ -124,7 +124,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .readonly, hasNoPriceSet: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .readonly)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: false), .name(editable: false), .description(editable: false)]
@@ -150,7 +150,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .readonly, hasNoPriceSet: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .readonly)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: false), .name(editable: false), .description(editable: false)]
@@ -177,7 +177,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .readonly, hasNoPriceSet: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .readonly)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: false), .name(editable: false), .description(editable: false)]
@@ -204,7 +204,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, hasNoPriceSet: false)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.variations,

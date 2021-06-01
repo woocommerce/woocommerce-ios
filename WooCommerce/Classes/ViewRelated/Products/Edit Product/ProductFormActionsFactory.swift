@@ -32,16 +32,25 @@ enum ProductFormEditAction: Equatable {
 
 /// Creates actions for different sections/UI on the product form.
 struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
+
+    /// Represents the variation price state.
+    ///
+    enum VariationsPrice {
+        case unknown // Un-fetched variations
+        case notSet
+        case set
+    }
+
     private let product: EditableProductModel
     private let formType: ProductFormType
     private let editable: Bool
-    private let hasNoPriceSet: Bool
+    private let variationsPrice: VariationsPrice
 
-    init(product: EditableProductModel, formType: ProductFormType, hasNoPriceSet: Bool) {
+    init(product: EditableProductModel, formType: ProductFormType, variationsPrice: VariationsPrice = .unknown) {
         self.product = product
         self.formType = formType
         self.editable = formType != .readonly
-        self.hasNoPriceSet = hasNoPriceSet
+        self.variationsPrice = variationsPrice
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -152,7 +161,9 @@ private extension ProductFormActionsFactory {
         let shouldShowReviewsRow = product.reviewsAllowed
         let canEditProductType = formType != .add && editable
         let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
-        let shouldShowNoPriceWarningRow = editable && hasNoPriceSet
+        let variationsHaveNoPriceSet = variationsPrice == .notSet
+        let productHasNoPriceSet = variationsPrice == .unknown && product.product.price.isEmpty
+        let shouldShowNoPriceWarningRow = editable && (variationsHaveNoPriceSet || productHasNoPriceSet)
 
         let actions: [ProductFormEditAction?] = [
             .variations,

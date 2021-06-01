@@ -81,6 +81,8 @@ private extension CardReaderSettingsUnknownViewController {
             showFoundReaderModal()
         case .failed(let error):
             showDiscoveryErrorModal(error: error)
+        case .cancellingSearch:
+            showSearchingModal()
         default:
             dismissAnyModal()
         }

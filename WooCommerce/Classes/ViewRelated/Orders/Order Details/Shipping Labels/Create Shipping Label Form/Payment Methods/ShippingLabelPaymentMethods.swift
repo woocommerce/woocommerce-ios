@@ -1,4 +1,5 @@
 import SwiftUI
+import Yosemite
 
 struct ShippingLabelPaymentMethods: View {
     @ObservedObject private var viewModel: ShippingLabelPaymentMethodsViewModel
@@ -6,7 +7,7 @@ struct ShippingLabelPaymentMethods: View {
 
     /// Completion callback
     ///
-    typealias Completion = (_ selectedPaymentMethodID: Int64, _ isEmailReceiptsEnabled: Bool) -> Void
+    typealias Completion = (_ newAccountSettings: ShippingLabelAccountSettings) -> Void
     private let onCompletion: Completion
 
     init(viewModel: ShippingLabelPaymentMethodsViewModel, completion: @escaping Completion) {
@@ -51,10 +52,16 @@ struct ShippingLabelPaymentMethods: View {
         .background(Color(.listBackground))
         .navigationBarTitle(Localization.navigationBarTitle)
         .navigationBarItems(trailing: Button(action: {
-            onCompletion(viewModel.selectedPaymentMethodID, viewModel.isEmailReceiptsEnabled)
-            presentation.wrappedValue.dismiss()
+            viewModel.updateShippingLabelAccountSettings {newSettings in
+                onCompletion(newSettings)
+                presentation.wrappedValue.dismiss()
+            }
         }, label: {
-            Text(Localization.doneButton)
+            if viewModel.isUpdating {
+                ProgressView()
+            } else {
+                Text(Localization.doneButton)
+            }
         })
         .disabled(!viewModel.isDoneButtonEnabled()))
     }
@@ -87,25 +94,24 @@ private extension ShippingLabelPaymentMethods {
 struct ShippingLabelPaymentMethods_Previews: PreviewProvider {
     static var previews: some View {
 
-        let viewModel = ShippingLabelPaymentMethodsViewModel(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings(),
-                                                             selectedPaymentMethodID: ShippingLabelPaymentMethodsViewModel.samplePaymentMethodID)
+        let viewModel = ShippingLabelPaymentMethodsViewModel(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings())
 
-        ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (selectedPaymentMethod, isEmailReceiptsEnabled) in
+        ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (newAccountSettings) in
         })
             .colorScheme(.light)
             .previewDisplayName("Light mode")
 
-        ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (selectedPaymentMethod, isEmailReceiptsEnabled) in
+        ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (newAccountSettings) in
         })
             .colorScheme(.dark)
             .previewDisplayName("Dark Mode")
 
-        ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (selectedPaymentMethod, isEmailReceiptsEnabled) in
+        ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (newAccountSettings) in
         })
             .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
             .previewDisplayName("Accessibility: Large Font Size")
 
-        ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (selectedPaymentMethod, isEmailReceiptsEnabled) in
+        ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (newAccountSettings) in
         })
             .environment(\.layoutDirection, .rightToLeft)
             .previewDisplayName("Localization: Right-to-Left Layout")

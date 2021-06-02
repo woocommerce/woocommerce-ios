@@ -70,8 +70,6 @@ final class ShippingLabelFormViewModel {
     /// Payment Methods
     ///
     var shippingLabelAccountSettings: ShippingLabelAccountSettings?
-    private(set) var selectedPaymentMethodID: Int64 = 0
-    private(set) var isEmailReceiptsEnabled: Bool?
 
 
     private let stores: StoresManager
@@ -151,13 +149,12 @@ final class ShippingLabelFormViewModel {
         updateRowState(type: .shippingCarrierAndRates, dataState: .validated, displayMode: .editable)
     }
 
-    func handlePaymentMethodValueChanges(selectedPaymentMethodID: Int64, isEmailReceiptsEnabled: Bool, editable: Bool) {
-        self.selectedPaymentMethodID = selectedPaymentMethodID
-        self.isEmailReceiptsEnabled = isEmailReceiptsEnabled
+    func handlePaymentMethodValueChanges(settings: ShippingLabelAccountSettings, editable: Bool) {
+        self.shippingLabelAccountSettings = settings
         let displayMode: ShippingLabelFormViewController.DisplayMode = editable ? .editable : .disabled
 
         // Only update the data state if there is a selected payment method
-        guard selectedPaymentMethodID != 0 else {
+        guard settings.selectedPaymentMethodID != 0 else {
             updateRowState(type: .paymentMethod, dataState: .pending, displayMode: displayMode)
             return
         }
@@ -219,7 +216,9 @@ final class ShippingLabelFormViewModel {
     /// Displays the payment method details if one is selected. Otherwise, displays a prompt to add a credit card.
     ///
     func getPaymentMethodBody() -> String {
-        guard let selectedPaymentMethod = shippingLabelAccountSettings?.paymentMethods.first(where: { $0.paymentMethodID == selectedPaymentMethodID }) else {
+        let selectedPaymentMethodID = shippingLabelAccountSettings?.selectedPaymentMethodID
+        let availablePaymentMethods = shippingLabelAccountSettings?.paymentMethods
+        guard let selectedPaymentMethod = availablePaymentMethods?.first(where: { $0.paymentMethodID == selectedPaymentMethodID }) else {
             return Localization.paymentMethodPlaceholder
         }
 
@@ -399,60 +398,13 @@ extension ShippingLabelFormViewModel {
 
             switch result {
             case .success(let value):
-                self.shippingLabelAccountSettings = value
-                self.handlePaymentMethodValueChanges(selectedPaymentMethodID: value.selectedPaymentMethodID,
-                                                     isEmailReceiptsEnabled: value.isEmailReceiptsEnabled,
-                                                     editable: false)
+                #warning("DO NOT COMMIT EDITABLE VALUE CHANGE - FOR TESTING ONLY")
+                self.handlePaymentMethodValueChanges(settings: value, editable: true)
             case .failure:
                 DDLogError("⛔️ Error synchronizing shipping label account settings")
             }
         }
         stores.dispatch(action)
-    }
-
-    /// Updates remote account settings specific to shipping labels
-    ///
-    func updateShippingLabelAccountSettings(selectedPaymentMethodID: Int64, isEmailReceiptsEnabled: Bool) {
-        guard let settings = shippingLabelAccountSettings else {
-            return
-        }
-        let newSettings = settings.copy(selectedPaymentMethodID: selectedPaymentMethodID,
-                                        isEmailReceiptsEnabled: isEmailReceiptsEnabled)
-
-        let action = ShippingLabelAction.updateShippingLabelAccountSettings(siteID: order.siteID, settings: newSettings) { result in
-            switch result {
-            case .success:
-                self.shippingLabelAccountSettings = newSettings
-                self.handlePaymentMethodValueChanges(selectedPaymentMethodID: selectedPaymentMethodID,
-                                                     isEmailReceiptsEnabled: isEmailReceiptsEnabled,
-                                                     editable: true)
-            case .failure:
-                DDLogError("⛔️ Error updating shipping label account settings")
-                self.displayPaymentMethodErrorNotice(selectedPaymentMethodID: selectedPaymentMethodID,
-                                                     isEmailReceiptsEnabled: isEmailReceiptsEnabled)
-            }
-        }
-        stores.dispatch(action)
-    }
-
-    /// Displays the `Unable to update payment method` Notice.
-    ///
-    func displayPaymentMethodErrorNotice(selectedPaymentMethodID: Int64, isEmailReceiptsEnabled: Bool) {
-        let title = NSLocalizedString(
-            "Unable to save changes to the payment method",
-            comment: "Content of error presented when Update Shipping Label Account Settings Action Failed. "
-                + "It reads: Unable to save changes to the payment method."
-        )
-        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: title,
-                            message: nil,
-                            feedbackType: .error,
-                            actionTitle: actionTitle) { [weak self] in
-            self?.updateShippingLabelAccountSettings(selectedPaymentMethodID: selectedPaymentMethodID,
-                                                     isEmailReceiptsEnabled: isEmailReceiptsEnabled)
-        }
-
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
     func syncPackageDetails() {

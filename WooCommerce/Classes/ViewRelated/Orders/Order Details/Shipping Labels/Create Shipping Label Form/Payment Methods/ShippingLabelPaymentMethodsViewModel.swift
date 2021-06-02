@@ -6,9 +6,13 @@ import protocol Storage.StorageManagerType
 ///
 final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
 
+    /// Indicates if the view model is updating the remote account settings
+    ///
+    @Published var isUpdating: Bool = false
+
     /// Shipping Label account settings from the remote API
     ///
-    private var accountSettings: ShippingLabelAccountSettings?
+    private var accountSettings: ShippingLabelAccountSettings
 
     @Published var selectedPaymentMethodID: Int64
     @Published var isEmailReceiptsEnabled: Bool
@@ -16,30 +20,29 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
     /// List of payment methods available to choose from
     ///
     var paymentMethods: [ShippingLabelPaymentMethod] {
-        accountSettings?.paymentMethods ?? []
+        accountSettings.paymentMethods
     }
 
     var storeOwnerUsername: String {
-        accountSettings?.storeOwnerUsername ?? ""
+        accountSettings.storeOwnerUsername
     }
 
     var storeOwnerDisplayName: String {
-        accountSettings?.storeOwnerDisplayName ?? ""
+        accountSettings.storeOwnerDisplayName
     }
 
     var storeOwnerWPcomUsername: String {
-        accountSettings?.storeOwnerWpcomUsername ?? ""
+        accountSettings.storeOwnerWpcomUsername
     }
 
     var storeOwnerWPcomEmail: String {
-        accountSettings?.storeOwnerWpcomEmail ?? ""
+        accountSettings.storeOwnerWpcomEmail
     }
 
-    init(accountSettings: ShippingLabelAccountSettings?,
-         selectedPaymentMethodID: Int64) {
+    init(accountSettings: ShippingLabelAccountSettings) {
         self.accountSettings = accountSettings
-        self.selectedPaymentMethodID = selectedPaymentMethodID
-        self.isEmailReceiptsEnabled = accountSettings?.isEmailReceiptsEnabled ?? false
+        self.selectedPaymentMethodID = accountSettings.selectedPaymentMethodID
+        self.isEmailReceiptsEnabled = accountSettings.isEmailReceiptsEnabled
     }
 
     func didSelectPaymentMethod(withID paymentMethodID: Int64) {
@@ -53,9 +56,40 @@ extension ShippingLabelPaymentMethodsViewModel {
     /// Return true if the done button should be enabled (if a new payment method ID was selected)
     ///
     func isDoneButtonEnabled() -> Bool {
-        let isPaymentMethodChanged = selectedPaymentMethodID != accountSettings?.selectedPaymentMethodID
-        let isEmailReceiptsChanged = isEmailReceiptsEnabled != accountSettings?.isEmailReceiptsEnabled
+        let isPaymentMethodChanged = selectedPaymentMethodID != accountSettings.selectedPaymentMethodID
+        let isEmailReceiptsChanged = isEmailReceiptsEnabled != accountSettings.isEmailReceiptsEnabled
         return isPaymentMethodChanged || isEmailReceiptsChanged
+    }
+
+    /// Updates remote account settings specific to shipping labels
+    ///
+    func updateShippingLabelAccountSettings(onCompletion: @escaping ((ShippingLabelAccountSettings) -> Void)) {
+        isUpdating = true
+        let newSettings = accountSettings.copy(selectedPaymentMethodID: selectedPaymentMethodID,
+                                        isEmailReceiptsEnabled: isEmailReceiptsEnabled)
+
+        let action = ShippingLabelAction.updateShippingLabelAccountSettings(siteID: accountSettings.siteID, settings: newSettings) { result in
+            self.isUpdating = false
+
+            switch result {
+            case .success:
+                onCompletion(newSettings)
+            case .failure:
+                ServiceLocator.noticePresenter.enqueue(notice: .init(title: Localization.updateSettingsError, feedbackType: .error))
+                DDLogError("⛔️ Error updating shipping label account settings")
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+}
+
+// MARK: - Localization
+//
+extension ShippingLabelPaymentMethodsViewModel {
+    enum Localization {
+        static let updateSettingsError = NSLocalizedString("Unable to save changes to the payment method",
+                                                           comment: "Content of error presented when Update Shipping Label Account Settings Action Failed. "
+                                                            + "It reads: Unable to save changes to the payment method.")
     }
 }
 

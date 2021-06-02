@@ -170,7 +170,7 @@ private extension ProductFormActionsFactory {
         let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
         let variationsHaveNoPriceSet = variationsPrice == .notSet
         let productHasNoPriceSet = variationsPrice == .unknown && product.product.price.isEmpty
-        let shouldShowNoPriceWarningRow = editable && formType != .add && (variationsHaveNoPriceSet || productHasNoPriceSet)
+        let shouldShowNoPriceWarningRow = canEditProductType && (variationsHaveNoPriceSet || productHasNoPriceSet)
 
         let actions: [ProductFormEditAction?] = [
             .variations,

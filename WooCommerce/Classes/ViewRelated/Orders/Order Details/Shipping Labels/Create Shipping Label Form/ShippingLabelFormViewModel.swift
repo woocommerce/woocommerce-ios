@@ -398,8 +398,7 @@ extension ShippingLabelFormViewModel {
 
             switch result {
             case .success(let value):
-                #warning("DO NOT COMMIT EDITABLE VALUE CHANGE - FOR TESTING ONLY")
-                self.handlePaymentMethodValueChanges(settings: value, editable: true)
+                self.handlePaymentMethodValueChanges(settings: value, editable: false)
             case .failure:
                 DDLogError("⛔️ Error synchronizing shipping label account settings")
             }

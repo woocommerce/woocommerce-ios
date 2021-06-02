@@ -408,7 +408,7 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func productVariationsAttributesRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.variationsImage
+        let icon = UIImage.customizeImage
         let title = Localization.productVariationAttributesTitle
 
         let format = NSLocalizedString("%1$@ (%2$ld options)", comment: "Format for each Product attribute")

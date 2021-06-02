@@ -48,20 +48,21 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
     func didSelectPaymentMethod(withID paymentMethodID: Int64) {
         selectedPaymentMethodID = paymentMethodID
     }
-}
 
-// MARK: - UI utils methods
-extension ShippingLabelPaymentMethodsViewModel {
-
-    /// Return true if the done button should be enabled (if a new payment method ID was selected)
+    /// Return true if the done button should be enabled (if any shipping label account settings have changed)
     ///
     func isDoneButtonEnabled() -> Bool {
         let isPaymentMethodChanged = selectedPaymentMethodID != accountSettings.selectedPaymentMethodID
         let isEmailReceiptsChanged = isEmailReceiptsEnabled != accountSettings.isEmailReceiptsEnabled
         return isPaymentMethodChanged || isEmailReceiptsChanged
     }
+}
 
-    /// Updates remote account settings specific to shipping labels
+// MARK: - API Requests
+//
+extension ShippingLabelPaymentMethodsViewModel {
+
+    /// Updates remote shipping label account settings
     ///
     func updateShippingLabelAccountSettings(onCompletion: @escaping ((ShippingLabelAccountSettings) -> Void)) {
         isUpdating = true

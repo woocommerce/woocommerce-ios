@@ -146,7 +146,7 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
     /// we will restart the discovery process again
     func continueSearch() {
         foundReader = nil
-        discoveryState = .cancellingSearch
+        discoveryState = .restartingSearch
         cancelReaderDiscovery { [weak self] in
             self?.startReaderDiscovery()
         }

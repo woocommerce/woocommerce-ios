@@ -155,6 +155,10 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
         product.crossSellIDs
     }
 
+    var hasAddOns: Bool {
+        product.addOns.isNotEmpty
+    }
+
     func isStockStatusEnabled() -> Bool {
         // Only a variable product's stock status is not editable.
         productType != .variable

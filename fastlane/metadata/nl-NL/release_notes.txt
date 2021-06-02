@@ -1,0 +1,3 @@
+Als je de extensie WooCommerce Product Add-ons (van WooCommerce) gebruikt en de details wilt zien als je een bestelling bekijkt, hoef je niet langer te wachten! We hebben experimentele ondersteuning toegevoegd aan de app om deze add-ons in bestellingen weer te geven. Ga om dit te proberen naar Experimentele functies in Instellingen om het in te schakelen. Stuur ons je feedback over je ervaringen!
+
+De volgende release na deze release gaan we ook iOS 14 of later ondersteunen. Om updates voor de WooCommerce-app te blijven ontvangen, moet je je apparaat upgraden naar iOS 14.

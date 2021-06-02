@@ -785,7 +785,7 @@ private extension OrderDetailsDataSource {
         guard let product = products.first(where: { $0.productID == item.productID }), showAddOns else {
             return []
         }
-        return AddOnCrossreferenceUseCase(orderItem: item, product: product, addOnGroups: addOnGroups).addOnsAttributes()
+        return AddOnCrossreferenceUseCase(orderItemAttributes: item.attributes, product: product, addOnGroups: addOnGroups).addOnsAttributes()
     }
 }
 

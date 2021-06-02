@@ -88,7 +88,7 @@ private extension OrderAddOnTopBanner {
                                                    "For now, you’ll be able to see the add-ons for your orders. " +
                                                    "You can create and edit these add-ons in your web dashboard.",
                                                    comment: "Content of the banner notice in the add-ons view")
-        static let giveFeedback = NSLocalizedString("Give Feedback", comment: "Title of the button to give feedback about the add-ons feature")
+        static let giveFeedback = NSLocalizedString("Give feedback", comment: "Title of the button to give feedback about the add-ons feature")
         static let dismiss = NSLocalizedString("Dismiss", comment: "Title of the button to dismiss the banner notice in the add-ons view")
     }
 }

@@ -307,6 +307,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 }
                 eventLogger.logInventorySettingsTapped()
                 editInventorySettings()
+            case .addOns(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
+                // TODO: Navigate to product add-ons
             case .categories(_, let isEditable):
                 guard isEditable else {
                     return

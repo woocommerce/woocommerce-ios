@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-05-19 11:32:05+0000 */
+/* Translation-Revision-Date: 2021-05-26 14:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -174,7 +174,7 @@
 "Active" = "פעיל";
 
 /* Title for table view section of active plugins */
-"Active Plugins" = "Active Plugins";
+"Active Plugins" = "תוספים פעילים";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "פעיל, עדכונים אוטומטיים מושבתים";
@@ -1198,7 +1198,7 @@
 "Inactive" = "לא פעיל";
 
 /* Title for table view section of inactive plugins */
-"Inactive Plugins" = "Inactive Plugins";
+"Inactive Plugins" = "תוספים לא פעילים";
 
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "לא פעיל, עדכונים אוטומטיים מושבתים";
@@ -1516,7 +1516,7 @@
 "Net Payment" = "תשלום נטו";
 
 /* Title for table view section of network active plugins */
-"Network Active Plugins" = "Network Active Plugins";
+"Network Active Plugins" = "תוספים פעילים ברשת";
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "שם המאפיין החדש";
@@ -2402,7 +2402,7 @@
 "Someone" = "לא ידוע";
 
 /* The text on the placeholder overlay when there is issue syncing site plugins */
-"Something went wrong" = "Something went wrong";
+"Something went wrong" = "משהו השתבש";
 
 /* Notice format when a shipping label refund request fails. */
 "Something went wrong with the refund. Please try again." = "משהו השתבש בביצוע ההחזר הכספי. יש לנסות שוב.";
@@ -2650,7 +2650,7 @@
 "Terms of Service" = "תנאי השירות";
 
 /* Cell description on the beta features screen to enable the order add-ons feature */
-"Test out viewing Order Add-Ons as we get ready to launch" = "Test out viewing Order Add-Ons as we get ready to launch";
+"Test out viewing Order Add-Ons as we get ready to launch" = "כדאי לבדוק את האפשרות להציג הרחבות בהזמנה בזמן שאנחנו מתכוננים להשקה";
 
 /* Button title
    The button's title text to send a 2FA code via SMS text message. */
@@ -2753,7 +2753,7 @@
 "There was a problem removing the block for specified site." = "אירעה בעיה בעת הסרת הבלוק עבור האתר שצוין.";
 
 /* The details on the placeholder overlay when there is issue syncing site plugins */
-"There was a problem while trying to load plugins. Check your internet and try again." = "There was a problem while trying to load plugins. Check your internet and try again.";
+"There was a problem while trying to load plugins. Check your internet and try again." = "אירעה בעיה בטעינת התוספים. יש לבדוק את החיבור לאינטרנט ולנסות שוב.";
 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "אירעה שגיאה בהנפקה של ההחזר הכספי";

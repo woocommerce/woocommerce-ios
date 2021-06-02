@@ -187,6 +187,10 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
         []
     }
 
+    var hasAddOns: Bool {
+        false
+    }
+
     // Visibility logic
 
     func allowsMultipleImages() -> Bool {

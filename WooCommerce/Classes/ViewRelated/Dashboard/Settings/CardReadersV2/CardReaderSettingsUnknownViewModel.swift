@@ -7,6 +7,7 @@ enum CardReaderSettingsUnknownViewModelDiscoveryState {
     case failed(Error)
     case foundReader
     case connectingToReader
+    case restartingSearch
 }
 
 final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewModel {
@@ -110,10 +111,7 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
     ///
     func cancelReaderDiscovery() {
         discoveryState = .notSearching
-
-        let action = CardPresentPaymentAction.cancelCardReaderDiscovery() { _ in
-        }
-        ServiceLocator.stores.dispatch(action)
+        cancelReaderDiscovery(completion: nil)
     }
 
     /// Dispatch a request to connect to the found reader
@@ -144,10 +142,14 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
     }
 
     /// Discard the found reader and keep searching
-    ///
+    /// As discussed in p91TBi-5fB-p2#comment-4849, for the first release,
+    /// we will restart the discovery process again
     func continueSearch() {
-        discoveryState = .searching
         foundReader = nil
+        discoveryState = .restartingSearch
+        cancelReaderDiscovery { [weak self] in
+            self?.startReaderDiscovery()
+        }
     }
 
     /// Updates whether the view this viewModel is associated with should be shown or not
@@ -171,5 +173,16 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
         if didChange {
             didChangeShouldShow?(shouldShow)
         }
+    }
+}
+
+
+private extension CardReaderSettingsUnknownViewModel {
+    func cancelReaderDiscovery(completion: (()-> Void)?) {
+        let action = CardPresentPaymentAction.cancelCardReaderDiscovery() { _ in
+            completion?()
+        }
+
+        ServiceLocator.stores.dispatch(action)
     }
 }

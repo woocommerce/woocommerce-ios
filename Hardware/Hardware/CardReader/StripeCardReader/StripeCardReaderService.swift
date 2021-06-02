@@ -112,13 +112,24 @@ extension StripeCardReaderService: CardReaderService {
                 return promise(.success(()))
             }
 
+            // The completion block for cancel, apparently, is called when
+            // the SDK has not really transitioned to an idle state.
+            // Clients might need to dispatch operations that rely on this completion block
+            // to start a second operation on the card reader.
+            // (for example, starting an operation after discovery has been cancelled)
+            //
             self?.discoveryCancellable?.cancel { [weak self] error in
-                guard let error = error else {
-                    self?.switchStatusToIdle()
-                    return promise(.success(()))
+                // Horrible, terrible workaround.
+                // And yet, it is the classic "dispatch to the next run cycle".
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    guard let error = error else {
+                        self?.switchStatusToIdle()
+                        return promise(.success(()))
+                    }
+
+                    self?.internalError(error)
+                    promise(.failure(error))
                 }
-                self?.internalError(error)
-                promise(.failure(error))
             }
         }
     }
@@ -403,7 +414,6 @@ extension StripeCardReaderService: DiscoveryDelegate {
         // Cache discovered readers. The cache needs to be cleared after we connect to a
         // specific reader
         discoveredStripeReadersCache.insert(readers)
-
         let wooReaders = readers.map {
             CardReader(reader: $0)
         }
@@ -457,16 +467,6 @@ private extension StripeCardReaderService {
 
         if !Terminal.hasTokenProvider() {
             Terminal.setTokenProvider(tokenProvider)
-        }
-    }
-
-    func cancelReaderDiscovery() {
-        discoveryCancellable?.cancel { [weak self] error in
-            guard let self = self,
-                  let error = error else {
-                return
-            }
-            self.internalError(error)
         }
     }
 

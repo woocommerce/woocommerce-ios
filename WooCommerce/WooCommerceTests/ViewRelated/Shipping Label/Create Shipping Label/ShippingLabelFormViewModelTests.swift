@@ -193,17 +193,19 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
                                                                     originAddress: nil,
                                                                     destinationAddress: nil)
         let expectedPaymentMethodID: Int64 = 0
+        let expectedEmailReceiptsSetting = true
+        let settings = ShippingLabelAccountSettings.fake().copy(selectedPaymentMethodID: expectedPaymentMethodID,
+                                                                isEmailReceiptsEnabled: expectedEmailReceiptsSetting)
 
         // When
-        viewModel.handlePaymentMethodValueChanges(selectedPaymentMethodID: expectedPaymentMethodID,
-                                                  isEmailReceiptsEnabled: true,
-                                                  editable: false)
+        viewModel.handlePaymentMethodValueChanges(settings: settings, editable: false)
 
         // Then
         let currentRows = viewModel.state.sections.first?.rows
         XCTAssertEqual(currentRows?[4].type, .paymentMethod)
         XCTAssertEqual(currentRows?[4].dataState, .pending)
-        XCTAssertEqual(viewModel.selectedPaymentMethodID, expectedPaymentMethodID)
+        XCTAssertEqual(viewModel.shippingLabelAccountSettings?.selectedPaymentMethodID, expectedPaymentMethodID)
+        XCTAssertEqual(viewModel.shippingLabelAccountSettings?.isEmailReceiptsEnabled, expectedEmailReceiptsSetting)
     }
 
     func test_handlePaymentMethodValueChanges_returns_updated_data_and_state_with_selected_payment_method() {
@@ -212,16 +214,18 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
                                                                     originAddress: nil,
                                                                     destinationAddress: nil)
         let expectedPaymentMethodID: Int64 = 12345
+        let expectedEmailReceiptsSetting = false
+        let settings = ShippingLabelAccountSettings.fake().copy(selectedPaymentMethodID: expectedPaymentMethodID,
+                                                                isEmailReceiptsEnabled: expectedEmailReceiptsSetting)
 
         // When
-        viewModel.handlePaymentMethodValueChanges(selectedPaymentMethodID: expectedPaymentMethodID,
-                                                  isEmailReceiptsEnabled: true,
-                                                  editable: false)
+        viewModel.handlePaymentMethodValueChanges(settings: settings, editable: false)
 
         // Then
         let currentRows = viewModel.state.sections.first?.rows
         XCTAssertEqual(currentRows?[4].type, .paymentMethod)
         XCTAssertEqual(currentRows?[4].dataState, .validated)
-        XCTAssertEqual(viewModel.selectedPaymentMethodID, expectedPaymentMethodID)
+        XCTAssertEqual(viewModel.shippingLabelAccountSettings?.selectedPaymentMethodID, expectedPaymentMethodID)
+        XCTAssertEqual(viewModel.shippingLabelAccountSettings?.isEmailReceiptsEnabled, expectedEmailReceiptsSetting)
     }
 }

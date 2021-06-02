@@ -249,7 +249,6 @@ final class ProductFormActionsFactoryTests: XCTestCase {
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [
             .variations,
-            .noPriceWarning,
             .reviews,
             .shippingSettings(editable: true),
             .inventorySettings(editable: true),

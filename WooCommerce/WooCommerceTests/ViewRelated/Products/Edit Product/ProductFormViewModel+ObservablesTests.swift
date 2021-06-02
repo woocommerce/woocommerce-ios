@@ -241,7 +241,8 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         // Given
         let mockStorage = MockStorageManager()
         let productID: Int64 = 123
-        let product = Product.fake().copy(siteID: defaultSiteID, productID: productID, productTypeKey: ProductType.variable.rawValue)
+        let variationID: Int64 = 256
+        let product = Product.fake().copy(siteID: defaultSiteID, productID: productID, productTypeKey: ProductType.variable.rawValue, variations: [variationID])
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model, formType: .edit, productImageActionHandler: productImageActionHandler, storageManager: mockStorage)
@@ -252,7 +253,9 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         let priceUpdated: Bool = waitFor { promise in
             self.cancellableVariationPrice = viewModel.newVariationsPrice.subscribe { promise(true) }
 
-            let newVariation = ProductVariation.fake().copy(siteID: self.defaultSiteID, productID: productID, productVariationID: 234, regularPrice: "10.2")
+            let newVariation = ProductVariation.fake().copy(siteID: self.defaultSiteID, productID: productID,
+                                                            productVariationID: variationID,
+                                                            regularPrice: "10.2")
             mockStorage.insertSampleProductVariation(readOnlyProductVariation: newVariation, on: product)
         }
 

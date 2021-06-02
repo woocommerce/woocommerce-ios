@@ -290,7 +290,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
         // Given
         let settings = ShippingLabelAccountSettings.fake().copy()
         let remote = ShippingLabelRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "account/settings", filename: "generic_success")
+        network.simulateResponse(requestUrlSuffix: "account/settings", filename: "generic_success_data")
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in

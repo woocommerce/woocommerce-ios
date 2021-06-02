@@ -52,6 +52,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private var cancellableProduct: ObservationToken?
     private var cancellableProductName: ObservationToken?
     private var cancellableUpdateEnabled: ObservationToken?
+    private var cancellableNewVariationsPrice: ObservationToken?
 
     init(viewModel: ViewModel,
          eventLogger: ProductFormEventLoggerProtocol,
@@ -90,6 +91,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         cancellableProduct?.cancel()
         cancellableProductName?.cancel()
         cancellableUpdateEnabled?.cancel()
+        cancellableNewVariationsPrice?.cancel()
     }
 
     override func viewDidLoad() {
@@ -107,6 +109,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         observeProduct()
         observeProductName()
         observeUpdateCTAVisibility()
+        observeVariationsPriceChanges()
 
         productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else {
@@ -498,6 +501,15 @@ private extension ProductFormViewController {
     func observeUpdateCTAVisibility() {
         cancellableUpdateEnabled = viewModel.isUpdateEnabled.subscribe { [weak self] _ in
             self?.updateNavigationBar()
+        }
+    }
+
+    /// Updates table rows when the price of the underlying variations change.
+    /// Needed to show/hide the `.noPrinceWarning` row.
+    ///
+    func observeVariationsPriceChanges() {
+        cancellableNewVariationsPrice = viewModel.newVariationsPrice.subscribe { [weak self] in
+            self?.tableView.reloadData()
         }
     }
 

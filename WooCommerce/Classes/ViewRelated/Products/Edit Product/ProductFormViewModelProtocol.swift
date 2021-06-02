@@ -32,6 +32,9 @@ protocol ProductFormViewModelProtocol {
     /// Emits a boolean of whether the product has unsaved changes for remote update.
     var isUpdateEnabled: Observable<Bool> { get }
 
+    /// Emits a void value informing when there is a new variation price state available
+    var newVariationsPrice: Observable<Void> { get }
+
     /// Creates actions available on the bottom sheet.
     var actionsFactory: ProductFormActionsFactoryProtocol { get }
 

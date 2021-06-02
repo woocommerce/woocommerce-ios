@@ -26,6 +26,12 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
         isUpdateEnabledSubject
     }
 
+    /// Emits a void value informing when there is a new variation price state available
+    var newVariationsPrice: Observable<Void> {
+        // No-op
+        PublishSubject<Void>()
+    }
+
     /// Creates actions available on the bottom sheet.
     private(set) var actionsFactory: ProductFormActionsFactoryProtocol
 

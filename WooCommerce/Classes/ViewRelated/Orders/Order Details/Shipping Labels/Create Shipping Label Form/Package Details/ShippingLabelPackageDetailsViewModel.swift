@@ -104,15 +104,18 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
             guard let self = self else { return }
             self.products = products
             self.itemsRows = self.generateItemsRows()
+            self.setTotalWeight()
         }, onProductVariationsReload: { [weak self] (productVariations) in
             guard let self = self else { return }
             self.productVariations = productVariations
             self.itemsRows = self.generateItemsRows()
+            self.setTotalWeight()
         })
 
         products = resultsControllers?.products ?? []
         productVariations = resultsControllers?.productVariations ?? []
         itemsRows = generateItemsRows()
+        setTotalWeight()
     }
 
     /// Generate the items rows, creating an element in the array for every item (eg. if there is an item with quantity 3,
@@ -147,6 +150,31 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
             }
         }
         return itemsToFulfill
+    }
+
+    /// Set the total weight based on the weight of products and products variation inside the order items,
+    /// only if they are not virtual products.
+    ///
+    private func setTotalWeight() {
+        var tempTotalWeight: Double = 0
+
+        for item in orderItems {
+            let isVariation = item.variationID > 0
+            var product: Product?
+            var productVariation: ProductVariation?
+
+            if isVariation {
+                productVariation = productVariations.first { $0.productVariationID == item.variationID }
+            }
+            else {
+                product = products.first { $0.productID == item.productID }
+            }
+            if product?.virtual == false || productVariation?.virtual == false {
+                tempTotalWeight += Double(productVariation?.weight ?? product?.weight ?? "0") ?? 0
+            }
+        }
+
+        totalWeight = String(tempTotalWeight)
     }
 }
 

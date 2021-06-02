@@ -7,7 +7,7 @@ enum CardReaderSettingsUnknownViewModelDiscoveryState {
     case failed(Error)
     case foundReader
     case connectingToReader
-    case cancellingSearch
+    case restartingSearch
 }
 
 final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewModel {

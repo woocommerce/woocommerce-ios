@@ -70,6 +70,8 @@ private extension DefaultProductFormTableViewModel {
                 return .shipping(viewModel: shippingSettingsRow(product: product, isEditable: editable), isEditable: editable)
             case .inventorySettings(let editable):
                 return .inventory(viewModel: inventorySettingsRow(product: product, isEditable: editable), isEditable: editable)
+            case .addOns(let editable):
+                return .addOns(viewModel: addOnsRow(product: product.product), isEditable: editable)
             case .categories(let editable):
                 return .categories(viewModel: categoriesRow(product: product.product, isEditable: editable), isEditable: editable)
             case .tags(let editable):
@@ -292,6 +294,12 @@ private extension DefaultProductFormTableViewModel {
                                                         title: title,
                                                         details: details,
                                                         isActionable: isEditable)
+    }
+
+    func addOnsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.addOutlineImage
+        let title = Localization.addOnsTitle
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon, title: title, details: nil, isActionable: true)
     }
 
     func categoriesRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
@@ -615,5 +623,8 @@ private extension DefaultProductFormTableViewModel {
 
             return String.localizedStringWithFormat(format, count)
         }
+
+        // Add-ons
+        static let addOnsTitle = NSLocalizedString("Product Add-ons", comment: "Title for Add-ons row in the product form screen.")
     }
 }

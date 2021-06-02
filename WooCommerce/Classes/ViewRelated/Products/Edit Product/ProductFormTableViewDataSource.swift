@@ -208,6 +208,7 @@ private extension ProductFormTableViewDataSource {
              .inventory(let viewModel, _),
              .productType(let viewModel, _),
              .shipping(let viewModel, _),
+             .addOns(let viewModel, _),
              .categories(let viewModel, _),
              .tags(let viewModel, _),
              .shortDescription(let viewModel, _),

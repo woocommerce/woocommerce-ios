@@ -94,7 +94,6 @@ private extension CardPresentPaymentStore {
                     case .failure(let error):
                         onError(error)
                     }
-                    print("completion")
                 },
                 receiveValue: onReaderDiscovered
             ))

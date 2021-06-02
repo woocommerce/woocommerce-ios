@@ -61,6 +61,15 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         return controller
     }()
 
+    /// Returns `true` if the `Add-ons` beta feature switch is enabled. `False` otherwise.
+    /// Assigning this value will recreate the `actionsFactory` property.
+    ///
+    private var isAddOnsFeatureEnabled: Bool = false {
+        didSet {
+            updateActionsFactory()
+        }
+    }
+
     /// The product model before any potential edits; reset after a remote update.
     private var originalProduct: EditableProductModel {
         didSet {
@@ -85,7 +94,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
             }
 
             updateFormTypeIfNeeded(oldProduct: oldValue.product)
-            actionsFactory = ProductFormActionsFactory(product: product, formType: formType, variationsPrice: calculateVariationPriceState())
+            updateActionsFactory()
             productSubject.send(product)
         }
     }
@@ -161,7 +170,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.productImageActionHandler = productImageActionHandler
         self.originalProduct = product
         self.product = product
-        self.actionsFactory = ProductFormActionsFactory(product: product, formType: formType, variationsPrice: .unknown)
+        self.actionsFactory = ProductFormActionsFactory(product: product, formType: formType)
         self.isUpdateEnabledSubject = PublishSubject<Bool>()
         self.stores = stores
         self.storageManager = storageManager
@@ -172,6 +181,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
             }
         }
 
+        queryAddOnsFeatureState()
         updateVariationsPriceState()
     }
 
@@ -473,7 +483,7 @@ private extension ProductFormViewModel {
     /// Returns weather the variation
     ///
     func updateVariationsPriceState() {
-        actionsFactory = ProductFormActionsFactory(product: product, formType: formType, variationsPrice: calculateVariationPriceState())
+        updateActionsFactory()
         newVariationsPriceSubject.send(())
     }
 
@@ -487,5 +497,30 @@ private extension ProductFormViewModel {
 
         let someMissingPrice = variationsResultsController.fetchedObjects.contains { $0.regularPrice.isNilOrEmpty }
         return someMissingPrice ? .notSet : .set
+    }
+}
+
+// MARK: Beta feature handling
+//
+private extension ProductFormViewModel {
+    /// Query the latest `Add-ons` beta feature state.
+    ///
+    func queryAddOnsFeatureState() {
+        let action = AppSettingsAction.loadOrderAddOnsSwitchState { [weak self] result in
+            guard let self = self, case .success(let addOnsEnabled) = result else {
+                return
+            }
+            self.isAddOnsFeatureEnabled = addOnsEnabled && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.addOnsI1)
+        }
+        stores.dispatch(action)
+    }
+
+    /// Recreates `actionsFactory` with the latest `product`, `formType`, and `isAddOnsFeatureEnabled` information.
+    ///
+    func updateActionsFactory() {
+        actionsFactory = ProductFormActionsFactory(product: product,
+                                                   formType: formType,
+                                                   addOnsFeatureEnabled: isAddOnsFeatureEnabled,
+                                                   variationsPrice: calculateVariationPriceState())
     }
 }

@@ -121,7 +121,7 @@ extension StripeCardReaderService: CardReaderService {
             self?.discoveryCancellable?.cancel { [weak self] error in
                 // Horrible, terrible workaround.
                 // And yet, it is the classic "dispatch to the next run cycle".
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     guard let error = error else {
                         self?.switchStatusToIdle()
                         return promise(.success(()))

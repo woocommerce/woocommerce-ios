@@ -509,32 +509,34 @@ private extension ProductFormViewController {
     ///
     func observeVariationsPriceChanges() {
         cancellableNewVariationsPrice = viewModel.newVariationsPrice.subscribe { [weak self] in
-            self?.tableView.reloadData()
+            self?.onVariationsPriceChanged()
         }
     }
 
     func onProductUpdated(product: ProductModel) {
         updateMoreDetailsButtonVisibility()
-
         tableViewModel = DefaultProductFormTableViewModel(product: product,
                                                           actionsFactory: viewModel.actionsFactory,
                                                           currency: currency)
-        tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
-                                                             productImageStatuses: productImageActionHandler.productImageStatuses,
-                                                             productUIImageLoader: productUIImageLoader)
-        tableViewDataSource.configureActions(onNameChange: { [weak self] name in
-            self?.onEditProductNameCompletion(newName: name ?? "")
-        }, onStatusChange: { [weak self] isEnabled in
-            self?.onEditStatusCompletion(isEnabled: isEnabled)
-        }, onAddImage: { [weak self] in
-            self?.eventLogger.logImageTapped()
-            self?.showProductImages()
-        })
-        tableView.dataSource = tableViewDataSource
-        tableView.reloadData()
+        reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses)
     }
 
     func onImageStatusesUpdated(statuses: [ProductImageStatus]) {
+        reconfigureDataSource(tableViewModel: tableViewModel, statuses: statuses)
+    }
+
+    /// Recreates the `tableViewModel` and reloads the `table` & `datasource`.
+    ///
+    func onVariationsPriceChanged() {
+        tableViewModel = DefaultProductFormTableViewModel(product: product,
+                                                          actionsFactory: viewModel.actionsFactory,
+                                                          currency: currency)
+        reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses)
+    }
+
+    /// Recreates `tableViewDataSource` and reloads the `tableView` data.
+    ///
+    func reconfigureDataSource(tableViewModel: ProductFormTableViewModel, statuses: [ProductImageStatus]) {
         tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                              productImageStatuses: statuses,
                                                              productUIImageLoader: productUIImageLoader)
@@ -543,6 +545,7 @@ private extension ProductFormViewController {
         }, onStatusChange: { [weak self] isEnabled in
             self?.onEditStatusCompletion(isEnabled: isEnabled)
         }, onAddImage: { [weak self] in
+            self?.eventLogger.logImageTapped()
             self?.showProductImages()
         })
         tableView.dataSource = tableViewDataSource

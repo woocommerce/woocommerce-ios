@@ -48,18 +48,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     private let isUpdateEnabledSubject: PublishSubject<Bool>
     private let newVariationsPriceSubject = PublishSubject<Void>()
 
-    private lazy var variationsResultsController: ResultsController<StorageProductVariation> = {
-        let predicate = NSPredicate(format: "product.siteID = %ld AND product.productID = %ld", product.siteID, product.productID)
-        let descriptor = NSSortDescriptor(keyPath: \StorageProductVariation.productVariationID, ascending: true)
-        let controller = ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-
-        try? controller.performFetch()
-        controller.onDidChangeContent = { [weak self] in
-            self?.updateVariationsPriceState()
-        }
-
-        return controller
-    }()
+    private lazy var variationsResultsController = createVariationsResultsController()
 
     /// Returns `true` if the `Add-ons` beta feature switch is enabled. `False` otherwise.
     /// Assigning this value will recreate the `actionsFactory` property.
@@ -91,6 +80,11 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
             if isNameTheOnlyChange(oldProduct: oldValue, newProduct: product) {
                 productNameSubject.send(product.name)
                 return
+            }
+
+            // Product changes ID when it is just created.
+            if oldValue.productID != product.productID {
+                updateVariationsResultsController()
             }
 
             updateFormTypeIfNeeded(oldProduct: oldValue.product)
@@ -457,6 +451,27 @@ extension ProductFormViewModel {
         }
 
         formType = .edit
+    }
+
+    /// Reassigns the `variationsResultsController` with a newly created object.
+    ///
+    private func updateVariationsResultsController() {
+        variationsResultsController = createVariationsResultsController()
+    }
+
+    /// Creates a variations results controller.
+    ///
+    private func createVariationsResultsController() -> ResultsController<StorageProductVariation> {
+        let predicate = NSPredicate(format: "product.siteID = %ld AND product.productID = %ld", product.siteID, product.productID)
+        let descriptor = NSSortDescriptor(keyPath: \StorageProductVariation.productVariationID, ascending: true)
+        let controller = ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+
+        try? controller.performFetch()
+        controller.onDidChangeContent = { [weak self] in
+            self?.updateVariationsPriceState()
+        }
+
+        return controller
     }
 }
 

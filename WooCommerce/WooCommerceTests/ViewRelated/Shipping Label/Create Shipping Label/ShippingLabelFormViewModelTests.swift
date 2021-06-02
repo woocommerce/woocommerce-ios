@@ -228,4 +228,35 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shippingLabelAccountSettings?.selectedPaymentMethodID, expectedPaymentMethodID)
         XCTAssertEqual(viewModel.shippingLabelAccountSettings?.isEmailReceiptsEnabled, expectedEmailReceiptsSetting)
     }
+
+    func test_getPaymentMethodBody_returns_placeholder_with_no_selected_payment_method() {
+        // Given
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                   originAddress: nil,
+                                                   destinationAddress: nil)
+        let settings = ShippingLabelAccountSettings.fake().copy()
+
+        // When
+        viewModel.handlePaymentMethodValueChanges(settings: settings, editable: false)
+
+        // Then
+        let paymentMethodBody = viewModel.getPaymentMethodBody()
+        XCTAssertEqual(paymentMethodBody, "Add a new credit card")
+    }
+
+    func test_getPaymentMethodBody_returns_card_details_with_selected_payment_method() {
+        // Given
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                   originAddress: nil,
+                                                   destinationAddress: nil)
+        let paymentMethod = ShippingLabelPaymentMethod.fake().copy(paymentMethodID: 12345, cardDigits: "4242")
+        let settings = ShippingLabelAccountSettings.fake().copy(paymentMethods: [paymentMethod], selectedPaymentMethodID: 12345)
+
+        // When
+        viewModel.handlePaymentMethodValueChanges(settings: settings, editable: true)
+
+        // Then
+        let paymentMethodBody = viewModel.getPaymentMethodBody()
+        XCTAssertEqual(paymentMethodBody, "Credit card ending in 4242")
+    }
 }

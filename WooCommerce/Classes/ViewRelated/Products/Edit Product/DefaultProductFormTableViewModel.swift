@@ -384,23 +384,8 @@ private extension DefaultProductFormTableViewModel {
     func variationsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.variationsImage
         let title = product.variations.isEmpty ? Localization.addVariationsTitle : Localization.variationsTitle
-
-        let details: String
-        let format = NSLocalizedString("%1$@ (%2$ld options)", comment: "Format for each Product attribute")
-
-        switch product.variations.count {
-        case 1...:
-            details = product.attributesForVariations
-                .map({ String.localizedStringWithFormat(format, $0.name, $0.options.count) })
-                .joined(separator: "\n")
-        default:
-            details = ""
-        }
-
-        return ProductFormSection.SettingsRow.ViewModel(icon: icon,
-                                                        title: title,
-                                                        details: details,
-                                                        isActionable: true)
+        let details = Localization.variationsDetail(count: product.variations.count)
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon, title: title, details: details, isActionable: true)
     }
 
     // MARK: Product variation only
@@ -582,6 +567,23 @@ private extension DefaultProductFormTableViewModel {
         static let variationsTitle =
             NSLocalizedString("Variations",
                               comment: "Title of the Product Variations row on Product main screen for a variable product")
+
+        static func variationsDetail(count: Int) -> String {
+            let format: String = {
+                switch count {
+                case 0:
+                    return ""
+                case 1:
+                    return NSLocalizedString("%1$ld variation",
+                                             comment: "Format for the variations detail row in singular form. Reads, `1 variation`")
+                default:
+                    return NSLocalizedString("%1$ld variations",
+                                             comment: "Format for the variations detail row in plural form. Reads, `2 variations`")
+                }
+            }()
+
+            return String.localizedStringWithFormat(format, count)
+        }
 
         // Variation status
         static let variationStatusTitle =

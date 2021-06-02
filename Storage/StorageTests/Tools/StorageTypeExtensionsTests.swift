@@ -1045,4 +1045,17 @@ class StorageTypeExtensionsTests: XCTestCase {
         // Then
         XCTAssertEqual(foundPlugin, plugin1)
     }
+
+    func test_loadPaymentGatewayAccount_by_siteID() throws {
+        // Given
+        let account = storage.insertNewObject(ofType: PaymentGatewayAccount.self)
+        account.gatewayID = "woocommerce-payments"
+        account.isCardPresentEligible = true
+
+        // When
+        let foundAccount = try XCTUnwrap(storage.loadPaymentGatewayAccount(siteID: sampleSiteID))
+
+        // Then
+        XCTAssertEqual(foundAccount, account)
+    }
 }

@@ -92,6 +92,8 @@ private extension DefaultProductFormTableViewModel {
                 return .linkedProducts(viewModel: linkedProductsRow(product: product, isEditable: editable), isEditable: editable)
             case .noPriceWarning:
                 return .noPriceWarning(viewModel: noPriceWarningRow())
+            case .attributes(let editable):
+                return .attributes(viewModel: productVariationsAttributesRow(product: product.product, isEditable: editable), isEditable: editable)
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil
@@ -420,6 +422,18 @@ private extension DefaultProductFormTableViewModel {
         return ProductFormSection.SettingsRow.WarningViewModel(icon: icon, title: title)
     }
 
+    func productVariationsAttributesRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.variationsImage
+        let title = Localization.productVariationAttributesTitle
+
+        let format = NSLocalizedString("%1$@ (%2$ld options)", comment: "Format for each Product attribute")
+        let details = product.attributesForVariations
+            .map({ String.localizedStringWithFormat(format, $0.name, $0.options.count) })
+            .joined(separator: "\n")
+
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon, title: title, details: details, isActionable: isEditable)
+    }
+
     func variationAttributesRow(productVariation: EditableProductVariationModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.customizeImage
         let title = Localization.variationAttributesTitle
@@ -573,6 +587,10 @@ private extension DefaultProductFormTableViewModel {
         static let variationStatusTitle =
             NSLocalizedString("Enabled",
                               comment: "Title of the status row on Product Variation main screen to enable/disable a variation")
+
+        // Product Variations Attributes
+        static let productVariationAttributesTitle = NSLocalizedString("Variations Attributes",
+                                                                       comment: "Title of the variations attributes row on Product screen")
 
         // Variation attributes
         static let variationAttributesTitle = NSLocalizedString("Attributes", comment: "Title of the attributes row on Product Variation main screen")

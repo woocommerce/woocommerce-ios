@@ -391,6 +391,36 @@ extension ProductAddOnOption {
     }
 }
 
+extension ProductAttribute {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        attributeID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        position: CopiableProp<Int> = .copy,
+        visible: CopiableProp<Bool> = .copy,
+        variation: CopiableProp<Bool> = .copy,
+        options: CopiableProp<[String]> = .copy
+    ) -> ProductAttribute {
+        let siteID = siteID ?? self.siteID
+        let attributeID = attributeID ?? self.attributeID
+        let name = name ?? self.name
+        let position = position ?? self.position
+        let visible = visible ?? self.visible
+        let variation = variation ?? self.variation
+        let options = options ?? self.options
+
+        return ProductAttribute(
+            siteID: siteID,
+            attributeID: attributeID,
+            name: name,
+            position: position,
+            visible: visible,
+            variation: variation,
+            options: options
+        )
+    }
+}
+
 extension ProductImage {
     public func copy(
         imageID: CopiableProp<Int64> = .copy,

@@ -171,10 +171,12 @@ private extension ProductFormActionsFactory {
         let variationsHaveNoPriceSet = variationsPrice == .notSet
         let productHasNoPriceSet = variationsPrice == .unknown && product.product.variations.isNotEmpty && product.product.price.isEmpty
         let shouldShowNoPriceWarningRow = canEditProductType && (variationsHaveNoPriceSet || productHasNoPriceSet)
+        let shouldShowAttributesRow = product.product.attributesForVariations.isNotEmpty
 
         let actions: [ProductFormEditAction?] = [
             .variations,
             shouldShowNoPriceWarningRow ? .noPriceWarning : nil,
+            shouldShowAttributesRow ? .attributes(editable: editable) : nil,
             shouldShowReviewsRow ? .reviews: nil,
             .shippingSettings(editable: editable),
             .inventorySettings(editable: canEditInventorySettingsRow),
@@ -261,6 +263,9 @@ private extension ProductFormActionsFactory {
             // The variations row is always visible in the settings section for a variable product.
             return true
         case .noPriceWarning:
+            // Always visible when available
+            return true
+        case .attributes:
             // Always visible when available
             return true
         default:

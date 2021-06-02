@@ -317,9 +317,8 @@ private extension ShippingLabelFormViewController {
                                                       selectedPaymentMethodID: viewModel.selectedPaymentMethodID)
         let paymentMethod = ShippingLabelPaymentMethods(viewModel: vm) { [weak self] (newPaymentMethodID, isEmailReceiptsEnabled) in
             guard let self = self else { return }
-            self.viewModel.handlePaymentMethodValueChanges(selectedPaymentMethodID: newPaymentMethodID,
-                                                           isEmailReceiptsEnabled: isEmailReceiptsEnabled,
-                                                           editable: true)
+            self.viewModel.updateShippingLabelAccountSettings(selectedPaymentMethodID: newPaymentMethodID,
+                                                              isEmailReceiptsEnabled: isEmailReceiptsEnabled)
         }
 
         let hostingVC = UIHostingController(rootView: paymentMethod)

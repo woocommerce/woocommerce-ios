@@ -195,7 +195,9 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         let expectedPaymentMethodID: Int64 = 0
 
         // When
-        viewModel.handlePaymentMethodValueChanges(selectedPaymentMethodID: expectedPaymentMethodID, editable: false)
+        viewModel.handlePaymentMethodValueChanges(selectedPaymentMethodID: expectedPaymentMethodID,
+                                                  isEmailReceiptsEnabled: true,
+                                                  editable: false)
 
         // Then
         let currentRows = viewModel.state.sections.first?.rows
@@ -212,7 +214,9 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         let expectedPaymentMethodID: Int64 = 12345
 
         // When
-        viewModel.handlePaymentMethodValueChanges(selectedPaymentMethodID: expectedPaymentMethodID, editable: false)
+        viewModel.handlePaymentMethodValueChanges(selectedPaymentMethodID: expectedPaymentMethodID,
+                                                  isEmailReceiptsEnabled: true,
+                                                  editable: false)
 
         // Then
         let currentRows = viewModel.state.sections.first?.rows

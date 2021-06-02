@@ -116,14 +116,19 @@ private extension CardPresentPaymentsModalViewController {
 
     func stylePrimaryButton() {
         primaryButton.isPrimary = true
+        primaryButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        primaryButton.titleLabel?.minimumScaleFactor = 0.5
     }
 
     func styleSecondaryButton() {
-
+        secondaryButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        secondaryButton.titleLabel?.minimumScaleFactor = 0.5
     }
 
     func styleAuxiliaryButton() {
         auxiliaryButton.applyLinkButtonStyle()
+        auxiliaryButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        auxiliaryButton.titleLabel?.minimumScaleFactor = 0.5
     }
 
     func populateContent() {

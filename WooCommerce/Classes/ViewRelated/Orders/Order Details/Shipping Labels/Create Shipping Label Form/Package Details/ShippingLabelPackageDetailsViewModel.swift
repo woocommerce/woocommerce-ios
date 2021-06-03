@@ -156,6 +156,10 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     /// only if they are not virtual products.
     ///
     private func setTotalWeight() {
+        guard totalWeight.isEmpty else {
+            return
+        }
+
         var tempTotalWeight: Double = 0
 
         for item in orderItems {

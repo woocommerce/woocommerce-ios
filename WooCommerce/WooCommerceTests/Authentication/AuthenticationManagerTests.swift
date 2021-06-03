@@ -71,4 +71,54 @@ final class AuthenticationManagerTests: XCTestCase {
         // Then
         XCTAssertTrue(canHandle)
     }
+
+    func test_it_can_create_a_ViewModel_for_unknown_WPCOM_user_errors() throws {
+        // Given
+        let manager = AuthenticationManager()
+        let error = NSError(domain: "", code: WordPressComRestApiError.unknown.rawValue, userInfo: [
+            WordPressComRestApi.ErrorKeyErrorCode: "unknown_user"
+        ])
+
+        // When
+        let viewModel = try XCTUnwrap(manager.viewModel(error))
+
+        // Then
+        XCTAssertTrue(viewModel is NotWPAccountViewModel)
+    }
+
+    func test_it_can_create_a_ViewModel_for_inaccessible_site_errors() throws {
+        // Given
+        let manager = AuthenticationManager()
+        let error = NSError(domain: "", code: NSURLErrorCannotConnectToHost)
+
+        // When
+        let viewModel = try XCTUnwrap(manager.viewModel(error))
+
+        // Then
+        XCTAssertTrue(viewModel is NotWPErrorViewModel)
+    }
+
+    func test_it_can_create_a_ViewModel_for_unknown_site_URL_errors() throws {
+        // Given
+        let manager = AuthenticationManager()
+        let error = NSError(domain: "", code: NSURLErrorCannotFindHost)
+
+        // When
+        let viewModel = try XCTUnwrap(manager.viewModel(error))
+
+        // Then
+        XCTAssertTrue(viewModel is NotWPErrorViewModel)
+    }
+
+    func test_it_can_create_a_ViewModel_for_non_SSL_site_errors() throws {
+        // Given
+        let manager = AuthenticationManager()
+        let error = NSError(domain: "", code: NSURLErrorSecureConnectionFailed)
+
+        // When
+        let viewModel = try XCTUnwrap(manager.viewModel(error))
+
+        // Then
+        XCTAssertTrue(viewModel is NoSecureConnectionErrorViewModel)
+    }
 }

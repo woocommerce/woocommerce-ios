@@ -408,7 +408,22 @@ private extension GetStartedViewController {
                 // username instead.
                 self.showSelfHostedWithError(error)
         } else {
-            self.displayError(error as NSError, sourceTag: self.sourceTag)
+            guard let authenticationDelegate = WordPressAuthenticator.shared.delegate,
+                  authenticationDelegate.shouldHandleError(error) else {
+                self.displayError(error as NSError, sourceTag: self.sourceTag)
+                return
+            }
+
+            /// Hand over control to the host app.
+            authenticationDelegate.handleError(error) { customUI in
+                // Setting the rightBarButtonItems of the custom UI before pushing the view controller
+                // and resetting the navigationController's navigationItem after the push seems to be the
+                // only combination that gets the Help button to show up.
+                customUI.navigationItem.rightBarButtonItems = self.navigationItem.rightBarButtonItems
+                self.navigationController?.navigationItem.rightBarButtonItems = self.navigationItem.rightBarButtonItems
+
+                self.navigationController?.pushViewController(customUI, animated: true)
+            }
         }
     }
 

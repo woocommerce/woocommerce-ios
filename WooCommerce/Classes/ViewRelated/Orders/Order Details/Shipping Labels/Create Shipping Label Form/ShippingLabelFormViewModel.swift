@@ -66,8 +66,10 @@ final class ShippingLabelFormViewModel {
         return nil
     }
     private(set) var totalPackageWeight: String?
-    private(set) var shippingLabelAccountSettings: ShippingLabelAccountSettings?
-    private(set) var selectedPaymentMethodID: Int64 = 0
+
+    /// Payment Methods
+    ///
+    var shippingLabelAccountSettings: ShippingLabelAccountSettings?
 
 
     private let stores: StoresManager
@@ -147,11 +149,12 @@ final class ShippingLabelFormViewModel {
         updateRowState(type: .shippingCarrierAndRates, dataState: .validated, displayMode: .editable)
     }
 
-    func handlePaymentMethodValueChanges(selectedPaymentMethodID: Int64, editable: Bool) {
-        self.selectedPaymentMethodID = selectedPaymentMethodID
+    func handlePaymentMethodValueChanges(settings: ShippingLabelAccountSettings, editable: Bool) {
+        shippingLabelAccountSettings = settings
         let displayMode: ShippingLabelFormViewController.DisplayMode = editable ? .editable : .disabled
 
-        guard selectedPaymentMethodID != 0 else {
+        // Only update the data state if there is a selected payment method
+        guard settings.selectedPaymentMethodID != 0 else {
             updateRowState(type: .paymentMethod, dataState: .pending, displayMode: displayMode)
             return
         }
@@ -213,7 +216,9 @@ final class ShippingLabelFormViewModel {
     /// Displays the payment method details if one is selected. Otherwise, displays a prompt to add a credit card.
     ///
     func getPaymentMethodBody() -> String {
-        guard let selectedPaymentMethod = shippingLabelAccountSettings?.paymentMethods.first(where: { $0.paymentMethodID == selectedPaymentMethodID }) else {
+        let selectedPaymentMethodID = shippingLabelAccountSettings?.selectedPaymentMethodID
+        let availablePaymentMethods = shippingLabelAccountSettings?.paymentMethods
+        guard let selectedPaymentMethod = availablePaymentMethods?.first(where: { $0.paymentMethodID == selectedPaymentMethodID }) else {
             return Localization.paymentMethodPlaceholder
         }
 
@@ -393,8 +398,7 @@ extension ShippingLabelFormViewModel {
 
             switch result {
             case .success(let value):
-                self.shippingLabelAccountSettings = value
-                self.handlePaymentMethodValueChanges(selectedPaymentMethodID: value.selectedPaymentMethodID, editable: false)
+                self.handlePaymentMethodValueChanges(settings: value, editable: false)
             case .failure:
                 DDLogError("⛔️ Error synchronizing shipping label account settings")
             }

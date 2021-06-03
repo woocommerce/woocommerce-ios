@@ -1,10 +1,18 @@
 import SwiftUI
+import Yosemite
 
 struct ShippingLabelPaymentMethods: View {
     @ObservedObject private var viewModel: ShippingLabelPaymentMethodsViewModel
+    @Environment(\.presentationMode) var presentation
 
-    init(viewModel: ShippingLabelPaymentMethodsViewModel) {
+    /// Completion callback
+    ///
+    typealias Completion = (_ newAccountSettings: ShippingLabelAccountSettings) -> Void
+    private let onCompletion: Completion
+
+    init(viewModel: ShippingLabelPaymentMethodsViewModel, completion: @escaping Completion) {
         self.viewModel = viewModel
+        onCompletion = completion
     }
 
     var body: some View {
@@ -43,9 +51,19 @@ struct ShippingLabelPaymentMethods: View {
         }
         .background(Color(.listBackground))
         .navigationBarTitle(Localization.navigationBarTitle)
-        .navigationBarItems(trailing: Button(action: {}, label: {
-            Text(Localization.doneButton)
-        }))
+        .navigationBarItems(trailing: Button(action: {
+            viewModel.updateShippingLabelAccountSettings { newSettings in
+                onCompletion(newSettings)
+                presentation.wrappedValue.dismiss()
+            }
+        }, label: {
+            if viewModel.isUpdating {
+                ProgressView()
+            } else {
+                Text(Localization.doneButton)
+            }
+        })
+        .disabled(!viewModel.isDoneButtonEnabled()))
     }
 }
 
@@ -76,22 +94,25 @@ private extension ShippingLabelPaymentMethods {
 struct ShippingLabelPaymentMethods_Previews: PreviewProvider {
     static var previews: some View {
 
-        let viewModel = ShippingLabelPaymentMethodsViewModel(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings(),
-                                                             selectedPaymentMethodID: ShippingLabelPaymentMethodsViewModel.samplePaymentMethodID)
+        let viewModel = ShippingLabelPaymentMethodsViewModel(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings())
 
-        ShippingLabelPaymentMethods(viewModel: viewModel)
+        ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (newAccountSettings) in
+        })
             .colorScheme(.light)
             .previewDisplayName("Light mode")
 
-        ShippingLabelPaymentMethods(viewModel: viewModel)
+        ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (newAccountSettings) in
+        })
             .colorScheme(.dark)
             .previewDisplayName("Dark Mode")
 
-        ShippingLabelPaymentMethods(viewModel: viewModel)
+        ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (newAccountSettings) in
+        })
             .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
             .previewDisplayName("Accessibility: Large Font Size")
 
-        ShippingLabelPaymentMethods(viewModel: viewModel)
+        ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (newAccountSettings) in
+        })
             .environment(\.layoutDirection, .rightToLeft)
             .previewDisplayName("Localization: Right-to-Left Layout")
     }

@@ -676,6 +676,30 @@ extension ShippingLabelAddress {
     }
 }
 
+extension ShippingLabelPaymentMethod {
+    public func copy(
+        paymentMethodID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        cardType: CopiableProp<ShippingLabelPaymentCardType> = .copy,
+        cardDigits: CopiableProp<String> = .copy,
+        expiry: NullableCopiableProp<Date> = .copy
+    ) -> ShippingLabelPaymentMethod {
+        let paymentMethodID = paymentMethodID ?? self.paymentMethodID
+        let name = name ?? self.name
+        let cardType = cardType ?? self.cardType
+        let cardDigits = cardDigits ?? self.cardDigits
+        let expiry = expiry ?? self.expiry
+
+        return ShippingLabelPaymentMethod(
+            paymentMethodID: paymentMethodID,
+            name: name,
+            cardType: cardType,
+            cardDigits: cardDigits,
+            expiry: expiry
+        )
+    }
+}
+
 extension SitePlugin {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

@@ -19,6 +19,8 @@ final class SiteAddressViewController: LoginViewController {
     private var errorMessage: String?
     private var shouldChangeVoiceOverFocus: Bool = false
 
+    private var viewIsLoading: Bool = false
+
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
         tracker.track(click: .submit)
@@ -120,6 +122,8 @@ final class SiteAddressViewController: LoginViewController {
     /// - Parameter loading: True if the form should be configured to a "loading" state.
     ///
     override func configureViewLoading(_ loading: Bool) {
+        viewIsLoading = loading
+
         siteURLField?.isEnabled = !loading
 
         configureSubmitButton(animating: loading)

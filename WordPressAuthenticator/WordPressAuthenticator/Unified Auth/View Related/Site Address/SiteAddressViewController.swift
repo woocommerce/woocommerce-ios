@@ -38,7 +38,7 @@ final class SiteAddressViewController: LoginViewController {
         localizePrimaryButton()
         registerTableViewCells()
         loadRows()
-        configureSubmitButton(animating: false)
+        configureSubmitButton()
         configureForAccessibility()
     }
 
@@ -46,7 +46,7 @@ final class SiteAddressViewController: LoginViewController {
         super.viewWillAppear(animated)
 
         siteURLField?.text = loginFields.siteAddress
-        configureSubmitButton(animating: false)
+        configureSubmitButton()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -82,6 +82,10 @@ final class SiteAddressViewController: LoginViewController {
     ///
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return WordPressAuthenticator.shared.unifiedStyle?.statusBarStyle ?? WordPressAuthenticator.shared.style.statusBarStyle
+    }
+
+    private func configureSubmitButton() {
+        configureSubmitButton(animating: viewIsLoading)
     }
 
     /// Configures the appearance and state of the submit button.
@@ -126,7 +130,7 @@ final class SiteAddressViewController: LoginViewController {
 
         siteURLField?.isEnabled = !loading
 
-        configureSubmitButton(animating: loading)
+        configureSubmitButton()
         navigationItem.hidesBackButton = loading
     }
 
@@ -296,7 +300,7 @@ private extension SiteAddressViewController {
         cell.textField.text = loginFields.siteAddress
         cell.onChangeSelectionHandler = { [weak self] textfield in
             self?.loginFields.siteAddress = textfield.nonNilTrimmedText()
-            self?.configureSubmitButton(animating: false)
+            self?.configureSubmitButton()
         }
 
         SigninEditingState.signinEditingStateActive = true

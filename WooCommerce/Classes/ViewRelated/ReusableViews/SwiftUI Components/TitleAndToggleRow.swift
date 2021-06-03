@@ -9,8 +9,7 @@ struct TitleAndToggleRow: View {
 
     var body: some View {
         Toggle(title, isOn: $isOn)
-            .font(.body)
-            .foregroundColor(isEnabled ? Color(.text) : Color(.textTertiary))
+            .bodyStyle(isEnabled)
             .toggleStyle(SwitchToggleStyle.init(tint: isEnabled ? Color(.primary) : Color(.switchDisabledColor)))
             .padding(Constants.padding)
     }

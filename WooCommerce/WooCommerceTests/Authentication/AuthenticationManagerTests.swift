@@ -8,7 +8,7 @@ final class AuthenticationManagerTests: XCTestCase {
     /// We do not allow automatic WPCOM account sign-up if the user entered an email that is not
     /// registered in WordPress.com. This configuration is set up in
     /// `WordPressAuthenticatorConfiguration` in `AuthenticationManager.initialize()`.
-    func test_it_supports_handling_for_unknown_WPCOM_user_error() {
+    func test_it_supports_handling_for_unknown_WPCOM_user_errors() {
         // Given
         let manager = AuthenticationManager()
         let error = NSError(domain: "", code: WordPressComRestApiError.unknown.rawValue, userInfo: [

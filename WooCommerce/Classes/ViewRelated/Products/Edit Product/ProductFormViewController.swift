@@ -370,8 +370,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 guard isEditable else {
                     return
                 }
-                editVariationAttributes()
-                trackEditVariationAttributesRowTapped()
+                editAttributes()
             case .status, .noPriceWarning:
                 break
             }
@@ -1323,6 +1322,35 @@ private extension ProductFormViewController {
 // MARK: Action - Edit Product Variation Attributes
 //
 private extension ProductFormViewController {
+    /// Edit the product attributes or the variation attributes depending on the product model type.
+    ///
+    func editAttributes() {
+        switch product {
+        case is EditableProductModel:
+            editProductAttributes()
+            // TODO: Add Analytics
+        case is EditableProductVariationModel:
+            editVariationAttributes()
+            trackEditVariationAttributesRowTapped()
+        default:
+            break
+        }
+    }
+
+    /// Navigate to edit product attributes
+    ///
+    func editProductAttributes() {
+        guard let productModel = product as? EditableProductModel else {
+            return
+        }
+        let attributesViewModel = EditAttributesViewModel(product: productModel.product, allowVariationCreation: false)
+        let attributesViewController = EditAttributesViewController(viewModel: attributesViewModel)
+        attributesViewController.onAttributesUpdate = { [weak self] _ in
+            self?.onAttributeUpdated(attributesViewController: attributesViewController)
+        }
+        show(attributesViewController, sender: self)
+    }
+
     func editVariationAttributes() {
         guard let productVariationModel = product as? EditableProductVariationModel else {
             return
@@ -1348,6 +1376,13 @@ private extension ProductFormViewController {
             return
         }
         viewModel.updateVariationAttributes(attributes)
+    }
+
+    /// Perform necessary actions when an attribute is created or updated.
+    ///
+    func onAttributeUpdated(attributesViewController: UIViewController) {
+        // TODO: Update product attributes
+        navigationController?.popToViewController(attributesViewController, animated: true)
     }
 }
 

@@ -171,6 +171,8 @@ end
 #
 def hardware_pods
   pod 'StripeTerminal', '~> 1.4.0'
+  pod 'CocoaLumberjack', '~> 3.5'
+  pod 'CocoaLumberjack/Swift', '~> 3.5'
 end
 
 # Hardware Target:

@@ -66,6 +66,16 @@ extension StripeCardReaderService: CardReaderService {
     public func start(_ configProvider: CardReaderConfigProvider) throws {
         setConfigProvider(configProvider)
 
+        Terminal.setLogListener {  message in
+            // It seems stripe still tries to log messages when logLevel is .none,
+            // so let's ignore those
+            guard Terminal.shared.logLevel == .verbose else {
+                return
+            }
+            DDLogDebug("💳 [StripeTerminal] \(message)")
+        }
+        Terminal.shared.logLevel = terminalLogLevel
+
         let config = DiscoveryConfiguration(
             discoveryMethod: .bluetoothProximity,
             simulated: shouldUseSimulatedCardReader
@@ -516,6 +526,18 @@ private extension StripeCardReaderService {
         return ProcessInfo.processInfo.arguments.contains("-simulate-stripe-card-reader")
         #else
         return false
+        #endif
+    }
+
+    var terminalLogLevel: LogLevel {
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("-stripe-verbose-logging") {
+            return .verbose
+        } else {
+            return .none
+        }
+        #else
+        return .none
         #endif
     }
 }

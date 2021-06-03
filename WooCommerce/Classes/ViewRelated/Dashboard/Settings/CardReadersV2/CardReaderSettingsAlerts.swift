@@ -1,5 +1,5 @@
 import UIKit
-import Hardware
+import Yosemite
 import WordPressUI
 
 /// A layer of indirection between our card reader settings view controllers and the modal alerts

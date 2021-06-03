@@ -531,9 +531,11 @@ private extension ProductVariationsViewController {
         navigationController?.popToViewController(viewControllerToShow, animated: true)
     }
 
-    /// Navigates back to the `initialViewController` if possible. If not possible, pop `self`.
+    /// Presents a notice alerting that the variation was created and navigates back to the `initialViewController` if possible.
     ///
     private func onFirstVariationCreated() {
+        noticePresenter.enqueue(notice: .init(title: Localization.variationCreated, feedbackType: .success))
+
         guard let initialViewController = initialViewController else {
             navigationController?.popViewController(animated: true)
             return
@@ -745,5 +747,6 @@ private extension ProductVariationsViewController {
                                                         comment: "Instructions for the progress screen while generating a variation")
         static let generateVariationError = NSLocalizedString("The variation couldn't be generated.",
                                                               comment: "Error title when failing to generate a variation.")
+        static let variationCreated = NSLocalizedString("Variation created", comment: "Text for the notice after creating the first variation.")
     }
 }

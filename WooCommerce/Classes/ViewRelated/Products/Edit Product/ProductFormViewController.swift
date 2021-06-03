@@ -1345,8 +1345,8 @@ private extension ProductFormViewController {
         }
         let attributesViewModel = EditAttributesViewModel(product: productModel.product, allowVariationCreation: false)
         let attributesViewController = EditAttributesViewController(viewModel: attributesViewModel)
-        attributesViewController.onAttributesUpdate = { [weak self] _ in
-            self?.onAttributeUpdated(attributesViewController: attributesViewController)
+        attributesViewController.onAttributesUpdate = { [weak self] updatedProduct in
+            self?.onAttributeUpdated(attributesViewController: attributesViewController, updatedProduct: updatedProduct)
         }
         show(attributesViewController, sender: self)
     }
@@ -1380,8 +1380,8 @@ private extension ProductFormViewController {
 
     /// Perform necessary actions when an attribute is created or updated.
     ///
-    func onAttributeUpdated(attributesViewController: UIViewController) {
-        // TODO: Update product attributes
+    func onAttributeUpdated(attributesViewController: UIViewController, updatedProduct: Product) {
+        viewModel.updateProductVariations(from: updatedProduct)
         navigationController?.popToViewController(attributesViewController, animated: true)
     }
 }

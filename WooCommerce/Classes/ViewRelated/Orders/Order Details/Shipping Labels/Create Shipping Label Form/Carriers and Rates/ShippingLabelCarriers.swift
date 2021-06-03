@@ -43,15 +43,15 @@ struct ShippingLabelCarriers: View {
                             Divider().padding(.leading, Constants.dividerPadding)
                         }
                     case .error:
-                        VStack(alignment: .center) {
-                            EmptyState(title: Localization.emptyStateTitle,
-                                       description: Localization.emptyStateDescription,
-                                       image: .productErrorImage)
+                        VStack {
+                            HStack (alignment: .center) {
+                                EmptyState(title: Localization.emptyStateTitle,
+                                           description: Localization.emptyStateDescription,
+                                           image: .productErrorImage)
+                                    .frame(width: geometry.size.width)
+                            }
                         }
-                        .frame(width: geometry.size.width,
-                               alignment: .center)
-                        .position(x: geometry.size.width/2,
-                                  y: geometry.size.height/2)
+                        .frame(minHeight: geometry.size.height)
                     default:
                         EmptyView()
                     }

@@ -110,14 +110,20 @@ final class ProductVariationsViewController: UIViewController {
     private let noticePresenter: NoticePresenter
     private let analytics: Analytics
 
+    /// ViewController that pushed `self`. Needed in order to go back to it when the first variation is created.
+    ///
+    private weak var initialViewController: UIViewController?
+
     /// Assign this closure to get notified when the underlying product changes due to new variations or new attributes.
     ///
     var onProductUpdate: ((Product) -> Void)?
 
-    init(viewModel: ProductVariationsViewModel,
+    init(initialViewController: UIViewController,
+         viewModel: ProductVariationsViewModel,
          product: Product,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
          analytics: Analytics = ServiceLocator.analytics) {
+        self.initialViewController = initialViewController
         self.product = product
         self.viewModel = viewModel
         self.noticePresenter = noticePresenter
@@ -497,7 +503,7 @@ private extension ProductVariationsViewController {
         let editAttributeViewController = EditAttributesViewController(viewModel: editAttributesViewModel)
         editAttributeViewController.onVariationCreation = { [weak self] updatedProduct in
             self?.product = updatedProduct
-            navigationController.popViewController(animated: true)
+            self?.onFirstVariationCreated()
         }
         editAttributeViewController.onAttributesUpdate = { [weak self] updatedProduct in
             guard let self = self else { return }
@@ -523,6 +529,16 @@ private extension ProductVariationsViewController {
 
         let viewControllerToShow = allAttributes.isNotEmpty ? editAttributesViewController : self
         navigationController?.popToViewController(viewControllerToShow, animated: true)
+    }
+
+    /// Navigates back to the `initialViewController` if possible. If not possible, pop `self`.
+    ///
+    private func onFirstVariationCreated() {
+        guard let initialViewController = initialViewController else {
+            navigationController?.popViewController(animated: true)
+            return
+        }
+        navigationController?.popToViewController(initialViewController, animated: true)
     }
 }
 

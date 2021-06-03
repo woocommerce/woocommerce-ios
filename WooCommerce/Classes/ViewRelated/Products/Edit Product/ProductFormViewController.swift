@@ -360,7 +360,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                     return
                 }
                 let variationsViewModel = ProductVariationsViewModel(formType: viewModel.formType)
-                let variationsViewController = ProductVariationsViewController(viewModel: variationsViewModel,
+                let variationsViewController = ProductVariationsViewController(initialViewController: self,
+                                                                               viewModel: variationsViewModel,
                                                                                product: originalProduct.product)
                 variationsViewController.onProductUpdate = { [viewModel] updatedProduct in
                     viewModel.updateProductVariations(from: updatedProduct)

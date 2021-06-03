@@ -19,12 +19,14 @@ struct ShippingLabelPaymentMethods: View {
         GeometryReader { geometry in
             ScrollView {
                 VStack(spacing: 0) {
+                    // Banner displayed when user can't edit payment methods
                     ShippingLabelPaymentMethodsTopBanner(width: geometry.size.width,
                                                          storeOwnerDisplayName: viewModel.storeOwnerDisplayName,
                                                          storeOwnerUsername:
                                                             viewModel.storeOwnerUsername)
                         .renderedIf(!viewModel.canEditPaymentMethod)
 
+                    // Payment Methods list
                     ListHeaderView(text: Localization.paymentMethodsHeader, alignment: .left)
                         .textCase(.uppercase)
 
@@ -49,6 +51,7 @@ struct ShippingLabelPaymentMethods: View {
                     Spacer()
                         .frame(height: Constants.spacerHeight)
 
+                    // Email Receipts setting toggle
                     TitleAndToggleRow(title: String.localizedStringWithFormat(Localization.emailReceipt,
                                                                               viewModel.storeOwnerDisplayName,
                                                                               viewModel.storeOwnerUsername,

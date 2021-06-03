@@ -23,7 +23,7 @@ final class AuthenticationManagerTests: XCTestCase {
     }
 
     /// We provide a custom UI for sites that do not seem to be a WordPress site.
-    func test_it_supports_handling_for_unknown_sites() {
+    func test_it_supports_handling_for_unknown_site_errors() {
         // Given
         let manager = AuthenticationManager()
         let error = NSError(domain: "", code: WordPressOrgXMLRPCValidatorError.invalid.rawValue)
@@ -36,10 +36,34 @@ final class AuthenticationManagerTests: XCTestCase {
     }
 
     /// We don't allow sites that do not have SSL. We provide a custom error UI for this.
-    func test_it_supports_handling_for_non_SSL_sites() {
+    func test_it_supports_handling_for_non_SSL_site_errors() {
         // Given
         let manager = AuthenticationManager()
         let error = NSError(domain: "", code: NSURLErrorSecureConnectionFailed)
+
+        // When
+        let canHandle = manager.shouldHandleError(error)
+
+        // Then
+        XCTAssertTrue(canHandle)
+    }
+
+    func test_it_supports_handling_for_inaccessible_site_URL_errors() {
+        // Given
+        let manager = AuthenticationManager()
+        let error = NSError(domain: "", code: NSURLErrorCannotConnectToHost)
+
+        // When
+        let canHandle = manager.shouldHandleError(error)
+
+        // Then
+        XCTAssertTrue(canHandle)
+    }
+
+    func test_it_supports_handling_for_unknown_site_URL_errors() {
+        // Given
+        let manager = AuthenticationManager()
+        let error = NSError(domain: "", code: NSURLErrorCannotFindHost)
 
         // When
         let canHandle = manager.shouldHandleError(error)

@@ -11,7 +11,8 @@ final class ShippingLabelCarrierRowViewModelTests: XCTestCase {
                                                          adultSignatureSelected: false,
                                                          rate: MockShippingLabelCarrierRate.makeRate(rate: 40.33),
                                                          signatureRate: MockShippingLabelCarrierRate.makeRate(rate: 45.99),
-                                                         adultSignatureRate: MockShippingLabelCarrierRate.makeRate(rate: 51.33)) { (_, _, _) in
+                                                         adultSignatureRate: MockShippingLabelCarrierRate.makeRate(rate: 51.33),
+                                                         currencySettings: CurrencySettings()) { (_, _, _) in
         }
 
         // Then
@@ -20,7 +21,7 @@ final class ShippingLabelCarrierRowViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.adultSignatureSelected, false)
         XCTAssertEqual(viewModel.title, "USPS - Parcel Select Mail")
         XCTAssertEqual(viewModel.subtitle, "2 business days")
-        XCTAssertEqual(viewModel.price, "$40.33")
+        XCTAssertEqual(viewModel.price, "$45.99")
         XCTAssertEqual(viewModel.carrierLogo, UIImage(named: "shipping-label-usps-logo"))
         XCTAssertEqual(viewModel.extraInfo, "Includes USPS tracking, Eligible for free pickup")
         XCTAssertEqual(viewModel.displaySignatureRequired, true)
@@ -37,7 +38,8 @@ final class ShippingLabelCarrierRowViewModelTests: XCTestCase {
                                                          adultSignatureSelected: false,
                                                          rate: MockShippingLabelCarrierRate.makeRate(rate: 40.33),
                                                          signatureRate: MockShippingLabelCarrierRate.makeRate(rate: 45.99),
-                                                         adultSignatureRate: MockShippingLabelCarrierRate.makeRate(rate: 51.33)) { (rate, _, _) in
+                                                         adultSignatureRate: MockShippingLabelCarrierRate.makeRate(rate: 51.33),
+                                                         currencySettings: CurrencySettings()) { (rate, _, _) in
             promise(rate)
         }
             // When
@@ -59,7 +61,8 @@ final class ShippingLabelCarrierRowViewModelTests: XCTestCase {
                                                          adultSignatureSelected: false,
                                                          rate: MockShippingLabelCarrierRate.makeRate(rate: 40.33),
                                                          signatureRate: MockShippingLabelCarrierRate.makeRate(rate: 45.99),
-                                                         adultSignatureRate: MockShippingLabelCarrierRate.makeRate(rate: 51.33)) { (rate, signatureRate, _) in
+                                                         adultSignatureRate: MockShippingLabelCarrierRate.makeRate(rate: 51.33),
+                                                         currencySettings: CurrencySettings()) { (rate, signatureRate, _) in
             promise(signatureRate)
         }
             // When
@@ -81,7 +84,8 @@ final class ShippingLabelCarrierRowViewModelTests: XCTestCase {
                                                          adultSignatureSelected: false,
                                                          rate: MockShippingLabelCarrierRate.makeRate(rate: 40.33),
                                                          signatureRate: MockShippingLabelCarrierRate.makeRate(rate: 45.99),
-                                                         adultSignatureRate: MockShippingLabelCarrierRate.makeRate(rate: 51.33)) { (rate,
+                                                         adultSignatureRate: MockShippingLabelCarrierRate.makeRate(rate: 51.33),
+                                                         currencySettings: CurrencySettings()) { (rate,
                                                                                                                                     _,
                                                                                                                                     adultSignatureRate) in
             promise(adultSignatureRate)

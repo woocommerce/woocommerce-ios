@@ -1049,8 +1049,16 @@ class StorageTypeExtensionsTests: XCTestCase {
     func test_loadPaymentGatewayAccount_by_siteID() throws {
         // Given
         let account = storage.insertNewObject(ofType: PaymentGatewayAccount.self)
+        account.country = "US"
+        account.defaultCurrency = "USD"
         account.gatewayID = "woocommerce-payments"
+        account.hasOverdueRequirements = false
+        account.hasPendingRequirements = false
         account.isCardPresentEligible = true
+        account.siteID = sampleSiteID
+        account.statementDescriptor = "STAGING.MARS"
+        account.status = "complete"
+        account.supportedCurrencies = ["USD"]
 
         // When
         let foundAccount = try XCTUnwrap(storage.loadPaymentGatewayAccount(siteID: sampleSiteID))

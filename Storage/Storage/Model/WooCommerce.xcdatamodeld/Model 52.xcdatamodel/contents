@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17709" systemVersion="20E241" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17709" systemVersion="20F71" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -238,7 +238,7 @@
         <attribute name="isCardPresentEligible" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="siteID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="statementDescriptor" optional="YES" attributeType="String"/>
-        <attribute name="status" optional="YES" attributeType="Transformable"/>
+        <attribute name="status" optional="YES" attributeType="String"/>
         <attribute name="supportedCurrencies" optional="YES" attributeType="Transformable"/>
     </entity>
     <entity name="Product" representedClassName="Product" syncable="YES">
@@ -671,6 +671,7 @@
         <element name="OrderStatsV4Totals" positionX="-519.01171875" positionY="96.5546875" width="128" height="225"/>
         <element name="OrderStatus" positionX="-675" positionY="27" width="128" height="103"/>
         <element name="PaymentGateway" positionX="-693" positionY="36" width="128" height="133"/>
+        <element name="PaymentGatewayAccount" positionX="-693" positionY="45" width="128" height="194"/>
         <element name="Product" positionX="-692.92578125" positionY="1193.70703125" width="128" height="1004"/>
         <element name="ProductAddOn" positionX="-675" positionY="63" width="128" height="299"/>
         <element name="ProductAddOnOption" positionX="-684" positionY="54" width="128" height="104"/>
@@ -706,6 +707,5 @@
         <element name="TaxClass" positionX="-529.7734375" positionY="-56.109375" width="128" height="88"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="118"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
-        <element name="PaymentGatewayAccount" positionX="-693" positionY="45" width="128" height="194"/>
     </elements>
 </model>

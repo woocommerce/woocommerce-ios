@@ -22,6 +22,6 @@ extension PaymentGatewayAccount {
 
 }
 
-extension PaymentGatewayAccount : Identifiable {
+extension PaymentGatewayAccount: Identifiable {
 
 }

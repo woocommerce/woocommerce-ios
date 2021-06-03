@@ -612,7 +612,7 @@ private extension DefaultProductFormTableViewModel {
 
         // No price warning row
         static let noPriceWarningTitle =
-            NSLocalizedString("Variations without price won’t be shown in your store",
+            NSLocalizedString("Add price to your variations to make them visible on your store",
                               comment: "Title of the no price warning row on Product Variation main screen when a variation is enabled without a price")
 
         // Downloadable files

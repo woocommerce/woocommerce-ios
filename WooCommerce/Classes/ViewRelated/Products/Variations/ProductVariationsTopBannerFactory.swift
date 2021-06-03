@@ -22,7 +22,7 @@ private extension ProductVariationsTopBannerFactory {
     enum Localization {
         static let title = NSLocalizedString("Some variations do not have prices",
                                              comment: "Banner title in product variation list top banner when some variations do not have a price")
-        static let info = NSLocalizedString("Variations without price will not be shown in your store.",
+        static let info = NSLocalizedString("Add price to your variations to make them visible on your store",
                                             comment: "Banner caption in my store when the stats will be deprecated")
     }
 }

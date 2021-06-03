@@ -54,7 +54,7 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
     func isDoneButtonEnabled() -> Bool {
         let isPaymentMethodChanged = selectedPaymentMethodID != accountSettings.selectedPaymentMethodID
         let isEmailReceiptsChanged = isEmailReceiptsEnabled != accountSettings.isEmailReceiptsEnabled
-        return isPaymentMethodChanged || isEmailReceiptsChanged
+        return ( isPaymentMethodChanged || isEmailReceiptsChanged ) && !isUpdating
     }
 }
 

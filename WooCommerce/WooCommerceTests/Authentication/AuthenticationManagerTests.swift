@@ -34,4 +34,17 @@ final class AuthenticationManagerTests: XCTestCase {
         // Then
         XCTAssertTrue(canHandle)
     }
+
+    /// We don't allow sites that do not have SSL. We provide a custom error UI for this.
+    func test_it_supports_handling_for_non_SSL_sites() {
+        // Given
+        let manager = AuthenticationManager()
+        let error = NSError(domain: "", code: NSURLErrorSecureConnectionFailed)
+
+        // When
+        let canHandle = manager.shouldHandleError(error)
+
+        // Then
+        XCTAssertTrue(canHandle)
+    }
 }

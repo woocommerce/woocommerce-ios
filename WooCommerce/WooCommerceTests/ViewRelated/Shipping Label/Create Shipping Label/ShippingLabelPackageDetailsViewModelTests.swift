@@ -215,6 +215,47 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isPackageDetailsDoneButtonEnabled())
     }
 
+    func test_isPackageDetailsDoneButtonEnabled_returns_the_expected_value_when_the_totalWeight_is_not_valid() {
+        // Given
+        let order = MockOrders().empty().copy(siteID: sampleSiteID)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+        let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
+                                                             packagesResponse: mockPackageResponse(),
+                                                             selectedPackageID: nil,
+                                                             totalWeight: nil,
+                                                             formatter: currencyFormatter,
+                                                             stores: stores,
+                                                             storageManager: storageManager,
+                                                             weightUnit: "kg")
+
+        XCTAssertFalse(viewModel.isPackageDetailsDoneButtonEnabled())
+
+        // When
+        viewModel.totalWeight = "0"
+        viewModel.selectedPackageID = "sample-package"
+
+        // Then
+        XCTAssertFalse(viewModel.isPackageDetailsDoneButtonEnabled())
+
+        // When
+        viewModel.totalWeight = "0.0"
+
+        // Then
+        XCTAssertFalse(viewModel.isPackageDetailsDoneButtonEnabled())
+
+        // When
+        viewModel.totalWeight = "1..1"
+
+        // Then
+        XCTAssertFalse(viewModel.isPackageDetailsDoneButtonEnabled())
+
+        // When
+        viewModel.totalWeight = "test"
+
+        // Then
+        XCTAssertFalse(viewModel.isPackageDetailsDoneButtonEnabled())
+    }
+
     func test_totalWeight_returns_the_expected_value() {
         // Given
         let expect = expectation(description: "totalWeight returns expected value")

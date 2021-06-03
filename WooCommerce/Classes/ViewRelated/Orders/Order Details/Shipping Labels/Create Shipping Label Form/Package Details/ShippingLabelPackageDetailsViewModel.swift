@@ -183,7 +183,7 @@ extension ShippingLabelPackageDetailsViewModel {
 
     // Return true if the done button in the package details screen should be enabled
     func isPackageDetailsDoneButtonEnabled() -> Bool {
-        return !selectedPackageID.isNilOrEmpty && totalWeight.isNotEmpty
+        return !selectedPackageID.isNilOrEmpty && totalWeight.isNotEmpty && Double(totalWeight) != 0 && Double(totalWeight) != nil
     }
 }
 

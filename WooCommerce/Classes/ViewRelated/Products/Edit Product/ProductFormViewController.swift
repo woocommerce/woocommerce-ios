@@ -780,6 +780,10 @@ private extension ProductFormViewController {
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Variations.editVariationAttributeOptionsRowTapped(productID: variation.productID,
                                                                                                                   variationID: variation.productVariationID))
     }
+
+    func trackEditProductAttributeRowTapped() {
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Variations.editAttributesButtonTapped(productID: product.productID))
+    }
 }
 
 // MARK: Navigation Bar Items
@@ -1328,7 +1332,7 @@ private extension ProductFormViewController {
         switch product {
         case is EditableProductModel:
             editProductAttributes()
-            // TODO: Add Analytics
+            trackEditProductAttributeRowTapped()
         case is EditableProductVariationModel:
             editVariationAttributes()
             trackEditVariationAttributesRowTapped()

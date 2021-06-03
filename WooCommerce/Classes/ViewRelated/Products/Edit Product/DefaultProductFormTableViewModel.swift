@@ -411,9 +411,11 @@ private extension DefaultProductFormTableViewModel {
         let icon = UIImage.customizeImage
         let title = Localization.productVariationAttributesTitle
 
-        let format = NSLocalizedString("%1$@ (%2$ld options)", comment: "Format for each Product attribute")
         let details = product.attributesForVariations
-            .map({ String.localizedStringWithFormat(format, $0.name, $0.options.count) })
+            .map {
+                let format = Localization.variationAttributesDetailFormat(optionCount: $0.options.count)
+                return String.localizedStringWithFormat(format, $0.name, $0.options.count)
+            }
             .joined(separator: "\n")
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon, title: title, details: details, isActionable: isEditable)
@@ -596,6 +598,17 @@ private extension DefaultProductFormTableViewModel {
 
         // Variation attributes
         static let variationAttributesTitle = NSLocalizedString("Attributes", comment: "Title of the attributes row on Product Variation main screen")
+
+        static func variationAttributesDetailFormat(optionCount: Int) -> String {
+            switch optionCount {
+            case 0:
+                return ""
+            case 1:
+                return NSLocalizedString("%1$@ (%2$ld option)", comment: "Format for each Product attribute in singular form")
+            default:
+                return NSLocalizedString("%1$@ (%2$ld options)", comment: "Format for each Product attribute in plural form")
+            }
+        }
 
         // No price warning row
         static let noPriceWarningTitle =

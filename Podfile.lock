@@ -105,7 +105,7 @@ DEPENDENCIES:
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 1.4.0)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, branch `issue/wc-3962-allow-login-override`)
+  - WordPressAuthenticator (~> 1.38.0-beta)
   - WordPressKit (~> 4.32.0)
   - WordPressShared (~> 1.15)
   - WordPressUI (~> 1.7.2)
@@ -116,6 +116,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   https://github.com/wordpress-mobile/cocoapods-specs.git:
+    - WordPressAuthenticator
     - WordPressKit
     - WordPressShared
     - WordPressUI
@@ -157,16 +158,6 @@ SPEC REPOS:
     - ZendeskSupportProvidersSDK
     - ZendeskSupportSDK
 
-EXTERNAL SOURCES:
-  WordPressAuthenticator:
-    :branch: issue/wc-3962-allow-login-override
-    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
-
-CHECKOUT OPTIONS:
-  WordPressAuthenticator:
-    :commit: 968c1f2af497ac7a063c344d915a30bf7f3aecc1
-    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
-
 SPEC CHECKSUMS:
   1PasswordExtension: f97cc80ae58053c331b2b6dc8843ba7103b33794
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
@@ -193,7 +184,7 @@ SPEC CHECKSUMS:
   UIDeviceIdentifier: a79ccdfc940373835a7d8e9fc7541e6bf61b6319
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
-  WordPressAuthenticator: a70902bfd166e8c72dc077cada527b6fd1a382f2
+  WordPressAuthenticator: 3f8363ecb90d58ef7ced5090d3d0a6af3b57f164
   WordPressKit: 438af1e601ca74ff0d68efa17b4528cb7d8638a7
   WordPressShared: e1915cf3b4ac33f41c47610693b9ca30c0cdab45
   WordPressUI: a50ea1786cb75330c8cfafe0c97a88db8d796699
@@ -209,6 +200,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: 81fe9eb05ad1b9240c4a96e9e6eb7d40c6ba5c96
+PODFILE CHECKSUM: f70873cb078426fbe00eb0276ab013bab710352d
 
 COCOAPODS: 1.10.1

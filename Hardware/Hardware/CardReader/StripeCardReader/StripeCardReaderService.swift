@@ -214,25 +214,28 @@ extension StripeCardReaderService: CardReaderService {
                 return
             }
 
+            let cancelPaymentIntent = { [weak self] in
+                Terminal.shared.cancelPaymentIntent(activePaymentIntent) { (intent, error) in
+                    if let error = error {
+                        let underlyingError = UnderlyingError(with: error)
+                        promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: underlyingError)))
+                    }
+
+                    if let _ = intent {
+                        self?.activePaymentIntent = nil
+                        promise(.success(()))
+                    }
+                }
+            }
             guard let paymentCancellable = self.paymentCancellable,
                   !paymentCancellable.completed else {
-                return promise(.success(()))
+                return cancelPaymentIntent()
             }
 
             paymentCancellable.cancel({ [weak self] error in
                 if error == nil {
                     self?.paymentCancellable = nil
-                    Terminal.shared.cancelPaymentIntent(activePaymentIntent) { (intent, error) in
-                        if let error = error {
-                            let underlyingError = UnderlyingError(with: error)
-                            promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: underlyingError)))
-                        }
-
-                        if let _ = intent {
-                            self?.activePaymentIntent = nil
-                            promise(.success(()))
-                        }
-                    }
+                    cancelPaymentIntent()
                 }
             })
         }

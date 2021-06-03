@@ -396,7 +396,7 @@ private extension AuthenticationManager {
 
     /// Maps error codes emitted by WPAuthenticator to a domain error object
     enum AuthenticationError: Int, Error {
-        case emailDoesNotMatchWPAccount = 7
+        case emailDoesNotMatchWPAccount
         case notWPSite
         case notValidAddress
         case noSecureConnection

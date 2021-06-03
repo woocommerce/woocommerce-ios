@@ -390,6 +390,25 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     }
 }
 
+// MARK: - ViewModel Factory
+extension AuthenticationManager {
+    /// This is only exposed for testing.
+    func viewModel(_ error: Error) -> ULErrorViewModel? {
+        let wooAuthError = AuthenticationError.make(with: error)
+
+        switch wooAuthError {
+        case .emailDoesNotMatchWPAccount:
+            return NotWPAccountViewModel()
+        case .notWPSite,
+             .notValidAddress:
+            return NotWPErrorViewModel()
+        case .noSecureConnection:
+            return NoSecureConnectionErrorViewModel()
+        case .unknown:
+            return nil
+        }
+    }
+}
 
 // MARK: - Error handling
 private extension AuthenticationManager {
@@ -432,21 +451,5 @@ private extension AuthenticationManager {
     func isSupportedError(_ error: Error) -> Bool {
         let wooAuthError = AuthenticationError.make(with: error)
         return wooAuthError != .unknown
-    }
-
-    func viewModel(_ error: Error) -> ULErrorViewModel? {
-        let wooAuthError = AuthenticationError.make(with: error)
-
-        switch wooAuthError {
-        case .emailDoesNotMatchWPAccount:
-            return NotWPAccountViewModel()
-        case .notWPSite,
-             .notValidAddress:
-            return NotWPErrorViewModel()
-        case .noSecureConnection:
-            return NoSecureConnectionErrorViewModel()
-        case .unknown:
-            return nil
-        }
     }
 }

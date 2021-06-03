@@ -214,7 +214,12 @@ extension StripeCardReaderService: CardReaderService {
                 return
             }
 
-            self.paymentCancellable?.cancel({ [weak self] error in
+            guard let paymentCancellable = self.paymentCancellable,
+                  !paymentCancellable.completed else {
+                return promise(.success(()))
+            }
+
+            paymentCancellable.cancel({ [weak self] error in
                 if error == nil {
                     self?.paymentCancellable = nil
                     Terminal.shared.cancelPaymentIntent(activePaymentIntent) { (intent, error) in
@@ -373,6 +378,7 @@ private extension StripeCardReaderService {
             /// Because we are chaining promises, we need to retain a reference
             /// to this cancellable if we want to cancel 
             self?.paymentCancellable = Terminal.shared.collectPaymentMethod(intent, delegate: self) { (intent, error) in
+                self?.paymentCancellable = nil
                 // Notify clients that the card, no matter if tapped or inserted, is not needed anymore.
                 self?.sendReaderEvent(.cardRemoved)
 

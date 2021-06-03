@@ -39,6 +39,20 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
         accountSettings.storeOwnerWpcomEmail
     }
 
+    /// Whether the user has permission to edit the payment method.
+    /// Currently this is only true for the store owner.
+    ///
+    var canEditPaymentMethod: Bool {
+        accountSettings.canManagePayments
+    }
+
+    /// Whether the user has permission to edit non-payment settings.
+    /// Currently this is always true (hard-coded on the backend).
+    ///
+    var canEditNonpaymentSettings: Bool {
+        accountSettings.canEditSettings
+    }
+
     init(accountSettings: ShippingLabelAccountSettings) {
         self.accountSettings = accountSettings
         self.selectedPaymentMethodID = accountSettings.selectedPaymentMethodID
@@ -100,10 +114,10 @@ extension ShippingLabelPaymentMethodsViewModel {
 
     static let samplePaymentMethodID: Int64 = 11743265
 
-    static func sampleAccountSettings() -> ShippingLabelAccountSettings {
+    static func sampleAccountSettings(withPermissions: Bool = true) -> ShippingLabelAccountSettings {
         return ShippingLabelAccountSettings(siteID: 1234,
-                                            canManagePayments: true,
-                                            canEditSettings: true,
+                                            canManagePayments: withPermissions,
+                                            canEditSettings: withPermissions,
                                             storeOwnerDisplayName: "Display Name",
                                             storeOwnerUsername: "admin",
                                             storeOwnerWpcomUsername: "username",

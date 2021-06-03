@@ -16,54 +16,64 @@ struct ShippingLabelPaymentMethods: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 0) {
-                ListHeaderView(text: Localization.paymentMethodsHeader, alignment: .left)
-                    .textCase(.uppercase)
+        GeometryReader { geometry in
+            ScrollView {
+                VStack(spacing: 0) {
+                    ShippingLabelPaymentMethodsTopBanner(width: geometry.size.width,
+                                                         storeOwnerDisplayName: viewModel.storeOwnerDisplayName,
+                                                         storeOwnerUsername:
+                                                            viewModel.storeOwnerUsername)
+                        .renderedIf(!viewModel.canEditPaymentMethod)
 
-                ForEach(viewModel.paymentMethods, id: \.paymentMethodID) { method in
-                    let selected = method.paymentMethodID == viewModel.selectedPaymentMethodID
-                    SelectableItemRow(title: "\(method.cardType.rawValue.capitalized) ****\(method.cardDigits)",
-                                      subtitle: method.name,
-                                      selected: selected)
-                        .onTapGesture {
-                            viewModel.didSelectPaymentMethod(withID: method.paymentMethodID)
-                        }
-                        .background(Color(.systemBackground))
-                    Divider().padding(.leading, Constants.dividerPadding)
-                }
+                    ListHeaderView(text: Localization.paymentMethodsHeader, alignment: .left)
+                        .textCase(.uppercase)
 
-                ListHeaderView(text: String.localizedStringWithFormat(Localization.paymentMethodsFooter,
-                                                                      viewModel.storeOwnerWPcomUsername,
-                                                                      viewModel.storeOwnerWPcomEmail),
-                               alignment: .left)
+                    ForEach(viewModel.paymentMethods, id: \.paymentMethodID) { method in
+                        let selected = method.paymentMethodID == viewModel.selectedPaymentMethodID
+                        SelectableItemRow(title: "\(method.cardType.rawValue.capitalized) ****\(method.cardDigits)",
+                                          subtitle: method.name,
+                                          selected: selected)
+                            .onTapGesture {
+                                viewModel.didSelectPaymentMethod(withID: method.paymentMethodID)
+                            }
+                            .background(Color(.systemBackground))
+                        Divider().padding(.leading, Constants.dividerPadding)
+                    }
+                    .disabled(!viewModel.canEditPaymentMethod)
 
-                Spacer()
-                    .frame(height: Constants.spacerHeight)
-
-                TitleAndToggleRow(title: String.localizedStringWithFormat(Localization.emailReceipt,
-                                                                          viewModel.storeOwnerDisplayName,
-                                                                          viewModel.storeOwnerUsername,
+                    ListHeaderView(text: String.localizedStringWithFormat(Localization.paymentMethodsFooter,
+                                                                          viewModel.storeOwnerWPcomUsername,
                                                                           viewModel.storeOwnerWPcomEmail),
-                                  isOn: $viewModel.isEmailReceiptsEnabled)
-                    .background(Color(.systemBackground))
+                                   alignment: .left)
+
+                    Spacer()
+                        .frame(height: Constants.spacerHeight)
+
+                    TitleAndToggleRow(title: String.localizedStringWithFormat(Localization.emailReceipt,
+                                                                              viewModel.storeOwnerDisplayName,
+                                                                              viewModel.storeOwnerUsername,
+                                                                              viewModel.storeOwnerWPcomEmail),
+                                      isOn: $viewModel.isEmailReceiptsEnabled)
+                        .background(Color(.systemBackground))
+                        .disabled(!viewModel.canEditNonpaymentSettings)
+                }
             }
-        }
-        .background(Color(.listBackground))
-        .navigationBarTitle(Localization.navigationBarTitle)
-        .navigationBarItems(trailing: Button(action: {
-            viewModel.updateShippingLabelAccountSettings {newSettings in
-                onCompletion(newSettings)
-                presentation.wrappedValue.dismiss()
-            }
-        }, label: {
-            if viewModel.isUpdating {
-                ProgressView()
-            } else {
-                Text(Localization.doneButton)
-            }
-        })
+            .background(Color(.listBackground))
+            .navigationBarTitle(Localization.navigationBarTitle)
+            .navigationBarItems(trailing: Button(action: {
+                viewModel.updateShippingLabelAccountSettings {newSettings in
+                    onCompletion(newSettings)
+                    presentation.wrappedValue.dismiss()
+                }
+            }, label: {
+                if viewModel.isUpdating {
+                    ProgressView()
+                } else {
+                    Text(Localization.doneButton)
+                }
+            })
         .disabled(!viewModel.isDoneButtonEnabled()))
+        }
     }
 }
 
@@ -96,6 +106,9 @@ struct ShippingLabelPaymentMethods_Previews: PreviewProvider {
 
         let viewModel = ShippingLabelPaymentMethodsViewModel(accountSettings: ShippingLabelPaymentMethodsViewModel.sampleAccountSettings())
 
+        let accountSettingsWithoutEditPermissions = ShippingLabelPaymentMethodsViewModel.sampleAccountSettings(withPermissions: false)
+        let disabledViewModel = ShippingLabelPaymentMethodsViewModel(accountSettings: accountSettingsWithoutEditPermissions)
+
         ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (newAccountSettings) in
         })
             .colorScheme(.light)
@@ -105,6 +118,10 @@ struct ShippingLabelPaymentMethods_Previews: PreviewProvider {
         })
             .colorScheme(.dark)
             .previewDisplayName("Dark Mode")
+
+        ShippingLabelPaymentMethods(viewModel: disabledViewModel, completion: { (newAccountSettings) in
+        })
+            .previewDisplayName("Disabled state")
 
         ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (newAccountSettings) in
         })

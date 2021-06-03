@@ -22,6 +22,20 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(canHandle)
     }
 
+    func test_it_does_not_support_handling_for_unknown_REST_API_errors() {
+        // Given
+        let manager = AuthenticationManager()
+        let error = NSError(domain: "", code: WordPressComRestApiError.unknown.rawValue, userInfo: [
+            WordPressComRestApi.ErrorKeyErrorCode: "rick_rolled"
+        ])
+
+        // When
+        let canHandle = manager.shouldHandleError(error)
+
+        // Then
+        XCTAssertFalse(canHandle)
+    }
+
     /// We provide a custom UI for sites that do not seem to be a WordPress site.
     func test_it_supports_handling_for_unknown_site_errors() {
         // Given

@@ -268,7 +268,7 @@ private extension ProductVariationsViewController {
                      insets: .init(top: 16, left: 16, bottom: 8, right: 16),
                      hasBottomBorder: true,
                      actionSelector: #selector(addButtonTapped),
-                     stylingHandler: { $0.applyPrimaryButtonStyle() })
+                     stylingHandler: { $0.applySecondaryButtonStyle() })
 
         topStackView.addArrangedSubview(topBannerView)
 

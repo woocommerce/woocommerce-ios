@@ -66,7 +66,12 @@ extension StripeCardReaderService: CardReaderService {
     public func start(_ configProvider: CardReaderConfigProvider) throws {
         setConfigProvider(configProvider)
 
-        Terminal.setLogListener { message in
+        Terminal.setLogListener {  message in
+            // It seems stripe still tries to log messages when logLevel is .none,
+            // so let's ignore those
+            guard Terminal.shared.logLevel == .verbose else {
+                return
+            }
             DDLogDebug("💳 [StripeTerminal] \(message)")
         }
         Terminal.shared.logLevel = terminalLogLevel

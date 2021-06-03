@@ -406,9 +406,13 @@ private extension AuthenticationManager {
             let error = error as NSError
 
             switch error.code {
-            case emailDoesNotMatchWPAccount.rawValue:
-                // This is currently broken. See: https://github.com/woocommerce/woocommerce-ios/issues/3962.
-                return .emailDoesNotMatchWPAccount
+            case WordPressComRestApiError.unknown.rawValue:
+                let restAPIErrorCode = error.userInfo[WordPressComRestApi.ErrorKeyErrorCode] as? String
+                if restAPIErrorCode == "unknown_user" {
+                    return .emailDoesNotMatchWPAccount
+                } else {
+                    return .unknown
+                }
             case WordPressOrgXMLRPCValidatorError.invalid.rawValue:
                 // We were able to connect to the site but it does not seem to be a WordPress site.
                 return .notWPSite

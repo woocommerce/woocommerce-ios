@@ -662,6 +662,7 @@
 		57612989245888E2007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57612988245888E2007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlus.swift */; };
 		5761298B24589B84007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlusTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5761298A24589B84007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlusTests.swift */; };
 		5767E940256D9A4A00CFA652 /* OrderListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5767E93F256D9A4A00CFA652 /* OrderListViewModelTests.swift */; };
+		5768315126694ADC00FDFB6C /* AuthenticationManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5768315026694ADC00FDFB6C /* AuthenticationManagerTests.swift */; };
 		576D9F2924DB81D3007B48F4 /* StoreStatsAndTopPerformersPeriodViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576D9F2824DB81D3007B48F4 /* StoreStatsAndTopPerformersPeriodViewModelTests.swift */; };
 		576EA39225264C7400AFC0B3 /* RefundConfirmationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576EA39125264C7400AFC0B3 /* RefundConfirmationViewController.swift */; };
 		576EA39425264C9B00AFC0B3 /* RefundConfirmationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576EA39325264C9B00AFC0B3 /* RefundConfirmationViewModel.swift */; };
@@ -1931,6 +1932,7 @@
 		57612988245888E2007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NumberFormatter+LocalizedOrNinetyNinePlus.swift"; sourceTree = "<group>"; };
 		5761298A24589B84007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlusTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NumberFormatter+LocalizedOrNinetyNinePlusTests.swift"; sourceTree = "<group>"; };
 		5767E93F256D9A4A00CFA652 /* OrderListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListViewModelTests.swift; sourceTree = "<group>"; };
+		5768315026694ADC00FDFB6C /* AuthenticationManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManagerTests.swift; sourceTree = "<group>"; };
 		576D9F2824DB81D3007B48F4 /* StoreStatsAndTopPerformersPeriodViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsAndTopPerformersPeriodViewModelTests.swift; sourceTree = "<group>"; };
 		576EA39125264C7400AFC0B3 /* RefundConfirmationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundConfirmationViewController.swift; sourceTree = "<group>"; };
 		576EA39325264C9B00AFC0B3 /* RefundConfirmationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundConfirmationViewModel.swift; sourceTree = "<group>"; };
@@ -4119,6 +4121,7 @@
 				D85DD1E0257F376200861AA8 /* NotWPAccountViewModelTests.swift */,
 				D89C009325B4E9E2000E4683 /* ULAccountMismatchViewControllerTests.swift */,
 				D89C009925B4EEA4000E4683 /* WrongAccountErrorViewModelTests.swift */,
+				5768315026694ADC00FDFB6C /* AuthenticationManagerTests.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -7192,6 +7195,7 @@
 				0259EF77246BF4EC00B84FDF /* ProductDetailsFactoryTests.swift in Sources */,
 				4574745F24EA9ADE00CF49BC /* ProductTypeBottomSheetListSelectorCommandTests.swift in Sources */,
 				0212683724C049F000F8A892 /* ProductListMultiSelectorDataSourceTests.swift in Sources */,
+				5768315126694ADC00FDFB6C /* AuthenticationManagerTests.swift in Sources */,
 				D82DFB4C225F303200EFE2CB /* EmptyListMessageWithActionTests.swift in Sources */,
 				0298431225936DFC00979CAE /* ShippingLabelsTopBannerFactoryTests.swift in Sources */,
 				57B374B6245B331100D58BE0 /* EmptyStateViewControllerTests.swift in Sources */,

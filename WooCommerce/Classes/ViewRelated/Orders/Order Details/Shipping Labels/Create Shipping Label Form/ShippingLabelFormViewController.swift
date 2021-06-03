@@ -324,7 +324,6 @@ private extension ShippingLabelFormViewController {
         }
 
         let hostingVC = UIHostingController(rootView: paymentMethod)
-
         navigationController?.show(hostingVC, sender: nil)
     }
 }

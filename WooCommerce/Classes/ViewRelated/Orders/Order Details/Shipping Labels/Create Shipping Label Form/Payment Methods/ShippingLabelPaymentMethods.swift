@@ -52,7 +52,7 @@ struct ShippingLabelPaymentMethods: View {
         .background(Color(.listBackground))
         .navigationBarTitle(Localization.navigationBarTitle)
         .navigationBarItems(trailing: Button(action: {
-            viewModel.updateShippingLabelAccountSettings {newSettings in
+            viewModel.updateShippingLabelAccountSettings { newSettings in
                 onCompletion(newSettings)
                 presentation.wrappedValue.dismiss()
             }

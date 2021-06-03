@@ -150,7 +150,7 @@ final class ShippingLabelFormViewModel {
     }
 
     func handlePaymentMethodValueChanges(settings: ShippingLabelAccountSettings, editable: Bool) {
-        self.shippingLabelAccountSettings = settings
+        shippingLabelAccountSettings = settings
         let displayMode: ShippingLabelFormViewController.DisplayMode = editable ? .editable : .disabled
 
         // Only update the data state if there is a selected payment method

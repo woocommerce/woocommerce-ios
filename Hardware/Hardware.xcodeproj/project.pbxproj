@@ -76,6 +76,7 @@
 		D8DF5F4E25DD9F91008AFE25 /* CardReaderType+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DF5F4D25DD9F91008AFE25 /* CardReaderType+Stripe.swift */; };
 		D8EDFE2A25EED21D003D2213 /* CardReaderConfigProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EDFE2925EED21D003D2213 /* CardReaderConfigProvider.swift */; };
 		E11986952643EDF00054285D /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11986942643EDF00054285D /* ServiceLocator.swift */; };
+		E140F61C2668CDC900FDB5FF /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = E140F61B2668CDC900FDB5FF /* Logging.swift */; };
 		E1B6855826490E3D0077F8BF /* unknown.svg in Resources */ = {isa = PBXBuildFile; fileRef = E1B6855126490E3C0077F8BF /* unknown.svg */; };
 		E1B6855926490E3D0077F8BF /* discover.svg in Resources */ = {isa = PBXBuildFile; fileRef = E1B6855226490E3C0077F8BF /* discover.svg */; };
 		E1B6855A26490E3D0077F8BF /* mastercard.svg in Resources */ = {isa = PBXBuildFile; fileRef = E1B6855326490E3D0077F8BF /* mastercard.svg */; };
@@ -204,6 +205,7 @@
 		D8EDFE2925EED21D003D2213 /* CardReaderConfigProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderConfigProvider.swift; sourceTree = "<group>"; };
 		DB2B86965868C0EC25910D7D /* Pods-HardwareTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HardwareTests.release-alpha.xcconfig"; path = "Target Support Files/Pods-HardwareTests/Pods-HardwareTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		E11986942643EDF00054285D /* ServiceLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocator.swift; sourceTree = "<group>"; };
+		E140F61B2668CDC900FDB5FF /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		E15805FBEFD39C9C35DB54A6 /* Pods-PrinterPlayground.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PrinterPlayground.debug.xcconfig"; path = "Target Support Files/Pods-PrinterPlayground/Pods-PrinterPlayground.debug.xcconfig"; sourceTree = "<group>"; };
 		E1B6855126490E3C0077F8BF /* unknown.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = unknown.svg; sourceTree = "<group>"; };
 		E1B6855226490E3C0077F8BF /* discover.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = discover.svg; sourceTree = "<group>"; };
@@ -332,6 +334,7 @@
 		D88FDB0125DD216B00CB0DBD /* Hardware */ = {
 			isa = PBXGroup;
 			children = (
+				E140F61A2668CDBB00FDB5FF /* Internal */,
 				D845BE4E262ED7AE00A3E40F /* Printer */,
 				D88FDB1D25DD218800CB0DBD /* CardReader */,
 				D88FDB0225DD216B00CB0DBD /* Hardware.h */,
@@ -414,6 +417,14 @@
 				D845BDDD262DAB8300A3E40F /* PaymentMethod+Stripe.swift */,
 			);
 			path = StripeCardReader;
+			sourceTree = "<group>";
+		};
+		E140F61A2668CDBB00FDB5FF /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				E140F61B2668CDC900FDB5FF /* Logging.swift */,
+			);
+			path = Internal;
 			sourceTree = "<group>";
 		};
 		E1AE0A0E264557D6001D947A /* Resources */ = {
@@ -725,6 +736,7 @@
 				D845BE54262ED7CC00A3E40F /* PrinterService.swift in Sources */,
 				D845BDDE262DAB8300A3E40F /* PaymentMethod+Stripe.swift in Sources */,
 				D89B8F0C25DDC9D30001C726 /* ChargeStatus.swift in Sources */,
+				E140F61C2668CDC900FDB5FF /* Logging.swift in Sources */,
 				D88FDB3125DD21B000CB0DBD /* CardReader.swift in Sources */,
 				D845BDDA262DAADB00A3E40F /* PaymentMethod.swift in Sources */,
 				D81AE85A25E6A62800D9CFD3 /* StripeCardReaderDiscoveryCache.swift in Sources */,

@@ -68,7 +68,7 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
     func isDoneButtonEnabled() -> Bool {
         let isPaymentMethodChanged = selectedPaymentMethodID != accountSettings.selectedPaymentMethodID
         let isEmailReceiptsChanged = isEmailReceiptsEnabled != accountSettings.isEmailReceiptsEnabled
-        return isPaymentMethodChanged || isEmailReceiptsChanged
+        return ( isPaymentMethodChanged || isEmailReceiptsChanged ) && !isUpdating
     }
 }
 
@@ -83,8 +83,8 @@ extension ShippingLabelPaymentMethodsViewModel {
         let newSettings = accountSettings.copy(selectedPaymentMethodID: selectedPaymentMethodID,
                                         isEmailReceiptsEnabled: isEmailReceiptsEnabled)
 
-        let action = ShippingLabelAction.updateShippingLabelAccountSettings(siteID: accountSettings.siteID, settings: newSettings) { result in
-            self.isUpdating = false
+        let action = ShippingLabelAction.updateShippingLabelAccountSettings(siteID: accountSettings.siteID, settings: newSettings) { [weak self] result in
+            self?.isUpdating = false
 
             switch result {
             case .success:
@@ -100,7 +100,7 @@ extension ShippingLabelPaymentMethodsViewModel {
 
 // MARK: - Localization
 //
-extension ShippingLabelPaymentMethodsViewModel {
+private extension ShippingLabelPaymentMethodsViewModel {
     enum Localization {
         static let updateSettingsError = NSLocalizedString("Unable to save changes to the payment method",
                                                            comment: "Content of error presented when Update Shipping Label Account Settings Action Failed. "

@@ -9,7 +9,8 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
         let viewModel = ShippingLabelCarriersViewModel(order: MockOrders().sampleOrder(),
                                                        originAddress: MockShippingLabelAddress.sampleAddress(),
                                                        destinationAddress: MockShippingLabelAddress.sampleAddress(),
-                                                       packages: [])
+                                                       packages: [],
+                                                       currencySettings: CurrencySettings())
         XCTAssertEqual(viewModel.rows.count, 0)
 
         // When
@@ -51,7 +52,8 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
                                                        originAddress: MockShippingLabelAddress.sampleAddress(),
                                                        destinationAddress: MockShippingLabelAddress.sampleAddress(),
                                                        packages: [],
-                                                       selectedRate: MockShippingLabelCarrierRate.makeRate())
+                                                       selectedRate: MockShippingLabelCarrierRate.makeRate(),
+                                                       currencySettings: CurrencySettings())
 
         // Then
         XCTAssertEqual(viewModel.isDoneButtonEnabled(), true)
@@ -63,12 +65,64 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
                                                        originAddress: MockShippingLabelAddress.sampleAddress(),
                                                        destinationAddress: MockShippingLabelAddress.sampleAddress(),
                                                        packages: [],
-                                                       selectedRate: MockShippingLabelCarrierRate.makeRate())
+                                                       selectedRate: MockShippingLabelCarrierRate.makeRate(),
+                                                       currencySettings: CurrencySettings())
 
         // Then
         XCTAssertEqual(viewModel.getSelectedRates().selectedRate, MockShippingLabelCarrierRate.makeRate())
         XCTAssertEqual(viewModel.getSelectedRates().selectedSignatureRate, nil)
         XCTAssertEqual(viewModel.getSelectedRates().selectedAdultSignatureRate, nil)
+    }
+
+    func test_shouldDisplayTopBanner_returns_the_expected_value() {
+        // Given
+        let viewModel = ShippingLabelCarriersViewModel(order: MockOrders().sampleOrder().copy(shippingTotal: "10.00"),
+                                                       originAddress: MockShippingLabelAddress.sampleAddress(),
+                                                       destinationAddress: MockShippingLabelAddress.sampleAddress(),
+                                                       packages: [],
+                                                       selectedRate: MockShippingLabelCarrierRate.makeRate(),
+                                                       currencySettings: CurrencySettings())
+
+        // Then
+        XCTAssertEqual(viewModel.shouldDisplayTopBanner, true)
+    }
+
+    func test_shippingMethod_returns_the_expected_value() {
+        // Given
+        let viewModel = ShippingLabelCarriersViewModel(order: MockOrders().sampleOrder().copy(shippingTotal: "10.00",
+                                                                                              shippingLines: [ShippingLine(shippingID: 123,
+                                                                                                                           methodTitle: "Flat rate",
+                                                                                                                           methodID: "flat-rate",
+                                                                                                                           total: "10.00",
+                                                                                                                           totalTax: "0",
+                                                                                                                           taxes: [])]),
+                                                       originAddress: MockShippingLabelAddress.sampleAddress(),
+                                                       destinationAddress: MockShippingLabelAddress.sampleAddress(),
+                                                       packages: [],
+                                                       selectedRate: MockShippingLabelCarrierRate.makeRate(),
+                                                       currencySettings: CurrencySettings())
+
+        // Then
+        XCTAssertEqual(viewModel.shippingMethod, "Flat rate")
+    }
+
+    func test_shippingCost_returns_the_expected_value() {
+        // Given
+        let viewModel = ShippingLabelCarriersViewModel(order: MockOrders().sampleOrder().copy(shippingTotal: "10.00",
+                                                                                              shippingLines: [ShippingLine(shippingID: 123,
+                                                                                                                           methodTitle: "Flat rate",
+                                                                                                                           methodID: "flat-rate",
+                                                                                                                           total: "10.00",
+                                                                                                                           totalTax: "0",
+                                                                                                                           taxes: [])]),
+                                                       originAddress: MockShippingLabelAddress.sampleAddress(),
+                                                       destinationAddress: MockShippingLabelAddress.sampleAddress(),
+                                                       packages: [],
+                                                       selectedRate: MockShippingLabelCarrierRate.makeRate(),
+                                                       currencySettings: CurrencySettings())
+
+        // Then
+        XCTAssertEqual(viewModel.shippingCost, "$10.00")
     }
 }
 

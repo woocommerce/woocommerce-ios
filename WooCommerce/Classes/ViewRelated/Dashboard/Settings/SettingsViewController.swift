@@ -46,7 +46,7 @@ final class SettingsViewController: UIViewController {
 
     /// ResultsController: Loads Sites from the Storage Layer.
     ///
-    private let resultsController: ResultsController<StorageSite> = {
+    private let sitesResultsController: ResultsController<StorageSite> = {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "isWooCommerceActive == YES")
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
@@ -57,6 +57,20 @@ final class SettingsViewController: UIViewController {
     /// Sites pulled from the results controlelr
     ///
     private var sites = [Yosemite.Site]()
+
+    /// Payment Gateway Account ResultsController
+    ///
+    private let gatewayAccountResultsController: ResultsController<StoragePaymentGatewayAccount> = {
+        let storageManager = ServiceLocator.storageManager
+        /// TODO - resolve how I want to manage the siteID here. Should I just fetch all gatewayAccounts and filter by siteID later perhaps?
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
+    /// Accounts pulled from the results controller
+    ///
+    private var gatewayAccounts = [StoragePaymentGatewayAccount]()
 
     /// Store Picker Coordinator
     ///
@@ -71,11 +85,9 @@ final class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        checkAvailabilityForPayments() { [weak self] in
+        configureResultsControllers(onReload: { [weak self] in
             self?.refreshViewContent()
-        }
-
-        refreshResultsController()
+        })
         configureNavigation()
         configureMainView()
         configureTableView()
@@ -112,35 +124,35 @@ private extension SettingsViewController {
         tableView.delegate = self
     }
 
-    func refreshResultsController() {
-        try? resultsController.performFetch()
-        sites = resultsController.fetchedObjects
+    func configureResultsControllers(onReload: @escaping () -> Void) {
+        configureSiteResultsController(onReload: onReload)
+        configureAccountResultsController(onReload: onReload)
     }
 
-    func checkAvailabilityForPayments(onCompletion: @escaping () -> Void) {
-        guard let siteID = self.siteID else {
-            canCollectPayments = false
-            onCompletion()
+    private func configureSiteResultsController(onReload: @escaping () -> Void) {
+        try? sitesResultsController.performFetch()
+        sites = sitesResultsController.fetchedObjects
+    }
+
+    private func configureAccountResultsController(onReload: @escaping () -> Void) {
+        /// Bail early if the card present payments feature is disabled
+        ///
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) else {
             return
         }
 
-        let action = WCPayAction.loadAccount(siteID: siteID) { [weak self] result in
+        gatewayAccountResultsController.onDidChangeContent = {
+            onReload()
+        }
+
+        gatewayAccountResultsController.onDidResetContent = { [weak self] in
             guard let self = self else {
                 return
             }
-
-            switch result {
-            case .failure:
-                self.canCollectPayments = false
-            case .success(let account):
-                self.canCollectPayments = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) &&
-                    account.isCardPresentEligible
-            }
-
-            onCompletion()
+            onReload()
         }
 
-        ServiceLocator.stores.dispatch(action)
+        try? gatewayAccountResultsController.performFetch()
     }
 
     func configureTableViewFooter() {
@@ -162,8 +174,29 @@ private extension SettingsViewController {
     }
 
     func refreshViewContent() {
+        refreshCanCollectPayment()
         configureSections()
         tableView.reloadData()
+    }
+
+    func refreshCanCollectPayment() {
+        /// Bail early if the card present payments feature is disabled
+        ///
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) else {
+            canCollectPayments = false
+            return
+        }
+
+        canCollectPayments = false
+
+        /// At the moment, we only expect one gateway account, but in the futue we may have multiple gateway accounts
+        /// each capable of supporting card present payments, so let's do this right now
+        ///
+        for gatewayAccount in gatewayAccounts {
+            if gatewayAccount.isCardPresentEligible {
+                canCollectPayments = true
+            }
+        }
     }
 
     func configureSections() {

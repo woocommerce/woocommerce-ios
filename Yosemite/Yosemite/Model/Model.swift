@@ -118,7 +118,7 @@ public typealias PaymentIntent = Hardware.PaymentIntent
 public typealias PrintingResult = Hardware.PrintingResult
 public typealias CardPresentReceiptParameters = Hardware.CardPresentReceiptParameters
 public typealias WCPayAccount = Networking.WCPayAccount
-
+public typealias WCPayAccountStatusEnum = Networking.WCPayAccountStatusEnum
 
 // MARK: - Exported Storage Symbols
 
@@ -137,6 +137,7 @@ public typealias StorageOrderStatsV4Interval = Storage.OrderStatsV4Interval
 public typealias StorageOrderStatsV4Totals = Storage.OrderStatsV4Totals
 public typealias StorageOrderStatus = Storage.OrderStatus
 public typealias StoragePaymentGateway = Storage.PaymentGateway
+public typealias StoragePaymentGatewayAccount = Storage.PaymentGatewayAccount
 public typealias StoragePreselectedProvider = Storage.PreselectedProvider
 public typealias StorageProduct = Storage.Product
 public typealias StorageProductAddOn = Storage.ProductAddOn

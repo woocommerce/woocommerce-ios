@@ -1,6 +1,8 @@
 import Yosemite
 import Observables
 
+import protocol Storage.StorageManagerType
+
 /// Provides data for product form UI, and handles product editing actions.
 final class ProductFormViewModel: ProductFormViewModelProtocol {
     typealias ProductModel = EditableProductModel
@@ -18,6 +20,11 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     /// Emits a boolean of whether the product has unsaved changes for remote update.
     var isUpdateEnabled: Observable<Bool> {
         isUpdateEnabledSubject
+    }
+
+    /// Emits a void value informing when there is a new variation price state available
+    var newVariationsPrice: Observable<Void> {
+        newVariationsPriceSubject
     }
 
     /// The latest product value.
@@ -39,6 +46,9 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     private let productSubject: PublishSubject<EditableProductModel> = PublishSubject<EditableProductModel>()
     private let productNameSubject: PublishSubject<String> = PublishSubject<String>()
     private let isUpdateEnabledSubject: PublishSubject<Bool>
+    private let newVariationsPriceSubject = PublishSubject<Void>()
+
+    private lazy var variationsResultsController = createVariationsResultsController()
 
     /// Returns `true` if the `Add-ons` beta feature switch is enabled. `False` otherwise.
     /// Assigning this value will recreate the `actionsFactory` property.
@@ -70,6 +80,11 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
             if isNameTheOnlyChange(oldProduct: oldValue, newProduct: product) {
                 productNameSubject.send(product.name)
                 return
+            }
+
+            // Product changes ID when it is just created.
+            if oldValue.productID != product.productID {
+                updateVariationsResultsController()
             }
 
             updateFormTypeIfNeeded(oldProduct: oldValue.product)
@@ -138,10 +153,13 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private let stores: StoresManager
 
+    private let storageManager: StorageManagerType
+
     init(product: EditableProductModel,
          formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandler,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.formType = formType
         self.productImageActionHandler = productImageActionHandler
         self.originalProduct = product
@@ -149,6 +167,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.actionsFactory = ProductFormActionsFactory(product: product, formType: formType)
         self.isUpdateEnabledSubject = PublishSubject<Bool>()
         self.stores = stores
+        self.storageManager = storageManager
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
             if allStatuses.productImageStatuses.hasPendingUpload {
@@ -157,6 +176,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         }
 
         queryAddOnsFeatureState()
+        updateVariationsPriceState()
     }
 
     deinit {
@@ -421,17 +441,6 @@ extension ProductFormViewModel {
             }
         }
     }
-
-    /// Updates the internal `formType` when a product changes from new to a saved status.
-    /// Currently needed when a new product was just created as a draft to allow creating attributes and variations.
-    ///
-    func updateFormTypeIfNeeded(oldProduct: Product) {
-        guard !oldProduct.existsRemotely, product.product.existsRemotely else {
-            return
-        }
-
-        formType = .edit
-    }
 }
 
 // MARK: Reset actions
@@ -447,10 +456,64 @@ extension ProductFormViewModel {
     }
 }
 
+// MARK: Miscellaneous
+
 private extension ProductFormViewModel {
     func isNameTheOnlyChange(oldProduct: EditableProductModel, newProduct: EditableProductModel) -> Bool {
         let oldProductWithNewName = EditableProductModel(product: oldProduct.product.copy(name: newProduct.name))
         return oldProductWithNewName == newProduct && newProduct.name != oldProduct.name
+    }
+
+    /// Updates the `newVariationsPriceSubject`and `actionsFactory` to the latest variations price information.
+    /// Returns weather the variation
+    ///
+    func updateVariationsPriceState() {
+        updateActionsFactory()
+        newVariationsPriceSubject.send(())
+    }
+
+    /// Calculates the variations price state for the current fetched variations.
+    ///
+    func calculateVariationPriceState() -> ProductFormActionsFactory.VariationsPrice {
+        // If there are no fetched variations we can't be sure of it's price state
+        guard !variationsResultsController.isEmpty else {
+            return .unknown
+        }
+
+        let someMissingPrice = variationsResultsController.fetchedObjects.contains { $0.regularPrice.isNilOrEmpty }
+        return someMissingPrice ? .notSet : .set
+    }
+
+    /// Updates the internal `formType` when a product changes from new to a saved status.
+    /// Currently needed when a new product was just created as a draft to allow creating attributes and variations.
+    ///
+    func updateFormTypeIfNeeded(oldProduct: Product) {
+        guard !oldProduct.existsRemotely, product.product.existsRemotely else {
+            return
+        }
+
+        formType = .edit
+    }
+
+    /// Reassigns the `variationsResultsController` with a newly created object.
+    ///
+    private func updateVariationsResultsController() {
+        variationsResultsController = createVariationsResultsController()
+    }
+
+    /// Creates a variations results controller.
+    ///
+    private func createVariationsResultsController() -> ResultsController<StorageProductVariation> {
+        let predicate = NSPredicate(format: "product.siteID = %ld AND product.productID = %ld", product.siteID, product.productID)
+        let descriptor = NSSortDescriptor(keyPath: \StorageProductVariation.productVariationID, ascending: true)
+        let controller = ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+
+        try? controller.performFetch()
+        controller.onDidChangeContent = { [weak self] in
+            self?.updateVariationsPriceState()
+        }
+
+        return controller
     }
 }
 
@@ -472,6 +535,9 @@ private extension ProductFormViewModel {
     /// Recreates `actionsFactory` with the latest `product`, `formType`, and `isAddOnsFeatureEnabled` information.
     ///
     func updateActionsFactory() {
-        actionsFactory = ProductFormActionsFactory(product: product, formType: formType, addOnsFeatureEnabled: isAddOnsFeatureEnabled)
+        actionsFactory = ProductFormActionsFactory(product: product,
+                                                   formType: formType,
+                                                   addOnsFeatureEnabled: isAddOnsFeatureEnabled,
+                                                   variationsPrice: calculateVariationPriceState())
     }
 }

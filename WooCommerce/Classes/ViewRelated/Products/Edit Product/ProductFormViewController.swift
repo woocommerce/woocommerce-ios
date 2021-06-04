@@ -52,6 +52,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private var cancellableProduct: ObservationToken?
     private var cancellableProductName: ObservationToken?
     private var cancellableUpdateEnabled: ObservationToken?
+    private var cancellableNewVariationsPrice: ObservationToken?
 
     init(viewModel: ViewModel,
          eventLogger: ProductFormEventLoggerProtocol,
@@ -90,6 +91,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         cancellableProduct?.cancel()
         cancellableProductName?.cancel()
         cancellableUpdateEnabled?.cancel()
+        cancellableNewVariationsPrice?.cancel()
     }
 
     override func viewDidLoad() {
@@ -107,6 +109,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         observeProduct()
         observeProductName()
         observeUpdateCTAVisibility()
+        observeVariationsPriceChanges()
 
         productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else {
@@ -501,28 +504,39 @@ private extension ProductFormViewController {
         }
     }
 
+    /// Updates table rows when the price of the underlying variations change.
+    /// Needed to show/hide the `.noPrinceWarning` row.
+    ///
+    func observeVariationsPriceChanges() {
+        cancellableNewVariationsPrice = viewModel.newVariationsPrice.subscribe { [weak self] in
+            self?.onVariationsPriceChanged()
+        }
+    }
+
     func onProductUpdated(product: ProductModel) {
         updateMoreDetailsButtonVisibility()
-
         tableViewModel = DefaultProductFormTableViewModel(product: product,
                                                           actionsFactory: viewModel.actionsFactory,
                                                           currency: currency)
-        tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
-                                                             productImageStatuses: productImageActionHandler.productImageStatuses,
-                                                             productUIImageLoader: productUIImageLoader)
-        tableViewDataSource.configureActions(onNameChange: { [weak self] name in
-            self?.onEditProductNameCompletion(newName: name ?? "")
-        }, onStatusChange: { [weak self] isEnabled in
-            self?.onEditStatusCompletion(isEnabled: isEnabled)
-        }, onAddImage: { [weak self] in
-            self?.eventLogger.logImageTapped()
-            self?.showProductImages()
-        })
-        tableView.dataSource = tableViewDataSource
-        tableView.reloadData()
+        reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses)
     }
 
     func onImageStatusesUpdated(statuses: [ProductImageStatus]) {
+        reconfigureDataSource(tableViewModel: tableViewModel, statuses: statuses)
+    }
+
+    /// Recreates the `tableViewModel` and reloads the `table` & `datasource`.
+    ///
+    func onVariationsPriceChanged() {
+        tableViewModel = DefaultProductFormTableViewModel(product: product,
+                                                          actionsFactory: viewModel.actionsFactory,
+                                                          currency: currency)
+        reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses)
+    }
+
+    /// Recreates `tableViewDataSource` and reloads the `tableView` data.
+    ///
+    func reconfigureDataSource(tableViewModel: ProductFormTableViewModel, statuses: [ProductImageStatus]) {
         tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                              productImageStatuses: statuses,
                                                              productUIImageLoader: productUIImageLoader)
@@ -531,6 +545,7 @@ private extension ProductFormViewController {
         }, onStatusChange: { [weak self] isEnabled in
             self?.onEditStatusCompletion(isEnabled: isEnabled)
         }, onAddImage: { [weak self] in
+            self?.eventLogger.logImageTapped()
             self?.showProductImages()
         })
         tableView.dataSource = tableViewDataSource

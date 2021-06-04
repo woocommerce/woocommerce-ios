@@ -90,6 +90,8 @@ private extension DefaultProductFormTableViewModel {
                 return .downloadableFiles(viewModel: downloadsRow(product: product, isEditable: editable), isEditable: editable)
             case .linkedProducts(let editable):
                 return .linkedProducts(viewModel: linkedProductsRow(product: product, isEditable: editable), isEditable: editable)
+            case .noPriceWarning:
+                return .noPriceWarning(viewModel: noPriceWarningRow())
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil

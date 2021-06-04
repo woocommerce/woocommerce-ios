@@ -33,8 +33,8 @@ final class CardPresentModalErrorTests: XCTestCase {
         XCTAssertNotNil(viewModel.primaryButtonTitle)
     }
 
-    func test_secondary_button_title_is_nil() {
-        XCTAssertNil(viewModel.secondaryButtonTitle)
+    func test_secondary_button_title_is_not_nil() {
+        XCTAssertNotNil(viewModel.secondaryButtonTitle)
     }
 
     func test_bottom_title_is_not_nil() {

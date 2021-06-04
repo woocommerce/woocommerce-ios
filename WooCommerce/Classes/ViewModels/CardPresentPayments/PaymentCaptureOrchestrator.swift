@@ -157,18 +157,19 @@ private extension PaymentCaptureOrchestrator {
 
         return PaymentParameters(amount: orderTotal as Decimal,
                                                   currency: order.currency,
-                                                  receiptDescription: receiptDescription(),
+                                                  receiptDescription: receiptDescription(orderNumber: order.number),
                                                   statementDescription: account?.statementDescriptor,
                                                   receiptEmail: order.billingAddress?.email,
                                                   metadata: metadata)
     }
 
-    func receiptDescription() -> String? {
+    func receiptDescription(orderNumber: String) -> String? {
         guard let storeName = ServiceLocator.stores.sessionManager.defaultSite?.name else {
             return nil
         }
 
         return String.localizedStringWithFormat(Localization.receiptDescription,
+                                                orderNumber,
                                                 storeName)
     }
 
@@ -179,9 +180,11 @@ private extension PaymentCaptureOrchestrator {
 
 private extension PaymentCaptureOrchestrator {
     enum Localization {
-        static let receiptDescription = NSLocalizedString("Receipt from %1$@",
-                                                             comment: "Message included in emailed receipts."
-                                                                + "Reads as: Receipt from @{store name}"
-                                                                + "Parameters: %1$@ - store name")
+        static let receiptDescription = NSLocalizedString("In-Person Payment for Order #%1$@ for %2$@",
+                                                          comment: "Message included in emailed receipts. "
+                                                            + "Reads as: In-Person Payment for "
+                                                            + "Order @{number} for @{store name} "
+                                                            + "Parameters: %1$@ - order number, "
+                                                            + "%2$@ - store name")
     }
 }

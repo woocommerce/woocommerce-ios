@@ -34,6 +34,7 @@ final class ReceiptViewController: UIViewController {
 
 private extension ReceiptViewController {
     func configureToolbar() {
+        title = Localization.title
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: .print,
                                                             style: .plain,
                                                             target: self,
@@ -52,5 +53,14 @@ private extension ReceiptViewController {
 
     @objc func printReceipt() {
         viewModel.printReceipt()
+    }
+}
+
+private extension ReceiptViewController {
+    enum Localization {
+        static let title = NSLocalizedString(
+            "Receipt",
+            comment: "The title of the view containing a receipt preview"
+        )
     }
 }

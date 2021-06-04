@@ -452,6 +452,21 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let containsWarningAction = factory.settingsSectionActions().contains(ProductFormEditAction.noPriceWarning)
         XCTAssertFalse(containsWarningAction)
     }
+
+    func test_actions_for_variable_product_with_attributes_contains_attributes_action() {
+        // Given
+        let product = Fixtures.variableProductWithVariations.copy(attributes: [
+            ProductAttribute.fake().copy(variation: true)
+        ])
+        let model = EditableProductModel(product: product)
+
+        // When
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .unknown)
+
+        // Then
+        let containsAttributeAction = factory.settingsSectionActions().contains(ProductFormEditAction.attributes(editable: true))
+        XCTAssertTrue(containsAttributeAction)
+    }
 }
 
 private extension ProductFormActionsFactoryTests {

@@ -82,7 +82,6 @@ final class ProductVariationsViewController: UIViewController {
         didSet {
             viewModel.updatedFormTypeIfNeeded(newProduct: product)
 
-            configureRightButtonItem()
             resetResultsController(oldProduct: oldValue)
             updateEmptyState()
             onProductUpdate?(product)
@@ -166,22 +165,6 @@ private extension ProductVariationsViewController {
             "Variations",
             comment: "Title that appears on top of the Product Variation List screen."
         )
-        configureRightButtonItem()
-    }
-
-    /// Configure right button item.
-    ///
-    func configureRightButtonItem() {
-        guard viewModel.shouldShowMoreButton(for: product) else {
-            return navigationItem.rightBarButtonItem = nil
-        }
-
-        let moreButton = UIBarButtonItem(image: .moreImage,
-                                         style: .plain,
-                                         target: self,
-                                         action: #selector(presentMoreOptionsActionSheet(_:)))
-        moreButton.accessibilityLabel = Localization.moreButtonLabel
-        navigationItem.setRightBarButton(moreButton, animated: false)
     }
 
     /// Apply Woo styles.
@@ -283,13 +266,8 @@ private extension ProductVariationsViewController {
 
         addTopButton(title: Localization.generateVariationAction,
                      insets: .init(top: 16, left: 16, bottom: 8, right: 16),
-                     actionSelector: #selector(addButtonTapped),
-                     stylingHandler: { $0.applyPrimaryButtonStyle() })
-
-        addTopButton(title: Localization.editAttributesAction,
-                     insets: .init(top: 8, left: 16, bottom: 16, right: 16),
                      hasBottomBorder: true,
-                     actionSelector: #selector(editAttributesTapped),
+                     actionSelector: #selector(addButtonTapped),
                      stylingHandler: { $0.applySecondaryButtonStyle() })
 
         topStackView.addArrangedSubview(topBannerView)
@@ -562,37 +540,6 @@ private extension ProductVariationsViewController {
     @objc func addButtonTapped() {
         analytics.track(event: WooAnalyticsEvent.Variations.addMoreVariationsButtonTapped(productID: product.productID))
         createVariation()
-    }
-
-    @objc func editAttributesTapped() {
-        navigateToEditAttributeViewController(allowVariationCreation: false)
-        trackEditAttributesButtonPressed()
-    }
-
-    func trackEditAttributesButtonPressed() {
-        analytics.track(event: WooAnalyticsEvent.Variations.editAttributesButtonTapped(productID: product.productID))
-    }
-}
-
-// MARK: - Action sheet
-//
-private extension ProductVariationsViewController {
-    @objc private func presentMoreOptionsActionSheet(_ sender: UIBarButtonItem) {
-        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = .text
-
-        let editAttributesAction = UIAlertAction(title: Localization.editAttributesAction, style: .default) { [weak self] _ in
-            self?.editAttributesTapped()
-        }
-        actionSheet.addAction(editAttributesAction)
-
-        let cancelAction = UIAlertAction(title: Localization.cancelAction, style: .cancel)
-        actionSheet.addAction(cancelAction)
-
-        let popoverController = actionSheet.popoverPresentationController
-        popoverController?.barButtonItem = sender
-
-        present(actionSheet, animated: true)
     }
 }
 

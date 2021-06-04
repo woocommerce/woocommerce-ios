@@ -212,7 +212,7 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func configurePrimaryButton() {
-        guard shouldShowActionButtons() else {
+        guard shouldShowPrimaryActionButton() else {
             primaryButton.isHidden = true
             return
         }
@@ -262,11 +262,14 @@ private extension CardPresentPaymentsModalViewController {
             textMode == .reducedTopInfo
     }
 
-    func shouldShowBottomActionButton() -> Bool {
-        let actionMode = viewModel.actionsMode
+    func shouldShowPrimaryActionButton() -> Bool {
+        [.oneAction, .twoAction, .twoActionAndAuxiliary]
+            .contains(viewModel.actionsMode)
+    }
 
-        return actionMode == .twoAction ||
-            actionMode == .twoActionAndAuxiliary
+    func shouldShowBottomActionButton() -> Bool {
+        [.secondaryOnlyAction, .twoAction, .twoActionAndAuxiliary]
+            .contains(viewModel.actionsMode)
     }
 
     func shouldShowAuxiliaryButton() -> Bool {

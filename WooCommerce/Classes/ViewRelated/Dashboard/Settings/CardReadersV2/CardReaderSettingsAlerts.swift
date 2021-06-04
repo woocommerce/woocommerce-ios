@@ -1,4 +1,5 @@
 import UIKit
+import Yosemite
 import WordPressUI
 
 /// A layer of indirection between our card reader settings view controllers and the modal alerts
@@ -44,7 +45,12 @@ private extension CardReaderSettingsAlerts {
     }
 
     func scanningFailed(error: Error, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalScanningFailed(error: error, primaryAction: close)
+        switch error {
+        case CardReaderServiceError.bluetoothDenied:
+            return CardPresentModalBluetoothRequired(error: error, primaryAction: close)
+        default:
+            return CardPresentModalScanningFailed(error: error, primaryAction: close)
+        }
     }
 
     func connectingToReader() -> CardPresentPaymentsModalViewModel {

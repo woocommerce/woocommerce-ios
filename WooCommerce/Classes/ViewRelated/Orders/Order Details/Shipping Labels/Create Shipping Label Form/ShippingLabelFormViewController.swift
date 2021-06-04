@@ -313,11 +313,17 @@ private extension ShippingLabelFormViewController {
     }
 
     func displayPaymentMethodVC() {
-        let vm = ShippingLabelPaymentMethodsViewModel(accountSettings: viewModel.shippingLabelAccountSettings,
-                                                      selectedPaymentMethodID: viewModel.selectedPaymentMethodID)
-        let paymentMethod = ShippingLabelPaymentMethods(viewModel: vm)
-        let hostingVC = UIHostingController(rootView: paymentMethod)
+        guard let accountSettings = viewModel.shippingLabelAccountSettings else {
+            return
+        }
 
+        let vm = ShippingLabelPaymentMethodsViewModel(accountSettings: accountSettings)
+        let paymentMethod = ShippingLabelPaymentMethods(viewModel: vm) { [weak self] newSettings in
+            guard let self = self else { return }
+            self.viewModel.handlePaymentMethodValueChanges(settings: newSettings, editable: true)
+        }
+
+        let hostingVC = UIHostingController(rootView: paymentMethod)
         navigationController?.show(hostingVC, sender: nil)
     }
 }

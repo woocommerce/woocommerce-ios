@@ -1,14 +1,14 @@
 import XCTest
 @testable import WooCommerce
 
-final class CardPresentModalErrorTests: XCTestCase {
-    private var viewModel: CardPresentModalError!
+final class CardPresentModalBluetoothRequiredTests: XCTestCase {
+    private var viewModel: CardPresentModalBluetoothRequired!
     private var closures: Closures!
 
     override func setUp() {
         super.setUp()
         closures = Closures()
-        viewModel = CardPresentModalError(amount: Expectations.amount, error: Expectations.error, primaryAction: closures.primaryAction())
+        viewModel = CardPresentModalBluetoothRequired(error: Expectations.error, primaryAction: closures.primaryAction())
     }
 
     override func tearDown() {
@@ -25,15 +25,15 @@ final class CardPresentModalErrorTests: XCTestCase {
         XCTAssertNotNil(viewModel.topTitle)
     }
 
-    func test_topSubtitle_provides_expected_title() {
-        XCTAssertEqual(viewModel.topSubtitle, Expectations.amount)
+    func test_topSubtitle_is_nil() {
+        XCTAssertNil(viewModel.topSubtitle)
     }
 
     func test_primary_button_title_is_not_nil() {
         XCTAssertNotNil(viewModel.primaryButtonTitle)
     }
 
-    func test_secondary_button_title_is_not_nil() {
+    func test_secondary_button_title_is_nil() {
         XCTAssertNotNil(viewModel.secondaryButtonTitle)
     }
 
@@ -47,9 +47,8 @@ final class CardPresentModalErrorTests: XCTestCase {
 }
 
 
-private extension CardPresentModalErrorTests {
+private extension CardPresentModalBluetoothRequiredTests {
     enum Expectations {
-        static let amount = "amount"
         static let image = UIImage.paymentErrorImage
         static let error = MockError()
     }

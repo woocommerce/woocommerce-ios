@@ -441,6 +441,48 @@ extension ProductFormViewModel {
             }
         }
     }
+}
+
+// MARK: Reset actions
+//
+extension ProductFormViewModel {
+    private func resetProduct(_ product: EditableProductModel) {
+        originalProduct = product
+    }
+
+    func resetPassword(_ password: String?) {
+        originalPassword = password
+        isUpdateEnabledSubject.send(hasUnsavedChanges())
+    }
+}
+
+// MARK: Miscellaneous
+
+private extension ProductFormViewModel {
+    func isNameTheOnlyChange(oldProduct: EditableProductModel, newProduct: EditableProductModel) -> Bool {
+        let oldProductWithNewName = EditableProductModel(product: oldProduct.product.copy(name: newProduct.name))
+        return oldProductWithNewName == newProduct && newProduct.name != oldProduct.name
+    }
+
+    /// Updates the `newVariationsPriceSubject`and `actionsFactory` to the latest variations price information.
+    /// Returns weather the variation
+    ///
+    func updateVariationsPriceState() {
+        updateActionsFactory()
+        newVariationsPriceSubject.send(())
+    }
+
+    /// Calculates the variations price state for the current fetched variations.
+    ///
+    func calculateVariationPriceState() -> ProductFormActionsFactory.VariationsPrice {
+        // If there are no fetched variations we can't be sure of it's price state
+        guard !variationsResultsController.isEmpty else {
+            return .unknown
+        }
+
+        let someMissingPrice = variationsResultsController.fetchedObjects.contains { $0.regularPrice.isNilOrEmpty }
+        return someMissingPrice ? .notSet : .set
+    }
 
     /// Updates the internal `formType` when a product changes from new to a saved status.
     /// Currently needed when a new product was just created as a draft to allow creating attributes and variations.
@@ -472,46 +514,6 @@ extension ProductFormViewModel {
         }
 
         return controller
-    }
-}
-
-// MARK: Reset actions
-//
-extension ProductFormViewModel {
-    private func resetProduct(_ product: EditableProductModel) {
-        originalProduct = product
-    }
-
-    func resetPassword(_ password: String?) {
-        originalPassword = password
-        isUpdateEnabledSubject.send(hasUnsavedChanges())
-    }
-}
-
-private extension ProductFormViewModel {
-    func isNameTheOnlyChange(oldProduct: EditableProductModel, newProduct: EditableProductModel) -> Bool {
-        let oldProductWithNewName = EditableProductModel(product: oldProduct.product.copy(name: newProduct.name))
-        return oldProductWithNewName == newProduct && newProduct.name != oldProduct.name
-    }
-
-    /// Updates the `newVariationsPriceSubject`and `actionsFactory` to the latest variations price information.
-    /// Returns weather the variation
-    ///
-    func updateVariationsPriceState() {
-        updateActionsFactory()
-        newVariationsPriceSubject.send(())
-    }
-
-    /// Calculates the variations price state for the current fetched variations.
-    ///
-    func calculateVariationPriceState() -> ProductFormActionsFactory.VariationsPrice {
-        // If there are no fetched variations we can't be sure of it's price state
-        guard variationsResultsController.fetchedObjects.isNotEmpty else {
-            return .unknown
-        }
-
-        let someMissingPrice = variationsResultsController.fetchedObjects.contains { $0.regularPrice.isNilOrEmpty }
-        return someMissingPrice ? .notSet : .set
     }
 }
 

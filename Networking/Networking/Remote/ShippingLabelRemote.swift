@@ -195,7 +195,7 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
         ]
         let path = Path.accountSettings
         let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .post, siteID: siteID, path: path, parameters: parameters)
-        let mapper = SuccessResultMapper()
+        let mapper = SuccessDataResultMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
 

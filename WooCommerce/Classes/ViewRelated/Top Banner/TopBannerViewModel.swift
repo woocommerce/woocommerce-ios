@@ -29,6 +29,7 @@ struct TopBannerViewModel {
     enum BannerType {
         case normal
         case warning
+        case info
     }
 
     let title: String?

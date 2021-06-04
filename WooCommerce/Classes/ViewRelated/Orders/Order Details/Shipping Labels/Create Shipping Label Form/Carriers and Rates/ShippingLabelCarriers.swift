@@ -23,36 +23,51 @@ struct ShippingLabelCarriers: View {
     }
 
     var body: some View {
-        ScrollView {
-            LazyVStack {
-                switch viewModel.syncStatus {
-                case .loading:
-                    ForEach(viewModel.ghostRows) { ghostRowVM in
-                        ShippingLabelCarrierRow(ghostRowVM)
-                            .redacted(reason: .placeholder)
-                            .shimmering()
-                        Divider().padding(.leading, Constants.dividerPadding)
+        GeometryReader { geometry in
+            ScrollView {
+                LazyVStack {
+                    switch viewModel.syncStatus {
+                    case .loading:
+                        ForEach(viewModel.ghostRows) { ghostRowVM in
+                            ShippingLabelCarrierRow(ghostRowVM)
+                                .redacted(reason: .placeholder)
+                                .shimmering()
+                            Divider().padding(.leading, Constants.dividerPadding)
+                        }
+                    case .success:
+                        ShippingLabelCarrierAndRatesTopBanner(width: geometry.size.width,
+                                                              shippingMethod: viewModel.shippingMethod,
+                                                              shippingCost: viewModel.shippingCost).renderedIf(viewModel.shouldDisplayTopBanner)
+                        ForEach(viewModel.rows) { carrierRowVM in
+                            ShippingLabelCarrierRow(carrierRowVM)
+                            Divider().padding(.leading, Constants.dividerPadding)
+                        }
+                    case .error:
+                        VStack {
+                            HStack (alignment: .center) {
+                                EmptyState(title: Localization.emptyStateTitle,
+                                           description: Localization.emptyStateDescription,
+                                           image: .productErrorImage)
+                                    .frame(width: geometry.size.width)
+                            }
+                        }
+                        .frame(minHeight: geometry.size.height)
+                    default:
+                        EmptyView()
                     }
-                case .success:
-                    ForEach(viewModel.rows) { carrierRowVM in
-                        ShippingLabelCarrierRow(carrierRowVM)
-                        Divider().padding(.leading, Constants.dividerPadding)
-                    }
-                default:
-                    EmptyView()
                 }
             }
+            .navigationTitle(Localization.titleView)
+            .navigationBarItems(trailing: Button(action: {
+                onCompletion(viewModel.getSelectedRates().selectedRate,
+                             viewModel.getSelectedRates().selectedSignatureRate,
+                             viewModel.getSelectedRates().selectedAdultSignatureRate)
+                presentation.wrappedValue.dismiss()
+            }, label: {
+                Text(Localization.doneButton)
+            })
+            .disabled(!viewModel.isDoneButtonEnabled()))
         }
-        .navigationTitle(Localization.titleView)
-        .navigationBarItems(trailing: Button(action: {
-            onCompletion(viewModel.getSelectedRates().selectedRate,
-                         viewModel.getSelectedRates().selectedSignatureRate,
-                         viewModel.getSelectedRates().selectedAdultSignatureRate)
-            presentation.wrappedValue.dismiss()
-        }, label: {
-            Text(Localization.doneButton)
-        })
-        .disabled(!viewModel.isDoneButtonEnabled()))
     }
 
     enum Constants {
@@ -66,6 +81,11 @@ private extension ShippingLabelCarriers {
 
                                                  comment: "Navigation bar title of shipping label carrier and rates screen")
         static let doneButton = NSLocalizedString("Done", comment: "Done navigation button in shipping label carrier and rates screen")
+        static let emptyStateTitle = NSLocalizedString("No shipping rates available",
+                                                       comment: "Error state title in shipping label carrier and rates screen")
+        static let emptyStateDescription = NSLocalizedString("Please double check your package dimensions and weight" +
+                                                                "or try using a different package in Package Details.",
+                                                             comment: "Error state description in shipping label carrier and rates screen")
     }
 }
 

@@ -4,11 +4,33 @@ import Yosemite
 
 final class ShippingLabelCarriersViewModel: ObservableObject {
 
-    private let order: Order
+    private(set) var order: Order
     private let originAddress: ShippingLabelAddress
     private let destinationAddress: ShippingLabelAddress
     private let packages: [ShippingLabelPackageSelected]
+    private let currencySettings: CurrencySettings
     private let stores: StoresManager
+    var shouldDisplayTopBanner: Bool {
+        guard let shippingTotal = Double(order.shippingTotal) else {
+            return false
+        }
+        return shippingTotal > 0
+    }
+
+    /// We use the first `shipping_line` and we use directly the property `method_title` which is the the same behaviour of the web client.
+    /// We use this value in the top banner of the view.
+    ///
+    var shippingMethod: String {
+        order.shippingLines.first?.methodTitle.strippedHTML ?? ""
+    }
+
+    /// We use the first `shipping_line` and we use directly the property `method_title` which is the the same behaviour of the web client.
+    /// We use this value in the top banner of the view.
+    ///
+    var shippingCost: String {
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        return currencyFormatter.formatAmount(order.shippingTotal) ?? ""
+    }
 
     enum SyncStatus {
         case loading
@@ -42,6 +64,7 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
          selectedRate: ShippingLabelCarrierRate? = nil,
          selectedSignatureRate: ShippingLabelCarrierRate? = nil,
          selectedAdultSignatureRate: ShippingLabelCarrierRate? = nil,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          stores: StoresManager = ServiceLocator.stores) {
         self.order = order
         self.originAddress = originAddress
@@ -50,6 +73,7 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
         self.selectedRate = selectedRate
         self.selectedSignatureRate = selectedSignatureRate
         self.selectedAdultSignatureRate = selectedAdultSignatureRate
+        self.currencySettings = currencySettings
         self.stores = stores
         syncCarriersAndRates()
     }
@@ -64,7 +88,8 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
                                                     adultSignatureSelected: selectedAdultSignatureRate?.title == adultSignature?.title && adultSignature != nil,
                                                     rate: rate,
                                                     signatureRate: signature,
-                                                    adultSignatureRate: adultSignature) { [weak self] (rate, signature, adultSignature) in
+                                                    adultSignatureRate: adultSignature,
+                                                    currencySettings: currencySettings) { [weak self] (rate, signature, adultSignature) in
                 self?.selectedRate = rate
                 self?.selectedSignatureRate = signature
                 self?.selectedAdultSignatureRate = adultSignature

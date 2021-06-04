@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 52 (Release 6.9.0.0)
+- @allendav 2021-06-02
+- Added `PaymentGatewayAccount` entity
+
 ## Model 51 (Release 6.8.0.0)
 - @ealeksandrov 2021-05-21
 - Removed `OrderCount` entity

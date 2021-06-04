@@ -15,8 +15,8 @@ final class CardPresentPaymentsModalViewController: UIViewController {
     @IBOutlet private weak var bottomTitleLabel: UILabel!
     @IBOutlet private weak var bottomSubtitleLabel: UILabel!
 
-    @IBOutlet private weak var primaryButton: NUXButton!
-    @IBOutlet private weak var secondaryButton: NUXButton!
+    @IBOutlet private weak var primaryButton: UIButton!
+    @IBOutlet private weak var secondaryButton: UIButton!
     @IBOutlet weak var auxiliaryButton: UIButton!
 
     @IBOutlet private weak var imageView: UIImageView!
@@ -115,12 +115,13 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func stylePrimaryButton() {
-        primaryButton.isPrimary = true
+        primaryButton.applyPrimaryButtonStyle()
         primaryButton.titleLabel?.adjustsFontSizeToFitWidth = true
         primaryButton.titleLabel?.minimumScaleFactor = 0.5
     }
 
     func styleSecondaryButton() {
+        secondaryButton.applySecondaryLightButtonStyle()
         secondaryButton.titleLabel?.adjustsFontSizeToFitWidth = true
         secondaryButton.titleLabel?.minimumScaleFactor = 0.5
     }

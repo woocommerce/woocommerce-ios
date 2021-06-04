@@ -7,10 +7,14 @@ import SwiftUI
 
 // MARK: Woo Styles
 struct BodyStyle: ViewModifier {
+    /// Whether the View being modified is enabled
+    ///
+    var isEnabled: Bool
+
     func body(content: Content) -> some View {
         content
             .font(.body)
-            .foregroundColor(Color(.text))
+            .foregroundColor(isEnabled ? Color(.text) : Color(.textTertiary))
     }
 }
 
@@ -31,17 +35,23 @@ struct HeadlineStyle: ViewModifier {
 }
 
 struct FootnoteStyle: ViewModifier {
+    /// Whether the View being modified is enabled
+    ///
+    var isEnabled: Bool
+
     func body(content: Content) -> some View {
         content
             .font(.footnote)
-            .foregroundColor(Color(.textSubtle))
+            .foregroundColor(isEnabled ? Color(.textSubtle) : Color(.textTertiary))
     }
 }
 
 // MARK: View extensions
 extension View {
-    func bodyStyle() -> some View {
-        self.modifier(BodyStyle())
+    /// - Parameters:
+    ///     - isEnabled: Whether the view is enabled (to apply specific styles for disabled view)
+    func bodyStyle(_ isEnabled: Bool = true) -> some View {
+        self.modifier(BodyStyle(isEnabled: isEnabled))
     }
 
     func secondaryBodyStyle() -> some View {
@@ -52,7 +62,9 @@ extension View {
         self.modifier(HeadlineStyle())
     }
 
-    func footnoteStyle() -> some View {
-        self.modifier(FootnoteStyle())
+    /// - Parameters:
+    ///     - isEnabled: Whether the view is enabled (to apply specific styles for disabled view)
+    func footnoteStyle(_ isEnabled: Bool = true) -> some View {
+        self.modifier(FootnoteStyle(isEnabled: isEnabled))
     }
 }

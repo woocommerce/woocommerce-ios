@@ -457,7 +457,7 @@ extension ProductFormViewModel {
 }
 
 // MARK: Miscellaneous
-//
+
 private extension ProductFormViewModel {
     func isNameTheOnlyChange(oldProduct: EditableProductModel, newProduct: EditableProductModel) -> Bool {
         let oldProductWithNewName = EditableProductModel(product: oldProduct.product.copy(name: newProduct.name))
@@ -476,7 +476,7 @@ private extension ProductFormViewModel {
     ///
     func calculateVariationPriceState() -> ProductFormActionsFactory.VariationsPrice {
         // If there are no fetched variations we can't be sure of it's price state
-        guard variationsResultsController.fetchedObjects.isNotEmpty else {
+        guard !variationsResultsController.isEmpty else {
             return .unknown
         }
 

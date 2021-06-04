@@ -13,7 +13,7 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
     private let primaryAction: () -> Void
 
     let textMode: PaymentsModalTextMode = .reducedBottomInfo
-    let actionsMode: PaymentsModalActionsMode = .oneAction
+    let actionsMode: PaymentsModalActionsMode = .twoAction
 
     let topTitle: String = Localization.paymentFailed
 
@@ -25,7 +25,7 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
 
     let primaryButtonTitle: String? = Localization.tryAgain
 
-    let secondaryButtonTitle: String? = nil
+    let secondaryButtonTitle: String? = Localization.noThanks
 
     let auxiliaryButtonTitle: String? = nil
 
@@ -47,7 +47,9 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
         })
     }
 
-    func didTapSecondaryButton(in viewController: UIViewController?) { }
+    func didTapSecondaryButton(in viewController: UIViewController?) {
+        viewController?.dismiss(animated: true, completion: nil)
+    }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
 }
@@ -62,6 +64,11 @@ private extension CardPresentModalError {
         static let tryAgain = NSLocalizedString(
             "Try collecting payment again",
             comment: "Button to try to collect a payment again. Presented to users after a collecting a payment fails"
+        )
+
+        static let noThanks = NSLocalizedString(
+            "No thanks",
+            comment: "Button to dismiss modal overlay. Presented to users after collecting a payment fails"
         )
     }
 }

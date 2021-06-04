@@ -5,20 +5,21 @@ struct SelectableItemRow: View {
     let title: String
     let subtitle: String
     let selected: Bool
+    @Environment(\.isEnabled) var isEnabled
 
     var body: some View {
         HStack(spacing: 0) {
             ZStack {
-                if selected {
+                if selected, isEnabled {
                     Image(uiImage: .checkmarkStyledImage).frame(width: Constants.imageSize, height: Constants.imageSize)
                 }
             }.frame(width: Constants.zStackWidth)
             VStack(alignment: .leading,
                    spacing: 8) {
                 Text(title)
-                    .bodyStyle()
+                    .bodyStyle(isEnabled)
                 Text(subtitle)
-                    .footnoteStyle()
+                    .footnoteStyle(isEnabled)
             }.padding([.trailing], Constants.vStackPadding)
             Spacer()
         }
@@ -45,5 +46,10 @@ struct SelectableItemRow_Previews: PreviewProvider {
 
         SelectableItemRow(title: "Title", subtitle: "My subtitle", selected: false)
             .previewLayout(.fixed(width: 375, height: 100))
+
+        SelectableItemRow(title: "Title", subtitle: "My subtitle", selected: true)
+            .disabled(true)
+            .previewLayout(.fixed(width: 375, height: 100))
+            .previewDisplayName("Disabled state")
     }
 }

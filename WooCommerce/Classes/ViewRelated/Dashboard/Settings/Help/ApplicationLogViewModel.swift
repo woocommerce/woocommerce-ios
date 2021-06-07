@@ -9,7 +9,7 @@ struct ApplicationLogLine: Identifiable {
 
     private let dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "YYYY-MM-dd hh:mm:ss:SSS"
+        dateFormatter.dateFormat = "YYYY-MM-dd HH:mm:ss:SSS"
         return dateFormatter
     }()
 
@@ -87,6 +87,11 @@ extension ApplicationLogViewModel {
             2021/06/07 11:59:46:477  🔵 Tracking started.
             2021/06/07 11:59:46:487  ⚠️ Could not successfully decode SiteSetting value for woocommerce_all_except_countries
             2021/06/07 11:59:46:487  ⚠️ Could not successfully decode SiteSetting value for woocommerce_specific_allowed_countries
+            2021/06/07 11:59:46:487  ⚠️ Could not successfully decode SiteSetting value for woocommerce_specific_ship_to_countries
+            2021/06/07 11:59:46:487  ⚠️ Could not successfully decode SiteSetting value for woocommerce_specific_ship_to_countries
+            2021/06/07 11:59:46:487  ⚠️ Could not successfully decode SiteSetting value for woocommerce_specific_ship_to_countries
+            2021/06/07 11:59:46:487  ⚠️ Could not successfully decode SiteSetting value for woocommerce_specific_ship_to_countries
+            2021/06/07 11:59:46:487  ⚠️ Could not successfully decode SiteSetting value for woocommerce_specific_ship_to_countries
             2021/06/07 11:59:46:487  ⚠️ Could not successfully decode SiteSetting value for woocommerce_specific_ship_to_countries
             """)
     }

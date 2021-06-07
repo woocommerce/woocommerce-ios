@@ -9,6 +9,7 @@ final class CardPresentPaymentsModalViewController: UIViewController {
     /// and support for user actions
     private var viewModel: CardPresentPaymentsModalViewModel
 
+    @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var mainStackView: UIStackView!
     @IBOutlet private weak var topTitleLabel: UILabel!
     @IBOutlet private weak var topSubtitleLabel: UILabel!
@@ -38,6 +39,7 @@ final class CardPresentPaymentsModalViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        setBackgroundColor()
         setButtonsActions()
         styleContent()
         populateContent()
@@ -65,6 +67,9 @@ final class CardPresentPaymentsModalViewController: UIViewController {
 
 // MARK: - View configuration
 private extension CardPresentPaymentsModalViewController {
+    func setBackgroundColor() {
+        containerView.backgroundColor = .tertiarySystemBackground
+    }
 
     func styleContent() {
         styleTopTitle()

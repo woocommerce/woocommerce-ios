@@ -163,7 +163,6 @@ private extension ShippingLabelAddressFormViewController {
 
         topBannerView.removeFromSuperview()
         tableView.tableHeaderView = nil
-        tableView.updateHeaderHeight()
     }
 
     func configureConfirmButton() {

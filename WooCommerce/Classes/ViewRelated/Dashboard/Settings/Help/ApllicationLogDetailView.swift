@@ -42,53 +42,40 @@ struct ApplicationLogDetailView: View {
 
     var body: some View {
         ScrollViewReader { scrollProxy in
-            ZStack {
-                List(viewModel.lines) { line in
-                    VStack(alignment: .leading, spacing: 6) {
-                        line.date
-                            .flatMap(dateFormatter.string(for:))
-                            .map {
-                                Text($0)
-                                    .footnoteStyle()
+            List(viewModel.lines) { line in
+                VStack(alignment: .leading, spacing: 6) {
+                    line.date
+                        .flatMap(dateFormatter.string(for:))
+                        .map {
+                            Text($0)
+                                .footnoteStyle()
 
-                            }
-                        Text(line.text)
-                            .bodyStyle()
-                    }
-                    .onAppear(perform: {
-                        if isLastLine(line) {
+                        }
+                    Text(line.text)
+                        .bodyStyle()
+                }
+                .onAppear(perform: {
+                    if isLastLine(line) {
+                        withAnimation {
                             lastCellVisible = true
                         }
-                    })
-                    .onDisappear(perform: {
-                        if isLastLine(line) {
+                    }
+                })
+                .onDisappear(perform: {
+                    if isLastLine(line) {
+                        withAnimation {
                             lastCellVisible = false
                         }
-                    })
-                }
-
-                if !lastCellVisible {
-                    VStack() {
-                        Spacer()
-                        HStack() {
-                            Spacer()
-                            Button(action: {
-                                withAnimation {
-                                    scrollProxy.scrollTo(viewModel.lines.last!.id)
-                                }
-                            }, label: {
-                                Image(systemName: "chevron.down.circle.fill")
-                                    .resizable()
-                                    .accentColor(Color(.accent))
-                            })
-                            .frame(width: 32, height: 32)
-                            .padding()
-                            .transition(.move(edge: .bottom))
-                        }
                     }
-                }
+                })
             }
-            .animation(.easeInOut)
+            .overlay(
+                scrollToBottomButton {
+                    withAnimation {
+                        scrollProxy.scrollTo(viewModel.lines.last!.id)
+                    }
+                },
+                alignment: .bottomTrailing)
         }
         .navigationBarItems(
             trailing: Button(
@@ -97,6 +84,23 @@ struct ApplicationLogDetailView: View {
                 }, label: {
                     Image(systemName: "square.and.arrow.up")
             }))
+    }
+
+    func scrollToBottomButton(_ action: @escaping () -> Void) -> some View {
+        Group {
+            if !lastCellVisible {
+                Button(action: {
+                    action()
+                }, label: {
+                    Image(systemName: "chevron.down.circle.fill")
+                        .resizable()
+                        .accentColor(Color(.accent))
+                })
+                .frame(width: 32, height: 32)
+                .padding()
+                .transition(.move(edge: .bottom))
+            }
+        }
     }
 }
 

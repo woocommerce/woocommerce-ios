@@ -53,6 +53,10 @@ final class OrderDetailsViewController: UIViewController {
     ///
     private var cardReaderAvailableSubscription: Combine.Cancellable? = nil
 
+    /// Loading view displayed while the order is loading
+    ///
+    private let loadingView = LoadingView(waitMessage: "Order is loading...")
+
     // MARK: - View Lifecycle
 
     /// Create an instance of `Self` from its corresponding storyboard.
@@ -72,6 +76,7 @@ final class OrderDetailsViewController: UIViewController {
         configureEntityListener()
         configureViewModel()
         updateTopBannerView()
+        loadingView.showLoader(in: view)
 
         // FIXME: this is a hack. https://github.com/woocommerce/woocommerce-ios/issues/1779
         reloadTableViewSectionsAndData()
@@ -79,16 +84,9 @@ final class OrderDetailsViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        syncNotes()
-        syncProducts()
-        syncProductVariations()
-        syncRefunds()
-        syncShippingLabels()
-        syncSavedReceipts()
-        syncTrackingsHidingAddButtonIfNecessary()
-        checkShippingLabelCreationEligibility()
-        checkCardPresentPaymentEligibility()
-        checkOrderAddOnFeatureSwitchState()
+        syncEverything { [weak self] in
+            self?.loadingView.hideLoader()
+        }
     }
 
     override func viewDidLayoutSubviews() {
@@ -282,6 +280,20 @@ extension OrderDetailsViewController {
 
     @objc func pullToRefresh() {
         ServiceLocator.analytics.track(.orderDetailPulledToRefresh)
+        refreshControl.beginRefreshing()
+
+        syncEverything { [weak self] in
+            NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
+            self?.refreshControl.endRefreshing()
+        }
+    }
+}
+
+
+// MARK: - Sync'ing Helpers
+//
+private extension OrderDetailsViewController {
+    func syncEverything(onCompletion: (() -> ())? = nil) {
         let group = DispatchGroup()
 
         group.enter()
@@ -339,17 +351,11 @@ extension OrderDetailsViewController {
             group.leave()
         }
 
-        group.notify(queue: .main) { [weak self] in
-            NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
-            self?.refreshControl.endRefreshing()
+        group.notify(queue: .main) {
+            onCompletion?()
         }
     }
-}
 
-
-// MARK: - Sync'ing Helpers
-//
-private extension OrderDetailsViewController {
     func syncOrder(onCompletion: ((Error?) -> ())? = nil) {
         viewModel.syncOrder { [weak self] (order, error) in
             guard let self = self, let order = order else {

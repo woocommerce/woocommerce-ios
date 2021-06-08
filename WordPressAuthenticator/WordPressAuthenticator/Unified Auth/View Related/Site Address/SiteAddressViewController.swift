@@ -503,8 +503,9 @@ private extension SiteAddressViewController {
         // this causes the value of `loginFields.siteAddress` to be reset to what the user entered.
         //
         // Using the user-entered `loginFields.siteAddress` causes problems when we try to log
-        // the user in. For example, validating their self-hosted site credentials somehow
-        // fails. Especially if they only entered the domain (no url scheme).
+        // the user in especially if they just use a domain. For example, validating their
+        // self-hosted site credentials fails because the
+        // `WordPressOrgXMLRPCValidator.guessXMLRPCURLForSite` expects a complete site URL.
         //
         // This routine fixes that problem. We'll use what we already validated from
         // `fetchSiteInfo()`.

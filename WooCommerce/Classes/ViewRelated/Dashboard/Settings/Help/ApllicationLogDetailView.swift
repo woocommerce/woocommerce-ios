@@ -20,23 +20,12 @@ final class ApplicationLogDetailViewController: UIHostingController<ApplicationL
 struct ApplicationLogDetailView: View {
     @ObservedObject var viewModel: ApplicationLogViewModel
 
-    private let lastLineID: UUID?
-
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .medium
         return formatter
     }()
-
-    init(viewModel: ApplicationLogViewModel) {
-        self.viewModel = viewModel
-        lastLineID = viewModel.lines.last?.id
-    }
-
-    private func isLastLine(_ line: ApplicationLogLine) -> Bool {
-        line.id == lastLineID
-    }
 
     var body: some View {
         ScrollViewReader { scrollProxy in
@@ -52,12 +41,12 @@ struct ApplicationLogDetailView: View {
                     Text(line.text)
                         .bodyStyle()
                 }
-                .storeAppearance(on: $viewModel.lastCellIsVisible, if: isLastLine(line))
+                .storeAppearance(on: $viewModel.lastCellIsVisible, if: viewModel.isLastLine(line))
             }
             .overlay(
                 scrollToBottomButton {
                     withAnimation {
-                        scrollProxy.scrollTo(viewModel.lines.last!.id)
+                        scrollProxy.scrollTo(viewModel.lastLineID)
                     }
                 },
                 alignment: .bottomTrailing)
@@ -73,19 +62,20 @@ struct ApplicationLogDetailView: View {
 
     func scrollToBottomButton(_ action: @escaping () -> Void) -> some View {
         Group {
-            if !viewModel.buttonVisible {
+            if viewModel.buttonVisible {
                 Button(action: {
                     action()
                 }, label: {
                     Image(systemName: "chevron.down.circle.fill")
                         .resizable()
+                        .frame(width: 32, height: 32)
                         .accentColor(Color(.accent))
                 })
-                .frame(width: 32, height: 32)
                 .padding()
                 .transition(.move(edge: .bottom))
             }
         }
+        .animation(.easeInOut(duration: 0.1))
     }
 }
 

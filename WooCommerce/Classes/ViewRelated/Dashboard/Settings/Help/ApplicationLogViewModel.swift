@@ -36,6 +36,8 @@ final class ApplicationLogViewModel: ObservableObject {
     private let logText: String
     let lines: [ApplicationLogLine]
 
+    let lastLineID: UUID
+
     var present: ((UIViewController) -> Void)? = nil
 
     @Published var lastCellIsVisible = false
@@ -51,11 +53,27 @@ final class ApplicationLogViewModel: ObservableObject {
             .map(String.init)
             .map(ApplicationLogLine.init(text:))
 
+        // The `ScrollViewProxy.scrollTo` method doesn't seem to handle an optional line well
+        // Instead of `nil`, we can represent a missing value with a random UUID
+        lastLineID = lines.last?.id ?? UUID()
+
+        guard lines.isNotEmpty else {
+            // If the file is empty, there will be no last cell,
+            // and so the last cell won't be visible, but it still doesn't make
+            // sense to show a button to scroll down
+            buttonVisible = false
+            return
+        }
+
         $lastCellIsVisible
             .map(!)
             .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
             .assign(to: \.buttonVisible, on: self)
             .store(in: &cancellableSet)
+    }
+
+    func isLastLine(_ line: ApplicationLogLine) -> Bool {
+        line.id == lastLineID
     }
 
     func showShareActivity() {

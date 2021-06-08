@@ -73,3 +73,25 @@ extension SearchTableViewCell: UITextFieldDelegate {
         return false
     }
 }
+
+// MARK: - Loader
+//
+extension SearchTableViewCell {
+    func showLoader() {
+        guard let leftView = textField.leftView else { return }
+        let spinner = UIActivityIndicatorView(frame: leftView.frame)
+        addSubview(spinner)
+        spinner.startAnimating()
+
+        textField.leftView?.alpha = 0
+    }
+
+    func hideLoader() {
+        for subview in subviews where subview is UIActivityIndicatorView {
+            subview.removeFromSuperview()
+            break
+        }
+
+        textField.leftView?.alpha = 1
+    }
+}

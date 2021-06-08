@@ -25,6 +25,7 @@ extension Storage.PaymentGatewayAccount: ReadOnlyConvertible {
         let accountStatus = Yosemite.WCPayAccountStatusEnum.init(rawValue: status)
 
         return PaymentGatewayAccount(siteID: siteID,
+                                     gatewayID: gatewayID,
                                      status: accountStatus.rawValue,
                                      hasPendingRequirements: hasPendingRequirements,
                                      hasOverdueRequirements: hasOverdueRequirements,

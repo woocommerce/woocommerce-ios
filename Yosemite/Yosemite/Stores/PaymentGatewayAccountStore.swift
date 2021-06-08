@@ -40,14 +40,45 @@ public final class PaymentGatewayAccountStore: Store {
 // MARK: Storage Methods
 private extension PaymentGatewayAccountStore {
 
-    func loadAccounts(siteID: Int64, onCompletion: (Result<[PaymentGatewayAccount], Error>) -> Void) {
-        // Make it work similar to RefundStore.swift retrieveRefunds
-        // hits up the WCPayRemote to get the account
-        // deletes the stored account if it isn’t found
-        // converts the WCPayAccount to a PaymentGatewayAccount (using the extension above)
-        // upserts the PaymentGatewayAccount account if it is found
+    func loadAccounts(siteID: Int64, onCompletion: @escaping (Result<[PaymentGatewayAccount], Error>) -> Void) {
+
+        /// The only accounts we know about right now are WCPayAccounts
+        ///
+        remote.loadAccount(for: siteID) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+
+            switch result {
+            case .success(let wcpayAccount):
+                let account = wcpayAccount.toPaymentGatewayAccount(siteID: siteID)
+                self.upsertStoredAccountInBackground(readonlyAccount: account)
+                onCompletion(.success([account]))
+                    return
+            case .failure(let error):
+                self.deleteStaleAccount(siteID: siteID, gatewayID: "woocommerce-payments") // TODO make a constant/enum
+                onCompletion(.failure(error))
+                return
+            }
+
+        }
     }
 
-    // Add deleteStoredAccounts to it similar to deleteStaleRefunds
-    // Add upsertStoredAccountsInBackground to it similar to upsertStoredRefundsInBackground
+    func upsertStoredAccountInBackground(readonlyAccount: PaymentGatewayAccount) {
+        let storage = storageManager.viewStorage
+        let storageAccount = storage.loadPaymentGatewayAccount(siteID: readonlyAccount.siteID, gatewayID: readonlyAccount.gatewayID) ??
+            storage.insertNewObject(ofType: Storage.PaymentGatewayAccount.self)
+
+        storageAccount.update(with: readonlyAccount)
+    }
+
+    func deleteStaleAccount(siteID: Int64, gatewayID: String) {
+        let storage = storageManager.viewStorage
+        guard let storageAccount = storage.loadPaymentGatewayAccount(siteID: siteID, gatewayID: gatewayID) else {
+            return
+        }
+
+        storage.deleteObject(storageAccount)
+        storage.saveIfNeeded()
+    }
 }

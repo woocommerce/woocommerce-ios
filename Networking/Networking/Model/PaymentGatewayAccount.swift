@@ -8,6 +8,8 @@ public struct PaymentGatewayAccount {
     ///
     public let siteID: Int64
 
+    public let gatewayID: String
+
     public let status: String
 
     public let hasPendingRequirements: Bool
@@ -30,17 +32,19 @@ public struct PaymentGatewayAccount {
     /// Struct initializer
     ///
     public init(siteID: Int64,
-         status: String,
-         hasPendingRequirements: Bool,
-         hasOverdueRequirements: Bool,
-         currentDeadline: Date?,
-         statementDescriptor: String,
-         defaultCurrency: String,
-         supportedCurrencies: [String],
-         country: String,
-         isCardPresentEligible: Bool
-    ) {
+                gatewayID: String,
+                status: String,
+                hasPendingRequirements: Bool,
+                hasOverdueRequirements: Bool,
+                currentDeadline: Date?,
+                statementDescriptor: String,
+                defaultCurrency: String,
+                supportedCurrencies: [String],
+                country: String,
+                isCardPresentEligible: Bool
+        ) {
         self.siteID = siteID
+        self.gatewayID = gatewayID
         self.status = status
         self.hasPendingRequirements = hasPendingRequirements
         self.hasOverdueRequirements = hasOverdueRequirements

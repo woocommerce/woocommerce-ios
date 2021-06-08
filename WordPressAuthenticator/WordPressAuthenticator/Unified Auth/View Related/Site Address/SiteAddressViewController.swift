@@ -19,6 +19,13 @@ final class SiteAddressViewController: LoginViewController {
     private var errorMessage: String?
     private var shouldChangeVoiceOverFocus: Bool = false
 
+    /// A state variable that is `true` if network calls are currently happening and so the
+    /// view should be showing a loading indicator.
+    ///
+    /// This should only be modified within `configureViewLoading(_ loading:)`.
+    ///
+    /// This state is mainly used in `configureSubmitButton()` to determine whether the button
+    /// should show an activity indicator.
     private var viewIsLoading: Bool = false
 
     // MARK: - Actions
@@ -84,6 +91,10 @@ final class SiteAddressViewController: LoginViewController {
         return WordPressAuthenticator.shared.unifiedStyle?.statusBarStyle ?? WordPressAuthenticator.shared.style.statusBarStyle
     }
 
+    /// Configures the appearance and state of the submit button.
+    ///
+    /// Use this instead of the overridden `configureSubmitButton(animating:)` since this uses the
+    /// _current_ `viewIsLoading` state.
     private func configureSubmitButton() {
         configureSubmitButton(animating: viewIsLoading)
     }

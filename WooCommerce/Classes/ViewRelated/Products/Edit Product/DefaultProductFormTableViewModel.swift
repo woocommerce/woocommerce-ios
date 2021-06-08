@@ -90,6 +90,10 @@ private extension DefaultProductFormTableViewModel {
                 return .downloadableFiles(viewModel: downloadsRow(product: product, isEditable: editable), isEditable: editable)
             case .linkedProducts(let editable):
                 return .linkedProducts(viewModel: linkedProductsRow(product: product, isEditable: editable), isEditable: editable)
+            case .noPriceWarning:
+                return .noPriceWarning(viewModel: noPriceWarningRow())
+            case .attributes(let editable):
+                return .attributes(viewModel: productVariationsAttributesRow(product: product.product, isEditable: editable), isEditable: editable)
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil
@@ -380,23 +384,8 @@ private extension DefaultProductFormTableViewModel {
     func variationsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.variationsImage
         let title = product.variations.isEmpty ? Localization.addVariationsTitle : Localization.variationsTitle
-
-        let details: String
-        let format = NSLocalizedString("%1$@ (%2$ld options)", comment: "Format for each Product attribute")
-
-        switch product.variations.count {
-        case 1...:
-            details = product.attributesForVariations
-                .map({ String.localizedStringWithFormat(format, $0.name, $0.options.count) })
-                .joined(separator: "\n")
-        default:
-            details = ""
-        }
-
-        return ProductFormSection.SettingsRow.ViewModel(icon: icon,
-                                                        title: title,
-                                                        details: details,
-                                                        isActionable: true)
+        let details = Localization.variationsDetail(count: product.variations.count)
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon, title: title, details: details, isActionable: true)
     }
 
     // MARK: Product variation only
@@ -416,6 +405,20 @@ private extension DefaultProductFormTableViewModel {
         let icon = UIImage.infoOutlineImage
         let title = Localization.noPriceWarningTitle
         return ProductFormSection.SettingsRow.WarningViewModel(icon: icon, title: title)
+    }
+
+    func productVariationsAttributesRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.customizeImage
+        let title = Localization.productVariationAttributesTitle
+
+        let details = product.attributesForVariations
+            .map {
+                let format = Localization.variationAttributesDetailFormat(optionCount: $0.options.count)
+                return String.localizedStringWithFormat(format, $0.name, $0.options.count)
+            }
+            .joined(separator: "\n")
+
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon, title: title, details: details, isActionable: isEditable)
     }
 
     func variationAttributesRow(productVariation: EditableProductVariationModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
@@ -567,13 +570,45 @@ private extension DefaultProductFormTableViewModel {
             NSLocalizedString("Variations",
                               comment: "Title of the Product Variations row on Product main screen for a variable product")
 
+        static func variationsDetail(count: Int) -> String {
+            let format: String = {
+                switch count {
+                case 0:
+                    return ""
+                case 1:
+                    return NSLocalizedString("%1$ld variation",
+                                             comment: "Format for the variations detail row in singular form. Reads, `1 variation`")
+                default:
+                    return NSLocalizedString("%1$ld variations",
+                                             comment: "Format for the variations detail row in plural form. Reads, `2 variations`")
+                }
+            }()
+
+            return String.localizedStringWithFormat(format, count)
+        }
+
         // Variation status
         static let variationStatusTitle =
             NSLocalizedString("Enabled",
                               comment: "Title of the status row on Product Variation main screen to enable/disable a variation")
 
+        // Product Variations Attributes
+        static let productVariationAttributesTitle = NSLocalizedString("Variations Attributes",
+                                                                       comment: "Title of the variations attributes row on Product screen")
+
         // Variation attributes
         static let variationAttributesTitle = NSLocalizedString("Attributes", comment: "Title of the attributes row on Product Variation main screen")
+
+        static func variationAttributesDetailFormat(optionCount: Int) -> String {
+            switch optionCount {
+            case 0:
+                return ""
+            case 1:
+                return NSLocalizedString("%1$@ (%2$ld option)", comment: "Format for each Product attribute in singular form")
+            default:
+                return NSLocalizedString("%1$@ (%2$ld options)", comment: "Format for each Product attribute in plural form")
+            }
+        }
 
         // No price warning row
         static let noPriceWarningTitle =

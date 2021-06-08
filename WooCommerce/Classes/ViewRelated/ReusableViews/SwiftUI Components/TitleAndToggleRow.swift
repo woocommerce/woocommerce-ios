@@ -5,11 +5,12 @@ import SwiftUI
 struct TitleAndToggleRow: View {
     let title: String
     @Binding var isOn: Bool
+    @Environment(\.isEnabled) var isEnabled
 
     var body: some View {
         Toggle(title, isOn: $isOn)
-            .bodyStyle()
-            .toggleStyle(SwitchToggleStyle.init(tint: Color(.primary)))
+            .bodyStyle(isEnabled)
+            .toggleStyle(SwitchToggleStyle.init(tint: isEnabled ? Color(.primary) : Color(.switchDisabledColor)))
             .padding(Constants.padding)
     }
 }
@@ -25,6 +26,11 @@ struct TitleAndToggleRow_Previews: PreviewProvider {
         TitleAndToggleRow(title: "Toggle this setting", isOn: .constant(false))
             .previewLayout(.sizeThatFits)
             .previewDisplayName("Single line, toggle off")
+
+        TitleAndToggleRow(title: "Toggle this setting", isOn: .constant(true))
+            .disabled(true)
+            .previewLayout(.sizeThatFits)
+            .previewDisplayName("Disabled state")
 
         TitleAndToggleRow(title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas dictum ullamcorper enim.", isOn: .constant(true))
             .previewLayout(.sizeThatFits)

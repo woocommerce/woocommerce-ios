@@ -662,6 +662,7 @@
 		57612989245888E2007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57612988245888E2007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlus.swift */; };
 		5761298B24589B84007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlusTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5761298A24589B84007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlusTests.swift */; };
 		5767E940256D9A4A00CFA652 /* OrderListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5767E93F256D9A4A00CFA652 /* OrderListViewModelTests.swift */; };
+		5768315126694ADC00FDFB6C /* AuthenticationManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5768315026694ADC00FDFB6C /* AuthenticationManagerTests.swift */; };
 		576D9F2924DB81D3007B48F4 /* StoreStatsAndTopPerformersPeriodViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576D9F2824DB81D3007B48F4 /* StoreStatsAndTopPerformersPeriodViewModelTests.swift */; };
 		576EA39225264C7400AFC0B3 /* RefundConfirmationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576EA39125264C7400AFC0B3 /* RefundConfirmationViewController.swift */; };
 		576EA39425264C9B00AFC0B3 /* RefundConfirmationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576EA39325264C9B00AFC0B3 /* RefundConfirmationViewModel.swift */; };
@@ -943,6 +944,7 @@
 		CCDC49ED24000533003166BA /* TestCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDC49EC24000533003166BA /* TestCredentials.swift */; };
 		CCDC49F324007BD3003166BA /* XCTest+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997173223DBCF2800592D8E /* XCTest+Extensions.swift */; };
 		CCE4CD172667EBB100E09FD4 /* ShippingLabelPaymentMethodsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE4CD162667EBB100E09FD4 /* ShippingLabelPaymentMethodsViewModelTests.swift */; };
+		CCE4CD282669324300E09FD4 /* ShippingLabelPaymentMethodsTopBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE4CD272669324300E09FD4 /* ShippingLabelPaymentMethodsTopBanner.swift */; };
 		CCFC00B523E9BD1500157A78 /* ScreenshotCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCFC00B423E9BD1500157A78 /* ScreenshotCredentials.swift */; };
 		CCFC00EE23E9BD5500157A78 /* oauth2_token.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00BC23E9BD5500157A78 /* oauth2_token.json */; };
 		CCFC00EF23E9BD5500157A78 /* auth_options.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00BD23E9BD5500157A78 /* auth_options.json */; };
@@ -1932,6 +1934,7 @@
 		57612988245888E2007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NumberFormatter+LocalizedOrNinetyNinePlus.swift"; sourceTree = "<group>"; };
 		5761298A24589B84007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlusTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NumberFormatter+LocalizedOrNinetyNinePlusTests.swift"; sourceTree = "<group>"; };
 		5767E93F256D9A4A00CFA652 /* OrderListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListViewModelTests.swift; sourceTree = "<group>"; };
+		5768315026694ADC00FDFB6C /* AuthenticationManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManagerTests.swift; sourceTree = "<group>"; };
 		576D9F2824DB81D3007B48F4 /* StoreStatsAndTopPerformersPeriodViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsAndTopPerformersPeriodViewModelTests.swift; sourceTree = "<group>"; };
 		576EA39125264C7400AFC0B3 /* RefundConfirmationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundConfirmationViewController.swift; sourceTree = "<group>"; };
 		576EA39325264C9B00AFC0B3 /* RefundConfirmationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundConfirmationViewModel.swift; sourceTree = "<group>"; };
@@ -2225,6 +2228,7 @@
 		CCDC49F1240060F3003166BA /* UnitTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = UnitTests.xctestplan; path = WooCommerceTests/UnitTests.xctestplan; sourceTree = SOURCE_ROOT; };
 		CCDC49F224006130003166BA /* UITests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = UITests.xctestplan; path = WooCommerceUITests/UITests.xctestplan; sourceTree = SOURCE_ROOT; };
 		CCE4CD162667EBB100E09FD4 /* ShippingLabelPaymentMethodsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPaymentMethodsViewModelTests.swift; sourceTree = "<group>"; };
+		CCE4CD272669324300E09FD4 /* ShippingLabelPaymentMethodsTopBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPaymentMethodsTopBanner.swift; sourceTree = "<group>"; };
 		CCFC00B423E9BD1500157A78 /* ScreenshotCredentials.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScreenshotCredentials.swift; sourceTree = "<group>"; };
 		CCFC00BC23E9BD5500157A78 /* oauth2_token.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = oauth2_token.json; sourceTree = "<group>"; };
 		CCFC00BD23E9BD5500157A78 /* auth_options.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = auth_options.json; sourceTree = "<group>"; };
@@ -4122,6 +4126,7 @@
 				D85DD1E0257F376200861AA8 /* NotWPAccountViewModelTests.swift */,
 				D89C009325B4E9E2000E4683 /* ULAccountMismatchViewControllerTests.swift */,
 				D89C009925B4EEA4000E4683 /* WrongAccountErrorViewModelTests.swift */,
+				5768315026694ADC00FDFB6C /* AuthenticationManagerTests.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -4948,6 +4953,7 @@
 			children = (
 				CC4A4E952655273D00B75DCD /* ShippingLabelPaymentMethods.swift */,
 				CC4A4ED72655478D00B75DCD /* ShippingLabelPaymentMethodsViewModel.swift */,
+				CCE4CD272669324300E09FD4 /* ShippingLabelPaymentMethodsTopBanner.swift */,
 			);
 			path = "Payment Methods";
 			sourceTree = "<group>";
@@ -6483,6 +6489,7 @@
 				CE15524A21FFB10100EAA690 /* ApplicationLogViewController.swift in Sources */,
 				57C503DC23E8C70C00EC0790 /* OrdersTabbedViewController.swift in Sources */,
 				02E8B17A23E2C4BD00A43403 /* CircleSpinnerView.swift in Sources */,
+				CCE4CD282669324300E09FD4 /* ShippingLabelPaymentMethodsTopBanner.swift in Sources */,
 				02CA63DD23D1ADD100BBF148 /* MediaPickingContext.swift in Sources */,
 				31B19B67263B5E580099DAA6 /* CardReaderSettingsUnknownViewModel.swift in Sources */,
 				265284022624937600F91BA1 /* AddOnCrossreferenceUseCase.swift in Sources */,
@@ -7195,6 +7202,7 @@
 				0259EF77246BF4EC00B84FDF /* ProductDetailsFactoryTests.swift in Sources */,
 				4574745F24EA9ADE00CF49BC /* ProductTypeBottomSheetListSelectorCommandTests.swift in Sources */,
 				0212683724C049F000F8A892 /* ProductListMultiSelectorDataSourceTests.swift in Sources */,
+				5768315126694ADC00FDFB6C /* AuthenticationManagerTests.swift in Sources */,
 				D82DFB4C225F303200EFE2CB /* EmptyListMessageWithActionTests.swift in Sources */,
 				0298431225936DFC00979CAE /* ShippingLabelsTopBannerFactoryTests.swift in Sources */,
 				57B374B6245B331100D58BE0 /* EmptyStateViewControllerTests.swift in Sources */,

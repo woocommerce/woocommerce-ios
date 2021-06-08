@@ -3,6 +3,8 @@
 6.9
 -----
 
+- [*] Improved application log viewer. [https://github.com/woocommerce/woocommerce-ios/pull/4387]
+
 
 6.8
 -----

@@ -42,6 +42,7 @@ public typealias OrderStatsV4Interval = Networking.OrderStatsV4Interval
 public typealias OrderStatsV4Totals = Networking.OrderStatsV4Totals
 public typealias OrderStatus = Networking.OrderStatus
 public typealias PaymentGateway = Networking.PaymentGateway
+public typealias PaymentGatewayAccount = Networking.PaymentGatewayAccount
 public typealias Product = Networking.Product
 public typealias ProductAddOn = Networking.ProductAddOn
 public typealias ProductAddOnOption = Networking.ProductAddOnOption

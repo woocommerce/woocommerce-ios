@@ -60,9 +60,13 @@ final class SettingsViewController: UIViewController {
 
     /// Payment Gateway Account ResultsController
     ///
-    private let gatewayAccountResultsController: ResultsController<StoragePaymentGatewayAccount> = {
+    private var gatewayAccountResultsController: ResultsController<StoragePaymentGatewayAccount>? = {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            DDLogError("⛔️ Cannot find ID for current site to load accounts for!")
+            return nil
+        }
+
         let storageManager = ServiceLocator.storageManager
-        /// TODO - resolve how I want to manage the siteID here. Should I just fetch all gatewayAccounts and filter by siteID later perhaps?
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
 
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [])
@@ -70,7 +74,13 @@ final class SettingsViewController: UIViewController {
 
     /// Accounts pulled from the results controller
     ///
-    private var gatewayAccounts = [StoragePaymentGatewayAccount]()
+    private var gatewayAccounts: [PaymentGatewayAccount] {
+        guard gatewayAccountResultsController != nil else {
+            return []
+        }
+
+        return gatewayAccountResultsController?.fetchedObjects ?? []
+    }
 
     /// Store Picker Coordinator
     ///
@@ -141,18 +151,16 @@ private extension SettingsViewController {
             return
         }
 
-        gatewayAccountResultsController.onDidChangeContent = {
+        gatewayAccountResultsController?.onDidChangeContent = {
             onReload()
         }
 
-        gatewayAccountResultsController.onDidResetContent = { [weak self] in
-            guard let self = self else {
-                return
-            }
+        gatewayAccountResultsController?.onDidResetContent = {
+            // TODO - is this correct for onDidResetContent?
             onReload()
         }
 
-        try? gatewayAccountResultsController.performFetch()
+        try? gatewayAccountResultsController?.performFetch()
     }
 
     func configureTableViewFooter() {

@@ -494,6 +494,25 @@ private extension SiteAddressViewController {
     }
 
     func presentNextControllerIfPossible(siteInfo: WordPressComSiteInfo?) {
+
+        // Ensure that we're using the verified URL before passing the `loginFields` to the next
+        // view controller.
+        //
+        // In some scenarios, the text field change callback in `configureTextField()` gets executed
+        // right after we validated and modified `loginFields.siteAddress` in `validateForm()`. And
+        // this causes the value of `loginFields.siteAddress` to be reset to what the user entered.
+        //
+        // Using the user-entered `loginFields.siteAddress` causes problems when we try to log
+        // the user in. For example, validating their self-hosted site credentials somehow
+        // fails. Especially if they only entered the domain (no url scheme).
+        //
+        // This routine fixes that problem. We'll use what we already validated from
+        // `fetchSiteInfo()`.
+        //
+        if let verifiedSiteAddress = siteInfo?.url {
+            loginFields.siteAddress = verifiedSiteAddress
+        }
+
         guard siteInfo?.isWPCom == false else {
             showGetStarted()
             return

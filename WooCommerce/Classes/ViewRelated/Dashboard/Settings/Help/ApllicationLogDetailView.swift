@@ -18,11 +18,9 @@ final class ApplicationLogDetailViewController: UIHostingController<ApplicationL
 }
 
 struct ApplicationLogDetailView: View {
-    let viewModel: ApplicationLogViewModel
+    @ObservedObject var viewModel: ApplicationLogViewModel
 
     private let lastLineID: UUID?
-
-    @State private var lastCellVisible = false
 
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -54,20 +52,7 @@ struct ApplicationLogDetailView: View {
                     Text(line.text)
                         .bodyStyle()
                 }
-                .onAppear(perform: {
-                    if isLastLine(line) {
-                        withAnimation {
-                            lastCellVisible = true
-                        }
-                    }
-                })
-                .onDisappear(perform: {
-                    if isLastLine(line) {
-                        withAnimation {
-                            lastCellVisible = false
-                        }
-                    }
-                })
+                .storeAppearance(on: $viewModel.lastCellIsVisible, if: isLastLine(line))
             }
             .overlay(
                 scrollToBottomButton {
@@ -88,7 +73,7 @@ struct ApplicationLogDetailView: View {
 
     func scrollToBottomButton(_ action: @escaping () -> Void) -> some View {
         Group {
-            if !lastCellVisible {
+            if !viewModel.buttonVisible {
                 Button(action: {
                     action()
                 }, label: {
@@ -99,6 +84,23 @@ struct ApplicationLogDetailView: View {
                 .frame(width: 32, height: 32)
                 .padding()
                 .transition(.move(edge: .bottom))
+            }
+        }
+    }
+}
+
+private extension View {
+    func storeAppearance(on target: Binding<Bool>, if condition: @autoclosure () -> Bool) -> some View {
+        Group {
+            if condition() {
+                onAppear {
+                    target.wrappedValue = true
+                }
+                .onDisappear {
+                    target.wrappedValue = false
+                }
+            } else {
+                self
             }
         }
     }

@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import UIKit
 
 struct ApplicationLogLine: Identifiable {
@@ -31,11 +32,17 @@ struct ApplicationLogLine: Identifiable {
     }
 }
 
-final class ApplicationLogViewModel {
+final class ApplicationLogViewModel: ObservableObject {
     private let logText: String
     let lines: [ApplicationLogLine]
 
     var present: ((UIViewController) -> Void)? = nil
+
+    @Published var lastCellIsVisible = false
+
+    @Published var buttonVisible = true
+
+    private var cancellableSet: Set<AnyCancellable> = []
 
     init(logText: String) {
         self.logText = logText
@@ -43,6 +50,12 @@ final class ApplicationLogViewModel {
             .split(separator: "\n")
             .map(String.init)
             .map(ApplicationLogLine.init(text:))
+
+        $lastCellIsVisible
+            .map(!)
+            .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
+            .assign(to: \.buttonVisible, on: self)
+            .store(in: &cancellableSet)
     }
 
     func showShareActivity() {

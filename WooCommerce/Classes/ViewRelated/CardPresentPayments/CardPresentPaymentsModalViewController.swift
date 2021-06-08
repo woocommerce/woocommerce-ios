@@ -126,7 +126,11 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func styleSecondaryButton() {
-        secondaryButton.applySecondaryLightButtonStyle()
+        if viewModel.actionsMode == .secondaryOnlyAction {
+            secondaryButton.applyPaymentsModalCancelButtonStyle()
+        } else {
+            secondaryButton.applySecondaryLightButtonStyle()
+        }
         secondaryButton.titleLabel?.adjustsFontSizeToFitWidth = true
         secondaryButton.titleLabel?.minimumScaleFactor = 0.5
     }
@@ -148,6 +152,7 @@ private extension CardPresentPaymentsModalViewController {
 
         if shouldShowActionButtons() {
             configureActionButtonsView()
+            styleActionButtons()
         } else {
             hideActionButtonsView()
         }

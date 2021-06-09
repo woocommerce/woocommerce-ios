@@ -6,7 +6,7 @@ public extension WCPayAccount {
     func toPaymentGatewayAccount(siteID: Int64) -> PaymentGatewayAccount { // TODO can we add siteID to WCPayAccount?
         return PaymentGatewayAccount(
             siteID: siteID,
-            gatewayID: "woocommerce-payments", // TODO constant/enum
+            gatewayID: WCPayAccount.gatewayID,
             status: status.rawValue,
             hasPendingRequirements: hasPendingRequirements,
             hasOverdueRequirements: hasOverdueRequirements,

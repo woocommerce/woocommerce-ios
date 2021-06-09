@@ -65,7 +65,7 @@ private extension PaymentGatewayAccountStore {
                 onCompletion(.success(()))
                     return
             case .failure(let error):
-                self.deleteStaleAccount(siteID: siteID, gatewayID: "woocommerce-payments") // TODO make a constant/enum
+                self.deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID)
                 onCompletion(.failure(error))
                 return
             }

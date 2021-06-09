@@ -70,19 +70,17 @@ private extension PrivacySettingsViewController {
 
     func loadAccountSettings(completion: (()-> Void)? = nil) {
         guard let defaultAccount = ServiceLocator.stores.sessionManager.defaultAccount else {
+            completion?()
             return
         }
 
         let userID = defaultAccount.userID
 
-        let action = AccountAction.synchronizeAccountSettings(userID: userID) { [weak self] (accountSettings, error) in
-            guard let self = self,
-                let accountSettings = accountSettings else {
-                    return
+        let action = AccountAction.synchronizeAccountSettings(userID: userID) { [weak self] result in
+            if case let .success(accountSettings) = result {
+                // Switch is off when opting out of Tracks
+                self?.collectInfo = !accountSettings.tracksOptOut
             }
-
-            // Switch is off when opting out of Tracks
-            self.collectInfo = !accountSettings.tracksOptOut
 
             completion?()
         }
@@ -266,12 +264,9 @@ private extension PrivacySettingsViewController {
 
         let userID = defaultAccount.userID
 
-        let action = AccountAction.updateAccountSettings(userID: userID, tracksOptOut: userOptedOut) { error in
-
-            guard let _ = error else {
+        let action = AccountAction.updateAccountSettings(userID: userID, tracksOptOut: userOptedOut) { result in
+            if case .success = result {
                 ServiceLocator.analytics.setUserHasOptedOut(userOptedOut)
-
-                return
             }
         }
         ServiceLocator.stores.dispatch(action)

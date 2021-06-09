@@ -7,7 +7,7 @@ public class AccountRemote: Remote {
 
     /// Loads the Account Details associated with the Credential's authToken.
     ///
-    public func loadAccount(completion: @escaping (Account?, Error?) -> Void) {
+    public func loadAccount(completion: @escaping (Swift.Result<Account, Error>) -> Void) {
         let path = "me"
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path)
         let mapper = AccountMapper()
@@ -20,7 +20,7 @@ public class AccountRemote: Remote {
     /// - Parameters:
     ///   - for: The dotcom user ID - used primarily for persistence not on the actual network call
     ///
-    public func loadAccountSettings(for userID: Int64, completion: @escaping (AccountSettings?, Error?) -> Void) {
+    public func loadAccountSettings(for userID: Int64, completion: @escaping (Swift.Result<AccountSettings, Error>) -> Void) {
         let path = "me/settings"
         let parameters = [
             "fields": "tracks_opt_out,first_name,last_name"
@@ -35,7 +35,7 @@ public class AccountRemote: Remote {
     /// - Parameters:
     ///   - userID: The dotcom user ID - used primarily for persistence not on the actual network call
     ///
-    public func updateAccountSettings(for userID: Int64, tracksOptOut: Bool, completion: @escaping (AccountSettings?, Error?) -> Void) {
+    public func updateAccountSettings(for userID: Int64, tracksOptOut: Bool, completion: @escaping (Swift.Result<AccountSettings, Error>) -> Void) {
         let path = "me/settings"
         let parameters = [
             "fields": "tracks_opt_out",
@@ -51,7 +51,7 @@ public class AccountRemote: Remote {
 
     /// Loads the Sites collection associated with the WordPress.com User.
     ///
-    public func loadSites(completion: @escaping ([Site]?, Error?) -> Void) {
+    public func loadSites(completion: @escaping (Swift.Result<[Site], Error>) -> Void) {
         let path = "me/sites"
         let parameters = [
             "fields": "ID,name,description,URL,options",
@@ -66,7 +66,7 @@ public class AccountRemote: Remote {
 
     /// Loads the site plan for the default site associated with the WordPress.com user.
     ///
-    public func loadSitePlan(for siteID: Int64, completion: @escaping (SitePlan?, Error?) -> Void) {
+    public func loadSitePlan(for siteID: Int64, completion: @escaping (Swift.Result<SitePlan, Error>) -> Void) {
         let path = "sites/\(siteID)"
         let parameters = [
             "fields": "ID,plan"

@@ -19,36 +19,37 @@ class AccountRemoteTests: XCTestCase {
 
     /// Verifies that loadAccountDetails properly parses the `me` sample response.
     ///
-    func testLoadAccountDetailsProperlyReturnsParsedAccount() {
+    func test_loadAccount_properly_returns_parsed_account() {
+        // Given
         let remote = AccountRemote(network: network)
-        let expectation = self.expectation(description: "Load Account Details")
-
         network.simulateResponse(requestUrlSuffix: "me", filename: "me")
 
-        remote.loadAccount { (account, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(account)
-
-            expectation.fulfill()
+        // When
+        let result: Result<Account, Error> = waitFor { promise in
+            remote.loadAccount { result in
+                promise(result)
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isSuccess)
     }
 
-    func testUpdateAccountDetailsProperlyReturnsParsedAccount() {
+    func test_updateAccountSettings_properly_returns_parsed_account() {
+        // Given
         let remoteID: Int64 = 1
         let optOut = false
         let remote = AccountRemote(network: network)
-        let expectation = self.expectation(description: "Update Account Details")
-
         network.simulateResponse(requestUrlSuffix: "me/settings", filename: "me-settings")
-        remote.updateAccountSettings(for: remoteID, tracksOptOut: optOut) { (accountSettings, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(accountSettings)
 
-            expectation.fulfill()
+        // When
+        let result: Result<AccountSettings, Error> = waitFor { promise in
+            remote.updateAccountSettings(for: remoteID, tracksOptOut: optOut) { result in
+                promise(result)
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isSuccess)
     }
 }

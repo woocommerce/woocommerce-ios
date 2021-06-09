@@ -287,7 +287,6 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
                     DDLogError("⛔️ Error synchronizing orders: \(error)")
                     ErrorTopBannerFactory.showTopBannerView(banner: self.topBannerView, in: self.tableView)
                 } else {
-                    ErrorTopBannerFactory.hideTopBannerView(banner: self.topBannerView, in: self.tableView)
                     ServiceLocator.analytics.track(event: .ordersListLoaded(totalDuration: totalDuration,
                                                                             pageNumber: pageNumber,
                                                                             status: self.viewModel.statusFilter))
@@ -501,6 +500,7 @@ private extension OrderListViewController {
     ///
     func transitionToSyncingState() {
         state = dataSource.isEmpty ? .placeholder : .syncing
+        ErrorTopBannerFactory.hideTopBannerView(banner: topBannerView, in: tableView)
     }
 
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).

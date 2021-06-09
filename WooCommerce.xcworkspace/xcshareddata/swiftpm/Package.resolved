@@ -20,6 +20,15 @@
         }
       },
       {
+        "package": "ScreenObject",
+        "repositoryURL": "https://github.com/Automattic/ScreenObject",
+        "state": {
+          "branch": "trunk",
+          "revision": "3d93c36483884db3fab88aea5c181ce75ceeac1d",
+          "version": null
+        }
+      },
+      {
         "package": "SwiftUI-Shimmer",
         "repositoryURL": "https://github.com/markiv/SwiftUI-Shimmer",
         "state": {

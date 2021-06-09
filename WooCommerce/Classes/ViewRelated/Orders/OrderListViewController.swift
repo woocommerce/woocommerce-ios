@@ -89,6 +89,23 @@ final class OrderListViewController: UIViewController {
 
     private let siteID: Int64
 
+    /// Top banner that shows an error if there is a problem loading orders data
+    ///
+    private lazy var topBannerView: TopBannerView = {
+        ErrorTopBannerFactory.createTopBanner(isExpanded: false,
+                                              expandedStateChangeHandler: { [weak self] in
+                                                self?.tableView.updateHeaderHeight()
+                                              },
+                                              onTroubleshootButtonPressed: { [weak self] in
+                                                let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
+                                                self?.present(safariViewController, animated: true, completion: nil)
+                                              },
+                                              onContactSupportButtonPressed: { [weak self] in
+                                                guard let self = self else { return }
+                                                ZendeskManager.shared.showNewRequestIfPossible(from: self, with: nil)
+                                              })
+    }()
+
     // MARK: - View Lifecycle
 
     /// Designated initializer.
@@ -268,8 +285,9 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
                 if let error = error {
                     DDLogError("⛔️ Error synchronizing orders: \(error)")
-                    self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize, reason: reason)
+                    self.showTopBannerView()
                 } else {
+                    self.hideTopBannerView()
                     ServiceLocator.analytics.track(event: .ordersListLoaded(totalDuration: totalDuration,
                                                                             pageNumber: pageNumber,
                                                                             status: self.viewModel.statusFilter))
@@ -280,6 +298,29 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         }
 
         ServiceLocator.stores.dispatch(action)
+    }
+
+    func showTopBannerView() {
+        guard tableView.tableHeaderView == nil else {
+            return
+        }
+
+        // Configure header container view
+        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
+        headerContainer.addSubview(topBannerView)
+        headerContainer.pinSubviewToSafeArea(topBannerView)
+
+        tableView.tableHeaderView = headerContainer
+        tableView.updateHeaderHeight()
+    }
+
+    func hideTopBannerView() {
+        guard tableView.tableHeaderView != nil else {
+            return
+        }
+
+        topBannerView.removeFromSuperview()
+        tableView.tableHeaderView = nil
     }
 }
 
@@ -342,23 +383,6 @@ private extension OrderListViewController {
         ghostableTableView.isHidden = true
         ghostableTableView.stopGhostAnimation()
         ghostableTableView.removeGhostContent()
-    }
-
-    /// Displays the Error Notice.
-    ///
-    func displaySyncingErrorNotice(pageNumber: Int, pageSize: Int, reason: String?) {
-        let message = NSLocalizedString("Unable to refresh list", comment: "Refresh Action Failed")
-        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            self.delegate?.orderListViewControllerWillSynchronizeOrders(self)
-            self.sync(pageNumber: pageNumber, pageSize: pageSize, reason: reason)
-        }
-
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
     /// Shows the EmptyStateViewController

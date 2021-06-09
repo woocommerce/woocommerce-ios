@@ -9,6 +9,8 @@ extension Storage.PaymentGatewayAccount: ReadOnlyConvertible {
     ///
     public func update(with paymentGatewayAccount: Yosemite.PaymentGatewayAccount) {
         status = paymentGatewayAccount.status
+        siteID = paymentGatewayAccount.siteID
+        gatewayID = paymentGatewayAccount.gatewayID
         hasPendingRequirements = paymentGatewayAccount.hasPendingRequirements
         hasOverdueRequirements = paymentGatewayAccount.hasOverdueRequirements
         currentDeadline = paymentGatewayAccount.currentDeadline

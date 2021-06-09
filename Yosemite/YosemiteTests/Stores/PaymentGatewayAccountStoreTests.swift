@@ -91,14 +91,13 @@ final class PaymentGatewayAccountStoreTests: XCTestCase {
 
         XCTAssert(viewStorage.countObjects(ofType: Storage.PaymentGatewayAccount.self, matching: nil) == 1)
 
-        // TODO This doesn't find the storageAccount. Why not?
-        // let storageAccount = viewStorage.loadPaymentGatewayAccount(
-        //    siteID: sampleSiteID,
-        //    gatewayID: WCPayAccount.gatewayID
-        //)
+        let storageAccount = viewStorage.loadPaymentGatewayAccount(
+            siteID: sampleSiteID,
+            gatewayID: WCPayAccount.gatewayID
+        )
 
-        // TODO Figure out why the storageAccount lacks siteID and gatewayID here but everything else is fine
-        let storageAccount = viewStorage.firstObject(ofType: Storage.PaymentGatewayAccount.self)
+        XCTAssert(storageAccount?.siteID == sampleSiteID)
+        XCTAssert(storageAccount?.gatewayID == WCPayAccount.gatewayID)
         XCTAssert(storageAccount?.status == "complete")
     }
 
@@ -120,7 +119,7 @@ final class PaymentGatewayAccountStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that the store hits the network when capturing a payment ID, and that propagates sucess.
+    /// Verifies that the store hits the network when capturing a payment ID, and that propagates success.
     ///
     func test_capturePaymentID_returns_expected_data() throws {
         let store = PaymentGatewayAccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)

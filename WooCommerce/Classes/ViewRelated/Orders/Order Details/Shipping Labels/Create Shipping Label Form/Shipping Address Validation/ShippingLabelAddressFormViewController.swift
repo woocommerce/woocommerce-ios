@@ -52,13 +52,11 @@ final class ShippingLabelAddressFormViewController: UIViewController {
 
     /// Init
     ///
-    init(
-        siteID: Int64,
-        type: ShipType,
-        address: ShippingLabelAddress?,
-        validationError: ShippingLabelAddressValidationError?,
-        completion: @escaping Completion
-    ) {
+    init(siteID: Int64,
+         type: ShipType,
+         address: ShippingLabelAddress?,
+         validationError: ShippingLabelAddressValidationError?,
+         completion: @escaping Completion ) {
         viewModel = ShippingLabelAddressFormViewModel(siteID: siteID, type: type, address: address, validationError: validationError)
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
@@ -122,14 +120,6 @@ private extension ShippingLabelAddressFormViewController {
         registerTableViewCells()
 
         tableView.dataSource = self
-
-        // Configure header container view
-        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
-        headerContainer.addSubview(topStackView)
-        headerContainer.pinSubviewToSafeArea(topStackView)
-        topStackView.addArrangedSubview(topBannerView)
-
-        tableView.tableHeaderView = headerContainer
     }
 
     func registerTableViewCells() {
@@ -147,8 +137,32 @@ private extension ShippingLabelAddressFormViewController {
     }
 
     func updateTopBannerView() {
-        topBannerView.isHidden = !viewModel.shouldShowTopBannerView
+        if !viewModel.shouldShowTopBannerView {
+            hideTopBannerView()
+        }
+        else {
+            displayTopBannerView()
+        }
+    }
+
+    func displayTopBannerView() {
+        // Configure header container view
+        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
+        headerContainer.addSubview(topStackView)
+        headerContainer.pinSubviewToSafeArea(topStackView)
+        topStackView.addArrangedSubview(topBannerView)
+
+        tableView.tableHeaderView = headerContainer
         tableView.updateHeaderHeight()
+    }
+
+    func hideTopBannerView() {
+        guard tableView.tableHeaderView != nil else {
+            return
+        }
+
+        topBannerView.removeFromSuperview()
+        tableView.tableHeaderView = nil
     }
 
     func configureConfirmButton() {
@@ -475,9 +489,5 @@ private extension ShippingLabelAddressFormViewController {
                                                             comment: "Error in finding the address in the Shipping Label Address Validation in Apple Maps")
         static let phoneNumberErrorNotice = NSLocalizedString("The phone number is not valid or you can't call the customer from this device.",
             comment: "Error in calling the phone number of the customer in the Shipping Label Address Validation")
-    }
-
-    enum Constants {
-        static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
 }

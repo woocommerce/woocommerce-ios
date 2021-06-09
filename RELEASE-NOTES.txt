@@ -2,7 +2,7 @@
 
 6.9
 -----
-
+- [*] Products: You can edit product attributes for variations right from the main product form. [https://github.com/woocommerce/woocommerce-ios/pull/4350]
 
 6.8
 -----

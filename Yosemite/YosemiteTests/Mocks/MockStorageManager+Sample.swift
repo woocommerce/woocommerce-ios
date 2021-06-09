@@ -41,11 +41,18 @@ extension MockStorageManager {
     }
 
     /// Inserts a new (Sample) ProductVariation into the specified context.
+    /// Adds it to a product if required.
     ///
     @discardableResult
-    func insertSampleProductVariation(readOnlyProductVariation: ProductVariation) -> StorageProductVariation {
+    func insertSampleProductVariation(readOnlyProductVariation: ProductVariation, on readOnlyProduct: Product? = nil) -> StorageProductVariation {
         let newProductVariation = viewStorage.insertNewObject(ofType: StorageProductVariation.self)
         newProductVariation.update(with: readOnlyProductVariation)
+
+        if let readOnlyProduct = readOnlyProduct {
+            let newProduct = viewStorage.insertNewObject(ofType: StorageProduct.self)
+            newProduct.update(with: readOnlyProduct)
+            newProductVariation.product = newProduct
+        }
 
         return newProductVariation
     }

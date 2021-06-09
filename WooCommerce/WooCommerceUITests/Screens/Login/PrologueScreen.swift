@@ -1,4 +1,4 @@
-import Foundation
+import ScreenObject
 import XCTest
 
 private struct ElementStringIDs {
@@ -6,15 +6,18 @@ private struct ElementStringIDs {
     static let siteAddressButton = "Prologue Self Hosted Button"
 }
 
-final class PrologueScreen: BaseScreen {
+final class PrologueScreen: ScreenObject {
     private let continueButton: XCUIElement
     private let siteAddressButton: XCUIElement
 
-    init() {
+    init(app: XCUIApplication = XCUIApplication()) throws {
         continueButton = XCUIApplication().buttons[ElementStringIDs.continueButton]
         siteAddressButton = XCUIApplication().buttons[ElementStringIDs.siteAddressButton]
 
-        super.init(element: continueButton)
+        try super.init(
+            probeElementGetter: { $0.buttons[ElementStringIDs.continueButton] },
+            app: app
+        )
     }
 
     func selectContinueWithWordPress() -> GetStartedScreen {
@@ -27,9 +30,5 @@ final class PrologueScreen: BaseScreen {
         siteAddressButton.tap()
 
         return LoginSiteAddressScreen()
-    }
-
-    static func isLoaded() -> Bool {
-        return XCUIApplication().buttons[ElementStringIDs.continueButton].exists
     }
 }

@@ -13,7 +13,7 @@ final class LoginTests: XCTestCase {
 
     // Login with Store Address and log out.
     func test_site_address_login_logout() {
-        let prologue = PrologueScreen().selectSiteAddress()
+        let prologue = try! PrologueScreen().selectSiteAddress()
             .proceedWith(siteUrl: TestCredentials.siteUrl)
             .proceedWith(email: TestCredentials.emailAddress)
             .proceedWith(password: TestCredentials.password)
@@ -26,12 +26,12 @@ final class LoginTests: XCTestCase {
             .logOut()
 
 
-        XCTAssert(prologue.isLoaded())
+        XCTAssert(prologue.isLoaded)
     }
 
     //Login with WordPress.com account and log out
     func test_WordPress_login_logout() {
-        let prologue = PrologueScreen().selectContinueWithWordPress()
+        let prologue = try! PrologueScreen().selectContinueWithWordPress()
             .proceedWith(email: TestCredentials.emailAddress)
             .proceedWith(password: TestCredentials.password)
             .verifyEpilogueDisplays(displayName: TestCredentials.displayName, siteUrl: TestCredentials.siteUrl)
@@ -42,11 +42,11 @@ final class LoginTests: XCTestCase {
             .verifySelectedStoreDisplays(storeName: TestCredentials.storeName, siteUrl: TestCredentials.siteUrl)
             .logOut()
 
-        XCTAssert(prologue.isLoaded())
+        XCTAssert(prologue.isLoaded)
     }
 
     func test_WordPress_unsuccessfull_login() {
-        _ = PrologueScreen().selectContinueWithWordPress()
+        _ = try! PrologueScreen().selectContinueWithWordPress()
             .proceedWith(email: TestCredentials.emailAddress)
             .tryProceed(password: "invalidPswd")
             .verifyLoginError()

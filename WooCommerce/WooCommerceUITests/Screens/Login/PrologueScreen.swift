@@ -7,15 +7,19 @@ private struct ElementStringIDs {
 }
 
 final class PrologueScreen: ScreenObject {
-    private let continueButton: XCUIElement
-    private let siteAddressButton: XCUIElement
+    private let continueButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons[ElementStringIDs.continueButton]
+    }
+    private let siteAddressButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons[ElementStringIDs.siteAddressButton]
+    }
+
+    private var continueButton: XCUIElement { expectedElement }
+    private var siteAddressButton: XCUIElement { siteAddressButtonGetter(app) }
 
     init(app: XCUIApplication = XCUIApplication()) throws {
-        continueButton = XCUIApplication().buttons[ElementStringIDs.continueButton]
-        siteAddressButton = XCUIApplication().buttons[ElementStringIDs.siteAddressButton]
-
         try super.init(
-            probeElementGetter: { $0.buttons[ElementStringIDs.continueButton] },
+            expectedElementGetter: { $0.buttons[ElementStringIDs.continueButton] },
             app: app
         )
     }

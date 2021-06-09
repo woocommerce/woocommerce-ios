@@ -105,7 +105,7 @@ DEPENDENCIES:
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 1.4.0)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (~> 1.38.0-beta)
+  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, branch `issue/wc-4034-fix-login-ui`)
   - WordPressKit (~> 4.32.0)
   - WordPressShared (~> 1.15)
   - WordPressUI (~> 1.7.2)
@@ -158,6 +158,16 @@ SPEC REPOS:
     - ZendeskSupportProvidersSDK
     - ZendeskSupportSDK
 
+EXTERNAL SOURCES:
+  WordPressAuthenticator:
+    :branch: issue/wc-4034-fix-login-ui
+    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
+
+CHECKOUT OPTIONS:
+  WordPressAuthenticator:
+    :commit: aa020aa62cc50f6bc24e51d0fb6f64bcf871d79b
+    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
+
 SPEC CHECKSUMS:
   1PasswordExtension: f97cc80ae58053c331b2b6dc8843ba7103b33794
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
@@ -200,6 +210,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: 2be25b94c00aee591bd35eb860d7d11edda8f45e
+PODFILE CHECKSUM: 14ae912695644234a8ff2ff819cdd06bf7b6f837
 
 COCOAPODS: 1.10.1

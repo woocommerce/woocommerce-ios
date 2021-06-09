@@ -21,6 +21,33 @@ struct ErrorTopBannerFactory {
 
         return topBannerView
     }
+
+    /// Display the error banner in the table view header
+    ///
+    static func showTopBannerView(banner topBannerView: TopBannerView, in tableView: UITableView) {
+        guard tableView.tableHeaderView == nil else {
+            return
+        }
+
+        // Configure header container view
+        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
+        headerContainer.addSubview(topBannerView)
+        headerContainer.pinSubviewToSafeArea(topBannerView)
+
+        tableView.tableHeaderView = headerContainer
+        tableView.updateHeaderHeight()
+    }
+
+    /// Hide the error banner from the table view header
+    ///
+    static func hideTopBannerView(banner topBannerView: TopBannerView, in tableView: UITableView) {
+        guard tableView.tableHeaderView != nil else {
+            return
+        }
+
+        topBannerView.removeFromSuperview()
+        tableView.tableHeaderView = nil
+    }
 }
 
 private extension ErrorTopBannerFactory {

@@ -285,9 +285,9 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
                 if let error = error {
                     DDLogError("⛔️ Error synchronizing orders: \(error)")
-                    self.showTopBannerView()
+                    ErrorTopBannerFactory.showTopBannerView(banner: self.topBannerView, in: self.tableView)
                 } else {
-                    self.hideTopBannerView()
+                    ErrorTopBannerFactory.hideTopBannerView(banner: self.topBannerView, in: self.tableView)
                     ServiceLocator.analytics.track(event: .ordersListLoaded(totalDuration: totalDuration,
                                                                             pageNumber: pageNumber,
                                                                             status: self.viewModel.statusFilter))
@@ -298,29 +298,6 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         }
 
         ServiceLocator.stores.dispatch(action)
-    }
-
-    func showTopBannerView() {
-        guard tableView.tableHeaderView == nil else {
-            return
-        }
-
-        // Configure header container view
-        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
-        headerContainer.addSubview(topBannerView)
-        headerContainer.pinSubviewToSafeArea(topBannerView)
-
-        tableView.tableHeaderView = headerContainer
-        tableView.updateHeaderHeight()
-    }
-
-    func hideTopBannerView() {
-        guard tableView.tableHeaderView != nil else {
-            return
-        }
-
-        topBannerView.removeFromSuperview()
-        tableView.tableHeaderView = nil
     }
 }
 

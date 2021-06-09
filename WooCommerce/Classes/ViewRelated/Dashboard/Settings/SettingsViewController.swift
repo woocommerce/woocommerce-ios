@@ -112,7 +112,7 @@ private extension SettingsViewController {
         tableView.delegate = self
     }
 
-    private func refreshResultsController() {
+    func refreshResultsController() {
         try? resultsController.performFetch()
         sites = resultsController.fetchedObjects
     }

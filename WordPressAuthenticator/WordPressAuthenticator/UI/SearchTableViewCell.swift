@@ -76,7 +76,7 @@ extension SearchTableViewCell: UITextFieldDelegate {
 
 // MARK: - Loader
 //
-extension SearchTableViewCell {
+public extension SearchTableViewCell {
     func showLoader() {
         guard let leftView = textField.leftView else { return }
         let spinner = UIActivityIndicatorView(frame: leftView.frame)

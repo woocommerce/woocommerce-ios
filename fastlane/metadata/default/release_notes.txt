@@ -1,3 +1,3 @@
-If you are using the WooCommerce Product Add-ons extension (made by WooCommerce) and have been wanting to see those details when viewing an order, wait no longer! We have added experimental support to the app to show those add-ons in orders. To give it a try, head on over to Experimental Features in Settings to enable it. Please send us your feedback on your experience!
+You can now create and edit a virtual product directly from the product details screen!
 
-We’re also moving to support iOS 14 or later only with the next release after this one. To continue receiving updates to the WooCommerce app, please upgrade your device to iOS 14.
+Please note that iOS 13 is no longer supported. Only iOS 14 and later versions will be supported going forward.

@@ -1,3 +1,3 @@
-Om du använder tillägget WooCommerce-produkttillägg (skapat av WooCommerce) och har velat se den informationen när du visar en beställning så kan du känna dig nöjd! Vi har lagt till experimentellt stöd i appen för att visa dessa tillägg i beställningar. Om du vill testa kan du bege dig till Experimentella funktioner i Inställningarna och aktivera det. Skicka oss gärna din feedback om upplevelsen!
+Du kan nu skapa och redigera en virtuell produkt direkt från produktinformationsskärmen!
 
-I versionen efter den här kommer vi även att ändra så vi endast stöder iOS 14 eller senare. Om du vill fortsätta att få uppdateringar av WooCommerce-appen måste du uppgradera enheten till iOS 14.
+Observera att iOS 13 inte längre stöds. Från och med nu stöds endast iOS 14 och senare versioner.

@@ -6,6 +6,8 @@ class StorageTypeExtensionsTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 98765
 
+    private let sampleGatewayID: String = "woocommerce-payments"
+
     private var storageManager: StorageManagerType!
 
     private var storage: StorageType! {
@@ -1051,7 +1053,7 @@ class StorageTypeExtensionsTests: XCTestCase {
         let account = storage.insertNewObject(ofType: PaymentGatewayAccount.self)
         account.country = "US"
         account.defaultCurrency = "USD"
-        account.gatewayID = "woocommerce-payments"
+        account.gatewayID = sampleGatewayID
         account.hasOverdueRequirements = false
         account.hasPendingRequirements = false
         account.isCardPresentEligible = true
@@ -1061,7 +1063,7 @@ class StorageTypeExtensionsTests: XCTestCase {
         account.supportedCurrencies = ["USD"]
 
         // When
-        let foundAccount = try XCTUnwrap(storage.loadPaymentGatewayAccount(siteID: sampleSiteID))
+        let foundAccount = try XCTUnwrap(storage.loadPaymentGatewayAccount(siteID: sampleSiteID, gatewayID: sampleGatewayID))
 
         // Then
         XCTAssertEqual(foundAccount, account)

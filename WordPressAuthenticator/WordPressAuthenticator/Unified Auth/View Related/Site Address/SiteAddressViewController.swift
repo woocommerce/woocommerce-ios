@@ -467,7 +467,6 @@ private extension SiteAddressViewController {
     }
 
     func fetchSiteInfo() {
-        print("🔴 SAVC > fetchSiteInfo")
         let baseSiteUrl = WordPressAuthenticator.baseSiteURL(string: loginFields.siteAddress)
         let service = WordPressComBlogService()
 

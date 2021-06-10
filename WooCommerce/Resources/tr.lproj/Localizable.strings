@@ -3450,7 +3450,7 @@
 "Your receipt" = "Makbuzunuz";
 
 /* Subject of email sent with a card present payment receipt */
-"Your receipt from %1$@" = "%1$ kaynağından aldığınız makbuz";
+"Your receipt from %1$@" = "%1$@ kaynağından aldığınız makbuz";
 
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "Sitenizin adresi, Safari ile sitenizi ziyaret ettiğinizde en üstte görüntülenir.";

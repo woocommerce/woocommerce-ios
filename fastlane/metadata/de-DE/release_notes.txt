@@ -1,3 +1,3 @@
-Wenn du die WooCommerce-Erweiterung für Produkt-Add-ons (von WooCommerce entwickelt) verwendest und diese Details bei der Anzeige einer Bestellung sehen wolltest, kannst du dies jetzt tun! Wir haben eine experimentelle Unterstützung der App zur Anzeige dieser Add-ons in Bestellungen hinzugefügt. Gehe zu den experimentellen Funktionen in den Einstellungen und aktiviere die Funktion, um sie auszuprobieren. Sende uns bitte dein Feedback zu deinen Erfahrungen damit!
+Jetzt hast du die Möglichkeit, ein virtuelles Produkt in der Produktdetailansicht zu erstellen und zu bearbeiten!
 
-Außerdem werden wir ab dem nächsten Release nach diesem iOS 14 und neuere Versionen unterstützen. Um weiterhin Updates für die WooCommerce-App zu erhalten, führe bitte ein Upgrade deines Geräts auf iOS 14 durch.
+Hinweis: iOS 13 wird nicht mehr unterstützt. Wir unterstützen ab sofort nur noch iOS 14 und höhere Versionen.

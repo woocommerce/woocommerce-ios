@@ -1,6 +1,7 @@
 import UIKit
 import WordPressUI
 import Yosemite
+import SafariServices.SFSafariViewController
 
 import class AutomatticTracks.CrashLogging
 
@@ -135,6 +136,10 @@ final class ProductsViewController: UIViewController {
     private var emptyStateViewController: UIViewController?
 
     private let siteID: Int64
+
+    /// Set when sync fails, and used to display an error loading data banner
+    ///
+    private var hasErrorLoadingData: Bool = false
 
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -395,9 +400,15 @@ private extension ProductsViewController {
 // MARK: - Updates
 //
 private extension ProductsViewController {
-    /// Fetches products feedback visibility from AppSettingsStore and update products top banner accordingly
+    /// Fetches products feedback visibility from AppSettingsStore and update products top banner accordingly.
+    /// If there is an error loading products data, an error banner replaces the products top banner.
     ///
     func showTopBannerViewIfNeeded() {
+        guard !hasErrorLoadingData else {
+            requestAndShowErrorTopBannerView()
+            return
+        }
+
         let action = AppSettingsAction.loadFeedbackVisibility(type: .productsVariations) { [weak self] result in
             switch result {
             case .success(let visible):
@@ -431,6 +442,27 @@ private extension ProductsViewController {
             self?.topBannerView = topBannerView
             self?.updateTableHeaderViewHeight()
         })
+    }
+
+    /// Request a new error loading data banner from `ErrorTopBannerFactory` and display it in the table header
+    ///
+    func requestAndShowErrorTopBannerView() {
+        let errorBanner = ErrorTopBannerFactory.createTopBanner(
+            isExpanded: false,
+            expandedStateChangeHandler: { [weak self] in
+                self?.tableView.updateHeaderHeight()
+            },
+            onTroubleshootButtonPressed: { [weak self] in
+                let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
+                self?.present(safariViewController, animated: true, completion: nil)
+            },
+            onContactSupportButtonPressed: { [weak self] in
+                guard let self = self else { return }
+                ZendeskManager.shared.showNewRequestIfPossible(from: self, with: nil)
+            })
+        topBannerContainerView.updateSubview(errorBanner)
+        topBannerView = errorBanner
+        updateTableHeaderViewHeight()
     }
 
     func hideTopBannerView() {
@@ -634,18 +666,6 @@ private extension ProductsViewController {
         tableView.reloadData()
     }
 
-    /// Displays the Error Notice.
-    ///
-    func displaySyncingErrorNotice(pageNumber: Int, pageSize: Int) {
-        let message = NSLocalizedString("Unable to refresh list", comment: "Refresh Action Failed")
-        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
-            self?.sync(pageNumber: pageNumber, pageSize: pageSize)
-        }
-
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
-    }
-
     /// Displays the overlay when there are no results.
     ///
     func displayNoResultsOverlay() {
@@ -724,7 +744,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                                     case .failure(let error):
                                         ServiceLocator.analytics.track(.productListLoadError, withError: error)
                                         DDLogError("⛔️ Error synchronizing products: \(error)")
-                                        self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
+                                        self.hasErrorLoadingData = true
                                     case .success:
                                         ServiceLocator.analytics.track(.productListLoaded)
                                     }
@@ -785,6 +805,9 @@ private extension ProductsViewController {
             } else {
                 ensureFooterSpinnerIsStarted()
             }
+            // Reset sync errors and remove top banner during sync
+            hasErrorLoadingData = false
+            hideTopBannerView()
         case .results:
             break
         }
@@ -797,6 +820,7 @@ private extension ProductsViewController {
         case .syncing:
             ensureFooterSpinnerIsStopped()
             removePlaceholderProducts()
+            showTopBannerViewIfNeeded()
         case .results:
             break
         }

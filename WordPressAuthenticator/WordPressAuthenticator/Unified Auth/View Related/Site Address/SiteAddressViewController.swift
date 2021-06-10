@@ -19,6 +19,15 @@ final class SiteAddressViewController: LoginViewController {
     private var errorMessage: String?
     private var shouldChangeVoiceOverFocus: Bool = false
 
+    /// A state variable that is `true` if network calls are currently happening and so the
+    /// view should be showing a loading indicator.
+    ///
+    /// This should only be modified within `configureViewLoading(_ loading:)`.
+    ///
+    /// This state is mainly used in `configureSubmitButton()` to determine whether the button
+    /// should show an activity indicator.
+    private var viewIsLoading: Bool = false
+
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
         tracker.track(click: .submit)
@@ -36,7 +45,7 @@ final class SiteAddressViewController: LoginViewController {
         localizePrimaryButton()
         registerTableViewCells()
         loadRows()
-        configureSubmitButton(animating: false)
+        configureSubmitButton()
         configureForAccessibility()
     }
 
@@ -44,7 +53,7 @@ final class SiteAddressViewController: LoginViewController {
         super.viewWillAppear(animated)
 
         siteURLField?.text = loginFields.siteAddress
-        configureSubmitButton(animating: false)
+        configureSubmitButton()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -80,6 +89,14 @@ final class SiteAddressViewController: LoginViewController {
     ///
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return WordPressAuthenticator.shared.unifiedStyle?.statusBarStyle ?? WordPressAuthenticator.shared.style.statusBarStyle
+    }
+
+    /// Configures the appearance and state of the submit button.
+    ///
+    /// Use this instead of the overridden `configureSubmitButton(animating:)` since this uses the
+    /// _current_ `viewIsLoading` state.
+    private func configureSubmitButton() {
+        configureSubmitButton(animating: viewIsLoading)
     }
 
     /// Configures the appearance and state of the submit button.
@@ -120,9 +137,11 @@ final class SiteAddressViewController: LoginViewController {
     /// - Parameter loading: True if the form should be configured to a "loading" state.
     ///
     override func configureViewLoading(_ loading: Bool) {
+        viewIsLoading = loading
+
         siteURLField?.isEnabled = !loading
 
-        configureSubmitButton(animating: loading)
+        configureSubmitButton()
         navigationItem.hidesBackButton = loading
     }
 
@@ -180,21 +199,6 @@ extension SiteAddressViewController: UITableViewDataSource {
         configure(cell, for: row, at: indexPath)
 
         return cell
-    }
-}
-
-// MARK: - UITableViewDelegate conformance
-extension SiteAddressViewController: UITableViewDelegate {
-    /// After the site address textfield cell is done displaying, remove the textfield reference.
-    ///
-    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard let row = rows[safe: indexPath.row] else {
-            return
-        }
-
-        if row == .siteAddress {
-            siteURLField = nil
-        }
     }
 }
 
@@ -304,9 +308,10 @@ private extension SiteAddressViewController {
         // Save a reference to the first textField so it can becomeFirstResponder.
         siteURLField = cell.textField
         cell.textField.delegate = self
+        cell.textField.text = loginFields.siteAddress
         cell.onChangeSelectionHandler = { [weak self] textfield in
             self?.loginFields.siteAddress = textfield.nonNilTrimmedText()
-            self?.configureSubmitButton(animating: false)
+            self?.configureSubmitButton()
         }
 
         SigninEditingState.signinEditingStateActive = true
@@ -462,7 +467,6 @@ private extension SiteAddressViewController {
     }
 
     func fetchSiteInfo() {
-        print("🔴 SAVC > fetchSiteInfo")
         let baseSiteUrl = WordPressAuthenticator.baseSiteURL(string: loginFields.siteAddress)
         let service = WordPressComBlogService()
 
@@ -489,6 +493,26 @@ private extension SiteAddressViewController {
     }
 
     func presentNextControllerIfPossible(siteInfo: WordPressComSiteInfo?) {
+
+        // Ensure that we're using the verified URL before passing the `loginFields` to the next
+        // view controller.
+        //
+        // In some scenarios, the text field change callback in `configureTextField()` gets executed
+        // right after we validated and modified `loginFields.siteAddress` in `validateForm()`. And
+        // this causes the value of `loginFields.siteAddress` to be reset to what the user entered.
+        //
+        // Using the user-entered `loginFields.siteAddress` causes problems when we try to log
+        // the user in especially if they just use a domain. For example, validating their
+        // self-hosted site credentials fails because the
+        // `WordPressOrgXMLRPCValidator.guessXMLRPCURLForSite` expects a complete site URL.
+        //
+        // This routine fixes that problem. We'll use what we already validated from
+        // `fetchSiteInfo()`.
+        //
+        if let verifiedSiteAddress = siteInfo?.url {
+            loginFields.siteAddress = verifiedSiteAddress
+        }
+
         guard siteInfo?.isWPCom == false else {
             showGetStarted()
             return

@@ -49,6 +49,12 @@ class WordPressAuthenticatorTests: XCTestCase {
         XCTAssert(url == punycode)
     }
 
+    func testBaseSiteURLKeepsHTTPSchemeForNonWPSites() {
+        let url = "http://selfhostedsite.com"
+        let correctedURL = WordPressAuthenticator.baseSiteURL(string: url)
+        XCTAssertEqual(correctedURL, url)
+    }
+
     // MARK: WordPressAuthenticator Notification Tests
     func testDispatchesSupportPushNotificationReceived() {
         let authenticator = WordpressAuthenticatorProvider.getWordpressAuthenticator()

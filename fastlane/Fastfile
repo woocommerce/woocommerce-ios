@@ -1,5 +1,6 @@
 default_platform(:ios)
 fastlane_require 'dotenv'
+require 'pathname'
 
 unless FastlaneCore::Helper.bundler?
   UI.user_error!('Please run fastlane via `bundle exec`')
@@ -817,7 +818,7 @@ end
 
     UI.user_error!("Unable to find .xctestrun file") unless testPlanPath != nil and File.exists? (testPlanPath)
 
-    multi_scan(
+    summary = multi_scan(
       workspace: "WooCommerce.xcworkspace",
       scheme: "WooCommerce",
       device: options[:device],
@@ -826,6 +827,34 @@ end
       xctestrun: testPlanPath,
       try_count: options[:try_count],
       output_directory: "build/results",
-      result_bundle: true
+      result_bundle: true,
+      fail_build: false
     )
+    
+    # Finish if test succeded 
+    return unless summary[:failed_testcount] > 0
+
+    # Generate reports with trainer and delete junit one.
+    generate_trainer_reports()
+    delete_junit_report()
+    UI.test_failure!("Tests have failed")
+  end
+
+  # -----------------------------------------------------------------------------------
+  # Geneate trainer report for each subdirectory that contains a report.xcresult file
+  # -----------------------------------------------------------------------------------
+  def generate_trainer_reports() 
+    reports_path = Pathname.new(File.expand_path("build/results", File.dirname(Dir.pwd)))
+    reports_path.each_child { | children_path | 
+      report_path = children_path + "report.xcresult"
+      trainer(path: children_path.to_s, fail_build: false) if report_path.exist?
+    }
+  end
+
+  # -----------------------------------------------------------------------------------
+  # Deletes the aggregated junit report created by multi_scan.
+  # -----------------------------------------------------------------------------------
+  def delete_junit_report()
+    junit_report_path = File.expand_path("build/results/report.junit", File.dirname(Dir.pwd))
+    File.delete(junit_report_path) if File.exists? (junit_report_path) 
   end

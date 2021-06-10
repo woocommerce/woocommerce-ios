@@ -53,10 +53,6 @@ final class OrderDetailsViewController: UIViewController {
     ///
     private var cardReaderAvailableSubscription: Combine.Cancellable? = nil
 
-    /// Loading view displayed while the order is loading
-    ///
-    private let loadingView = LoadingView(waitMessage: "Order is loading...")
-
     // MARK: - View Lifecycle
 
     /// Create an instance of `Self` from its corresponding storyboard.
@@ -76,7 +72,6 @@ final class OrderDetailsViewController: UIViewController {
         configureEntityListener()
         configureViewModel()
         updateTopBannerView()
-        loadingView.showLoader(in: view)
 
         // FIXME: this is a hack. https://github.com/woocommerce/woocommerce-ios/issues/1779
         reloadTableViewSectionsAndData()
@@ -84,8 +79,10 @@ final class OrderDetailsViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
+        programaticallyBeginRefreshing()
         syncEverything { [weak self] in
-            self?.loadingView.hideLoader()
+            self?.refreshControl.endRefreshing()
         }
     }
 
@@ -276,7 +273,7 @@ private extension OrderDetailsViewController {
 
 // MARK: - Action Handlers
 //
-extension OrderDetailsViewController {
+private extension OrderDetailsViewController {
 
     @objc func pullToRefresh() {
         ServiceLocator.analytics.track(.orderDetailPulledToRefresh)
@@ -286,6 +283,14 @@ extension OrderDetailsViewController {
             NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
             self?.refreshControl.endRefreshing()
         }
+    }
+
+    /// Programmatically show the loader above the tableview.
+    ///
+    func programaticallyBeginRefreshing() {
+        refreshControl.beginRefreshing()
+        let offsetPoint = CGPoint(x: 0, y: -refreshControl.frame.size.height)
+        tableView.setContentOffset(offsetPoint, animated: true)
     }
 }
 

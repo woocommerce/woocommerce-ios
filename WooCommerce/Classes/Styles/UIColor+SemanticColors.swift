@@ -224,6 +224,10 @@ extension UIColor {
         return .systemColor(.systemGray3)
     }
 
+    /// Secondary Light Button Background.
+    ///
+    static var secondaryLightButtonBackground: UIColor = .white
+
     /// Button Disabled Background.
     ///
     static var buttonDisabledBackground: UIColor {

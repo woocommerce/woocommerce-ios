@@ -28,7 +28,6 @@ struct ApplicationLogDetailView: View {
                         .map {
                             Text($0)
                                 .footnoteStyle()
-
                         }
                     Text(line.text)
                         .bodyStyle()

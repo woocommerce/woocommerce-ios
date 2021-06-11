@@ -31,6 +31,8 @@ final class ReviewsViewModel {
         return data.notifications.filter { $0.read == false }
     }
 
+    /// Set when sync fails, and used to display an error loading data banner
+    ///
     var hasErrorLoadingData: Bool = false
 
     init(siteID: Int64, data: ReviewsDataSource) {

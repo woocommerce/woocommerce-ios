@@ -948,7 +948,7 @@ private extension OrderDetailsViewController {
     enum Localization {
         enum Generic {
             static let topLoaderBannerDescription = NSLocalizedString("Loading content",
-                                                                      comment: "Description of the loading banner in Order Detail when loaded for the first time")
+                                                                      comment: "Text of the loading banner in Order Detail when loaded for the first time")
         }
 
         enum ShippingLabelMoreMenu {

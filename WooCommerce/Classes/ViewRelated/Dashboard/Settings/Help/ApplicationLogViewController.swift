@@ -217,7 +217,7 @@ private extension ApplicationLogViewController {
             let date = dateFormatter.string(from: logFileInfo.creationDate )
             let viewModel = ApplicationLogViewModel(logText: contents, logDate: date)
             let appLogDetailVC = ApplicationLogDetailViewController(viewModel: viewModel)
-            navigationController?.pushViewController(appLogDetailVC, animated: true)
+            show(appLogDetailVC, sender: self)
         } catch {
             DDLogError("Error: attempted to get contents of logFileInfo. Contents not found.")
         }

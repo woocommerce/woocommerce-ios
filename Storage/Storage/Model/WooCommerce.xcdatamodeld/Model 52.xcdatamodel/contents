@@ -239,7 +239,7 @@
         <attribute name="siteID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="statementDescriptor" optional="YES" attributeType="String"/>
         <attribute name="status" optional="YES" attributeType="String"/>
-        <attribute name="supportedCurrencies" optional="YES" attributeType="Transformable"/>
+        <attribute name="supportedCurrencies" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
     </entity>
     <entity name="Product" representedClassName="Product" syncable="YES">
         <attribute name="averageRating" attributeType="String"/>

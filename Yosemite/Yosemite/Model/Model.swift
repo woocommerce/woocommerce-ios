@@ -42,6 +42,7 @@ public typealias OrderStatsV4Interval = Networking.OrderStatsV4Interval
 public typealias OrderStatsV4Totals = Networking.OrderStatsV4Totals
 public typealias OrderStatus = Networking.OrderStatus
 public typealias PaymentGateway = Networking.PaymentGateway
+public typealias PaymentGatewayAccount = Networking.PaymentGatewayAccount
 public typealias Product = Networking.Product
 public typealias ProductAddOn = Networking.ProductAddOn
 public typealias ProductAddOnOption = Networking.ProductAddOnOption
@@ -118,7 +119,7 @@ public typealias PaymentIntent = Hardware.PaymentIntent
 public typealias PrintingResult = Hardware.PrintingResult
 public typealias CardPresentReceiptParameters = Hardware.CardPresentReceiptParameters
 public typealias WCPayAccount = Networking.WCPayAccount
-
+public typealias WCPayAccountStatusEnum = Networking.WCPayAccountStatusEnum
 
 // MARK: - Exported Storage Symbols
 
@@ -137,6 +138,7 @@ public typealias StorageOrderStatsV4Interval = Storage.OrderStatsV4Interval
 public typealias StorageOrderStatsV4Totals = Storage.OrderStatsV4Totals
 public typealias StorageOrderStatus = Storage.OrderStatus
 public typealias StoragePaymentGateway = Storage.PaymentGateway
+public typealias StoragePaymentGatewayAccount = Storage.PaymentGatewayAccount
 public typealias StoragePreselectedProvider = Storage.PreselectedProvider
 public typealias StorageProduct = Storage.Product
 public typealias StorageProductAddOn = Storage.ProductAddOn

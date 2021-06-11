@@ -39,4 +39,10 @@ extension View {
             ShareSheetView(shareSheet: content())
         }
     }
+
+    func sharePopover(isPresented: Binding<Bool>, content: @escaping () -> ShareSheet) -> some View {
+        popover(isPresented: isPresented) {
+            ShareSheetView(shareSheet: content())
+        }
+    }
 }

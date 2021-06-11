@@ -48,7 +48,7 @@ struct ApplicationLogDetailView: View {
                 }, label: {
                     Image(systemName: "square.and.arrow.up")
                 })
-                .shareSheet(isPresented: $viewModel.shareSheetVisible) {
+                .sharePopover(isPresented: $viewModel.shareSheetVisible) {
                     ShareSheet(
                         activityItems: viewModel.activityItems,
                         excludedActivityTypes: Array(viewModel.excludedActivityTypes)

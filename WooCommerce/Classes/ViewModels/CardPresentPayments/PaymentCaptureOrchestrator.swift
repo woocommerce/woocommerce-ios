@@ -99,9 +99,9 @@ private extension PaymentCaptureOrchestrator {
                              order: Order,
                              paymentIntent: PaymentIntent,
                              onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
-        let action = WCPayAction.captureOrderPayment(siteID: siteID,
-                                                     orderID: order.orderID,
-                                                     paymentIntentID: paymentIntent.id) { [weak self] result in
+        let action = PaymentGatewayAccountAction.captureOrderPayment(siteID: siteID,
+                                                                     orderID: order.orderID,
+                                                                     paymentIntentID: paymentIntent.id) { [weak self] result in
 
             guard let receiptParameters = paymentIntent.receiptParameters() else {
                 let error = CardReaderServiceError.paymentCapture()

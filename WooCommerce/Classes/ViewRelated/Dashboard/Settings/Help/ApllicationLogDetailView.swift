@@ -32,7 +32,7 @@ struct ApplicationLogDetailView: View {
                     Text(line.text)
                         .bodyStyle()
                 }
-                .storeAppearance(on: $viewModel.lastCellIsVisible, if: viewModel.isLastLine(line))
+                .storeVisibleStatus(on: $viewModel.lastCellIsVisible, if: viewModel.isLastLine(line))
             }
             .overlay(
                 scrollToBottomButton {
@@ -71,7 +71,13 @@ struct ApplicationLogDetailView: View {
 }
 
 private extension View {
-    func storeAppearance(on target: Binding<Bool>, if condition: @autoclosure () -> Bool) -> some View {
+    /// Monitors the view's appearance by watching the `onAppear`/ `onDisappear` modifiers and stores the state in the given binding
+    ///
+    /// - Parameters:
+    ///     - target: where to store the current visible status for the view
+    ///     - if: a condition that must be true for the view to propagate its visible status to the given binding
+    ///
+    func storeVisibleStatus(on target: Binding<Bool>, if condition: @autoclosure () -> Bool) -> some View {
         Group {
             if condition() {
                 onAppear {

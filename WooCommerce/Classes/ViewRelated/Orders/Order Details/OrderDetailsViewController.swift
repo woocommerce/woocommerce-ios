@@ -87,7 +87,7 @@ final class OrderDetailsViewController: UIViewController {
         syncSavedReceipts()
         syncTrackingsHidingAddButtonIfNecessary()
         checkShippingLabelCreationEligibility()
-        checkCardPresentPaymentEligibility()
+        refreshCardPresentPaymentEligibility()
         checkOrderAddOnFeatureSwitchState()
     }
 
@@ -325,9 +325,8 @@ extension OrderDetailsViewController {
         }
 
         group.enter()
-        checkCardPresentPaymentEligibility {
-            group.leave()
-        }
+        refreshCardPresentPaymentEligibility()
+        group.leave()
 
         group.enter()
         syncSavedReceipts {_ in
@@ -402,11 +401,8 @@ private extension OrderDetailsViewController {
         }
     }
 
-    func checkCardPresentPaymentEligibility(onCompletion: (() -> Void)? = nil) {
-        viewModel.checkCardPaymentEligibility { [weak self] in
-            self?.reloadTableViewSectionsAndData()
-            onCompletion?()
-        }
+    func refreshCardPresentPaymentEligibility() {
+        viewModel.refreshCardPresentPaymentEligibility()
     }
 
     func checkOrderAddOnFeatureSwitchState(onCompletion: (() -> Void)? = nil) {
@@ -619,7 +615,7 @@ private extension OrderDetailsViewController {
             case .success(let receiptParameters):
                 ServiceLocator.analytics.track(.collectPaymentSuccess)
                 self.syncOrderAfterPaymentCollection {
-                    self.checkCardPresentPaymentEligibility()
+                    self.refreshCardPresentPaymentEligibility()
                 }
 
                 self.paymentAlerts.success(printReceipt: {

@@ -462,30 +462,11 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
-    func checkCardPaymentEligibility(onCompletion: (() -> Void)? = nil) {
-        // Orders are eligible for card present payment if:
-        // the status is pending or on hold
-        // and
-        // the payment method is none or cash on delivery
-        // and
-        // if the account is eligible for card present payments
-        let action = WCPayAction.loadAccount(siteID: order.siteID) { [weak self] result in
-            guard let self = self else {
-                return
-            }
-
-            switch result {
-            case .failure:
-                self.dataSource.isEligibleForCardPresentPayment = false
-            case .success(let account):
-                self.paymentsAccount = account
-                self.dataSource.isEligibleForCardPresentPayment = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) &&
-                    self.isOrderEligibleForCardPayment() && account.isCardPresentEligible
-            }
-
-            onCompletion?()
-        }
-
+    func refreshCardPresentPaymentEligibility() {
+        /// No need for a completion here. The VC will be notified of changes to the stored paymentGatewayAccounts
+        /// by the viewModel (after passing up through the dataSource and originating in the resultsControllers)
+        ///
+        let action = PaymentGatewayAccountAction.loadAccounts(siteID: order.siteID) {_ in}
         ServiceLocator.stores.dispatch(action)
     }
 
@@ -576,24 +557,6 @@ extension OrderDetailsViewModel {
         paymentOrchestrator.emailReceipt(for: order, params: params, onContent: onContent)
     }
 }
-
-
-private extension OrderDetailsViewModel {
-    func isOrderEligibleForCardPayment() -> Bool {
-        return isOrderStatusEligibleForCardPayment() && isOrderPaymentMethodEligibleForCardPayment()
-    }
-
-    func isOrderStatusEligibleForCardPayment() -> Bool {
-        (order.status == .pending || order.status == .onHold || order.status == .processing)
-    }
-
-    func isOrderPaymentMethodEligibleForCardPayment() -> Bool {
-        let paymentMethod = OrderPaymentMethod(rawValue: order.paymentMethodID)
-
-        return paymentMethod == .cod || paymentMethod == .none
-    }
-}
-
 
 private extension OrderDetailsViewModel {
     enum Localization {

@@ -44,7 +44,12 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Whether the order is eligible for card present payment.
     ///
-    var isEligibleForCardPresentPayment: Bool = false
+    var isEligibleForCardPresentPayment: Bool {
+        return isCardPresentPaymentsFeatureEnabled() &&
+            isOrderStatusEligibleForCardPayment() &&
+            isOrderPaymentMethodEligibleForCardPayment() &&
+            hasCardPresentEligiblePaymentGatewayAccount()
+    }
 
     /// Whether the order has a receipt associated.
     ///
@@ -1413,6 +1418,27 @@ extension OrderDetailsDataSource {
         static let addOrderCell = 1
         static let paymentCell = 1
         static let paidByCustomerCell = 1
+    }
+}
+
+// MARK: - Private Payments Logic
+
+private extension OrderDetailsDataSource {
+    func isCardPresentPaymentsFeatureEnabled() -> Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments)
+    }
+
+    func isOrderStatusEligibleForCardPayment() -> Bool {
+        (order.status == .pending || order.status == .onHold || order.status == .processing)
+    }
+
+    func isOrderPaymentMethodEligibleForCardPayment() -> Bool {
+        let paymentMethod = OrderPaymentMethod(rawValue: order.paymentMethodID)
+        return paymentMethod == .cod || paymentMethod == .none
+    }
+
+    func hasCardPresentEligiblePaymentGatewayAccount() -> Bool {
+        resultsControllers.paymentGatewayAccounts.contains(where: \.isCardPresentEligible)
     }
 }
 

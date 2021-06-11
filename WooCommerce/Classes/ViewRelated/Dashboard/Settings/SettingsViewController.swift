@@ -189,8 +189,7 @@ private extension SettingsViewController {
 
         /// No need for a completion here. We will be notified of storage changes in `onDidChangeContent`
         ///
-        let action = PaymentGatewayAccountAction.loadAccounts(siteID: siteID) {_ in
-        }
+        let action = PaymentGatewayAccountAction.loadAccounts(siteID: siteID) {_ in}
         ServiceLocator.stores.dispatch(action)
     }
 
@@ -209,16 +208,7 @@ private extension SettingsViewController {
         }
 
         paymentGatewayAccounts = paymentGatewayAccountsResultsController?.fetchedObjects ?? []
-
-        guard paymentGatewayAccounts.isNotEmpty else {
-            canCollectPayments = false
-            return
-        }
-
         canCollectPayments = paymentGatewayAccounts.contains(where: \.isCardPresentEligible)
-        guard canCollectPayments else {
-            return
-        }
     }
 
     func configureTableViewFooter() {

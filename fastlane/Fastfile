@@ -206,8 +206,8 @@ GH_ORG_NAME="woocommerce"
   #####################################################################################
   # finalize_release
   # -----------------------------------------------------------------------------------
-  # This lane finalize a release: updates store metadata, pushes the final tag and
-  # cleans all the temp ones
+  # This lane finalize a release: updates store metadata, bump final version number,
+  # remove branch protection and close milestone, then trigger the final release on CI
   # -----------------------------------------------------------------------------------
   # Usage:
   # bundle exec fastlane finalize_release [skip_confirm:<skip confirm>] [version:<version>]

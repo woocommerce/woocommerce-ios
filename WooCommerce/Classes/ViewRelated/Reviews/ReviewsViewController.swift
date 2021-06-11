@@ -437,7 +437,6 @@ private extension ReviewsViewController {
     func transitionToSyncingState(pageNumber: Int) {
         state = isEmpty ? .placeholder : .syncing(pageNumber: pageNumber)
         // Remove banner for error loading data during sync
-        viewModel.hasErrorLoadingData = false
         hideTopBannerView()
     }
 

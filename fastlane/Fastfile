@@ -254,7 +254,7 @@ GH_ORG_NAME="woocommerce"
   lane :build_and_upload_beta do | options |
     ios_build_prechecks(skip_confirm: options[:skip_confirm], internal: false, external: true)
     ios_build_preflight()
-    build_and_upload_itc(skip_prechecks: true, skip_confirm: options[:skip_confirm], create_release: options[:create_gh_release])
+    build_and_upload_itc(skip_prechecks: true, skip_confirm: options[:skip_confirm], beta_release: true, create_release: options[:create_gh_release])
   end
 
   #####################################################################################
@@ -275,7 +275,7 @@ GH_ORG_NAME="woocommerce"
   lane :build_and_upload_release do | options |
     ios_build_prechecks(skip_confirm: options[:skip_confirm], internal: false, external: true)
     ios_build_preflight()
-    build_and_upload_itc(skip_prechecks: true, skip_confirm: options[:skip_confirm], final: true, create_release: options[:create_gh_release])
+    build_and_upload_itc(skip_prechecks: true, skip_confirm: options[:skip_confirm], beta_release: false, create_release: options[:create_gh_release])
   end
 
   #####################################################################################
@@ -322,13 +322,13 @@ GH_ORG_NAME="woocommerce"
   # This lane builds the app and upload it for external distribution
   # -----------------------------------------------------------------------------------
   # Usage:
-  # bundle exec fastlane build_and_upload_itc [skip_confirm:<skip confirm>] [create_release:<Create release on GH>] [final:<final release or intermediate beta?>]
+  # bundle exec fastlane build_and_upload_itc [skip_confirm:<skip confirm>] [create_release:<Create release on GH>] [beta_release:<intermediate beta?>]
   #
   # Example:
   # bundle exec fastlane build_and_upload_itc
   # bundle exec fastlane build_and_upload_itc skip_confirm:true
   # bundle exec fastlane build_and_upload_itc create_release:true
-  # bundle exec fastlane build_and_upload_itc create_release:true final:true
+  # bundle exec fastlane build_and_upload_itc create_release:true beta_release:true
   #####################################################################################
   desc "Builds and uploads for distribution"
   lane :build_and_upload_itc do | options |
@@ -359,12 +359,12 @@ GH_ORG_NAME="woocommerce"
       archive_zip_path = File.dirname(Dir.pwd) + "/WooCommerce.xarchive.zip"
       zip(path: lane_context[SharedValues::XCODEBUILD_ARCHIVE], output_path: archive_zip_path)
 
-      version = options[:final] ? ios_get_app_version() : ios_get_build_version()
+      version = options[:beta_release] ? ios_get_build_version : ios_get_app_version
       create_release(repository: GHHELPER_REPO,
         version: version,
         release_notes_file_path: './WooCommerce/Resources/release_notes.txt',
         release_assets: "#{archive_zip_path}",
-        prerelease: !options[:final]
+        prerelease: options[:beta_release]
       )
 
       sh("rm #{archive_zip_path}")

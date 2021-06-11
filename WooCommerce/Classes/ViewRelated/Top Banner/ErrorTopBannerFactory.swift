@@ -25,9 +25,13 @@ struct ErrorTopBannerFactory {
 
 private extension ErrorTopBannerFactory {
     enum Localization {
-        static let title = NSLocalizedString("We couldn't load your data", comment: "The title of the Error Loading Data banner")
-        static let info = NSLocalizedString("Please try again later or reach out to us and we'll be happy to assist you!", comment: "The info of the Error Loading Data banner")
-        static let troubleshoot = NSLocalizedString("Troubleshoot", comment: "The title of the button to get troubleshooting information in the Error Loading Data banner")
-        static let contactSupport = NSLocalizedString("Contact Support", comment: "The title of the button to contact support in the Error Loading Data banner")
+        static let title = NSLocalizedString("We couldn't load your data",
+                                             comment: "The title of the Error Loading Data banner")
+        static let info = NSLocalizedString("Please try again later or reach out to us and we'll be happy to assist you!",
+                                            comment: "The info of the Error Loading Data banner")
+        static let troubleshoot = NSLocalizedString("Troubleshoot",
+                                                    comment: "The title of the button to get troubleshooting information in the Error Loading Data banner")
+        static let contactSupport = NSLocalizedString("Contact Support",
+                                                      comment: "The title of the button to contact support in the Error Loading Data banner")
     }
 }

@@ -6,9 +6,6 @@ final class ApplicationLogDetailViewController: UIHostingController<ApplicationL
     init(viewModel: ApplicationLogViewModel) {
         super.init(rootView: ApplicationLogDetailView(viewModel: viewModel))
         self.title = viewModel.title
-        viewModel.present = { [weak self] vc in
-            self?.present(vc, animated: true, completion: nil)
-        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {

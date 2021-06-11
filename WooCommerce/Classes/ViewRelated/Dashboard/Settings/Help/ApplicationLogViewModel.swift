@@ -63,8 +63,6 @@ final class ApplicationLogViewModel: ObservableObject {
 
     let lastLineID: UUID
 
-    var present: ((UIViewController) -> Void)? = nil
-
     @Published var lastCellIsVisible = false
 
     @Published var buttonVisible = true

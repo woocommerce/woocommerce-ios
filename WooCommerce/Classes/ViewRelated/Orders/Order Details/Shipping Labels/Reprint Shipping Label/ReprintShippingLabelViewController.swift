@@ -257,8 +257,8 @@ private extension ReprintShippingLabelViewController {
     }
 
     enum Localization {
-        static let navigationBarTitle = NSLocalizedString("Reprint Shipping Label",
-                                                          comment: "Navigation bar title to reprint a shipping label")
+        static let navigationBarTitle = NSLocalizedString("Print Shipping Label",
+                                                          comment: "Navigation bar title to print a shipping label")
         static let reprintButtonTitle = NSLocalizedString("Print Shipping Label",
                                                           comment: "Button title to generate a shipping label document for printing")
         static let paperSizeSelectorTitle = NSLocalizedString("Paper Size", comment: "Title of the paper size selector row for reprinting a shipping label")

@@ -3,6 +3,7 @@
 6.9
 -----
 - [*] Products: You can edit product attributes for variations right from the main product form. [https://github.com/woocommerce/woocommerce-ios/pull/4350]
+- [*] Improved CTA. "Print Shipping Label" instead of "Reprint Shipping Label". [https://github.com/woocommerce/woocommerce-ios/pull/4394]
 
 6.8
 -----

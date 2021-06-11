@@ -337,6 +337,13 @@ private extension ReviewsViewController {
 
         childController.configure(emptyStateConfig)
 
+        // Show Error Loading Data banner if the empty state is caused by a sync error
+        if viewModel.hasErrorLoadingData {
+            childController.showTopBannerView()
+        } else {
+            childController.hideTopBannerView()
+        }
+
         childView.translatesAutoresizingMaskIntoConstraints = false
 
         addChild(childController)

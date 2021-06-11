@@ -135,7 +135,9 @@ final class OrderDetailsViewModel {
         return String.localizedStringWithFormat(Localization.emailSubjectWithStoreName, storeName)
     }
 
-    private var paymentsAccount: WCPayAccount? = nil
+    private var cardPresentPaymentGatewayAccounts: [PaymentGatewayAccount] {
+        return dataSource.cardPresentPaymentGatewayAccounts()
+    }
 
     private var receipt: CardPresentReceiptParameters? = nil
 
@@ -534,8 +536,16 @@ extension OrderDetailsViewModel {
                         onClearMessage: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
+
+        /// We don't have a concept of priority yet, so use the first paymentGatewayAccount for now
+        /// since we can't yet have multiple accounts
+        ///
+        if self.cardPresentPaymentGatewayAccounts.count != 1 {
+            DDLogWarn("Expected one card present gateway account. Got something else.")
+        }
+
         paymentOrchestrator.collectPayment(for: self.order,
-                                           paymentsAccount: self.paymentsAccount,
+                                           paymentsAccount: self.cardPresentPaymentGatewayAccounts.first,
                                            onPresentMessage: onPresentMessage,
                                            onClearMessage: onClearMessage,
                                            onProcessingMessage: onProcessingMessage,

@@ -79,7 +79,7 @@ final class ApplicationLogViewModel: ObservableObject {
     func showShareActivity() {
         let activityVC = UIActivityViewController(activityItems: [logText], applicationActivities: nil)
         activityVC.modalPresentationStyle = .popover
-        activityVC.excludedActivityTypes = assembleExcludedSupportTypes()
+        activityVC.excludedActivityTypes = Array(excludedActivityTypes)
         present?(activityVC)
     }
 
@@ -87,14 +87,14 @@ final class ApplicationLogViewModel: ObservableObject {
     /// - returns: all unsupported types
     /// Preserves support for `.copyToPasteboard`, `.mail`, and `.airDrop`
     ///
-    func assembleExcludedSupportTypes() -> [UIActivity.ActivityType] {
+    var excludedActivityTypes: Set<UIActivity.ActivityType> {
         let activityTypes = Set(SharingHelper.allActivityTypes())
         let supportedTypes: Set<UIActivity.ActivityType> = [
             .copyToPasteboard,
             .mail,
             .airDrop
         ]
-        return Array(activityTypes.subtracting(supportedTypes))
+        return activityTypes.subtracting(supportedTypes)
     }
 }
 

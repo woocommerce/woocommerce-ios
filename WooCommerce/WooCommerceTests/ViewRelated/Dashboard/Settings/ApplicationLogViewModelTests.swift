@@ -4,8 +4,8 @@ import XCTest
 class ApplicationLogViewModelTests: XCTestCase {
     func testExcludedTypes() {
         let model = ApplicationLogViewModel(logText: "")
-        let excludedTypes = Set(model.assembleExcludedSupportTypes())
-        let expectedTypes: Set<UIActivity.ActivityType> = Set([
+        let excludedTypes = model.excludedActivityTypes
+        let expectedTypes: Set<UIActivity.ActivityType> = [
             .postToFacebook,
             .postToTwitter,
             .postToWeibo,
@@ -19,7 +19,7 @@ class ApplicationLogViewModelTests: XCTestCase {
             .postToTencentWeibo,
             .openInIBooks,
             .markupAsPDF
-        ])
+        ]
         XCTAssertEqual(excludedTypes, expectedTypes)
     }
 }

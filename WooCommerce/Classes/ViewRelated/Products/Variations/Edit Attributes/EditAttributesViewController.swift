@@ -102,22 +102,18 @@ extension EditAttributesViewController {
     /// Navigates to an intermediate screen where we can generate our first variation.
     ///
     private func navigateToCreateVariation() {
-        let createVariationViewController = EmptyStateViewController(style: .basic)
+        let createVariationViewController = EmptyStateViewController(
+            style: .basic,
+            configuration: .withButton(
+                message: .init(string: Localization.attributesAddedTitle),
+                image: .welcomeImage,
+                details: Localization.attributesAddedInfo,
+                buttonTitle: Localization.generateButtonTitle,
+                onTap: { [weak self] _ in
+                    self?.createVariation()
+                }
+            ))
         createVariationViewController.title = Localization.generateTitle
-
-        // Force view to be loaded on memory
-        _ = createVariationViewController.view
-
-        let config = EmptyStateViewController.Config.withButton(
-            message: .init(string: Localization.attributesAddedTitle),
-            image: .welcomeImage,
-            details: Localization.attributesAddedInfo,
-            buttonTitle: Localization.generateButtonTitle,
-            onTap: { [weak self] _ in
-                self?.createVariation()
-            }
-        )
-        createVariationViewController.configure(config)
         show(createVariationViewController, sender: self)
     }
 

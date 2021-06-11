@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-06-10 15:54:05+0000 */
+/* Translation-Revision-Date: 2021-06-11 15:45:38+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -931,7 +931,7 @@
 "Email receipt" = "이메일 영수증";
 
 /* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
-"Email the label purchase receipts to %1$@ (%2$@) at %3$@" = "%3$@에 1$@(%2$@)(으)로 레이블 구매 영수증을 이메일로 보내기";
+"Email the label purchase receipts to %1$@ (%2$@) at %3$@" = "%3$@에 %1$@(%2$@)(으)로 레이블 구매 영수증을 이메일로 보내기";
 
 /* Accessibility label that lets the user know the billing customer's email address */
 "Email: %@" = "이메일: %@";

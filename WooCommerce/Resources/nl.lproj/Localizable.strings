@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-06-10 15:54:05+0000 */
+/* Translation-Revision-Date: 2021-06-11 15:51:12+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -2493,7 +2493,7 @@
 "Sign up with Email" = "Inschrijven met e-mail";
 
 /* Signature required in Shipping Labels > Carrier and Rates */
-"Signature required (+%1$@)" = "Handtekening vereist (+% $1@)";
+"Signature required (+%1$@)" = "Handtekening vereist (+%1$@)";
 
 /* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
 "Signed in as @%1$@" = "Aangemeld als @%1$@";

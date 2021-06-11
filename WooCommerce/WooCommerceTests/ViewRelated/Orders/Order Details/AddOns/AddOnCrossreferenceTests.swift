@@ -1,6 +1,5 @@
 import XCTest
 import Fakes
-import TestKit
 
 @testable import WooCommerce
 @testable import Yosemite
@@ -155,7 +154,7 @@ class AddOnCrossreferenceTests: XCTestCase {
         XCTAssertEqual(addOnsAttributes, [
             OrderItemAttribute(metaID: 1, name: "Topping ($3.00)", value: ""),
             OrderItemAttribute(metaID: 3, name: "Fast Delivery ($7.00)", value: ""),
-            OrderItemAttribute(metaID: 4, name: "Gift Wrapping ($8.00)", value: "")
+            OrderItemAttribute(metaID: 4, name: "Gift Wrapping ($7.00)", value: "")
         ])
     }
 }

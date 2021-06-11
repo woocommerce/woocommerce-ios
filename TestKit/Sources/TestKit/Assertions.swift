@@ -49,18 +49,27 @@ public func assertThat<T>(_ subject: Any?, isAnInstanceOf expectedType: T.Type, 
                   line: line)
 }
 
-/// Overrides regular `XCTAssertEqual` to show a formatted difference when `expected` and  `received` are not equal,
-///
-public func XCTAssertEqual<T: Equatable>(_ expected: @autoclosure () throws -> T,
-                                         _ received: @autoclosure () throws -> T,
-                                         file: StaticString = #filePath,
-                                         line: UInt = #line) {
-    do {
-        let expected = try expected()
-        let received = try received()
-        XCTAssertTrue(expected == received, "Found difference for \n" + diff(expected, received).joined(separator: ", "), file: file, line: line)
-    }
-    catch {
-        XCTFail("Caught error while testing: \(error)", file: file, line: line)
+extension XCTestCase {
+    /// Alternative to the regular `XCTAssertEqual` that outputs a `diff` between the `expect` and `received` objects.
+    ///
+    public func assertEqual<T: Equatable>(_ expected: @autoclosure () throws -> T,
+                                          _ received: @autoclosure () throws -> T) {
+        do {
+            let expected = try expected()
+            let received = try received()
+            guard expected != received else {
+                return
+            }
+
+            record(
+                XCTIssue(type: .assertionFailure,
+                         compactDescription: "Found difference for \n" + diff(expected, received).joined(separator: ", "))
+            )
+        }
+        catch {
+            record(
+                XCTIssue(type: .uncaughtException, compactDescription: "Caught error while testing: \(error)")
+            )
+        }
     }
 }

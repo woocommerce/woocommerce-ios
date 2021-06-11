@@ -20,11 +20,10 @@ struct ApplicationLogDetailView: View {
         ScrollViewReader { scrollProxy in
             List(viewModel.lines) { line in
                 VStack(alignment: .leading, spacing: 6) {
-                    line.dateText
-                        .map {
-                            Text($0)
-                                .footnoteStyle()
-                        }
+                    if let dateText = line.dateText {
+                        Text(dateText)
+                            .footnoteStyle()
+                    }
                     Text(line.text)
                         .bodyStyle()
                 }

@@ -8,10 +8,17 @@ struct ApplicationLogLine: Identifiable {
     let date: Date?
     let text: String
 
-    private let dateFormatter: DateFormatter = {
+    private static let parsingFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "YYYY-MM-dd HH:mm:ss:SSS"
         return dateFormatter
+    }()
+
+    private static let displayFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .medium
+        return formatter
     }()
 
     private let datePrefixPattern = try! NSRegularExpression(pattern: "^(\\d{4}/\\d{2}/\\d{2} \\d{2}:\\d{2}:\\d{2}\\:\\d{3})  (.*)")
@@ -21,7 +28,7 @@ struct ApplicationLogLine: Identifiable {
         guard let result = datePrefixPattern.firstMatch(in: text, options: [], range: NSMakeRange(0, text.utf16.count)),
               let dateRange = Range(result.range(at: 1), in: text),
               let logRange = Range(result.range(at: 2), in: text),
-              let date = dateFormatter.date(from: String(text[dateRange])) else {
+              let date = ApplicationLogLine.parsingFormatter.date(from: String(text[dateRange])) else {
             self.date = nil
             self.text = text
             return
@@ -29,6 +36,10 @@ struct ApplicationLogLine: Identifiable {
 
         self.date = date
         self.text = String(text[logRange])
+    }
+
+    var dateText: String? {
+        date.map(ApplicationLogLine.displayFormatter.string(from:))
     }
 }
 

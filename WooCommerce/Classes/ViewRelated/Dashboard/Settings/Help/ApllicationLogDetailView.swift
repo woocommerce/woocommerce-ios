@@ -20,19 +20,11 @@ final class ApplicationLogDetailViewController: UIHostingController<ApplicationL
 struct ApplicationLogDetailView: View {
     @ObservedObject var viewModel: ApplicationLogViewModel
 
-    private let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .medium
-        return formatter
-    }()
-
     var body: some View {
         ScrollViewReader { scrollProxy in
             List(viewModel.lines) { line in
                 VStack(alignment: .leading, spacing: 6) {
-                    line.date
-                        .flatMap(dateFormatter.string(for:))
+                    line.dateText
                         .map {
                             Text($0)
                                 .footnoteStyle()

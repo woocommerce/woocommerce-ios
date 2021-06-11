@@ -438,7 +438,7 @@ private extension ReviewsViewController {
         state = isEmpty ? .placeholder : .syncing(pageNumber: pageNumber)
         // Remove banner for error loading data during sync
         viewModel.hasErrorLoadingData = false
-        ErrorTopBannerFactory.hideTopBannerView(banner: topBannerView, in: tableView)
+        hideTopBannerView()
     }
 
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
@@ -499,10 +499,29 @@ extension ReviewsViewController: SyncingCoordinatorDelegate {
             guard let self = self else { return }
             self.transitionToResultsUpdatedState()
             if self.viewModel.hasErrorLoadingData {
-                ErrorTopBannerFactory.showTopBannerView(banner: self.topBannerView, in: self.tableView)
+                self.showTopBannerView()
             }
             onCompletion?(true)
         }
+    }
+
+    /// Display the error banner in the table view header
+    ///
+    private func showTopBannerView() {
+        // Configure header container view
+        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
+        headerContainer.addSubview(topBannerView)
+        headerContainer.pinSubviewToSafeArea(topBannerView)
+
+        tableView.tableHeaderView = headerContainer
+        tableView.updateHeaderHeight()
+    }
+
+    /// Hide the error banner from the table view header
+    ///
+    private func hideTopBannerView() {
+        topBannerView.removeFromSuperview()
+        tableView.updateHeaderHeight()
     }
 }
 

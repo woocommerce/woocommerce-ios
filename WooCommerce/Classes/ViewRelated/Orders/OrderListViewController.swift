@@ -285,7 +285,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
                 if let error = error {
                     DDLogError("⛔️ Error synchronizing orders: \(error)")
-                    ErrorTopBannerFactory.showTopBannerView(banner: self.topBannerView, in: self.tableView)
+                    self.showTopBannerView()
                 } else {
                     ServiceLocator.analytics.track(event: .ordersListLoaded(totalDuration: totalDuration,
                                                                             pageNumber: pageNumber,
@@ -297,6 +297,25 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         }
 
         ServiceLocator.stores.dispatch(action)
+    }
+
+    /// Display the error banner in the table view header
+    ///
+    private func showTopBannerView() {
+        // Configure header container view
+        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
+        headerContainer.addSubview(topBannerView)
+        headerContainer.pinSubviewToSafeArea(topBannerView)
+
+        tableView.tableHeaderView = headerContainer
+        tableView.updateHeaderHeight()
+    }
+
+    /// Hide the error banner from the table view header
+    ///
+    private func hideTopBannerView() {
+        topBannerView.removeFromSuperview()
+        tableView.updateHeaderHeight()
     }
 }
 
@@ -500,7 +519,7 @@ private extension OrderListViewController {
     ///
     func transitionToSyncingState() {
         state = dataSource.isEmpty ? .placeholder : .syncing
-        ErrorTopBannerFactory.hideTopBannerView(banner: topBannerView, in: tableView)
+        hideTopBannerView()
     }
 
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).

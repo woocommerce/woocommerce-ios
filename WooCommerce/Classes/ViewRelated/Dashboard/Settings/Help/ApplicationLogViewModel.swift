@@ -21,8 +21,19 @@ struct ApplicationLogLine: Identifiable {
         return formatter
     }()
 
-    private let datePrefixPattern = try! NSRegularExpression(pattern: "^(\\d{4}/\\d{2}/\\d{2} \\d{2}:\\d{2}:\\d{2}\\:\\d{3})  (.*)")
-
+    private let datePrefixPattern = try! NSRegularExpression(
+        pattern: """
+    ^                                       # Match start of the string only
+        (                                   # First capture group for the timestamp
+            \\d{4}/\\d{2}/\\d{2}            # Date component (YYYY-MM-dd)
+            \\s                             # A single whitespace
+            \\d{2}:\\d{2}:\\d{2}\\:\\d{3}   # Time component (HH:mm:ss:SSS)
+        )                                   # End of first capture group
+        \\s+                                # At least one whitespace character, discard this
+        (.*)                                # Second capture group: rest of text
+""",
+        options: [.allowCommentsAndWhitespace]
+    )
 
     init(text: String) {
         guard let result = datePrefixPattern.firstMatch(in: text, options: [], range: NSMakeRange(0, text.utf16.count)),

@@ -273,6 +273,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
         transitionToSyncingState()
+        setErrorLoadingData(to: false)
 
         let action = viewModel.synchronizationAction(
             siteID: siteID,
@@ -285,7 +286,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
                 if let error = error {
                     DDLogError("⛔️ Error synchronizing orders: \(error)")
-                    self.showTopBannerView()
+                    self.setErrorLoadingData(to: true)
                 } else {
                     ServiceLocator.analytics.track(event: .ordersListLoaded(totalDuration: totalDuration,
                                                                             pageNumber: pageNumber,
@@ -297,6 +298,17 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         }
 
         ServiceLocator.stores.dispatch(action)
+    }
+
+    /// Sets `hasErrorLoadingData` in the view model and shows or hides the banner view accordingly
+    ///
+    private func setErrorLoadingData(to hasError: Bool) {
+        viewModel.hasErrorLoadingData = hasError
+        if hasError {
+            showTopBannerView()
+        } else {
+            hideTopBannerView()
+        }
     }
 
     /// Display the error banner in the table view header
@@ -394,6 +406,13 @@ private extension OrderListViewController {
         }
 
         childController.configure(emptyStateConfig)
+
+        // Show Error Loading Data banner if the empty state is caused by a sync error
+        if viewModel.hasErrorLoadingData {
+            childController.showTopBannerView()
+        } else {
+            childController.hideTopBannerView()
+        }
 
         childView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -519,7 +538,6 @@ private extension OrderListViewController {
     ///
     func transitionToSyncingState() {
         state = dataSource.isEmpty ? .placeholder : .syncing
-        hideTopBannerView()
     }
 
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).

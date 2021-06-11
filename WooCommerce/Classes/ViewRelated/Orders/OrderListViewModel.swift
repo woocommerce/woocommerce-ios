@@ -67,6 +67,10 @@ final class OrderListViewModel {
         snapshotsProvider.snapshot
     }
 
+    /// Set when sync fails, and used to display an error loading data banner
+    ///
+    var hasErrorLoadingData: Bool = false
+
     init(siteID: Int64,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,

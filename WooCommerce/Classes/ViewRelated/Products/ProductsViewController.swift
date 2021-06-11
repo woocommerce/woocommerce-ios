@@ -727,6 +727,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
         transitionToSyncingState(pageNumber: pageNumber)
+        hasErrorLoadingData = false
 
         let action = ProductAction
             .synchronizeProducts(siteID: siteID,
@@ -805,8 +806,7 @@ private extension ProductsViewController {
             } else {
                 ensureFooterSpinnerIsStarted()
             }
-            // Reset sync errors and remove top banner during sync
-            hasErrorLoadingData = false
+            // Remove top banner when sync starts
             hideTopBannerView()
         case .results:
             break

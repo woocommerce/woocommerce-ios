@@ -1,5 +1,5 @@
-
 import UIKit
+import SafariServices.SFSafariViewController
 
 /// A configurable view to display an "empty state".
 ///
@@ -54,9 +54,13 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     /// The scrollable view which contains the `contentView`.
     ///
     @IBOutlet private var scrollView: UIScrollView!
-    /// The child of the scrollView containing all the content (labels, image, etc).
+    /// The child of the scrollView which contains the `stackView`.
     ///
     @IBOutlet private var contentView: UIView!
+    /// The child of the contentView containing all the content (labels, image, etc).
+    ///
+    @IBOutlet weak var stackView: UIStackView!
+
 
     /// The height adjustment constraint for the content view.
     ///
@@ -88,6 +92,21 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
 
     /// Used to present the Contact Support dialog if the `Config` is `.withSupportRequest`.
     private let zendeskManager: ZendeskManagerProtocol
+
+    /// Top banner that shows an error if there is a problem loading reviews data
+    ///
+    private lazy var topBannerView: TopBannerView = {
+        ErrorTopBannerFactory.createTopBanner(isExpanded: false,
+                                              expandedStateChangeHandler: {},
+                                              onTroubleshootButtonPressed: { [weak self] in
+                                                let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
+                                                self?.present(safariViewController, animated: true, completion: nil)
+                                              },
+                                              onContactSupportButtonPressed: { [weak self] in
+                                                guard let self = self else { return }
+                                                ZendeskManager.shared.showNewRequestIfPossible(from: self, with: nil)
+                                              })
+    }()
 
     init(style: Style = .basic, zendeskManager: ZendeskManagerProtocol = ZendeskManager.shared) {
         self.style = style
@@ -201,6 +220,24 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     /// OnTouchUpInside handler for the `actionButton`.
     @IBAction private func actionButtonTapped(_ sender: Any) {
         lastActionButtonTapHandler?()
+    }
+
+    /// Display the error banner at the top of the view
+    ///
+    func showTopBannerView() {
+        contentView.insertSubview(topBannerView, at: 0)
+        NSLayoutConstraint.activate([
+            topBannerView.leadingAnchor.constraint(equalTo: contentView.safeLeadingAnchor),
+            topBannerView.trailingAnchor.constraint(equalTo: contentView.safeTrailingAnchor),
+            topBannerView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            topBannerView.bottomAnchor.constraint(lessThanOrEqualTo: stackView.topAnchor, constant: -16)
+        ])
+    }
+
+    /// Hide the error banner at the top of the view
+    ///
+    func hideTopBannerView() {
+        topBannerView.removeFromSuperview()
     }
 }
 

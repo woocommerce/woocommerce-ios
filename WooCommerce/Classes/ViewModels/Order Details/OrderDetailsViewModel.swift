@@ -479,8 +479,7 @@ extension OrderDetailsViewModel {
                 self.dataSource.isEligibleForCardPresentPayment = false
             case .success(let account):
                 self.paymentsAccount = account
-                self.dataSource.isEligibleForCardPresentPayment = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) &&
-                    self.isOrderEligibleForCardPayment() && account.isCardPresentEligible
+                self.dataSource.isEligibleForCardPresentPayment = self.isOrderEligibleForCardPayment() && account.isCardPresentEligible
             }
 
             onCompletion?()

@@ -388,10 +388,6 @@ private extension OrderDetailsViewController {
     }
 
     func syncSavedReceipts(onCompletion: ((Error?) -> ())? = nil) {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) else {
-            return
-        }
-
         viewModel.syncSavedReceipts(onCompletion: onCompletion)
     }
 

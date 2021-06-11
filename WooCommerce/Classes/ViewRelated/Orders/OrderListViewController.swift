@@ -327,7 +327,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
     ///
     private func hideTopBannerView() {
         topBannerView.removeFromSuperview()
-        tableView.updateHeaderHeight()
+        tableView.tableHeaderView = nil
     }
 }
 

@@ -44,10 +44,17 @@ struct ApplicationLogDetailView: View {
         .navigationBarItems(
             trailing: Button(
                 action: {
-                    viewModel.showShareActivity()
+                    viewModel.shareSheetVisible.toggle()
                 }, label: {
                     Image(systemName: "square.and.arrow.up")
-            }))
+                })
+                .shareSheet(isPresented: $viewModel.shareSheetVisible) {
+                    ShareSheet(
+                        activityItems: viewModel.activityItems,
+                        excludedActivityTypes: Array(viewModel.excludedActivityTypes)
+                    )
+                }
+        )
     }
 
     func scrollToBottomButton(_ action: @escaping () -> Void) -> some View {

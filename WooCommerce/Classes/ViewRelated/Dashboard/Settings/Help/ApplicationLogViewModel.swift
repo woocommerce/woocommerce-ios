@@ -69,6 +69,8 @@ final class ApplicationLogViewModel: ObservableObject {
 
     @Published var buttonVisible = true
 
+    @Published var shareSheetVisible = false
+
     private var cancellableSet: Set<AnyCancellable> = []
 
     init(logText: String, logDate: String) {
@@ -102,11 +104,8 @@ final class ApplicationLogViewModel: ObservableObject {
         line.id == lastLineID
     }
 
-    func showShareActivity() {
-        let activityVC = UIActivityViewController(activityItems: [logText], applicationActivities: nil)
-        activityVC.modalPresentationStyle = .popover
-        activityVC.excludedActivityTypes = Array(excludedActivityTypes)
-        present?(activityVC)
+    var activityItems: [Any] {
+        [logText]
     }
 
     /// Specifies the activity types that should be excluded.

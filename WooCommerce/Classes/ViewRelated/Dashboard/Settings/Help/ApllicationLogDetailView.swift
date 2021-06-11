@@ -3,10 +3,9 @@ import SwiftUI
 /// Hosting controller that wraps an `ApplicationLogDetailView`
 ///
 final class ApplicationLogDetailViewController: UIHostingController<ApplicationLogDetailView> {
-    init(with contents: String, for date: String) {
-        let viewModel = ApplicationLogViewModel(logText: contents)
+    init(viewModel: ApplicationLogViewModel) {
         super.init(rootView: ApplicationLogDetailView(viewModel: viewModel))
-        self.title = date
+        self.title = viewModel.title
         viewModel.present = { [weak self] vc in
             self?.present(vc, animated: true, completion: nil)
         }

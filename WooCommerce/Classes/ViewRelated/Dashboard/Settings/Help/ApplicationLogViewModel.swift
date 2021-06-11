@@ -56,6 +56,9 @@ struct ApplicationLogLine: Identifiable {
 
 final class ApplicationLogViewModel: ObservableObject {
     private let logText: String
+
+    let logDate: String
+
     let lines: [ApplicationLogLine]
 
     let lastLineID: UUID
@@ -68,8 +71,9 @@ final class ApplicationLogViewModel: ObservableObject {
 
     private var cancellableSet: Set<AnyCancellable> = []
 
-    init(logText: String) {
+    init(logText: String, logDate: String) {
         self.logText = logText
+        self.logDate = logDate
         lines = logText
             .split(separator: "\n")
             .map(String.init)
@@ -118,12 +122,17 @@ final class ApplicationLogViewModel: ObservableObject {
         ]
         return activityTypes.subtracting(supportedTypes)
     }
+
+    var title: String {
+        logDate
+    }
 }
 
 #if DEBUG
 extension ApplicationLogViewModel {
     static var sampleLog: ApplicationLogViewModel {
-        return .init(logText: """
+        return .init(
+            logText: """
             2021/06/07 11:59:42:636  📱 Registering for Remote Notifications...
             2021/06/07 11:59:42:661  Zendesk Enabled: true
             2021/06/07 11:59:46:454  🔵 Tracked application_opened
@@ -139,7 +148,8 @@ extension ApplicationLogViewModel {
             2021/06/07 11:59:46:487  ⚠️ Could not successfully decode SiteSetting value for woocommerce_specific_ship_to_countries
             2021/06/07 11:59:46:487  ⚠️ Could not successfully decode SiteSetting value for woocommerce_specific_ship_to_countries
             2021/06/07 11:59:46:487  ⚠️ Could not successfully decode SiteSetting value for woocommerce_specific_ship_to_countries
-            """)
+            """,
+            logDate: "Today")
     }
 }
 #endif

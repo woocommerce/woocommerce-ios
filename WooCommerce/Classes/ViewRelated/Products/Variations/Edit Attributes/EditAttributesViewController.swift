@@ -99,7 +99,7 @@ extension EditAttributesViewController {
         analytics.track(event: WooAnalyticsEvent.Variations.addAttributeButtonTapped(productID: viewModel.product.productID))
     }
 
-    /// Navigates to a screen explaining that attributes are created and we are ready to create the first variation.
+    /// Navigates to an intermediate screen where we can generate our first variation.
     ///
     private func navigateToCreateVariation() {
         let createVariationViewController = EmptyStateViewController(style: .basic)
@@ -110,7 +110,7 @@ extension EditAttributesViewController {
 
         let config = EmptyStateViewController.Config.withButton(
             message: .init(string: Localization.attributesAddedTitle),
-            image: .cardReaderScanning,
+            image: .welcomeImage,
             details: Localization.attributesAddedInfo,
             buttonTitle: Localization.generateButtonTitle,
             onTap: { [weak self] _ in

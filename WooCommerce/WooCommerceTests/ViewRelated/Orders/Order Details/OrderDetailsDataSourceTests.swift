@@ -129,11 +129,11 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
     func test_collect_payment_button_is_visible_and_primary_style_if_order_is_eligible_for_cash_on_delivery() throws {
         // Given
-        let order = makeOrder()
+        let order = makeOrder().copy(status: .processing, paymentMethodID: "cod")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        dataSource.configureResultsControllers { }
 
         // When
-        dataSource.isEligibleForCardPresentPayment = true
         dataSource.reloadSections()
 
         // Then
@@ -143,11 +143,11 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
     func test_collect_payment_button_is_not_visible_if_order_is_processing_and_order_is_not_eligible_for_cash_on_delivery() throws {
         // Given
-        let order = makeOrder()
+        let order = makeOrder().copy(status: .processing, paymentMethodID: "stripe")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        dataSource.configureResultsControllers { }
 
         // When
-        dataSource.isEligibleForCardPresentPayment = false
         dataSource.reloadSections()
 
         // Then

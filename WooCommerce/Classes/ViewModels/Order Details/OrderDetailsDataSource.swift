@@ -52,7 +52,7 @@ final class OrderDetailsDataSource: NSObject {
     }
 
     func cardPresentPaymentGatewayAccounts() -> [PaymentGatewayAccount] {
-        resultsControllers.paymentGatewayAccounts.filter{$0.isCardPresentEligible}
+        resultsControllers.paymentGatewayAccounts.filter{ $0.isCardPresentEligible }
     }
 
 

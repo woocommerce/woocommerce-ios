@@ -58,7 +58,6 @@ class AuthenticatedState: StoresManagerState {
             SitePostStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network),
             TaxClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            WCPayStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CardPresentPaymentStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network,

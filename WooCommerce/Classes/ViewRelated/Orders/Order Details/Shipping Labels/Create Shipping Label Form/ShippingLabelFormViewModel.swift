@@ -168,7 +168,7 @@ final class ShippingLabelFormViewModel {
         let shippingCarrierAndRates = Row(type: .shippingCarrierAndRates, dataState: .pending, displayMode: .disabled)
         let paymentMethod = Row(type: .paymentMethod, dataState: .pending, displayMode: .disabled)
         let rows: [Row] = [shipFrom, shipTo, packageDetails, shippingCarrierAndRates, paymentMethod]
-        return [Section(rows: rows)]
+        return [Section(title: nil, rows: rows)]
     }
 
     /// Returns the body of the Package Details cell
@@ -255,7 +255,15 @@ private extension ShippingLabelFormViewModel {
             }
         }
 
-        state.sections = [Section(rows: rows)]
+        var summarySection: Section?
+        if rows.allSatisfy({ (row) -> Bool in
+            row.dataState == .validated && row.displayMode == .editable
+        }) {
+            summarySection = Section(title: Localization.orderSummaryHeader.uppercased(),
+                                     rows: [Row(type: .orderSummary, dataState: .validated, displayMode: .editable)])
+        }
+
+        state.sections = [Section(title: nil, rows: rows), summarySection].compactMap { $0 }
     }
 }
 
@@ -444,5 +452,7 @@ private extension ShippingLabelFormViewModel {
         static let paymentMethodLabel =
             NSLocalizedString("Credit card ending in %1$@",
                               comment: "Selected credit card in Shipping Label form. %1$@ is a placeholder for the last four digits of the credit card.")
+        static let orderSummaryHeader = NSLocalizedString("Shipping label order summary",
+                                                          comment: "Header of the order summary section in the shipping label creation form")
     }
 }

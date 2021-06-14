@@ -46,10 +46,12 @@ final class ShippingLabelSummaryTableViewCell: UITableViewCell {
         configureButton()
     }
 
-    func configure(onSwitchChange: ((Bool) -> Void)?,
+    func configure(state: ShippingLabelFormStepTableViewCell.State,
+                   onSwitchChange: ((Bool) -> Void)?,
                    onButtonTouchUp: (() -> Void)?) {
         self.onSwitchChange = onSwitchChange
         self.onButtonTouchUp = onButtonTouchUp
+        configureCellBasedOnState(state)
     }
 
     @IBAction func toggleSwitchWasPressed(_ sender: Any) {
@@ -84,6 +86,17 @@ private extension ShippingLabelSummaryTableViewCell {
 
     func configureButton() {
         button.applyPrimaryButtonStyle()
+    }
+
+    func configureCellBasedOnState(_ state: ShippingLabelFormStepTableViewCell.State) {
+        switch state {
+        case .disabled:
+            button.isEnabled = false
+        case .enabled:
+            button.isEnabled = true
+        case .continue:
+            button.isEnabled = false
+        }
     }
 }
 

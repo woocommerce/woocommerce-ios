@@ -1,3 +1,3 @@
-Si utilizas la extensión WooCommerce Product Add-ons (creada por WooCommerce) y estabas deseando poder ver toda esa información al visualizar un pedido, ¡tus deseos se han hecho realidad! Hemos añadido compatibilidad experimental a la aplicación para que muestre esos complementos en los pedidos. Si quieres probarla, ve a Funciones experimentales en la Configuración para activarla. Envíanos tus comentarios contándonos cómo ha sido tu experiencia.
+Ahora puedes crear y editar productos virtuales desde la pantalla de detalles.
 
-Además, el próximo lanzamiento después de este solo será compatible con iOS 14 o versiones posteriores. Si quieres seguir recibiendo las actualizaciones de la aplicación de WooCommerce, actualiza tu dispositivo a iOS 14.
+Ten en cuenta que iOS 13 ya no es compatible. A partir de ahora, solo serán compatibles iOS 14 y las versiones posteriores.

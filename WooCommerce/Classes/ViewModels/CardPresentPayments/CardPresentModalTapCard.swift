@@ -11,7 +11,7 @@ final class CardPresentModalTapCard: CardPresentPaymentsModalViewModel {
     private let amount: String
 
     let textMode: PaymentsModalTextMode = .fullInfo
-    let actionsMode: PaymentsModalActionsMode = .oneAction
+    let actionsMode: PaymentsModalActionsMode = .secondaryOnlyAction
 
     var topTitle: String {
         name
@@ -23,9 +23,9 @@ final class CardPresentModalTapCard: CardPresentPaymentsModalViewModel {
 
     let image: UIImage = .cardPresentImage
 
-    let primaryButtonTitle: String? = Localization.cancel
+    let primaryButtonTitle: String? = nil
 
-    let secondaryButtonTitle: String? = nil
+    let secondaryButtonTitle: String? = Localization.cancel
 
     let auxiliaryButtonTitle: String? = nil
 
@@ -39,16 +39,16 @@ final class CardPresentModalTapCard: CardPresentPaymentsModalViewModel {
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
+        //
+    }
+
+    func didTapSecondaryButton(in viewController: UIViewController?) {
         ServiceLocator.analytics.track(.collectPaymentCanceled)
         let action = CardPresentPaymentAction.cancelPayment(onCompletion: nil)
 
         ServiceLocator.stores.dispatch(action)
 
         viewController?.dismiss(animated: true, completion: nil)
-    }
-
-    func didTapSecondaryButton(in viewController: UIViewController?) {
-        //
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {

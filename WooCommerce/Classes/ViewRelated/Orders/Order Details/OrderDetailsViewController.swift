@@ -10,9 +10,22 @@ import Combine
 //
 final class OrderDetailsViewController: UIViewController {
 
+    /// Main Stack View, that contains all the other views of the screen
+    ///
+    @IBOutlet private weak var stackView: UIStackView!
+
     /// Main TableView.
     ///
     @IBOutlet private weak var tableView: UITableView!
+
+    /// The top loader view, that will be embedded inside the stackview, on top of the tableview, while the screen is loading its
+    /// content for the first time.
+    ///
+    private var topLoaderView: TopLoaderView = {
+        let loaderView: TopLoaderView = TopLoaderView.instantiateFromNib()
+        loaderView.setBody(Localization.Generic.topLoaderBannerDescription)
+        return loaderView
+    }()
 
     /// Pull To Refresh Support.
     ///
@@ -66,6 +79,7 @@ final class OrderDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigation()
+        configureTopLoaderView()
         configureTableView()
         registerTableViewCells()
         registerTableViewHeaderFooters()
@@ -79,16 +93,9 @@ final class OrderDetailsViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        syncNotes()
-        syncProducts()
-        syncProductVariations()
-        syncRefunds()
-        syncShippingLabels()
-        syncSavedReceipts()
-        syncTrackingsHidingAddButtonIfNecessary()
-        checkShippingLabelCreationEligibility()
-        refreshCardPresentPaymentEligibility()
-        checkOrderAddOnFeatureSwitchState()
+        syncEverything { [weak self] in
+            self?.topLoaderView.isHidden = true
+        }
     }
 
     override func viewDidLayoutSubviews() {
@@ -111,6 +118,11 @@ final class OrderDetailsViewController: UIViewController {
 // MARK: - TableView Configuration
 //
 private extension OrderDetailsViewController {
+
+    /// Setup: TopLoaderView
+    func configureTopLoaderView() {
+        stackView.insertArrangedSubview(topLoaderView, at: 0)
+    }
 
     /// Setup: TableView
     ///
@@ -278,10 +290,24 @@ private extension OrderDetailsViewController {
 
 // MARK: - Action Handlers
 //
-extension OrderDetailsViewController {
+private extension OrderDetailsViewController {
 
     @objc func pullToRefresh() {
         ServiceLocator.analytics.track(.orderDetailPulledToRefresh)
+        refreshControl.beginRefreshing()
+
+        syncEverything { [weak self] in
+            NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
+            self?.refreshControl.endRefreshing()
+        }
+    }
+}
+
+
+// MARK: - Sync'ing Helpers
+//
+private extension OrderDetailsViewController {
+    func syncEverything(onCompletion: (() -> ())? = nil) {
         let group = DispatchGroup()
 
         group.enter()
@@ -338,17 +364,11 @@ extension OrderDetailsViewController {
             group.leave()
         }
 
-        group.notify(queue: .main) { [weak self] in
-            NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
-            self?.refreshControl.endRefreshing()
+        group.notify(queue: .main) {
+            onCompletion?()
         }
     }
-}
 
-
-// MARK: - Sync'ing Helpers
-//
-private extension OrderDetailsViewController {
     func syncOrder(onCompletion: ((Error?) -> ())? = nil) {
         viewModel.syncOrder { [weak self] (order, error) in
             guard let self = self, let order = order else {
@@ -922,6 +942,11 @@ private extension OrderDetailsViewController {
     }
 
     enum Localization {
+        enum Generic {
+            static let topLoaderBannerDescription = NSLocalizedString("Loading content",
+                                                                      comment: "Text of the loading banner in Order Detail when loaded for the first time")
+        }
+
         enum ShippingLabelMoreMenu {
             static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the shipping label more menu action sheet")
             static let requestRefundAction = NSLocalizedString("Request a Refund",

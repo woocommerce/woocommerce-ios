@@ -1185,7 +1185,7 @@ extension OrderDetailsDataSource {
         static let netAmount = NSLocalizedString("Net Payment", comment: "The title for the net amount paid cell")
         static let collectPayment = NSLocalizedString("Collect Payment", comment: "Text on the button that starts collecting a card present payment.")
         static let createShippingLabel = NSLocalizedString("Create Shipping Label", comment: "Text on the button that starts shipping label creation")
-        static let reprintShippingLabel = NSLocalizedString("Reprint Shipping Label", comment: "Text on the button that reprints a shipping label")
+        static let reprintShippingLabel = NSLocalizedString("Print Shipping Label", comment: "Text on the button that prints a shipping label")
         static let seeReceipt = NSLocalizedString("See Receipt", comment: "Text on the button to see a saved receipt")
     }
 

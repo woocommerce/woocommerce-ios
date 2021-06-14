@@ -19,7 +19,7 @@ public final class PaymentGatewayAccountStore: Store {
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
-        dispatcher.register(processor: self, for: PaymentGatewayAction.self)
+        dispatcher.register(processor: self, for: PaymentGatewayAccountAction.self)
     }
 
     /// Receives and executes Actions.
@@ -63,7 +63,7 @@ private extension PaymentGatewayAccountStore {
                 let account = wcpayAccount.toPaymentGatewayAccount(siteID: siteID)
                 self.upsertStoredAccountInBackground(readonlyAccount: account)
                 onCompletion(.success(()))
-                    return
+                return
             case .failure(let error):
                 self.deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID)
                 onCompletion(.failure(error))

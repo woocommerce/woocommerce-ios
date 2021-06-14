@@ -2,6 +2,11 @@ import XCTest
 @testable import WooCommerce
 
 final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
+    override func setUp() {
+        super.setUp()
+        // The NUX buttons require WordPressAuthenticator to be initialized
+        AuthenticationManager().initialize()
+    }
 
     func test_viewcontroller_presents_top_title_provided_by_viewmodel() throws {
         let viewModel = ModalViewModel(textMode: .fullInfo, actionsMode: .none)
@@ -107,6 +112,95 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
 
         XCTAssertTrue(bottomSubtitleLabel.isHidden)
     }
+
+    func test_viewcontroller_shows_primary_action_button_in_one_action_mode() throws {
+        let viewModel = ModalViewModel(textMode: .reducedBottomInfo, actionsMode: .oneAction)
+        let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
+
+        _ = try XCTUnwrap(viewController.view)
+
+        let primaryButton = viewController.getPrimaryActionButton()
+
+        XCTAssertFalse(primaryButton.isHidden)
+    }
+
+    func test_viewcontroller_hides_primary_action_button_in_secondary_only_action_mode() throws {
+        let viewModel = ModalViewModel(textMode: .reducedBottomInfo, actionsMode: .secondaryOnlyAction)
+        let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
+
+        _ = try XCTUnwrap(viewController.view)
+
+        let primaryButton = viewController.getPrimaryActionButton()
+
+        XCTAssertTrue(primaryButton.isHidden)
+    }
+
+    func test_viewcontroller_shows_primary_action_button_in_two_action_mode() throws {
+        let viewModel = ModalViewModel(textMode: .reducedBottomInfo, actionsMode: .twoAction)
+        let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
+
+        _ = try XCTUnwrap(viewController.view)
+
+        let primaryButton = viewController.getPrimaryActionButton()
+
+        XCTAssertFalse(primaryButton.isHidden)
+    }
+
+    func test_viewcontroller_shows_primary_action_button_in_two_action_and_auxiliary_mode() throws {
+        let viewModel = ModalViewModel(textMode: .reducedBottomInfo, actionsMode: .twoActionAndAuxiliary)
+        let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
+
+        _ = try XCTUnwrap(viewController.view)
+
+        let primaryButton = viewController.getPrimaryActionButton()
+
+        XCTAssertFalse(primaryButton.isHidden)
+    }
+
+    func test_viewcontroller_hides_secondary_action_button_in_one_action_mode() throws {
+        let viewModel = ModalViewModel(textMode: .reducedBottomInfo, actionsMode: .oneAction)
+        let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
+
+        _ = try XCTUnwrap(viewController.view)
+
+        let secondaryButton = viewController.getSecondaryActionButton()
+
+        XCTAssertTrue(secondaryButton.isHidden)
+    }
+
+    func test_viewcontroller_shows_secondary_action_button_in_secondary_only_action_mode() throws {
+        let viewModel = ModalViewModel(textMode: .reducedBottomInfo, actionsMode: .secondaryOnlyAction)
+        let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
+
+        _ = try XCTUnwrap(viewController.view)
+
+        let secondaryButton = viewController.getSecondaryActionButton()
+
+        XCTAssertFalse(secondaryButton.isHidden)
+    }
+
+    func test_viewcontroller_shows_secondary_action_button_in_two_action_mode() throws {
+        let viewModel = ModalViewModel(textMode: .reducedBottomInfo, actionsMode: .twoAction)
+        let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
+
+        _ = try XCTUnwrap(viewController.view)
+
+        let secondaryButton = viewController.getSecondaryActionButton()
+
+        XCTAssertFalse(secondaryButton.isHidden)
+    }
+
+    func test_viewcontroller_shows_secondary_action_button_in_two_action_and_auxiliary_mode() throws {
+        let viewModel = ModalViewModel(textMode: .reducedBottomInfo, actionsMode: .twoActionAndAuxiliary)
+        let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
+
+        _ = try XCTUnwrap(viewController.view)
+
+        let secondaryButton = viewController.getSecondaryActionButton()
+
+        XCTAssertFalse(secondaryButton.isHidden)
+    }
+
 }
 
 

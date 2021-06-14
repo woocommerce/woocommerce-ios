@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-06-10 11:54:04+0000 */
+/* Translation-Revision-Date: 2021-06-10 15:54:04+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -150,7 +150,7 @@
 "99+" = "Более 99";
 
 /* A label prompting users to learn more about card readers with an embedded hyperlink */
-"<a href=\"https:\/\/woocommerce.com\/payments\">Learn more<\/a> about accepting payments with your mobile device and ordering card readers" = "<a href=\"https:\/\/woocommerce.com\/payments\">Подробнее<\/a> о приеме платежей с помощью мобильного устройства и заказе устройств чтения";
+"<a href=\"https:\/\/woocommerce.com\/payments\">Learn more<\/a> about accepting payments with your mobile device and ordering card readers" = "<a href=\"https:\/\/woocommerce.com\/payments\">Подробнее<\/a> о приёме платежей с помощью мобильного устройства и заказе устройств чтения";
 
 /* Placeholder of the Product Short Description row on Product main screen */
 "A brief excerpt about the product" = "Короткое описание продукта";
@@ -611,7 +611,7 @@
 "Connected But…" = "Подключено, но...";
 
 /* Settings > Manage Card Reader > Connected Reader Table Section Heading */
-"Connected Reader" = "Подключенное устройство чтения";
+"Connected Reader" = "Подключённое устройство чтения";
 
 /* Store Picker's Section Title: Displayed when there's a single pre-selected Store. */
 "Connected Store" = "Подключенный магазин";
@@ -721,10 +721,10 @@
 "Credit card" = "Банковская карта";
 
 /* Selected credit card in Shipping Label form. %1$@ is a placeholder for the last four digits of the credit card. */
-"Credit card ending in %1$@" = "Последние цифры кредитной карты: %1$@";
+"Credit card ending in %1$@" = "Последние цифры номера кредитной карты: %1$@";
 
 /* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
-"Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>" = "Сведения о кредитных картах получены из следующей учётной записи WordPress.com:  %1$@ <%2$@>";
+"Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>" = "Сведения о кредитных картах получены из следующей учётной записи WordPress.com: %1$@ <%2$@>";
 
 /* Cell title for Cross-sells products in Linked Products Settings screen
    Navigation bar title for editing linked products for cross-sell products */
@@ -1995,7 +1995,7 @@
 "Processing" = "В обработке";
 
 /* Indicates that a payment is being processed */
-"Processing payment..." = "Обработка платежа...";
+"Processing payment..." = "Обработка платежа…";
 
 /* Description for Top Performers left column header
    Product section title - Product section title if there is only one product. */

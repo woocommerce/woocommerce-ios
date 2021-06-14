@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-06-09 17:54:04+0000 */
+/* Translation-Revision-Date: 2021-06-10 15:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -150,7 +150,7 @@
 "99+" = "Plus de 99";
 
 /* A label prompting users to learn more about card readers with an embedded hyperlink */
-"<a href=\"https:\/\/woocommerce.com\/payments\">Learn more<\/a> about accepting payments with your mobile device and ordering card readers" = "<a href=\"https:\/\/woocommerce.com\/payments\">En apprendre plus<\/a> sur l’acceptation des paiements avec votre appareil mobile et la commande de lecteurs de cartes";
+"<a href=\"https:\/\/woocommerce.com\/payments\">Learn more<\/a> about accepting payments with your mobile device and ordering card readers" = "<a href=\"https:\/\/woocommerce.com\/payments\">En savoir plus<\/a> sur l’acceptation des paiements avec votre appareil mobile et la commande de lecteurs de cartes";
 
 /* Placeholder of the Product Short Description row on Product main screen */
 "A brief excerpt about the product" = "Un bref extrait sur le produit";

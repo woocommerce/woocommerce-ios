@@ -1,3 +1,3 @@
-WooCommerce Ürün Eklentileri uzantısını (WooCommerce tarafından yapılmıştır) kullanıyorsanız ve bir siparişi görüntülerken bu ayrıntıları görmek istiyorsanız, daha fazla beklemeyin. Bu eklentileri siparişlerde göstermek için uygulamaya deneysel destek ekledik. Denemek için, Ayarlar'daki Deneysel Özellikler'e giderek ve etkinleştirin. Lütfen deneyiminizle ilgili geri bildiriminizi bize gönderin.
+Artık doğrudan ürün detay ekranından sanal bir ürün oluşturabilir ve düzenleyebilirsiniz.
 
-Ayrıca iOS 14 veya sonraki sürümleri yalnızca bundan sonraki sürümde desteklemeye geçiyoruz. WooCommerce uygulamasıyla ilgili güncellemeler almaya devam etmek için lütfen cihazınızı iOS 14'e yükseltin.
+iOS 13'ün artık desteklenmediğini lütfen unutmayın.  Bundan sonra yalnızca iOS 14 ve sonraki sürümler desteklenecektir.

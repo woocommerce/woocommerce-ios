@@ -1,3 +1,0 @@
-Je kunt nu vanaf het scherm Productgegevens een virtueel product maken en bijwerken.
-
-Opmerking: iOS 13 wordt niet meer ondersteund. Vanaf nu wordt alleen iOS 14 en hoger ondersteund.

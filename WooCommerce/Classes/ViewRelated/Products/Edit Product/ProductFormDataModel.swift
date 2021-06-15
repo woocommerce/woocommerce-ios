@@ -65,6 +65,8 @@ protocol ProductFormDataModel {
     // Linked Products
     var upsellIDs: [Int64] { get }
     var crossSellIDs: [Int64] { get }
+
+    var hasAddOns: Bool { get }
 }
 
 // MARK: Helpers that can be derived from `ProductFormDataModel`

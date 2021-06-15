@@ -44,7 +44,17 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Whether the order is eligible for card present payment.
     ///
-    var isEligibleForCardPresentPayment: Bool = false
+    var isEligibleForCardPresentPayment: Bool {
+        return isCardPresentPaymentsFeatureEnabled() &&
+            isOrderStatusEligibleForCardPayment() &&
+            isOrderPaymentMethodEligibleForCardPayment() &&
+            hasCardPresentEligiblePaymentGatewayAccount()
+    }
+
+    func cardPresentPaymentGatewayAccounts() -> [PaymentGatewayAccount] {
+        resultsControllers.paymentGatewayAccounts.filter { $0.isCardPresentEligible }
+    }
+
 
     /// Whether the order has a receipt associated.
     ///
@@ -1175,7 +1185,7 @@ extension OrderDetailsDataSource {
         static let netAmount = NSLocalizedString("Net Payment", comment: "The title for the net amount paid cell")
         static let collectPayment = NSLocalizedString("Collect Payment", comment: "Text on the button that starts collecting a card present payment.")
         static let createShippingLabel = NSLocalizedString("Create Shipping Label", comment: "Text on the button that starts shipping label creation")
-        static let reprintShippingLabel = NSLocalizedString("Reprint Shipping Label", comment: "Text on the button that reprints a shipping label")
+        static let reprintShippingLabel = NSLocalizedString("Print Shipping Label", comment: "Text on the button that prints a shipping label")
         static let seeReceipt = NSLocalizedString("See Receipt", comment: "Text on the button to see a saved receipt")
     }
 
@@ -1413,6 +1423,27 @@ extension OrderDetailsDataSource {
         static let addOrderCell = 1
         static let paymentCell = 1
         static let paidByCustomerCell = 1
+    }
+}
+
+// MARK: - Private Payments Logic
+
+private extension OrderDetailsDataSource {
+    func isCardPresentPaymentsFeatureEnabled() -> Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments)
+    }
+
+    func isOrderStatusEligibleForCardPayment() -> Bool {
+        (order.status == .pending || order.status == .onHold || order.status == .processing)
+    }
+
+    func isOrderPaymentMethodEligibleForCardPayment() -> Bool {
+        let paymentMethod = OrderPaymentMethod(rawValue: order.paymentMethodID)
+        return paymentMethod == .cod || paymentMethod == .none
+    }
+
+    func hasCardPresentEligiblePaymentGatewayAccount() -> Bool {
+        resultsControllers.paymentGatewayAccounts.contains(where: \.isCardPresentEligible)
     }
 }
 

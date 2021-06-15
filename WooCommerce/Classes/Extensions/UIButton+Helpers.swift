@@ -68,6 +68,37 @@ extension UIButton {
         setBackgroundImage(disabledBackgroundImage, for: .disabled)
     }
 
+    /// Applies the Secondary Button Style: Solid BG, always light!
+    ///
+    func applySecondaryLightButtonStyle() {
+        contentEdgeInsets = Style.defaultEdgeInsets
+        layer.borderColor = UIColor.primaryButtonBorder.cgColor
+        layer.borderWidth = Style.defaultBorderWidth
+        layer.cornerRadius = Style.defaultCornerRadius
+        titleLabel?.applyHeadlineStyle()
+        enableMultipleLines()
+        titleLabel?.textAlignment = .center
+
+        setTitleColor(.black, for: .normal)
+        setTitleColor(.black, for: .highlighted)
+        setTitleColor(.buttonDisabledTitle, for: .disabled)
+
+        let normalBackgroundImage = UIImage.renderBackgroundImage(fill: .secondaryLightButtonBackground,
+                                                                  border: .secondaryLightButtonBackground)
+            .applyTintColorToiOS13(.secondaryLightButtonBackground)
+        setBackgroundImage(normalBackgroundImage, for: .normal)
+
+        let highlightedBackgroundImage = UIImage.renderBackgroundImage(fill: .primaryButtonDownBackground,
+                                                                       border: .primaryButtonDownBorder)
+            .applyTintColorToiOS13(.primaryButtonDownBackground)
+        setBackgroundImage(highlightedBackgroundImage, for: .highlighted)
+
+        let disabledBackgroundImage = UIImage.renderBackgroundImage(fill: .buttonDisabledBackground,
+                                                                    border: .buttonDisabledBorder)
+            .applyTintColorToiOS13(.buttonDisabledBorder) // Use border as tint color since the background is clear
+        setBackgroundImage(disabledBackgroundImage, for: .disabled)
+    }
+
     /// Applies the Link Button Style: Clear BG / Brand Text Color
     ///
     func applyLinkButtonStyle() {
@@ -87,6 +118,36 @@ extension UIButton {
         titleLabel?.applyBodyStyle()
         titleLabel?.textAlignment = .natural
         setTitleColor(.modalCancelAction, for: .normal)
+    }
+
+    func applyPaymentsModalCancelButtonStyle() {
+        backgroundColor = .tertiarySystemBackground
+        contentEdgeInsets = Style.defaultEdgeInsets
+        layer.borderColor = UIColor.secondaryButtonBorder.cgColor
+        layer.borderWidth = Style.defaultBorderWidth
+        layer.cornerRadius = Style.defaultCornerRadius
+        titleLabel?.applyHeadlineStyle()
+        enableMultipleLines()
+        titleLabel?.textAlignment = .center
+
+        setTitleColor(.secondaryButtonTitle, for: .normal)
+        setTitleColor(.secondaryButtonTitle, for: .highlighted)
+        setTitleColor(.buttonDisabledTitle, for: .disabled)
+
+        let normalBackgroundImage = UIImage.renderBackgroundImage(fill: .tertiarySystemBackground,
+                                                                  border: .secondaryButtonBorder)
+            .applyTintColorToiOS13(.tertiarySystemBackground)
+        setBackgroundImage(normalBackgroundImage, for: .normal)
+
+        let highlightedBackgroundImage = UIImage.renderBackgroundImage(fill: .secondaryButtonDownBackground,
+                                                                       border: .secondaryButtonDownBorder)
+            .applyTintColorToiOS13(.secondaryButtonDownBackground)
+        setBackgroundImage(highlightedBackgroundImage, for: .highlighted)
+
+        let disabledBackgroundImage = UIImage.renderBackgroundImage(fill: .buttonDisabledBackground,
+                                                                    border: .buttonDisabledBorder)
+            .applyTintColorToiOS13(.buttonDisabledBackground)
+        setBackgroundImage(disabledBackgroundImage, for: .disabled)
     }
 
     /// Applies the Single-Color Icon Button Style: accent/accent dark tint color

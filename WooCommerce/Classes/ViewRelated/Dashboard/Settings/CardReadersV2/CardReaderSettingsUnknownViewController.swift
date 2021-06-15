@@ -81,6 +81,8 @@ private extension CardReaderSettingsUnknownViewController {
             showFoundReaderModal()
         case .failed(let error):
             showDiscoveryErrorModal(error: error)
+        case .restartingSearch:
+            showSearchingModal()
         default:
             dismissAnyModal()
         }
@@ -169,7 +171,7 @@ private extension CardReaderSettingsUnknownViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as TitleTableViewCell where row == .connectHeader:
+        case let cell as HeadlineTableViewCell where row == .connectHeader:
             configureHeader(cell: cell)
         case let cell as ImageTableViewCell where row == .connectImage:
             configureImage(cell: cell)
@@ -188,8 +190,8 @@ private extension CardReaderSettingsUnknownViewController {
         }
     }
 
-    private func configureHeader(cell: TitleTableViewCell) {
-        cell.titleLabel?.text = Localization.connectYourCardReaderTitle
+    private func configureHeader(cell: HeadlineTableViewCell) {
+        cell.headlineLabel?.text = Localization.connectYourCardReaderTitle
         cell.selectionStyle = .none
     }
 
@@ -311,7 +313,7 @@ private enum Row: CaseIterable {
     var type: UITableViewCell.Type {
         switch self {
         case .connectHeader:
-            return TitleTableViewCell.self
+            return HeadlineTableViewCell.self
         case .connectImage:
             return ImageTableViewCell.self
         case .connectHelpHintChargeReader:

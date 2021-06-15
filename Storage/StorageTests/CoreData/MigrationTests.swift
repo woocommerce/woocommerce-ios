@@ -629,6 +629,27 @@ final class MigrationTests: XCTestCase {
         XCTAssertFalse(targetEntitiesNames.contains("OrderCount"))
         XCTAssertFalse(targetEntitiesNames.contains("OrderCountItem"))
     }
+
+    func test_migrating_from_51_to_52_enables_creating_new_paymentGatewayAccount_entities() throws {
+        // Arrange
+        let sourceContainer = try startPersistentContainer("Model 51")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 52")
+        let targetContext = targetContainer.viewContext
+
+        // Assert
+        XCTAssertEqual(try targetContext.count(entityName: "PaymentGatewayAccount"), 0)
+
+        let paymentGatewayAccount = insertPaymentGatewayAccount(to: targetContext)
+        let insertedAccount = try XCTUnwrap(targetContext.firstObject(ofType: PaymentGatewayAccount.self))
+
+        XCTAssertEqual(try targetContext.count(entityName: "PaymentGatewayAccount"), 1)
+        XCTAssertEqual(insertedAccount, paymentGatewayAccount)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -946,6 +967,23 @@ private extension MigrationTests {
             "requiresWPVersion": "",
             "requiresPHPVersion": "",
             "textDomain": ""
+        ])
+    }
+
+    @discardableResult
+    func insertPaymentGatewayAccount(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "PaymentGatewayAccount", properties: [
+            "siteID": 1372,
+            "statementDescriptor": "STAGING.MARS",
+            "isCardPresentEligible": false,
+            "hasPendingRequirements": false,
+            "hasOverdueRequirements": false,
+            "currentDeadline": NSDate(),
+            "defaultCurrency": "USD",
+            "country": "US",
+            "supportedCurrencies": ["USD"],
+            "status": "complete",
+            "gatewayID": "woocommerce-payments"
         ])
     }
 

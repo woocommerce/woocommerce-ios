@@ -2,17 +2,20 @@
 
 6.9
 -----
-
+- [*] Order Detail: now we display a loader on top, to communicate that the order detail view has not yet been fully loaded. [https://github.com/woocommerce/woocommerce-ios/pull/4396]
+- [*] Products: You can edit product attributes for variations right from the main product form. [https://github.com/woocommerce/woocommerce-ios/pull/4350]
+- [*] Improved CTA. "Print Shipping Label" instead of "Reprint Shipping Label". [https://github.com/woocommerce/woocommerce-ios/pull/4394]
+- [*] Improved application log viewer. [https://github.com/woocommerce/woocommerce-ios/pull/4387]
 
 6.8
 -----
 
 - [***] Dropped iOS 13 support. From now we support iOS 14 and later. [https://github.com/woocommerce/woocommerce-ios/pull/4209]
+- [**] Products: Added the option to create and edit a virtual product directly from the product detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/4214]
 
 6.7
 -----
 - [**] Add-Ons: Order add-ons are now available as a beta feature. To try it, enable it from settings! [https://github.com/woocommerce/woocommerce-ios/pull/4119]
-- [**] Products: Added the option to create and edit a virtual product directly from the product detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/4214]
 
 6.6
 -----

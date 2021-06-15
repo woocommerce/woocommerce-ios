@@ -49,7 +49,7 @@ final class CardPresentModalFoundReaderTests: XCTestCase {
     }
 
     func test_primary_button_action_calls_closure() {
-        viewModel.didTapPrimaryButton(in: nil)
+        viewModel.didTapPrimaryButton(in: UIViewController())
 
         XCTAssertTrue(closures.didTapConnect)
     }

@@ -1,6 +1,8 @@
 /// Represent a WCPay accont Entity.
 ///
 public struct WCPayAccount: Decodable {
+    public static let gatewayID = "woocommerce-payments"
+
     public let status: WCPayAccountStatusEnum
     public let hasPendingRequirements: Bool
     public let hasOverdueRequirements: Bool

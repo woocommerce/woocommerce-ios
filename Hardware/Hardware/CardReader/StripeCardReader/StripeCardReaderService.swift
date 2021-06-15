@@ -24,6 +24,9 @@ public final class StripeCardReaderService: NSObject {
     private var pendingSoftwareUpdate: ReaderSoftwareUpdate?
 
     private var activePaymentIntent: StripeTerminal.PaymentIntent? = nil
+
+    /// A lock to ensure that the service only initiates or cancels a discovery process at the same time
+    private let discoveryLock = NSLock()
 }
 
 
@@ -66,18 +69,39 @@ extension StripeCardReaderService: CardReaderService {
     public func start(_ configProvider: CardReaderConfigProvider) throws {
         setConfigProvider(configProvider)
 
+        Terminal.setLogListener {  message in
+            // It seems stripe still tries to log messages when logLevel is .none,
+            // so let's ignore those
+            guard Terminal.shared.logLevel == .verbose else {
+                return
+            }
+            DDLogDebug("💳 [StripeTerminal] \(message)")
+        }
+        Terminal.shared.logLevel = terminalLogLevel
+
         let config = DiscoveryConfiguration(
             discoveryMethod: .bluetoothProximity,
-            simulated: false
+            simulated: shouldUseSimulatedCardReader
         )
 
-        guard CBCentralManager.authorization != .denied else {
+        // If we're using the simulated reader, we don't want to check for Bluetooth permissions
+        // as the simulator won't have Bluetooth available.
+        guard shouldUseSimulatedCardReader || CBCentralManager.authorization != .denied else {
             throw CardReaderServiceError.bluetoothDenied
         }
 
-        switchStatusToDiscovering()
-
         Terminal.shared.delegate = self
+
+        // We're now ready to start discovery, but first we'll check that we're not starting or canceling
+        // another discovery process.
+        // If we can't grab a lock quickly, let's fail rather than wait indefinitely
+        guard discoveryLock.lock(before: Date().addingTimeInterval(1)) else {
+            throw CardReaderServiceError.discovery(underlyingError: .busy)
+        }
+        // We only want to lock while we start the process to make sure another start or cancel doesn't collide.
+        // The lock is released when we return from this method, when it will be OK to call cancel.
+        defer { discoveryLock.unlock() }
+        switchStatusToDiscovering()
 
         /**
          * https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)discoverReaders:delegate:completion:
@@ -106,17 +130,39 @@ extension StripeCardReaderService: CardReaderService {
              * discovering mode before attempting a cancellation
              *
              */
-            guard self?.discoveryStatusSubject.value == .discovering else {
+            guard let self = self,
+                  let discoveryCancellable = self.discoveryCancellable,
+                  self.discoveryStatusSubject.value == .discovering else {
                 return promise(.success(()))
             }
 
-            self?.discoveryCancellable?.cancel { [weak self] error in
-                guard let error = error else {
-                    self?.switchStatusToIdle()
-                    return promise(.success(()))
+            // If all the previous checks are ok, and we are going to definitely cancel an existing
+            // cancelable, then we attempt to grab a lock on the discovery process.
+            // If it's not possible, then another start or cancel might be in progress, so we'll fail right away.
+            guard self.discoveryLock.lock(before: Date().addingTimeInterval(1)) else {
+                return promise(.failure(CardReaderServiceError.discovery(underlyingError: .busy)))
+            }
+
+            // The completion block for cancel, apparently, is called when
+            // the SDK has not really transitioned to an idle state.
+            // Clients might need to dispatch operations that rely on this completion block
+            // to start a second operation on the card reader.
+            // (for example, starting an operation after discovery has been cancelled)
+            //
+            discoveryCancellable.cancel { [discoveryLock = self.discoveryLock, weak self] error in
+                // Horrible, terrible workaround.
+                // And yet, it is the classic "dispatch to the next run cycle".
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [discoveryLock] in
+                    // When we're done with the completion, we let go of the discovery lock
+                    defer { discoveryLock.unlock() }
+                    guard let error = error else {
+                        self?.switchStatusToIdle()
+                        return promise(.success(()))
+                    }
+
+                    self?.internalError(error)
+                    promise(.failure(error))
                 }
-                self?.internalError(error)
-                promise(.failure(error))
             }
         }
     }
@@ -191,20 +237,28 @@ extension StripeCardReaderService: CardReaderService {
                 return
             }
 
-            self.paymentCancellable?.cancel({ [weak self] error in
+            let cancelPaymentIntent = { [weak self] in
+                Terminal.shared.cancelPaymentIntent(activePaymentIntent) { (intent, error) in
+                    if let error = error {
+                        let underlyingError = UnderlyingError(with: error)
+                        promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: underlyingError)))
+                    }
+
+                    if let _ = intent {
+                        self?.activePaymentIntent = nil
+                        promise(.success(()))
+                    }
+                }
+            }
+            guard let paymentCancellable = self.paymentCancellable,
+                  !paymentCancellable.completed else {
+                return cancelPaymentIntent()
+            }
+
+            paymentCancellable.cancel({ [weak self] error in
                 if error == nil {
                     self?.paymentCancellable = nil
-                    Terminal.shared.cancelPaymentIntent(activePaymentIntent) { (intent, error) in
-                        if let error = error {
-                            let underlyingError = UnderlyingError(with: error)
-                            promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: underlyingError)))
-                        }
-
-                        if let _ = intent {
-                            self?.activePaymentIntent = nil
-                            promise(.success(()))
-                        }
-                    }
+                    cancelPaymentIntent()
                 }
             })
         }
@@ -350,6 +404,7 @@ private extension StripeCardReaderService {
             /// Because we are chaining promises, we need to retain a reference
             /// to this cancellable if we want to cancel 
             self?.paymentCancellable = Terminal.shared.collectPaymentMethod(intent, delegate: self) { (intent, error) in
+                self?.paymentCancellable = nil
                 // Notify clients that the card, no matter if tapped or inserted, is not needed anymore.
                 self?.sendReaderEvent(.cardRemoved)
 
@@ -401,7 +456,6 @@ extension StripeCardReaderService: DiscoveryDelegate {
         // Cache discovered readers. The cache needs to be cleared after we connect to a
         // specific reader
         discoveredStripeReadersCache.insert(readers)
-
         let wooReaders = readers.map {
             CardReader(reader: $0)
         }
@@ -458,16 +512,6 @@ private extension StripeCardReaderService {
         }
     }
 
-    func cancelReaderDiscovery() {
-        discoveryCancellable?.cancel { [weak self] error in
-            guard let self = self,
-                  let error = error else {
-                return
-            }
-            self.internalError(error)
-        }
-    }
-
     func resetDiscoveredReadersSubject(error: Error? = nil) {
         if let error = error {
             discoveredReadersSubject.send(completion: .failure(error))
@@ -503,5 +547,29 @@ private extension StripeCardReaderService {
 private extension StripeCardReaderService {
     func internalError(_ error: Error) {
         // Empty for now. Will be implemented later
+    }
+}
+
+// MARK: - Debugging configuration
+//
+private extension StripeCardReaderService {
+    var shouldUseSimulatedCardReader: Bool {
+        #if DEBUG
+        return ProcessInfo.processInfo.arguments.contains("-simulate-stripe-card-reader")
+        #else
+        return false
+        #endif
+    }
+
+    var terminalLogLevel: LogLevel {
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("-stripe-verbose-logging") {
+            return .verbose
+        } else {
+            return .none
+        }
+        #else
+        return .none
+        #endif
     }
 }

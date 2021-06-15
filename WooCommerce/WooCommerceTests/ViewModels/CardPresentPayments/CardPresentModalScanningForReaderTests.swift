@@ -28,12 +28,12 @@ final class CardPresentModalScanningForReaderTests: XCTestCase {
         XCTAssertNil(viewModel.topSubtitle)
     }
 
-    func test_primary_button_title_is_not_nil() {
-        XCTAssertNotNil(viewModel.primaryButtonTitle)
+    func test_primary_button_title_is_nil() {
+        XCTAssertNil(viewModel.primaryButtonTitle)
     }
 
-    func test_secondary_button_title_is_nil() {
-        XCTAssertNil(viewModel.secondaryButtonTitle)
+    func test_secondary_button_title_is_not_nil() {
+        XCTAssertNotNil(viewModel.secondaryButtonTitle)
     }
 
     func test_auxiliary_button_title_is_nil() {
@@ -48,8 +48,8 @@ final class CardPresentModalScanningForReaderTests: XCTestCase {
         XCTAssertNil(viewModel.bottomSubtitle)
     }
 
-    func test_primary_button_action_calls_closure() {
-        viewModel.didTapPrimaryButton(in: nil)
+    func test_secondary_button_action_calls_closure() {
+        viewModel.didTapSecondaryButton(in: nil)
 
         XCTAssertTrue(closures.didTapCancel)
     }

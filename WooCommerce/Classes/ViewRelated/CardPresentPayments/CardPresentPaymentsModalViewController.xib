@@ -15,6 +15,7 @@
                 <outlet property="bottomLabels" destination="k73-qi-GuD" id="LvQ-UE-SBc"/>
                 <outlet property="bottomSubtitleLabel" destination="2Sx-5s-f7J" id="Mco-Vu-Li6"/>
                 <outlet property="bottomTitleLabel" destination="oAj-lv-0k9" id="Clc-oi-Ywf"/>
+                <outlet property="containerView" destination="8Tg-Q2-wkH" id="0n7-5Q-edX"/>
                 <outlet property="imageView" destination="Osv-Wo-lxW" id="yIN-vL-DOA"/>
                 <outlet property="mainStackView" destination="jIt-xb-rrN" id="mSC-3J-47R"/>
                 <outlet property="primaryButton" destination="ZHa-is-GJK" id="wzn-TJ-1Sm"/>
@@ -30,10 +31,10 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Tg-Q2-wkH" userLabel="WrapperView">
-                    <rect key="frame" x="35" y="162.5" width="344" height="581"/>
+                    <rect key="frame" x="31" y="162.5" width="352" height="581"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="32" translatesAutoresizingMaskIntoConstraints="NO" id="jIt-xb-rrN">
-                            <rect key="frame" x="16" y="32" width="312" height="517"/>
+                            <rect key="frame" x="20" y="32" width="312" height="517"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Q0r-qo-iZS">
                                     <rect key="frame" x="135.5" y="0.0" width="41.5" height="49"/>
@@ -44,7 +45,7 @@
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aVs-Lf-QTr">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="aVs-Lf-QTr">
                                             <rect key="frame" x="0.0" y="28.5" width="41.5" height="20.5"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
@@ -78,12 +79,12 @@
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="mhI-fa-Yzw">
                                             <rect key="frame" x="16" y="20" width="280" height="170"/>
                                             <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZHa-is-GJK" userLabel="secondary action button" customClass="NUXButton" customModule="WordPressAuthenticator">
-                                                    <rect key="frame" x="0.0" y="0.0" width="280" height="50"/>
+                                                <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZHa-is-GJK" userLabel="secondary action button">
+                                                    <rect key="frame" x="0.0" y="0.0" width="280" height="40"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="50" id="Gcd-Af-CS9"/>
+                                                        <constraint firstAttribute="height" constant="40" id="Gcd-Af-CS9"/>
                                                     </constraints>
-                                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
                                                     <state key="normal" title="Primary Action Button">
                                                         <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     </state>
@@ -91,12 +92,12 @@
                                                         <userDefinedRuntimeAttribute type="boolean" keyPath="isPrimary" value="YES"/>
                                                     </userDefinedRuntimeAttributes>
                                                 </button>
-                                                <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9Ap-Te-Fsi" userLabel="Action Button" customClass="NUXButton" customModule="WordPressAuthenticator">
-                                                    <rect key="frame" x="0.0" y="70" width="280" height="50"/>
+                                                <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9Ap-Te-Fsi" userLabel="Action Button">
+                                                    <rect key="frame" x="0.0" y="60" width="280" height="40"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="50" id="ju1-aE-m26"/>
+                                                        <constraint firstAttribute="height" constant="40" id="ju1-aE-m26"/>
                                                     </constraints>
-                                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
                                                     <state key="normal" title="Secondary Action Button">
                                                         <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     </state>
@@ -105,7 +106,7 @@
                                                     </userDefinedRuntimeAttributes>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="maO-19-PuQ">
-                                                    <rect key="frame" x="0.0" y="140" width="280" height="30"/>
+                                                    <rect key="frame" x="0.0" y="120" width="280" height="50"/>
                                                     <state key="normal" title="Button"/>
                                                 </button>
                                             </subviews>
@@ -123,13 +124,13 @@
                     </subviews>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <constraints>
-                        <constraint firstItem="jIt-xb-rrN" firstAttribute="leading" secondItem="8Tg-Q2-wkH" secondAttribute="leading" constant="16" id="80k-pZ-tsR"/>
+                        <constraint firstItem="jIt-xb-rrN" firstAttribute="leading" secondItem="8Tg-Q2-wkH" secondAttribute="leading" constant="20" id="80k-pZ-tsR"/>
                         <constraint firstItem="jIt-xb-rrN" firstAttribute="top" secondItem="8Tg-Q2-wkH" secondAttribute="top" constant="32" id="JLA-XJ-MiD"/>
                         <constraint firstItem="jIt-xb-rrN" firstAttribute="height" secondItem="8Tg-Q2-wkH" secondAttribute="height" priority="750" id="VJR-wO-lUP"/>
                         <constraint firstAttribute="bottom" secondItem="jIt-xb-rrN" secondAttribute="bottom" constant="32" id="lVZ-pu-Fmb"/>
                         <constraint firstItem="jIt-xb-rrN" firstAttribute="centerX" secondItem="8Tg-Q2-wkH" secondAttribute="centerX" id="p6Y-jJ-KuU"/>
                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="280" id="uaz-2N-7M4"/>
-                        <constraint firstAttribute="trailing" secondItem="jIt-xb-rrN" secondAttribute="trailing" constant="16" id="ufT-Yf-gsb"/>
+                        <constraint firstAttribute="trailing" secondItem="jIt-xb-rrN" secondAttribute="trailing" constant="20" id="ufT-Yf-gsb"/>
                     </constraints>
                 </view>
             </subviews>

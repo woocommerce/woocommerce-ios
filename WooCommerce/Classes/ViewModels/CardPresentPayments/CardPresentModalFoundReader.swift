@@ -35,13 +35,13 @@ final class CardPresentModalFoundReader: CardPresentPaymentsModalViewModel {
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        connectAction()
-        viewController?.dismiss(animated: true, completion: nil)
+        viewController?.dismiss(animated: true, completion: { [weak self] in
+            self?.connectAction()
+        })
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
         continueSearchAction()
-        viewController?.dismiss(animated: true, completion: nil)
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {}

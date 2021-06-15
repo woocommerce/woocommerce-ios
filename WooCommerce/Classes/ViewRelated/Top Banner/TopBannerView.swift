@@ -229,6 +229,8 @@ private extension TopBannerView {
             iconImageView.tintColor = .textSubtle
         case .warning:
             iconImageView.tintColor = .warning
+        case .info:
+            iconImageView.tintColor = .info
         }
         backgroundColor = backgroundColor(for: type)
     }
@@ -239,6 +241,8 @@ private extension TopBannerView {
             return .systemColor(.secondarySystemGroupedBackground)
         case .warning:
             return .warningBackground
+        case .info:
+            return .withColorStudio(.green, shade: .shade5)
         }
     }
 

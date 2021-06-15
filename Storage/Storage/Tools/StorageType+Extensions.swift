@@ -522,4 +522,10 @@ public extension StorageType {
         let predicate = \SitePlugin.siteID == siteID && \SitePlugin.name == name
         return firstObject(ofType: SitePlugin.self, matching: predicate)
     }
-}
+
+    /// Returns a payment gateway account with a specified `siteID` and `gatewayID`
+    ///
+    func loadPaymentGatewayAccount(siteID: Int64, gatewayID: String) -> PaymentGatewayAccount? {
+        let predicate = \PaymentGatewayAccount.siteID == siteID && \PaymentGatewayAccount.gatewayID == gatewayID
+        return firstObject(ofType: PaymentGatewayAccount.self, matching: predicate)
+    }}

@@ -27,6 +27,7 @@ enum ProductFormSection: Equatable {
         case productType(viewModel: ViewModel, isEditable: Bool)
         case shipping(viewModel: ViewModel, isEditable: Bool)
         case inventory(viewModel: ViewModel, isEditable: Bool)
+        case addOns(viewModel: ViewModel, isEditable: Bool)
         case categories(viewModel: ViewModel, isEditable: Bool)
         case tags(viewModel: ViewModel, isEditable: Bool)
         case shortDescription(viewModel: ViewModel, isEditable: Bool)

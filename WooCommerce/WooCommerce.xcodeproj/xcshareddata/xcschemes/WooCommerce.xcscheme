@@ -124,6 +124,14 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "-stripe-verbose-logging"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-simulate-stripe-card-reader"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "-force-crash-logging 1"
             isEnabled = "NO">
          </CommandLineArgument>

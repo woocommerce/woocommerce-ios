@@ -10,7 +10,6 @@
 require 'json'
 require 'optparse'
 
-
 ## Parse Input Parameters
 ##
 options = {}
@@ -27,44 +26,40 @@ end
 
 optparse.parse!
 
-
 ## Validate Parameters
 ##
-for parameter in [:secrets, :input]
-	filename = options[parameter]
+%i[secrets input].each do |parameter|
+  filename = options[parameter]
 
-	if filename.nil? == true || File.exists?(filename) == false then
-		puts optparse
-		exit
-	end
+  if filename.nil? == true || File.exist?(filename) == false
+    puts optparse
+    exit
+  end
 end
-
 
 ## Loads the Secrets at the specified Path. This must be a JSON Valid file!
 ##
 def load(secrets_path)
-	raw_secrets = File.read(secrets_path)
-	output = JSON.parse(raw_secrets, :symbolize_names => true)
-    output[:timestamp] = Time.now.strftime("%b %d, %Y at %H:%M:%S")
+  raw_secrets = File.read(secrets_path)
+  output = JSON.parse(raw_secrets, symbolize_names: true)
+  output[:timestamp] = Time.now.strftime('%b %d, %Y at %H:%M:%S')
 
-    return output
+  output
 end
 
-
-## Loads the Template at the specified path, and applies Placeholder Replacement OP's, with the secrets 
+## Loads the Template at the specified path, and applies Placeholder Replacement OP's, with the secrets
 ## located at a given path.
 ##
 def process(template_path, secrets_path)
-	secrets = load(secrets_path)
-	template = File.open(template_path, "r")
+  secrets = load(secrets_path)
+  template = File.open(template_path, 'r')
 
-	template.each_line { |line|
-		puts line % secrets
-	}
+  template.each_line do |line|
+    puts line % secrets
+  end
 
-	template.close
+  template.close
 end
-
 
 ## Main!
 ##

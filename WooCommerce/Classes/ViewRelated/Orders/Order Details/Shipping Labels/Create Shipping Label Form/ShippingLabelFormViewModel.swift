@@ -224,6 +224,73 @@ final class ShippingLabelFormViewModel {
 
         return String.localizedStringWithFormat(Localization.paymentMethodLabel, selectedPaymentMethod.cardDigits)
     }
+
+    /// Returns the subtotal under the Order Summary.
+    ///
+    func getSubtotal() -> String {
+        guard let selectedRate = selectedRate else {
+            return ""
+        }
+
+        var retailRate: Double = selectedRate.retailRate
+        if let selectedSignatureRate = selectedSignatureRate {
+            retailRate = selectedSignatureRate.retailRate
+        }
+        else if let selectedAdultSignatureRate = selectedAdultSignatureRate {
+            retailRate = selectedAdultSignatureRate.retailRate
+        }
+
+        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+        let price = currencyFormatter.formatAmount(Decimal(retailRate)) ?? ""
+
+        return price
+    }
+
+    /// Returns, if available, the discount under the Order Summary.
+    ///
+    func getDiscount() -> String? {
+        guard let selectedRate = selectedRate else {
+            return nil
+        }
+
+        var rate: Double = selectedRate.retailRate - selectedRate.rate
+        if let selectedSignatureRate = selectedSignatureRate {
+            rate = selectedSignatureRate.rate - selectedSignatureRate.retailRate
+        }
+        else if let selectedAdultSignatureRate = selectedAdultSignatureRate {
+            rate = selectedAdultSignatureRate.rate - selectedAdultSignatureRate.retailRate
+        }
+
+        guard rate != 0 else {
+            return nil
+        }
+
+        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+        let discount = currencyFormatter.formatAmount(Decimal(rate)) ?? nil
+
+        return discount
+    }
+
+    /// Returns the order total under the Order Summary.
+    ///
+    func getOrderTotal() -> String {
+        guard let selectedRate = selectedRate else {
+            return ""
+        }
+
+        var rate: Double = selectedRate.rate
+        if let selectedSignatureRate = selectedSignatureRate {
+            rate = selectedSignatureRate.rate
+        }
+        else if let selectedAdultSignatureRate = selectedAdultSignatureRate {
+            rate = selectedAdultSignatureRate.rate
+        }
+
+        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+        let price = currencyFormatter.formatAmount(Decimal(rate)) ?? ""
+
+        return price
+    }
 }
 
 // MARK: - State Machine

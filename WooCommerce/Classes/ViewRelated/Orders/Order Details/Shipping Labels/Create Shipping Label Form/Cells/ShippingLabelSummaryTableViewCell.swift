@@ -54,8 +54,28 @@ final class ShippingLabelSummaryTableViewCell: UITableViewCell {
         configureCellBasedOnState(state)
     }
 
-    @IBAction func toggleSwitchWasPressed(_ sender: Any) {
+    @IBAction private func toggleSwitchWasPressed(_ sender: Any) {
         onSwitchChange?(isOn)
+    }
+    @IBAction private func buttonTouchUpEvent(_ sender: Any) {
+        onButtonTouchUp?()
+    }
+
+    func setSubtotal(_ total: String) {
+        subtotalBody.text = total
+    }
+
+    func setDiscount(_ discount: String?) {
+        guard let discount = discount else {
+            discountView.isHidden = true
+            return
+        }
+        discountView.isHidden = false
+        discountBody.text = discount
+    }
+
+    func setOrderTotal(_ total: String) {
+        orderTotalBody.text = total
     }
 }
 
@@ -63,6 +83,8 @@ private extension ShippingLabelSummaryTableViewCell {
     func configureStyle() {
         applyDefaultBackgroundStyle()
         selectionStyle = .none
+        discountImage.image = .infoOutlineImage
+        separator.backgroundColor = .systemColor(.separator)
     }
 
     func configureLabels() {
@@ -72,10 +94,10 @@ private extension ShippingLabelSummaryTableViewCell {
         discountTitle.applyBodyStyle()
         discountTitle.text = Localization.discount
         discountBody.applyBodyStyle()
-        orderTotalTitle.applyTitleStyle()
+        orderTotalTitle.applyHeadlineStyle()
         orderTotalTitle.text = Localization.orderTotal
-        orderTotalBody.applyTitleStyle()
-        orderCompleteTitle.applyBodyStyle()
+        orderTotalBody.applyHeadlineStyle()
+        orderCompleteTitle.applySubheadlineStyle()
         orderCompleteTitle.numberOfLines = 0
         orderCompleteTitle.text = Localization.orderComplete
     }
@@ -86,6 +108,7 @@ private extension ShippingLabelSummaryTableViewCell {
 
     func configureButton() {
         button.applyPrimaryButtonStyle()
+        button.setTitle(Localization.button, for: .normal)
     }
 
     func configureCellBasedOnState(_ state: ShippingLabelFormStepTableViewCell.State) {
@@ -107,5 +130,6 @@ private extension ShippingLabelSummaryTableViewCell {
         static let orderTotal = NSLocalizedString("Order Total", comment: "Create Shipping Label form -> Order Total label")
         static let orderComplete = NSLocalizedString("Mark this order as complete and notify the customer",
                                                      comment: "Create Shipping Label form -> Mark order as complete label")
+        static let button = NSLocalizedString("Purchase Label", comment: "Create Shipping Label form -> Purchase Label button")
     }
 }

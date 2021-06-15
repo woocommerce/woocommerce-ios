@@ -273,11 +273,15 @@ private extension ShippingLabelFormViewController {
     }
 
     func configureOrderSummary(cell: ShippingLabelSummaryTableViewCell, row: Row) {
-        cell.configure(state: row.cellState) { (switchIsON) in
-
+        cell.configure(state: row.cellState) { (switchIsOn) in
+            // TODO: Handle order completion
         } onButtonTouchUp: {
-
+            // TODO: Purchase Label action
         }
+        cell.isOn = false
+        cell.setSubtotal(viewModel.getSubtotal())
+        cell.setDiscount(viewModel.getDiscount())
+        cell.setOrderTotal(viewModel.getOrderTotal())
     }
 }
 

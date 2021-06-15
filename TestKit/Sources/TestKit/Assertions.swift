@@ -63,7 +63,7 @@ extension XCTestCase {
 
             record(
                 XCTIssue(type: .assertionFailure,
-                         compactDescription: "Found difference for \n" + diff(expected, received).joined(separator: ", "))
+                         compactDescription: "assertEqual failed: Found difference for \n" + diff(expected, received).joined(separator: ", "))
             )
         }
         catch {

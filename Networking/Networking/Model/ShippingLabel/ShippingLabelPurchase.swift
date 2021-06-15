@@ -3,6 +3,8 @@ import Codegen
 
 /// Represents a Shipping Label purchase.
 ///
+/// Shipping label purchases contain a subset of the label data included in a purchased `ShippingLabel`.
+///
 public struct ShippingLabelPurchase: Equatable, GeneratedCopiable, GeneratedFakeable {
     /// The remote ID of the site that owns this shipping label.
     public let siteID: Int64
@@ -14,7 +16,7 @@ public struct ShippingLabelPurchase: Equatable, GeneratedCopiable, GeneratedFake
     public let shippingLabelID: Int64
 
     /// The remote ID of the shipping carrier.
-    public let carrierID: String
+    public let carrierID: String?
 
     /// The date the shipping label was created.
     public let dateCreated: Date
@@ -23,7 +25,7 @@ public struct ShippingLabelPurchase: Equatable, GeneratedCopiable, GeneratedFake
     public let packageName: String
 
     /// The tracking number of the shipping label.
-    public let trackingNumber: String
+    public let trackingNumber: String?
 
     /// The name of service for the shipping label (e.g. "USPS - Media Mail").
     public let serviceName: String
@@ -45,10 +47,10 @@ public struct ShippingLabelPurchase: Equatable, GeneratedCopiable, GeneratedFake
     public init(siteID: Int64,
                 orderID: Int64,
                 shippingLabelID: Int64,
-                carrierID: String,
+                carrierID: String?,
                 dateCreated: Date,
                 packageName: String,
-                trackingNumber: String,
+                trackingNumber: String?,
                 serviceName: String,
                 refundableAmount: Double,
                 status: ShippingLabelStatus,

@@ -223,6 +223,32 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
         let mapper = ShippingLabelCreationEligibilityMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Purchases the shipping label.
+    public func purchaseShippingLabel(siteID: Int64,
+                                      orderID: Int64,
+                                      originAddress: ShippingLabelAddress,
+                                      destinationAddress: ShippingLabelAddress,
+                                      packages: [ShippingLabelPackageSelected],
+                                      emailCustomerReceipt: Bool,
+                                      completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void) {
+        do {
+            let parameters: [String: Any] = [
+                ParameterKey.async: true,
+                ParameterKey.originAddress: try originAddress.toDictionary(),
+                ParameterKey.destinationAddress: try destinationAddress.toDictionary(),
+                ParameterKey.packages: try packages.map { try $0.toDictionary() },
+                ParameterKey.emailReceipt: emailCustomerReceipt
+            ]
+            let path = "\(Path.shippingLabels)/\(orderID)"
+            let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let mapper = ShippingLabelPurchaseMapper(siteID: siteID, orderID: orderID)
+            enqueue(request, mapper: mapper, completion: completion)
+        }
+        catch {
+            completion(.failure(error))
+        }
+    }
 }
 
 // MARK: Constant
@@ -248,5 +274,7 @@ private extension ShippingLabelRemote {
         static let packages = "packages"
         static let selectedPaymentMethodID = "selected_payment_method_id"
         static let emailReceipts = "email_receipts"
+        static let emailReceipt = "email_receipt"
+        static let async = "async"
     }
 }

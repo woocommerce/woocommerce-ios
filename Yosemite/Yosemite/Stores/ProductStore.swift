@@ -103,7 +103,12 @@ private extension ProductStore {
 
     /// Searches all of the products that contain a given Keyword.
     ///
-    func searchProducts(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, excludedProductIDs: [Int64], onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func searchProducts(siteID: Int64,
+                        keyword: String,
+                        pageNumber: Int,
+                        pageSize: Int,
+                        excludedProductIDs: [Int64],
+                        onCompletion: @escaping (Result<Void, Error>) -> Void) {
         remote.searchProducts(for: siteID,
                               keyword: keyword,
                               pageNumber: pageNumber,

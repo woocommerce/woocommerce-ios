@@ -8425,8 +8425,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Automattic/ScreenObject";
 			requirement = {
-				branch = trunk;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.0;
 			};
 		};
 		45455E302657C3F300BBB0C4 /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */ = {

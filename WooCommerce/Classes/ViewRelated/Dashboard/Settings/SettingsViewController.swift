@@ -202,11 +202,6 @@ private extension SettingsViewController {
     /// Determine if any payment gateway account for this site supports card present payments
     ///
     private func checkAvailabilityForPayments() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) else {
-            canCollectPayments = false
-            return
-        }
-
         paymentGatewayAccounts = paymentGatewayAccountsResultsController?.fetchedObjects ?? []
         canCollectPayments = paymentGatewayAccounts.contains(where: \.isCardPresentEligible)
     }

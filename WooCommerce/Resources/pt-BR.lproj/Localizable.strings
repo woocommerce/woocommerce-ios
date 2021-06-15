@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-06-10 09:54:04+0000 */
+/* Translation-Revision-Date: 2021-06-11 08:54:43+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -46,7 +46,7 @@
 "%1$@ › %2$@" = "%1$@ › %2$@";
 
 /* Card reader battery level as an integer percentage */
-"%1$@%% Battery" = "Bateria do %1$@%%";
+"%1$@%% Battery" = "%1$@%% de bateria";
 
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
@@ -132,7 +132,7 @@
 "- %1$d items" = "- %1$d itens";
 
 /* Settings > Manage Card Reader > Connect > Help hint number 1 */
-"1" = "0";
+"1" = "1";
 
 /* Navigation bar title for selecting multiple products when one product has been selected. */
 "1 Product Selected" = "1 produto selecionado";
@@ -525,7 +525,7 @@
 "Capture high-quality product reviews for your store." = "Colete avaliações de alta qualidade do produto para sua loja.";
 
 /* Navigation bar title of shipping label carrier and rates screen */
-"Carrier and Rates" = "Portadora e taxas";
+"Carrier and Rates" = "Transportadora e tarifas";
 
 /* Add Custom shipping carrier. Title of cell presenting the carrier name */
 "Carrier name" = "Nome da transportadora";
@@ -596,10 +596,10 @@
 "Composes a new order note." = "Escreve uma nova nota para o pedido.";
 
 /* Settings > Manage Card Reader > Connect > A button to begin a search for a reader */
-"Connect Card Reader" = "Conecte o leitor de cartão";
+"Connect Card Reader" = "Conectar leitor de cartão";
 
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
-"Connect to Reader" = "Conecte-se ao leitor";
+"Connect to Reader" = "Conectar-se ao leitor";
 
 /* Settings > Manage Card Reader > Prompt user to connect their first reader */
 "Connect your card reader" = "Conecte seu leitor de cartão";
@@ -721,10 +721,10 @@
 "Credit card" = "Cartão de crédito";
 
 /* Selected credit card in Shipping Label form. %1$@ is a placeholder for the last four digits of the credit card. */
-"Credit card ending in %1$@" = "Cartão de crédito que terminam com os dígitos %1$@";
+"Credit card ending in %1$@" = "Cartão de crédito que termina em %1$@";
 
 /* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
-"Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>" = "Cartões de crédito são recuperados das seguintes contas do WordPress.com: %1$@ <%2$@>";
+"Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>" = "Cartões de crédito recuperados da seguinte conta do WordPress.com: %1$@ <%2$@>";
 
 /* Cell title for Cross-sells products in Linked Products Settings screen
    Navigation bar title for editing linked products for cross-sell products */
@@ -931,7 +931,7 @@
 "Email receipt" = "Enviar recibo por e-mail";
 
 /* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
-"Email the label purchase receipts to %1$@ (%2$@) at %3$@" = "Envie por e-mail os recibos de compra de rótulo para  %1$@ (%2$@) pelo endereço %3$@";
+"Email the label purchase receipts to %1$@ (%2$@) at %3$@" = "Envie por e-mail os recibos de compra de etiqueta para %1$@ (%2$@) pelo endereço %3$@";
 
 /* Accessibility label that lets the user know the billing customer's email address */
 "Email: %@" = "E-mail: %@";
@@ -1831,7 +1831,7 @@
 "Payment Method" = "Forma de pagamento";
 
 /* Header for list of payment methods in Payment Method screen */
-"Payment Method Selected" = "Método de pagamento selecionado";
+"Payment Method Selected" = "Forma de pagamento selecionada";
 
 /* Error message. Presented to users after a collecting a payment fails
    Error message. Presented to users after collecting a payment fails */
@@ -2100,7 +2100,7 @@
 "Read privacy policy" = "Ler política de privacidade";
 
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
-"Reader is ready" = "O Leitor está pronto";
+"Reader is ready" = "O leitor está pronto";
 
 /* Refund note section title */
 "Reason for Refund" = "Motivo do reembolso";
@@ -2355,7 +2355,7 @@
 "Select start date" = "Selecionar data de início";
 
 /* Placeholder in Shipping Label form for the Package Details row. */
-"Select the type of packaging you'd like to ship your items in" = "Selecione o tipo de pacote";
+"Select the type of packaging you'd like to ship your items in" = "Selecione o tipo de pacote em que você gostaria de enviar seus itens";
 
 /* Title of the bottom sheet from the product downloadable file to add a new downloadable file. */
 "Select upload method" = "Selecionar método de upload";

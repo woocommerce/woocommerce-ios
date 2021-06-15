@@ -1,3 +1,0 @@
-You can now create and edit a virtual product directly from the product details screen!
-
-Please note that iOS 13 is no longer supported. Only iOS 14 and later versions will be supported going forward.

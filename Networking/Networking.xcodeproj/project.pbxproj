@@ -400,6 +400,7 @@
 		CC07865F267799EE00BA9AC1 /* ShippingLabelPurchase.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC07865E267799EE00BA9AC1 /* ShippingLabelPurchase.swift */; };
 		CC0786612677B2DA00BA9AC1 /* ShippingLabelPurchaseMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0786602677B2DA00BA9AC1 /* ShippingLabelPurchaseMapper.swift */; };
 		CC0786632678F79500BA9AC1 /* shipping-label-purchase-success.json in Resources */ = {isa = PBXBuildFile; fileRef = CC0786622678F79500BA9AC1 /* shipping-label-purchase-success.json */; };
+		CC07866526790B1100BA9AC1 /* ShippingLabelPurchaseMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC07866426790B1100BA9AC1 /* ShippingLabelPurchaseMapperTests.swift */; };
 		CC851D0625E51ADF00249E9C /* Decimal+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC851D0525E51ADF00249E9C /* Decimal+Extensions.swift */; };
 		CC851D1425E52AB500249E9C /* Decimal+ExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC851D1325E52AB500249E9C /* Decimal+ExtensionsTests.swift */; };
 		CC9A24A32641BCF2005DE56E /* ShippingLabelCreationEligibilityResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9A24A22641BCF2005DE56E /* ShippingLabelCreationEligibilityResponse.swift */; };
@@ -934,6 +935,7 @@
 		CC07865E267799EE00BA9AC1 /* ShippingLabelPurchase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPurchase.swift; sourceTree = "<group>"; };
 		CC0786602677B2DA00BA9AC1 /* ShippingLabelPurchaseMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPurchaseMapper.swift; sourceTree = "<group>"; };
 		CC0786622678F79500BA9AC1 /* shipping-label-purchase-success.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "shipping-label-purchase-success.json"; sourceTree = "<group>"; };
+		CC07866426790B1100BA9AC1 /* ShippingLabelPurchaseMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPurchaseMapperTests.swift; sourceTree = "<group>"; };
 		CC851D0525E51ADF00249E9C /* Decimal+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Decimal+Extensions.swift"; sourceTree = "<group>"; };
 		CC851D1325E52AB500249E9C /* Decimal+ExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Decimal+ExtensionsTests.swift"; sourceTree = "<group>"; };
 		CC9A24A22641BCF2005DE56E /* ShippingLabelCreationEligibilityResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCreationEligibilityResponse.swift; sourceTree = "<group>"; };
@@ -1804,6 +1806,7 @@
 				451A9835260B9DF90059D135 /* ShippingLabelPackagesMapperTests.swift */,
 				CCF48B7F2628BBC10034EA83 /* ShippingLabelAccountSettingsMapperTests.swift */,
 				CC9A254926442D26005DE56E /* ShippingLabelCreationEligibilityMapperTests.swift */,
+				CC07866426790B1100BA9AC1 /* ShippingLabelPurchaseMapperTests.swift */,
 				02C254D22563992900A04423 /* OrderShippingLabelListMapperTests.swift */,
 			);
 			path = Mapper;
@@ -2512,6 +2515,7 @@
 				74002D6C2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift in Sources */,
 				0212683524C046CB00F8A892 /* MockNetwork+Path.swift in Sources */,
 				B554FA932180C17200C54DFF /* NoteHashListMapperTests.swift in Sources */,
+				CC07866526790B1100BA9AC1 /* ShippingLabelPurchaseMapperTests.swift in Sources */,
 				74002D6A2118B26100A63C19 /* SiteVisitStatsMapperTests.swift in Sources */,
 				743E84FA221742E300FAC9D7 /* ShipmentsRemoteTests.swift in Sources */,
 				743E84F822172E1F00FAC9D7 /* ShipmentTrackingListMapperTests.swift in Sources */,

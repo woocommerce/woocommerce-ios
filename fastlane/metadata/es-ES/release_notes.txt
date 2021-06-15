@@ -1,3 +1,0 @@
-Ahora puedes crear y editar productos virtuales desde la pantalla de detalles.
-
-Ten en cuenta que iOS 13 ya no es compatible. A partir de ahora, solo serán compatibles iOS 14 y las versiones posteriores.

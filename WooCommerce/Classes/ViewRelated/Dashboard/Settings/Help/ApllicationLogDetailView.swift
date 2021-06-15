@@ -95,8 +95,10 @@ private extension View {
     }
 }
 
+#if DEBUG
 struct ApplicationLogDetailView_Previews: PreviewProvider {
     static var previews: some View {
         ApplicationLogDetailView(viewModel: .sampleLog)
     }
 }
+#endif

@@ -1,11 +1,17 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+7.0
+-----
+
+
 6.9
 -----
+- [*] Order Detail: now we display a loader on top, to communicate that the order detail view has not yet been fully loaded. [https://github.com/woocommerce/woocommerce-ios/pull/4396]
 - [*] Products: You can edit product attributes for variations right from the main product form. [https://github.com/woocommerce/woocommerce-ios/pull/4350]
 - [*] Improved CTA. "Print Shipping Label" instead of "Reprint Shipping Label". [https://github.com/woocommerce/woocommerce-ios/pull/4394]
 - [*] Improved application log viewer. [https://github.com/woocommerce/woocommerce-ios/pull/4387]
 - [*] If the Orders, Products, or Reviews lists can't load, a banner now appears at the top of the screen with links to troubleshoot or contact support. [https://github.com/woocommerce/woocommerce-ios/pull/4400, https://github.com/woocommerce/woocommerce-ios/pull/4407]
+- [*] Improved the experience when creating the first variation. [https://github.com/woocommerce/woocommerce-ios/pull/4405]
 
 6.8
 -----

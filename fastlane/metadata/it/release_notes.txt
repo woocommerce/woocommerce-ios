@@ -1,3 +1,0 @@
-Ora puoi creare e modificare un prodotto virtuale direttamente dalla schermata dei dettagli del prodotto.
-
-iOS 13 non è più supportato. In futuro solo iOS 14 e versioni successive saranno supportate.

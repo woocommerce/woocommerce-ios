@@ -83,7 +83,7 @@ Please, remember to not add this information on your commits and PRs.
     - [Networking](docs/NETWORKING.md)
     - [Storage](docs/STORAGE.md)
     - [Yosemite](docs/YOSEMITE.md)
-    - [Hardware](HARDWARE.md)    
+    - [Hardware](docs/HARDWARE.md)    
 - Coding Guidelines
     - [Coding Style](docs/coding-style-guide.md)
     - [Naming Conventions](docs/naming-conventions.md)

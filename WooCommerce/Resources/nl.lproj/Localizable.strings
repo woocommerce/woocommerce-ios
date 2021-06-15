@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-06-01 11:32:06+0000 */
+/* Translation-Revision-Date: 2021-06-11 15:51:12+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -46,7 +46,7 @@
 "%1$@ › %2$@" = "%1$@ › %2$@";
 
 /* Card reader battery level as an integer percentage */
-"%1$@%% Battery" = "%1$@%% Battery";
+"%1$@%% Battery" = "%1$@%% batterij";
 
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
@@ -58,10 +58,10 @@
 "%1$@・%2$@ x %3$@" = "%1$@・%2$@ x %3$@";
 
 /* Singular format of number of business day in Shipping Labels > Carrier and Rates */
-"%1$d business day" = "%1$d business day";
+"%1$d business day" = "%1$d werkdag";
 
 /* Plural format of number of business days in Shipping Labels > Carrier and Rates */
-"%1$d business days" = "%1$d business days";
+"%1$d business days" = "%1$d werkdagen";
 
 /* 1 Item */
 "%@ Item" = "%@ artikel";
@@ -150,7 +150,7 @@
 "99+" = "99+";
 
 /* A label prompting users to learn more about card readers with an embedded hyperlink */
-"<a href=\"https:\/\/woocommerce.com\/payments\">Learn more<\/a> about accepting payments with your mobile device and ordering card readers" = "<a href=\"https:\/\/woocommerce.com\/payments\">Learn more<\/a> about accepting payments with your mobile device and ordering card readers";
+"<a href=\"https:\/\/woocommerce.com\/payments\">Learn more<\/a> about accepting payments with your mobile device and ordering card readers" = "<a href=\"https:\/\/woocommerce.com\/payments\">Meer informatie<\/a> over het aannemen van betalingen met je mobiele apparaat en het bestellen van kaartlezers";
 
 /* Placeholder of the Product Short Description row on Product main screen */
 "A brief excerpt about the product" = "Een korte samenvatting van het product";
@@ -174,10 +174,10 @@
 "A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "Er kon geen beveiligde verbinding met de site tot stand worden gebracht. Zorg ervoor dat je site over een geldig SSL-certificaat beschikt.";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
-"A unique digital product like services, downloadable books, music or videos" = "A unique digital product like services, downloadable books, music or videos";
+"A unique digital product like services, downloadable books, music or videos" = "Een unieke digitaal product zoals services, downloadbare boeken, muziek of video's";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple physical product */
-"A unique physical product that you may have to ship to the customer" = "A unique physical product that you may have to ship to the customer";
+"A unique physical product that you may have to ship to the customer" = "Een uniek fysiek product dat je wellicht naar de klant moet verzenden";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Er is een geldig e-mailadres vereist om een verificatielink te mailen. Ga terug naar het vorige scherm en voer een geldig e-mailadres in.";
@@ -250,7 +250,7 @@
 "Add Variation" = "Variatie toevoegen";
 
 /* Placeholder in Shipping Label form for the Payment Method row. */
-"Add a new credit card" = "Add a new credit card";
+"Add a new credit card" = "Een nieuwe creditcard toevoegen";
 
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
@@ -315,7 +315,7 @@
 "Adds tracking to an order." = "Voegt tracking toe aan een bestelling.";
 
 /* Adult signature required in Shipping Labels > Carrier and Rates */
-"Adult signature required (+%1$@)" = "Adult signature required (+%1$@)";
+"Adult signature required (+%1$@)" = "Handtekening volwassene vereist (+%1$@)";
 
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "Geavanceerde tool om de app-status te controleren";
@@ -473,7 +473,7 @@
 "Block Quote" = "Citaat blokkeren";
 
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"Bluetooth permission required" = "Bluetooth permission required";
+"Bluetooth permission required" = "Bluetooth-machtiging vereist";
 
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "Vetgedrukt";
@@ -525,7 +525,7 @@
 "Capture high-quality product reviews for your store." = "Ontvang hoogwaardige productbeoordelingen voor je winkel.";
 
 /* Navigation bar title of shipping label carrier and rates screen */
-"Carrier and Rates" = "Carrier and Rates";
+"Carrier and Rates" = "Bezorgservice en tarieven";
 
 /* Add Custom shipping carrier. Title of cell presenting the carrier name */
 "Carrier name" = "Naam bezorgservice";
@@ -584,7 +584,7 @@
 "Collect Information" = "Verzamel informatie";
 
 /* Text on the button that starts collecting a card present payment. */
-"Collect Payment" = "Collect Payment";
+"Collect Payment" = "Betaling innen";
 
 /* Text field company in Shipping Label Address Validation */
 "Company" = "Bedrijf";
@@ -596,13 +596,13 @@
 "Composes a new order note." = "Hiermee wordt een nieuw bericht van bestelling opgesteld.";
 
 /* Settings > Manage Card Reader > Connect > A button to begin a search for a reader */
-"Connect Card Reader" = "Connect Card Reader";
+"Connect Card Reader" = "Kaartlezer koppelen";
 
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
-"Connect to Reader" = "Connect to Reader";
+"Connect to Reader" = "Verbinding maken met lezer";
 
 /* Settings > Manage Card Reader > Prompt user to connect their first reader */
-"Connect your card reader" = "Connect your card reader";
+"Connect your card reader" = "Je kaartlezer koppelen";
 
 /* Link on the store picker when there are no stores available. Opens a webview about Jetpack setup. */
 "Connect your store with Jetpack" = "Koppel je winkel aan Jetpack";
@@ -611,7 +611,7 @@
 "Connected But…" = "Verbonden maar...";
 
 /* Settings > Manage Card Reader > Connected Reader Table Section Heading */
-"Connected Reader" = "Connected Reader";
+"Connected Reader" = "Verbonden lezer";
 
 /* Store Picker's Section Title: Displayed when there's a single pre-selected Store. */
 "Connected Store" = "Gekoppelde winkel";
@@ -721,10 +721,10 @@
 "Credit card" = "Creditcard";
 
 /* Selected credit card in Shipping Label form. %1$@ is a placeholder for the last four digits of the credit card. */
-"Credit card ending in %1$@" = "Credit card ending in %1$@";
+"Credit card ending in %1$@" = "Creditcard eindigt op %1$@";
 
 /* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
-"Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>" = "Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>";
+"Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>" = "Creditcards worden opgehaald uit het volgende WordPress.com-account: %1$@ <%2$@>";
 
 /* Cell title for Cross-sells products in Linked Products Settings screen
    Navigation bar title for editing linked products for cross-sell products */
@@ -822,7 +822,7 @@
 "Do not allow" = "Niet toestaan";
 
 /* Dialog title that displays the name of a found card reader */
-"Do you want to connect to reader %@?" = "Do you want to connect to reader %@?";
+"Do you want to connect to reader %@?" = "Wil je verbinding maken met lezer %@?";
 
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "Wil je dit product naar de prullenbak verplaatsen?";
@@ -912,7 +912,7 @@
 "Edit and add new products from anywhere" = "Bewerk en voeg nieuwe producten toe ongeacht waar je bent";
 
 /* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
-"Eligible for free pickup" = "Eligible for free pickup";
+"Eligible for free pickup" = "Geschikt voor gratis afhalen";
 
 /* Email address text field placeholder */
 "Email" = "E-mail";
@@ -928,10 +928,10 @@
 "Email note to customer %@" = "E-mailbericht aan klant %@";
 
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
-"Email receipt" = "Email receipt";
+"Email receipt" = "E-mailontvangst";
 
 /* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
-"Email the label purchase receipts to %1$@ (%2$@) at %3$@" = "Email the label purchase receipts to %1$@ (%2$@) at %3$@";
+"Email the label purchase receipts to %1$@ (%2$@) at %3$@" = "E-mail de labelaanschafkwitanties naar %1$@ (%2$@) via %3$@";
 
 /* Accessibility label that lets the user know the billing customer's email address */
 "Email: %@" = "E-mail: %@";
@@ -1276,7 +1276,7 @@
 "Included with Site" = "Inbegrepen bij site";
 
 /* Includes tracking of a specific carrier in Shipping Labels > Carrier and Rates */
-"Includes %1$@ tracking" = "Includes %1$@ tracking";
+"Includes %1$@ tracking" = "Inclusief %1$@-tracking";
 
 /* An error message shown when a user signed in with incorrect credentials. */
 "Incorrect username or password. Please try entering your login details again." = "Gebruikersnaam of wachtwoord onjuist. Probeer nogmaals je inloggegevens in te voeren.";
@@ -1294,7 +1294,7 @@
 "Insert Link" = "Link invoeren";
 
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates */
-"Insurance (up to %1$@)" = "Insurance (up to %1$@)";
+"Insurance (up to %1$@)" = "Verzekering (tot %1$@)";
 
 /* The title of the alert when there is an error updating the product SKU */
 "Invalid Product SKU" = "Ongeldige product-SKU";
@@ -1349,7 +1349,7 @@
 "Keep Editing" = "Doorgaan met bewerken";
 
 /* Label for a button that when tapped, continues searching for card readers */
-"Keep Searching" = "Keep Searching";
+"Keep Searching" = "Verder zoeken";
 
 /* Information text when the survey is completed */
 "Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "Houd in gedachten dat dit geen ondersteuningsticket is en we niet op je individuele feedback in kunnen gaan";
@@ -1474,7 +1474,7 @@
 "Mail (Default)" = "Mail (Standaard)";
 
 /* Settings > Manage Card Reader > Connect > Hint to charge card reader */
-"Make sure card reader is charged" = "Make sure card reader is charged";
+"Make sure card reader is charged" = "Zorg ervoor dat de kaartlezer opgeladen is";
 
 /* Text that explains how to update VC to get the latest stats */
 "Make sure you are running the latest version of WooCommerce on your site and that you have WooCommerce Admin activated." = "Zorg dat je de nieuwste versie van WooCommerce gebruikt op je site en dat WooCommerce Admin geactiveerd is.";
@@ -1831,14 +1831,14 @@
 "Payment Method" = "Betalingsmethode";
 
 /* Header for list of payment methods in Payment Method screen */
-"Payment Method Selected" = "Payment Method Selected";
+"Payment Method Selected" = "Betaalmethode geselecteerd";
 
 /* Error message. Presented to users after a collecting a payment fails
    Error message. Presented to users after collecting a payment fails */
-"Payment failed" = "Payment failed";
+"Payment failed" = "Betaling mislukt";
 
 /* Label informing users that the payment succeeded. Presented to users when a payment is collected */
-"Payment successful" = "Payment successful";
+"Payment successful" = "Betaling gelukt";
 
 /* Display label for the review's pending status */
 "Pending" = "In afwachting";
@@ -1911,7 +1911,7 @@
 "Please make sure the app can access Photos in device settings" = "Controleer in de apparaatinstellingen of de app toegang heeft tot Foto's";
 
 /* Label asking users to remove card. Presented to users when a payment is in the process of being collected */
-"Please remove card" = "Please remove card";
+"Please remove card" = "Verwijder de kaart";
 
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "Probeer het nog eens.";
@@ -1964,7 +1964,7 @@
 "Print from your Phone" = "Afdrukken vanaf je telefoon";
 
 /* Button to print receipts. Presented to users after a payment has been successfully collected */
-"Print receipt" = "Print receipt";
+"Print receipt" = "Kwitantie afdrukken";
 
 /* The title of the shipping labels top banner in order details */
 "Print shipping labels from your device!" = "Verzendlabels afdrukken vanaf je apparaat!";
@@ -1995,7 +1995,7 @@
 "Processing" = "Bezig met verwerken";
 
 /* Indicates that a payment is being processed */
-"Processing payment..." = "Processing payment...";
+"Processing payment..." = "Betaling wordt verwerkt ...";
 
 /* Description for Top Performers left column header
    Product section title - Product section title if there is only one product. */
@@ -2100,7 +2100,7 @@
 "Read privacy policy" = "Lees privacybeleid";
 
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
-"Reader is ready" = "Reader is ready";
+"Reader is ready" = "Lezer is gereed";
 
 /* Refund note section title */
 "Reason for Refund" = "Reden voor restitutie";
@@ -2112,7 +2112,7 @@
 "Reason for refunding order" = "Reden voor terugbetalen bestelling";
 
 /* Message included in emailed receipts.Reads as: Receipt from @{store name}Parameters: %1$@ - store name */
-"Receipt from %1$@" = "Receipt from %1$@";
+"Receipt from %1$@" = "Kwitantie van %1$@";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "Terugbetalen";
@@ -2292,7 +2292,7 @@
 "Scan products" = "Producten scannen";
 
 /* Title label for modal dialog that appears when searching for a card reader */
-"Scanning for reader" = "Scanning for reader";
+"Scanning for reader" = "Er wordt gescand op lezer";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
 "Scans barcodes that are associated with a product SKU for stock management." = "Scant barcodes die gekoppeld zijn aan een product-SKU voor voorraadbeheer.";
@@ -2322,7 +2322,7 @@
 "See Instructions" = "Zie aanwijzingen";
 
 /* Text on the button to see a saved receipt */
-"See Receipt" = "See Receipt";
+"See Receipt" = "Bekijk kwitantie";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "See comments and notifications in real time." = "Lees opmerkingen en ontvang meldingen in realtime.";
@@ -2355,13 +2355,13 @@
 "Select start date" = "Selecteer startdatum";
 
 /* Placeholder in Shipping Label form for the Package Details row. */
-"Select the type of packaging you'd like to ship your items in" = "Select the type of packaging you'd like to ship your items in";
+"Select the type of packaging you'd like to ship your items in" = "Selecteer het type verpakking waarin je je artikelen wil verzenden";
 
 /* Title of the bottom sheet from the product downloadable file to add a new downloadable file. */
 "Select upload method" = "Uploadmethode selecteren";
 
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
-"Select your shipping carrier and rates" = "Select your shipping carrier and rates";
+"Select your shipping carrier and rates" = "Selecteer je bezorgservice en tarieven";
 
 /* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
 "Selected Store" = "Geselecteerde winkel";
@@ -2493,7 +2493,7 @@
 "Sign up with Email" = "Inschrijven met e-mail";
 
 /* Signature required in Shipping Labels > Carrier and Rates */
-"Signature required (+%1$@)" = "Signature required (+%1$@)";
+"Signature required (+%1$@)" = "Handtekening vereist (+%1$@)";
 
 /* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
 "Signed in as @%1$@" = "Aangemeld als @%1$@";
@@ -2502,10 +2502,10 @@
 "Simple" = "Simpel";
 
 /* Action sheet option when the user wants to change the Product type to simple physical product */
-"Simple physical product" = "Simple physical product";
+"Simple physical product" = "Eenvoudig fysiek product";
 
 /* Action sheet option when the user wants to change the Product type to simple virtual product */
-"Simple virtual product" = "Simple virtual product";
+"Simple virtual product" = "Eenvoudig virtueel product";
 
 /* Describes a site redirect domain */
 "Site Redirect" = "Sitedoorverwijzing";
@@ -2745,7 +2745,7 @@
 
 /* Indicates the action expected from a user. Presented to users when payment collection starts
    Label asking users to present a card. Presented to users when a payment is going to be collected */
-"Tap, insert or swipe to pay" = "Tap, insert or swipe to pay";
+"Tap, insert or swipe to pay" = "Tik, voer in of swipe om te betalen";
 
 /* Tax label for a refund details view
    Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
@@ -3003,7 +3003,7 @@
 "Total package weight" = "Totaal pakketgewicht";
 
 /* Total package weight label in Shipping Label form. %1$@ is a placeholder for the weight */
-"Total package weight: %1$@" = "Total package weight: %1$@";
+"Total package weight: %1$@" = "Totaal pakketgewicht: %1$@";
 
 /* Track shipment button title */
 "Track Shipment" = "Verzending volgen";
@@ -3042,7 +3042,7 @@
 "Try again" = "Probeer opnieuw";
 
 /* Button to try to collect a payment again. Presented to users after a collecting a payment fails */
-"Try collecting payment again" = "Try collecting payment again";
+"Try collecting payment again" = "Probeer de betaling opnieuw te innen";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Probeer met ander e-mailadres";
@@ -3051,13 +3051,13 @@
 "Try with the site address" = "Probeer met het site-adres";
 
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
-"Turn card reader on and place it next to mobile device" = "Turn card reader on and place it next to mobile device";
+"Turn card reader on and place it next to mobile device" = "Zet de kaartlezer aan en plaats deze naast het mobiele apparaat";
 
 /* Settings > Manage Card Reader > Connect > Hint to enable Bluetooth */
-"Turn mobile device Bluetooth on" = "Turn mobile device Bluetooth on";
+"Turn mobile device Bluetooth on" = "Zet de Bluetooth aan op je mobiele apparaat";
 
 /* Label within the modal dialog that appears when searching for a card reader */
-"Turn on your reader by pressing its power button" = "Turn on your reader by pressing its power button";
+"Turn on your reader by pressing its power button" = "Zet je lezer aan door op de aan-\/uitknop te drukken";
 
 /* Navigation bar title for editing the URL of a text link
    URL text field placeholder */
@@ -3131,7 +3131,7 @@
 "Unknown" = "Onbekend";
 
 /* Displayed in the unlikely event a card reader has an indeterminate battery status */
-"Unknown Battery Level" = "Unknown Battery Level";
+"Unknown Battery Level" = "Onbekend batterijniveau";
 
 /* No comment provided by engineer. */
 "Unknown error" = "Onbekende fout";
@@ -3447,10 +3447,10 @@
 "Your notifications travel with you — see comments and likes as they happen." = "Je meldingen reizen met je mee. Bekijk reacties en likes wanneer ze binnenkomen.";
 
 /* Subject of email sent with a card present payment receipt */
-"Your receipt" = "Your receipt";
+"Your receipt" = "Je kwitantie";
 
 /* Subject of email sent with a card present payment receipt */
-"Your receipt from %1$@" = "Your receipt from %1$@";
+"Your receipt from %1$@" = "Je kwitantie van %1$@";
 
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "Het adres van je site wordt aan de bovenzijde van je scherm weergegeven wanneer je je site in Safari bekijkt.";

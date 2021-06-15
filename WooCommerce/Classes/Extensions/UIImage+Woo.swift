@@ -709,6 +709,12 @@ extension UIImage {
     static var whatIsJetpackImage: UIImage {
         return UIImage(named: "woo-what-is-jetpack")!
     }
+
+    /// Welcome Image
+    ///
+    static var welcomeImage: UIImage {
+        UIImage(imageLiteralResourceName: "img-welcome")
+    }
 }
 
 private extension UIImage {

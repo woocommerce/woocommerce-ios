@@ -86,10 +86,10 @@ extension ShippingLabelPurchase: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let shippingLabelID = try container.decode(Int64.self, forKey: .shippingLabelID)
-        let carrierID = try container.decode(String.self, forKey: .carrierID)
+        let carrierID = try container.decodeIfPresent(String.self, forKey: .carrierID)
         let dateCreated = try container.decode(Date.self, forKey: .dateCreated)
         let packageName = try container.decode(String.self, forKey: .packageName)
-        let trackingNumber = try container.decode(String.self, forKey: .trackingNumber)
+        let trackingNumber = try container.decodeIfPresent(String.self, forKey: .trackingNumber)
         let serviceName = try container.decode(String.self, forKey: .serviceName)
         let refundableAmount = try container.decode(Double.self, forKey: .refundableAmount)
 

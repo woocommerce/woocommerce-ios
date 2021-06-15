@@ -1,5 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+7.0
+-----
+- [*] Fix: Orders for a variable product with different configurations of a single variation will now show each order item separately. [https://github.com/woocommerce/woocommerce-ios/pull/4416]
+
+
 6.9
 -----
 - [*] Order Detail: now we display a loader on top, to communicate that the order detail view has not yet been fully loaded. [https://github.com/woocommerce/woocommerce-ios/pull/4396]

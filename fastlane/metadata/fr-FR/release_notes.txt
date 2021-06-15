@@ -1,3 +1,0 @@
-Vous pouvez désormais créer et modifier un produit virtuel à partir de l’écran des détails du produit !
-
-Veuillez noter qu’iOS 13 n’est plus pris en charge. Seuls iOS 14 et les versions ultérieures seront pris en charge à l’avenir.

@@ -1,3 +1,0 @@
-Du kan nu skapa och redigera en virtuell produkt direkt från produktinformationsskärmen!
-
-Observera att iOS 13 inte längre stöds. Från och med nu stöds endast iOS 14 och senare versioner.

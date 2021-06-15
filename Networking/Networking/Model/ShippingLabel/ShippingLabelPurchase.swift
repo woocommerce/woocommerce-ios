@@ -54,8 +54,6 @@ public struct ShippingLabelPurchase: Equatable, GeneratedCopiable, GeneratedFake
                 serviceName: String,
                 refundableAmount: Double,
                 status: ShippingLabelStatus,
-                originAddress: ShippingLabelAddress,
-                destinationAddress: ShippingLabelAddress,
                 productIDs: [Int64],
                 productNames: [String]) {
         self.siteID = siteID
@@ -111,8 +109,6 @@ extension ShippingLabelPurchase: Decodable {
                   serviceName: serviceName,
                   refundableAmount: refundableAmount,
                   status: status,
-                  originAddress: .init(),
-                  destinationAddress: .init(),
                   productIDs: productIDs,
                   productNames: productNames)
     }

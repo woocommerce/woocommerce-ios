@@ -1101,8 +1101,6 @@ extension ShippingLabelPurchase {
             serviceName: .fake(),
             refundableAmount: .fake(),
             status: .fake(),
-            originAddress: .fake(),
-            destinationAddress: .fake(),
             productIDs: .fake(),
             productNames: .fake()
         )

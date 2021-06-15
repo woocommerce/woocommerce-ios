@@ -1,4 +1,5 @@
 import UIKit
+import SafariServices.SFSafariViewController
 
 
 // MARK: - ReviewsViewController
@@ -90,6 +91,23 @@ final class ReviewsViewController: UIViewController {
     /// Footer "Loading More" Spinner.
     ///
     private lazy var footerSpinnerView = FooterSpinnerView()
+
+    /// Top banner that shows an error if there is a problem loading reviews data
+    ///
+    private lazy var topBannerView: TopBannerView = {
+        ErrorTopBannerFactory.createTopBanner(isExpanded: false,
+                                              expandedStateChangeHandler: { [weak self] in
+                                                self?.tableView.updateHeaderHeight()
+                                              },
+                                              onTroubleshootButtonPressed: { [weak self] in
+                                                let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
+                                                self?.present(safariViewController, animated: true, completion: nil)
+                                              },
+                                              onContactSupportButtonPressed: { [weak self] in
+                                                guard let self = self else { return }
+                                                ZendeskManager.shared.showNewRequestIfPossible(from: self, with: nil)
+                                              })
+    }()
 
     // MARK: - View Lifecycle
 
@@ -319,6 +337,13 @@ private extension ReviewsViewController {
 
         childController.configure(emptyStateConfig)
 
+        // Show Error Loading Data banner if the empty state is caused by a sync error
+        if viewModel.hasErrorLoadingData {
+            childController.showTopBannerView()
+        } else {
+            childController.hideTopBannerView()
+        }
+
         childView.translatesAutoresizingMaskIntoConstraints = false
 
         addChild(childController)
@@ -418,6 +443,8 @@ private extension ReviewsViewController {
     ///
     func transitionToSyncingState(pageNumber: Int) {
         state = isEmpty ? .placeholder : .syncing(pageNumber: pageNumber)
+        // Remove banner for error loading data during sync
+        hideTopBannerView()
     }
 
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
@@ -475,9 +502,32 @@ extension ReviewsViewController: SyncingCoordinatorDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
         transitionToSyncingState(pageNumber: pageNumber)
         viewModel.synchronizeReviews(pageNumber: pageNumber, pageSize: pageSize) { [weak self] in
-            self?.transitionToResultsUpdatedState()
+            guard let self = self else { return }
+            self.transitionToResultsUpdatedState()
+            if self.viewModel.hasErrorLoadingData {
+                self.showTopBannerView()
+            }
             onCompletion?(true)
         }
+    }
+
+    /// Display the error banner in the table view header
+    ///
+    private func showTopBannerView() {
+        // Configure header container view
+        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
+        headerContainer.addSubview(topBannerView)
+        headerContainer.pinSubviewToSafeArea(topBannerView)
+
+        tableView.tableHeaderView = headerContainer
+        tableView.updateHeaderHeight()
+    }
+
+    /// Hide the error banner from the table view header
+    ///
+    private func hideTopBannerView() {
+        topBannerView.removeFromSuperview()
+        tableView.tableHeaderView = nil
     }
 }
 

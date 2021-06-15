@@ -236,6 +236,10 @@ private extension CardReaderSettingsUnknownViewController {
         cell.learnMoreTextView.attributedText = Localization.learnMore
         cell.learnMoreTextView.tintColor = .textLink
         cell.learnMoreTextView.delegate = self
+        cell.learnMoreTextView.linkTextAttributes = [
+            .foregroundColor: UIColor.textLink,
+            .underlineColor: UIColor.clear
+        ]
         cell.backgroundColor = .systemBackground
         cell.selectionStyle = .none
     }

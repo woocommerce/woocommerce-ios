@@ -72,6 +72,11 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     ///
     private let style: Style
 
+    /// Initial configuration.
+    /// Useful when rendering this view controller using the UIKit presentation APIs.
+    ///
+    private var configuration: Config?
+
     /// The handler to execute when the button is tapped.
     ///
     /// This is normally set up in `configure()`.
@@ -89,8 +94,9 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     /// Used to present the Contact Support dialog if the `Config` is `.withSupportRequest`.
     private let zendeskManager: ZendeskManagerProtocol
 
-    init(style: Style = .basic, zendeskManager: ZendeskManagerProtocol = ZendeskManager.shared) {
+    init(style: Style = .basic, configuration: Config? = nil, zendeskManager: ZendeskManagerProtocol = ZendeskManager.shared) {
         self.style = style
+        self.configuration = configuration
         self.zendeskManager = zendeskManager
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
@@ -109,6 +115,10 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         detailsLabel.applySecondaryBodyStyle()
 
         keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
+
+        if let configuration = configuration {
+            configure(configuration)
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -120,6 +130,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     /// Configure the elements to be displayed.
     ///
     func configure(_ config: Config) {
+        configuration = config
         messageLabel.attributedText = config.message
 
         imageView.image = config.image

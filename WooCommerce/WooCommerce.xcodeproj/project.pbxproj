@@ -450,6 +450,7 @@
 		26F65C9825DEDAF0008FAE29 /* GenerateVariationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F65C9725DEDAF0008FAE29 /* GenerateVariationUseCase.swift */; };
 		26F65C9E25DEDE67008FAE29 /* GenerateVariationUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F65C9D25DEDE67008FAE29 /* GenerateVariationUseCaseTests.swift */; };
 		26F94E1C267A3E4500DB6CCF /* ProductAddOnsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F94E1B267A3E4500DB6CCF /* ProductAddOnsListViewController.swift */; };
+		26F94E21267A41BE00DB6CCF /* ProductAddOnsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F94E20267A41BE00DB6CCF /* ProductAddOnsListViewModel.swift */; };
 		26FB056825F6CB6000A40B26 /* Fakes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26FB056725F6CB6000A40B26 /* Fakes.framework */; };
 		26FE09DD24D9F3F600B9BDF5 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09DC24D9F3F600B9BDF5 /* LoadingView.swift */; };
 		26FE09DF24DB871100B9BDF5 /* SurveyViewControllersFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09DE24DB871100B9BDF5 /* SurveyViewControllersFactory.swift */; };
@@ -1732,6 +1733,7 @@
 		26F65C9725DEDAF0008FAE29 /* GenerateVariationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateVariationUseCase.swift; sourceTree = "<group>"; };
 		26F65C9D25DEDE67008FAE29 /* GenerateVariationUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateVariationUseCaseTests.swift; sourceTree = "<group>"; };
 		26F94E1B267A3E4500DB6CCF /* ProductAddOnsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAddOnsListViewController.swift; sourceTree = "<group>"; };
+		26F94E20267A41BE00DB6CCF /* ProductAddOnsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAddOnsListViewModel.swift; sourceTree = "<group>"; };
 		26FB056725F6CB6000A40B26 /* Fakes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Fakes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		26FE09DC24D9F3F600B9BDF5 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		26FE09DE24DB871100B9BDF5 /* SurveyViewControllersFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyViewControllersFactory.swift; sourceTree = "<group>"; };
@@ -3655,6 +3657,7 @@
 			isa = PBXGroup;
 			children = (
 				26F94E1B267A3E4500DB6CCF /* ProductAddOnsListViewController.swift */,
+				26F94E20267A41BE00DB6CCF /* ProductAddOnsListViewModel.swift */,
 			);
 			path = Addons;
 			sourceTree = "<group>";
@@ -6933,6 +6936,7 @@
 				262A09812628A8F40033AD20 /* WooStyleModifiers.swift in Sources */,
 				02F4F50F237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.swift in Sources */,
 				021E2A1C23AA0DD100B1DE07 /* ProductBackordersSettingListSelectorCommand.swift in Sources */,
+				26F94E21267A41BE00DB6CCF /* ProductAddOnsListViewModel.swift in Sources */,
 				5795F22E23E26A9E00F6707C /* OrderSearchStarterViewController.swift in Sources */,
 				45F5A3C123DF206B007D40E5 /* ShippingInputFormatter.swift in Sources */,
 				45C8B2582313FA570002FA77 /* CustomerNoteTableViewCell.swift in Sources */,

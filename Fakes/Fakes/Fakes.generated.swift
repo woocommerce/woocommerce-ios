@@ -1086,6 +1086,26 @@ extension ShippingLabelPrintData {
         )
     }
 }
+extension ShippingLabelPurchase {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ShippingLabelPurchase {
+        .init(
+            siteID: .fake(),
+            orderID: .fake(),
+            shippingLabelID: .fake(),
+            carrierID: .fake(),
+            dateCreated: .fake(),
+            packageName: .fake(),
+            trackingNumber: .fake(),
+            serviceName: .fake(),
+            refundableAmount: .fake(),
+            status: .fake(),
+            productIDs: .fake(),
+            productNames: .fake()
+        )
+    }
+}
 extension ShippingLabelRefund {
     /// Returns a "ready to use" type filled with fake values.
     ///

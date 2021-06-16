@@ -730,6 +730,51 @@ extension ShippingLabelPaymentMethod {
     }
 }
 
+extension ShippingLabelPurchase {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        orderID: CopiableProp<Int64> = .copy,
+        shippingLabelID: CopiableProp<Int64> = .copy,
+        carrierID: NullableCopiableProp<String> = .copy,
+        dateCreated: CopiableProp<Date> = .copy,
+        packageName: CopiableProp<String> = .copy,
+        trackingNumber: NullableCopiableProp<String> = .copy,
+        serviceName: CopiableProp<String> = .copy,
+        refundableAmount: CopiableProp<Double> = .copy,
+        status: CopiableProp<ShippingLabelStatus> = .copy,
+        productIDs: CopiableProp<[Int64]> = .copy,
+        productNames: CopiableProp<[String]> = .copy
+    ) -> ShippingLabelPurchase {
+        let siteID = siteID ?? self.siteID
+        let orderID = orderID ?? self.orderID
+        let shippingLabelID = shippingLabelID ?? self.shippingLabelID
+        let carrierID = carrierID ?? self.carrierID
+        let dateCreated = dateCreated ?? self.dateCreated
+        let packageName = packageName ?? self.packageName
+        let trackingNumber = trackingNumber ?? self.trackingNumber
+        let serviceName = serviceName ?? self.serviceName
+        let refundableAmount = refundableAmount ?? self.refundableAmount
+        let status = status ?? self.status
+        let productIDs = productIDs ?? self.productIDs
+        let productNames = productNames ?? self.productNames
+
+        return ShippingLabelPurchase(
+            siteID: siteID,
+            orderID: orderID,
+            shippingLabelID: shippingLabelID,
+            carrierID: carrierID,
+            dateCreated: dateCreated,
+            packageName: packageName,
+            trackingNumber: trackingNumber,
+            serviceName: serviceName,
+            refundableAmount: refundableAmount,
+            status: status,
+            productIDs: productIDs,
+            productNames: productNames
+        )
+    }
+}
+
 extension SitePlugin {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

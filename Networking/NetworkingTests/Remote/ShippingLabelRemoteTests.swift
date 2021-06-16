@@ -365,6 +365,50 @@ final class ShippingLabelRemoteTests: XCTestCase {
         XCTAssertEqual(response.isEligible, false)
         XCTAssertEqual(response.reason, "no_selected_payment_method_and_user_cannot_manage_payment_methods")
     }
+
+    func test_purchaseShippingLabel_parses_success_response() throws {
+        // Given
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/\(sampleOrderID)", filename: "shipping-label-purchase-success")
+        let expectedLabelPurchase = sampleShippingLabelPurchase()
+
+        // When
+        let result: Result<[ShippingLabelPurchase], Error> = waitFor { promise in
+            remote.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                         orderID: self.sampleOrderID,
+                                         originAddress: ShippingLabelAddress.fake(),
+                                         destinationAddress: ShippingLabelAddress.fake(),
+                                         packages: [ShippingLabelPackageSelected.fake()],
+                                         emailCustomerReceipt: true) { (result) in
+                promise(result)
+            }
+        }
+
+        // Then
+        let successResponse = try XCTUnwrap(result.get())
+        XCTAssertEqual(successResponse.first, expectedLabelPurchase)
+    }
+
+    func test_purchaseShippingLabel_returns_error_on_failure() throws {
+        // Given
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/\(sampleOrderID)", filename: "generic_error")
+
+        // When
+        let result: Result<[ShippingLabelPurchase], Error> = waitFor { promise in
+            remote.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                         orderID: self.sampleOrderID,
+                                         originAddress: ShippingLabelAddress.fake(),
+                                         destinationAddress: ShippingLabelAddress.fake(),
+                                         packages: [ShippingLabelPackageSelected.fake()],
+                                         emailCustomerReceipt: true) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
 }
 
 private extension ShippingLabelRemoteTests {
@@ -410,5 +454,20 @@ private extension ShippingLabelRemoteTests {
                                             deliveryDateGuaranteed: false)
 
         return rate
+    }
+
+    func sampleShippingLabelPurchase() -> ShippingLabelPurchase {
+        return ShippingLabelPurchase(siteID: sampleSiteID,
+                                     orderID: sampleOrderID,
+                                     shippingLabelID: 733,
+                                     carrierID: nil,
+                                     dateCreated: Date(timeIntervalSince1970: 1584549793.938),
+                                     packageName: "Test",
+                                     trackingNumber: nil,
+                                     serviceName: "USPS - First Class Mail",
+                                     refundableAmount: 0,
+                                     status: ShippingLabelStatus.purchaseInProgress,
+                                     productIDs: [],
+                                     productNames: ["Beanie"])
     }
 }

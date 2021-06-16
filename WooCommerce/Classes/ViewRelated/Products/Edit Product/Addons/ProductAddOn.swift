@@ -10,7 +10,6 @@ struct ProductAddOn: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Divider()
 
             Text(viewModel.name)
                 .headlineStyle()
@@ -18,7 +17,7 @@ struct ProductAddOn: View {
 
             HStack(alignment: .bottom) {
                 Text(viewModel.description)
-                    .bodyStyle()
+                    .secondaryBodyStyle()
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .renderedIf(viewModel.showDescription)
 
@@ -28,7 +27,24 @@ struct ProductAddOn: View {
             }
             .padding([.leading, .trailing])
 
-            Divider()
+            Spacer()
+                .frame(height: 2)
+
+            ForEach(viewModel.options) { option in
+                HStack(alignment: .bottom) {
+                    Text(option.name)
+                        .bodyStyle()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                    Text(option.price)
+                        .secondaryBodyStyle()
+                        .renderedIf(option.showPrice)
+                }
+                .padding([.leading, .trailing])
+
+                Divider()
+                    .padding(.leading)
+            }
         }
         .background(Color(.basicBackground))
     }
@@ -54,6 +70,9 @@ struct ProductAddOn_Previews: PreviewProvider {
         VStack {
             ProductAddOn(viewModel: toppingViewModel)
                 .environment(\.colorScheme, .light)
+
+            Spacer()
+                .frame(height: 20)
 
             ProductAddOn(viewModel: deliveryViewModel)
                 .environment(\.colorScheme, .light)

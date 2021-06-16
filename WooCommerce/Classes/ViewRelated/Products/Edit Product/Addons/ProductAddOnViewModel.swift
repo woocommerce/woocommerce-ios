@@ -6,7 +6,7 @@ struct ProductAddOnViewModel {
 
     /// Represents an Add-on option
     ///
-    struct Option {
+    struct Option: Identifiable {
 
         /// Option name
         ///
@@ -15,6 +15,12 @@ struct ProductAddOnViewModel {
         /// Option optional price.
         ///
         let price: String
+
+        /// Identifiable conformance.
+        ///
+        var id: String {
+            name
+        }
 
         /// Determines the option price visibility
         ///

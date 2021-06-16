@@ -271,15 +271,6 @@ extension OrderDetailsViewModel {
             ServiceLocator.analytics.track(.orderDetailShowBillingTapped)
             let billingInformationViewController = BillingInformationViewController(order: order)
             viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
-        case .details:
-            ServiceLocator.analytics.track(.orderDetailProductDetailTapped)
-            let identifier = ProductListViewController.classNameWithoutNamespaces
-            guard let productListVC = UIStoryboard.orders.instantiateViewController(identifier: identifier) as? ProductListViewController else {
-                DDLogError("Error: attempted to instantiate ProductListViewController. Instantiation failed.")
-                return
-            }
-            productListVC.viewModel = self
-            viewController.navigationController?.pushViewController(productListVC, animated: true)
         case .seeReceipt:
             ServiceLocator.analytics.track(.receiptViewTapped)
             guard let receipt = receipt else {

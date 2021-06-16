@@ -145,10 +145,7 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var aggregateOrderItems: [AggregateOrderItem] {
         let orderItemsAfterCombiningWithRefunds = AggregateDataHelper.combineOrderItems(items, with: refunds)
-        let orderItemsAfterCombiningWithRefundsAndShippingLabels = AggregateDataHelper
-            .combineAggregatedOrderItems(orderItemsAfterCombiningWithRefunds,
-                                         with: shippingLabelOrderItemsAggregator.orderItemsOfNonRefundedShippingLabels(shippingLabels))
-        return orderItemsAfterCombiningWithRefundsAndShippingLabels
+        return orderItemsAfterCombiningWithRefunds
     }
 
     /// All the condensed refunds in an order
@@ -278,8 +275,6 @@ extension OrderDetailsDataSource {
 private extension OrderDetailsDataSource {
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as WooBasicTableViewCell where row == .details:
-            configureDetails(cell: cell)
         case let cell as CustomerInfoTableViewCell where row == .shippingAddress:
             configureShippingAddress(cell: cell)
         case let cell as CustomerNoteTableViewCell where row == .customerNote:
@@ -449,14 +444,6 @@ private extension OrderDetailsDataSource {
         cell.leftText = Titles.paidByCustomer
         cell.rightText = paymentViewModel.paymentTotal
         cell.updateFootnoteText(paymentViewModel.paymentSummary)
-    }
-
-    private func configureDetails(cell: WooBasicTableViewCell) {
-        cell.bodyLabel?.text = Titles.productDetails
-        cell.applyPlainTextStyle()
-        cell.accessoryImage = nil
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
     }
 
     private func configureSeeReceipt(cell: TwoColumnHeadlineFootnoteTableViewCell) {
@@ -863,23 +850,21 @@ extension OrderDetailsDataSource {
 
             var rows: [Row] = Array(repeating: .aggregateOrderItem, count: aggregateOrderItemCount)
 
-            if isEligibleForShippingLabelCreation {
+            if isEligibleForShippingLabelCreation && shippingLabels.isEmpty {
                 rows.append(.shippingLabelCreateButton)
             }
 
             if isProcessingPayment {
-                if isEligibleForShippingLabelCreation {
+                if isEligibleForShippingLabelCreation && shippingLabels.isEmpty {
                     rows.append(.markCompleteButton(style: .secondary, showsBottomSpacing: false))
                     rows.append(.shippingLabelCreationInfo(showsSeparator: false))
                 } else {
                     rows.append(.markCompleteButton(style: .primary, showsBottomSpacing: true))
                 }
             } else if isRefundedStatus == false {
-                if isEligibleForShippingLabelCreation {
+                if isEligibleForShippingLabelCreation && shippingLabels.isEmpty {
                     rows.append(.shippingLabelCreationInfo(showsSeparator: true))
                 }
-
-                rows.append(.details)
             }
 
             if rows.count == 0 {
@@ -914,7 +899,6 @@ extension OrderDetailsDataSource {
                     rows = [.shippingLabelRefunded, .shippingLabelDetail]
                     headerStyle = .primary
                 } else {
-                    // TODO-2167: show printing instructions
                     let orderItemsCount = shippingLabelOrderItemsAggregator.orderItems(of: shippingLabel).count
                     rows = Array(repeating: .shippingLabelProduct, count: orderItemsCount)
                         + [.shippingLabelReprintButton, .shippingLabelPrintingInfo, .shippingLabelTrackingNumber, .shippingLabelDetail]
@@ -1172,8 +1156,6 @@ extension OrderDetailsDataSource {
 // MARK: - Constants
 extension OrderDetailsDataSource {
     enum Titles {
-        static let productDetails = NSLocalizedString("Details",
-                                                      comment: "The row label to tap for a detailed product list")
         static let markComplete = NSLocalizedString("Mark Order Complete", comment: "Fulfill Order Action Button")
         static let addNoteText = NSLocalizedString("Add a note",
                                                    comment: "Button text for adding a new order note")
@@ -1314,7 +1296,6 @@ extension OrderDetailsDataSource {
         case summary
         case aggregateOrderItem
         case markCompleteButton(style: ButtonTableViewCell.Style, showsBottomSpacing: Bool)
-        case details
         case refundedProducts
         case issueRefundButton
         case customerNote
@@ -1350,8 +1331,6 @@ extension OrderDetailsDataSource {
                 return ProductDetailsTableViewCell.reuseIdentifier
             case .markCompleteButton:
                 return ButtonTableViewCell.reuseIdentifier
-            case .details:
-                return WooBasicTableViewCell.reuseIdentifier
             case .refundedProducts:
                 return WooBasicTableViewCell.reuseIdentifier
             case .issueRefundButton:

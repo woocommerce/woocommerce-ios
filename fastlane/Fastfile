@@ -6,6 +6,20 @@ UI.user_error!('Please run fastlane via `bundle exec`') unless FastlaneCore::Hel
 USER_ENV_FILE_PATH = File.join(Dir.home, '.wcios-env.default')
 PROJECT_ENV_FILE_PATH = File.expand_path(File.join(Dir.pwd, '../.configure-files/project.env'))
 
+# Constants
+FASTLANE_DIR = __dir__
+DERIVED_DATA_DIR = File.join(FASTLANE_DIR, 'DerivedData')
+SCREENSHOTS_DIR =  File.join(FASTLANE_DIR, 'screenshots')
+IOS_LOCALES = %w[ar de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant].freeze
+GLOTPRESS_LOCALES = %w[ar de es fr he id it ja ko nl pt-br ru sv tr zh-cn zh-tw].freeze
+SIMULATOR_VERSION = '14.3'.freeze # For screenshots
+SCREENSHOT_DEVICES = [
+  'iPhone 11 Pro Max',
+  'iPhone 8 Plus',
+  'iPad Pro (12.9-inch) (2nd generation)',
+  'iPad Pro (12.9-inch) (3rd generation)'
+].freeze
+
 # Use this instead of getting values from ENV directly
 # It will throw an error if the requested value is missing
 def get_required_env(key)
@@ -477,10 +491,10 @@ platform :ios do
     xcversion(version: '~> 12.0')
 
     scan(
-      workspace: File.join(fastlane_directory, '../WooCommerce.xcworkspace'),
+      workspace: File.join(FASTLANE_DIR, '../WooCommerce.xcworkspace'),
       scheme: 'WooCommerceScreenshots',
       build_for_testing: true,
-      derived_data_path: derived_data_directory
+      derived_data_path: DERIVED_DATA_DIR
     )
   end
 
@@ -490,11 +504,11 @@ platform :ios do
     xcversion(version: '~> 12.0')
 
     # By default, clear previous screenshots
-    languages = ios_locales
+    languages = IOS_LOCALES
 
     languages &= options[:languages].split(',') unless options[:languages].nil?
 
-    devices = screenshot_devices
+    devices = SCREENSHOT_DEVICES
 
     devices &= options[:devices].split(',') unless options[:devices].nil?
 
@@ -515,10 +529,10 @@ platform :ios do
 
       # Don't rebuild the app for every new locale / device type, and specify where to find the binaries
       test_without_building: true,
-      derived_data_path: derived_data_directory,
+      derived_data_path: DERIVED_DATA_DIR,
 
       # Where should the screenshots go, and should we delete them before starting?
-      output_directory: screenshots_directory,
+      output_directory: SCREENSHOTS_DIR,
 
       # Output the simulator logs for debugging
       buildlog_path: './fastlane/logs',
@@ -529,7 +543,7 @@ platform :ios do
       concurrent_simulators: true,
 
       # Explicitly set the iOS version to ensure we match the created simulators
-      ios_version: simulator_version,
+      ios_version: SIMULATOR_VERSION,
 
       # Erase the simulator prior to booting the app
       erase_simulator: true,
@@ -550,7 +564,7 @@ platform :ios do
 
   desc 'Create Screenshots Locally'
   lane :screenshots do |options|
-    FileUtils.rm_f(screenshots_directory)
+    FileUtils.rm_f(SCREENSHOTS_DIR)
 
     build_screenshots(options)
     take_screenshots(options.merge({ mode: 'light' }))
@@ -561,17 +575,15 @@ platform :ios do
   lane :rebuild_screenshot_devices do
     require 'simctl'
 
-    device_names = screenshot_devices
-
     SimCtl.list_devices.each do |device|
-      next unless device_names.include? device.name
+      next unless SCREENSHOT_DEVICES.include? device.name
 
       puts "Deleting #{device.name} because it already exists."
       device.delete
     end
 
-    screenshot_devices.each do |device|
-      runtime = SimCtl.runtime(name: "iOS #{simulator_version}")
+    SCREENSHOT_DEVICES.each do |device|
+      runtime = SimCtl.runtime(name: "iOS #{SIMULATOR_VERSION}")
       devicetype = SimCtl.devicetype(name: device)
 
       device = SimCtl.create_device device, devicetype, runtime
@@ -610,7 +622,7 @@ platform :ios do
       'app_store_screenshot-5' => { desc: 'app_store_screenshot_5.txt' }
     }
 
-    metadata_locales = glotpress_locales
+    metadata_locales = GLOTPRESS_LOCALES
 
     gp_downloadmetadata(project_url: 'https://translate.wordpress.com/projects/woocommerce%2Fwoocommerce-ios%2Frelease-notes/',
                         target_files: files,
@@ -754,39 +766,6 @@ platform :ios do
   ensure
     file.close unless file.nil?
   end
-
-  def ios_locales
-    'ar de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant'.split
-  end
-
-  def glotpress_locales
-    'ar de es fr he id it ja ko nl pt-br ru sv tr zh-cn zh-tw'.split
-  end
-end
-
-def fastlane_directory
-  __dir__
-end
-
-def derived_data_directory
-  File.join(fastlane_directory, 'DerivedData')
-end
-
-def screenshots_directory
-  File.join(fastlane_directory, 'screenshots')
-end
-
-def screenshot_devices
-  [
-    'iPhone 11 Pro Max',
-    'iPhone 8 Plus',
-    'iPad Pro (12.9-inch) (2nd generation)',
-    'iPad Pro (12.9-inch) (3rd generation)'
-  ]
-end
-
-def simulator_version
-  '14.3'
 end
 
 ########################################################################

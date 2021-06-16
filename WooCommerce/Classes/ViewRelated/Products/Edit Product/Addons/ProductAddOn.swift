@@ -17,7 +17,7 @@ struct ProductAddOn: View {
 
             HStack(alignment: .bottom) {
                 Text(viewModel.description)
-                    .secondaryBodyStyle()
+                    .subheadlineStyle()
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .renderedIf(viewModel.showDescription)
 

@@ -6,8 +6,9 @@ import SwiftUI
 /// Hosting controller that wraps an `ProductAddOnsList` view.
 ///
 final class ProductAddOnsListViewController: UIHostingController<ProductAddOnsList> {
-    init() {
+    init(viewModel: ProductAddOnsListViewModel) {
         super.init(rootView: ProductAddOnsList())
+        title = viewModel.title
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {

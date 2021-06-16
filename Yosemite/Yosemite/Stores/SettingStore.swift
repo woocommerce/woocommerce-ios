@@ -83,9 +83,7 @@ private extension SettingStore {
     /// This call does NOT persist returned data into the Storage layer.
     ///
     func retrieveSiteAPI(siteID: Int64, onCompletion: @escaping (Result<SiteAPI, Error>) -> Void) {
-        siteAPIRemote.loadAPIInformation(for: siteID) { result in
-            onCompletion(result)
-        }
+        siteAPIRemote.loadAPIInformation(for: siteID, completion: onCompletion)
     }
 }
 

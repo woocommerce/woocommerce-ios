@@ -1,5 +1,4 @@
 import Foundation
-import Alamofire
 
 /// SiteVisitStats: Remote Endpoints
 ///

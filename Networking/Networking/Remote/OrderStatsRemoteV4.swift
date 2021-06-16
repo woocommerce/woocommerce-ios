@@ -1,5 +1,4 @@
 import Foundation
-import Alamofire
 
 /// OrderStats: Remote Endpoints found in wc-admin's v4 API
 ///

@@ -64,15 +64,13 @@ private extension AccountStore {
 
     /// Synchronizes the WordPress.com account associated with the Network's Auth Token.
     ///
-    func synchronizeAccount(onCompletion: @escaping (Account?, Error?) -> Void) {
-        remote.loadAccount { [weak self] (account, error) in
-            guard let account = account else {
-                onCompletion(nil, error)
-                return
+    func synchronizeAccount(onCompletion: @escaping (Result<Account, Error>) -> Void) {
+        remote.loadAccount { [weak self] result in
+            if case let .success(account) = result {
+                self?.upsertStoredAccount(readOnlyAccount: account)
             }
 
-            self?.upsertStoredAccount(readOnlyAccount: account)
-            onCompletion(account, nil)
+            onCompletion(result)
         }
     }
 
@@ -80,44 +78,42 @@ private extension AccountStore {
     /// Synchronizes the WordPress.com account settings associated with the Network's Auth Token.
     /// User ID is passed along because the API doesn't include it in the response.
     ///
-    func synchronizeAccountSettings(userID: Int64, onCompletion: @escaping (AccountSettings?, Error?) -> Void) {
-        remote.loadAccountSettings(for: userID) { [weak self] (accountSettings, error) in
-            guard let accountSettings = accountSettings else {
-                onCompletion(nil, error)
-                return
+    func synchronizeAccountSettings(userID: Int64, onCompletion: @escaping (Result<AccountSettings, Error>) -> Void) {
+        remote.loadAccountSettings(for: userID) { [weak self] result in
+            if case let .success(accountSettings) = result {
+                self?.upsertStoredAccountSettings(readOnlyAccountSettings: accountSettings)
             }
 
-            self?.upsertStoredAccountSettings(readOnlyAccountSettings: accountSettings)
-            onCompletion(accountSettings, nil)
+            onCompletion(result)
         }
     }
 
     /// Synchronizes the WordPress.com sites associated with the Network's Auth Token.
     ///
-    func synchronizeSites(onCompletion: @escaping (Error?) -> Void) {
-        remote.loadSites { [weak self]  (sites, error) in
-            guard let sites = sites else {
-                onCompletion(error)
-                return
-            }
-
-            self?.upsertStoredSitesInBackground(readOnlySites: sites) {
-                onCompletion(nil)
+    func synchronizeSites(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        remote.loadSites { [weak self] result in
+            switch result {
+            case .success(let sites):
+                self?.upsertStoredSitesInBackground(readOnlySites: sites) {
+                    onCompletion(.success(()))
+                }
+            case .failure(let error):
+                onCompletion(.failure(error))
             }
         }
     }
 
     /// Loads the site plan for the default site.
     ///
-    func synchronizeSitePlan(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        remote.loadSitePlan(for: siteID) { [weak self]  (siteplan, error) in
-            guard let siteplan = siteplan else {
-                onCompletion(error)
-                return
-            }
-
-            self?.updateStoredSitePlanInBackground(plan: siteplan) {
-                onCompletion(nil)
+    func synchronizeSitePlan(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        remote.loadSitePlan(for: siteID) { [weak self] result in
+            switch result {
+            case .success(let siteplan):
+                self?.updateStoredSitePlanInBackground(plan: siteplan) {
+                    onCompletion(.success(()))
+                }
+            case .failure(let error):
+                onCompletion(.failure(error))
             }
         }
     }
@@ -138,14 +134,14 @@ private extension AccountStore {
 
     /// Submits the tracks opt-in / opt-out setting to be synced globally. 
     ///
-    func updateAccountSettings(userID: Int64, tracksOptOut: Bool, onCompletion: @escaping (Error?) -> Void) {
-        remote.updateAccountSettings(for: userID, tracksOptOut: tracksOptOut) { accountSettings, error in
-            guard let _ = accountSettings else {
-                onCompletion(error)
-                return
+    func updateAccountSettings(userID: Int64, tracksOptOut: Bool, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        remote.updateAccountSettings(for: userID, tracksOptOut: tracksOptOut) { result in
+            switch result {
+            case .success:
+                onCompletion(.success(()))
+            case .failure(let error):
+                onCompletion(.failure(error))
             }
-
-            onCompletion(nil)
         }
     }
 }

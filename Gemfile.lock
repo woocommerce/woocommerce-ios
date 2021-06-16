@@ -155,6 +155,8 @@ GEM
       trainer
       xcodeproj
       xctest_list (>= 1.2.1)
+    fastlane-plugin-trainer (0.4.1)
+      trainer (>= 0.7.0)
     fastlane-plugin-wpmreleasetoolkit (1.2.0)
       activesupport (~> 5)
       bigdecimal (~> 1.4)
@@ -328,6 +330,7 @@ DEPENDENCIES
   fastlane-plugin-appcenter (= 1.6.0)
   fastlane-plugin-sentry
   fastlane-plugin-test_center
+  fastlane-plugin-trainer
   fastlane-plugin-wpmreleasetoolkit (~> 1.1)
   rake
   rmagick (~> 3.2.0)

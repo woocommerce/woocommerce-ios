@@ -253,7 +253,7 @@ final class ShippingLabelFormViewModel {
             return nil
         }
 
-        var rate: Double = selectedRate.retailRate - selectedRate.rate
+        var rate: Double = selectedRate.rate - selectedRate.retailRate
         if let selectedSignatureRate = selectedSignatureRate {
             rate = selectedSignatureRate.rate - selectedSignatureRate.retailRate
         }

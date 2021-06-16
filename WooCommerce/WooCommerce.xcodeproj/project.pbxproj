@@ -453,6 +453,7 @@
 		26F94E21267A41BE00DB6CCF /* ProductAddOnsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F94E20267A41BE00DB6CCF /* ProductAddOnsListViewModel.swift */; };
 		26F94E26267A559300DB6CCF /* ProductAddOn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F94E25267A559300DB6CCF /* ProductAddOn.swift */; };
 		26F94E2E267A96A000DB6CCF /* ProductAddOnViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F94E2D267A96A000DB6CCF /* ProductAddOnViewModel.swift */; };
+		26F94E34267AA42F00DB6CCF /* ProductAddOnViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F94E33267AA42F00DB6CCF /* ProductAddOnViewModelTests.swift */; };
 		26FB056825F6CB6000A40B26 /* Fakes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26FB056725F6CB6000A40B26 /* Fakes.framework */; };
 		26FE09DD24D9F3F600B9BDF5 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09DC24D9F3F600B9BDF5 /* LoadingView.swift */; };
 		26FE09DF24DB871100B9BDF5 /* SurveyViewControllersFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09DE24DB871100B9BDF5 /* SurveyViewControllersFactory.swift */; };
@@ -1738,6 +1739,7 @@
 		26F94E20267A41BE00DB6CCF /* ProductAddOnsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAddOnsListViewModel.swift; sourceTree = "<group>"; };
 		26F94E25267A559300DB6CCF /* ProductAddOn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAddOn.swift; sourceTree = "<group>"; };
 		26F94E2D267A96A000DB6CCF /* ProductAddOnViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAddOnViewModel.swift; sourceTree = "<group>"; };
+		26F94E33267AA42F00DB6CCF /* ProductAddOnViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAddOnViewModelTests.swift; sourceTree = "<group>"; };
 		26FB056725F6CB6000A40B26 /* Fakes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Fakes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		26FE09DC24D9F3F600B9BDF5 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		26FE09DE24DB871100B9BDF5 /* SurveyViewControllersFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyViewControllersFactory.swift; sourceTree = "<group>"; };
@@ -3047,6 +3049,7 @@
 		0269177E23260090002AFC20 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				26F94E32267AA3DD00DB6CCF /* Addons */,
 				02077F70253816B1005A78EF /* Actions Factory */,
 				024F1450250B658F0003030A /* Add Product */,
 				02A9A494244D848F00757B99 /* BottomSheetListSelector */,
@@ -3664,6 +3667,14 @@
 				26F94E20267A41BE00DB6CCF /* ProductAddOnsListViewModel.swift */,
 				26F94E25267A559300DB6CCF /* ProductAddOn.swift */,
 				26F94E2D267A96A000DB6CCF /* ProductAddOnViewModel.swift */,
+			);
+			path = Addons;
+			sourceTree = "<group>";
+		};
+		26F94E32267AA3DD00DB6CCF /* Addons */ = {
+			isa = PBXGroup;
+			children = (
+				26F94E33267AA42F00DB6CCF /* ProductAddOnViewModelTests.swift */,
 			);
 			path = Addons;
 			sourceTree = "<group>";
@@ -7454,6 +7465,7 @@
 				262A0999262908A60033AD20 /* OrderAddOnListI1Tests.swift in Sources */,
 				022A45EE237BADA6001417F0 /* Product+ProductFormTests.swift in Sources */,
 				B57C5C9921B80E7100FF82B2 /* DictionaryWooTests.swift in Sources */,
+				26F94E34267AA42F00DB6CCF /* ProductAddOnViewModelTests.swift in Sources */,
 				0290E27E238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift in Sources */,
 				020B2F9123BDD71500BD79AD /* IntegerInputFormatterTests.swift in Sources */,
 				D816DDBC22265DA300903E59 /* OrderTrackingTableViewCellTests.swift in Sources */,

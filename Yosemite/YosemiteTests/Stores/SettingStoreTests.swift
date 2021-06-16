@@ -477,71 +477,81 @@ class SettingStoreTests: XCTestCase {
 
     /// Verifies that `SettingAction.retrieveSiteAPI` returns the expected API information.
     ///
-    func testRetrieveSiteAPIReturnsExpectedStatus() {
+    func test_retrieveSiteAPI_returns_expected_status() throws {
+        // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let expectation = self.expectation(description: "Retrieve Site API info successfully")
-
         network.simulateResponse(requestUrlSuffix: "", filename: "site-api")
-        let action = SettingAction.retrieveSiteAPI(siteID: sampleSiteID) { (siteAPI, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(siteAPI)
-            XCTAssertEqual(siteAPI, self.sampleSiteAPIWithWoo())
-            expectation.fulfill()
+
+        // When
+        let result: Result<SiteAPI, Error> = waitFor { promise in
+            let action = SettingAction.retrieveSiteAPI(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
         }
 
-        store.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let siteAPI = try result.get()
+        XCTAssertEqual(siteAPI, sampleSiteAPIWithWoo())
     }
 
     /// Verifies that `SettingAction.retrieveSiteAPI` returns the expected API information.
     ///
-    func testRetrieveSiteAPIReturnsExpectedStatusForNonWooSite() {
+    func test_retrieveSiteAPI_returns_expected_status_for_non_woo_site() throws {
+        // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let expectation = self.expectation(description: "Retrieve Site API info successfully for non-Woo site")
-
         network.simulateResponse(requestUrlSuffix: "", filename: "site-api-no-woo")
-        let action = SettingAction.retrieveSiteAPI(siteID: sampleSiteID) { (siteAPI, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(siteAPI)
-            XCTAssertEqual(siteAPI, self.sampleSiteAPINoWoo())
-            expectation.fulfill()
+
+        // When
+        let result: Result<SiteAPI, Error> = waitFor { promise in
+            let action = SettingAction.retrieveSiteAPI(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
         }
 
-        store.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let siteAPI = try result.get()
+        XCTAssertEqual(siteAPI, sampleSiteAPINoWoo())
     }
 
     /// Verifies that `SettingAction.retrieveSiteAPI` returns an error whenever there is an error response from the backend.
     ///
-    func testRetrieveSiteAPIReturnsErrorUponReponseError() {
-        let expectation = self.expectation(description: "Retrieve Site API info error response")
-        let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
+    func test_retrieveSiteAPI_returns_error_upon_reponse_error() {
+        // Given
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "", filename: "generic_error")
-        let action = SettingAction.retrieveSiteAPI(siteID: sampleSiteID) { (siteAPI, error) in
-            XCTAssertNil(siteAPI)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+
+        // When
+        let result: Result<SiteAPI, Error> = waitFor { promise in
+            let action = SettingAction.retrieveSiteAPI(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
         }
 
-        settingStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isFailure)
     }
 
     /// Verifies that `SettingAction.retrieveSiteAPI` returns an error whenever there is no backend response.
     ///
-    func testRetrieveSiteAPIReturnsErrorUponEmptyResponse() {
-        let expectation = self.expectation(description: "Retrieve Site API info empty response")
-        let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    func test_retrieveSiteAPI_returns_error_upon_empty_response() {
+        // Given
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = SettingAction.retrieveSiteAPI(siteID: sampleSiteID) { (siteAPI, error) in
-            XCTAssertNil(siteAPI)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        // When
+        let result: Result<SiteAPI, Error> = waitFor { promise in
+            let action = SettingAction.retrieveSiteAPI(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
         }
 
-        settingStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isFailure)
     }
 }
 

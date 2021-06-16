@@ -452,6 +452,7 @@
 		26F94E1C267A3E4500DB6CCF /* ProductAddOnsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F94E1B267A3E4500DB6CCF /* ProductAddOnsListViewController.swift */; };
 		26F94E21267A41BE00DB6CCF /* ProductAddOnsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F94E20267A41BE00DB6CCF /* ProductAddOnsListViewModel.swift */; };
 		26F94E26267A559300DB6CCF /* ProductAddOn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F94E25267A559300DB6CCF /* ProductAddOn.swift */; };
+		26F94E2E267A96A000DB6CCF /* ProductAddOnViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F94E2D267A96A000DB6CCF /* ProductAddOnViewModel.swift */; };
 		26FB056825F6CB6000A40B26 /* Fakes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26FB056725F6CB6000A40B26 /* Fakes.framework */; };
 		26FE09DD24D9F3F600B9BDF5 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09DC24D9F3F600B9BDF5 /* LoadingView.swift */; };
 		26FE09DF24DB871100B9BDF5 /* SurveyViewControllersFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09DE24DB871100B9BDF5 /* SurveyViewControllersFactory.swift */; };
@@ -1736,6 +1737,7 @@
 		26F94E1B267A3E4500DB6CCF /* ProductAddOnsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAddOnsListViewController.swift; sourceTree = "<group>"; };
 		26F94E20267A41BE00DB6CCF /* ProductAddOnsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAddOnsListViewModel.swift; sourceTree = "<group>"; };
 		26F94E25267A559300DB6CCF /* ProductAddOn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAddOn.swift; sourceTree = "<group>"; };
+		26F94E2D267A96A000DB6CCF /* ProductAddOnViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAddOnViewModel.swift; sourceTree = "<group>"; };
 		26FB056725F6CB6000A40B26 /* Fakes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Fakes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		26FE09DC24D9F3F600B9BDF5 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		26FE09DE24DB871100B9BDF5 /* SurveyViewControllersFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyViewControllersFactory.swift; sourceTree = "<group>"; };
@@ -3661,6 +3663,7 @@
 				26F94E1B267A3E4500DB6CCF /* ProductAddOnsListViewController.swift */,
 				26F94E20267A41BE00DB6CCF /* ProductAddOnsListViewModel.swift */,
 				26F94E25267A559300DB6CCF /* ProductAddOn.swift */,
+				26F94E2D267A96A000DB6CCF /* ProductAddOnViewModel.swift */,
 			);
 			path = Addons;
 			sourceTree = "<group>";
@@ -6781,6 +6784,7 @@
 				0225C42C2477D0D500C5B4F0 /* ProductFormViewModel.swift in Sources */,
 				020F41E523163C0100776C4D /* TopBannerViewModel.swift in Sources */,
 				B541B2172189EED4008FE7C1 /* NSMutableAttributedString+Helpers.swift in Sources */,
+				26F94E2E267A96A000DB6CCF /* ProductAddOnViewModel.swift in Sources */,
 				B586906621A5F4B1001F1EFC /* UINavigationController+Woo.swift in Sources */,
 				45FBDF3A238D3F8B00127F77 /* ExtendedAddProductImageCollectionViewCell.swift in Sources */,
 				02A410F52583A84C005E2925 /* SpacerTableViewCell.swift in Sources */,

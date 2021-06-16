@@ -451,6 +451,7 @@
 		26F65C9E25DEDE67008FAE29 /* GenerateVariationUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F65C9D25DEDE67008FAE29 /* GenerateVariationUseCaseTests.swift */; };
 		26F94E1C267A3E4500DB6CCF /* ProductAddOnsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F94E1B267A3E4500DB6CCF /* ProductAddOnsListViewController.swift */; };
 		26F94E21267A41BE00DB6CCF /* ProductAddOnsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F94E20267A41BE00DB6CCF /* ProductAddOnsListViewModel.swift */; };
+		26F94E26267A559300DB6CCF /* ProductAddOn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F94E25267A559300DB6CCF /* ProductAddOn.swift */; };
 		26FB056825F6CB6000A40B26 /* Fakes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26FB056725F6CB6000A40B26 /* Fakes.framework */; };
 		26FE09DD24D9F3F600B9BDF5 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09DC24D9F3F600B9BDF5 /* LoadingView.swift */; };
 		26FE09DF24DB871100B9BDF5 /* SurveyViewControllersFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09DE24DB871100B9BDF5 /* SurveyViewControllersFactory.swift */; };
@@ -1734,6 +1735,7 @@
 		26F65C9D25DEDE67008FAE29 /* GenerateVariationUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateVariationUseCaseTests.swift; sourceTree = "<group>"; };
 		26F94E1B267A3E4500DB6CCF /* ProductAddOnsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAddOnsListViewController.swift; sourceTree = "<group>"; };
 		26F94E20267A41BE00DB6CCF /* ProductAddOnsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAddOnsListViewModel.swift; sourceTree = "<group>"; };
+		26F94E25267A559300DB6CCF /* ProductAddOn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAddOn.swift; sourceTree = "<group>"; };
 		26FB056725F6CB6000A40B26 /* Fakes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Fakes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		26FE09DC24D9F3F600B9BDF5 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		26FE09DE24DB871100B9BDF5 /* SurveyViewControllersFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyViewControllersFactory.swift; sourceTree = "<group>"; };
@@ -3658,6 +3660,7 @@
 			children = (
 				26F94E1B267A3E4500DB6CCF /* ProductAddOnsListViewController.swift */,
 				26F94E20267A41BE00DB6CCF /* ProductAddOnsListViewModel.swift */,
+				26F94E25267A559300DB6CCF /* ProductAddOn.swift */,
 			);
 			path = Addons;
 			sourceTree = "<group>";
@@ -7071,6 +7074,7 @@
 				0259D5F92581F0E6003B1CD6 /* ShippingLabelPaperSizeOptionView.swift in Sources */,
 				D81F2D37225F0D160084BF9C /* EmptyListMessageWithActionView.swift in Sources */,
 				575472812452185300A94C3C /* PushNotification.swift in Sources */,
+				26F94E26267A559300DB6CCF /* ProductAddOn.swift in Sources */,
 				77E53EBF2510C153003D385F /* ProductDownloadListViewModel.swift in Sources */,
 				2667BFE52530DCF4008099D4 /* RefundItemsValuesCalculationUseCase.swift in Sources */,
 				B55BC1F121A878A30011A0C0 /* String+HTML.swift in Sources */,

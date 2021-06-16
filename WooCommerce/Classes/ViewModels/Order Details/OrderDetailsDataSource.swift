@@ -45,8 +45,7 @@ final class OrderDetailsDataSource: NSObject {
     /// Whether the order is eligible for card present payment.
     ///
     var isEligibleForCardPresentPayment: Bool {
-        return isCardPresentPaymentsFeatureEnabled() &&
-            isOrderStatusEligibleForCardPayment() &&
+        return isOrderStatusEligibleForCardPayment() &&
             isOrderPaymentMethodEligibleForCardPayment() &&
             hasCardPresentEligiblePaymentGatewayAccount()
     }
@@ -1429,10 +1428,6 @@ extension OrderDetailsDataSource {
 // MARK: - Private Payments Logic
 
 private extension OrderDetailsDataSource {
-    func isCardPresentPaymentsFeatureEnabled() -> Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments)
-    }
-
     func isOrderStatusEligibleForCardPayment() -> Bool {
         (order.status == .pending || order.status == .onHold || order.status == .processing)
     }

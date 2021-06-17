@@ -11,6 +11,8 @@ struct ProductAddOn: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
 
+            Divider()
+
             // Add-on name
             Text(viewModel.name)
                 .headlineStyle()
@@ -48,6 +50,8 @@ struct ProductAddOn: View {
                 Divider()
                     .padding(.leading)
             }
+
+            Divider()
         }
         .background(Color(.basicBackground))
     }
@@ -56,7 +60,7 @@ struct ProductAddOn: View {
 // MARK: Previews
 struct ProductAddOn_Previews: PreviewProvider {
 
-    static let toppingViewModel = ProductAddOnViewModel(name: "Pizza Topping (Multiple Choice)",
+    static let toppingViewModel = ProductAddOnViewModel(name: "Pizza Topping",
                                                  description: "Select your favorite topping",
                                                  price: "",
                                                  options: [
@@ -64,7 +68,7 @@ struct ProductAddOn_Previews: PreviewProvider {
                                                     .init(name: "Salami", price: "$1.99"),
                                                     .init(name: "Ham", price: "$1.99"),
                                                  ])
-    static let deliveryViewModel = ProductAddOnViewModel(name: "Delivery (Checkbox)",
+    static let deliveryViewModel = ProductAddOnViewModel(name: "Delivery",
                                                  description: "Weather you need delivery or not",
                                                  price: "$6.00",
                                                  options: [])
@@ -77,7 +81,7 @@ struct ProductAddOn_Previews: PreviewProvider {
 
             ProductAddOn(viewModel: toppingViewModel)
                 .environment(\.colorScheme, .light)
-                .previewLayout(.fixed(width: 420, height: 200))
+                .previewLayout(.fixed(width: 420, height: 220))
         }
     }
 }

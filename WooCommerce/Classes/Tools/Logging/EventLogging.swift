@@ -33,9 +33,7 @@ struct WCEventLoggingDelegate: EventLoggingDelegate {
     func didQueueLogForUpload(_ log: LogFile) {
         DDLogDebug("📜 Added log to queue: \(log.uuid)")
 
-        if let eventLogging = CrashLogging.eventLogging {
-            DDLogDebug("📜\t There are \(eventLogging.queuedLogFiles.count) logs in the queue.")
-        }
+        DDLogDebug("📜\t There are \(ServiceLocator.crashLogging.queuedLogFileCount) logs in the queue.")
     }
 
     func didStartUploadingLog(_ log: LogFile) {
@@ -44,9 +42,7 @@ struct WCEventLoggingDelegate: EventLoggingDelegate {
 
     func didFinishUploadingLog(_ log: LogFile) {
         DDLogDebug("📜 Finished uploading encrypted log: \(log.uuid)")
-        if let eventLogging = CrashLogging.eventLogging {
-            DDLogDebug("📜\t There are \(eventLogging.queuedLogFiles.count) logs remaining in the queue.")
-        }
+        DDLogDebug("📜\t There are \(ServiceLocator.crashLogging.queuedLogFileCount) logs remaining in the queue.")
     }
 
     func uploadFailed(withError error: Error, forLog log: LogFile) {

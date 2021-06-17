@@ -4,6 +4,15 @@ import Storage
 import Yosemite
 import Hardware
 
+// The crash logging stack is required in both the crashLogging property and to initialize the storageManager.
+// Since CoreDataManager can crash on initialization, ServiceLocator might not have initialized its crashLogging property yet.
+// We'll use this variable to ensure both properties are initialized with the same stack
+private let initialCrashLoggingStack: CrashLoggingStack = {
+    let stack = WooCrashLoggingStack()
+    try? stack.start()
+    return stack
+}()
+
 /// Provides global dependencies.
 ///
 final class ServiceLocator {
@@ -52,11 +61,15 @@ final class ServiceLocator {
 
     /// CoreData Stack
     ///
-    private static var _storageManager = CoreDataManager(name: WooConstants.databaseStackName, crashLogger: SentryCrashLogger())
+    private static var _storageManager = CoreDataManager(name: WooConstants.databaseStackName, crashLogger: initialCrashLoggingStack)
 
     /// Cocoalumberjack DDLog
     ///
     private static var _fileLogger: Logs = DDFileLogger()
+
+    /// Crash Logging Stack
+    ///
+    private static var _crashLogging: CrashLoggingStack = initialCrashLoggingStack
 
     /// Support for external Card Readers
     ///
@@ -147,6 +160,12 @@ final class ServiceLocator {
     /// - Returns: An implementation of the Logs protocol. It defaults to DDFileLogger
     static var fileLogger: Logs {
         return _fileLogger
+    }
+
+    /// Provides the access point to the CrashLogger
+    /// - Returns: An implementation
+    static var crashLogging: CrashLoggingStack {
+        return _crashLogging
     }
 
     /// Provides the last known `KeyboardState`.
@@ -257,6 +276,14 @@ extension ServiceLocator {
         }
 
         _fileLogger = mock
+    }
+
+    static func setCrashLogging(_ mock: CrashLoggingStack) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _crashLogging = mock
     }
 
     static func setCardReader(_ mock: CardReaderService) {

@@ -19,11 +19,20 @@ public protocol CrashLogger {
     func logMessage(_ message: String, properties: [String: Any]?, level: SeverityLevel)
 
     /**
-     Writes a message to the Crash Logging system and waits until the message is sent.
+     Writes an error to the Crash Logging system.
      - Parameters:
-     - message: The message
-     - properties: A dictionary containing additional information about this message
+     - error: The error
+     - userInfo: A dictionary containing additional information about this message
      - level: The level of severity to report
     */
-    func logMessageAndWait(_ message: String, properties: [String: Any]?, level: SeverityLevel)
+    func logError(_ error: Error, userInfo: [String: Any]?, level: SeverityLevel)
+
+    /**
+     Writes an error to the Crash Logging system and waits until the message is sent.
+     - Parameters:
+     - error: The error
+     - userInfo: A dictionary containing additional information about this message
+     - level: The level of severity to report
+    */
+    func logErrorAndWait(_ error: Error, userInfo: [String: Any]?, level: SeverityLevel)
 }

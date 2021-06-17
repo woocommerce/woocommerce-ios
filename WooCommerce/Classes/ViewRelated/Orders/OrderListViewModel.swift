@@ -109,7 +109,7 @@ final class OrderListViewModel {
         do {
             try snapshotsProvider.start()
         } catch {
-            CrashLogging.logError(error)
+            ServiceLocator.crashLogging.logError(error)
         }
     }
 
@@ -194,7 +194,7 @@ private extension OrderListViewModel {
         do {
             try statusResultsController.performFetch()
         } catch {
-            CrashLogging.logError(error)
+            ServiceLocator.crashLogging.logError(error)
         }
     }
 

@@ -17,7 +17,7 @@ class ProductAddOnViewModelTests: XCTestCase {
     func test_view_model_hides_description_and_price_when_empty() {
         // Given
         let viewModel = ProductAddOnViewModel(name: "", description: "", price: "", options: [
-            .init(name: "", price: "")
+            .init(name: "", price: "", offSetDivider: false)
         ])
 
         // Then & When
@@ -29,12 +29,20 @@ class ProductAddOnViewModelTests: XCTestCase {
     func test_view_model_shows_description_and_price_when_not_empty() {
         // Given
         let viewModel = ProductAddOnViewModel(name: "", description: "Description", price: "$20.99", options: [
-            .init(name: "", price: "$20.99")
+            .init(name: "", price: "$20.99", offSetDivider: false)
         ])
 
         // Then & When
         XCTAssertTrue(viewModel.showDescription)
         XCTAssertTrue(viewModel.showPrice)
         XCTAssertTrue(viewModel.options[0].showPrice)
+    }
+
+    func test_bottom_divider_is_visible_when_no_options() {
+        // Given
+        let viewModel = ProductAddOnViewModel(name: "Name", description: "Description", price: "$20.99", options: [])
+
+        // Then & When
+        XCTAssertTrue(viewModel.showBottomDivider)
     }
 }

@@ -48,10 +48,11 @@ struct ProductAddOn: View {
                 .padding([.leading, .trailing])
 
                 Divider()
-                    .padding(.leading)
+                    .padding(option.offSetDivider ? [.leading] : [])
             }
 
             Divider()
+                .renderedIf(viewModel.showBottomDivider)
         }
         .background(Color(.basicBackground))
     }
@@ -64,9 +65,9 @@ struct ProductAddOn_Previews: PreviewProvider {
                                                  description: "Select your favorite topping",
                                                  price: "",
                                                  options: [
-                                                    .init(name: "Peperoni", price: "$2.99"),
-                                                    .init(name: "Salami", price: "$1.99"),
-                                                    .init(name: "Ham", price: "$1.99"),
+                                                    .init(name: "Peperoni", price: "$2.99", offSetDivider: true),
+                                                    .init(name: "Salami", price: "$1.99", offSetDivider: true),
+                                                    .init(name: "Ham", price: "$1.99", offSetDivider: false),
                                                  ])
     static let deliveryViewModel = ProductAddOnViewModel(name: "Delivery",
                                                  description: "Weather you need delivery or not",

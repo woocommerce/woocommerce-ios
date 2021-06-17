@@ -16,6 +16,10 @@ struct ProductAddOnViewModel {
         ///
         let price: String
 
+        /// Defines if the divider should be offset or not.
+        ///
+        let offSetDivider: Bool
+
         /// Identifiable conformance.
         ///
         var id: String {
@@ -55,5 +59,11 @@ struct ProductAddOnViewModel {
     ///
     var showPrice: Bool {
         price.isNotEmpty
+    }
+
+    /// Determines the bottom divider visibility.
+    ///
+    var showBottomDivider: Bool {
+        options.isEmpty
     }
 }

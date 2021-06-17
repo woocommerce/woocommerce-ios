@@ -56,7 +56,7 @@ struct ProductAddOn: View {
 // MARK: Previews
 struct ProductAddOn_Previews: PreviewProvider {
 
-    static let toppingViewModel = ProductAddOnViewModel(name: "Pizza Topping",
+    static let toppingViewModel = ProductAddOnViewModel(name: "Pizza Topping (Multiple Choice)",
                                                  description: "Select your favorite topping",
                                                  price: "",
                                                  options: [
@@ -64,21 +64,20 @@ struct ProductAddOn_Previews: PreviewProvider {
                                                     .init(name: "Salami", price: "$1.99"),
                                                     .init(name: "Ham", price: "$1.99"),
                                                  ])
-    static let deliveryViewModel = ProductAddOnViewModel(name: "Delivery",
+    static let deliveryViewModel = ProductAddOnViewModel(name: "Delivery (Checkbox)",
                                                  description: "Weather you need delivery or not",
                                                  price: "$6.00",
                                                  options: [])
 
     static var previews: some View {
-        VStack {
-            ProductAddOn(viewModel: toppingViewModel)
-                .environment(\.colorScheme, .light)
-
-            Spacer()
-                .frame(height: 20)
-
+        Group {
             ProductAddOn(viewModel: deliveryViewModel)
                 .environment(\.colorScheme, .light)
+                .previewLayout(.fixed(width: 420, height: 100))
+
+            ProductAddOn(viewModel: toppingViewModel)
+                .environment(\.colorScheme, .light)
+                .previewLayout(.fixed(width: 420, height: 200))
         }
     }
 }

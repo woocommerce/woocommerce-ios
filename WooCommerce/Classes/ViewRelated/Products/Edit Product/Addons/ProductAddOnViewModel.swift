@@ -84,6 +84,8 @@ extension ProductAddOnViewModel {
         name = addOn.name
         description = addOn.description
         price = addOn.price
-        options = addOn.options.map { Option(name: $0.label ?? "", price: $0.price ?? "") }
+        options = addOn.options.enumerated().map { index, option in
+            Option(name: option.label ?? "", price: option.price ?? "", offSetDivider: index < (addOn.options.count - 1))
+        }
     }
 }

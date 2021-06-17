@@ -1,4 +1,5 @@
 import Foundation
+import Yosemite
 
 /// ViewModel for `ProductAddOn`
 ///
@@ -65,5 +66,18 @@ struct ProductAddOnViewModel {
     ///
     var showBottomDivider: Bool {
         options.isEmpty
+    }
+}
+
+// MARK: Initializers
+extension ProductAddOnViewModel {
+
+    /// Initializes properties using a `Yosemite.ProductAddOn` as  source.
+    ///
+    init(addOn: Yosemite.ProductAddOn) {
+        name = addOn.name
+        description = addOn.description
+        price = addOn.price
+        options = addOn.options.map { Option(name: $0.label ?? "", price: $0.price ?? "") }
     }
 }

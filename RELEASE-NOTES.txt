@@ -3,6 +3,8 @@
 7.0
 -----
 - [*] If the Orders, Products, or Reviews lists can't load, a banner now appears at the top of the screen with links to troubleshoot or contact support. [https://github.com/woocommerce/woocommerce-ios/pull/4400, https://github.com/woocommerce/woocommerce-ios/pull/4407]
+- [*] Fix: Orders for a variable product with different configurations of a single variation will now show each order item separately. [https://github.com/woocommerce/woocommerce-ios/pull/4445]
+- [**] Order Detail: now we display Order Items and Shipping Label Packages as separate sections. [https://github.com/woocommerce/woocommerce-ios/pull/4445]
 
 6.9
 -----

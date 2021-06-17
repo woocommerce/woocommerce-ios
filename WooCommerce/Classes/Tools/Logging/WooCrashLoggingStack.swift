@@ -22,10 +22,7 @@ struct WooCrashLoggingStack: CrashLoggingStack {
         /// Upload any remaining files any time the app becomes active
         let willEnterForeground = UIApplication.willEnterForegroundNotification
         NotificationCenter.default.addObserver(forName: willEnterForeground, object: nil, queue: nil, using: self.willEnterForeground)
-    }
-
-    func start() throws {
-        _ = try crashLogging.start()
+        _ = try? crashLogging.start()
     }
 
     func crash() {

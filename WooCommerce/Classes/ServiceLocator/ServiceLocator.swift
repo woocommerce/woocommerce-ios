@@ -4,15 +4,6 @@ import Storage
 import Yosemite
 import Hardware
 
-// The crash logging stack is required in both the crashLogging property and to initialize the storageManager.
-// Since CoreDataManager can crash on initialization, ServiceLocator might not have initialized its crashLogging property yet.
-// We'll use this variable to ensure both properties are initialized with the same stack
-private let initialCrashLoggingStack: CrashLoggingStack = {
-    let stack = WooCrashLoggingStack()
-    try? stack.start()
-    return stack
-}()
-
 /// Provides global dependencies.
 ///
 final class ServiceLocator {
@@ -61,7 +52,7 @@ final class ServiceLocator {
 
     /// CoreData Stack
     ///
-    private static var _storageManager = CoreDataManager(name: WooConstants.databaseStackName, crashLogger: initialCrashLoggingStack)
+    private static var _storageManager = CoreDataManager(name: WooConstants.databaseStackName, crashLogger: crashLogging)
 
     /// Cocoalumberjack DDLog
     ///
@@ -69,7 +60,7 @@ final class ServiceLocator {
 
     /// Crash Logging Stack
     ///
-    private static var _crashLogging: CrashLoggingStack = initialCrashLoggingStack
+    private static var _crashLogging: CrashLoggingStack = WooCrashLoggingStack()
 
     /// Support for external Card Readers
     ///

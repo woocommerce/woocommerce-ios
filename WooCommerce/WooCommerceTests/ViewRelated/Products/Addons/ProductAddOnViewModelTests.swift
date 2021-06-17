@@ -64,4 +64,21 @@ class ProductAddOnViewModelTests: XCTestCase {
         ])
         assertEqual(viewModel, expected)
     }
+
+    func test_empty_options_are_excluded() {
+        // Given
+        let productAddOn = Yosemite.ProductAddOn.fake().copy(name: "Name", description: "Description", price: "20.0", options: [
+            ProductAddOnOption.fake().copy(label: "", price: ""),
+            ProductAddOnOption.fake().copy(label: "Option 1", price: "11.0"),
+        ])
+
+        // When
+        let viewModel = ProductAddOnViewModel(addOn: productAddOn)
+
+        // Then
+        let expected = ProductAddOnViewModel(name: "Name", description: "Description", price: "$20.00", options: [
+            .init(name: "Option 1", price: "$11.00", offSetDivider: false),
+        ])
+        assertEqual(viewModel, expected)
+    }
 }

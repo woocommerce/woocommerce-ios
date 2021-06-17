@@ -85,10 +85,15 @@ extension ProductAddOnViewModel {
         name = addOn.name
         description = addOn.description
         price = currencyFormatter.formatAmount(addOn.price) ?? ""
-        options = addOn.options.enumerated().map { index, option in
-            Option(name: option.label ?? "",
-                   price: currencyFormatter.formatAmount(option.price ?? "") ?? "",
-                   offSetDivider: index < (addOn.options.count - 1))
+
+        // Convert options and filter empty ones.
+        options = addOn.options.enumerated().compactMap { index, option in
+            guard !option.label.isNilOrEmpty || !option.price.isNilOrEmpty else {
+                return nil
+            }
+            return Option(name: option.label ?? "",
+                          price: currencyFormatter.formatAmount(option.price ?? "") ?? "",
+                          offSetDivider: index < (addOn.options.count - 1))
         }
     }
 }

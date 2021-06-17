@@ -57,18 +57,6 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
         ensureGhostContentIsAnimated()
     }
 
-    // MARK: - RTL support
-
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        /// ButtonBarView is a collection view, and it should flip to support
-        /// RTL languages automatically. And yet it doesn't.
-        /// So, for RTL languages, we flip it. This also flips the cells
-        if traitCollection.layoutDirection == .rightToLeft {
-            buttonBarView.transform = CGAffineTransform(scaleX: -1, y: 1)
-        }
-    }
-
     // MARK: - PagerTabStripDataSource
 
     override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
@@ -260,6 +248,13 @@ private extension StoreStatsAndTopPerformersViewController {
 
         // Disables any content inset adjustment since `XLPagerTabStrip` doesn't seem to support safe area insets.
         containerView.contentInsetAdjustmentBehavior = .never
+
+        /// ButtonBarView is a collection view, and it should flip to support
+        /// RTL languages automatically. And yet it doesn't.
+        /// So, for RTL languages, we flip it. This also flips the cells
+        if traitCollection.layoutDirection == .rightToLeft {
+            buttonBarView.transform = CGAffineTransform(scaleX: -1, y: 1)
+        }
     }
 
     func configurePeriodViewControllers() {

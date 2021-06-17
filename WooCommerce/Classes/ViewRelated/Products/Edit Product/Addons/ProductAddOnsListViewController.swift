@@ -52,8 +52,18 @@ private struct AddOnListNotice: View {
 
 // MARK: Previews
 struct ProductAddOnsList_Previews: PreviewProvider {
+
+    static let viewModel = ProductAddOnsListViewModel(addOns: [
+        .init(name: "Toppings", description: "Select your toppings", price: "", options: [
+            .init(name: "Peperoni", price: "$2.99"),
+            .init(name: "Salami", price: "$1.99"),
+            .init(name: "Ham", price: "$1.99")
+        ]),
+        .init(name: "Delivery", description: "Do you want it delivered to your address?", price: "$10.00", options: []),
+    ])
+
     static var previews: some View {
-        ProductAddOnsList(viewModel: ProductAddOnsListViewModel())
+        ProductAddOnsList(viewModel: viewModel)
             .environment(\.colorScheme, .light)
     }
 }

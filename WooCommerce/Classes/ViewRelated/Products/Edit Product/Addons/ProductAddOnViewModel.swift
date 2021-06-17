@@ -3,11 +3,11 @@ import Yosemite
 
 /// ViewModel for `ProductAddOn`
 ///
-struct ProductAddOnViewModel: Identifiable {
+struct ProductAddOnViewModel: Identifiable, Equatable {
 
     /// Represents an Add-on option
     ///
-    struct Option: Identifiable {
+    struct Option: Identifiable, Equatable {
 
         /// Option name
         ///

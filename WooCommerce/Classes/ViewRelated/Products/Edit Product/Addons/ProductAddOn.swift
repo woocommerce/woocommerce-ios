@@ -72,6 +72,10 @@ struct ProductAddOn_Previews: PreviewProvider {
                                                  description: "Weather you need delivery or not",
                                                  price: "$6.00",
                                                  options: [])
+    static let engravingViewModel = ProductAddOnViewModel(name: "Engraving",
+                                                 description: "",
+                                                 price: "$5.00",
+                                                 options: [])
 
     static var previews: some View {
         Group {
@@ -82,6 +86,10 @@ struct ProductAddOn_Previews: PreviewProvider {
             ProductAddOn(viewModel: toppingViewModel)
                 .environment(\.colorScheme, .light)
                 .previewLayout(.fixed(width: 420, height: 220))
+
+            ProductAddOn(viewModel: engravingViewModel)
+                .environment(\.colorScheme, .light)
+                .previewLayout(.fixed(width: 420, height: 100))
         }
     }
 }

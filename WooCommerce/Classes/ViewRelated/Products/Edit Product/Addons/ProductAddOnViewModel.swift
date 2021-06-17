@@ -48,7 +48,7 @@ struct ProductAddOnViewModel {
     /// Determines the main description visibility
     ///
     var showDescription: Bool {
-        description.isNotEmpty
+        price.isNotEmpty || description.isNotEmpty
     }
 
     /// Determines the main price visibility

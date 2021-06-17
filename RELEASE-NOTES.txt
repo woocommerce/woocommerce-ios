@@ -3,6 +3,7 @@
 7.0
 -----
 - [*] If the Orders, Products, or Reviews lists can't load, a banner now appears at the top of the screen with links to troubleshoot or contact support. [https://github.com/woocommerce/woocommerce-ios/pull/4400, https://github.com/woocommerce/woocommerce-ios/pull/4407]
+- [*] Fix: Stats tabs are now displayed and ordered correctly in RTL languages. [https://github.com/woocommerce/woocommerce-ios/pull/4444]
 
 6.9
 -----

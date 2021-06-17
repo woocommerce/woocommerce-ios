@@ -258,15 +258,17 @@ extension OrderDetailsViewModel {
             let printingInstructionsViewController = ShippingLabelPrintingInstructionsViewController()
             let navigationController = WooNavigationController(rootViewController: printingInstructionsViewController)
             viewController.present(navigationController, animated: true, completion: nil)
-        case .shippingLabelProduct:
-            guard let item = dataSource.shippingLabelOrderItem(at: indexPath), item.productOrVariationID > 0 else {
+        case .shippingLabelProducts:
+            let shippingLabelItems = dataSource.shippingLabelOrderItems(at: indexPath)
+
+            let identifier = AggregatedProductListViewController.classNameWithoutNamespaces
+            guard let productListVC = UIStoryboard.orders.instantiateViewController(identifier: identifier) as? AggregatedProductListViewController else {
+                DDLogError("Error: attempted to instantiate AggregatedProductListViewController. Instantiation failed.")
                 return
             }
-            let loaderViewController = ProductLoaderViewController(model: .init(aggregateOrderItem: item),
-                                                                   siteID: order.siteID,
-                                                                   forceReadOnly: true)
-            let navController = WooNavigationController(rootViewController: loaderViewController)
-            viewController.present(navController, animated: true, completion: nil)
+            productListVC.viewModel = self
+            productListVC.items = shippingLabelItems
+            viewController.navigationController?.show(productListVC, sender: nil)
         case .billingDetail:
             ServiceLocator.analytics.track(.orderDetailShowBillingTapped)
             let billingInformationViewController = BillingInformationViewController(order: order)

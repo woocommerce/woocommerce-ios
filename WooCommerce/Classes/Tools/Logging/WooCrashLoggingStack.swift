@@ -10,6 +10,7 @@ struct WooCrashLoggingStack: CrashLoggingStack {
     let crashLogging: AutomatticTracks.CrashLogging
     let eventLogging: EventLogging
 
+    private let crashLoggingDataProvider = WCCrashLoggingDataProvider()
     private let eventLoggingDataProvider = WCEventLoggingDataSource()
     private let eventLoggingDelegate = WCEventLoggingDelegate()
 
@@ -17,7 +18,7 @@ struct WooCrashLoggingStack: CrashLoggingStack {
         let eventLogging = EventLogging(dataSource: eventLoggingDataProvider, delegate: eventLoggingDelegate)
 
         self.eventLogging = eventLogging
-        self.crashLogging = AutomatticTracks.CrashLogging(dataProvider: WCCrashLoggingDataProvider(), eventLogging: eventLogging)
+        self.crashLogging = AutomatticTracks.CrashLogging(dataProvider: crashLoggingDataProvider, eventLogging: eventLogging)
 
         /// Upload any remaining files any time the app becomes active
         let willEnterForeground = UIApplication.willEnterForegroundNotification
@@ -41,12 +42,14 @@ struct WooCrashLoggingStack: CrashLoggingStack {
         crashLogging.logError(error, userInfo: userInfo, level: sentrySeverity(with: level))
     }
 
-    func logErrorAndWait(_ error: Error, userInfo: [String: Any]? = nil, level: SeverityLevel = .error) {
+    func logFatalErrorAndExit(_ error: Error, userInfo: [String: Any]? = nil, level: SeverityLevel = .error) -> Never {
         do {
+            crashLoggingDataProvider.appIsCrashing = true
             try crashLogging.logErrorAndWait(error, userInfo: userInfo, level: sentrySeverity(with: level))
         } catch {
             DDLogError("⛔️ Unable to send startup error message to Sentry: \(error)")
         }
+        fatalError(error.localizedDescription)
     }
 
     func setNeedsDataRefresh() {
@@ -79,6 +82,8 @@ struct WooCrashLoggingStack: CrashLoggingStack {
 }
 
 class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
+    /// Indicates that app is in an inconsistent state and we don't want to start asking it for metadata
+    fileprivate var appIsCrashing = false
 
     init() {
         NotificationCenter.default.addObserver(self, selector: #selector(updateCrashLoggingSystem(_:)), name: .defaultAccountWasUpdated, object: nil)
@@ -91,6 +96,9 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
     }
 
     var currentUser: TracksUser? {
+        guard !appIsCrashing else {
+            return nil
+        }
 
         guard let account = ServiceLocator.stores.sessionManager.defaultAccount else {
             return nil

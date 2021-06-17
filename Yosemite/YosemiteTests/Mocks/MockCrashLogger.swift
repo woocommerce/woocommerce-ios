@@ -5,7 +5,7 @@ struct MockCrashLogger: CrashLogger {
         // no-op
     }
 
-    func logErrorAndWait(_ error: Error, userInfo: [String: Any]?, level: SeverityLevel) {
+    func logFatalError(_ error: Error, userInfo: [String: Any]?, level: SeverityLevel) {
         // no-op
     }
 

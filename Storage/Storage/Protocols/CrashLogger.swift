@@ -28,11 +28,15 @@ public protocol CrashLogger {
     func logError(_ error: Error, userInfo: [String: Any]?, level: SeverityLevel)
 
     /**
-     Writes an error to the Crash Logging system and waits until the message is sent.
+     Writes an error to the Crash Logging system, waits until the message is sent, and exits the app
+
+     This method assumes that the app is in an unrecoverable state and will prioritize sending an error event over having complete metadata.
+     For instance, it will not attempt to attach the current user to the error, since we might be calling these because Core Data initialization failed.
+
      - Parameters:
      - error: The error
      - userInfo: A dictionary containing additional information about this message
      - level: The level of severity to report
     */
-    func logErrorAndWait(_ error: Error, userInfo: [String: Any]?, level: SeverityLevel)
+    func logFatalErrorAndExit(_ error: Error, userInfo: [String: Any]?, level: SeverityLevel) -> Never
 }

@@ -11,10 +11,12 @@ struct ProductAddOn: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
 
+            // Add-on name
             Text(viewModel.name)
                 .headlineStyle()
                 .padding([.leading, .trailing])
 
+            // Add-on description & price
             HStack(alignment: .bottom) {
                 Text(viewModel.description)
                     .subheadlineStyle()
@@ -30,6 +32,7 @@ struct ProductAddOn: View {
             Spacer()
                 .frame(height: 2)
 
+            // Add-on options
             ForEach(viewModel.options) { option in
                 HStack(alignment: .bottom) {
                     Text(option.name)

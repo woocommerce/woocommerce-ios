@@ -9,13 +9,23 @@ import Yosemite
 final class AggregatedProductListViewController: UIViewController {
     @IBOutlet private var tableView: UITableView!
 
-    var viewModel: OrderDetailsViewModel!
+    private var viewModel: OrderDetailsViewModel
     private var products: [Product]? = []
-    var items: [AggregateOrderItem] = []
+    private var items: [AggregateOrderItem]
 
     private let imageService: ImageService = ServiceLocator.imageService
 
-    // MARK: - View Lifecycle
+    /// Init
+    ///
+    init(viewModel: OrderDetailsViewModel, items: [AggregateOrderItem]) {
+        self.viewModel = viewModel
+        self.items = items
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,9 +53,14 @@ private extension AggregatedProductListViewController {
     ///
     func configureTableView() {
         tableView.backgroundColor = .listBackground
+        tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.registerNib(for: PickListTableViewCell.self)
+
+        let headerNib = UINib(nibName: TwoColumnSectionHeaderView.reuseIdentifier, bundle: nil)
+        tableView.register(headerNib, forHeaderFooterViewReuseIdentifier: TwoColumnSectionHeaderView.reuseIdentifier)
     }
 }
 
@@ -60,20 +75,27 @@ extension AggregatedProductListViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = itemAtIndexPath(indexPath)
-        let product = lookUpProduct(by: item.productOrVariationID)
-        let addOns = itemAddOnsAttributes(item: item)
+        let product = viewModel.lookUpProduct(by: item.productOrVariationID)
         let itemViewModel = ProductDetailsCellViewModel(aggregateItem: item,
                                                         currency: viewModel.order.currency,
                                                         product: product,
-                                                        hasAddOns: addOns.isNotEmpty)
+                                                        hasAddOns: false)
         let cell = tableView.dequeueReusableCell(PickListTableViewCell.self, for: indexPath)
         cell.selectionStyle = .default
         cell.configure(item: itemViewModel, imageService: imageService)
-        cell.onViewAddOnsTouchUp = { [weak self] in
-            self?.itemAddOnsButtonTapped(addOns: addOns)
-        }
 
         return cell
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerID = TwoColumnSectionHeaderView.reuseIdentifier
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerID) as? TwoColumnSectionHeaderView else {
+            fatalError()
+        }
+        headerView.leftText = viewModel.productLeftTitle
+        headerView.rightText = viewModel.productRightTitle
+
+        return headerView
     }
 }
 
@@ -96,22 +118,6 @@ private extension AggregatedProductListViewController {
 
     func itemAtIndexPath(_ indexPath: IndexPath) -> AggregateOrderItem {
         return items[indexPath.row]
-    }
-
-    func lookUpProduct(by productID: Int64) -> Product? {
-        return products?.filter({ $0.productID == productID }).first
-    }
-
-    /// Returns the item attributes that can be identified as add-ons attributes.
-    /// If the "view add-ons" feature is disabled an empty array will be returned.
-    ///
-    func itemAddOnsAttributes(item: AggregateOrderItem) -> [OrderItemAttribute] {
-        guard let product = lookUpProduct(by: item.productID), viewModel.dataSource.showAddOns else {
-            return []
-        }
-
-        let globalAddOns = viewModel.dataSource.addOnGroups
-        return AddOnCrossreferenceUseCase(orderItemAttributes: item.attributes, product: product, addOnGroups: globalAddOns).addOnsAttributes()
     }
 
     /// Displays the product details screen for the provided AggregateOrderItem
@@ -143,6 +149,7 @@ private extension AggregatedProductListViewController {
     }
 
     struct Constants {
+        static let sectionHeight = CGFloat(44)
         static let rowHeight = CGFloat(80)
     }
 }

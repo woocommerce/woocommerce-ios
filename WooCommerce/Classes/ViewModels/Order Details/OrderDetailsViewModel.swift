@@ -260,15 +260,8 @@ extension OrderDetailsViewModel {
             viewController.present(navigationController, animated: true, completion: nil)
         case .shippingLabelProducts:
             let shippingLabelItems = dataSource.shippingLabelOrderItems(at: indexPath)
-
-            let identifier = AggregatedProductListViewController.classNameWithoutNamespaces
-            guard let productListVC = UIStoryboard.orders.instantiateViewController(identifier: identifier) as? AggregatedProductListViewController else {
-                DDLogError("Error: attempted to instantiate AggregatedProductListViewController. Instantiation failed.")
-                return
-            }
-            productListVC.viewModel = self
-            productListVC.items = shippingLabelItems
-            viewController.navigationController?.show(productListVC, sender: nil)
+            let productListVC = AggregatedProductListViewController(viewModel: self, items: shippingLabelItems)
+            viewController.show(productListVC, sender: nil)
         case .billingDetail:
             ServiceLocator.analytics.track(.orderDetailShowBillingTapped)
             let billingInformationViewController = BillingInformationViewController(order: order)

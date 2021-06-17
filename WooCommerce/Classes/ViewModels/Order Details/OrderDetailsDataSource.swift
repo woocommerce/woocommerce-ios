@@ -571,9 +571,9 @@ private extension OrderDetailsDataSource {
         }
 
         let orderItems = shippingLabelOrderItemsAggregator.orderItems(of: shippingLabel)
-        let singular = NSLocalizedString("%d item",
+        let singular = NSLocalizedString("%1$d item",
                                          comment: "For example: `1 item` in Shipping Label package row")
-        let plural = NSLocalizedString("%d items",
+        let plural = NSLocalizedString("%1$d items",
                                        comment: "For example: `5 items` in Shipping Label package row")
         let itemsText = String.pluralize(orderItems.count, singular: singular, plural: plural)
 

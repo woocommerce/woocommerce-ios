@@ -81,45 +81,8 @@
             </objects>
             <point key="canvasLocation" x="3780" y="543"/>
         </scene>
-        <!--Aggregated Product List View Controller-->
-        <scene sceneID="eSi-uk-4bD">
-            <objects>
-                <viewController storyboardIdentifier="AggregatedProductListViewController" id="B3T-oW-Fi5" customClass="AggregatedProductListViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="ytU-Ra-2hR">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="vwa-0g-u3c">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <color key="backgroundColor" systemColor="groupTableViewBackgroundColor"/>
-                                <connections>
-                                    <outlet property="dataSource" destination="B3T-oW-Fi5" id="mHz-c5-M6o"/>
-                                    <outlet property="delegate" destination="B3T-oW-Fi5" id="rK6-Hq-P5J"/>
-                                </connections>
-                            </tableView>
-                        </subviews>
-                        <viewLayoutGuide key="safeArea" id="ywQ-NR-248"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstItem="ywQ-NR-248" firstAttribute="bottom" secondItem="vwa-0g-u3c" secondAttribute="bottom" id="5bx-bg-wAx"/>
-                            <constraint firstItem="ywQ-NR-248" firstAttribute="trailing" secondItem="vwa-0g-u3c" secondAttribute="trailing" id="j3J-BH-ck2"/>
-                            <constraint firstItem="vwa-0g-u3c" firstAttribute="leading" secondItem="ywQ-NR-248" secondAttribute="leading" id="lMb-Tf-cAQ"/>
-                            <constraint firstItem="vwa-0g-u3c" firstAttribute="top" secondItem="ywQ-NR-248" secondAttribute="top" id="yVb-6c-Cds"/>
-                        </constraints>
-                    </view>
-                    <connections>
-                        <outlet property="tableView" destination="vwa-0g-u3c" id="hli-eR-Rku"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="d1d-rz-O67" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="4465" y="543"/>
-        </scene>
     </scenes>
     <resources>
-        <systemColor name="groupTableViewBackgroundColor">
-            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
         <systemColor name="groupTableViewBackgroundColor">
             <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

@@ -36,6 +36,13 @@ public protocol ShippingLabelRemoteProtocol {
                                   canCreateCustomsForm: Bool,
                                   canCreatePackage: Bool,
                                   completion: @escaping (Result<ShippingLabelCreationEligibilityResponse, Error>) -> Void)
+    func purchaseShippingLabel(siteID: Int64,
+                               orderID: Int64,
+                               originAddress: ShippingLabelAddress,
+                               destinationAddress: ShippingLabelAddress,
+                               packages: [ShippingLabelPackageSelected],
+                               emailCustomerReceipt: Bool,
+                               completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints.

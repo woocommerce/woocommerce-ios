@@ -112,7 +112,7 @@ private extension ReceiptRenderer {
         // We should use CurrencyFormatter instead for consistency
         let formatter = NumberFormatter()
 
-        let fractionDigits = 2 // TODO - support non cent currencies like JPY
+        let fractionDigits = 2 // TODO - support non cent currencies like JPY - see #3948
         formatter.minimumFractionDigits = fractionDigits
         formatter.maximumFractionDigits = fractionDigits
 

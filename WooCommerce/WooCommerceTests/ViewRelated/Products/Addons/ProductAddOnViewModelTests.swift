@@ -50,17 +50,17 @@ class ProductAddOnViewModelTests: XCTestCase {
     func test_fields_are_properly_populated_from_entity() {
         // Given
         let productAddOn = Yosemite.ProductAddOn.fake().copy(name: "Name", description: "Description", price: "20.0", options: [
-            ProductAddOnOption.fake().copy(label: "option 1", price: "11.0"),
-            ProductAddOnOption.fake().copy(label: "option 2", price: "9.0"),
+            ProductAddOnOption.fake().copy(label: "Option 1", price: "11.0"),
+            ProductAddOnOption.fake().copy(label: "Option 2", price: "9.0"),
         ])
 
         // When
         let viewModel = ProductAddOnViewModel(addOn: productAddOn)
 
         // Then
-        let expected = ProductAddOnViewModel(name: productAddOn.name, description: productAddOn.description, price: productAddOn.price, options: [
-            .init(name: productAddOn.options[0].label ?? "", price: productAddOn.options[0].price ?? "", offSetDivider: true),
-            .init(name: productAddOn.options[1].label ?? "", price: productAddOn.options[1].price ?? "", offSetDivider: false),
+        let expected = ProductAddOnViewModel(name: "Name", description: "Description", price: "$20.00", options: [
+            .init(name: "Option 1", price: "$11.00", offSetDivider: true),
+            .init(name: "Option 2", price: "$9.00", offSetDivider: false),
         ])
         assertEqual(viewModel, expected)
     }

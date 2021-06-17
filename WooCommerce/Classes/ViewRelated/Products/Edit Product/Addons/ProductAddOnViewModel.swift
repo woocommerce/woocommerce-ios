@@ -80,12 +80,15 @@ extension ProductAddOnViewModel {
 
     /// Initializes properties using a `Yosemite.ProductAddOn` as  source.
     ///
-    init(addOn: Yosemite.ProductAddOn) {
+    init(addOn: Yosemite.ProductAddOn,
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         name = addOn.name
         description = addOn.description
-        price = addOn.price
+        price = currencyFormatter.formatAmount(addOn.price) ?? ""
         options = addOn.options.enumerated().map { index, option in
-            Option(name: option.label ?? "", price: option.price ?? "", offSetDivider: index < (addOn.options.count - 1))
+            Option(name: option.label ?? "",
+                   price: currencyFormatter.formatAmount(option.price ?? "") ?? "",
+                   offSetDivider: index < (addOn.options.count - 1))
         }
     }
 }

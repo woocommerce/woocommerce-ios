@@ -25,7 +25,7 @@ final class ProductAddOnsListViewModel {
 // MARK: Initializers
 extension ProductAddOnsListViewModel {
     convenience init(addOns: [Yosemite.ProductAddOn]) {
-        let viewModels = addOns.map(ProductAddOnViewModel.init(addOn:))
+        let viewModels = addOns.map { ProductAddOnViewModel(addOn: $0) }
         self.init(addOns: viewModels)
     }
 }

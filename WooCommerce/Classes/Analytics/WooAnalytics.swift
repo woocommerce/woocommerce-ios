@@ -83,11 +83,8 @@ public extension WooAnalytics {
             return
         }
 
-        if let updatedProperties = updatePropertiesIfNeeded(for: stat, properties: properties) {
-            analyticsProvider.track(stat.rawValue, withProperties: updatedProperties)
-        } else {
-            analyticsProvider.track(stat.rawValue)
-        }
+        let updatedProperties = augmentProperties(for: stat, properties: properties ?? [:])
+        analyticsProvider.track(stat.rawValue, withProperties: updatedProperties)
     }
 
     /// Track a specific event with an associated error (that is translated to properties)
@@ -105,7 +102,7 @@ public extension WooAnalytics {
         let errorDictionary = [Constants.errorKeyCode: "\(err.code)",
                                Constants.errorKeyDomain: err.domain,
                                Constants.errorKeyDescription: err.description]
-        let updatedProperties = updatePropertiesIfNeeded(for: stat, properties: errorDictionary)
+        let updatedProperties = augmentProperties(for: stat, properties: errorDictionary)
         analyticsProvider.track(stat.rawValue, withProperties: updatedProperties)
     }
 }
@@ -133,6 +130,7 @@ extension WooAnalytics {
 // MARK: - Private Helpers
 //
 private extension WooAnalytics {
+    typealias Properties = [AnyHashable: Any]
 
     func startObservingNotifications() {
         guard userHasOptedIn == true else {
@@ -169,18 +167,36 @@ private extension WooAnalytics {
         return [PropertyKeys.propertyKeyTimeInApp: timeInApp.description]
     }
 
-    /// This function appends any additional properties to the provided properties dict if needed.
+    /// This function adds any additional properties to the provided properties dict if needed.
     ///
-    func updatePropertiesIfNeeded(for stat: WooAnalyticsStat, properties: [AnyHashable: Any]?) -> [AnyHashable: Any]? {
+    func augmentProperties(for stat: WooAnalyticsStat, properties: Properties) -> Properties {
+        [
+            properties,
+            deviceProperties,
+            siteProperties(for: stat),
+        ]
+        .reduce(into: [:], { result, properties in
+            result.merge(properties) { (_, new) in new}
+        })
+    }
+
+    var deviceProperties: Properties {
+        return [
+            PropertyKeys.buildConfiguration: BuildConfiguration.current.rawValue
+        ]
+    }
+
+    func siteProperties(for stat: WooAnalyticsStat) -> Properties {
         guard stat.shouldSendSiteProperties, ServiceLocator.stores.isAuthenticated else {
-            return properties
+            return [:]
         }
 
-        var updatedProperties = properties ?? [:]
         let site = ServiceLocator.stores.sessionManager.defaultSite
-        updatedProperties[PropertyKeys.blogIDKey] = site?.siteID
-        updatedProperties[PropertyKeys.wpcomStoreKey] = site?.isWordPressStore
-        return updatedProperties
+        return ([
+            PropertyKeys.blogIDKey: site?.siteID,
+            PropertyKeys.wpcomStoreKey: site?.isWordPressStore
+        ] as [AnyHashable: Any?])
+        .compactMapValues({ $0 })
     }
 }
 
@@ -199,5 +215,7 @@ private extension WooAnalytics {
         static let propertyKeyTimeInApp = "time_in_app"
         static let blogIDKey            = "blog_id"
         static let wpcomStoreKey        = "is_wpcom_store"
+
+        static let buildConfiguration   = "device_info_app_build_configuration"
     }
 }

@@ -8,6 +8,9 @@ enum BuildConfiguration: String {
     /// that might be behind feature flags.
     case alpha
 
+    /// Production build released through TestFlight
+    case beta
+
     /// Production build released in the app store
     case appStore
 
@@ -17,7 +20,11 @@ enum BuildConfiguration: String {
         #elseif ALPHA
         return .alpha
         #else
-        return .appStore
+        if hasTestFlightReceipt {
+            return .beta
+        } else {
+            return .appStore
+        }
         #endif
     }
 
@@ -45,5 +52,9 @@ enum BuildConfiguration: String {
 
     static var shouldDisableAnimations: Bool {
         ProcessInfo.processInfo.arguments.contains("disable-animations")
+    }
+
+    private static var hasTestFlightReceipt: Bool {
+        Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
     }
 }

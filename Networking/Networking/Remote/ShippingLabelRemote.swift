@@ -43,6 +43,10 @@ public protocol ShippingLabelRemoteProtocol {
                                packages: [ShippingLabelPackageSelected],
                                emailCustomerReceipt: Bool,
                                completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void)
+    func checkLabelStatus(siteID: Int64,
+                             orderID: Int64,
+                             labelIDs: [Int64],
+                             completion: @escaping (Result<[ShippingLabel], Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints.

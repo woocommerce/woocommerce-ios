@@ -1,11 +1,11 @@
 import Storage
 
 struct MockCrashLogger: CrashLogger {
-    func logError(_ error: Error, userInfo: [String : Any]?, level: SeverityLevel) {
+    func logError(_ error: Error, userInfo: [String: Any]?, level: SeverityLevel) {
         // no-op
     }
 
-    func logErrorAndWait(_ error: Error, userInfo: [String : Any]?, level: SeverityLevel) {
+    func logErrorAndWait(_ error: Error, userInfo: [String: Any]?, level: SeverityLevel) {
         // no-op
     }
 

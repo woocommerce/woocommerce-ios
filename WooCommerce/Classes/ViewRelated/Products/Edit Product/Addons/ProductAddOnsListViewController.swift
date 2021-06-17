@@ -27,7 +27,17 @@ struct ProductAddOnsList: View {
     let viewModel: ProductAddOnsListViewModel
 
     var body: some View {
-        AddOnListNotice(updateText: viewModel.infoNotice)
+        ZStack {
+            // Solid color as a background view to cover all non-safe area
+            Color(.listBackground).edgesIgnoringSafeArea(.all)
+
+            List {
+                ForEach(viewModel.addOns) { addOn in
+                    ProductAddOn(viewModel: addOn)
+                }
+                AddOnListNotice(updateText: viewModel.infoNotice)
+            }
+        }
     }
 }
 

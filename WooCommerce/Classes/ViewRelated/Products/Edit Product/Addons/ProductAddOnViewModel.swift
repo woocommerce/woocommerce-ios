@@ -3,7 +3,7 @@ import Yosemite
 
 /// ViewModel for `ProductAddOn`
 ///
-struct ProductAddOnViewModel {
+struct ProductAddOnViewModel: Identifiable {
 
     /// Represents an Add-on option
     ///
@@ -49,6 +49,12 @@ struct ProductAddOnViewModel {
     /// Add-on options.
     ///
     let options: [Option]
+
+    /// Identifiable conformance.
+    ///
+    var id: String {
+        name
+    }
 
     /// Determines the main description visibility
     ///

@@ -57,11 +57,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v6.8-whats-new"
+msgctxt "v6.9-whats-new"
 msgid ""
-"You can now create and edit a virtual product directly from the product details screen!\n"
-"\n"
-"Please note that iOS 13 is no longer supported. Only iOS 14 and later versions will be supported going forward.\n"
+"Fewer taps are needed to get to attributes on a variable product – they’re listed right in the product details! We also improved how an order’s details load both visually and behind the scenes – we hope you notice the improvements!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

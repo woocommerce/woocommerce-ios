@@ -9,17 +9,16 @@ import Yosemite
 final class AggregatedProductListViewController: UIViewController {
     @IBOutlet private var tableView: UITableView!
 
-    private var viewModel: OrderDetailsViewModel
-    private var products: [Product]? = []
-    private var items: [AggregateOrderItem]
-
-    private let imageService: ImageService = ServiceLocator.imageService
+    private let viewModel: OrderDetailsViewModel
+    private let items: [AggregateOrderItem]
+    private let imageService: ImageService
 
     /// Init
     ///
-    init(viewModel: OrderDetailsViewModel, items: [AggregateOrderItem]) {
+    init(viewModel: OrderDetailsViewModel, items: [AggregateOrderItem], imageService: ImageService = ServiceLocator.imageService) {
         self.viewModel = viewModel
         self.items = items
+        self.imageService = imageService
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -29,8 +28,6 @@ final class AggregatedProductListViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        self.products = viewModel.products
 
         configureMainView()
         configureTableView()
@@ -45,7 +42,7 @@ private extension AggregatedProductListViewController {
     /// Setup: Main View
     ///
     func configureMainView() {
-        title = String.pluralize(items.count, singular: Localization.titleSingular, plural: Localization.titlePlural)
+        title = String.pluralize(items.map { $0.quantity.intValue }.reduce(0, +), singular: Localization.titleSingular, plural: Localization.titlePlural)
         view.backgroundColor = .listBackground
     }
 

@@ -575,7 +575,7 @@ private extension OrderDetailsDataSource {
                                          comment: "For example: `1 item` in Shipping Label package row")
         let plural = NSLocalizedString("%1$d items",
                                        comment: "For example: `5 items` in Shipping Label package row")
-        let itemsText = String.pluralize(orderItems.count, singular: singular, plural: plural)
+        let itemsText = String.pluralize(orderItems.map { $0.quantity.intValue }.reduce(0, +), singular: singular, plural: plural)
 
         cell.bodyLabel?.text = itemsText
         cell.applySecondaryTextStyle()

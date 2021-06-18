@@ -314,7 +314,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 guard isEditable else {
                     return
                 }
-                // TODO: Navigate to product add-ons
+                navigateToAddOns()
             case .categories(_, let isEditable):
                 guard isEditable else {
                     return
@@ -1388,6 +1388,16 @@ private extension ProductFormViewController {
     func onAttributeUpdated(attributesViewController: UIViewController, updatedProduct: Product) {
         viewModel.updateProductVariations(from: updatedProduct)
         navigationController?.popToViewController(attributesViewController, animated: true)
+    }
+}
+
+// MARK: Action - View Add-ons
+//
+private extension ProductFormViewController {
+    func navigateToAddOns() {
+        let viewModel = ProductAddOnsListViewModel()
+        let viewController = ProductAddOnsListViewController(viewModel: viewModel)
+        show(viewController, sender: self)
     }
 }
 

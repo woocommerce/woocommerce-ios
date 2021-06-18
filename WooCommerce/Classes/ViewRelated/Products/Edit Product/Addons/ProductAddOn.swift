@@ -30,9 +30,10 @@ struct ProductAddOn: View {
                     .renderedIf(viewModel.showPrice)
             }
             .padding([.leading, .trailing])
+            .renderedIf(viewModel.showPrice || viewModel.showDescription)
 
             Spacer()
-                .frame(height: 2)
+                .frame(height: 1)
 
             // Add-on options
             ForEach(viewModel.options) { option in
@@ -62,7 +63,15 @@ struct ProductAddOn: View {
 struct ProductAddOn_Previews: PreviewProvider {
 
     static let toppingViewModel = ProductAddOnViewModel(name: "Pizza Topping",
-                                                 description: "Select your favorite topping",
+                                                 description: "Select your topping",
+                                                 price: "",
+                                                 options: [
+                                                    .init(name: "Peperoni", price: "$2.99", offSetDivider: true),
+                                                    .init(name: "Salami", price: "$1.99", offSetDivider: true),
+                                                    .init(name: "Ham", price: "$1.99", offSetDivider: false),
+                                                 ])
+    static let toppingViewModel2 = ProductAddOnViewModel(name: "Pizza Topping",
+                                                 description: "",
                                                  price: "",
                                                  options: [
                                                     .init(name: "Peperoni", price: "$2.99", offSetDivider: true),
@@ -85,6 +94,10 @@ struct ProductAddOn_Previews: PreviewProvider {
                 .previewLayout(.fixed(width: 420, height: 100))
 
             ProductAddOn(viewModel: toppingViewModel)
+                .environment(\.colorScheme, .light)
+                .previewLayout(.fixed(width: 420, height: 220))
+
+            ProductAddOn(viewModel: toppingViewModel2)
                 .environment(\.colorScheme, .light)
                 .previewLayout(.fixed(width: 420, height: 220))
 

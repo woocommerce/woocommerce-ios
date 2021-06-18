@@ -36,6 +36,17 @@ public protocol ShippingLabelRemoteProtocol {
                                   canCreateCustomsForm: Bool,
                                   canCreatePackage: Bool,
                                   completion: @escaping (Result<ShippingLabelCreationEligibilityResponse, Error>) -> Void)
+    func purchaseShippingLabel(siteID: Int64,
+                               orderID: Int64,
+                               originAddress: ShippingLabelAddress,
+                               destinationAddress: ShippingLabelAddress,
+                               packages: [ShippingLabelPackageSelected],
+                               emailCustomerReceipt: Bool,
+                               completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void)
+    func checkLabelStatus(siteID: Int64,
+                             orderID: Int64,
+                             labelIDs: [Int64],
+                             completion: @escaping (Result<[ShippingLabel], Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints.
@@ -248,6 +259,26 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
         catch {
             completion(.failure(error))
         }
+    }
+
+    /// Checks the shipping label status
+    ///
+    /// Used after purchasing a shipping label, to check for errors or confirm a successful purchase.
+    /// This is used instead of `loadShippingLabels` to ensure up-to-date (non-cached) results.
+    /// - Parameters:
+    ///     - siteID: Remote ID of the site.
+    ///     - orderID: Remote ID of the order that owns the shipping labels.
+    ///     - labelIDs: Remote ID(s) of the label(s) to check the status of.
+    ///     - completion: Closure to be executed upon completion.
+    public func checkLabelStatus(siteID: Int64,
+                                    orderID: Int64,
+                                    labelIDs: [Int64],
+                                    completion: @escaping (Result<[ShippingLabel], Error>) -> Void) {
+        let labelIDs = labelIDs.map(String.init).joined(separator: ",")
+        let path = "\(Path.shippingLabels)/\(orderID)/\(labelIDs)"
+        let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .get, siteID: siteID, path: path)
+        let mapper = ShippingLabelStatusMapper(siteID: siteID, orderID: orderID)
+        enqueue(request, mapper: mapper, completion: completion)
     }
 }
 

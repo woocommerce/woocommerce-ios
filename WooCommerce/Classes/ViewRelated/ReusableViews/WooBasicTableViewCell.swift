@@ -82,4 +82,9 @@ extension WooBasicTableViewCell {
         bodyLabel.applyActionableStyle()
         bodyLabelTopMarginConstraint.constant = 8
     }
+
+    func applySecondaryTextStyle() {
+        bodyLabel.applySecondaryBodyStyle()
+        bodyLabelTopMarginConstraint.constant = 8
+    }
 }

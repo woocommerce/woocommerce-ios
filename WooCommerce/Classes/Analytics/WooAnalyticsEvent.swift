@@ -301,3 +301,20 @@ extension WooAnalyticsEvent {
         }
     }
 }
+
+// MARK: - Product Detail Add-ons
+//
+extension WooAnalyticsEvent {
+    /// Common event keys
+    ///
+    private enum Keys {
+        static let productID = "product_id"
+    }
+
+    // Namespace
+    enum ProductDetailAddOns {
+        static func productAddOnsButtonTappedViewed(productID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailViewProductAddOnsTapped, properties: [Keys.productID: "\(productID)"])
+        }
+    }
+}

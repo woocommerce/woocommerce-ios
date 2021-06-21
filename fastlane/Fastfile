@@ -89,10 +89,11 @@ platform :ios do
 
     ios_bump_version_release
     new_version = ios_get_app_version
-    extract_release_notes_for_version(version: new_version,
-                                      release_notes_file_path: 'RELEASE-NOTES.txt',
-                                      extracted_notes_file_path: File.join('WooCommerce',
-                                                                           'Resources', 'release_notes.txt'))
+    extract_release_notes_for_version(
+      version: new_version,
+      release_notes_file_path: 'RELEASE-NOTES.txt',
+      extracted_notes_file_path: File.join('WooCommerce', 'Resources', 'release_notes.txt')
+    )
     ios_update_release_notes(new_version: new_version)
     get_prs_list(repository: GHHELPER_REPO, milestone: new_version,
                  report_path: File.join(File.expand_path('~'), "wcios_prs_list_#{old_version}_#{new_version}.txt"))
@@ -135,11 +136,11 @@ platform :ios do
   #####################################################################################
   desc 'Updates the AppStoreStrings.pot file with the latest data'
   lane :update_appstore_strings do |options|
-    prj_folder = Pathname.new(File.join(Dir.pwd, '..')).expand_path.to_s
-    source_metadata_folder = File.join(prj_folder, 'fastlane/appstoreres/metadata/source')
+    project_root = File.dirname(File.expand_path(__dir__))
+    source_metadata_folder = File.join(project_root, 'fastlane', 'appstoreres', 'metadata', 'source')
 
     files = {
-      whats_new: File.join(prj_folder, '/WooCommerce/Resources/release_notes.txt'),
+      whats_new: File.join(project_root, 'WooCommerce', 'Resources', 'release_notes.txt'),
       app_store_subtitle: File.join(source_metadata_folder, 'subtitle.txt'),
       app_store_desc: File.join(source_metadata_folder, 'description.txt'),
       app_store_keywords: File.join(source_metadata_folder, 'keywords.txt'),
@@ -151,9 +152,11 @@ platform :ios do
       'app_store_screenshot-5' => File.join(source_metadata_folder, 'promo_screenshot_5.txt')
     }
 
-    ios_update_metadata_source(po_file_path: prj_folder + '/WooCommerce/Resources/AppStoreStrings.pot',
-                               source_files: files,
-                               release_version: options[:version])
+    ios_update_metadata_source(
+      po_file_path: File.join(project_root, 'WooCommerce', 'Resources', 'AppStoreStrings.pot'),
+      source_files: files,
+      release_version: options[:version]
+    )
   end
 
   #####################################################################################

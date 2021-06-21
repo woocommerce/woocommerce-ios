@@ -86,7 +86,6 @@ final class ShippingLabelSummaryTableViewCell: UITableViewCell {
     }
 
     @objc private func discountViewTapped() {
-        print("entra qui")
         onDiscountTouchUp?()
     }
 }

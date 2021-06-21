@@ -466,12 +466,12 @@ private extension ShippingLabelStore {
             }
         }
     }
+}
 
-    /// Represents errors that can be returned when checking shipping label purchase status
-    enum LabelPurchaseError: Error {
-        /// API returns a `PURCHASE_ERROR` status for a label
-        case purchaseErrorStatus
-        /// Label purchase not complete after polling the backend
-        case purchaseIncomplete
-    }
+/// Represents errors that can be returned when checking shipping label purchase status
+public enum LabelPurchaseError: Error {
+    /// API returns a `PURCHASE_ERROR` status for a label
+    case purchaseErrorStatus
+    /// Label purchase not complete after polling the backend
+    case purchaseIncomplete
 }

@@ -1,12 +1,13 @@
 import Foundation
+import Yosemite
 
 /// ViewModel for `ProductAddOn`
 ///
-struct ProductAddOnViewModel {
+struct ProductAddOnViewModel: Identifiable, Equatable {
 
     /// Represents an Add-on option
     ///
-    struct Option: Identifiable {
+    struct Option: Identifiable, Equatable {
 
         /// Option name
         ///
@@ -49,6 +50,12 @@ struct ProductAddOnViewModel {
     ///
     let options: [Option]
 
+    /// Identifiable conformance.
+    ///
+    var id: String {
+        name
+    }
+
     /// Determines the main description visibility
     ///
     var showDescription: Bool {
@@ -65,5 +72,28 @@ struct ProductAddOnViewModel {
     ///
     var showBottomDivider: Bool {
         options.isEmpty
+    }
+}
+
+// MARK: Initializers
+extension ProductAddOnViewModel {
+
+    /// Initializes properties using a `Yosemite.ProductAddOn` as  source.
+    ///
+    init(addOn: Yosemite.ProductAddOn,
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+        name = addOn.name
+        description = addOn.description
+        price = currencyFormatter.formatAmount(addOn.price) ?? ""
+
+        // Convert options and filter empty ones.
+        options = addOn.options.enumerated().compactMap { index, option in
+            guard !option.label.isNilOrEmpty || !option.price.isNilOrEmpty else {
+                return nil
+            }
+            return Option(name: option.label ?? "",
+                          price: currencyFormatter.formatAmount(option.price ?? "") ?? "",
+                          offSetDivider: index < (addOn.options.count - 1))
+        }
     }
 }

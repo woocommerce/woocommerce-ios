@@ -2,6 +2,7 @@ import XCTest
 import TestKit
 
 @testable import WooCommerce
+@testable import Yosemite
 
 class ProductAddOnViewModelTests: XCTestCase {
 
@@ -44,5 +45,40 @@ class ProductAddOnViewModelTests: XCTestCase {
 
         // Then & When
         XCTAssertTrue(viewModel.showBottomDivider)
+    }
+
+    func test_fields_are_properly_populated_from_entity() {
+        // Given
+        let productAddOn = Yosemite.ProductAddOn.fake().copy(name: "Name", description: "Description", price: "20.0", options: [
+            ProductAddOnOption.fake().copy(label: "Option 1", price: "11.0"),
+            ProductAddOnOption.fake().copy(label: "Option 2", price: "9.0"),
+        ])
+
+        // When
+        let viewModel = ProductAddOnViewModel(addOn: productAddOn)
+
+        // Then
+        let expected = ProductAddOnViewModel(name: "Name", description: "Description", price: "$20.00", options: [
+            .init(name: "Option 1", price: "$11.00", offSetDivider: true),
+            .init(name: "Option 2", price: "$9.00", offSetDivider: false),
+        ])
+        assertEqual(viewModel, expected)
+    }
+
+    func test_empty_options_are_excluded() {
+        // Given
+        let productAddOn = Yosemite.ProductAddOn.fake().copy(name: "Name", description: "Description", price: "20.0", options: [
+            ProductAddOnOption.fake().copy(label: "", price: ""),
+            ProductAddOnOption.fake().copy(label: "Option 1", price: "11.0"),
+        ])
+
+        // When
+        let viewModel = ProductAddOnViewModel(addOn: productAddOn)
+
+        // Then
+        let expected = ProductAddOnViewModel(name: "Name", description: "Description", price: "$20.00", options: [
+            .init(name: "Option 1", price: "$11.00", offSetDivider: false),
+        ])
+        assertEqual(viewModel, expected)
     }
 }

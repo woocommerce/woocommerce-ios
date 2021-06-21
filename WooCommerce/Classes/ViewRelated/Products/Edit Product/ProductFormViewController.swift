@@ -1395,7 +1395,10 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func navigateToAddOns() {
-        let viewModel = ProductAddOnsListViewModel()
+        guard let product = product as? EditableProductModel else {
+            return
+        }
+        let viewModel = ProductAddOnsListViewModel(addOns: product.product.addOns)
         let viewController = ProductAddOnsListViewController(viewModel: viewModel)
         show(viewController, sender: self)
     }

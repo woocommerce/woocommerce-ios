@@ -428,10 +428,16 @@ private extension ShippingLabelStore {
                 }
 
                 // If no errors but status is not PURCHASED for all labels, poll again after delay
-                else {
+                else if maxRetries > 0 {
                     DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
                         self?.pollLabelStatus(withDelayInSeconds: delay, maxRetries: maxRetries - 1, siteID: siteID, orderID: orderID, labelIDs: labelIDs, completion: completion)
                     }
+                }
+
+                // If there are no retries left
+                else {
+                    DDLogError("⛔️ Shipping label purchase for order \(orderID) still in progress")
+                    completion(.failure(LabelPurchaseError.purchaseIncomplete))
                 }
 
             case .failure(let error):
@@ -455,5 +461,7 @@ private extension ShippingLabelStore {
     enum LabelPurchaseError: Error {
         /// API returns a `PURCHASE_ERROR` status for a label
         case purchaseErrorStatus
+        /// Label purchase not complete after polling the backend
+        case purchaseIncomplete
     }
 }

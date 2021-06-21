@@ -430,7 +430,12 @@ private extension ShippingLabelStore {
                 // If no errors but status is not PURCHASED for all labels, poll again after delay
                 else if maxRetries > 0 {
                     DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
-                        self?.pollLabelStatus(withDelayInSeconds: delay, maxRetries: maxRetries - 1, siteID: siteID, orderID: orderID, labelIDs: labelIDs, completion: completion)
+                        self?.pollLabelStatus(withDelayInSeconds: delay,
+                                              maxRetries: maxRetries - 1,
+                                              siteID: siteID,
+                                              orderID: orderID,
+                                              labelIDs: labelIDs,
+                                              completion: completion)
                     }
                 }
 
@@ -444,7 +449,12 @@ private extension ShippingLabelStore {
                 // If there are retries left, poll again after delay
                 if maxRetries > 0 {
                     DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
-                        self?.pollLabelStatus(withDelayInSeconds: delay, maxRetries: maxRetries - 1, siteID: siteID, orderID: orderID, labelIDs: labelIDs, completion: completion)
+                        self?.pollLabelStatus(withDelayInSeconds: delay,
+                                              maxRetries: maxRetries - 1,
+                                              siteID: siteID,
+                                              orderID: orderID,
+                                              labelIDs: labelIDs,
+                                              completion: completion)
                     }
                 }
 

@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 import SwiftUI
+import WordPressUI
 
 final class ShippingLabelFormViewController: UIViewController {
 
@@ -273,7 +274,11 @@ private extension ShippingLabelFormViewController {
     }
 
     func configureOrderSummary(cell: ShippingLabelSummaryTableViewCell, row: Row) {
-        cell.configure(state: row.cellState) { (switchIsOn) in
+        cell.configure(state: row.cellState) {
+            let discountInfoVC = ShippingLabelDiscountInfoViewController()
+            let bottomSheet = BottomSheetViewController(childViewController: discountInfoVC)
+            bottomSheet.show(from: self)
+        } onSwitchChange: { (switchIsOn) in
             // TODO: Handle order completion
         } onButtonTouchUp: {
             // TODO: Purchase Label action

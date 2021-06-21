@@ -30,6 +30,10 @@ final class ShippingLabelSummaryTableViewCell: UITableViewCell {
         }
     }
 
+    /// Closure to be executed whenever the Discount View is tapped
+    ///
+    private var onDiscountTouchUp: (() -> Void)?
+
     /// Closure to be executed whenever the Switch is flipped
     ///
     private var onSwitchChange: ((Bool) -> Void)?
@@ -44,11 +48,14 @@ final class ShippingLabelSummaryTableViewCell: UITableViewCell {
         configureLabels()
         configureSwitch()
         configureButton()
+        discountView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(discountViewTapped)))
     }
 
     func configure(state: ShippingLabelFormStepTableViewCell.State,
+                   onDiscountTouchUp: (() -> Void)?,
                    onSwitchChange: ((Bool) -> Void)?,
                    onButtonTouchUp: (() -> Void)?) {
+        self.onDiscountTouchUp = onDiscountTouchUp
         self.onSwitchChange = onSwitchChange
         self.onButtonTouchUp = onButtonTouchUp
         configureCellBasedOnState(state)
@@ -76,6 +83,11 @@ final class ShippingLabelSummaryTableViewCell: UITableViewCell {
 
     func setOrderTotal(_ total: String) {
         orderTotalBody.text = total
+    }
+
+    @objc private func discountViewTapped() {
+        print("entra qui")
+        onDiscountTouchUp?()
     }
 }
 

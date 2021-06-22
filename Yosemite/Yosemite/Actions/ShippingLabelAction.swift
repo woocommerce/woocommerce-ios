@@ -66,4 +66,14 @@ public enum ShippingLabelAction: Action {
     case updateShippingLabelAccountSettings(siteID: Int64,
                                             settings: ShippingLabelAccountSettings,
                                             completion: (Result<Bool, Error>) -> Void)
+
+    /// Purchases a shipping label
+    ///
+    case purchaseShippingLabel(siteID: Int64,
+                               orderID: Int64,
+                               originAddress: ShippingLabelAddress,
+                               destinationAddress: ShippingLabelAddress,
+                               packages: [ShippingLabelPackageSelected],
+                               emailCustomerReceipt: Bool,
+                               completion: (Result<[ShippingLabel], Error>) -> Void)
 }

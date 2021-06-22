@@ -235,7 +235,18 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// Purchases the shipping label.
+    /// Initiates a shipping label purchase.
+    ///
+    /// This request returns the label purchase data, including a `PURCHASE_IN_PROGRESS` status.
+    /// After initiating the purchase, we must poll the backend for the updated label status (successful purchase or error).
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site.
+    ///   - orderID: Remote ID of the order that owns the shipping labels.
+    ///   - originAddress: the origin address entity.
+    ///   - destinationAddress: the destination address entity.
+    ///   - packages: The package previously selected with all their data.
+    ///   - emailCustomerReceipt: Whether to email an order receipt to the customer.
+    ///   - completion: Closure to be executed upon completion.
     public func purchaseShippingLabel(siteID: Int64,
                                       orderID: Int64,
                                       originAddress: ShippingLabelAddress,

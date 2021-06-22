@@ -90,16 +90,22 @@ private extension ShippingLabelSummaryTableViewCell {
     func configureLabels() {
         subtotalTitle.applyBodyStyle()
         subtotalTitle.text = Localization.subtotal
+        subtotalTitle.numberOfLines = 0
         subtotalBody.applyBodyStyle()
+        subtotalBody.numberOfLines = 0
         discountTitle.applyBodyStyle()
         discountTitle.text = Localization.discount
+        discountTitle.numberOfLines = 0
         discountBody.applyBodyStyle()
+        discountBody.numberOfLines = 0
         orderTotalTitle.applyHeadlineStyle()
         orderTotalTitle.text = Localization.orderTotal
+        orderTotalTitle.numberOfLines = 0
         orderTotalBody.applyHeadlineStyle()
+        orderTotalBody.numberOfLines = 0
         orderCompleteTitle.applySubheadlineStyle()
-        orderCompleteTitle.numberOfLines = 0
         orderCompleteTitle.text = Localization.orderComplete
+        orderCompleteTitle.numberOfLines = 0
     }
 
     func configureSwitch() {

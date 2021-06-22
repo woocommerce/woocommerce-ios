@@ -1202,9 +1202,12 @@
 		DE8C946E264699B600C94823 /* PluginListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8C946D264699B600C94823 /* PluginListViewModel.swift */; };
 		DEFD6E61264990FB00E51E0D /* SitePluginListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6E60264990FB00E51E0D /* SitePluginListViewModelTests.swift */; };
 		DEFD6E86264ABFB700E51E0D /* PluginListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DEFD6E85264ABFB700E51E0D /* PluginListViewController.xib */; };
+		E10C64AC267CD0420078A005 /* CardReaderSettingsUnknownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10C64AB267CD0420078A005 /* CardReaderSettingsUnknownView.swift */; };
 		E10DFC78267331590083AFF2 /* ApplicationLogViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10DFC77267331590083AFF2 /* ApplicationLogViewModelTests.swift */; };
 		E10DFC7A2673595A0083AFF2 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10DFC792673595A0083AFF2 /* ShareSheet.swift */; };
 		E12FB786266E0CAE0039E9C2 /* ApllicationLogDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12FB785266E0CAE0039E9C2 /* ApllicationLogDetailView.swift */; };
+		E14284AD2681EB8E002635B3 /* PrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14284AC2681EB8E002635B3 /* PrimaryButton.swift */; };
+		E14284AF2681FCE3002635B3 /* SafariSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14284AE2681FCE3002635B3 /* SafariSheet.swift */; };
 		E16715CB26663B0B00326230 /* CardPresentModalSuccessWithoutEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16715CA26663B0B00326230 /* CardPresentModalSuccessWithoutEmail.swift */; };
 		E16715CD2666543000326230 /* CardPresentModalSuccessWithoutEmailTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16715CC2666543000326230 /* CardPresentModalSuccessWithoutEmailTests.swift */; };
 		E17E3BF9266917C10009D977 /* CardPresentModalScanningFailedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17E3BF8266917C10009D977 /* CardPresentModalScanningFailedTests.swift */; };
@@ -1214,6 +1217,7 @@
 		E1D4E84526776AD900256B83 /* HeadlineTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1D4E84226776A6A00256B83 /* HeadlineTableViewCell.xib */; };
 		E1ED16E4266E10A10037B8DB /* ApplicationLogViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1ED16E3266E10A10037B8DB /* ApplicationLogViewModel.swift */; };
 		E1F52DC62668E03B00349D75 /* CardPresentModalBluetoothRequired.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F52DC52668E03B00349D75 /* CardPresentModalBluetoothRequired.swift */; };
+		E1FE01E92680F04200E472D4 /* AttributedText in Frameworks */ = {isa = PBXBuildFile; productRef = E1FE01E82680F04200E472D4 /* AttributedText */; };
 		F93E8E5324087FDA0057FF21 /* BetaFeaturesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */; };
 		F93E8E5424087FDA0057FF21 /* BetaFeaturesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */; };
 		F93E8E5524087FDA0057FF21 /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5224087FDA0057FF21 /* SettingsScreen.swift */; };
@@ -2502,9 +2506,12 @@
 		DE8C946D264699B600C94823 /* PluginListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginListViewModel.swift; sourceTree = "<group>"; };
 		DEFD6E60264990FB00E51E0D /* SitePluginListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginListViewModelTests.swift; sourceTree = "<group>"; };
 		DEFD6E85264ABFB700E51E0D /* PluginListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PluginListViewController.xib; sourceTree = "<group>"; };
+		E10C64AB267CD0420078A005 /* CardReaderSettingsUnknownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsUnknownView.swift; sourceTree = "<group>"; };
 		E10DFC77267331590083AFF2 /* ApplicationLogViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLogViewModelTests.swift; sourceTree = "<group>"; };
 		E10DFC792673595A0083AFF2 /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 		E12FB785266E0CAE0039E9C2 /* ApllicationLogDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApllicationLogDetailView.swift; sourceTree = "<group>"; };
+		E14284AC2681EB8E002635B3 /* PrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryButton.swift; sourceTree = "<group>"; };
+		E14284AE2681FCE3002635B3 /* SafariSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariSheet.swift; sourceTree = "<group>"; };
 		E16715CA26663B0B00326230 /* CardPresentModalSuccessWithoutEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalSuccessWithoutEmail.swift; sourceTree = "<group>"; };
 		E16715CC2666543000326230 /* CardPresentModalSuccessWithoutEmailTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalSuccessWithoutEmailTests.swift; sourceTree = "<group>"; };
 		E17E3BF8266917C10009D977 /* CardPresentModalScanningFailedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalScanningFailedTests.swift; sourceTree = "<group>"; };
@@ -2552,6 +2559,7 @@
 				263E37E12641AD8300260D3B /* Codegen in Frameworks */,
 				5744BEB1248FE44D000A6FE2 /* SwiftUI.framework in Frameworks */,
 				B5C3B5E720D189ED0072CB9D /* Yosemite.framework in Frameworks */,
+				E1FE01E92680F04200E472D4 /* AttributedText in Frameworks */,
 				B5C3B5E520D189EA0072CB9D /* Storage.framework in Frameworks */,
 				B5C3B5E320D189E60072CB9D /* Networking.framework in Frameworks */,
 				45455E322657C3F300BBB0C4 /* Shimmer in Frameworks */,
@@ -3688,6 +3696,7 @@
 				314265AB26459F7300500598 /* CardReaderSettingsUnknownViewController.swift */,
 				317F679726420E9D00BA2A7A /* CardReaderSettingsViewModelsOrderedList.swift */,
 				3142663E2645E2AB00500598 /* CardReaderSettingsViewModelPresenter.swift */,
+				E10C64AB267CD0420078A005 /* CardReaderSettingsUnknownView.swift */,
 			);
 			path = CardReadersV2;
 			sourceTree = "<group>";
@@ -4043,6 +4052,8 @@
 				45DB6D962632CF9300E83C1A /* ActivityIndicator.swift */,
 				45A8DA3F2664E40B00308FBE /* EmptyState.swift */,
 				E10DFC792673595A0083AFF2 /* ShareSheet.swift */,
+				E14284AC2681EB8E002635B3 /* PrimaryButton.swift */,
+				E14284AE2681FCE3002635B3 /* SafariSheet.swift */,
 			);
 			path = "SwiftUI Components";
 			sourceTree = "<group>";
@@ -5981,6 +5992,7 @@
 			packageProductDependencies = (
 				263E37E02641AD8300260D3B /* Codegen */,
 				45455E312657C3F300BBB0C4 /* Shimmer */,
+				E1FE01E82680F04200E472D4 /* AttributedText */,
 			);
 			productName = WooCommerce;
 			productReference = B56DB3C62049BFAA00D4AA8E /* WooCommerce.app */;
@@ -6129,6 +6141,7 @@
 			packageReferences = (
 				247CE89A2583402A00F9D9D1 /* XCRemoteSwiftPackageReference "Embassy" */,
 				45455E302657C3F300BBB0C4 /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */,
+				E1FE01E72680F04200E472D4 /* XCRemoteSwiftPackageReference "AttributedText" */,
 			);
 			productRefGroup = B56DB3C72049BFAA00D4AA8E /* Products */;
 			projectDirPath = "";
@@ -6900,6 +6913,7 @@
 				029F29FA24D93E9E004751CA /* EditableProductModel.swift in Sources */,
 				025E32BC251D8FEF00685C4A /* ProductFormDataModel+ProductsTabProductViewModel.swift in Sources */,
 				02ECD1E624FFB4E900735BE5 /* ProductFactory.swift in Sources */,
+				E14284AF2681FCE3002635B3 /* SafariSheet.swift in Sources */,
 				74F9E9CE214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift in Sources */,
 				576EA39225264C7400AFC0B3 /* RefundConfirmationViewController.swift in Sources */,
 				2688641B25D3202B00821BA5 /* EditAttributesViewController.swift in Sources */,
@@ -6998,6 +7012,7 @@
 				57A5D8D32534F92D00AA54D6 /* TotalRefundedCalculationUseCase.swift in Sources */,
 				CE5F462723AAC8C0006B1A5C /* RefundDetailsViewModel.swift in Sources */,
 				D8815B132638686200EDAD62 /* CardPresentModalError.swift in Sources */,
+				E10C64AC267CD0420078A005 /* CardReaderSettingsUnknownView.swift in Sources */,
 				453DBF8E2387F34A006762A5 /* UICollectionViewCell+Helpers.swift in Sources */,
 				45B9C63E23A8E50D007FC4C5 /* ProductPriceSettingsViewController.swift in Sources */,
 				318853362639FC9C00F66A9C /* CardReaderSettingsPresentingViewController.swift in Sources */,
@@ -7182,6 +7197,7 @@
 				D8815B0126385E3F00EDAD62 /* CardPresentModalTapCard.swift in Sources */,
 				773077EE251E943700178696 /* ProductDownloadFileViewController.swift in Sources */,
 				45D1CF4523BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift in Sources */,
+				E14284AD2681EB8E002635B3 /* PrimaryButton.swift in Sources */,
 				6856D31F941A33BAE66F394D /* KeyboardFrameAdjustmentProvider.swift in Sources */,
 				6856DB2E741639716E149967 /* KeyboardStateProvider.swift in Sources */,
 			);
@@ -8212,6 +8228,14 @@
 				minimumVersion = 1.0.0;
 			};
 		};
+		E1FE01E72680F04200E472D4 /* XCRemoteSwiftPackageReference "AttributedText" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/gonzalezreal/AttributedText";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.3.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -8236,6 +8260,11 @@
 		57150E0E24F462C200E81611 /* TestKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TestKit;
+		};
+		E1FE01E82680F04200E472D4 /* AttributedText */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1FE01E72680F04200E472D4 /* XCRemoteSwiftPackageReference "AttributedText" */;
+			productName = AttributedText;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

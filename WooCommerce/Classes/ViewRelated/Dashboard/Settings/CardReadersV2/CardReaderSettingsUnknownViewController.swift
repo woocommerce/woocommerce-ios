@@ -4,7 +4,7 @@ import UIKit
 /// This view controller is used when no readers are known or connected. It assists
 /// the merchant in connecting to a reader, often for the first time.
 ///
-final class CardReaderSettingsUnknownViewController: UIViewController, CardReaderSettingsViewModelPresenter {
+final class _CardReaderSettingsUnknownViewController: UIViewController, CardReaderSettingsViewModelPresenter {
 
     /// Main TableView
     ///
@@ -60,7 +60,7 @@ final class CardReaderSettingsUnknownViewController: UIViewController, CardReade
 
 // MARK: - View Updates
 //
-private extension CardReaderSettingsUnknownViewController {
+private extension _CardReaderSettingsUnknownViewController {
     func onViewModelDidUpdate() {
         updateModal()
         updateTable()
@@ -129,7 +129,7 @@ private extension CardReaderSettingsUnknownViewController {
 
 // MARK: - View Configuration
 //
-private extension CardReaderSettingsUnknownViewController {
+private extension _CardReaderSettingsUnknownViewController {
 
     /// Set the title.
     ///
@@ -251,7 +251,7 @@ private extension CardReaderSettingsUnknownViewController {
 
 // MARK: - Convenience Methods
 //
-private extension CardReaderSettingsUnknownViewController {
+private extension _CardReaderSettingsUnknownViewController {
 
     func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
@@ -260,7 +260,7 @@ private extension CardReaderSettingsUnknownViewController {
 
 // MARK: - UITableViewDataSource Conformance
 //
-extension CardReaderSettingsUnknownViewController: UITableViewDataSource {
+extension _CardReaderSettingsUnknownViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
         return sections.count
@@ -294,7 +294,7 @@ extension CardReaderSettingsUnknownViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate Conformance
 //
-extension CardReaderSettingsUnknownViewController: UITableViewDelegate {
+extension _CardReaderSettingsUnknownViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         UITableView.automaticDimension
@@ -347,7 +347,7 @@ private enum Row: CaseIterable {
 
 // MARK: - UITextViewDelegate Conformance
 //
-extension CardReaderSettingsUnknownViewController: UITextViewDelegate {
+extension _CardReaderSettingsUnknownViewController: UITextViewDelegate {
 
     func textView(_ textView: UITextView, shouldInteractWith URL: URL,
                   in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
@@ -358,7 +358,7 @@ extension CardReaderSettingsUnknownViewController: UITextViewDelegate {
 
 // MARK: - Localization
 //
-private extension CardReaderSettingsUnknownViewController {
+private extension _CardReaderSettingsUnknownViewController {
     enum Localization {
         static let title = NSLocalizedString(
             "Manage Card Reader",

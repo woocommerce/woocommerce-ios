@@ -509,12 +509,13 @@ private extension SettingsViewController {
 
     func cardReadersV2WasPressed() {
         ServiceLocator.analytics.track(.settingsCardReadersTapped)
-        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsPresentingViewController.self) else {
-            fatalError("Cannot instantiate `CardReaderSettingsPresentingViewController` from Dashboard storyboard")
-        }
-
-        let viewModelsAndViews = CardReaderSettingsViewModelsOrderedList()
-        viewController.configure(viewModelsAndViews: viewModelsAndViews)
+//        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsPresentingViewController.self) else {
+//            fatalError("Cannot instantiate `CardReaderSettingsPresentingViewController` from Dashboard storyboard")
+//        }
+//
+//        let viewModelsAndViews = CardReaderSettingsViewModelsOrderedList()
+//        viewController.configure(viewModelsAndViews: viewModelsAndViews)
+        let viewController = CardReaderSettingsUnknownViewController(viewModel: CardReaderSettingsUnknownViewModel(didChangeShouldShow: { _ in }))
         show(viewController, sender: self)
     }
 

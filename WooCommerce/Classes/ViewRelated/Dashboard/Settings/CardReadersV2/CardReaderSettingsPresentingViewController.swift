@@ -40,7 +40,11 @@ final class CardReaderSettingsPresentingViewController: UIViewController {
             return
         }
 
-        childViewController = self.storyboard!.instantiateViewController(withIdentifier: viewModelAndView.viewIdentifier)
+        if viewModelAndView.viewIdentifier == "CardReaderSettingsUnknownViewController" {
+            childViewController = CardReaderSettingsUnknownViewController(viewModel: viewModelAndView.viewModel as! CardReaderSettingsUnknownViewModel)
+        } else {
+            childViewController = self.storyboard!.instantiateViewController(withIdentifier: viewModelAndView.viewIdentifier)
+        }
 
         guard let childViewController = childViewController else {
             return

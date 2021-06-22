@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "AttributedText",
+        "repositoryURL": "https://github.com/gonzalezreal/AttributedText",
+        "state": {
+          "branch": null,
+          "revision": "bf076de48dbb2172525486936d512e1bba062642",
+          "version": "0.3.0"
+        }
+      },
+      {
         "package": "Difference",
         "repositoryURL": "https://github.com/krzysztofzablocki/Difference.git",
         "state": {

@@ -313,7 +313,7 @@ extension WooAnalyticsEvent {
 
     // Namespace
     enum ProductDetailAddOns {
-        static func productAddOnsButtonTappedViewed(productID: Int64) -> WooAnalyticsEvent {
+        static func productAddOnsButtonTapped(productID: Int64) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailViewProductAddOnsTapped, properties: [Keys.productID: "\(productID)"])
         }
     }

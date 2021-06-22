@@ -61,11 +61,17 @@ final class MediaTypeTests: XCTestCase {
     }
 
     func testInitWithVideoMimeType() {
-        let videoMimeTypes = [
+        var videoMimeTypes = [
             "video/mp4", "video/x-msvideo", "video/mpeg", "video/3gpp", "video/3gpp2",
             // 3gpp/3gpp2 audio is considered as video on iOS
             "audio/3gpp", "audio/3gpp2"
         ]
+        if #available(iOS 14.4, *) {
+            videoMimeTypes += [
+                "video/webm", // iOS 14.4 supports WebM
+                "audio/webm"  // audio/webm also results as a video type
+            ]
+        }
         videoMimeTypes.forEach { mimeType in
             XCTAssertEqual(MediaType(mimeType: mimeType), .video, "Unexpected media type for file extension: \(mimeType)")
         }
@@ -86,14 +92,23 @@ final class MediaTypeTests: XCTestCase {
     }
 
     func testInitWithOtherMimeType() {
-        let otherMimeTypes = [
-            "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-            "application/vnd.oasis.opendocument.text", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            // Video formats that are not supported on iOS
-            "video/ogg", "video/mp2t", "video/webm",
-            // Audio formats that are not supported on iOS
-            "audio/ogg", "audio/opus", "audio/webm"
-        ]
+        let otherMimeTypes: [String] = {
+            let mimeTypes = [
+                "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                "application/vnd.oasis.opendocument.text", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                // Video formats that are not supported on iOS
+                "video/ogg", "video/mp2t",
+                // Audio formats that are not supported on iOS
+                "audio/ogg", "audio/opus"
+            ]
+            guard #available(iOS 14.4, *) else {
+                // iOS prior 14.4 doesn't support WebM
+                return mimeTypes + ["video/webm", "audio/webm"]
+            }
+
+            return mimeTypes
+        }()
+
         otherMimeTypes.forEach { mimeType in
             XCTAssertEqual(MediaType(mimeType: mimeType), .other, "Unexpected media type for file extension: \(mimeType)")
         }

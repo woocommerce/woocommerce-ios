@@ -1,6 +1,8 @@
 import UIKit
 import WordPressUI
 
+/// This view controller is embedded in a bottom sheet, and display the information about the Shipping Label Discount
+///
 final class ShippingLabelDiscountInfoViewController: UIViewController {
 
     @IBOutlet private weak var stackView: UIStackView!

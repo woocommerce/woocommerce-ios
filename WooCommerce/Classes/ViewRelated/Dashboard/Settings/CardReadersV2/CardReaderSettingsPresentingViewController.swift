@@ -58,6 +58,18 @@ final class CardReaderSettingsPresentingViewController: UIViewController {
         self.view.addSubview(childViewController.view)
         self.addChild(childViewController)
         childViewController.didMove(toParent: self)
+
+        childViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            childViewController.view.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            childViewController.view.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            childViewController.view.widthAnchor.constraint(equalTo: view.widthAnchor),
+            childViewController.view.heightAnchor.constraint(equalTo: view.heightAnchor),
+            childViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            childViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            childViewController.view.topAnchor.constraint(equalTo: view.topAnchor),
+            childViewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+         ])
     }
 }
 

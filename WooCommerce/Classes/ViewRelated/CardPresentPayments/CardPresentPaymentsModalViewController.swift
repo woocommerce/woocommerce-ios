@@ -26,6 +26,9 @@ final class CardPresentPaymentsModalViewController: UIViewController {
     @IBOutlet private weak var actionButtonsView: UIView!
     @IBOutlet private weak var bottomLabels: UIStackView!
 
+    @IBOutlet weak var heightConstraint: NSLayoutConstraint!
+
+
 
     init(viewModel: CardPresentPaymentsModalViewModel) {
         self.viewModel = viewModel
@@ -57,9 +60,11 @@ final class CardPresentPaymentsModalViewController: UIViewController {
         if traitCollection.containsTraits(in: UITraitCollection(verticalSizeClass: .compact)) {
             mainStackView.axis = .horizontal
             mainStackView.distribution = .fillProportionally
+            heightConstraint.constant = Constants.modalWidth
         } else {
             mainStackView.axis = .vertical
             mainStackView.distribution = .fill
+            heightConstraint.constant = Constants.modalHeight
         }
     }
 }
@@ -309,6 +314,8 @@ private extension CardPresentPaymentsModalViewController {
 private extension CardPresentPaymentsModalViewController {
     enum Constants {
         static let extraInfoCustomInsets = UIEdgeInsets(top: 12, left: 10, bottom: 12, right: 10)
+        static let modalHeight: CGFloat = 382
+        static let modalWidth: CGFloat = 280
     }
 }
 

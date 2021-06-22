@@ -27,6 +27,7 @@ final class CardPresentPaymentsModalViewController: UIViewController {
     @IBOutlet private weak var bottomLabels: UIStackView!
 
     @IBOutlet weak var heightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var widthConstraint: NSLayoutConstraint!
 
 
 
@@ -56,16 +57,27 @@ final class CardPresentPaymentsModalViewController: UIViewController {
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
+        resetHeightAndWidth()
+    }
 
+    private func resetHeightAndWidth() {
+        print("=== resetting height and width")
         if traitCollection.containsTraits(in: UITraitCollection(verticalSizeClass: .compact)) {
             mainStackView.axis = .horizontal
             mainStackView.distribution = .fillProportionally
             heightConstraint.constant = Constants.modalWidth
+            widthConstraint.constant = Constants.modalHeight
+            heightConstraint.priority = .defaultHigh
+            print("=== setting horizontal")
         } else {
             mainStackView.axis = .vertical
             mainStackView.distribution = .fill
             heightConstraint.constant = Constants.modalHeight
+            widthConstraint.constant = Constants.modalWidth
+            heightConstraint.priority = .defaultHigh
+            print("=== setting vertical")
         }
+
     }
 }
 
@@ -165,6 +177,8 @@ private extension CardPresentPaymentsModalViewController {
         if shouldShowBottomLabels() {
             configureBottomLabels()
         }
+
+        resetHeightAndWidth()
     }
 
     func configureTopTitle() {

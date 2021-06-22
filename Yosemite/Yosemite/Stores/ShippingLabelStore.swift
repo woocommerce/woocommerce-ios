@@ -243,24 +243,24 @@ private extension ShippingLabelStore {
                 for label in labelPurchases {
                     labelPurchaseIDs.append(label.shippingLabelID)
                 }
+
+                // Wait for 2 seconds (give the backend time to process the purchase)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                    guard let self = self else { return }
+
+                    // Poll the status of the label purchases from the response above
+                    // with a delay of 1 second each time, with a maximum of 3 retries
+                    self.pollLabelStatus(withDelayInSeconds: 1.0,
+                                         maxRetries: 3,
+                                         siteID: siteID,
+                                         orderID: orderID,
+                                         labelIDs: labelPurchaseIDs,
+                                         completion: completion)
+                }
             case .failure(let error):
                 DDLogError("⛔️ Error purchasing shipping label for order \(orderID): \(error)")
                 completion(.failure(error))
             }
-        }
-
-        // Wait for 2 seconds (give the backend time to process the purchase)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
-            guard let self = self else { return }
-
-            // Poll the status of the label purchases from the response above
-            // with a delay of 1 second each time, with a maximum of 3 retries
-            self.pollLabelStatus(withDelayInSeconds: 1.0,
-                                 maxRetries: 3,
-                                 siteID: siteID,
-                                 orderID: orderID,
-                                 labelIDs: labelPurchaseIDs,
-                                 completion: completion)
         }
     }
 }

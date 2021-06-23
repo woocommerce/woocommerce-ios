@@ -1,8 +1,9 @@
 import Foundation
+import Codegen
 
 /// Represents the rate for a specific shipping carrier
 ///
-public struct ShippingLabelCarrierRate: Equatable {
+public struct ShippingLabelCarrierRate: Equatable, GeneratedFakeable {
 
     public let title: String
     public let insurance: Double

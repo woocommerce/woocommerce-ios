@@ -12,12 +12,12 @@ public struct ShippingLabelPackagePurchase: Equatable, GeneratedFakeable {
     public let rate: ShippingLabelCarrierRate
 
     /// IDs for the products to be shipped
-    public let products: [Int64]
+    public let productIDs: [Int64]
 
-    public init(package: ShippingLabelPackageSelected, rate: ShippingLabelCarrierRate, products: [Int64]) {
+    public init(package: ShippingLabelPackageSelected, rate: ShippingLabelCarrierRate, productIDs: [Int64]) {
         self.package = package
         self.rate = rate
-        self.products = products
+        self.productIDs = productIDs
     }
 }
 
@@ -39,7 +39,7 @@ extension ShippingLabelPackagePurchase: Encodable {
         try container.encode(rate.serviceID, forKey: .serviceID)
         try container.encode(rate.carrierID, forKey: .carrierID)
         try container.encode(rate.title, forKey: .serviceName)
-        try container.encode(products, forKey: .products)
+        try container.encode(productIDs, forKey: .products)
     }
 
     private enum CodingKeys: String, CodingKey {

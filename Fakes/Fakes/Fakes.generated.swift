@@ -1030,7 +1030,7 @@ extension ShippingLabelPackagePurchase {
         .init(
             package: .fake(),
             rate: .fake(),
-            products: .fake()
+            productIDs: .fake()
         )
     }
 }

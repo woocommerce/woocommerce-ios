@@ -281,7 +281,7 @@ private extension ShippingLabelFormViewController {
         } onSwitchChange: { (switchIsOn) in
             // TODO: Handle order completion
         } onButtonTouchUp: {
-            // TODO: Purchase Label action
+            self.displayPurchaseProgressView()
         }
         cell.isOn = false
         cell.setSubtotal(viewModel.getSubtotal())
@@ -388,6 +388,14 @@ private extension ShippingLabelFormViewController {
         let hostingVC = UIHostingController(rootView: paymentMethod)
         navigationController?.show(hostingVC, sender: nil)
     }
+
+    func displayPurchaseProgressView() {
+        let viewProperties = InProgressViewProperties(title: Localization.purchaseProgressTitle, message: Localization.purchaseProgressMessage)
+        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
+        inProgressViewController.modalPresentationStyle = .overFullScreen
+
+        present(inProgressViewController, animated: true)
+    }
 }
 
 extension ShippingLabelFormViewController {
@@ -471,5 +479,8 @@ private extension ShippingLabelFormViewController {
         static let navigationBarTitlePackageDetails =
             NSLocalizedString("Package Details",
                               comment: "Navigation bar title of shipping label package details screen")
+        // Purchase progress view
+        static let purchaseProgressTitle = NSLocalizedString("Purchasing Label", comment: "Title of the in-progress UI while purchasing a shipping label")
+        static let purchaseProgressMessage = NSLocalizedString("Please wait", comment: "Message of the in-progress UI while purchasing a shipping label")
     }
 }

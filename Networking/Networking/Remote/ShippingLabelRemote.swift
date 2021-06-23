@@ -40,7 +40,7 @@ public protocol ShippingLabelRemoteProtocol {
                                orderID: Int64,
                                originAddress: ShippingLabelAddress,
                                destinationAddress: ShippingLabelAddress,
-                               packages: [ShippingLabelPackageSelected],
+                               packages: [ShippingLabelPackagePurchase],
                                emailCustomerReceipt: Bool,
                                completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void)
     func checkLabelStatus(siteID: Int64,
@@ -251,7 +251,7 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
                                       orderID: Int64,
                                       originAddress: ShippingLabelAddress,
                                       destinationAddress: ShippingLabelAddress,
-                                      packages: [ShippingLabelPackageSelected],
+                                      packages: [ShippingLabelPackagePurchase],
                                       emailCustomerReceipt: Bool,
                                       completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void) {
         do {

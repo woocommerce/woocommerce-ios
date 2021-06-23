@@ -329,7 +329,7 @@ DEPENDENCIES
   fastlane-plugin-sentry
   fastlane-plugin-test_center
   fastlane-plugin-wpmreleasetoolkit (~> 1.1)
-  rake
+  rake (~> 12.3)
   rmagick (~> 3.2.0)
   xcode-install
   xcpretty-travis-formatter

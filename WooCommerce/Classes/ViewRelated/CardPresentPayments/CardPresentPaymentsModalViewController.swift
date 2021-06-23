@@ -66,14 +66,15 @@ final class CardPresentPaymentsModalViewController: UIViewController {
             mainStackView.distribution = .fillProportionally
             heightConstraint.constant = Constants.modalWidth
             widthConstraint.constant = Constants.modalHeight
-            heightConstraint.priority = .defaultHigh
         } else {
             mainStackView.axis = .vertical
             mainStackView.distribution = .fill
             heightConstraint.constant = Constants.modalHeight
             widthConstraint.constant = Constants.modalWidth
-            heightConstraint.priority = .defaultHigh
         }
+
+        heightConstraint.priority = .defaultHigh
+        widthConstraint.priority = .defaultHigh
     }
 }
 

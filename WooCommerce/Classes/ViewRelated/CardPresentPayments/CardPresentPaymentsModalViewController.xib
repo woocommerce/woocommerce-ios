@@ -132,7 +132,7 @@
                         <constraint firstAttribute="bottom" secondItem="jIt-xb-rrN" secondAttribute="bottom" constant="32" id="lVZ-pu-Fmb"/>
                         <constraint firstAttribute="height" priority="250" constant="581" id="n7H-7U-izh"/>
                         <constraint firstItem="jIt-xb-rrN" firstAttribute="centerX" secondItem="8Tg-Q2-wkH" secondAttribute="centerX" id="p6Y-jJ-KuU"/>
-                        <constraint firstAttribute="width" relation="greaterThanOrEqual" priority="250" constant="280" id="uaz-2N-7M4"/>
+                        <constraint firstAttribute="width" priority="250" constant="280" id="uaz-2N-7M4"/>
                         <constraint firstAttribute="trailing" secondItem="jIt-xb-rrN" secondAttribute="trailing" constant="20" id="ufT-Yf-gsb"/>
                     </constraints>
                 </view>

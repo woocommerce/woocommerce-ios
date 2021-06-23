@@ -1,3 +1,1 @@
-You can now create and edit a virtual product directly from the product details screen!
-
-Please note that iOS 13 is no longer supported. Only iOS 14 and later versions will be supported going forward.
+Fewer taps are needed to get to attributes on a variable product – they’re listed right in the product details! We also improved how an order’s details load both visually and behind the scenes – we hope you notice the improvements!

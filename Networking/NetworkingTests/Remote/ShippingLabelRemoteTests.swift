@@ -409,6 +409,47 @@ final class ShippingLabelRemoteTests: XCTestCase {
         // Then
         XCTAssertNotNil(result.failure)
     }
+
+    func test_checkLabelStatus_parses_success_response() throws {
+        // Given
+        let sampleLabelID: Int64 = 4321
+        let expectedLabelStatus = ShippingLabel.fake().status
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/\(sampleOrderID)/\(sampleLabelID)", filename: "shipping-label-status-success")
+
+        // When
+        let result: Result<[ShippingLabel], Error> = waitFor { promise in
+            remote.checkLabelStatus(siteID: self.sampleSiteID,
+                                    orderID: self.sampleOrderID,
+                                    labelIDs: [sampleLabelID]) { (result) in
+                promise(result)
+            }
+        }
+
+        // Then
+        let successResponse = try XCTUnwrap(result.get())
+        let shippingLabel = successResponse.first
+        XCTAssertEqual(shippingLabel?.status, expectedLabelStatus)
+    }
+
+    func test_checkLabelStatus_returns_error_on_failure() throws {
+        // Given
+        let sampleLabelID: Int64 = 4321
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/\(sampleOrderID)/\(sampleLabelID)", filename: "generic_error")
+
+        // When
+        let result: Result<[ShippingLabel], Error> = waitFor { promise in
+            remote.checkLabelStatus(siteID: self.sampleSiteID,
+                                    orderID: self.sampleOrderID,
+                                    labelIDs: [sampleLabelID]) { (result) in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
 }
 
 private extension ShippingLabelRemoteTests {

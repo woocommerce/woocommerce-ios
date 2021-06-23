@@ -258,28 +258,14 @@ extension OrderDetailsViewModel {
             let printingInstructionsViewController = ShippingLabelPrintingInstructionsViewController()
             let navigationController = WooNavigationController(rootViewController: printingInstructionsViewController)
             viewController.present(navigationController, animated: true, completion: nil)
-        case .shippingLabelProduct:
-            guard let item = dataSource.shippingLabelOrderItem(at: indexPath), item.productOrVariationID > 0 else {
-                return
-            }
-            let loaderViewController = ProductLoaderViewController(model: .init(aggregateOrderItem: item),
-                                                                   siteID: order.siteID,
-                                                                   forceReadOnly: true)
-            let navController = WooNavigationController(rootViewController: loaderViewController)
-            viewController.present(navController, animated: true, completion: nil)
+        case .shippingLabelProducts:
+            let shippingLabelItems = dataSource.shippingLabelOrderItems(at: indexPath)
+            let productListVC = AggregatedProductListViewController(viewModel: self, items: shippingLabelItems)
+            viewController.show(productListVC, sender: nil)
         case .billingDetail:
             ServiceLocator.analytics.track(.orderDetailShowBillingTapped)
             let billingInformationViewController = BillingInformationViewController(order: order)
             viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
-        case .details:
-            ServiceLocator.analytics.track(.orderDetailProductDetailTapped)
-            let identifier = ProductListViewController.classNameWithoutNamespaces
-            guard let productListVC = UIStoryboard.orders.instantiateViewController(identifier: identifier) as? ProductListViewController else {
-                DDLogError("Error: attempted to instantiate ProductListViewController. Instantiation failed.")
-                return
-            }
-            productListVC.viewModel = self
-            viewController.navigationController?.pushViewController(productListVC, animated: true)
         case .seeReceipt:
             ServiceLocator.analytics.track(.receiptViewTapped)
             guard let receipt = receipt else {

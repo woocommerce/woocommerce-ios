@@ -684,6 +684,189 @@ final class ShippingLabelStoreTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
+
+    func test_purchaseShippingLabel_returns_shipping_label_on_success() throws {
+        // Given
+        let mockAddress = ShippingLabelAddress.fake()
+        let mockPackages = [ShippingLabelPackageSelected.fake()]
+        let expectedLabel = ShippingLabel.fake().copy(shippingLabelID: 13579)
+        let remote = MockShippingLabelRemote()
+        remote.whenPurchaseShippingLabel(siteID: sampleSiteID,
+                                         orderID: sampleOrderID,
+                                         originAddress: mockAddress,
+                                         destinationAddress: mockAddress,
+                                         packages: mockPackages,
+                                         emailCustomerReceipt: true,
+                                         thenReturn: .success([ShippingLabelPurchase.fake().copy(shippingLabelID: 13579)]))
+        remote.whenCheckLabelStatus(siteID: sampleSiteID,
+                                    orderID: sampleOrderID,
+                                    labelIDs: [13579],
+                                    thenReturn: .success([expectedLabel]))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<[Yosemite.ShippingLabel], Error> = waitFor { promise in
+            let action = ShippingLabelAction.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                                                   orderID: self.sampleOrderID,
+                                                                   originAddress: mockAddress,
+                                                                   destinationAddress: mockAddress,
+                                                                   packages: mockPackages,
+                                                                   emailCustomerReceipt: true) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let actualLabels = try XCTUnwrap(result.get())
+        XCTAssertEqual(actualLabels, [expectedLabel])
+    }
+
+    func test_purchaseShippingLabel_returns_error_on_purchaseShippingLabel_request_failure() throws {
+        // Given
+        let mockAddress = ShippingLabelAddress.fake()
+        let mockPackages = [ShippingLabelPackageSelected.fake()]
+        let expectedError = NetworkError.timeout
+        let remote = MockShippingLabelRemote()
+        remote.whenPurchaseShippingLabel(siteID: sampleSiteID,
+                                         orderID: sampleOrderID,
+                                         originAddress: mockAddress,
+                                         destinationAddress: mockAddress,
+                                         packages: mockPackages,
+                                         emailCustomerReceipt: true,
+                                         thenReturn: .failure(expectedError))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<[Yosemite.ShippingLabel], Error> = waitFor { promise in
+            let action = ShippingLabelAction.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                                                   orderID: self.sampleOrderID,
+                                                                   originAddress: mockAddress,
+                                                                   destinationAddress: mockAddress,
+                                                                   packages: mockPackages,
+                                                                   emailCustomerReceipt: true) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
+
+    func test_purchaseShippingLabel_returns_error_on_checkLabelStatus_request_failure() throws {
+        // Given
+        let mockAddress = ShippingLabelAddress.fake()
+        let mockPackages = [ShippingLabelPackageSelected.fake()]
+        let expectedError = NetworkError.timeout
+        let remote = MockShippingLabelRemote()
+        remote.whenPurchaseShippingLabel(siteID: sampleSiteID,
+                                         orderID: sampleOrderID,
+                                         originAddress: mockAddress,
+                                         destinationAddress: mockAddress,
+                                         packages: mockPackages,
+                                         emailCustomerReceipt: true,
+                                         thenReturn: .success([ShippingLabelPurchase.fake().copy(shippingLabelID: 13579)]))
+        remote.whenCheckLabelStatus(siteID: sampleSiteID,
+                                    orderID: sampleOrderID,
+                                    labelIDs: [13579],
+                                    thenReturn: .failure(expectedError))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<[Yosemite.ShippingLabel], Error> = waitFor(timeout: 6.0) { promise in
+            let action = ShippingLabelAction.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                                                   orderID: self.sampleOrderID,
+                                                                   originAddress: mockAddress,
+                                                                   destinationAddress: mockAddress,
+                                                                   packages: mockPackages,
+                                                                   emailCustomerReceipt: true) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
+
+    func test_purchaseShippingLabel_returns_error_on_purchase_error() throws {
+        // Given
+        let mockAddress = ShippingLabelAddress.fake()
+        let mockPackages = [ShippingLabelPackageSelected.fake()]
+        let expectedLabel = ShippingLabel.fake().copy(shippingLabelID: 13579, status: .purchaseError)
+        let remote = MockShippingLabelRemote()
+        remote.whenPurchaseShippingLabel(siteID: sampleSiteID,
+                                         orderID: sampleOrderID,
+                                         originAddress: mockAddress,
+                                         destinationAddress: mockAddress,
+                                         packages: mockPackages,
+                                         emailCustomerReceipt: true,
+                                         thenReturn: .success([ShippingLabelPurchase.fake().copy(shippingLabelID: 13579)]))
+        remote.whenCheckLabelStatus(siteID: sampleSiteID,
+                                    orderID: sampleOrderID,
+                                    labelIDs: [13579],
+                                    thenReturn: .success([expectedLabel]))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<[Yosemite.ShippingLabel], Error> = waitFor { promise in
+            let action = ShippingLabelAction.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                                                   orderID: self.sampleOrderID,
+                                                                   originAddress: mockAddress,
+                                                                   destinationAddress: mockAddress,
+                                                                   packages: mockPackages,
+                                                                   emailCustomerReceipt: true) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? LabelPurchaseError, LabelPurchaseError.purchaseErrorStatus)
+    }
+
+    func test_purchaseShippingLabel_returns_error_if_purchase_remains_in_progress() throws {
+        // Given
+        let mockAddress = ShippingLabelAddress.fake()
+        let mockPackages = [ShippingLabelPackageSelected.fake()]
+        let expectedLabel = ShippingLabel.fake().copy(shippingLabelID: 13579, status: .purchaseInProgress)
+        let remote = MockShippingLabelRemote()
+        remote.whenPurchaseShippingLabel(siteID: sampleSiteID,
+                                         orderID: sampleOrderID,
+                                         originAddress: mockAddress,
+                                         destinationAddress: mockAddress,
+                                         packages: mockPackages,
+                                         emailCustomerReceipt: true,
+                                         thenReturn: .success([ShippingLabelPurchase.fake().copy(shippingLabelID: 13579)]))
+        remote.whenCheckLabelStatus(siteID: sampleSiteID,
+                                    orderID: sampleOrderID,
+                                    labelIDs: [13579],
+                                    thenReturn: .success([expectedLabel]))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<[Yosemite.ShippingLabel], Error> = waitFor(timeout: 6.0) { promise in
+            let action = ShippingLabelAction.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                                                   orderID: self.sampleOrderID,
+                                                                   originAddress: mockAddress,
+                                                                   destinationAddress: mockAddress,
+                                                                   packages: mockPackages,
+                                                                   emailCustomerReceipt: true) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? LabelPurchaseError, LabelPurchaseError.purchaseIncomplete)
+    }
 }
 
 private extension ShippingLabelStoreTests {

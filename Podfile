@@ -257,5 +257,15 @@ post_install do |installer|
          configuration.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET' if pod_ios_deployment_target <= app_ios_deployment_target
       end
   end
+
+  # Flag Alpha builds for Tracks
+  # ============================
+  installer.pods_project.targets.each do |target|
+    next unless target.name == "Automattic-Tracks-iOS"
+    target.build_configurations.each do |config|
+      next unless config.name == "Release-Alpha"
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', 'ALPHA=1']
+    end
+  end
 end
 

@@ -36,7 +36,6 @@ public protocol CrashLogger {
      - Parameters:
      - error: The error
      - userInfo: A dictionary containing additional information about this message
-     - level: The level of severity to report
     */
-    func logFatalErrorAndExit(_ error: Error, userInfo: [String: Any]?, level: SeverityLevel) -> Never
+    func logFatalErrorAndExit(_ error: Error, userInfo: [String: Any]?) -> Never
 }

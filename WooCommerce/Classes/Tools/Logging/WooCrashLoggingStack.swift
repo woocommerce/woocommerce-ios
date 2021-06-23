@@ -42,10 +42,10 @@ struct WooCrashLoggingStack: CrashLoggingStack {
         crashLogging.logError(error, userInfo: userInfo, level: sentrySeverity(with: level))
     }
 
-    func logFatalErrorAndExit(_ error: Error, userInfo: [String: Any]? = nil, level: SeverityLevel = .error) -> Never {
+    func logFatalErrorAndExit(_ error: Error, userInfo: [String: Any]? = nil) -> Never {
         do {
             crashLoggingDataProvider.appIsCrashing = true
-            try crashLogging.logErrorAndWait(error, userInfo: userInfo, level: sentrySeverity(with: level))
+            try crashLogging.logErrorAndWait(error, userInfo: userInfo, level: .fatal)
         } catch {
             DDLogError("⛔️ Unable to send startup error message to Sentry: \(error)")
         }

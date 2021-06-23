@@ -40,7 +40,7 @@ public final class CoreDataManager: StorageManagerType {
             // We'll throw a fatalError() because we can't really proceed without a
             // ManagedObjectModel.
             let error = CoreDataManagerError.modelInventoryLoadingFailed(name, error)
-            crashLogger.logFatalErrorAndExit(error, userInfo: nil, level: .fatal)
+            crashLogger.logFatalErrorAndExit(error, userInfo: nil)
         }
     }
 
@@ -110,8 +110,7 @@ public final class CoreDataManager: StorageManagerType {
                                                      "appState": UIApplication.shared.applicationState.rawValue,
                                                      "migrationMessages": migrationDebugMessages]
                 self?.crashLogger.logFatalErrorAndExit(error,
-                                                  userInfo: logProperties.compactMapValues { $0 },
-                                                  level: .fatal)
+                                                  userInfo: logProperties.compactMapValues { $0 })
             }
 
             let logProperties: [String: Any?] = ["persistentStoreLoadingError": persistentStoreLoadingError,

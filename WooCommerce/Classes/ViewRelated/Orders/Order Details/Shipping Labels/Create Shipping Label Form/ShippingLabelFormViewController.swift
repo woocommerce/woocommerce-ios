@@ -277,7 +277,7 @@ private extension ShippingLabelFormViewController {
         cell.configure(state: row.cellState) {
             let discountInfoVC = ShippingLabelDiscountInfoViewController()
             let bottomSheet = BottomSheetViewController(childViewController: discountInfoVC)
-            bottomSheet.show(from: self)
+            bottomSheet.show(from: self, sourceView: cell)
         } onSwitchChange: { (switchIsOn) in
             // TODO: Handle order completion
         } onButtonTouchUp: {

@@ -688,7 +688,7 @@ final class ShippingLabelStoreTests: XCTestCase {
     func test_purchaseShippingLabel_returns_shipping_label_on_success() throws {
         // Given
         let mockAddress = ShippingLabelAddress.fake()
-        let mockPackages = [ShippingLabelPackageSelected.fake()]
+        let mockPackages = [ShippingLabelPackagePurchase.fake()]
         let expectedLabel = ShippingLabel.fake().copy(shippingLabelID: 13579)
         let remote = MockShippingLabelRemote()
         remote.whenPurchaseShippingLabel(siteID: sampleSiteID,
@@ -726,7 +726,7 @@ final class ShippingLabelStoreTests: XCTestCase {
     func test_purchaseShippingLabel_returns_error_on_purchaseShippingLabel_request_failure() throws {
         // Given
         let mockAddress = ShippingLabelAddress.fake()
-        let mockPackages = [ShippingLabelPackageSelected.fake()]
+        let mockPackages = [ShippingLabelPackagePurchase.fake()]
         let expectedError = NetworkError.timeout
         let remote = MockShippingLabelRemote()
         remote.whenPurchaseShippingLabel(siteID: sampleSiteID,
@@ -759,7 +759,7 @@ final class ShippingLabelStoreTests: XCTestCase {
     func test_purchaseShippingLabel_returns_error_on_checkLabelStatus_request_failure() throws {
         // Given
         let mockAddress = ShippingLabelAddress.fake()
-        let mockPackages = [ShippingLabelPackageSelected.fake()]
+        let mockPackages = [ShippingLabelPackagePurchase.fake()]
         let expectedError = NetworkError.timeout
         let remote = MockShippingLabelRemote()
         remote.whenPurchaseShippingLabel(siteID: sampleSiteID,
@@ -796,7 +796,7 @@ final class ShippingLabelStoreTests: XCTestCase {
     func test_purchaseShippingLabel_returns_error_on_purchase_error() throws {
         // Given
         let mockAddress = ShippingLabelAddress.fake()
-        let mockPackages = [ShippingLabelPackageSelected.fake()]
+        let mockPackages = [ShippingLabelPackagePurchase.fake()]
         let expectedLabel = ShippingLabel.fake().copy(shippingLabelID: 13579, status: .purchaseError)
         let remote = MockShippingLabelRemote()
         remote.whenPurchaseShippingLabel(siteID: sampleSiteID,
@@ -833,7 +833,7 @@ final class ShippingLabelStoreTests: XCTestCase {
     func test_purchaseShippingLabel_returns_error_if_purchase_remains_in_progress() throws {
         // Given
         let mockAddress = ShippingLabelAddress.fake()
-        let mockPackages = [ShippingLabelPackageSelected.fake()]
+        let mockPackages = [ShippingLabelPackagePurchase.fake()]
         let expectedLabel = ShippingLabel.fake().copy(shippingLabelID: 13579, status: .purchaseInProgress)
         let remote = MockShippingLabelRemote()
         remote.whenPurchaseShippingLabel(siteID: sampleSiteID,

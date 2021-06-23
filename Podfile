@@ -35,9 +35,8 @@ target 'WooCommerce' do
   # ====================
   #
 
-  # Use the latest bugfix for coretelephony
-  #pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => 'add/application-state-tag'
-  pod 'Automattic-Tracks-iOS', '~> 0.8.0'
+  pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => 'add/build-configuration'
+  #pod 'Automattic-Tracks-iOS', '~> 0.8.0'
 
   pod 'Gridicons', '~> 1.0'
 

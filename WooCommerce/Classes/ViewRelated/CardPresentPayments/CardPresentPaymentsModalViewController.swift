@@ -26,6 +26,10 @@ final class CardPresentPaymentsModalViewController: UIViewController {
     @IBOutlet private weak var actionButtonsView: UIView!
     @IBOutlet private weak var bottomLabels: UIStackView!
 
+    @IBOutlet weak var heightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var widthConstraint: NSLayoutConstraint!
+
+
 
     init(viewModel: CardPresentPaymentsModalViewModel) {
         self.viewModel = viewModel
@@ -53,14 +57,24 @@ final class CardPresentPaymentsModalViewController: UIViewController {
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
+        resetHeightAndWidth()
+    }
 
+    private func resetHeightAndWidth() {
         if traitCollection.containsTraits(in: UITraitCollection(verticalSizeClass: .compact)) {
             mainStackView.axis = .horizontal
             mainStackView.distribution = .fillProportionally
+            heightConstraint.constant = Constants.modalWidth
+            widthConstraint.constant = Constants.modalHeight
         } else {
             mainStackView.axis = .vertical
             mainStackView.distribution = .fill
+            heightConstraint.constant = Constants.modalHeight
+            widthConstraint.constant = Constants.modalWidth
         }
+
+        heightConstraint.priority = .defaultHigh
+        widthConstraint.priority = .defaultHigh
     }
 }
 
@@ -309,6 +323,8 @@ private extension CardPresentPaymentsModalViewController {
 private extension CardPresentPaymentsModalViewController {
     enum Constants {
         static let extraInfoCustomInsets = UIEdgeInsets(top: 12, left: 10, bottom: 12, right: 10)
+        static let modalHeight: CGFloat = 382
+        static let modalWidth: CGFloat = 280
     }
 }
 

@@ -14,11 +14,12 @@ class CountryListMapperTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(countries.count, 2)
-        XCTAssertEqual(countries.first?.code, "PY")
-        XCTAssertEqual(countries.first?.name, "Paraguay")
-        XCTAssertEqual(countries.first?.states.count, 18)
-        XCTAssertEqual(countries.first?.states.first, StateOfACountry(code: "PY-ASU", name: "Asunción"))
+        XCTAssertEqual(countries.count, 3)
+        XCTAssertEqual(countries.first?.states.isEmpty, true)
+        XCTAssertEqual(countries[1].code, "PY")
+        XCTAssertEqual(countries[1].name, "Paraguay")
+        XCTAssertEqual(countries[1].states.count, 18)
+        XCTAssertEqual(countries[1].states.first, StateOfACountry(code: "PY-ASU", name: "Asunción"))
     }
 }
 

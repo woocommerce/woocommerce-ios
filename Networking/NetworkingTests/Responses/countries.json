@@ -1,6 +1,23 @@
 {
     "data": [
         {
+            "code": "AT",
+            "name": "Austria",
+            "states": [],
+            "_links": {
+                "self": [
+                    {
+                        "href": "https://mywootesting.mystagingwebsite.com/wp-json/wc/v3/data/countries/at"
+                    }
+                ],
+                "collection": [
+                    {
+                        "href": "https://mywootesting.mystagingwebsite.com/wp-json/wc/v3/data/countries"
+                    }
+                ]
+            }
+        },
+        {
             "code": "PY",
             "name": "Paraguay",
             "states": [

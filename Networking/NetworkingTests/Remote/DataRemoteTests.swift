@@ -34,11 +34,11 @@ class DataRemoteTests: XCTestCase {
 
         // Then
         let countries = try XCTUnwrap(result.get())
-        XCTAssertEqual(countries.count, 2)
-        XCTAssertEqual(countries.first?.code, "PY")
-        XCTAssertEqual(countries.first?.name, "Paraguay")
-        XCTAssertEqual(countries.first?.states.count, 18)
-        XCTAssertEqual(countries.first?.states.first, StateOfACountry(code: "PY-ASU", name: "Asunción"))
+        XCTAssertEqual(countries.count, 3)
+        XCTAssertEqual(countries[1].code, "PY")
+        XCTAssertEqual(countries[1].name, "Paraguay")
+        XCTAssertEqual(countries[1].states.count, 18)
+        XCTAssertEqual(countries[1].states.first, StateOfACountry(code: "PY-ASU", name: "Asunción"))
     }
 
     func test_loadCountries_returns_error_on_failure() throws {

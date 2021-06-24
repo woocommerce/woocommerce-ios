@@ -71,6 +71,10 @@ final class ShippingLabelFormViewModel {
     ///
     var shippingLabelAccountSettings: ShippingLabelAccountSettings?
 
+    /// Shipping Label Purchase
+    ///
+    var purchasedShippingLabel: ShippingLabel?
+
 
     private let stores: StoresManager
 
@@ -499,6 +503,34 @@ extension ShippingLabelFormViewModel {
         case suggestedAddress
         case validationError(ShippingLabelAddressValidationError)
         case genericError(Error)
+    }
+
+    func purchaseLabel(onCompletion: @escaping ((Bool) -> Void)) {
+        guard let originAddress = originAddress,
+              let destinationAddress = destinationAddress,
+              let selectedPackage = selectedPackage,
+              let selectedRate = selectedRate,
+              let accountSettings = shippingLabelAccountSettings else {
+            return
+        }
+
+        let productIDs = order.items.map { $0.productOrVariationID }
+        let package = ShippingLabelPackagePurchase(package: selectedPackage, rate: selectedRate, productIDs: productIDs)
+        let action = ShippingLabelAction.purchaseShippingLabel(siteID: siteID,
+                                                               orderID: order.orderID,
+                                                               originAddress: originAddress,
+                                                               destinationAddress: destinationAddress,
+                                                               packages: [package],
+                                                               emailCustomerReceipt: accountSettings.isEmailReceiptsEnabled) { result in
+            switch result {
+            case .success(let labels):
+                self.purchasedShippingLabel = labels.first(where: { $0.productIDs == productIDs })
+                onCompletion(true)
+            case .failure:
+                onCompletion(false)
+            }
+        }
+        stores.dispatch(action)
     }
 }
 

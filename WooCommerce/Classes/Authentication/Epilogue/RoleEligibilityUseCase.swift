@@ -1,7 +1,7 @@
 import Yosemite
 
 protocol RoleEligibilityUseCaseProtocol {
-    func checkEligibility(for storeID: Int64, completion: @escaping (Bool) -> Void)
+    func checkEligibility(for storeID: Int64, completion: @escaping (Result<Bool, Error>) -> Void)
 }
 
 /// Encapsulates the logic for checking the eligibility of user roles.
@@ -19,26 +19,45 @@ final class RoleEligibilityUseCase: RoleEligibilityUseCaseProtocol {
     ///   - storeID: The dotcom site ID of the store.
     ///   - completion: The block to be called when the check completes. The boolean argument contains true if the user has the proper role to manage the store.
     ///
-    func checkEligibility(for storeID: Int64, completion: @escaping (Bool) -> Void) {
+    func checkEligibility(for storeID: Int64, completion: @escaping (Result<Bool, RoleEligibilityError>) -> Void) {
         guard stores.isAuthenticated else {
-            completion(false)
+            completion(.failure(RoleEligibilityError.notAuthenticated))
             return
         }
 
         let action = UserAction.retrieveUser(siteID: storeID) { result in
             switch result {
             case .success(let user):
-                let isEligible = self.isEligible(with: user.roles)
-                // TODO: David - persist result in user defaults.
-                completion(isEligible)
+                guard self.isEligible(with: user.roles) else {
+                    // report back with the display information for the error page.
+                    completion(.failure(RoleEligibilityError.insufficientRole(displayName: user.nickname, roles: user.roles)))
+                    return
+                }
+                completion(.success(true))
 
-            case .failure:
-                completion(false)
+            case .failure(let error):
+                completion(.failure(RoleEligibilityError.unknown(error: error)))
+
+            default:
+                print("This should not happen")
             }
         }
         stores.dispatch(action)
     }
 
+}
+
+enum RoleEligibilityError: Error {
+    /// The user's role is insufficient to manage the store.
+    /// Additional information is provided for the error page to display more information.
+    case insufficientRole(displayName: String, roles: [String])
+
+    /// The user has not yet authenticated with the app.
+    /// This should not happen, and may indicate an implementation error.
+    case notAuthenticated
+
+    /// Errors caused from other sources.
+    case unknown(error: Error)
 }
 
 // MARK: - Private methods

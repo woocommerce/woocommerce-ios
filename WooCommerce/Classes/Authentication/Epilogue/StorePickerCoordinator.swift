@@ -49,25 +49,19 @@ final class StorePickerCoordinator: Coordinator {
 extension StorePickerCoordinator: StorePickerViewControllerDelegate {
 
     func didSelectStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
-        roleEligibilityUseCase.checkEligibility(for: storeID) { [weak self] isEligible in
+        roleEligibilityUseCase.checkEligibility(for: storeID) { [weak self] result in
             guard let self = self else { return }
 
-            guard isEligible else {
-                print("TODO: Show role error page")
-                return
-            }
+            switch result {
+            case .success:
+                self.switchStore(with: storeID, onCompletion: onCompletion)
 
-            self.switchStoreUseCase.switchStore(with: storeID) { [weak self] siteChanged in
-                if self?.selectedConfiguration == .login {
-                    MainTabBarController.switchToMyStoreTab(animated: true)
-                }
+            case .failure(.insufficientRole(let displayName, let roles)):
+                // TODO: show error page.
+                print("insufficient role!")
 
-                if siteChanged {
-                    let presenter = SwitchStoreNoticePresenter()
-                    presenter.presentStoreSwitchedNotice(configuration: self?.selectedConfiguration)
-                }
-                onCompletion()
-                self?.onDismiss?()
+            case .failure(let error):
+                print("\(error)") // this could be anything – not authenticated, network-related errors.
             }
         }
     }
@@ -95,6 +89,21 @@ private extension StorePickerCoordinator {
             navigationController.present(wrapper, animated: true)
         default:
             navigationController.pushViewController(storePicker, animated: true)
+        }
+    }
+
+    func switchStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
+        switchStoreUseCase.switchStore(with: storeID) { [weak self] siteChanged in
+            if self?.selectedConfiguration == .login {
+                MainTabBarController.switchToMyStoreTab(animated: true)
+            }
+
+            if siteChanged {
+                let presenter = SwitchStoreNoticePresenter()
+                presenter.presentStoreSwitchedNotice(configuration: self?.selectedConfiguration)
+            }
+            onCompletion()
+            self?.onDismiss?()
         }
     }
 

@@ -1360,3 +1360,34 @@ extension UploadableMedia {
         )
     }
 }
+extension User {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> User {
+        .init(
+            localID: .fake(),
+            siteID: .fake(),
+            wpcomID: .fake(),
+            email: .fake(),
+            username: .fake(),
+            firstName: .fake(),
+            lastName: .fake(),
+            nickname: .fake(),
+            roles: .fake()
+        )
+    }
+}
+extension WCPayAccountStatusEnum {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> WCPayAccountStatusEnum {
+        .complete
+    }
+}
+extension WCPayPaymentIntentStatusEnum {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> WCPayPaymentIntentStatusEnum {
+        .requiresPaymentMethod
+    }
+}

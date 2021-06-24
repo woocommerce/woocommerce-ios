@@ -136,11 +136,12 @@ private extension StoreStatsAndTopPerformersViewController {
                            siteTimezone: timezoneForSync,
                            timeRange: vc.timeRange,
                            latestDateToInclude: latestDateToInclude) { [weak self] result in
-                if case let .failure(error) = result {
+                switch result {
+                case .success:
+                    self?.trackStatsLoaded(for: vc.granularity)
+                case .failure(let error):
                     DDLogError("⛔️ Error synchronizing order stats: \(error)")
                     syncError = error
-                } else {
-                    self?.trackStatsLoaded(for: vc.granularity)
                 }
                 group.leave()
             }
@@ -367,13 +368,14 @@ private extension StoreStatsAndTopPerformersViewController {
                                                           earliestDateToInclude: earliestDateToInclude,
                                                           latestDateToInclude: latestDateToInclude,
                                                           onCompletion: { result in
-                                                            if case let .failure(error) = result {
-                                                                DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
-                                                            } else {
+                                                            switch result {
+                                                            case .success:
                                                                 ServiceLocator.analytics.track(.dashboardTopPerformersLoaded,
                                                                                                withProperties: [
                                                                                                 "granularity": timeRange.topEarnerStatsGranularity.rawValue
                                                                                                ])
+                                                            case .failure(let error):
+                                                                DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
                                                             }
                                                             onCompletion?(result)
         })

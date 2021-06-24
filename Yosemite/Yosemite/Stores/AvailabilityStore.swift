@@ -44,9 +44,10 @@ private extension AvailabilityStore {
                               earliestDateToInclude: Date(),
                               latestDateToInclude: Date(),
                               quantity: 1) { result in
-            if case let .failure(error) = result, error as? DotcomError == .noRestRoute {
+            switch result {
+            case .failure(let error) where error as? DotcomError == .noRestRoute:
                 onCompletion(false)
-            } else {
+            default:
                 onCompletion(true)
             }
         }

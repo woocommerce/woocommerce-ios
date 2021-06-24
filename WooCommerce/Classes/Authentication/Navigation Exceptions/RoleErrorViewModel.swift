@@ -67,7 +67,8 @@ struct RoleErrorViewModel {
 
 private extension String {
 
-    static let errorMessageText = NSLocalizedString("This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role",
+    static let errorMessageText = NSLocalizedString("This app supports only Administrator and Shop Manager user roles. "
+                                                        + "Please contact your store owner to upgrade your role",
                                                     comment: "Message explaining more detail on why the user's role is incorrect.")
 
     static let linkButtonTitle = NSLocalizedString("Learn more about roles and permissions",
@@ -75,7 +76,7 @@ private extension String {
                                                     + "Presented when the user has tries to switch to a store with incorrect permissions.")
 
     static let primaryButtonTitle = NSLocalizedString("Retry",
-                                                      comment: "Action button that will recheck whether the user has sufficient permissions to manage the store."
+                                                      comment: "Action button that will recheck whether user has sufficient permissions to manage the store."
                                                         + "Presented when the user tries to switch to a store with incorrect permissions.")
 
     static let secondaryButtonTitle = NSLocalizedString("Log In With Another Account",

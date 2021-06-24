@@ -15,11 +15,14 @@ final class PrintShippingLabelViewController: UIViewController {
 
     private var cancellables = Set<AnyCancellable>()
 
+    /// Type of print action offered: printing a new label or reprinting an existing label
+    private var printType: PrintShippingLabelCoordinator.PrintType
+
     /// Closure to be executed when an action is triggered.
     ///
     var onAction: ((ActionType) -> Void)?
 
-    init(shippingLabel: ShippingLabel) {
+    init(shippingLabel: ShippingLabel, printType: PrintShippingLabelCoordinator.PrintType) {
         self.viewModel = PrintShippingLabelViewModel(shippingLabel: shippingLabel)
         self.rows = [.headerText, .infoText,
                      .spacerBetweenInfoTextAndPaperSizeSelector, .paperSize, .spacerBetweenPaperSizeSelectorAndInfoLinks,

@@ -20,6 +20,10 @@ final class StorePickerCoordinator: Coordinator {
     ///
     private let switchStoreUseCase = SwitchStoreUseCase(stores: ServiceLocator.stores)
 
+    /// The RoleEligibilityUseCase object initialized with the ServiceLocator stores
+    ///
+    private let roleEligibilityUseCase = RoleEligibilityUseCase(stores: ServiceLocator.stores)
+
     /// Site Picker VC
     ///
     private lazy var storePicker: StorePickerViewController = {
@@ -45,17 +49,26 @@ final class StorePickerCoordinator: Coordinator {
 extension StorePickerCoordinator: StorePickerViewControllerDelegate {
 
     func didSelectStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
-        switchStoreUseCase.switchStore(with: storeID) { [weak self] siteChanged in
-            if self?.selectedConfiguration == .login {
-                MainTabBarController.switchToMyStoreTab(animated: true)
+        roleEligibilityUseCase.checkEligibility(for: storeID) { [weak self] isEligible in
+            guard let self = self else { return }
+
+            guard isEligible else {
+                print("TODO: Show role error page")
+                return
             }
 
-            if siteChanged {
-                let presenter = SwitchStoreNoticePresenter()
-                presenter.presentStoreSwitchedNotice(configuration: self?.selectedConfiguration)
+            self.switchStoreUseCase.switchStore(with: storeID) { [weak self] siteChanged in
+                if self?.selectedConfiguration == .login {
+                    MainTabBarController.switchToMyStoreTab(animated: true)
+                }
+
+                if siteChanged {
+                    let presenter = SwitchStoreNoticePresenter()
+                    presenter.presentStoreSwitchedNotice(configuration: self?.selectedConfiguration)
+                }
+                onCompletion()
+                self?.onDismiss?()
             }
-            onCompletion()
-            self?.onDismiss?()
         }
     }
 

@@ -10,7 +10,7 @@ extension Country {
 
     @NSManaged public var code: String
     @NSManaged public var name: String
-    @NSManaged public var states: Set<StateOfACountry>?
+    @NSManaged public var states: Set<StateOfACountry>
 
 }
 

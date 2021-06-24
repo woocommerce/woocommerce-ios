@@ -506,6 +506,8 @@
 		FE28F6E226840DED004465C7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E126840DED004465C7 /* User.swift */; };
 		FE28F6E426842848004465C7 /* UserMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E326842848004465C7 /* UserMapper.swift */; };
 		FE28F6E6268429B6004465C7 /* UserRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E5268429B6004465C7 /* UserRemote.swift */; };
+		FE28F6E826842D57004465C7 /* user-complete.json in Resources */ = {isa = PBXBuildFile; fileRef = FE28F6E726842D57004465C7 /* user-complete.json */; };
+		FE28F6EA26842E49004465C7 /* UserMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E926842E49004465C7 /* UserMapperTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1049,6 +1051,8 @@
 		FE28F6E126840DED004465C7 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		FE28F6E326842848004465C7 /* UserMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserMapper.swift; sourceTree = "<group>"; };
 		FE28F6E5268429B6004465C7 /* UserRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRemote.swift; sourceTree = "<group>"; };
+		FE28F6E726842D57004465C7 /* user-complete.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "user-complete.json"; sourceTree = "<group>"; };
+		FE28F6E926842E49004465C7 /* UserMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserMapperTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1627,6 +1631,7 @@
 				749737692141F2BE0008C490 /* top-performers-week-alt.json */,
 				74ABA1C6213F19FD00FFAD30 /* top-performers-month.json */,
 				74ABA1C7213F19FE00FFAD30 /* top-performers-year.json */,
+				FE28F6E726842D57004465C7 /* user-complete.json */,
 				7495AACE225D366D00801A89 /* variation-as-product.json */,
 				D800DA0D25EFEC21001E13CE /* wcpay-connection-token.json */,
 				3158FE5F26129ADD00E566B9 /* wcpay-account-none.json */,
@@ -1826,6 +1831,7 @@
 				CC07866426790B1100BA9AC1 /* ShippingLabelPurchaseMapperTests.swift */,
 				CC0786C8267BB32800BA9AC1 /* ShippingLabelStatusMapperTests.swift */,
 				02C254D22563992900A04423 /* OrderShippingLabelListMapperTests.swift */,
+				FE28F6E926842E49004465C7 /* UserMapperTests.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -2068,6 +2074,7 @@
 				D8FBFF1822D4DDB9006E3336 /* order-stats-v4-hour.json in Resources */,
 				B554FA8D2180B59700C54DFF /* notifications-load-hashes.json in Resources */,
 				022902D622E2436400059692 /* no_stats_permission_error.json in Resources */,
+				FE28F6E826842D57004465C7 /* user-complete.json in Resources */,
 				261CF2CB255C50010090D8D3 /* payment-gateway-list-half.json in Resources */,
 				02C254D72563999300A04423 /* order-shipping-labels.json in Resources */,
 				45B204BC24890B1200FE6526 /* category.json in Resources */,
@@ -2521,6 +2528,7 @@
 				B5969E1520A47F99005E9DF1 /* RemoteTests.swift in Sources */,
 				74C8F06E20EEC1E800B6EDC9 /* OrderNotesMapperTests.swift in Sources */,
 				45ED4F10239E8A54004F1BE3 /* TaxClassListMapperTest.swift in Sources */,
+				FE28F6EA26842E49004465C7 /* UserMapperTests.swift in Sources */,
 				020C907F24C7D359001E2BEB /* ProductVariationMapperTests.swift in Sources */,
 				74ABA1D5213F26B300FFAD30 /* TopEarnerStatsMapperTests.swift in Sources */,
 				74AB5B5121AF426D00859C12 /* SiteAPIRemoteTests.swift in Sources */,

@@ -107,6 +107,17 @@ extension Address {
         )
     }
 }
+extension Country {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Country {
+        .init(
+            code: .fake(),
+            name: .fake(),
+            states: .fake()
+        )
+    }
+}
 extension CreateProductVariation {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -1294,6 +1305,16 @@ extension StatGranularity {
         .day
     }
 }
+extension StateOfACountry {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> StateOfACountry {
+        .init(
+            code: .fake(),
+            name: .fake()
+        )
+    }
+}
 extension StatsGranularityV4 {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -1358,5 +1379,19 @@ extension UploadableMedia {
             filename: .fake(),
             mimeType: .fake()
         )
+    }
+}
+extension WCPayAccountStatusEnum {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> WCPayAccountStatusEnum {
+        .complete
+    }
+}
+extension WCPayPaymentIntentStatusEnum {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> WCPayPaymentIntentStatusEnum {
+        .requiresPaymentMethod
     }
 }

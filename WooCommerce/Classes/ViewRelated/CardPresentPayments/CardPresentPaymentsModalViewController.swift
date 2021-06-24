@@ -63,16 +63,15 @@ final class CardPresentPaymentsModalViewController: UIViewController {
     private func resetHeightAndWidth() {
         if traitCollection.containsTraits(in: UITraitCollection(verticalSizeClass: .compact)) {
             mainStackView.axis = .horizontal
-            mainStackView.distribution = .fillProportionally
             heightConstraint.constant = Constants.modalWidth
             widthConstraint.constant = Constants.modalHeight
         } else {
             mainStackView.axis = .vertical
-            mainStackView.distribution = .fill
             heightConstraint.constant = Constants.modalHeight
             widthConstraint.constant = Constants.modalWidth
         }
 
+        mainStackView.distribution = .fill
         heightConstraint.priority = .defaultHigh
         widthConstraint.priority = .defaultHigh
     }

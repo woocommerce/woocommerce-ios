@@ -282,6 +282,14 @@ private extension ShippingLabelFormViewController {
             // TODO: Handle order completion
         } onButtonTouchUp: {
             self.displayPurchaseProgressView()
+            self.viewModel.purchaseLabel { [weak self] success in
+                if success {
+                    self?.displayPrintShippingLabelVC()
+                } else {
+                    // TODO: Implement and display error screen for purchase failures
+                }
+                self?.dismiss(animated: true)
+            }
         }
         cell.isOn = false
         cell.setSubtotal(viewModel.getSubtotal())
@@ -395,6 +403,16 @@ private extension ShippingLabelFormViewController {
         inProgressViewController.modalPresentationStyle = .overFullScreen
 
         present(inProgressViewController, animated: true)
+    }
+
+    func displayPrintShippingLabelVC() {
+        guard let purchasedShippingLabel = viewModel.purchasedShippingLabel else {
+            return
+        }
+
+        // TODO: Customize the reprint shipping label VC
+        let printLabelVC = ReprintShippingLabelViewController(shippingLabel: purchasedShippingLabel)
+        navigationController?.show(printLabelVC, sender: nil)
     }
 }
 

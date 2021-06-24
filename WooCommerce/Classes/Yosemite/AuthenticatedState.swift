@@ -58,6 +58,7 @@ class AuthenticatedState: StoresManagerState {
             SitePostStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network),
             TaxClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            UserStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CardPresentPaymentStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network,
@@ -66,7 +67,8 @@ class AuthenticatedState: StoresManagerState {
                          storageManager: storageManager,
                          network: network,
                          receiptPrinterService: ServiceLocator.receiptPrinterService,
-                         fileStorage: PListFileStorage())
+                         fileStorage: PListFileStorage()),
+
         ]
 
         startListeningToNotifications()

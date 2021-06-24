@@ -432,7 +432,9 @@ private extension ShippingLabelFormViewController {
         }
 
         // TODO: Customize the reprint shipping label VC
-        let printCoordinator = PrintShippingLabelCoordinator(shippingLabel: purchasedShippingLabel, sourceViewController: navigationController)
+        let printCoordinator = PrintShippingLabelCoordinator(shippingLabel: purchasedShippingLabel,
+                                                             printType: .print,
+                                                             sourceViewController: navigationController)
         printCoordinator.showPrintUI()
     }
 }

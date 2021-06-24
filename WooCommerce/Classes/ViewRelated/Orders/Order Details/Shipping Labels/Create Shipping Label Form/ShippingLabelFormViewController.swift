@@ -406,13 +406,14 @@ private extension ShippingLabelFormViewController {
     }
 
     func displayPrintShippingLabelVC() {
-        guard let purchasedShippingLabel = viewModel.purchasedShippingLabel else {
+        guard let purchasedShippingLabel = viewModel.purchasedShippingLabel,
+              let navigationController = navigationController else {
             return
         }
 
         // TODO: Customize the reprint shipping label VC
-        let printLabelVC = ReprintShippingLabelViewController(shippingLabel: purchasedShippingLabel)
-        navigationController?.show(printLabelVC, sender: nil)
+        let printCoordinator = ReprintShippingLabelCoordinator(shippingLabel: purchasedShippingLabel, sourceViewController: navigationController)
+        printCoordinator.showReprintUI()
     }
 }
 

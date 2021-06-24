@@ -504,6 +504,7 @@
 		D8FBFF2922D52AFB006E3336 /* order-stats-v4-year.json in Resources */ = {isa = PBXBuildFile; fileRef = D8FBFF2822D52AFA006E3336 /* order-stats-v4-year.json */; };
 		E12552C526385B05001CEE70 /* ShippingLabelAddressValidationSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12552C426385B05001CEE70 /* ShippingLabelAddressValidationSuccess.swift */; };
 		FE28F6E226840DED004465C7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E126840DED004465C7 /* User.swift */; };
+		FE28F6E426842848004465C7 /* UserMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6E326842848004465C7 /* UserMapper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1045,6 +1046,7 @@
 		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
 		FE28F6E126840DED004465C7 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		FE28F6E326842848004465C7 /* UserMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserMapper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1716,6 +1718,7 @@
 				CC9A24F32642CF37005DE56E /* ShippingLabelCreationEligibilityMapper.swift */,
 				CC0786602677B2DA00BA9AC1 /* ShippingLabelPurchaseMapper.swift */,
 				CC0786C4267BAF0F00BA9AC1 /* ShippingLabelStatusMapper.swift */,
+				FE28F6E326842848004465C7 /* UserMapper.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -2211,6 +2214,7 @@
 				74ABA1CF213F1D1600FFAD30 /* TopEarnerStatsItem.swift in Sources */,
 				7452387421124B7700A973CD /* AnyDecodable.swift in Sources */,
 				CEF88DAD233E95B000BED485 /* OrderRefundCondensed.swift in Sources */,
+				FE28F6E426842848004465C7 /* UserMapper.swift in Sources */,
 				CE430670234B99F50073CBFF /* RefundsRemote.swift in Sources */,
 				B56C1EB620EA757B00D749F9 /* SiteListMapper.swift in Sources */,
 				B50A583921AD861700617455 /* APNSDevice.swift in Sources */,

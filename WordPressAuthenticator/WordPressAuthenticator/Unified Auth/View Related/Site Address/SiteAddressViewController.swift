@@ -430,7 +430,9 @@ private extension SiteAddressViewController {
                 guard let error = error, let self = self else {
                     return
                 }
-
+                // Intentionally log the attempted address on failures.
+                // It's not guaranteed to be included in the error object depending on the error.
+                DDLogInfo("Error attempting to connect to site address: \(self.loginFields.siteAddress)")
                 DDLogError(error.localizedDescription)
                 // TODO: - Tracks.
                 // WordPressAuthenticator.track(.loginFailedToGuessXMLRPC, error: error)

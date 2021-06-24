@@ -293,7 +293,7 @@ extension AboutViewController {
         )
 
         return UIAlertAction(title: crashTitle, style: .destructive) { _ in
-            CrashLogging.crash()
+            ServiceLocator.crashLogging.crash()
         }
     }
 

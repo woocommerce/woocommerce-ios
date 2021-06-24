@@ -44,7 +44,15 @@ public struct User: Decodable, GeneratedFakeable {
 
     /// Designated Initializer
     ///
-    public init(localID: Int64, siteID: Int64, wpcomID: Int64, email: String, username: String, firstName: String, lastName: String, nickname: String, roles: [String]) {
+    public init(localID: Int64,
+                siteID: Int64,
+                wpcomID: Int64,
+                email: String,
+                username: String,
+                firstName: String,
+                lastName: String,
+                nickname: String,
+                roles: [String]) {
         self.localID = localID
         self.siteID = siteID
         self.wpcomID = wpcomID

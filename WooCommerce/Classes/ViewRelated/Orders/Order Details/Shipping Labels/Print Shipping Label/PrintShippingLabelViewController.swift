@@ -9,7 +9,7 @@ final class PrintShippingLabelViewController: UIViewController {
     @IBOutlet private weak var printButton: UIButton!
 
     private let viewModel: PrintShippingLabelViewModel
-    private let rows: [Row]
+    private var rows: [Row] = []
 
     private var selectedPaperSize: ShippingLabelPaperSize?
 
@@ -24,10 +24,9 @@ final class PrintShippingLabelViewController: UIViewController {
 
     init(shippingLabel: ShippingLabel, printType: PrintShippingLabelCoordinator.PrintType) {
         self.viewModel = PrintShippingLabelViewModel(shippingLabel: shippingLabel)
-        self.rows = [.headerText, .infoText,
-                     .spacerBetweenInfoTextAndPaperSizeSelector, .paperSize, .spacerBetweenPaperSizeSelectorAndInfoLinks,
-                     .paperSizeOptions, .printingInstructions]
+        self.printType = printType
         super.init(nibName: nil, bundle: nil)
+        self.rows = rowsToDisplay()
     }
 
     required init?(coder: NSCoder) {
@@ -193,16 +192,37 @@ private extension PrintShippingLabelViewController {
         }
     }
 
+    func rowsToDisplay() -> [Row] {
+        let shouldShowInfoText = printType == .reprint
+        let rows: [Row?] = [
+            .headerText,
+            shouldShowInfoText ? .infoText : nil,
+            .spacerBetweenInfoTextAndPaperSizeSelector,
+            .paperSize,
+            .spacerBetweenPaperSizeSelectorAndInfoLinks,
+            .paperSizeOptions,
+            .printingInstructions
+        ]
+        return rows.compactMap { $0 }
+    }
+
     func configureHeaderText(cell: BasicTableViewCell) {
-        cell.textLabel?.text = Localization.headerText
+        switch printType {
+        case .print:
+            cell.textLabel?.text = Localization.printHeaderText
+            cell.textLabel?.applyHeadlineStyle()
+            cell.textLabel?.textAlignment = .center
+        case .reprint:
+            cell.textLabel?.text = Localization.reprintHeaderText
+            cell.textLabel?.applyBodyStyle()
+        }
         cell.textLabel?.numberOfLines = 0
-        cell.textLabel?.applyBodyStyle()
         cell.hideSeparator()
     }
 
     func configureInfoText(cell: ImageAndTitleAndTextTableViewCell) {
         cell.update(with: .imageAndTitleOnly(fontStyle: .body),
-                    data: .init(title: Localization.infoText,
+                    data: .init(title: Localization.reprintInfoText,
                                 textTintColor: .systemColor(.secondaryLabel),
                                 image: .infoOutlineImage,
                                 imageTintColor: .systemColor(.secondaryLabel),
@@ -265,10 +285,11 @@ private extension PrintShippingLabelViewController {
         static let printButtonTitle = NSLocalizedString("Print Shipping Label",
                                                           comment: "Button title to generate a shipping label document for printing")
         static let paperSizeSelectorTitle = NSLocalizedString("Paper Size", comment: "Title of the paper size selector row for printing a shipping label")
-        static let headerText = NSLocalizedString(
+        static let printHeaderText = NSLocalizedString("Shipping label purchased!", comment: "Header text when printing a newly purchased shipping label")
+        static let reprintHeaderText = NSLocalizedString(
             "If there was a printing error when you purchased the label, you can print it again.",
             comment: "Header text when reprinting a shipping label")
-        static let infoText = NSLocalizedString(
+        static let reprintInfoText = NSLocalizedString(
             "If you already used the label in a package, printing and using it again is a violation of our terms of service",
             comment: "Info text when reprinting a shipping label")
         static let paperSizeOptionsButtonTitle = NSLocalizedString("See layout and paper sizes options", comment: "Link title to see all paper size options")

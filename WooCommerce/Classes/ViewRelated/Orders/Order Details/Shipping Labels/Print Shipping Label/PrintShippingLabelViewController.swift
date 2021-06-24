@@ -175,6 +175,8 @@ private extension PrintShippingLabelViewController {
         switch cell {
         case let cell as BasicTableViewCell where row == .headerText:
             configureHeaderText(cell: cell)
+        case let cell as ImageTableViewCell where row == .headerImage:
+            configureHeaderImage(cell: cell)
         case let cell as ImageAndTitleAndTextTableViewCell where row == .infoText:
             configureInfoText(cell: cell)
         case let cell as TitleAndValueTableViewCell where row == .paperSize:
@@ -193,10 +195,11 @@ private extension PrintShippingLabelViewController {
     }
 
     func rowsToDisplay() -> [Row] {
-        let shouldShowInfoText = printType == .reprint
+        let isReprint = printType == .reprint
         let rows: [Row?] = [
             .headerText,
-            shouldShowInfoText ? .infoText : nil,
+            isReprint ? nil : .headerImage,
+            isReprint ? .infoText : nil,
             .spacerBetweenInfoTextAndPaperSizeSelector,
             .paperSize,
             .spacerBetweenPaperSizeSelectorAndInfoLinks,
@@ -218,6 +221,11 @@ private extension PrintShippingLabelViewController {
         }
         cell.textLabel?.numberOfLines = 0
         cell.hideSeparator()
+    }
+
+    func configureHeaderImage(cell: ImageTableViewCell) {
+        cell.detailImageView.image = .celebrationImage
+        cell.selectionStyle = .none
     }
 
     func configureInfoText(cell: ImageAndTitleAndTextTableViewCell) {
@@ -301,6 +309,7 @@ private extension PrintShippingLabelViewController {
 private extension PrintShippingLabelViewController {
     enum Row: CaseIterable {
         case headerText
+        case headerImage
         case infoText
         case spacerBetweenInfoTextAndPaperSizeSelector
         case paperSize
@@ -312,6 +321,8 @@ private extension PrintShippingLabelViewController {
             switch self {
             case .headerText:
                 return BasicTableViewCell.self
+            case .headerImage:
+                return ImageTableViewCell.self
             case .infoText:
                 return ImageAndTitleAndTextTableViewCell.self
             case .spacerBetweenInfoTextAndPaperSizeSelector, .spacerBetweenPaperSizeSelectorAndInfoLinks:

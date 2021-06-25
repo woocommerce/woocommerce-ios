@@ -3,7 +3,6 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
-        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -26,56 +25,76 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="xZF-VZ-vTL" userLabel="Content Stack View">
-                    <rect key="frame" x="41" y="252" width="332" height="362.5"/>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="U2J-WF-pcf" userLabel="Container View">
+                    <rect key="frame" x="0.0" y="44" width="414" height="692"/>
                     <subviews>
-                        <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="LtB-cQ-hsK" userLabel="Top Label Stack View">
-                            <rect key="frame" x="0.0" y="0.0" width="332" height="34"/>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="xZF-VZ-vTL" userLabel="Content Stack View">
+                            <rect key="frame" x="41" y="166.5" width="332" height="311"/>
                             <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="751" verticalHuggingPriority="751" ambiguous="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qti-dQ-ryI" userLabel="Name Label">
-                                    <rect key="frame" x="0.0" y="0.0" width="332" height="18"/>
-                                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="17"/>
-                                    <nil key="textColor"/>
-                                    <nil key="highlightedColor"/>
-                                </label>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="751" verticalHuggingPriority="751" ambiguous="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9kP-iV-kxf" userLabel="Role Label">
-                                    <rect key="frame" x="0.0" y="18" width="332" height="16"/>
-                                    <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                                <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="LtB-cQ-hsK" userLabel="Top Label Stack View">
+                                    <rect key="frame" x="0.0" y="0.0" width="332" height="36.5"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qti-dQ-ryI" userLabel="Name Label">
+                                            <rect key="frame" x="0.0" y="0.0" width="332" height="20.5"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9kP-iV-kxf" userLabel="Role Label">
+                                            <rect key="frame" x="0.0" y="20.5" width="332" height="16"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </stackView>
+                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" image="woo-incorrect-role-error" translatesAutoresizingMaskIntoConstraints="NO" id="w7Q-ul-F52" userLabel="Error Image View">
+                                    <rect key="frame" x="0.0" y="60.5" width="332" height="206"/>
+                                </imageView>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="middleTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nPH-Hd-nTV" userLabel="Description Label">
+                                    <rect key="frame" x="0.0" y="290.5" width="332" height="20.5"/>
+                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                             </subviews>
-                            <color key="backgroundColor" name="Celadon10"/>
                         </stackView>
-                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" image="woo-incorrect-role-error" translatesAutoresizingMaskIntoConstraints="NO" id="w7Q-ul-F52" userLabel="Error Image View">
-                            <rect key="frame" x="0.0" y="58" width="332" height="206"/>
-                        </imageView>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="nPH-Hd-nTV" userLabel="Description Label">
-                            <rect key="frame" x="0.0" y="288" width="332" height="20.5"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                            <nil key="textColor"/>
-                            <nil key="highlightedColor"/>
-                        </label>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UjK-5a-gOc">
-                            <rect key="frame" x="0.0" y="332.5" width="332" height="30"/>
+                        <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="UjK-5a-gOc">
+                            <rect key="frame" x="157.5" y="501.5" width="99" height="32"/>
+                            <constraints>
+                                <constraint firstAttribute="width" relation="lessThanOrEqual" constant="398" id="eiJ-fe-mF0"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                             <state key="normal" title="Action Button"/>
                         </button>
                     </subviews>
-                    <color key="backgroundColor" name="Gray40"/>
-                </stackView>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <constraints>
+                        <constraint firstItem="UjK-5a-gOc" firstAttribute="centerX" secondItem="U2J-WF-pcf" secondAttribute="centerX" id="FIW-yW-kGi"/>
+                        <constraint firstItem="xZF-VZ-vTL" firstAttribute="top" relation="greaterThanOrEqual" secondItem="U2J-WF-pcf" secondAttribute="top" constant="8" id="HSI-gY-tY3"/>
+                        <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="UjK-5a-gOc" secondAttribute="bottom" constant="16" id="IPs-OG-tu4"/>
+                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="UjK-5a-gOc" secondAttribute="trailing" constant="8" id="Pml-DI-rWB"/>
+                        <constraint firstAttribute="trailing" secondItem="xZF-VZ-vTL" secondAttribute="trailing" constant="41" id="amH-b6-qf2"/>
+                        <constraint firstItem="xZF-VZ-vTL" firstAttribute="leading" secondItem="U2J-WF-pcf" secondAttribute="leading" constant="41" id="fee-El-ZNE"/>
+                        <constraint firstItem="UjK-5a-gOc" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="U2J-WF-pcf" secondAttribute="leading" constant="8" id="iAw-w5-jea"/>
+                        <constraint firstItem="xZF-VZ-vTL" firstAttribute="centerY" secondItem="U2J-WF-pcf" secondAttribute="centerY" priority="750" constant="-24" id="wLI-4N-MXz"/>
+                        <constraint firstItem="UjK-5a-gOc" firstAttribute="top" secondItem="xZF-VZ-vTL" secondAttribute="bottom" constant="24" id="yJR-iK-mZx"/>
+                    </constraints>
+                </view>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="k2k-VX-DIG" userLabel="Action Stack View">
                     <rect key="frame" x="16" y="736" width="382" height="116"/>
                     <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="12a-pO-tKA" userLabel="Primary Action Button" customClass="NUXButton" customModule="WordPressAuthenticator">
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="12a-pO-tKA" userLabel="Primary Action Button">
                             <rect key="frame" x="0.0" y="0.0" width="382" height="50"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="50" id="VSp-UD-zdS"/>
                             </constraints>
+                            <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                             <state key="normal" title="Primary Action Button"/>
                         </button>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="B7H-Ml-KIN" userLabel="Secondary Action Button" customClass="NUXButton" customModule="WordPressAuthenticator">
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="B7H-Ml-KIN" userLabel="Secondary Action Button">
                             <rect key="frame" x="0.0" y="66" width="382" height="50"/>
+                            <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                             <state key="normal" title="Secondary Action Button"/>
                         </button>
                     </subviews>
@@ -87,12 +106,12 @@
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
+                <constraint firstItem="U2J-WF-pcf" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="1iC-Dr-GrJ"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="k2k-VX-DIG" secondAttribute="bottom" constant="10" id="2LQ-vM-Emq"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="xZF-VZ-vTL" secondAttribute="trailing" constant="41" id="GV4-yj-9LU"/>
+                <constraint firstItem="U2J-WF-pcf" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="JKO-bi-eM0"/>
+                <constraint firstItem="k2k-VX-DIG" firstAttribute="top" secondItem="U2J-WF-pcf" secondAttribute="bottom" id="Jqo-se-c1i"/>
                 <constraint firstItem="k2k-VX-DIG" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="TpY-t0-XXR"/>
-                <constraint firstItem="xZF-VZ-vTL" firstAttribute="top" relation="greaterThanOrEqual" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="8" id="UW0-f9-F4F"/>
-                <constraint firstItem="xZF-VZ-vTL" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="41" id="dda-X7-kac"/>
-                <constraint firstItem="xZF-VZ-vTL" firstAttribute="centerY" secondItem="fnl-2z-Ty3" secondAttribute="centerY" constant="-20" id="ff4-nL-UNA"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="U2J-WF-pcf" secondAttribute="trailing" id="UcS-h2-E0Z"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="k2k-VX-DIG" secondAttribute="trailing" constant="16" id="jKk-KK-qLP"/>
             </constraints>
             <point key="canvasLocation" x="131.8840579710145" y="124.55357142857142"/>
@@ -100,12 +119,6 @@
     </objects>
     <resources>
         <image name="woo-incorrect-role-error" width="233" height="206"/>
-        <namedColor name="Celadon10">
-            <color red="0.396078431372549" green="0.85098039215686272" blue="0.72549019607843135" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
-        <namedColor name="Gray40">
-            <color red="0.49803921568627452" green="0.50196078431372548" blue="0.54117647058823526" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

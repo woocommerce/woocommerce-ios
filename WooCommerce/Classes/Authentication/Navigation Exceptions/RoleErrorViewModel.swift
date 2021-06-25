@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-struct RoleErrorViewModel {
+final class RoleErrorViewModel {
     /// The name of the user on the store.
     private(set) var nameText: String
 
@@ -33,6 +33,12 @@ struct RoleErrorViewModel {
     /// Provides the title for a secondary action button
     let secondaryButtonTitle: String = .secondaryButtonTitle
 
+    /// Provides the URL destination when the link button is tapped
+    private let linkDestinationURL = WooConstants.URLs.rolesAndPermissionsInfo.asURL()
+
+    /// An object capable of executing display-related tasks based on updates
+    /// from the view model.
+    weak var output: RoleErrorOutput?
 
     // MARK: Lifecycle
 
@@ -44,18 +50,16 @@ struct RoleErrorViewModel {
         roleText = humanizedRolesText(from: roles)
     }
 
-    /// Executes action associated to a tap on the primary button
     func didTapPrimaryButton() {
-        // TODO
+        // TODO: Implement retry functionality
     }
 
-    /// Executes action associated to a tap on the primary button
     func didTapSecondaryButton() {
-        // TODO
+        // TODO: Implement log out functionality
     }
 
     func didTapAuxiliaryButton() {
-        // TODO
+        output?.displayWebContent(for: linkDestinationURL)
     }
 
     // MARK: Private Helpers

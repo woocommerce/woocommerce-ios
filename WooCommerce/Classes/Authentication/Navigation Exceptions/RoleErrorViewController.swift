@@ -1,5 +1,18 @@
 import UIKit
+import SafariServices
 import WordPressAuthenticator
+
+/// RoleErrorOutput enables communication from the view model to the view controller.
+/// Note that it's important for the view model to weakly retain the view controller.
+protocol RoleErrorOutput: class {
+    /// Updates title and subtitle label text with latest content.
+    func refreshTitleLabels()
+
+    /// Tells the output to display a web content.
+    func displayWebContent(for url: URL)
+}
+
+// MARK: - View Controller
 
 class RoleErrorViewController: UIViewController {
     // MARK: IBOutlets
@@ -23,6 +36,7 @@ class RoleErrorViewController: UIViewController {
     init(viewModel: RoleErrorViewModel) {
         self.viewModel = viewModel
         super.init(nibName: Self.nibName, bundle: nil)
+        viewModel.output = self
     }
 
     required init?(coder: NSCoder) {
@@ -42,7 +56,7 @@ class RoleErrorViewController: UIViewController {
         // top title labels
         titleLabel.applyHeadlineStyle()
         subtitleLabel.applySecondaryFootnoteStyle()
-        updateTitleLabels()
+        refreshTitleLabels()
 
         // illustration
         imageView.image = viewModel.image
@@ -54,14 +68,6 @@ class RoleErrorViewController: UIViewController {
         configureLinkButton()
         configurePrimaryActionButton()
         configureSecondaryActionButton()
-    }
-
-    /// this method may be repeatedly called by the view model to update text contents.
-    /// these are the only components that may change on runtime, e.g. the role changed
-    /// to something else, but still incorrect; or the user updated their display name.
-    func updateTitleLabels() {
-        titleLabel.text = viewModel.nameText
-        subtitleLabel.text = viewModel.roleText
     }
 
     func configureDescriptionLabel() {
@@ -118,5 +124,21 @@ class RoleErrorViewController: UIViewController {
         // buttons
         primaryActionButton.applyPrimaryButtonStyle()
         secondaryActionButton.applySecondaryButtonStyle()
+    }
+}
+
+// MARK: - RoleErrorOutput
+
+extension RoleErrorViewController: RoleErrorOutput {
+    func refreshTitleLabels() {
+        // these are the only components that may change on runtime, e.g. the role changed
+        // to something else, but still incorrect; or the user updated their display name.
+        titleLabel.text = viewModel.nameText
+        subtitleLabel.text = viewModel.roleText
+    }
+
+    func displayWebContent(for url: URL) {
+        let safariViewController = SFSafariViewController(url: url)
+        present(safariViewController, animated: true, completion: nil)
     }
 }

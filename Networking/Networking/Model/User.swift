@@ -4,7 +4,6 @@ import Codegen
 /// Site-specific User representation
 ///
 public struct User: Decodable, GeneratedFakeable {
-
     /// Local ID of the account on the user's site
     ///
     public let localID: Int64
@@ -40,7 +39,6 @@ public struct User: Decodable, GeneratedFakeable {
     /// User's roles
     ///
     public let roles: [String]
-
 
     /// Designated Initializer
     ///
@@ -82,11 +80,9 @@ public struct User: Decodable, GeneratedFakeable {
                   roles: try container.decode([String].self, forKey: .roles)
         )
     }
-
 }
 
 private extension User {
-
     enum CodingKeys: String, CodingKey {
         case localID    = "id"
         case siteID
@@ -98,7 +94,6 @@ private extension User {
         case nickname
         case roles
     }
-
 }
 
 // MARK: - Comparable Conformance

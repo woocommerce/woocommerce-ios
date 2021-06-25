@@ -3,7 +3,6 @@ import Foundation
 /// User: Remote Endpoints
 ///
 public final class UserRemote: Remote {
-
     /// Loads the User associated with the site ID.
     /// This should be able to fetch from both dotcom and Jetpack-connected sites.
     /// - Parameters:
@@ -20,5 +19,4 @@ public final class UserRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
-
 }

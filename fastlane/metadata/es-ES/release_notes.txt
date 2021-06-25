@@ -1,0 +1,1 @@
+Ahora, ya no tendrás que hacer tantos toques para llegar a los atributos de un producto variable, ya que aparece una lista directamente en los detalles del producto. También hemos mejorado la carga de los detalles de un pedido, tanto en el apartado visual como en otros aspectos, ¡esperamos que notes las mejoras!

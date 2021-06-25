@@ -73,7 +73,7 @@ public enum ShippingLabelAction: Action {
                                orderID: Int64,
                                originAddress: ShippingLabelAddress,
                                destinationAddress: ShippingLabelAddress,
-                               packages: [ShippingLabelPackageSelected],
+                               packages: [ShippingLabelPackagePurchase],
                                emailCustomerReceipt: Bool,
                                completion: (Result<[ShippingLabel], Error>) -> Void)
 }

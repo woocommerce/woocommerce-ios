@@ -39,10 +39,8 @@ public final class CoreDataManager: StorageManagerType {
         } catch {
             // We'll throw a fatalError() because we can't really proceed without a
             // ManagedObjectModel.
-            let message = "Failed to load models inventory using packageName \(name). Error: \(error)"
-            crashLogger.logMessageAndWait(message, properties: nil, level: .fatal)
-
-            fatalError(message)
+            let error = CoreDataManagerError.modelInventoryLoadingFailed(name, error)
+            crashLogger.logFatalErrorAndExit(error, userInfo: nil)
         }
     }
 
@@ -100,22 +98,19 @@ public final class CoreDataManager: StorageManagerType {
 
             /// Retry!
             ///
-            container.loadPersistentStores { [weak self] (storeDescription, error) in
-                guard let error = error as NSError? else {
+            container.loadPersistentStores { [weak self] (storeDescription, underlyingError) in
+                guard let underlyingError = underlyingError as NSError? else {
                     return
                 }
 
-                let message = "☠️ [CoreDataManager] Recovery Failed!"
-
+                let error = CoreDataManagerError.recoveryFailed
                 let logProperties: [String: Any?] = ["persistentStoreLoadingError": persistentStoreLoadingError,
                                                      "persistentStoreRemovalError": persistentStoreRemovalError,
-                                                     "retryError": error,
+                                                     "retryError": underlyingError,
                                                      "appState": UIApplication.shared.applicationState.rawValue,
                                                      "migrationMessages": migrationDebugMessages]
-                self?.crashLogger.logMessageAndWait(message,
-                                                    properties: logProperties.compactMapValues { $0 },
-                                                    level: .fatal)
-                fatalError(message)
+                self?.crashLogger.logFatalErrorAndExit(error,
+                                                  userInfo: logProperties.compactMapValues { $0 })
             }
 
             let logProperties: [String: Any?] = ["persistentStoreLoadingError": persistentStoreLoadingError,
@@ -243,5 +238,23 @@ extension CoreDataManager {
         }
 
         return url.appendingPathComponent(name + ".sqlite")
+    }
+}
+
+// MARK: - Errors
+//
+enum CoreDataManagerError: Error {
+    case modelInventoryLoadingFailed(String, Error)
+    case recoveryFailed
+}
+
+extension CoreDataManagerError: CustomStringConvertible {
+    var description: String {
+        switch self {
+        case .modelInventoryLoadingFailed(let name, let underlyingError):
+            return "Failed to load models inventory using packageName \(name). Error: \(underlyingError)"
+        case .recoveryFailed:
+            return "☠️ [CoreDataManager] Recovery Failed!"
+        }
     }
 }

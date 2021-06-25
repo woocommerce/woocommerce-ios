@@ -54,4 +54,19 @@ final class UserStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    func test_retrieveUser_properly_returns_error() {
+        // Given
+        let store = UserStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result: Result<User, Error> = waitFor { promise in
+            let action = UserAction.retrieveUser(siteID: self.testSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
 }

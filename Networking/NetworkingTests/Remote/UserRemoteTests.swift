@@ -5,7 +5,6 @@ import XCTest
 /// UserRemote Unit Tests
 ///
 final class UserRemoteTests: XCTestCase {
-
     /// Dummy Network Wrapper
     ///
     let network = MockNetwork()
@@ -36,5 +35,19 @@ final class UserRemoteTests: XCTestCase {
         XCTAssertEqual(user.siteID, siteID)
     }
 
+    func test_loadUserInfo_properly_relays_errors() {
+        // Given
+        let remote = UserRemote(network: network)
+        let siteID: Int64 = 1234
 
+        // When
+        let result: Result<User, Error> = waitFor { promise in
+            remote.loadUserInfo(for: siteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
 }

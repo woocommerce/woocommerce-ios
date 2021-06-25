@@ -2,9 +2,6 @@ import Foundation
 import UIKit
 
 struct RoleErrorViewModel {
-
-    // MARK: Properties
-
     /// The name of the user on the store.
     private(set) var nameText: String
 
@@ -19,10 +16,13 @@ struct RoleErrorViewModel {
     private(set) var roleText: String = ""
 
     /// An illustration accompanying the error.
-    let image: UIImage = .incorrectRoleError
+    /// This is intended as a computed property to adjust to runtime color appearance changes.
+    var image: UIImage {
+        .incorrectRoleError
+    }
 
     /// Extended description of the error.
-    let text: NSAttributedString = .init(string: .errorMessageText)
+    let descriptionText: String = .errorMessageText
 
     /// Provides the title for an auxiliary button
     let auxiliaryButtonTitle: String = .linkButtonTitle
@@ -70,13 +70,11 @@ struct RoleErrorViewModel {
             return $0.components(separatedBy: "_").map { $0.capitalized }.joined(separator: " ")
         }.joined(separator: ", ")
     }
-
 }
 
 // MARK: - Localization
 
 private extension String {
-
     static let errorMessageText = NSLocalizedString("This app supports only Administrator and Shop Manager user roles. "
                                                         + "Please contact your store owner to upgrade your role.",
                                                     comment: "Message explaining more detail on why the user's role is incorrect.")

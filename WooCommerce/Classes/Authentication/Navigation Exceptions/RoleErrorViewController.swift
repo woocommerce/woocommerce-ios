@@ -2,19 +2,17 @@ import UIKit
 import WordPressAuthenticator
 
 class RoleErrorViewController: UIViewController {
-
     // MARK: IBOutlets
 
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var subtitleLabel: UILabel!
 
     @IBOutlet weak var imageView: UIImageView!
-
     @IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var linkButton: UIButton!
 
-    @IBOutlet weak var primaryActionButton: NUXButton!
-    @IBOutlet weak var secondaryActionButton: NUXButton!
+    @IBOutlet weak var primaryActionButton: UIButton!
+    @IBOutlet weak var secondaryActionButton: UIButton!
 
     // MARK: Properties
 
@@ -37,22 +35,20 @@ class RoleErrorViewController: UIViewController {
         configureViews()
     }
 
-
     // MARK: View Configurations
 
     /// styles up the views. this should ideally only be called once.
     func configureViews() {
         // top title labels
         titleLabel.applyHeadlineStyle()
-        subtitleLabel.applyFootnoteStyle()
+        subtitleLabel.applySecondaryFootnoteStyle()
         updateTitleLabels()
 
-        // center illustration
+        // illustration
         imageView.image = viewModel.image
 
         // description
-        descriptionLabel.applyBodyStyle()
-        descriptionLabel.attributedText = viewModel.text
+        configureDescriptionLabel()
 
         // button configurations
         configureLinkButton()
@@ -66,6 +62,11 @@ class RoleErrorViewController: UIViewController {
     func updateTitleLabels() {
         titleLabel.text = viewModel.nameText
         subtitleLabel.text = viewModel.roleText
+    }
+
+    func configureDescriptionLabel() {
+        descriptionLabel.applyBodyStyle()
+        descriptionLabel.attributedText = .init(string: viewModel.descriptionText)
     }
 
     func configureLinkButton() {
@@ -92,4 +93,30 @@ class RoleErrorViewController: UIViewController {
         }
     }
 
+    // MARK: Trait Change Adjustments
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        // hide image in compact height sizes (e.g. landscape iphones).
+        // with limited space, text description should have higher priority.
+        imageView.isHidden = traitCollection.verticalSizeClass == .compact
+
+        // handle dynamic color appearance changes.
+        if let previousTrait = previousTraitCollection,
+           previousTrait.hasDifferentColorAppearance(comparedTo: traitCollection) {
+            updateViewAppearances()
+        }
+    }
+
+    /// update views that can adjust to color appearance changes.
+    /// this method is called when color appearance changes are detected in `traitCollectionDidChange`.
+    private func updateViewAppearances() {
+        // illustrations
+        imageView.image = viewModel.image
+
+        // buttons
+        primaryActionButton.applyPrimaryButtonStyle()
+        secondaryActionButton.applySecondaryButtonStyle()
+    }
 }

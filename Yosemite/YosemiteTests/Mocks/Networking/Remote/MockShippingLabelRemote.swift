@@ -187,7 +187,7 @@ final class MockShippingLabelRemote {
                                    orderID: Int64,
                                    originAddress: ShippingLabelAddress,
                                    destinationAddress: ShippingLabelAddress,
-                                   packages: [ShippingLabelPackageSelected],
+                                   packages: [ShippingLabelPackagePurchase],
                                    emailCustomerReceipt: Bool,
                                    thenReturn result: Result<[ShippingLabelPurchase], Error>) {
         let key = PurchaseShippingLabelResultKey(siteID: siteID)
@@ -360,7 +360,7 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
                                orderID: Int64,
                                originAddress: ShippingLabelAddress,
                                destinationAddress: ShippingLabelAddress,
-                               packages: [ShippingLabelPackageSelected],
+                               packages: [ShippingLabelPackagePurchase],
                                emailCustomerReceipt: Bool,
                                completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in

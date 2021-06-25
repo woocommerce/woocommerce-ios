@@ -225,7 +225,7 @@ private extension ShippingLabelStore {
                                orderID: Int64,
                                originAddress: ShippingLabelAddress,
                                destinationAddress: ShippingLabelAddress,
-                               packages: [ShippingLabelPackageSelected],
+                               packages: [ShippingLabelPackagePurchase],
                                emailCustomerReceipt: Bool,
                                completion: @escaping (Result<[ShippingLabel], Error>) -> Void) {
         var labelPurchaseIDs: [Int64] = []

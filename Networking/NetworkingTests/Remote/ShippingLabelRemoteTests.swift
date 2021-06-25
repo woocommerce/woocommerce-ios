@@ -378,7 +378,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
                                          orderID: self.sampleOrderID,
                                          originAddress: ShippingLabelAddress.fake(),
                                          destinationAddress: ShippingLabelAddress.fake(),
-                                         packages: [ShippingLabelPackageSelected.fake()],
+                                         packages: [ShippingLabelPackagePurchase.fake()],
                                          emailCustomerReceipt: true) { (result) in
                 promise(result)
             }
@@ -400,7 +400,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
                                          orderID: self.sampleOrderID,
                                          originAddress: ShippingLabelAddress.fake(),
                                          destinationAddress: ShippingLabelAddress.fake(),
-                                         packages: [ShippingLabelPackageSelected.fake()],
+                                         packages: [ShippingLabelPackagePurchase.fake()],
                                          emailCustomerReceipt: true) { result in
                 promise(result)
             }

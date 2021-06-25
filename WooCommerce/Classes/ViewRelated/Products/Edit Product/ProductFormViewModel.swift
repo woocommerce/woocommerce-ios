@@ -527,7 +527,7 @@ private extension ProductFormViewModel {
             guard let self = self, case .success(let addOnsEnabled) = result else {
                 return
             }
-            self.isAddOnsFeatureEnabled = addOnsEnabled && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.addOnsI1)
+            self.isAddOnsFeatureEnabled = addOnsEnabled
         }
         stores.dispatch(action)
     }

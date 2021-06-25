@@ -33,6 +33,9 @@ final class RoleErrorViewModel {
     /// Provides the title for a secondary action button
     let secondaryButtonTitle: String = .secondaryButtonTitle
 
+    /// Provides the title for the help navigation bar button
+    let helpBarButtonTitle: String = .helpBarButtonItemTitle
+
     /// Provides the URL destination when the link button is tapped
     private let linkDestinationURL = WooConstants.URLs.rolesAndPermissionsInfo.asURL()
 
@@ -94,4 +97,6 @@ private extension String {
     static let secondaryButtonTitle = NSLocalizedString("Log In With Another Account",
                                                         comment: "Action button that will restart the login flow."
                                                         + "Presented when logging in with a site address that does not have a valid Jetpack installation")
+
+    static let helpBarButtonItemTitle = NSLocalizedString("Help", comment: "Help button")
 }

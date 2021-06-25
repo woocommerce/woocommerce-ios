@@ -53,6 +53,9 @@ class RoleErrorViewController: UIViewController {
 
     /// styles up the views. this should ideally only be called once.
     func configureViews() {
+        // set up navigation items
+        addHelpButtonToNavigationItem()
+
         // top title labels
         titleLabel.applyHeadlineStyle()
         subtitleLabel.applySecondaryFootnoteStyle()
@@ -124,6 +127,20 @@ class RoleErrorViewController: UIViewController {
         // buttons
         primaryActionButton.applyPrimaryButtonStyle()
         secondaryActionButton.applySecondaryButtonStyle()
+    }
+
+    // MARK: Private helpers
+
+    private func addHelpButtonToNavigationItem() {
+        let helpBarButtonItem = UIBarButtonItem(title: viewModel.helpBarButtonTitle,
+                                                style: .plain,
+                                                target: self,
+                                                action: #selector(helpButtonWasPressed))
+        navigationItem.rightBarButtonItem = helpBarButtonItem
+    }
+
+    @objc private func helpButtonWasPressed() {
+        ServiceLocator.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin)
     }
 }
 

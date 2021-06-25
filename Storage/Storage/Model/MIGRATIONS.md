@@ -2,6 +2,11 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 53 (Release 7.0.0.0)
+- @pmusolino 2021-06-24
+- Added `Country` entity
+- Added `StateOfACountry` entity
+
 ## Model 52 (Release 6.9.0.0)
 - @allendav 2021-06-02
 - Added `PaymentGatewayAccount` entity

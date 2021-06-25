@@ -463,6 +463,15 @@ public extension StorageType {
         return firstObject(ofType: PaymentGateway.self, matching: predicate)
     }
 
+    // MARK: - Data
+
+    /// Returns all the countries stored.
+    ///
+    func loadCountries() -> [Country] {
+        let descriptor = NSSortDescriptor(keyPath: \Country.name, ascending: true)
+        return allObjects(ofType: Country.self, matching: nil, sortedBy: [descriptor])
+    }
+
     // MARK: - Shipping Labels
 
     /// Returns all stored shipping labels for a site and order.

@@ -35,9 +35,8 @@ target 'WooCommerce' do
   # ====================
   #
 
-  # Use the latest bugfix for coretelephony
-  #pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => 'add/application-state-tag'
-  pod 'Automattic-Tracks-iOS', '~> 0.8.0'
+  #pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => 'add/build-configuration'
+  pod 'Automattic-Tracks-iOS', '~> 0.9.0-beta.1'
 
   pod 'Gridicons', '~> 1.0'
 
@@ -257,6 +256,16 @@ post_install do |installer|
          pod_ios_deployment_target = Gem::Version.new(configuration.build_settings['IPHONEOS_DEPLOYMENT_TARGET'])
          configuration.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET' if pod_ios_deployment_target <= app_ios_deployment_target
       end
+  end
+
+  # Flag Alpha builds for Tracks
+  # ============================
+  installer.pods_project.targets.each do |target|
+    next unless target.name == "Automattic-Tracks-iOS"
+    target.build_configurations.each do |config|
+      next unless config.name == "Release-Alpha"
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', 'ALPHA=1']
+    end
   end
 end
 

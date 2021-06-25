@@ -9,35 +9,29 @@ struct RoleErrorViewModel {
     private(set) var nameText: String
 
     /// Assigned roles text for the user.
-    private var roles: [String] {
+    private var roles: [String] = [] {
         didSet {
-            /// try to "humanize" the roles. e.g., "shop_manager" to "Shop Manager".
-            /// given multiple roles, it will all be joined with a comma separator.
-            roleText = roles.map {
-                guard $0.contains("_") else {
-                    return $0
-                }
-                return $0.components(separatedBy: "_").map { $0.capitalized }.joined(separator: " ")
-            }.joined(separator: ", ")
+            roleText = humanizedRolesText(from: roles)
         }
     }
 
-    var roleText: String = ""
+    /// Presentable version of the user's roles.
+    private(set) var roleText: String = ""
 
     /// An illustration accompanying the error.
-    var image: UIImage = .incorrectRoleError
+    let image: UIImage = .incorrectRoleError
 
     /// Extended description of the error.
-    var text: NSAttributedString = .init(string: .errorMessageText)
+    let text: NSAttributedString = .init(string: .errorMessageText)
 
     /// Provides the title for an auxiliary button
-    var auxiliaryButtonTitle: String = .linkButtonTitle
+    let auxiliaryButtonTitle: String = .linkButtonTitle
 
     /// Provides the title for a primary action button
-    var primaryButtonTitle: String = .primaryButtonTitle
+    let primaryButtonTitle: String = .primaryButtonTitle
 
     /// Provides the title for a secondary action button
-    var secondaryButtonTitle: String = .secondaryButtonTitle
+    let secondaryButtonTitle: String = .secondaryButtonTitle
 
 
     // MARK: Lifecycle
@@ -45,6 +39,9 @@ struct RoleErrorViewModel {
     init(displayName: String, roles: [String]) {
         self.nameText = displayName
         self.roles = roles
+
+        // Note: assignment during initialization will not trigger didSet.
+        roleText = humanizedRolesText(from: roles)
     }
 
     /// Executes action associated to a tap on the primary button
@@ -61,6 +58,19 @@ struct RoleErrorViewModel {
         // TODO
     }
 
+    // MARK: Private Helpers
+
+    /// try to "humanize" the roles. e.g., "shop_manager" to "Shop Manager".
+    /// given multiple roles, it will all be joined with a comma separator.
+    private func humanizedRolesText(from roles: [String]) -> String {
+        return roles.map {
+            guard $0.contains("_") else {
+                return $0.capitalized
+            }
+            return $0.components(separatedBy: "_").map { $0.capitalized }.joined(separator: " ")
+        }.joined(separator: ", ")
+    }
+
 }
 
 // MARK: - Localization
@@ -68,7 +78,7 @@ struct RoleErrorViewModel {
 private extension String {
 
     static let errorMessageText = NSLocalizedString("This app supports only Administrator and Shop Manager user roles. "
-                                                        + "Please contact your store owner to upgrade your role",
+                                                        + "Please contact your store owner to upgrade your role.",
                                                     comment: "Message explaining more detail on why the user's role is incorrect.")
 
     static let linkButtonTitle = NSLocalizedString("Learn more about roles and permissions",

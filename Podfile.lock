@@ -6,11 +6,11 @@ PODS:
     - AppAuth/ExternalUserAgent (= 1.4.0)
   - AppAuth/Core (1.4.0)
   - AppAuth/ExternalUserAgent (1.4.0)
-  - Automattic-Tracks-iOS (0.6.0):
+  - Automattic-Tracks-iOS (0.9.0-beta.1):
     - CocoaLumberjack (~> 3)
     - Reachability (~> 3)
-    - Sentry (~> 4)
-    - Sodium-Fork (= 0.8.2)
+    - Sentry (~> 6)
+    - Sodium (>= 0.9.1)
     - UIDeviceIdentifier (~> 1)
   - Charts (3.6.0):
     - Charts/Core (= 3.6.0)
@@ -40,10 +40,10 @@ PODS:
   - NSObject-SafeExpectations (0.0.4)
   - "NSURL+IDN (0.4)"
   - Reachability (3.2)
-  - Sentry (4.5.0):
-    - Sentry/Core (= 4.5.0)
-  - Sentry/Core (4.5.0)
-  - Sodium-Fork (0.8.2)
+  - Sentry (6.2.1):
+    - Sentry/Core (= 6.2.1)
+  - Sentry/Core (6.2.1)
+  - Sodium (0.9.1)
   - Sourcery (1.0.3)
   - StripeTerminal (1.4.0)
   - SVProgressHUD (2.2.5)
@@ -73,7 +73,7 @@ PODS:
   - WordPressShared (1.15.0):
     - CocoaLumberjack (~> 3.4)
     - FormatterKit/TimeIntervalFormatter (~> 1.8)
-  - WordPressUI (1.7.2)
+  - WordPressUI (1.12.1-beta.3)
   - Wormholy (1.6.4)
   - WPMediaPicker (1.7.1)
   - wpxmlrpc (0.9.0)
@@ -95,7 +95,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.8)
-  - Automattic-Tracks-iOS (~> 0.6.0)
+  - Automattic-Tracks-iOS (~> 0.9.0-beta.1)
   - Charts (~> 3.6.0)
   - CocoaLumberjack (~> 3.5)
   - CocoaLumberjack/Swift (~> 3.5)
@@ -108,7 +108,7 @@ DEPENDENCIES:
   - WordPressAuthenticator (~> 1.38.0)
   - WordPressKit (~> 4.32.0)
   - WordPressShared (~> 1.15)
-  - WordPressUI (~> 1.7.2)
+  - WordPressUI (~> 1.12.1-beta.3)
   - Wormholy (~> 1.6.4)
   - WPMediaPicker (~> 1.7.1)
   - XLPagerTabStrip (~> 9.0)
@@ -119,7 +119,6 @@ SPEC REPOS:
     - WordPressAuthenticator
     - WordPressKit
     - WordPressShared
-    - WordPressUI
   trunk:
     - 1PasswordExtension
     - Alamofire
@@ -139,13 +138,14 @@ SPEC REPOS:
     - "NSURL+IDN"
     - Reachability
     - Sentry
-    - Sodium-Fork
+    - Sodium
     - Sourcery
     - StripeTerminal
     - SVProgressHUD
     - UIDeviceIdentifier
     - WordPress-Aztec-iOS
     - WordPress-Editor-iOS
+    - WordPressUI
     - Wormholy
     - WPMediaPicker
     - wpxmlrpc
@@ -162,7 +162,7 @@ SPEC CHECKSUMS:
   1PasswordExtension: f97cc80ae58053c331b2b6dc8843ba7103b33794
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
-  Automattic-Tracks-iOS: c525679cbf91ac8bcbcbed01bdaa564867173182
+  Automattic-Tracks-iOS: 59b9722299d6adbb2e4bc643553d84b41170d075
   Charts: b1e3a1f5a1c9ba5394438ca3b91bd8c9076310af
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   FormatterKit: 184db51bf120b633693a73624a4cede89ec51a41
@@ -176,8 +176,8 @@ SPEC CHECKSUMS:
   NSObject-SafeExpectations: ab8fe623d36b25aa1f150affa324e40a2f3c0374
   "NSURL+IDN": afc873e639c18138a1589697c3add197fe8679ca
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  Sentry: ab6c209f23700d1460691dbc90e19ed0a05d496b
-  Sodium-Fork: 45fe3a7c675898ca0635af4eadcb34985477e868
+  Sentry: 9b922b396b0e0bca8516a10e36b0ea3ebea5faf7
+  Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
   Sourcery: 70a6048014bd4f37ea80e6bd4354d47bf3b760e1
   StripeTerminal: be33ec308dba387ce707bf08aafa90debf29ea7f
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
@@ -187,7 +187,7 @@ SPEC CHECKSUMS:
   WordPressAuthenticator: 4ccd7f41bae37247883922ad92a14f18cc759bf3
   WordPressKit: 438af1e601ca74ff0d68efa17b4528cb7d8638a7
   WordPressShared: e1915cf3b4ac33f41c47610693b9ca30c0cdab45
-  WordPressUI: a50ea1786cb75330c8cfafe0c97a88db8d796699
+  WordPressUI: cf3b3ef744663811a8d8a9844f42386e1826f512
   Wormholy: 2e70f64227e010d363f8d33268369f77faf12471
   WPMediaPicker: 46ae5807c8f64d30a39c28812ad150837a424ed2
   wpxmlrpc: bf55a43a7e710bd2a4fb8c02dfe83b1246f14f13
@@ -200,6 +200,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: 7323ee6703bf1714a01eca73fc930e96657d5634
+PODFILE CHECKSUM: ab3c7a0484657da5aa58fda8681b8a4b623070a5
 
 COCOAPODS: 1.10.1

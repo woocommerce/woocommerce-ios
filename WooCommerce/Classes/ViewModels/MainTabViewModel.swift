@@ -147,7 +147,7 @@ private extension MainTabViewModel {
 
         let action = AppSettingsAction.setInstallationDateIfNecessary(date: Date()) { result in
             if case let .failure(error) = result {
-                CrashLogging.logError(error)
+                ServiceLocator.crashLogging.logError(error)
             }
         }
         storesManager.dispatch(action)

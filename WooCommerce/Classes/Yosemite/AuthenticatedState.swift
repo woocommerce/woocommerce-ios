@@ -34,6 +34,7 @@ class AuthenticatedState: StoresManagerState {
             AddOnGroupStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             AvailabilityStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            DataStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             MediaStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationCountStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
@@ -58,6 +59,7 @@ class AuthenticatedState: StoresManagerState {
             SitePostStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network),
             TaxClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            UserStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CardPresentPaymentStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network,
@@ -66,7 +68,7 @@ class AuthenticatedState: StoresManagerState {
                          storageManager: storageManager,
                          network: network,
                          receiptPrinterService: ServiceLocator.receiptPrinterService,
-                         fileStorage: PListFileStorage())
+                         fileStorage: PListFileStorage()),
         ]
 
         startListeningToNotifications()

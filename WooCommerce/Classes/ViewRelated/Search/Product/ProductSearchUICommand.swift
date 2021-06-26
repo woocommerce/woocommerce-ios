@@ -53,12 +53,12 @@ final class ProductSearchUICommand: SearchUICommand {
         let action = ProductAction.searchProducts(siteID: siteID,
                                                   keyword: keyword,
                                                   pageNumber: pageNumber,
-                                                  pageSize: pageSize) { error in
-                                                    if let error = error {
-                                                        DDLogError("☠️ Product Search Failure! \(error)")
-                                                    }
+                                                  pageSize: pageSize) { result in
+            if case let .failure(error) = result {
+                DDLogError("☠️ Product Search Failure! \(error)")
+            }
 
-                                                    onCompletion?(error == nil)
+            onCompletion?(result.isSuccess)
         }
 
         ServiceLocator.stores.dispatch(action)

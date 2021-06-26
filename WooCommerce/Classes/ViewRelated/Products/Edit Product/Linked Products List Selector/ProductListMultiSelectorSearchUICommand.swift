@@ -75,12 +75,12 @@ final class ProductListMultiSelectorSearchUICommand: NSObject, SearchUICommand {
                                                   keyword: keyword,
                                                   pageNumber: pageNumber,
                                                   pageSize: pageSize,
-                                                  excludedProductIDs: excludedProductIDs) { error in
-                                                    if let error = error {
-                                                        DDLogError("☠️ Product Search Failure! \(error)")
-                                                    }
+                                                  excludedProductIDs: excludedProductIDs) { result in
+            if case let .failure(error) = result {
+                DDLogError("☠️ Product Search Failure! \(error)")
+            }
 
-                                                    onCompletion?(error == nil)
+            onCompletion?(result.isSuccess)
         }
         ServiceLocator.stores.dispatch(action)
     }

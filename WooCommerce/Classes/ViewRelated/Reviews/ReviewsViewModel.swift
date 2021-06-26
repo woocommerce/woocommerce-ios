@@ -31,6 +31,10 @@ final class ReviewsViewModel {
         return data.notifications.filter { $0.read == false }
     }
 
+    /// Set when sync fails, and used to display an error loading data banner
+    ///
+    var hasErrorLoadingData: Bool = false
+
     init(siteID: Int64, data: ReviewsDataSource) {
         self.siteID = siteID
         self.data = data
@@ -58,7 +62,7 @@ final class ReviewsViewModel {
         do {
             try data.observeReviews()
         } catch {
-            CrashLogging.logError(error)
+            ServiceLocator.crashLogging.logError(error)
         }
 
         // Reload table because observeReviews() executes performFetch()
@@ -92,6 +96,8 @@ extension ReviewsViewModel {
     func synchronizeReviews(pageNumber: Int = Settings.firstPage,
                             pageSize: Int = Settings.pageSize,
                             onCompletion: (() -> Void)? = nil) {
+        hasErrorLoadingData = false
+
         let group = DispatchGroup()
 
         group.enter()
@@ -121,11 +127,12 @@ extension ReviewsViewModel {
     private func synchronizeAllReviews(pageNumber: Int,
                                        pageSize: Int,
                                        onCompletion: (() -> Void)? = nil) {
-        let action = ProductReviewAction.synchronizeProductReviews(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { error in
+        let action = ProductReviewAction.synchronizeProductReviews(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] error in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing reviews: \(error)")
                 ServiceLocator.analytics.track(.reviewsListLoadFailed,
                                                withError: error)
+                self?.hasErrorLoadingData = true
             } else {
                 let loadingMore = pageNumber != Settings.firstPage
                 ServiceLocator.analytics.track(.reviewsListLoaded,
@@ -141,12 +148,13 @@ extension ReviewsViewModel {
     private func synchronizeProductsReviewed(onCompletion: @escaping () -> Void) {
         let reviewsProductIDs = data.reviewsProductsIDs
 
-        let action = ProductAction.retrieveProducts(siteID: siteID, productIDs: reviewsProductIDs) { result in
+        let action = ProductAction.retrieveProducts(siteID: siteID, productIDs: reviewsProductIDs) { [weak self] result in
             switch result {
             case .failure(let error):
                 DDLogError("⛔️ Error synchronizing products: \(error)")
                 ServiceLocator.analytics.track(.reviewsProductsLoadFailed,
                                                withError: error)
+                self?.hasErrorLoadingData = true
             case .success:
                 ServiceLocator.analytics.track(.reviewsProductsLoaded)
             }
@@ -160,11 +168,12 @@ extension ReviewsViewModel {
     /// Synchronizes the Notifications associated to the active WordPress.com account.
     ///
     private func synchronizeNotifications(onCompletion: (() -> Void)? = nil) {
-        let action = NotificationAction.synchronizeNotifications { error in
+        let action = NotificationAction.synchronizeNotifications { [weak self] error in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing notifications: \(error)")
                 ServiceLocator.analytics.track(.notificationsLoadFailed,
                                                withError: error)
+                self?.hasErrorLoadingData = true
             } else {
                 ServiceLocator.analytics.track(.notificationListLoaded)
             }

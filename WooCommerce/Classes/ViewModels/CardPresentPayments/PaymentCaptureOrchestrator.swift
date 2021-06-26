@@ -11,7 +11,7 @@ final class PaymentCaptureOrchestrator {
     private let celebration = PaymentCaptureCelebration()
 
     func collectPayment(for order: Order,
-                        paymentsAccount: WCPayAccount?,
+                        paymentsAccount: PaymentGatewayAccount?,
                         onPresentMessage: @escaping (String) -> Void,
                         onClearMessage: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
@@ -99,9 +99,9 @@ private extension PaymentCaptureOrchestrator {
                              order: Order,
                              paymentIntent: PaymentIntent,
                              onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
-        let action = WCPayAction.captureOrderPayment(siteID: siteID,
-                                                     orderID: order.orderID,
-                                                     paymentIntentID: paymentIntent.id) { [weak self] result in
+        let action = PaymentGatewayAccountAction.captureOrderPayment(siteID: siteID,
+                                                                     orderID: order.orderID,
+                                                                     paymentIntentID: paymentIntent.id) { [weak self] result in
 
             guard let receiptParameters = paymentIntent.receiptParameters() else {
                 let error = CardReaderServiceError.paymentCapture()
@@ -126,7 +126,7 @@ private extension PaymentCaptureOrchestrator {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func paymentParameters(order: Order, account: WCPayAccount?) -> PaymentParameters? {
+    func paymentParameters(order: Order, account: PaymentGatewayAccount?) -> PaymentParameters? {
         guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
             DDLogError("Error: attempted to collect payment for an order without a valid total.")
             return nil

@@ -165,7 +165,7 @@ private extension TopPerformerDataViewController {
         do {
             try resultsController.performFetch()
         } catch {
-            CrashLogging.logError(error)
+            ServiceLocator.crashLogging.logError(error)
         }
     }
 

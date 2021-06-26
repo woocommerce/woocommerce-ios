@@ -346,13 +346,14 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         appleUserID = nil
 
         ServiceLocator.stores.authenticate(credentials: .init(authToken: wpcom.authToken))
-        let action = AccountAction.synchronizeAccount { (account, error) in
-            if let account = account {
+        let action = AccountAction.synchronizeAccount { result in
+            switch result {
+            case .success(let account):
                 let credentials = Credentials(username: account.username, authToken: wpcom.authToken, siteAddress: wpcom.siteURL)
                 ServiceLocator.stores
                     .authenticate(credentials: credentials)
                     .synchronizeEntities(onCompletion: onCompletion)
-            } else {
+            case .failure:
                 ServiceLocator.stores.synchronizeEntities(onCompletion: onCompletion)
             }
         }

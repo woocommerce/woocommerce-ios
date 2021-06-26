@@ -355,9 +355,8 @@ private extension OrderDetailsViewController {
         }
 
         group.enter()
-        checkCardPresentPaymentEligibility {
-            group.leave()
-        }
+        refreshCardPresentPaymentEligibility()
+        group.leave()
 
         group.enter()
         syncSavedReceipts {_ in
@@ -427,11 +426,8 @@ private extension OrderDetailsViewController {
         }
     }
 
-    func checkCardPresentPaymentEligibility(onCompletion: (() -> Void)? = nil) {
-        viewModel.checkCardPaymentEligibility { [weak self] in
-            self?.reloadTableViewSectionsAndData()
-            onCompletion?()
-        }
+    func refreshCardPresentPaymentEligibility() {
+        viewModel.refreshCardPresentPaymentEligibility()
     }
 
     func checkOrderAddOnFeatureSwitchState(onCompletion: (() -> Void)? = nil) {
@@ -619,9 +615,14 @@ private extension OrderDetailsViewController {
     }
 
     private func collectPaymentForCurrentOrder() {
+        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+        let currencyCode = ServiceLocator.currencySettings.currencyCode
+        let unit = ServiceLocator.currencySettings.symbol(from: currencyCode)
+        let value = currencyFormatter.formatAmount(viewModel.order.total, with: unit) ?? ""
+
         paymentAlerts.readerIsReady(from: self,
                                     title: viewModel.collectPaymentFrom,
-                                    amount: viewModel.order.total)
+                                    amount: value)
 
         ServiceLocator.analytics.track(.collectPaymentTapped)
         viewModel.collectPayment { [weak self] readerEventMessage in
@@ -644,7 +645,7 @@ private extension OrderDetailsViewController {
             case .success(let receiptParameters):
                 ServiceLocator.analytics.track(.collectPaymentSuccess)
                 self.syncOrderAfterPaymentCollection {
-                    self.checkCardPresentPaymentEligibility()
+                    self.refreshCardPresentPaymentEligibility()
                 }
 
                 self.paymentAlerts.success(printReceipt: {

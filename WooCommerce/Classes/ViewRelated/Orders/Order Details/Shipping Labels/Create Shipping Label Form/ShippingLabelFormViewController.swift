@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 import SwiftUI
+import WordPressUI
 
 final class ShippingLabelFormViewController: UIViewController {
 
@@ -27,6 +28,7 @@ final class ShippingLabelFormViewController: UIViewController {
         configureMainView()
         configureTableView()
         registerTableViewCells()
+        registerTableViewHeaderFooters()
         observeViewModel()
     }
 }
@@ -44,11 +46,14 @@ private extension ShippingLabelFormViewController {
     }
 
     func configureTableView() {
+        view.backgroundColor = .listBackground
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.backgroundColor = .listForeground
+        tableView.estimatedSectionHeaderHeight = UITableView.automaticDimension
+        tableView.backgroundColor = .listBackground
         tableView.separatorStyle = .none
 
         registerTableViewCells()
+        registerTableViewHeaderFooters()
 
         tableView.dataSource = self
         tableView.delegate = self
@@ -57,6 +62,18 @@ private extension ShippingLabelFormViewController {
     func registerTableViewCells() {
         for row in RowType.allCases {
             tableView.registerNib(for: row.type)
+        }
+    }
+
+    /// Registers all of the available TableViewHeaderFooters
+    ///
+    func registerTableViewHeaderFooters() {
+        let headersAndFooters = [
+            TwoColumnSectionHeaderView.self
+        ]
+
+        for kind in headersAndFooters {
+            tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
         }
     }
 
@@ -86,6 +103,34 @@ extension ShippingLabelFormViewController: UITableViewDataSource {
         configure(cell, for: row, at: indexPath)
 
         return cell
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if viewModel.state.sections[section].title == nil {
+            return CGFloat.leastNormalMagnitude
+        }
+
+        return UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return CGFloat.leastNormalMagnitude
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let leftText = viewModel.state.sections[section].title else {
+            return nil
+        }
+
+        let headerID = TwoColumnSectionHeaderView.reuseIdentifier
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerID) as? TwoColumnSectionHeaderView else {
+            fatalError()
+        }
+
+        headerView.leftText = leftText
+        headerView.rightText = nil
+
+        return headerView
     }
 }
 
@@ -132,6 +177,8 @@ private extension ShippingLabelFormViewController {
             configureShippingCarrierAndRates(cell: cell, row: row)
         case let cell as ShippingLabelFormStepTableViewCell where row.type == .paymentMethod:
             configurePaymentMethod(cell: cell, row: row)
+        case let cell as ShippingLabelSummaryTableViewCell where row.type == .orderSummary:
+            configureOrderSummary(cell: cell, row: row)
         default:
             fatalError("Cannot instantiate \(cell) with row \(row.type)")
             break
@@ -226,6 +273,21 @@ private extension ShippingLabelFormViewController {
         }
     }
 
+    func configureOrderSummary(cell: ShippingLabelSummaryTableViewCell, row: Row) {
+        cell.configure(state: row.cellState) {
+            let discountInfoVC = ShippingLabelDiscountInfoViewController()
+            let bottomSheet = BottomSheetViewController(childViewController: discountInfoVC)
+            bottomSheet.show(from: self, sourceView: cell)
+        } onSwitchChange: { (switchIsOn) in
+            // TODO: Handle order completion
+        } onButtonTouchUp: {
+            // TODO: Purchase Label action
+        }
+        cell.isOn = false
+        cell.setSubtotal(viewModel.getSubtotal())
+        cell.setDiscount(viewModel.getDiscount())
+        cell.setOrderTotal(viewModel.getOrderTotal())
+    }
 }
 
 // MARK: - Actions
@@ -331,6 +393,7 @@ private extension ShippingLabelFormViewController {
 extension ShippingLabelFormViewController {
 
     struct Section: Equatable {
+        let title: String?
         let rows: [Row]
     }
 
@@ -375,11 +438,14 @@ extension ShippingLabelFormViewController {
         case packageDetails
         case shippingCarrierAndRates
         case paymentMethod
+        case orderSummary
 
         fileprivate var type: UITableViewCell.Type {
             switch self {
             case .shipFrom, .shipTo, .packageDetails, .shippingCarrierAndRates, .paymentMethod:
                 return ShippingLabelFormStepTableViewCell.self
+            case .orderSummary:
+                return ShippingLabelSummaryTableViewCell.self
             }
         }
 

@@ -8,9 +8,9 @@ import Networking
 public enum AccountAction: Action {
     case loadAccount(userID: Int64, onCompletion: (Account?) -> Void)
     case loadSite(siteID: Int64, onCompletion: (Site?) -> Void)
-    case synchronizeAccount(onCompletion: (Account?, Error?) -> Void)
-    case synchronizeAccountSettings(userID: Int64, onCompletion: (AccountSettings?, Error?) -> Void)
-    case synchronizeSites(onCompletion: (Error?) -> Void)
-    case synchronizeSitePlan(siteID: Int64, onCompletion: (Error?) -> Void)
-    case updateAccountSettings(userID: Int64, tracksOptOut: Bool, onCompletion: (Error?) -> Void)
+    case synchronizeAccount(onCompletion: (Result<Account, Error>) -> Void)
+    case synchronizeAccountSettings(userID: Int64, onCompletion: (Result<AccountSettings, Error>) -> Void)
+    case synchronizeSites(onCompletion: (Result<Void, Error>) -> Void)
+    case synchronizeSitePlan(siteID: Int64, onCompletion: (Result<Void, Error>) -> Void)
+    case updateAccountSettings(userID: Int64, tracksOptOut: Bool, onCompletion: (Result<Void, Error>) -> Void)
 }

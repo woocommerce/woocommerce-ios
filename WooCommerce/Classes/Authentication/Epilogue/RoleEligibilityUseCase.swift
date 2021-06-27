@@ -1,7 +1,7 @@
 import Yosemite
 
 protocol RoleEligibilityUseCaseProtocol {
-    func checkEligibility(for storeID: Int64, completion: @escaping (Result<Bool, Error>) -> Void)
+    func checkEligibility(for storeID: Int64, completion: @escaping (RoleEligibilityError?) -> Void)
 }
 
 /// Encapsulates the logic for checking the eligibility of user roles.
@@ -15,42 +15,48 @@ final class RoleEligibilityUseCase: RoleEligibilityUseCaseProtocol {
     }
 
     /// Checks whether the current authenticated session has the correct role to manage the store.
+    /// Any error returned from the block means that the user is not eligible.
+    ///
     /// - Parameters:
     ///   - storeID: The dotcom site ID of the store.
-    ///   - completion: The block to be called when the check completes. The boolean argument contains true if the user has the proper role to manage the store.
+    ///   - completion: The block to be called when the check completes, with an optional RoleEligibilityError.
     ///
-    func checkEligibility(for storeID: Int64, completion: @escaping (Result<Bool, RoleEligibilityError>) -> Void) {
+    func checkEligibility(for storeID: Int64, completion: @escaping (RoleEligibilityError?) -> Void) {
         guard stores.isAuthenticated else {
-            completion(.failure(RoleEligibilityError.notAuthenticated))
+            // TODO: (dvdchr) It's not expected to enter this path. Maybe log something here?
+            completion(RoleEligibilityError.notAuthenticated)
             return
         }
 
         let action = UserAction.retrieveUser(siteID: storeID) { result in
             switch result {
             case .success(let user):
-                guard self.isEligible(with: user.roles) else {
-                    // report back with the display information for the error page.
-                    completion(.failure(RoleEligibilityError.insufficientRole(displayName: user.nickname, roles: user.roles)))
+                let isEligible = self.isEligible(with: user.roles)
+
+                // TODO: (dvdchr) persist state in user defaults.
+
+                guard isEligible else {
+                    // Report back with the display information for the error page.
+                    completion(RoleEligibilityError.insufficientRole(name: user.nickname, roles: user.roles))
                     return
                 }
-                completion(.success(true))
+
+                // The user is eligible to manage the store.
+                completion(nil)
 
             case .failure(let error):
-                completion(.failure(RoleEligibilityError.unknown(error: error)))
-
-            default:
-                print("This should not happen")
+                completion(RoleEligibilityError.unknown(error: error))
             }
         }
         stores.dispatch(action)
     }
-
 }
 
+/// Convenient error class that helps with categorizing errors related to role eligibility checks.
 enum RoleEligibilityError: Error {
     /// The user's role is insufficient to manage the store.
     /// Additional information is provided for the error page to display more information.
-    case insufficientRole(displayName: String, roles: [String])
+    case insufficientRole(name: String, roles: [String])
 
     /// The user has not yet authenticated with the app.
     /// This should not happen, and may indicate an implementation error.
@@ -60,20 +66,17 @@ enum RoleEligibilityError: Error {
     case unknown(error: Error)
 }
 
-// MARK: - Private methods
+// MARK: - Private Methods
 
 private extension RoleEligibilityUseCase {
-
     /// This method does a simple match to check if the provided `roles` contain *any* role defined in
-    /// EligibleRole. `roles` from the parameter are lowercased just in case :)
-    ///
+    /// EligibleRole. `roles` from the parameter are lowercased just in case.
     func isEligible(with roles: [String]) -> Bool {
         return roles.firstIndex { EligibleRole.allRoles.contains($0.lowercased()) } != nil
     }
-
 }
 
-// MARK: - Constants
+// MARK: - Private Types
 
 private enum EligibleRole: String, CaseIterable {
     case administrator

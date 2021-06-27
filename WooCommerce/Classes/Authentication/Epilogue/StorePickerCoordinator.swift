@@ -49,20 +49,15 @@ final class StorePickerCoordinator: Coordinator {
 extension StorePickerCoordinator: StorePickerViewControllerDelegate {
 
     func didSelectStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
-        roleEligibilityUseCase.checkEligibility(for: storeID) { [weak self] result in
+        roleEligibilityUseCase.checkEligibility(for: storeID) { [weak self] error in
             guard let self = self else { return }
-
-            switch result {
-            case .success:
+            guard let error = error else {
                 self.switchStore(with: storeID, onCompletion: onCompletion)
-
-            case .failure(.insufficientRole(let displayName, let roles)):
-                // TODO: show error page.
-                print("insufficient role!")
-
-            case .failure(let error):
-                print("\(error)") // this could be anything – not authenticated, network-related errors.
+                return
             }
+
+            // TODO: (dvdchr) Handle errors
+            print(error)
         }
     }
 
@@ -106,5 +101,4 @@ private extension StorePickerCoordinator {
             self?.onDismiss?()
         }
     }
-
 }

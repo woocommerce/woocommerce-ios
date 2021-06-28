@@ -12,7 +12,7 @@ struct EligibilityErrorInfo {
     /// Convenience method that converts the roles to a display-friendly format.
     /// e.g. ["author", "shop_manager"] -> "Author, Shop Manager"
     var humanizedRoles: String {
-        roles.map { $0.titleCasedFromSnakeCase }.joined(separator: " ")
+        roles.map { $0.titleCasedFromSnakeCase }.joined(separator: ", ")
     }
 
     init(name: String, roles: [String]) {

@@ -1253,6 +1253,7 @@
 		FE28F7132684CA29004465C7 /* RoleErrorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE28F7112684CA29004465C7 /* RoleErrorViewController.xib */; };
 		FE28F7182684EE6A004465C7 /* RoleErrorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F7172684EE6A004465C7 /* RoleErrorViewModel.swift */; };
 		FEEB2F552689FEA40075A6E0 /* EligibilityErrorInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEB2F542689FEA40075A6E0 /* EligibilityErrorInfo.swift */; };
+		FEEB2F61268A215E0075A6E0 /* EligibilityErrorInfoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEB2F60268A215E0075A6E0 /* EligibilityErrorInfoTests.swift */; };
 		FEED57FA2686544D00E47FD9 /* RoleErrorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEED57F92686544D00E47FD9 /* RoleErrorViewModelTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -2562,6 +2563,7 @@
 		FE28F7112684CA29004465C7 /* RoleErrorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RoleErrorViewController.xib; sourceTree = "<group>"; };
 		FE28F7172684EE6A004465C7 /* RoleErrorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleErrorViewModel.swift; sourceTree = "<group>"; };
 		FEEB2F542689FEA40075A6E0 /* EligibilityErrorInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EligibilityErrorInfo.swift; sourceTree = "<group>"; };
+		FEEB2F60268A215E0075A6E0 /* EligibilityErrorInfoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EligibilityErrorInfoTests.swift; sourceTree = "<group>"; };
 		FEED57F92686544D00E47FD9 /* RoleErrorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleErrorViewModelTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -5032,6 +5034,7 @@
 				7435E58F21C0162C00216F0F /* OrderNoteWooTests.swift */,
 				6856D1A5F72A36AB3704D19D /* AgeTests.swift */,
 				455A2FDA246B1349000CA72C /* ProductVisibilityTests.swift */,
+				FEEB2F60268A215E0075A6E0 /* EligibilityErrorInfoTests.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -7354,6 +7357,7 @@
 				0215320D2423309B003F2BBD /* UIStackView+SubviewsTests.swift in Sources */,
 				027B8BBD23FE0DE10040944E /* ProductImageActionHandlerTests.swift in Sources */,
 				B5980A6521AC905C00EBF596 /* UIDeviceWooTests.swift in Sources */,
+				FEEB2F61268A215E0075A6E0 /* EligibilityErrorInfoTests.swift in Sources */,
 				31F21B02263C8E150035B50A /* CardReaderSettingsUnknownViewModelTests.swift in Sources */,
 				45EF798624509B4C00B22BA2 /* ArrayIndexPathTests.swift in Sources */,
 				D8610BDD256F5ABF00A5DF27 /* JetpackErrorViewModelTests.swift in Sources */,

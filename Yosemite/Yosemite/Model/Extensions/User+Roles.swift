@@ -5,7 +5,7 @@ extension User {
     /// Convenience method to produce display text representing the user, for the role error page.
     /// This follows the implementation in Android side: fullName > username > email. See: https://git.io/JcJx3
     public func displayName() -> String {
-        let fullName = "\(firstName) \(lastName)"
+        let fullName = "\(firstName) \(lastName)".trimmingCharacters(in: .whitespacesAndNewlines)
         return [fullName, username].first { !$0.isEmpty } ?? email
     }
 

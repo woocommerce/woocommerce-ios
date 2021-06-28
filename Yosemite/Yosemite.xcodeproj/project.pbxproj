@@ -327,6 +327,7 @@
 		FE28F6F026844231004465C7 /* UserStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6EF26844231004465C7 /* UserStore.swift */; };
 		FE28F6F2268462A6004465C7 /* UserStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6F1268462A6004465C7 /* UserStoreTests.swift */; };
 		FEEB2F5D268A15730075A6E0 /* User+Roles.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEB2F5C268A15730075A6E0 /* User+Roles.swift */; };
+		FEEB2F5F268A1C5E0075A6E0 /* User+RolesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEB2F5E268A1C5E0075A6E0 /* User+RolesTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -688,6 +689,7 @@
 		FE28F6EF26844231004465C7 /* UserStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStore.swift; sourceTree = "<group>"; };
 		FE28F6F1268462A6004465C7 /* UserStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStoreTests.swift; sourceTree = "<group>"; };
 		FEEB2F5C268A15730075A6E0 /* User+Roles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+Roles.swift"; sourceTree = "<group>"; };
+		FEEB2F5E268A1C5E0075A6E0 /* User+RolesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+RolesTests.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -785,6 +787,7 @@
 			children = (
 				0225512422FC312400D98613 /* OrderStatsV4Interval+DateTests.swift */,
 				D8652E312630741000350F37 /* PaymentIntent+ReceiptParametersTests.swift */,
+				FEEB2F5E268A1C5E0075A6E0 /* User+RolesTests.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1955,6 +1958,7 @@
 				FE28F6F2268462A6004465C7 /* UserStoreTests.swift in Sources */,
 				741F34842195F752005F5BD9 /* CommentStoreTests.swift in Sources */,
 				B5C9DE282087FF20006B910A /* MockSiteStore.swift in Sources */,
+				FEEB2F5F268A1C5E0075A6E0 /* User+RolesTests.swift in Sources */,
 				B5BC736820D1AA8F00B5B6FA /* AccountStoreTests.swift in Sources */,
 				0212AC67242C799B00C51F6C /* ResultsController+StorageProductTests.swift in Sources */,
 				578CE7902475EBAB00492EBF /* MockProductReviewsRemote.swift in Sources */,

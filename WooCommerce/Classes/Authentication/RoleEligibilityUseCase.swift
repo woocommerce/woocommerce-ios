@@ -84,6 +84,12 @@ extension RoleEligibilityUseCase: RoleEligibilityUseCaseProtocol {
             return
         }
 
+        // handle edge case to prevent extra, unnecessary request.
+        guard storeID > 0 else {
+            completion(.invalidStoreId(id: storeID))
+            return
+        }
+
         let action = UserAction.retrieveUser(siteID: storeID) { result in
             switch result {
             case .success(let user):
@@ -121,6 +127,10 @@ enum RoleEligibilityError: Error {
     /// The user has not yet authenticated with the app.
     /// This should not happen, and may indicate an implementation error.
     case notAuthenticated
+
+    /// Submitted store ID is most likely invalid.
+    /// This should not happen, and may indicate an implementation error.
+    case invalidStoreId(id: Int64)
 
     /// An unknown error caused from other sources.
     case unknown(error: Error)

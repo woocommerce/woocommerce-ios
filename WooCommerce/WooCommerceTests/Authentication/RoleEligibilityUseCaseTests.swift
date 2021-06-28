@@ -14,13 +14,13 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
 
         sessionManager = .makeForTesting(authenticated: false)
         stores = MockStoresManager(sessionManager: sessionManager)
-        defaults = UserDefaults(suiteName: #file)
-        defaults.removePersistentDomain(forName: #file)
+        defaults = UserDefaults(suiteName: Constants.suiteName)
+        defaults.removePersistentDomain(forName: Constants.suiteName)
     }
 
     override func tearDown() {
         sessionManager.defaultStoreID = nil
-        defaults.removePersistentDomain(forName: #file)
+        defaults.removePersistentDomain(forName: Constants.suiteName)
         stores = nil
         sessionManager = nil
         defaults = nil
@@ -288,6 +288,7 @@ private extension RoleEligibilityUseCaseTests {
         static let eligibleRoles = ["shop_manager", "editor"]
         static let ineligibleRoles = ["author", "editor"]
         static let sampleDictionary = ["name": "Jane", "roles": "shop_manager,editor"]
+        static let suiteName = "RoleEligibilityUseCaseTests"
     }
 
     func makeUser(eligible: Bool = false) -> User {

@@ -73,7 +73,7 @@ final class ShippingLabelFormViewModel {
 
     /// Shipping Label Purchase
     ///
-    var purchasedShippingLabel: ShippingLabel?
+    private(set) var purchasedShippingLabel: ShippingLabel?
 
 
     private let stores: StoresManager
@@ -505,6 +505,9 @@ extension ShippingLabelFormViewModel {
         case genericError(Error)
     }
 
+    /// Purchases a shipping label with the origin and destination address, package, and rate selected in the Shipping Label Form.
+    /// - Parameter onCompletion: Closure to be executed on completion with the success/failure result of the purchase.
+    ///
     func purchaseLabel(onCompletion: @escaping ((Result<Void, Error>) -> Void)) {
         guard let originAddress = originAddress,
               let destinationAddress = destinationAddress,

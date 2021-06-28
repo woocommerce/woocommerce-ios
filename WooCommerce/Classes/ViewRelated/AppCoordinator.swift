@@ -117,6 +117,7 @@ private extension AppCoordinator {
             self.stores.deauthenticate()
         }
 
+        // this needs to be wrapped within a navigation controller to properly show the right bar button for Help.
         setWindowRootViewControllerAndAnimateIfNeeded(UINavigationController(rootViewController: errorViewController))
     }
 }

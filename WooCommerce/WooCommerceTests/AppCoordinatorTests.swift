@@ -89,7 +89,11 @@ final class AppCoordinatorTests: XCTestCase {
         appCoordinator.start()
 
         // Then
-        assertThat(window.rootViewController, isAnInstanceOf: RoleErrorViewController.self)
+        guard let navigationController = window.rootViewController as? UINavigationController else {
+            XCTFail()
+            return
+        }
+        assertThat(navigationController.visibleViewController, isAnInstanceOf: RoleErrorViewController.self)
     }
 
     func test_starting_app_logged_in_then_logging_out_presents_authentication() throws {

@@ -36,8 +36,11 @@ final class RoleEligibilityUseCase {
 
     /// The last eligibility error info encountered by the user.
     private var lastErrorInfo: EligibilityErrorInfo? {
-        didSet {
-            defaults.setValue(lastErrorInfo?.toDictionary(), forKey: Constants.eligibilityErrorInfoKey)
+        get {
+            loadLastErrorInfo()
+        }
+        set {
+            defaults.setValue(newValue?.toDictionary(), forKey: Constants.eligibilityErrorInfoKey)
         }
     }
 

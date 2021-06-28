@@ -326,6 +326,7 @@
 		FE28F6EE268440B1004465C7 /* UserAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6ED268440B1004465C7 /* UserAction.swift */; };
 		FE28F6F026844231004465C7 /* UserStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6EF26844231004465C7 /* UserStore.swift */; };
 		FE28F6F2268462A6004465C7 /* UserStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6F1268462A6004465C7 /* UserStoreTests.swift */; };
+		FEEB2F5D268A15730075A6E0 /* User+Roles.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEB2F5C268A15730075A6E0 /* User+Roles.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -686,6 +687,7 @@
 		FE28F6ED268440B1004465C7 /* UserAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAction.swift; sourceTree = "<group>"; };
 		FE28F6EF26844231004465C7 /* UserStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStore.swift; sourceTree = "<group>"; };
 		FE28F6F1268462A6004465C7 /* UserStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStoreTests.swift; sourceTree = "<group>"; };
+		FEEB2F5C268A15730075A6E0 /* User+Roles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+Roles.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -764,6 +766,7 @@
 			isa = PBXGroup;
 			children = (
 				0225512022FC2F3000D98613 /* OrderStatsV4Interval+Date.swift */,
+				FEEB2F5C268A15730075A6E0 /* User+Roles.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1827,6 +1830,7 @@
 				025CA2CE238F53CB00B05C81 /* ProductShippingClass+ReadOnlyConvertible.swift in Sources */,
 				247CE86225832B1600F9D9D1 /* MockRefundActionHandler.swift in Sources */,
 				26E5A07625A626CA000DF8F6 /* ProductAttributeTerm+ReadOnlyConvertible.swift in Sources */,
+				FEEB2F5D268A15730075A6E0 /* User+Roles.swift in Sources */,
 				261CF1C9255B2C7B0090D8D3 /* PaymentGateway+ReadOnlyConvertible.swift in Sources */,
 				45E4620E2684C45500011BF2 /* Country+ReadOnlyConvertible.swift in Sources */,
 				7455D4672141B57600FA8C1F /* TopEarnerStats+ReadOnlyConvertible.swift in Sources */,

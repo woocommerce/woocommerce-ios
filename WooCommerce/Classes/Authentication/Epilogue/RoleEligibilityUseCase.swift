@@ -92,9 +92,9 @@ extension RoleEligibilityUseCase: RoleEligibilityUseCaseProtocol {
         let action = UserAction.retrieveUser(siteID: storeID) { result in
             switch result {
             case .success(let user):
-                guard self.isEligible(with: user.roles) else {
+                guard user.hasEligibleRoles() else {
                     // Report back with the display information for the error page.
-                    let errorInfo = EligibilityErrorInfo(name: user.nickname, roles: user.roles)
+                    let errorInfo = EligibilityErrorInfo(name: user.displayName(), roles: user.roles)
                     completion(.insufficientRole(info: errorInfo))
                     return
                 }
@@ -144,12 +144,6 @@ private extension RoleEligibilityUseCase {
 
         return EligibilityErrorInfo(from: errorInfoDictionary)
     }
-
-    /// This method does a simple match to check if the provided `roles` contain *any* role defined in
-    /// EligibleRole. `roles` from the parameter are lowercased just in case.
-    func isEligible(with roles: [String]) -> Bool {
-        return roles.firstIndex { EligibleRole.allRoles.contains($0.lowercased()) } != nil
-    }
 }
 
 // MARK: - Constants
@@ -157,15 +151,5 @@ private extension RoleEligibilityUseCase {
 private extension RoleEligibilityUseCase {
     struct Constants {
         static let eligibilityErrorInfoKey = "wc_eligibility_error_info"
-    }
-
-    enum EligibleRole: String, CaseIterable {
-        case administrator
-        case shopManager = "shop_manager"
-
-        /// Convenience method that returns the collection in raw value instead of in enum type.
-        static let allRoles: [String] = {
-            allCases.map { $0.rawValue }
-        }()
     }
 }

@@ -9,6 +9,12 @@ struct EligibilityErrorInfo {
     /// The roles of the ineligible user, for display purposes.
     let roles: [String]
 
+    /// Convenience method that converts the roles to a display-friendly format.
+    /// e.g. ["author", "shop_manager"] -> "Author, Shop Manager"
+    var humanizedRoles: String {
+        roles.map { $0.titleCasedFromSnakeCase }.joined(separator: " ")
+    }
+
     init(name: String, roles: [String]) {
         self.name = name
         self.roles = roles
@@ -28,6 +34,19 @@ struct EligibilityErrorInfo {
             Constants.nameKey: name,
             Constants.rolesKey: roles.joined(separator: Constants.separatorString)
         ]
+    }
+}
+
+// MARK: - Private Helpers
+
+private extension String {
+    /// Convenience function that converts snake-cased strings into title case.
+    /// e.g. "shop_manager" -> "Shop Manager"
+    var titleCasedFromSnakeCase: String {
+        guard contains("_") else {
+            return capitalized
+        }
+        return components(separatedBy: "_").map { $0.capitalized }.joined(separator: " ")
     }
 }
 

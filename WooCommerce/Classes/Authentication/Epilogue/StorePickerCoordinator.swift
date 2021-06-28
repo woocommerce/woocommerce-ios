@@ -20,6 +20,10 @@ final class StorePickerCoordinator: Coordinator {
     ///
     private let switchStoreUseCase = SwitchStoreUseCase(stores: ServiceLocator.stores)
 
+    /// The RoleEligibilityUseCase object initialized with the ServiceLocator stores
+    ///
+    private let roleEligibilityUseCase = RoleEligibilityUseCase(stores: ServiceLocator.stores)
+
     /// Site Picker VC
     ///
     private lazy var storePicker: StorePickerViewController = {
@@ -45,17 +49,19 @@ final class StorePickerCoordinator: Coordinator {
 extension StorePickerCoordinator: StorePickerViewControllerDelegate {
 
     func didSelectStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
-        switchStoreUseCase.switchStore(with: storeID) { [weak self] siteChanged in
-            if self?.selectedConfiguration == .login {
-                MainTabBarController.switchToMyStoreTab(animated: true)
+        roleEligibilityUseCase.checkEligibility(for: storeID) { [weak self] error in
+            guard let self = self else { return }
+
+            guard let error = error else {
+                // user is eligible to proceed.
+                self.roleEligibilityUseCase.reset()
+                self.switchStore(with: storeID, onCompletion: onCompletion)
+                return
             }
 
-            if siteChanged {
-                let presenter = SwitchStoreNoticePresenter()
-                presenter.presentStoreSwitchedNotice(configuration: self?.selectedConfiguration)
+            if case let RoleEligibilityError.insufficientRole(errorInfo) = error {
+                self.showRoleErrorScreen(for: storeID, errorInfo: errorInfo, onCompletion: onCompletion)
             }
-            onCompletion()
-            self?.onDismiss?()
         }
     }
 
@@ -83,6 +89,44 @@ private extension StorePickerCoordinator {
         default:
             navigationController.pushViewController(storePicker, animated: true)
         }
+    }
+
+    func switchStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
+        switchStoreUseCase.switchStore(with: storeID) { [weak self] siteChanged in
+            if self?.selectedConfiguration == .login {
+                MainTabBarController.switchToMyStoreTab(animated: true)
+            }
+
+            if siteChanged {
+                let presenter = SwitchStoreNoticePresenter()
+                presenter.presentStoreSwitchedNotice(configuration: self?.selectedConfiguration)
+            }
+            onCompletion()
+            self?.onDismiss?()
+        }
+    }
+
+    /// Shows a Role Error page using the provided error information.
+    /// The error page is pushed to the navigation stack so the user is not locked out, and can go back to select another store.
+    func showRoleErrorScreen(for siteID: Int64, errorInfo: EligibilityErrorInfo, onCompletion: @escaping SelectStoreClosure) {
+        let errorViewModel = RoleErrorViewModel(siteID: siteID, title: errorInfo.name, subtitle: errorInfo.humanizedRoles, useCase: self.roleEligibilityUseCase)
+        let errorViewController = RoleErrorViewController(viewModel: errorViewModel)
+
+        errorViewModel.onSuccess = {
+            self.switchStore(with: siteID, onCompletion: onCompletion)
+        }
+
+        errorViewModel.onDeauthenticationRequest = {
+            self.restartAuthentication()
+        }
+
+        // find the top-most navigation controller by checking if there's a navigationController being presented.
+        // this takes care of the different variation of presentation, based on configurations.
+        var topNavigationController = navigationController
+        while let presented = topNavigationController.presentedViewController as? UINavigationController {
+            topNavigationController = presented
+        }
+        topNavigationController.pushViewController(errorViewController, animated: true)
     }
 
 }

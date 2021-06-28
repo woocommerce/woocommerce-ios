@@ -74,6 +74,23 @@ final class AppCoordinatorTests: XCTestCase {
         assertThat(window.rootViewController, isAnInstanceOf: MainTabBarController.self)
     }
 
+    func test_starting_app_logged_in_with_selected_site_and_ineligible_status_presents_role_error() throws {
+        // Given
+        stores.authenticate(credentials: SessionSettings.credentials)
+        sessionManager.defaultStoreID = 134
+        let defaults = UserDefaults(suiteName: #file)!
+        defaults.removePersistentDomain(forName: #file)
+        defaults.setValue(Constants.sampleErrorInfoDictionary, forKey: Constants.errorInfoUDKey) // set mock data in defaults
+        let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
+        let appCoordinator = AppCoordinator(window: window, stores: stores, authenticationManager: authenticationManager, roleEligibilityUseCase: useCase)
+
+        // When
+        appCoordinator.start()
+
+        // Then
+        assertThat(window.rootViewController, isAnInstanceOf: RoleErrorViewController.self)
+    }
+
     func test_starting_app_logged_in_then_logging_out_presents_authentication() throws {
         // Given
         stores.authenticate(credentials: SessionSettings.credentials)
@@ -86,5 +103,12 @@ final class AppCoordinatorTests: XCTestCase {
 
         // Then
         assertThat(window.rootViewController, isAnInstanceOf: LoginNavigationController.self)
+    }
+}
+
+private extension AppCoordinatorTests {
+    struct Constants {
+        static let sampleErrorInfoDictionary = ["name": "Patrick", "roles": "author,editor"]
+        static let errorInfoUDKey = "wc_eligibility_error_info"
     }
 }

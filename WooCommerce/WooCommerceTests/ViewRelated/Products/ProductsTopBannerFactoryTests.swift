@@ -67,12 +67,6 @@ final class ProductsTopBannerFactoryTests: XCTestCase {
 
 private extension ProductsTopBannerFactoryTests {
     func makeBannerViewMirror(for bannerType: ProductsTopBannerFactory.BannerType) throws -> TopBannerViewMirror {
-        storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            if case let .loadProductsFeatureSwitch(onCompletion) = action {
-                onCompletion(true)
-            }
-        }
-
         var banner: TopBannerView?
         waitForExpectation { exp in
             ProductsTopBannerFactory.topBanner(isExpanded: false,

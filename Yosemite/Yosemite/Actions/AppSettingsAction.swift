@@ -55,19 +55,6 @@ public enum AppSettingsAction: Action {
     ///
     case resetStatsVersionStates
 
-    /// Loads the user preferred Product feature switch given the latest app settings
-    ///
-    case loadProductsFeatureSwitch(onCompletion: (Bool) -> Void)
-
-    /// Sets the user preferred Product feature switch
-    /// If on, Products M2 features are available
-    ///
-    case setProductsFeatureSwitch(isEnabled: Bool, onCompletion: () -> Void)
-
-    /// Clears all the app settings on feature switches
-    ///
-    case resetFeatureSwitches
-
     // MARK: - Products Settings
 
     /// Loads the products settings

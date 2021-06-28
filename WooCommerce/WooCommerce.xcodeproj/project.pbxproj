@@ -177,7 +177,6 @@
 		0259D65D2582248D003B1CD6 /* ReprintShippingLabelViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0259D65B2582248D003B1CD6 /* ReprintShippingLabelViewController.swift */; };
 		0259D65E2582248D003B1CD6 /* ReprintShippingLabelViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0259D65C2582248D003B1CD6 /* ReprintShippingLabelViewController.xib */; };
 		0259EF77246BF4EC00B84FDF /* ProductDetailsFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0259EF76246BF4EC00B84FDF /* ProductDetailsFactoryTests.swift */; };
-		0259EF79246BF66000B84FDF /* MockProductsAppSettingsStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0259EF78246BF66000B84FDF /* MockProductsAppSettingsStoresManager.swift */; };
 		025A1246247CDF55008EA761 /* ProductFormViewModel+ChangesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025A1245247CDF55008EA761 /* ProductFormViewModel+ChangesTests.swift */; };
 		025A1248247CE793008EA761 /* ProductFormViewModel+ObservablesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025A1247247CE793008EA761 /* ProductFormViewModel+ObservablesTests.swift */; };
 		025B1748237A92D800C780B4 /* ProductFormSection+ReusableTableRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025B1747237A92D800C780B4 /* ProductFormSection+ReusableTableRow.swift */; };
@@ -1474,7 +1473,6 @@
 		0259D65B2582248D003B1CD6 /* ReprintShippingLabelViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReprintShippingLabelViewController.swift; sourceTree = "<group>"; };
 		0259D65C2582248D003B1CD6 /* ReprintShippingLabelViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReprintShippingLabelViewController.xib; sourceTree = "<group>"; };
 		0259EF76246BF4EC00B84FDF /* ProductDetailsFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailsFactoryTests.swift; sourceTree = "<group>"; };
-		0259EF78246BF66000B84FDF /* MockProductsAppSettingsStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductsAppSettingsStoresManager.swift; sourceTree = "<group>"; };
 		025A1245247CDF55008EA761 /* ProductFormViewModel+ChangesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormViewModel+ChangesTests.swift"; sourceTree = "<group>"; };
 		025A1247247CE793008EA761 /* ProductFormViewModel+ObservablesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormViewModel+ObservablesTests.swift"; sourceTree = "<group>"; };
 		025B1747237A92D800C780B4 /* ProductFormSection+ReusableTableRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormSection+ReusableTableRow.swift"; sourceTree = "<group>"; };
@@ -4356,7 +4354,6 @@
 				02B653AB2429F7BF00A9C839 /* MockTaxClassStoresManager.swift */,
 				02EA6BFB2435EC3500FFF90A /* MockImageDownloader.swift */,
 				6856D249FD1702FE3864950A /* MockPushNotificationsManager.swift */,
-				0259EF78246BF66000B84FDF /* MockProductsAppSettingsStoresManager.swift */,
 				57C9A8FD24C23335001E1C2F /* MockNoticePresenter.swift */,
 				02BC5AA724D2802B00C43326 /* MockProductVariationStoresManager.swift */,
 				023EC2E124DA8BAB0021DA91 /* MockProductSKUValidationStoresManager.swift */,
@@ -7317,7 +7314,6 @@
 				D802548726552E07001B2CC1 /* CardPresentModalNonRetryableErrorTests.swift in Sources */,
 				02BAB02924D13AA500F8B06E /* ProductVariationFormActionsFactoryTests.swift in Sources */,
 				B53A569B21123E8E000776C9 /* MockTableView.swift in Sources */,
-				0259EF79246BF66000B84FDF /* MockProductsAppSettingsStoresManager.swift in Sources */,
 				2667BFE3252FA695008099D4 /* RefundItemQuantityListSelectorCommandTests.swift in Sources */,
 				2611EE59243A473300A74490 /* ProductCategoryListViewModelTests.swift in Sources */,
 				0247AAA223A3C5A6007F967E /* DecimalInputFormatterTests.swift in Sources */,

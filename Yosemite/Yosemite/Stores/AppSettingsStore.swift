@@ -51,27 +51,6 @@ public class AppSettingsStore: Store {
         return documents!.appendingPathComponent(Constants.statsVersionLastShownFileName)
     }()
 
-    /// URL to the plist file that we use to determine the visibility for Product features.
-    ///
-    private lazy var productsFeatureSwitchURL: URL = {
-        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        return documents!.appendingPathComponent(Constants.productsFeatureSwitchFileName)
-    }()
-
-    /// URL to the plist file that we use to determine the visibility for Product features M3.
-    ///
-    private lazy var productsRelease3FeatureSwitchURL: URL = {
-        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        return documents!.appendingPathComponent(Constants.productsRelease3FeatureSwitchFileName)
-    }()
-
-    /// URL to the plist file that we use to determine the visibility for Product features M4.
-    ///
-    private lazy var productsRelease4FeatureSwitchURL: URL = {
-        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        return documents!.appendingPathComponent(Constants.productsRelease4FeatureSwitchFileName)
-    }()
-
     private lazy var generalAppSettingsFileURL: URL! = {
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
         return documents!.appendingPathComponent(Constants.generalAppSettingsFileName)
@@ -130,12 +109,6 @@ public class AppSettingsStore: Store {
             setStatsVersionBannerVisibility(banner: banner, shouldShowBanner: shouldShowBanner)
         case .resetStatsVersionStates:
             resetStatsVersionStates()
-        case .loadProductsFeatureSwitch(let onCompletion):
-            loadProductsFeatureSwitch(onCompletion: onCompletion)
-        case .setProductsFeatureSwitch(let isEnabled, let onCompletion):
-            setProductsFeatureSwitch(isEnabled: isEnabled, onCompletion: onCompletion)
-        case .resetFeatureSwitches:
-            resetFeatureSwitches()
         case .setInstallationDateIfNecessary(let date, let onCompletion):
             setInstallationDateIfNecessary(date: date, onCompletion: onCompletion)
         case .updateFeedbackStatus(let type, let status, let onCompletion):
@@ -475,36 +448,6 @@ private extension AppSettingsStore {
         } catch {
             let error = AppSettingsStoreErrors.deleteStatsVersionStates
             DDLogError("⛔️ Deleting the stats version files failed. Error: \(error)")
-        }
-    }
-
-    func loadProductsFeatureSwitch(onCompletion: (Bool) -> Void) {
-        guard let existingData: ProductsFeatureSwitchPListWrapper = try? fileStorage.data(for: productsRelease4FeatureSwitchURL) else {
-            onCompletion(false)
-            return
-        }
-        onCompletion(existingData.isEnabled)
-    }
-
-    func setProductsFeatureSwitch(isEnabled: Bool, onCompletion: () -> Void) {
-        let fileURL = productsRelease4FeatureSwitchURL
-        let wrapper = ProductsFeatureSwitchPListWrapper(isEnabled: isEnabled)
-        do {
-            try fileStorage.write(wrapper, to: fileURL)
-            onCompletion()
-        } catch {
-            DDLogError("⛔️ Saving the Products visibility to \(isEnabled) failed: \(error)")
-            onCompletion()
-        }
-    }
-
-    func resetFeatureSwitches() {
-        do {
-            try fileStorage.deleteFile(at: productsFeatureSwitchURL)
-            try fileStorage.deleteFile(at: productsRelease3FeatureSwitchURL)
-            try fileStorage.deleteFile(at: productsRelease4FeatureSwitchURL)
-        } catch {
-            DDLogError("⛔️ Deleting the product feature switch files failed. Error: \(error)")
         }
     }
 }

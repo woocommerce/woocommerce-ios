@@ -41,11 +41,6 @@ final class RoleEligibilityUseCase {
         }
     }
 
-    /// Convenient method that checks whether the current user has previous eligibility errors.
-    var isPreviouslyEligible: Bool {
-        lastErrorInfo == nil
-    }
-
     // MARK: Initialization
 
     init(stores: StoresManager = ServiceLocator.stores, defaults: UserDefaults = UserDefaults.standard) {

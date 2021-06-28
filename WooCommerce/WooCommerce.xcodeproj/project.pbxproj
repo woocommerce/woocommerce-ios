@@ -4642,6 +4642,7 @@
 				CE16177921B7192A00B82A47 /* AuthenticationConstants.swift */,
 				027A2E132513124E00DA6ACB /* Keychain+Entries.swift */,
 				027A2E152513356100DA6ACB /* AppleIDCredentialChecker.swift */,
+				FE28F6F3268477C1004465C7 /* RoleEligibilityUseCase.swift */,
 				D89CFE8F25B256E9000E4683 /* ULAccountMatcher.swift */,
 			);
 			path = Authentication;
@@ -5006,7 +5007,6 @@
 				74460D4122289C7A00D7316A /* StorePickerCoordinator.swift */,
 				45527A402472C6160078D609 /* SwitchStoreUseCase.swift */,
 				45A4221924ACC79C003B1E4C /* SwitchStoreNoticePresenter.swift */,
-				FE28F6F3268477C1004465C7 /* RoleEligibilityUseCase.swift */,
 			);
 			path = Epilogue;
 			sourceTree = "<group>";

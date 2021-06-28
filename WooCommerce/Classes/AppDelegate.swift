@@ -69,6 +69,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Upgrade check...
         checkForUpgrades()
 
+        // User eligibility check
+        syncEligibilityStatusIfPossible()
+
         return true
     }
 
@@ -353,6 +356,13 @@ extension AppDelegate {
 
         ServiceLocator.stores.synchronizeEntities(onCompletion: nil)
 
+    }
+
+    /// Fetch the latest eligibility status of current user.
+    /// Only runs when the user is authenticated and has a default store.
+    ///
+    private func syncEligibilityStatusIfPossible() {
+        RoleEligibilityUseCase().syncEligibilityStatusIfNeeded()
     }
 
     /// Runs whenever the Authentication Flow is completed successfully.

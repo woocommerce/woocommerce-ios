@@ -294,6 +294,14 @@ private extension ShippingLabelFormViewController {
 //
 private extension ShippingLabelFormViewController {
     func displayEditAddressFormVC(address: ShippingLabelAddress?, validationError: ShippingLabelAddressValidationError?, type: ShipType) {
+        guard viewModel.countries.isNotEmpty else {
+            let notice = Notice(title: Localization.noticeUnableToFetchCountries, feedbackType: .error, actionTitle: Localization.noticeRetryAction) {
+                [weak self] in
+                self?.viewModel.fetchCountries()
+            }
+            ServiceLocator.noticePresenter.enqueue(notice: notice)
+            return
+        }
         let shippingAddressVC = ShippingLabelAddressFormViewController(
             siteID: viewModel.siteID,
             type: type,
@@ -314,6 +322,14 @@ private extension ShippingLabelFormViewController {
     }
 
     func displaySuggestedAddressVC(address: ShippingLabelAddress?, suggestedAddress: ShippingLabelAddress?, type: ShipType) {
+        guard viewModel.countries.isNotEmpty else {
+            let notice = Notice(title: Localization.noticeUnableToFetchCountries, feedbackType: .error, actionTitle: Localization.noticeRetryAction) {
+                [weak self] in
+                self?.viewModel.fetchCountries()
+            }
+            ServiceLocator.noticePresenter.enqueue(notice: notice)
+            return
+        }
         let vc = ShippingLabelSuggestedAddressViewController(siteID: viewModel.siteID,
                                                              type: type,
                                                              address: address,
@@ -471,5 +487,8 @@ private extension ShippingLabelFormViewController {
         static let navigationBarTitlePackageDetails =
             NSLocalizedString("Package Details",
                               comment: "Navigation bar title of shipping label package details screen")
+        static let noticeUnableToFetchCountries = NSLocalizedString("Unable to fetch countries.",
+                                                                    comment: "Unable to fetch countries action failed in Shipping Label Form")
+        static let noticeRetryAction = NSLocalizedString("Retry", comment: "Retry Action")
     }
 }

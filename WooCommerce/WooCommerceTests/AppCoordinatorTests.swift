@@ -8,6 +8,7 @@ final class AppCoordinatorTests: XCTestCase {
     private var sessionManager: SessionManager!
     private var stores: StoresManager!
     private var authenticationManager: AuthenticationManager!
+    private var defaults: UserDefaults!
 
     private let window = UIWindow(frame: UIScreen.main.bounds)
 
@@ -16,6 +17,7 @@ final class AppCoordinatorTests: XCTestCase {
 
         window.makeKeyAndVisible()
 
+        defaults = UserDefaults(suiteName: Constants.suiteName)
         sessionManager = .makeForTesting(authenticated: false)
         stores = MockStoresManager(sessionManager: sessionManager)
         authenticationManager = AuthenticationManager()
@@ -27,6 +29,7 @@ final class AppCoordinatorTests: XCTestCase {
         sessionManager.defaultStoreID = nil
         stores = nil
         sessionManager = nil
+        defaults.removePersistentDomain(forName: Constants.suiteName)
 
         // If not resetting the window, `AsyncDictionaryTests.testAsyncUpdatesWhereTheFirstOperationFinishesLast` fails.
         window.resignKey()
@@ -78,8 +81,6 @@ final class AppCoordinatorTests: XCTestCase {
         // Given
         stores.authenticate(credentials: SessionSettings.credentials)
         sessionManager.defaultStoreID = 134
-        let defaults = UserDefaults(suiteName: #file)!
-        defaults.removePersistentDomain(forName: #file)
         defaults.setValue(Constants.sampleErrorInfoDictionary, forKey: Constants.errorInfoUDKey) // set mock data in defaults
         let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
         let appCoordinator = AppCoordinator(window: window, stores: stores, authenticationManager: authenticationManager, roleEligibilityUseCase: useCase)
@@ -110,5 +111,6 @@ private extension AppCoordinatorTests {
     struct Constants {
         static let sampleErrorInfoDictionary = ["name": "Patrick", "roles": "author,editor"]
         static let errorInfoUDKey = "wc_eligibility_error_info"
+        static let suiteName = "AppCoordinatorTests"
     }
 }

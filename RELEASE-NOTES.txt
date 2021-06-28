@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+7.1
+-----
+
+
 7.0
 -----
 - [**] Order Detail: now we display Order Items and Shipping Label Packages as separate sections. [https://github.com/woocommerce/woocommerce-ios/pull/4445]

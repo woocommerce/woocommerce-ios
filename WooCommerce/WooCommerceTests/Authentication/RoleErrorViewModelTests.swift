@@ -100,19 +100,65 @@ final class RoleErrorViewModelTests: XCTestCase {
     // MARK: Button action behaviors
 
     func test_when_primaryButton_isTapped_viewModel_should_trigger_retry() {
-        // TODO: This test will be implemented in the later part.
+        // Given
+        let fakeUseCase = FakeRoleUseCase()
+        let expectedStoreID: Int64 = 1234
+        let viewModel = factory.makeViewModel(siteID: expectedStoreID, useCase: fakeUseCase)
+
+        // When
+        viewModel.didTapPrimaryButton()
+
+        // Then
+        XCTAssertEqual(fakeUseCase.lastCheckedStoreID, expectedStoreID)
     }
 
     func test_when_retry_succeeded_viewModel_should_redirect_to_main_content() {
-        // TODO: This test will be implemented in the later part.
+        // Given
+        let fakeUseCase = FakeRoleUseCase()
+        let viewModel = factory.makeViewModel(siteID: 123, useCase: fakeUseCase)
+        var successCalled = false
+        viewModel.onSuccess = {
+            successCalled = true
+        }
+
+        // When
+        viewModel.didTapPrimaryButton()
+
+        // Then
+        XCTAssertTrue(successCalled)
+        XCTAssertEqual(fakeUseCase.resetCallCount, 1)
     }
 
     func test_when_retry_failed_viewModel_should_inform_output_to_notify_error() {
-        // TODO: This test will be implemented in the later part.
+        // Given
+        let fakeUseCase = FakeRoleUseCase()
+        let fakeOutput = FakeRoleErrorOutput()
+        fakeUseCase.errorToReturn = RoleEligibilityError.insufficientRole(info: Expectations.errorInfo)
+        let viewModel = factory.makeViewModel(siteID: 123, output: fakeOutput, useCase: fakeUseCase)
+
+        // When
+        viewModel.didTapPrimaryButton()
+
+        // Then
+        XCTAssertEqual(viewModel.titleText, Expectations.errorInfo.name)
+        XCTAssertEqual(viewModel.subtitleText, Expectations.errorInfo.humanizedRoles)
+        XCTAssertEqual(fakeOutput.displayNoticeCallCount, 1)
+        XCTAssertEqual(fakeOutput.lastNoticeMessage, Expectations.insufficientRolesErrorMessage)
     }
 
     func test_when_secondaryButton_isTapped_viewModel_should_trigger_navigation_to_root() {
-        // TODO: This test will be implemented in the later part.
+        // Given
+        let viewModel = factory.makeViewModel()
+        var deauthenticateRequested = false
+        viewModel.onDeauthenticationRequest = {
+            deauthenticateRequested = true
+        }
+
+        // When
+        viewModel.didTapSecondaryButton()
+
+        // Then
+        XCTAssertTrue(deauthenticateRequested)
     }
 
     func test_when_auxiliaryButton_isTapped_viewModel_triggers_webContent_correctly() {
@@ -134,10 +180,12 @@ final class RoleErrorViewModelTests: XCTestCase {
 private struct RoleErrorTestsMockFactory {
     /// Convenient method to generate RoleErrorViewModel objects with its dependencies injectable
     /// through this method's parameters.
-    func makeViewModel(title: String = Expectations.titleText,
+    func makeViewModel(siteID: Int64 = 123,
+                       title: String = Expectations.titleText,
                        subtitle: String = Expectations.subtitleText,
-                       output: RoleErrorOutput = FakeRoleErrorOutput()) -> RoleErrorViewModel {
-        let viewModel = RoleErrorViewModel(title: title, subtitle: subtitle)
+                       output: RoleErrorOutput = FakeRoleErrorOutput(),
+                       useCase: RoleEligibilityUseCaseProtocol = FakeRoleUseCase()) -> RoleErrorViewModel {
+        let viewModel = RoleErrorViewModel(siteID: siteID, title: title, subtitle: subtitle, useCase: useCase)
         viewModel.output = output
 
         return viewModel
@@ -148,7 +196,9 @@ private struct RoleErrorTestsMockFactory {
 private class FakeRoleErrorOutput: RoleErrorOutput {
     var refreshTitleLabelsCallCount = 0
     var displayWebContentCallCount = 0
+    var displayNoticeCallCount = 0
     var lastDisplayedURL: URL? = nil
+    var lastNoticeMessage: String? = nil
 
     func refreshTitleLabels() {
         refreshTitleLabelsCallCount += 1
@@ -157,6 +207,37 @@ private class FakeRoleErrorOutput: RoleErrorOutput {
     func displayWebContent(for url: URL) {
         displayWebContentCallCount += 1
         lastDisplayedURL = url
+    }
+
+    func displayNotice(message: String) {
+        displayNoticeCallCount += 1
+        lastNoticeMessage = message
+    }
+}
+
+/// Convenient fake class for the RoleEligibilityUseCase protocol.
+private class FakeRoleUseCase: RoleEligibilityUseCaseProtocol {
+    var syncEligibilityCallCount = 0
+    var resetCallCount = 0
+    var lastCheckedStoreID: Int64 = -1
+    var errorToReturn: RoleEligibilityError? = nil
+    var errorInfoToReturn: EligibilityErrorInfo? = nil
+
+    func syncEligibilityStatusIfNeeded() {
+        syncEligibilityCallCount += 1
+    }
+
+    func checkEligibility(for storeID: Int64, completion: @escaping (RoleEligibilityError?) -> Void) {
+        lastCheckedStoreID = storeID
+        completion(errorToReturn)
+    }
+
+    func lastEligibilityErrorInfo() -> EligibilityErrorInfo? {
+        errorInfoToReturn
+    }
+
+    func reset() {
+        resetCallCount += 1
     }
 }
 
@@ -167,6 +248,7 @@ private enum Expectations {
     static let titleText = "John Appleseed"
     static let subtitleText = "Author, Editor"
     static let image = UIImage.incorrectRoleError
+    static let errorInfo = EligibilityErrorInfo(name: "Billie Jean", roles: ["skater", "writer"])
     static let descriptionText = NSLocalizedString("This app supports only Administrator and Shop Manager user roles. "
                                                     + "Please contact your store owner to upgrade your role.",
                                                    comment: "Message explaining more detail on why the user's role is incorrect.")
@@ -184,4 +266,12 @@ private enum Expectations {
                                                             + "Presented when logging in with a site address that does not have a valid Jetpack installation")
 
     static let helpBarButtonTitle = NSLocalizedString("Help", comment: "Help button")
+
+    static let insufficientRolesErrorMessage = NSLocalizedString("You are not authorized to access this store.",
+                                                                 comment: "An error message shown after the user retried checking their roles,"
+                                                                    + "but they still don't have enough permission to access the store through the app.")
+
+    static let retrieveErrorMessage = NSLocalizedString("Unable to retrieve user roles.",
+                                                        comment: "An error message shown when failing to retrieve information about user roles, "
+                                                            + "before letting the user in to manage the store.")
 }

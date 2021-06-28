@@ -42,7 +42,7 @@ final class RoleEligibilityUseCase {
     }
 
     /// Convenient method that checks whether the current user has previous eligibility errors.
-    var isPreviouslyIneligible: Bool {
+    var isPreviouslyEligible: Bool {
         lastErrorInfo == nil
     }
 

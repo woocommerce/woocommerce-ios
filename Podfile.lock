@@ -6,7 +6,7 @@ PODS:
     - AppAuth/ExternalUserAgent (= 1.4.0)
   - AppAuth/Core (1.4.0)
   - AppAuth/ExternalUserAgent (1.4.0)
-  - Automattic-Tracks-iOS (0.9.0-beta.1):
+  - Automattic-Tracks-iOS (0.9.0):
     - CocoaLumberjack (~> 3)
     - Reachability (~> 3)
     - Sentry (~> 6)
@@ -73,7 +73,7 @@ PODS:
   - WordPressShared (1.15.0):
     - CocoaLumberjack (~> 3.4)
     - FormatterKit/TimeIntervalFormatter (~> 1.8)
-  - WordPressUI (1.12.1-beta.3)
+  - WordPressUI (1.12.1)
   - Wormholy (1.6.4)
   - WPMediaPicker (1.7.1)
   - wpxmlrpc (0.9.0)
@@ -95,7 +95,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.8)
-  - Automattic-Tracks-iOS (~> 0.9.0-beta.1)
+  - Automattic-Tracks-iOS (~> 0.9.0)
   - Charts (~> 3.6.0)
   - CocoaLumberjack (~> 3.5)
   - CocoaLumberjack/Swift (~> 3.5)
@@ -108,7 +108,7 @@ DEPENDENCIES:
   - WordPressAuthenticator (~> 1.38.0)
   - WordPressKit (~> 4.32.0)
   - WordPressShared (~> 1.15)
-  - WordPressUI (~> 1.12.1-beta.3)
+  - WordPressUI (~> 1.12.1)
   - Wormholy (~> 1.6.4)
   - WPMediaPicker (~> 1.7.1)
   - XLPagerTabStrip (~> 9.0)
@@ -162,7 +162,7 @@ SPEC CHECKSUMS:
   1PasswordExtension: f97cc80ae58053c331b2b6dc8843ba7103b33794
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
-  Automattic-Tracks-iOS: 59b9722299d6adbb2e4bc643553d84b41170d075
+  Automattic-Tracks-iOS: f6ece12d2e630b55b701bac8bcf4301fcce9a327
   Charts: b1e3a1f5a1c9ba5394438ca3b91bd8c9076310af
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   FormatterKit: 184db51bf120b633693a73624a4cede89ec51a41
@@ -187,7 +187,7 @@ SPEC CHECKSUMS:
   WordPressAuthenticator: 4ccd7f41bae37247883922ad92a14f18cc759bf3
   WordPressKit: 438af1e601ca74ff0d68efa17b4528cb7d8638a7
   WordPressShared: e1915cf3b4ac33f41c47610693b9ca30c0cdab45
-  WordPressUI: cf3b3ef744663811a8d8a9844f42386e1826f512
+  WordPressUI: 414bf3a7d007618f94a1c7969d6e849779877d5d
   Wormholy: 2e70f64227e010d363f8d33268369f77faf12471
   WPMediaPicker: 46ae5807c8f64d30a39c28812ad150837a424ed2
   wpxmlrpc: bf55a43a7e710bd2a4fb8c02dfe83b1246f14f13
@@ -200,6 +200,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: ab3c7a0484657da5aa58fda8681b8a4b623070a5
+PODFILE CHECKSUM: 6373f8df9e01453dada082af519df7396222805e
 
 COCOAPODS: 1.10.1

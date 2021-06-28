@@ -49,15 +49,17 @@ final class StorePickerCoordinator: Coordinator {
 extension StorePickerCoordinator: StorePickerViewControllerDelegate {
 
     func didSelectStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
-        roleEligibilityUseCase.checkEligibility(for: storeID) { [weak self] error in
-            guard let self = self else { return }
-            guard let error = error else {
-                self.switchStore(with: storeID, onCompletion: onCompletion)
-                return
+        switchStoreUseCase.switchStore(with: storeID) { [weak self] siteChanged in
+            if self?.selectedConfiguration == .login {
+                MainTabBarController.switchToMyStoreTab(animated: true)
             }
 
-            // TODO: (dvdchr) Handle errors
-            print(error)
+            if siteChanged {
+                let presenter = SwitchStoreNoticePresenter()
+                presenter.presentStoreSwitchedNotice(configuration: self?.selectedConfiguration)
+            }
+            onCompletion()
+            self?.onDismiss?()
         }
     }
 
@@ -87,18 +89,4 @@ private extension StorePickerCoordinator {
         }
     }
 
-    func switchStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
-        switchStoreUseCase.switchStore(with: storeID) { [weak self] siteChanged in
-            if self?.selectedConfiguration == .login {
-                MainTabBarController.switchToMyStoreTab(animated: true)
-            }
-
-            if siteChanged {
-                let presenter = SwitchStoreNoticePresenter()
-                presenter.presentStoreSwitchedNotice(configuration: self?.selectedConfiguration)
-            }
-            onCompletion()
-            self?.onDismiss?()
-        }
-    }
 }

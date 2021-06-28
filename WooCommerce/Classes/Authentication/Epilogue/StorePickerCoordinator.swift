@@ -53,7 +53,7 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
             guard let self = self else { return }
 
             guard let error = error else {
-                // user is eligible to proceed.
+                // if user is eligible, then switch to the desired store.
                 self.roleEligibilityUseCase.reset()
                 self.switchStore(with: storeID, onCompletion: onCompletion)
                 return
@@ -112,6 +112,7 @@ private extension StorePickerCoordinator {
         let errorViewModel = RoleErrorViewModel(siteID: siteID, title: errorInfo.name, subtitle: errorInfo.humanizedRoles, useCase: self.roleEligibilityUseCase)
         let errorViewController = RoleErrorViewController(viewModel: errorViewModel)
 
+        // when the retry is successful, resume the original switchStore intention.
         errorViewModel.onSuccess = {
             self.switchStore(with: siteID, onCompletion: onCompletion)
         }

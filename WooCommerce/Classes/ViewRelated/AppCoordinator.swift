@@ -102,17 +102,19 @@ private extension AppCoordinator {
         }
     }
 
+    /// Displays the role error page as the root view.
+    ///
     func displayRoleErrorUI(for siteID: Int64, errorInfo: EligibilityErrorInfo) {
         let errorViewModel = RoleErrorViewModel(siteID: siteID, title: errorInfo.name, subtitle: errorInfo.humanizedRoles)
         let errorViewController = RoleErrorViewController(viewModel: errorViewModel)
 
+        // when the retry is successful, resume the intention to display the main tab bar.
         errorViewModel.onSuccess = {
             self.displayLoggedInUI()
         }
 
         errorViewModel.onDeauthenticationRequest = {
             self.stores.deauthenticate()
-            self.displayAuthenticator()
         }
 
         setWindowRootViewControllerAndAnimateIfNeeded(UINavigationController(rootViewController: errorViewController))

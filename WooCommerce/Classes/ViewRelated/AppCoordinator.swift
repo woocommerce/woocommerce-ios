@@ -71,8 +71,9 @@ private extension AppCoordinator {
     func displayLoggedInUI() {
         // if the previous role check indicates that the user is ineligible, then we want to show the error message.
         // Eligibility status is stored locally in user defaults, and updated asynchronously upon app launch.
-        if let errorInfo = roleEligibilityUseCase.lastEligibilityErrorInfo() {
-            displayRoleErrorUI(with: errorInfo)
+        if let errorInfo = roleEligibilityUseCase.lastEligibilityErrorInfo(),
+           let siteID = stores.sessionManager.defaultStoreID {
+            displayRoleErrorUI(for: siteID, errorInfo: errorInfo)
             return
         }
 
@@ -101,11 +102,20 @@ private extension AppCoordinator {
         }
     }
 
-    func displayRoleErrorUI(with errorInfo: EligibilityErrorInfo) {
-        let errorViewModel = RoleErrorViewModel(title: errorInfo.name, subtitle: errorInfo.humanizedRoles)
+    func displayRoleErrorUI(for siteID: Int64, errorInfo: EligibilityErrorInfo) {
+        let errorViewModel = RoleErrorViewModel(siteID: siteID, title: errorInfo.name, subtitle: errorInfo.humanizedRoles)
         let errorViewController = RoleErrorViewController(viewModel: errorViewModel)
 
-        setWindowRootViewControllerAndAnimateIfNeeded(errorViewController)
+        errorViewModel.onSuccess = {
+            self.displayLoggedInUI()
+        }
+
+        errorViewModel.onDeauthenticationRequest = {
+            self.stores.deauthenticate()
+            self.displayAuthenticator()
+        }
+
+        setWindowRootViewControllerAndAnimateIfNeeded(UINavigationController(rootViewController: errorViewController))
     }
 }
 

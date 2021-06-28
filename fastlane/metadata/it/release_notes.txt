@@ -1,0 +1,1 @@
+Sono necessari meno tocchi per ottenere gli attributi su un prodotto variabile: sono elencati proprio nei dettagli del prodotto. Abbiamo anche migliorato il modo in cui i dettagli di un ordine vengono caricati sia visivamente che dietro le quinte: speriamo che noterai i miglioramenti!

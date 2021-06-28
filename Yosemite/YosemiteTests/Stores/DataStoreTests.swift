@@ -48,7 +48,7 @@ final class DataStoreTests: XCTestCase {
         let store = DataStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<[Yosemite.Country], Error> = waitFor { promise in
+        let result: Result<[Yosemite.WooCountry], Error> = waitFor { promise in
             let action = DataAction.synchronizeCountries(siteID: 123) { result in
                 promise(result)
             }
@@ -81,7 +81,7 @@ final class DataStoreTests: XCTestCase {
         let store = DataStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<[Yosemite.Country], Error> = waitFor { promise in
+        let result: Result<[Yosemite.WooCountry], Error> = waitFor { promise in
             let action = DataAction.synchronizeCountries(siteID: 123) { result in
                 promise(result)
             }

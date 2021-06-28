@@ -47,7 +47,7 @@ public final class DataStore: Store {
 private extension DataStore {
 
     func synchronizeCountries(siteID: Int64,
-                              completion: @escaping (Result<[Country], Error>) -> Void) {
+                              completion: @escaping (Result<[WooCountry], Error>) -> Void) {
         remote.loadCountries(siteID: siteID) { [weak self] (result) in
             guard let self = self else { return }
 
@@ -66,10 +66,10 @@ private extension DataStore {
 
 private extension DataStore {
 
-    /// Inserts the specified readonly Country entity *in a background thread*.
+    /// Inserts the specified readonly WooCountry entity *in a background thread*.
     /// `onCompletion` will be called on the main thread!
     ///
-    func insertCountriesInBackground(countries: [Country], onCompletion: @escaping () -> Void) {
+    func insertCountriesInBackground(countries: [WooCountry], onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform { [weak self] in
             self?.insertCountries(countries: countries, in: derivedStorage)
@@ -80,17 +80,17 @@ private extension DataStore {
         }
     }
 
-    /// Delete and re-inserts the specified readonly Country entities in the current thread.
-    func insertCountries(countries: [Country], in storage: StorageType) {
+    /// Delete and re-inserts the specified readonly WooCountry entities in the current thread.
+    func insertCountries(countries: [WooCountry], in storage: StorageType) {
         // We remove any objects that exist in storage
-        storage.deleteAllObjects(ofType: Storage.Country.self)
+        storage.deleteAllObjects(ofType: Storage.WooCountry.self)
 
         // We add the new entities
         for country in countries {
-            let newStorageCountry = storage.insertNewObject(ofType: Storage.Country.self)
+            let newStorageCountry = storage.insertNewObject(ofType: Storage.WooCountry.self)
             newStorageCountry.update(with: country)
             for state in country.states {
-                let newStorageState = storage.insertNewObject(ofType: Storage.StateOfACountry.self)
+                let newStorageState = storage.insertNewObject(ofType: Storage.StateOfAWooCountry.self)
                 newStorageState.update(with: state)
                 newStorageCountry.addToStates(newStorageState)
             }

@@ -2,11 +2,11 @@ import Foundation
 import XCTest
 @testable import Networking
 
-/// Unit Tests for `CountryListMapperTests`
+/// Unit Tests for `WooCountryListMapperTests`
 ///
-class CountryListMapperTests: XCTestCase {
+class WooCountryListMapperTests: XCTestCase {
 
-    /// Verifies that the Country List is parsed correctly.
+    /// Verifies that the WooCountry List is parsed correctly.
     ///
     func test_countries_are_properly_parsed() {
         guard let countries = mapCountriesResponse() else {
@@ -19,27 +19,27 @@ class CountryListMapperTests: XCTestCase {
         XCTAssertEqual(countries[1].code, "PY")
         XCTAssertEqual(countries[1].name, "Paraguay")
         XCTAssertEqual(countries[1].states.count, 18)
-        XCTAssertEqual(countries[1].states.first, StateOfACountry(code: "PY-ASU", name: "Asunción"))
+        XCTAssertEqual(countries[1].states.first, StateOfAWooCountry(code: "PY-ASU", name: "Asunción"))
     }
 }
 
 /// Private Helpers
 ///
-private extension CountryListMapperTests {
+private extension WooCountryListMapperTests {
 
     /// Returns the CountryListMapperTests output upon receiving `filename` (Data Encoded)
     ///
-    func mapCountries(from filename: String) -> [Country]? {
+    func mapCountries(from filename: String) -> [WooCountry]? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
 
-        return try! CountryListMapper().map(response: response)
+        return try! WooCountryListMapper().map(response: response)
     }
 
     /// Returns the CountryListMapper output upon receiving `countries`
     ///
-    func mapCountriesResponse() -> [Country]? {
+    func mapCountriesResponse() -> [WooCountry]? {
         return mapCountries(from: "countries")
     }
 }

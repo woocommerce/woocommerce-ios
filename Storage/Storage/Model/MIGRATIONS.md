@@ -2,6 +2,12 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 54 (Release 7.0.0.0)
+- @pmusolino 2021-06-28
+- Removed `Country` entity, because of error `'Country' has different definitions in different modules; first difference is definition in module 'Storage.Swift' found super class with type 'NSManagedObject'`. This happens because of a definition of a `Country` entity inside `WordPressKit`.
+- Modified the entity `Country` to `WooCountry`
+- Modified the entity `StateOfACountry` to `StateOfAWooCountry`
+
 ## Model 53 (Release 7.0.0.0)
 - @pmusolino 2021-06-24
 - Added `Country` entity

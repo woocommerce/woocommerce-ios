@@ -81,7 +81,8 @@ final class ManagedObjectModelsInventoryTests: XCTestCase {
             "Model 50",
             "Model 51",
             "Model 52",
-            "Model 53"
+            "Model 53",
+            "Model 54"
         ]
 
         // When

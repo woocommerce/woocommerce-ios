@@ -26,7 +26,7 @@ class DataRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "data/countries", filename: "countries")
 
         // When
-        let result: Result<[Country], Error> = waitFor { promise in
+        let result: Result<[WooCountry], Error> = waitFor { promise in
             remote.loadCountries(siteID: self.sampleSiteID) { (result) in
                 promise(result)
             }
@@ -38,7 +38,7 @@ class DataRemoteTests: XCTestCase {
         XCTAssertEqual(countries[1].code, "PY")
         XCTAssertEqual(countries[1].name, "Paraguay")
         XCTAssertEqual(countries[1].states.count, 18)
-        XCTAssertEqual(countries[1].states.first, StateOfACountry(code: "PY-ASU", name: "Asunción"))
+        XCTAssertEqual(countries[1].states.first, StateOfAWooCountry(code: "PY-ASU", name: "Asunción"))
     }
 
     func test_loadCountries_returns_error_on_failure() throws {
@@ -47,7 +47,7 @@ class DataRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "data/countries", filename: "generic_error")
 
         // When
-        let result: Result<[Country], Error> = waitFor { promise in
+        let result: Result<[WooCountry], Error> = waitFor { promise in
             remote.loadCountries(siteID: self.sampleSiteID) { (result) in
                 promise(result)
             }

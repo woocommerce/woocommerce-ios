@@ -651,7 +651,7 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(insertedAccount, paymentGatewayAccount)
     }
 
-    func test_migrating_from_52_to_53_enables_creating_new_StateOfACountry_and_adding_to_Country_attributes_relationship() throws {
+    func test_migrating_from_52_to_54_enables_creating_new_WooStateOfACountry_and_adding_to_WooCountry_attributes_relationship() throws {
         // Arrange
         let sourceContainer = try startPersistentContainer("Model 52")
         let sourceContext = sourceContainer.viewContext
@@ -659,21 +659,21 @@ final class MigrationTests: XCTestCase {
         try sourceContext.save()
 
         // Action
-        let targetContainer = try migrate(sourceContainer, to: "Model 53")
+        let targetContainer = try migrate(sourceContainer, to: "Model 54")
         let targetContext = targetContainer.viewContext
 
         // Assert
-        XCTAssertEqual(try targetContext.count(entityName: "Country"), 0)
+        XCTAssertEqual(try targetContext.count(entityName: "WooCountry"), 0)
 
-        let stateOfCountry1 = insertStateOfACountry(code: "DZ-01", name: "Adrar", to: targetContext)
-        let stateOfCountry2 = insertStateOfACountry(code: "DZ-02", name: "Chlef", to: targetContext)
-        let country = insertCountry(to: targetContext)
+        let stateOfCountry1 = insertStateOfAWooCountry(code: "DZ-01", name: "Adrar", to: targetContext)
+        let stateOfCountry2 = insertStateOfAWooCountry(code: "DZ-02", name: "Chlef", to: targetContext)
+        let country = insertWooCountry(to: targetContext)
         country.mutableSetValue(forKey: "states").add(stateOfCountry1)
         country.mutableSetValue(forKey: "states").add(stateOfCountry2)
-        let insertedCountry = try XCTUnwrap(targetContext.firstObject(ofType: Country.self))
+        let insertedCountry = try XCTUnwrap(targetContext.firstObject(ofType: WooCountry.self))
 
-        XCTAssertEqual(try targetContext.count(entityName: "Country"), 1)
-        XCTAssertEqual(try targetContext.count(entityName: "StateOfACountry"), 2)
+        XCTAssertEqual(try targetContext.count(entityName: "WooCountry"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "StateOfAWooCountry"), 2)
         XCTAssertEqual(insertedCountry, country)
     }
 }
@@ -1030,16 +1030,16 @@ private extension MigrationTests {
     }
 
     @discardableResult
-    func insertCountry(to context: NSManagedObjectContext) -> NSManagedObject {
-        context.insert(entityName: "Country", properties: [
+    func insertWooCountry(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "WooCountry", properties: [
             "code": "DZ",
             "name": "Algeria"
         ])
     }
 
     @discardableResult
-    func insertStateOfACountry(code: String, name: String, to context: NSManagedObjectContext) -> NSManagedObject {
-        context.insert(entityName: "StateOfACountry", properties:
+    func insertStateOfAWooCountry(code: String, name: String, to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "StateOfAWooCountry", properties:
             ["code": code, "name": name])
     }
 }

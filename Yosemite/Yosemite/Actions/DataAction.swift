@@ -11,5 +11,5 @@ public enum DataAction: Action {
     ///   - onCompletion: Closure to be executed upon completion.
     ///
     case synchronizeCountries(siteID: Int64,
-                              onCompletion: (Result<[Country], Error>) -> Void)
+                              onCompletion: (Result<[WooCountry], Error>) -> Void)
 }

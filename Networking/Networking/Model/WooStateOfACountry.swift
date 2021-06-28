@@ -1,15 +1,15 @@
 import Foundation
 import Codegen
 
-/// Represents a State Entity within a Country.
+/// Represents a State Entity within a StateOfAWooCountry.
 ///
-public struct StateOfACountry: Decodable, Equatable, GeneratedFakeable {
+public struct StateOfAWooCountry: Decodable, Equatable, GeneratedFakeable {
 
     // E.g., ON for Ontario. Note: Not always two letters.
     public let code: String
     public let name: String
 
-    /// StateOfACountry struct initializer.
+    /// StateOfAWooCountry struct initializer.
     ///
     public init(code: String, name: String) {
         self.code = code
@@ -18,9 +18,9 @@ public struct StateOfACountry: Decodable, Equatable, GeneratedFakeable {
 }
 
 
-/// Defines all of the StateOfACountry's CodingKeys.
+/// Defines all of the StateOfAWooCountry's CodingKeys.
 ///
-private extension StateOfACountry {
+private extension StateOfAWooCountry {
 
     enum CodingKeys: String, CodingKey {
         case code

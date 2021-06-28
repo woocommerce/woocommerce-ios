@@ -107,17 +107,6 @@ extension Address {
         )
     }
 }
-extension Country {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Country {
-        .init(
-            code: .fake(),
-            name: .fake(),
-            states: .fake()
-        )
-    }
-}
 extension CreateProductVariation {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -1337,10 +1326,10 @@ extension StatGranularity {
         .day
     }
 }
-extension StateOfACountry {
+extension StateOfAWooCountry {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> StateOfACountry {
+    public static func fake() -> StateOfAWooCountry {
         .init(
             code: .fake(),
             name: .fake()
@@ -1425,5 +1414,16 @@ extension WCPayPaymentIntentStatusEnum {
     ///
     public static func fake() -> WCPayPaymentIntentStatusEnum {
         .requiresPaymentMethod
+    }
+}
+extension WooCountry {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> WooCountry {
+        .init(
+            code: .fake(),
+            name: .fake(),
+            states: .fake()
+        )
     }
 }

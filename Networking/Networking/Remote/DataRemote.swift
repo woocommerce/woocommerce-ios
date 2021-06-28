@@ -7,9 +7,9 @@ public final class DataRemote: Remote {
     /// - Parameters:
     ///   - siteID: Remote ID of the site that owns the countries.
     ///   - completion: Closure to be executed upon completion.
-    public func loadCountries(siteID: Int64, completion: @escaping (Result<[Country], Error>) -> Void) {
+    public func loadCountries(siteID: Int64, completion: @escaping (Result<[WooCountry], Error>) -> Void) {
         let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .get, siteID: siteID, path: Path.countries)
-        let mapper = CountryListMapper()
+        let mapper = WooCountryListMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
 }

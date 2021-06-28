@@ -2,26 +2,26 @@ import Foundation
 import CoreData
 
 
-extension Country {
+extension WooCountry {
 
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<Country> {
-        return NSFetchRequest<Country>(entityName: "Country")
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<WooCountry> {
+        return NSFetchRequest<WooCountry>(entityName: "WooCountry")
     }
 
     @NSManaged public var code: String
     @NSManaged public var name: String
-    @NSManaged public var states: Set<StateOfACountry>
+    @NSManaged public var states: Set<StateOfAWooCountry>
 
 }
 
 // MARK: Generated accessors for states
-extension Country {
+extension WooCountry {
 
     @objc(addStatesObject:)
-    @NSManaged public func addToStates(_ value: StateOfACountry)
+    @NSManaged public func addToStates(_ value: StateOfAWooCountry)
 
     @objc(removeStatesObject:)
-    @NSManaged public func removeFromStates(_ value: StateOfACountry)
+    @NSManaged public func removeFromStates(_ value: StateOfAWooCountry)
 
     @objc(addStates:)
     @NSManaged public func addToStates(_ values: NSSet)

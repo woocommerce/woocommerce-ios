@@ -467,9 +467,9 @@ public extension StorageType {
 
     /// Returns all the countries stored.
     ///
-    func loadCountries() -> [Country] {
-        let descriptor = NSSortDescriptor(keyPath: \Country.name, ascending: true)
-        return allObjects(ofType: Country.self, matching: nil, sortedBy: [descriptor])
+    func loadCountries() -> [WooCountry] {
+        let descriptor = NSSortDescriptor(keyPath: \WooCountry.name, ascending: true)
+        return allObjects(ofType: WooCountry.self, matching: nil, sortedBy: [descriptor])
     }
 
     // MARK: - Shipping Labels

@@ -505,12 +505,13 @@ extension ShippingLabelFormViewModel {
         case genericError(Error)
     }
 
-    func purchaseLabel(onCompletion: @escaping ((Bool) -> Void)) {
+    func purchaseLabel(onCompletion: @escaping ((Result<Void, Error>) -> Void)) {
         guard let originAddress = originAddress,
               let destinationAddress = destinationAddress,
               let selectedPackage = selectedPackage,
               let selectedRate = selectedRate,
               let accountSettings = shippingLabelAccountSettings else {
+            onCompletion(.failure(PurchaseError.labelDetailsMissing))
             return
         }
 
@@ -525,12 +526,16 @@ extension ShippingLabelFormViewModel {
             switch result {
             case .success(let labels):
                 self.purchasedShippingLabel = labels.first(where: { $0.productIDs == productIDs })
-                onCompletion(true)
-            case .failure:
-                onCompletion(false)
+                onCompletion(.success(()))
+            case .failure(let error):
+                onCompletion(.failure(error))
             }
         }
         stores.dispatch(action)
+    }
+
+    private enum PurchaseError: Error {
+        case labelDetailsMissing
     }
 }
 

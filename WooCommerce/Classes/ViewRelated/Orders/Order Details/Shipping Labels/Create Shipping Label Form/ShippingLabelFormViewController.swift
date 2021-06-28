@@ -282,11 +282,13 @@ private extension ShippingLabelFormViewController {
             // TODO: Handle order completion
         } onButtonTouchUp: {
             self.displayPurchaseProgressView()
-            self.viewModel.purchaseLabel { [weak self] success in
-                if success {
+            self.viewModel.purchaseLabel { [weak self] result in
+                switch result {
+                case .success:
                     self?.displayPrintShippingLabelVC()
-                } else {
+                case .failure:
                     // TODO: Implement and display error screen for purchase failures
+                    break
                 }
                 self?.dismiss(animated: true)
             }

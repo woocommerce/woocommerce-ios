@@ -20,10 +20,6 @@ final class StorePickerCoordinator: Coordinator {
     ///
     private let switchStoreUseCase = SwitchStoreUseCase(stores: ServiceLocator.stores)
 
-    /// The RoleEligibilityUseCase object initialized with the ServiceLocator stores
-    ///
-    private let roleEligibilityUseCase = RoleEligibilityUseCase(stores: ServiceLocator.stores)
-
     /// Site Picker VC
     ///
     private lazy var storePicker: StorePickerViewController = {

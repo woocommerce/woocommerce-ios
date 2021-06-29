@@ -352,7 +352,6 @@ extension AppDelegate {
         }
 
         ServiceLocator.stores.synchronizeEntities(onCompletion: nil)
-
     }
 
     /// Runs whenever the Authentication Flow is completed successfully.

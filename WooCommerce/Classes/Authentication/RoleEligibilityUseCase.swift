@@ -1,4 +1,3 @@
-import Combine
 import Yosemite
 
 /// Encapsulates the logic for checking the eligibility of user roles.

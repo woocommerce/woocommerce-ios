@@ -1,5 +1,4 @@
 import Foundation
-import Yosemite
 
 /// Convenience type that encapsulates display information for user ineligible for managing the store.
 struct EligibilityErrorInfo {

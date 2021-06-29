@@ -19,6 +19,8 @@ struct EligibilityErrorInfo {
         self.roles = roles
     }
 
+    /// Converts dictionary into EligibilityErrorInfo.
+    /// Note that the value for `roles` needs to be in a specific format. See: `toDictionary()`.
     init?(from dictionary: [String: String]) {
         guard let name = dictionary[Constants.nameKey],
               let roles = dictionary[Constants.rolesKey] else {
@@ -28,6 +30,8 @@ struct EligibilityErrorInfo {
         self.init(name: name, roles: roles.components(separatedBy: Constants.separatorString))
     }
 
+    /// Formats the struct to a simple string dictionary structure.
+    /// Roles will be serialized by turning them into a single string with comma-separated values.
     func toDictionary() -> [String: String] {
         return [
             Constants.nameKey: name,

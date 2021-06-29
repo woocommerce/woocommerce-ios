@@ -7,15 +7,22 @@ extension Storage.ShippingLabel: ReadOnlyConvertible {
     /// Updates the Storage.ShippingLabel with the a ReadOnly ShippingLabel.
     ///
     public func update(with shippingLabel: Yosemite.ShippingLabel) {
+        guard let labelCarrierID = shippingLabel.carrierID,
+              let labelRate = shippingLabel.rate,
+              let labelCurrency = shippingLabel.currency,
+              let labelTrackingNumber = shippingLabel.trackingNumber else {
+            DDLogError("⛔️ Shipping label is missing required information and cannot be stored")
+            return
+        }
         siteID = shippingLabel.siteID
         orderID = shippingLabel.orderID
         shippingLabelID = shippingLabel.shippingLabelID
-        carrierID = shippingLabel.carrierID
+        carrierID = labelCarrierID
         dateCreated = shippingLabel.dateCreated
         packageName = shippingLabel.packageName
-        rate = shippingLabel.rate
-        currency = shippingLabel.currency
-        trackingNumber = shippingLabel.trackingNumber
+        rate = labelRate
+        currency = labelCurrency
+        trackingNumber = labelTrackingNumber
         serviceName = shippingLabel.serviceName
         refundableAmount = shippingLabel.refundableAmount
         status = shippingLabel.status.rawValue

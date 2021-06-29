@@ -536,9 +536,6 @@ private enum Constants {
     static let customShipmentProvidersFileName = "custom-shipment-providers.plist"
     static let statsVersionBannerVisibilityFileName = "stats-version-banner-visibility.plist"
     static let statsVersionLastShownFileName = "stats-version-last-shown.plist"
-    static let productsFeatureSwitchFileName = "products-feature-switch.plist"
-    static let productsRelease3FeatureSwitchFileName = "products-m3-feature-switch.plist"
-    static let productsRelease4FeatureSwitchFileName = "products-m4-feature-switch.plist"
     static let generalAppSettingsFileName = "general-app-settings.plist"
     static let productsSettings = "products-settings.plist"
 }

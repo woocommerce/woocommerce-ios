@@ -10,14 +10,14 @@ final class ProductDetailsFactoryTests: XCTestCase {
         // Arrange
         let product = Product.fake().copy(productTypeKey: ProductType.simple.rawValue)
 
-        let expectation = expectation(description: #function)
+        let exp = expectation(description: #function)
         // Action
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
                                              forceReadOnly: false) { viewController in
                                                 // Assert
                                                 XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
-                                                expectation.fulfill()
+                                                exp.fulfill()
         }
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
@@ -27,7 +27,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
     func test_factory_creates_product_form_for_affiliate_product() {
         // Arrange
         let product = Product.fake().copy(productTypeKey: ProductType.affiliate.rawValue)
-        let expectation = expectation(description: #function)
+        let exp = expectation(description: #function)
 
         // Action
         ProductDetailsFactory.productDetails(product: product,
@@ -35,7 +35,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
                                              forceReadOnly: false) { viewController in
                                                 // Assert
                                                 XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
-                                                expectation.fulfill()
+                                                exp.fulfill()
         }
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
@@ -45,7 +45,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
     func test_factory_creates_product_form_for_grouped_product() {
         // Arrange
         let product = Product.fake().copy(productTypeKey: ProductType.grouped.rawValue)
-        let expectation = expectation(description: #function)
+        let exp = expectation(description: #function)
 
         // Action
         ProductDetailsFactory.productDetails(product: product,
@@ -53,7 +53,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
                                              forceReadOnly: false) { viewController in
                                                 // Assert
                                                 XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
-                                                expectation.fulfill()
+                                                exp.fulfill()
         }
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
@@ -63,7 +63,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
     func test_factory_creates_product_form_for_variable_product() {
         // Arrange
         let product = Product.fake().copy(productTypeKey: ProductType.variable.rawValue)
-        let expectation = expectation(description: #function)
+        let exp = expectation(description: #function)
 
         // Action
         ProductDetailsFactory.productDetails(product: product,
@@ -71,7 +71,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
                                              forceReadOnly: false) { viewController in
                                                 // Assert
                                                 XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
-                                                expectation.fulfill()
+                                                exp.fulfill()
         }
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }

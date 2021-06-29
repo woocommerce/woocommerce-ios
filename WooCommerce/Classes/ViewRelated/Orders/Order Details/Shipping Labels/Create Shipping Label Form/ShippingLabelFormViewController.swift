@@ -307,6 +307,7 @@ private extension ShippingLabelFormViewController {
             type: type,
             address: address,
             validationError: validationError,
+            countries: viewModel.countries,
             completion: { [weak self] (newShippingLabelAddress) in
                 guard let self = self else { return }
                 switch type {
@@ -333,7 +334,8 @@ private extension ShippingLabelFormViewController {
         let vc = ShippingLabelSuggestedAddressViewController(siteID: viewModel.siteID,
                                                              type: type,
                                                              address: address,
-                                                             suggestedAddress: suggestedAddress) { [weak self] (newShippingLabelAddress) in
+                                                             suggestedAddress: suggestedAddress,
+                                                             countries: viewModel.countries) { [weak self] (newShippingLabelAddress) in
             switch type {
             case .origin:
                 self?.viewModel.handleOriginAddressValueChanges(address: newShippingLabelAddress,

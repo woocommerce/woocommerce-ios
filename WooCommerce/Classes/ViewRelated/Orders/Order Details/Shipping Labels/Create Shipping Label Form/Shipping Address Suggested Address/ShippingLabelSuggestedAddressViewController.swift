@@ -42,13 +42,21 @@ final class ShippingLabelSuggestedAddressViewController: UIViewController {
         }
     }
 
+    private(set) var countries: [Country]
+
     /// Init
     ///
-    init(siteID: Int64, type: ShipType, address: ShippingLabelAddress?, suggestedAddress: ShippingLabelAddress?, completion: @escaping Completion) {
+    init(siteID: Int64,
+         type: ShipType,
+         address: ShippingLabelAddress?,
+         suggestedAddress: ShippingLabelAddress?,
+         countries: [Country],
+         completion: @escaping Completion) {
         self.siteID = siteID
         self.type = type
         self.address = address
         self.suggestedAddress = suggestedAddress
+        self.countries = countries
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
@@ -161,6 +169,7 @@ private extension ShippingLabelSuggestedAddressViewController {
             type: type,
             address: address,
             validationError: nil,
+            countries: countries,
             completion: { [weak self] (newShippingLabelAddress) in
                 guard let self = self else { return }
                 self.onCompletion(newShippingLabelAddress)

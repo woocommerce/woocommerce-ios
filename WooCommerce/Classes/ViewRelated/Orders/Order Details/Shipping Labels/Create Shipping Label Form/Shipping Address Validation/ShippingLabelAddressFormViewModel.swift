@@ -46,12 +46,15 @@ final class ShippingLabelAddressFormViewModel {
 
     var sections: [Section] = []
 
+    private(set) var countries: [Country]
+
     init(
         siteID: Int64,
         type: ShipType,
         address: ShippingLabelAddress?,
         stores: StoresManager = ServiceLocator.stores,
-        validationError: ShippingLabelAddressValidationError?
+        validationError: ShippingLabelAddressValidationError?,
+        countries: [Country]
     ) {
         self.siteID = siteID
         self.type = type
@@ -61,6 +64,7 @@ final class ShippingLabelAddressFormViewModel {
             addressValidationError = validationError
             addressValidated = .remote
         }
+        self.countries = countries
         updateSections()
     }
 

@@ -56,8 +56,9 @@ final class ShippingLabelAddressFormViewController: UIViewController {
          type: ShipType,
          address: ShippingLabelAddress?,
          validationError: ShippingLabelAddressValidationError?,
+         countries: [Country],
          completion: @escaping Completion ) {
-        viewModel = ShippingLabelAddressFormViewModel(siteID: siteID, type: type, address: address, validationError: validationError)
+        viewModel = ShippingLabelAddressFormViewModel(siteID: siteID, type: type, address: address, validationError: validationError, countries: countries)
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }

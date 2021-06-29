@@ -1,3 +1,1 @@
-Jetzt hast du die Möglichkeit, ein virtuelles Produkt in der Produktdetailansicht zu erstellen und zu bearbeiten!
-
-Hinweis: iOS 13 wird nicht mehr unterstützt. Wir unterstützen ab sofort nur noch iOS 14 und höhere Versionen.
+Zum Abrufen von Attributen eines variablen Produkts musst du nun weniger oft tippen – du findest sie direkt in den Produktdetails! Wir haben auch verbessert, wie die Details zu einer Bestellung visuell und im Hintergrund geladen werden – hoffentlich machen sich die Verbesserungen für dich bemerkbar!

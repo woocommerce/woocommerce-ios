@@ -10,10 +10,6 @@ enum FeatureFlag: Int {
     ///
     case barcodeScanner
 
-    /// Card Present Payments
-    ///
-    case cardPresentPayments
-
     /// Large titles on the main tabs
     ///
     case largeTitles

@@ -44,9 +44,9 @@ final class SettingsViewController: UIViewController {
         return urlAsString?.hostname() ?? String()
     }
 
-    /// ResultsController: Loads Sites from the Storage Layer.
+    /// SitesResultsController: Loads Sites from the Storage Layer.
     ///
-    private let resultsController: ResultsController<StorageSite> = {
+    private let sitesResultsController: ResultsController<StorageSite> = {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "isWooCommerceActive == YES")
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
@@ -57,6 +57,24 @@ final class SettingsViewController: UIViewController {
     /// Sites pulled from the results controlelr
     ///
     private var sites = [Yosemite.Site]()
+
+    /// Payment Gateway Accounts Results Controller: Loads Payment Gateway Accounts from the Storage Layer
+    /// e.g. WooCommerce Payments, but eventually other in-person payment accounts too
+    ///
+    private var paymentGatewayAccountsResultsController: ResultsController<StoragePaymentGatewayAccount>? = {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return nil
+        }
+
+        let storageManager = ServiceLocator.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
+    /// Accounts pulled from the results controller
+    ///
+    private var paymentGatewayAccounts = [PaymentGatewayAccount]()
 
     /// Store Picker Coordinator
     ///
@@ -71,11 +89,12 @@ final class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        checkAvailabilityForPayments() { [weak self] in
+        configureResultsControllers(onReload: { [weak self] in
             self?.refreshViewContent()
-        }
+        })
 
-        refreshResultsController()
+        loadPaymentGatewayAccounts()
+
         configureNavigation()
         configureMainView()
         configureTableView()
@@ -112,35 +131,79 @@ private extension SettingsViewController {
         tableView.delegate = self
     }
 
-    func refreshResultsController() {
-        try? resultsController.performFetch()
-        sites = resultsController.fetchedObjects
-    }
-
-    func checkAvailabilityForPayments(onCompletion: @escaping () -> Void) {
-        guard let siteID = self.siteID else {
-            canCollectPayments = false
-            onCompletion()
-            return
+    /// Set up observation of the results controllers, so that when new data arrives
+    /// the view can be refreshed, and then perform the initial fetch from storage.
+    ///
+    private func configureResultsControllers(onReload: @escaping () -> Void) {
+        sitesResultsController.onDidChangeContent = {
+            onReload()
         }
 
-        let action = WCPayAction.loadAccount(siteID: siteID) { [weak self] result in
+        sitesResultsController.onDidResetContent = { [weak self] in
             guard let self = self else {
                 return
             }
 
-            switch result {
-            case .failure:
-                self.canCollectPayments = false
-            case .success(let account):
-                self.canCollectPayments = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) &&
-                    account.isCardPresentEligible
-            }
-
-            onCompletion()
+            self.refetchAllResultsControllers()
+            onReload()
         }
 
+        try? sitesResultsController.performFetch()
+
+        guard paymentGatewayAccountsResultsController != nil else {
+            return
+        }
+
+        paymentGatewayAccountsResultsController?.onDidChangeContent = {
+            onReload()
+        }
+
+        paymentGatewayAccountsResultsController?.onDidResetContent = { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.refetchAllResultsControllers()
+            onReload()
+        }
+
+        try? paymentGatewayAccountsResultsController?.performFetch()
+    }
+
+    /// Refetching all the results controllers is necessary after a storage reset in `onDidResetContent` callback and before reloading UI that
+    /// involves more than one results controller.
+    ///
+    private func refetchAllResultsControllers() {
+        try? sitesResultsController.performFetch()
+        guard paymentGatewayAccountsResultsController != nil else {
+            return
+        }
+        try? paymentGatewayAccountsResultsController?.performFetch()
+    }
+
+    /// Ask the PaymentGatewayAccountStore to loadAccounts from the network and update storage
+    ///
+    private func loadPaymentGatewayAccounts() {
+        guard let siteID = self.siteID else {
+            return
+        }
+
+        /// No need for a completion here. We will be notified of storage changes in `onDidChangeContent`
+        ///
+        let action = PaymentGatewayAccountAction.loadAccounts(siteID: siteID) {_ in}
         ServiceLocator.stores.dispatch(action)
+    }
+
+    /// Update our list of sites from the sitesResultsController
+    ///
+    private func updateSites() {
+        sites = sitesResultsController.fetchedObjects
+    }
+
+    /// Determine if any payment gateway account for this site supports card present payments
+    ///
+    private func checkAvailabilityForPayments() {
+        paymentGatewayAccounts = paymentGatewayAccountsResultsController?.fetchedObjects ?? []
+        canCollectPayments = paymentGatewayAccounts.contains(where: \.isCardPresentEligible)
     }
 
     func configureTableViewFooter() {
@@ -162,6 +225,8 @@ private extension SettingsViewController {
     }
 
     func refreshViewContent() {
+        updateSites()
+        checkAvailabilityForPayments()
         configureSections()
         tableView.reloadData()
     }

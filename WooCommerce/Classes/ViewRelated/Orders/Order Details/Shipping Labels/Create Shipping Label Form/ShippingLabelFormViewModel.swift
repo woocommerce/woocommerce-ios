@@ -168,7 +168,7 @@ final class ShippingLabelFormViewModel {
         let shippingCarrierAndRates = Row(type: .shippingCarrierAndRates, dataState: .pending, displayMode: .disabled)
         let paymentMethod = Row(type: .paymentMethod, dataState: .pending, displayMode: .disabled)
         let rows: [Row] = [shipFrom, shipTo, packageDetails, shippingCarrierAndRates, paymentMethod]
-        return [Section(rows: rows)]
+        return [Section(title: nil, rows: rows)]
     }
 
     /// Returns the body of the Package Details cell
@@ -224,6 +224,73 @@ final class ShippingLabelFormViewModel {
 
         return String.localizedStringWithFormat(Localization.paymentMethodLabel, selectedPaymentMethod.cardDigits)
     }
+
+    /// Returns the subtotal under the Order Summary.
+    ///
+    func getSubtotal() -> String {
+        guard let selectedRate = selectedRate else {
+            return ""
+        }
+
+        var retailRate: Double = selectedRate.retailRate
+        if let selectedSignatureRate = selectedSignatureRate {
+            retailRate = selectedSignatureRate.retailRate
+        }
+        else if let selectedAdultSignatureRate = selectedAdultSignatureRate {
+            retailRate = selectedAdultSignatureRate.retailRate
+        }
+
+        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+        let price = currencyFormatter.formatAmount(Decimal(retailRate)) ?? ""
+
+        return price
+    }
+
+    /// Returns, if available, the discount under the Order Summary.
+    ///
+    func getDiscount() -> String? {
+        guard let selectedRate = selectedRate else {
+            return nil
+        }
+
+        var rate: Double = selectedRate.rate - selectedRate.retailRate
+        if let selectedSignatureRate = selectedSignatureRate {
+            rate = selectedSignatureRate.rate - selectedSignatureRate.retailRate
+        }
+        else if let selectedAdultSignatureRate = selectedAdultSignatureRate {
+            rate = selectedAdultSignatureRate.rate - selectedAdultSignatureRate.retailRate
+        }
+
+        guard rate != 0 else {
+            return nil
+        }
+
+        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+        let discount = currencyFormatter.formatAmount(Decimal(rate)) ?? nil
+
+        return discount
+    }
+
+    /// Returns the order total under the Order Summary.
+    ///
+    func getOrderTotal() -> String {
+        guard let selectedRate = selectedRate else {
+            return ""
+        }
+
+        var rate: Double = selectedRate.rate
+        if let selectedSignatureRate = selectedSignatureRate {
+            rate = selectedSignatureRate.rate
+        }
+        else if let selectedAdultSignatureRate = selectedAdultSignatureRate {
+            rate = selectedAdultSignatureRate.rate
+        }
+
+        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+        let price = currencyFormatter.formatAmount(Decimal(rate)) ?? ""
+
+        return price
+    }
 }
 
 // MARK: - State Machine
@@ -255,7 +322,15 @@ private extension ShippingLabelFormViewModel {
             }
         }
 
-        state.sections = [Section(rows: rows)]
+        var summarySection: Section?
+        if rows.allSatisfy({ (row) -> Bool in
+            row.dataState == .validated && row.displayMode == .editable
+        }) {
+            summarySection = Section(title: Localization.orderSummaryHeader.uppercased(),
+                                     rows: [Row(type: .orderSummary, dataState: .validated, displayMode: .editable)])
+        }
+
+        state.sections = [Section(title: nil, rows: rows), summarySection].compactMap { $0 }
     }
 }
 
@@ -444,5 +519,7 @@ private extension ShippingLabelFormViewModel {
         static let paymentMethodLabel =
             NSLocalizedString("Credit card ending in %1$@",
                               comment: "Selected credit card in Shipping Label form. %1$@ is a placeholder for the last four digits of the credit card.")
+        static let orderSummaryHeader = NSLocalizedString("Shipping label order summary",
+                                                          comment: "Header of the order summary section in the shipping label creation form")
     }
 }

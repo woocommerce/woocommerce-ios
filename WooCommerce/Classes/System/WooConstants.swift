@@ -107,6 +107,10 @@ extension WooConstants {
         ///
         case productReviewInfo = "https://woocommerce.com/posts/reviews-woocommerce-best-practices/"
 
+        /// URL for troubleshooting documentation used in Error Loading Data banner
+        ///
+        case troubleshootErrorLoadingData = "https://docs.woocommerce.com/document/android-ios-apps-troubleshooting-error-fetching-orders/"
+
         /// Returns the URL version of the receiver
         ///
         func asURL() -> URL {

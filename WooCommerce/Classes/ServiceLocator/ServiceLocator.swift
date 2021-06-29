@@ -52,11 +52,15 @@ final class ServiceLocator {
 
     /// CoreData Stack
     ///
-    private static var _storageManager = CoreDataManager(name: WooConstants.databaseStackName, crashLogger: SentryCrashLogger())
+    private static var _storageManager = CoreDataManager(name: WooConstants.databaseStackName, crashLogger: crashLogging)
 
     /// Cocoalumberjack DDLog
     ///
     private static var _fileLogger: Logs = DDFileLogger()
+
+    /// Crash Logging Stack
+    ///
+    private static var _crashLogging: CrashLoggingStack = WooCrashLoggingStack()
 
     /// Support for external Card Readers
     ///
@@ -147,6 +151,12 @@ final class ServiceLocator {
     /// - Returns: An implementation of the Logs protocol. It defaults to DDFileLogger
     static var fileLogger: Logs {
         return _fileLogger
+    }
+
+    /// Provides the access point to the CrashLogger
+    /// - Returns: An implementation
+    static var crashLogging: CrashLoggingStack {
+        return _crashLogging
     }
 
     /// Provides the last known `KeyboardState`.
@@ -257,6 +267,14 @@ extension ServiceLocator {
         }
 
         _fileLogger = mock
+    }
+
+    static func setCrashLogging(_ mock: CrashLoggingStack) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _crashLogging = mock
     }
 
     static func setCardReader(_ mock: CardReaderService) {

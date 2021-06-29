@@ -56,7 +56,7 @@ final class StoreStatsAndTopPerformersPeriodViewModel {
             }
 
             if let error = result.failure {
-                CrashLogging.logError(error)
+                ServiceLocator.crashLogging.logError(error)
             }
 
             self.refreshIsInAppFeedbackCardVisibleValue()
@@ -80,7 +80,7 @@ final class StoreStatsAndTopPerformersPeriodViewModel {
             case .success(let shouldBeVisible):
                 self.sendIsInAppFeedbackCardVisibleValueAndTrackIfNeeded(shouldBeVisible)
             case .failure(let error):
-                CrashLogging.logError(error)
+                ServiceLocator.crashLogging.logError(error)
                 // We'll just send a `false` value. I think this is the safer bet.
                 self.sendIsInAppFeedbackCardVisibleValueAndTrackIfNeeded(false)
             }

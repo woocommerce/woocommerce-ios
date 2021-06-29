@@ -67,6 +67,10 @@ final class OrderListViewModel {
         snapshotsProvider.snapshot
     }
 
+    /// Set when sync fails, and used to display an error loading data banner
+    ///
+    var hasErrorLoadingData: Bool = false
+
     init(siteID: Int64,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
@@ -105,7 +109,7 @@ final class OrderListViewModel {
         do {
             try snapshotsProvider.start()
         } catch {
-            CrashLogging.logError(error)
+            ServiceLocator.crashLogging.logError(error)
         }
     }
 
@@ -190,7 +194,7 @@ private extension OrderListViewModel {
         do {
             try statusResultsController.performFetch()
         } catch {
-            CrashLogging.logError(error)
+            ServiceLocator.crashLogging.logError(error)
         }
     }
 

@@ -39,78 +39,81 @@ class AccountStoreTests: XCTestCase {
 
     /// Verifies that AccountAction.synchronizeAccount returns an error, whenever there is not backend response.
     ///
-    func testSynchronizeAccountReturnsErrorUponEmptyResponse() {
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let expectation = self.expectation(description: "Synchronize")
+    func test_synchronizeAccount_returns_error_upon_empty_response() {
+        // Given
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = AccountAction.synchronizeAccount { (account, error) in
-            XCTAssertNotNil(error)
-            XCTAssertNil(account)
-            expectation.fulfill()
+        // When
+        let result: Result<Yosemite.Account, Error> = waitFor { promise in
+            let action = AccountAction.synchronizeAccount { result in
+                promise(result)
+            }
+            store.onAction(action)
         }
 
-        accountStore.onAction(action)
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isFailure)
     }
 
 
     /// Verifies that AccountAction.synchronizeAccount returns an error whenever there is an error response from the backend.
     ///
-    func testSynchronizeAccountReturnsErrorUponReponseError() {
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let expectation = self.expectation(description: "Synchronize")
-
+    func test_synchronizeAccount_returns_error_upon_reponse_error() {
+        // Given
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "me", filename: "generic_error")
-        let action = AccountAction.synchronizeAccount { (account, error) in
-            XCTAssertNil(account)
-            XCTAssertNotNil(error)
-            guard let _ = error as NSError? else {
-                XCTFail()
-                return
+
+        // When
+        let result: Result<Yosemite.Account, Error> = waitFor { promise in
+            let action = AccountAction.synchronizeAccount { result in
+                promise(result)
             }
-            expectation.fulfill()
+            store.onAction(action)
         }
 
-        accountStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isFailure)
     }
 
 
     /// Verifies that AccountAction.synchronizeAccount effectively inserts a new Default Account.
     ///
-    func testSynchronizeAccountReturnsExpectedAccountDetails() {
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let expectation = self.expectation(description: "Synchronize")
-
+    func test_synchronizeAccount_returns_expected_account_details() throws {
+        // Given
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "me", filename: "me")
         XCTAssertNil(viewStorage.firstObject(ofType: Storage.Account.self, matching: nil))
 
-        let action = AccountAction.synchronizeAccount { (account, error) in
-            XCTAssertNil(error)
-            XCTAssertEqual(account?.userID, 78972699)
-            XCTAssertEqual(account?.username, "apiexamples")
-
-            expectation.fulfill()
+        // When
+        let result: Result<Yosemite.Account, Error> = waitFor { promise in
+            let action = AccountAction.synchronizeAccount { result in
+                promise(result)
+            }
+            store.onAction(action)
         }
 
-        accountStore.onAction(action)
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let account = try result.get()
+        XCTAssertEqual(account.userID, 78972699)
+        XCTAssertEqual(account.username, "apiexamples")
+        XCTAssertNotNil(viewStorage.firstObject(ofType: Storage.Account.self, matching: nil))
     }
 
     // MARK: - AccountStore + Account + Storage
 
     /// Verifies that `updateStoredAccount` does not produce duplicate entries.
     ///
-    func testUpdateStoredAccountEffectivelyUpdatesPreexistantAccounts() {
+    func test_upsertStoredAccount_effectively_updates_preexistant_accounts() {
+        // Given
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
         XCTAssertNil(viewStorage.firstObject(ofType: Storage.Account.self, matching: nil))
 
+        // When
         accountStore.upsertStoredAccount(readOnlyAccount: sampleAccountPristine())
         accountStore.upsertStoredAccount(readOnlyAccount: sampleAccountUpdate())
 
+        // Then
         XCTAssert(viewStorage.countObjects(ofType: Storage.Account.self, matching: nil) == 1)
 
         let expectedAccount = sampleAccountUpdate()
@@ -120,13 +123,16 @@ class AccountStoreTests: XCTestCase {
 
     /// Verifies that `updateStoredAccount` effectively inserts a new Account, with the specified payload.
     ///
-    func testUpdateStoredAccountEffectivelyPersistsNewAccounts() {
+    func test_upsertStoredAccount_effectively_persists_new_accounts() {
+        // Given
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteAccount = sampleAccountPristine()
-
         XCTAssertNil(viewStorage.loadAccount(userID: remoteAccount.userID))
+
+        // When
         accountStore.upsertStoredAccount(readOnlyAccount: remoteAccount)
 
+        // Then
         let storageAccount = viewStorage.loadAccount(userID: remoteAccount.userID)!
         compare(storageAccount: storageAccount, remoteAccount: remoteAccount)
     }
@@ -135,59 +141,62 @@ class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeAccountSettings` returns an error, whenever there is no backend reply.
     ///
-    func testSynchronizeAccountSettingsReturnsErrorOnEmptyResponse() {
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let expectation = self.expectation(description: "Synchronize")
+    func test_synchronizeAccountSettings_returns_error_on_empty_response() {
+        // Given
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = AccountAction.synchronizeAccountSettings(userID: 10) { _, error in
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        // When
+        let result: Result<Yosemite.AccountSettings, Error> = waitFor { promise in
+            let action = AccountAction.synchronizeAccountSettings(userID: 10) { result in
+                promise(result)
+            }
+            store.onAction(action)
         }
 
-        accountStore.onAction(action)
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isFailure)
     }
 
     /// Verifies that `synchronizeAccountSettings` effectively persists any retrieved settings.
     ///
-    func testSynchronizeAccountSettingsEffectivelyPersistsRetrievedSettings() {
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let expectation = self.expectation(description: "Synchronize")
-
+    func test_synchronizeAccountSettings_effectively_persists_retrieved_settings() {
+        // Given
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "me/settings", filename: "me-settings")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.AccountSettings.self), 0)
 
-        let action = AccountAction.synchronizeAccountSettings(userID: 10) { _, error in
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.AccountSettings.self), 1)
-            XCTAssertNil(error)
-            expectation.fulfill()
+        // When
+        let result: Result<Yosemite.AccountSettings, Error> = waitFor { promise in
+            let action = AccountAction.synchronizeAccountSettings(userID: 10) { result in
+                promise(result)
+            }
+            store.onAction(action)
         }
 
-        accountStore.onAction(action)
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.AccountSettings.self), 1)
     }
 
     /// Verifies that `synchronizeAccountSettings` effectively update any retrieved settings.
     ///
     func test_synchronizeAccountSettings_effectively_update_retrieved_settings() throws {
         // Given
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         storageManager.insertSampleAccountSettings(readOnlyAccountSettings: sampleAccountSettings())
-
-        // When
         network.simulateResponse(requestUrlSuffix: "me/settings", filename: "me-settings")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.AccountSettings.self), 1)
 
-        let result: Result<Yosemite.AccountSettings?, Error> = waitFor { promise in
-            let action = AccountAction.synchronizeAccountSettings(userID: 10) { account, _ in
-                promise(.success(account))
+        // When
+        let result: Result<Yosemite.AccountSettings, Error> = waitFor { promise in
+            let action = AccountAction.synchronizeAccountSettings(userID: 10) { result in
+                promise(result)
             }
-            accountStore.onAction(action)
+            store.onAction(action)
         }
 
         // Then
+        XCTAssertTrue(result.isSuccess)
         let account = try result.get()
         let expectedAccount = Networking.AccountSettings(userID: 10,
                                                          tracksOptOut: true,
@@ -195,89 +204,95 @@ class AccountStoreTests: XCTestCase {
                                                          lastName: "Nines")
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.AccountSettings.self), 1)
         XCTAssertEqual(account, expectedAccount)
-        XCTAssertTrue(result.isSuccess)
     }
 
     // MARK: - AccountAction.synchronizeSites
 
     /// Verifies that `synchronizeSites` returns an error, whenever there is no backend reply.
     ///
-    func testSynchronizeSitesReturnsErrorOnEmptyResponse() {
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let expectation = self.expectation(description: "Synchronize")
+    func test_synchronizeSites_returns_error_on_empty_response() {
+        // Given
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = AccountAction.synchronizeSites { error in
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = AccountAction.synchronizeSites { result in
+                promise(result)
+            }
+            store.onAction(action)
         }
 
-        accountStore.onAction(action)
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isFailure)
     }
 
     /// Verifies that `synchronizeSites` effectively persists any retrieved sites.
     ///
-    func testSynchronizeSitesEffectivelyPersistsRetrievedSites() {
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let expectation = self.expectation(description: "Synchronize")
-
+    func test_synchronizeSites_effectively_persists_retrieved_sites() {
+        // Given
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "me/sites", filename: "sites")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
-        let action = AccountAction.synchronizeSites { error in
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 2)
-            XCTAssertNil(error)
-            expectation.fulfill()
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = AccountAction.synchronizeSites { result in
+                promise(result)
+            }
+            store.onAction(action)
         }
 
-        accountStore.onAction(action)
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 2)
     }
 
     // MARK: - AccountAction.loadAccount
 
-    func testLoadAccountActionReturnsExpectedAccount() {
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let expectation = self.expectation(description: "Load Account Action Success")
+    func test_loadAccount_returns_expected_account() {
+        // Given
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Account.self), 0)
-        accountStore.upsertStoredAccount(readOnlyAccount: sampleAccountPristine())
+        store.upsertStoredAccount(readOnlyAccount: sampleAccountPristine())
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Account.self), 1)
 
-        let action = AccountAction.loadAccount(userID: 1234) { account in
-            XCTAssertNotNil(account)
-            XCTAssertEqual(account!, self.sampleAccountPristine())
-            expectation.fulfill()
+        // When
+        let account: Yosemite.Account? = waitFor { promise in
+            let action = AccountAction.loadAccount(userID: 1234) { account in
+                promise(account)
+            }
+            store.onAction(action)
         }
 
-        accountStore.onAction(action)
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertNotNil(account)
+        XCTAssertEqual(account, sampleAccountPristine())
     }
 
-    func testLoadAccountActionReturnsNilForUnknownAccount() {
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let expectation = self.expectation(description: "Load Account Action Error")
+    func test_loadAccount_returns_nil_for_unknown_account() {
+        // Given
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Account.self), 0)
-        accountStore.upsertStoredAccount(readOnlyAccount: sampleAccountPristine())
+        store.upsertStoredAccount(readOnlyAccount: sampleAccountPristine())
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Account.self), 1)
 
-        let action = AccountAction.loadAccount(userID: 9999) { account in
-            XCTAssertNil(account)
-            expectation.fulfill()
+        // When
+        let account: Yosemite.Account? = waitFor { promise in
+            let action = AccountAction.loadAccount(userID: 9999) { account in
+                promise(account)
+            }
+            store.onAction(action)
         }
 
-        accountStore.onAction(action)
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertNil(account)
     }
 
     // MARK: - AccountAction.loadSite
 
-    func testLoadSiteActionReturnsExpectedSite() {
+    func test_loadSite_returns_expected_site() {
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let group = DispatchGroup()
         let expectation = self.expectation(description: "Load Site Action Success")
@@ -303,7 +318,7 @@ class AccountStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    func testLoadSiteActionReturnsNilForUnknownSite() {
+    func test_loadSite_returns_nil_for_unknown_site() {
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let group = DispatchGroup()
         let expectation = self.expectation(description: "Load Site Action Error")

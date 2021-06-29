@@ -48,10 +48,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: - AppDelegate Methods
 
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-
-        // As first thing, setup the crash logging
-        setupCrashLogging()
-
         // Setup Components
         setupAnalytics()
         setupAuthenticationManager()
@@ -210,13 +206,6 @@ private extension AppDelegate {
         appearance.primaryNormalBorderColor = .primaryButtonBorder
         appearance.primaryHighlightBackgroundColor = .primaryButtonDownBackground
         appearance.primaryHighlightBorderColor = .primaryButtonDownBorder
-    }
-
-    /// Sets up Crash Logging
-    ///
-    func setupCrashLogging() {
-        let eventLogging = EventLogging(dataSource: WCEventLoggingDataSource(), delegate: WCEventLoggingDelegate())
-        CrashLogging.start(withDataProvider: WCCrashLoggingDataProvider(), eventLogging: eventLogging)
     }
 
     /// Sets up the Zendesk SDK.

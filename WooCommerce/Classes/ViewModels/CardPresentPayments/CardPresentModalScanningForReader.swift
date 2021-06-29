@@ -7,7 +7,7 @@ final class CardPresentModalScanningForReader: CardPresentPaymentsModalViewModel
     private let cancelAction: () -> Void
 
     let textMode: PaymentsModalTextMode = .reducedBottomInfo
-    let actionsMode: PaymentsModalActionsMode = .oneAction
+    let actionsMode: PaymentsModalActionsMode = .secondaryOnlyAction
 
     let topTitle: String = Localization.title
 
@@ -15,9 +15,9 @@ final class CardPresentModalScanningForReader: CardPresentPaymentsModalViewModel
 
     let image: UIImage = .cardReaderScanning
 
-    let primaryButtonTitle: String? = Localization.cancel
+    let primaryButtonTitle: String? = nil
 
-    let secondaryButtonTitle: String? = nil
+    let secondaryButtonTitle: String? = Localization.cancel
 
     let auxiliaryButtonTitle: String? = nil
 
@@ -29,12 +29,12 @@ final class CardPresentModalScanningForReader: CardPresentPaymentsModalViewModel
         self.cancelAction = cancel
     }
 
-    func didTapPrimaryButton(in viewController: UIViewController?) {
+    func didTapPrimaryButton(in viewController: UIViewController?) {}
+
+    func didTapSecondaryButton(in viewController: UIViewController?) {
         cancelAction()
         viewController?.dismiss(animated: true, completion: nil)
     }
-
-    func didTapSecondaryButton(in viewController: UIViewController?) {}
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {}
 }
@@ -47,7 +47,7 @@ private extension CardPresentModalScanningForReader {
         )
 
         static let instruction = NSLocalizedString(
-            "Turn on your reader by pressing its power button",
+            "Press the power button of your reader until you see a flashing blue light",
             comment: "Label within the modal dialog that appears when searching for a card reader"
         )
 

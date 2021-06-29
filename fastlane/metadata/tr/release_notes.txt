@@ -1,3 +1,1 @@
-Artık doğrudan ürün detay ekranından sanal bir ürün oluşturabilir ve düzenleyebilirsiniz.
-
-iOS 13'ün artık desteklenmediğini lütfen unutmayın.  Bundan sonra yalnızca iOS 14 ve sonraki sürümler desteklenecektir.
+Artık değişken bir ürünün özelliklerine daha az dokunuşla ulaşabilirsiniz. Bunlar ürün ayrntılarında listelenmiştir. Ayrıca bir siparişin ayrıntılarının hem görsel olarak hem de sahne arkasında yüklenme biçimini iyileştirdik. Umarız iyileştirmeleri fark edersiniz.

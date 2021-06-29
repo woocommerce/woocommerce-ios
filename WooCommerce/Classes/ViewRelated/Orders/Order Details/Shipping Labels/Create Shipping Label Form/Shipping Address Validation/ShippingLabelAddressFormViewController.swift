@@ -404,7 +404,7 @@ private extension ShippingLabelAddressFormViewController {
             self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
         }
         cell.configure(viewModel: cellViewModel)
-        cell.isSelected = false
+        cell.enableTextField(false)
     }
 }
 

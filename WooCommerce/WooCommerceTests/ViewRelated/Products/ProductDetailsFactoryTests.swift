@@ -10,7 +10,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
         // Arrange
         let product = Product.fake().copy(productTypeKey: ProductType.simple.rawValue)
 
-        let expectation = self.expectation(description: "Wait for loading Products feature switch from app settings")
+        let expectation = expectation(description: #function)
         // Action
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
@@ -27,7 +27,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
     func test_factory_creates_product_form_for_affiliate_product() {
         // Arrange
         let product = Product.fake().copy(productTypeKey: ProductType.affiliate.rawValue)
-        let expectation = self.expectation(description: "Wait for loading Products feature switch from app settings")
+        let expectation = expectation(description: #function)
 
         // Action
         ProductDetailsFactory.productDetails(product: product,
@@ -45,7 +45,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
     func test_factory_creates_product_form_for_grouped_product() {
         // Arrange
         let product = Product.fake().copy(productTypeKey: ProductType.grouped.rawValue)
-        let expectation = self.expectation(description: "Wait for loading Products feature switch from app settings")
+        let expectation = expectation(description: #function)
 
         // Action
         ProductDetailsFactory.productDetails(product: product,
@@ -63,7 +63,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
     func test_factory_creates_product_form_for_variable_product() {
         // Arrange
         let product = Product.fake().copy(productTypeKey: ProductType.variable.rawValue)
-        let expectation = self.expectation(description: "Wait for loading Products feature switch from app settings")
+        let expectation = expectation(description: #function)
 
         // Action
         ProductDetailsFactory.productDetails(product: product,

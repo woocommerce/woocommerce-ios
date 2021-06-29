@@ -355,7 +355,6 @@ extension AppDelegate {
         }
 
         ServiceLocator.stores.synchronizeEntities(onCompletion: nil)
-
     }
 
     /// Fetch the latest eligibility status of current user.

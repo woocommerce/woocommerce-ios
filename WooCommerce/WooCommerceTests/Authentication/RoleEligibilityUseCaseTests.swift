@@ -1,5 +1,4 @@
 import XCTest
-import Fakes
 import Yosemite
 
 @testable import WooCommerce
@@ -76,6 +75,7 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
     }
 
     func test_roleEligibilityUseCase_sync_updates_errorInfo_when_user_is_ineligible() {
+        // Given
         stores.authenticate(credentials: SessionSettings.credentials)
         stores.whenReceivingAction(ofType: UserAction.self) { action in
             guard case let .retrieveUser(_, completion) = action else {
@@ -98,6 +98,7 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
     }
 
     func test_roleEligibilityUseCase_sync_returns_when_unknown_error_encountered() {
+        // Given
         defaults.setValue(Constants.sampleDictionary, forKey: .errorInfoKey)
         stores.authenticate(credentials: SessionSettings.credentials)
         stores.whenReceivingAction(ofType: UserAction.self) { action in

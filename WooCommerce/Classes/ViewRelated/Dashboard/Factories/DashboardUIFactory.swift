@@ -16,8 +16,9 @@ protocol DashboardUI: UIViewController {
 
     /// Reloads data in Dashboard
     ///
+    /// - Parameter forced: pass `true` to override sync throttling
     /// - Parameter completion: called when Dashboard data reload finishes
-    func reloadData(completion: @escaping () -> Void)
+    func reloadData(forced: Bool, completion: @escaping () -> Void)
 }
 
 /// Relays the scroll events to a delegate for navigation bar large title workaround.

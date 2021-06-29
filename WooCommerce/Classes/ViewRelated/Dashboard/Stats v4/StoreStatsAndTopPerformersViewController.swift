@@ -80,10 +80,10 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
 }
 
 extension StoreStatsAndTopPerformersViewController: DashboardUI {
-    func reloadData(completion: @escaping () -> Void) {
-        syncAllStats { _ in
+    func reloadData(forced: Bool, completion: @escaping () -> Void) {
+        syncAllStats(forced: forced, onCompletion: { _ in
             completion()
-        }
+        })
     }
 
     func remindStatsUpgradeLater() {
@@ -94,12 +94,12 @@ extension StoreStatsAndTopPerformersViewController: DashboardUI {
 // MARK: - Syncing Data
 //
 private extension StoreStatsAndTopPerformersViewController {
-    func syncAllStats(onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
+    func syncAllStats(forced: Bool, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         guard !isSyncing else {
             return
         }
 
-        if let lastFullSyncTimestamp = lastFullSyncTimestamp, Date().timeIntervalSince(lastFullSyncTimestamp) < minimalIntervalBetweenSync {
+        if !forced, let lastFullSyncTimestamp = lastFullSyncTimestamp, Date().timeIntervalSince(lastFullSyncTimestamp) < minimalIntervalBetweenSync {
             // less than 30 s from last full sync
             return
         }

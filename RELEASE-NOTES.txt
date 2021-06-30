@@ -2,7 +2,7 @@
 
 7.1
 -----
-
+- [*] Fix: Interactive pop gesture on Order Details and Settings screen. [https://github.com/woocommerce/woocommerce-ios/pull/4504]
 
 7.0
 -----

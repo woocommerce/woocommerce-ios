@@ -2,7 +2,7 @@
 
 7.1
 -----
-
+- [*] Fix: Frozen refresh control and placeholder when switching tabs [https://github.com/woocommerce/woocommerce-ios/pull/4505]
 
 7.0
 -----

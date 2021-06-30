@@ -273,6 +273,7 @@ private extension ProductFormTableViewDataSource {
                     data: .init(title: viewModel.title,
                                 image: viewModel.icon,
                                 numberOfLinesForTitle: 0,
-                                isActionable: false))
+                                isActionable: false,
+                                showsSeparator: false))
     }
 }

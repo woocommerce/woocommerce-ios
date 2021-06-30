@@ -113,4 +113,20 @@ public enum AppSettingsAction: Action {
     /// Loads the most recent state for the Order Add-ons beta feature switch
     ///
     case loadOrderAddOnsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Remember the given card reader (to support automatic reconnection)
+    /// where `cardReaderID` is a String e.g. "CHB204909005931"
+    ///
+    case rememberCardReader(cardReaderID: String, onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Forget the given card reader (i.e. automatic reconnection is no longer desired)
+    /// where `cardReaderID` is a String e.g. "CHB204909005931"
+    ///
+    case forgetCardReader(cardReaderID: String, onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Loads the list of all known (remembered) readers (i.e. card readers that, if discovered, should be reconnected automatically)
+    /// E.g.  ["CHB204909005931"]
+    /// Note: will pass [] to the completion if there are no known readers
+    ///
+    case loadCardReaders(onCompletion: (Result<[String], Error>) -> Void)
 }

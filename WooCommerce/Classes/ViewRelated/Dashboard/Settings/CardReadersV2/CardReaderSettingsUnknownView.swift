@@ -24,35 +24,37 @@ struct CardReaderSettingsUnknownView: View {
     @State var viewModel: CardReaderSettingsUnknownViewModel
 
     var body: some View {
-        VStack(spacing: 20) {
-            Text(Localization.connectYourCardReaderTitle)
-                .font(.headline)
-                .frame(height: 90)
+        ScrollView {
+            VStack(spacing: 20) {
+                Text(Localization.connectYourCardReaderTitle)
+                    .font(.headline)
+                    .frame(height: 90)
 
-            Image("card-reader-connect")
+                Image("card-reader-connect")
 
-            NumberedListItem(number: Localization.hintOneTitle, content: Localization.hintOne)
-            NumberedListItem(number: Localization.hintTwoTitle, content: Localization.hintTwo)
-            NumberedListItem(number: Localization.hintThreeTitle, content: Localization.hintThree)
+                NumberedListItem(number: Localization.hintOneTitle, content: Localization.hintOne)
+                NumberedListItem(number: Localization.hintTwoTitle, content: Localization.hintTwo)
+                NumberedListItem(number: Localization.hintThreeTitle, content: Localization.hintThree)
 
-            Spacer()
+                Spacer()
 
-            Button(action: {}) {
-                Text(Localization.connectButton)
-                    .frame(maxWidth: .infinity)
+                Button(action: {}) {
+                    Text(Localization.connectButton)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(PrimaryButtonStyle())
+
+                HStack(alignment: .center, spacing: 20) {
+                    Image(uiImage: .infoOutlineImage)
+                        .accentColor(Color(.lightGray))
+                        .frame(width: 20, height: 20)
+                    AttributedText(Localization.learnMore)
+                        .accentColor(Color(.textLink))
+                }
             }
-            .buttonStyle(PrimaryButtonStyle())
-
-            HStack(alignment: .center, spacing: 20) {
-                Image(uiImage: .infoOutlineImage)
-                    .accentColor(Color(.lightGray))
-                    .frame(width: 20, height: 20)
-                AttributedText(Localization.learnMore)
-                    .accentColor(Color(.textLink))
-            }
+            .padding(.horizontal, 20)
+            .navigationTitle(Localization.title)
         }
-        .padding(.horizontal, 20)
-        .navigationTitle(Localization.title)
     }
 }
 

@@ -156,15 +156,11 @@ final class ReviewsViewController: UIViewController {
 
         // Fix any incomplete animation of the refresh control
         // when switching tabs mid-animation
-        if refreshControl.isRefreshing {
-             refreshControl.endRefreshing()
-             tableView.setContentOffset(CGPoint(x: 0, y: tableView.contentOffset.y - refreshControl.frame.size.height), animated: true)
-             refreshControl.beginRefreshing()
-
+        refreshControl.resetAnimation(in: tableView) { [unowned self] in
             // ghost animation is also removed after switching tabs
             // show make sure it's displayed again
-            removePlaceholderReviews()
-            displayPlaceholderReviews()
+            self.removePlaceholderReviews()
+            self.displayPlaceholderReviews()
         }
     }
 }

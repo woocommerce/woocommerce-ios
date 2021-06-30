@@ -48,6 +48,18 @@ final class ShippingLabelAddressFormViewModel {
 
     private(set) var countries: [Country]
 
+    var statesOfSelectedCountry: [StateOfACountry] {
+        countries.first { $0.code == address?.country }?.states.sorted { $0.name < $1.name } ?? []
+    }
+
+    var extendedCountryName: String? {
+        return countries.first { $0.code == address?.country }?.name
+    }
+
+    var extendedStateName: String? {
+        return statesOfSelectedCountry.first { $0.code == address?.state }?.name
+    }
+
     init(
         siteID: Int64,
         type: ShipType,

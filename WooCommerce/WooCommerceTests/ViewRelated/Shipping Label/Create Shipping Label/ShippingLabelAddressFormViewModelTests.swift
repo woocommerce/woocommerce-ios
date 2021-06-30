@@ -255,4 +255,48 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
             !viewModel.showLoadingIndicator
         }
     }
+
+    func test_extended_country_and_state_name_return_the_correct_values() {
+        // Given
+        let shippingAddress = ShippingLabelAddress(company: "Automattic Inc.",
+                                                   name: "Skylar Ferry",
+                                                   phone: "12345",
+                                                   country: "US",
+                                                   state: "CA",
+                                                   address1: "60 29th",
+                                                   address2: "Street #343",
+                                                   city: "San Francisco",
+                                                   postcode: "94121-2303")
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+
+
+        // When
+        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10,
+                                                          type: .origin,
+                                                          address: shippingAddress,
+                                                          stores: stores,
+                                                          validationError: nil,
+                                                          countries: sampleCountries())
+
+
+        // Then
+        XCTAssertEqual(viewModel.extendedCountryName, "United States")
+        XCTAssertEqual(viewModel.extendedStateName, "California")
+    }
+}
+
+private extension ShippingLabelAddressFormViewModelTests {
+    func sampleCountries() -> [Country] {
+        let state1 = StateOfACountry(code: "CA", name: "California")
+        let state2 = StateOfACountry(code: "DE", name: "Delaware")
+        let state3 = StateOfACountry(code: "DC", name: "District Of Columbia")
+        let country1 = Country(code: "US", name: "United States", states: [state1, state2, state3])
+
+        let state4 = StateOfACountry(code: "AG", name: "Agrigento")
+        let state5 = StateOfACountry(code: "RC", name: "Reggio Calabria")
+        let state6 = StateOfACountry(code: "RM", name: "Roma")
+        let country2 = Country(code: "IT", name: "Italy", states: [state4, state5, state6])
+
+        return [country1, country2]
+    }
 }

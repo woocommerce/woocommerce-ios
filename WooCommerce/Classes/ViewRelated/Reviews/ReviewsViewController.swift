@@ -160,6 +160,11 @@ final class ReviewsViewController: UIViewController {
              refreshControl.endRefreshing()
              tableView.setContentOffset(CGPoint(x: 0, y: tableView.contentOffset.y - refreshControl.frame.size.height), animated: true)
              refreshControl.beginRefreshing()
+
+            // ghost animation is also removed after switching tabs
+            // show make sure it's displayed again
+            removePlaceholderReviews()
+            displayPlaceholderReviews()
         }
     }
 }

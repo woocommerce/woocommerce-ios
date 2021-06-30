@@ -130,6 +130,12 @@ public class AppSettingsStore: Store {
             setOrderAddOnsFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadOrderAddOnsSwitchState(onCompletion: let onCompletion):
             loadOrderAddOnsSwitchState(onCompletion: onCompletion)
+        case .rememberCardReader(cardReaderID: let cardReaderID, onCompletion: let onCompletion):
+            rememberCardReader(cardReaderID: cardReaderID, onCompletion: onCompletion)
+        case .forgetCardReader(cardReaderID: let cardReaderID, onCompletion: let onCompletion):
+            forgetCardReader(cardReaderID: cardReaderID, onCompletion: onCompletion)
+        case .loadCardReaders(onCompletion: let onCompletion):
+            loadCardReaders(onCompletion: onCompletion)
         }
     }
 }
@@ -208,7 +214,7 @@ private extension AppSettingsStore {
     /// Load the `GeneralAppSettings` from file or create an empty one if it doesn't exist.
     func loadOrCreateGeneralAppSettings() -> GeneralAppSettings {
         guard let settings: GeneralAppSettings = try? fileStorage.data(for: generalAppSettingsFileURL) else {
-            return GeneralAppSettings(installationDate: nil, feedbacks: [:], isViewAddOnsSwitchEnabled: false)
+            return GeneralAppSettings(installationDate: nil, feedbacks: [:], isViewAddOnsSwitchEnabled: false, knownCardReaders: [])
         }
 
         return settings
@@ -217,6 +223,61 @@ private extension AppSettingsStore {
     /// Save the `GeneralAppSettings` to the appropriate file.
     func saveGeneralAppSettings(_ settings: GeneralAppSettings) throws {
         try fileStorage.write(settings, to: generalAppSettingsFileURL)
+    }
+}
+
+// MARK: - Card Reader Actions
+//
+private extension AppSettingsStore {
+    /// Remember the given card reader (to support automatic reconnection)
+    /// where `cardReaderID` is a String e.g. "CHB204909005931"
+    ///
+    func rememberCardReader(cardReaderID: String, onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings()
+
+            guard !settings.knownCardReaders.contains(cardReaderID) else {
+                return onCompletion(.success(()))
+            }
+
+            let knownCardReadersToSave = settings.knownCardReaders + [cardReaderID]
+            let settingsToSave = settings.copy(knownCardReaders: knownCardReadersToSave)
+            try saveGeneralAppSettings(settingsToSave)
+
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+    }
+
+    /// Forget the given card reader (i.e. automatic reconnection is no longer desired)
+    /// where `cardReaderID` is a String e.g. "CHB204909005931"
+    ///
+    func forgetCardReader(cardReaderID: String, onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings()
+
+            guard settings.knownCardReaders.contains(cardReaderID) else {
+                return onCompletion(.success(()))
+            }
+
+            let knownCardReadersToSave = settings.knownCardReaders.filter { $0 != cardReaderID }
+            let settingsToSave = settings.copy(knownCardReaders: knownCardReadersToSave)
+            try saveGeneralAppSettings(settingsToSave)
+
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+    }
+
+    /// Loads the list of all known (remembered) readers (i.e. card readers that, if discovered, should be reconnected automatically)
+    /// E.g.  ["CHB204909005931"]
+    /// Note: will pass [] to the completion if there are no known readers
+    ///
+    func loadCardReaders(onCompletion: (Result<[String], Error>) -> Void) {
+        let settings = loadOrCreateGeneralAppSettings()
+        onCompletion(.success(settings.knownCardReaders))
     }
 }
 

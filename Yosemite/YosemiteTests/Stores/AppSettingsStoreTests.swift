@@ -458,7 +458,12 @@ private extension AppSettingsStoreTests {
 
     func createAppSettingAndGeneralFeedback(installationDate: Date?, feedbackStatus: FeedbackSettings.Status) -> (GeneralAppSettings, FeedbackSettings) {
         let feedback = FeedbackSettings(name: .general, status: feedbackStatus)
-        let settings = GeneralAppSettings(installationDate: installationDate, feedbacks: [feedback.name: feedback], isViewAddOnsSwitchEnabled: false)
+        let settings = GeneralAppSettings(
+            installationDate: installationDate,
+            feedbacks: [feedback.name: feedback],
+            isViewAddOnsSwitchEnabled: false,
+            knownCardReaders: []
+        )
         return (settings, feedback)
     }
 }

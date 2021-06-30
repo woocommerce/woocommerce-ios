@@ -11,7 +11,7 @@ struct ShippingLabelCarrierRowViewModel: Identifiable {
     private let adultSignatureRate: ShippingLabelCarrierRate?
 
     let title: String
-    let subtitle: String
+    let subtitle: String?
     let price: String
     let carrierLogo: UIImage?
 
@@ -47,7 +47,12 @@ struct ShippingLabelCarrierRowViewModel: Identifiable {
 
         title = rate.title
         let formatString = rate.deliveryDays == 1 ? Localization.businessDaySingular : Localization.businessDaysPlural
-        subtitle = String(format: formatString, rate.deliveryDays?.description ?? "-")
+        if let deliveryDays = rate.deliveryDays {
+            subtitle = String(format: formatString, deliveryDays)
+        }
+        else {
+            subtitle = nil
+        }
 
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
 
@@ -120,9 +125,9 @@ struct ShippingLabelCarrierRowViewModel: Identifiable {
 private extension ShippingLabelCarrierRowViewModel {
     enum Localization {
         static let businessDaySingular =
-            NSLocalizedString("%1$@ business day", comment: "Singular format of number of business day in Shipping Labels > Carrier and Rates")
+            NSLocalizedString("%1$d business day", comment: "Singular format of number of business day in Shipping Labels > Carrier and Rates")
         static let businessDaysPlural =
-            NSLocalizedString("%1$@ business days", comment: "Plural format of number of business days in Shipping Labels > Carrier and Rates")
+            NSLocalizedString("%1$d business days", comment: "Plural format of number of business days in Shipping Labels > Carrier and Rates")
         static let tracking = NSLocalizedString("Includes %1$@ tracking",
                                                 comment: "Includes tracking of a specific carrier in Shipping Labels > Carrier and Rates")
         static let insurance = NSLocalizedString("Insurance (up to %1$@)",

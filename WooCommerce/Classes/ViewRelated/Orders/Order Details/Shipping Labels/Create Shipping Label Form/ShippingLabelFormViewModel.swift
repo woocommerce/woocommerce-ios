@@ -54,12 +54,12 @@ final class ShippingLabelFormViewModel {
 
         for option in packagesResponse.predefinedOptions {
             if let predefinedPackage = option.predefinedPackages.first(where: { $0.id == selectedPackageID }) {
-                    return ShippingLabelPackageSelected(boxID: predefinedPackage.id,
-                                                        length: predefinedPackage.getLength(),
-                                                        width: predefinedPackage.getWidth(),
-                                                        height: predefinedPackage.getHeight(),
-                                                        weight: predefinedPackage.getWidth(),
-                                                        isLetter: predefinedPackage.isLetter)
+                return ShippingLabelPackageSelected(boxID: predefinedPackage.id,
+                                                    length: predefinedPackage.getLength(),
+                                                    width: predefinedPackage.getWidth(),
+                                                    height: predefinedPackage.getHeight(),
+                                                    weight: predefinedPackage.getWidth(),
+                                                    isLetter: predefinedPackage.isLetter)
             }
         }
 
@@ -211,9 +211,13 @@ final class ShippingLabelFormViewModel {
         let price = currencyFormatter.formatAmount(Decimal(rate)) ?? ""
 
         let formatString = selectedRate.deliveryDays == 1 ? Localization.businessDaySingular : Localization.businessDaysPlural
-        let shippingDays = String(format: formatString, selectedRate.deliveryDays?.description ?? "-")
 
-        return selectedRate.title + "\n" + price + " - " + shippingDays
+        var shippingDays = ""
+        if let deliveryDays = selectedRate.deliveryDays {
+            shippingDays = " - " + String(format: formatString, deliveryDays)
+        }
+
+        return selectedRate.title + "\n" + price + shippingDays
     }
 
     /// Returns the body of the Payment Methods cell.
@@ -550,9 +554,9 @@ private extension ShippingLabelFormViewModel {
                                                           comment: "Total package weight label in Shipping Label form. %1$@ is a placeholder for the weight")
         static let carrierAndRatesPlaceholder = NSLocalizedString("Select your shipping carrier and rates",
                                                                   comment: "Placeholder in Shipping Label form for the Carrier and Rates row.")
-        static let businessDaySingular = NSLocalizedString("%1$@ business day",
+        static let businessDaySingular = NSLocalizedString("%1$d business day",
                                                            comment: "Singular format of number of business day in Shipping Labels > Carrier and Rates")
-        static let businessDaysPlural = NSLocalizedString("%1$@ business days",
+        static let businessDaysPlural = NSLocalizedString("%1$d business days",
                                                           comment: "Plural format of number of business days in Shipping Labels > Carrier and Rates")
         static let paymentMethodPlaceholder = NSLocalizedString("Add a new credit card",
                                                                 comment: "Placeholder in Shipping Label form for the Payment Method row.")

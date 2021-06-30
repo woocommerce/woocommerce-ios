@@ -186,6 +186,14 @@ final class ProductsViewController: UIViewController {
         if AppRatingManager.shared.shouldPromptForAppReview() {
             displayRatingPrompt()
         }
+
+        // Fix any incomplete animation of the refresh control
+        // when switching tabs mid-animation
+        if refreshControl.isRefreshing {
+             refreshControl.endRefreshing()
+             tableView.setContentOffset(CGPoint(x: 0, y: tableView.contentOffset.y - refreshControl.frame.size.height), animated: true)
+             refreshControl.beginRefreshing()
+        }
     }
 
     override func viewDidLayoutSubviews() {

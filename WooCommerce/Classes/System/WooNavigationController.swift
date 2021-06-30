@@ -1,7 +1,6 @@
 import UIKit
 
 /// Subclass to set Woo styling. Removes back button text on managed view controllers.
-/// Use this when presenting modals.
 ///
 class WooNavigationController: UINavigationController {
 

@@ -30,6 +30,10 @@ final class ShippingLabelSummaryTableViewCell: UITableViewCell {
         }
     }
 
+    /// Closure to be executed whenever the Discount View is tapped
+    ///
+    private var onDiscountTouchUp: (() -> Void)?
+
     /// Closure to be executed whenever the Switch is flipped
     ///
     private var onSwitchChange: ((Bool) -> Void)?
@@ -44,11 +48,14 @@ final class ShippingLabelSummaryTableViewCell: UITableViewCell {
         configureLabels()
         configureSwitch()
         configureButton()
+        discountView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(discountViewTapped)))
     }
 
     func configure(state: ShippingLabelFormStepTableViewCell.State,
+                   onDiscountTouchUp: (() -> Void)?,
                    onSwitchChange: ((Bool) -> Void)?,
                    onButtonTouchUp: (() -> Void)?) {
+        self.onDiscountTouchUp = onDiscountTouchUp
         self.onSwitchChange = onSwitchChange
         self.onButtonTouchUp = onButtonTouchUp
         configureCellBasedOnState(state)
@@ -77,6 +84,10 @@ final class ShippingLabelSummaryTableViewCell: UITableViewCell {
     func setOrderTotal(_ total: String) {
         orderTotalBody.text = total
     }
+
+    @objc private func discountViewTapped() {
+        onDiscountTouchUp?()
+    }
 }
 
 private extension ShippingLabelSummaryTableViewCell {
@@ -90,16 +101,22 @@ private extension ShippingLabelSummaryTableViewCell {
     func configureLabels() {
         subtotalTitle.applyBodyStyle()
         subtotalTitle.text = Localization.subtotal
+        subtotalTitle.numberOfLines = 0
         subtotalBody.applyBodyStyle()
+        subtotalBody.numberOfLines = 0
         discountTitle.applyBodyStyle()
         discountTitle.text = Localization.discount
+        discountTitle.numberOfLines = 0
         discountBody.applyBodyStyle()
+        discountBody.numberOfLines = 0
         orderTotalTitle.applyHeadlineStyle()
         orderTotalTitle.text = Localization.orderTotal
+        orderTotalTitle.numberOfLines = 0
         orderTotalBody.applyHeadlineStyle()
+        orderTotalBody.numberOfLines = 0
         orderCompleteTitle.applySubheadlineStyle()
-        orderCompleteTitle.numberOfLines = 0
         orderCompleteTitle.text = Localization.orderComplete
+        orderCompleteTitle.numberOfLines = 0
     }
 
     func configureSwitch() {

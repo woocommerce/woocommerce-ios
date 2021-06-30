@@ -1,0 +1,1 @@
+Artık değişken bir ürünün özelliklerine daha az dokunuşla ulaşabilirsiniz. Bunlar ürün ayrntılarında listelenmiştir. Ayrıca bir siparişin ayrıntılarının hem görsel olarak hem de sahne arkasında yüklenme biçimini iyileştirdik. Umarız iyileştirmeleri fark edersiniz.

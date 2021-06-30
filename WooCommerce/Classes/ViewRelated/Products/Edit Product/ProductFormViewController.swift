@@ -314,6 +314,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 guard isEditable else {
                     return
                 }
+                ServiceLocator.analytics.track(event: WooAnalyticsEvent.ProductDetailAddOns.productAddOnsButtonTapped(productID: product.productID))
                 navigateToAddOns()
             case .categories(_, let isEditable):
                 guard isEditable else {
@@ -1395,7 +1396,10 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func navigateToAddOns() {
-        let viewModel = ProductAddOnsListViewModel()
+        guard let product = product as? EditableProductModel else {
+            return
+        }
+        let viewModel = ProductAddOnsListViewModel(addOns: product.product.addOns)
         let viewController = ProductAddOnsListViewController(viewModel: viewModel)
         show(viewController, sender: self)
     }

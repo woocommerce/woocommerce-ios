@@ -17,7 +17,7 @@ struct ShippingLabelDetailsViewModel {
         self.packageName = shippingLabel.packageName
         self.carrierAndRate = {
             let serviceName = shippingLabel.serviceName
-            let rate = currencyFormatter.formatAmount(Decimal(shippingLabel.rate ?? 0), with: shippingLabel.currency)
+            let rate = currencyFormatter.formatAmount(Decimal(shippingLabel.rate), with: shippingLabel.currency)
             return [serviceName, rate].compactMap { $0 }.joined(separator: "\n")
         }()
         self.paymentMethod = Localization.creditCardPaymentMethod

@@ -14,7 +14,7 @@ public struct ShippingLabel: Equatable, GeneratedCopiable, GeneratedFakeable {
     public let shippingLabelID: Int64
 
     /// The remote ID of the shipping carrier.
-    public let carrierID: String?
+    public let carrierID: String
 
     /// The date the shipping label was created.
     public let dateCreated: Date
@@ -23,13 +23,13 @@ public struct ShippingLabel: Equatable, GeneratedCopiable, GeneratedFakeable {
     public let packageName: String
 
     /// The cost of the shipping label.
-    public let rate: Double?
+    public let rate: Double
 
     /// The currency of the shipping label.
-    public let currency: String?
+    public let currency: String
 
     /// The tracking number of the shipping label.
-    public let trackingNumber: String?
+    public let trackingNumber: String
 
     /// The name of service for the shipping label (e.g. "USPS - Media Mail").
     public let serviceName: String
@@ -60,12 +60,12 @@ public struct ShippingLabel: Equatable, GeneratedCopiable, GeneratedFakeable {
     public init(siteID: Int64,
                 orderID: Int64,
                 shippingLabelID: Int64,
-                carrierID: String?,
+                carrierID: String,
                 dateCreated: Date,
                 packageName: String,
-                rate: Double?,
-                currency: String?,
-                trackingNumber: String?,
+                rate: Double,
+                currency: String,
+                trackingNumber: String,
                 serviceName: String,
                 refundableAmount: Double,
                 status: ShippingLabelStatus,
@@ -109,12 +109,12 @@ extension ShippingLabel: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let shippingLabelID = try container.decode(Int64.self, forKey: .shippingLabelID)
-        let carrierID = try container.decodeIfPresent(String.self, forKey: .carrierID)
+        let carrierID = try container.decode(String.self, forKey: .carrierID)
         let dateCreated = try container.decode(Date.self, forKey: .dateCreated)
         let packageName = try container.decode(String.self, forKey: .packageName)
-        let rate = try container.decodeIfPresent(Double.self, forKey: .rate)
-        let currency = try container.decodeIfPresent(String.self, forKey: .currency)
-        let trackingNumber = try container.decodeIfPresent(String.self, forKey: .trackingNumber)
+        let rate = try container.decode(Double.self, forKey: .rate)
+        let currency = try container.decode(String.self, forKey: .currency)
+        let trackingNumber = try container.decode(String.self, forKey: .trackingNumber)
         let serviceName = try container.decode(String.self, forKey: .serviceName)
         let refund = try container.decodeIfPresent(ShippingLabelRefund.self, forKey: .refund)
         let refundableAmount = try container.decode(Double.self, forKey: .refundableAmount)

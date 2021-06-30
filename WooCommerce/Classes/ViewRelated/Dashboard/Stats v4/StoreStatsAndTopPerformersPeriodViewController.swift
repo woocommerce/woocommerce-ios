@@ -139,11 +139,7 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
         // Fix any incomplete animation of the refresh control
         // when switching tabs mid-animation
-        if refreshControl.isRefreshing {
-             refreshControl.endRefreshing()
-             scrollView.setContentOffset(CGPoint(x: 0, y: scrollView.contentOffset.y - refreshControl.frame.size.height), animated: true)
-             refreshControl.beginRefreshing()
-        }
+        refreshControl.resetAnimation(in: scrollView)
     }
 
     override func viewDidAppear(_ animated: Bool) {

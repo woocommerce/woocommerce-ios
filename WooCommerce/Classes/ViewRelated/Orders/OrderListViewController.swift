@@ -148,11 +148,7 @@ final class OrderListViewController: UIViewController {
 
         // Fix any incomplete animation of the refresh control
         // when switching tabs mid-animation
-        if refreshControl.isRefreshing {
-             refreshControl.endRefreshing()
-             tableView.setContentOffset(CGPoint(x: 0, y: tableView.contentOffset.y - refreshControl.frame.size.height), animated: true)
-             refreshControl.beginRefreshing()
-        }
+        refreshControl.resetAnimation(in: tableView)
 
         // Fix any _incomplete_ animation if the orders were deleted and refetched from
         // a different location (or Orders tab).

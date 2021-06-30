@@ -2,6 +2,7 @@
 
 7.1
 -----
+- [internal] Stats tab: added network sync throttling [https://github.com/woocommerce/woocommerce-ios/pull/4494]
 
 
 7.0

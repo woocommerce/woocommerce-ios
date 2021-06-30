@@ -11,7 +11,7 @@ import XLPagerTabStrip
 
 private typealias SyncReason = OrderListSyncActionUseCase.SyncReason
 
-protocol OrderListViewControllerDelegate: class {
+protocol OrderListViewControllerDelegate: AnyObject {
     /// Called when `OrderListViewController` (or `OrdersViewController`) is about to fetch Orders from the API.
     ///
     func orderListViewControllerWillSynchronizeOrders(_ viewController: UIViewController)

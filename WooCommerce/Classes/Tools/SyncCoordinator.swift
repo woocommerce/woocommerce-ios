@@ -4,7 +4,7 @@ import Yosemite
 
 /// SyncingCoordinatorDelegate: Delegate that's expected to provide Sync'ing Services per Page.
 ///
-protocol SyncingCoordinatorDelegate: class {
+protocol SyncingCoordinatorDelegate: AnyObject {
 
     /// The receiver is expected to synchronize the pageNumber. On completion, it should indicate if the sync was
     /// successful or not.

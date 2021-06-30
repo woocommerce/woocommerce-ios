@@ -8,7 +8,7 @@ public protocol Action { }
 
 // MARK: - Action: Represents a Flux Action Processor. Processors should get registered into the Dispatcher instance, for action processing.
 //
-public protocol ActionsProcessor: class {
+public protocol ActionsProcessor: AnyObject {
 
     /// Called whenever a given Action is dispatched.
     ///

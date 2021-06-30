@@ -63,27 +63,6 @@ private class WooNavigationControllerDelegate: NSObject, UINavigationControllerD
     func navigationControllerPreferredInterfaceOrientationForPresentation(_ navigationController: UINavigationController) -> UIInterfaceOrientation {
         forwardDelegate?.navigationControllerPreferredInterfaceOrientationForPresentation?(navigationController) ?? .portrait
     }
-
-    /// Forwards the event to the children delegate.
-    ///
-    func navigationController(
-        _ navigationController: UINavigationController,
-        interactionControllerFor animationController: UIViewControllerAnimatedTransitioning
-    ) -> UIViewControllerInteractiveTransitioning? {
-        forwardDelegate?.navigationController?(navigationController, interactionControllerFor: animationController)
-    }
-
-    /// Forwards the event to the children delegate.
-    ///
-    func navigationController(_ navigationController: UINavigationController,
-                              animationControllerFor operation: UINavigationController.Operation,
-                              from fromVC: UIViewController,
-                              to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        forwardDelegate?.navigationController?(navigationController,
-                                               animationControllerFor: operation,
-                                               from: fromVC,
-                                               to: toVC)
-    }
 }
 
 // MARK: Back button configuration

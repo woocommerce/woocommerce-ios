@@ -134,6 +134,18 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         configureSubviews()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        // Fix any incomplete animation of the refresh control
+        // when switching tabs mid-animation
+        if refreshControl.isRefreshing {
+             refreshControl.endRefreshing()
+             scrollView.setContentOffset(CGPoint(x: 0, y: scrollView.contentOffset.y - refreshControl.frame.size.height), animated: true)
+             refreshControl.beginRefreshing()
+        }
+    }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         viewModel.onViewDidAppear()

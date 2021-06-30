@@ -1,0 +1,1 @@
+L’accès aux attributs sur un produit variable est plus rapide. Ils sont répertoriés directement dans les détails du produit ! Nous avons également amélioré la façon dont les détails d’une commande se chargent à la fois visuellement et en arrière-plan. Nous espérons que vous remarquerez ces améliorations !

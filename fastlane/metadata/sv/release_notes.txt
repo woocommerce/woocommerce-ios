@@ -1,0 +1,1 @@
+Färre tryck behövs för att komma till attribut för en variabel produkt – de listas direkt i produktinformationen! Vi har också förbättrat hur informationen för en beställning laddas, både visuellt och bakom kulisserna – vi hoppas att du märker förbättringarna! 

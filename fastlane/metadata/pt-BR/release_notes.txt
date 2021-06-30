@@ -1,0 +1,1 @@
+São necessários menos toques para acessar os atributos de um produto variável: eles são listados nos detalhes do produto! Também aprimoramos o carregamento visual e interno dos detalhes do pedido. Esperamos que você perceba as melhorias!

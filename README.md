@@ -50,7 +50,7 @@
 
 
     ```bash
-    bundle exec rake dependencies
+    bundle install && bundle exec rake dependencies
     ```
 
     This command installs the required tools like [CocoaPods](https://cocoapods.org/). And then it installs the iOS project dependencies using CocoaPods.

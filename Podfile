@@ -36,7 +36,7 @@ target 'WooCommerce' do
   #
 
   #pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => 'add/build-configuration'
-  pod 'Automattic-Tracks-iOS', '~> 0.9.0-beta.1'
+  pod 'Automattic-Tracks-iOS', '~> 0.9.0'
 
   pod 'Gridicons', '~> 1.0'
 
@@ -52,7 +52,7 @@ target 'WooCommerce' do
 
   pod 'WordPressShared', '~> 1.15'
 
-  pod 'WordPressUI', '~> 1.12.1-beta.3'
+  pod 'WordPressUI', '~> 1.12.1'
   # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
 
   aztec

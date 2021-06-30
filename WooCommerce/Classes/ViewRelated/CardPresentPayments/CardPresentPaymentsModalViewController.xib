@@ -55,7 +55,7 @@
                                         </label>
                                     </subviews>
                                 </stackView>
-                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="249" verticalHuggingPriority="249" horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="749" image="woo-celebration" translatesAutoresizingMaskIntoConstraints="NO" id="Osv-Wo-lxW">
+                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="woo-celebration" translatesAutoresizingMaskIntoConstraints="NO" id="Osv-Wo-lxW">
                                     <rect key="frame" x="89" y="81" width="134" height="117"/>
                                 </imageView>
                                 <stackView opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="751" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="k73-qi-GuD">
@@ -130,7 +130,7 @@
                         <constraint firstItem="jIt-xb-rrN" firstAttribute="top" secondItem="8Tg-Q2-wkH" secondAttribute="top" constant="32" id="JLA-XJ-MiD"/>
                         <constraint firstItem="jIt-xb-rrN" firstAttribute="height" secondItem="8Tg-Q2-wkH" secondAttribute="height" constant="-64" id="VJR-wO-lUP"/>
                         <constraint firstAttribute="bottom" secondItem="jIt-xb-rrN" secondAttribute="bottom" constant="32" id="lVZ-pu-Fmb"/>
-                        <constraint firstAttribute="height" priority="250" constant="581" id="n7H-7U-izh"/>
+                        <constraint firstAttribute="height" relation="greaterThanOrEqual" priority="250" constant="382" id="n7H-7U-izh"/>
                         <constraint firstItem="jIt-xb-rrN" firstAttribute="centerX" secondItem="8Tg-Q2-wkH" secondAttribute="centerX" id="p6Y-jJ-KuU"/>
                         <constraint firstAttribute="width" priority="250" constant="280" id="uaz-2N-7M4"/>
                         <constraint firstAttribute="trailing" secondItem="jIt-xb-rrN" secondAttribute="trailing" constant="20" id="ufT-Yf-gsb"/>

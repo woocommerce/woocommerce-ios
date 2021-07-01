@@ -71,6 +71,18 @@ final class ShippingLabelFormViewModel {
     ///
     var shippingLabelAccountSettings: ShippingLabelAccountSettings?
 
+    /// ResultsController: Loads Countries from the Storage Layer.
+    ///
+    private let resultsController: ResultsController<StorageCountry> = {
+        let storageManager = ServiceLocator.storageManager
+        let descriptor = NSSortDescriptor(key: "name", ascending: true)
+
+        return ResultsController(storageManager: storageManager, matching: nil, sortedBy: [descriptor])
+    }()
+
+    var countries: [Country] {
+        resultsController.fetchedObjects
+    }
 
     private let stores: StoresManager
 
@@ -110,6 +122,7 @@ final class ShippingLabelFormViewModel {
 
         syncShippingLabelAccountSettings()
         syncPackageDetails()
+        fetchCountries()
     }
 
     func handleOriginAddressValueChanges(address: ShippingLabelAddress?, validated: Bool) {
@@ -433,6 +446,21 @@ private extension ShippingLabelFormViewModel {
 
 // MARK: - Remote API
 extension ShippingLabelFormViewModel {
+    func fetchCountries() {
+        try? resultsController.performFetch()
+        let action = DataAction.synchronizeCountries(siteID: siteID) { [weak self] (result) in
+            guard let self = self else { return }
+            switch result {
+            case .success:
+                try? self.resultsController.performFetch()
+            case .failure:
+                break
+            }
+        }
+
+        stores.dispatch(action)
+    }
+
     func validateAddress(type: ShipType, onCompletion: ((ValidationState, ShippingLabelAddressValidationSuccess?) -> ())? = nil) {
 
         guard let address = type == .origin ? originAddress : destinationAddress else { return }

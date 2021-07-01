@@ -31,6 +31,9 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
 
     private var periodVCs = [StoreStatsAndTopPerformersPeriodViewController]()
     private let siteID: Int64
+    private var isSyncing = false
+    private var lastFullSyncTimestamp: Date?
+    private let minimalIntervalBetweenSync: TimeInterval = 30
 
     // MARK: - View Lifecycle
 
@@ -77,10 +80,10 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
 }
 
 extension StoreStatsAndTopPerformersViewController: DashboardUI {
-    func reloadData(completion: @escaping () -> Void) {
-        syncAllStats { _ in
+    func reloadData(forced: Bool, completion: @escaping () -> Void) {
+        syncAllStats(forced: forced, onCompletion: { _ in
             completion()
-        }
+        })
     }
 
     func remindStatsUpgradeLater() {
@@ -91,26 +94,39 @@ extension StoreStatsAndTopPerformersViewController: DashboardUI {
 // MARK: - Syncing Data
 //
 private extension StoreStatsAndTopPerformersViewController {
-    func syncAllStats(onCompletion: ((Error?) -> Void)? = nil) {
+    func syncAllStats(forced: Bool, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
+        guard !isSyncing else {
+            return
+        }
+
+        if !forced, let lastFullSyncTimestamp = lastFullSyncTimestamp, Date().timeIntervalSince(lastFullSyncTimestamp) < minimalIntervalBetweenSync {
+            // less than 30 s from last full sync
+            return
+        }
+
+        isSyncing = true
+
         let group = DispatchGroup()
 
         var syncError: Error? = nil
 
         ensureGhostContentIsDisplayed()
-
         showSpinner(shouldShowSpinner: true)
 
         defer {
             group.notify(queue: .main) { [weak self] in
+                self?.isSyncing = false
                 self?.removeGhostContent()
                 self?.showSpinner(shouldShowSpinner: false)
                 if let error = syncError {
                     DDLogError("⛔️ Error loading dashboard: \(error)")
                     self?.handleSyncError(error: error)
+                    onCompletion?(.failure(error))
                 } else {
+                    self?.lastFullSyncTimestamp = Date()
                     self?.showSiteVisitors(true)
+                    onCompletion?(.success(()))
                 }
-                onCompletion?(syncError)
             }
         }
 
@@ -135,12 +151,13 @@ private extension StoreStatsAndTopPerformersViewController {
             self.syncStats(for: siteID,
                            siteTimezone: timezoneForSync,
                            timeRange: vc.timeRange,
-                           latestDateToInclude: latestDateToInclude) { [weak self] error in
-                if let error = error {
+                           latestDateToInclude: latestDateToInclude) { [weak self] result in
+                switch result {
+                case .success:
+                    self?.trackStatsLoaded(for: vc.granularity)
+                case .failure(let error):
                     DDLogError("⛔️ Error synchronizing order stats: \(error)")
                     syncError = error
-                } else {
-                    self?.trackStatsLoaded(for: vc.granularity)
                 }
                 group.leave()
             }
@@ -149,8 +166,8 @@ private extension StoreStatsAndTopPerformersViewController {
             self.syncSiteVisitStats(for: siteID,
                                     siteTimezone: timezoneForSync,
                                     timeRange: vc.timeRange,
-                                    latestDateToInclude: latestDateToInclude) { error in
-                if let error = error {
+                                    latestDateToInclude: latestDateToInclude) { result in
+                if case let .failure(error) = result {
                     DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
                     syncError = error
                 }
@@ -161,8 +178,8 @@ private extension StoreStatsAndTopPerformersViewController {
             self.syncTopEarnersStats(for: siteID,
                                      siteTimezone: timezoneForSync,
                                      timeRange: vc.timeRange,
-                                     latestDateToInclude: latestDateToInclude) { error in
-                if let error = error {
+                                     latestDateToInclude: latestDateToInclude) { result in
+                if case let .failure(error) = result {
                     DDLogError("⛔️ Error synchronizing top earners stats: \(error)")
                     syncError = error
                 }
@@ -320,18 +337,18 @@ private extension StoreStatsAndTopPerformersViewController {
                    siteTimezone: TimeZone,
                    timeRange: StatsTimeRangeV4,
                    latestDateToInclude: Date,
-                   onCompletion: ((Error?) -> Void)? = nil) {
+                   onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
         let action = StatsActionV4.retrieveStats(siteID: siteID,
                                                  timeRange: timeRange,
                                                  earliestDateToInclude: earliestDateToInclude,
                                                  latestDateToInclude: latestDateToInclude,
                                                  quantity: timeRange.maxNumberOfIntervals,
-                                                 onCompletion: { error in
-                                                    if let error = error {
+                                                 onCompletion: { result in
+                                                    if case let .failure(error) = result {
                                                         DDLogError("⛔️ Dashboard (Order Stats) — Error synchronizing order stats v4: \(error)")
                                                     }
-                                                    onCompletion?(error)
+                                                    onCompletion?(result)
         })
 
         ServiceLocator.stores.dispatch(action)
@@ -341,16 +358,17 @@ private extension StoreStatsAndTopPerformersViewController {
                             siteTimezone: TimeZone,
                             timeRange: StatsTimeRangeV4,
                             latestDateToInclude: Date,
-                            onCompletion: ((Error?) -> Void)? = nil) {
+                            onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         let action = StatsActionV4.retrieveSiteVisitStats(siteID: siteID,
                                                           siteTimezone: siteTimezone,
                                                           timeRange: timeRange,
-                                                          latestDateToInclude: latestDateToInclude) { error in
-                                                            if let error = error {
+                                                          latestDateToInclude: latestDateToInclude,
+                                                          onCompletion: { result in
+                                                            if case let .failure(error) = result {
                                                                 DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
                                                             }
-                                                            onCompletion?(error)
-        }
+                                                            onCompletion?(result)
+        })
 
         ServiceLocator.stores.dispatch(action)
     }
@@ -359,22 +377,24 @@ private extension StoreStatsAndTopPerformersViewController {
                              siteTimezone: TimeZone,
                              timeRange: StatsTimeRangeV4,
                              latestDateToInclude: Date,
-                             onCompletion: ((Error?) -> Void)? = nil) {
+                             onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
         let action = StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
                                                           timeRange: timeRange,
                                                           earliestDateToInclude: earliestDateToInclude,
-                                                          latestDateToInclude: latestDateToInclude) { error in
-                                                            if let error = error {
-                                                                DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
-                                                            } else {
+                                                          latestDateToInclude: latestDateToInclude,
+                                                          onCompletion: { result in
+                                                            switch result {
+                                                            case .success:
                                                                 ServiceLocator.analytics.track(.dashboardTopPerformersLoaded,
-                                                                                          withProperties: [
-                                                                                            "granularity": timeRange.topEarnerStatsGranularity.rawValue
-                                                                    ])
+                                                                                               withProperties: [
+                                                                                                "granularity": timeRange.topEarnerStatsGranularity.rawValue
+                                                                                               ])
+                                                            case .failure(let error):
+                                                                DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
                                                             }
-                                                            onCompletion?(error)
-        }
+                                                            onCompletion?(result)
+        })
 
         ServiceLocator.stores.dispatch(action)
     }

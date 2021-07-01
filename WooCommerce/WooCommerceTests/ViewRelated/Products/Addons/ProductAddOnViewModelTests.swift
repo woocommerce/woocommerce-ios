@@ -6,6 +6,14 @@ import TestKit
 
 class ProductAddOnViewModelTests: XCTestCase {
 
+    /// Fixed currency formatter for tests
+    ///
+    private let currencyFormatter = CurrencyFormatter(currencySettings: .init(currencyCode: .USD,
+                                                                              currencyPosition: .left,
+                                                                              thousandSeparator: ",",
+                                                                              decimalSeparator: ".",
+                                                                              numberOfDecimals: 2))
+
     func test_view_model_shows_description_when_price_is_not_empty() {
         // Given
         let viewModel = ProductAddOnViewModel(name: "", description: "", price: "$20.99", options: [])
@@ -55,7 +63,7 @@ class ProductAddOnViewModelTests: XCTestCase {
         ])
 
         // When
-        let viewModel = ProductAddOnViewModel(addOn: productAddOn)
+        let viewModel = ProductAddOnViewModel(addOn: productAddOn, currencyFormatter: currencyFormatter)
 
         // Then
         let expected = ProductAddOnViewModel(name: "Name", description: "Description", price: "$20.00", options: [
@@ -73,7 +81,7 @@ class ProductAddOnViewModelTests: XCTestCase {
         ])
 
         // When
-        let viewModel = ProductAddOnViewModel(addOn: productAddOn)
+        let viewModel = ProductAddOnViewModel(addOn: productAddOn, currencyFormatter: currencyFormatter)
 
         // Then
         let expected = ProductAddOnViewModel(name: "Name", description: "Description", price: "$20.00", options: [

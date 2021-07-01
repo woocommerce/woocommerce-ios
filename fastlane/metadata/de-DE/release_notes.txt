@@ -1,0 +1,1 @@
+Zum Abrufen von Attributen eines variablen Produkts musst du nun weniger oft tippen – du findest sie direkt in den Produktdetails! Wir haben auch verbessert, wie die Details zu einer Bestellung visuell und im Hintergrund geladen werden – hoffentlich machen sich die Verbesserungen für dich bemerkbar!

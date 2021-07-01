@@ -33,4 +33,8 @@ enum FeatureFlag: Int {
     /// Site Plugin list entry point on Settings screen
     ///
     case sitePlugins
+
+    /// Automatically Reconnect to a Known Card Reader
+    ///
+    case cardPresentKnownReader
 }

@@ -186,6 +186,15 @@ final class ProductsViewController: UIViewController {
         if AppRatingManager.shared.shouldPromptForAppReview() {
             displayRatingPrompt()
         }
+
+        // Fix any incomplete animation of the refresh control
+        // when switching tabs mid-animation
+        refreshControl.resetAnimation(in: tableView) { [unowned self] in
+            // ghost animation is also removed after switching tabs
+            // show make sure it's displayed again
+            self.removePlaceholderProducts()
+            self.displayPlaceholderProducts()
+        }
     }
 
     override func viewDidLayoutSubviews() {
@@ -419,7 +428,7 @@ private extension ProductsViewController {
                 }
             case.failure(let error):
                 self?.hideTopBannerView()
-                CrashLogging.logError(error)
+                ServiceLocator.crashLogging.logError(error)
             }
         }
         ServiceLocator.stores.dispatch(action)
@@ -502,7 +511,7 @@ private extension ProductsViewController {
         do {
             try resultsController.performFetch()
         } catch {
-            CrashLogging.logError(error)
+            ServiceLocator.crashLogging.logError(error)
         }
 
         tableView.reloadData()
@@ -636,7 +645,7 @@ private extension ProductsViewController {
         let action = AppSettingsAction.updateFeedbackStatus(type: .productsVariations,
                                                             status: .dismissed) { [weak self] result in
             if let error = result.failure {
-                CrashLogging.logError(error)
+                ServiceLocator.crashLogging.logError(error)
             }
             self?.hideTopBannerView()
         }

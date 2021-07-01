@@ -304,11 +304,20 @@ private extension ShippingLabelFormViewController {
 //
 private extension ShippingLabelFormViewController {
     func displayEditAddressFormVC(address: ShippingLabelAddress?, validationError: ShippingLabelAddressValidationError?, type: ShipType) {
+        guard viewModel.countries.isNotEmpty else {
+            let notice = Notice(title: Localization.noticeUnableToFetchCountries, feedbackType: .error, actionTitle: Localization.noticeRetryAction) {
+                [weak self] in
+                self?.viewModel.fetchCountries()
+            }
+            ServiceLocator.noticePresenter.enqueue(notice: notice)
+            return
+        }
         let shippingAddressVC = ShippingLabelAddressFormViewController(
             siteID: viewModel.siteID,
             type: type,
             address: address,
             validationError: validationError,
+            countries: viewModel.countries,
             completion: { [weak self] (newShippingLabelAddress) in
                 guard let self = self else { return }
                 switch type {
@@ -324,10 +333,19 @@ private extension ShippingLabelFormViewController {
     }
 
     func displaySuggestedAddressVC(address: ShippingLabelAddress?, suggestedAddress: ShippingLabelAddress?, type: ShipType) {
+        guard viewModel.countries.isNotEmpty else {
+            let notice = Notice(title: Localization.noticeUnableToFetchCountries, feedbackType: .error, actionTitle: Localization.noticeRetryAction) {
+                [weak self] in
+                self?.viewModel.fetchCountries()
+            }
+            ServiceLocator.noticePresenter.enqueue(notice: notice)
+            return
+        }
         let vc = ShippingLabelSuggestedAddressViewController(siteID: viewModel.siteID,
                                                              type: type,
                                                              address: address,
-                                                             suggestedAddress: suggestedAddress) { [weak self] (newShippingLabelAddress) in
+                                                             suggestedAddress: suggestedAddress,
+                                                             countries: viewModel.countries) { [weak self] (newShippingLabelAddress) in
             switch type {
             case .origin:
                 self?.viewModel.handleOriginAddressValueChanges(address: newShippingLabelAddress,
@@ -503,5 +521,8 @@ private extension ShippingLabelFormViewController {
         // Purchase progress view
         static let purchaseProgressTitle = NSLocalizedString("Purchasing Label", comment: "Title of the in-progress UI while purchasing a shipping label")
         static let purchaseProgressMessage = NSLocalizedString("Please wait", comment: "Message of the in-progress UI while purchasing a shipping label")
+        static let noticeUnableToFetchCountries = NSLocalizedString("Unable to fetch countries.",
+                                                                    comment: "Unable to fetch countries action failed in Shipping Label Form")
+        static let noticeRetryAction = NSLocalizedString("Retry", comment: "Retry Action")
     }
 }

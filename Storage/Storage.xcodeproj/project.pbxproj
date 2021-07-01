@@ -45,7 +45,7 @@
 		262B270E2621412000A421CF /* ProductAddOn+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262B26752621401A00A421CF /* ProductAddOn+CoreDataProperties.swift */; };
 		262B27132621412700A421CF /* ProductAddOnOption+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262B26762621401A00A421CF /* ProductAddOnOption+CoreDataClass.swift */; };
 		262B27182621412D00A421CF /* ProductAddOnOption+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262B26772621401A00A421CF /* ProductAddOnOption+CoreDataProperties.swift */; };
-		263E37D72641AD5100260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E37D62641AD5100260D3B /* Codegen */; };
+		263E37D72641AD5100260D3B /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 263E37D62641AD5100260D3B /* SwiftPackageProductDependency */; };
 		26577519243D808B003168A5 /* WooCommerceModelV26toV27.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 26577518243D808B003168A5 /* WooCommerceModelV26toV27.xcmappingmodel */; };
 		267439D624E5D45A0090696C /* FeedbackSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267439D524E5D45A0090696C /* FeedbackSettings.swift */; };
 		2685C108263C88B000D9EE97 /* AddOnGroup+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2685C106263C88B000D9EE97 /* AddOnGroup+CoreDataClass.swift */; };
@@ -65,9 +65,13 @@
 		455C0C9125DD6D93007B6F38 /* AccountSettings+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455C0C8F25DD6D93007B6F38 /* AccountSettings+CoreDataProperties.swift */; };
 		45E1862E2370450C009241F3 /* ShippingLine+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E1862D2370450C009241F3 /* ShippingLine+CoreDataClass.swift */; };
 		45E1863023704519009241F3 /* ShippingLine+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E1862F23704519009241F3 /* ShippingLine+CoreDataProperties.swift */; };
+		45E462072684BCEE00011BF2 /* StateOfACountry+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E462042684BCEE00011BF2 /* StateOfACountry+CoreDataClass.swift */; };
+		45E462082684BCEE00011BF2 /* Country+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E462052684BCEE00011BF2 /* Country+CoreDataProperties.swift */; };
+		45E462092684BCEE00011BF2 /* StateOfACountry+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E462032684BCEE00011BF2 /* StateOfACountry+CoreDataProperties.swift */; };
+		45E4620A2684BCEE00011BF2 /* Country+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E462062684BCEE00011BF2 /* Country+CoreDataClass.swift */; };
 		5707FBC425B5FE2200B7C1A6 /* CoreDataIterativeMigrator+MigrationStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5707FBC325B5FE2200B7C1A6 /* CoreDataIterativeMigrator+MigrationStep.swift */; };
 		5707FBC825B610DA00B7C1A6 /* CoreDataIterativeMigrator+MigrationStepTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5707FBC725B610DA00B7C1A6 /* CoreDataIterativeMigrator+MigrationStepTests.swift */; };
-		57150E1324F462DF00E81611 /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 57150E1224F462DF00E81611 /* TestKit */; };
+		57150E1324F462DF00E81611 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 57150E1224F462DF00E81611 /* SwiftPackageProductDependency */; };
 		572B40E425A5414D00DB20E0 /* DeleteEntityObjectsMigrationPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572B40E325A5414D00DB20E0 /* DeleteEntityObjectsMigrationPolicy.swift */; };
 		572C099625475208005372E1 /* SpyFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572C099525475208005372E1 /* SpyFileManager.swift */; };
 		5736878E24AAADAE00B528FE /* ManagedObjectModelsInventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5736878D24AAADAE00B528FE /* ManagedObjectModelsInventory.swift */; };
@@ -299,6 +303,11 @@
 		45E1862C2370415C009241F3 /* Model 22.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 22.xcdatamodel"; sourceTree = "<group>"; };
 		45E1862D2370450C009241F3 /* ShippingLine+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLine+CoreDataClass.swift"; sourceTree = "<group>"; };
 		45E1862F23704519009241F3 /* ShippingLine+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLine+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		45E462022684B86F00011BF2 /* Model 53.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 53.xcdatamodel"; sourceTree = "<group>"; };
+		45E462032684BCEE00011BF2 /* StateOfACountry+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StateOfACountry+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		45E462042684BCEE00011BF2 /* StateOfACountry+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StateOfACountry+CoreDataClass.swift"; sourceTree = "<group>"; };
+		45E462052684BCEE00011BF2 /* Country+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Country+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		45E462062684BCEE00011BF2 /* Country+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Country+CoreDataClass.swift"; sourceTree = "<group>"; };
 		45ED6099257EB11B007B4AC6 /* Model 40.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 40.xcdatamodel"; sourceTree = "<group>"; };
 		47556EE256120BEE49FF5FD3 /* Pods_StorageTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StorageTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5707FBC325B5FE2200B7C1A6 /* CoreDataIterativeMigrator+MigrationStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataIterativeMigrator+MigrationStep.swift"; sourceTree = "<group>"; };
@@ -467,7 +476,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				263E37D72641AD5100260D3B /* Codegen in Frameworks */,
+				263E37D72641AD5100260D3B /* BuildFile in Frameworks */,
 				B54CA5B520A4BC0300F38CD1 /* CoreData.framework in Frameworks */,
 				7028A41485A08AC748206184 /* Pods_Storage.framework in Frameworks */,
 			);
@@ -477,7 +486,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				57150E1324F462DF00E81611 /* TestKit in Frameworks */,
+				57150E1324F462DF00E81611 /* BuildFile in Frameworks */,
 				B54CA5A320A4BBA600F38CD1 /* Storage.framework in Frameworks */,
 				68BC97FB41770051C287D1A8 /* Pods_StorageTests.framework in Frameworks */,
 			);
@@ -764,6 +773,10 @@
 				455C0C8F25DD6D93007B6F38 /* AccountSettings+CoreDataProperties.swift */,
 				2685C106263C88B000D9EE97 /* AddOnGroup+CoreDataClass.swift */,
 				2685C107263C88B000D9EE97 /* AddOnGroup+CoreDataProperties.swift */,
+				45E462062684BCEE00011BF2 /* Country+CoreDataClass.swift */,
+				45E462052684BCEE00011BF2 /* Country+CoreDataProperties.swift */,
+				45E462042684BCEE00011BF2 /* StateOfACountry+CoreDataClass.swift */,
+				45E462032684BCEE00011BF2 /* StateOfACountry+CoreDataProperties.swift */,
 				74F009BE2183B99B002B4566 /* Note+CoreDataClass.swift */,
 				74F009BF2183B99B002B4566 /* Note+CoreDataProperties.swift */,
 				CE12FBCC221F0E1A00C59248 /* Order+CoreDataClass.swift */,
@@ -907,7 +920,7 @@
 			);
 			name = Storage;
 			packageProductDependencies = (
-				263E37D62641AD5100260D3B /* Codegen */,
+				263E37D62641AD5100260D3B /* SwiftPackageProductDependency */,
 			);
 			productName = Storage;
 			productReference = B54CA59920A4BBA500F38CD1 /* Storage.framework */;
@@ -921,7 +934,7 @@
 				B54CA59E20A4BBA600F38CD1 /* Sources */,
 				B54CA59F20A4BBA600F38CD1 /* Frameworks */,
 				B54CA5A020A4BBA600F38CD1 /* Resources */,
-				B321616C16238C2A9AE9A6A7 /* [CP] Embed Pods Frameworks */,
+				E73E84823B544CDE60613A23 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -930,7 +943,7 @@
 			);
 			name = StorageTests;
 			packageProductDependencies = (
-				57150E1224F462DF00E81611 /* TestKit */,
+				57150E1224F462DF00E81611 /* SwiftPackageProductDependency */,
 			);
 			productName = StorageTests;
 			productReference = B54CA5A220A4BBA600F38CD1 /* StorageTests.xctest */;
@@ -1013,23 +1026,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		B321616C16238C2A9AE9A6A7 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-StorageTests/Pods-StorageTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-StorageTests/Pods-StorageTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-StorageTests/Pods-StorageTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		B5A9361234BC984EB7277688 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1048,6 +1044,23 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		E73E84823B544CDE60613A23 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-StorageTests/Pods-StorageTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-StorageTests/Pods-StorageTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-StorageTests/Pods-StorageTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -1064,6 +1077,7 @@
 				747453A02242C85E00E0B5EE /* ProductImage+CoreDataProperties.swift in Sources */,
 				574B774C24AA87FA0042116F /* FileManagerProtocol.swift in Sources */,
 				CE4FD44E2350EB7600A16B31 /* Refund+CoreDataProperties.swift in Sources */,
+				45E462092684BCEE00011BF2 /* StateOfACountry+CoreDataProperties.swift in Sources */,
 				CE4FD44B2350EB7600A16B31 /* OrderItemTaxRefund+CoreDataClass.swift in Sources */,
 				B54CA5BB20A4BD2800F38CD1 /* NSManagedObject+Object.swift in Sources */,
 				025CA2BD238EB86200B05C81 /* ProductShippingClass+CoreDataClass.swift in Sources */,
@@ -1084,6 +1098,7 @@
 				268BF6DB2642CBA6003948D8 /* Models+Copiable.generated.swift in Sources */,
 				D87F61552265AA900031A13B /* PListFileStorage.swift in Sources */,
 				B5B914C620EFF03500F2F832 /* Site+CoreDataProperties.swift in Sources */,
+				45E462072684BCEE00011BF2 /* StateOfACountry+CoreDataClass.swift in Sources */,
 				2619F72525B236E60006DAFF /* TypedPredicates.swift in Sources */,
 				CCD2E70725DE9AAA00BD975D /* WooCommerceModelV45toV46.xcmappingmodel in Sources */,
 				02DA64172313C26400284168 /* StatsVersionBySite.swift in Sources */,
@@ -1129,6 +1144,7 @@
 				747453A82242C85E00E0B5EE /* ProductTag+CoreDataProperties.swift in Sources */,
 				D8FBFF5A22D66A06006E3336 /* OrderStatsV4+CoreDataProperties.swift in Sources */,
 				D88E234125AE08F10023F3B1 /* OrderFeeLine+CoreDataProperties.swift in Sources */,
+				45E462082684BCEE00011BF2 /* Country+CoreDataProperties.swift in Sources */,
 				2685C108263C88B000D9EE97 /* AddOnGroup+CoreDataClass.swift in Sources */,
 				7474539F2242C85E00E0B5EE /* ProductImage+CoreDataClass.swift in Sources */,
 				7474539D2242C85E00E0B5EE /* ProductAttribute+CoreDataClass.swift in Sources */,
@@ -1152,6 +1168,7 @@
 				31D9C8C826684AEC000AC134 /* PaymentGatewayAccount+CoreDataClass.swift in Sources */,
 				B505F6DA20BEEA3200BB1B69 /* Account+CoreDataProperties.swift in Sources */,
 				CE4FD44D2350EB7600A16B31 /* Refund+CoreDataClass.swift in Sources */,
+				45E4620A2684BCEE00011BF2 /* Country+CoreDataClass.swift in Sources */,
 				02DA64192313C2AA00284168 /* StatsVersion.swift in Sources */,
 				2618707325409C65006522A1 /* ShippingLineTax+CoreDataClass.swift in Sources */,
 				7474539E2242C85E00E0B5EE /* ProductAttribute+CoreDataProperties.swift in Sources */,
@@ -1625,11 +1642,11 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		263E37D62641AD5100260D3B /* Codegen */ = {
+		263E37D62641AD5100260D3B /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Codegen;
 		};
-		57150E1224F462DF00E81611 /* TestKit */ = {
+		57150E1224F462DF00E81611 /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TestKit;
 		};
@@ -1639,6 +1656,7 @@
 		B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				45E462022684B86F00011BF2 /* Model 53.xcdatamodel */,
 				31D9C881266844B8000AC134 /* Model 52.xcdatamodel */,
 				AEBAAFAE2657C5AC00404651 /* Model 51.xcdatamodel */,
 				DEFD6D3B2641B3C200E51E0D /* Model 50.xcdatamodel */,
@@ -1692,7 +1710,7 @@
 				746A9D14214071F90013F6FF /* Model 2.xcdatamodel */,
 				B59E11D920A9D00C004121A4 /* Model.xcdatamodel */,
 			);
-			currentVersion = 31D9C881266844B8000AC134 /* Model 52.xcdatamodel */;
+			currentVersion = 45E462022684B86F00011BF2 /* Model 53.xcdatamodel */;
 			path = WooCommerce.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

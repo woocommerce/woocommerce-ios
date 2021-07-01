@@ -95,6 +95,11 @@ final class OrderDetailsViewController: UIViewController {
         super.viewWillAppear(animated)
         syncEverything { [weak self] in
             self?.topLoaderView.isHidden = true
+
+            /// We add the refresh control to the tableview just after the `topLoaderView` disappear for the first time.
+            if self?.tableView.refreshControl == nil {
+                self?.tableView.refreshControl = self?.refreshControl
+            }
         }
     }
 
@@ -132,7 +137,6 @@ private extension OrderDetailsViewController {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.refreshControl = refreshControl
 
         tableView.dataSource = viewModel.dataSource
     }

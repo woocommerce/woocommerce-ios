@@ -354,7 +354,7 @@ private extension ProductVariationsViewController {
         do {
             try resultsController.performFetch()
         } catch {
-            CrashLogging.logError(error)
+            ServiceLocator.crashLogging.logError(error)
         }
 
         tableView.reloadData()

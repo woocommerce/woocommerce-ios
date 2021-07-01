@@ -54,12 +54,12 @@ final class ShippingLabelFormViewModel {
 
         for option in packagesResponse.predefinedOptions {
             if let predefinedPackage = option.predefinedPackages.first(where: { $0.id == selectedPackageID }) {
-                    return ShippingLabelPackageSelected(boxID: predefinedPackage.id,
-                                                        length: predefinedPackage.getLength(),
-                                                        width: predefinedPackage.getWidth(),
-                                                        height: predefinedPackage.getHeight(),
-                                                        weight: predefinedPackage.getWidth(),
-                                                        isLetter: predefinedPackage.isLetter)
+                return ShippingLabelPackageSelected(boxID: predefinedPackage.id,
+                                                    length: predefinedPackage.getLength(),
+                                                    width: predefinedPackage.getWidth(),
+                                                    height: predefinedPackage.getHeight(),
+                                                    weight: predefinedPackage.getWidth(),
+                                                    isLetter: predefinedPackage.isLetter)
             }
         }
 
@@ -211,9 +211,13 @@ final class ShippingLabelFormViewModel {
         let price = currencyFormatter.formatAmount(Decimal(rate)) ?? ""
 
         let formatString = selectedRate.deliveryDays == 1 ? Localization.businessDaySingular : Localization.businessDaysPlural
-        let shippingDays = String(format: formatString, selectedRate.deliveryDays)
 
-        return selectedRate.title + "\n" + price + " - " + shippingDays
+        var shippingDays = ""
+        if let deliveryDays = selectedRate.deliveryDays {
+            shippingDays = " - " + String(format: formatString, deliveryDays)
+        }
+
+        return selectedRate.title + "\n" + price + shippingDays
     }
 
     /// Returns the body of the Payment Methods cell.

@@ -146,6 +146,10 @@ final class OrderListViewController: UIViewController {
 
         syncingCoordinator.resynchronize()
 
+        // Fix any incomplete animation of the refresh control
+        // when switching tabs mid-animation
+        refreshControl.resetAnimation(in: tableView)
+
         // Fix any _incomplete_ animation if the orders were deleted and refetched from
         // a different location (or Orders tab).
         //

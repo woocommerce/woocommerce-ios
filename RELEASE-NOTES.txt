@@ -2,8 +2,8 @@
 
 7.1
 -----
+- [*] Fix: Frozen refresh control and placeholder when switching tabs [https://github.com/woocommerce/woocommerce-ios/pull/4505]
 - [internal] Stats tab: added network sync throttling [https://github.com/woocommerce/woocommerce-ios/pull/4494]
-
 
 7.0
 -----

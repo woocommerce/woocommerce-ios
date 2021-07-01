@@ -31,8 +31,10 @@ struct ShippingLabelCarrierRow: View {
                         Text(viewModel.price)
                             .bodyStyle()
                     }
-                    Text(viewModel.subtitle)
-                        .footnoteStyle()
+                    if let subtitle = viewModel.subtitle {
+                        Text(subtitle)
+                            .footnoteStyle()
+                    }
                     Text(viewModel.extraInfo)
                         .footnoteStyle()
                         .fixedSize(horizontal: false, vertical: true)

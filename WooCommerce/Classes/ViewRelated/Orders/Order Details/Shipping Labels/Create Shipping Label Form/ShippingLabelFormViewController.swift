@@ -281,7 +281,17 @@ private extension ShippingLabelFormViewController {
         } onSwitchChange: { (switchIsOn) in
             // TODO: Handle order completion
         } onButtonTouchUp: {
-            // TODO: Purchase Label action
+            self.displayPurchaseProgressView()
+            self.viewModel.purchaseLabel { [weak self] result in
+                switch result {
+                case .success:
+                    self?.displayPrintShippingLabelVC()
+                case .failure:
+                    // TODO: Implement and display error screen for purchase failures
+                    break
+                }
+                self?.dismiss(animated: true)
+            }
         }
         cell.isOn = false
         cell.setSubtotal(viewModel.getSubtotal())
@@ -406,6 +416,25 @@ private extension ShippingLabelFormViewController {
         let hostingVC = UIHostingController(rootView: paymentMethod)
         navigationController?.show(hostingVC, sender: nil)
     }
+
+    func displayPurchaseProgressView() {
+        let viewProperties = InProgressViewProperties(title: Localization.purchaseProgressTitle, message: Localization.purchaseProgressMessage)
+        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
+        inProgressViewController.modalPresentationStyle = .overFullScreen
+
+        present(inProgressViewController, animated: true)
+    }
+
+    func displayPrintShippingLabelVC() {
+        guard let purchasedShippingLabel = viewModel.purchasedShippingLabel,
+              let navigationController = navigationController else {
+            return
+        }
+
+        // TODO: Customize the reprint shipping label VC
+        let printCoordinator = ReprintShippingLabelCoordinator(shippingLabel: purchasedShippingLabel, sourceViewController: navigationController)
+        printCoordinator.showReprintUI()
+    }
 }
 
 extension ShippingLabelFormViewController {
@@ -489,6 +518,9 @@ private extension ShippingLabelFormViewController {
         static let navigationBarTitlePackageDetails =
             NSLocalizedString("Package Details",
                               comment: "Navigation bar title of shipping label package details screen")
+        // Purchase progress view
+        static let purchaseProgressTitle = NSLocalizedString("Purchasing Label", comment: "Title of the in-progress UI while purchasing a shipping label")
+        static let purchaseProgressMessage = NSLocalizedString("Please wait", comment: "Message of the in-progress UI while purchasing a shipping label")
         static let noticeUnableToFetchCountries = NSLocalizedString("Unable to fetch countries.",
                                                                     comment: "Unable to fetch countries action failed in Shipping Label Form")
         static let noticeRetryAction = NSLocalizedString("Retry", comment: "Retry Action")

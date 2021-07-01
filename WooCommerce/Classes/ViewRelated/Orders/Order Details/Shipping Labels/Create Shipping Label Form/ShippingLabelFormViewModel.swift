@@ -54,12 +54,12 @@ final class ShippingLabelFormViewModel {
 
         for option in packagesResponse.predefinedOptions {
             if let predefinedPackage = option.predefinedPackages.first(where: { $0.id == selectedPackageID }) {
-                    return ShippingLabelPackageSelected(boxID: predefinedPackage.id,
-                                                        length: predefinedPackage.getLength(),
-                                                        width: predefinedPackage.getWidth(),
-                                                        height: predefinedPackage.getHeight(),
-                                                        weight: predefinedPackage.getWidth(),
-                                                        isLetter: predefinedPackage.isLetter)
+                return ShippingLabelPackageSelected(boxID: predefinedPackage.id,
+                                                    length: predefinedPackage.getLength(),
+                                                    width: predefinedPackage.getWidth(),
+                                                    height: predefinedPackage.getHeight(),
+                                                    weight: predefinedPackage.getWidth(),
+                                                    isLetter: predefinedPackage.isLetter)
             }
         }
 
@@ -70,6 +70,10 @@ final class ShippingLabelFormViewModel {
     /// Payment Methods
     ///
     var shippingLabelAccountSettings: ShippingLabelAccountSettings?
+
+    /// Shipping Label Purchase
+    ///
+    private(set) var purchasedShippingLabel: ShippingLabel?
 
     /// ResultsController: Loads Countries from the Storage Layer.
     ///
@@ -220,9 +224,13 @@ final class ShippingLabelFormViewModel {
         let price = currencyFormatter.formatAmount(Decimal(rate)) ?? ""
 
         let formatString = selectedRate.deliveryDays == 1 ? Localization.businessDaySingular : Localization.businessDaysPlural
-        let shippingDays = String(format: formatString, selectedRate.deliveryDays)
 
-        return selectedRate.title + "\n" + price + " - " + shippingDays
+        var shippingDays = ""
+        if let deliveryDays = selectedRate.deliveryDays {
+            shippingDays = " - " + String(format: formatString, deliveryDays)
+        }
+
+        return selectedRate.title + "\n" + price + shippingDays
     }
 
     /// Returns the body of the Payment Methods cell.
@@ -527,6 +535,42 @@ extension ShippingLabelFormViewModel {
         case suggestedAddress
         case validationError(ShippingLabelAddressValidationError)
         case genericError(Error)
+    }
+
+    /// Purchases a shipping label with the origin and destination address, package, and rate selected in the Shipping Label Form.
+    /// - Parameter onCompletion: Closure to be executed on completion with the success/failure result of the purchase.
+    ///
+    func purchaseLabel(onCompletion: @escaping ((Result<Void, Error>) -> Void)) {
+        guard let originAddress = originAddress,
+              let destinationAddress = destinationAddress,
+              let selectedPackage = selectedPackage,
+              let selectedRate = selectedRate,
+              let accountSettings = shippingLabelAccountSettings else {
+            onCompletion(.failure(PurchaseError.labelDetailsMissing))
+            return
+        }
+
+        let productIDs = order.items.map { $0.productOrVariationID }
+        let package = ShippingLabelPackagePurchase(package: selectedPackage, rate: selectedRate, productIDs: productIDs)
+        let action = ShippingLabelAction.purchaseShippingLabel(siteID: siteID,
+                                                               orderID: order.orderID,
+                                                               originAddress: originAddress,
+                                                               destinationAddress: destinationAddress,
+                                                               packages: [package],
+                                                               emailCustomerReceipt: accountSettings.isEmailReceiptsEnabled) { result in
+            switch result {
+            case .success(let labels):
+                self.purchasedShippingLabel = labels.first(where: { $0.productIDs == productIDs })
+                onCompletion(.success(()))
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    private enum PurchaseError: Error {
+        case labelDetailsMissing
     }
 }
 

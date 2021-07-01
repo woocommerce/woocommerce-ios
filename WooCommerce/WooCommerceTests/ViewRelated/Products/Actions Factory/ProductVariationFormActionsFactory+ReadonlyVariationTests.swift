@@ -26,7 +26,7 @@ final class ProductVariationFormActionsFactory_ReadonlyVariationTests: XCTestCas
         let factory = ProductVariationFormActionsFactory(productVariation: model, editable: false)
 
         // Assert
-        XCTAssertFalse(factory.settingsSectionActions().contains(.priceSettings(editable: false)))
+        XCTAssertFalse(factory.settingsSectionActions().contains(.priceSettings(editable: false, hideSeparator: true)))
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
@@ -44,7 +44,7 @@ final class ProductVariationFormActionsFactory_ReadonlyVariationTests: XCTestCas
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: false), .variationName, .description(editable: false)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: false),
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: false, hideSeparator: false),
                                                                        .attributes(editable: false),
                                                                        .status(editable: false),
                                                                        .shippingSettings(editable: false),
@@ -64,7 +64,7 @@ final class ProductVariationFormActionsFactory_ReadonlyVariationTests: XCTestCas
         let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true)
 
         // Assert
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true),
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
                                                                        .attributes(editable: true),
                                                                        .status(editable: true),
                                                                        .inventorySettings(editable: false)]

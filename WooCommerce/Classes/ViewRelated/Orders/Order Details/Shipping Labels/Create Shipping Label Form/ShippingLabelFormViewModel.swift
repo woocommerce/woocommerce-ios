@@ -154,6 +154,10 @@ final class ShippingLabelFormViewModel {
             return
         }
         updateRowState(type: .packageDetails, dataState: .validated, displayMode: .editable)
+
+        // We reset the carrier and rates selected because if the package change
+        // the carrier and rate change accordingly
+        handleCarrierAndRatesValueChanges(selectedRate: nil, selectedSignatureRate: nil, selectedAdultSignatureRate: nil, editable: false)
     }
 
     func handleCarrierAndRatesValueChanges(selectedRate: ShippingLabelCarrierRate?,

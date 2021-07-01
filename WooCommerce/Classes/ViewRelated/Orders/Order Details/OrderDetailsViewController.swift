@@ -335,7 +335,7 @@ private extension OrderDetailsViewController {
         }
 
         group.enter()
-        syncTrackingsHidingAddButtonIfNecessary {
+        syncTrackingsEnablingAddButtonIfReachable {
             group.leave()
         }
 
@@ -404,7 +404,7 @@ private extension OrderDetailsViewController {
         viewModel.syncSavedReceipts(onCompletion: onCompletion)
     }
 
-    func syncTrackingsHidingAddButtonIfNecessary(onCompletion: (() -> Void)? = nil) {
+    func syncTrackingsEnablingAddButtonIfReachable(onCompletion: (() -> Void)? = nil) {
         syncTracking { [weak self] error in
             if error == nil {
                 self?.viewModel.trackingIsReachable = true

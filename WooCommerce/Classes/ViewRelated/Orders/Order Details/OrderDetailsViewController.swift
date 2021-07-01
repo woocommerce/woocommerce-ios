@@ -107,16 +107,6 @@ final class OrderDetailsViewController: UIViewController {
         super.viewDidLayoutSubviews()
         tableView.updateHeaderHeight()
     }
-
-    private func syncTrackingsHidingAddButtonIfNecessary() {
-        syncTracking { [weak self] error in
-            if error == nil {
-                self?.viewModel.trackingIsReachable = true
-            }
-
-            self?.reloadTableViewSectionsAndData()
-        }
-    }
 }
 
 
@@ -345,7 +335,7 @@ private extension OrderDetailsViewController {
         }
 
         group.enter()
-        syncTracking { _ in
+        syncTrackingsHidingAddButtonIfNecessary {
             group.leave()
         }
 
@@ -418,6 +408,17 @@ private extension OrderDetailsViewController {
         }
 
         viewModel.syncSavedReceipts(onCompletion: onCompletion)
+    }
+
+    func syncTrackingsHidingAddButtonIfNecessary(onCompletion: (() -> Void)? = nil) {
+        syncTracking { [weak self] error in
+            if error == nil {
+                self?.viewModel.trackingIsReachable = true
+            }
+
+            self?.reloadTableViewSectionsAndData()
+            onCompletion?()
+        }
     }
 
     func checkShippingLabelCreationEligibility(onCompletion: (() -> Void)? = nil) {

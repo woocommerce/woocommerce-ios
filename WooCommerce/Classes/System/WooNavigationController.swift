@@ -32,8 +32,7 @@ class WooNavigationController: UINavigationController {
 /// Class that listens and forwards events from `UINavigationControllerDelegate`
 /// Needed to configure the managed `ViewController` back button while providing a `delegate` to children classes.
 ///
-/// Please make sure to forward any other optional method if needed,
-/// e.g `navigationController(_:animationControllerFor:from:to:)` and `navigationController(_:interactionControllerFor:)` for customized transitions.
+/// Please be cautious when forwarding events of `navigationController(_:animationControllerFor:from:to:)` - make sure to implement the method in ALL subclasses of `WooNavigationController`, otherwise it will break the interactive pop gesture.
 ///
 private class WooNavigationControllerDelegate: NSObject, UINavigationControllerDelegate {
 

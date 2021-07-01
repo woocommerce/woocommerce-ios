@@ -111,6 +111,10 @@ extension WooConstants {
         ///
         case troubleshootErrorLoadingData = "https://docs.woocommerce.com/document/android-ios-apps-troubleshooting-error-fetching-orders/"
 
+        /// URL for roles and permissions information
+        ///
+        case rolesAndPermissionsInfo = "https://woocommerce.com/posts/a-guide-to-woocommerce-user-roles-permissions-and-security/"
+
         /// Returns the URL version of the receiver
         ///
         func asURL() -> URL {

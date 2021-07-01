@@ -7,14 +7,13 @@ import Combine
 final class CardReaderSettingsKnownReadersStoredList: CardReaderSettingsKnownReadersProvider {
     private let stores: StoresManager
 
-    @Published private(set) var knownReaders: [String]
-    var knownReadersPublished: Published<[String]> { _knownReaders }
-    var knownReadersPublisher: Published<[String]>.Publisher { $knownReaders }
+    var knownReaders: AnyPublisher<[String], Never> {
+        knownReadersSubject.eraseToAnyPublisher()
+    }
+    private let knownReadersSubject = CurrentValueSubject<[String], Never>([])
 
     init(stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
-        self.knownReaders = []
-
         self.loadReaders()
     }
 
@@ -33,10 +32,10 @@ final class CardReaderSettingsKnownReadersStoredList: CardReaderSettingsKnownRea
     }
 
     private func loadReaders() {
-        let action = AppSettingsAction.loadCardReaders(onCompletion: { [weak self] result in
+        let action = AppSettingsAction.loadCardReaders(onCompletion: { [knownReadersSubject] result in
             switch result {
             case .success(let readers):
-                self?.knownReaders = readers
+                knownReadersSubject.send(readers)
             case .failure(let error):
                 DDLogError("⛔️ Error synchronizing known readers: \(error)")
             }

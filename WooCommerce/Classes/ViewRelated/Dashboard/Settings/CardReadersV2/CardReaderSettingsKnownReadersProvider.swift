@@ -7,12 +7,9 @@ import Combine
 ///
 protocol CardReaderSettingsKnownReadersProvider {
 
-    /// We can't use a @Published wrapper for knownReaders as part of a protocol declaration, but we can
-    /// require its synthesized methods explicitly
+    /// Publishes changes to the known reader list.
     ///
-    var knownReaders: [String] { get }
-    var knownReadersPublished: Published<[String]> { get }
-    var knownReadersPublisher: Published<[String]>.Publisher { get }
+    var knownReaders: AnyPublisher<[String], Never> { get }
 
     /// Remember a reader. Asynchronous.
     ///

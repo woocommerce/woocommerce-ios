@@ -28,6 +28,19 @@ public enum MediaType {
     }
 
     private init(fileUTI: CFString) {
+        // Prior to iOS 14.4, video/webm and audio/webm were not natively supported and would
+        // have resulted as `self = .other` in the code below. iOS 14.4 added support for them,
+        // interpreting both as video types, but we don't want the app to allow users to upload
+        // them because WooCommerce/WordPress don't support that format, yet.
+        //
+        // The UT type identifier for both video/webm and audio/webm is "org.webmproject.webm"
+        //
+        // See https://github.com/woocommerce/woocommerce-ios/pull/4459/files#r656194065
+        guard "\(fileUTI)" != "org.webmproject.webm" else {
+            self = .other
+            return
+        }
+
         if UTTypeConformsTo(fileUTI, kUTTypeImage) {
             self = .image
         } else if UTTypeConformsTo(fileUTI, kUTTypeVideo) {

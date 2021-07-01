@@ -3,7 +3,7 @@ import Foundation
 
 /// Defines the basic properties of any persisted entity.
 ///
-public protocol Object: class {
+public protocol Object: AnyObject {
 
     /// ObjectID Instance Type.
     ///

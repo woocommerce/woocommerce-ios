@@ -385,8 +385,8 @@ private extension ShippingLabelFormViewController {
                                                                                selectedAdultSignatureRate) in
             self?.viewModel.handleCarrierAndRatesValueChanges(selectedRate: selectedRate,
                                                               selectedSignatureRate: selectedSignatureRate,
-                                                              selectedAdultSignatureRate: selectedAdultSignatureRate)
-
+                                                              selectedAdultSignatureRate: selectedAdultSignatureRate,
+                                                              editable: true)
         }
         let hostingVC = UIHostingController(rootView: carriersView)
         navigationController?.show(hostingVC, sender: nil)

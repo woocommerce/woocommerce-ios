@@ -155,7 +155,6 @@ extension RoleErrorViewController: RoleErrorOutput {
     }
 
     func displayWebContent(for url: URL) {
-        let safariViewController = SFSafariViewController(url: url)
-        present(safariViewController, animated: true, completion: nil)
+        WebviewHelper.launch(url, with: self)
     }
 }

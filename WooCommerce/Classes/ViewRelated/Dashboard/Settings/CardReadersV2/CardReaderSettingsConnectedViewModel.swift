@@ -9,12 +9,14 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
 
     private var didGetConnectedReaders: Bool = false
     private var connectedReaders = [CardReader]()
+    private var knownReadersProvider: CardReaderSettingsKnownReadersProvider?
 
     var connectedReaderSerialNumber: String?
     var connectedReaderBatteryLevel: String?
 
-    init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?) {
+    init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?, knownReadersProvider: CardReaderSettingsKnownReadersProvider? = nil) {
         self.didChangeShouldShow = didChangeShouldShow
+        self.knownReadersProvider = knownReadersProvider
         beginObservation()
     }
 
@@ -58,11 +60,19 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     ///
     func disconnectReader() {
         ServiceLocator.analytics.track(.cardReaderDisconnectTapped)
-        let action = CardPresentPaymentAction.disconnect() { result in
+
+        let readerSerialNumberToDisconnect = connectedReaderSerialNumber
+        let action = CardPresentPaymentAction.disconnect() { [readerSerialNumberToDisconnect, weak self] result in
             guard result.isSuccess else {
                 DDLogError("Unexpected error when disconnecting reader")
                 return
             }
+
+            guard let readerSerialNumberToDisconnect = readerSerialNumberToDisconnect else {
+                return
+            }
+
+            self?.knownReadersProvider?.forgetCardReader(cardReaderID: readerSerialNumberToDisconnect)
         }
         ServiceLocator.stores.dispatch(action)
     }

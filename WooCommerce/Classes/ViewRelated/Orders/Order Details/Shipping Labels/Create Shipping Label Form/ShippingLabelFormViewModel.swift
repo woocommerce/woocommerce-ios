@@ -43,12 +43,14 @@ final class ShippingLabelFormViewModel {
             return nil
         }
 
+        let weight = Double(truncating: (Decimal(string: totalPackageWeight ?? "0") as  NSNumber?) ?? 0)
+
         if let customPackage = packagesResponse.customPackages.first(where: { $0.title == selectedPackageID }) {
             return ShippingLabelPackageSelected(boxID: customPackage.title,
                                                 length: customPackage.getLength(),
                                                 width: customPackage.getWidth(),
                                                 height: customPackage.getHeight(),
-                                                weight: customPackage.getWidth(),
+                                                weight: weight,
                                                 isLetter: customPackage.isLetter)
         }
 
@@ -58,7 +60,7 @@ final class ShippingLabelFormViewModel {
                                                     length: predefinedPackage.getLength(),
                                                     width: predefinedPackage.getWidth(),
                                                     height: predefinedPackage.getHeight(),
-                                                    weight: predefinedPackage.getWidth(),
+                                                    weight: weight,
                                                     isLetter: predefinedPackage.isLetter)
             }
         }

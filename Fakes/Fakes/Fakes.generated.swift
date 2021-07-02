@@ -1184,6 +1184,13 @@ extension ShippingLabelStatus {
         .purchased
     }
 }
+extension ShippingLabelStatusPollingResponse {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ShippingLabelStatusPollingResponse {
+        .pending
+    }
+}
 extension ShippingLabelStoreOptions {
     /// Returns a "ready to use" type filled with fake values.
     ///

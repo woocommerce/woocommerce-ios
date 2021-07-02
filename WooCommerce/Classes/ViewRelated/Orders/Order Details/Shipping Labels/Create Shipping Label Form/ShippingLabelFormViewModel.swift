@@ -133,12 +133,20 @@ final class ShippingLabelFormViewModel {
         originAddress = address
         let dateState: ShippingLabelFormViewController.DataState = validated ? .validated : .pending
         updateRowState(type: .shipFrom, dataState: dateState, displayMode: .editable)
+
+        // We reset the carrier and rates selected because if the address change
+        // the carrier and rate change accordingly
+        handleCarrierAndRatesValueChanges(selectedRate: nil, selectedSignatureRate: nil, selectedAdultSignatureRate: nil, editable: false)
     }
 
     func handleDestinationAddressValueChanges(address: ShippingLabelAddress?, validated: Bool) {
         destinationAddress = address
         let dateState: ShippingLabelFormViewController.DataState = validated ? .validated : .pending
         updateRowState(type: .shipTo, dataState: dateState, displayMode: .editable)
+
+        // We reset the carrier and rates selected because if the address change
+        // the carrier and rate change accordingly
+        handleCarrierAndRatesValueChanges(selectedRate: nil, selectedSignatureRate: nil, selectedAdultSignatureRate: nil, editable: false)
     }
 
     func handlePackageDetailsValueChanges(selectedPackageID: String?, totalPackageWeight: String?) {
@@ -150,20 +158,25 @@ final class ShippingLabelFormViewModel {
             return
         }
         updateRowState(type: .packageDetails, dataState: .validated, displayMode: .editable)
+
+        // We reset the carrier and rates selected because if the package change
+        // the carrier and rate change accordingly
+        handleCarrierAndRatesValueChanges(selectedRate: nil, selectedSignatureRate: nil, selectedAdultSignatureRate: nil, editable: false)
     }
 
     func handleCarrierAndRatesValueChanges(selectedRate: ShippingLabelCarrierRate?,
                                            selectedSignatureRate: ShippingLabelCarrierRate?,
-                                           selectedAdultSignatureRate: ShippingLabelCarrierRate?) {
+                                           selectedAdultSignatureRate: ShippingLabelCarrierRate?,
+                                           editable: Bool) {
         self.selectedRate = selectedRate
         self.selectedSignatureRate = selectedSignatureRate
         self.selectedAdultSignatureRate = selectedAdultSignatureRate
 
-        guard selectedRate != nil else {
-            updateRowState(type: .shippingCarrierAndRates, dataState: .pending, displayMode: .editable)
+        guard selectedRate != nil || selectedSignatureRate != nil || selectedAdultSignatureRate != nil else {
+            updateRowState(type: .shippingCarrierAndRates, dataState: .pending, displayMode: editable ? .editable : .disabled)
             return
         }
-        updateRowState(type: .shippingCarrierAndRates, dataState: .validated, displayMode: .editable)
+        updateRowState(type: .shippingCarrierAndRates, dataState: .validated, displayMode: editable ? .editable : .disabled)
     }
 
     func handlePaymentMethodValueChanges(settings: ShippingLabelAccountSettings, editable: Bool) {

@@ -58,6 +58,67 @@ extension ReviewOrderViewModel {
     }
 }
 
+// MARK: - Section and row types for Review Order table view
+//
+extension ReviewOrderViewModel {
+    /// Section types for Review Order screen
+    ///
+    enum Section: CaseIterable {
+        case products
+        case customerInformation
+        case tracking
+
+        var headerType: UITableViewHeaderFooterView.Type {
+            switch self {
+            case .products:
+                return PrimarySectionHeaderView.self
+            case .customerInformation, .tracking:
+                return TwoColumnSectionHeaderView.self
+            }
+        }
+    }
+
+    /// Row types for Review Order screen
+    ///
+    enum Row {
+        case orderItem(item: OrderItem)
+        case customerNote(text: String)
+        case shippingAddress(address: Address)
+        case shippingMethod
+        case billingDetail
+        case tracking
+        case trackingAdd
+
+        var rowType: UITableViewCell.Type {
+            switch self {
+            case .orderItem:
+                return ProductDetailsTableViewCell.self
+            case .customerNote:
+                return CustomerNoteTableViewCell.self
+            case .shippingAddress:
+                return CustomerInfoTableViewCell.self
+            case .shippingMethod:
+                return CustomerNoteTableViewCell.self
+            case .billingDetail:
+                return WooBasicTableViewCell.self
+            case .tracking:
+                return OrderTrackingTableViewCell.self
+            case .trackingAdd:
+                return LeftImageTableViewCell.self
+            }
+        }
+
+        static let allRowTypes: [UITableViewCell.Type] = {
+            [ProductDetailsTableViewCell.self,
+             CustomerNoteTableViewCell.self,
+             CustomerInfoTableViewCell.self,
+             WooBasicTableViewCell.self,
+             OrderTrackingTableViewCell.self,
+             LeftImageTableViewCell.self]
+        }()
+    }
+}
+
 // MARK: - Localization
 //
 private extension ReviewOrderViewModel {

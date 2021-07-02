@@ -13,6 +13,14 @@ final class ReviewOrderViewController: UIViewController {
     ///
     @IBOutlet private var tableView: UITableView!
 
+    /// Shortcut to access Row enum of the view model
+    ///
+    private typealias Row = ReviewOrderViewModel.Row
+
+    /// Shortcut to access Section enum of the view model
+    ///
+    private typealias Section = ReviewOrderViewModel.Section
+
     init(viewModel: ReviewOrderViewModel) {
         self.viewModel = viewModel
         super.init(nibName: Self.nibName, bundle: nil)
@@ -47,7 +55,7 @@ private extension ReviewOrderViewController {
             tableView.register(headerType.loadNib(), forHeaderFooterViewReuseIdentifier: headerType.reuseIdentifier)
         }
 
-        for rowType in Row.allCases.map({ $0.rowType }) {
+        for rowType in Row.allRowTypes {
             tableView.registerNib(for: rowType)
         }
 
@@ -62,54 +70,6 @@ private extension ReviewOrderViewController {
 // MARK: - Sections and Rows for the order review
 //
 private extension ReviewOrderViewController {
-    /// Section types for Review Order screen
-    ///
-    enum Section: CaseIterable {
-        case products
-        case customerInformation
-        case tracking
-
-        var headerType: UITableViewHeaderFooterView.Type {
-            switch self {
-            case .products:
-                return PrimarySectionHeaderView.self
-            case .customerInformation, .tracking:
-                return TwoColumnSectionHeaderView.self
-            }
-        }
-    }
-
-    /// Row types for Review Order screen
-    ///
-    enum Row: CaseIterable {
-        case orderItem
-        case customerNote
-        case shippingAddress
-        case shippingMethod
-        case billingDetail
-        case tracking
-        case trackingAdd
-
-        var rowType: UITableViewCell.Type {
-            switch self {
-            case .orderItem:
-                return ProductDetailsTableViewCell.self
-            case .customerNote:
-                return CustomerNoteTableViewCell.self
-            case .shippingAddress:
-                return CustomerInfoTableViewCell.self
-            case .shippingMethod:
-                return CustomerNoteTableViewCell.self
-            case .billingDetail:
-                return WooBasicTableViewCell.self
-            case .tracking:
-                return OrderTrackingTableViewCell.self
-            case .trackingAdd:
-                return LeftImageTableViewCell.self
-            }
-        }
-    }
-
     /// Some magic numbers for table view UI 🪄
     ///
     enum Constants {

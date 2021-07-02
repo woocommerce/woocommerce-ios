@@ -8,7 +8,7 @@ final class ReviewOrderViewController: UIViewController {
     /// View model to provide order info for review
     ///
     private let viewModel: ReviewOrderViewModel
-    
+
     /// Table view to display order details
     ///
     @IBOutlet private var tableView: UITableView!
@@ -38,5 +38,28 @@ private extension ReviewOrderViewController {
         title = viewModel.screenTitle
     }
 
-    func configureTableView() {}
+    func configureTableView() {
+        for section in Section.allCases {
+            tableView.register(section.headerType.loadNib(), forHeaderFooterViewReuseIdentifier: section.headerType.reuseIdentifier)
+        }
+    }
+}
+
+// MARK: - Sections for the order review
+//
+private extension ReviewOrderViewController {
+    enum Section: CaseIterable {
+        case products
+        case customerInformation
+        case tracking
+
+        var headerType: UITableViewHeaderFooterView.Type {
+            switch self {
+            case .products:
+                return PrimarySectionHeaderView.self
+            case .customerInformation, .tracking:
+                return TwoColumnSectionHeaderView.self
+            }
+        }
+    }
 }

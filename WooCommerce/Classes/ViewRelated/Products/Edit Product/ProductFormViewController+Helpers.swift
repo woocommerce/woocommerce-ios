@@ -75,15 +75,11 @@ extension ProductFormViewController {
     // MARK: - Progress
 
     /// Progress view for save action.
-    /// Shows "Publish" when the product does not exists remotely and it's gonna be published for the first time.
-    /// Shows "Publish" when the product is going to be published from a different status (eg: draft).
-    /// Shows "Save" for all other cases
-    ///
-    func showSavingProgress(previousStatus: ProductStatus, newStatus: ProductStatus, existsRemotely: Bool) {
-        switch newStatus {
-        case .publish where !existsRemotely || previousStatus != .publish:
+    func showSavingProgress(_ messageType: SaveMessageType) {
+        switch messageType {
+        case .publish:
             displayInProgressView(title: Localization.ProgressView.productPublishingTitle, message: Localization.ProgressView.productPublishingMessage)
-        default:
+        case .save:
             displayInProgressView(title: Localization.ProgressView.productSavingTitle, message: Localization.ProgressView.productSavingMessage)
         }
     }

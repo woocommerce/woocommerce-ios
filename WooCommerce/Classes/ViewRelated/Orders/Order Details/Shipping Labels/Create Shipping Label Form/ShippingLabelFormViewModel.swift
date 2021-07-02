@@ -43,7 +43,7 @@ final class ShippingLabelFormViewModel {
             return nil
         }
 
-        let weight = Double(truncating: (Decimal(string: totalPackageWeight ?? "0") as  NSNumber?) ?? 0)
+        let weight = Double(totalPackageWeight ?? "0") ?? .zero
 
         if let customPackage = packagesResponse.customPackages.first(where: { $0.title == selectedPackageID }) {
             return ShippingLabelPackageSelected(boxID: customPackage.title,

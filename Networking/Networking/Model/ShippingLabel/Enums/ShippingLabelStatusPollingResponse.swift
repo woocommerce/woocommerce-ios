@@ -5,7 +5,7 @@ import Codegen
 ///
 /// The status endpoint can return a `ShippingLabelPurchase` (for pending or failed purchases) or `ShippingLabel` (for a successful purchase).
 ///
-public enum ShippingLabelStatusPollingResponse: Decodable, GeneratedFakeable {
+public enum ShippingLabelStatusPollingResponse: Decodable {
     case pending(ShippingLabelPurchase)
     case purchased(ShippingLabel)
 

@@ -10,7 +10,7 @@ private struct TestConstants {
 
 final class CardReaderSettingsKnownReadersStoredListTests: XCTestCase {
 
-    func test_subscribing_publishes_initial_value() {
+    func test_subscribing_publishes_initial_empty_value() {
         let mockStoresManager = MockAppSettingsStoresManager(sessionManager: SessionManager.testingInstance)
 
         let expectation = self.expectation(description: #function)
@@ -30,6 +30,29 @@ final class CardReaderSettingsKnownReadersStoredListTests: XCTestCase {
         cancellable?.cancel()
 
         XCTAssertEqual(recordedObservations, [[]])
+    }
+
+    func test_subscribing_publishes_initial_known_value() {
+        let mockStoresManager = MockAppSettingsStoresManager(sessionManager: SessionManager.testingInstance, knownReaders: [TestConstants.mockReaderID])
+
+        let expectation = self.expectation(description: #function)
+        expectation.expectedFulfillmentCount = 1
+
+        var cancellable: AnyCancellable?
+        let readerList = CardReaderSettingsKnownReadersStoredList(stores: mockStoresManager)
+
+        var recordedObservations: [[String]] = []
+
+        cancellable = readerList.knownReaders.sink(receiveValue: { readers in
+            recordedObservations.append(readers)
+            expectation.fulfill()
+        })
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        cancellable?.cancel()
+
+        XCTAssertEqual(recordedObservations, [[TestConstants.mockReaderID]])
     }
 
     func test_remembering_a_reader_publishes_change() {

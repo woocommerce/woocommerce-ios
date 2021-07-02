@@ -5,7 +5,13 @@ import UIKit
 ///
 final class ReviewOrderViewController: UIViewController {
 
+    /// View model to provide order info for review
+    ///
     private let viewModel: ReviewOrderViewModel
+    
+    /// Table view to display order details
+    ///
+    @IBOutlet private var tableView: UITableView!
 
     init(viewModel: ReviewOrderViewModel) {
         self.viewModel = viewModel
@@ -20,6 +26,7 @@ final class ReviewOrderViewController: UIViewController {
         super.viewDidLoad()
 
         configureNavigation()
+        configureTableView()
     }
 
 }
@@ -30,4 +37,6 @@ private extension ReviewOrderViewController {
     func configureNavigation() {
         title = viewModel.screenTitle
     }
+
+    func configureTableView() {}
 }

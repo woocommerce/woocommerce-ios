@@ -34,20 +34,36 @@ final class ReviewOrderViewController: UIViewController {
 // MARK: - UI Configuration
 //
 private extension ReviewOrderViewController {
+    /// Configs for navigation bar
+    ///
     func configureNavigation() {
         title = viewModel.screenTitle
     }
 
+    /// Configs for table view
+    ///
     func configureTableView() {
-        for section in Section.allCases {
-            tableView.register(section.headerType.loadNib(), forHeaderFooterViewReuseIdentifier: section.headerType.reuseIdentifier)
+        for headerType in Section.allCases.map({ $0.headerType }) {
+            tableView.register(headerType.loadNib(), forHeaderFooterViewReuseIdentifier: headerType.reuseIdentifier)
         }
+
+        for rowType in Row.allCases.map({ $0.rowType }) {
+            tableView.registerNib(for: rowType)
+        }
+
+        view.backgroundColor = .listBackground
+        tableView.backgroundColor = .listBackground
+        tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
+        tableView.estimatedRowHeight = Constants.rowHeight
+        tableView.rowHeight = UITableView.automaticDimension
     }
 }
 
-// MARK: - Sections for the order review
+// MARK: - Sections and Rows for the order review
 //
 private extension ReviewOrderViewController {
+    /// Section types for Review Order screen
+    ///
     enum Section: CaseIterable {
         case products
         case customerInformation
@@ -61,5 +77,45 @@ private extension ReviewOrderViewController {
                 return TwoColumnSectionHeaderView.self
             }
         }
+    }
+
+    /// Row types for Review Order screen
+    ///
+    enum Row: CaseIterable {
+        case orderItem
+        case customerNote
+        case shippingAddress
+        case shippingMethod
+        case billingDetail
+        case tracking
+        case trackingAdd
+
+        var rowType: UITableViewCell.Type {
+            switch self {
+            case .orderItem:
+                return ProductDetailsTableViewCell.self
+            case .customerNote:
+                return CustomerNoteTableViewCell.self
+            case .shippingAddress:
+                return CustomerInfoTableViewCell.self
+            case .shippingMethod:
+                return CustomerNoteTableViewCell.self
+            case .billingDetail:
+                return WooBasicTableViewCell.self
+            case .tracking:
+                return OrderTrackingTableViewCell.self
+            case .trackingAdd:
+                return LeftImageTableViewCell.self
+            }
+        }
+    }
+
+    /// Some magic numbers for table view UI 🪄
+    ///
+    enum Constants {
+        static let headerDefaultHeight = CGFloat(130)
+        static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 8, right: 0)
+        static let rowHeight = CGFloat(38)
+        static let sectionHeight = CGFloat(44)
     }
 }

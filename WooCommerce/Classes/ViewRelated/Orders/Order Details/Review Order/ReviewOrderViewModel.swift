@@ -23,3 +23,19 @@ final class ReviewOrderViewModel {
         self.storageManager = storageManager
     }
 }
+
+// MARK: - Data source for review order controller
+//
+extension ReviewOrderViewModel {
+    var screenTitle: String {
+        Localization.screenTitle
+    }
+}
+
+// MARK: - Localization
+//
+private extension ReviewOrderViewModel {
+    enum Localization {
+        static let screenTitle = NSLocalizedString("Review Order", comment: "Title of Review Order screen")
+    }
+}

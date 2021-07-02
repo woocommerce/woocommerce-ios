@@ -19,7 +19,15 @@ final class ReviewOrderViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        configureNavigation()
     }
 
+}
+
+// MARK: - UI Configuration
+//
+private extension ReviewOrderViewController {
+    func configureNavigation() {
+        title = viewModel.screenTitle
+    }
 }

@@ -15,6 +15,20 @@ public struct StateOfACountry: Decodable, Equatable, GeneratedFakeable {
         self.code = code
         self.name = name
     }
+
+    /// The public initializer for StateOfACountry.
+    ///
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        let code = container.failsafeDecodeIfPresent(targetType: String.self,
+                                                         forKey: .code,
+                                                         alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })]) ?? ""
+        let name = try container.decode(String.self, forKey: .name)
+
+        self.init(code: code, name: name)
+    }
+
 }
 
 

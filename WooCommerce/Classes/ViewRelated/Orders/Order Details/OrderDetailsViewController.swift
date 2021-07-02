@@ -512,7 +512,7 @@ private extension OrderDetailsViewController {
     func markOrderCompleteWasPressed() {
         ServiceLocator.analytics.track(.orderFulfillmentCompleteButtonTapped)
 
-        let reviewOrderViewModel = ReviewOrderViewModel(order: viewModel.order)
+        let reviewOrderViewModel = ReviewOrderViewModel(order: viewModel.order, products: viewModel.products)
         let controller = ReviewOrderViewController(viewModel: reviewOrderViewModel)
         navigationController?.pushViewController(controller, animated: true)
     }

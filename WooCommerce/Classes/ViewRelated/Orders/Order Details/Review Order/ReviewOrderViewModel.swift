@@ -6,7 +6,8 @@ final class ReviewOrderViewModel {
     /// Quick access to header types for table view registration
     ///
     let allHeaderTypes: [UITableViewHeaderFooterView.Type] = {
-        Section.Category.allCases.map { $0.headerType }
+        [PrimarySectionHeaderView.self,
+         TwoColumnSectionHeaderView.self]
     }()
 
     /// Quick access cell types for table view registration
@@ -207,19 +208,19 @@ extension ReviewOrderViewModel {
             case products
             case customerInformation
             case tracking
-
-            var headerType: UITableViewHeaderFooterView.Type {
-                switch self {
-                case .products:
-                    return PrimarySectionHeaderView.self
-                case .customerInformation, .tracking:
-                    return TwoColumnSectionHeaderView.self
-                }
-            }
         }
 
         let category: Category
         let rows: [Row]
+
+        var headerType: UITableViewHeaderFooterView.Type {
+            switch category {
+            case .products:
+                return PrimarySectionHeaderView.self
+            case .customerInformation, .tracking:
+                return TwoColumnSectionHeaderView.self
+            }
+        }
 
         init(category: Category, rows: [Row]) {
             self.category = category

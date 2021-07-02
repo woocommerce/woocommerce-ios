@@ -62,6 +62,7 @@ private extension ReviewOrderViewController {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.dataSource = self
+        tableView.delegate = self
     }
 }
 
@@ -81,6 +82,56 @@ extension ReviewOrderViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: row.cellType.reuseIdentifier, for: indexPath)
         setup(cell: cell, for: row, at: indexPath)
         return cell
+    }
+}
+
+// MARK: - UITableViewDelegate conformance
+//
+extension ReviewOrderViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return CGFloat.leastNormalMagnitude
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let section = viewModel.sections[safe: section] else {
+            return nil
+        }
+
+        let reuseIdentifier = section.headerType.reuseIdentifier
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: reuseIdentifier) else {
+            assertionFailure("Could not find section header view for reuseIdentifier \(reuseIdentifier)")
+            return nil
+        }
+
+        switch headerView {
+        case let headerView as PrimarySectionHeaderView:
+            switch section.category {
+            case .products:
+                headerView.configure(title: viewModel.productionSectionTitle)
+            case .customerInformation, .tracking:
+                assertionFailure("Unexpected category of type \(headerView.self)")
+            }
+        case let headerView as TwoColumnSectionHeaderView:
+            switch section.category {
+            case .customerInformation:
+                headerView.leftText = viewModel.customerSectionTitle
+                headerView.rightText = nil
+            case .tracking:
+                headerView.leftText = viewModel.trackingSectionTitle
+                headerView.rightText = nil
+            case .products:
+                assertionFailure("Unexpected category of type \(headerView.self)")
+            }
+        default:
+            assertionFailure("Unexpected headerView type \(headerView.self)")
+            return nil
+        }
+
+        return headerView
     }
 }
 

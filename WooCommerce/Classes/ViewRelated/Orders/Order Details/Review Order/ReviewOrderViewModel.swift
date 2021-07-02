@@ -6,7 +6,7 @@ final class ReviewOrderViewModel {
     /// Quick access to header types for table view registration
     ///
     let allHeaderTypes: [UITableViewHeaderFooterView.Type] = {
-        Section.SectionType.allCases.map { $0.headerType }
+        Section.Category.allCases.map { $0.headerType }
     }()
 
     /// Quick access cell types for table view registration
@@ -88,7 +88,7 @@ private extension ReviewOrderViewModel {
     ///
     var productSection: Section {
         let rows = order.items.map { Row.orderItem(item: $0) }
-        return .init(type: .products, rows: rows)
+        return .init(category: .products, rows: rows)
     }
 
     /// Customer section setup
@@ -121,7 +121,7 @@ private extension ReviewOrderViewModel {
         // TODO: billing row?
 
         let rows = [noteRow, shippingMethodRow, addressRow].compactMap { $0 }
-        return .init(type: .customerInformation, rows: rows)
+        return .init(category: .customerInformation, rows: rows)
     }
 
     /// Tracking section setup
@@ -141,7 +141,7 @@ private extension ReviewOrderViewModel {
         }()
 
         let rows = [trackingRow, trackingAddRow].compactMap { $0 }
-        return .init(type: .tracking, rows: rows)
+        return .init(category: .tracking, rows: rows)
     }
 }
 
@@ -151,7 +151,7 @@ extension ReviewOrderViewModel {
     struct Section {
         /// Section types for Review Order screen
         ///
-        enum SectionType: CaseIterable {
+        enum Category: CaseIterable {
             case products
             case customerInformation
             case tracking
@@ -166,11 +166,11 @@ extension ReviewOrderViewModel {
             }
         }
 
-        let type: SectionType
+        let category: Category
         let rows: [Row]
 
-        init(type: SectionType, rows: [Row]) {
-            self.type = type
+        init(category: Category, rows: [Row]) {
+            self.category = category
             self.rows = rows
         }
     }

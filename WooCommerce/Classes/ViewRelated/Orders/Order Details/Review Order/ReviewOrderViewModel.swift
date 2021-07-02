@@ -27,8 +27,29 @@ final class ReviewOrderViewModel {
 // MARK: - Data source for review order controller
 //
 extension ReviewOrderViewModel {
+    /// Title for Review Order screen
+    ///
     var screenTitle: String {
         Localization.screenTitle
+    }
+
+    /// Title for Product section
+    ///
+    var productionSectionTitle: String {
+        // TODO: pluralize this! 👀
+        Localization.productsSectionTitle
+    }
+
+    /// Title for Customer section
+    ///
+    var customerSectionTitle: String {
+        return Localization.customerSectionTitle
+    }
+
+    /// Title for Tracking section
+    ///
+    var trackingSectionTitle: String {
+        return Localization.trackingSectionTitle
     }
 }
 
@@ -37,5 +58,10 @@ extension ReviewOrderViewModel {
 private extension ReviewOrderViewModel {
     enum Localization {
         static let screenTitle = NSLocalizedString("Review Order", comment: "Title of Review Order screen")
+        static let productSectionTitle = NSLocalizedString("Product", comment: "Product section title in Review Order screen if there is one product.")
+        static let productsSectionTitle = NSLocalizedString("Products",
+                                                            comment: "Product section title in Review Order screen if there is more than one product.")
+        static let customerSectionTitle = NSLocalizedString("Customer", comment: "Customer info section title in Review Order screen")
+        static let trackingSectionTitle = NSLocalizedString("Tracking", comment: "Tracking section title in Review Order screen")
     }
 }

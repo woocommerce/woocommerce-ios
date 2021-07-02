@@ -13,14 +13,6 @@ final class ReviewOrderViewController: UIViewController {
     ///
     @IBOutlet private var tableView: UITableView!
 
-    /// Shortcut to access Row enum of the view model
-    ///
-    private typealias Row = ReviewOrderViewModel.Row
-
-    /// Shortcut to access Section enum of the view model
-    ///
-    private typealias Section = ReviewOrderViewModel.Section
-
     init(viewModel: ReviewOrderViewModel) {
         self.viewModel = viewModel
         super.init(nibName: Self.nibName, bundle: nil)
@@ -51,12 +43,12 @@ private extension ReviewOrderViewController {
     /// Configs for table view
     ///
     func configureTableView() {
-        for headerType in Section.allCases.map({ $0.headerType }) {
+        for headerType in viewModel.allHeaderTypes {
             tableView.register(headerType.loadNib(), forHeaderFooterViewReuseIdentifier: headerType.reuseIdentifier)
         }
 
-        for rowType in Row.allRowTypes {
-            tableView.registerNib(for: rowType)
+        for cellType in viewModel.allCellTypes {
+            tableView.registerNib(for: cellType)
         }
 
         view.backgroundColor = .listBackground

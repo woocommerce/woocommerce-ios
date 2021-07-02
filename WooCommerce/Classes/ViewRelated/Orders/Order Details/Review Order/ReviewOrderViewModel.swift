@@ -3,6 +3,23 @@ import Yosemite
 import protocol Storage.StorageManagerType
 
 final class ReviewOrderViewModel {
+    /// Quick access to header types for table view registration
+    ///
+    let allHeaderTypes: [UITableViewHeaderFooterView.Type] = {
+        Section.SectionType.allCases.map { $0.headerType }
+    }()
+
+    /// Quick access cell types for table view registration
+    ///
+    let allCellTypes: [UITableViewCell.Type] = {
+        [ProductDetailsTableViewCell.self,
+         CustomerNoteTableViewCell.self,
+         CustomerInfoTableViewCell.self,
+         WooBasicTableViewCell.self,
+         OrderTrackingTableViewCell.self,
+         LeftImageTableViewCell.self]
+    }()
+
     /// The order for review
     ///
     private let order: Order
@@ -56,25 +73,105 @@ extension ReviewOrderViewModel {
     var trackingSectionTitle: String {
         return Localization.trackingSectionTitle
     }
+
+    /// Sections for order table view
+    ///
+    var sections: [Section] {
+        return [productSection, customerSection, trackingSection].filter { !$0.rows.isEmpty }
+    }
+}
+
+// MARK: -
+//
+private extension ReviewOrderViewModel {
+    /// Product section setup
+    ///
+    var productSection: Section {
+        let rows = order.items.map { Row.orderItem(item: $0) }
+        return .init(type: .products, rows: rows)
+    }
+
+    /// Customer section setup
+    ///
+    var customerSection: Section {
+        let noteRow: Row? = {
+            guard let note = order.customerNote, !note.isEmpty else {
+                return nil
+            }
+            return Row.customerNote(text: note)
+        }()
+
+        let shippingMethodRow: Row? = {
+            guard order.shippingLines.count > 0 else { return nil }
+            return Row.shippingMethod
+        }()
+
+        let addressRow: Row? = {
+            let orderContainsOnlyVirtualProducts = products
+                .filter { (product) -> Bool in
+                    order.items.first(where: { $0.productID == product.productID}) != nil
+                }
+                .allSatisfy { $0.virtual == true }
+            guard let shippingAddress = order.shippingAddress, !orderContainsOnlyVirtualProducts else {
+                return nil
+            }
+            return Row.shippingAddress(address: shippingAddress)
+        }()
+
+        // TODO: billing row?
+
+        let rows = [noteRow, shippingMethodRow, addressRow].compactMap { $0 }
+        return .init(type: .customerInformation, rows: rows)
+    }
+
+    /// Tracking section setup
+    ///
+    var trackingSection: Section {
+        // TODO: add order tracking & trackingIsReachable
+        let trackingRow: Row? = {
+//                guard !orderTracking.isEmpty else { return nil }
+            return nil
+        }()
+
+        let trackingAddRow: Row? = {
+            // Hide the section if the shipment
+            // tracking plugin is not installed
+//                guard trackingIsReachable else { return nil }
+            return Row.trackingAdd
+        }()
+
+        let rows = [trackingRow, trackingAddRow].compactMap { $0 }
+        return .init(type: .tracking, rows: rows)
+    }
 }
 
 // MARK: - Section and row types for Review Order table view
 //
 extension ReviewOrderViewModel {
-    /// Section types for Review Order screen
-    ///
-    enum Section: CaseIterable {
-        case products
-        case customerInformation
-        case tracking
+    struct Section {
+        /// Section types for Review Order screen
+        ///
+        enum SectionType: CaseIterable {
+            case products
+            case customerInformation
+            case tracking
 
-        var headerType: UITableViewHeaderFooterView.Type {
-            switch self {
-            case .products:
-                return PrimarySectionHeaderView.self
-            case .customerInformation, .tracking:
-                return TwoColumnSectionHeaderView.self
+            var headerType: UITableViewHeaderFooterView.Type {
+                switch self {
+                case .products:
+                    return PrimarySectionHeaderView.self
+                case .customerInformation, .tracking:
+                    return TwoColumnSectionHeaderView.self
+                }
             }
+        }
+
+        let type: SectionType
+        let rows: [Row]
+
+        init(type: SectionType, rows: [Row]) {
+            self.type = type
+            self.rows = rows
         }
     }
 
@@ -107,15 +204,6 @@ extension ReviewOrderViewModel {
                 return LeftImageTableViewCell.self
             }
         }
-
-        static let allRowTypes: [UITableViewCell.Type] = {
-            [ProductDetailsTableViewCell.self,
-             CustomerNoteTableViewCell.self,
-             CustomerInfoTableViewCell.self,
-             WooBasicTableViewCell.self,
-             OrderTrackingTableViewCell.self,
-             LeftImageTableViewCell.self]
-        }()
     }
 }
 

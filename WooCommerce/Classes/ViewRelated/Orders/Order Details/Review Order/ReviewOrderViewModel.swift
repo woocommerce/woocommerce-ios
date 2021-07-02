@@ -36,6 +36,24 @@ final class ReviewOrderViewModel {
     ///
     private let stores: StoresManager
 
+    /// Indicates if the product cell will be configured with add on information or not.
+    /// Property provided while "view add-ons" feature is in development.
+    ///
+    var showAddOns = false
+
+    /// Site's add-on groups.
+    ///
+    var addOnGroups: [AddOnGroup] {
+        return addOnGroupResultsController.fetchedObjects
+    }
+
+    /// AddOnGroup ResultsController.
+    ///
+    private lazy var addOnGroupResultsController: ResultsController<StorageAddOnGroup> = {
+        let predicate = NSPredicate(format: "siteID == %lld", order.siteID)
+        return ResultsController<StorageAddOnGroup>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
     init(order: Order,
          products: [Product],
          stores: StoresManager = ServiceLocator.stores,
@@ -79,6 +97,40 @@ extension ReviewOrderViewModel {
     var sections: [Section] {
         return [productSection, customerSection, trackingSection].filter { !$0.rows.isEmpty }
     }
+
+    /// Filter product for an order item
+    ///
+    func filterProduct(for item: OrderItem) -> Product? {
+        products.filter({ $0.productID == item.productOrVariationID }).first
+    }
+
+    /// Filter addons for an order item
+    ///
+    func filterAddons(for item: OrderItem) -> [OrderItemAttribute] {
+        let product = filterProduct(for: item)
+        guard let product = product, showAddOns else {
+            return []
+        }
+        return AddOnCrossreferenceUseCase(orderItemAttributes: item.attributes, product: product, addOnGroups: addOnGroups).addOnsAttributes()
+    }
+
+    /// Cell model for an order item
+    ///
+    func cellViewModel(for item: OrderItem) -> ProductDetailsCellViewModel {
+        let product = products.filter({ $0.productID == item.productOrVariationID }).first
+        let addOns = filterAddons(for: item)
+        return ProductDetailsCellViewModel(item: item, currency: order.currency, product: product, hasAddOns: !addOns.isEmpty)
+    }
+}
+
+// MARK: - Order details
+//
+private extension ReviewOrderViewModel {
+    /// First Shipping method from an order
+    ///
+    var shippingMethod: String {
+        return order.shippingLines.first?.methodTitle ?? String()
+    }
 }
 
 // MARK: -
@@ -103,7 +155,7 @@ private extension ReviewOrderViewModel {
 
         let shippingMethodRow: Row? = {
             guard order.shippingLines.count > 0 else { return nil }
-            return Row.shippingMethod
+            return Row.shippingMethod(method: shippingMethod)
         }()
 
         let addressRow: Row? = {
@@ -181,12 +233,12 @@ extension ReviewOrderViewModel {
         case orderItem(item: OrderItem)
         case customerNote(text: String)
         case shippingAddress(address: Address)
-        case shippingMethod
+        case shippingMethod(method: String)
         case billingDetail
         case tracking
         case trackingAdd
 
-        var rowType: UITableViewCell.Type {
+        var cellType: UITableViewCell.Type {
             switch self {
             case .orderItem:
                 return ProductDetailsTableViewCell.self

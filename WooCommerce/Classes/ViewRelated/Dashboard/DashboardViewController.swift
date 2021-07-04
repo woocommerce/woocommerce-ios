@@ -231,7 +231,6 @@ private extension DashboardViewController {
             addViewBellowSubtitle(contentView: contentView)
         }
 
-        //configureSubtitle(contentView: contentView)
         updatedDashboardUI.onPullToRefresh = { [weak self] in
             self?.pullToRefresh()
         }

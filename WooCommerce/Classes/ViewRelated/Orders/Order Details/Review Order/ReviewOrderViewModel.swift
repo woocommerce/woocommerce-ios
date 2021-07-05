@@ -40,11 +40,11 @@ final class ReviewOrderViewModel {
     /// Indicates if the product cell will be configured with add on information or not.
     /// Property provided while "view add-ons" feature is in development.
     ///
-    var showAddOns = false
+    private let showAddOns: Bool
 
     /// Site's add-on groups.
     ///
-    var addOnGroups: [AddOnGroup] {
+    private var addOnGroups: [AddOnGroup] {
         return addOnGroupResultsController.fetchedObjects
     }
 
@@ -57,10 +57,12 @@ final class ReviewOrderViewModel {
 
     init(order: Order,
          products: [Product],
+         showAddOns: Bool,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.order = order
         self.products = products
+        self.showAddOns = showAddOns
         self.stores = stores
         self.storageManager = storageManager
     }
@@ -103,7 +105,7 @@ extension ReviewOrderViewModel {
     /// Filter product for an order item
     ///
     func filterProduct(for item: OrderItem) -> Product? {
-        products.filter({ $0.productID == item.productOrVariationID }).first
+        products.first(where: { $0.productID == item.productID })
     }
 
     /// Filter addons for an order item
@@ -119,7 +121,7 @@ extension ReviewOrderViewModel {
     /// Cell model for an order item
     ///
     func cellViewModel(for item: OrderItem) -> ProductDetailsCellViewModel {
-        let product = products.filter({ $0.productID == item.productOrVariationID }).first
+        let product = filterProduct(for: item)
         let addOns = filterAddons(for: item)
         return ProductDetailsCellViewModel(item: item, currency: order.currency, product: product, hasAddOns: !addOns.isEmpty)
     }

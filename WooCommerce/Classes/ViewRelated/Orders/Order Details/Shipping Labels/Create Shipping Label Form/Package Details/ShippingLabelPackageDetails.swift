@@ -34,13 +34,10 @@ struct ShippingLabelPackageDetails: View {
 
                 TitleAndValueRow(title: Localization.packageSelected, value: viewModel.selectedPackageName, selectable: true) {
                     showingAddPackage.toggle()
-                }
+                }.sheet(isPresented: $showingAddPackage, content: {
+                    ShippingLabelPackageList(viewModel: viewModel)
+                })
 
-                NavigationLink(
-                    destination:
-                        ShippingLabelPackageList(viewModel: viewModel),
-                    isActive: $showingAddPackage) { EmptyView()
-                }
                 Divider()
 
                 TitleAndTextFieldRow(title: Localization.totalPackageWeight,
@@ -56,6 +53,7 @@ struct ShippingLabelPackageDetails: View {
             .background(Color(.systemBackground))
         }
         .background(Color(.listBackground))
+        .navigationTitle("Title Of the view")
         .navigationBarItems(trailing: Button(action: {
             onCompletion(viewModel.selectedPackageID, viewModel.totalWeight)
             presentation.wrappedValue.dismiss()

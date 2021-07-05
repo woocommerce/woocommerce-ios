@@ -368,8 +368,6 @@ private extension ShippingLabelFormViewController {
         }
 
         let hostingVC = UIHostingController(rootView: packageDetails)
-        hostingVC.title = Localization.navigationBarTitlePackageDetails
-
         navigationController?.show(hostingVC, sender: nil)
     }
 

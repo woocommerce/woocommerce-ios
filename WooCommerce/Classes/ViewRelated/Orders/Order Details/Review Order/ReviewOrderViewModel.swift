@@ -37,12 +37,32 @@ final class ReviewOrderViewModel {
     ///
     private let stores: StoresManager
 
+    /// Indicates if the product cell will be configured with add on information or not.
+    /// Property provided while "view add-ons" feature is in development.
+    ///
+    private let showAddOns: Bool
+
+    /// Site's add-on groups.
+    ///
+    private var addOnGroups: [AddOnGroup] {
+        return addOnGroupResultsController.fetchedObjects
+    }
+
+    /// AddOnGroup ResultsController.
+    ///
+    private lazy var addOnGroupResultsController: ResultsController<StorageAddOnGroup> = {
+        let predicate = NSPredicate(format: "siteID == %lld", order.siteID)
+        return ResultsController<StorageAddOnGroup>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
     init(order: Order,
          products: [Product],
+         showAddOns: Bool,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.order = order
         self.products = products
+        self.showAddOns = showAddOns
         self.stores = stores
         self.storageManager = storageManager
     }
@@ -66,6 +86,30 @@ extension ReviewOrderViewModel {
     var sections: [Section] {
         // TODO: add other sections: Customer Info and Tracking
         return [productSection].filter { !$0.rows.isEmpty }
+    }
+
+    /// Filter product for an order item
+    ///
+    func filterProduct(for item: OrderItem) -> Product? {
+        products.first(where: { $0.productID == item.productID })
+    }
+
+    /// Filter addons for an order item
+    ///
+    func filterAddons(for item: OrderItem) -> [OrderItemAttribute] {
+        let product = filterProduct(for: item)
+        guard let product = product, showAddOns else {
+            return []
+        }
+        return AddOnCrossreferenceUseCase(orderItemAttributes: item.attributes, product: product, addOnGroups: addOnGroups).addOnsAttributes()
+    }
+
+    /// Cell model for an order item
+    ///
+    func cellViewModel(for item: OrderItem) -> ProductDetailsCellViewModel {
+        let product = filterProduct(for: item)
+        let addOns = filterAddons(for: item)
+        return ProductDetailsCellViewModel(item: item, currency: order.currency, product: product, hasAddOns: !addOns.isEmpty)
     }
 }
 

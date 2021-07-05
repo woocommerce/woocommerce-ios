@@ -104,9 +104,9 @@ extension ReviewOrderViewModel {
         return AddOnCrossreferenceUseCase(orderItemAttributes: item.attributes, product: product, addOnGroups: addOnGroups).addOnsAttributes()
     }
 
-    /// Cell model for an order item
+    /// Product Details cell view model for an order item
     ///
-    func cellViewModel(for item: OrderItem) -> ProductDetailsCellViewModel {
+    func productDetailsCellViewModel(for item: OrderItem) -> ProductDetailsCellViewModel {
         let product = filterProduct(for: item)
         let addOns = filterAddons(for: item)
         return ProductDetailsCellViewModel(item: item, currency: order.currency, product: product, hasAddOns: !addOns.isEmpty)

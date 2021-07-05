@@ -142,7 +142,7 @@ private extension ReviewOrderViewController {
             fatalError()
         }
 
-        let itemViewModel = viewModel.cellViewModel(for: item)
+        let itemViewModel = viewModel.productDetailsCellViewModel(for: item)
         cell.configure(item: itemViewModel, imageService: imageService)
         cell.onViewAddOnsTouchUp = { [weak self] in
             guard let self = self else { return }

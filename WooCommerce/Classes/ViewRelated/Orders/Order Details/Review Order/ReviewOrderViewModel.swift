@@ -93,6 +93,12 @@ extension ReviewOrderViewModel {
         Localization.trackingSectionTitle
     }
 
+    /// Title for Customer Note cell
+    ///
+    var customerNoteTitle: String {
+        Localization.customerNoteTitle
+    }
+
     /// Title for Shipping Address cell
     ///
     var shippingAddressTitle: String {
@@ -300,6 +306,7 @@ private extension ReviewOrderViewModel {
                                                             comment: "Product section title in Review Order screen if there is more than one product.")
         static let customerSectionTitle = NSLocalizedString("Customer", comment: "Customer info section title in Review Order screen")
         static let trackingSectionTitle = NSLocalizedString("Tracking", comment: "Tracking section title in Review Order screen")
+        static let customerNoteTitle = NSLocalizedString("Customer Provided Note", comment: "Customer note row title")
         static let shippingAddressTitle = NSLocalizedString("Shipping Address", comment: "Shipping Address title for customer info section")
         static let noAddressCellTitle = NSLocalizedString(
             "No address specified.",

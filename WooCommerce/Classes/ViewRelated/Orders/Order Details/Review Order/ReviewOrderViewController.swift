@@ -185,20 +185,17 @@ private extension ReviewOrderViewController {
     /// Setup: Customer Note Cell
     ///
     private func setupCustomerNoteCell(_ cell: UITableViewCell, with note: String) {
-        guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
+        guard let cell = cell as? CustomerNoteTableViewCell else {
             fatalError("⛔ Incorrect cell type for Customer Note cell")
         }
 
-        cell.update(with: .imageAndTitleOnly(fontStyle: .body),
-                    data: .init(title: note,
-                                textTintColor: .text,
-                                image: .quoteImage,
-                                imageTintColor: .text,
-                                numberOfLinesForTitle: 0,
-                                isActionable: false))
-
-        cell.isAccessibilityElement = true
-        cell.accessibilityLabel = note
+        cell.headline = viewModel.customerNoteTitle
+        let localizedBody = String.localizedStringWithFormat(
+            NSLocalizedString("“%@”",
+                              comment: "Customer note, wrapped in quotes"),
+            note)
+        cell.body = localizedBody
+        cell.selectionStyle = .none
     }
 
     /// Setup: Address Cell

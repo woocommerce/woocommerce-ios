@@ -38,6 +38,77 @@ extension ReviewOrderViewModel {
     }
 }
 
+// MARK: - Section and row types for Review Order table view
+//
+extension ReviewOrderViewModel {
+    struct Section {
+        /// Section types for Review Order screen
+        ///
+        enum Category: CaseIterable {
+            case products
+            case customerInformation
+            case tracking
+        }
+
+        /// Category of the section
+        ///
+        let category: Category
+
+        /// Rows in the section
+        ///
+        let rows: [Row]
+
+        /// UITableViewHeaderFooterView type for each section
+        ///
+        var headerType: UITableViewHeaderFooterView.Type {
+            switch category {
+            case .products:
+                return PrimarySectionHeaderView.self
+            case .customerInformation, .tracking:
+                return TwoColumnSectionHeaderView.self
+            }
+        }
+
+        init(category: Category, rows: [Row]) {
+            self.category = category
+            self.rows = rows
+        }
+    }
+
+    /// Row types for Review Order screen
+    ///
+    enum Row {
+        case orderItem(item: OrderItem)
+        case customerNote(text: String)
+        case shippingAddress(address: Address)
+        case shippingMethod(method: String)
+        case billingDetail
+        case tracking
+        case trackingAdd
+
+        /// UITableViewCell type for each row type
+        ///
+        var cellType: UITableViewCell.Type {
+            switch self {
+            case .orderItem:
+                return ProductDetailsTableViewCell.self
+            case .customerNote:
+                return CustomerNoteTableViewCell.self
+            case .shippingAddress:
+                return CustomerInfoTableViewCell.self
+            case .shippingMethod:
+                return CustomerNoteTableViewCell.self
+            case .billingDetail:
+                return WooBasicTableViewCell.self
+            case .tracking:
+                return OrderTrackingTableViewCell.self
+            case .trackingAdd:
+                return LeftImageTableViewCell.self
+            }
+        }
+    }
+}
+
 // MARK: - Localization
 //
 private extension ReviewOrderViewModel {

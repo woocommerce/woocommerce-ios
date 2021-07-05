@@ -36,6 +36,30 @@ extension ReviewOrderViewModel {
     var screenTitle: String {
         Localization.screenTitle
     }
+
+    /// Title for Product section
+    ///
+    var productionSectionTitle: String {
+        order.items.count > 0 ? Localization.productsSectionTitle : Localization.productSectionTitle
+    }
+
+    /// Sections for order table view
+    ///
+    var sections: [Section] {
+        // TODO: add other sections: Customer Info and Tracking
+        return [productSection].filter { !$0.rows.isEmpty }
+    }
+}
+
+// MARK: - Sections configuration
+//
+private extension ReviewOrderViewModel {
+    /// Product section setup
+    ///
+    var productSection: Section {
+        let rows = order.items.map { Row.orderItem(item: $0) }
+        return .init(category: .products, rows: rows)
+    }
 }
 
 // MARK: - Section and row types for Review Order table view
@@ -114,5 +138,8 @@ extension ReviewOrderViewModel {
 private extension ReviewOrderViewModel {
     enum Localization {
         static let screenTitle = NSLocalizedString("Review Order", comment: "Title of Review Order screen")
+        static let productSectionTitle = NSLocalizedString("Product", comment: "Product section title in Review Order screen if there is one product.")
+        static let productsSectionTitle = NSLocalizedString("Products",
+                                                            comment: "Product section title in Review Order screen if there is more than one product.")
     }
 }

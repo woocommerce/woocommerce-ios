@@ -38,5 +38,30 @@ private extension ReviewOrderViewController {
         title = viewModel.screenTitle
     }
 
-    func configureTableView() {}
+    func configureTableView() {
+        for headerType in viewModel.allHeaderTypes {
+            tableView.register(headerType.loadNib(), forHeaderFooterViewReuseIdentifier: headerType.reuseIdentifier)
+        }
+
+        for cellType in viewModel.allCellTypes {
+            tableView.registerNib(for: cellType)
+        }
+
+        view.backgroundColor = .listBackground
+        tableView.backgroundColor = .listBackground
+        tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
+        tableView.estimatedRowHeight = Constants.rowHeight
+        tableView.rowHeight = UITableView.automaticDimension
+    }
+}
+
+// MARK: - Miscellanous
+//
+private extension ReviewOrderViewController {
+    /// Some magic numbers for table view UI 🪄
+    ///
+    enum Constants {
+        static let rowHeight = CGFloat(38)
+        static let sectionHeight = CGFloat(44)
+    }
 }

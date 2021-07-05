@@ -14,6 +14,7 @@ extension String {
     /// See [#4527](https://github.com/woocommerce/woocommerce-ios/pull/4527) for an example of the problems this can cause.
     ///
     var htmlToAttributedString: NSAttributedString {
+        precondition(Thread.isMainThread, "htmlToAttributedString should only be called from the main thread")
         guard let data = data(using: .utf8) else { return NSAttributedString() }
         do {
             return try NSAttributedString(data: data,

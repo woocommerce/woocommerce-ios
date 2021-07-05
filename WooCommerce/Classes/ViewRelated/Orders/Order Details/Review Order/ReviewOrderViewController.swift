@@ -52,6 +52,25 @@ private extension ReviewOrderViewController {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
+        tableView.dataSource = self
+    }
+}
+
+// MARK: - UITableViewDatasource conformance
+//
+extension ReviewOrderViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return viewModel.sections.count
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return viewModel.sections[section].rows.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let row = viewModel.sections[indexPath.section].rows[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: row.cellType.reuseIdentifier, for: indexPath)
+        return cell
     }
 }
 

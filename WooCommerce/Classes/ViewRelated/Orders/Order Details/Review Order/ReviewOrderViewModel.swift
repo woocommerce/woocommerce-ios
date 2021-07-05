@@ -23,7 +23,7 @@ final class ReviewOrderViewModel {
 
     /// The order for review
     ///
-    private(set) var order: Order
+    let order: Order
 
     /// Products in the order
     ///

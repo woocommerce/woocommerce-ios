@@ -58,7 +58,7 @@ final class OrderDetailsViewController: UIViewController {
     /// Orchestrates what needs to be presented in the modal views
     /// that provide user-facing feedback about the card present payment process.
     private lazy var paymentAlerts: OrderDetailsPaymentAlerts = {
-        OrderDetailsPaymentAlerts()
+        OrderDetailsPaymentAlerts(presentingController: self)
     }()
 
     /// Subscription that listens for connected readers while we are trying to connect to one to capture payment
@@ -616,8 +616,7 @@ private extension OrderDetailsViewController {
         let unit = ServiceLocator.currencySettings.symbol(from: currencyCode)
         let value = currencyFormatter.formatAmount(viewModel.order.total, with: unit) ?? ""
 
-        paymentAlerts.readerIsReady(from: self,
-                                    title: viewModel.collectPaymentFrom,
+        paymentAlerts.readerIsReady(title: viewModel.collectPaymentFrom,
                                     amount: value)
 
         ServiceLocator.analytics.track(.collectPaymentTapped)

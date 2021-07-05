@@ -418,7 +418,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "label/\(sampleOrderID)/\(sampleLabelID)", filename: "shipping-label-status-success")
 
         // When
-        let result: Result<[ShippingLabel], Error> = waitFor { promise in
+        let result: Result<[ShippingLabelStatusPollingResponse], Error> = waitFor { promise in
             remote.checkLabelStatus(siteID: self.sampleSiteID,
                                     orderID: self.sampleOrderID,
                                     labelIDs: [sampleLabelID]) { (result) in
@@ -439,7 +439,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "label/\(sampleOrderID)/\(sampleLabelID)", filename: "generic_error")
 
         // When
-        let result: Result<[ShippingLabel], Error> = waitFor { promise in
+        let result: Result<[ShippingLabelStatusPollingResponse], Error> = waitFor { promise in
             remote.checkLabelStatus(siteID: self.sampleSiteID,
                                     orderID: self.sampleOrderID,
                                     labelIDs: [sampleLabelID]) { (result) in

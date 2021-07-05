@@ -160,9 +160,16 @@ extension ReviewOrderViewModel {
             case tracking
         }
 
+        /// Category of the section
+        ///
         let category: Category
+
+        /// Rows in the section
+        ///
         let rows: [Row]
 
+        /// UITableViewHeaderFooterView type for each section
+        ///
         var headerType: UITableViewHeaderFooterView.Type {
             switch category {
             case .products:
@@ -189,6 +196,8 @@ extension ReviewOrderViewModel {
         case tracking
         case trackingAdd
 
+        /// UITableViewCell type for each row type
+        ///
         var cellType: UITableViewCell.Type {
             switch self {
             case .orderItem:

@@ -185,8 +185,6 @@ private extension ReviewOrderViewController {
     /// Some magic numbers for table view UI 🪄
     ///
     enum Constants {
-        static let headerDefaultHeight = CGFloat(130)
-        static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 8, right: 0)
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
     }

@@ -59,13 +59,13 @@ class ReviewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(productCellModel.hasAddOns, false)
     }
 
-    func test_productDetailsCellViewModel_returns_correct_hasAddOns_if_view_model_receives_showAddOns_as_true() {
+    func test_productDetailsCellViewModel_returns_correct_hasAddOns_if_view_model_receives_showAddOns_as_true_and_there_are_valid_addons() {
         // Given
-        let item = OrderItem.fake().copy(productID: productID)
+        let addOnName = "Test"
+        let itemAttribute = OrderItemAttribute.fake().copy(name: addOnName)
+        let item = OrderItem.fake().copy(productID: productID, attributes: [itemAttribute])
         let order = Order.fake().copy(siteID: siteID, status: .processing, items: [item])
-        let addOn = ProductAddOn.fake()
-        let addOnGroup = AddOnGroup.fake().copy(siteID: siteID, addOns: [addOn])
-        insert(addOnGroup)
+        let addOn = ProductAddOn.fake().copy(name: addOnName)
         let product = Product().copy(productID: productID, addOns: [addOn])
 
         // When
@@ -73,20 +73,6 @@ class ReviewOrderViewModelTests: XCTestCase {
         let productCellModel = viewModel.productDetailsCellViewModel(for: item)
 
         // Then
-        // TODO: fix failed test
-//        XCTAssertEqual(productCellModel.hasAddOns, true)
-    }
-}
-
-// MARK: - Storage helper
-private extension ReviewOrderViewModelTests {
-    func insert(_ readOnlyAddOnGroup: Yosemite.AddOnGroup) {
-        readOnlyAddOnGroup.addOns.forEach { readOnlyAddOn in
-            let storageAddOn = storage.insertNewObject(ofType: StorageProductAddOn.self)
-            storageAddOn.update(with: readOnlyAddOn)
-        }
-        let group = storage.insertNewObject(ofType: StorageAddOnGroup.self)
-        group.update(with: readOnlyAddOnGroup)
-        storage.saveIfNeeded()
+        XCTAssertEqual(productCellModel.hasAddOns, true)
     }
 }

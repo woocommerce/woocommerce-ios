@@ -7,7 +7,8 @@ extension String {
 
     /// Convert HTML to an attributed string
     ///
-    /// This method uses `NSAttributedString.init(data:options:documentAttributes:)` with a documentType value of html. Internally it uses WebKit so it should only be called from the main thread.
+    /// This method uses `NSAttributedString.init(data:options:documentAttributes:)` with a documentType value of html.
+    /// Internally it uses WebKit so it should only be called from the main thread.
     ///
     /// Even then, the implementation seems to suspend the execution while WebKit is loading and might continue processing other events in the run loop.
     ///

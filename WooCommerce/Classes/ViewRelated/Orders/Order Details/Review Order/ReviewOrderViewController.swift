@@ -8,7 +8,7 @@ final class ReviewOrderViewController: UIViewController {
     /// View model to provide order info for review
     ///
     private let viewModel: ReviewOrderViewModel
-    
+
     /// Table view to display order details
     ///
     @IBOutlet private var tableView: UITableView!

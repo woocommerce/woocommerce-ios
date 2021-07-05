@@ -7,6 +7,10 @@ final class ReviewOrderViewModel {
     ///
     private let order: Order
 
+    /// Products in the order
+    ///
+    private let products: [Product]
+
     /// StorageManager to load details of order from storage
     ///
     private let storageManager: StorageManagerType
@@ -16,9 +20,11 @@ final class ReviewOrderViewModel {
     private let stores: StoresManager
 
     init(order: Order,
+         products: [Product],
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.order = order
+        self.products = products
         self.stores = stores
         self.storageManager = storageManager
     }

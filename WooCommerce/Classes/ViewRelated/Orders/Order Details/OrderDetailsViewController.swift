@@ -513,7 +513,7 @@ private extension OrderDetailsViewController {
         ServiceLocator.analytics.track(.orderFulfillmentCompleteButtonTapped)
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.reviewOrder) {
-            let reviewOrderViewModel = ReviewOrderViewModel(order: viewModel.order)
+            let reviewOrderViewModel = ReviewOrderViewModel(order: viewModel.order, products: viewModel.products)
             let controller = ReviewOrderViewController(viewModel: reviewOrderViewModel)
             navigationController?.pushViewController(controller, animated: true)
         } else {

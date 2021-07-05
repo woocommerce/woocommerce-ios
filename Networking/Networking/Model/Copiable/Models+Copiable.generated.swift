@@ -166,6 +166,24 @@ extension OrderItem {
     }
 }
 
+extension OrderItemAttribute {
+    public func copy(
+        metaID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        value: CopiableProp<String> = .copy
+    ) -> OrderItemAttribute {
+        let metaID = metaID ?? self.metaID
+        let name = name ?? self.name
+        let value = value ?? self.value
+
+        return OrderItemAttribute(
+            metaID: metaID,
+            name: name,
+            value: value
+        )
+    }
+}
+
 extension Product {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

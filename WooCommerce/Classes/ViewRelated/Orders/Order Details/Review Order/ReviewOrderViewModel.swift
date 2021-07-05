@@ -23,7 +23,7 @@ final class ReviewOrderViewModel {
 
     /// The order for review
     ///
-    private let order: Order
+    private(set) var order: Order
 
     /// Products in the order
     ///
@@ -55,12 +55,6 @@ final class ReviewOrderViewModel {
         return ResultsController<StorageAddOnGroup>(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
 
-    /// First Shipping method from an order
-    ///
-    private var shippingMethod: String {
-        return order.shippingLines.first?.methodTitle ?? String()
-    }
-
     init(order: Order,
          products: [Product],
          showAddOns: Bool,
@@ -90,13 +84,49 @@ extension ReviewOrderViewModel {
     /// Title for Customer section
     ///
     var customerSectionTitle: String {
-        return Localization.customerSectionTitle
+        Localization.customerSectionTitle
     }
 
     /// Title for Tracking section
     ///
     var trackingSectionTitle: String {
-        return Localization.trackingSectionTitle
+        Localization.trackingSectionTitle
+    }
+
+    /// Title for Shipping Address cell
+    ///
+    var shippingAddressTitle: String {
+        Localization.shippingAddressTitle
+    }
+
+    /// Title for Shipping Address if no address found
+    ///
+    var noAddressCellTitle: String {
+        Localization.noAddressCellTitle
+    }
+
+    /// Title for Shipping Method cell
+    ///
+    var shippingMethodTitle: String {
+        Localization.shippingMethodTitle
+    }
+
+    /// Title for Show Billing cell
+    ///
+    var showBillingTitle: String {
+        Localization.showBillingTitle
+    }
+
+    /// Accessibility Label for Show Billing title
+    ///
+    var showBillingAccessibilityLabel: String {
+        Localization.showBillingAccessibilityLabel
+    }
+
+    /// Accessibility Hint for Show Billing title
+    ///
+    var showBillingAccessibilityHint: String {
+        Localization.showBillingAccessibilityHint
     }
 
     /// Sections for order table view
@@ -127,6 +157,21 @@ extension ReviewOrderViewModel {
         let product = filterProduct(for: item)
         let addOns = filterAddons(for: item)
         return ProductDetailsCellViewModel(item: item, currency: order.currency, product: product, hasAddOns: !addOns.isEmpty)
+    }
+}
+
+// MARK: - Order details
+private extension ReviewOrderViewModel {
+    /// Shipping address of the order
+    ///
+    var shippingAddress: Address? {
+        order.shippingAddress
+    }
+
+    /// First Shipping method from an order
+    ///
+    var shippingMethod: String {
+        return order.shippingLines.first?.methodTitle ?? String()
     }
 }
 
@@ -161,14 +206,14 @@ private extension ReviewOrderViewModel {
                     order.items.first(where: { $0.productID == product.productID}) != nil
                 }
                 .allSatisfy { $0.virtual == true }
-            guard let shippingAddress = order.shippingAddress, !orderContainsOnlyVirtualProducts else {
+            guard let shippingAddress = shippingAddress, !orderContainsOnlyVirtualProducts else {
                 return nil
             }
             return Row.shippingAddress(address: shippingAddress)
         }()
 
-        // TODO: billing row?
-        let rows = [noteRow, shippingMethodRow, addressRow].compactMap { $0 }
+        let billingRow: Row = .billingDetail
+        let rows = [noteRow, addressRow, shippingMethodRow, billingRow].compactMap { $0 }
         return .init(category: .customerInformation, rows: rows)
     }
 
@@ -274,5 +319,21 @@ private extension ReviewOrderViewModel {
                                                             comment: "Product section title in Review Order screen if there is more than one product.")
         static let customerSectionTitle = NSLocalizedString("Customer", comment: "Customer info section title in Review Order screen")
         static let trackingSectionTitle = NSLocalizedString("Tracking", comment: "Tracking section title in Review Order screen")
+        static let shippingAddressTitle = NSLocalizedString("Shipping Address", comment: "Shipping Address title for customer info section")
+        static let noAddressCellTitle = NSLocalizedString(
+            "No address specified.",
+            comment: "Order details > customer info > shipping details. This is where the address would normally display."
+        )
+        static let shippingMethodTitle = NSLocalizedString("Shipping Method", comment: "Shipping method title for customer info section")
+        static let showBillingTitle = NSLocalizedString("View Billing Information",
+                                                        comment: "Button on bottom of Customer's information to show the billing details")
+        static let showBillingAccessibilityLabel = NSLocalizedString(
+            "View Billing Information",
+            comment: "Accessibility label for the 'View Billing Information' button"
+        )
+        static let showBillingAccessibilityHint = NSLocalizedString(
+            "Show the billing details for this order.",
+            comment: "VoiceOver accessibility hint, informing the user that the button can be used to view billing information."
+        )
     }
 }

@@ -129,6 +129,19 @@ extension ReviewOrderViewController: UITableViewDelegate {
 
         return headerView
     }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        guard let row = viewModel.sections[safe: indexPath.section]?.rows[safe: indexPath.row] else {
+            return
+        }
+        switch row {
+        case .billingDetail:
+            billingInformationTapped()
+        default:
+            break
+        }
+    }
 }
 
 // MARK: - Setup cells for the table view
@@ -140,6 +153,14 @@ private extension ReviewOrderViewController {
         switch row {
         case .orderItem(let item):
             setupOrderItemCell(cell, with: item)
+        case .customerNote(let text):
+            setupCustomerNoteCell(cell, with: text)
+        case .shippingAddress(let address):
+            setupAddressCell(cell, with: address)
+        case .shippingMethod(let method):
+            setupShippingMethodCell(cell, method: method)
+        case .billingDetail:
+            setupBillingDetail(cell)
         default:
             // TODO: setup
             break
@@ -150,7 +171,7 @@ private extension ReviewOrderViewController {
     ///
     private func setupOrderItemCell(_ cell: UITableViewCell, with item: OrderItem) {
         guard let cell = cell as? ProductDetailsTableViewCell else {
-            fatalError()
+            fatalError("⛔ Incorrect cell type for Product Details cell")
         }
 
         let itemViewModel = viewModel.productDetailsCellViewModel(for: item)
@@ -159,6 +180,64 @@ private extension ReviewOrderViewController {
             guard let self = self else { return }
             self.itemAddOnsButtonTapped(addOns: self.viewModel.filterAddons(for: item))
         }
+    }
+
+    /// Setup: Customer Note Cell
+    ///
+    private func setupCustomerNoteCell(_ cell: UITableViewCell, with note: String) {
+        guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
+            fatalError("⛔ Incorrect cell type for Customer Note cell")
+        }
+
+        cell.update(with: .imageAndTitleOnly(fontStyle: .body),
+                    data: .init(title: note,
+                                textTintColor: .text,
+                                image: .quoteImage,
+                                imageTintColor: .text,
+                                numberOfLinesForTitle: 0,
+                                isActionable: false))
+
+        cell.isAccessibilityElement = true
+        cell.accessibilityLabel = note
+    }
+
+    /// Setup: Address Cell
+    ///
+    private func setupAddressCell(_ cell: UITableViewCell, with address: Address?) {
+        guard let cell = cell as? CustomerInfoTableViewCell else {
+            fatalError("⛔ Incorrect cell type for Address cell")
+        }
+        cell.title = viewModel.shippingAddressTitle
+        cell.name = address?.fullNameWithCompany
+        cell.address = address?.formattedPostalAddress ?? viewModel.noAddressCellTitle
+    }
+
+    /// Setup: Shipping Method cell
+    ///
+    func setupShippingMethodCell(_ cell: UITableViewCell, method: String?) {
+        guard let cell = cell as? CustomerNoteTableViewCell else {
+            fatalError("⛔ Incorrect cell type for Shipping Method cell")
+        }
+
+        cell.headline = viewModel.shippingMethodTitle
+        cell.body = method?.strippedHTML
+        cell.selectionStyle = .none
+    }
+
+    /// Setup: Billing Detail cell
+    ///
+    func setupBillingDetail(_ cell: UITableViewCell) {
+        guard let cell = cell as? WooBasicTableViewCell else {
+            fatalError("⛔ Incorrect cell type for Billing Detail cell")
+        }
+        cell.bodyLabel?.text = viewModel.showBillingTitle
+        cell.applyPlainTextStyle()
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+
+        cell.accessibilityTraits = .button
+        cell.accessibilityLabel = viewModel.showBillingAccessibilityLabel
+        cell.accessibilityHint = viewModel.showBillingAccessibilityHint
     }
 }
 
@@ -172,6 +251,14 @@ private extension ReviewOrderViewController {
         let addOnsController = OrderAddOnsListViewController(viewModel: addOnsViewModel)
         let navigationController = WooNavigationController(rootViewController: addOnsController)
         present(navigationController, animated: true, completion: nil)
+    }
+
+    /// Show billing information screen
+    ///
+    func billingInformationTapped() {
+        ServiceLocator.analytics.track(.orderDetailShowBillingTapped)
+        let billingInformationViewController = BillingInformationViewController(order: viewModel.order)
+        navigationController?.pushViewController(billingInformationViewController, animated: true)
     }
 }
 

@@ -264,7 +264,7 @@ extension ReviewOrderViewModel {
 
     /// Row types for Review Order screen
     ///
-    enum Row: Equatable {
+    enum Row {
         case orderItem(item: OrderItem)
         case customerNote(text: String)
         case shippingAddress(address: Address)

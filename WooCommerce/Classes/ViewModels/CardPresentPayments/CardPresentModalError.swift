@@ -42,9 +42,7 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        viewController?.dismiss(animated: true, completion: {[weak self] in
-            self?.primaryAction()
-        })
+        primaryAction()
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {

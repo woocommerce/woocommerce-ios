@@ -55,6 +55,12 @@ final class ReviewOrderViewModel {
         return ResultsController<StorageAddOnGroup>(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
 
+    /// First Shipping method from an order
+    ///
+    private var shippingMethod: String {
+        return order.shippingLines.first?.methodTitle ?? String()
+    }
+
     init(order: Order,
          products: [Product],
          showAddOns: Bool,
@@ -96,8 +102,7 @@ extension ReviewOrderViewModel {
     /// Sections for order table view
     ///
     var sections: [Section] {
-        // TODO: add other sections: Customer Info and Tracking
-        return [productSection].filter { !$0.rows.isEmpty }
+        return [productSection, customerSection, trackingSection].filter { !$0.rows.isEmpty }
     }
 
     /// Filter product for an order item
@@ -133,6 +138,58 @@ private extension ReviewOrderViewModel {
     var productSection: Section {
         let rows = order.items.map { Row.orderItem(item: $0) }
         return .init(category: .products, rows: rows)
+    }
+
+    /// Customer section setup
+    ///
+    var customerSection: Section {
+        let noteRow: Row? = {
+            guard let note = order.customerNote, !note.isEmpty else {
+                return nil
+            }
+            return Row.customerNote(text: note)
+        }()
+
+        let shippingMethodRow: Row? = {
+            guard order.shippingLines.count > 0 else { return nil }
+            return Row.shippingMethod(method: shippingMethod)
+        }()
+
+        let addressRow: Row? = {
+            let orderContainsOnlyVirtualProducts = products
+                .filter { (product) -> Bool in
+                    order.items.first(where: { $0.productID == product.productID}) != nil
+                }
+                .allSatisfy { $0.virtual == true }
+            guard let shippingAddress = order.shippingAddress, !orderContainsOnlyVirtualProducts else {
+                return nil
+            }
+            return Row.shippingAddress(address: shippingAddress)
+        }()
+
+        // TODO: billing row?
+        let rows = [noteRow, shippingMethodRow, addressRow].compactMap { $0 }
+        return .init(category: .customerInformation, rows: rows)
+    }
+
+    /// Tracking section setup
+    ///
+    var trackingSection: Section {
+        // TODO: add order tracking & trackingIsReachable
+        let trackingRow: Row? = {
+//                guard !orderTracking.isEmpty else { return nil }
+            return nil
+        }()
+
+        let trackingAddRow: Row? = {
+            // Hide the section if the shipment
+            // tracking plugin is not installed
+//                guard trackingIsReachable else { return nil }
+            return Row.trackingAdd
+        }()
+
+        let rows = [trackingRow, trackingAddRow].compactMap { $0 }
+        return .init(category: .tracking, rows: rows)
     }
 }
 

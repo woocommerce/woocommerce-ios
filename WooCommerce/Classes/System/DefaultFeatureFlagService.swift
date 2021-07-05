@@ -18,7 +18,7 @@ struct DefaultFeatureFlagService: FeatureFlagService {
         case .cardPresentKnownReader:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .reviewOrder:
-            return false
+            return buildConfig == .localDeveloper
         default:
             return true
         }

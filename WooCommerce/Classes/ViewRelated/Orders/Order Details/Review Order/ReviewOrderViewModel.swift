@@ -132,7 +132,8 @@ extension ReviewOrderViewModel {
     /// Sections for order table view
     ///
     var sections: [Section] {
-        return [productSection, customerSection, trackingSection].filter { !$0.rows.isEmpty }
+        // TODO: Add tracking section
+        return [productSection, customerSection].filter { !$0.rows.isEmpty }
     }
 
     /// Filter product for an order item
@@ -216,26 +217,6 @@ private extension ReviewOrderViewModel {
         let rows = [noteRow, addressRow, shippingMethodRow, billingRow].compactMap { $0 }
         return .init(category: .customerInformation, rows: rows)
     }
-
-    /// Tracking section setup
-    ///
-    var trackingSection: Section {
-        // TODO: add order tracking & trackingIsReachable
-        let trackingRow: Row? = {
-//                guard !orderTracking.isEmpty else { return nil }
-            return nil
-        }()
-
-        let trackingAddRow: Row? = {
-            // Hide the section if the shipment
-            // tracking plugin is not installed
-//                guard trackingIsReachable else { return nil }
-            return Row.trackingAdd
-        }()
-
-        let rows = [trackingRow, trackingAddRow].compactMap { $0 }
-        return .init(category: .tracking, rows: rows)
-    }
 }
 
 // MARK: - Section and row types for Review Order table view
@@ -277,7 +258,7 @@ extension ReviewOrderViewModel {
 
     /// Row types for Review Order screen
     ///
-    enum Row {
+    enum Row: Equatable {
         case orderItem(item: OrderItem)
         case customerNote(text: String)
         case shippingAddress(address: Address)

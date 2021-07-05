@@ -10,7 +10,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PrintShippingLabelViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
-                <outlet property="printButton" destination="oIN-xw-L7c" id="jxj-Et-jnK"/>
+                <outlet property="reprintButton" destination="oIN-xw-L7c" id="Bax-S0-S4C"/>
                 <outlet property="tableView" destination="Lwb-OO-Vek" id="1ln-2f-zfn"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>

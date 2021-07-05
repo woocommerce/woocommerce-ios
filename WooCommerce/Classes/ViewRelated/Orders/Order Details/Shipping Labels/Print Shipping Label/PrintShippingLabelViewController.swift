@@ -6,7 +6,7 @@ import UIKit
 /// Informational links are displayed for printing instructions and paper size options.
 final class PrintShippingLabelViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
-    @IBOutlet private weak var printButton: UIButton!
+    @IBOutlet weak var reprintButton: UIButton!
 
     private let viewModel: PrintShippingLabelViewModel
     private var rows: [Row] = []
@@ -44,7 +44,7 @@ final class PrintShippingLabelViewController: UIViewController {
 
         configureNavigationBar()
         configureTableView()
-        configurePrintButton()
+        configureReprintButton()
         observeSelectedPaperSize()
     }
 }
@@ -112,10 +112,14 @@ private extension PrintShippingLabelViewController {
         }
     }
 
-    func configurePrintButton() {
-        printButton.applyPrimaryButtonStyle()
-        printButton.setTitle(Localization.printButtonTitle, for: .normal)
-        printButton.on(.touchUpInside) { [weak self] _ in
+    func configureReprintButton() {
+        guard printType == .reprint else {
+            reprintButton.isHidden = true
+            return
+        }
+        reprintButton.applyPrimaryButtonStyle()
+        reprintButton.setTitle(Localization.printButtonTitle, for: .normal)
+        reprintButton.on(.touchUpInside) { [weak self] _ in
             self?.printShippingLabel()
         }
     }
@@ -126,7 +130,7 @@ private extension PrintShippingLabelViewController {
             guard let self = self else { return }
             self.selectedPaperSize = paperSize
             self.tableView.reloadData()
-            self.printButton.isEnabled = paperSize != nil
+            self.reprintButton.isEnabled = paperSize != nil
         }.store(in: &cancellables)
     }
 }
@@ -189,23 +193,40 @@ private extension PrintShippingLabelViewController {
             configurePaperSizeOptions(cell: cell)
         case let cell as ImageAndTitleAndTextTableViewCell where row == .printingInstructions:
             configurePrintingInstructions(cell: cell)
+        case let cell as ButtonTableViewCell where row == .printButton:
+            configurePrintButtonRow(cell: cell)
+        case let cell as ButtonTableViewCell where row == .saveButton:
+            configureSaveButton(cell: cell)
         default:
             break
         }
     }
 
     func rowsToDisplay() -> [Row] {
-        let isReprint = printType == .reprint
-        let rows: [Row?] = [
-            .headerText,
-            isReprint ? nil : .headerImage,
-            isReprint ? .infoText : nil,
-            .spacerBetweenInfoTextAndPaperSizeSelector,
-            .paperSize,
-            .spacerBetweenPaperSizeSelectorAndInfoLinks,
-            .paperSizeOptions,
-            .printingInstructions
-        ]
+        var rows: [Row?]
+        switch printType {
+        case .print:
+            rows = [
+                .headerText,
+                .headerImage,
+                .paperSize,
+                .spacerBetweenPaperSizeSelectorAndInfoLinks,
+                .printButton,
+                .saveButton,
+                .paperSizeOptions,
+                .printingInstructions
+            ]
+        case .reprint:
+            rows = [
+                .headerText,
+                .infoText,
+                .spacerBetweenInfoTextAndPaperSizeSelector,
+                .paperSize,
+                .spacerBetweenPaperSizeSelectorAndInfoLinks,
+                .paperSizeOptions,
+                .printingInstructions
+            ]
+        }
         return rows.compactMap { $0 }
     }
 
@@ -226,6 +247,7 @@ private extension PrintShippingLabelViewController {
     func configureHeaderImage(cell: ImageTableViewCell) {
         cell.detailImageView.image = .celebrationImage
         cell.selectionStyle = .none
+        cell.hideSeparator()
     }
 
     func configureInfoText(cell: ImageAndTitleAndTextTableViewCell) {
@@ -279,6 +301,27 @@ private extension PrintShippingLabelViewController {
     func configureCommonStylesForInfoLinkCell(_ cell: ImageAndTitleAndTextTableViewCell) {
         cell.selectionStyle = .default
     }
+
+    func configurePrintButtonRow(cell: ButtonTableViewCell) {
+        cell.configure(style: .primary,
+                       title: Localization.printButtonTitle,
+                       topSpacing: 8,
+                       bottomSpacing: 8) {
+            self.printShippingLabel()
+        }
+        cell.hideSeparator()
+        cell.enableButton(selectedPaperSize != nil)
+    }
+
+    func configureSaveButton(cell: ButtonTableViewCell) {
+        cell.configure(style: .secondary,
+                       title: Localization.saveButtonTitle,
+                       topSpacing: 8,
+                       bottomSpacing: 8) {
+            // TODO: Implement "save for later" behavior
+        }
+        cell.hideSeparator()
+    }
 }
 
 private extension PrintShippingLabelViewController {
@@ -292,6 +335,8 @@ private extension PrintShippingLabelViewController {
                                                           comment: "Navigation bar title to print a shipping label")
         static let printButtonTitle = NSLocalizedString("Print Shipping Label",
                                                           comment: "Button title to generate a shipping label document for printing")
+        static let saveButtonTitle = NSLocalizedString("Save for Later",
+                                                          comment: "Button title to save a shipping label to print later")
         static let paperSizeSelectorTitle = NSLocalizedString("Paper Size", comment: "Title of the paper size selector row for printing a shipping label")
         static let printHeaderText = NSLocalizedString("Shipping label purchased!", comment: "Header text when printing a newly purchased shipping label")
         static let reprintHeaderText = NSLocalizedString(
@@ -316,6 +361,8 @@ private extension PrintShippingLabelViewController {
         case spacerBetweenPaperSizeSelectorAndInfoLinks
         case paperSizeOptions
         case printingInstructions
+        case printButton
+        case saveButton
 
         var type: UITableViewCell.Type {
             switch self {
@@ -331,6 +378,8 @@ private extension PrintShippingLabelViewController {
                 return TitleAndValueTableViewCell.self
             case .paperSizeOptions, .printingInstructions:
                 return ImageAndTitleAndTextTableViewCell.self
+            case .printButton, .saveButton:
+                return ButtonTableViewCell.self
             }
         }
 

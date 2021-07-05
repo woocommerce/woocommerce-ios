@@ -13,6 +13,7 @@ struct ShippingLabelPaymentMethods: View {
     init(viewModel: ShippingLabelPaymentMethodsViewModel, completion: @escaping Completion) {
         self.viewModel = viewModel
         onCompletion = completion
+        ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "payment_method_started"])
     }
 
     var body: some View {
@@ -37,6 +38,7 @@ struct ShippingLabelPaymentMethods: View {
                                           selected: selected)
                             .onTapGesture {
                                 viewModel.didSelectPaymentMethod(withID: method.paymentMethodID)
+                                ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "payment_method_selected"])
                             }
                             .background(Color(.systemBackground))
                         Divider().padding(.leading, Constants.dividerPadding)

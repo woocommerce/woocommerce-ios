@@ -16,6 +16,7 @@ final class ShippingLabelFormViewController: UIViewController {
                                                originAddress: nil,
                                                destinationAddress: order.shippingAddress)
         super.init(nibName: nil, bundle: nil)
+        ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "started"])
     }
 
     required init?(coder: NSCoder) {
@@ -280,14 +281,20 @@ private extension ShippingLabelFormViewController {
             bottomSheet.show(from: self, sourceView: cell)
         } onSwitchChange: { (switchIsOn) in
             // TODO: Handle order completion
-        } onButtonTouchUp: {
-            self.displayPurchaseProgressView()
-            self.viewModel.purchaseLabel { [weak self] result in
+        } onButtonTouchUp: { [weak self] in
+            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_initiated",
+                                                                                        "amount": self?.viewModel.selectedRate?.rate ?? 0])
+            self?.displayPurchaseProgressView()
+            self?.viewModel.purchaseLabel { [weak self] result in
                 switch result {
                 case .success:
+                    ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_succeeded",
+                                                                                                "amount": self?.viewModel.selectedRate?.rate ?? 0])
                     self?.displayPrintShippingLabelVC()
                 case .failure:
                     // TODO: Implement and display error screen for purchase failures
+                    ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_failed",
+                                                                                                "amount": self?.viewModel.selectedRate?.rate ?? 0])
                     break
                 }
                 self?.dismiss(animated: true)

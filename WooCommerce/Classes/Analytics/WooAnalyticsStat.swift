@@ -210,6 +210,10 @@ public enum WooAnalyticsStat: String {
     case shipmentTrackingMenuAction = "shipment_tracking_menu_action"
     case shippingLabelsAPIRequest = "shipping_label_api_request"
 
+    // MARK: Shipping Labels Creation Events
+    //
+    case shippingLabelPurchaseFlow = "shipping_label_purchase_flow"
+
     // MARK: Receipt Events
     //
     case receiptViewTapped                      = "receipt_view_tapped"

@@ -20,6 +20,7 @@ struct ShippingLabelCarriers: View {
          completion: @escaping Completion) {
         self.viewModel = viewModel
         onCompletion = completion
+        ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "carrier_rates_started"])
     }
 
     var body: some View {
@@ -62,6 +63,7 @@ struct ShippingLabelCarriers: View {
                 onCompletion(viewModel.getSelectedRates().selectedRate,
                              viewModel.getSelectedRates().selectedSignatureRate,
                              viewModel.getSelectedRates().selectedAdultSignatureRate)
+                ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "carrier_rates_selected"])
                 presentation.wrappedValue.dismiss()
             }, label: {
                 Text(Localization.doneButton)

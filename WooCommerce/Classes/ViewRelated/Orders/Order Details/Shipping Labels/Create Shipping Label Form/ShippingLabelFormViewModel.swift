@@ -139,6 +139,10 @@ final class ShippingLabelFormViewModel {
         // We reset the carrier and rates selected because if the address change
         // the carrier and rate change accordingly
         handleCarrierAndRatesValueChanges(selectedRate: nil, selectedSignatureRate: nil, selectedAdultSignatureRate: nil, editable: false)
+
+        if dateState == .validated {
+            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "origin_address_complete"])
+        }
     }
 
     func handleDestinationAddressValueChanges(address: ShippingLabelAddress?, validated: Bool) {
@@ -149,6 +153,10 @@ final class ShippingLabelFormViewModel {
         // We reset the carrier and rates selected because if the address change
         // the carrier and rate change accordingly
         handleCarrierAndRatesValueChanges(selectedRate: nil, selectedSignatureRate: nil, selectedAdultSignatureRate: nil, editable: false)
+
+        if dateState == .validated {
+            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "destination_address_complete"])
+        }
     }
 
     func handlePackageDetailsValueChanges(selectedPackageID: String?, totalPackageWeight: String?) {

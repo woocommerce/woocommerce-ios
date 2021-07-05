@@ -111,6 +111,17 @@ extension ReviewOrderViewController: UITableViewDelegate {
             case .customerInformation, .tracking:
                 assertionFailure("Unexpected category of type \(headerView.self)")
             }
+        case let headerView as TwoColumnSectionHeaderView:
+            switch section.category {
+            case .customerInformation:
+                headerView.leftText = viewModel.customerSectionTitle
+                headerView.rightText = nil
+            case .tracking:
+                headerView.leftText = viewModel.trackingSectionTitle
+                headerView.rightText = nil
+            case .products:
+                assertionFailure("Unexpected category of type \(headerView.self)")
+            }
         default:
             assertionFailure("Unexpected headerView type \(headerView.self)")
             return nil

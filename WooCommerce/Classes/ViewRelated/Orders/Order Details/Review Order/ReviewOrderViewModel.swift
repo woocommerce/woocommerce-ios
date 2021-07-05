@@ -81,6 +81,18 @@ extension ReviewOrderViewModel {
         order.items.count > 0 ? Localization.productsSectionTitle : Localization.productSectionTitle
     }
 
+    /// Title for Customer section
+    ///
+    var customerSectionTitle: String {
+        return Localization.customerSectionTitle
+    }
+
+    /// Title for Tracking section
+    ///
+    var trackingSectionTitle: String {
+        return Localization.trackingSectionTitle
+    }
+
     /// Sections for order table view
     ///
     var sections: [Section] {
@@ -203,5 +215,7 @@ private extension ReviewOrderViewModel {
         static let productSectionTitle = NSLocalizedString("Product", comment: "Product section title in Review Order screen if there is one product.")
         static let productsSectionTitle = NSLocalizedString("Products",
                                                             comment: "Product section title in Review Order screen if there is more than one product.")
+        static let customerSectionTitle = NSLocalizedString("Customer", comment: "Customer info section title in Review Order screen")
+        static let trackingSectionTitle = NSLocalizedString("Tracking", comment: "Tracking section title in Review Order screen")
     }
 }

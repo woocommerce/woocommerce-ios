@@ -83,7 +83,7 @@ private extension ShippingLabelCarriers {
         static let doneButton = NSLocalizedString("Done", comment: "Done navigation button in shipping label carrier and rates screen")
         static let emptyStateTitle = NSLocalizedString("No shipping rates available",
                                                        comment: "Error state title in shipping label carrier and rates screen")
-        static let emptyStateDescription = NSLocalizedString("Please double check your package dimensions and weight" +
+        static let emptyStateDescription = NSLocalizedString("Please double check your package dimensions and weight " +
                                                                 "or try using a different package in Package Details.",
                                                              comment: "Error state description in shipping label carrier and rates screen")
     }

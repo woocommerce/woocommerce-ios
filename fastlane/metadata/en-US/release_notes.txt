@@ -1,1 +1,0 @@
-Fewer taps are needed to get to attributes on a variable product – they’re listed right in the product details! We also improved how an order’s details load both visually and behind the scenes – we hope you notice the improvements!

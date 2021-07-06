@@ -1,1 +1,0 @@
-Er zijn minder tiks nodig om naar de eigenschappen van een variabel product te gaan. Ze staan gewoon bij de productgegevens! We hebben ook verbeterd hoe de gegevens van een bestelling worden geladen, zowel visueel als op de achtergrond. We hopen dat je het verschil merkt!

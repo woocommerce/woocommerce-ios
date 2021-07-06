@@ -145,9 +145,11 @@ private extension ShippingLabelSuggestedAddressViewController {
     @objc func didTapUseAddressButton() {
         switch selectedAddress {
         case .entered:
+            ServiceLocator.analytics.track(.shippingLabelAddressSuggestionsUseSelectedAddressButtonTapped, withProperties: ["type": "original"])
             onCompletion(address)
             navigationController?.popViewController(animated: true)
         case .suggested:
+            ServiceLocator.analytics.track(.shippingLabelAddressSuggestionsUseSelectedAddressButtonTapped, withProperties: ["type": "suggested"])
             onCompletion(suggestedAddress)
             navigationController?.popViewController(animated: true)
         }

@@ -299,12 +299,13 @@ private extension ShippingLabelFormViewController {
                 switch result {
                 case .success:
                     self.onLabelPurchase?(self.shouldMarkOrderComplete)
+                    self.dismiss(animated: true)
                     self.displayPrintShippingLabelVC()
                 case .failure:
                     // TODO: Implement and display error screen for purchase failures
+                    self.dismiss(animated: true)
                     break
                 }
-                self.dismiss(animated: true)
             }
         }
         cell.isOn = false
@@ -439,12 +440,19 @@ private extension ShippingLabelFormViewController {
         present(inProgressViewController, animated: true)
     }
 
+    /// Removes the Shipping Label Form from the navigation stack and displays the Print Shipping Label screen.
+    /// This prevents navigating back to the purchase form after successfully purchasing the label.
+    ///
     func displayPrintShippingLabelVC() {
         guard let purchasedShippingLabel = viewModel.purchasedShippingLabel,
               let navigationController = navigationController else {
             return
         }
 
+        if let indexOfSelf = navigationController.viewControllers.firstIndex(of: self) {
+            let viewControllersExcludingSelf = Array(navigationController.viewControllers[0..<indexOfSelf])
+            navigationController.setViewControllers(viewControllersExcludingSelf, animated: false)
+        }
         let printCoordinator = PrintShippingLabelCoordinator(shippingLabel: purchasedShippingLabel,
                                                              printType: .print,
                                                              sourceViewController: navigationController,

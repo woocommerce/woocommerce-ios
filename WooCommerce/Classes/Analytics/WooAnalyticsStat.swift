@@ -213,6 +213,7 @@ public enum WooAnalyticsStat: String {
     // MARK: Shipping Labels Creation Events
     //
     case shippingLabelPurchaseFlow = "shipping_label_purchase_flow"
+    case shippingLabelDiscountInfoButtonTapped = "shipping_label_discount_info_button_tapped"
 
     // MARK: Receipt Events
     //

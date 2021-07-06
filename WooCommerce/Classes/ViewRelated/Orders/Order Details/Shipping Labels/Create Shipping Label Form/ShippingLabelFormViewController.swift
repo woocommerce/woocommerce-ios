@@ -276,6 +276,7 @@ private extension ShippingLabelFormViewController {
 
     func configureOrderSummary(cell: ShippingLabelSummaryTableViewCell, row: Row) {
         cell.configure(state: row.cellState) {
+            ServiceLocator.analytics.track(.shippingLabelDiscountInfoButtonTapped)
             let discountInfoVC = ShippingLabelDiscountInfoViewController()
             let bottomSheet = BottomSheetViewController(childViewController: discountInfoVC)
             bottomSheet.show(from: self, sourceView: cell)

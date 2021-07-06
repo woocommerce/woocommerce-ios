@@ -105,6 +105,14 @@ final class ReviewOrderViewModel {
         self.storageManager = storageManager
     }
 
+    /// Trigger reload UI on change / reset of data
+    ///
+    func configureResultsControllers(onReload: @escaping () -> Void) {
+        configureTrackingResultsController(onReload: onReload)
+        configureShippingLabelResultsController(onReload: onReload)
+        configureAddOnGroupResultsController(onReload: onReload)
+    }
+
     /// Syncs shipment tracking data and triggers callback upon completion
     ///
     func syncTrackingsHidingAddButtonIfNecessary(onCompletion: @escaping () -> Void) {
@@ -339,5 +347,67 @@ extension ReviewOrderViewModel {
                 return LeftImageTableViewCell.self
             }
         }
+    }
+}
+
+/// Configure result controllers
+///
+private extension ReviewOrderViewModel {
+    /// Trigger reload UI on change / reset of Shipment Tracking
+    ///
+    func configureTrackingResultsController(onReload: @escaping () -> Void) {
+        trackingResultsController.onDidChangeContent = {
+            onReload()
+        }
+
+        trackingResultsController.onDidResetContent = { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.refetchAllResultsControllers()
+            onReload()
+        }
+
+        try? trackingResultsController.performFetch()
+    }
+
+    /// Trigger reload UI on change / reset of Shipping Labels
+    ///
+    func configureShippingLabelResultsController(onReload: @escaping () -> Void) {
+        shippingLabelResultsController.onDidChangeContent = {
+            onReload()
+        }
+
+        shippingLabelResultsController.onDidResetContent = { [weak self] in
+            guard let self = self else { return }
+            self.refetchAllResultsControllers()
+            onReload()
+        }
+
+        try? shippingLabelResultsController.performFetch()
+    }
+
+    /// Trigger reload UI on change / reset of Add-on Groups
+    ///
+    func configureAddOnGroupResultsController(onReload: @escaping () -> Void) {
+        addOnGroupResultsController.onDidChangeContent = {
+            onReload()
+        }
+
+        addOnGroupResultsController.onDidResetContent = { [weak self] in
+            guard let self = self else { return }
+            self.refetchAllResultsControllers()
+            onReload()
+        }
+
+        try? addOnGroupResultsController.performFetch()
+    }
+
+    /// Refetching all the results controllers is necessary after a storage reset in `onDidResetContent` callback and before reloading UI that
+    /// involves more than one results controller.
+    func refetchAllResultsControllers() {
+        try? trackingResultsController.performFetch()
+        try? shippingLabelResultsController.performFetch()
+        try? addOnGroupResultsController.performFetch()
     }
 }

@@ -32,17 +32,26 @@ final class ReviewOrderViewController: UIViewController {
 
         configureNavigation()
         configureTableView()
+        configureViewModel()
+    }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         viewModel.syncTrackingsHidingAddButtonIfNecessary { [weak self] in
             self?.tableView.reloadData()
         }
     }
-
 }
 
 // MARK: - UI Configuration
 //
 private extension ReviewOrderViewController {
+    func configureViewModel() {
+        viewModel.configureResultsControllers { [weak self] in
+            self?.tableView.reloadData()
+        }
+    }
+
     func configureNavigation() {
         title = Localization.screenTitle
     }

@@ -212,14 +212,14 @@ class ReviewOrderViewModelTests: XCTestCase {
 
     func test_tracking_section_is_not_shown_when_there_is_nonrefunded_shipping_labels() {
         // Given
-        let shippingLabel = ShippingLabel.fake().copy(orderID: orderID, refund: nil)
+        let shippingLabel = ShippingLabel.fake().copy(siteID: siteID, orderID: orderID, refund: nil)
         insertShippingLabel(shippingLabel)
         let item = OrderItem.fake().copy(productID: productID)
-        let order = Order.fake().copy(orderID: orderID, status: .processing, items: [item], shippingAddress: Address.fake())
+        let order = Order.fake().copy(siteID: siteID, orderID: orderID, status: .processing, items: [item], shippingAddress: Address.fake())
         let product = Product().copy(productID: productID, virtual: false)
 
         // When
-        let viewModel = ReviewOrderViewModel(order: order, products: [product], showAddOns: false)
+        let viewModel = ReviewOrderViewModel(order: order, products: [product], showAddOns: false, storageManager: storageManager)
         viewModel.configureResultsControllers {}
         viewModel.syncTrackingsHidingAddButtonIfNecessary {}
 
@@ -229,15 +229,15 @@ class ReviewOrderViewModelTests: XCTestCase {
 
     func test_add_tracking_is_shown_when_there_is_no_nonrefunded_shipping_labels_and_tracking_is_reachable() {
         // Given
-        let shippingLabel = ShippingLabel.fake().copy(orderID: orderID, refund: ShippingLabelRefund.fake())
+        let shippingLabel = ShippingLabel.fake().copy(siteID: siteID, orderID: orderID, refund: ShippingLabelRefund.fake())
         insertShippingLabel(shippingLabel)
         let item = OrderItem.fake().copy(productID: productID)
-        let order = Order.fake().copy(orderID: orderID, status: .processing, items: [item], shippingAddress: Address.fake())
+        let order = Order.fake().copy(siteID: siteID, orderID: orderID, status: .processing, items: [item], shippingAddress: Address.fake())
         let product = Product().copy(productID: productID, virtual: false)
         let stores = MockShipmentActionStoresManager(syncSuccessfully: true)
 
         // When
-        let viewModel = ReviewOrderViewModel(order: order, products: [product], showAddOns: false, stores: stores)
+        let viewModel = ReviewOrderViewModel(order: order, products: [product], showAddOns: false, stores: stores, storageManager: storageManager)
         viewModel.configureResultsControllers {}
         viewModel.syncTrackingsHidingAddButtonIfNecessary {}
 
@@ -253,7 +253,7 @@ class ReviewOrderViewModelTests: XCTestCase {
         XCTAssertNotNil(addTrackingRow)
     }
 
-    func test_add_tracking_is_shown_when_there_is_not_shipping_labels_and_tracking_is_reachable() {
+    func test_add_tracking_is_shown_when_there_is_no_shipping_labels_and_tracking_is_reachable() {
         // Given
         let item = OrderItem.fake().copy(productID: productID)
         let order = Order.fake().copy(orderID: orderID, status: .processing, items: [item], shippingAddress: Address.fake())
@@ -323,11 +323,11 @@ class ReviewOrderViewModelTests: XCTestCase {
         let order = Order.fake().copy(siteID: siteID, orderID: orderID, status: .processing, items: [item], shippingAddress: Address.fake())
         let product = Product().copy(productID: productID, virtual: false)
         let stores = MockShipmentActionStoresManager(syncSuccessfully: true)
-        let shipmentTracking = ShipmentTracking.fake().copy(siteID: siteID, orderID: orderID)
+        let shipmentTracking = ShipmentTracking.fake().copy(siteID: siteID, orderID: orderID, dateShipped: Date())
         insertShipmentTracking(shipmentTracking)
 
         // When
-        let viewModel = ReviewOrderViewModel(order: order, products: [product], showAddOns: false, stores: stores)
+        let viewModel = ReviewOrderViewModel(order: order, products: [product], showAddOns: false, stores: stores, storageManager: storageManager)
         viewModel.configureResultsControllers {}
         viewModel.syncTrackingsHidingAddButtonIfNecessary {}
 
@@ -348,6 +348,11 @@ private extension ReviewOrderViewModelTests {
     func insertShippingLabel(_ readOnlyLabel: ShippingLabel) {
         let storageLabel = storage.insertNewObject(ofType: StorageShippingLabel.self)
         storageLabel.update(with: readOnlyLabel)
+        if let readOnlyRefund = readOnlyLabel.refund {
+            let storageRefund = storage.insertNewObject(ofType: StorageShippingLabelRefund.self)
+            storageRefund.update(with: readOnlyRefund)
+            storageLabel.refund = storageRefund
+        }
         storage.saveIfNeeded()
     }
 

@@ -371,12 +371,7 @@ private extension ReviewOrderViewController {
         present(actionSheet, animated: true)
     }
 
-    /// Sends the provided text to the general pasteboard and triggers a success haptic. If the text param
-    /// is nil, nothing is sent to the pasteboard.
-    ///
-    /// - Parameter
-    ///   - text: string value to send to the pasteboard
-    ///   - includeTrailingNewline: If true, insert a trailing newline; defaults to true
+    /// Sends the provided text to the general pasteboard and triggers a success haptic.
     ///
     func sendToPasteboard(_ text: String?, includeTrailingNewline: Bool = true) {
         guard var text = text, text.isEmpty == false else {

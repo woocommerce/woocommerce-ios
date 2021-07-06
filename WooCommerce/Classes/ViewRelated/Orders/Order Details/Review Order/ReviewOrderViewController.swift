@@ -40,7 +40,7 @@ final class ReviewOrderViewController: UIViewController {
 //
 private extension ReviewOrderViewController {
     func configureNavigation() {
-        title = viewModel.screenTitle
+        title = Localization.screenTitle
     }
 
     func configureTableView() {
@@ -107,7 +107,8 @@ extension ReviewOrderViewController: UITableViewDelegate {
         case let headerView as PrimarySectionHeaderView:
             switch section.category {
             case .products:
-                headerView.configure(title: viewModel.productionSectionTitle)
+                let sectionTitle = viewModel.order.items.count > 1 ? Localization.productsSectionTitle : Localization.productSectionTitle
+                headerView.configure(title: sectionTitle)
             case .customerInformation, .tracking:
                 assertionFailure("Unexpected category of type \(headerView.self)")
             }
@@ -267,5 +268,14 @@ private extension ReviewOrderViewController {
     enum Constants {
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
+    }
+
+    /// Localized copies
+    ///
+    enum Localization {
+        static let screenTitle = NSLocalizedString("Review Order", comment: "Title of Review Order screen")
+        static let productSectionTitle = NSLocalizedString("Product", comment: "Product section title in Review Order screen if there is one product.")
+        static let productsSectionTitle = NSLocalizedString("Products",
+                                                            comment: "Product section title in Review Order screen if there is more than one product.")
     }
 }

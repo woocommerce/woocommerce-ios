@@ -45,7 +45,8 @@ final class OrderDetailsDataSource: NSObject {
     /// Whether the order is eligible for card present payment.
     ///
     var isEligibleForCardPresentPayment: Bool {
-        return isOrderStatusEligibleForCardPayment() &&
+        return isOrderAmountEligibleForCardPayment() &&
+            isOrderStatusEligibleForCardPayment() &&
             isOrderPaymentMethodEligibleForCardPayment() &&
             hasCardPresentEligiblePaymentGatewayAccount()
     }
@@ -1422,6 +1423,19 @@ extension OrderDetailsDataSource {
 // MARK: - Private Payments Logic
 
 private extension OrderDetailsDataSource {
+    func isOrderAmountEligibleForCardPayment() -> Bool {
+        // If the order is paid, it is not eligible.
+        guard order.datePaid == nil else {
+            return false
+        }
+
+        guard let totalAmount = currencyFormatter.convertToDecimal(from: order.total) else {
+            return false
+        }
+
+        return totalAmount.decimalValue > 0
+    }
+
     func isOrderStatusEligibleForCardPayment() -> Bool {
         (order.status == .pending || order.status == .onHold || order.status == .processing)
     }

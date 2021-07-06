@@ -282,7 +282,7 @@ private extension ReviewOrderViewController {
         cell.accessibilityHint = Localization.addTrackingAccessibilityHint
     }
 
-    ///
+    /// Setup: Shipment Tracking cells
     ///
     func setupTrackingCell(_ cell: UITableViewCell, at indexPath: IndexPath) {
         guard let cell = cell as? OrderTrackingTableViewCell else {

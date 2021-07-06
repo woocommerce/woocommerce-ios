@@ -52,6 +52,12 @@ final class ReviewOrderViewModel {
         return shippingLabelResultsController.fetchedObjects
     }
 
+    /// Order shipment tracking list
+    ///
+    var orderTracking: [ShipmentTracking] {
+        return trackingResultsController.fetchedObjects
+    }
+
     /// Site's add-on groups.
     ///
     private var addOnGroups: [AddOnGroup] {
@@ -76,6 +82,17 @@ final class ReviewOrderViewModel {
                                                        sortedBy: [dateCreatedDescriptor, shippingLabelIDDescriptor])
     }()
 
+    /// Shipment Tracking ResultsController.
+    ///
+    private lazy var trackingResultsController: ResultsController<StorageShipmentTracking> = {
+        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld",
+                                    order.siteID,
+                                    order.orderID)
+        let descriptor = NSSortDescriptor(keyPath: \StorageShipmentTracking.dateShipped, ascending: true)
+
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
     init(order: Order,
          products: [Product],
          showAddOns: Bool,
@@ -97,27 +114,6 @@ final class ReviewOrderViewModel {
             }
             onCompletion()
         }
-    }
-
-    /// Syncs shipment tracking data and returns error if any
-    ///
-    private func syncTracking(onCompletion: ((Error?) -> Void)? = nil) {
-        let orderID = order.orderID
-        let siteID = order.siteID
-        let action = ShipmentAction.synchronizeShipmentTrackingData(
-            siteID: siteID,
-            orderID: orderID) { error in
-            if let error = error {
-                DDLogError("⛔️ Error synchronizing tracking: \(error.localizedDescription)")
-                onCompletion?(error)
-                return
-            }
-
-            ServiceLocator.analytics.track(.orderTrackingLoaded, withProperties: ["id": orderID])
-
-            onCompletion?(nil)
-        }
-        stores.dispatch(action)
     }
 }
 
@@ -169,6 +165,27 @@ private extension ReviewOrderViewModel {
     var shippingMethod: String {
         return order.shippingLines.first?.methodTitle ?? String()
     }
+
+    /// Syncs shipment tracking data and returns error if any
+    ///
+    func syncTracking(onCompletion: ((Error?) -> Void)? = nil) {
+        let orderID = order.orderID
+        let siteID = order.siteID
+        let action = ShipmentAction.synchronizeShipmentTrackingData(
+            siteID: siteID,
+            orderID: orderID) { error in
+            if let error = error {
+                DDLogError("⛔️ Error synchronizing tracking: \(error.localizedDescription)")
+                onCompletion?(error)
+                return
+            }
+
+            ServiceLocator.analytics.track(.orderTrackingLoaded, withProperties: ["id": orderID])
+
+            onCompletion?(nil)
+        }
+        stores.dispatch(action)
+    }
 }
 
 // MARK: - Sections configuration
@@ -216,10 +233,16 @@ private extension ReviewOrderViewModel {
     /// Tracking section setup
     ///
     var trackingSection: Section {
-        // TODO: add order tracking
-        let trackingRow: Row? = {
-//                guard !orderTracking.isEmpty else { return nil }
-            return nil
+        let trackingRows: [Row] = {
+            // Tracking section is hidden if there are non-empty non-refunded shipping labels.
+            guard shippingLabels.nonRefunded.isEmpty else {
+                return []
+            }
+
+            guard !orderTracking.isEmpty else { return [] }
+
+            return Array(repeating: .tracking, count: orderTracking.count)
+
         }()
 
         let trackingAddRow: Row? = {
@@ -234,7 +257,7 @@ private extension ReviewOrderViewModel {
             return Row.trackingAdd
         }()
 
-        let rows = [trackingRow, trackingAddRow].compactMap { $0 }
+        let rows = (trackingRows + [trackingAddRow]).compactMap { $0 }
         return .init(category: .tracking, rows: rows)
     }
 }

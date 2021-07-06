@@ -128,8 +128,7 @@ extension ReviewOrderViewModel {
     /// Sections for order table view
     ///
     var sections: [Section] {
-        // TODO: Add tracking section
-        return [productSection, customerSection].filter { !$0.rows.isEmpty }
+        return [productSection, customerSection, trackingSection].filter { !$0.rows.isEmpty }
     }
 
     /// Filter product for an order item

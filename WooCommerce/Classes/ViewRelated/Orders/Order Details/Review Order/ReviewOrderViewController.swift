@@ -143,6 +143,8 @@ extension ReviewOrderViewController: UITableViewDelegate {
         switch row {
         case .billingDetail:
             billingInformationTapped()
+        case .trackingAdd:
+            addTrackingTapped()
         default:
             break
         }
@@ -282,6 +284,15 @@ private extension ReviewOrderViewController {
         ServiceLocator.analytics.track(.orderDetailShowBillingTapped)
         let billingInformationViewController = BillingInformationViewController(order: viewModel.order)
         navigationController?.pushViewController(billingInformationViewController, animated: true)
+    }
+
+    /// Handle add tracking
+    ///
+    func addTrackingTapped() {
+        let addTrackingViewModel = AddTrackingViewModel(order: viewModel.order)
+        let addTracking = ManualTrackingViewController(viewModel: addTrackingViewModel)
+        let navController = WooNavigationController(rootViewController: addTracking)
+        present(navController, animated: true, completion: nil)
     }
 }
 

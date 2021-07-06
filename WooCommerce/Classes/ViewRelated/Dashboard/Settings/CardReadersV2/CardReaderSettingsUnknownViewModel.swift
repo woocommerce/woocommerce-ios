@@ -8,7 +8,6 @@ enum CardReaderSettingsUnknownViewModelDiscoveryState {
     case foundReader
     case connectingToReader
     case restartingSearch
-    case connected
 }
 
 final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewModel {
@@ -130,14 +129,12 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
         let action = CardPresentPaymentAction.connect(reader: foundReader) { [weak self] result in
             switch result {
             case .success(let reader):
-                self?.discoveryState = .connected
                 self?.knownReadersProvider?.rememberCardReader(cardReaderID: reader.id)
                 // If the reader does not have a battery, or the battery level is unknown, it will be nil
                 let properties = reader.batteryLevel
                     .map { ["battery_level": $0] }
                 ServiceLocator.analytics.track(.cardReaderConnectionSuccess, withProperties: properties)
             case .failure(let error):
-                self?.discoveryState = .failed(error)
                 ServiceLocator.analytics.track(.cardReaderConnectionFailed, withError: error)
             }
         }

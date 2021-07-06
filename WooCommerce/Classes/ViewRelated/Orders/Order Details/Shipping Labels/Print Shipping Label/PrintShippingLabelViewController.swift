@@ -317,8 +317,8 @@ private extension PrintShippingLabelViewController {
     func configurePrintButtonRow(cell: ButtonTableViewCell) {
         cell.configure(style: .primary,
                        title: Localization.printButtonTitle,
-                       topSpacing: 8,
-                       bottomSpacing: 8) {
+                       topSpacing: Constants.buttonVerticalSpacing,
+                       bottomSpacing: Constants.buttonVerticalSpacing) {
             self.printShippingLabel()
         }
         cell.hideSeparator()
@@ -328,8 +328,8 @@ private extension PrintShippingLabelViewController {
     func configureSaveButton(cell: ButtonTableViewCell) {
         cell.configure(style: .secondary,
                        title: Localization.saveButtonTitle,
-                       topSpacing: 8,
-                       bottomSpacing: 8) {
+                       topSpacing: Constants.buttonVerticalSpacing,
+                       bottomSpacing: Constants.buttonVerticalSpacing) {
             self.saveLabelForLater()
         }
         cell.hideSeparator()
@@ -340,6 +340,7 @@ private extension PrintShippingLabelViewController {
     enum Constants {
         static let verticalSpacingBetweenInfoTextAndPaperSizeSelector = CGFloat(8)
         static let verticalSpacingBetweenPaperSizeSelectorAndInfoLinks = CGFloat(8)
+        static let buttonVerticalSpacing = CGFloat(8)
     }
 
     enum Localization {

@@ -29,6 +29,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
                 }
             }
         } contactCustomerPressed: { [weak self] in
+            ServiceLocator.analytics.track(.shippingLabelEditAddressContactCustomerButtonTapped)
             if PhoneHelper.callPhoneNumber(phone: self?.viewModel.address?.phone) == false {
                 self?.displayPhoneNumberErrorNotice()
             }
@@ -186,6 +187,7 @@ private extension ShippingLabelAddressFormViewController {
 private extension ShippingLabelAddressFormViewController {
 
     @objc func doneButtonTapped() {
+        ServiceLocator.analytics.track(.shippingLabelEditAddressDoneButtonTapped)
         viewModel.validateAddress(onlyLocally: false) { [weak self] (result) in
             guard let self = self else { return }
             switch result {
@@ -199,6 +201,7 @@ private extension ShippingLabelAddressFormViewController {
     }
 
     @objc func confirmButtonTapped() {
+        ServiceLocator.analytics.track(.shippingLabelEditAddressUseAddressAsIsButtonTapped)
         viewModel.validateAddress(onlyLocally: true) { [weak self] (result) in
             guard let self = self else { return }
             switch result {

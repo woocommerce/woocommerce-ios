@@ -27,6 +27,10 @@ final class ReviewOrderViewController: UIViewController {
     ///
     private let notices = OrderDetailsNotices()
 
+    /// Footer of the table view
+    ///
+    private lazy var footerView: UIView = configureTableFooterView()
+
     init(viewModel: ReviewOrderViewModel) {
         self.viewModel = viewModel
         super.init(nibName: Self.nibName, bundle: nil)
@@ -49,6 +53,11 @@ final class ReviewOrderViewController: UIViewController {
         viewModel.syncTrackingsHidingAddButtonIfNecessary { [weak self] in
             self?.tableView.reloadData()
         }
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updateTableFooterViewIfNeeded()
     }
 }
 
@@ -79,8 +88,64 @@ private extension ReviewOrderViewController {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
+        tableView.tableFooterView = footerView
+
+        // workaround to fix extra space on top
+        tableView.tableHeaderView = {
+            let view = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: CGFloat.leastNormalMagnitude))
+            view.backgroundColor = .listBackground
+            return view
+        }()
+
         tableView.dataSource = self
         tableView.delegate = self
+    }
+
+    func updateTableFooterViewIfNeeded() {
+        guard let footerView = tableView.tableFooterView else {
+            return
+        }
+        let width = tableView.bounds.size.width
+        let size = footerView.systemLayoutSizeFitting(CGSize(width: width, height: UIView.layoutFittingCompressedSize.height))
+        if footerView.frame.size.height != size.height {
+            footerView.frame.size.height = size.height
+            tableView.tableFooterView = footerView
+        }
+    }
+
+    func configureTableFooterView() -> UIView {
+        let containerView = UIView(frame: .zero)
+        containerView.backgroundColor = .listBackground
+
+        let emailLabel = UILabel(frame: .zero)
+        emailLabel.text = Localization.emailMessage
+        emailLabel.applySecondaryBodyStyle()
+        emailLabel.numberOfLines = 2
+        emailLabel.lineBreakMode = .byWordWrapping
+        emailLabel.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(emailLabel)
+
+        NSLayoutConstraint.activate([
+            emailLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
+            emailLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 24),
+            containerView.trailingAnchor.constraint(equalTo: emailLabel.trailingAnchor, constant: 16)
+        ])
+
+        let actionButton = UIButton(frame: .zero)
+        actionButton.applyPrimaryButtonStyle()
+        actionButton.setTitle(Localization.markOrderCompleteTitle, for: .normal)
+        actionButton.addTarget(self, action: #selector(markOrderComplete), for: .touchUpInside)
+        actionButton.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(actionButton)
+
+        NSLayoutConstraint.activate([
+            actionButton.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 16),
+            actionButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
+            containerView.safeBottomAnchor.constraint(equalTo: actionButton.bottomAnchor, constant: 24),
+            containerView.trailingAnchor.constraint(equalTo: actionButton.trailingAnchor, constant: 16)
+        ])
+
+        return containerView
     }
 }
 
@@ -465,6 +530,11 @@ private extension ReviewOrderViewController {
         static let notShippedYetTitle = NSLocalizedString("Not shipped yet",
                                                           comment: "Order details > tracking. " +
                           " This is where the shipping date would normally display.")
+        static let emailMessage = NSLocalizedString(
+            "The customer will receive an email once order is completed",
+            comment: "Message at the bottom of Review Order screen to inform of emailing the customer upon completing order"
+        )
+        static let markOrderCompleteTitle = NSLocalizedString("Mark Order Complete", comment: "Action button on Review Order screen")
     }
 
     /// Localized copies for Shipment Tracking action

@@ -9,6 +9,18 @@ final class ShippingLabelFormViewController: UIViewController {
 
     private let viewModel: ShippingLabelFormViewModel
 
+    /// Can be set to true to mark the order as complete when the label is purchased
+    ///
+    private var shouldMarkOrderComplete = false
+
+    /// Assign this closure to be notified after a shipping label is successfully purchased
+    ///
+    var onLabelPurchase: ((_ isOrderComplete: Bool) -> Void)?
+
+    /// Assign this closure to be notified after a shipping label is saved for later
+    ///
+    var onLabelSave: (() -> Void)?
+
     /// Init
     ///
     init(order: Order) {
@@ -279,18 +291,20 @@ private extension ShippingLabelFormViewController {
             let bottomSheet = BottomSheetViewController(childViewController: discountInfoVC)
             bottomSheet.show(from: self, sourceView: cell)
         } onSwitchChange: { (switchIsOn) in
-            // TODO: Handle order completion
+            self.shouldMarkOrderComplete = switchIsOn
         } onButtonTouchUp: {
             self.displayPurchaseProgressView()
             self.viewModel.purchaseLabel { [weak self] result in
+                guard let self = self else { return }
                 switch result {
                 case .success:
-                    self?.displayPrintShippingLabelVC()
+                    self.onLabelPurchase?(self.shouldMarkOrderComplete)
+                    self.displayPrintShippingLabelVC()
                 case .failure:
                     // TODO: Implement and display error screen for purchase failures
                     break
                 }
-                self?.dismiss(animated: true)
+                self.dismiss(animated: true)
             }
         }
         cell.isOn = false
@@ -431,10 +445,10 @@ private extension ShippingLabelFormViewController {
             return
         }
 
-        // TODO: Customize the reprint shipping label VC
         let printCoordinator = PrintShippingLabelCoordinator(shippingLabel: purchasedShippingLabel,
                                                              printType: .print,
-                                                             sourceViewController: navigationController)
+                                                             sourceViewController: navigationController,
+                                                             onCompletion: onLabelSave)
         printCoordinator.showPrintUI()
     }
 }

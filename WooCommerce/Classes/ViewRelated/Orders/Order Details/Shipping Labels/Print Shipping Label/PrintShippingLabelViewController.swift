@@ -62,6 +62,8 @@ extension PrintShippingLabelViewController {
         case presentPaperSizeOptions
         /// Called when the printing instructions row is selected.
         case presentPrintingInstructions
+        /// Called when the "Save for Later" button is selected.
+        case saveLabelForLater
     }
 }
 
@@ -88,6 +90,10 @@ private extension PrintShippingLabelViewController {
 
     func presentPrintingInstructions() {
         onAction?(.presentPrintingInstructions)
+    }
+
+    func saveLabelForLater() {
+        onAction?(.saveLabelForLater)
     }
 }
 
@@ -318,7 +324,7 @@ private extension PrintShippingLabelViewController {
                        title: Localization.saveButtonTitle,
                        topSpacing: 8,
                        bottomSpacing: 8) {
-            // TODO: Implement "save for later" behavior
+            self.saveLabelForLater()
         }
         cell.hideSeparator()
     }

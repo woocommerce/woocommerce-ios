@@ -501,6 +501,15 @@ private extension OrderDetailsViewController {
             coordinator.showPrintUI()
         case .createShippingLabel:
             let shippingLabelFormVC = ShippingLabelFormViewController(order: viewModel.order)
+            shippingLabelFormVC.onLabelPurchase = { [weak self] isOrderComplete in
+                if isOrderComplete {
+                    _ = self?.viewModel.markCompleted()
+                }
+            }
+            shippingLabelFormVC.onLabelSave = { [weak self] in
+                guard let self = self else { return }
+                self.navigationController?.popToViewController(self, animated: true)
+            }
             navigationController?.show(shippingLabelFormVC, sender: self)
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)

@@ -8,6 +8,7 @@ final class PrintShippingLabelCoordinator {
     private let stores: StoresManager
     private let analytics: Analytics
     private let printType: PrintType
+    private let onCompletion: (() -> Void)?
 
     /// - Parameter shippingLabel: The shipping label to print.
     /// - Parameter printType: Whether the label is being printed for the first time or reprinted.
@@ -18,12 +19,14 @@ final class PrintShippingLabelCoordinator {
          printType: PrintType,
          sourceViewController: UIViewController,
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         onCompletion: (() -> Void)? = nil) {
         self.shippingLabel = shippingLabel
         self.printType = printType
         self.sourceViewController = sourceViewController
         self.stores = stores
         self.analytics = analytics
+        self.onCompletion = onCompletion
     }
 
     /// Shows the main screen for printing a shipping label.
@@ -44,6 +47,8 @@ final class PrintShippingLabelCoordinator {
                 self.presentPaperSizeOptions()
             case .presentPrintingInstructions:
                 self.presentPrintingInstructions()
+            case .saveLabelForLater:
+                self.saveLabelForLater()
             }
         }
 
@@ -113,6 +118,10 @@ private extension PrintShippingLabelCoordinator {
         let printingInstructionsViewController = ShippingLabelPrintingInstructionsViewController()
         let navigationController = WooNavigationController(rootViewController: printingInstructionsViewController)
         sourceViewController.present(navigationController, animated: true, completion: nil)
+    }
+
+    func saveLabelForLater() {
+        onCompletion?()
     }
 }
 

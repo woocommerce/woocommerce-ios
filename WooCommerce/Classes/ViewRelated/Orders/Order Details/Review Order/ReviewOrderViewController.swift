@@ -32,6 +32,10 @@ final class ReviewOrderViewController: UIViewController {
 
         configureNavigation()
         configureTableView()
+
+        viewModel.syncTrackingsHidingAddButtonIfNecessary { [weak self] in
+            self?.tableView.reloadData()
+        }
     }
 
 }
@@ -162,8 +166,10 @@ private extension ReviewOrderViewController {
             setupShippingMethodCell(cell, method: method)
         case .billingDetail:
             setupBillingDetail(cell)
-        default:
-            // TODO: setup
+        case .trackingAdd:
+            setupTrackingAddCell(cell)
+        case .tracking:
+            // TODO: UPDATE!!!
             break
         }
     }
@@ -237,6 +243,25 @@ private extension ReviewOrderViewController {
         cell.accessibilityLabel = Localization.showBillingAccessibilityLabel
         cell.accessibilityHint = Localization.showBillingAccessibilityHint
     }
+
+    /// Setup: Add Tracking Cell
+    ///
+    func setupTrackingAddCell(_ cell: UITableViewCell) {
+        guard let cell = cell as? LeftImageTableViewCell else {
+            fatalError()
+        }
+
+        let cellTextContent = Localization.addTrackingTitle
+        cell.leftImage = .addOutlineImage
+        cell.imageView?.tintColor = .accent
+        cell.labelText = cellTextContent
+
+        cell.isAccessibilityElement = true
+
+        cell.accessibilityLabel = cellTextContent
+        cell.accessibilityTraits = .button
+        cell.accessibilityHint = Localization.addTrackingAccessibilityHint
+    }
 }
 
 // MARK: - Actions
@@ -296,5 +321,10 @@ private extension ReviewOrderViewController {
                     "Show the billing details for this order.",
                     comment: "VoiceOver accessibility hint, informing the user that the button can be used to view billing information."
                 )
+        static let addTrackingTitle = NSLocalizedString("Add Tracking", comment: "Add Tracking row label")
+        static let addTrackingAccessibilityHint = NSLocalizedString(
+            "Adds tracking to an order.",
+            comment: "VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period."
+        )
     }
 }

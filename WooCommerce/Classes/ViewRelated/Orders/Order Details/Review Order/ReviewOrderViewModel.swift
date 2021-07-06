@@ -42,6 +42,10 @@ final class ReviewOrderViewModel {
     ///
     private let showAddOns: Bool
 
+    /// Indicates if we consider the shipment tracking plugin as reachable
+    ///
+    private var trackingIsReachable: Bool = false
+
     /// Site's add-on groups.
     ///
     private var addOnGroups: [AddOnGroup] {
@@ -65,6 +69,38 @@ final class ReviewOrderViewModel {
         self.showAddOns = showAddOns
         self.stores = stores
         self.storageManager = storageManager
+    }
+
+    /// Syncs shipment tracking data and triggers callback upon completion
+    ///
+    func syncTrackingsHidingAddButtonIfNecessary(onCompletion: @escaping () -> Void) {
+        syncTracking { [weak self] error in
+            if error == nil {
+                self?.trackingIsReachable = true
+            }
+            onCompletion()
+        }
+    }
+
+    /// Syncs shipment tracking data and returns error if any
+    ///
+    private func syncTracking(onCompletion: ((Error?) -> Void)? = nil) {
+        let orderID = order.orderID
+        let siteID = order.siteID
+        let action = ShipmentAction.synchronizeShipmentTrackingData(
+            siteID: siteID,
+            orderID: orderID) { error in
+            if let error = error {
+                DDLogError("⛔️ Error synchronizing tracking: \(error.localizedDescription)")
+                onCompletion?(error)
+                return
+            }
+
+            ServiceLocator.analytics.track(.orderTrackingLoaded, withProperties: ["id": orderID])
+
+            onCompletion?(nil)
+        }
+        stores.dispatch(action)
     }
 }
 
@@ -159,6 +195,26 @@ private extension ReviewOrderViewModel {
         let billingRow: Row = .billingDetail
         let rows = [noteRow, addressRow, shippingMethodRow, billingRow].compactMap { $0 }
         return .init(category: .customerInformation, rows: rows)
+    }
+
+    /// Tracking section setup
+    ///
+    var trackingSection: Section {
+        // TODO: add order tracking
+        let trackingRow: Row? = {
+//                guard !orderTracking.isEmpty else { return nil }
+            return nil
+        }()
+
+        let trackingAddRow: Row? = {
+            // Hide the section if the shipment
+            // tracking plugin is not installed
+            guard trackingIsReachable else { return nil }
+            return Row.trackingAdd
+        }()
+
+        let rows = [trackingRow, trackingAddRow].compactMap { $0 }
+        return .init(category: .tracking, rows: rows)
     }
 }
 

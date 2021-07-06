@@ -2,6 +2,7 @@ import Yosemite
 @testable import WooCommerce
 
 /// Allows mocking for `CardPresentPaymentAction`.
+/// TODO - remove references to `knownReaders` when the `cardPresentKnownReader` feature is complete
 ///
 final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
     private var knownReaders: [CardReader]

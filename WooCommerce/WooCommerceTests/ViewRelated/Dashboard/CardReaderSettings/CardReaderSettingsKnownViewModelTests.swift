@@ -9,11 +9,10 @@ private struct TestConstants {
 final class CardReaderSettingsKnownViewModelTests: XCTestCase {
 
     func test_should_show_returns_false_if_no_known_readers() {
+        let mockKnownReadersProvider = MockKnownReadersProvider()
 
-        // TODO - we need to pass in a known readers provider LOL
-
-        let mockStoresManager = MockKnownReadersStoresManager(
-            knownReaderIDs: [],
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            knownReaders: [], // TODO - Remove when cardPresentKnownReaders feature is complete
             connectedReaders: [],
             sessionManager: SessionManager.testingInstance
         )
@@ -23,17 +22,16 @@ final class CardReaderSettingsKnownViewModelTests: XCTestCase {
         let _ = CardReaderSettingsKnownViewModel(didChangeShouldShow: { shouldShow in
             XCTAssertTrue(shouldShow == .isFalse)
             expectation.fulfill()
-        } )
+        }, knownReadersProvider: mockKnownReadersProvider)
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     func test_should_show_returns_true_if_known_but_no_connected_readers() {
+        let mockKnownReadersProvider = MockKnownReadersProvider(knownReaders: [TestConstants.mockReaderID])
 
-        // TODO - we need to pass in a known readers provider LOL
-
-        let mockStoresManager = MockKnownReadersStoresManager(
-            knownReaderIDs: [TestConstants.mockReaderID],
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            knownReaders: [],  // TODO - Remove when cardPresentKnownReaders feature is complete
             connectedReaders: [],
             sessionManager: SessionManager.testingInstance
         )
@@ -43,17 +41,27 @@ final class CardReaderSettingsKnownViewModelTests: XCTestCase {
         let _ = CardReaderSettingsKnownViewModel(didChangeShouldShow: { shouldShow in
             XCTAssertTrue(shouldShow == .isTrue)
             expectation.fulfill()
-        } )
+        }, knownReadersProvider: mockKnownReadersProvider)
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)    }
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 
     func test_should_show_returns_false_if_reader_connected() {
-    }
+        let mockKnownReadersProvider = MockKnownReadersProvider()
 
-    func test_dispatches_connect_on_discovering_known_reader() {
-    }
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            knownReaders: [],  // TODO - Remove when cardPresentKnownReaders feature is complete
+            connectedReaders: [MockCardReader.bbposChipper2XBT()],
+            sessionManager: SessionManager.testingInstance
+        )
+        ServiceLocator.setStores(mockStoresManager)
 
-    func test_advances_to_found_unknown_reader_on_discovering_unknown_reader() {
+        let expectation = self.expectation(description: #function)
+        let _ = CardReaderSettingsKnownViewModel(didChangeShouldShow: { shouldShow in
+            XCTAssertTrue(shouldShow == .isFalse)
+            expectation.fulfill()
+        }, knownReadersProvider: mockKnownReadersProvider)
 
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 }

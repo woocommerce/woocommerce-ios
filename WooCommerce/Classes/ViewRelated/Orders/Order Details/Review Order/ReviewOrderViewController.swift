@@ -115,10 +115,10 @@ extension ReviewOrderViewController: UITableViewDelegate {
         case let headerView as TwoColumnSectionHeaderView:
             switch section.category {
             case .customerInformation:
-                headerView.leftText = viewModel.customerSectionTitle
+                headerView.leftText = Localization.customerSectionTitle
                 headerView.rightText = nil
             case .tracking:
-                headerView.leftText = viewModel.trackingSectionTitle
+                headerView.leftText = Localization.trackingSectionTitle
                 headerView.rightText = nil
             case .products:
                 assertionFailure("Unexpected category of type \(headerView.self)")
@@ -190,7 +190,7 @@ private extension ReviewOrderViewController {
             fatalError("⛔ Incorrect cell type for Customer Note cell")
         }
 
-        cell.headline = viewModel.customerNoteTitle
+        cell.headline = Localization.customerNoteTitle
         let localizedBody = String.localizedStringWithFormat(
             NSLocalizedString("“%@”",
                               comment: "Customer note, wrapped in quotes"),
@@ -205,9 +205,9 @@ private extension ReviewOrderViewController {
         guard let cell = cell as? CustomerInfoTableViewCell else {
             fatalError("⛔ Incorrect cell type for Address cell")
         }
-        cell.title = viewModel.shippingAddressTitle
+        cell.title = Localization.shippingAddressTitle
         cell.name = address?.fullNameWithCompany
-        cell.address = address?.formattedPostalAddress ?? viewModel.noAddressCellTitle
+        cell.address = address?.formattedPostalAddress ?? Localization.noAddressCellTitle
     }
 
     /// Setup: Shipping Method cell
@@ -217,7 +217,7 @@ private extension ReviewOrderViewController {
             fatalError("⛔ Incorrect cell type for Shipping Method cell")
         }
 
-        cell.headline = viewModel.shippingMethodTitle
+        cell.headline = Localization.shippingMethodTitle
         cell.body = method?.strippedHTML
         cell.selectionStyle = .none
     }
@@ -228,14 +228,14 @@ private extension ReviewOrderViewController {
         guard let cell = cell as? WooBasicTableViewCell else {
             fatalError("⛔ Incorrect cell type for Billing Detail cell")
         }
-        cell.bodyLabel?.text = viewModel.showBillingTitle
+        cell.bodyLabel?.text = Localization.showBillingTitle
         cell.applyPlainTextStyle()
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
 
         cell.accessibilityTraits = .button
-        cell.accessibilityLabel = viewModel.showBillingAccessibilityLabel
-        cell.accessibilityHint = viewModel.showBillingAccessibilityHint
+        cell.accessibilityLabel = Localization.showBillingAccessibilityLabel
+        cell.accessibilityHint = Localization.showBillingAccessibilityHint
     }
 }
 
@@ -277,5 +277,24 @@ private extension ReviewOrderViewController {
         static let productSectionTitle = NSLocalizedString("Product", comment: "Product section title in Review Order screen if there is one product.")
         static let productsSectionTitle = NSLocalizedString("Products",
                                                             comment: "Product section title in Review Order screen if there is more than one product.")
+        static let customerSectionTitle = NSLocalizedString("Customer", comment: "Customer info section title in Review Order screen")
+                static let trackingSectionTitle = NSLocalizedString("Tracking", comment: "Tracking section title in Review Order screen")
+                static let customerNoteTitle = NSLocalizedString("Customer Provided Note", comment: "Customer note row title")
+                static let shippingAddressTitle = NSLocalizedString("Shipping Address", comment: "Shipping Address title for customer info section")
+                static let noAddressCellTitle = NSLocalizedString(
+                    "No address specified.",
+                    comment: "Order details > customer info > shipping details. This is where the address would normally display."
+                )
+                static let shippingMethodTitle = NSLocalizedString("Shipping Method", comment: "Shipping method title for customer info section")
+                static let showBillingTitle = NSLocalizedString("View Billing Information",
+                                                                comment: "Button on bottom of Customer's information to show the billing details")
+                static let showBillingAccessibilityLabel = NSLocalizedString(
+                    "View Billing Information",
+                    comment: "Accessibility label for the 'View Billing Information' button"
+                )
+                static let showBillingAccessibilityHint = NSLocalizedString(
+                    "Show the billing details for this order.",
+                    comment: "VoiceOver accessibility hint, informing the user that the button can be used to view billing information."
+                )
     }
 }

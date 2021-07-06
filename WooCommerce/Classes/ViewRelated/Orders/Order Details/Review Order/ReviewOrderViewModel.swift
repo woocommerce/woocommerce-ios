@@ -72,60 +72,6 @@ final class ReviewOrderViewModel {
 //
 extension ReviewOrderViewModel {
 
-    /// Title for Customer section
-    ///
-    var customerSectionTitle: String {
-        Localization.customerSectionTitle
-    }
-
-    /// Title for Tracking section
-    ///
-    var trackingSectionTitle: String {
-        Localization.trackingSectionTitle
-    }
-
-    /// Title for Customer Note cell
-    ///
-    var customerNoteTitle: String {
-        Localization.customerNoteTitle
-    }
-
-    /// Title for Shipping Address cell
-    ///
-    var shippingAddressTitle: String {
-        Localization.shippingAddressTitle
-    }
-
-    /// Title for Shipping Address if no address found
-    ///
-    var noAddressCellTitle: String {
-        Localization.noAddressCellTitle
-    }
-
-    /// Title for Shipping Method cell
-    ///
-    var shippingMethodTitle: String {
-        Localization.shippingMethodTitle
-    }
-
-    /// Title for Show Billing cell
-    ///
-    var showBillingTitle: String {
-        Localization.showBillingTitle
-    }
-
-    /// Accessibility Label for Show Billing title
-    ///
-    var showBillingAccessibilityLabel: String {
-        Localization.showBillingAccessibilityLabel
-    }
-
-    /// Accessibility Hint for Show Billing title
-    ///
-    var showBillingAccessibilityHint: String {
-        Localization.showBillingAccessibilityHint
-    }
-
     /// Sections for order table view
     ///
     var sections: [Section] {

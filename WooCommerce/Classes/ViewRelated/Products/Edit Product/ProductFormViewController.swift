@@ -604,7 +604,8 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func saveProduct(status: ProductStatus? = nil) {
         let productStatus = status ?? product.status
-        showSavingProgress(for: productStatus)
+        let messageType = viewModel.saveMessageType(for: productStatus)
+        showSavingProgress(messageType)
 
         saveImagesAndProductRemotely(status: status)
     }

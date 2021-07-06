@@ -28,8 +28,8 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
             didUpdate?()
         }
     }
-    var foundReaderSerialNumber: String? {
-        foundReader?.serial
+    var foundReaderID: String? {
+        foundReader?.id
     }
 
     init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?, knownReadersProvider: CardReaderSettingsKnownReadersProvider? = nil) {
@@ -129,7 +129,7 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
         let action = CardPresentPaymentAction.connect(reader: foundReader) { [weak self] result in
             switch result {
             case .success(let reader):
-                self?.knownReadersProvider?.rememberCardReader(cardReaderID: reader.serial)
+                self?.knownReadersProvider?.rememberCardReader(cardReaderID: reader.id)
                 // If the reader does not have a battery, or the battery level is unknown, it will be nil
                 let properties = reader.batteryLevel
                     .map { ["battery_level": $0] }

@@ -72,17 +72,17 @@ private extension CardReaderSettingsUnknownViewController {
         }
 
         /// Show the new modal, if any
-        switch viewModel.discoveryState {
+        switch viewModel.viewModelState {
         case .searching:
             showSearchingModal()
         case .connectingToReader:
             showConnectingModal()
         case .foundReader:
             showFoundReaderModal()
-        case .failed(let error):
+        case .searchFailure(let error):
             showDiscoveryErrorModal(error: error)
-        case .restartingSearch:
-            showSearchingModal()
+        case .connectionFailure(let error):
+            showDiscoveryErrorModal(error: error)
         default:
             dismissAnyModal()
         }

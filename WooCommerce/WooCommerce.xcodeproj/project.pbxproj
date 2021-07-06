@@ -461,6 +461,9 @@
 		311D21E8264AEDB900102316 /* CardPresentModalScanningForReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311D21E7264AEDB900102316 /* CardPresentModalScanningForReader.swift */; };
 		311D21ED264AF0E700102316 /* CardReaderSettingsAlerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311D21EC264AF0E700102316 /* CardReaderSettingsAlerts.swift */; };
 		31316F9C25CB20FD00D9F129 /* OrderStatusListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31316F9B25CB20FD00D9F129 /* OrderStatusListViewModel.swift */; };
+		313F5FC12693B52C00C20653 /* CardReaderSettingsKnownViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 313F5FC02693B52B00C20653 /* CardReaderSettingsKnownViewModel.swift */; };
+		313F5FC32693CBAE00C20653 /* CardReaderSettingsKnownViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 313F5FC22693CBAE00C20653 /* CardReaderSettingsKnownViewModelTests.swift */; };
+		313F5FC52693CEF500C20653 /* MockKnownReadersStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 313F5FC42693CEF500C20653 /* MockKnownReadersStoresManager.swift */; };
 		314265AC26459F7300500598 /* CardReaderSettingsUnknownViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314265AB26459F7300500598 /* CardReaderSettingsUnknownViewController.swift */; };
 		314265B12645A07800500598 /* CardReaderSettingsConnectedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314265B02645A07800500598 /* CardReaderSettingsConnectedViewController.swift */; };
 		3142663F2645E2AB00500598 /* CardReaderSettingsViewModelPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3142663E2645E2AB00500598 /* CardReaderSettingsViewModelPresenter.swift */; };
@@ -1755,6 +1758,9 @@
 		311D21E7264AEDB900102316 /* CardPresentModalScanningForReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalScanningForReader.swift; sourceTree = "<group>"; };
 		311D21EC264AF0E700102316 /* CardReaderSettingsAlerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsAlerts.swift; sourceTree = "<group>"; };
 		31316F9B25CB20FD00D9F129 /* OrderStatusListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusListViewModel.swift; sourceTree = "<group>"; };
+		313F5FC02693B52B00C20653 /* CardReaderSettingsKnownViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsKnownViewModel.swift; sourceTree = "<group>"; };
+		313F5FC22693CBAE00C20653 /* CardReaderSettingsKnownViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsKnownViewModelTests.swift; sourceTree = "<group>"; };
+		313F5FC42693CEF500C20653 /* MockKnownReadersStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockKnownReadersStoresManager.swift; sourceTree = "<group>"; };
 		314265AB26459F7300500598 /* CardReaderSettingsUnknownViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsUnknownViewController.swift; sourceTree = "<group>"; };
 		314265B02645A07800500598 /* CardReaderSettingsConnectedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsConnectedViewController.swift; sourceTree = "<group>"; };
 		3142663E2645E2AB00500598 /* CardReaderSettingsViewModelPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsViewModelPresenter.swift; sourceTree = "<group>"; };
@@ -3717,6 +3723,7 @@
 				3142663E2645E2AB00500598 /* CardReaderSettingsViewModelPresenter.swift */,
 				314DC4BC268D158F00444C9E /* CardReaderSettingsKnownReadersProvider.swift */,
 				314DC4BE268D183600444C9E /* CardReaderSettingsKnownReadersStoredList.swift */,
+				313F5FC02693B52B00C20653 /* CardReaderSettingsKnownViewModel.swift */,
 			);
 			path = CardReadersV2;
 			sourceTree = "<group>";
@@ -3727,6 +3734,7 @@
 				3178C1FC26409360000D771A /* CardReaderSettingsConnectedViewModelTests.swift */,
 				31F21B01263C8E150035B50A /* CardReaderSettingsUnknownViewModelTests.swift */,
 				314DC4C0268D28B100444C9E /* CardReaderSettingsKnownReadersStoredListTests.swift */,
+				313F5FC22693CBAE00C20653 /* CardReaderSettingsKnownViewModelTests.swift */,
 			);
 			path = CardReaderSettings;
 			sourceTree = "<group>";
@@ -4357,6 +4365,7 @@
 				B509FED421C052D1000076A9 /* MockSupportManager.swift */,
 				B555531221B57E8800449E71 /* MockUserNotificationsCenterAdapter.swift */,
 				02404EE32315151400FF1170 /* MockStatsVersionStoresManager.swift */,
+				313F5FC42693CEF500C20653 /* MockKnownReadersStoresManager.swift */,
 				027B8BBE23FE0F850040944E /* MockMediaStoresManager.swift */,
 				02A275BF23FE58F6005C560F /* MockImageCache.swift */,
 				02A275C123FE590A005C560F /* MockKingfisherImageDownloader.swift */,
@@ -6727,6 +6736,7 @@
 				4512055224655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.swift in Sources */,
 				57448D28242E775000A56A74 /* EmptyStateViewController.swift in Sources */,
 				CE21B3D720FE669A00A259D5 /* BasicTableViewCell.swift in Sources */,
+				313F5FC12693B52C00C20653 /* CardReaderSettingsKnownViewModel.swift in Sources */,
 				451A04EA2386D28300E368C9 /* ProductImagesHeaderViewModel.swift in Sources */,
 				02307924258731B2008EADEE /* ReprintShippingLabelViewModel.swift in Sources */,
 				D843D5D92248EE91001BFA55 /* ManualTrackingViewModel.swift in Sources */,
@@ -7376,6 +7386,7 @@
 				746FC23D2200A62B00C3096C /* DateWooTests.swift in Sources */,
 				31F21B5A263CB41A0035B50A /* MockCardPresentPaymentsStoresManager.swift in Sources */,
 				02F5F80E246102240000613A /* FilterProductListViewModel+numberOfActiveFiltersTests.swift in Sources */,
+				313F5FC32693CBAE00C20653 /* CardReaderSettingsKnownViewModelTests.swift in Sources */,
 				021AEF9C2407B07300029D28 /* ProductImageStatus+HelpersTests.swift in Sources */,
 				024A543622BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift in Sources */,
 				B541B2132189E7FD008FE7C1 /* ScannerWooTests.swift in Sources */,
@@ -7506,6 +7517,7 @@
 				020B2F9123BDD71500BD79AD /* IntegerInputFormatterTests.swift in Sources */,
 				D816DDBC22265DA300903E59 /* OrderTrackingTableViewCellTests.swift in Sources */,
 				573D0ACF2458665C004DE614 /* OrderSearchStarterViewModelTests.swift in Sources */,
+				313F5FC52693CEF500C20653 /* MockKnownReadersStoresManager.swift in Sources */,
 				262A2C2B2537A3330086C1BE /* MockRefunds.swift in Sources */,
 				027F240C258371150021DB06 /* RefundShippingLabelViewModelTests.swift in Sources */,
 				D85136DD231E613900DD0539 /* ReviewsViewModelTests.swift in Sources */,

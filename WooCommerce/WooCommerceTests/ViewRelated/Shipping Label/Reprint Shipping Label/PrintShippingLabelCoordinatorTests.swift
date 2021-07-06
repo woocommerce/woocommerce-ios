@@ -8,7 +8,7 @@ final class PrintShippingLabelCoordinatorTests: XCTestCase {
         // Given
         let viewController = MockSourceViewController()
         let shippingLabel = MockShippingLabel.emptyLabel()
-        let coordinator = PrintShippingLabelCoordinator(shippingLabel: shippingLabel, sourceViewController: viewController)
+        let coordinator = PrintShippingLabelCoordinator(shippingLabel: shippingLabel, printType: .print, sourceViewController: viewController)
 
         // When
         coordinator.showPrintUI()
@@ -23,7 +23,7 @@ final class PrintShippingLabelCoordinatorTests: XCTestCase {
     func test_showPaperSizeSelector_shows_ListSelectorViewController() throws {
         // Given
         let viewController = MockSourceViewController()
-        let coordinator = PrintShippingLabelCoordinator(shippingLabel: MockShippingLabel.emptyLabel(), sourceViewController: viewController)
+        let coordinator = PrintShippingLabelCoordinator(shippingLabel: MockShippingLabel.emptyLabel(), printType: .print, sourceViewController: viewController)
         coordinator.showPrintUI()
         let printViewController = try XCTUnwrap(viewController.shownViewControllers.first as? PrintShippingLabelViewController)
 
@@ -36,13 +36,16 @@ final class PrintShippingLabelCoordinatorTests: XCTestCase {
                    isAnInstanceOf: ListSelectorViewController<ShippingLabelPaperSizeListSelectorCommand, ShippingLabelPaperSize, BasicTableViewCell>.self)
     }
 
-    // MARK: `reprint`
+    // MARK: `print`
 
-    func test_reprint_without_result_presents_InProgressViewController() throws {
+    func test_print_without_result_presents_InProgressViewController() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewController = MockSourceViewController()
-        let coordinator = PrintShippingLabelCoordinator(shippingLabel: MockShippingLabel.emptyLabel(), sourceViewController: viewController, stores: stores)
+        let coordinator = PrintShippingLabelCoordinator(shippingLabel: MockShippingLabel.emptyLabel(),
+                                                        printType: .print,
+                                                        sourceViewController: viewController,
+                                                        stores: stores)
         coordinator.showPrintUI()
         let printViewController = try XCTUnwrap(viewController.shownViewControllers.first as? PrintShippingLabelViewController)
 
@@ -54,7 +57,7 @@ final class PrintShippingLabelCoordinatorTests: XCTestCase {
         assertThat(viewController.presentedViewControllers[0], isAnInstanceOf: InProgressViewController.self)
     }
 
-    func test_reprint_on_success_dismisses_InProgressViewController() throws {
+    func test_print_on_success_dismisses_InProgressViewController() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let printData = ShippingLabelPrintData(mimeType: "application/pdf", base64Content: "////")
@@ -68,7 +71,10 @@ final class PrintShippingLabelCoordinatorTests: XCTestCase {
         }
 
         let viewController = MockSourceViewController()
-        let coordinator = PrintShippingLabelCoordinator(shippingLabel: MockShippingLabel.emptyLabel(), sourceViewController: viewController, stores: stores)
+        let coordinator = PrintShippingLabelCoordinator(shippingLabel: MockShippingLabel.emptyLabel(),
+                                                        printType: .print,
+                                                        sourceViewController: viewController,
+                                                        stores: stores)
         coordinator.showPrintUI()
         let printViewController = try XCTUnwrap(viewController.shownViewControllers.first as? PrintShippingLabelViewController)
 
@@ -83,7 +89,7 @@ final class PrintShippingLabelCoordinatorTests: XCTestCase {
         }
     }
 
-    func test_reprint_on_failure_presents_error_alert() throws {
+    func test_print_on_failure_presents_error_alert() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let error = SampleError.first
@@ -97,7 +103,10 @@ final class PrintShippingLabelCoordinatorTests: XCTestCase {
         }
 
         let viewController = MockSourceViewController()
-        let coordinator = PrintShippingLabelCoordinator(shippingLabel: MockShippingLabel.emptyLabel(), sourceViewController: viewController, stores: stores)
+        let coordinator = PrintShippingLabelCoordinator(shippingLabel: MockShippingLabel.emptyLabel(),
+                                                        printType: .print,
+                                                        sourceViewController: viewController,
+                                                        stores: stores)
         coordinator.showPrintUI()
         let printViewController = try XCTUnwrap(viewController.shownViewControllers.first as? PrintShippingLabelViewController)
 
@@ -109,7 +118,7 @@ final class PrintShippingLabelCoordinatorTests: XCTestCase {
         assertThat(viewController.presentedViewControllers[0], isAnInstanceOf: UIAlertController.self)
     }
 
-    func test_reprint_logs_analytics() throws {
+    func test_print_logs_analytics() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let analyticsProvider = MockAnalyticsProvider()
@@ -117,9 +126,10 @@ final class PrintShippingLabelCoordinatorTests: XCTestCase {
 
         let viewController = MockSourceViewController()
         let coordinator = PrintShippingLabelCoordinator(shippingLabel: MockShippingLabel.emptyLabel(),
-                                                          sourceViewController: viewController,
-                                                          stores: stores,
-                                                          analytics: analytics)
+                                                        printType: .print,
+                                                        sourceViewController: viewController,
+                                                        stores: stores,
+                                                        analytics: analytics)
         coordinator.showPrintUI()
         let printViewController = try XCTUnwrap(viewController.shownViewControllers.first as? PrintShippingLabelViewController)
 
@@ -136,7 +146,7 @@ final class PrintShippingLabelCoordinatorTests: XCTestCase {
     func test_presentPaperSizeOptions_presents_ShippingLabelPaperSizeOptionsViewController() throws {
         // Given
         let viewController = MockSourceViewController()
-        let coordinator = PrintShippingLabelCoordinator(shippingLabel: MockShippingLabel.emptyLabel(), sourceViewController: viewController)
+        let coordinator = PrintShippingLabelCoordinator(shippingLabel: MockShippingLabel.emptyLabel(), printType: .print, sourceViewController: viewController)
         coordinator.showPrintUI()
         let printViewController = try XCTUnwrap(viewController.shownViewControllers.first as? PrintShippingLabelViewController)
 
@@ -154,7 +164,7 @@ final class PrintShippingLabelCoordinatorTests: XCTestCase {
     func test_presentPrintingInstructions_presents_ShippingLabelPrintingInstructionsViewController() throws {
         // Given
         let viewController = MockSourceViewController()
-        let coordinator = PrintShippingLabelCoordinator(shippingLabel: MockShippingLabel.emptyLabel(), sourceViewController: viewController)
+        let coordinator = PrintShippingLabelCoordinator(shippingLabel: MockShippingLabel.emptyLabel(), printType: .print, sourceViewController: viewController)
         coordinator.showPrintUI()
         let printViewController = try XCTUnwrap(viewController.shownViewControllers.first as? PrintShippingLabelViewController)
 

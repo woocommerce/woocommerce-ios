@@ -254,7 +254,6 @@ private extension ReviewOrderViewController {
     /// Show billing information screen
     ///
     func billingInformationTapped() {
-        ServiceLocator.analytics.track(.orderDetailShowBillingTapped)
         let billingInformationViewController = BillingInformationViewController(order: viewModel.order)
         navigationController?.pushViewController(billingInformationViewController, animated: true)
     }

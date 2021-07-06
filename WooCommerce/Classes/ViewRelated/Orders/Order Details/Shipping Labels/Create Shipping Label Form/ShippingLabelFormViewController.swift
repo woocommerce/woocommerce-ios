@@ -368,8 +368,6 @@ private extension ShippingLabelFormViewController {
         }
 
         let hostingVC = UIHostingController(rootView: packageDetails)
-        hostingVC.title = Localization.navigationBarTitlePackageDetails
-
         navigationController?.show(hostingVC, sender: nil)
     }
 
@@ -515,9 +513,6 @@ private extension ShippingLabelFormViewController {
                                                               comment: "Title of the cell Payment Method inside Create Shipping Label form")
         static let continueButtonInCells = NSLocalizedString("Continue",
                                                              comment: "Continue button inside every cell inside Create Shipping Label form")
-        static let navigationBarTitlePackageDetails =
-            NSLocalizedString("Package Details",
-                              comment: "Navigation bar title of shipping label package details screen")
         // Purchase progress view
         static let purchaseProgressTitle = NSLocalizedString("Purchasing Label", comment: "Title of the in-progress UI while purchasing a shipping label")
         static let purchaseProgressMessage = NSLocalizedString("Please wait", comment: "Message of the in-progress UI while purchasing a shipping label")

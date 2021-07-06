@@ -46,7 +46,7 @@ public protocol ShippingLabelRemoteProtocol {
     func checkLabelStatus(siteID: Int64,
                              orderID: Int64,
                              labelIDs: [Int64],
-                             completion: @escaping (Result<[ShippingLabel], Error>) -> Void)
+                             completion: @escaping (Result<[ShippingLabelStatusPollingResponse], Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints.
@@ -284,7 +284,7 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
     public func checkLabelStatus(siteID: Int64,
                                     orderID: Int64,
                                     labelIDs: [Int64],
-                                    completion: @escaping (Result<[ShippingLabel], Error>) -> Void) {
+                                    completion: @escaping (Result<[ShippingLabelStatusPollingResponse], Error>) -> Void) {
         let labelIDs = labelIDs.map(String.init).joined(separator: ",")
         let path = "\(Path.shippingLabels)/\(orderID)/\(labelIDs)"
         let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .get, siteID: siteID, path: path)

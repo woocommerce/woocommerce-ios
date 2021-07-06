@@ -220,6 +220,8 @@ public enum WooAnalyticsStat: String {
     case shippingLabelEditAddressContactCustomerButtonTapped = "shipping_label_edit_address_contact_customer_button_tapped"
     case shippingLabelAddressSuggestionsUseSelectedAddressButtonTapped = "shipping_label_address_suggestions_use_selected_address_button_tapped"
     case shippingLabelAddressSuggestionsEditSelectedAddressButtonTapped = "shipping_label_address_suggestions_edit_selected_address_button_tapped"
+    case shippingLabelAddressValidationFailed = "shipping_label_address_validation_failed"
+    case shippingLabelAddressValidationSucceeded = "shipping_label_address_validation_succeeded"
 
     // MARK: Receipt Events
     //

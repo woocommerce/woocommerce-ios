@@ -46,6 +46,12 @@ final class ReviewOrderViewModel {
     ///
     private var trackingIsReachable: Bool = false
 
+    /// Shipping labels for an Order
+    ///
+    var shippingLabels: [ShippingLabel] {
+        return shippingLabelResultsController.fetchedObjects
+    }
+
     /// Site's add-on groups.
     ///
     private var addOnGroups: [AddOnGroup] {
@@ -57,6 +63,17 @@ final class ReviewOrderViewModel {
     private lazy var addOnGroupResultsController: ResultsController<StorageAddOnGroup> = {
         let predicate = NSPredicate(format: "siteID == %lld", order.siteID)
         return ResultsController<StorageAddOnGroup>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
+    /// ShippingLabel Results Controller.
+    ///
+    private lazy var shippingLabelResultsController: ResultsController<StorageShippingLabel> = {
+        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld", order.siteID, order.orderID)
+        let dateCreatedDescriptor = NSSortDescriptor(keyPath: \StorageShippingLabel.dateCreated, ascending: false)
+        let shippingLabelIDDescriptor = NSSortDescriptor(keyPath: \StorageShippingLabel.shippingLabelID, ascending: false)
+        return ResultsController<StorageShippingLabel>(storageManager: storageManager,
+                                                       matching: predicate,
+                                                       sortedBy: [dateCreatedDescriptor, shippingLabelIDDescriptor])
     }()
 
     init(order: Order,
@@ -207,6 +224,11 @@ private extension ReviewOrderViewModel {
         }()
 
         let trackingAddRow: Row? = {
+            // Add tracking section is hidden if there are non-empty non-refunded shipping labels.
+            guard shippingLabels.nonRefunded.isEmpty else {
+                return nil
+            }
+
             // Hide the section if the shipment
             // tracking plugin is not installed
             guard trackingIsReachable else { return nil }

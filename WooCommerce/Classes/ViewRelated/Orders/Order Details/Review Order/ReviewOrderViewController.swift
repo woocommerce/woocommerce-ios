@@ -1,3 +1,4 @@
+import SafariServices
 import UIKit
 import Yosemite
 
@@ -17,6 +18,14 @@ final class ReviewOrderViewController: UIViewController {
     /// Table view to display order details
     ///
     @IBOutlet private var tableView: UITableView!
+
+    /// Haptic Feedback!
+    ///
+    private let hapticGenerator = UINotificationFeedbackGenerator()
+
+    /// Reuse notices from Order Details
+    ///
+    private let notices = OrderDetailsNotices()
 
     init(viewModel: ReviewOrderViewModel) {
         self.viewModel = viewModel
@@ -180,8 +189,7 @@ private extension ReviewOrderViewController {
         case .trackingAdd:
             setupTrackingAddCell(cell)
         case .tracking:
-            // TODO: UPDATE!!!
-            break
+            setupTrackingCell(cell, at: indexPath)
         }
     }
 
@@ -285,8 +293,8 @@ private extension ReviewOrderViewController {
         cell.topText = tracking.trackingProvider
         cell.middleText = tracking.trackingNumber
 
-        cell.onEllipsisTouchUp = {
-            // TODO
+        cell.onEllipsisTouchUp = { [weak self] in
+            self?.shipmentTrackingTapped(at: indexPath)
         }
 
         if let dateShipped = tracking.dateShipped?.toString(dateStyle: .long, timeStyle: .none) {
@@ -324,6 +332,96 @@ private extension ReviewOrderViewController {
         let addTracking = ManualTrackingViewController(viewModel: addTrackingViewModel)
         let navController = WooNavigationController(rootViewController: addTracking)
         present(navController, animated: true, completion: nil)
+    }
+
+    /// Handle shipment tracking tapped
+    ///
+    func shipmentTrackingTapped(at indexPath: IndexPath) {
+        guard let cell = tableView.cellForRow(at: indexPath) as? OrderTrackingTableViewCell else {
+            return
+        }
+
+        guard let tracking = viewModel.orderTracking(at: indexPath.row) else {
+            return
+        }
+
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+
+        actionSheet.addCancelActionWithTitle(TrackingAction.dismiss)
+
+        actionSheet.addDefaultActionWithTitle(TrackingAction.copyTrackingNumber) { [weak self] _ in
+            self?.sendToPasteboard(tracking.trackingNumber, includeTrailingNewline: false)
+        }
+
+        if tracking.trackingURL?.isEmpty == false {
+            actionSheet.addDefaultActionWithTitle(TrackingAction.trackShipment) { [weak self] _ in
+                self?.openTrackingDetails(tracking)
+            }
+        }
+
+        actionSheet.addDestructiveActionWithTitle(TrackingAction.deleteTracking) { [weak self] _ in
+            ServiceLocator.analytics.track(.orderDetailTrackingDeleteButtonTapped)
+            self?.deleteTracking(tracking)
+        }
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.sourceView = cell
+        popoverController?.sourceRect = cell.bounds
+
+        present(actionSheet, animated: true)
+    }
+
+    /// Sends the provided text to the general pasteboard and triggers a success haptic. If the text param
+    /// is nil, nothing is sent to the pasteboard.
+    ///
+    /// - Parameter
+    ///   - text: string value to send to the pasteboard
+    ///   - includeTrailingNewline: If true, insert a trailing newline; defaults to true
+    ///
+    func sendToPasteboard(_ text: String?, includeTrailingNewline: Bool = true) {
+        guard var text = text, text.isEmpty == false else {
+            return
+        }
+
+        if includeTrailingNewline {
+            text += "\n"
+        }
+
+        UIPasteboard.general.string = text
+        hapticGenerator.notificationOccurred(.success)
+    }
+
+    /// Opens details of the shipment tracking in a web view
+    ///
+    func openTrackingDetails(_ tracking: ShipmentTracking) {
+        guard let trackingURL = tracking.trackingURL?.addHTTPSSchemeIfNecessary(),
+              let url = URL(string: trackingURL) else {
+            return
+        }
+        let safariViewController = SFSafariViewController(url: url)
+        present(safariViewController, animated: true, completion: nil)
+    }
+
+    /// Trigger view model to delete specified tracking and then reload data
+    ///
+    func deleteTracking(_ tracking: ShipmentTracking) {
+        let order = viewModel.order
+        viewModel.deleteTracking(tracking) { [weak self] error in
+            if let _ = error {
+                self?.displayDeleteErrorNotice(order: order, tracking: tracking)
+                return
+            }
+            self?.tableView.reloadData()
+        }
+    }
+
+    /// Displays the `Unable to delete tracking` Notice.
+    ///
+    func displayDeleteErrorNotice(order: Order, tracking: ShipmentTracking) {
+        notices.displayDeleteErrorNotice(order: order, tracking: tracking) { [weak self] in
+            self?.deleteTracking(tracking)
+        }
     }
 }
 
@@ -373,5 +471,14 @@ private extension ReviewOrderViewController {
         static let notShippedYetTitle = NSLocalizedString("Not shipped yet",
                                                           comment: "Order details > tracking. " +
                           " This is where the shipping date would normally display.")
+    }
+
+    /// Localized copies for Shipment Tracking action
+    ///
+    enum TrackingAction {
+        static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the shipment tracking action sheet")
+        static let copyTrackingNumber = NSLocalizedString("Copy Tracking Number", comment: "Copy tracking number button title")
+        static let trackShipment = NSLocalizedString("Track Shipment", comment: "Track shipment button title")
+        static let deleteTracking = NSLocalizedString("Delete Tracking", comment: "Delete tracking button title")
     }
 }

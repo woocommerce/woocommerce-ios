@@ -123,6 +123,41 @@ final class ReviewOrderViewModel {
             onCompletion()
         }
     }
+
+    /// Delete specified shipment tracking
+    ///
+    func deleteTracking(_ tracking: ShipmentTracking, onCompletion: @escaping (Error?) -> Void) {
+        let siteID = order.siteID
+        let orderID = order.orderID
+        let trackingID = tracking.trackingID
+
+        let status = order.status
+        let providerName = tracking.trackingProvider ?? ""
+
+        ServiceLocator.analytics.track(.orderTrackingDelete, withProperties: ["id": orderID,
+                                                                              "status": status.rawValue,
+                                                                              "carrier": providerName,
+                                                                              "source": "order_detail"])
+
+        let deleteTrackingAction = ShipmentAction.deleteTracking(siteID: siteID,
+                                                                 orderID: orderID,
+                                                                 trackingID: trackingID) { error in
+                                                                    if let error = error {
+                                                                        DDLogError("⛔️ Order Details - Delete Tracking: orderID \(orderID). Error: \(error)")
+
+                                                                        ServiceLocator.analytics.track(.orderTrackingDeleteFailed,
+                                                                                                  withError: error)
+                                                                        onCompletion(error)
+                                                                        return
+                                                                    }
+
+                                                                    ServiceLocator.analytics.track(.orderTrackingDeleteSuccess)
+                                                                    onCompletion(nil)
+
+        }
+
+        stores.dispatch(deleteTrackingAction)
+    }
 }
 
 // MARK: - Data source for review order controller

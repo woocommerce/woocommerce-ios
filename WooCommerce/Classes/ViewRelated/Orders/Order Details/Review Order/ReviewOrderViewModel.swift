@@ -150,6 +150,15 @@ extension ReviewOrderViewModel {
         let addOns = filterAddons(for: item)
         return ProductDetailsCellViewModel(item: item, currency: order.currency, product: product, hasAddOns: !addOns.isEmpty)
     }
+
+    /// Get shipment tracking at specified index of order.
+    ///
+    func orderTracking(at index: Int) -> ShipmentTracking? {
+        guard orderTracking.indices.contains(index) else {
+            return nil
+        }
+        return orderTracking[index]
+    }
 }
 
 // MARK: - Order details

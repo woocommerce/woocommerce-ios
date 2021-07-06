@@ -250,7 +250,7 @@ private extension ReviewOrderViewController {
     ///
     func setupTrackingAddCell(_ cell: UITableViewCell) {
         guard let cell = cell as? LeftImageTableViewCell else {
-            fatalError()
+            fatalError("⛔ Incorrect cell type for Add Tracking cell")
         }
 
         let cellTextContent = Localization.addTrackingTitle
@@ -263,6 +263,28 @@ private extension ReviewOrderViewController {
         cell.accessibilityLabel = cellTextContent
         cell.accessibilityTraits = .button
         cell.accessibilityHint = Localization.addTrackingAccessibilityHint
+    }
+
+    ///
+    ///
+    func setupTrackingCell(_ cell: UITableViewCell, at indexPath: IndexPath) {
+        guard let cell = cell as? OrderTrackingTableViewCell else {
+            fatalError("⛔ Incorrect cell type for Tracking cell")
+        }
+        guard let tracking = viewModel.orderTracking(at: indexPath.row) else { return }
+
+        cell.topText = tracking.trackingProvider
+        cell.middleText = tracking.trackingNumber
+
+        cell.onEllipsisTouchUp = {
+            // TODO
+        }
+
+        if let dateShipped = tracking.dateShipped?.toString(dateStyle: .long, timeStyle: .none) {
+            cell.bottomText = String.localizedStringWithFormat(Localization.shippedTitle, dateShipped)
+        } else {
+            cell.bottomText = Localization.notShippedYetTitle
+        }
     }
 }
 
@@ -337,5 +359,10 @@ private extension ReviewOrderViewController {
             "Adds tracking to an order.",
             comment: "VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period."
         )
+        static let shippedTitle = NSLocalizedString("Shipped %@",
+                                                    comment: "Date an item was shipped")
+        static let notShippedYetTitle = NSLocalizedString("Not shipped yet",
+                                                          comment: "Order details > tracking. " +
+                          " This is where the shipping date would normally display.")
     }
 }

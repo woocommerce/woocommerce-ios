@@ -20,6 +20,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
     private lazy var topBannerView: TopBannerView = {
         let topBanner = ShippingLabelAddressTopBannerFactory.addressErrorTopBannerView(shipType: viewModel.type) { [weak self] in
             MapsHelper.openAppleMaps(address: self?.viewModel.address?.formattedPostalAddress) { [weak self] (result) in
+                ServiceLocator.analytics.track(.shippingLabelEditAddressOpenMapButtonTapped)
                 switch result {
                 case .success:
                     break

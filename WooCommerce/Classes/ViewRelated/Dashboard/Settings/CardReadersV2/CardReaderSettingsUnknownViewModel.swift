@@ -111,7 +111,7 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
     /// Dispatch a request to cancel reader discovery
     ///
     func cancelReaderDiscovery() {
-        self.discoveryState = .notSearching
+        discoveryState = .notSearching
         cancelReaderDiscovery(completion: nil)
     }
 

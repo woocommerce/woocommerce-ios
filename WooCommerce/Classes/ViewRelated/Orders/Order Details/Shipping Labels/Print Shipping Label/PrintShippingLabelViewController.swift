@@ -47,6 +47,12 @@ final class PrintShippingLabelViewController: UIViewController {
         configureReprintButton()
         observeSelectedPaperSize()
     }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        onAction?(.saveLabelForLater)
+    }
 }
 
 extension PrintShippingLabelViewController {

@@ -1424,6 +1424,11 @@ extension OrderDetailsDataSource {
 
 private extension OrderDetailsDataSource {
     func isOrderAmountEligibleForCardPayment() -> Bool {
+        // If the order is paid, it is not eligible.
+        guard order.datePaid == nil else {
+            return false
+        }
+
         guard let totalAmount = currencyFormatter.convertToDecimal(from: order.total) else {
             return false
         }

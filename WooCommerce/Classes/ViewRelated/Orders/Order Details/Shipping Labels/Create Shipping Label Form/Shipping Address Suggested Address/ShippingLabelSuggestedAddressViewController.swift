@@ -158,8 +158,10 @@ private extension ShippingLabelSuggestedAddressViewController {
     @objc func didTapEditAddressButton() {
         switch selectedAddress {
         case .entered:
+            ServiceLocator.analytics.track(.shippingLabelAddressSuggestionsEditSelectedAddressButtonTapped, withProperties: ["type": "original"])
             displayEditAddressFormVC(address: address, type: type)
         case .suggested:
+            ServiceLocator.analytics.track(.shippingLabelAddressSuggestionsEditSelectedAddressButtonTapped, withProperties: ["type": "suggested"])
             displayEditAddressFormVC(address: suggestedAddress, type: type)
         }
 

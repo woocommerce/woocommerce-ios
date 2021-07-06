@@ -189,6 +189,8 @@ extension PrintShippingLabelViewController: UITableViewDelegate {
 private extension PrintShippingLabelViewController {
     func configure(_ cell: UITableViewCell, for row: Row) {
         switch cell {
+        case let cell as SpacerTableViewCell where row == .spacerBetweenHeaderCells:
+            configureSpacerBetweenHeaderCells(cell: cell)
         case let cell as BasicTableViewCell where row == .headerText:
             configureHeaderText(cell: cell)
         case let cell as ImageTableViewCell where row == .headerImage:
@@ -219,8 +221,11 @@ private extension PrintShippingLabelViewController {
         switch printType {
         case .print:
             rows = [
+                .spacerBetweenHeaderCells,
                 .headerText,
+                .spacerBetweenHeaderCells,
                 .headerImage,
+                .spacerBetweenHeaderCells,
                 .paperSize,
                 .spacerBetweenPaperSizeSelectorAndInfoLinks,
                 .printButton,
@@ -286,6 +291,10 @@ private extension PrintShippingLabelViewController {
         cell.configure(height: Constants.verticalSpacingBetweenPaperSizeSelectorAndInfoLinks)
     }
 
+    func configureSpacerBetweenHeaderCells(cell: SpacerTableViewCell) {
+        cell.configure(height: Constants.headerVerticalSpacing)
+    }
+
     func configurePaperSizeOptions(cell: ImageAndTitleAndTextTableViewCell) {
         cell.update(with: .imageAndTitleOnly(fontStyle: .footnote),
                     data: .init(title: Localization.paperSizeOptionsButtonTitle,
@@ -341,6 +350,7 @@ private extension PrintShippingLabelViewController {
         static let verticalSpacingBetweenInfoTextAndPaperSizeSelector = CGFloat(8)
         static let verticalSpacingBetweenPaperSizeSelectorAndInfoLinks = CGFloat(8)
         static let buttonVerticalSpacing = CGFloat(8)
+        static let headerVerticalSpacing = CGFloat(32)
     }
 
     enum Localization {
@@ -366,6 +376,7 @@ private extension PrintShippingLabelViewController {
 
 private extension PrintShippingLabelViewController {
     enum Row: CaseIterable {
+        case spacerBetweenHeaderCells
         case headerText
         case headerImage
         case infoText
@@ -385,7 +396,7 @@ private extension PrintShippingLabelViewController {
                 return ImageTableViewCell.self
             case .infoText:
                 return ImageAndTitleAndTextTableViewCell.self
-            case .spacerBetweenInfoTextAndPaperSizeSelector, .spacerBetweenPaperSizeSelectorAndInfoLinks:
+            case .spacerBetweenInfoTextAndPaperSizeSelector, .spacerBetweenPaperSizeSelectorAndInfoLinks, .spacerBetweenHeaderCells:
                 return SpacerTableViewCell.self
             case .paperSize:
                 return TitleAndValueTableViewCell.self

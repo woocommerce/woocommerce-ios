@@ -4,7 +4,6 @@ import Yosemite
 enum CardReaderSettingsUnknownViewModelDiscoveryState {
     case notSearching
     case searching
-    case stoppingSearch
     case failed(Error)
     case foundReader
     case connectingToReader
@@ -100,8 +99,8 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
 
         ServiceLocator.analytics.track(.cardReaderDiscoveredReader)
 
-        /// This viewmodel and view supports one reader at a time discovery only.
-        /// TODO: Add another viewmodel and view for listing discovered readers.
+        /// This viewmodel and view supports single reader discovery only.
+        /// TODO: Add another viewmodel and view to handle multiple discovered readers.
         guard let cardReader = cardReaders.first else {
             return
         }
@@ -113,10 +112,8 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
     /// Dispatch a request to cancel reader discovery
     ///
     func cancelReaderDiscovery() {
-        self.discoveryState = .stoppingSearch
-        cancelReaderDiscovery(completion: { [weak self] in
-            self?.discoveryState = .notSearching
-        })
+        self.discoveryState = .notSearching
+        cancelReaderDiscovery(completion: nil)
     }
 
     /// Dispatch a request to connect to the found reader

@@ -1,14 +1,14 @@
 import Foundation
 import Yosemite
 
-enum CardReaderSettingsUnknownViewModelState {
-    case idle
+enum CardReaderSettingsUnknownViewModelDiscoveryState {
+    case notSearching
     case searching
     case stoppingSearch
-    case searchFailure(Error)
+    case failed(Error)
     case foundReader
     case connectingToReader
-    case connectionFailure(Error)
+    case restartingSearch
     case connected
 }
 
@@ -25,7 +25,7 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
 
     private var foundReader: CardReader?
 
-    var viewModelState: CardReaderSettingsUnknownViewModelState = .idle {
+    var discoveryState: CardReaderSettingsUnknownViewModelDiscoveryState = .notSearching {
         didSet {
             didUpdate?()
         }
@@ -69,7 +69,7 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
     /// Dispatch a request to start reader discovery
     ///
     func startReaderDiscovery() {
-        viewModelState = .searching
+        discoveryState = .searching
 
         ServiceLocator.analytics.track(.cardReaderDiscoveryTapped)
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
@@ -78,7 +78,7 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
                 self?.didDiscoverReaders(cardReaders: cardReaders)
             },
             onError: { [weak self] error in
-                self?.viewModelState = .searchFailure(error)
+                self?.discoveryState = .failed(error)
                 ServiceLocator.analytics.track(.cardReaderDiscoveryFailed, withError: error)
             })
 
@@ -89,7 +89,7 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
     ///
     func didDiscoverReaders(cardReaders: [CardReader]) {
         /// If we are already presenting a foundReader alert to the user, ignore the found reader
-        guard case .searching = viewModelState else {
+        guard case .searching = discoveryState else {
             return
         }
 
@@ -107,15 +107,15 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
         }
 
         foundReader = cardReader
-        viewModelState = .foundReader
+        discoveryState = .foundReader
     }
 
     /// Dispatch a request to cancel reader discovery
     ///
     func cancelReaderDiscovery() {
-        self.viewModelState = .stoppingSearch
+        self.discoveryState = .stoppingSearch
         cancelReaderDiscovery(completion: { [weak self] in
-            self?.viewModelState = .idle
+            self?.discoveryState = .notSearching
         })
     }
 
@@ -127,20 +127,20 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
             return
         }
 
-        viewModelState = .connectingToReader
+        discoveryState = .connectingToReader
 
         ServiceLocator.analytics.track(.cardReaderConnectionTapped)
         let action = CardPresentPaymentAction.connect(reader: foundReader) { [weak self] result in
             switch result {
             case .success(let reader):
-                self?.viewModelState = .connected
+                self?.discoveryState = .connected
                 self?.knownReadersProvider?.rememberCardReader(cardReaderID: reader.serial)
                 // If the reader does not have a battery, or the battery level is unknown, it will be nil
                 let properties = reader.batteryLevel
                     .map { ["battery_level": $0] }
                 ServiceLocator.analytics.track(.cardReaderConnectionSuccess, withProperties: properties)
             case .failure(let error):
-                self?.viewModelState = .connectionFailure(error)
+                self?.discoveryState = .failed(error)
                 ServiceLocator.analytics.track(.cardReaderConnectionFailed, withError: error)
             }
         }
@@ -152,6 +152,7 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
     /// we will restart the discovery process again
     func continueSearch() {
         foundReader = nil
+        discoveryState = .restartingSearch
         cancelReaderDiscovery { [weak self] in
             self?.startReaderDiscovery()
         }

@@ -404,6 +404,14 @@ private extension ProductsViewController {
     func registerTableViewCells() {
         tableView.register(ProductsTabProductTableViewCell.self)
     }
+
+    func showOrHideToolBar(resultController: ResultsController<StorageProduct>) {
+        if resultsController.isEmpty {
+            toolbar.isHidden = true
+        } else {
+            toolbar.isHidden = false
+        }
+    }
 }
 
 // MARK: - Updates
@@ -500,11 +508,13 @@ private extension ProductsViewController {
     }
 
     func configureResultsController(_ resultsController: ResultsController<StorageProduct>, onReload: @escaping () -> Void) {
-        resultsController.onDidChangeContent = {
+        resultsController.onDidChangeContent = { [weak self] in
+            self?.showOrHideToolBar(resultController: resultsController)
             onReload()
         }
 
-        resultsController.onDidResetContent = {
+        resultsController.onDidResetContent = { [weak self] in
+            self?.showOrHideToolBar(resultController: resultsController)
             onReload()
         }
 
@@ -694,6 +704,8 @@ private extension ProductsViewController {
         }
         displayEmptyStateViewController(emptyStateViewController)
         emptyStateViewController.configure(config)
+        // Hide toolbar when user doesn't have products
+        toolbar.isHidden = true
     }
 
     /// Shows the EmptyStateViewController as a child view controller.

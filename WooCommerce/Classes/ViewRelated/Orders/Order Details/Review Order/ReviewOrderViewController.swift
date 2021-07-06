@@ -482,6 +482,15 @@ private extension ReviewOrderViewController {
             self?.deleteTracking(tracking)
         }
     }
+
+    /// Marks order complete and pop the view
+    ///
+    @objc func markOrderComplete() {
+        let fulfillmentProcess = viewModel.markCompleted()
+        let presenter = OrderFulfillmentNoticePresenter()
+        presenter.present(process: fulfillmentProcess)
+        navigationController?.popViewController(animated: true)
+    }
 }
 
 // MARK: - Miscellanous

@@ -202,6 +202,11 @@ extension ReviewOrderViewModel {
         }
         return orderTracking[index]
     }
+
+    /// Dispatches a network call in order to update `self.order`'s `status` to `.completed`.
+    func markCompleted() -> OrderFulfillmentUseCase.FulfillmentProcess {
+        OrderFulfillmentUseCase(order: order, stores: stores).fulfill()
+    }
 }
 
 // MARK: - Order details

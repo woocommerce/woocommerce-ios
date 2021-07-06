@@ -46,12 +46,27 @@ final class ShippingLabelAddressFormViewModel {
 
     var sections: [Section] = []
 
+    private(set) var countries: [Country]
+
+    var statesOfSelectedCountry: [StateOfACountry] {
+        countries.first { $0.code == address?.country }?.states.sorted { $0.name < $1.name } ?? []
+    }
+
+    var extendedCountryName: String? {
+        return countries.first { $0.code == address?.country }?.name
+    }
+
+    var extendedStateName: String? {
+        return statesOfSelectedCountry.first { $0.code == address?.state }?.name
+    }
+
     init(
         siteID: Int64,
         type: ShipType,
         address: ShippingLabelAddress?,
         stores: StoresManager = ServiceLocator.stores,
-        validationError: ShippingLabelAddressValidationError?
+        validationError: ShippingLabelAddressValidationError?,
+        countries: [Country]
     ) {
         self.siteID = siteID
         self.type = type
@@ -61,6 +76,7 @@ final class ShippingLabelAddressFormViewModel {
             addressValidationError = validationError
             addressValidated = .remote
         }
+        self.countries = countries
         updateSections()
     }
 

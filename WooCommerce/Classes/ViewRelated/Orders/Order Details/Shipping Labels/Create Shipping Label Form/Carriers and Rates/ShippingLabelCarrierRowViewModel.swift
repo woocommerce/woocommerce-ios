@@ -11,7 +11,7 @@ struct ShippingLabelCarrierRowViewModel: Identifiable {
     private let adultSignatureRate: ShippingLabelCarrierRate?
 
     let title: String
-    let subtitle: String
+    let subtitle: String?
     let price: String
     let carrierLogo: UIImage?
 
@@ -47,7 +47,12 @@ struct ShippingLabelCarrierRowViewModel: Identifiable {
 
         title = rate.title
         let formatString = rate.deliveryDays == 1 ? Localization.businessDaySingular : Localization.businessDaysPlural
-        subtitle = String(format: formatString, rate.deliveryDays)
+        if let deliveryDays = rate.deliveryDays {
+            subtitle = String(format: formatString, deliveryDays)
+        }
+        else {
+            subtitle = nil
+        }
 
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
 

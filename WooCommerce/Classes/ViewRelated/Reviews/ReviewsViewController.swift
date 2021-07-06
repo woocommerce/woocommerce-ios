@@ -153,6 +153,15 @@ final class ReviewsViewController: UIViewController {
         if AppRatingManager.shared.shouldPromptForAppReview(section: Constants.section) {
             displayRatingPrompt()
         }
+
+        // Fix any incomplete animation of the refresh control
+        // when switching tabs mid-animation
+        refreshControl.resetAnimation(in: tableView) { [unowned self] in
+            // ghost animation is also removed after switching tabs
+            // show make sure it's displayed again
+            self.removePlaceholderReviews()
+            self.displayPlaceholderReviews()
+        }
     }
 }
 

@@ -133,7 +133,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         storageManager.viewStorage.saveIfNeeded()
 
         // Given
-        let order = makeOrder().copy(status: .processing, paymentMethodID: "cod")
+        let order = makeOrder().copy(status: .processing, datePaid: nil, paymentMethodID: "cod")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
         dataSource.configureResultsControllers { }
 
@@ -155,7 +155,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         storageManager.viewStorage.saveIfNeeded()
 
         // Given
-        let order = makeOrder().copy(status: .processing, paymentMethodID: "stripe")
+        let order = makeOrder().copy(status: .processing, datePaid: nil, paymentMethodID: "stripe")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
         dataSource.configureResultsControllers { }
 
@@ -177,7 +177,73 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         storageManager.viewStorage.saveIfNeeded()
 
         // Given
-        let order = makeOrder().copy(status: .processing, paymentMethodID: "stripe")
+        let order = makeOrder().copy(status: .processing, datePaid: nil, paymentMethodID: "stripe")
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        dataSource.configureResultsControllers { }
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
+
+        // Clean up
+        storageManager.viewStorage.deleteObject(account)
+        storageManager.viewStorage.saveIfNeeded()
+    }
+
+    func test_collect_payment_button_is_not_visible_if_order_is_eligible_for_cash_on_delivery_and_total_amount_is_zero() throws {
+        // Setup
+        let account = storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+
+        // Given
+        let order = makeOrder().copy(status: .processing, datePaid: nil, total: "0", paymentMethodID: "cod")
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        dataSource.configureResultsControllers { }
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
+
+        // Clean up
+        storageManager.viewStorage.deleteObject(account)
+        storageManager.viewStorage.saveIfNeeded()
+    }
+
+    func test_collect_payment_button_is_visible_if_order_is_eligible_for_cash_on_delivery_and_total_amount_is_greater_than_zero() throws {
+        // Setup
+        let account = storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+
+        // Given
+        let order = makeOrder().copy(status: .processing, datePaid: nil, total: "1", paymentMethodID: "cod")
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        dataSource.configureResultsControllers { }
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        XCTAssertNotNil(row(row: .collectCardPaymentButton, in: paymentSection))
+
+        // Clean up
+        storageManager.viewStorage.deleteObject(account)
+        storageManager.viewStorage.saveIfNeeded()
+    }
+
+    func test_collect_payment_button_is_not_visible_if_date_paid_is_not_nil() throws {
+        // Setup
+        let account = storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+
+        // Given
+        let order = makeOrder().copy(status: .processing, datePaid: Date(), total: "0", paymentMethodID: "cod")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
         dataSource.configureResultsControllers { }
 

@@ -7,8 +7,8 @@ final class MockAppSettingsStoresManager: DefaultStoresManager {
 
     private var knownReaderIDs: [String]
 
-    init(sessionManager: SessionManager) {
-        knownReaderIDs = []
+    init(sessionManager: SessionManager, knownReaderIDs: [String] = []) {
+        self.knownReaderIDs = knownReaderIDs
         super.init(sessionManager: sessionManager)
     }
 

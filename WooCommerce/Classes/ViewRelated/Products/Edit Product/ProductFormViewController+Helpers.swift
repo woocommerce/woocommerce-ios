@@ -74,13 +74,12 @@ extension ProductFormViewController {
 
     // MARK: - Progress
 
-    /// Progress view for save action
-    ///
-    func showSavingProgress(for productStatus: ProductStatus) {
-        switch productStatus {
+    /// Progress view for save action.
+    func showSavingProgress(_ messageType: SaveMessageType) {
+        switch messageType {
         case .publish:
             displayInProgressView(title: Localization.ProgressView.productPublishingTitle, message: Localization.ProgressView.productPublishingMessage)
-        default:
+        case .save:
             displayInProgressView(title: Localization.ProgressView.productSavingTitle, message: Localization.ProgressView.productSavingMessage)
         }
     }

@@ -23,7 +23,7 @@ final class ReviewOrderViewModel {
 
     /// The order for review
     ///
-    private let order: Order
+    let order: Order
 
     /// Products in the order
     ///
@@ -71,15 +71,6 @@ final class ReviewOrderViewModel {
 // MARK: - Data source for review order controller
 //
 extension ReviewOrderViewModel {
-    var screenTitle: String {
-        Localization.screenTitle
-    }
-
-    /// Title for Product section
-    ///
-    var productionSectionTitle: String {
-        order.items.count > 0 ? Localization.productsSectionTitle : Localization.productSectionTitle
-    }
 
     /// Sections for order table view
     ///
@@ -192,16 +183,5 @@ extension ReviewOrderViewModel {
                 return LeftImageTableViewCell.self
             }
         }
-    }
-}
-
-// MARK: - Localization
-//
-private extension ReviewOrderViewModel {
-    enum Localization {
-        static let screenTitle = NSLocalizedString("Review Order", comment: "Title of Review Order screen")
-        static let productSectionTitle = NSLocalizedString("Product", comment: "Product section title in Review Order screen if there is one product.")
-        static let productsSectionTitle = NSLocalizedString("Products",
-                                                            comment: "Product section title in Review Order screen if there is more than one product.")
     }
 }

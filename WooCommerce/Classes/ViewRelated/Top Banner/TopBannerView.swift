@@ -233,6 +233,8 @@ private extension TopBannerView {
             iconImageView.tintColor = .info
         }
         backgroundColor = backgroundColor(for: type)
+        titleLabel.textColor = textColor(for: type)
+        infoLabel.textColor = textColor(for: type)
     }
 
     func backgroundColor(for bannerType: TopBannerViewModel.BannerType) -> UIColor {
@@ -243,6 +245,17 @@ private extension TopBannerView {
             return .warningBackground
         case .info:
             return .withColorStudio(.green, shade: .shade5)
+        }
+    }
+
+    func textColor(for bannerType: TopBannerViewModel.BannerType) -> UIColor {
+        switch bannerType {
+        case .normal:
+            return .text
+        case .warning:
+            return .text
+        case .info:
+            return .white
         }
     }
 

@@ -15,12 +15,12 @@ final class DashboardViewController: UIViewController {
     private let dashboardUIFactory: DashboardUIFactory
     private var dashboardUI: DashboardUI?
 
-    private var isDefaultSiteNameAvailable: Bool {
+    private var shouldShowStoreNameAsSubtitle: Bool {
         return ServiceLocator.stores.sessionManager.defaultSite?.name != nil && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles)
     }
 
     private var titleName: String {
-        if !isDefaultSiteNameAvailable {
+        if !shouldShowStoreNameAsSubtitle {
             return ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.title
         }
         return Localization.title
@@ -112,7 +112,7 @@ private extension DashboardViewController {
     }
 
     func configureSubtitle() {
-        if isDefaultSiteNameAvailable {
+        if shouldShowStoreNameAsSubtitle {
             containerView.backgroundColor = .listForeground
             storeNameLabel.text = ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.title
             stackView.addArrangedSubview(storeNameLabel)
@@ -227,7 +227,7 @@ private extension DashboardViewController {
         addChild(updatedDashboardUI)
         containerView.addSubview(contentView)
         updatedDashboardUI.didMove(toParent: self)
-        if isDefaultSiteNameAvailable {
+        if shouldShowStoreNameAsSubtitle {
             addViewBellowSubtitle(contentView: contentView)
         }
 

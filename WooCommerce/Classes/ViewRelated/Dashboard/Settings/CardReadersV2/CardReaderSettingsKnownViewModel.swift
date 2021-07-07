@@ -46,8 +46,8 @@ final class CardReaderSettingsKnownViewModel: CardReaderSettingsPresentedViewMod
 
     /// Used by the view to present the card reader serial number to the merchant
     ///
-    var foundReaderSerialNumber: String? {
-        foundReader?.serial
+    var foundReaderID: String? {
+        foundReader?.id
     }
 
     init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?, knownReadersProvider: CardReaderSettingsKnownReadersProvider? = nil) {

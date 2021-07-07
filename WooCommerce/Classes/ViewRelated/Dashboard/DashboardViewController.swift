@@ -12,7 +12,7 @@ final class DashboardViewController: UIViewController {
     enum Constants {
         static let animationDuration = 0.2
     }
-    
+
     // MARK: Properties
 
     private let siteID: Int64

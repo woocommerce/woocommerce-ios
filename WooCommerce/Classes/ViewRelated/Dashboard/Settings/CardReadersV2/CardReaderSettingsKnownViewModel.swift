@@ -21,8 +21,8 @@ final class CardReaderSettingsKnownViewModel: CardReaderSettingsPresentedViewMod
 
     private var noConnectedReaders: CardReaderSettingsTriState = .isUnknown
     private var noKnownReaders: CardReaderSettingsTriState = .isUnknown
-    private var knownReadersProvider: CardReaderSettingsKnownReadersProvider?
-    private var siteID: Int64 = Int64.min
+    private let knownReadersProvider: CardReaderSettingsKnownReadersProvider?
+    private let siteID: Int64
 
     private var subscriptions = Set<AnyCancellable>()
 
@@ -198,9 +198,9 @@ final class CardReaderSettingsKnownViewModel: CardReaderSettingsPresentedViewMod
     private func reevaluateShouldShow() {
         var newShouldShow: CardReaderSettingsTriState = .isUnknown
 
-        if ( noKnownReaders == .isUnknown ) || ( noConnectedReaders == .isUnknown ) {
+        if (noKnownReaders == .isUnknown) || (noConnectedReaders == .isUnknown) {
             newShouldShow = .isUnknown
-        } else if ( noKnownReaders == .isFalse ) && ( noConnectedReaders == .isTrue ) {
+        } else if (noKnownReaders == .isFalse) && (noConnectedReaders == .isTrue) {
             newShouldShow = .isTrue
         } else {
             newShouldShow = .isFalse

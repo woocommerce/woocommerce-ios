@@ -26,7 +26,7 @@ final class DashboardViewController: UIViewController {
     }
 
     private var titleName: String {
-        guard shouldShowStoreNameAsSubtitle else {
+        guard !shouldShowStoreNameAsSubtitle else {
             return Localization.title
         }
         return ServiceLocator.stores.sessionManager.defaultSite?.name ?? ""
@@ -116,7 +116,7 @@ private extension DashboardViewController {
     }
 
     func configureSubtitle() {
-        guard !shouldShowStoreNameAsSubtitle else {
+        guard shouldShowStoreNameAsSubtitle else {
             return
         }
         containerView.backgroundColor = .listForeground
@@ -131,6 +131,9 @@ private extension DashboardViewController {
     }
 
     func addViewBellowSubtitle(contentView: UIView) {
+        guard shouldShowStoreNameAsSubtitle else {
+            return
+        }
         contentView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             contentView.topAnchor.constraint(equalTo: stackView.bottomAnchor),
@@ -189,16 +192,17 @@ extension DashboardViewController: DashboardUIScrollDelegate {
     }
 
     private func showOrHideSubtitle(offset: CGFloat) {
-        if ServiceLocator.stores.sessionManager.defaultSite?.name != nil {
-            storeNameLabel.isHidden = offset > stackView.frame.height
-            if offset < -stackView.frame.height {
-                UIView.transition(with: storeNameLabel, duration: Constants.animationDuration,
-                                  options: .showHideTransitionViews,
-                                  animations: { [weak self] in
-                                    guard let self = self else { return }
-                                    self.storeNameLabel.isHidden = false
-                              })
-            }
+        guard shouldShowStoreNameAsSubtitle else {
+            return
+        }
+        storeNameLabel.isHidden = offset > stackView.frame.height
+        if offset < -stackView.frame.height {
+            UIView.transition(with: storeNameLabel, duration: Constants.animationDuration,
+                              options: .showHideTransitionViews,
+                              animations: { [weak self] in
+                                guard let self = self else { return }
+                                self.storeNameLabel.isHidden = false
+                          })
         }
     }
 }
@@ -228,9 +232,7 @@ private extension DashboardViewController {
         addChild(updatedDashboardUI)
         containerView.addSubview(contentView)
         updatedDashboardUI.didMove(toParent: self)
-        if shouldShowStoreNameAsSubtitle {
-            addViewBellowSubtitle(contentView: contentView)
-        }
+        addViewBellowSubtitle(contentView: contentView)
 
         updatedDashboardUI.onPullToRefresh = { [weak self] in
             self?.pullToRefresh()

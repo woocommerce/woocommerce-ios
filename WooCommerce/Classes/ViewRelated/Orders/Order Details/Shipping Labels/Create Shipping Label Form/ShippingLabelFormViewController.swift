@@ -302,9 +302,8 @@ private extension ShippingLabelFormViewController {
                     self.dismiss(animated: true)
                     self.displayPrintShippingLabelVC()
                 case .failure:
-                    // TODO: Implement and display error screen for purchase failures
                     self.dismiss(animated: true)
-                    break
+                    self.displayLabelPurchaseErrorNotice()
                 }
             }
         }
@@ -456,6 +455,15 @@ private extension ShippingLabelFormViewController {
                                                              sourceViewController: navigationController,
                                                              onCompletion: onLabelSave)
         printCoordinator.showPrintUI()
+    }
+
+    /// Enqueues the `Label Purchase Error` Notice.
+    ///
+    private func displayLabelPurchaseErrorNotice() {
+        let message = NSLocalizedString("Error purchasing the label", comment: "Notice displayed when the label purchase fails")
+        let notice = Notice(title: message, feedbackType: .error)
+
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 

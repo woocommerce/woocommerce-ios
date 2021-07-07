@@ -7,26 +7,33 @@ final class PrintShippingLabelCoordinator {
     private let shippingLabel: ShippingLabel
     private let stores: StoresManager
     private let analytics: Analytics
+    private let printType: PrintType
+    private let onCompletion: (() -> Void)?
 
     /// - Parameter shippingLabel: The shipping label to print.
+    /// - Parameter printType: Whether the label is being printed for the first time or reprinted.
     /// - Parameter sourceViewController: The view controller that shows the print UI in the first place.
     /// - Parameter stores: Handles Yosemite store actions.
     /// - Parameter analytics: Tracks analytics events.
     init(shippingLabel: ShippingLabel,
+         printType: PrintType,
          sourceViewController: UIViewController,
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         onCompletion: (() -> Void)? = nil) {
         self.shippingLabel = shippingLabel
+        self.printType = printType
         self.sourceViewController = sourceViewController
         self.stores = stores
         self.analytics = analytics
+        self.onCompletion = onCompletion
     }
 
     /// Shows the main screen for printing a shipping label.
     /// `self` is retained in the action callbacks so that the coordinator has the same life cycle as the main view controller
     /// (`PrintShippingLabelViewController`).
     func showPrintUI() {
-        let printViewController = PrintShippingLabelViewController(shippingLabel: shippingLabel)
+        let printViewController = PrintShippingLabelViewController(shippingLabel: shippingLabel, printType: printType)
 
         printViewController.onAction = { actionType in
             switch actionType {
@@ -40,12 +47,21 @@ final class PrintShippingLabelCoordinator {
                 self.presentPaperSizeOptions()
             case .presentPrintingInstructions:
                 self.presentPrintingInstructions()
+            case .saveLabelForLater:
+                self.saveLabelForLater()
             }
         }
 
         // Since the print UI could make an API request for printing data, disables the bottom bar (tab bar) to simplify app states.
         printViewController.hidesBottomBarWhenPushed = true
         sourceViewController.show(printViewController, sender: sourceViewController)
+    }
+}
+
+extension PrintShippingLabelCoordinator {
+    enum PrintType {
+        case print
+        case reprint
     }
 }
 
@@ -102,6 +118,10 @@ private extension PrintShippingLabelCoordinator {
         let printingInstructionsViewController = ShippingLabelPrintingInstructionsViewController()
         let navigationController = WooNavigationController(rootViewController: printingInstructionsViewController)
         sourceViewController.present(navigationController, animated: true, completion: nil)
+    }
+
+    func saveLabelForLater() {
+        onCompletion?()
     }
 }
 

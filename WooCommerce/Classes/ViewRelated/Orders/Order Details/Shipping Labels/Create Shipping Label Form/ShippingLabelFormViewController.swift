@@ -9,6 +9,18 @@ final class ShippingLabelFormViewController: UIViewController {
 
     private let viewModel: ShippingLabelFormViewModel
 
+    /// Can be set to true to mark the order as complete when the label is purchased
+    ///
+    private var shouldMarkOrderComplete = false
+
+    /// Assign this closure to be notified after a shipping label is successfully purchased
+    ///
+    var onLabelPurchase: ((_ isOrderComplete: Bool) -> Void)?
+
+    /// Assign this closure to be notified after a shipping label is saved for later
+    ///
+    var onLabelSave: (() -> Void)?
+
     /// Init
     ///
     init(order: Order) {
@@ -278,19 +290,22 @@ private extension ShippingLabelFormViewController {
             let discountInfoVC = ShippingLabelDiscountInfoViewController()
             let bottomSheet = BottomSheetViewController(childViewController: discountInfoVC)
             bottomSheet.show(from: self, sourceView: cell)
-        } onSwitchChange: { (switchIsOn) in
-            // TODO: Handle order completion
-        } onButtonTouchUp: {
-            self.displayPurchaseProgressView()
-            self.viewModel.purchaseLabel { [weak self] result in
+        } onSwitchChange: { [weak self] (switchIsOn) in
+            self?.shouldMarkOrderComplete = switchIsOn
+        } onButtonTouchUp: { [weak self] in
+            self?.displayPurchaseProgressView()
+            self?.viewModel.purchaseLabel { [weak self] result in
+                guard let self = self else { return }
                 switch result {
                 case .success:
-                    self?.displayPrintShippingLabelVC()
+                    self.onLabelPurchase?(self.shouldMarkOrderComplete)
+                    self.dismiss(animated: true)
+                    self.displayPrintShippingLabelVC()
                 case .failure:
                     // TODO: Implement and display error screen for purchase failures
+                    self.dismiss(animated: true)
                     break
                 }
-                self?.dismiss(animated: true)
             }
         }
         cell.isOn = false
@@ -423,14 +438,23 @@ private extension ShippingLabelFormViewController {
         present(inProgressViewController, animated: true)
     }
 
+    /// Removes the Shipping Label Form from the navigation stack and displays the Print Shipping Label screen.
+    /// This prevents navigating back to the purchase form after successfully purchasing the label.
+    ///
     func displayPrintShippingLabelVC() {
         guard let purchasedShippingLabel = viewModel.purchasedShippingLabel,
               let navigationController = navigationController else {
             return
         }
 
-        // TODO: Customize the reprint shipping label VC
-        let printCoordinator = PrintShippingLabelCoordinator(shippingLabel: purchasedShippingLabel, sourceViewController: navigationController)
+        if let indexOfSelf = navigationController.viewControllers.firstIndex(of: self) {
+            let viewControllersExcludingSelf = Array(navigationController.viewControllers[0..<indexOfSelf])
+            navigationController.setViewControllers(viewControllersExcludingSelf, animated: false)
+        }
+        let printCoordinator = PrintShippingLabelCoordinator(shippingLabel: purchasedShippingLabel,
+                                                             printType: .print,
+                                                             sourceViewController: navigationController,
+                                                             onCompletion: onLabelSave)
         printCoordinator.showPrintUI()
     }
 }

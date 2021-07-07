@@ -497,10 +497,19 @@ private extension OrderDetailsViewController {
                 assertionFailure("Cannot reprint a shipping label because `navigationController` is nil")
                 return
             }
-            let coordinator = PrintShippingLabelCoordinator(shippingLabel: shippingLabel, sourceViewController: navigationController)
+            let coordinator = PrintShippingLabelCoordinator(shippingLabel: shippingLabel, printType: .reprint, sourceViewController: navigationController)
             coordinator.showPrintUI()
         case .createShippingLabel:
             let shippingLabelFormVC = ShippingLabelFormViewController(order: viewModel.order)
+            shippingLabelFormVC.onLabelPurchase = { [weak self] isOrderComplete in
+                if isOrderComplete {
+                    _ = self?.viewModel.markCompleted()
+                }
+            }
+            shippingLabelFormVC.onLabelSave = { [weak self] in
+                guard let self = self else { return }
+                self.navigationController?.popToViewController(self, animated: true)
+            }
             navigationController?.show(shippingLabelFormVC, sender: self)
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)

@@ -57,7 +57,7 @@ final class ReviewOrderViewController: UIViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        updateTableFooterViewIfNeeded()
+        tableView.updateFooterHeight()
     }
 }
 
@@ -91,26 +91,10 @@ private extension ReviewOrderViewController {
         tableView.tableFooterView = footerView
 
         // workaround to fix extra space on top
-        tableView.tableHeaderView = {
-            let view = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: CGFloat.leastNormalMagnitude))
-            view.backgroundColor = .listBackground
-            return view
-        }()
+        tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: CGFloat.leastNormalMagnitude))
 
         tableView.dataSource = self
         tableView.delegate = self
-    }
-
-    func updateTableFooterViewIfNeeded() {
-        guard let footerView = tableView.tableFooterView else {
-            return
-        }
-        let width = tableView.bounds.size.width
-        let size = footerView.systemLayoutSizeFitting(CGSize(width: width, height: UIView.layoutFittingCompressedSize.height))
-        if footerView.frame.size.height != size.height {
-            footerView.frame.size.height = size.height
-            tableView.tableFooterView = footerView
-        }
     }
 
     func configureTableFooterView() -> UIView {

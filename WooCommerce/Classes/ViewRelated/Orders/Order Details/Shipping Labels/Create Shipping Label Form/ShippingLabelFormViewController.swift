@@ -290,11 +290,11 @@ private extension ShippingLabelFormViewController {
             let discountInfoVC = ShippingLabelDiscountInfoViewController()
             let bottomSheet = BottomSheetViewController(childViewController: discountInfoVC)
             bottomSheet.show(from: self, sourceView: cell)
-        } onSwitchChange: { (switchIsOn) in
-            self.shouldMarkOrderComplete = switchIsOn
-        } onButtonTouchUp: {
-            self.displayPurchaseProgressView()
-            self.viewModel.purchaseLabel { [weak self] result in
+        } onSwitchChange: { [weak self] (switchIsOn) in
+            self?.shouldMarkOrderComplete = switchIsOn
+        } onButtonTouchUp: { [weak self] in
+            self?.displayPurchaseProgressView()
+            self?.viewModel.purchaseLabel { [weak self] result in
                 guard let self = self else { return }
                 switch result {
                 case .success:

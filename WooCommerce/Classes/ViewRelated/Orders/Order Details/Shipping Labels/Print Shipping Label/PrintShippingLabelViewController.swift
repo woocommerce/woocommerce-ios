@@ -6,6 +6,9 @@ import UIKit
 /// Informational links are displayed for printing instructions and paper size options.
 final class PrintShippingLabelViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
+
+    /// Reprint button: Used to pin button to bottom of screen (below the table) when reprinting an existing label
+    ///
     @IBOutlet weak var reprintButton: UIButton!
 
     private let viewModel: PrintShippingLabelViewModel
@@ -211,7 +214,7 @@ private extension PrintShippingLabelViewController {
     }
 
     func rowsToDisplay() -> [Row] {
-        var rows: [Row?]
+        var rows: [Row]
         switch printType {
         case .print:
             rows = [
@@ -238,7 +241,7 @@ private extension PrintShippingLabelViewController {
                 .printingInstructions
             ]
         }
-        return rows.compactMap { $0 }
+        return rows.map { $0 }
     }
 
     func configureHeaderText(cell: BasicTableViewCell) {
@@ -250,6 +253,7 @@ private extension PrintShippingLabelViewController {
         case .reprint:
             cell.textLabel?.text = Localization.reprintHeaderText
             cell.textLabel?.applyBodyStyle()
+            cell.textLabel?.textAlignment = .natural
         }
         cell.textLabel?.numberOfLines = 0
         cell.hideSeparator()
@@ -321,8 +325,8 @@ private extension PrintShippingLabelViewController {
         cell.configure(style: .primary,
                        title: Localization.printButtonTitle,
                        topSpacing: Constants.buttonVerticalSpacing,
-                       bottomSpacing: Constants.buttonVerticalSpacing) {
-            self.printShippingLabel()
+                       bottomSpacing: Constants.buttonVerticalSpacing) { [weak self] in
+            self?.printShippingLabel()
         }
         cell.hideSeparator()
         cell.enableButton(selectedPaperSize != nil)
@@ -332,8 +336,8 @@ private extension PrintShippingLabelViewController {
         cell.configure(style: .secondary,
                        title: Localization.saveButtonTitle,
                        topSpacing: Constants.buttonVerticalSpacing,
-                       bottomSpacing: Constants.buttonVerticalSpacing) {
-            self.saveLabelForLater()
+                       bottomSpacing: Constants.buttonVerticalSpacing) { [weak self] in
+            self?.saveLabelForLater()
         }
         cell.hideSeparator()
     }

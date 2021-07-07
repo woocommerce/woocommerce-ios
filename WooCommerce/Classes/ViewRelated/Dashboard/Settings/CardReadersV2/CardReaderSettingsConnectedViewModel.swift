@@ -9,12 +9,14 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
 
     private var didGetConnectedReaders: Bool = false
     private var connectedReaders = [CardReader]()
+    private let knownReadersProvider: CardReaderSettingsKnownReadersProvider?
 
-    var connectedReaderSerialNumber: String?
+    var connectedReaderID: String?
     var connectedReaderBatteryLevel: String?
 
-    init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?) {
+    init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?, knownReadersProvider: CardReaderSettingsKnownReadersProvider? = nil) {
         self.didChangeShouldShow = didChangeShouldShow
+        self.knownReadersProvider = knownReadersProvider
         beginObservation()
     }
 
@@ -37,12 +39,12 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
 
     private func updateProperties() {
         guard connectedReaders.count > 0 else {
-            connectedReaderSerialNumber = nil
+            connectedReaderID = nil
             connectedReaderBatteryLevel = nil
             return
         }
 
-        connectedReaderSerialNumber = connectedReaders[0].serial
+        connectedReaderID = connectedReaders[0].id
 
         guard let batteryLevel = connectedReaders[0].batteryLevel else {
             connectedReaderBatteryLevel = Localization.unknownBatteryStatus
@@ -58,6 +60,11 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     ///
     func disconnectReader() {
         ServiceLocator.analytics.track(.cardReaderDisconnectTapped)
+
+        if connectedReaderID != nil {
+            knownReadersProvider?.forgetCardReader(cardReaderID: connectedReaderID!)
+        }
+
         let action = CardPresentPaymentAction.disconnect() { result in
             guard result.isSuccess else {
                 DDLogError("Unexpected error when disconnecting reader")

@@ -45,6 +45,10 @@ final class ButtonTableViewCell: UITableViewCell {
         topConstraint.constant = topSpacing
         bottomConstraint.constant = bottomSpacing
     }
+
+    func enableButton(_ enabled: Bool) {
+        button.isEnabled = enabled
+    }
 }
 
 private extension ButtonTableViewCell {

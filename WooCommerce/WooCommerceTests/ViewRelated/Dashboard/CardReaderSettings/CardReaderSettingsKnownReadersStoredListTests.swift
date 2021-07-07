@@ -33,7 +33,7 @@ final class CardReaderSettingsKnownReadersStoredListTests: XCTestCase {
     }
 
     func test_subscribing_publishes_initial_known_value() {
-        let mockStoresManager = MockAppSettingsStoresManager(sessionManager: SessionManager.testingInstance, knownReaders: [TestConstants.mockReaderID])
+        let mockStoresManager = MockAppSettingsStoresManager(sessionManager: SessionManager.testingInstance, knownReaderIDs: [TestConstants.mockReaderID])
 
         let expectation = self.expectation(description: #function)
         expectation.expectedFulfillmentCount = 1

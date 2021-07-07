@@ -66,6 +66,7 @@ final class ProductsViewController: UIViewController {
     private lazy var resultsController: ResultsController<StorageProduct> = {
         let resultsController = createResultsController(siteID: siteID)
         configureResultsController(resultsController) { [weak self] in
+            self?.showOrHideToolBar()
             self?.tableView.reloadData()
         }
         return resultsController
@@ -405,12 +406,12 @@ private extension ProductsViewController {
         tableView.register(ProductsTabProductTableViewCell.self)
     }
 
-    func showOrHideToolBar(resultController: ResultsController<StorageProduct>) {
-        if resultsController.isEmpty {
-            toolbar.isHidden = true
-        } else {
-            toolbar.isHidden = false
-        }
+    /// Show or hide the toolbar based on number of products
+    /// If there is 0 products, toolbar will be hidden
+    /// if there is 1 or more products, toolbar will be visible
+    ///
+    func showOrHideToolBar() {
+        toolbar.isHidden = self.isEmpty
     }
 }
 
@@ -508,13 +509,11 @@ private extension ProductsViewController {
     }
 
     func configureResultsController(_ resultsController: ResultsController<StorageProduct>, onReload: @escaping () -> Void) {
-        resultsController.onDidChangeContent = { [weak self] in
-            self?.showOrHideToolBar(resultController: resultsController)
+        resultsController.onDidChangeContent = {
             onReload()
         }
 
-        resultsController.onDidResetContent = { [weak self] in
-            self?.showOrHideToolBar(resultController: resultsController)
+        resultsController.onDidResetContent = {
             onReload()
         }
 
@@ -673,16 +672,12 @@ private extension ProductsViewController {
         let options = GhostOptions(reuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier, rowsPerSection: Constants.placeholderRowsPerSection)
         tableView.displayGhostContent(options: options,
         style: .wooDefaultGhostStyle)
-
-        resultsController.stopForwardingEvents()
     }
 
     /// Removes the Placeholder Products (and restores the ResultsController <> UITableView link).
     ///
     func removePlaceholderProducts() {
         tableView.removeGhostContent()
-        resultsController.startForwardingEvents(to: tableView)
-        tableView.reloadData()
     }
 
     /// Displays the overlay when there are no results.
@@ -705,7 +700,7 @@ private extension ProductsViewController {
         displayEmptyStateViewController(emptyStateViewController)
         emptyStateViewController.configure(config)
         // Hide toolbar when user doesn't have products
-        toolbar.isHidden = true
+        showOrHideToolBar()
     }
 
     /// Shows the EmptyStateViewController as a child view controller.

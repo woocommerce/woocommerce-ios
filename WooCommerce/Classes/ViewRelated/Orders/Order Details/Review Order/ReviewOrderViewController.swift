@@ -11,6 +11,10 @@ final class ReviewOrderViewController: UIViewController {
     ///
     private let viewModel: ReviewOrderViewModel
 
+    /// Handler block to call when order is marked completed
+    ///
+    private let markOrderCompleteHandler: () -> Void
+
     /// Image service needed for order item cells
     ///
     private let imageService: ImageService = ServiceLocator.imageService
@@ -31,8 +35,9 @@ final class ReviewOrderViewController: UIViewController {
     ///
     private lazy var footerView: UIView = configureTableFooterView()
 
-    init(viewModel: ReviewOrderViewModel) {
+    init(viewModel: ReviewOrderViewModel, markOrderCompleteHandler: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.markOrderCompleteHandler = markOrderCompleteHandler
         super.init(nibName: Self.nibName, bundle: nil)
     }
 
@@ -470,10 +475,12 @@ private extension ReviewOrderViewController {
     /// Marks order complete and pop the view
     ///
     @objc func markOrderComplete() {
-        let fulfillmentProcess = viewModel.markCompleted()
-        let presenter = OrderFulfillmentNoticePresenter()
-        presenter.present(process: fulfillmentProcess)
-        navigationController?.popViewController(animated: true)
+        markOrderCompleteHandler()
+        // delay to let the above block take some time to execute
+        // to avoid potential problems caused by deiniting the controller
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        }
     }
 }
 

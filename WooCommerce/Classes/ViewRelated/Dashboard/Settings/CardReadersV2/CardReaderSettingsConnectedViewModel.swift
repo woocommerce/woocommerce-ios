@@ -9,7 +9,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
 
     private var didGetConnectedReaders: Bool = false
     private var connectedReaders = [CardReader]()
-    private var knownReadersProvider: CardReaderSettingsKnownReadersProvider?
+    private let knownReadersProvider: CardReaderSettingsKnownReadersProvider?
 
     var connectedReaderID: String?
     var connectedReaderBatteryLevel: String?

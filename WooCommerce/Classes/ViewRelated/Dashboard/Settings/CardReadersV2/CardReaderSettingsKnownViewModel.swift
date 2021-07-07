@@ -1,16 +1,19 @@
 import Foundation
+import Combine
 import Yosemite
 
-enum CardReaderSettingsUnknownViewModelDiscoveryState {
-    case notSearching
+enum CardReaderSettingsKnownViewModelState {
+    case idle
     case searching
-    case failed(Error)
-    case foundReader
+    case stoppingSearch
+    case searchFailure(Error)
+    case foundUnknownReader
     case connectingToReader
-    case restartingSearch
+    case connectionFailure(Error)
+    case connected
 }
 
-final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewModel {
+final class CardReaderSettingsKnownViewModel: CardReaderSettingsPresentedViewModel {
 
     private(set) var shouldShow: CardReaderSettingsTriState = .isUnknown
     var didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?
@@ -21,39 +24,65 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
     private let knownReadersProvider: CardReaderSettingsKnownReadersProvider?
     private let siteID: Int64
 
+    private var subscriptions = Set<AnyCancellable>()
+
+    private var knownReaderIDs: [String]? {
+        didSet {
+            guard let knownReaderIDs = knownReaderIDs else {
+                noKnownReaders = .isUnknown
+                return
+            }
+
+            noKnownReaders = knownReaderIDs.isEmpty ? .isTrue : .isFalse
+        }
+    }
     private var foundReader: CardReader?
 
-    var discoveryState: CardReaderSettingsUnknownViewModelDiscoveryState = .notSearching {
+    var viewModelState: CardReaderSettingsKnownViewModelState = .idle {
         didSet {
             didUpdate?()
         }
     }
-    var foundReaderID: String? {
-        foundReader?.id
+
+    /// Used by the view to present the card reader serial number to the merchant
+    ///
+    var foundReaderSerialNumber: String? {
+        foundReader?.serial
     }
 
     init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?, knownReadersProvider: CardReaderSettingsKnownReadersProvider? = nil) {
         self.didChangeShouldShow = didChangeShouldShow
         self.siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
         self.knownReadersProvider = knownReadersProvider
-        beginObservation()
+
+        beginKnownReaderObservation()
+        beginConnectedReaderObservation()
     }
 
-    /// Dispatches actions to the CardPresentPaymentStore so that we can monitor changes to the list of known
-    /// and connected readers.
-    ///
-    private func beginObservation() {
-        // This completion should be called repeatedly as the list of known readers changes
-        let knownAction = CardPresentPaymentAction.observeKnownReaders() { [weak self] readers in
-            guard let self = self else {
-                return
-            }
-            self.noKnownReaders = readers.isEmpty ? .isTrue : .isFalse
-            self.reevaluateShouldShow()
-        }
-        ServiceLocator.stores.dispatch(knownAction)
+    deinit {
+        subscriptions.removeAll()
+    }
 
-        // This completion should be called repeatedly as the list of connected readers changes
+    /// Monitor the list of known readers
+    ///
+    private func beginKnownReaderObservation() {
+        guard knownReadersProvider != nil else {
+            self.knownReaderIDs = []
+            self.reevaluateShouldShow()
+            return
+        }
+
+        knownReadersProvider?.knownReaders
+            .sink(receiveValue: { [weak self] readerIDs in
+                self?.knownReaderIDs = readerIDs
+                self?.reevaluateShouldShow()
+            })
+            .store(in: &subscriptions)
+    }
+
+    /// Monitor the list of connected readers.
+    ///
+    private func beginConnectedReaderObservation() {
         let connectedAction = CardPresentPaymentAction.observeConnectedReaders() { [weak self] readers in
             guard let self = self else {
                 return
@@ -67,7 +96,7 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
     /// Dispatch a request to start reader discovery
     ///
     func startReaderDiscovery() {
-        discoveryState = .searching
+        viewModelState = .searching
 
         ServiceLocator.analytics.track(.cardReaderDiscoveryTapped)
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
@@ -76,7 +105,7 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
                 self?.didDiscoverReaders(cardReaders: cardReaders)
             },
             onError: { [weak self] error in
-                self?.discoveryState = .failed(error)
+                self?.viewModelState = .searchFailure(error)
                 ServiceLocator.analytics.track(.cardReaderDiscoveryFailed, withError: error)
             })
 
@@ -87,7 +116,7 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
     ///
     func didDiscoverReaders(cardReaders: [CardReader]) {
         /// If we are already presenting a foundReader alert to the user, ignore the found reader
-        guard case .searching = discoveryState else {
+        guard case .searching = viewModelState else {
             return
         }
 
@@ -98,21 +127,31 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
 
         ServiceLocator.analytics.track(.cardReaderDiscoveredReader)
 
-        /// This viewmodel and view supports single reader discovery only.
-        /// TODO: Add another viewmodel and view to handle multiple discovered readers.
+        /// This viewmodel and view supports one reader at a time discovery only.
+        /// TODO: Add another viewmodel and view for listing discovered readers.
         guard let cardReader = cardReaders.first else {
             return
         }
 
         foundReader = cardReader
-        discoveryState = .foundReader
+
+        /// If this reader ID is not known to us, we should not connect automatically but first ask the user
+        guard let knownReaderIDs = knownReaderIDs, knownReaderIDs.contains(cardReader.id) else {
+            viewModelState = .foundUnknownReader
+            return
+        }
+
+        /// On the other hand, known readers should be connected to automatically
+        connectToReader()
     }
 
     /// Dispatch a request to cancel reader discovery
     ///
     func cancelReaderDiscovery() {
-        discoveryState = .notSearching
-        cancelReaderDiscovery(completion: nil)
+        self.viewModelState = .stoppingSearch
+        cancelReaderDiscovery(completion: { [weak self] in
+            self?.viewModelState = .idle
+        })
     }
 
     /// Dispatch a request to connect to the found reader
@@ -123,18 +162,20 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
             return
         }
 
-        discoveryState = .connectingToReader
+        viewModelState = .connectingToReader
 
         ServiceLocator.analytics.track(.cardReaderConnectionTapped)
         let action = CardPresentPaymentAction.connect(reader: foundReader) { [weak self] result in
             switch result {
             case .success(let reader):
+                self?.viewModelState = .connected
                 self?.knownReadersProvider?.rememberCardReader(cardReaderID: reader.id)
                 // If the reader does not have a battery, or the battery level is unknown, it will be nil
                 let properties = reader.batteryLevel
                     .map { ["battery_level": $0] }
                 ServiceLocator.analytics.track(.cardReaderConnectionSuccess, withProperties: properties)
             case .failure(let error):
+                self?.viewModelState = .connectionFailure(error)
                 ServiceLocator.analytics.track(.cardReaderConnectionFailed, withError: error)
             }
         }
@@ -146,7 +187,6 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
     /// we will restart the discovery process again
     func continueSearch() {
         foundReader = nil
-        discoveryState = .restartingSearch
         cancelReaderDiscovery { [weak self] in
             self?.startReaderDiscovery()
         }
@@ -160,7 +200,7 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
 
         if (noKnownReaders == .isUnknown) || (noConnectedReaders == .isUnknown) {
             newShouldShow = .isUnknown
-        } else if (noKnownReaders == .isTrue) && (noConnectedReaders == .isTrue) {
+        } else if (noKnownReaders == .isFalse) && (noConnectedReaders == .isTrue) {
             newShouldShow = .isTrue
         } else {
             newShouldShow = .isFalse
@@ -177,7 +217,7 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
 }
 
 
-private extension CardReaderSettingsUnknownViewModel {
+private extension CardReaderSettingsKnownViewModel {
     func cancelReaderDiscovery(completion: (()-> Void)?) {
         let action = CardPresentPaymentAction.cancelCardReaderDiscovery() { _ in
             completion?()

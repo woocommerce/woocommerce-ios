@@ -116,7 +116,9 @@ private extension DashboardViewController {
     }
 
     func configureSubtitle() {
-        if shouldShowStoreNameAsSubtitle {
+        guard let !shouldShowStoreNameAsSubtitle {
+            return
+        }
             containerView.backgroundColor = .listForeground
             storeNameLabel.text = ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.title
             stackView.addArrangedSubview(storeNameLabel)

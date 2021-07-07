@@ -18,7 +18,7 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
 
     private var noConnectedReaders: CardReaderSettingsTriState = .isUnknown
     private var noKnownReaders: CardReaderSettingsTriState = .isUnknown
-
+    private var knownReadersProvider: CardReaderSettingsKnownReadersProvider?
     private var siteID: Int64 = Int64.min
 
     private var foundReader: CardReader?
@@ -28,13 +28,14 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
             didUpdate?()
         }
     }
-    var foundReaderSerialNumber: String? {
-        foundReader?.serial
+    var foundReaderID: String? {
+        foundReader?.id
     }
 
-    init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?) {
+    init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?, knownReadersProvider: CardReaderSettingsKnownReadersProvider? = nil) {
         self.didChangeShouldShow = didChangeShouldShow
         self.siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
+        self.knownReadersProvider = knownReadersProvider
         beginObservation()
     }
 
@@ -125,11 +126,10 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
         discoveryState = .connectingToReader
 
         ServiceLocator.analytics.track(.cardReaderConnectionTapped)
-        let action = CardPresentPaymentAction.connect(reader: foundReader) { result in
-            /// Nothing to do here because, when the observed connectedReaders mutates, the
-            /// connected view will be shown automatically.
+        let action = CardPresentPaymentAction.connect(reader: foundReader) { [weak self] result in
             switch result {
             case .success(let reader):
+                self?.knownReadersProvider?.rememberCardReader(cardReaderID: reader.id)
                 // If the reader does not have a battery, or the battery level is unknown, it will be nil
                 let properties = reader.batteryLevel
                     .map { ["battery_level": $0] }

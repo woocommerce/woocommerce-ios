@@ -9,6 +9,18 @@ final class ShippingLabelFormViewController: UIViewController {
 
     private let viewModel: ShippingLabelFormViewModel
 
+    /// Can be set to true to mark the order as complete when the label is purchased
+    ///
+    private var shouldMarkOrderComplete = false
+
+    /// Assign this closure to be notified after a shipping label is successfully purchased
+    ///
+    var onLabelPurchase: ((_ isOrderComplete: Bool) -> Void)?
+
+    /// Assign this closure to be notified after a shipping label is saved for later
+    ///
+    var onLabelSave: (() -> Void)?
+
     /// Init
     ///
     init(order: Order) {
@@ -280,25 +292,27 @@ private extension ShippingLabelFormViewController {
             let discountInfoVC = ShippingLabelDiscountInfoViewController()
             let bottomSheet = BottomSheetViewController(childViewController: discountInfoVC)
             bottomSheet.show(from: self, sourceView: cell)
-        } onSwitchChange: { (switchIsOn) in
-            // TODO: Handle order completion
+        } onSwitchChange: { [weak self] (switchIsOn) in
+            self?.shouldMarkOrderComplete = switchIsOn
         } onButtonTouchUp: { [weak self] in
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_initiated",
                                                                                         "amount": self?.viewModel.selectedRate?.rate ?? 0])
             self?.displayPurchaseProgressView()
             self?.viewModel.purchaseLabel { [weak self] result in
+                guard let self = self else { return }
                 switch result {
                 case .success:
                     ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_succeeded",
-                                                                                                "amount": self?.viewModel.selectedRate?.rate ?? 0])
-                    self?.displayPrintShippingLabelVC()
+                                                                                                "amount": self.viewModel.selectedRate?.rate ?? 0])
+                    self.onLabelPurchase?(self.shouldMarkOrderComplete)
+                    self.dismiss(animated: true)
+                    self.displayPrintShippingLabelVC()
                 case .failure:
-                    // TODO: Implement and display error screen for purchase failures
                     ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_failed",
-                                                                                                "amount": self?.viewModel.selectedRate?.rate ?? 0])
-                    break
+                                                                                                "amount": self.viewModel.selectedRate?.rate ?? 0])
+                    self.dismiss(animated: true)
+                    self.displayLabelPurchaseErrorNotice()
                 }
-                self?.dismiss(animated: true)
             }
         }
         cell.isOn = false
@@ -376,8 +390,6 @@ private extension ShippingLabelFormViewController {
         }
 
         let hostingVC = UIHostingController(rootView: packageDetails)
-        hostingVC.title = Localization.navigationBarTitlePackageDetails
-
         navigationController?.show(hostingVC, sender: nil)
     }
 
@@ -433,15 +445,33 @@ private extension ShippingLabelFormViewController {
         present(inProgressViewController, animated: true)
     }
 
+    /// Removes the Shipping Label Form from the navigation stack and displays the Print Shipping Label screen.
+    /// This prevents navigating back to the purchase form after successfully purchasing the label.
+    ///
     func displayPrintShippingLabelVC() {
         guard let purchasedShippingLabel = viewModel.purchasedShippingLabel,
               let navigationController = navigationController else {
             return
         }
 
-        // TODO: Customize the reprint shipping label VC
-        let printCoordinator = ReprintShippingLabelCoordinator(shippingLabel: purchasedShippingLabel, sourceViewController: navigationController)
-        printCoordinator.showReprintUI()
+        if let indexOfSelf = navigationController.viewControllers.firstIndex(of: self) {
+            let viewControllersExcludingSelf = Array(navigationController.viewControllers[0..<indexOfSelf])
+            navigationController.setViewControllers(viewControllersExcludingSelf, animated: false)
+        }
+        let printCoordinator = PrintShippingLabelCoordinator(shippingLabel: purchasedShippingLabel,
+                                                             printType: .print,
+                                                             sourceViewController: navigationController,
+                                                             onCompletion: onLabelSave)
+        printCoordinator.showPrintUI()
+    }
+
+    /// Enqueues the `Label Purchase Error` Notice.
+    ///
+    private func displayLabelPurchaseErrorNotice() {
+        let message = NSLocalizedString("Error purchasing the label", comment: "Notice displayed when the label purchase fails")
+        let notice = Notice(title: message, feedbackType: .error)
+
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -523,9 +553,6 @@ private extension ShippingLabelFormViewController {
                                                               comment: "Title of the cell Payment Method inside Create Shipping Label form")
         static let continueButtonInCells = NSLocalizedString("Continue",
                                                              comment: "Continue button inside every cell inside Create Shipping Label form")
-        static let navigationBarTitlePackageDetails =
-            NSLocalizedString("Package Details",
-                              comment: "Navigation bar title of shipping label package details screen")
         // Purchase progress view
         static let purchaseProgressTitle = NSLocalizedString("Purchasing Label", comment: "Title of the in-progress UI while purchasing a shipping label")
         static let purchaseProgressMessage = NSLocalizedString("Please wait", comment: "Message of the in-progress UI while purchasing a shipping label")

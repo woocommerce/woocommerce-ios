@@ -52,7 +52,9 @@ final class CardPresentPaymentsModalViewController: UIViewController {
     func setViewModel(_ newViewModel: CardPresentPaymentsModalViewModel) {
         self.viewModel = newViewModel
 
-        populateContent()
+        if isViewLoaded {
+            populateContent()
+        }
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

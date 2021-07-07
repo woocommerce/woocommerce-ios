@@ -119,7 +119,7 @@ private extension CardReaderSettingsUnknownViewController {
             return
         }
 
-        guard let name = viewModel.foundReaderSerialNumber else {
+        guard let name = viewModel.foundReaderID else {
             return
         }
 

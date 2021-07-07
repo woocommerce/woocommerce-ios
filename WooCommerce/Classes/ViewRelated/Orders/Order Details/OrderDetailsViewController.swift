@@ -58,7 +58,7 @@ final class OrderDetailsViewController: UIViewController {
     /// Orchestrates what needs to be presented in the modal views
     /// that provide user-facing feedback about the card present payment process.
     private lazy var paymentAlerts: OrderDetailsPaymentAlerts = {
-        OrderDetailsPaymentAlerts()
+        OrderDetailsPaymentAlerts(presentingController: self)
     }()
 
     /// Subscription that listens for connected readers while we are trying to connect to one to capture payment
@@ -497,10 +497,19 @@ private extension OrderDetailsViewController {
                 assertionFailure("Cannot reprint a shipping label because `navigationController` is nil")
                 return
             }
-            let coordinator = ReprintShippingLabelCoordinator(shippingLabel: shippingLabel, sourceViewController: navigationController)
-            coordinator.showReprintUI()
+            let coordinator = PrintShippingLabelCoordinator(shippingLabel: shippingLabel, printType: .reprint, sourceViewController: navigationController)
+            coordinator.showPrintUI()
         case .createShippingLabel:
             let shippingLabelFormVC = ShippingLabelFormViewController(order: viewModel.order)
+            shippingLabelFormVC.onLabelPurchase = { [weak self] isOrderComplete in
+                if isOrderComplete {
+                    _ = self?.viewModel.markCompleted()
+                }
+            }
+            shippingLabelFormVC.onLabelSave = { [weak self] in
+                guard let self = self else { return }
+                self.navigationController?.popToViewController(self, animated: true)
+            }
             navigationController?.show(shippingLabelFormVC, sender: self)
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
@@ -512,10 +521,15 @@ private extension OrderDetailsViewController {
     func markOrderCompleteWasPressed() {
         ServiceLocator.analytics.track(.orderFulfillmentCompleteButtonTapped)
 
-        let fulfillmentProcess = viewModel.markCompleted()
-
-        let presenter = OrderFulfillmentNoticePresenter()
-        presenter.present(process: fulfillmentProcess)
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.reviewOrder) {
+            let reviewOrderViewModel = ReviewOrderViewModel(order: viewModel.order, products: viewModel.products)
+            let controller = ReviewOrderViewController(viewModel: reviewOrderViewModel)
+            navigationController?.pushViewController(controller, animated: true)
+        } else {
+            let fulfillmentProcess = viewModel.markCompleted()
+            let presenter = OrderFulfillmentNoticePresenter()
+            presenter.present(process: fulfillmentProcess)
+        }
     }
 
     func trackingWasPressed(at indexPath: IndexPath) {
@@ -615,8 +629,7 @@ private extension OrderDetailsViewController {
         let unit = ServiceLocator.currencySettings.symbol(from: currencyCode)
         let value = currencyFormatter.formatAmount(viewModel.order.total, with: unit) ?? ""
 
-        paymentAlerts.readerIsReady(from: self,
-                                    title: viewModel.collectPaymentFrom,
+        paymentAlerts.readerIsReady(title: viewModel.collectPaymentFrom,
                                     amount: value)
 
         ServiceLocator.analytics.track(.collectPaymentTapped)

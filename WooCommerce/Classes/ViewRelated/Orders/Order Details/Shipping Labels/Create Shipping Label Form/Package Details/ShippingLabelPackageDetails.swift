@@ -35,13 +35,10 @@ struct ShippingLabelPackageDetails: View {
 
                 TitleAndValueRow(title: Localization.packageSelected, value: viewModel.selectedPackageName, selectable: true) {
                     showingAddPackage.toggle()
-                }
+                }.sheet(isPresented: $showingAddPackage, content: {
+                    ShippingLabelPackageList(viewModel: viewModel)
+                })
 
-                NavigationLink(
-                    destination:
-                        ShippingLabelPackageList(viewModel: viewModel),
-                    isActive: $showingAddPackage) { EmptyView()
-                }
                 Divider()
 
                 TitleAndTextFieldRow(title: Localization.totalPackageWeight,
@@ -57,6 +54,7 @@ struct ShippingLabelPackageDetails: View {
             .background(Color(.systemBackground))
         }
         .background(Color(.listBackground))
+        .navigationTitle(Localization.title)
         .navigationBarItems(trailing: Button(action: {
             onCompletion(viewModel.selectedPackageID, viewModel.totalWeight)
             presentation.wrappedValue.dismiss()
@@ -69,6 +67,8 @@ struct ShippingLabelPackageDetails: View {
 
 private extension ShippingLabelPackageDetails {
     enum Localization {
+        static let title = NSLocalizedString("Package Details",
+                                             comment: "Navigation bar title of shipping label package details screen")
         static let itemsToFulfillHeader = NSLocalizedString("ITEMS TO FULFILL", comment: "Header section items to fulfill in Shipping Label Package Detail")
         static let packageDetailsHeader = NSLocalizedString("PACKAGE DETAILS", comment: "Header section package details in Shipping Label Package Detail")
         static let packageSelected = NSLocalizedString("Package Selected",

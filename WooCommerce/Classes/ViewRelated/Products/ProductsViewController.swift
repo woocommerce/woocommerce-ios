@@ -407,11 +407,12 @@ private extension ProductsViewController {
     }
 
     /// Show or hide the toolbar based on number of products
+    /// if there is any filter applied, toolbar must be always visible
     /// If there is 0 products, toolbar will be hidden
     /// if there is 1 or more products, toolbar will be visible
     ///
     func showOrHideToolBar() {
-        toolbar.isHidden = self.isEmpty
+        toolbar.isHidden = filters.numberOfActiveFilters == 0 ? self.isEmpty : false
     }
 }
 

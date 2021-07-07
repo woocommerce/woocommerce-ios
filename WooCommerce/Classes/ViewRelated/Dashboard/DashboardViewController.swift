@@ -116,19 +116,18 @@ private extension DashboardViewController {
     }
 
     func configureSubtitle() {
-        guard let !shouldShowStoreNameAsSubtitle {
+        guard let !shouldShowStoreNameAsSubtitle else {
             return
         }
-            containerView.backgroundColor = .listForeground
-            storeNameLabel.text = ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.title
-            stackView.addArrangedSubview(storeNameLabel)
-            containerView.addSubview(stackView)
-            NSLayoutConstraint.activate([
-                stackView.topAnchor.constraint(equalTo: containerView.topAnchor),
-                stackView.leadingAnchor.constraint(equalTo: containerView.layoutMarginsGuide.leadingAnchor),
-                stackView.trailingAnchor.constraint(equalTo: containerView.layoutMarginsGuide.trailingAnchor)
-            ])
-        }
+        containerView.backgroundColor = .listForeground
+        storeNameLabel.text = ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.title
+        stackView.addArrangedSubview(storeNameLabel)
+        containerView.addSubview(stackView)
+        NSLayoutConstraint.activate([
+            stackView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            stackView.leadingAnchor.constraint(equalTo: containerView.layoutMarginsGuide.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: containerView.layoutMarginsGuide.trailingAnchor)
+        ])
     }
 
     func addViewBellowSubtitle(contentView: UIView) {
@@ -198,9 +197,7 @@ extension DashboardViewController: DashboardUIScrollDelegate {
                 UIView.transition(with: storeNameLabel, duration: Constants.animationDuration,
                                   options: .showHideTransitionViews,
                                   animations: { [weak self] in
-                                    guard let self = self else {
-                                        return
-                                    }
+                                    guard let self = self else { return }
                                     self.storeNameLabel.isHidden = false
                               })
             }

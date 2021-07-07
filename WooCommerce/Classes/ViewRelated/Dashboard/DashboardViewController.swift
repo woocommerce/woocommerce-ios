@@ -25,7 +25,6 @@ final class DashboardViewController: UIViewController {
             return Localization.title
         }
         return ServiceLocator.stores.sessionManager.defaultSite?.name ?? ""
-
     }
 
     // MARK: Subviews
@@ -36,11 +35,9 @@ final class DashboardViewController: UIViewController {
 
     private lazy var storeNameLabel: UILabel = {
         let label = UILabel()
-        label.numberOfLines = 1
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.subheadline
+        label.applySubheadlineStyle()
         label.backgroundColor = .listForeground
-        label.textColor = UIColor.text
         return label
     }()
 

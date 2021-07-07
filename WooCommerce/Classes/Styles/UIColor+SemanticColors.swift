@@ -55,6 +55,13 @@ extension UIColor {
                        dark: .withColorStudio(.orange, shade: .shade30))
     }
 
+    /// Info. Green-80 (< iOS 13 and Light Mode) and Orange-70 (Dark Mode)
+    ///
+    static var infoBackground: UIColor {
+        return UIColor(light: .withColorStudio(.green, shade: .shade80),
+                       dark: .withColorStudio(.orange, shade: .shade70))
+    }
+
     /// Blue. Blue-50 (< iOS 13 and Light Mode) and Blue-30 (Dark Mode)
     ///
     static var blue: UIColor {

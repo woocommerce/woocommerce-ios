@@ -244,7 +244,7 @@ private extension TopBannerView {
         case .warning:
             return .warningBackground
         case .info:
-            return .withColorStudio(.green, shade: .shade5)
+            return .infoBackground
         }
     }
 

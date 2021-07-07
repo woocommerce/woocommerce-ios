@@ -8,6 +8,11 @@ import Yosemite
 //
 final class DashboardViewController: UIViewController {
 
+    // MARK: Constants
+    enum Constants {
+        static let animationDuration = 0.2
+    }
+    
     // MARK: Properties
 
     private let siteID: Int64
@@ -188,7 +193,7 @@ extension DashboardViewController: DashboardUIScrollDelegate {
                 storeNameLabel.isHidden = true
             }
             if offset < -stackView.frame.height {
-                UIView.transition(with: storeNameLabel, duration: 0.2,
+                UIView.transition(with: storeNameLabel, duration: Constants.animationDuration,
                                   options: .showHideTransitionViews,
                                   animations: { [weak self] in
                                     guard let self = self else {

@@ -15,15 +15,17 @@ final class DashboardViewController: UIViewController {
     private let dashboardUIFactory: DashboardUIFactory
     private var dashboardUI: DashboardUI?
 
+    // Used to enable subtitle with store name
     private var shouldShowStoreNameAsSubtitle: Bool {
         return ServiceLocator.stores.sessionManager.defaultSite?.name != nil && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles)
     }
 
     private var titleName: String {
-        if !shouldShowStoreNameAsSubtitle {
-            return ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.title
+        guard shouldShowStoreNameAsSubtitle else {
+            return Localization.title
         }
-        return Localization.title
+        return ServiceLocator.stores.sessionManager.defaultSite?.name ?? ""
+
     }
 
     // MARK: Subviews

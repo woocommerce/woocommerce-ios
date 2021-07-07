@@ -116,7 +116,7 @@ private extension DashboardViewController {
     }
 
     func configureSubtitle() {
-        guard let !shouldShowStoreNameAsSubtitle else {
+        guard !shouldShowStoreNameAsSubtitle else {
             return
         }
         containerView.backgroundColor = .listForeground
@@ -190,9 +190,7 @@ extension DashboardViewController: DashboardUIScrollDelegate {
 
     private func showOrHideSubtitle(offset: CGFloat) {
         if ServiceLocator.stores.sessionManager.defaultSite?.name != nil {
-            if offset > stackView.frame.height {
-                storeNameLabel.isHidden = true
-            }
+            storeNameLabel.isHidden = offset > stackView.frame.height
             if offset < -stackView.frame.height {
                 UIView.transition(with: storeNameLabel, duration: Constants.animationDuration,
                                   options: .showHideTransitionViews,

@@ -2,13 +2,13 @@ import Combine
 import Yosemite
 import UIKit
 
-/// Allows the user to select a paper size and reprint a shipping label given the selected paper size.
+/// Allows the user to select a paper size and print a shipping label given the selected paper size.
 /// Informational links are displayed for printing instructions and paper size options.
-final class ReprintShippingLabelViewController: UIViewController {
+final class PrintShippingLabelViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
-    @IBOutlet private weak var reprintButton: UIButton!
+    @IBOutlet private weak var printButton: UIButton!
 
-    private let viewModel: ReprintShippingLabelViewModel
+    private let viewModel: PrintShippingLabelViewModel
     private let rows: [Row]
 
     private var selectedPaperSize: ShippingLabelPaperSize?
@@ -20,7 +20,7 @@ final class ReprintShippingLabelViewController: UIViewController {
     var onAction: ((ActionType) -> Void)?
 
     init(shippingLabel: ShippingLabel) {
-        self.viewModel = ReprintShippingLabelViewModel(shippingLabel: shippingLabel)
+        self.viewModel = PrintShippingLabelViewModel(shippingLabel: shippingLabel)
         self.rows = [.headerText, .infoText,
                      .spacerBetweenInfoTextAndPaperSizeSelector, .paperSize, .spacerBetweenPaperSizeSelectorAndInfoLinks,
                      .paperSizeOptions, .printingInstructions]
@@ -42,20 +42,20 @@ final class ReprintShippingLabelViewController: UIViewController {
 
         configureNavigationBar()
         configureTableView()
-        configureReprintButton()
+        configurePrintButton()
         observeSelectedPaperSize()
     }
 }
 
-extension ReprintShippingLabelViewController {
-    /// Actions that can be triggered from the reprint UI.
+extension PrintShippingLabelViewController {
+    /// Actions that can be triggered from the print UI.
     enum ActionType {
         /// Called when the paper size row is selected.
         case showPaperSizeSelector(paperSizeOptions: [ShippingLabelPaperSize],
                                    selectedPaperSize: ShippingLabelPaperSize?,
                                    onSelection: (ShippingLabelPaperSize?) -> Void)
-        /// Called when the Reprint CTA is tapped.
-        case reprint(paperSize: ShippingLabelPaperSize)
+        /// Called when the Print CTA is tapped.
+        case print(paperSize: ShippingLabelPaperSize)
         /// Called when the "layout and paper size options" row is selected.
         case presentPaperSizeOptions
         /// Called when the printing instructions row is selected.
@@ -64,12 +64,12 @@ extension ReprintShippingLabelViewController {
 }
 
 // MARK: Action Handling
-private extension ReprintShippingLabelViewController {
-    func reprintShippingLabel() {
+private extension PrintShippingLabelViewController {
+    func printShippingLabel() {
         guard let selectedPaperSize = selectedPaperSize else {
             return
         }
-        onAction?(.reprint(paperSize: selectedPaperSize))
+        onAction?(.print(paperSize: selectedPaperSize))
     }
 
     func showPaperSizeSelector() {
@@ -90,7 +90,7 @@ private extension ReprintShippingLabelViewController {
 }
 
 // MARK: Configuration
-private extension ReprintShippingLabelViewController {
+private extension PrintShippingLabelViewController {
     func configureNavigationBar() {
         navigationItem.title = Localization.navigationBarTitle
     }
@@ -110,11 +110,11 @@ private extension ReprintShippingLabelViewController {
         }
     }
 
-    func configureReprintButton() {
-        reprintButton.applyPrimaryButtonStyle()
-        reprintButton.setTitle(Localization.reprintButtonTitle, for: .normal)
-        reprintButton.on(.touchUpInside) { [weak self] _ in
-            self?.reprintShippingLabel()
+    func configurePrintButton() {
+        printButton.applyPrimaryButtonStyle()
+        printButton.setTitle(Localization.printButtonTitle, for: .normal)
+        printButton.on(.touchUpInside) { [weak self] _ in
+            self?.printShippingLabel()
         }
     }
 
@@ -124,13 +124,13 @@ private extension ReprintShippingLabelViewController {
             guard let self = self else { return }
             self.selectedPaperSize = paperSize
             self.tableView.reloadData()
-            self.reprintButton.isEnabled = paperSize != nil
+            self.printButton.isEnabled = paperSize != nil
         }.store(in: &cancellables)
     }
 }
 
 // MARK: UITableViewDataSource
-extension ReprintShippingLabelViewController: UITableViewDataSource {
+extension PrintShippingLabelViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         rows.count
     }
@@ -146,7 +146,7 @@ extension ReprintShippingLabelViewController: UITableViewDataSource {
 }
 
 // MARK: UITableViewDelegate
-extension ReprintShippingLabelViewController: UITableViewDelegate {
+extension PrintShippingLabelViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
@@ -168,7 +168,7 @@ extension ReprintShippingLabelViewController: UITableViewDelegate {
 }
 
 // MARK: Cell configuration
-private extension ReprintShippingLabelViewController {
+private extension PrintShippingLabelViewController {
     func configure(_ cell: UITableViewCell, for row: Row) {
         switch cell {
         case let cell as BasicTableViewCell where row == .headerText:
@@ -250,7 +250,7 @@ private extension ReprintShippingLabelViewController {
     }
 }
 
-private extension ReprintShippingLabelViewController {
+private extension PrintShippingLabelViewController {
     enum Constants {
         static let verticalSpacingBetweenInfoTextAndPaperSizeSelector = CGFloat(8)
         static let verticalSpacingBetweenPaperSizeSelectorAndInfoLinks = CGFloat(8)
@@ -259,9 +259,9 @@ private extension ReprintShippingLabelViewController {
     enum Localization {
         static let navigationBarTitle = NSLocalizedString("Print Shipping Label",
                                                           comment: "Navigation bar title to print a shipping label")
-        static let reprintButtonTitle = NSLocalizedString("Print Shipping Label",
+        static let printButtonTitle = NSLocalizedString("Print Shipping Label",
                                                           comment: "Button title to generate a shipping label document for printing")
-        static let paperSizeSelectorTitle = NSLocalizedString("Paper Size", comment: "Title of the paper size selector row for reprinting a shipping label")
+        static let paperSizeSelectorTitle = NSLocalizedString("Paper Size", comment: "Title of the paper size selector row for printing a shipping label")
         static let headerText = NSLocalizedString(
             "If there was a printing error when you purchased the label, you can print it again.",
             comment: "Header text when reprinting a shipping label")
@@ -274,7 +274,7 @@ private extension ReprintShippingLabelViewController {
     }
 }
 
-private extension ReprintShippingLabelViewController {
+private extension PrintShippingLabelViewController {
     enum Row: CaseIterable {
         case headerText
         case infoText

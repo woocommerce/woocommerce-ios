@@ -3,7 +3,7 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 
-final class ReprintShippingLabelViewModelTests: XCTestCase {
+final class PrintShippingLabelViewModelTests: XCTestCase {
     private var cancellables = Set<AnyCancellable>()
 
     override func tearDown() {
@@ -17,7 +17,7 @@ final class ReprintShippingLabelViewModelTests: XCTestCase {
     func test_paperSizeOptions_contain_all_supported_paper_sizes() {
         // Given
         let shippingLabel = MockShippingLabel.emptyLabel()
-        let viewModel = ReprintShippingLabelViewModel(shippingLabel: shippingLabel)
+        let viewModel = PrintShippingLabelViewModel(shippingLabel: shippingLabel)
 
         // When
         let paperSizeOptions = viewModel.paperSizeOptions
@@ -31,7 +31,7 @@ final class ReprintShippingLabelViewModelTests: XCTestCase {
     func test_selectedPaperSize_starts_with_nil() {
         // Given
         let shippingLabel = MockShippingLabel.emptyLabel()
-        let viewModel = ReprintShippingLabelViewModel(shippingLabel: shippingLabel)
+        let viewModel = PrintShippingLabelViewModel(shippingLabel: shippingLabel)
 
         // When
         var paperSizeValues = [ShippingLabelPaperSize?]()
@@ -47,7 +47,7 @@ final class ReprintShippingLabelViewModelTests: XCTestCase {
         // Given
         let shippingLabel = MockShippingLabel.emptyLabel()
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = ReprintShippingLabelViewModel(shippingLabel: shippingLabel, stores: stores)
+        let viewModel = PrintShippingLabelViewModel(shippingLabel: shippingLabel, stores: stores)
         let shippingLabelSettings = ShippingLabelSettings(siteID: shippingLabel.siteID, orderID: shippingLabel.orderID, paperSize: .letter)
         stores.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
             switch action {
@@ -74,7 +74,7 @@ final class ReprintShippingLabelViewModelTests: XCTestCase {
         // Given
         let shippingLabel = MockShippingLabel.emptyLabel()
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = ReprintShippingLabelViewModel(shippingLabel: shippingLabel, stores: stores)
+        let viewModel = PrintShippingLabelViewModel(shippingLabel: shippingLabel, stores: stores)
         // A4 paper size is not supported in mobile yet.
         let shippingLabelSettings = ShippingLabelSettings(siteID: shippingLabel.siteID, orderID: shippingLabel.orderID, paperSize: .a4)
         stores.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
@@ -101,7 +101,7 @@ final class ReprintShippingLabelViewModelTests: XCTestCase {
     func test_updateSelectedPaperSize_sets_selectedPaperSize_to_selected_value() {
         // Given
         let shippingLabel = MockShippingLabel.emptyLabel()
-        let viewModel = ReprintShippingLabelViewModel(shippingLabel: shippingLabel)
+        let viewModel = PrintShippingLabelViewModel(shippingLabel: shippingLabel)
         var paperSizeValues = [ShippingLabelPaperSize?]()
         viewModel.$selectedPaperSize.sink { paperSize in
             paperSizeValues.append(paperSize)

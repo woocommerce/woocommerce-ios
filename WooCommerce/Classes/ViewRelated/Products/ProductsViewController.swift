@@ -162,6 +162,7 @@ final class ProductsViewController: UIViewController {
         configureNavigationBar()
         configureMainView()
         configureTableView()
+        configureToolBarView()
         configureSyncingCoordinator()
         registerTableViewCells()
 
@@ -367,6 +368,12 @@ private extension ProductsViewController {
 
         // Updates products tab state after table view is configured, otherwise the initial state is always showing results.
         stateCoordinator.transitionToResultsUpdatedState(hasData: !isEmpty)
+    }
+    
+    /// Configure toolbar view by number of products
+    ///
+    func configureToolBarView() {
+        showOrHideToolBar()
     }
 
     func createToolbar() -> ToolbarView {
@@ -728,8 +735,6 @@ private extension ProductsViewController {
         }
         displayEmptyStateViewController(emptyStateViewController)
         emptyStateViewController.configure(config)
-        // Hide toolbar when user doesn't have products
-        showOrHideToolBar()
     }
 
     /// Shows the EmptyStateViewController as a child view controller.

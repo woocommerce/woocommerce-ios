@@ -114,6 +114,139 @@ class ReviewOrderViewModelTests: XCTestCase {
         })
         XCTAssertNil(refundedProductRow)
     }
+
+    func test_customerSection_does_not_contain_customer_note_cell_if_there_is_no_note() {
+        // Given
+        let item = OrderItem.fake().copy(productID: productID)
+        let order = Order.fake().copy(status: .processing, customerNote: nil, items: [item])
+        let product = Product().copy(productID: productID)
+
+        // When
+        let viewModel = ReviewOrderViewModel(order: order, products: [product], showAddOns: false)
+
+        // Then
+        let customerSection = viewModel.sections.first(where: { $0.category == .customerInformation })
+        XCTAssertNotNil(customerSection)
+
+        let customerNoteRow = customerSection?.rows.first(where: {
+            if case .customerNote = $0 {
+                return true
+            }
+            return false
+        })
+        XCTAssertNil(customerNoteRow)
+    }
+
+    func test_customerSection_contains_customer_note_cell_if_there_is_non_empty_note() {
+        // Given
+        let note = "Test"
+        let item = OrderItem.fake().copy(productID: productID)
+        let order = Order.fake().copy(status: .processing, customerNote: note, items: [item])
+        let product = Product().copy(productID: productID)
+
+        // When
+        let viewModel = ReviewOrderViewModel(order: order, products: [product], showAddOns: false)
+
+        // Then
+        let customerSection = viewModel.sections.first(where: { $0.category == .customerInformation })
+        XCTAssertNotNil(customerSection)
+
+        let customerNoteRow = customerSection?.rows.first(where: {
+            if case .customerNote = $0 {
+                return true
+            }
+            return false
+        })
+        XCTAssertNotNil(customerNoteRow)
+    }
+
+    func test_customerSection_does_not_contain_shipping_method_cell_if_there_is_no_shippingLines() {
+        // Given
+        let item = OrderItem.fake().copy(productID: productID)
+        let order = Order.fake().copy(status: .processing, items: [item], shippingLines: [])
+        let product = Product().copy(productID: productID)
+
+        // When
+        let viewModel = ReviewOrderViewModel(order: order, products: [product], showAddOns: false)
+
+        // Then
+        let customerSection = viewModel.sections.first(where: { $0.category == .customerInformation })
+        XCTAssertNotNil(customerSection)
+
+        let customerShippingMethodRow = customerSection?.rows.first(where: {
+            if case .shippingMethod = $0 {
+                return true
+            }
+            return false
+        })
+        XCTAssertNil(customerShippingMethodRow)
+    }
+
+    func test_customerSection_contains_shipping_method_cell_if_there_exist_shippingLines() {
+        // Given
+        let item = OrderItem.fake().copy(productID: productID)
+        let order = Order.fake().copy(status: .processing, items: [item], shippingLines: [ShippingLine.fake()])
+        let product = Product().copy(productID: productID)
+
+        // When
+        let viewModel = ReviewOrderViewModel(order: order, products: [product], showAddOns: false)
+
+        // Then
+        let customerSection = viewModel.sections.first(where: { $0.category == .customerInformation })
+        XCTAssertNotNil(customerSection)
+
+        let customerShippingMethodRow = customerSection?.rows.first(where: {
+            if case .shippingMethod = $0 {
+                return true
+            }
+            return false
+        })
+        XCTAssertNotNil(customerShippingMethodRow)
+    }
+
+    func test_customerSection_does_not_contain_shipping_address_cell_if_there_are_only_virtual_products() {
+        // Given
+        let item = OrderItem.fake().copy(productID: productID)
+        let order = Order.fake().copy(status: .processing, items: [item])
+        let product = Product().copy(productID: productID, virtual: true)
+
+        // When
+        let viewModel = ReviewOrderViewModel(order: order, products: [product], showAddOns: false)
+
+        // Then
+        let customerSection = viewModel.sections.first(where: { $0.category == .customerInformation })
+        XCTAssertNotNil(customerSection)
+
+        let customerAddressRow = customerSection?.rows.first(where: {
+            if case .shippingAddress = $0 {
+                return true
+            }
+            return false
+        })
+        XCTAssertNil(customerAddressRow)
+    }
+
+    func test_customerSection_does_not_contain_shipping_address_cell_if_there_is_virtual_product_and_shipping_address() {
+        // Given
+        let item = OrderItem.fake().copy(productID: productID)
+        let order = Order.fake().copy(status: .processing, items: [item], shippingAddress: Address.fake())
+        let product = Product().copy(productID: productID, virtual: false)
+
+        // When
+        let viewModel = ReviewOrderViewModel(order: order, products: [product], showAddOns: false)
+
+        // Then
+        let customerSection = viewModel.sections.first(where: { $0.category == .customerInformation })
+        XCTAssertNotNil(customerSection)
+
+        let customerAddressRow = customerSection?.rows.first(where: {
+            if case .shippingAddress = $0 {
+                return true
+            }
+            return false
+        })
+        XCTAssertNotNil(customerAddressRow)
+    }
 }
 
 private extension ReviewOrderViewModelTests {

@@ -12,7 +12,7 @@ final class ReviewOrderViewModel {
 
     /// The order for review
     ///
-    private let order: Order
+    let order: Order
 
     /// Products in the order
     ///
@@ -88,8 +88,8 @@ extension ReviewOrderViewModel {
     /// Sections for order table view
     ///
     var sections: [Section] {
-        // TODO: add other sections: Customer Info and Tracking
-        return [productSection].filter { !$0.rows.isEmpty }
+        // TODO: Add tracking section
+        return [productSection, customerSection].filter { !$0.rows.isEmpty }
     }
 
     /// Filter product for an order item
@@ -117,6 +117,21 @@ extension ReviewOrderViewModel {
     }
 }
 
+// MARK: - Order details
+private extension ReviewOrderViewModel {
+    /// Shipping address of the order
+    ///
+    var shippingAddress: Address? {
+        order.shippingAddress
+    }
+
+    /// First Shipping method from an order
+    ///
+    var shippingMethod: String {
+        return order.shippingLines.first?.methodTitle ?? String()
+    }
+}
+
 // MARK: - Sections configuration
 //
 private extension ReviewOrderViewModel {
@@ -125,6 +140,38 @@ private extension ReviewOrderViewModel {
     var productSection: Section {
         let rows = aggregateOrderItems.map { Row.orderItem(item: $0) }
         return .init(category: .products, rows: rows)
+    }
+
+    /// Customer section setup
+    ///
+    var customerSection: Section {
+        let noteRow: Row? = {
+            guard let note = order.customerNote, !note.isEmpty else {
+                return nil
+            }
+            return Row.customerNote(text: note)
+        }()
+
+        let shippingMethodRow: Row? = {
+            guard order.shippingLines.count > 0 else { return nil }
+            return Row.shippingMethod(method: shippingMethod)
+        }()
+
+        let addressRow: Row? = {
+            let orderContainsOnlyVirtualProducts = products
+                .filter { (product) -> Bool in
+                    order.items.first(where: { $0.productID == product.productID}) != nil
+                }
+                .allSatisfy { $0.virtual == true }
+            guard let shippingAddress = shippingAddress, !orderContainsOnlyVirtualProducts else {
+                return nil
+            }
+            return Row.shippingAddress(address: shippingAddress)
+        }()
+
+        let billingRow: Row = .billingDetail
+        let rows = [noteRow, addressRow, shippingMethodRow, billingRow].compactMap { $0 }
+        return .init(category: .customerInformation, rows: rows)
     }
 }
 

@@ -22,21 +22,13 @@ final class ProductVariationsViewController: UIViewController {
         return refreshControl
     }()
 
-    /// Stack view that contains the top warning banner and is contained in the table view header.
+    /// Stack view that is contained in the table view header.
     ///
     private lazy var topStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .vertical
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
-    }()
-
-    /// Top banner that shows a warning in case some variations are missing a price.
-    ///
-    private lazy var topBannerView: TopBannerView = {
-        let topBanner = ProductVariationsTopBannerFactory.missingPricesTopBannerView()
-        topBanner.translatesAutoresizingMaskIntoConstraints = false
-        return topBanner
     }()
 
     /// Footer "Loading More" Spinner.
@@ -146,7 +138,6 @@ final class ProductVariationsViewController: UIViewController {
         configureSyncingCoordinator()
         registerTableViewCells()
         configureHeaderContainerView()
-        updateTopBannerView()
         updateEmptyState()
 
         syncingCoordinator.synchronizeFirstPage()
@@ -276,8 +267,6 @@ private extension ProductVariationsViewController {
                      actionSelector: #selector(addButtonTapped),
                      stylingHandler: { $0.applySecondaryButtonStyle() })
 
-        topStackView.addArrangedSubview(topBannerView)
-
         tableView.tableHeaderView = headerContainer
     }
 
@@ -309,17 +298,6 @@ private extension ProductVariationsViewController {
         }
 
         topStackView.addArrangedSubview(buttonContainer)
-    }
-
-    func updateTopBannerView() {
-        let hasVariationsMissingPrice = resultsController.fetchedObjects.contains {
-            EditableProductVariationModel(productVariation: $0,
-                                          allAttributes: allAttributes,
-                                          parentProductSKU: parentProductSKU)
-                .isEnabledAndMissingPrice
-        }
-        topBannerView.isHidden = hasVariationsMissingPrice == false
-        tableView.updateHeaderHeight()
     }
 }
 
@@ -354,7 +332,7 @@ private extension ProductVariationsViewController {
         do {
             try resultsController.performFetch()
         } catch {
-            CrashLogging.logError(error)
+            ServiceLocator.crashLogging.logError(error)
         }
 
         tableView.reloadData()
@@ -363,7 +341,6 @@ private extension ProductVariationsViewController {
     func configureResultsControllerEventHandling(_ resultsController: ResultsController<StorageProductVariation>) {
         let onReload = { [weak self] in
             self?.tableView.reloadData()
-            self?.updateTopBannerView()
         }
 
         resultsController.onDidChangeContent = { [weak tableView] in
@@ -681,7 +658,6 @@ private extension ProductVariationsViewController {
 
     func transitionToResultsUpdatedState() {
         stateCoordinator.transitionToResultsUpdatedState(hasData: !isEmpty)
-        updateTopBannerView()
     }
 }
 

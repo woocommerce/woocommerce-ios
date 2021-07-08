@@ -1,5 +1,4 @@
 import Foundation
-import Alamofire
 
 
 /// Devices: Remote Endpoints (Push Notifications Registration / Unregistration!)

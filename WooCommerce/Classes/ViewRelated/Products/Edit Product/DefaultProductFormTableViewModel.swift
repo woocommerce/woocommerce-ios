@@ -60,7 +60,7 @@ private extension DefaultProductFormTableViewModel {
     func settingsRows(product: EditableProductModel, actions: [ProductFormEditAction]) -> [ProductFormSection.SettingsRow] {
         return actions.compactMap { action in
             switch action {
-            case .priceSettings(let editable):
+            case .priceSettings(let editable, _):
                 return .price(viewModel: priceSettingsRow(product: product, isEditable: editable), isEditable: editable)
             case .reviews:
                 return .reviews(viewModel: reviewsRow(product: product), ratingCount: product.ratingCount, averageRating: product.averageRating)
@@ -84,8 +84,8 @@ private extension DefaultProductFormTableViewModel {
                 return .sku(viewModel: skuRow(product: product.product, isEditable: editable), isEditable: editable)
             case .groupedProducts(let editable):
                 return .groupedProducts(viewModel: groupedProductsRow(product: product.product, isEditable: editable), isEditable: editable)
-            case .variations:
-                return .variations(viewModel: variationsRow(product: product.product))
+            case .variations(let hideSeparator):
+                return .variations(viewModel: variationsRow(product: product.product, hideSeparator: hideSeparator))
             case .downloadableFiles(let editable):
                 return .downloadableFiles(viewModel: downloadsRow(product: product, isEditable: editable), isEditable: editable)
             case .linkedProducts(let editable):
@@ -104,8 +104,9 @@ private extension DefaultProductFormTableViewModel {
     func settingsRows(productVariation: EditableProductVariationModel, actions: [ProductFormEditAction]) -> [ProductFormSection.SettingsRow] {
         return actions.compactMap { action in
             switch action {
-            case .priceSettings(let editable):
-                return .price(viewModel: variationPriceSettingsRow(productVariation: productVariation, isEditable: editable), isEditable: editable)
+            case .priceSettings(let editable, let hideSeparator):
+                return .price(viewModel: variationPriceSettingsRow(productVariation: productVariation, isEditable: editable, hideSeparator: hideSeparator),
+                              isEditable: editable)
             case .attributes(let editable):
                 return .attributes(viewModel: variationAttributesRow(productVariation: productVariation, isEditable: editable), isEditable: editable)
             case .shippingSettings(let editable):
@@ -168,14 +169,17 @@ private extension DefaultProductFormTableViewModel {
                                                         isActionable: isEditable)
     }
 
-    func variationPriceSettingsRow(productVariation: EditableProductVariationModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
+    func variationPriceSettingsRow(productVariation: EditableProductVariationModel,
+                                   isEditable: Bool,
+                                   hideSeparator: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let priceViewModel = priceSettingsRow(product: productVariation, isEditable: isEditable)
         let tintColor = productVariation.isEnabledAndMissingPrice ? UIColor.warning: nil
         return .init(icon: priceViewModel.icon,
                      title: priceViewModel.title,
                      details: priceViewModel.details,
                      tintColor: tintColor,
-                     isActionable: priceViewModel.isActionable)
+                     isActionable: priceViewModel.isActionable,
+                     hideSeparator: hideSeparator)
     }
 
     func reviewsRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
@@ -381,11 +385,11 @@ private extension DefaultProductFormTableViewModel {
 
     // MARK: Variable products only
 
-    func variationsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
+    func variationsRow(product: Product, hideSeparator: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.variationsImage
         let title = product.variations.isEmpty ? Localization.addVariationsTitle : Localization.variationsTitle
         let details = Localization.variationsDetail(count: product.variations.count)
-        return ProductFormSection.SettingsRow.ViewModel(icon: icon, title: title, details: details, isActionable: true)
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon, title: title, details: details, isActionable: true, hideSeparator: hideSeparator)
     }
 
     // MARK: Product variation only

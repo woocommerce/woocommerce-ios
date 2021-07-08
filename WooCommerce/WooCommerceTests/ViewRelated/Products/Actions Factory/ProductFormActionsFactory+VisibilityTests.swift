@@ -14,7 +14,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Assert
-        XCTAssertTrue(factory.settingsSectionActions().contains(.priceSettings(editable: true)))
+        XCTAssertTrue(factory.settingsSectionActions().contains(.priceSettings(editable: true, hideSeparator: false)))
     }
 
     func testPriceRowIsVisibleForProductWithoutPriceData() {
@@ -26,7 +26,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Assert
-        XCTAssertTrue(factory.settingsSectionActions().contains(.priceSettings(editable: true)))
+        XCTAssertTrue(factory.settingsSectionActions().contains(.priceSettings(editable: true, hideSeparator: false)))
     }
 
     // MARK: - Inventory

@@ -25,10 +25,10 @@ public protocol ProductsRemoteProtocol {
                         pageNumber: Int,
                         pageSize: Int,
                         excludedProductIDs: [Int64],
-                        completion: @escaping ([Product]?, Error?) -> Void)
+                        completion: @escaping (Result<[Product], Error>) -> Void)
     func searchSku(for siteID: Int64,
                    sku: String,
-                   completion: @escaping (String?, Error?) -> Void)
+                   completion: @escaping (Result<String, Error>) -> Void)
     func updateProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void)
 }
 
@@ -199,7 +199,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                pageNumber: Int,
                                pageSize: Int,
                                excludedProductIDs: [Int64] = [],
-                               completion: @escaping ([Product]?, Error?) -> Void) {
+                               completion: @escaping (Result<[Product], Error>) -> Void) {
         let stringOfExcludedProductIDs = excludedProductIDs.map { String($0) }
             .joined(separator: ",")
 
@@ -226,7 +226,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///
     public func searchSku(for siteID: Int64,
                                sku: String,
-                               completion: @escaping (String?, Error?) -> Void) {
+                               completion: @escaping (Result<String, Error>) -> Void) {
         let parameters = [
             ParameterKey.sku: sku,
             ParameterKey.fields: ParameterValues.skuFieldValues

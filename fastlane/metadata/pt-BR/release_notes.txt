@@ -1,3 +1,1 @@
-Agora você pode criar e editar um produto virtual diretamente na tela de detalhes dele!
-
-Não há mais suporte para iOS 13. De agora em diante, apenas o iOS 14 e versões posteriores serão compatíveis.
+São necessários menos toques para acessar os atributos de um produto variável: eles são listados nos detalhes do produto! Também aprimoramos o carregamento visual e interno dos detalhes do pedido. Esperamos que você perceba as melhorias!

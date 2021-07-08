@@ -314,7 +314,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 guard isEditable else {
                     return
                 }
-                // TODO: Navigate to product add-ons
+                ServiceLocator.analytics.track(event: WooAnalyticsEvent.ProductDetailAddOns.productAddOnsButtonTapped(productID: product.productID))
+                navigateToAddOns()
             case .categories(_, let isEditable):
                 guard isEditable else {
                     return
@@ -603,7 +604,8 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func saveProduct(status: ProductStatus? = nil) {
         let productStatus = status ?? product.status
-        showSavingProgress(for: productStatus)
+        let messageType = viewModel.saveMessageType(for: productStatus)
+        showSavingProgress(messageType)
 
         saveImagesAndProductRemotely(status: status)
     }
@@ -1388,6 +1390,19 @@ private extension ProductFormViewController {
     func onAttributeUpdated(attributesViewController: UIViewController, updatedProduct: Product) {
         viewModel.updateProductVariations(from: updatedProduct)
         navigationController?.popToViewController(attributesViewController, animated: true)
+    }
+}
+
+// MARK: Action - View Add-ons
+//
+private extension ProductFormViewController {
+    func navigateToAddOns() {
+        guard let product = product as? EditableProductModel else {
+            return
+        }
+        let viewModel = ProductAddOnsListViewModel(addOns: product.product.addOns)
+        let viewController = ProductAddOnsListViewController(viewModel: viewModel)
+        show(viewController, sender: self)
     }
 }
 

@@ -1,3 +1,1 @@
-Sekarang Anda bisa membuat dan menyunting produk virtual langsung dari layar detail produk!
-
-Harap perhatikan bahwa iOS 13 tidak lagi didukung. Hanya iOS 14 dan versi lebih baru yang akan didukung ke depannya. 
+Membuka atribut pada produk variabel memerlukan lebih sedikit ketukan – atribut langsung terdaftar dalam detail produk! Kami juga meningkatkan cara detail pesanan dimuat secara visual maupun pada proses pemesanannya – semoga Anda dapat melihat perubahannya!

@@ -111,9 +111,15 @@ private extension ReceiptRenderer {
     private func formattedAmount() -> String {
         // We should use CurrencyFormatter instead for consistency
         let formatter = NumberFormatter()
-        formatter.minimumFractionDigits = 2
-        formatter.maximumFractionDigits = 2
-        return formatter.string(for: parameters.amount / 100) ?? ""
+
+        let fractionDigits = 2 // TODO - support non cent currencies like JPY - see #3948
+        formatter.minimumFractionDigits = fractionDigits
+        formatter.maximumFractionDigits = fractionDigits
+
+        var amount: Decimal = Decimal(parameters.amount)
+        amount = amount / pow(10, fractionDigits)
+
+        return formatter.string(for: amount) ?? ""
     }
 
     private func summaryTable() -> String {

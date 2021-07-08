@@ -1,7 +1,6 @@
 import UIKit
 
 /// Subclass to set Woo styling. Removes back button text on managed view controllers.
-/// Use this when presenting modals.
 ///
 class WooNavigationController: UINavigationController {
 
@@ -33,6 +32,10 @@ class WooNavigationController: UINavigationController {
 /// Class that listens and forwards events from `UINavigationControllerDelegate`
 /// Needed to configure the managed `ViewController` back button while providing a `delegate` to children classes.
 ///
+/// Please be cautious when forwarding events of `navigationController(_:animationControllerFor:from:to:)`.
+/// Make sure to implement the method in ALL subclasses of `WooNavigationController`,
+/// otherwise it will break the interactive pop gesture.
+///
 private class WooNavigationControllerDelegate: NSObject, UINavigationControllerDelegate {
 
     /// Children delegate, all events will be forwarded to this object
@@ -62,27 +65,6 @@ private class WooNavigationControllerDelegate: NSObject, UINavigationControllerD
     ///
     func navigationControllerPreferredInterfaceOrientationForPresentation(_ navigationController: UINavigationController) -> UIInterfaceOrientation {
         forwardDelegate?.navigationControllerPreferredInterfaceOrientationForPresentation?(navigationController) ?? .portrait
-    }
-
-    /// Forwards the event to the children delegate.
-    ///
-    func navigationController(
-        _ navigationController: UINavigationController,
-        interactionControllerFor animationController: UIViewControllerAnimatedTransitioning
-    ) -> UIViewControllerInteractiveTransitioning? {
-        forwardDelegate?.navigationController?(navigationController, interactionControllerFor: animationController)
-    }
-
-    /// Forwards the event to the children delegate.
-    ///
-    func navigationController(_ navigationController: UINavigationController,
-                              animationControllerFor operation: UINavigationController.Operation,
-                              from fromVC: UIViewController,
-                              to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        forwardDelegate?.navigationController?(navigationController,
-                                               animationControllerFor: operation,
-                                               from: fromVC,
-                                               to: toVC)
     }
 }
 

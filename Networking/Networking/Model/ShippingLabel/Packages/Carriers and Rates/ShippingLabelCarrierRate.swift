@@ -1,8 +1,9 @@
 import Foundation
+import Codegen
 
 /// Represents the rate for a specific shipping carrier
 ///
-public struct ShippingLabelCarrierRate: Equatable {
+public struct ShippingLabelCarrierRate: Equatable, GeneratedFakeable {
 
     public let title: String
     public let insurance: Double
@@ -15,7 +16,7 @@ public struct ShippingLabelCarrierRate: Equatable {
     public let hasTracking: Bool
     public let isSelected: Bool
     public let isPickupFree: Bool
-    public let deliveryDays: Int64
+    public let deliveryDays: Int64?
     public let deliveryDateGuaranteed: Bool
 
     public init(title: String,
@@ -29,7 +30,7 @@ public struct ShippingLabelCarrierRate: Equatable {
                 hasTracking: Bool,
                 isSelected: Bool,
                 isPickupFree: Bool,
-                deliveryDays: Int64,
+                deliveryDays: Int64?,
                 deliveryDateGuaranteed: Bool) {
         self.title = title
         self.insurance = insurance
@@ -64,7 +65,7 @@ extension ShippingLabelCarrierRate: Codable {
         let hasTracking = try container.decode(Bool.self, forKey: .hasTracking)
         let isSelected = try container.decode(Bool.self, forKey: .isSelected)
         let isPickupFree = try container.decode(Bool.self, forKey: .isPickupFree)
-        let deliveryDays = try container.decode(Int64.self, forKey: .deliveryDays)
+        let deliveryDays = try container.decodeIfPresent(Int64.self, forKey: .deliveryDays)
         let deliveryDateGuaranteed = try container.decode(Bool.self, forKey: .deliveryDateGuaranteed)
 
 

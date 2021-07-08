@@ -204,6 +204,10 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
     func isShippingEnabled() -> Bool {
         productVariation.downloadable == false && productVariation.virtual == false
     }
+
+    var existsRemotely: Bool {
+        true // Variations are always created remotely
+    }
 }
 
 extension EditableProductVariationModel {

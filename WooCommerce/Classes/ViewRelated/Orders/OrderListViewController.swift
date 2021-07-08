@@ -11,7 +11,7 @@ import XLPagerTabStrip
 
 private typealias SyncReason = OrderListSyncActionUseCase.SyncReason
 
-protocol OrderListViewControllerDelegate: class {
+protocol OrderListViewControllerDelegate: AnyObject {
     /// Called when `OrderListViewController` (or `OrdersViewController`) is about to fetch Orders from the API.
     ///
     func orderListViewControllerWillSynchronizeOrders(_ viewController: UIViewController)
@@ -89,6 +89,23 @@ final class OrderListViewController: UIViewController {
 
     private let siteID: Int64
 
+    /// Top banner that shows an error if there is a problem loading orders data
+    ///
+    private lazy var topBannerView: TopBannerView = {
+        ErrorTopBannerFactory.createTopBanner(isExpanded: false,
+                                              expandedStateChangeHandler: { [weak self] in
+                                                self?.tableView.updateHeaderHeight()
+                                              },
+                                              onTroubleshootButtonPressed: { [weak self] in
+                                                let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
+                                                self?.present(safariViewController, animated: true, completion: nil)
+                                              },
+                                              onContactSupportButtonPressed: { [weak self] in
+                                                guard let self = self else { return }
+                                                ZendeskManager.shared.showNewRequestIfPossible(from: self, with: nil)
+                                              })
+    }()
+
     // MARK: - View Lifecycle
 
     /// Designated initializer.
@@ -128,6 +145,10 @@ final class OrderListViewController: UIViewController {
         super.viewWillAppear(animated)
 
         syncingCoordinator.resynchronize()
+
+        // Fix any incomplete animation of the refresh control
+        // when switching tabs mid-animation
+        refreshControl.resetAnimation(in: tableView)
 
         // Fix any _incomplete_ animation if the orders were deleted and refetched from
         // a different location (or Orders tab).
@@ -256,6 +277,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
         transitionToSyncingState()
+        setErrorLoadingData(to: false)
 
         let action = viewModel.synchronizationAction(
             siteID: siteID,
@@ -268,7 +290,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
                 if let error = error {
                     DDLogError("⛔️ Error synchronizing orders: \(error)")
-                    self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize, reason: reason)
+                    self.setErrorLoadingData(to: true)
                 } else {
                     ServiceLocator.analytics.track(event: .ordersListLoaded(totalDuration: totalDuration,
                                                                             pageNumber: pageNumber,
@@ -280,6 +302,36 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         }
 
         ServiceLocator.stores.dispatch(action)
+    }
+
+    /// Sets `hasErrorLoadingData` in the view model and shows or hides the banner view accordingly
+    ///
+    private func setErrorLoadingData(to hasError: Bool) {
+        viewModel.hasErrorLoadingData = hasError
+        if hasError {
+            showTopBannerView()
+        } else {
+            hideTopBannerView()
+        }
+    }
+
+    /// Display the error banner in the table view header
+    ///
+    private func showTopBannerView() {
+        // Configure header container view
+        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
+        headerContainer.addSubview(topBannerView)
+        headerContainer.pinSubviewToSafeArea(topBannerView)
+
+        tableView.tableHeaderView = headerContainer
+        tableView.updateHeaderHeight()
+    }
+
+    /// Hide the error banner from the table view header
+    ///
+    private func hideTopBannerView() {
+        topBannerView.removeFromSuperview()
+        tableView.tableHeaderView = nil
     }
 }
 
@@ -344,23 +396,6 @@ private extension OrderListViewController {
         ghostableTableView.removeGhostContent()
     }
 
-    /// Displays the Error Notice.
-    ///
-    func displaySyncingErrorNotice(pageNumber: Int, pageSize: Int, reason: String?) {
-        let message = NSLocalizedString("Unable to refresh list", comment: "Refresh Action Failed")
-        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            self.delegate?.orderListViewControllerWillSynchronizeOrders(self)
-            self.sync(pageNumber: pageNumber, pageSize: pageSize, reason: reason)
-        }
-
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
-    }
-
     /// Shows the EmptyStateViewController
     ///
     func displayEmptyViewController() {
@@ -375,6 +410,13 @@ private extension OrderListViewController {
         }
 
         childController.configure(emptyStateConfig)
+
+        // Show Error Loading Data banner if the empty state is caused by a sync error
+        if viewModel.hasErrorLoadingData {
+            childController.showTopBannerView()
+        } else {
+            childController.hideTopBannerView()
+        }
 
         childView.translatesAutoresizingMaskIntoConstraints = false
 

@@ -135,7 +135,9 @@ final class OrderDetailsViewModel {
         return String.localizedStringWithFormat(Localization.emailSubjectWithStoreName, storeName)
     }
 
-    private var paymentsAccount: WCPayAccount? = nil
+    private var cardPresentPaymentGatewayAccounts: [PaymentGatewayAccount] {
+        return dataSource.cardPresentPaymentGatewayAccounts()
+    }
 
     private var receipt: CardPresentReceiptParameters? = nil
 
@@ -256,28 +258,14 @@ extension OrderDetailsViewModel {
             let printingInstructionsViewController = ShippingLabelPrintingInstructionsViewController()
             let navigationController = WooNavigationController(rootViewController: printingInstructionsViewController)
             viewController.present(navigationController, animated: true, completion: nil)
-        case .shippingLabelProduct:
-            guard let item = dataSource.shippingLabelOrderItem(at: indexPath), item.productOrVariationID > 0 else {
-                return
-            }
-            let loaderViewController = ProductLoaderViewController(model: .init(aggregateOrderItem: item),
-                                                                   siteID: order.siteID,
-                                                                   forceReadOnly: true)
-            let navController = WooNavigationController(rootViewController: loaderViewController)
-            viewController.present(navController, animated: true, completion: nil)
+        case .shippingLabelProducts:
+            let shippingLabelItems = dataSource.shippingLabelOrderItems(at: indexPath)
+            let productListVC = AggregatedProductListViewController(viewModel: self, items: shippingLabelItems)
+            viewController.show(productListVC, sender: nil)
         case .billingDetail:
             ServiceLocator.analytics.track(.orderDetailShowBillingTapped)
             let billingInformationViewController = BillingInformationViewController(order: order)
             viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
-        case .details:
-            ServiceLocator.analytics.track(.orderDetailProductDetailTapped)
-            let identifier = ProductListViewController.classNameWithoutNamespaces
-            guard let productListVC = UIStoryboard.orders.instantiateViewController(identifier: identifier) as? ProductListViewController else {
-                DDLogError("Error: attempted to instantiate ProductListViewController. Instantiation failed.")
-                return
-            }
-            productListVC.viewModel = self
-            viewController.navigationController?.pushViewController(productListVC, animated: true)
         case .seeReceipt:
             ServiceLocator.analytics.track(.receiptViewTapped)
             guard let receipt = receipt else {
@@ -462,30 +450,11 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
-    func checkCardPaymentEligibility(onCompletion: (() -> Void)? = nil) {
-        // Orders are eligible for card present payment if:
-        // the status is pending or on hold
-        // and
-        // the payment method is none or cash on delivery
-        // and
-        // if the account is eligible for card present payments
-        let action = WCPayAction.loadAccount(siteID: order.siteID) { [weak self] result in
-            guard let self = self else {
-                return
-            }
-
-            switch result {
-            case .failure:
-                self.dataSource.isEligibleForCardPresentPayment = false
-            case .success(let account):
-                self.paymentsAccount = account
-                self.dataSource.isEligibleForCardPresentPayment = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) &&
-                    self.isOrderEligibleForCardPayment() && account.isCardPresentEligible
-            }
-
-            onCompletion?()
-        }
-
+    func refreshCardPresentPaymentEligibility() {
+        /// No need for a completion here. The VC will be notified of changes to the stored paymentGatewayAccounts
+        /// by the viewModel (after passing up through the dataSource and originating in the resultsControllers)
+        ///
+        let action = PaymentGatewayAccountAction.loadAccounts(siteID: order.siteID) {_ in}
         ServiceLocator.stores.dispatch(action)
     }
 
@@ -553,8 +522,16 @@ extension OrderDetailsViewModel {
                         onClearMessage: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
+
+        /// We don't have a concept of priority yet, so use the first paymentGatewayAccount for now
+        /// since we can't yet have multiple accounts
+        ///
+        if self.cardPresentPaymentGatewayAccounts.count != 1 {
+            DDLogWarn("Expected one card present gateway account. Got something else.")
+        }
+
         paymentOrchestrator.collectPayment(for: self.order,
-                                           paymentsAccount: self.paymentsAccount,
+                                           paymentsAccount: self.cardPresentPaymentGatewayAccounts.first,
                                            onPresentMessage: onPresentMessage,
                                            onClearMessage: onClearMessage,
                                            onProcessingMessage: onProcessingMessage,
@@ -576,24 +553,6 @@ extension OrderDetailsViewModel {
         paymentOrchestrator.emailReceipt(for: order, params: params, onContent: onContent)
     }
 }
-
-
-private extension OrderDetailsViewModel {
-    func isOrderEligibleForCardPayment() -> Bool {
-        return isOrderStatusEligibleForCardPayment() && isOrderPaymentMethodEligibleForCardPayment()
-    }
-
-    func isOrderStatusEligibleForCardPayment() -> Bool {
-        (order.status == .pending || order.status == .onHold || order.status == .processing)
-    }
-
-    func isOrderPaymentMethodEligibleForCardPayment() -> Bool {
-        let paymentMethod = OrderPaymentMethod(rawValue: order.paymentMethodID)
-
-        return paymentMethod == .cod || paymentMethod == .none
-    }
-}
-
 
 private extension OrderDetailsViewModel {
     enum Localization {

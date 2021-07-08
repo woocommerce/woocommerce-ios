@@ -105,4 +105,14 @@ final class ServiceLocatorTests: XCTestCase {
 
         XCTAssertTrue(cardReader is AirPrintReceiptPrinterService)
    }
+
+    func test_ServiceLocator_provides_crash_logging() {
+        XCTAssertNotNil(ServiceLocator.crashLogging)
+    }
+
+    func test_crash_logging_defaults_to_woo_crash_logging() {
+        let crashLogging = ServiceLocator.crashLogging
+        XCTAssertTrue(crashLogging is WooCrashLoggingStack)
+
+    }
 }

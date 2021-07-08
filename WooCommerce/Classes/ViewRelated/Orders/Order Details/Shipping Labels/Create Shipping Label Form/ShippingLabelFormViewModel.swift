@@ -43,23 +43,25 @@ final class ShippingLabelFormViewModel {
             return nil
         }
 
+        let weight = Double(totalPackageWeight ?? "0") ?? .zero
+
         if let customPackage = packagesResponse.customPackages.first(where: { $0.title == selectedPackageID }) {
             return ShippingLabelPackageSelected(boxID: customPackage.title,
                                                 length: customPackage.getLength(),
                                                 width: customPackage.getWidth(),
                                                 height: customPackage.getHeight(),
-                                                weight: customPackage.getWidth(),
+                                                weight: weight,
                                                 isLetter: customPackage.isLetter)
         }
 
         for option in packagesResponse.predefinedOptions {
             if let predefinedPackage = option.predefinedPackages.first(where: { $0.id == selectedPackageID }) {
-                    return ShippingLabelPackageSelected(boxID: predefinedPackage.id,
-                                                        length: predefinedPackage.getLength(),
-                                                        width: predefinedPackage.getWidth(),
-                                                        height: predefinedPackage.getHeight(),
-                                                        weight: predefinedPackage.getWidth(),
-                                                        isLetter: predefinedPackage.isLetter)
+                return ShippingLabelPackageSelected(boxID: predefinedPackage.id,
+                                                    length: predefinedPackage.getLength(),
+                                                    width: predefinedPackage.getWidth(),
+                                                    height: predefinedPackage.getHeight(),
+                                                    weight: weight,
+                                                    isLetter: predefinedPackage.isLetter)
             }
         }
 
@@ -71,6 +73,22 @@ final class ShippingLabelFormViewModel {
     ///
     var shippingLabelAccountSettings: ShippingLabelAccountSettings?
 
+    /// Shipping Label Purchase
+    ///
+    private(set) var purchasedShippingLabel: ShippingLabel?
+
+    /// ResultsController: Loads Countries from the Storage Layer.
+    ///
+    private let resultsController: ResultsController<StorageCountry> = {
+        let storageManager = ServiceLocator.storageManager
+        let descriptor = NSSortDescriptor(key: "name", ascending: true)
+
+        return ResultsController(storageManager: storageManager, matching: nil, sortedBy: [descriptor])
+    }()
+
+    var countries: [Country] {
+        resultsController.fetchedObjects
+    }
 
     private let stores: StoresManager
 
@@ -110,18 +128,35 @@ final class ShippingLabelFormViewModel {
 
         syncShippingLabelAccountSettings()
         syncPackageDetails()
+        fetchCountries()
     }
 
     func handleOriginAddressValueChanges(address: ShippingLabelAddress?, validated: Bool) {
         originAddress = address
         let dateState: ShippingLabelFormViewController.DataState = validated ? .validated : .pending
         updateRowState(type: .shipFrom, dataState: dateState, displayMode: .editable)
+
+        // We reset the carrier and rates selected because if the address change
+        // the carrier and rate change accordingly
+        handleCarrierAndRatesValueChanges(selectedRate: nil, selectedSignatureRate: nil, selectedAdultSignatureRate: nil, editable: false)
+
+        if dateState == .validated {
+            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "origin_address_complete"])
+        }
     }
 
     func handleDestinationAddressValueChanges(address: ShippingLabelAddress?, validated: Bool) {
         destinationAddress = address
         let dateState: ShippingLabelFormViewController.DataState = validated ? .validated : .pending
         updateRowState(type: .shipTo, dataState: dateState, displayMode: .editable)
+
+        // We reset the carrier and rates selected because if the address change
+        // the carrier and rate change accordingly
+        handleCarrierAndRatesValueChanges(selectedRate: nil, selectedSignatureRate: nil, selectedAdultSignatureRate: nil, editable: false)
+
+        if dateState == .validated {
+            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "destination_address_complete"])
+        }
     }
 
     func handlePackageDetailsValueChanges(selectedPackageID: String?, totalPackageWeight: String?) {
@@ -133,20 +168,25 @@ final class ShippingLabelFormViewModel {
             return
         }
         updateRowState(type: .packageDetails, dataState: .validated, displayMode: .editable)
+
+        // We reset the carrier and rates selected because if the package change
+        // the carrier and rate change accordingly
+        handleCarrierAndRatesValueChanges(selectedRate: nil, selectedSignatureRate: nil, selectedAdultSignatureRate: nil, editable: false)
     }
 
     func handleCarrierAndRatesValueChanges(selectedRate: ShippingLabelCarrierRate?,
                                            selectedSignatureRate: ShippingLabelCarrierRate?,
-                                           selectedAdultSignatureRate: ShippingLabelCarrierRate?) {
+                                           selectedAdultSignatureRate: ShippingLabelCarrierRate?,
+                                           editable: Bool) {
         self.selectedRate = selectedRate
         self.selectedSignatureRate = selectedSignatureRate
         self.selectedAdultSignatureRate = selectedAdultSignatureRate
 
-        guard selectedRate != nil else {
-            updateRowState(type: .shippingCarrierAndRates, dataState: .pending, displayMode: .editable)
+        guard selectedRate != nil || selectedSignatureRate != nil || selectedAdultSignatureRate != nil else {
+            updateRowState(type: .shippingCarrierAndRates, dataState: .pending, displayMode: editable ? .editable : .disabled)
             return
         }
-        updateRowState(type: .shippingCarrierAndRates, dataState: .validated, displayMode: .editable)
+        updateRowState(type: .shippingCarrierAndRates, dataState: .validated, displayMode: editable ? .editable : .disabled)
     }
 
     func handlePaymentMethodValueChanges(settings: ShippingLabelAccountSettings, editable: Bool) {
@@ -168,7 +208,7 @@ final class ShippingLabelFormViewModel {
         let shippingCarrierAndRates = Row(type: .shippingCarrierAndRates, dataState: .pending, displayMode: .disabled)
         let paymentMethod = Row(type: .paymentMethod, dataState: .pending, displayMode: .disabled)
         let rows: [Row] = [shipFrom, shipTo, packageDetails, shippingCarrierAndRates, paymentMethod]
-        return [Section(rows: rows)]
+        return [Section(title: nil, rows: rows)]
     }
 
     /// Returns the body of the Package Details cell
@@ -207,9 +247,13 @@ final class ShippingLabelFormViewModel {
         let price = currencyFormatter.formatAmount(Decimal(rate)) ?? ""
 
         let formatString = selectedRate.deliveryDays == 1 ? Localization.businessDaySingular : Localization.businessDaysPlural
-        let shippingDays = String(format: formatString, selectedRate.deliveryDays)
 
-        return selectedRate.title + "\n" + price + " - " + shippingDays
+        var shippingDays = ""
+        if let deliveryDays = selectedRate.deliveryDays {
+            shippingDays = " - " + String(format: formatString, deliveryDays)
+        }
+
+        return selectedRate.title + "\n" + price + shippingDays
     }
 
     /// Returns the body of the Payment Methods cell.
@@ -223,6 +267,73 @@ final class ShippingLabelFormViewModel {
         }
 
         return String.localizedStringWithFormat(Localization.paymentMethodLabel, selectedPaymentMethod.cardDigits)
+    }
+
+    /// Returns the subtotal under the Order Summary.
+    ///
+    func getSubtotal() -> String {
+        guard let selectedRate = selectedRate else {
+            return ""
+        }
+
+        var retailRate: Double = selectedRate.retailRate
+        if let selectedSignatureRate = selectedSignatureRate {
+            retailRate = selectedSignatureRate.retailRate
+        }
+        else if let selectedAdultSignatureRate = selectedAdultSignatureRate {
+            retailRate = selectedAdultSignatureRate.retailRate
+        }
+
+        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+        let price = currencyFormatter.formatAmount(Decimal(retailRate)) ?? ""
+
+        return price
+    }
+
+    /// Returns, if available, the discount under the Order Summary.
+    ///
+    func getDiscount() -> String? {
+        guard let selectedRate = selectedRate else {
+            return nil
+        }
+
+        var rate: Double = selectedRate.rate - selectedRate.retailRate
+        if let selectedSignatureRate = selectedSignatureRate {
+            rate = selectedSignatureRate.rate - selectedSignatureRate.retailRate
+        }
+        else if let selectedAdultSignatureRate = selectedAdultSignatureRate {
+            rate = selectedAdultSignatureRate.rate - selectedAdultSignatureRate.retailRate
+        }
+
+        guard rate != 0 else {
+            return nil
+        }
+
+        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+        let discount = currencyFormatter.formatAmount(Decimal(rate)) ?? nil
+
+        return discount
+    }
+
+    /// Returns the order total under the Order Summary.
+    ///
+    func getOrderTotal() -> String {
+        guard let selectedRate = selectedRate else {
+            return ""
+        }
+
+        var rate: Double = selectedRate.rate
+        if let selectedSignatureRate = selectedSignatureRate {
+            rate = selectedSignatureRate.rate
+        }
+        else if let selectedAdultSignatureRate = selectedAdultSignatureRate {
+            rate = selectedAdultSignatureRate.rate
+        }
+
+        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+        let price = currencyFormatter.formatAmount(Decimal(rate)) ?? ""
+
+        return price
     }
 }
 
@@ -255,7 +366,15 @@ private extension ShippingLabelFormViewModel {
             }
         }
 
-        state.sections = [Section(rows: rows)]
+        var summarySection: Section?
+        if rows.allSatisfy({ (row) -> Bool in
+            row.dataState == .validated && row.displayMode == .editable
+        }) {
+            summarySection = Section(title: Localization.orderSummaryHeader.uppercased(),
+                                     rows: [Row(type: .orderSummary, dataState: .validated, displayMode: .editable)])
+        }
+
+        state.sections = [Section(title: nil, rows: rows), summarySection].compactMap { $0 }
     }
 }
 
@@ -358,6 +477,21 @@ private extension ShippingLabelFormViewModel {
 
 // MARK: - Remote API
 extension ShippingLabelFormViewModel {
+    func fetchCountries() {
+        try? resultsController.performFetch()
+        let action = DataAction.synchronizeCountries(siteID: siteID) { [weak self] (result) in
+            guard let self = self else { return }
+            switch result {
+            case .success:
+                try? self.resultsController.performFetch()
+            case .failure:
+                break
+            }
+        }
+
+        stores.dispatch(action)
+    }
+
     func validateAddress(type: ShipType, onCompletion: ((ValidationState, ShippingLabelAddressValidationSuccess?) -> ())? = nil) {
 
         guard let address = type == .origin ? originAddress : destinationAddress else { return }
@@ -425,6 +559,43 @@ extension ShippingLabelFormViewModel {
         case validationError(ShippingLabelAddressValidationError)
         case genericError(Error)
     }
+
+    /// Purchases a shipping label with the origin and destination address, package, and rate selected in the Shipping Label Form.
+    /// - Parameter onCompletion: Closure to be executed on completion with the success/failure result of the purchase.
+    ///
+    func purchaseLabel(onCompletion: @escaping ((Result<TimeInterval, Error>) -> Void)) {
+        guard let originAddress = originAddress,
+              let destinationAddress = destinationAddress,
+              let selectedPackage = selectedPackage,
+              let selectedRate = selectedRate,
+              let accountSettings = shippingLabelAccountSettings else {
+            onCompletion(.failure(PurchaseError.labelDetailsMissing))
+            return
+        }
+
+        let productIDs = order.items.map { $0.productOrVariationID }
+        let package = ShippingLabelPackagePurchase(package: selectedPackage, rate: selectedRate, productIDs: productIDs)
+        let startTime = Date()
+        let action = ShippingLabelAction.purchaseShippingLabel(siteID: siteID,
+                                                               orderID: order.orderID,
+                                                               originAddress: originAddress,
+                                                               destinationAddress: destinationAddress,
+                                                               packages: [package],
+                                                               emailCustomerReceipt: accountSettings.isEmailReceiptsEnabled) { result in
+            switch result {
+            case .success(let labels):
+                self.purchasedShippingLabel = labels.first(where: { $0.productIDs == productIDs })
+                onCompletion(.success(Date().timeIntervalSince(startTime)))
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    private enum PurchaseError: Error {
+        case labelDetailsMissing
+    }
 }
 
 private extension ShippingLabelFormViewModel {
@@ -444,5 +615,7 @@ private extension ShippingLabelFormViewModel {
         static let paymentMethodLabel =
             NSLocalizedString("Credit card ending in %1$@",
                               comment: "Selected credit card in Shipping Label form. %1$@ is a placeholder for the last four digits of the credit card.")
+        static let orderSummaryHeader = NSLocalizedString("Shipping label order summary",
+                                                          comment: "Header of the order summary section in the shipping label creation form")
     }
 }

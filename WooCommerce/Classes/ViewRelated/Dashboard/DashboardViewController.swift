@@ -48,7 +48,7 @@ final class DashboardViewController: UIViewController {
         super.viewWillAppear(animated)
         // Reset title to prevent it from being empty right after login
         configureTitle()
-        reloadDashboardUIStatsVersion()
+        reloadDashboardUIStatsVersion(forced: false)
     }
 
     override func viewDidLayoutSubviews() {
@@ -113,12 +113,12 @@ private extension DashboardViewController {
         view.pinSubviewToSafeArea(containerView)
     }
 
-    func reloadDashboardUIStatsVersion() {
+    func reloadDashboardUIStatsVersion(forced: Bool) {
         dashboardUIFactory.reloadDashboardUI(onUIUpdate: { [weak self] dashboardUI in
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) {
                 dashboardUI.scrollDelegate = self
             }
-            self?.onDashboardUIUpdate(updatedDashboardUI: dashboardUI)
+            self?.onDashboardUIUpdate(forced: forced, updatedDashboardUI: dashboardUI)
         })
     }
 }
@@ -132,10 +132,10 @@ extension DashboardViewController: DashboardUIScrollDelegate {
 // MARK: - Updates
 //
 private extension DashboardViewController {
-    func onDashboardUIUpdate(updatedDashboardUI: DashboardUI) {
+    func onDashboardUIUpdate(forced: Bool, updatedDashboardUI: DashboardUI) {
         defer {
             // Reloads data of the updated dashboard UI at the end.
-            reloadData()
+            reloadData(forced: forced)
         }
 
         // No need to continue replacing the dashboard UI child view controller if the updated dashboard UI is the same as the currently displayed one.
@@ -185,7 +185,7 @@ private extension DashboardViewController {
 
     func pullToRefresh() {
         ServiceLocator.analytics.track(.dashboardPulledToRefresh)
-        reloadDashboardUIStatsVersion()
+        reloadDashboardUIStatsVersion(forced: true)
     }
 
     func displaySyncingErrorNotice() {
@@ -193,7 +193,7 @@ private extension DashboardViewController {
         let message = NSLocalizedString("Unable to load content", comment: "Load Action Failed")
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: title, message: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
-            self?.reloadData()
+            self?.reloadData(forced: true)
         }
 
         ServiceLocator.noticePresenter.enqueue(notice: notice)
@@ -203,9 +203,9 @@ private extension DashboardViewController {
 // MARK: - Private Helpers
 //
 private extension DashboardViewController {
-    func reloadData() {
+    func reloadData(forced: Bool) {
         DDLogInfo("♻️ Requesting dashboard data be reloaded...")
-        dashboardUI?.reloadData(completion: { [weak self] in
+        dashboardUI?.reloadData(forced: forced, completion: { [weak self] in
             self?.configureTitle()
         })
     }

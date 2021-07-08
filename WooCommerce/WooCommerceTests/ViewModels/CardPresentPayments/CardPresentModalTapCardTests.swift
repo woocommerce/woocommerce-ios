@@ -28,12 +28,12 @@ final class CardPresentModalTapCardTests: XCTestCase {
         XCTAssertEqual(viewModel.topSubtitle, Expectations.amount)
     }
 
-    func test_primary_button_title_is_not_nil() {
-        XCTAssertNotNil(viewModel.primaryButtonTitle)
+    func test_primary_button_title_is_nil() {
+        XCTAssertNil(viewModel.primaryButtonTitle)
     }
 
-    func test_secondary_button_title_is_nil() {
-        XCTAssertNil(viewModel.secondaryButtonTitle)
+    func test_secondary_button_title_is_not_nil() {
+        XCTAssertNotNil(viewModel.secondaryButtonTitle)
     }
 
     func test_auxiliary_button_title_is_nil() {
@@ -48,7 +48,7 @@ final class CardPresentModalTapCardTests: XCTestCase {
         XCTAssertNotNil(viewModel.bottomSubtitle)
     }
 
-    func test_primary_button_dispatched_cancel_action() throws {
+    func test_secondary_button_dispatched_cancel_action() throws {
         let storesManager = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         storesManager.reset()
 
@@ -56,7 +56,7 @@ final class CardPresentModalTapCardTests: XCTestCase {
 
         assertEmpty(storesManager.receivedActions)
 
-        viewModel.didTapPrimaryButton(in: nil)
+        viewModel.didTapSecondaryButton(in: nil)
 
         XCTAssertEqual(storesManager.receivedActions.count, 1)
 

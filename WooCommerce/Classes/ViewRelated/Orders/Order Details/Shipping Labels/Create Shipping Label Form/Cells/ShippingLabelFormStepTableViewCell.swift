@@ -79,6 +79,7 @@ private extension ShippingLabelFormStepTableViewCell {
 
     func configureLabels() {
         titleLabel.applyBodyStyle()
+        titleLabel.numberOfLines = 0
         bodyLabel.applySubheadlineStyle()
         bodyLabel.numberOfLines = 0
     }

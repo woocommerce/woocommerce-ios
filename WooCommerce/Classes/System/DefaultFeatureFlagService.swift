@@ -5,8 +5,6 @@ struct DefaultFeatureFlagService: FeatureFlagService {
         switch featureFlag {
         case .barcodeScanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .cardPresentPayments:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .largeTitles:
             return true
         case .shippingLabelsM2M3:
@@ -17,6 +15,10 @@ struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .sitePlugins:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .cardPresentKnownReader:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .reviewOrder:
+            return buildConfig == .localDeveloper
         default:
             return true
         }

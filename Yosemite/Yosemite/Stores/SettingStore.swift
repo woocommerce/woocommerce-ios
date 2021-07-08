@@ -82,10 +82,8 @@ private extension SettingStore {
     /// Retrieves the site API information associated with the provided Site ID (if any!).
     /// This call does NOT persist returned data into the Storage layer.
     ///
-    func retrieveSiteAPI(siteID: Int64, onCompletion: @escaping (SiteAPI?, Error?) -> Void) {
-        siteAPIRemote.loadAPIInformation(for: siteID) { (siteAPI, error) in
-            onCompletion(siteAPI, error)
-        }
+    func retrieveSiteAPI(siteID: Int64, onCompletion: @escaping (Result<SiteAPI, Error>) -> Void) {
+        siteAPIRemote.loadAPIInformation(for: siteID, completion: onCompletion)
     }
 }
 

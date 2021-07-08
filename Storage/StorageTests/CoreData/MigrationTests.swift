@@ -650,6 +650,32 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "PaymentGatewayAccount"), 1)
         XCTAssertEqual(insertedAccount, paymentGatewayAccount)
     }
+
+    func test_migrating_from_52_to_53_enables_creating_new_StateOfACountry_and_adding_to_Country_attributes_relationship() throws {
+        // Arrange
+        let sourceContainer = try startPersistentContainer("Model 52")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 53")
+        let targetContext = targetContainer.viewContext
+
+        // Assert
+        XCTAssertEqual(try targetContext.count(entityName: "Country"), 0)
+
+        let stateOfCountry1 = insertStateOfACountry(code: "DZ-01", name: "Adrar", to: targetContext)
+        let stateOfCountry2 = insertStateOfACountry(code: "DZ-02", name: "Chlef", to: targetContext)
+        let country = insertCountry(to: targetContext)
+        country.mutableSetValue(forKey: "states").add(stateOfCountry1)
+        country.mutableSetValue(forKey: "states").add(stateOfCountry2)
+        let insertedCountry = try XCTUnwrap(targetContext.firstObject(ofType: Country.self))
+
+        XCTAssertEqual(try targetContext.count(entityName: "Country"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "StateOfACountry"), 2)
+        XCTAssertEqual(insertedCountry, country)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -1001,5 +1027,19 @@ private extension MigrationTests {
             "name": slug,
             "total": 6
         ])
+    }
+
+    @discardableResult
+    func insertCountry(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "Country", properties: [
+            "code": "DZ",
+            "name": "Algeria"
+        ])
+    }
+
+    @discardableResult
+    func insertStateOfACountry(code: String, name: String, to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "StateOfACountry", properties:
+            ["code": code, "name": name])
     }
 }

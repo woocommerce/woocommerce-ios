@@ -65,10 +65,7 @@ final class ProductsViewController: UIViewController {
     ///
     private lazy var resultsController: ResultsController<StorageProduct> = {
         let resultsController = createResultsController(siteID: siteID)
-        configureResultsController(resultsController) { [weak self] in
-            self?.showOrHideToolBar()
-            self?.tableView.reloadData()
-        }
+        configureResultsController(resultsController, onReload: reloadTableAndView)
         return resultsController
     }()
 
@@ -509,14 +506,11 @@ private extension ProductsViewController {
                                                  sortOrder: sortOrder)
     }
 
+    /// Configure resultController.
+    /// Assign closures and start performBatch
+    ///
     func configureResultsController(_ resultsController: ResultsController<StorageProduct>, onReload: @escaping () -> Void) {
-        resultsController.onDidChangeContent = {
-            onReload()
-        }
-
-        resultsController.onDidResetContent = {
-            onReload()
-        }
+        setClosuresToResultController(resultsController, onReload: onReload)
 
         do {
             try resultsController.performFetch()
@@ -524,6 +518,25 @@ private extension ProductsViewController {
             ServiceLocator.crashLogging.logError(error)
         }
 
+        tableView.reloadData()
+    }
+
+    /// Set closure  to methods `onDidChangeContent` and `onDidResetContent
+    ///
+    func setClosuresToResultController(_ resultsController: ResultsController<StorageProduct>, onReload: @escaping () -> Void) {
+        resultsController.onDidChangeContent = {
+            onReload()
+        }
+
+        resultsController.onDidResetContent = {
+            onReload()
+        }
+    }
+
+    /// Manages ToolBar and reload tableview
+    ///
+    func reloadTableAndView() {
+        showOrHideToolBar()
         tableView.reloadData()
     }
 }
@@ -673,12 +686,17 @@ private extension ProductsViewController {
         let options = GhostOptions(reuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier, rowsPerSection: Constants.placeholderRowsPerSection)
         tableView.displayGhostContent(options: options,
         style: .wooDefaultGhostStyle)
+        resultsController.stopForwardingEvents()
+        // Assign again the original closure
+        setClosuresToResultController(resultsController, onReload: reloadTableAndView)
     }
 
     /// Removes the Placeholder Products (and restores the ResultsController <> UITableView link).
     ///
     func removePlaceholderProducts() {
         tableView.removeGhostContent()
+        resultsController.startForwardingEvents(to: tableView)
+        tableView.reloadData()
     }
 
     /// Displays the overlay when there are no results.

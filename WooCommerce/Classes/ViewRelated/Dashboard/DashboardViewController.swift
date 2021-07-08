@@ -15,10 +15,39 @@ final class DashboardViewController: UIViewController {
     private let dashboardUIFactory: DashboardUIFactory
     private var dashboardUI: DashboardUI?
 
+    // Used to enable subtitle with store name
+    private var shouldShowStoreNameAsSubtitle: Bool {
+        return ServiceLocator.stores.sessionManager.defaultSite?.name != nil && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles)
+    }
+
+    private var titleName: String {
+        guard !shouldShowStoreNameAsSubtitle else {
+            return Localization.title
+        }
+        return ServiceLocator.stores.sessionManager.defaultSite?.name ?? ""
+    }
+
     // MARK: Subviews
 
     private lazy var containerView: UIView = {
         return UIView(frame: .zero)
+    }()
+
+    private lazy var storeNameLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.applySubheadlineStyle()
+        label.backgroundColor = .listForeground
+        return label
+    }()
+
+    private lazy var stackView: UIStackView = {
+        let view = UIStackView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .listForeground
+        view.layoutMargins = UIEdgeInsets(top: 0, left: navigationController?.navigationBar.directionalLayoutMargins.leading ?? 0, bottom: 0, right: 0)
+        view.isLayoutMarginsRelativeArrangement = true
+        return view
     }()
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
@@ -57,7 +86,6 @@ final class DashboardViewController: UIViewController {
     }
 }
 
-
 // MARK: - Configuration
 //
 private extension DashboardViewController {
@@ -68,6 +96,7 @@ private extension DashboardViewController {
 
     func configureNavigation() {
         configureTitle()
+        configureSubtitle()
         configureNavigationItem()
     }
 
@@ -78,7 +107,35 @@ private extension DashboardViewController {
     }
 
     func configureTitle() {
-        navigationItem.title = ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.title
+        navigationItem.title = titleName
+    }
+
+    func configureSubtitle() {
+        guard shouldShowStoreNameAsSubtitle else {
+            return
+        }
+        containerView.backgroundColor = .listForeground
+        storeNameLabel.text = ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.title
+        stackView.addArrangedSubview(storeNameLabel)
+        containerView.addSubview(stackView)
+        NSLayoutConstraint.activate([
+            stackView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            stackView.leadingAnchor.constraint(equalTo: containerView.layoutMarginsGuide.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: containerView.layoutMarginsGuide.trailingAnchor)
+        ])
+    }
+
+    func addViewBellowSubtitle(contentView: UIView) {
+        guard shouldShowStoreNameAsSubtitle else {
+            return
+        }
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            contentView.topAnchor.constraint(equalTo: stackView.bottomAnchor),
+            contentView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
+        ])
     }
 
     private func configureNavigationItem() {
@@ -126,6 +183,22 @@ private extension DashboardViewController {
 extension DashboardViewController: DashboardUIScrollDelegate {
     func dashboardUIScrollViewDidScroll(_ scrollView: UIScrollView) {
         hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
+        showOrHideSubtitle(offset: scrollView.contentOffset.y)
+    }
+
+    private func showOrHideSubtitle(offset: CGFloat) {
+        guard shouldShowStoreNameAsSubtitle else {
+            return
+        }
+        storeNameLabel.isHidden = offset > stackView.frame.height
+        if offset < -stackView.frame.height {
+            UIView.transition(with: storeNameLabel, duration: Constants.animationDuration,
+                              options: .showHideTransitionViews,
+                              animations: { [weak self] in
+                                guard let self = self else { return }
+                                self.storeNameLabel.isHidden = false
+                          })
+        }
     }
 }
 
@@ -154,6 +227,7 @@ private extension DashboardViewController {
         addChild(updatedDashboardUI)
         containerView.addSubview(contentView)
         updatedDashboardUI.didMove(toParent: self)
+        addViewBellowSubtitle(contentView: contentView)
 
         updatedDashboardUI.onPullToRefresh = { [weak self] in
             self?.pullToRefresh()
@@ -211,11 +285,16 @@ private extension DashboardViewController {
     }
 }
 
+// MARK: Constants
 private extension DashboardViewController {
     enum Localization {
         static let title = NSLocalizedString(
             "My store",
             comment: "Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard"
         )
+    }
+
+    enum Constants {
+        static let animationDuration = 0.2
     }
 }

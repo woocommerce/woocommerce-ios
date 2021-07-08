@@ -3,24 +3,6 @@ import Yosemite
 import protocol Storage.StorageManagerType
 
 final class ReviewOrderViewModel {
-    /// Quick access to header types for table view registration
-    ///
-    let allHeaderTypes: [UITableViewHeaderFooterView.Type] = {
-        [PrimarySectionHeaderView.self,
-         TwoColumnSectionHeaderView.self]
-    }()
-
-    /// Quick access cell types for table view registration
-    ///
-    let allCellTypes: [UITableViewCell.Type] = {
-        [ProductDetailsTableViewCell.self,
-         CustomerNoteTableViewCell.self,
-         CustomerInfoTableViewCell.self,
-         WooBasicTableViewCell.self,
-         OrderTrackingTableViewCell.self,
-         LeftImageTableViewCell.self]
-    }()
-
     /// The order for review
     ///
     let order: Order

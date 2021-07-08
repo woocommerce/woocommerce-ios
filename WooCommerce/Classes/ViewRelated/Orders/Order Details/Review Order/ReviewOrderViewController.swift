@@ -44,14 +44,8 @@ private extension ReviewOrderViewController {
     }
 
     func configureTableView() {
-        for headerType in viewModel.allHeaderTypes {
-            tableView.register(headerType.loadNib(), forHeaderFooterViewReuseIdentifier: headerType.reuseIdentifier)
-        }
-
-        for cellType in viewModel.allCellTypes {
-            tableView.registerNib(for: cellType)
-        }
-
+        registerHeaderTypes()
+        registerCellTypes()
         view.backgroundColor = .listBackground
         tableView.backgroundColor = .listBackground
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
@@ -59,6 +53,32 @@ private extension ReviewOrderViewController {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.dataSource = self
         tableView.delegate = self
+    }
+
+    func registerHeaderTypes() {
+        let allHeaderTypes: [UITableViewHeaderFooterView.Type] = {
+            [PrimarySectionHeaderView.self,
+             TwoColumnSectionHeaderView.self]
+        }()
+
+        for headerType in allHeaderTypes {
+            tableView.register(headerType.loadNib(), forHeaderFooterViewReuseIdentifier: headerType.reuseIdentifier)
+        }
+    }
+
+    func registerCellTypes() {
+        let allCellTypes: [UITableViewCell.Type] = {
+            [ProductDetailsTableViewCell.self,
+             CustomerNoteTableViewCell.self,
+             CustomerInfoTableViewCell.self,
+             WooBasicTableViewCell.self,
+             OrderTrackingTableViewCell.self,
+             LeftImageTableViewCell.self]
+        }()
+
+        for cellType in allCellTypes {
+            tableView.registerNib(for: cellType)
+        }
     }
 }
 

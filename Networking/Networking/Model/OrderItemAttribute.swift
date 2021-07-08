@@ -4,7 +4,7 @@ import Codegen
 /// Currently, the use case is
 /// 1. When an order item is a variation and the attributes are its variation attributes.
 /// 2. Product Add-Ons are stored as attributes.
-public struct OrderItemAttribute: Decodable, Hashable, Equatable, GeneratedFakeable {
+public struct OrderItemAttribute: Decodable, Hashable, Equatable, GeneratedFakeable, GeneratedCopiable {
     public let metaID: Int64
     public let name: String
     public let value: String

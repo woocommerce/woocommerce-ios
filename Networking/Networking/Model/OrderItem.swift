@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents an Order's Item Entity.
 ///
-public struct OrderItem: Decodable, Hashable, GeneratedFakeable {
+public struct OrderItem: Decodable, Hashable, GeneratedFakeable, GeneratedCopiable {
     public let itemID: Int64
     public let name: String
     public let productID: Int64

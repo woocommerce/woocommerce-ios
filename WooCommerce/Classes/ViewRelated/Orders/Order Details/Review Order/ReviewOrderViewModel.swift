@@ -12,7 +12,7 @@ final class ReviewOrderViewModel {
 
     /// The order for review
     ///
-    private let order: Order
+    let order: Order
 
     /// Products in the order
     ///

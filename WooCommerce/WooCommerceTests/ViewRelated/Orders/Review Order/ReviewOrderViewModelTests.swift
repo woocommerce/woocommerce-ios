@@ -34,7 +34,7 @@ class ReviewOrderViewModelTests: XCTestCase {
 
     func test_productDetailsCellViewModel_returns_correct_item_details() {
         // Given
-        let item = OrderItem.fake().copy(productID: productID)
+        let item = OrderItem.fake().copy(productID: productID, quantity: 1)
         let order = Order.fake().copy(status: .processing, items: [item])
         let product = Product().copy(productID: productID)
 
@@ -50,7 +50,7 @@ class ReviewOrderViewModelTests: XCTestCase {
 
     func test_productDetailsCellViewModel_returns_no_addOns_if_view_model_receives_showAddOns_as_false() {
         // Given
-        let item = OrderItem.fake().copy(productID: productID)
+        let item = OrderItem.fake().copy(productID: productID, quantity: 1)
         let order = Order.fake().copy(status: .processing, items: [item])
         let product = Product().copy(productID: productID)
 
@@ -67,7 +67,7 @@ class ReviewOrderViewModelTests: XCTestCase {
         // Given
         let addOnName = "Test"
         let itemAttribute = OrderItemAttribute.fake().copy(name: addOnName)
-        let item = OrderItem.fake().copy(productID: productID, attributes: [itemAttribute])
+        let item = OrderItem.fake().copy(productID: productID, quantity: 1, attributes: [itemAttribute])
         let order = Order.fake().copy(siteID: siteID, status: .processing, items: [item])
         let addOn = ProductAddOn.fake().copy(name: addOnName)
         let product = Product().copy(productID: productID, addOns: [addOn])
@@ -112,7 +112,7 @@ class ReviewOrderViewModelTests: XCTestCase {
             }
             return false
         })
-        XCTAssertNotNil(productRow)        
+        XCTAssertNotNil(productRow)
     }
 
     func test_customerSection_does_not_contain_customer_note_cell_if_there_is_no_note() {
@@ -222,7 +222,8 @@ class ReviewOrderViewModelTests: XCTestCase {
                 return true
             }
             return false
-         }
+        })
+        XCTAssertNil(customerAddressRow)
     }
 
     func test_customerSection_does_not_contain_shipping_address_cell_if_there_is_virtual_product_and_shipping_address() {
@@ -244,7 +245,7 @@ class ReviewOrderViewModelTests: XCTestCase {
             }
             return false
         })
-        XCTAssertNotNil(customerAddressRow)        
+        XCTAssertNotNil(customerAddressRow)
     }
 }
 

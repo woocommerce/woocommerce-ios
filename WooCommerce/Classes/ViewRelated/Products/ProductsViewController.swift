@@ -544,10 +544,11 @@ private extension ProductsViewController {
     /// Try to remove Overlay if resultController has products
     ///
     func removeOverlayIfControllerHasResults() {
-        guard !isEmpty else {
+        guard isEmpty else {
+            removeAllOverlays()
             return
         }
-        removeAllOverlays()
+        displayNoResultsOverlay()
     }
 }
 

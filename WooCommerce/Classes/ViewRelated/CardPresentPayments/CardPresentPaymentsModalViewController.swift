@@ -52,7 +52,9 @@ final class CardPresentPaymentsModalViewController: UIViewController {
     func setViewModel(_ newViewModel: CardPresentPaymentsModalViewModel) {
         self.viewModel = newViewModel
 
-        populateContent()
+        if isViewLoaded {
+            populateContent()
+        }
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -140,11 +142,7 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func styleSecondaryButton() {
-        if viewModel.actionsMode == .secondaryOnlyAction {
-            secondaryButton.applyPaymentsModalCancelButtonStyle()
-        } else {
-            secondaryButton.applySecondaryLightButtonStyle()
-        }
+        secondaryButton.applyPaymentsModalCancelButtonStyle()
         secondaryButton.titleLabel?.adjustsFontSizeToFitWidth = true
         secondaryButton.titleLabel?.minimumScaleFactor = 0.5
     }

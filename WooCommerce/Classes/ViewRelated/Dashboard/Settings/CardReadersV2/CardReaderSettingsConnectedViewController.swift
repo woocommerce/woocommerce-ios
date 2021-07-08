@@ -90,7 +90,7 @@ private extension CardReaderSettingsConnectedViewController {
     }
 
     private func configureConnectedReader(cell: ConnectedReaderTableViewCell) {
-        cell.serialNumberLabel?.text = viewModel?.connectedReaderSerialNumber
+        cell.nameLabel?.text = viewModel?.connectedReaderID
         cell.batteryLevelLabel?.text = viewModel?.connectedReaderBatteryLevel
         cell.selectionStyle = .none
     }

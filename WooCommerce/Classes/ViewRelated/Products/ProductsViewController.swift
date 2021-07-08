@@ -409,7 +409,7 @@ private extension ProductsViewController {
     /// if there is 1 or more products, toolbar will be visible
     ///
     func showOrHideToolBar() {
-        toolbar.isHidden = filters.numberOfActiveFilters == 0 ? self.isEmpty : false
+        toolbar.isHidden = filters.numberOfActiveFilters == 0 ? isEmpty : false
     }
 }
 
@@ -537,7 +537,15 @@ private extension ProductsViewController {
     ///
     func reloadTableAndView() {
         showOrHideToolBar()
+        removeOverlayIfControllerHasResults()
         tableView.reloadData()
+    }
+
+    func removeOverlayIfControllerHasResults() {
+        guard !isEmpty else {
+            return
+        }
+        removeAllOverlays()
     }
 }
 
@@ -687,15 +695,14 @@ private extension ProductsViewController {
         tableView.displayGhostContent(options: options,
         style: .wooDefaultGhostStyle)
         resultsController.stopForwardingEvents()
-        // Assign again the original closure
-        setClosuresToResultController(resultsController, onReload: reloadTableAndView)
     }
 
     /// Removes the Placeholder Products (and restores the ResultsController <> UITableView link).
     ///
     func removePlaceholderProducts() {
         tableView.removeGhostContent()
-        resultsController.startForwardingEvents(to: tableView)
+        // Assign again the original closure
+        setClosuresToResultController(resultsController, onReload: reloadTableAndView)
         tableView.reloadData()
     }
 

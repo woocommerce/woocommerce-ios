@@ -395,6 +395,11 @@ private extension ShippingLabelFormViewController {
         }
 
         let hostingVC = UIHostingController(rootView: packageDetails)
+        // Hack to make transition of navigation bar smooth
+        hostingVC.title = Localization.packageDetailsNavigationBarTitle
+        let doneButton = UIBarButtonItem(title: Localization.packageDetailsDoneButton, style: .done, target: nil, action: nil)
+        doneButton.isEnabled = false
+        hostingVC.navigationItem.rightBarButtonItem = doneButton
         navigationController?.show(hostingVC, sender: nil)
     }
 
@@ -424,6 +429,11 @@ private extension ShippingLabelFormViewController {
                                                               editable: true)
         }
         let hostingVC = UIHostingController(rootView: carriersView)
+        // Hack to make transition of navigation bar smooth
+        hostingVC.title = Localization.carrierAndRatesNavigationBarTitle
+        let doneButton = UIBarButtonItem(title: Localization.carrierAndRatesDoneButton, style: .done, target: nil, action: nil)
+        doneButton.isEnabled = false
+        hostingVC.navigationItem.rightBarButtonItem = doneButton
         navigationController?.show(hostingVC, sender: nil)
     }
 
@@ -439,6 +449,11 @@ private extension ShippingLabelFormViewController {
         }
 
         let hostingVC = UIHostingController(rootView: paymentMethod)
+        // Hack to make the transition of navigation bar smooth
+        hostingVC.title = Localization.paymentMethodNavigationBarTitle
+        let doneButton = UIBarButtonItem(title: Localization.paymentMethodDoneButton, style: .done, target: nil, action: nil)
+        doneButton.isEnabled = false
+        hostingVC.navigationItem.rightBarButtonItem = doneButton
         navigationController?.show(hostingVC, sender: nil)
     }
 
@@ -564,5 +579,14 @@ private extension ShippingLabelFormViewController {
         static let noticeUnableToFetchCountries = NSLocalizedString("Unable to fetch countries.",
                                                                     comment: "Unable to fetch countries action failed in Shipping Label Form")
         static let noticeRetryAction = NSLocalizedString("Retry", comment: "Retry Action")
+        static let paymentMethodNavigationBarTitle = NSLocalizedString("Payment Method",
+                                                                       comment: "Navigation bar title in the Shipping Label Payment Method screen")
+        static let paymentMethodDoneButton = NSLocalizedString("Done", comment: "Done navigation button in the Shipping Label Payment Method screen")
+        static let packageDetailsNavigationBarTitle = NSLocalizedString("Package Details",
+                                             comment: "Navigation bar title of shipping label package details screen")
+        static let packageDetailsDoneButton = NSLocalizedString("Done", comment: "Done navigation button in the Package Details screen in Shipping Label flow")
+        static let carrierAndRatesNavigationBarTitle = NSLocalizedString("Carrier and Rates",
+                                                                         comment: "Navigation bar title of shipping label carrier and rates screen")
+        static let carrierAndRatesDoneButton = NSLocalizedString("Done", comment: "Done navigation button in shipping label carrier and rates screen")
     }
 }

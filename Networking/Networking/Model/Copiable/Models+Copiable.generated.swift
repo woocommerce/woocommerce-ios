@@ -184,6 +184,54 @@ extension OrderItemAttribute {
     }
 }
 
+extension OrderItemRefund {
+    public func copy(
+        itemID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        productID: CopiableProp<Int64> = .copy,
+        variationID: CopiableProp<Int64> = .copy,
+        quantity: CopiableProp<Decimal> = .copy,
+        price: CopiableProp<NSDecimalNumber> = .copy,
+        sku: NullableCopiableProp<String> = .copy,
+        subtotal: CopiableProp<String> = .copy,
+        subtotalTax: CopiableProp<String> = .copy,
+        taxClass: CopiableProp<String> = .copy,
+        taxes: CopiableProp<[OrderItemTaxRefund]> = .copy,
+        total: CopiableProp<String> = .copy,
+        totalTax: CopiableProp<String> = .copy
+    ) -> OrderItemRefund {
+        let itemID = itemID ?? self.itemID
+        let name = name ?? self.name
+        let productID = productID ?? self.productID
+        let variationID = variationID ?? self.variationID
+        let quantity = quantity ?? self.quantity
+        let price = price ?? self.price
+        let sku = sku ?? self.sku
+        let subtotal = subtotal ?? self.subtotal
+        let subtotalTax = subtotalTax ?? self.subtotalTax
+        let taxClass = taxClass ?? self.taxClass
+        let taxes = taxes ?? self.taxes
+        let total = total ?? self.total
+        let totalTax = totalTax ?? self.totalTax
+
+        return OrderItemRefund(
+            itemID: itemID,
+            name: name,
+            productID: productID,
+            variationID: variationID,
+            quantity: quantity,
+            price: price,
+            sku: sku,
+            subtotal: subtotal,
+            subtotalTax: subtotalTax,
+            taxClass: taxClass,
+            taxes: taxes,
+            total: total,
+            totalTax: totalTax
+        )
+    }
+}
+
 extension Product {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -660,6 +708,48 @@ extension ShipmentTracking {
             trackingProvider: trackingProvider,
             trackingURL: trackingURL,
             dateShipped: dateShipped
+        )
+    }
+}
+
+extension Refund {
+    public func copy(
+        refundID: CopiableProp<Int64> = .copy,
+        orderID: CopiableProp<Int64> = .copy,
+        siteID: CopiableProp<Int64> = .copy,
+        dateCreated: CopiableProp<Date> = .copy,
+        amount: CopiableProp<String> = .copy,
+        reason: CopiableProp<String> = .copy,
+        refundedByUserID: CopiableProp<Int64> = .copy,
+        isAutomated: NullableCopiableProp<Bool> = .copy,
+        createAutomated: NullableCopiableProp<Bool> = .copy,
+        items: CopiableProp<[OrderItemRefund]> = .copy,
+        shippingLines: NullableCopiableProp<[ShippingLine]> = .copy
+    ) -> Refund {
+        let refundID = refundID ?? self.refundID
+        let orderID = orderID ?? self.orderID
+        let siteID = siteID ?? self.siteID
+        let dateCreated = dateCreated ?? self.dateCreated
+        let amount = amount ?? self.amount
+        let reason = reason ?? self.reason
+        let refundedByUserID = refundedByUserID ?? self.refundedByUserID
+        let isAutomated = isAutomated ?? self.isAutomated
+        let createAutomated = createAutomated ?? self.createAutomated
+        let items = items ?? self.items
+        let shippingLines = shippingLines ?? self.shippingLines
+
+        return Refund(
+            refundID: refundID,
+            orderID: orderID,
+            siteID: siteID,
+            dateCreated: dateCreated,
+            amount: amount,
+            reason: reason,
+            refundedByUserID: refundedByUserID,
+            isAutomated: isAutomated,
+            createAutomated: createAutomated,
+            items: items,
+            shippingLines: shippingLines
         )
     }
 }

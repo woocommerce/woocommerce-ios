@@ -8,11 +8,6 @@ import Yosemite
 //
 final class DashboardViewController: UIViewController {
 
-    // MARK: Constants
-    enum Constants {
-        static let animationDuration = 0.2
-    }
-
     // MARK: Properties
 
     private let siteID: Int64
@@ -50,7 +45,7 @@ final class DashboardViewController: UIViewController {
         let view = UIStackView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .listForeground
-        view.layoutMargins = UIEdgeInsets(top: 0, left: navigationController?.navigationBar.layoutMargins.left ?? 0, bottom: 0, right: 0)
+        view.layoutMargins = UIEdgeInsets(top: 0, left: navigationController?.navigationBar.directionalLayoutMargins.leading ?? 0, bottom: 0, right: 0)
         view.isLayoutMarginsRelativeArrangement = true
         return view
     }()
@@ -290,11 +285,16 @@ private extension DashboardViewController {
     }
 }
 
+// MARK: Constants
 private extension DashboardViewController {
     enum Localization {
         static let title = NSLocalizedString(
             "My store",
             comment: "Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard"
         )
+    }
+
+    enum Constants {
+        static let animationDuration = 0.2
     }
 }

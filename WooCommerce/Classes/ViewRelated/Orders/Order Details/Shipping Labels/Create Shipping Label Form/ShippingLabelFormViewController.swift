@@ -295,21 +295,25 @@ private extension ShippingLabelFormViewController {
         } onSwitchChange: { [weak self] (switchIsOn) in
             self?.shouldMarkOrderComplete = switchIsOn
         } onButtonTouchUp: { [weak self] in
+            guard let self = self else { return }
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_initiated",
-                                                                                        "amount": self?.viewModel.selectedRate?.rate ?? 0])
-            self?.displayPurchaseProgressView()
-            self?.viewModel.purchaseLabel { [weak self] result in
+                                                                                        "amount": self.viewModel.selectedRate?.rate ?? 0,
+                                                                                        "fulfill_order": self.shouldMarkOrderComplete])
+            self.displayPurchaseProgressView()
+            self.viewModel.purchaseLabel { [weak self] result in
                 guard let self = self else { return }
                 switch result {
                 case .success:
                     ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_succeeded",
-                                                                                                "amount": self.viewModel.selectedRate?.rate ?? 0])
+                                                                                                "amount": self.viewModel.selectedRate?.rate ?? 0,
+                                                                                                "fulfill_order": self.shouldMarkOrderComplete])
                     self.onLabelPurchase?(self.shouldMarkOrderComplete)
                     self.dismiss(animated: true)
                     self.displayPrintShippingLabelVC()
                 case .failure:
                     ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_failed",
-                                                                                                "amount": self.viewModel.selectedRate?.rate ?? 0])
+                                                                                                "amount": self.viewModel.selectedRate?.rate ?? 0,
+                                                                                                "fulfill_order": self.shouldMarkOrderComplete])
                     self.dismiss(animated: true)
                     self.displayLabelPurchaseErrorNotice()
                 }

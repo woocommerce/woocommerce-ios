@@ -369,7 +369,7 @@ private extension ProductsViewController {
         // Updates products tab state after table view is configured, otherwise the initial state is always showing results.
         stateCoordinator.transitionToResultsUpdatedState(hasData: !isEmpty)
     }
-    
+
     /// Configure toolbar view by number of products
     ///
     func configureToolBarView() {

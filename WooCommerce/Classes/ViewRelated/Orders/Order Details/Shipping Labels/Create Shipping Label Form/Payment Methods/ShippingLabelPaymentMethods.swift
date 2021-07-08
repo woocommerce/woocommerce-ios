@@ -38,7 +38,6 @@ struct ShippingLabelPaymentMethods: View {
                                           selected: selected)
                             .onTapGesture {
                                 viewModel.didSelectPaymentMethod(withID: method.paymentMethodID)
-                                ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "payment_method_selected"])
                             }
                             .background(Color(.systemBackground))
                         Divider().padding(.leading, Constants.dividerPadding)
@@ -67,6 +66,7 @@ struct ShippingLabelPaymentMethods: View {
             .navigationBarTitle(Localization.navigationBarTitle)
             .navigationBarItems(trailing: Button(action: {
                 viewModel.updateShippingLabelAccountSettings { newSettings in
+                    ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "payment_method_selected"])
                     onCompletion(newSettings)
                     presentation.wrappedValue.dismiss()
                 }

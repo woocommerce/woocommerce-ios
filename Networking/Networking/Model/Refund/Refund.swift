@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a decoded Refund entity.
 ///
-public struct Refund: Codable, GeneratedFakeable {
+public struct Refund: Codable, GeneratedFakeable, GeneratedCopiable {
     public let refundID: Int64
     public let orderID: Int64
     public let siteID: Int64

@@ -234,22 +234,4 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         XCTAssertTrue(mockCardReaderService.didHitDisconnect)
     }
-
-    func test_known_readers_array_initially_empty() {
-        let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
-                                                       storageManager: storageManager,
-                                                       network: network,
-                                                       cardReaderService: mockCardReaderService)
-
-        let expectation = self.expectation(description: "Known readers array initially empty")
-
-        let action = CardPresentPaymentAction.observeKnownReaders() { knownReaders in
-            XCTAssertTrue(knownReaders.isEmpty)
-            expectation.fulfill()
-        }
-
-        cardPresentStore.onAction(action)
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
-    }
 }

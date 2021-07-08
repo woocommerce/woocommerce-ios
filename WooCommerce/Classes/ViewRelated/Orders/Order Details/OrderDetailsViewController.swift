@@ -503,7 +503,7 @@ private extension OrderDetailsViewController {
             let shippingLabelFormVC = ShippingLabelFormViewController(order: viewModel.order)
             shippingLabelFormVC.onLabelPurchase = { [weak self] isOrderComplete in
                 if isOrderComplete {
-                    _ = self?.viewModel.markCompleted()
+                    self?.markOrderCompleteFromShippingLabels()
                 }
             }
             shippingLabelFormVC.onLabelSave = { [weak self] in
@@ -522,7 +522,7 @@ private extension OrderDetailsViewController {
         ServiceLocator.analytics.track(.orderFulfillmentCompleteButtonTapped)
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.reviewOrder) {
-            let reviewOrderViewModel = ReviewOrderViewModel(order: viewModel.order, products: viewModel.products)
+            let reviewOrderViewModel = ReviewOrderViewModel(order: viewModel.order, products: viewModel.products, showAddOns: viewModel.dataSource.showAddOns)
             let controller = ReviewOrderViewController(viewModel: reviewOrderViewModel)
             navigationController?.pushViewController(controller, animated: true)
         } else {
@@ -530,6 +530,27 @@ private extension OrderDetailsViewController {
             let presenter = OrderFulfillmentNoticePresenter()
             presenter.present(process: fulfillmentProcess)
         }
+    }
+
+    func markOrderCompleteFromShippingLabels() {
+        let fulfillmentProcess = self.viewModel.markCompleted()
+
+        var cancellables = Set<AnyCancellable>()
+        var cancellable: AnyCancellable = AnyCancellable { }
+        cancellable = fulfillmentProcess.result.sink { completion in
+            if case .failure(_) = completion {
+                ServiceLocator.analytics.track(.shippingLabelOrderFulfillFailed)
+            }
+            else {
+                ServiceLocator.analytics.track(.shippingLabelOrderFulfillSucceeded)
+            }
+            cancellables.remove(cancellable)
+        } receiveValue: {
+            // Noop. There is no value to receive or act on.
+        }
+
+        // Insert in `cancellables` to keep the `sink` handler active.
+        cancellables.insert(cancellable)
     }
 
     func trackingWasPressed(at indexPath: IndexPath) {

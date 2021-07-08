@@ -80,14 +80,8 @@ private extension ReviewOrderViewController {
     }
 
     func configureTableView() {
-        for headerType in viewModel.allHeaderTypes {
-            tableView.register(headerType.loadNib(), forHeaderFooterViewReuseIdentifier: headerType.reuseIdentifier)
-        }
-
-        for cellType in viewModel.allCellTypes {
-            tableView.registerNib(for: cellType)
-        }
-
+        registerHeaderTypes()
+        registerCellTypes()
         view.backgroundColor = .listBackground
         tableView.backgroundColor = .listBackground
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
@@ -136,6 +130,32 @@ private extension ReviewOrderViewController {
 
         return containerView
     }
+
+    func registerHeaderTypes() {
+        let allHeaderTypes: [UITableViewHeaderFooterView.Type] = {
+            [PrimarySectionHeaderView.self,
+             TwoColumnSectionHeaderView.self]
+        }()
+
+        for headerType in allHeaderTypes {
+            tableView.register(headerType.loadNib(), forHeaderFooterViewReuseIdentifier: headerType.reuseIdentifier)
+        }
+    }
+
+    func registerCellTypes() {
+        let allCellTypes: [UITableViewCell.Type] = {
+            [ProductDetailsTableViewCell.self,
+             CustomerNoteTableViewCell.self,
+             CustomerInfoTableViewCell.self,
+             WooBasicTableViewCell.self,
+             OrderTrackingTableViewCell.self,
+             LeftImageTableViewCell.self]
+        }()
+
+        for cellType in allCellTypes {
+            tableView.registerNib(for: cellType)
+        }
+    }
 }
 
 // MARK: - UITableViewDatasource conformance
@@ -183,7 +203,7 @@ extension ReviewOrderViewController: UITableViewDelegate {
         case let headerView as PrimarySectionHeaderView:
             switch section.category {
             case .products:
-                let sectionTitle = viewModel.order.items.count > 1 ? Localization.productsSectionTitle : Localization.productSectionTitle
+                let sectionTitle = viewModel.aggregateOrderItems.count > 1 ? Localization.productsSectionTitle : Localization.productSectionTitle
                 headerView.configure(title: sectionTitle)
             case .customerInformation, .tracking:
                 assertionFailure("Unexpected category of type \(headerView.self)")
@@ -249,7 +269,7 @@ private extension ReviewOrderViewController {
 
     /// Setup: Order item Cell
     ///
-    private func setupOrderItemCell(_ cell: UITableViewCell, with item: OrderItem) {
+    private func setupOrderItemCell(_ cell: UITableViewCell, with item: AggregateOrderItem) {
         guard let cell = cell as? ProductDetailsTableViewCell else {
             fatalError("⛔ Incorrect cell type for Product Details cell")
         }

@@ -383,6 +383,17 @@ class ReviewOrderViewModelTests: XCTestCase {
 }
 
 private extension ReviewOrderViewModelTests {
+    func insert(_ readOnlyRefund: Refund) {
+        let storageRefund = storage.insertNewObject(ofType: StorageRefund.self)
+        storageRefund.update(with: readOnlyRefund)
+        storageRefund.items = Set(readOnlyRefund.items.map {
+            let storageItem = storage.insertNewObject(ofType: StorageOrderItemRefund.self)
+            storageItem.update(with: $0)
+            return storageItem
+        })
+        storage.saveIfNeeded()
+    }
+
     func insertShippingLabel(_ readOnlyLabel: ShippingLabel) {
         let storageLabel = storage.insertNewObject(ofType: StorageShippingLabel.self)
         storageLabel.update(with: readOnlyLabel)
@@ -397,19 +408,6 @@ private extension ReviewOrderViewModelTests {
     func insertShipmentTracking(_ readOnlyTracking: ShipmentTracking) {
         let storageTracking = storage.insertNewObject(ofType: StorageShipmentTracking.self)
         storageTracking.update(with: readOnlyTracking)
-        storage.saveIfNeeded()
-    }
-}
-
-private extension ReviewOrderViewModelTests {
-    func insert(_ readOnlyRefund: Refund) {
-        let storageRefund = storage.insertNewObject(ofType: StorageRefund.self)
-        storageRefund.update(with: readOnlyRefund)
-        storageRefund.items = Set(readOnlyRefund.items.map {
-            let storageItem = storage.insertNewObject(ofType: StorageOrderItemRefund.self)
-            storageItem.update(with: $0)
-            return storageItem
-        })
         storage.saveIfNeeded()
     }
 }

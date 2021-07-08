@@ -28,6 +28,7 @@ final class ShippingLabelFormViewController: UIViewController {
                                                originAddress: nil,
                                                destinationAddress: order.shippingAddress)
         super.init(nibName: nil, bundle: nil)
+        ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "started"])
     }
 
     required init?(coder: NSCoder) {
@@ -287,21 +288,33 @@ private extension ShippingLabelFormViewController {
 
     func configureOrderSummary(cell: ShippingLabelSummaryTableViewCell, row: Row) {
         cell.configure(state: row.cellState) {
+            ServiceLocator.analytics.track(.shippingLabelDiscountInfoButtonTapped)
             let discountInfoVC = ShippingLabelDiscountInfoViewController()
             let bottomSheet = BottomSheetViewController(childViewController: discountInfoVC)
             bottomSheet.show(from: self, sourceView: cell)
         } onSwitchChange: { [weak self] (switchIsOn) in
             self?.shouldMarkOrderComplete = switchIsOn
         } onButtonTouchUp: { [weak self] in
-            self?.displayPurchaseProgressView()
-            self?.viewModel.purchaseLabel { [weak self] result in
+            guard let self = self else { return }
+            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_initiated",
+                                                                                        "amount": self.viewModel.selectedRate?.rate ?? 0,
+                                                                                        "fulfill_order": self.shouldMarkOrderComplete])
+            self.displayPurchaseProgressView()
+            self.viewModel.purchaseLabel { [weak self] result in
                 guard let self = self else { return }
                 switch result {
-                case .success:
+                case .success(let totalDuration):
+                    ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_succeeded",
+                                                                                                "amount": self.viewModel.selectedRate?.rate ?? 0,
+                                                                                                "fulfill_order": self.shouldMarkOrderComplete,
+                                                                                                "total_duration": Double(totalDuration)])
                     self.onLabelPurchase?(self.shouldMarkOrderComplete)
                     self.dismiss(animated: true)
                     self.displayPrintShippingLabelVC()
                 case .failure:
+                    ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_failed",
+                                                                                                "amount": self.viewModel.selectedRate?.rate ?? 0,
+                                                                                                "fulfill_order": self.shouldMarkOrderComplete])
                     self.dismiss(animated: true)
                     self.displayLabelPurchaseErrorNotice()
                 }

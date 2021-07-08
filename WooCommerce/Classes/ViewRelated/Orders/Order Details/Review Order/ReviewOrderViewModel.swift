@@ -3,27 +3,16 @@ import Yosemite
 import protocol Storage.StorageManagerType
 
 final class ReviewOrderViewModel {
-    /// Quick access to header types for table view registration
+    /// Calculate the new order item quantities and totals after refunded products have altered the fields
     ///
-    let allHeaderTypes: [UITableViewHeaderFooterView.Type] = {
-        [PrimarySectionHeaderView.self,
-         TwoColumnSectionHeaderView.self]
-    }()
-
-    /// Quick access cell types for table view registration
-    ///
-    let allCellTypes: [UITableViewCell.Type] = {
-        [ProductDetailsTableViewCell.self,
-         CustomerNoteTableViewCell.self,
-         CustomerInfoTableViewCell.self,
-         WooBasicTableViewCell.self,
-         OrderTrackingTableViewCell.self,
-         LeftImageTableViewCell.self]
-    }()
+    var aggregateOrderItems: [AggregateOrderItem] {
+        let orderItemsAfterCombiningWithRefunds = AggregateDataHelper.combineOrderItems(order.items, with: refunds)
+        return orderItemsAfterCombiningWithRefunds
+    }
 
     /// The order for review
     ///
-    let order: Order
+    private let order: Order
 
     /// Products in the order
     ///
@@ -48,11 +37,28 @@ final class ReviewOrderViewModel {
         return addOnGroupResultsController.fetchedObjects
     }
 
+    /// Refunds in an Order
+    ///
+    private var refunds: [Refund] {
+        return refundResultsController.fetchedObjects
+    }
+
     /// AddOnGroup ResultsController.
     ///
     private lazy var addOnGroupResultsController: ResultsController<StorageAddOnGroup> = {
         let predicate = NSPredicate(format: "siteID == %lld", order.siteID)
         return ResultsController<StorageAddOnGroup>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
+    /// Refund Results Controller.
+    ///
+    private lazy var refundResultsController: ResultsController<StorageRefund> = {
+        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld",
+                                    order.siteID,
+                                    order.orderID)
+        let descriptor = NSSortDescriptor(keyPath: \StorageRefund.dateCreated, ascending: true)
+
+        return ResultsController<StorageRefund>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
     init(order: Order,
@@ -65,6 +71,13 @@ final class ReviewOrderViewModel {
         self.showAddOns = showAddOns
         self.stores = stores
         self.storageManager = storageManager
+    }
+
+    /// Trigger reload UI on change / reset of data
+    ///
+    func configureResultsControllers(onReload: @escaping () -> Void) {
+        configureAddOnGroupResultsController(onReload: onReload)
+        configureRefundResultsController(onReload: onReload)
     }
 }
 
@@ -81,13 +94,13 @@ extension ReviewOrderViewModel {
 
     /// Filter product for an order item
     ///
-    func filterProduct(for item: OrderItem) -> Product? {
+    func filterProduct(for item: AggregateOrderItem) -> Product? {
         products.first(where: { $0.productID == item.productID })
     }
 
     /// Filter addons for an order item
     ///
-    func filterAddons(for item: OrderItem) -> [OrderItemAttribute] {
+    func filterAddons(for item: AggregateOrderItem) -> [OrderItemAttribute] {
         let product = filterProduct(for: item)
         guard let product = product, showAddOns else {
             return []
@@ -97,10 +110,10 @@ extension ReviewOrderViewModel {
 
     /// Product Details cell view model for an order item
     ///
-    func productDetailsCellViewModel(for item: OrderItem) -> ProductDetailsCellViewModel {
+    func productDetailsCellViewModel(for item: AggregateOrderItem) -> ProductDetailsCellViewModel {
         let product = filterProduct(for: item)
         let addOns = filterAddons(for: item)
-        return ProductDetailsCellViewModel(item: item, currency: order.currency, product: product, hasAddOns: !addOns.isEmpty)
+        return ProductDetailsCellViewModel(aggregateItem: item, currency: order.currency, product: product, hasAddOns: !addOns.isEmpty)
     }
 }
 
@@ -125,7 +138,7 @@ private extension ReviewOrderViewModel {
     /// Product section setup
     ///
     var productSection: Section {
-        let rows = order.items.map { Row.orderItem(item: $0) }
+        let rows = aggregateOrderItems.map { Row.orderItem(item: $0) }
         return .init(category: .products, rows: rows)
     }
 
@@ -202,7 +215,7 @@ extension ReviewOrderViewModel {
     /// Row types for Review Order screen
     ///
     enum Row {
-        case orderItem(item: OrderItem)
+        case orderItem(item: AggregateOrderItem)
         case customerNote(text: String)
         case shippingAddress(address: Address)
         case shippingMethod(method: String)
@@ -230,5 +243,48 @@ extension ReviewOrderViewModel {
                 return LeftImageTableViewCell.self
             }
         }
+    }
+}
+
+/// Configure result controllers
+///
+private extension ReviewOrderViewModel {
+    /// Trigger reload UI on change / reset of Add-on Groups
+    ///
+    func configureAddOnGroupResultsController(onReload: @escaping () -> Void) {
+        addOnGroupResultsController.onDidChangeContent = {
+            onReload()
+        }
+
+        addOnGroupResultsController.onDidResetContent = { [weak self] in
+            guard let self = self else { return }
+            self.refetchAllResultsControllers()
+            onReload()
+        }
+
+        try? addOnGroupResultsController.performFetch()
+    }
+
+    /// Trigger reload UI on change / reset of Refunds
+    ///
+    func configureRefundResultsController(onReload: @escaping () -> Void) {
+        refundResultsController.onDidChangeContent = {
+            onReload()
+        }
+
+        refundResultsController.onDidResetContent = { [weak self] in
+            guard let self = self else { return }
+            self.refetchAllResultsControllers()
+            onReload()
+        }
+
+        try? refundResultsController.performFetch()
+    }
+
+    /// Refetching all the results controllers is necessary after a storage reset in `onDidResetContent` callback and before reloading UI that
+    /// involves more than one results controller.
+    func refetchAllResultsControllers() {
+        try? addOnGroupResultsController.performFetch()
+        try? refundResultsController.performFetch()
     }
 }

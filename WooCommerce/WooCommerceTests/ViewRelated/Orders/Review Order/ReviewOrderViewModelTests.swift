@@ -8,6 +8,7 @@ import protocol Storage.StorageManagerType
 
 class ReviewOrderViewModelTests: XCTestCase {
 
+    private let orderID: Int64 = 543
     private let productID: Int64 = 1_00
     private let siteID: Int64 = 123
 
@@ -39,9 +40,11 @@ class ReviewOrderViewModelTests: XCTestCase {
 
         // When
         let viewModel = ReviewOrderViewModel(order: order, products: [product], showAddOns: false)
-        let productCellModel = viewModel.productDetailsCellViewModel(for: item)
 
         // Then
+        let aggregateItem = viewModel.aggregateOrderItems.first
+        XCTAssertNotNil(aggregateItem)
+        let productCellModel = viewModel.productDetailsCellViewModel(for: aggregateItem!)
         XCTAssertEqual(productCellModel.name, item.name)
     }
 
@@ -53,9 +56,10 @@ class ReviewOrderViewModelTests: XCTestCase {
 
         // When
         let viewModel = ReviewOrderViewModel(order: order, products: [product], showAddOns: false)
-        let productCellModel = viewModel.productDetailsCellViewModel(for: item)
 
         // Then
+        let aggregateItem = viewModel.aggregateOrderItems.first!
+        let productCellModel = viewModel.productDetailsCellViewModel(for: aggregateItem)
         XCTAssertEqual(productCellModel.hasAddOns, false)
     }
 
@@ -70,10 +74,45 @@ class ReviewOrderViewModelTests: XCTestCase {
 
         // When
         let viewModel = ReviewOrderViewModel(order: order, products: [product], showAddOns: true, storageManager: storageManager)
-        let productCellModel = viewModel.productDetailsCellViewModel(for: item)
 
         // Then
+        let aggregateItem = viewModel.aggregateOrderItems.first!
+        let productCellModel = viewModel.productDetailsCellViewModel(for: aggregateItem)
         XCTAssertEqual(productCellModel.hasAddOns, true)
+    }
+
+    func test_productSection_contains_only_non_refunded_items() {
+        // Given
+        let productID2: Int64 = 335
+        let itemID1: Int64 = 134
+        let itemID2: Int64 = 432
+
+        let product1 = Product().copy(productID: productID)
+        let product2 = Product().copy(productID: productID2)
+
+        let item1 = OrderItem.fake().copy(itemID: itemID1, productID: product1.productID, quantity: 1)
+        let item2 = OrderItem.fake().copy(itemID: itemID2, productID: product2.productID, quantity: -1)
+        let order = Order.fake().copy(siteID: siteID, orderID: orderID, status: .processing, items: [item1, item2])
+
+        let itemRefund = OrderItemRefund.fake().copy(itemID: item2.itemID, productID: item2.productID)
+        let refund = Refund.fake().copy(orderID: orderID, siteID: siteID, items: [itemRefund])
+        insert(refund)
+
+        // When
+        let viewModel = ReviewOrderViewModel(order: order, products: [product1, product2], showAddOns: false, storageManager: storageManager)
+        viewModel.configureResultsControllers {}
+
+        // Then
+        let productSection = viewModel.sections.first(where: { $0.category == .products })
+        XCTAssertNotNil(productSection)
+        let productRow = productSection?.rows.first(where: {
+            if case .orderItem(let item) = $0,
+               item.productID == productID {
+                return true
+            }
+            return false
+        })
+        XCTAssertNotNil(productRow)        
     }
 
     func test_customerSection_does_not_contain_customer_note_cell_if_there_is_no_note() {
@@ -183,8 +222,7 @@ class ReviewOrderViewModelTests: XCTestCase {
                 return true
             }
             return false
-        })
-        XCTAssertNil(customerAddressRow)
+         }
     }
 
     func test_customerSection_does_not_contain_shipping_address_cell_if_there_is_virtual_product_and_shipping_address() {
@@ -206,6 +244,19 @@ class ReviewOrderViewModelTests: XCTestCase {
             }
             return false
         })
-        XCTAssertNotNil(customerAddressRow)
+        XCTAssertNotNil(customerAddressRow)        
+    }
+}
+
+private extension ReviewOrderViewModelTests {
+    func insert(_ readOnlyRefund: Refund) {
+        let storageRefund = storage.insertNewObject(ofType: StorageRefund.self)
+        storageRefund.update(with: readOnlyRefund)
+        storageRefund.items = Set(readOnlyRefund.items.map {
+            let storageItem = storage.insertNewObject(ofType: StorageOrderItemRefund.self)
+            storageItem.update(with: $0)
+            return storageItem
+        })
+        storage.saveIfNeeded()
     }
 }

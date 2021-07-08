@@ -533,7 +533,7 @@ private extension ProductsViewController {
         }
     }
 
-    /// Manages ToolBar and reload tableview
+    /// Manages view components and reload tableview
     ///
     func reloadTableAndView() {
         showOrHideToolBar()
@@ -541,6 +541,8 @@ private extension ProductsViewController {
         tableView.reloadData()
     }
 
+    /// Try to remove Overlay if resultController has products
+    ///
     func removeOverlayIfControllerHasResults() {
         guard !isEmpty else {
             return

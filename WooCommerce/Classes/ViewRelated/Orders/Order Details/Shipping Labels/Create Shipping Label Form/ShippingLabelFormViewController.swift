@@ -303,10 +303,11 @@ private extension ShippingLabelFormViewController {
             self.viewModel.purchaseLabel { [weak self] result in
                 guard let self = self else { return }
                 switch result {
-                case .success:
+                case .success(let totalDuration):
                     ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_succeeded",
                                                                                                 "amount": self.viewModel.selectedRate?.rate ?? 0,
-                                                                                                "fulfill_order": self.shouldMarkOrderComplete])
+                                                                                                "fulfill_order": self.shouldMarkOrderComplete,
+                                                                                                "total_duration": Double(totalDuration)])
                     self.onLabelPurchase?(self.shouldMarkOrderComplete)
                     self.dismiss(animated: true)
                     self.displayPrintShippingLabelVC()

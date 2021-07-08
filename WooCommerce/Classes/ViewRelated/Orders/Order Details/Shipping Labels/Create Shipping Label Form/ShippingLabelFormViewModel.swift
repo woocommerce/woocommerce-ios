@@ -563,7 +563,7 @@ extension ShippingLabelFormViewModel {
     /// Purchases a shipping label with the origin and destination address, package, and rate selected in the Shipping Label Form.
     /// - Parameter onCompletion: Closure to be executed on completion with the success/failure result of the purchase.
     ///
-    func purchaseLabel(onCompletion: @escaping ((Result<Void, Error>) -> Void)) {
+    func purchaseLabel(onCompletion: @escaping ((Result<TimeInterval, Error>) -> Void)) {
         guard let originAddress = originAddress,
               let destinationAddress = destinationAddress,
               let selectedPackage = selectedPackage,
@@ -575,6 +575,7 @@ extension ShippingLabelFormViewModel {
 
         let productIDs = order.items.map { $0.productOrVariationID }
         let package = ShippingLabelPackagePurchase(package: selectedPackage, rate: selectedRate, productIDs: productIDs)
+        let startTime = Date()
         let action = ShippingLabelAction.purchaseShippingLabel(siteID: siteID,
                                                                orderID: order.orderID,
                                                                originAddress: originAddress,
@@ -584,7 +585,7 @@ extension ShippingLabelFormViewModel {
             switch result {
             case .success(let labels):
                 self.purchasedShippingLabel = labels.first(where: { $0.productIDs == productIDs })
-                onCompletion(.success(()))
+                onCompletion(.success(Date().timeIntervalSince(startTime)))
             case .failure(let error):
                 onCompletion(.failure(error))
             }

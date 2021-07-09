@@ -37,8 +37,4 @@ enum FeatureFlag: Int {
     /// Automatically Reconnect to a Known Card Reader
     ///
     case cardPresentKnownReader
-
-    /// Show Review order screen upon marking order complete
-    ///
-    case reviewOrder
 }

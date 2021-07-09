@@ -520,16 +520,14 @@ private extension OrderDetailsViewController {
 
     func markOrderCompleteWasPressed() {
         ServiceLocator.analytics.track(.orderFulfillmentCompleteButtonTapped)
-
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.reviewOrder) {
-            let reviewOrderViewModel = ReviewOrderViewModel(order: viewModel.order, products: viewModel.products, showAddOns: viewModel.dataSource.showAddOns)
-            let controller = ReviewOrderViewController(viewModel: reviewOrderViewModel)
-            navigationController?.pushViewController(controller, animated: true)
-        } else {
-            let fulfillmentProcess = viewModel.markCompleted()
+        let reviewOrderViewModel = ReviewOrderViewModel(order: viewModel.order, products: viewModel.products, showAddOns: viewModel.dataSource.showAddOns)
+        let controller = ReviewOrderViewController(viewModel: reviewOrderViewModel) { [weak self] in
+            guard let self = self else { return }
+            let fulfillmentProcess = self.viewModel.markCompleted()
             let presenter = OrderFulfillmentNoticePresenter()
             presenter.present(process: fulfillmentProcess)
         }
+        navigationController?.pushViewController(controller, animated: true)
     }
 
     func markOrderCompleteFromShippingLabels() {

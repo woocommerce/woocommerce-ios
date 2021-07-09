@@ -6,6 +6,8 @@ class StorageTypeExtensionsTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 98765
 
+    private let sampleGatewayID: String = "woocommerce-payments"
+
     private var storageManager: StorageManagerType!
 
     private var storage: StorageType! {
@@ -206,18 +208,6 @@ class StorageTypeExtensionsTests: XCTestCase {
 
         // Then
         XCTAssertEqual(orderNote, storedNote)
-    }
-
-    func test_loadOrderCount_by_siteID() throws {
-        // Given
-        let orderCount = storage.insertNewObject(ofType: OrderCount.self)
-        orderCount.siteID = sampleSiteID
-
-        // When
-        let storedOrderCount = try XCTUnwrap(storage.loadOrderCount(siteID: sampleSiteID))
-
-        // Then
-        XCTAssertEqual(orderCount, storedOrderCount)
     }
 
     func test_loadTopEarnerStats_by_date_granularity() throws {
@@ -1056,5 +1046,26 @@ class StorageTypeExtensionsTests: XCTestCase {
 
         // Then
         XCTAssertEqual(foundPlugin, plugin1)
+    }
+
+    func test_loadPaymentGatewayAccount_by_siteID() throws {
+        // Given
+        let account = storage.insertNewObject(ofType: PaymentGatewayAccount.self)
+        account.country = "US"
+        account.defaultCurrency = "USD"
+        account.gatewayID = sampleGatewayID
+        account.hasOverdueRequirements = false
+        account.hasPendingRequirements = false
+        account.isCardPresentEligible = true
+        account.siteID = sampleSiteID
+        account.statementDescriptor = "STAGING.MARS"
+        account.status = "complete"
+        account.supportedCurrencies = ["USD"]
+
+        // When
+        let foundAccount = try XCTUnwrap(storage.loadPaymentGatewayAccount(siteID: sampleSiteID, gatewayID: sampleGatewayID))
+
+        // Then
+        XCTAssertEqual(foundAccount, account)
     }
 }

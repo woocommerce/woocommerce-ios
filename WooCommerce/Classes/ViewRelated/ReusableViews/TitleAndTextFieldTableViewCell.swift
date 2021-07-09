@@ -62,6 +62,10 @@ final class TitleAndTextFieldTableViewCell: UITableViewCell {
         onTextChange = viewModel.onTextChange
     }
 
+    func enableTextField(_ enabled: Bool) {
+        textField.isEnabled = enabled
+    }
+
     func textFieldBecomeFirstResponder() {
         textField.becomeFirstResponder()
     }

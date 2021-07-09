@@ -1,3 +1,4 @@
+import MessageUI
 import UIKit
 import WordPressUI
 
@@ -5,54 +6,78 @@ import WordPressUI
 /// presented to provide user-facing feedback about the progress
 /// of the payment collection process
 final class OrderDetailsPaymentAlerts {
-    private var modalController: CardPresentPaymentsModalViewController?
+    private weak var presentingController: UIViewController?
+
+    // Storing this as a weak variable means that iOS should automatically set this to nil
+    // when the VC is dismissed, unless there is a retain cycle somewhere else.
+    private weak var _modalController: CardPresentPaymentsModalViewController?
+    private var modalController: CardPresentPaymentsModalViewController {
+        if let controller = _modalController {
+            return controller
+        } else {
+            let controller = CardPresentPaymentsModalViewController(viewModel: readerIsReady())
+            _modalController = controller
+            return controller
+        }
+    }
+
     private var name: String = ""
     private var amount: String = ""
 
-    func readerIsReady(from: UIViewController, title: String, amount: String) {
+    init(presentingController: UIViewController) {
+        self.presentingController = presentingController
+    }
+
+    func presentViewModel(viewModel: CardPresentPaymentsModalViewModel) {
+        let controller = modalController
+        controller.setViewModel(viewModel)
+        if controller.presentingViewController == nil {
+            controller.modalPresentationStyle = .custom
+            controller.transitioningDelegate = AppDelegate.shared.tabBarController
+            presentingController?.present(controller, animated: true)
+        }
+    }
+
+    func readerIsReady(title: String, amount: String) {
         self.name = title
         self.amount = amount
 
         // Initial presentation of the modal view controller. We need to provide
         // a customer name and an amount.
         let viewModel = readerIsReady()
-        let newAlert = CardPresentPaymentsModalViewController(viewModel: viewModel)
-        modalController = newAlert
-        modalController?.modalPresentationStyle = .custom
-        modalController?.transitioningDelegate = AppDelegate.shared.tabBarController
-        from.present(newAlert, animated: true)
+        presentViewModel(viewModel: viewModel)
     }
 
     func tapOrInsertCard() {
         let viewModel = tapOrInsert()
-        modalController?.setViewModel(viewModel)
+        presentViewModel(viewModel: viewModel)
     }
 
     func removeCard() {
         let viewModel = remove()
-        modalController?.setViewModel(viewModel)
+        presentViewModel(viewModel: viewModel)
     }
 
     func processingPayment() {
         let viewModel = processing()
-        modalController?.setViewModel(viewModel)
+        presentViewModel(viewModel: viewModel)
     }
 
     func success(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void) {
         let viewModel = successViewModel(printReceipt: printReceipt, emailReceipt: emailReceipt)
-        modalController?.setViewModel(viewModel)
+        presentViewModel(viewModel: viewModel)
     }
 
     func error(error: Error, tryAgain: @escaping () -> Void) {
         let viewModel = errorViewModel(amount: amount, error: error, tryAgain: tryAgain)
-        modalController?.setViewModel(viewModel)
+        presentViewModel(viewModel: viewModel)
     }
 
-    func dismiss() {
-        modalController?.dismiss(animated: true, completion: nil)
+    func nonRetryableError(from: UIViewController?, error: Error) {
+        let viewModel = nonRetryableErrorViewModel(amount: amount, error: error)
+        presentViewModel(viewModel: viewModel)
     }
 }
-
 
 private extension OrderDetailsPaymentAlerts {
     func readerIsReady() -> CardPresentPaymentsModalViewModel {
@@ -72,10 +97,18 @@ private extension OrderDetailsPaymentAlerts {
     }
 
     func successViewModel(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalSuccess(amount: amount, printReceipt: printReceipt, emailReceipt: emailReceipt)
+        if MFMailComposeViewController.canSendMail() {
+            return CardPresentModalSuccess(amount: amount, printReceipt: printReceipt, emailReceipt: emailReceipt)
+        } else {
+            return CardPresentModalSuccessWithoutEmail(amount: amount, printReceipt: printReceipt)
+        }
     }
 
     func errorViewModel(amount: String, error: Error, tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalError(amount: amount, error: error, primaryAction: tryAgain)
+    }
+
+    func nonRetryableErrorViewModel(amount: String, error: Error) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalNonRetryableError(amount: amount, error: error)
     }
 }

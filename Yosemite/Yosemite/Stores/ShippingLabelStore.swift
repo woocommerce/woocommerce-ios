@@ -67,6 +67,16 @@ public final class ShippingLabelStore: Store {
                                  completion: completion)
         case .synchronizeShippingLabelAccountSettings(let siteID, let completion):
             synchronizeShippingLabelAccountSettings(siteID: siteID, completion: completion)
+        case .updateShippingLabelAccountSettings(let siteID, let settings, let completion):
+            updateShippingLabelAccountSettings(siteID: siteID, settings: settings, completion: completion)
+        case .purchaseShippingLabel(let siteID, let orderID, let originAddress, let destinationAddress, let packages, let emailCustomerReceipt, let completion):
+            purchaseShippingLabel(siteID: siteID,
+                                  orderID: orderID,
+                                  originAddress: originAddress,
+                                  destinationAddress: destinationAddress,
+                                  packages: packages,
+                                  emailCustomerReceipt: emailCustomerReceipt,
+                                  completion: completion)
         }
     }
 }
@@ -190,6 +200,66 @@ private extension ShippingLabelStore {
                 self.upsertShippingLabelAccountSettingsInBackground(siteID: siteID, accountSettings: settings) {
                     completion(.success(settings))
                 }
+            }
+        }
+    }
+
+    func updateShippingLabelAccountSettings(siteID: Int64,
+                                            settings: ShippingLabelAccountSettings,
+                                            completion: @escaping (Result<Bool, Error>) -> Void) {
+        remote.updateShippingLabelAccountSettings(siteID: siteID, settings: settings) { [weak self] result in
+            guard let self = self else { return }
+
+            switch result {
+            case .success(let success):
+                self.upsertShippingLabelAccountSettingsInBackground(siteID: siteID, accountSettings: settings) {
+                    completion(.success(success))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func purchaseShippingLabel(siteID: Int64,
+                               orderID: Int64,
+                               originAddress: ShippingLabelAddress,
+                               destinationAddress: ShippingLabelAddress,
+                               packages: [ShippingLabelPackagePurchase],
+                               emailCustomerReceipt: Bool,
+                               completion: @escaping (Result<[ShippingLabel], Error>) -> Void) {
+        var labelPurchaseIDs: [Int64] = []
+
+        // Make the initial purchase request.
+        remote.purchaseShippingLabel(siteID: siteID,
+                                     orderID: orderID,
+                                     originAddress: originAddress,
+                                     destinationAddress: destinationAddress,
+                                     packages: packages,
+                                     emailCustomerReceipt: emailCustomerReceipt) { result in
+            switch result {
+            case .success(let labelPurchases):
+                // Save the IDs of label purchases in the response so we can poll the backend for their status.
+                for label in labelPurchases {
+                    labelPurchaseIDs.append(label.shippingLabelID)
+                }
+
+                // Wait for 2 seconds (give the backend time to process the purchase)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                    guard let self = self else { return }
+
+                    // Poll the status of the label purchases from the response above
+                    // with a delay of 1 second each time, with a maximum of 3 retries
+                    self.pollLabelStatus(withDelayInSeconds: 1.0,
+                                         maxRetries: 3,
+                                         siteID: siteID,
+                                         orderID: orderID,
+                                         labelIDs: labelPurchaseIDs,
+                                         completion: completion)
+                }
+            case .failure(let error):
+                DDLogError("⛔️ Error purchasing shipping label for order \(orderID): \(error)")
+                completion(.failure(error))
             }
         }
     }
@@ -336,4 +406,73 @@ private extension ShippingLabelStore {
             storageAccountSettings.addToPaymentMethods(newStoragePaymentMethod)
         }
     }
+
+    func pollLabelStatus(withDelayInSeconds delay: Double,
+                         maxRetries: Int64,
+                         siteID: Int64,
+                         orderID: Int64,
+                         labelIDs: [Int64],
+                         completion: @escaping (Result<[ShippingLabel], Error>) -> Void) {
+        remote.checkLabelStatus(siteID: siteID, orderID: orderID, labelIDs: labelIDs) { result in
+            switch result {
+            case .success(let labelStatusResponse):
+                // If all labels have PURCHASED status, stop polling
+                if labelStatusResponse.allSatisfy({ $0.status == .purchased }) {
+                    let labels = labelStatusResponse.compactMap { $0.getPurchasedLabel() }
+                    completion(.success(labels))
+                }
+
+                // If any label has PURCHASE_ERROR status, return error and stop polling
+                else if labelStatusResponse.contains(where: { $0.status == .purchaseError }) {
+                    DDLogError("⛔️ Error purchasing shipping label for order \(orderID)")
+                    completion(.failure(LabelPurchaseError.purchaseErrorStatus))
+                }
+
+                // If no errors but status is not PURCHASED for all labels, poll again after delay
+                else if maxRetries > 0 {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
+                        self?.pollLabelStatus(withDelayInSeconds: delay,
+                                              maxRetries: maxRetries - 1,
+                                              siteID: siteID,
+                                              orderID: orderID,
+                                              labelIDs: labelIDs,
+                                              completion: completion)
+                    }
+                }
+
+                // If there are no retries left
+                else {
+                    DDLogError("⛔️ Shipping label purchase for order \(orderID) still in progress")
+                    completion(.failure(LabelPurchaseError.purchaseIncomplete))
+                }
+
+            case .failure(let error):
+                // If there are retries left, poll again after delay
+                if maxRetries > 0 {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
+                        self?.pollLabelStatus(withDelayInSeconds: delay,
+                                              maxRetries: maxRetries - 1,
+                                              siteID: siteID,
+                                              orderID: orderID,
+                                              labelIDs: labelIDs,
+                                              completion: completion)
+                    }
+                }
+
+                // If there are no retries left, stop polling
+                else {
+                    DDLogError("⛔️ Error checking shipping label status for order \(orderID): \(error)")
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+}
+
+/// Represents errors that can be returned when checking shipping label purchase status
+public enum LabelPurchaseError: Error {
+    /// API returns a `PURCHASE_ERROR` status for a label
+    case purchaseErrorStatus
+    /// Label purchase not complete after polling the backend
+    case purchaseIncomplete
 }

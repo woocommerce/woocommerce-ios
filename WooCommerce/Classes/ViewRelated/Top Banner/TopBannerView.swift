@@ -192,6 +192,7 @@ private extension TopBannerView {
         // Style buttons
         actionButtons.forEach { button in
             button.applyLinkButtonStyle()
+            button.titleLabel?.adjustsFontSizeToFitWidth = true
             button.backgroundColor = backgroundColor(for: viewModel.type)
             buttonsStackView.addArrangedSubview(button)
         }
@@ -228,8 +229,12 @@ private extension TopBannerView {
             iconImageView.tintColor = .textSubtle
         case .warning:
             iconImageView.tintColor = .warning
+        case .info:
+            iconImageView.tintColor = .info
         }
         backgroundColor = backgroundColor(for: type)
+        titleLabel.textColor = textColor(for: type)
+        infoLabel.textColor = textColor(for: type)
     }
 
     func backgroundColor(for bannerType: TopBannerViewModel.BannerType) -> UIColor {
@@ -238,6 +243,19 @@ private extension TopBannerView {
             return .systemColor(.secondarySystemGroupedBackground)
         case .warning:
             return .warningBackground
+        case .info:
+            return .infoBackground
+        }
+    }
+
+    func textColor(for bannerType: TopBannerViewModel.BannerType) -> UIColor {
+        switch bannerType {
+        case .normal:
+            return .text
+        case .warning:
+            return .text
+        case .info:
+            return .white
         }
     }
 

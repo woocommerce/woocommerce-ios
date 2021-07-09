@@ -1,5 +1,1 @@
-Ürün varyasyonları yalnızca bir resmi destekler; bu nedenle eğer bir ürün varyasyonunun zaten bir resmi varsa onu değiştirme veya kaldırma seçeneği görürsünüz, ancak başka bir tane ekleyemezsiniz.
-
-Medya Kitaplığından görüntü seçerken, belirli sayıda görsele sahip kitaplıklarda kilitlenme durumları olduğu bildirilmişti. Bu sorunu düzelttik.
-
-Ayrıca, bir müşteri çevrimdışı bir cihaz, geçersiz bir SSL sertifikası veya engellenmiş bir XML-RPC ile bir siteye otrum açtığında görüntülenen hata mesajını da iyileştirdik. Güncellenen mesajlaşma, kişilerin oturum açma sorunlarını gidermesini kolaylaştırır.
+Artık değişken bir ürünün özelliklerine daha az dokunuşla ulaşabilirsiniz. Bunlar ürün ayrntılarında listelenmiştir. Ayrıca bir siparişin ayrıntılarının hem görsel olarak hem de sahne arkasında yüklenme biçimini iyileştirdik. Umarız iyileştirmeleri fark edersiniz.

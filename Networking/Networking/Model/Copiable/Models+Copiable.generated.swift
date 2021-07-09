@@ -67,7 +67,7 @@ extension Order {
         let customerNote = customerNote ?? self.customerNote
         let dateCreated = dateCreated ?? self.dateCreated
         let dateModified = dateModified ?? self.dateModified
-        let datePaid = datePaid ?? self.datePaid
+        let datePaid = datePaid ?? nil
         let discountTotal = discountTotal ?? self.discountTotal
         let discountTax = discountTax ?? self.discountTax
         let shippingTotal = shippingTotal ?? self.shippingTotal
@@ -111,6 +111,123 @@ extension Order {
             coupons: coupons,
             refunds: refunds,
             fees: fees
+        )
+    }
+}
+
+extension OrderItem {
+    public func copy(
+        itemID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        productID: CopiableProp<Int64> = .copy,
+        variationID: CopiableProp<Int64> = .copy,
+        quantity: CopiableProp<Decimal> = .copy,
+        price: CopiableProp<NSDecimalNumber> = .copy,
+        sku: NullableCopiableProp<String> = .copy,
+        subtotal: CopiableProp<String> = .copy,
+        subtotalTax: CopiableProp<String> = .copy,
+        taxClass: CopiableProp<String> = .copy,
+        taxes: CopiableProp<[OrderItemTax]> = .copy,
+        total: CopiableProp<String> = .copy,
+        totalTax: CopiableProp<String> = .copy,
+        attributes: CopiableProp<[OrderItemAttribute]> = .copy
+    ) -> OrderItem {
+        let itemID = itemID ?? self.itemID
+        let name = name ?? self.name
+        let productID = productID ?? self.productID
+        let variationID = variationID ?? self.variationID
+        let quantity = quantity ?? self.quantity
+        let price = price ?? self.price
+        let sku = sku ?? self.sku
+        let subtotal = subtotal ?? self.subtotal
+        let subtotalTax = subtotalTax ?? self.subtotalTax
+        let taxClass = taxClass ?? self.taxClass
+        let taxes = taxes ?? self.taxes
+        let total = total ?? self.total
+        let totalTax = totalTax ?? self.totalTax
+        let attributes = attributes ?? self.attributes
+
+        return OrderItem(
+            itemID: itemID,
+            name: name,
+            productID: productID,
+            variationID: variationID,
+            quantity: quantity,
+            price: price,
+            sku: sku,
+            subtotal: subtotal,
+            subtotalTax: subtotalTax,
+            taxClass: taxClass,
+            taxes: taxes,
+            total: total,
+            totalTax: totalTax,
+            attributes: attributes
+        )
+    }
+}
+
+extension OrderItemAttribute {
+    public func copy(
+        metaID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        value: CopiableProp<String> = .copy
+    ) -> OrderItemAttribute {
+        let metaID = metaID ?? self.metaID
+        let name = name ?? self.name
+        let value = value ?? self.value
+
+        return OrderItemAttribute(
+            metaID: metaID,
+            name: name,
+            value: value
+        )
+    }
+}
+
+extension OrderItemRefund {
+    public func copy(
+        itemID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        productID: CopiableProp<Int64> = .copy,
+        variationID: CopiableProp<Int64> = .copy,
+        quantity: CopiableProp<Decimal> = .copy,
+        price: CopiableProp<NSDecimalNumber> = .copy,
+        sku: NullableCopiableProp<String> = .copy,
+        subtotal: CopiableProp<String> = .copy,
+        subtotalTax: CopiableProp<String> = .copy,
+        taxClass: CopiableProp<String> = .copy,
+        taxes: CopiableProp<[OrderItemTaxRefund]> = .copy,
+        total: CopiableProp<String> = .copy,
+        totalTax: CopiableProp<String> = .copy
+    ) -> OrderItemRefund {
+        let itemID = itemID ?? self.itemID
+        let name = name ?? self.name
+        let productID = productID ?? self.productID
+        let variationID = variationID ?? self.variationID
+        let quantity = quantity ?? self.quantity
+        let price = price ?? self.price
+        let sku = sku ?? self.sku
+        let subtotal = subtotal ?? self.subtotal
+        let subtotalTax = subtotalTax ?? self.subtotalTax
+        let taxClass = taxClass ?? self.taxClass
+        let taxes = taxes ?? self.taxes
+        let total = total ?? self.total
+        let totalTax = totalTax ?? self.totalTax
+
+        return OrderItemRefund(
+            itemID: itemID,
+            name: name,
+            productID: productID,
+            variationID: variationID,
+            quantity: quantity,
+            price: price,
+            sku: sku,
+            subtotal: subtotal,
+            subtotalTax: subtotalTax,
+            taxClass: taxClass,
+            taxes: taxes,
+            total: total,
+            totalTax: totalTax
         )
     }
 }
@@ -391,6 +508,36 @@ extension ProductAddOnOption {
     }
 }
 
+extension ProductAttribute {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        attributeID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        position: CopiableProp<Int> = .copy,
+        visible: CopiableProp<Bool> = .copy,
+        variation: CopiableProp<Bool> = .copy,
+        options: CopiableProp<[String]> = .copy
+    ) -> ProductAttribute {
+        let siteID = siteID ?? self.siteID
+        let attributeID = attributeID ?? self.attributeID
+        let name = name ?? self.name
+        let position = position ?? self.position
+        let visible = visible ?? self.visible
+        let variation = variation ?? self.variation
+        let options = options ?? self.options
+
+        return ProductAttribute(
+            siteID: siteID,
+            attributeID: attributeID,
+            name: name,
+            position: position,
+            visible: visible,
+            variation: variation,
+            options: options
+        )
+    }
+}
+
 extension ProductImage {
     public func copy(
         imageID: CopiableProp<Int64> = .copy,
@@ -535,6 +682,78 @@ extension ProductVariation {
     }
 }
 
+extension ShipmentTracking {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        orderID: CopiableProp<Int64> = .copy,
+        trackingID: CopiableProp<String> = .copy,
+        trackingNumber: CopiableProp<String> = .copy,
+        trackingProvider: NullableCopiableProp<String> = .copy,
+        trackingURL: NullableCopiableProp<String> = .copy,
+        dateShipped: NullableCopiableProp<Date> = .copy
+    ) -> ShipmentTracking {
+        let siteID = siteID ?? self.siteID
+        let orderID = orderID ?? self.orderID
+        let trackingID = trackingID ?? self.trackingID
+        let trackingNumber = trackingNumber ?? self.trackingNumber
+        let trackingProvider = trackingProvider ?? self.trackingProvider
+        let trackingURL = trackingURL ?? self.trackingURL
+        let dateShipped = dateShipped ?? self.dateShipped
+
+        return ShipmentTracking(
+            siteID: siteID,
+            orderID: orderID,
+            trackingID: trackingID,
+            trackingNumber: trackingNumber,
+            trackingProvider: trackingProvider,
+            trackingURL: trackingURL,
+            dateShipped: dateShipped
+        )
+    }
+}
+
+extension Refund {
+    public func copy(
+        refundID: CopiableProp<Int64> = .copy,
+        orderID: CopiableProp<Int64> = .copy,
+        siteID: CopiableProp<Int64> = .copy,
+        dateCreated: CopiableProp<Date> = .copy,
+        amount: CopiableProp<String> = .copy,
+        reason: CopiableProp<String> = .copy,
+        refundedByUserID: CopiableProp<Int64> = .copy,
+        isAutomated: NullableCopiableProp<Bool> = .copy,
+        createAutomated: NullableCopiableProp<Bool> = .copy,
+        items: CopiableProp<[OrderItemRefund]> = .copy,
+        shippingLines: NullableCopiableProp<[ShippingLine]> = .copy
+    ) -> Refund {
+        let refundID = refundID ?? self.refundID
+        let orderID = orderID ?? self.orderID
+        let siteID = siteID ?? self.siteID
+        let dateCreated = dateCreated ?? self.dateCreated
+        let amount = amount ?? self.amount
+        let reason = reason ?? self.reason
+        let refundedByUserID = refundedByUserID ?? self.refundedByUserID
+        let isAutomated = isAutomated ?? self.isAutomated
+        let createAutomated = createAutomated ?? self.createAutomated
+        let items = items ?? self.items
+        let shippingLines = shippingLines ?? self.shippingLines
+
+        return Refund(
+            refundID: refundID,
+            orderID: orderID,
+            siteID: siteID,
+            dateCreated: dateCreated,
+            amount: amount,
+            reason: reason,
+            refundedByUserID: refundedByUserID,
+            isAutomated: isAutomated,
+            createAutomated: createAutomated,
+            items: items,
+            shippingLines: shippingLines
+        )
+    }
+}
+
 extension ShippingLabel {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -595,6 +814,51 @@ extension ShippingLabel {
     }
 }
 
+extension ShippingLabelAccountSettings {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        canManagePayments: CopiableProp<Bool> = .copy,
+        canEditSettings: CopiableProp<Bool> = .copy,
+        storeOwnerDisplayName: CopiableProp<String> = .copy,
+        storeOwnerUsername: CopiableProp<String> = .copy,
+        storeOwnerWpcomUsername: CopiableProp<String> = .copy,
+        storeOwnerWpcomEmail: CopiableProp<String> = .copy,
+        paymentMethods: CopiableProp<[ShippingLabelPaymentMethod]> = .copy,
+        selectedPaymentMethodID: CopiableProp<Int64> = .copy,
+        isEmailReceiptsEnabled: CopiableProp<Bool> = .copy,
+        paperSize: CopiableProp<ShippingLabelPaperSize> = .copy,
+        lastSelectedPackageID: CopiableProp<String> = .copy
+    ) -> ShippingLabelAccountSettings {
+        let siteID = siteID ?? self.siteID
+        let canManagePayments = canManagePayments ?? self.canManagePayments
+        let canEditSettings = canEditSettings ?? self.canEditSettings
+        let storeOwnerDisplayName = storeOwnerDisplayName ?? self.storeOwnerDisplayName
+        let storeOwnerUsername = storeOwnerUsername ?? self.storeOwnerUsername
+        let storeOwnerWpcomUsername = storeOwnerWpcomUsername ?? self.storeOwnerWpcomUsername
+        let storeOwnerWpcomEmail = storeOwnerWpcomEmail ?? self.storeOwnerWpcomEmail
+        let paymentMethods = paymentMethods ?? self.paymentMethods
+        let selectedPaymentMethodID = selectedPaymentMethodID ?? self.selectedPaymentMethodID
+        let isEmailReceiptsEnabled = isEmailReceiptsEnabled ?? self.isEmailReceiptsEnabled
+        let paperSize = paperSize ?? self.paperSize
+        let lastSelectedPackageID = lastSelectedPackageID ?? self.lastSelectedPackageID
+
+        return ShippingLabelAccountSettings(
+            siteID: siteID,
+            canManagePayments: canManagePayments,
+            canEditSettings: canEditSettings,
+            storeOwnerDisplayName: storeOwnerDisplayName,
+            storeOwnerUsername: storeOwnerUsername,
+            storeOwnerWpcomUsername: storeOwnerWpcomUsername,
+            storeOwnerWpcomEmail: storeOwnerWpcomEmail,
+            paymentMethods: paymentMethods,
+            selectedPaymentMethodID: selectedPaymentMethodID,
+            isEmailReceiptsEnabled: isEmailReceiptsEnabled,
+            paperSize: paperSize,
+            lastSelectedPackageID: lastSelectedPackageID
+        )
+    }
+}
+
 extension ShippingLabelAddress {
     public func copy(
         company: CopiableProp<String> = .copy,
@@ -627,6 +891,75 @@ extension ShippingLabelAddress {
             address2: address2,
             city: city,
             postcode: postcode
+        )
+    }
+}
+
+extension ShippingLabelPaymentMethod {
+    public func copy(
+        paymentMethodID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        cardType: CopiableProp<ShippingLabelPaymentCardType> = .copy,
+        cardDigits: CopiableProp<String> = .copy,
+        expiry: NullableCopiableProp<Date> = .copy
+    ) -> ShippingLabelPaymentMethod {
+        let paymentMethodID = paymentMethodID ?? self.paymentMethodID
+        let name = name ?? self.name
+        let cardType = cardType ?? self.cardType
+        let cardDigits = cardDigits ?? self.cardDigits
+        let expiry = expiry ?? self.expiry
+
+        return ShippingLabelPaymentMethod(
+            paymentMethodID: paymentMethodID,
+            name: name,
+            cardType: cardType,
+            cardDigits: cardDigits,
+            expiry: expiry
+        )
+    }
+}
+
+extension ShippingLabelPurchase {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        orderID: CopiableProp<Int64> = .copy,
+        shippingLabelID: CopiableProp<Int64> = .copy,
+        carrierID: NullableCopiableProp<String> = .copy,
+        dateCreated: CopiableProp<Date> = .copy,
+        packageName: CopiableProp<String> = .copy,
+        trackingNumber: NullableCopiableProp<String> = .copy,
+        serviceName: CopiableProp<String> = .copy,
+        refundableAmount: CopiableProp<Double> = .copy,
+        status: CopiableProp<ShippingLabelStatus> = .copy,
+        productIDs: CopiableProp<[Int64]> = .copy,
+        productNames: CopiableProp<[String]> = .copy
+    ) -> ShippingLabelPurchase {
+        let siteID = siteID ?? self.siteID
+        let orderID = orderID ?? self.orderID
+        let shippingLabelID = shippingLabelID ?? self.shippingLabelID
+        let carrierID = carrierID ?? self.carrierID
+        let dateCreated = dateCreated ?? self.dateCreated
+        let packageName = packageName ?? self.packageName
+        let trackingNumber = trackingNumber ?? self.trackingNumber
+        let serviceName = serviceName ?? self.serviceName
+        let refundableAmount = refundableAmount ?? self.refundableAmount
+        let status = status ?? self.status
+        let productIDs = productIDs ?? self.productIDs
+        let productNames = productNames ?? self.productNames
+
+        return ShippingLabelPurchase(
+            siteID: siteID,
+            orderID: orderID,
+            shippingLabelID: shippingLabelID,
+            carrierID: carrierID,
+            dateCreated: dateCreated,
+            packageName: packageName,
+            trackingNumber: trackingNumber,
+            serviceName: serviceName,
+            refundableAmount: refundableAmount,
+            status: status,
+            productIDs: productIDs,
+            productNames: productNames
         )
     }
 }

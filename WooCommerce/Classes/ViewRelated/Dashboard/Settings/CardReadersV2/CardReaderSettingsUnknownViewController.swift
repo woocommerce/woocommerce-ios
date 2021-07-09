@@ -79,6 +79,10 @@ private extension CardReaderSettingsUnknownViewController {
             showConnectingModal()
         case .foundReader:
             showFoundReaderModal()
+        case .failed(let error):
+            showDiscoveryErrorModal(error: error)
+        case .restartingSearch:
+            showSearchingModal()
         default:
             dismissAnyModal()
         }
@@ -100,6 +104,12 @@ private extension CardReaderSettingsUnknownViewController {
         modalAlerts.scanningForReader(from: self, cancel: viewModel.cancelReaderDiscovery)
     }
 
+    func showDiscoveryErrorModal(error: Error) {
+        modalAlerts.scanningFailed(from: self, error: error) { [weak self] in
+            self?.dismissAnyModal()
+        }
+    }
+
     func showConnectingModal() {
         modalAlerts.connectingToReader(from: self)
     }
@@ -109,7 +119,7 @@ private extension CardReaderSettingsUnknownViewController {
             return
         }
 
-        guard let name = viewModel.foundReaderSerialNumber else {
+        guard let name = viewModel.foundReaderID else {
             return
         }
 
@@ -161,7 +171,7 @@ private extension CardReaderSettingsUnknownViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as TitleTableViewCell where row == .connectHeader:
+        case let cell as HeadlineTableViewCell where row == .connectHeader:
             configureHeader(cell: cell)
         case let cell as ImageTableViewCell where row == .connectImage:
             configureImage(cell: cell)
@@ -180,31 +190,36 @@ private extension CardReaderSettingsUnknownViewController {
         }
     }
 
-    private func configureHeader(cell: TitleTableViewCell) {
-        cell.titleLabel?.text = Localization.connectYourCardReaderTitle
+    private func configureHeader(cell: HeadlineTableViewCell) {
+        cell.headlineLabel?.text = Localization.connectYourCardReaderTitle
+        cell.backgroundColor = .systemBackground
         cell.selectionStyle = .none
     }
 
     private func configureImage(cell: ImageTableViewCell) {
         cell.detailImageView?.image = UIImage(named: "card-reader-connect")
+        cell.backgroundColor = .systemBackground
         cell.selectionStyle = .none
     }
 
     private func configureHelpHintChargeReader(cell: NumberedListItemTableViewCell) {
         cell.numberLabel?.text = Localization.hintOneTitle
         cell.itemTextLabel?.text = Localization.hintOne
+        cell.backgroundColor = .systemBackground
         cell.selectionStyle = .none
     }
 
     private func configureHelpHintTurnOnReader(cell: NumberedListItemTableViewCell) {
         cell.numberLabel?.text = Localization.hintTwoTitle
         cell.itemTextLabel?.text = Localization.hintTwo
+        cell.backgroundColor = .systemBackground
         cell.selectionStyle = .none
     }
 
     private func configureHelpHintEnableBluetooth(cell: NumberedListItemTableViewCell) {
         cell.numberLabel?.text = Localization.hintThreeTitle
         cell.itemTextLabel?.text = Localization.hintThree
+        cell.backgroundColor = .systemBackground
         cell.selectionStyle = .none
    }
 
@@ -213,6 +228,7 @@ private extension CardReaderSettingsUnknownViewController {
         cell.configure(title: buttonTitle) { [weak self] in
             self?.viewModel?.startReaderDiscovery()
         }
+        cell.backgroundColor = .systemBackground
         cell.selectionStyle = .none
     }
 
@@ -220,6 +236,11 @@ private extension CardReaderSettingsUnknownViewController {
         cell.learnMoreTextView.attributedText = Localization.learnMore
         cell.learnMoreTextView.tintColor = .textLink
         cell.learnMoreTextView.delegate = self
+        cell.learnMoreTextView.linkTextAttributes = [
+            .foregroundColor: UIColor.textLink,
+            .underlineColor: UIColor.clear
+        ]
+        cell.backgroundColor = .systemBackground
         cell.selectionStyle = .none
     }
 
@@ -303,7 +324,7 @@ private enum Row: CaseIterable {
     var type: UITableViewCell.Type {
         switch self {
         case .connectHeader:
-            return TitleTableViewCell.self
+            return HeadlineTableViewCell.self
         case .connectImage:
             return ImageTableViewCell.self
         case .connectHelpHintChargeReader:
@@ -384,7 +405,7 @@ private extension CardReaderSettingsUnknownViewController {
             comment: "Settings > Manage Card Reader > Connect > A button to begin a search for a reader"
         )
 
-        static var learnMore: NSAttributedString {
+        static let learnMore: NSAttributedString = {
             let learnMoreText = NSLocalizedString(
                 "<a href=\"https://woocommerce.com/payments\">Learn more</a> about accepting payments with your mobile device and ordering card readers",
                 comment: "A label prompting users to learn more about card readers with an embedded hyperlink"
@@ -401,6 +422,6 @@ private extension CardReaderSettingsUnknownViewController {
             learnMoreAttrText.addAttributes(learnMoreAttributes, range: range)
 
             return learnMoreAttrText
-        }
+        }()
     }
 }

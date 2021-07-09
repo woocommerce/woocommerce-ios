@@ -100,13 +100,6 @@ public extension StorageType {
 
     // MARK: - Stats
 
-    /// Retrieves the Stored OrderCount.
-    ///
-    func loadOrderCount(siteID: Int64) -> OrderCount? {
-        let predicate = \OrderCount.siteID == siteID
-        return firstObject(ofType: OrderCount.self, matching: predicate)
-    }
-
     /// Retrieves the Stored TopEarnerStats.
     ///
     func loadTopEarnerStats(date: String, granularity: String) -> TopEarnerStats? {
@@ -470,6 +463,15 @@ public extension StorageType {
         return firstObject(ofType: PaymentGateway.self, matching: predicate)
     }
 
+    // MARK: - Data
+
+    /// Returns all the countries stored.
+    ///
+    func loadCountries() -> [Country] {
+        let descriptor = NSSortDescriptor(keyPath: \Country.name, ascending: true)
+        return allObjects(ofType: Country.self, matching: nil, sortedBy: [descriptor])
+    }
+
     // MARK: - Shipping Labels
 
     /// Returns all stored shipping labels for a site and order.
@@ -529,4 +531,10 @@ public extension StorageType {
         let predicate = \SitePlugin.siteID == siteID && \SitePlugin.name == name
         return firstObject(ofType: SitePlugin.self, matching: predicate)
     }
-}
+
+    /// Returns a payment gateway account with a specified `siteID` and `gatewayID`
+    ///
+    func loadPaymentGatewayAccount(siteID: Int64, gatewayID: String) -> PaymentGatewayAccount? {
+        let predicate = \PaymentGatewayAccount.siteID == siteID && \PaymentGatewayAccount.gatewayID == gatewayID
+        return firstObject(ofType: PaymentGatewayAccount.self, matching: predicate)
+    }}

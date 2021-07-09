@@ -22,21 +22,13 @@ final class ProductVariationsViewController: UIViewController {
         return refreshControl
     }()
 
-    /// Stack view that contains the top warning banner and is contained in the table view header.
+    /// Stack view that is contained in the table view header.
     ///
     private lazy var topStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .vertical
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
-    }()
-
-    /// Top banner that shows a warning in case some variations are missing a price.
-    ///
-    private lazy var topBannerView: TopBannerView = {
-        let topBanner = ProductVariationsTopBannerFactory.missingPricesTopBannerView()
-        topBanner.translatesAutoresizingMaskIntoConstraints = false
-        return topBanner
     }()
 
     /// Footer "Loading More" Spinner.
@@ -82,7 +74,6 @@ final class ProductVariationsViewController: UIViewController {
         didSet {
             viewModel.updatedFormTypeIfNeeded(newProduct: product)
 
-            configureRightButtonItem()
             resetResultsController(oldProduct: oldValue)
             updateEmptyState()
             onProductUpdate?(product)
@@ -111,14 +102,20 @@ final class ProductVariationsViewController: UIViewController {
     private let noticePresenter: NoticePresenter
     private let analytics: Analytics
 
+    /// ViewController that pushed `self`. Needed in order to go back to it when the first variation is created.
+    ///
+    private weak var initialViewController: UIViewController?
+
     /// Assign this closure to get notified when the underlying product changes due to new variations or new attributes.
     ///
     var onProductUpdate: ((Product) -> Void)?
 
-    init(viewModel: ProductVariationsViewModel,
+    init(initialViewController: UIViewController,
+         viewModel: ProductVariationsViewModel,
          product: Product,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
          analytics: Analytics = ServiceLocator.analytics) {
+        self.initialViewController = initialViewController
         self.product = product
         self.viewModel = viewModel
         self.noticePresenter = noticePresenter
@@ -141,7 +138,6 @@ final class ProductVariationsViewController: UIViewController {
         configureSyncingCoordinator()
         registerTableViewCells()
         configureHeaderContainerView()
-        updateTopBannerView()
         updateEmptyState()
 
         syncingCoordinator.synchronizeFirstPage()
@@ -166,22 +162,6 @@ private extension ProductVariationsViewController {
             "Variations",
             comment: "Title that appears on top of the Product Variation List screen."
         )
-        configureRightButtonItem()
-    }
-
-    /// Configure right button item.
-    ///
-    func configureRightButtonItem() {
-        guard viewModel.shouldShowMoreButton(for: product) else {
-            return navigationItem.rightBarButtonItem = nil
-        }
-
-        let moreButton = UIBarButtonItem(image: .moreImage,
-                                         style: .plain,
-                                         target: self,
-                                         action: #selector(presentMoreOptionsActionSheet(_:)))
-        moreButton.accessibilityLabel = Localization.moreButtonLabel
-        navigationItem.setRightBarButton(moreButton, animated: false)
     }
 
     /// Apply Woo styles.
@@ -283,16 +263,9 @@ private extension ProductVariationsViewController {
 
         addTopButton(title: Localization.generateVariationAction,
                      insets: .init(top: 16, left: 16, bottom: 8, right: 16),
-                     actionSelector: #selector(addButtonTapped),
-                     stylingHandler: { $0.applyPrimaryButtonStyle() })
-
-        addTopButton(title: Localization.editAttributesAction,
-                     insets: .init(top: 8, left: 16, bottom: 16, right: 16),
                      hasBottomBorder: true,
-                     actionSelector: #selector(editAttributesTapped),
+                     actionSelector: #selector(addButtonTapped),
                      stylingHandler: { $0.applySecondaryButtonStyle() })
-
-        topStackView.addArrangedSubview(topBannerView)
 
         tableView.tableHeaderView = headerContainer
     }
@@ -325,17 +298,6 @@ private extension ProductVariationsViewController {
         }
 
         topStackView.addArrangedSubview(buttonContainer)
-    }
-
-    func updateTopBannerView() {
-        let hasVariationsMissingPrice = resultsController.fetchedObjects.contains {
-            EditableProductVariationModel(productVariation: $0,
-                                          allAttributes: allAttributes,
-                                          parentProductSKU: parentProductSKU)
-                .isEnabledAndMissingPrice
-        }
-        topBannerView.isHidden = hasVariationsMissingPrice == false
-        tableView.updateHeaderHeight()
     }
 }
 
@@ -370,7 +332,7 @@ private extension ProductVariationsViewController {
         do {
             try resultsController.performFetch()
         } catch {
-            CrashLogging.logError(error)
+            ServiceLocator.crashLogging.logError(error)
         }
 
         tableView.reloadData()
@@ -379,7 +341,6 @@ private extension ProductVariationsViewController {
     func configureResultsControllerEventHandling(_ resultsController: ResultsController<StorageProductVariation>) {
         let onReload = { [weak self] in
             self?.tableView.reloadData()
-            self?.updateTopBannerView()
         }
 
         resultsController.onDidChangeContent = { [weak tableView] in
@@ -519,7 +480,7 @@ private extension ProductVariationsViewController {
         let editAttributeViewController = EditAttributesViewController(viewModel: editAttributesViewModel)
         editAttributeViewController.onVariationCreation = { [weak self] updatedProduct in
             self?.product = updatedProduct
-            navigationController.popViewController(animated: true)
+            self?.onFirstVariationCreated()
         }
         editAttributeViewController.onAttributesUpdate = { [weak self] updatedProduct in
             guard let self = self else { return }
@@ -546,6 +507,18 @@ private extension ProductVariationsViewController {
         let viewControllerToShow = allAttributes.isNotEmpty ? editAttributesViewController : self
         navigationController?.popToViewController(viewControllerToShow, animated: true)
     }
+
+    /// Presents a notice alerting that the variation was created and navigates back to the `initialViewController` if possible.
+    ///
+    private func onFirstVariationCreated() {
+        noticePresenter.enqueue(notice: .init(title: Localization.variationCreated, feedbackType: .success))
+
+        guard let initialViewController = initialViewController else {
+            navigationController?.popViewController(animated: true)
+            return
+        }
+        navigationController?.popToViewController(initialViewController, animated: true)
+    }
 }
 
 // MARK: - Actions
@@ -562,37 +535,6 @@ private extension ProductVariationsViewController {
     @objc func addButtonTapped() {
         analytics.track(event: WooAnalyticsEvent.Variations.addMoreVariationsButtonTapped(productID: product.productID))
         createVariation()
-    }
-
-    @objc func editAttributesTapped() {
-        navigateToEditAttributeViewController(allowVariationCreation: false)
-        trackEditAttributesButtonPressed()
-    }
-
-    func trackEditAttributesButtonPressed() {
-        analytics.track(event: WooAnalyticsEvent.Variations.editAttributesButtonTapped(productID: product.productID))
-    }
-}
-
-// MARK: - Action sheet
-//
-private extension ProductVariationsViewController {
-    @objc private func presentMoreOptionsActionSheet(_ sender: UIBarButtonItem) {
-        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = .text
-
-        let editAttributesAction = UIAlertAction(title: Localization.editAttributesAction, style: .default) { [weak self] _ in
-            self?.editAttributesTapped()
-        }
-        actionSheet.addAction(editAttributesAction)
-
-        let cancelAction = UIAlertAction(title: Localization.cancelAction, style: .cancel)
-        actionSheet.addAction(cancelAction)
-
-        let popoverController = actionSheet.popoverPresentationController
-        popoverController?.barButtonItem = sender
-
-        present(actionSheet, animated: true)
     }
 }
 
@@ -672,11 +614,14 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
             progressViewController.dismiss(animated: true)
 
             guard let self = self else { return }
-            guard let updatedProduct = try? result.get() else {
-                return self.noticePresenter.enqueue(notice: .init(title: Localization.generateVariationError, feedbackType: .error))
+            switch result {
+            case .success(let updatedProduct):
+                self.noticePresenter.enqueue(notice: .init(title: Localization.variationCreated, feedbackType: .success))
+                self.product = updatedProduct
+            case .failure(let error):
+                self.noticePresenter.enqueue(notice: .init(title: Localization.generateVariationError, feedbackType: .error))
+                DDLogError("⛔️ Error generating variation: \(error)")
             }
-
-            self.product = updatedProduct
         }
     }
 }
@@ -716,7 +661,6 @@ private extension ProductVariationsViewController {
 
     func transitionToResultsUpdatedState() {
         stateCoordinator.transitionToResultsUpdatedState(hasData: !isEmpty)
-        updateTopBannerView()
     }
 }
 
@@ -782,5 +726,6 @@ private extension ProductVariationsViewController {
                                                         comment: "Instructions for the progress screen while generating a variation")
         static let generateVariationError = NSLocalizedString("The variation couldn't be generated.",
                                                               comment: "Error title when failing to generate a variation.")
+        static let variationCreated = NSLocalizedString("Variation created", comment: "Text for the notice after creating the first variation.")
     }
 }

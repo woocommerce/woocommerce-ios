@@ -1,5 +1,3 @@
-Product variations only support one image, so if a product variation already has an image, you’ll see an option to replace or remove it but will not be able to add another one.
+We heard that orders containing multiple configurations of the same variable product can be confusing to fulfill with the app. This update fixes that and makes those items appear separately, making it easier to read. In that same spirit, orders with multiple shipments from the WooCommerce Shipping & Tax extension will show as separate sections.
 
-We received reports of crashes when selecting images from the Media Library, which occurred with libraries that had a specific number of images. This issue has been fixed.
-
-We also improved an error message that displayed when a customer logged into a site with an offline device, an invalid SSL certificate, or a blocked XML-RPC. The updated messaging makes it easier for people to troubleshoot their login issue.
+If the app has trouble loading data, we now show a helpful message with instructions on how to reach out for help. Most times, it’s a plugin causing issues, but we can help walk you through resolving it!

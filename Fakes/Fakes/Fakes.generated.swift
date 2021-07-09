@@ -107,6 +107,17 @@ extension Address {
         )
     }
 }
+extension Country {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Country {
+        .init(
+            code: .fake(),
+            name: .fake(),
+            states: .fake()
+        )
+    }
+}
 extension CreateProductVariation {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -247,27 +258,6 @@ extension Order {
             coupons: .fake(),
             refunds: .fake(),
             fees: .fake()
-        )
-    }
-}
-extension OrderCount {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> OrderCount {
-        .init(
-            siteID: .fake(),
-            items: .fake()
-        )
-    }
-}
-extension OrderCountItem {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> OrderCountItem {
-        .init(
-            slug: .fake(),
-            name: .fake(),
-            total: .fake()
         )
     }
 }
@@ -999,6 +989,27 @@ extension ShippingLabelAddressVerification.ShipType {
         .origin
     }
 }
+extension ShippingLabelCarrierRate {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ShippingLabelCarrierRate {
+        .init(
+            title: .fake(),
+            insurance: .fake(),
+            retailRate: .fake(),
+            rate: .fake(),
+            rateID: .fake(),
+            serviceID: .fake(),
+            carrierID: .fake(),
+            shipmentID: .fake(),
+            hasTracking: .fake(),
+            isSelected: .fake(),
+            isPickupFree: .fake(),
+            deliveryDays: .fake(),
+            deliveryDateGuaranteed: .fake()
+        )
+    }
+}
 extension ShippingLabelCreationEligibilityResponse {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -1020,6 +1031,17 @@ extension ShippingLabelCustomPackage {
             dimensions: .fake(),
             boxWeight: .fake(),
             maxWeight: .fake()
+        )
+    }
+}
+extension ShippingLabelPackagePurchase {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ShippingLabelPackagePurchase {
+        .init(
+            package: .fake(),
+            rate: .fake(),
+            productIDs: .fake()
         )
     }
 }
@@ -1104,6 +1126,26 @@ extension ShippingLabelPrintData {
         .init(
             mimeType: .fake(),
             base64Content: .fake()
+        )
+    }
+}
+extension ShippingLabelPurchase {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ShippingLabelPurchase {
+        .init(
+            siteID: .fake(),
+            orderID: .fake(),
+            shippingLabelID: .fake(),
+            carrierID: .fake(),
+            dateCreated: .fake(),
+            packageName: .fake(),
+            trackingNumber: .fake(),
+            serviceName: .fake(),
+            refundableAmount: .fake(),
+            status: .fake(),
+            productIDs: .fake(),
+            productNames: .fake()
         )
     }
 }
@@ -1295,6 +1337,16 @@ extension StatGranularity {
         .day
     }
 }
+extension StateOfACountry {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> StateOfACountry {
+        .init(
+            code: .fake(),
+            name: .fake()
+        )
+    }
+}
 extension StatsGranularityV4 {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -1359,5 +1411,19 @@ extension UploadableMedia {
             filename: .fake(),
             mimeType: .fake()
         )
+    }
+}
+extension WCPayAccountStatusEnum {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> WCPayAccountStatusEnum {
+        .complete
+    }
+}
+extension WCPayPaymentIntentStatusEnum {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> WCPayPaymentIntentStatusEnum {
+        .requiresPaymentMethod
     }
 }

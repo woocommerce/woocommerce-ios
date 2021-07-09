@@ -39,8 +39,8 @@ final class OrdersTabbedViewModel {
     /// Fetch all `OrderStatus` from the API
     ///
     func syncOrderStatuses() {
-        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { (_, error) in
-            if let error = error {
+        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { result in
+            if case let .failure(error) = result {
                 DDLogError("⛔️ Order List — Error synchronizing order statuses: \(error)")
             }
         }

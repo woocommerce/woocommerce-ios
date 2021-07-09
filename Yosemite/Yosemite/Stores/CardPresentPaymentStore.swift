@@ -39,8 +39,8 @@ public final class CardPresentPaymentStore: Store {
         }
 
         switch action {
-        case .startCardReaderDiscovery(let siteID, let completion):
-            startCardReaderDiscovery(siteID: siteID, completion: completion)
+        case .startCardReaderDiscovery(let siteID, let onReaderDiscovered, let onError):
+            startCardReaderDiscovery(siteID: siteID, onReaderDiscovered: onReaderDiscovered, onError: onError)
         case .cancelCardReaderDiscovery(let completion):
             cancelCardReaderDiscovery(completion: completion)
         case .connect(let reader, let completion):
@@ -65,8 +65,8 @@ public final class CardPresentPaymentStore: Store {
             startCardReaderUpdate(onProgress: progress, onCompletion: completion)
         case .reset:
             reset()
-        case .isReadyToCollectPayment(onCompletion: let completion):
-            isReadyToCollectPayment(onCompletion: completion)
+        case .checkCardReaderConnected(onCompletion: let completion):
+            checkCardReaderConnected(onCompletion: completion)
         }
     }
 }
@@ -75,8 +75,12 @@ public final class CardPresentPaymentStore: Store {
 // MARK: - Services
 //
 private extension CardPresentPaymentStore {
-    func startCardReaderDiscovery(siteID: Int64, completion: @escaping (_ readers: [CardReader]) -> Void) {
-        cardReaderService.start(WCPayTokenProvider(siteID: siteID, remote: self.remote))
+    func startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: @escaping (_ readers: [CardReader]) -> Void, onError: @escaping (Error) -> Void) {
+        do {
+            try cardReaderService.start(WCPayTokenProvider(siteID: siteID, remote: self.remote))
+        } catch {
+            return onError(error)
+        }
 
         // Over simplification. This is the point where we would receive
         // new data via the CardReaderService's stream of discovered readers
@@ -84,8 +88,14 @@ private extension CardPresentPaymentStore {
         // For now we are sending the data up to the UI directly
         cardReaderService.discoveredReaders
             .subscribe(Subscribers.Sink(
-                receiveCompletion: { _ in },
-                receiveValue: completion
+                receiveCompletion: { result in
+                    switch result {
+                    case .finished: break
+                    case .failure(let error):
+                        onError(error)
+                    }
+                },
+                receiveValue: onReaderDiscovered
             ))
     }
 
@@ -232,12 +242,19 @@ private extension CardPresentPaymentStore {
             ))
     }
 
-    func isReadyToCollectPayment(onCompletion: @escaping (Bool) -> Void) {
-        cardReaderService.connectedReaders.subscribe(Subscribers.Sink(receiveCompletion: { value in
-            print("==== received completion ", value)
-        }, receiveValue: { value in
-            onCompletion(value.count > 0)
-        }))
+    func checkCardReaderConnected(onCompletion: (AnyPublisher<[CardReader], Never>) -> Void) {
+        let publisher = cardReaderService.connectedReaders
+            // We only emit values when there is no reader connected, including an initial value
+            .prefix(while: { cardReaders in
+                cardReaders.count == 0
+            })
+            // Remove duplicates since we don't want to present the connection modal twice
+            .removeDuplicates()
+            // Beyond this point, the publisher should emit an empty initial value once
+            // and then finish when a reader is connected.
+            .eraseToAnyPublisher()
+
+        onCompletion(publisher)
     }
 }
 

@@ -158,11 +158,8 @@ class DefaultStoresManager: StoresManager {
     ///
     @discardableResult
     func deauthenticate() -> StoresManager {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) {
-            let resetAction = CardPresentPaymentAction.reset
-
-            ServiceLocator.stores.dispatch(resetAction)
-        }
+        let resetAction = CardPresentPaymentAction.reset
+        ServiceLocator.stores.dispatch(resetAction)
 
         state = DeauthenticatedState()
 
@@ -218,14 +215,18 @@ private extension DefaultStoresManager {
 
     /// Synchronizes the WordPress.com Account, associated with the current credentials.
     ///
-    func synchronizeAccount(onCompletion: @escaping (Error?) -> Void) {
-        let action = AccountAction.synchronizeAccount { [weak self] (account, error) in
-            if let `self` = self, let account = account, self.isAuthenticated {
-                self.sessionManager.defaultAccount = account
-                ServiceLocator.analytics.refreshUserData()
+    func synchronizeAccount(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let action = AccountAction.synchronizeAccount { [weak self] result in
+            switch result {
+            case .success(let account):
+                if let self = self, self.isAuthenticated {
+                    self.sessionManager.defaultAccount = account
+                    ServiceLocator.analytics.refreshUserData()
+                }
+                onCompletion(.success(()))
+            case .failure(let error):
+                onCompletion(.failure(error))
             }
-
-            onCompletion(error)
         }
 
         dispatch(action)
@@ -233,21 +234,23 @@ private extension DefaultStoresManager {
 
     /// Synchronizes the WordPress.com Account Settings, associated with the current credentials.
     ///
-    func synchronizeAccountSettings(onCompletion: @escaping (Error?) -> Void) {
-        guard let userID = self.sessionManager.defaultAccount?.userID else {
-            onCompletion(StoresManagerError.missingDefaultSite)
+    func synchronizeAccountSettings(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        guard let userID = sessionManager.defaultAccount?.userID else {
+            onCompletion(.failure(StoresManagerError.missingDefaultSite))
             return
         }
 
-        let action = AccountAction.synchronizeAccountSettings(userID: userID) { [weak self] (accountSettings, error) in
-            if let self = self,
-                let accountSettings = accountSettings,
-                self.isAuthenticated {
-                // Save the user's preference
-                ServiceLocator.analytics.setUserHasOptedOut(accountSettings.tracksOptOut)
+        let action = AccountAction.synchronizeAccountSettings(userID: userID) { [weak self] result in
+            switch result {
+            case .success(let accountSettings):
+                if let self = self, self.isAuthenticated {
+                    // Save the user's preference
+                    ServiceLocator.analytics.setUserHasOptedOut(accountSettings.tracksOptOut)
+                }
+                onCompletion(.success(()))
+            case .failure(let error):
+                onCompletion(.failure(error))
             }
-
-            onCompletion(error)
         }
 
         dispatch(action)
@@ -269,16 +272,16 @@ private extension DefaultStoresManager {
 
     /// Synchronizes the WordPress.com Sites, associated with the current credentials.
     ///
-    func synchronizeSites(onCompletion: @escaping (Error?) -> Void) {
+    func synchronizeSites(onCompletion: @escaping (Result<Void, Error>) -> Void) {
         let action = AccountAction.synchronizeSites(onCompletion: onCompletion)
         dispatch(action)
     }
 
     /// Synchronizes the WordPress.com Site Plan.
     ///
-    func synchronizeSitePlan(onCompletion: @escaping (Error?) -> Void) {
+    func synchronizeSitePlan(onCompletion: @escaping (Result<Void, Error>) -> Void) {
         guard let siteID = sessionManager.defaultSite?.siteID else {
-            onCompletion(StoresManagerError.missingDefaultSite)
+            onCompletion(.failure(StoresManagerError.missingDefaultSite))
             return
         }
 
@@ -344,8 +347,8 @@ private extension DefaultStoresManager {
             return
         }
 
-        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { (_, error) in
-            if let error = error {
+        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { result in
+            if case let .failure(error) = result {
                 DDLogError("⛔️ Could not successfully fetch order statuses for siteID \(siteID): \(error)")
             }
         }

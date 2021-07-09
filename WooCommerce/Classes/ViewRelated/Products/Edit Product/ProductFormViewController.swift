@@ -52,6 +52,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private var cancellableProduct: ObservationToken?
     private var cancellableProductName: ObservationToken?
     private var cancellableUpdateEnabled: ObservationToken?
+    private var cancellableNewVariationsPrice: ObservationToken?
 
     init(viewModel: ViewModel,
          eventLogger: ProductFormEventLoggerProtocol,
@@ -90,6 +91,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         cancellableProduct?.cancel()
         cancellableProductName?.cancel()
         cancellableUpdateEnabled?.cancel()
+        cancellableNewVariationsPrice?.cancel()
     }
 
     override func viewDidLoad() {
@@ -107,6 +109,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         observeProduct()
         observeProductName()
         observeUpdateCTAVisibility()
+        observeVariationsPriceChanges()
 
         productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else {
@@ -307,6 +310,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 }
                 eventLogger.logInventorySettingsTapped()
                 editInventorySettings()
+            case .addOns(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
+                ServiceLocator.analytics.track(event: WooAnalyticsEvent.ProductDetailAddOns.productAddOnsButtonTapped(productID: product.productID))
+                navigateToAddOns()
             case .categories(_, let isEditable):
                 guard isEditable else {
                     return
@@ -352,7 +361,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                     return
                 }
                 let variationsViewModel = ProductVariationsViewModel(formType: viewModel.formType)
-                let variationsViewController = ProductVariationsViewController(viewModel: variationsViewModel,
+                let variationsViewController = ProductVariationsViewController(initialViewController: self,
+                                                                               viewModel: variationsViewModel,
                                                                                product: originalProduct.product)
                 variationsViewController.onProductUpdate = { [viewModel] updatedProduct in
                     viewModel.updateProductVariations(from: updatedProduct)
@@ -362,8 +372,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 guard isEditable else {
                     return
                 }
-                editVariationAttributes()
-                trackEditVariationAttributesRowTapped()
+                editAttributes()
             case .status, .noPriceWarning:
                 break
             }
@@ -496,28 +505,39 @@ private extension ProductFormViewController {
         }
     }
 
+    /// Updates table rows when the price of the underlying variations change.
+    /// Needed to show/hide the `.noPrinceWarning` row.
+    ///
+    func observeVariationsPriceChanges() {
+        cancellableNewVariationsPrice = viewModel.newVariationsPrice.subscribe { [weak self] in
+            self?.onVariationsPriceChanged()
+        }
+    }
+
     func onProductUpdated(product: ProductModel) {
         updateMoreDetailsButtonVisibility()
-
         tableViewModel = DefaultProductFormTableViewModel(product: product,
                                                           actionsFactory: viewModel.actionsFactory,
                                                           currency: currency)
-        tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
-                                                             productImageStatuses: productImageActionHandler.productImageStatuses,
-                                                             productUIImageLoader: productUIImageLoader)
-        tableViewDataSource.configureActions(onNameChange: { [weak self] name in
-            self?.onEditProductNameCompletion(newName: name ?? "")
-        }, onStatusChange: { [weak self] isEnabled in
-            self?.onEditStatusCompletion(isEnabled: isEnabled)
-        }, onAddImage: { [weak self] in
-            self?.eventLogger.logImageTapped()
-            self?.showProductImages()
-        })
-        tableView.dataSource = tableViewDataSource
-        tableView.reloadData()
+        reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses)
     }
 
     func onImageStatusesUpdated(statuses: [ProductImageStatus]) {
+        reconfigureDataSource(tableViewModel: tableViewModel, statuses: statuses)
+    }
+
+    /// Recreates the `tableViewModel` and reloads the `table` & `datasource`.
+    ///
+    func onVariationsPriceChanged() {
+        tableViewModel = DefaultProductFormTableViewModel(product: product,
+                                                          actionsFactory: viewModel.actionsFactory,
+                                                          currency: currency)
+        reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses)
+    }
+
+    /// Recreates `tableViewDataSource` and reloads the `tableView` data.
+    ///
+    func reconfigureDataSource(tableViewModel: ProductFormTableViewModel, statuses: [ProductImageStatus]) {
         tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                              productImageStatuses: statuses,
                                                              productUIImageLoader: productUIImageLoader)
@@ -526,6 +546,7 @@ private extension ProductFormViewController {
         }, onStatusChange: { [weak self] isEnabled in
             self?.onEditStatusCompletion(isEnabled: isEnabled)
         }, onAddImage: { [weak self] in
+            self?.eventLogger.logImageTapped()
             self?.showProductImages()
         })
         tableView.dataSource = tableViewDataSource
@@ -583,7 +604,8 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func saveProduct(status: ProductStatus? = nil) {
         let productStatus = status ?? product.status
-        showSavingProgress(for: productStatus)
+        let messageType = viewModel.saveMessageType(for: productStatus)
+        showSavingProgress(messageType)
 
         saveImagesAndProductRemotely(status: status)
     }
@@ -760,6 +782,10 @@ private extension ProductFormViewController {
 
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Variations.editVariationAttributeOptionsRowTapped(productID: variation.productID,
                                                                                                                   variationID: variation.productVariationID))
+    }
+
+    func trackEditProductAttributeRowTapped() {
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Variations.editAttributesButtonTapped(productID: product.productID))
     }
 }
 
@@ -974,7 +1000,8 @@ private extension ProductFormViewController {
         let title = NSLocalizedString("Change product type",
                                       comment: "Message title of bottom sheet for selecting a product type")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
-        let command = ProductTypeBottomSheetListSelectorCommand(selected: viewModel.productModel.productType) { [weak self] (selectedProductType) in
+        let productType = BottomSheetProductType(productType: viewModel.productModel.productType, isVirtual: viewModel.productModel.virtual)
+        let command = ProductTypeBottomSheetListSelectorCommand(selected: productType) { [weak self] (selectedProductType) in
             self?.dismiss(animated: true, completion: nil)
 
             guard let originalProductType = self?.product.productType else {
@@ -983,7 +1010,7 @@ private extension ProductFormViewController {
 
             ServiceLocator.analytics.track(.productTypeChanged, withProperties: [
                 "from": originalProductType.rawValue,
-                "to": selectedProductType.rawValue
+                "to": selectedProductType.productType.rawValue
             ])
 
             self?.presentProductTypeChangeAlert(for: originalProductType, completion: { (change) in
@@ -1302,6 +1329,35 @@ private extension ProductFormViewController {
 // MARK: Action - Edit Product Variation Attributes
 //
 private extension ProductFormViewController {
+    /// Edit the product attributes or the variation attributes depending on the product model type.
+    ///
+    func editAttributes() {
+        switch product {
+        case is EditableProductModel:
+            editProductAttributes()
+            trackEditProductAttributeRowTapped()
+        case is EditableProductVariationModel:
+            editVariationAttributes()
+            trackEditVariationAttributesRowTapped()
+        default:
+            break
+        }
+    }
+
+    /// Navigate to edit product attributes
+    ///
+    func editProductAttributes() {
+        guard let productModel = product as? EditableProductModel else {
+            return
+        }
+        let attributesViewModel = EditAttributesViewModel(product: productModel.product, allowVariationCreation: false)
+        let attributesViewController = EditAttributesViewController(viewModel: attributesViewModel)
+        attributesViewController.onAttributesUpdate = { [weak self] updatedProduct in
+            self?.onAttributeUpdated(attributesViewController: attributesViewController, updatedProduct: updatedProduct)
+        }
+        show(attributesViewController, sender: self)
+    }
+
     func editVariationAttributes() {
         guard let productVariationModel = product as? EditableProductVariationModel else {
             return
@@ -1327,6 +1383,26 @@ private extension ProductFormViewController {
             return
         }
         viewModel.updateVariationAttributes(attributes)
+    }
+
+    /// Perform necessary actions when an attribute is created or updated.
+    ///
+    func onAttributeUpdated(attributesViewController: UIViewController, updatedProduct: Product) {
+        viewModel.updateProductVariations(from: updatedProduct)
+        navigationController?.popToViewController(attributesViewController, animated: true)
+    }
+}
+
+// MARK: Action - View Add-ons
+//
+private extension ProductFormViewController {
+    func navigateToAddOns() {
+        guard let product = product as? EditableProductModel else {
+            return
+        }
+        let viewModel = ProductAddOnsListViewModel(addOns: product.product.addOns)
+        let viewController = ProductAddOnsListViewController(viewModel: viewModel)
+        show(viewController, sender: self)
     }
 }
 

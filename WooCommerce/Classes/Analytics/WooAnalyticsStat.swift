@@ -139,6 +139,16 @@ public enum WooAnalyticsStat: String {
     case settingsLogoutConfirmation             = "settings_logout_confirmation_dialog_result"
     case settingsWereHiringTapped               = "settings_we_are_hiring_button_tapped"
 
+    // MARK: Card Reader Connection Events
+    //
+    case cardReaderDiscoveryTapped              = "card_reader_discovery_tapped"
+    case cardReaderDiscoveryFailed              = "card_reader_discovery_failed"
+    case cardReaderDiscoveredReader             = "card_reader_discovery_reader_discovered"
+    case cardReaderConnectionTapped             = "card_reader_connection_tapped"
+    case cardReaderConnectionFailed             = "card_reader_connection_failed"
+    case cardReaderConnectionSuccess            = "card_reader_connection_success"
+    case cardReaderDisconnectTapped             = "card_reader_disconnect_tapped"
+
     // MARK: Order View Events
     //
     case ordersSelected                         = "main_tab_orders_selected"
@@ -159,7 +169,6 @@ public enum WooAnalyticsStat: String {
     case orderDetailCustomerPhoneOptionTapped   = "order_detail_customer_info_phone_menu_phone_tapped"
     case orderDetailCustomerSMSOptionTapped     = "order_detail_customer_info_phone_menu_sms_tapped"
     case orderDetailOrderStatusEditButtonTapped = "order_detail_order_status_edit_button_tapped"
-    case orderDetailProductDetailTapped         = "order_detail_product_detail_button_tapped"
     case orderDetailRefundDetailTapped          = "order_detail_refund_detail_tapped"
     case orderDetailAddOnsViewed                = "order_detail_addons_viewed"
     case refundedProductsDetailTapped           = "order_detail_refunded_products_detail_tapped"
@@ -200,6 +209,40 @@ public enum WooAnalyticsStat: String {
     case shippingLabelReprintRequested = "shipping_label_print_requested"
     case shipmentTrackingMenuAction = "shipment_tracking_menu_action"
     case shippingLabelsAPIRequest = "shipping_label_api_request"
+
+    // MARK: Shipping Labels Creation Events
+    //
+    case shippingLabelPurchaseFlow = "shipping_label_purchase_flow"
+    case shippingLabelOrderFulfillSucceeded = "shipping_label_order_fulfill_succeeded"
+    case shippingLabelOrderFulfillFailed = "shipping_label_order_fulfill_failed"
+    case shippingLabelDiscountInfoButtonTapped = "shipping_label_discount_info_button_tapped"
+    case shippingLabelEditAddressOpenMapButtonTapped = "shipping_label_edit_address_open_map_button_tapped"
+    case shippingLabelEditAddressDoneButtonTapped = "shipping_label_edit_address_done_button_tapped"
+    case shippingLabelEditAddressUseAddressAsIsButtonTapped = "shipping_label_edit_address_use_address_as_is_button_tapped"
+    case shippingLabelEditAddressContactCustomerButtonTapped = "shipping_label_edit_address_contact_customer_button_tapped"
+    case shippingLabelAddressSuggestionsUseSelectedAddressButtonTapped = "shipping_label_address_suggestions_use_selected_address_button_tapped"
+    case shippingLabelAddressSuggestionsEditSelectedAddressButtonTapped = "shipping_label_address_suggestions_edit_selected_address_button_tapped"
+    case shippingLabelAddressValidationFailed = "shipping_label_address_validation_failed"
+    case shippingLabelAddressValidationSucceeded = "shipping_label_address_validation_succeeded"
+
+    // MARK: Receipt Events
+    //
+    case receiptViewTapped                      = "receipt_view_tapped"
+    case receiptEmailTapped                     = "receipt_email_tapped"
+    case receiptEmailFailed                     = "receipt_email_failed"
+    case receiptEmailCanceled                   = "receipt_email_canceled"
+    case receiptEmailSuccess                    = "receipt_email_success"
+    case receiptPrintTapped                     = "receipt_print_tapped"
+    case receiptPrintFailed                     = "receipt_print_failed"
+    case receiptPrintCanceled                   = "receipt_print_canceled"
+    case receiptPrintSuccess                    = "receipt_print_success"
+
+    // MARK: Payment Events
+    //
+    case collectPaymentTapped                   = "card_present_collect_payment_tapped"
+    case collectPaymentCanceled                 = "card_present_collect_payment_canceled"
+    case collectPaymentFailed                   = "card_present_collect_payment_failed"
+    case collectPaymentSuccess                  = "card_present_collect_payment_success"
 
     // MARK: Push Notifications Events
     //
@@ -299,6 +342,7 @@ public enum WooAnalyticsStat: String {
     case productDetailViewDownloadableFilesTapped = "product_detail_view_downloadable_files_tapped"
     case productDetailViewLinkedProductsTapped = "product_detail_view_linked_products_tapped"
     case productDetailProductDeleted = "product_detail_product_deleted"
+    case productDetailViewProductAddOnsTapped = "product_detail_view_product_addons_tapped"
 
     // MARK: Edit Product Variation Events
     //

@@ -1,5 +1,1 @@
-Product variations only support one image, so if a product variation already has an image, you’ll see an option to replace or remove it but will not be able to add another one.
-
-We received reports of crashes when selecting images from the Media Library, which occurred with libraries that had a specific number of images. This issue has been fixed.
-
-We also improved an error message that displayed when a customer logged into a site with an offline device, an invalid SSL certificate, or a blocked XML-RPC. The updated messaging makes it easier for people to troubleshoot their login issue.
+Fewer taps are needed to get to attributes on a variable product – they’re listed right in the product details! We also improved how an order’s details load both visually and behind the scenes – we hope you notice the improvements!

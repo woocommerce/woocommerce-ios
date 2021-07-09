@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents Account Settings for Shipping Labels.
 ///
-public struct ShippingLabelAccountSettings: Equatable, GeneratedFakeable {
+public struct ShippingLabelAccountSettings: Equatable, GeneratedFakeable, GeneratedCopiable {
     /// Remote Site ID.
     public let siteID: Int64
 

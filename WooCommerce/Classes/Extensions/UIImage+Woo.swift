@@ -121,6 +121,12 @@ extension UIImage {
         return UIImage.gridicon(.cross)
     }
 
+    /// Cloud Outline Icon
+    ///
+    static var cloudOutlineImage: UIImage {
+        return UIImage.gridicon(.cloudOutline)
+    }
+
     /// Gear Icon - used in `UIBarButtonItem`
     ///
     static var gearBarButtonItemImage: UIImage {
@@ -702,6 +708,12 @@ extension UIImage {
     ///
     static var whatIsJetpackImage: UIImage {
         return UIImage(named: "woo-what-is-jetpack")!
+    }
+
+    /// Welcome Image
+    ///
+    static var welcomeImage: UIImage {
+        UIImage(imageLiteralResourceName: "img-welcome")
     }
 }
 

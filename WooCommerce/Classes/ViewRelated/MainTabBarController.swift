@@ -172,7 +172,7 @@ extension MainTabBarController: UIViewControllerTransitioningDelegate {
     func presentationController(forPresented presented: UIViewController,
                                 presenting: UIViewController?,
                                 source: UIViewController) -> UIPresentationController? {
-        guard presented is FancyAlertViewController else {
+        guard presented is FancyAlertViewController || presented is CardPresentPaymentsModalViewController else {
             return nil
         }
 
@@ -368,6 +368,9 @@ private extension MainTabBarController {
         guard let siteID = siteID else {
             return
         }
+
+        // Update view model with `siteID` to query correct Orders Status
+        viewModel.configureOrdersStatusesListener(for: siteID)
 
         // Initialize each tab's root view controller
         let dashboardViewController = createDashboardViewController(siteID: siteID)

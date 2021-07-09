@@ -187,6 +187,10 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
         []
     }
 
+    var hasAddOns: Bool {
+        false
+    }
+
     // Visibility logic
 
     func allowsMultipleImages() -> Bool {
@@ -199,6 +203,10 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
 
     func isShippingEnabled() -> Bool {
         productVariation.downloadable == false && productVariation.virtual == false
+    }
+
+    var existsRemotely: Bool {
+        true // Variations are always created remotely
     }
 }
 

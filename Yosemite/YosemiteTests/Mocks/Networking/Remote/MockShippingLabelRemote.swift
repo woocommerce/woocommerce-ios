@@ -43,12 +43,24 @@ final class MockShippingLabelRemote {
         let siteID: Int64
     }
 
+    private struct UpdateAccountSettingsResultKey: Hashable {
+        let siteID: Int64
+    }
+
     private struct CreationEligibilityResultKey: Hashable {
         let siteID: Int64
         let orderID: Int64
         let canCreatePaymentMethod: Bool
         let canCreateCustomsForm: Bool
         let canCreatePackage: Bool
+    }
+
+    private struct PurchaseShippingLabelResultKey: Hashable {
+        let siteID: Int64
+    }
+
+    private struct CheckLabelStatusResultKey: Hashable {
+        let siteID: Int64
     }
 
     /// The results to return based on the given arguments in `loadShippingLabels`
@@ -75,8 +87,17 @@ final class MockShippingLabelRemote {
     /// The results to return based on the given arguments in `loadShippingLabelAccountSettings`
     private var loadAccountSettings = [LoadAccountSettingsResultKey: Result<ShippingLabelAccountSettings, Error>]()
 
+    /// The results to return based on the given arguments in `updateShippingLabelAccountSettings`
+    private var updateAccountSettings = [UpdateAccountSettingsResultKey: Result<Bool, Error>]()
+
     /// The results to return based on the given arguments in `checkCreationEligibility`
     private var creationEligibilityResults = [CreationEligibilityResultKey: Result<ShippingLabelCreationEligibilityResponse, Error>]()
+
+    /// The results to return based on the given arguments in `purchaseShippingLabel`
+    private var purchaseShippingLabelResults = [PurchaseShippingLabelResultKey: Result<[ShippingLabelPurchase], Error>]()
+
+    /// The results to return based on the given arguments in `checkLabelStatus`
+    private var checkLabelStatusResults = [CheckLabelStatusResultKey: Result<[ShippingLabelStatusPollingResponse], Error>]()
 
     /// Set the value passed to the `completion` block if `loadShippingLabels` is called.
     func whenLoadingShippingLabels(siteID: Int64,
@@ -132,11 +153,19 @@ final class MockShippingLabelRemote {
         loadCarriersAndRatesResults[key] = result
     }
 
-    /// Set the value passed to the `completion` block if `createPackage` is called.
+    /// Set the value passed to the `completion` block if `loadShippingLabelAccountSettings` is called.
     func whenLoadShippingLabelAccountSettings(siteID: Int64,
                                        thenReturn result: Result<ShippingLabelAccountSettings, Error>) {
         let key = LoadAccountSettingsResultKey(siteID: siteID)
         loadAccountSettings[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `updateShippingLabelAccountSettings` is called.
+    func whenUpdateShippingLabelAccountSettings(siteID: Int64,
+                                                settings: ShippingLabelAccountSettings,
+                                                thenReturn result: Result<Bool, Error>) {
+        let key = UpdateAccountSettingsResultKey(siteID: siteID)
+        updateAccountSettings[key] = result
     }
 
     func whenCheckingCreationEligiblity(siteID: Int64,
@@ -151,6 +180,27 @@ final class MockShippingLabelRemote {
                                                canCreateCustomsForm: canCreateCustomsForm,
                                                canCreatePackage: canCreatePackage)
         creationEligibilityResults[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `purchaseShippingLabel` is called.
+    func whenPurchaseShippingLabel(siteID: Int64,
+                                   orderID: Int64,
+                                   originAddress: ShippingLabelAddress,
+                                   destinationAddress: ShippingLabelAddress,
+                                   packages: [ShippingLabelPackagePurchase],
+                                   emailCustomerReceipt: Bool,
+                                   thenReturn result: Result<[ShippingLabelPurchase], Error>) {
+        let key = PurchaseShippingLabelResultKey(siteID: siteID)
+        purchaseShippingLabelResults[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `checkLabelStatus` is called.
+    func whenCheckLabelStatus(siteID: Int64,
+                              orderID: Int64,
+                              labelIDs: [Int64],
+                              thenReturn result: Result<[ShippingLabelStatusPollingResponse], Error>) {
+        let key = CheckLabelStatusResultKey(siteID: siteID)
+        checkLabelStatusResults[key] = result
     }
 }
 
@@ -269,6 +319,21 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
         }
     }
 
+    func updateShippingLabelAccountSettings(siteID: Int64,
+                                            settings: ShippingLabelAccountSettings,
+                                            completion: @escaping (Result<Bool, Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let key = UpdateAccountSettingsResultKey(siteID: siteID)
+            if let result = self.updateAccountSettings[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
     func checkCreationEligibility(siteID: Int64,
                                   orderID: Int64,
                                   canCreatePaymentMethod: Bool,
@@ -284,6 +349,41 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
                                                    canCreateCustomsForm: canCreateCustomsForm,
                                                    canCreatePackage: canCreatePackage)
             if let result = self.creationEligibilityResults[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func purchaseShippingLabel(siteID: Int64,
+                               orderID: Int64,
+                               originAddress: ShippingLabelAddress,
+                               destinationAddress: ShippingLabelAddress,
+                               packages: [ShippingLabelPackagePurchase],
+                               emailCustomerReceipt: Bool,
+                               completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let key = PurchaseShippingLabelResultKey(siteID: siteID)
+            if let result = self.purchaseShippingLabelResults[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func checkLabelStatus(siteID: Int64,
+                          orderID: Int64,
+                          labelIDs: [Int64],
+                          completion: @escaping (Result<[ShippingLabelStatusPollingResponse], Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let key = CheckLabelStatusResultKey(siteID: siteID)
+            if let result = self.checkLabelStatusResults[key] {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")

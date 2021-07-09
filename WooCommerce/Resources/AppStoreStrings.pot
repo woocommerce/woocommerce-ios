@@ -46,7 +46,7 @@ msgid ""
 msgstr ""
 
 #. translators: Keywords used in the App Store search engine to find the app.
-#. Delimit with a comma between each keyword. Limit to 100 characters including spaces and commas.
+#. Delimit with an English comma between each keyword. Limit to 100 characters including spaces and commas.
 msgctxt "app_store_keywords"
 msgid "Woocommerce, woocommerce app, woocommerce mobile, woo app, woocommerce order alert, wordpress, eComm"
 msgstr ""
@@ -57,13 +57,11 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v6.6-whats-new"
+msgctxt "v7.0-whats-new"
 msgid ""
-"Product variations only support one image, so if a product variation already has an image, you’ll see an option to replace or remove it but will not be able to add another one.\n"
+"We heard that orders containing multiple configurations of the same variable product can be confusing to fulfill with the app. This update fixes that and makes those items appear separately, making it easier to read. In that same spirit, orders with multiple shipments from the WooCommerce Shipping & Tax extension will show as separate sections.\n"
 "\n"
-"We received reports of crashes when selecting images from the Media Library, which occurred with libraries that had a specific number of images. This issue has been fixed.\n"
-"\n"
-"We also improved an error message that displayed when a customer logged into a site with an offline device, an invalid SSL certificate, or a blocked XML-RPC. The updated messaging makes it easier for people to troubleshoot their login issue.\n"
+"If the app has trouble loading data, we now show a helpful message with instructions on how to reach out for help. Most times, it’s a plugin causing issues, but we can help walk you through resolving it!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

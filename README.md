@@ -50,7 +50,7 @@
 
 
     ```bash
-    bundle exec rake dependencies
+    bundle install && bundle exec rake dependencies
     ```
 
     This command installs the required tools like [CocoaPods](https://cocoapods.org/). And then it installs the iOS project dependencies using CocoaPods.
@@ -83,7 +83,7 @@ Please, remember to not add this information on your commits and PRs.
     - [Networking](docs/NETWORKING.md)
     - [Storage](docs/STORAGE.md)
     - [Yosemite](docs/YOSEMITE.md)
-    - [Hardware](HARDWARE.md)    
+    - [Hardware](docs/HARDWARE.md)    
 - Coding Guidelines
     - [Coding Style](docs/coding-style-guide.md)
     - [Naming Conventions](docs/naming-conventions.md)
@@ -102,10 +102,11 @@ Please, remember to not add this information on your commits and PRs.
         - [Modifying Fakes Code Generation](docs/fakeable.md#modifying-the-fakeable-code-generation)
     - [Tracking Events](docs/tracking-events.md)
         - [Custom Properties](docs/tracking-events.md#custom-properties)
-- Testing
+- Quality & Testing
     - [UI Tests](docs/UI-TESTS.md)
     - [Testing Card Present Payments](docs/stripe-tests.md)
     - [Beta Testing](https://woocommercehalo.wordpress.com/setup/join-ios-beta/)
+    - [Issue Triage](docs/issue-triage.md)
 - Features
     - [In-app Feedback](docs/in-app-feedback.md)
     - [Card Present Payments](docs/card-present-payments.md)

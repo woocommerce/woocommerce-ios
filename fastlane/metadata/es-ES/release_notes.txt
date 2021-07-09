@@ -1,5 +1,1 @@
-Las variaciones de producto solo admiten una imagen. Si una variación ya tiene una imagen, verás una opción para sustituirla o eliminarla, pero no podrás añadir otra nueva.
-
-Hemos recibido informes de fallos al seleccionar imágenes de la biblioteca multimedia, que se producían con bibliotecas que tenían un número concreto de imágenes. El problema se ha corregido.
-
-También hemos mejorado un mensaje de error que se mostraba cuando un cliente accedía a un sitio con un dispositivo sin conexión, un certificado SSL no válido o un XML-RPC bloqueado. Con los nuevos mensajes, es más sencillo resolver los problemas de acceso.
+Ahora, ya no tendrás que hacer tantos toques para llegar a los atributos de un producto variable, ya que aparece una lista directamente en los detalles del producto. También hemos mejorado la carga de los detalles de un pedido, tanto en el apartado visual como en otros aspectos, ¡esperamos que notes las mejoras!

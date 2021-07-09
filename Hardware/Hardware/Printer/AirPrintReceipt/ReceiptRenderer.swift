@@ -75,7 +75,7 @@ public extension ReceiptRenderer {
                         <h1>\(receiptTitle)</h1>
                         <h3>\(Localization.amountPaidSectionTitle.uppercased())</h3>
                         <p>
-                            \(parameters.amount / 100) \(parameters.currency.uppercased())
+                            \(formattedAmount()) \(parameters.currency.uppercased())
                         </p>
                         <h3>\(Localization.datePaidSectionTitle.uppercased())</h3>
                         <p>
@@ -108,6 +108,20 @@ private extension ReceiptRenderer {
         addPrintFormatter(formatter, startingAtPageAt: 0)
     }
 
+    private func formattedAmount() -> String {
+        // We should use CurrencyFormatter instead for consistency
+        let formatter = NumberFormatter()
+
+        let fractionDigits = 2 // TODO - support non cent currencies like JPY - see #3948
+        formatter.minimumFractionDigits = fractionDigits
+        formatter.maximumFractionDigits = fractionDigits
+
+        var amount: Decimal = Decimal(parameters.amount)
+        amount = amount / pow(10, fractionDigits)
+
+        return formatter.string(for: amount) ?? ""
+    }
+
     private func summaryTable() -> String {
         var summaryContent = "<table>"
         for line in lines {
@@ -119,7 +133,7 @@ private extension ReceiptRenderer {
                                     \(Localization.amountPaidSectionTitle)
                                 </td>
                                 <td>
-                                    \(parameters.amount / 100) \(parameters.currency.uppercased())
+                                    \(formattedAmount()) \(parameters.currency.uppercased())
                                 </td>
                             </tr>
                             """

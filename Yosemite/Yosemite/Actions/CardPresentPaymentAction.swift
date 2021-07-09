@@ -1,9 +1,12 @@
 // MARK: - CardPresentPaymentAction: Defines all of the Actions supported by the CardPresentPaymentStore.
 //
+
+import Combine
+
 public enum CardPresentPaymentAction: Action {
     /// Start the Card Reader discovery process.
     ///
-    case startCardReaderDiscovery(siteID: Int64, onCompletion: ([CardReader]) -> Void)
+    case startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: ([CardReader]) -> Void, onError: (Error) -> Void)
 
     /// Cancels the Card Reader discovery process.
     ///
@@ -58,6 +61,6 @@ public enum CardPresentPaymentAction: Action {
     /// 3. Reset all status indicators
     case reset
 
-    /// Checks if the store is ready to collect a payment
-    case isReadyToCollectPayment(onCompletion: (Bool) -> Void)
+    /// Checks if a reader is connected
+    case checkCardReaderConnected(onCompletion: (AnyPublisher<[CardReader], Never>) -> Void)
 }

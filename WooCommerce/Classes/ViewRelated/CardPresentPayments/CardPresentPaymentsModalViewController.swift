@@ -9,14 +9,15 @@ final class CardPresentPaymentsModalViewController: UIViewController {
     /// and support for user actions
     private var viewModel: CardPresentPaymentsModalViewModel
 
+    @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var mainStackView: UIStackView!
     @IBOutlet private weak var topTitleLabel: UILabel!
     @IBOutlet private weak var topSubtitleLabel: UILabel!
     @IBOutlet private weak var bottomTitleLabel: UILabel!
     @IBOutlet private weak var bottomSubtitleLabel: UILabel!
 
-    @IBOutlet private weak var primaryButton: NUXButton!
-    @IBOutlet private weak var secondaryButton: NUXButton!
+    @IBOutlet private weak var primaryButton: UIButton!
+    @IBOutlet private weak var secondaryButton: UIButton!
     @IBOutlet weak var auxiliaryButton: UIButton!
 
     @IBOutlet private weak var imageView: UIImageView!
@@ -24,6 +25,10 @@ final class CardPresentPaymentsModalViewController: UIViewController {
 
     @IBOutlet private weak var actionButtonsView: UIView!
     @IBOutlet private weak var bottomLabels: UIStackView!
+
+    @IBOutlet weak var heightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var widthConstraint: NSLayoutConstraint!
+
 
 
     init(viewModel: CardPresentPaymentsModalViewModel) {
@@ -38,6 +43,7 @@ final class CardPresentPaymentsModalViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        setBackgroundColor()
         setButtonsActions()
         styleContent()
         populateContent()
@@ -46,23 +52,40 @@ final class CardPresentPaymentsModalViewController: UIViewController {
     func setViewModel(_ newViewModel: CardPresentPaymentsModalViewModel) {
         self.viewModel = newViewModel
 
-        populateContent()
+        if isViewLoaded {
+            populateContent()
+        }
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
+        resetHeightAndWidth()
+    }
 
+    private func resetHeightAndWidth() {
         if traitCollection.containsTraits(in: UITraitCollection(verticalSizeClass: .compact)) {
             mainStackView.axis = .horizontal
+            mainStackView.distribution = .fillProportionally
+            heightConstraint.constant = Constants.modalWidth
+            widthConstraint.constant = Constants.modalHeight
         } else {
             mainStackView.axis = .vertical
+            mainStackView.distribution = .fill
+            heightConstraint.constant = Constants.modalHeight
+            widthConstraint.constant = Constants.modalWidth
         }
+
+        heightConstraint.priority = .defaultHigh
+        widthConstraint.priority = .defaultHigh
     }
 }
 
 
 // MARK: - View configuration
 private extension CardPresentPaymentsModalViewController {
+    func setBackgroundColor() {
+        containerView.backgroundColor = .tertiarySystemBackground
+    }
 
     func styleContent() {
         styleTopTitle()
@@ -80,7 +103,7 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func styleTopTitle() {
-        topTitleLabel.applyBodyStyle()
+        topTitleLabel.applyHeadlineStyle()
     }
 
     func styleTopSubtitle() {
@@ -113,15 +136,21 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func stylePrimaryButton() {
-        primaryButton.isPrimary = true
+        primaryButton.applyPrimaryButtonStyle()
+        primaryButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        primaryButton.titleLabel?.minimumScaleFactor = 0.5
     }
 
     func styleSecondaryButton() {
-
+        secondaryButton.applyPaymentsModalCancelButtonStyle()
+        secondaryButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        secondaryButton.titleLabel?.minimumScaleFactor = 0.5
     }
 
     func styleAuxiliaryButton() {
         auxiliaryButton.applyLinkButtonStyle()
+        auxiliaryButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        auxiliaryButton.titleLabel?.minimumScaleFactor = 0.5
     }
 
     func populateContent() {
@@ -135,6 +164,7 @@ private extension CardPresentPaymentsModalViewController {
 
         if shouldShowActionButtons() {
             configureActionButtonsView()
+            styleActionButtons()
         } else {
             hideActionButtonsView()
         }
@@ -205,7 +235,7 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func configurePrimaryButton() {
-        guard shouldShowActionButtons() else {
+        guard shouldShowPrimaryActionButton() else {
             primaryButton.isHidden = true
             return
         }
@@ -255,11 +285,14 @@ private extension CardPresentPaymentsModalViewController {
             textMode == .reducedTopInfo
     }
 
-    func shouldShowBottomActionButton() -> Bool {
-        let actionMode = viewModel.actionsMode
+    func shouldShowPrimaryActionButton() -> Bool {
+        [.oneAction, .twoAction, .twoActionAndAuxiliary]
+            .contains(viewModel.actionsMode)
+    }
 
-        return actionMode == .twoAction ||
-            actionMode == .twoActionAndAuxiliary
+    func shouldShowBottomActionButton() -> Bool {
+        [.secondaryOnlyAction, .twoAction, .twoActionAndAuxiliary]
+            .contains(viewModel.actionsMode)
     }
 
     func shouldShowAuxiliaryButton() -> Bool {
@@ -288,6 +321,8 @@ private extension CardPresentPaymentsModalViewController {
 private extension CardPresentPaymentsModalViewController {
     enum Constants {
         static let extraInfoCustomInsets = UIEdgeInsets(top: 12, left: 10, bottom: 12, right: 10)
+        static let modalHeight: CGFloat = 382
+        static let modalWidth: CGFloat = 280
     }
 }
 

@@ -54,6 +54,12 @@
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>org-appextension-feature-password-management</string>
+		<string>googlegmail</string>
+		<string>airmail</string>
+		<string>ms-outlook</string>
+		<string>readdle-spark</string>
+		<string>ymail</string>
+		<string>fastmail</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
@@ -66,7 +72,9 @@
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>Bluetooth access is required in order to connect to supported card readers.</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>This app uses Bluetooth to connect to supported card readers.</string>	
+	<string>This app uses Bluetooth to connect to supported card readers.</string>
+	<key>NSLocationDefaultAccuracyReduced</key>
+	<true/>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Noticons.ttf</string>

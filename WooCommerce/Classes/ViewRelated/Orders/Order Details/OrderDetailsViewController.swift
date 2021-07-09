@@ -4,14 +4,28 @@ import Contacts
 import Yosemite
 import SafariServices
 import MessageUI
+import Combine
 
 // MARK: - OrderDetailsViewController: Displays the details for a given Order.
 //
 final class OrderDetailsViewController: UIViewController {
 
+    /// Main Stack View, that contains all the other views of the screen
+    ///
+    @IBOutlet private weak var stackView: UIStackView!
+
     /// Main TableView.
     ///
     @IBOutlet private weak var tableView: UITableView!
+
+    /// The top loader view, that will be embedded inside the stackview, on top of the tableview, while the screen is loading its
+    /// content for the first time.
+    ///
+    private var topLoaderView: TopLoaderView = {
+        let loaderView: TopLoaderView = TopLoaderView.instantiateFromNib()
+        loaderView.setBody(Localization.Generic.topLoaderBannerDescription)
+        return loaderView
+    }()
 
     /// Pull To Refresh Support.
     ///
@@ -44,8 +58,13 @@ final class OrderDetailsViewController: UIViewController {
     /// Orchestrates what needs to be presented in the modal views
     /// that provide user-facing feedback about the card present payment process.
     private lazy var paymentAlerts: OrderDetailsPaymentAlerts = {
-        OrderDetailsPaymentAlerts()
+        OrderDetailsPaymentAlerts(presentingController: self)
     }()
+
+    /// Subscription that listens for connected readers while we are trying to connect to one to capture payment
+    /// We need to cancel that subscription if the process is canceled by the user or when we connect to a reader.
+    ///
+    private var cardReaderAvailableSubscription: Combine.Cancellable? = nil
 
     // MARK: - View Lifecycle
 
@@ -60,6 +79,7 @@ final class OrderDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigation()
+        configureTopLoaderView()
         configureTableView()
         registerTableViewCells()
         registerTableViewHeaderFooters()
@@ -73,16 +93,14 @@ final class OrderDetailsViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        syncNotes()
-        syncProducts()
-        syncProductVariations()
-        syncRefunds()
-        syncShippingLabels()
-        syncSavedReceipts()
-        syncTrackingsHidingAddButtonIfNecessary()
-        checkShippingLabelCreationEligibility()
-        checkCardPresentPaymentEligibility()
-        checkOrderAddOnFeatureSwitchState()
+        syncEverything { [weak self] in
+            self?.topLoaderView.isHidden = true
+
+            /// We add the refresh control to the tableview just after the `topLoaderView` disappear for the first time.
+            if self?.tableView.refreshControl == nil {
+                self?.tableView.refreshControl = self?.refreshControl
+            }
+        }
     }
 
     override func viewDidLayoutSubviews() {
@@ -106,6 +124,11 @@ final class OrderDetailsViewController: UIViewController {
 //
 private extension OrderDetailsViewController {
 
+    /// Setup: TopLoaderView
+    func configureTopLoaderView() {
+        stackView.insertArrangedSubview(topLoaderView, at: 0)
+    }
+
     /// Setup: TableView
     ///
     func configureTableView() {
@@ -114,7 +137,6 @@ private extension OrderDetailsViewController {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.refreshControl = refreshControl
 
         tableView.dataSource = viewModel.dataSource
     }
@@ -272,10 +294,24 @@ private extension OrderDetailsViewController {
 
 // MARK: - Action Handlers
 //
-extension OrderDetailsViewController {
+private extension OrderDetailsViewController {
 
     @objc func pullToRefresh() {
         ServiceLocator.analytics.track(.orderDetailPulledToRefresh)
+        refreshControl.beginRefreshing()
+
+        syncEverything { [weak self] in
+            NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
+            self?.refreshControl.endRefreshing()
+        }
+    }
+}
+
+
+// MARK: - Sync'ing Helpers
+//
+private extension OrderDetailsViewController {
+    func syncEverything(onCompletion: (() -> ())? = nil) {
         let group = DispatchGroup()
 
         group.enter()
@@ -319,9 +355,8 @@ extension OrderDetailsViewController {
         }
 
         group.enter()
-        checkCardPresentPaymentEligibility {
-            group.leave()
-        }
+        refreshCardPresentPaymentEligibility()
+        group.leave()
 
         group.enter()
         syncSavedReceipts {_ in
@@ -333,17 +368,11 @@ extension OrderDetailsViewController {
             group.leave()
         }
 
-        group.notify(queue: .main) { [weak self] in
-            NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
-            self?.refreshControl.endRefreshing()
+        group.notify(queue: .main) {
+            onCompletion?()
         }
     }
-}
 
-
-// MARK: - Sync'ing Helpers
-//
-private extension OrderDetailsViewController {
     func syncOrder(onCompletion: ((Error?) -> ())? = nil) {
         viewModel.syncOrder { [weak self] (order, error) in
             guard let self = self, let order = order else {
@@ -382,10 +411,6 @@ private extension OrderDetailsViewController {
     }
 
     func syncSavedReceipts(onCompletion: ((Error?) -> ())? = nil) {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) else {
-            return
-        }
-
         viewModel.syncSavedReceipts(onCompletion: onCompletion)
     }
 
@@ -396,11 +421,8 @@ private extension OrderDetailsViewController {
         }
     }
 
-    func checkCardPresentPaymentEligibility(onCompletion: (() -> Void)? = nil) {
-        viewModel.checkCardPaymentEligibility { [weak self] in
-            self?.reloadTableViewSectionsAndData()
-            onCompletion?()
-        }
+    func refreshCardPresentPaymentEligibility() {
+        viewModel.refreshCardPresentPaymentEligibility()
     }
 
     func checkOrderAddOnFeatureSwitchState(onCompletion: (() -> Void)? = nil) {
@@ -475,10 +497,19 @@ private extension OrderDetailsViewController {
                 assertionFailure("Cannot reprint a shipping label because `navigationController` is nil")
                 return
             }
-            let coordinator = ReprintShippingLabelCoordinator(shippingLabel: shippingLabel, sourceViewController: navigationController)
-            coordinator.showReprintUI()
+            let coordinator = PrintShippingLabelCoordinator(shippingLabel: shippingLabel, printType: .reprint, sourceViewController: navigationController)
+            coordinator.showPrintUI()
         case .createShippingLabel:
             let shippingLabelFormVC = ShippingLabelFormViewController(order: viewModel.order)
+            shippingLabelFormVC.onLabelPurchase = { [weak self] isOrderComplete in
+                if isOrderComplete {
+                    self?.markOrderCompleteFromShippingLabels()
+                }
+            }
+            shippingLabelFormVC.onLabelSave = { [weak self] in
+                guard let self = self else { return }
+                self.navigationController?.popToViewController(self, animated: true)
+            }
             navigationController?.show(shippingLabelFormVC, sender: self)
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
@@ -489,11 +520,35 @@ private extension OrderDetailsViewController {
 
     func markOrderCompleteWasPressed() {
         ServiceLocator.analytics.track(.orderFulfillmentCompleteButtonTapped)
+        let reviewOrderViewModel = ReviewOrderViewModel(order: viewModel.order, products: viewModel.products, showAddOns: viewModel.dataSource.showAddOns)
+        let controller = ReviewOrderViewController(viewModel: reviewOrderViewModel) { [weak self] in
+            guard let self = self else { return }
+            let fulfillmentProcess = self.viewModel.markCompleted()
+            let presenter = OrderFulfillmentNoticePresenter()
+            presenter.present(process: fulfillmentProcess)
+        }
+        navigationController?.pushViewController(controller, animated: true)
+    }
 
-        let fulfillmentProcess = viewModel.markCompleted()
+    func markOrderCompleteFromShippingLabels() {
+        let fulfillmentProcess = self.viewModel.markCompleted()
 
-        let presenter = OrderFulfillmentNoticePresenter()
-        presenter.present(process: fulfillmentProcess)
+        var cancellables = Set<AnyCancellable>()
+        var cancellable: AnyCancellable = AnyCancellable { }
+        cancellable = fulfillmentProcess.result.sink { completion in
+            if case .failure(_) = completion {
+                ServiceLocator.analytics.track(.shippingLabelOrderFulfillFailed)
+            }
+            else {
+                ServiceLocator.analytics.track(.shippingLabelOrderFulfillSucceeded)
+            }
+            cancellables.remove(cancellable)
+        } receiveValue: {
+            // Noop. There is no value to receive or act on.
+        }
+
+        // Insert in `cancellables` to keep the `sink` handler active.
+        cancellables.insert(cancellable)
     }
 
     func trackingWasPressed(at indexPath: IndexPath) {
@@ -574,22 +629,29 @@ private extension OrderDetailsViewController {
     }
 
     @objc private func collectPayment(at: IndexPath) {
-        viewModel.isReadyToCollectPayment { [weak self] isReady in
-            if isReady {
-                self?.dismiss(animated: false, completion: {
-                    self?.collectPaymentForCurrentOrder()
+        cardReaderAvailableSubscription = viewModel.cardReaderAvailable()
+            .sink(
+                receiveCompletion: { [weak self] result in
+                    self?.dismiss(animated: false, completion: {
+                        self?.collectPaymentForCurrentOrder()
+                    })
+                    self?.cardReaderAvailableSubscription = nil
+                },
+                receiveValue: { [weak self] _ in
+                    self?.connectToCardReader()
                 })
-            } else {
-                self?.connectToCardReader()
-            }
-        }
     }
 
     private func collectPaymentForCurrentOrder() {
-        paymentAlerts.readerIsReady(from: self,
-                                    title: viewModel.collectPaymentFrom,
-                                    amount: viewModel.order.total)
+        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+        let currencyCode = ServiceLocator.currencySettings.currencyCode
+        let unit = ServiceLocator.currencySettings.symbol(from: currencyCode)
+        let value = currencyFormatter.formatAmount(viewModel.order.total, with: unit) ?? ""
 
+        paymentAlerts.readerIsReady(title: viewModel.collectPaymentFrom,
+                                    amount: value)
+
+        ServiceLocator.analytics.track(.collectPaymentTapped)
         viewModel.collectPayment { [weak self] readerEventMessage in
             self?.paymentAlerts.tapOrInsertCard()
         } onClearMessage: { [weak self] in
@@ -603,12 +665,14 @@ private extension OrderDetailsViewController {
 
             switch result {
             case .failure(let error):
+                ServiceLocator.analytics.track(.collectPaymentFailed, withError: error)
                 self.paymentAlerts.error(error: error, tryAgain: {
-                    // To be implemented.
+                    self.retryCollectPayment()
                 })
             case .success(let receiptParameters):
+                ServiceLocator.analytics.track(.collectPaymentSuccess)
                 self.syncOrderAfterPaymentCollection {
-                    self.checkCardPresentPaymentEligibility()
+                    self.refreshCardPresentPaymentEligibility()
                 }
 
                 self.paymentAlerts.success(printReceipt: {
@@ -623,6 +687,17 @@ private extension OrderDetailsViewController {
         }
     }
 
+    private func retryCollectPayment() {
+        viewModel.cancelPayment { [weak self] result in
+            switch result {
+            case .failure(let error):
+                self?.paymentAlerts.nonRetryableError(from: self, error: error)
+            case .success:
+                self?.collectPaymentForCurrentOrder()
+            }
+        }
+    }
+
     private func connectToCardReader() {
         guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsPresentingViewController.self) else {
             fatalError("Cannot instantiate `CardReaderSettingsPresentingViewController` from Dashboard storyboard")
@@ -630,8 +705,14 @@ private extension OrderDetailsViewController {
 
         let viewModelsAndViews = CardReaderSettingsViewModelsOrderedList()
         viewController.configure(viewModelsAndViews: viewModelsAndViews)
+        viewController.presentationController?.delegate = self
 
-        present(viewController, animated: true, completion: nil)
+        present(viewController, animated: true)
+    }
+
+    private func cancelObservingCardReader() {
+        cardReaderAvailableSubscription?.cancel()
+        cardReaderAvailableSubscription = nil
     }
 
     private func itemAddOnsButtonTapped(addOns: [OrderItemAttribute]) {
@@ -663,6 +744,16 @@ private extension OrderDetailsViewController {
 
 extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        switch result {
+        case .cancelled:
+            ServiceLocator.analytics.track(.receiptEmailCanceled)
+        case .sent, .saved:
+            ServiceLocator.analytics.track(.receiptEmailSuccess)
+        case .failed:
+            ServiceLocator.analytics.track(.receiptEmailFailed, withError: error ?? UnknownEmailError())
+        @unknown default:
+            assertionFailure("MFMailComposeViewController finished with an unknown result type")
+        }
         controller.dismiss(animated: true)
     }
 }
@@ -728,6 +819,12 @@ extension OrderDetailsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return viewModel.dataSource.viewForHeaderInSection(section, tableView: tableView)
+    }
+}
+
+extension OrderDetailsViewController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        cancelObservingCardReader()
     }
 }
 
@@ -882,6 +979,11 @@ private extension OrderDetailsViewController {
     }
 
     enum Localization {
+        enum Generic {
+            static let topLoaderBannerDescription = NSLocalizedString("Loading content",
+                                                                      comment: "Text of the loading banner in Order Detail when loaded for the first time")
+        }
+
         enum ShippingLabelMoreMenu {
             static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the shipping label more menu action sheet")
             static let requestRefundAction = NSLocalizedString("Request a Refund",
@@ -905,4 +1007,8 @@ private extension OrderDetailsViewController {
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
     }
+
+    /// Mailing a receipt failed but the SDK didn't return a more specific error
+    ///
+    struct UnknownEmailError: Error {}
 }

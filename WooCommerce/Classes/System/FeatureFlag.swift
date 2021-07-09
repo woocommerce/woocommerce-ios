@@ -10,10 +10,6 @@ enum FeatureFlag: Int {
     ///
     case barcodeScanner
 
-    /// Card Present Payments
-    ///
-    case cardPresentPayments
-
     /// Large titles on the main tabs
     ///
     case largeTitles
@@ -37,4 +33,8 @@ enum FeatureFlag: Int {
     /// Site Plugin list entry point on Settings screen
     ///
     case sitePlugins
+
+    /// Automatically Reconnect to a Known Card Reader
+    ///
+    case cardPresentKnownReader
 }

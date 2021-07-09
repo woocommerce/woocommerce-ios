@@ -1,5 +1,1 @@
-Produktvariationen unterstützen nur ein Bild. Wenn ein Produkt also bereits über ein Bild verfügt, hast du die Option, dieses zu ersetzen oder zu entfernen, doch du kannst leider kein weiteres Bild hinzufügen.
-
-Es wurden Abstürze bei der Bildauswahl in der Mediathek gemeldet. Diese traten in Medienübersichten auf, die über eine bestimmte Anzahl von Bildern verfügten. Das Problem wurde nun behoben.
-
-Außerdem haben wir eine Fehlermeldung verbessert, die angezeigt wurde, wenn sich ein Kunde über ein Offline-Gerät, mit einem ungültigen SSL-Zertifikat oder einem blockierten XML-RPC auf einer Website angemeldet hat. Dank der aktualisierten Nachricht können Probleme bei der Anmeldung besser behoben werden.
+Zum Abrufen von Attributen eines variablen Produkts musst du nun weniger oft tippen – du findest sie direkt in den Produktdetails! Wir haben auch verbessert, wie die Details zu einer Bestellung visuell und im Hintergrund geladen werden – hoffentlich machen sich die Verbesserungen für dich bemerkbar!

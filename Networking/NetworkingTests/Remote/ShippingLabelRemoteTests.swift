@@ -286,6 +286,41 @@ final class ShippingLabelRemoteTests: XCTestCase {
         XCTAssertNotNil(result.failure)
     }
 
+    func test_updateShippingLabelAccountSettings_returns_true_on_success() throws {
+        // Given
+        let settings = ShippingLabelAccountSettings.fake().copy()
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "account/settings", filename: "generic_success_data")
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            remote.updateShippingLabelAccountSettings(siteID: self.sampleSiteID, settings: settings) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let response = try result.get()
+        XCTAssertTrue(response)
+    }
+
+    func test_updateShippingLabelAccountSettings_returns_error_on_failure() throws {
+        // Given
+        let settings = ShippingLabelAccountSettings.fake().copy()
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "account/settings", filename: "generic_error")
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            remote.updateShippingLabelAccountSettings(siteID: self.sampleSiteID, settings: settings) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
+
     func test_checkCreationEligibility_returns_true_on_success() throws {
         // Given
         let orderID: Int64 = 321
@@ -329,6 +364,91 @@ final class ShippingLabelRemoteTests: XCTestCase {
         let response = try XCTUnwrap(result.get())
         XCTAssertEqual(response.isEligible, false)
         XCTAssertEqual(response.reason, "no_selected_payment_method_and_user_cannot_manage_payment_methods")
+    }
+
+    func test_purchaseShippingLabel_parses_success_response() throws {
+        // Given
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/\(sampleOrderID)", filename: "shipping-label-purchase-success")
+        let expectedLabelPurchase = sampleShippingLabelPurchase()
+
+        // When
+        let result: Result<[ShippingLabelPurchase], Error> = waitFor { promise in
+            remote.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                         orderID: self.sampleOrderID,
+                                         originAddress: ShippingLabelAddress.fake(),
+                                         destinationAddress: ShippingLabelAddress.fake(),
+                                         packages: [ShippingLabelPackagePurchase.fake()],
+                                         emailCustomerReceipt: true) { (result) in
+                promise(result)
+            }
+        }
+
+        // Then
+        let successResponse = try XCTUnwrap(result.get())
+        XCTAssertEqual(successResponse.first, expectedLabelPurchase)
+    }
+
+    func test_purchaseShippingLabel_returns_error_on_failure() throws {
+        // Given
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/\(sampleOrderID)", filename: "generic_error")
+
+        // When
+        let result: Result<[ShippingLabelPurchase], Error> = waitFor { promise in
+            remote.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                         orderID: self.sampleOrderID,
+                                         originAddress: ShippingLabelAddress.fake(),
+                                         destinationAddress: ShippingLabelAddress.fake(),
+                                         packages: [ShippingLabelPackagePurchase.fake()],
+                                         emailCustomerReceipt: true) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
+
+    func test_checkLabelStatus_parses_success_response() throws {
+        // Given
+        let sampleLabelID: Int64 = 4321
+        let expectedLabelStatus = ShippingLabel.fake().status
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/\(sampleOrderID)/\(sampleLabelID)", filename: "shipping-label-status-success")
+
+        // When
+        let result: Result<[ShippingLabelStatusPollingResponse], Error> = waitFor { promise in
+            remote.checkLabelStatus(siteID: self.sampleSiteID,
+                                    orderID: self.sampleOrderID,
+                                    labelIDs: [sampleLabelID]) { (result) in
+                promise(result)
+            }
+        }
+
+        // Then
+        let successResponse = try XCTUnwrap(result.get())
+        let shippingLabel = successResponse.first
+        XCTAssertEqual(shippingLabel?.status, expectedLabelStatus)
+    }
+
+    func test_checkLabelStatus_returns_error_on_failure() throws {
+        // Given
+        let sampleLabelID: Int64 = 4321
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/\(sampleOrderID)/\(sampleLabelID)", filename: "generic_error")
+
+        // When
+        let result: Result<[ShippingLabelStatusPollingResponse], Error> = waitFor { promise in
+            remote.checkLabelStatus(siteID: self.sampleSiteID,
+                                    orderID: self.sampleOrderID,
+                                    labelIDs: [sampleLabelID]) { (result) in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
     }
 }
 
@@ -375,5 +495,20 @@ private extension ShippingLabelRemoteTests {
                                             deliveryDateGuaranteed: false)
 
         return rate
+    }
+
+    func sampleShippingLabelPurchase() -> ShippingLabelPurchase {
+        return ShippingLabelPurchase(siteID: sampleSiteID,
+                                     orderID: sampleOrderID,
+                                     shippingLabelID: 733,
+                                     carrierID: nil,
+                                     dateCreated: Date(timeIntervalSince1970: 1584549793.938),
+                                     packageName: "Test",
+                                     trackingNumber: nil,
+                                     serviceName: "USPS - First Class Mail",
+                                     refundableAmount: 0,
+                                     status: ShippingLabelStatus.purchaseInProgress,
+                                     productIDs: [],
+                                     productNames: ["Beanie"])
     }
 }

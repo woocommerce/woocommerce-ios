@@ -601,6 +601,81 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "SitePlugin"), 1)
         XCTAssertEqual(insertedPlugin, plugin)
     }
+
+    func test_migrating_from_50_to_51_removes_OrderCount_entities() throws {
+        // Arrange
+        let sourceContainer = try startPersistentContainer("Model 50")
+        let sourceContext = sourceContainer.viewContext
+
+        let orderCount = insertOrderCount(to: sourceContext)
+        let orderCountItem1 = insertOrderCountItem(slug: "processing", to: sourceContext)
+        let orderCountItem2 = insertOrderCountItem(slug: "completed", to: sourceContext)
+        orderCount.mutableSetValue(forKey: "items").add(orderCountItem1)
+        orderCount.mutableSetValue(forKey: "items").add(orderCountItem2)
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "OrderCount"), 1)
+        XCTAssertEqual(try sourceContext.count(entityName: "OrderCountItem"), 2)
+
+        let sourceEntitiesNames = sourceContainer.managedObjectModel.entitiesByName.keys
+        XCTAssertTrue(sourceEntitiesNames.contains("OrderCount"))
+        XCTAssertTrue(sourceEntitiesNames.contains("OrderCountItem"))
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 51")
+        let targetEntitiesNames = targetContainer.managedObjectModel.entitiesByName.keys
+
+        // Assert
+        XCTAssertFalse(targetEntitiesNames.contains("OrderCount"))
+        XCTAssertFalse(targetEntitiesNames.contains("OrderCountItem"))
+    }
+
+    func test_migrating_from_51_to_52_enables_creating_new_paymentGatewayAccount_entities() throws {
+        // Arrange
+        let sourceContainer = try startPersistentContainer("Model 51")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 52")
+        let targetContext = targetContainer.viewContext
+
+        // Assert
+        XCTAssertEqual(try targetContext.count(entityName: "PaymentGatewayAccount"), 0)
+
+        let paymentGatewayAccount = insertPaymentGatewayAccount(to: targetContext)
+        let insertedAccount = try XCTUnwrap(targetContext.firstObject(ofType: PaymentGatewayAccount.self))
+
+        XCTAssertEqual(try targetContext.count(entityName: "PaymentGatewayAccount"), 1)
+        XCTAssertEqual(insertedAccount, paymentGatewayAccount)
+    }
+
+    func test_migrating_from_52_to_53_enables_creating_new_StateOfACountry_and_adding_to_Country_attributes_relationship() throws {
+        // Arrange
+        let sourceContainer = try startPersistentContainer("Model 52")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 53")
+        let targetContext = targetContainer.viewContext
+
+        // Assert
+        XCTAssertEqual(try targetContext.count(entityName: "Country"), 0)
+
+        let stateOfCountry1 = insertStateOfACountry(code: "DZ-01", name: "Adrar", to: targetContext)
+        let stateOfCountry2 = insertStateOfACountry(code: "DZ-02", name: "Chlef", to: targetContext)
+        let country = insertCountry(to: targetContext)
+        country.mutableSetValue(forKey: "states").add(stateOfCountry1)
+        country.mutableSetValue(forKey: "states").add(stateOfCountry2)
+        let insertedCountry = try XCTUnwrap(targetContext.firstObject(ofType: Country.self))
+
+        XCTAssertEqual(try targetContext.count(entityName: "Country"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "StateOfACountry"), 2)
+        XCTAssertEqual(insertedCountry, country)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -919,5 +994,52 @@ private extension MigrationTests {
             "requiresPHPVersion": "",
             "textDomain": ""
         ])
+    }
+
+    @discardableResult
+    func insertPaymentGatewayAccount(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "PaymentGatewayAccount", properties: [
+            "siteID": 1372,
+            "statementDescriptor": "STAGING.MARS",
+            "isCardPresentEligible": false,
+            "hasPendingRequirements": false,
+            "hasOverdueRequirements": false,
+            "currentDeadline": NSDate(),
+            "defaultCurrency": "USD",
+            "country": "US",
+            "supportedCurrencies": ["USD"],
+            "status": "complete",
+            "gatewayID": "woocommerce-payments"
+        ])
+    }
+
+    @discardableResult
+    func insertOrderCount(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "OrderCount", properties: [
+            "siteID": 123
+        ])
+    }
+
+    @discardableResult
+    func insertOrderCountItem(slug: String, to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "OrderCountItem", properties: [
+            "slug": slug,
+            "name": slug,
+            "total": 6
+        ])
+    }
+
+    @discardableResult
+    func insertCountry(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "Country", properties: [
+            "code": "DZ",
+            "name": "Algeria"
+        ])
+    }
+
+    @discardableResult
+    func insertStateOfACountry(code: String, name: String, to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "StateOfACountry", properties:
+            ["code": code, "name": name])
     }
 }

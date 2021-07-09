@@ -1,5 +1,1 @@
-Le varianti del prodotto supportano solamente un'immagine, quindi se una variante del prodotto dispone già di un'immagine, vedrai un'opzione per la sostituzione o la rimozione, ma non sarai in grado di aggiungerne un'altra.
-
-Abbiamo ricevuto rapporti di arresti anomali durante la selezione di immagini dalla Libreria multimediale, che avvenivano con librerie che avevano un numero specifico di immagini. Il problema è stato risolto.
-
-Abbiamo anche migliorato un messaggio di errore che veniva visualizzato quando un cliente effettuava l'accesso a un sito con un dispositivo offline, un certificato SSL non valido o un XML-RPC bloccato. La messaggistica aggiornata rende più semplice per gli utenti risolvere i problemi di accesso.
+Sono necessari meno tocchi per ottenere gli attributi su un prodotto variabile: sono elencati proprio nei dettagli del prodotto. Abbiamo anche migliorato il modo in cui i dettagli di un ordine vengono caricati sia visivamente che dietro le quinte: speriamo che noterai i miglioramenti!

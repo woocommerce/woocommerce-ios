@@ -420,13 +420,13 @@ private extension StorePickerViewController {
     ///
     func displaySiteWCRequirementWarningIfNeeded(siteID: Int64, siteName: String) {
         updateActionButtonAndTableState(animating: true, enabled: false)
-        RequirementsChecker.checkMinimumWooVersion(for: siteID) { [weak self] (result, error) in
+        RequirementsChecker.checkMinimumWooVersion(for: siteID) { [weak self] result in
             switch result {
-            case .validWCVersion:
+            case .success(.validWCVersion):
                 self?.updateUIForValidSite()
-            case .invalidWCVersion:
+            case .success(.invalidWCVersion):
                 self?.updateUIForInvalidSite(named: siteName)
-            case .empty, .error:
+            case .failure:
                 self?.updateUIForEmptyOrErroredSite(named: siteName, with: siteID)
             }
         }

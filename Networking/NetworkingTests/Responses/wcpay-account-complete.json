@@ -11,6 +11,7 @@
                 "usd"
             ]
         },
-        "country": "US"
+        "country": "US",
+        "card_present_eligible": true
     }
 }

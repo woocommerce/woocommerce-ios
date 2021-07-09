@@ -54,8 +54,4 @@ public enum OrderAction: Action {
     /// Updates a given Order's Status.
     ///
     case updateOrder(siteID: Int64, orderID: Int64, status: OrderStatusEnum, onCompletion: (Error?) -> Void)
-
-    /// Gets the number of orders in processing status.
-    ///
-    case countProcessingOrders(siteID: Int64, onCompletion: (OrderCount?, Error?) -> Void)
 }

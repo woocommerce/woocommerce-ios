@@ -1,5 +1,1 @@
-Produktvariationer har endast stöd för en bild, så om en produktvariation redan har en bild kommer du att ha möjlighet att byta ut eller ta bort den, men du kommer inte att kunna lägga till ytterligare en bild.
-
-Vi har fått rapporter om krascher vid val av bilder från mediabiblioteket. Dessa krascher uppstod med bibliotek som hade ett specifikt antal bilder. Detta problem har åtgärdats.
-
-Vi har också förbättrat ett felmeddelande som visades när en kund loggade in på en webbplats med en offline-enhet, ett ogiltigt SSL-certifikat eller ett blockerat XML-RPC. Det uppdaterade meddelandet gör det enklare att felsöka inloggningsproblemet.
+Färre tryck behövs för att komma till attribut för en variabel produkt – de listas direkt i produktinformationen! Vi har också förbättrat hur informationen för en beställning laddas, både visuellt och bakom kulisserna – vi hoppas att du märker förbättringarna! 

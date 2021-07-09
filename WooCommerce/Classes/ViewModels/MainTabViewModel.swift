@@ -20,8 +20,21 @@ final class MainTabViewModel {
 
     private let storesManager: StoresManager
 
+    private var statusResultsController: ResultsController<StorageOrderStatus>?
+
     init(storesManager: StoresManager = ServiceLocator.stores) {
         self.storesManager = storesManager
+
+        if let siteID = storesManager.sessionManager.defaultStoreID {
+            configureOrdersStatusesListener(for: siteID)
+        }
+    }
+
+    /// Setup: ResultsController for `processing` OrderStatus updates
+    ///
+    func configureOrdersStatusesListener(for siteID: Int64) {
+        statusResultsController = createStatusResultsController(siteID: siteID)
+        configureStatusResultsController()
     }
 
     /// Callback to be executed when this view model receives new data
@@ -42,39 +55,68 @@ final class MainTabViewModel {
     ///
     func startObservingOrdersCount() {
         observeBadgeRefreshNotifications()
+        updateBadgeFromCache()
         requestBadgeCount()
     }
 }
 
 
 private extension MainTabViewModel {
+
+    /// Construct `ResultsController` with `siteID`
+    ///
+    func createStatusResultsController(siteID: Int64) -> ResultsController<StorageOrderStatus> {
+        let predicate = NSPredicate(format: "siteID == %lld AND slug == %@", siteID, OrderStatusEnum.processing.rawValue)
+        return ResultsController<StorageOrderStatus>(storageManager: ServiceLocator.storageManager, matching: predicate, sortedBy: [])
+    }
+
+    /// Connect hooks on `ResultsController` and query cached data
+    ///
+    func configureStatusResultsController() {
+        statusResultsController?.onDidChangeObject = { [weak self] (updatedOrdersStatus, _, _, _) in
+            self?.processBadgeCount(updatedOrdersStatus)
+        }
+
+        try? statusResultsController?.performFetch()
+        updateBadgeFromCache()
+    }
+
+    /// Get last known data from cache (if exists) and draw it on a badge
+    ///
+    func updateBadgeFromCache() {
+        let initialCachedOrderStatus = statusResultsController?.fetchedObjects.first
+        processBadgeCount(initialCachedOrderStatus)
+    }
+
+    /// Trigger network action to update underlying cache. Badge redraw will be triggered by `statusResultsController`
+    ///
     @objc func requestBadgeCount() {
         guard let siteID = storesManager.sessionManager.defaultStoreID else {
             DDLogError("# Error: Cannot fetch order count")
             return
         }
 
-        let action = OrderAction.countProcessingOrders(siteID: siteID) { [weak self] orderCount, error in
-            if error != nil {
-                return
+        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { result in
+            if case let .failure(error) = result {
+                DDLogError("⛔️ Could not successfully fetch order statuses for siteID \(siteID): \(error)")
             }
-
-            self?.processBadgeCount(orderCount)
         }
 
         storesManager.dispatch(action)
     }
 
-    func processBadgeCount(_ orderCount: OrderCount?) {
+    /// Validate `OrderStatus` and trigger badge redraw
+    ///
+    func processBadgeCount(_ ordersStatus: OrderStatus?) {
         // Exit early if there is not data, or the count is zero
-        guard let orderCount = orderCount,
-            let processingCount = orderCount[OrderStatusEnum.processing.rawValue]?.total,
-            processingCount > 0 else {
+        guard let ordersStatus = ordersStatus,
+              ordersStatus.slug == OrderStatusEnum.processing.rawValue,
+              ordersStatus.total > 0 else {
             onBadgeReload?(nil)
             return
         }
 
-        onBadgeReload?(NumberFormatter.localizedOrNinetyNinePlus(processingCount))
+        onBadgeReload?(NumberFormatter.localizedOrNinetyNinePlus(ordersStatus.total))
     }
 
     func observeBadgeRefreshNotifications() {
@@ -105,7 +147,7 @@ private extension MainTabViewModel {
 
         let action = AppSettingsAction.setInstallationDateIfNecessary(date: Date()) { result in
             if case let .failure(error) = result {
-                CrashLogging.logError(error)
+                ServiceLocator.crashLogging.logError(error)
             }
         }
         storesManager.dispatch(action)

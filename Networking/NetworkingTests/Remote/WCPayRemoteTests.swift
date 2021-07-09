@@ -83,6 +83,44 @@ final class WCPayRemoteTests: XCTestCase {
         XCTAssertEqual(account.defaultCurrency, "usd")
         XCTAssertEqual(account.supportedCurrencies, ["usd"])
         XCTAssertEqual(account.country, "US")
+        XCTAssertEqual(account.isCardPresentEligible, true)
+    }
+
+    /// Verifies that loadAccount properly detects when an account is NOT eligible for card present payments
+    ///
+    func test_loadAccount_properly_handles_not_eligible_for_card_present_payments() throws {
+        let remote = WCPayRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "payments/accounts", filename: "wcpay-account-not-eligible")
+
+        let result: Result<WCPayAccount, Error> = waitFor { promise in
+            remote.loadAccount(for: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(result.isSuccess)
+        let account = try result.get()
+        XCTAssertEqual(account.isCardPresentEligible, false)
+    }
+
+    /// Verifies that loadAccount properly detects when an account is implicitly NOT eligible for card present payments
+    /// i.e. when the response does not include the `card_present_eligible` flag
+    ///
+    func test_loadAccount_properly_handles_implicitly_not_eligible_for_card_present_payments() throws {
+        let remote = WCPayRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "payments/accounts", filename: "wcpay-account-implicitly-not-eligible")
+
+        let result: Result<WCPayAccount, Error> = waitFor { promise in
+            remote.loadAccount(for: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(result.isSuccess)
+        let account = try result.get()
+        XCTAssertEqual(account.isCardPresentEligible, false)
     }
 
     /// Verifies that loadAccount properly handles the no account response

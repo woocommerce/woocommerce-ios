@@ -1,0 +1,3 @@
+Nous avons entendu dire que les commandes contenant plusieurs configurations du même produit variable peuvent être difficiles à exécuter avec l’application. Cette mise à jour corrige cela et fait apparaître ces éléments séparément, ce qui facilite la lecture. Dans le même esprit, les commandes avec plusieurs envois depuis l’extension WooCommerce Shipping & Tax s’afficheront dans des sections distinctes.
+
+Si l’application a du mal à charger des données, nous affichons désormais un message utile avec des instructions pour demander de l’aide. La plupart du temps, c’est une extension qui pose problème, mais nous pouvons vous aider à résoudre cela !

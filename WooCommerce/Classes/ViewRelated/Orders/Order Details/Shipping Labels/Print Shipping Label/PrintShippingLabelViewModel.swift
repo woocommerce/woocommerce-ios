@@ -1,10 +1,10 @@
 import Combine
 import Yosemite
 
-/// View model for `ReprintShippingLabelViewController`.
+/// View model for `PrintShippingLabelViewController`.
 /// Performs and handles actions that might change data for UI display.
-final class ReprintShippingLabelViewModel {
-    /// Paper size options that we support for reprinting a shipping label.
+final class PrintShippingLabelViewModel {
+    /// Paper size options that we support for printing a shipping label.
     /// In the future, the options could be different per geographical region.
     let paperSizeOptions: [ShippingLabelPaperSize] = [.legal, .letter, .label]
 
@@ -22,8 +22,8 @@ final class ReprintShippingLabelViewModel {
 
 // MARK: Public methods
 //
-extension ReprintShippingLabelViewModel {
-    /// Sets the default selected paper size to the one from shipping label settings, if the user has not selected one in the reprint UI.
+extension PrintShippingLabelViewModel {
+    /// Sets the default selected paper size to the one from shipping label settings, if the user has not selected one in the print UI.
     func loadShippingLabelSettingsForDefaultPaperSize() {
         let action = ShippingLabelAction.loadShippingLabelSettings(shippingLabel: shippingLabel) { [weak self] settings in
             guard let self = self else { return }

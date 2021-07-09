@@ -416,6 +416,54 @@ final class ProductFormViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(canShowPublishOption)
     }
+
+    func test_publish_message_is_shown_when_publishing_an_new_product() {
+        // Given
+        let product = Product.fake().copy(statusKey: ProductStatus.publish.rawValue)
+        let viewModel = createViewModel(product: product, formType: .add)
+
+        // When
+        let messageType = viewModel.saveMessageType(for: .publish)
+
+        // Then
+        assertEqual(messageType, .publish)
+    }
+
+    func test_publish_message_is_shown_when_publishing_a_draft_product() {
+        // Given
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
+        let viewModel = createViewModel(product: product, formType: .edit)
+
+        // When
+        let messageType = viewModel.saveMessageType(for: .publish)
+
+        // Then
+        assertEqual(messageType, .publish)
+    }
+
+    func test_save_message_is_shown_when_updating_a_published_product() {
+        // Given
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.publish.rawValue)
+        let viewModel = createViewModel(product: product, formType: .edit)
+
+        // When
+        let messageType = viewModel.saveMessageType(for: .publish)
+
+        // Then
+        assertEqual(messageType, .save)
+    }
+
+    func test_save_message_is_shown_when_updating_a_draft_product() {
+        // Given
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
+        let viewModel = createViewModel(product: product, formType: .edit)
+
+        // When
+        let messageType = viewModel.saveMessageType(for: .draft)
+
+        // Then
+        assertEqual(messageType, .save)
+    }
 }
 
 private extension ProductFormViewModelTests {

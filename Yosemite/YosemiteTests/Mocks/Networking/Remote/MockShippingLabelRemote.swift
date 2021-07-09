@@ -97,7 +97,7 @@ final class MockShippingLabelRemote {
     private var purchaseShippingLabelResults = [PurchaseShippingLabelResultKey: Result<[ShippingLabelPurchase], Error>]()
 
     /// The results to return based on the given arguments in `checkLabelStatus`
-    private var checkLabelStatusResults = [CheckLabelStatusResultKey: Result<[ShippingLabel], Error>]()
+    private var checkLabelStatusResults = [CheckLabelStatusResultKey: Result<[ShippingLabelStatusPollingResponse], Error>]()
 
     /// Set the value passed to the `completion` block if `loadShippingLabels` is called.
     func whenLoadingShippingLabels(siteID: Int64,
@@ -198,7 +198,7 @@ final class MockShippingLabelRemote {
     func whenCheckLabelStatus(siteID: Int64,
                               orderID: Int64,
                               labelIDs: [Int64],
-                              thenReturn result: Result<[ShippingLabel], Error>) {
+                              thenReturn result: Result<[ShippingLabelStatusPollingResponse], Error>) {
         let key = CheckLabelStatusResultKey(siteID: siteID)
         checkLabelStatusResults[key] = result
     }
@@ -378,7 +378,7 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
     func checkLabelStatus(siteID: Int64,
                           orderID: Int64,
                           labelIDs: [Int64],
-                          completion: @escaping (Result<[ShippingLabel], Error>) -> Void) {
+                          completion: @escaping (Result<[ShippingLabelStatusPollingResponse], Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
 

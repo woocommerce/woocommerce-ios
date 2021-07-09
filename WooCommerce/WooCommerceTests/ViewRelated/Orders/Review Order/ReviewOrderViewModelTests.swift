@@ -81,7 +81,7 @@ class ReviewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(productCellModel.hasAddOns, true)
     }
 
-    func test_productSection_contains_only_non_refunded_items() {
+    func test_product_section_does_not_contain_refunded_items() {
         // Given
         let productID2: Int64 = 335
         let itemID1: Int64 = 134
@@ -105,14 +105,14 @@ class ReviewOrderViewModelTests: XCTestCase {
         // Then
         let productSection = viewModel.sections.first(where: { $0.category == .products })
         XCTAssertNotNil(productSection)
-        let productRow = productSection?.rows.first(where: {
+        let refundedProductRow = productSection?.rows.first(where: {
             if case .orderItem(let item) = $0,
-               item.productID == productID {
+               item.productID == productID2 {
                 return true
             }
             return false
         })
-        XCTAssertNotNil(productRow)
+        XCTAssertNil(refundedProductRow)
     }
 
     func test_customerSection_does_not_contain_customer_note_cell_if_there_is_no_note() {
@@ -383,6 +383,17 @@ class ReviewOrderViewModelTests: XCTestCase {
 }
 
 private extension ReviewOrderViewModelTests {
+    func insert(_ readOnlyRefund: Refund) {
+        let storageRefund = storage.insertNewObject(ofType: StorageRefund.self)
+        storageRefund.update(with: readOnlyRefund)
+        storageRefund.items = Set(readOnlyRefund.items.map {
+            let storageItem = storage.insertNewObject(ofType: StorageOrderItemRefund.self)
+            storageItem.update(with: $0)
+            return storageItem
+        })
+        storage.saveIfNeeded()
+    }
+
     func insertShippingLabel(_ readOnlyLabel: ShippingLabel) {
         let storageLabel = storage.insertNewObject(ofType: StorageShippingLabel.self)
         storageLabel.update(with: readOnlyLabel)
@@ -397,19 +408,6 @@ private extension ReviewOrderViewModelTests {
     func insertShipmentTracking(_ readOnlyTracking: ShipmentTracking) {
         let storageTracking = storage.insertNewObject(ofType: StorageShipmentTracking.self)
         storageTracking.update(with: readOnlyTracking)
-        storage.saveIfNeeded()
-    }
-}
-
-private extension ReviewOrderViewModelTests {
-    func insert(_ readOnlyRefund: Refund) {
-        let storageRefund = storage.insertNewObject(ofType: StorageRefund.self)
-        storageRefund.update(with: readOnlyRefund)
-        storageRefund.items = Set(readOnlyRefund.items.map {
-            let storageItem = storage.insertNewObject(ofType: StorageOrderItemRefund.self)
-            storageItem.update(with: $0)
-            return storageItem
-        })
         storage.saveIfNeeded()
     }
 }

@@ -39,7 +39,7 @@ final class SettingsScreen: BaseScreen {
             logOutAlert.buttons.element(boundBy: 1).tap()
         }
 
-        return PrologueScreen()
+        return try! PrologueScreen()
     }
 }
 

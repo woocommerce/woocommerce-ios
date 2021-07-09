@@ -1,5 +1,6 @@
-import XCTest
 import Embassy
+import ScreenObject
+import XCTest
 
 class WooCommerceScreenshots: XCTestCase {
 
@@ -129,6 +130,21 @@ class WooCommerceScreenshots: XCTestCase {
 fileprivate var screenshotCount = 0
 
 extension BaseScreen {
+
+    @discardableResult
+    func thenTakeScreenshot(named title: String) -> Self {
+        screenshotCount += 1
+
+        let mode = isDarkMode ? "dark" : "light"
+        let filename = "\(screenshotCount)-\(mode)-\(title)"
+
+        snapshot(filename)
+
+        return self
+    }
+}
+
+extension ScreenObject {
 
     @discardableResult
     func thenTakeScreenshot(named title: String) -> Self {

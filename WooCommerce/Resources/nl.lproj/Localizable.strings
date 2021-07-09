@@ -1753,7 +1753,7 @@
 "Only one photo can be displayed by variation" = "Er kan slechts één foto worden weergegeven per variatie";
 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
-"Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Alleen de site-eigenaar kan de betalingsmethoden voor verzendlabels beheren. Neem contact op met%$1@ (%$2@) om betalingsmethoden te beheren.";
+"Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Alleen de site-eigenaar kan de betalingsmethoden voor verzendlabels beheren. Neem contact op met %1$@ (%2$@) om betalingsmethoden te beheren.";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Open Apparaatinstellingen";

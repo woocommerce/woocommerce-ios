@@ -10,7 +10,7 @@
 "%1$@" = "%1$@";
 
 /* Format for each Product attribute in singular form */
-"%1$@ (%2$ld option)" = "%1$@(%2$l개 옵션)";
+"%1$@ (%2$ld option)" = "%1$@(%2$ld개 옵션)";
 
 /* Format for each Product attribute in plural form */
 "%1$@ (%2$ld options)" = "%1$@(옵션 %2$ld개)";
@@ -73,10 +73,10 @@
 "%1$d items" = "%1$d개 아이템";
 
 /* Format for the variations detail row in singular form. Reads, `1 variation` */
-"%1$ld variation" = "%1$l개 변형";
+"%1$ld variation" = "%1$ld개 변형";
 
 /* Format for the variations detail row in plural form. Reads, `2 variations` */
-"%1$ld variations" = "%1$l개 변형";
+"%1$ld variations" = "%1$ld개 변형";
 
 /* 1 Item */
 "%@ Item" = "%@개 항목";

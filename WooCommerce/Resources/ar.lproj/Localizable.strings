@@ -10,7 +10,7 @@
 "%1$@" = "%1$@";
 
 /* Format for each Product attribute in singular form */
-"%1$@ (%2$ld option)" = "%1$@ (⁦%2$l⁩ خيار)";
+"%1$@ (%2$ld option)" = "%1$@ (⁦%2$ld خيار)";
 
 /* Format for each Product attribute in plural form */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld من الخيارات)";
@@ -73,10 +73,10 @@
 "%1$d items" = "⁦%1$d⁩ العناصر";
 
 /* Format for the variations detail row in singular form. Reads, `1 variation` */
-"%1$ld variation" = "⁦%1$l⁩ مجموعة";
+"%1$ld variation" = "⁦%1$ld مجموعة";
 
 /* Format for the variations detail row in plural form. Reads, `2 variations` */
-"%1$ld variations" = "⁦%1$l⁩ من المجموعات";
+"%1$ld variations" = "⁦%1$ld من المجموعات";
 
 /* 1 Item */
 "%@ Item" = "%@ من العناصر";

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-06-10 09:54:04+0000 */
+/* Translation-Revision-Date: 2021-07-08 09:54:57+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -10,7 +10,7 @@
 "%1$@" = "%1$@";
 
 /* Format for each Product attribute in singular form */
-"%1$@ (%2$ld option)" = "%1$@ (%2$ld option)";
+"%1$@ (%2$ld option)" = "%1$@ (%2$l オプション)";
 
 /* Format for each Product attribute in plural form */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld オプション)";
@@ -67,16 +67,16 @@
 "%1$d business days" = "%1$d営業日";
 
 /* For example: `1 item` in Shipping Label package row */
-"%1$d item" = "%1$d item";
+"%1$d item" = "%1$d アイテム";
 
 /* For example: `5 items` in Shipping Label package row */
-"%1$d items" = "%1$d items";
+"%1$d items" = "%1$d 項目";
 
 /* Format for the variations detail row in singular form. Reads, `1 variation` */
-"%1$ld variation" = "%1$ld variation";
+"%1$ld variation" = "%1$l バリエーション";
 
 /* Format for the variations detail row in plural form. Reads, `2 variations` */
-"%1$ld variations" = "%1$ld variations";
+"%1$ld variations" = "%1$l バリエーション";
 
 /* 1 Item */
 "%@ Item" = "%@個のアイテム";
@@ -94,10 +94,10 @@
 "%@ via %@" = "%2$@ 経由 %1$@";
 
 /* For example: `1 item` in Aggregated Product List */
-"%d item" = "%d item";
+"%d item" = "%d アイテム";
 
 /* For example: `5 items` in Aggregated Product List */
-"%d items" = "%d items";
+"%d items" = "%d 項目";
 
 /* Title of the label indicating that there are multiple items to refund. */
 "%d items selected" = "%d 複数のアイテムを選択済み";
@@ -304,7 +304,7 @@
 
 /* Banner caption in my store when the stats will be deprecated
    Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
-"Add price to your variations to make them visible on your store" = "Add price to your variations to make them visible on your store";
+"Add price to your variations to make them visible on your store" = "バリエーションの価格を追加してストアで表示します";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "商品へのリンクを追加";
@@ -452,7 +452,7 @@
 "Attributes" = "属性";
 
 /* Primary text for the generate first variation screen */
-"Attributes added!" = "Attributes added!";
+"Attributes added!" = "属性を追加しました";
 
 /* No comment provided by engineer. */
 "Authenticating" = "認証中";
@@ -648,7 +648,7 @@
 "Connected Stores" = "連携ストア";
 
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
-"Connecting reader failed" = "Connecting reader failed";
+"Connecting reader failed" = "Reader に接続できませんでした";
 
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "WordPress.com に接続中";
@@ -779,7 +779,7 @@
 "Customer Provided Note" = "顧客提供メモ";
 
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
-"Customer paid a %1$@ of %2$@ for shipping" = "Customer paid a %1$@ of %2$@ for shipping";
+"Customer paid a %1$@ of %2$@ for shipping" = "配送料としてお客様から %2$@ の %1$@ の支払いがありました";
 
 /* Details text in the shipping label creation info screen */
 "Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "自宅でスマートフォンを使い、割引料金で配送ラベルを印刷して、郵便局での待ち時間をカット !";
@@ -1139,7 +1139,7 @@
 "Generate New Variation" = "新しいバリエーションを生成";
 
 /* Title of the action to generate the first variation */
-"Generate Variation" = "Generate Variation";
+"Generate Variation" = "バリエーションを生成";
 
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "バリエーションを生成しています";
@@ -1293,7 +1293,7 @@
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "サイト管理画面で、Jetpack ダッシュボードの「接続」>「アカウント接続」から WordPress.com への接続に使用したメールアドレスを確認できます。";
 
 /* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} Parameters: %1$@ - order number, %2$@ - store name */
-"In-Person Payment for Order #%1$@ for %2$@" = "In-Person Payment for Order #%1$@ for %2$@";
+"In-Person Payment for Order #%1$@ for %2$@" = "%2$@ への #%1$@ の注文のオフラインでの支払い";
 
 /* Application's Inactive State */
 "Inactive" = "停止中";
@@ -1459,7 +1459,7 @@
 "Loading Product" = "商品を読み込み中";
 
 /* Text of the loading banner in Order Detail when loaded for the first time */
-"Loading content" = "Loading content";
+"Loading content" = "コンテンツを読み込んでいます";
 
 /* Loading tags in Product Tags screen */
 "Loading..." = "読み込み中…";
@@ -1552,7 +1552,7 @@
 "Mark Order Complete" = "注文を完了としてマーク";
 
 /* Create Shipping Label form -> Mark order as complete label */
-"Mark this order as complete and notify the customer" = "Mark this order as complete and notify the customer";
+"Mark this order as complete and notify the customer" = "この注文に完了のマークを付けてお客様に通知";
 
 /* VoiceOver accessibility hint for the Mark All Reviews as Read Action */
 "Marks Every Review as Read" = "すべてのレビューを既読にする";
@@ -1690,7 +1690,7 @@
 "No shipping classes yet" = "送料区分がまだありません";
 
 /* Error state title in shipping label carrier and rates screen */
-"No shipping rates available" = "No shipping rates available";
+"No shipping rates available" = "利用できる配送料金がありません";
 
 /* Placeholder of the Product Tags row on Product main screen */
 "No tags" = "タグなし";
@@ -1716,7 +1716,7 @@
 "Note to customer" = "お客様への通知";
 
 /* Info text for the generate first variation screen */
-"Now that you’ve added attributes, you can create your first variation!" = "Now that you’ve added attributes, you can create your first variation!";
+"Now that you’ve added attributes, you can create your first variation!" = "属性の追加が完了しました。最初のバリエーションを作成してください。";
 
 /* Alert dismissal title
    Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for reprinting - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
@@ -1753,7 +1753,7 @@
 "Only one photo can be displayed by variation" = "表示できる写真はバリエーションごとに1点のみです";
 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
-"Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods.";
+"Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "配送ラベルのお支払い方法を管理できるのは、サイトの所有者のみです。 お支払い方法を管理するには、%1$@ (%2$@) にお問い合わせください。";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "デバイス設定を開く";
@@ -1921,7 +1921,7 @@
 "Placing your product in the trash..." = "商品をゴミ箱に移動しています...";
 
 /* Error state description in shipping label carrier and rates screen */
-"Please double check your package dimensions and weightor try using a different package in Package Details." = "Please double check your package dimensions and weightor try using a different package in Package Details.";
+"Please double check your package dimensions and weightor try using a different package in Package Details." = "荷物の寸法と重量を再度ご確認いただくか、「荷物の詳細」で別の荷物のご利用をお試しください。";
 
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "URL を入力してください";
@@ -1969,7 +1969,7 @@
 "Please remove card" = "カードを取り除いてください";
 
 /* The info of the Error Loading Data banner */
-"Please try again later or reach out to us and we'll be happy to assist you!" = "Please try again later or reach out to us and we'll be happy to assist you!";
+"Please try again later or reach out to us and we'll be happy to assist you!" = "しばらくしてから再度お試しいただくか、サポートをご依頼ください。";
 
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "もう一度お試しください。";
@@ -2009,7 +2009,7 @@
 "Powered by Automattic" = "Powered by Automattic";
 
 /* Label within the modal dialog that appears when searching for a card reader */
-"Press the power button of your reader until you see a flashing blue light" = "Press the power button of your reader until you see a flashing blue light";
+"Press the power button of your reader until you see a flashing blue light" = "青いライトが点滅するまで、Reader の電源ボタンを押します";
 
 /* A label representing the amount that was previously refunded for the order. */
 "Previously Refunded" = "過去に返金済み";
@@ -2134,7 +2134,7 @@
 "Purchase Date" = "購入日";
 
 /* Create Shipping Label form -> Purchase Label button */
-"Purchase Label" = "Purchase Label";
+"Purchase Label" = "ラベルを購入";
 
 /* Product Note navigation title
    Purchase note label in Product Settings */
@@ -2178,7 +2178,7 @@
 "Reason for refunding order" = "﻿注文返金﻿の理由";
 
 /* The title of the view containing a receipt preview */
-"Receipt" = "Receipt";
+"Receipt" = "領収書";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "払戻額";
@@ -2499,7 +2499,7 @@
 "Shipping details" = "配送詳細";
 
 /* Header of the order summary section in the shipping label creation form */
-"Shipping label order summary" = "Shipping label order summary";
+"Shipping label order summary" = "配送ラベル注文の概要";
 
 /* VoiceOver accessibility label for the shipping notice about the order */
 "Shipping notice about the order" = "注文の配送に関するお知らせ";
@@ -2537,7 +2537,7 @@
 "Show the billing details for this order." = "この注文の請求詳細を表示";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view the items inside the shipping label package */
-"Show the items included inside this shipping label package." = "Show the items included inside this shipping label package.";
+"Show the items included inside this shipping label package." = "この配送ラベルの荷物内の商品を表示します。";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details. */
 "Show the shipment details for this shipping label." = "この配送ラベルの配送状況の詳細を表示します。";
@@ -3101,7 +3101,7 @@
 "Trash" = "ゴミ箱";
 
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
-"Troubleshoot" = "Troubleshoot";
+"Troubleshoot" = "トラブルシューティング";
 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "信用する";
@@ -3174,7 +3174,7 @@
 "Unable to refresh list" = "リストを更新できません";
 
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
-"Unable to save changes to the payment method" = "Unable to save changes to the payment method";
+"Unable to save changes to the payment method" = "お支払い方法の変更を保存できませんでした";
 
 /* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
 "Unable to successfully connect to %@" = "%@ に接続できませんでした";
@@ -3300,14 +3300,14 @@
 "Variable product" = "バリエーションのある商品";
 
 /* Text for the notice after creating the first variation. */
-"Variation created" = "Variation created";
+"Variation created" = "バリエーションが作成されました";
 
 /* Title for the generate first variation screen
    Title of the Product Variations row on Product main screen for a variable product - Title that appears on top of the Product Variation List screen. */
 "Variations" = "バリエーション";
 
 /* Title of the variations attributes row on Product screen */
-"Variations Attributes" = "Variations Attributes";
+"Variations Attributes" = "バリエーション属性";
 
 /* two factor code placeholder */
 "Verification code" = "認証コード";
@@ -3343,7 +3343,7 @@
 "View downloadable file settings" = "ダウンロード可能なファイル設定を表示";
 
 /* Accessibility label for the items inside a Shipping Label package */
-"View items in this shipping label package." = "View items in this shipping label package.";
+"View items in this shipping label package." = "この配送ラベルの荷物の商品を表示します。";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "送信済みのサポートチケットを表示";
@@ -3398,7 +3398,7 @@
 "We can’t display your store’s analytics" = "ストアのアナリティクスを表示できません";
 
 /* The title of the Error Loading Data banner */
-"We couldn't load your data" = "We couldn't load your data";
+"We couldn't load your data" = "データを読み込めませんでした";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "入力された住所が一部修正されました。 正しい場合は、正確に配送できるように提案された住所を使用してください。";
@@ -3463,13 +3463,13 @@
 "What is Jetpack?" = "Jetpack とは ?";
 
 /* Shipping Labels: info title about WooCommerce Services discount */
-"What is WooCommerce Services discount?" = "What is WooCommerce Services discount?";
+"What is WooCommerce Services discount?" = "WooCommerce サービスの割引はどのくらいですか ?";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "ご使用のサイトアドレス。";
 
 /* Shipping Labels: info description about WooCommerce Services discount */
-"When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices.";
+"When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "WooCommerce で配送ラベルを購入する際には、業務用価格の割引が適用されます。";
 
 /* An error message shown when a wpcom user provides the wrong password. */
 "Whoops, something went wrong and we couldn't log you in. Please try again!" = "エラーが発生し、ログインできませんでした。もう一度お試しください。";
@@ -3487,7 +3487,7 @@
 "WooCommerce" = "WooCommerce";
 
 /* Create Shipping Label form -> WooCommerce Discount label */
-"WooCommerce Discount" = "WooCommerce Discount";
+"WooCommerce Discount" = "WooCommerce の割引";
 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce の送料";
@@ -3515,7 +3515,7 @@
 "Yesterday" = "昨日";
 
 /* Info notice at the bottom of the product add-ons screen */
-"You can edit product add-ons in the web dashboard." = "You can edit product add-ons in the web dashboard.";
+"You can edit product add-ons in the web dashboard." = "ウェブダッシュボードで製品アドオンを編集できます。";
 
 /* The info of the top banner on the Products tab. */
 "You can now create and manage product variations!" = "商品のバリエーションを作成、管理できるようになりました。";

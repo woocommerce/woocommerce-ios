@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-06-10 15:54:04+0000 */
+/* Translation-Revision-Date: 2021-07-07 13:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -67,16 +67,16 @@
 "%1$d business days" = "%1$d jours ouvrables";
 
 /* For example: `1 item` in Shipping Label package row */
-"%1$d item" = "%1$d item";
+"%1$d item" = "%1$d article";
 
 /* For example: `5 items` in Shipping Label package row */
-"%1$d items" = "%1$d items";
+"%1$d items" = "%1$d articles";
 
 /* Format for the variations detail row in singular form. Reads, `1 variation` */
-"%1$ld variation" = "%1$ld variation";
+"%1$ld variation" = "%1$ld variante";
 
 /* Format for the variations detail row in plural form. Reads, `2 variations` */
-"%1$ld variations" = "%1$ld variations";
+"%1$ld variations" = "%1$ld variantes";
 
 /* 1 Item */
 "%@ Item" = "%@ article";
@@ -94,10 +94,10 @@
 "%@ via %@" = "%1$@ via %2$@";
 
 /* For example: `1 item` in Aggregated Product List */
-"%d item" = "%d item";
+"%d item" = "%d article";
 
 /* For example: `5 items` in Aggregated Product List */
-"%d items" = "%d items";
+"%d items" = "%d articles";
 
 /* Title of the label indicating that there are multiple items to refund. */
 "%d items selected" = "%d éléments sélectionnés";
@@ -304,7 +304,7 @@
 
 /* Banner caption in my store when the stats will be deprecated
    Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
-"Add price to your variations to make them visible on your store" = "Add price to your variations to make them visible on your store";
+"Add price to your variations to make them visible on your store" = "Ajouter un prix à vos variantes pour les rendre visibles sur votre boutique";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Ajouter un lien vers le produit";
@@ -452,7 +452,7 @@
 "Attributes" = "Attributs";
 
 /* Primary text for the generate first variation screen */
-"Attributes added!" = "Attributes added!";
+"Attributes added!" = "Attributs ajoutés !";
 
 /* No comment provided by engineer. */
 "Authenticating" = "Connexion";
@@ -648,7 +648,7 @@
 "Connected Stores" = "Boutiques connectées";
 
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
-"Connecting reader failed" = "Connecting reader failed";
+"Connecting reader failed" = "Échec de la connexion au lecteur";
 
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "Connexion à WordPress.com ";
@@ -779,7 +779,7 @@
 "Customer Provided Note" = "Note fournie par le client";
 
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
-"Customer paid a %1$@ of %2$@ for shipping" = "Customer paid a %1$@ of %2$@ for shipping";
+"Customer paid a %1$@ of %2$@ for shipping" = "Le client a payé un %1$@ de %2$@ pour la livraison";
 
 /* Details text in the shipping label creation info screen */
 "Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Évitez un déplacement à la Poste en imprimant les étiquettes d’expédition de chez vous avec votre téléphone à prix réduit !";
@@ -1139,7 +1139,7 @@
 "Generate New Variation" = "Générer une nouvelle variante";
 
 /* Title of the action to generate the first variation */
-"Generate Variation" = "Generate Variation";
+"Generate Variation" = "Générer une variante";
 
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "Génération de la variante";
@@ -1293,7 +1293,7 @@
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "Dans l’administration de votre site, vous trouverez l’adresse e-mail utilisée pour vous connecter à WordPress.com à partir du Tableau de bord de Jetpack sous Connexions > Connexion du compte";
 
 /* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} Parameters: %1$@ - order number, %2$@ - store name */
-"In-Person Payment for Order #%1$@ for %2$@" = "In-Person Payment for Order #%1$@ for %2$@";
+"In-Person Payment for Order #%1$@ for %2$@" = "Paiement en personne de la commande #%1$@ pour %2$@";
 
 /* Application's Inactive State */
 "Inactive" = "Inactif";
@@ -1459,7 +1459,7 @@
 "Loading Product" = "Chargement du produit";
 
 /* Text of the loading banner in Order Detail when loaded for the first time */
-"Loading content" = "Loading content";
+"Loading content" = "Chargement du contenu";
 
 /* Loading tags in Product Tags screen */
 "Loading..." = "Chargement...";
@@ -1552,7 +1552,7 @@
 "Mark Order Complete" = "Marquer la commande comme terminée";
 
 /* Create Shipping Label form -> Mark order as complete label */
-"Mark this order as complete and notify the customer" = "Mark this order as complete and notify the customer";
+"Mark this order as complete and notify the customer" = "Marquer cette commande comme terminée et informer le client";
 
 /* VoiceOver accessibility hint for the Mark All Reviews as Read Action */
 "Marks Every Review as Read" = "Marque chaque avis comme lu";
@@ -1690,7 +1690,7 @@
 "No shipping classes yet" = "Pas encore de classes de livraison";
 
 /* Error state title in shipping label carrier and rates screen */
-"No shipping rates available" = "No shipping rates available";
+"No shipping rates available" = "Aucun tarif d’expédition disponible";
 
 /* Placeholder of the Product Tags row on Product main screen */
 "No tags" = "Aucune étiquette";
@@ -1716,7 +1716,7 @@
 "Note to customer" = "Note au client";
 
 /* Info text for the generate first variation screen */
-"Now that you’ve added attributes, you can create your first variation!" = "Now that you’ve added attributes, you can create your first variation!";
+"Now that you’ve added attributes, you can create your first variation!" = "Maintenant que vous avez ajouté des attributs, vous pouvez créer votre première variante !";
 
 /* Alert dismissal title
    Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for reprinting - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
@@ -1753,7 +1753,7 @@
 "Only one photo can be displayed by variation" = "Vous ne pouvez afficher qu’une seule photo par variante";
 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
-"Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods.";
+"Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Seul le propriétaire du site peut gérer les moyens de paiement des étiquettes d’expédition. Veuillez contacter %1$@ (%2$@) pour gérer les moyens de paiement.";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Réglages des appareils ouverts";
@@ -1921,7 +1921,7 @@
 "Placing your product in the trash..." = "Déplacement de votre produit dans la corbeille...";
 
 /* Error state description in shipping label carrier and rates screen */
-"Please double check your package dimensions and weightor try using a different package in Package Details." = "Please double check your package dimensions and weightor try using a different package in Package Details.";
+"Please double check your package dimensions and weightor try using a different package in Package Details." = "Veuillez vérifier les dimensions et le poids de votre colis ou essayez d’utiliser un autre colis dans Détails du colis.";
 
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "Veuillez entrer une URL";
@@ -1969,7 +1969,7 @@
 "Please remove card" = "Veuillez retirer la carte";
 
 /* The info of the Error Loading Data banner */
-"Please try again later or reach out to us and we'll be happy to assist you!" = "Please try again later or reach out to us and we'll be happy to assist you!";
+"Please try again later or reach out to us and we'll be happy to assist you!" = "Réessayez plus tard ou contactez-nous et nous vous aiderons avec plaisir !";
 
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "Veuillez réessayer.";
@@ -2009,7 +2009,7 @@
 "Powered by Automattic" = "Propulsé par Automattic";
 
 /* Label within the modal dialog that appears when searching for a card reader */
-"Press the power button of your reader until you see a flashing blue light" = "Press the power button of your reader until you see a flashing blue light";
+"Press the power button of your reader until you see a flashing blue light" = "Appuyer sur le bouton d’alimentation de votre lecteur jusqu’à ce qu’une lumière bleue clignote";
 
 /* A label representing the amount that was previously refunded for the order. */
 "Previously Refunded" = "Remboursements déjà effectués";
@@ -2134,7 +2134,7 @@
 "Purchase Date" = "Date d’achat";
 
 /* Create Shipping Label form -> Purchase Label button */
-"Purchase Label" = "Purchase Label";
+"Purchase Label" = "Acheter une étiquette";
 
 /* Product Note navigation title
    Purchase note label in Product Settings */
@@ -2178,7 +2178,7 @@
 "Reason for refunding order" = "Motif du remboursement de la commande";
 
 /* The title of the view containing a receipt preview */
-"Receipt" = "Receipt";
+"Receipt" = "Reçu";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "Rembourser";
@@ -2499,7 +2499,7 @@
 "Shipping details" = "Détails de livraison";
 
 /* Header of the order summary section in the shipping label creation form */
-"Shipping label order summary" = "Shipping label order summary";
+"Shipping label order summary" = "Récapitulatif de la commande d’étiquettes d’expédition";
 
 /* VoiceOver accessibility label for the shipping notice about the order */
 "Shipping notice about the order" = "Avis d'expédition de la commande";
@@ -2537,7 +2537,7 @@
 "Show the billing details for this order." = "Affichez les informations de facturation liées à cette commande.";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view the items inside the shipping label package */
-"Show the items included inside this shipping label package." = "Show the items included inside this shipping label package.";
+"Show the items included inside this shipping label package." = "Afficher les articles inclus dans ce colis d’étiquettes d’expédition.";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details. */
 "Show the shipment details for this shipping label." = "Affichez les détails de l’expédition de cette étiquette d’expédition.";
@@ -3101,7 +3101,7 @@
 "Trash" = "Déplacer vers la corbeille";
 
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
-"Troubleshoot" = "Troubleshoot";
+"Troubleshoot" = "Dépannage";
 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Faire confiance";
@@ -3174,7 +3174,7 @@
 "Unable to refresh list" = "Impossible d’actualiser la liste";
 
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
-"Unable to save changes to the payment method" = "Unable to save changes to the payment method";
+"Unable to save changes to the payment method" = "Impossible d’enregistrer les modifications apportées au moyen de paiement";
 
 /* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
 "Unable to successfully connect to %@" = "Impossible de se connecter à %@";
@@ -3300,14 +3300,14 @@
 "Variable product" = "Produit variable";
 
 /* Text for the notice after creating the first variation. */
-"Variation created" = "Variation created";
+"Variation created" = "Variante créée";
 
 /* Title for the generate first variation screen
    Title of the Product Variations row on Product main screen for a variable product - Title that appears on top of the Product Variation List screen. */
 "Variations" = "Variantes";
 
 /* Title of the variations attributes row on Product screen */
-"Variations Attributes" = "Variations Attributes";
+"Variations Attributes" = "Attributs des variantes";
 
 /* two factor code placeholder */
 "Verification code" = "Code de vérification";
@@ -3343,7 +3343,7 @@
 "View downloadable file settings" = "Afficher les réglages du fichier téléchargeable";
 
 /* Accessibility label for the items inside a Shipping Label package */
-"View items in this shipping label package." = "View items in this shipping label package.";
+"View items in this shipping label package." = "Voir les articles dans ce colis d’étiquettes d’expédition.";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "Voir les précédents tickets de support envoyés";
@@ -3398,7 +3398,7 @@
 "We can’t display your store’s analytics" = "Nous ne pouvons pas afficher l’analyse de votre boutique";
 
 /* The title of the Error Loading Data banner */
-"We couldn't load your data" = "We couldn't load your data";
+"We couldn't load your data" = "Nous n’avons pas pu charger vos données";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "Nous avons légèrement modifié l’adresse saisie. Si l’adresse suggérée est correcte, utilisez-la pour garantir la précision de la livraison.";
@@ -3463,13 +3463,13 @@
 "What is Jetpack?" = "Qu'est-ce que Jetpack ?";
 
 /* Shipping Labels: info title about WooCommerce Services discount */
-"What is WooCommerce Services discount?" = "What is WooCommerce Services discount?";
+"What is WooCommerce Services discount?" = "Qu’est-ce que la remise WooCommerce Services ?";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "Quelle est l’adresse de mon site ?";
 
 /* Shipping Labels: info description about WooCommerce Services discount */
-"When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices.";
+"When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "Lorsque vous achetez des étiquettes d’expédition avec WooCommerce, vous avez accès à des prix commerciaux réduits.";
 
 /* An error message shown when a wpcom user provides the wrong password. */
 "Whoops, something went wrong and we couldn't log you in. Please try again!" = "Oups, quelque chose s’est mal passé et nous ne pouvons pas vous connecter. Veuillez réessayer !";
@@ -3515,7 +3515,7 @@
 "Yesterday" = "Hier";
 
 /* Info notice at the bottom of the product add-ons screen */
-"You can edit product add-ons in the web dashboard." = "You can edit product add-ons in the web dashboard.";
+"You can edit product add-ons in the web dashboard." = "Vous pouvez modifier des modules produits dans le tableau de bord Web.";
 
 /* The info of the top banner on the Products tab. */
 "You can now create and manage product variations!" = "Vous pouvez désormais créer et gérer des variantes de produit !";

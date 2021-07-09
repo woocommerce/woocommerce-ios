@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-06-08 11:54:45+0000 */
+/* Translation-Revision-Date: 2021-07-08 09:54:58+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -10,7 +10,7 @@
 "%1$@" = "%1$@";
 
 /* Format for each Product attribute in singular form */
-"%1$@ (%2$ld option)" = "%1$@ (%2$ld option)";
+"%1$@ (%2$ld option)" = "%1$@ (%2$ld 個選項)";
 
 /* Format for each Product attribute in plural form */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld 選項)";
@@ -67,16 +67,16 @@
 "%1$d business days" = "%1$d 個工作天";
 
 /* For example: `1 item` in Shipping Label package row */
-"%1$d item" = "%1$d item";
+"%1$d item" = "%1$d 件商品";
 
 /* For example: `5 items` in Shipping Label package row */
-"%1$d items" = "%1$d items";
+"%1$d items" = "%1$d 件商品";
 
 /* Format for the variations detail row in singular form. Reads, `1 variation` */
-"%1$ld variation" = "%1$ld variation";
+"%1$ld variation" = "%1$ld 個款式";
 
 /* Format for the variations detail row in plural form. Reads, `2 variations` */
-"%1$ld variations" = "%1$ld variations";
+"%1$ld variations" = "%1$ld 個款式";
 
 /* 1 Item */
 "%@ Item" = "%@ 個品項";
@@ -94,10 +94,10 @@
 "%@ via %@" = "已在 %1$@ 收到 %2$@ 付款";
 
 /* For example: `1 item` in Aggregated Product List */
-"%d item" = "%d item";
+"%d item" = "%d 件商品";
 
 /* For example: `5 items` in Aggregated Product List */
-"%d items" = "%d items";
+"%d items" = "%d 件商品";
 
 /* Title of the label indicating that there are multiple items to refund. */
 "%d items selected" = "已選取 %d 個項目";
@@ -304,7 +304,7 @@
 
 /* Banner caption in my store when the stats will be deprecated
    Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
-"Add price to your variations to make them visible on your store" = "Add price to your variations to make them visible on your store";
+"Add price to your variations to make them visible on your store" = "為款式新增價格以顯示於商店中";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "新增產品連結";
@@ -452,7 +452,7 @@
 "Attributes" = "屬性";
 
 /* Primary text for the generate first variation screen */
-"Attributes added!" = "Attributes added!";
+"Attributes added!" = "已新增屬性！";
 
 /* No comment provided by engineer. */
 "Authenticating" = "驗證中";
@@ -648,7 +648,7 @@
 "Connected Stores" = "連結的商店";
 
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
-"Connecting reader failed" = "Connecting reader failed";
+"Connecting reader failed" = "連線至讀卡機失敗";
 
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "正在連線至 WordPress.com";
@@ -779,7 +779,7 @@
 "Customer Provided Note" = "顧客所提出的備註";
 
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
-"Customer paid a %1$@ of %2$@ for shipping" = "Customer paid a %1$@ of %2$@ for shipping";
+"Customer paid a %1$@ of %2$@ for shipping" = "客戶支付 %1$@ (%2$@) 運費";
 
 /* Details text in the shipping label creation info screen */
 "Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "在家使用手機列印郵寄標籤，不必在郵局排隊，還可享優惠費率！";
@@ -1139,7 +1139,7 @@
 "Generate New Variation" = "產生新款式";
 
 /* Title of the action to generate the first variation */
-"Generate Variation" = "Generate Variation";
+"Generate Variation" = "產生款式";
 
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "正在產生款式";
@@ -1293,7 +1293,7 @@
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "在你的網站管理中，你可以從 Jetpack 控制台的「連結」>「帳號連結」找到用於連結 WordPress.com 的電子郵件。";
 
 /* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} Parameters: %1$@ - order number, %2$@ - store name */
-"In-Person Payment for Order #%1$@ for %2$@" = "In-Person Payment for Order #%1$@ for %2$@";
+"In-Person Payment for Order #%1$@ for %2$@" = "親自支付 %2$@ 訂單的 #%1$@ 費用";
 
 /* Application's Inactive State */
 "Inactive" = "未啟用";
@@ -1459,7 +1459,7 @@
 "Loading Product" = "載入產品";
 
 /* Text of the loading banner in Order Detail when loaded for the first time */
-"Loading content" = "Loading content";
+"Loading content" = "正在載入內容";
 
 /* Loading tags in Product Tags screen */
 "Loading..." = "正在載入...";
@@ -1552,7 +1552,7 @@
 "Mark Order Complete" = "將訂單標示為完成";
 
 /* Create Shipping Label form -> Mark order as complete label */
-"Mark this order as complete and notify the customer" = "Mark this order as complete and notify the customer";
+"Mark this order as complete and notify the customer" = "將此訂單標示為完成並通知客戶";
 
 /* VoiceOver accessibility hint for the Mark All Reviews as Read Action */
 "Marks Every Review as Read" = "將所有評論標示為已讀";
@@ -1690,7 +1690,7 @@
 "No shipping classes yet" = "尚未有運送類別";
 
 /* Error state title in shipping label carrier and rates screen */
-"No shipping rates available" = "No shipping rates available";
+"No shipping rates available" = "沒有可用的運費";
 
 /* Placeholder of the Product Tags row on Product main screen */
 "No tags" = "無標籤";
@@ -1716,7 +1716,7 @@
 "Note to customer" = "給顧客的備註";
 
 /* Info text for the generate first variation screen */
-"Now that you’ve added attributes, you can create your first variation!" = "Now that you’ve added attributes, you can create your first variation!";
+"Now that you’ve added attributes, you can create your first variation!" = "現在您已新增屬性，可以建立第一個款式了！";
 
 /* Alert dismissal title
    Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for reprinting - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
@@ -1753,7 +1753,7 @@
 "Only one photo can be displayed by variation" = "每個款式只能顯示一張相片";
 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
-"Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods.";
+"Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "僅限網站擁有者能管理郵寄標籤付款方式。 請聯絡 %1$@ (%2$@) 以管理付款方式。";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "開啟裝置設定";
@@ -1921,7 +1921,7 @@
 "Placing your product in the trash..." = "正在將你的商品放入垃圾桶…";
 
 /* Error state description in shipping label carrier and rates screen */
-"Please double check your package dimensions and weightor try using a different package in Package Details." = "Please double check your package dimensions and weightor try using a different package in Package Details.";
+"Please double check your package dimensions and weightor try using a different package in Package Details." = "請再次檢查包裹尺寸和重量，或嘗試使用「包裹詳細資訊」中的其他包裹。";
 
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "請輸入 URL。";
@@ -1969,7 +1969,7 @@
 "Please remove card" = "請移除卡片";
 
 /* The info of the Error Loading Data banner */
-"Please try again later or reach out to us and we'll be happy to assist you!" = "Please try again later or reach out to us and we'll be happy to assist you!";
+"Please try again later or reach out to us and we'll be happy to assist you!" = "請稍後再試或與我們聯絡，我們將很樂意提供協助！";
 
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "請再試一次。";
@@ -2009,7 +2009,7 @@
 "Powered by Automattic" = "由 Automattic 提供技術";
 
 /* Label within the modal dialog that appears when searching for a card reader */
-"Press the power button of your reader until you see a flashing blue light" = "Press the power button of your reader until you see a flashing blue light";
+"Press the power button of your reader until you see a flashing blue light" = "按住讀卡機的電源按鈕，直到藍燈閃爍為止";
 
 /* A label representing the amount that was previously refunded for the order. */
 "Previously Refunded" = "之前已退款";
@@ -2134,7 +2134,7 @@
 "Purchase Date" = "購買日期";
 
 /* Create Shipping Label form -> Purchase Label button */
-"Purchase Label" = "Purchase Label";
+"Purchase Label" = "購買標籤";
 
 /* Product Note navigation title
    Purchase note label in Product Settings */
@@ -2178,7 +2178,7 @@
 "Reason for refunding order" = "退還訂單費用原因";
 
 /* The title of the view containing a receipt preview */
-"Receipt" = "Receipt";
+"Receipt" = "收據";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "退費";
@@ -2499,7 +2499,7 @@
 "Shipping details" = "運送詳細資料";
 
 /* Header of the order summary section in the shipping label creation form */
-"Shipping label order summary" = "Shipping label order summary";
+"Shipping label order summary" = "郵寄標籤訂單摘要";
 
 /* VoiceOver accessibility label for the shipping notice about the order */
 "Shipping notice about the order" = "訂單的運送通知";
@@ -2537,7 +2537,7 @@
 "Show the billing details for this order." = "顯示此訂單的帳單詳細資料。";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view the items inside the shipping label package */
-"Show the items included inside this shipping label package." = "Show the items included inside this shipping label package.";
+"Show the items included inside this shipping label package." = "顯示此郵寄標籤包裹中包含的商品。";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details. */
 "Show the shipment details for this shipping label." = "顯示此郵寄標籤的貨件詳細資訊。";
@@ -3101,7 +3101,7 @@
 "Trash" = "移至垃圾桶";
 
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
-"Troubleshoot" = "Troubleshoot";
+"Troubleshoot" = "疑難排解";
 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "信任";
@@ -3174,7 +3174,7 @@
 "Unable to refresh list" = "無法重新整理清單";
 
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
-"Unable to save changes to the payment method" = "Unable to save changes to the payment method";
+"Unable to save changes to the payment method" = "無法儲存付款方式變更";
 
 /* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
 "Unable to successfully connect to %@" = "無法成功連線至 %@";
@@ -3300,14 +3300,14 @@
 "Variable product" = "變化商品";
 
 /* Text for the notice after creating the first variation. */
-"Variation created" = "Variation created";
+"Variation created" = "已建立款式";
 
 /* Title for the generate first variation screen
    Title of the Product Variations row on Product main screen for a variable product - Title that appears on top of the Product Variation List screen. */
 "Variations" = "不同型號";
 
 /* Title of the variations attributes row on Product screen */
-"Variations Attributes" = "Variations Attributes";
+"Variations Attributes" = "款式屬性";
 
 /* two factor code placeholder */
 "Verification code" = "驗證碼";
@@ -3343,7 +3343,7 @@
 "View downloadable file settings" = "查看可下載的檔案設定";
 
 /* Accessibility label for the items inside a Shipping Label package */
-"View items in this shipping label package." = "View items in this shipping label package.";
+"View items in this shipping label package." = "檢視此郵寄標籤包裹中的商品。";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "檢視先前提交的支援票證";
@@ -3398,7 +3398,7 @@
 "We can’t display your store’s analytics" = "我們無法顯示你的商店分析資料";
 
 /* The title of the Error Loading Data banner */
-"We couldn't load your data" = "We couldn't load your data";
+"We couldn't load your data" = "無法載入你的資料";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "我們稍微修改了輸入的地址。 如果內容正確，請使用建議地址，確保正確運送。";
@@ -3463,13 +3463,13 @@
 "What is Jetpack?" = "什麼是 Jetpack？";
 
 /* Shipping Labels: info title about WooCommerce Services discount */
-"What is WooCommerce Services discount?" = "What is WooCommerce Services discount?";
+"What is WooCommerce Services discount?" = "什麼是 WooCommerce 服務折扣？";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "我的網站位址是？";
 
 /* Shipping Labels: info description about WooCommerce Services discount */
-"When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices.";
+"When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "透過 WooCommerce 購買郵寄標籤可享折扣商業價。";
 
 /* An error message shown when a wpcom user provides the wrong password. */
 "Whoops, something went wrong and we couldn't log you in. Please try again!" = "糟糕，發生了點錯誤，我們無法將你登入。請再試一次！";
@@ -3487,7 +3487,7 @@
 "WooCommerce" = "WooCommerce";
 
 /* Create Shipping Label form -> WooCommerce Discount label */
-"WooCommerce Discount" = "WooCommerce Discount";
+"WooCommerce Discount" = "WooCommerce 折扣";
 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce Shipping";
@@ -3515,7 +3515,7 @@
 "Yesterday" = "昨天";
 
 /* Info notice at the bottom of the product add-ons screen */
-"You can edit product add-ons in the web dashboard." = "You can edit product add-ons in the web dashboard.";
+"You can edit product add-ons in the web dashboard." = "你可以在 Web 儀表板中編輯產品附加元件。";
 
 /* The info of the top banner on the Products tab. */
 "You can now create and manage product variations!" = "現在你可以建立和管理產品款式！";

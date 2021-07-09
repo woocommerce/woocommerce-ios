@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-06-10 15:49:57+0000 */
+/* Translation-Revision-Date: 2021-07-08 12:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -10,7 +10,7 @@
 "%1$@" = "%1$@";
 
 /* Format for each Product attribute in singular form */
-"%1$@ (%2$ld option)" = "%1$@ (%2$ld option)";
+"%1$@ (%2$ld option)" = "%1$@ (%2$ld seçenek)";
 
 /* Format for each Product attribute in plural form */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld options)";
@@ -67,16 +67,16 @@
 "%1$d business days" = "%1$d iş günü ";
 
 /* For example: `1 item` in Shipping Label package row */
-"%1$d item" = "%1$d item";
+"%1$d item" = "%1$d ürün";
 
 /* For example: `5 items` in Shipping Label package row */
-"%1$d items" = "%1$d items";
+"%1$d items" = "%1$d öğeler";
 
 /* Format for the variations detail row in singular form. Reads, `1 variation` */
-"%1$ld variation" = "%1$ld variation";
+"%1$ld variation" = "%1$ld varyasyon";
 
 /* Format for the variations detail row in plural form. Reads, `2 variations` */
-"%1$ld variations" = "%1$ld variations";
+"%1$ld variations" = "%1$ld varyasyon";
 
 /* 1 Item */
 "%@ Item" = "%@ Ürün";
@@ -94,10 +94,10 @@
 "%@ via %@" = "%2$@ üzerinden %1$@";
 
 /* For example: `1 item` in Aggregated Product List */
-"%d item" = "%d item";
+"%d item" = "%d ürün";
 
 /* For example: `5 items` in Aggregated Product List */
-"%d items" = "%d items";
+"%d items" = "%d öğeler";
 
 /* Title of the label indicating that there are multiple items to refund. */
 "%d items selected" = "%d ürün seçildi";
@@ -304,7 +304,7 @@
 
 /* Banner caption in my store when the stats will be deprecated
    Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
-"Add price to your variations to make them visible on your store" = "Add price to your variations to make them visible on your store";
+"Add price to your variations to make them visible on your store" = "Mağazanızda görünmesi için varyasyonlarınıza fiyat ekleyin";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Ürün bağlantısı ekle";
@@ -452,7 +452,7 @@
 "Attributes" = "Nitelikler";
 
 /* Primary text for the generate first variation screen */
-"Attributes added!" = "Attributes added!";
+"Attributes added!" = "Özellikler eklendi.";
 
 /* No comment provided by engineer. */
 "Authenticating" = "Doğrulanıyor";
@@ -648,7 +648,7 @@
 "Connected Stores" = "Bağlı Mağazalar";
 
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
-"Connecting reader failed" = "Connecting reader failed";
+"Connecting reader failed" = "Okuyucuya bağlanılamadı";
 
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "WordPress.com'a bağlanılıyor";
@@ -779,7 +779,7 @@
 "Customer Provided Note" = "Müşterinin Verdiği Not";
 
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
-"Customer paid a %1$@ of %2$@ for shipping" = "Customer paid a %1$@ of %2$@ for shipping";
+"Customer paid a %1$@ of %2$@ for shipping" = "Müşteri gönderim için %1$@ (%2$@) ödedi";
 
 /* Details text in the shipping label creation info screen */
 "Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Telefonunuzla evde indirimli fiyatlara gönderim etiketleri yazdırarak postane ile olan bağınızı koparın.";
@@ -1139,7 +1139,7 @@
 "Generate New Variation" = "Yeni Varyasyon Oluştur";
 
 /* Title of the action to generate the first variation */
-"Generate Variation" = "Generate Variation";
+"Generate Variation" = "Varyasyon Oluştur";
 
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "Varyasyon Oluşturma";
@@ -1293,7 +1293,7 @@
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "Site yöneticinizde, Bağlantılar > Hesap bağlantısı bölümünde yer alan Jetpack Yönetim Panelinden WordPress.com'a bağlanmak için kullandığınız e-postayı bulabilirsiniz.";
 
 /* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} Parameters: %1$@ - order number, %2$@ - store name */
-"In-Person Payment for Order #%1$@ for %2$@" = "In-Person Payment for Order #%1$@ for %2$@";
+"In-Person Payment for Order #%1$@ for %2$@" = "1$@ numaralı Sipariş (%2$@) için Şahsen Ödeme";
 
 /* Application's Inactive State */
 "Inactive" = "Etkin değil";
@@ -1459,7 +1459,7 @@
 "Loading Product" = "Ürün yükleniyor";
 
 /* Text of the loading banner in Order Detail when loaded for the first time */
-"Loading content" = "Loading content";
+"Loading content" = "İçerik yükleniyor";
 
 /* Loading tags in Product Tags screen */
 "Loading..." = "Yükleniyor...";
@@ -1552,7 +1552,7 @@
 "Mark Order Complete" = "Siparişi Tamamlanmış Olarak İşaretle";
 
 /* Create Shipping Label form -> Mark order as complete label */
-"Mark this order as complete and notify the customer" = "Mark this order as complete and notify the customer";
+"Mark this order as complete and notify the customer" = "Bu siparişi tamamlandı olarak işaretleyin ve müşteriyi bilgilendirin";
 
 /* VoiceOver accessibility hint for the Mark All Reviews as Read Action */
 "Marks Every Review as Read" = "Her Yorumu Okundu Olarak İşaretler";
@@ -1690,7 +1690,7 @@
 "No shipping classes yet" = "Henüz bir kargo sınıfı yok";
 
 /* Error state title in shipping label carrier and rates screen */
-"No shipping rates available" = "No shipping rates available";
+"No shipping rates available" = "Gönderim ücreti yok";
 
 /* Placeholder of the Product Tags row on Product main screen */
 "No tags" = "Etiket yok";
@@ -1716,7 +1716,7 @@
 "Note to customer" = "Müşteriye not";
 
 /* Info text for the generate first variation screen */
-"Now that you’ve added attributes, you can create your first variation!" = "Now that you’ve added attributes, you can create your first variation!";
+"Now that you’ve added attributes, you can create your first variation!" = "Nitelikleri eklediğinize göre ilk varyasyonunuzu oluşturabilirsiniz.";
 
 /* Alert dismissal title
    Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for reprinting - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
@@ -1753,7 +1753,7 @@
 "Only one photo can be displayed by variation" = "Varyasyon başına yalnızca bir fotoğraf görüntülenebilir";
 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
-"Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods.";
+"Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Gönderim etiketi ödeme yöntemlerini yalnızca site sahibi yönetebilir. Ödeme yöntemlerini yönetmek için lütfen %1$@ (%2$@) ile iletişime geçin. ";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Cihaz ayarlarını aç";
@@ -1921,7 +1921,7 @@
 "Placing your product in the trash..." = "Ürününüz çöp kutusuna atılıyor... ";
 
 /* Error state description in shipping label carrier and rates screen */
-"Please double check your package dimensions and weightor try using a different package in Package Details." = "Please double check your package dimensions and weightor try using a different package in Package Details.";
+"Please double check your package dimensions and weightor try using a different package in Package Details." = "Lütfen paketinizin boyutlarını ve ağırlığını bir daha kontrol edin veya Paket Ayrıntıları'ndan farklı bir paket kullanmayı deneyin.";
 
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "Lütfen bir URL girin.";
@@ -1969,7 +1969,7 @@
 "Please remove card" = "Lütfen kartı çıkarın";
 
 /* The info of the Error Loading Data banner */
-"Please try again later or reach out to us and we'll be happy to assist you!" = "Please try again later or reach out to us and we'll be happy to assist you!";
+"Please try again later or reach out to us and we'll be happy to assist you!" = "Lütfen daha sonra tekrar deneyin veya bize ulaşın, size yardımcı olmaktan memnuniyet duyarız.";
 
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "Lütfen yeniden deneyin.";
@@ -2009,7 +2009,7 @@
 "Powered by Automattic" = "Automattic tarafından desteklenmektedir";
 
 /* Label within the modal dialog that appears when searching for a card reader */
-"Press the power button of your reader until you see a flashing blue light" = "Press the power button of your reader until you see a flashing blue light";
+"Press the power button of your reader until you see a flashing blue light" = "Yanıp sönen mavi bir ışık görene kadar okuyucunuzun güç düğmesine basın";
 
 /* A label representing the amount that was previously refunded for the order. */
 "Previously Refunded" = "Daha Önce Para İadesi Yapıldı";
@@ -2134,7 +2134,7 @@
 "Purchase Date" = "Satın Alma Tarihi";
 
 /* Create Shipping Label form -> Purchase Label button */
-"Purchase Label" = "Purchase Label";
+"Purchase Label" = "Satın Alma Etiketi";
 
 /* Product Note navigation title
    Purchase note label in Product Settings */
@@ -2178,7 +2178,7 @@
 "Reason for refunding order" = "Siparişin para iadesinin nedeni";
 
 /* The title of the view containing a receipt preview */
-"Receipt" = "Receipt";
+"Receipt" = "Makbuz";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "Para iadesi";
@@ -2499,7 +2499,7 @@
 "Shipping details" = "Gönderim ayrıntıları";
 
 /* Header of the order summary section in the shipping label creation form */
-"Shipping label order summary" = "Shipping label order summary";
+"Shipping label order summary" = "Gönderim etiketi sipariş özeti";
 
 /* VoiceOver accessibility label for the shipping notice about the order */
 "Shipping notice about the order" = "Sipariş hakkında gönderi bildirimi";
@@ -2537,7 +2537,7 @@
 "Show the billing details for this order." = "Bu siparişin fatura bilgilerini göster.";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view the items inside the shipping label package */
-"Show the items included inside this shipping label package." = "Show the items included inside this shipping label package.";
+"Show the items included inside this shipping label package." = "Bu gönderi etiketi paketinde bulunan öğeleri gösterin.";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details. */
 "Show the shipment details for this shipping label." = "Bu gönderi etiketi için gönderi ayrıntılarını gösterin.";
@@ -3101,7 +3101,7 @@
 "Trash" = "Çöp Kutusu";
 
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
-"Troubleshoot" = "Troubleshoot";
+"Troubleshoot" = "Sorun giderme";
 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Güven";
@@ -3174,7 +3174,7 @@
 "Unable to refresh list" = "Liste yenilenemedi";
 
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
-"Unable to save changes to the payment method" = "Unable to save changes to the payment method";
+"Unable to save changes to the payment method" = "Ödeme yöntemindeki değişiklikler kaydedilemiyor";
 
 /* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
 "Unable to successfully connect to %@" = "%@ adlı siteye başarıyla bağlanılamıyor";
@@ -3300,14 +3300,14 @@
 "Variable product" = "Varyasyonlu ürün";
 
 /* Text for the notice after creating the first variation. */
-"Variation created" = "Variation created";
+"Variation created" = "Varyasyon oluşturuldu";
 
 /* Title for the generate first variation screen
    Title of the Product Variations row on Product main screen for a variable product - Title that appears on top of the Product Variation List screen. */
 "Variations" = "Varyasyonlar";
 
 /* Title of the variations attributes row on Product screen */
-"Variations Attributes" = "Variations Attributes";
+"Variations Attributes" = "Varyasyonların Nitelikleri";
 
 /* two factor code placeholder */
 "Verification code" = "Doğrulama kodu";
@@ -3343,7 +3343,7 @@
 "View downloadable file settings" = "İndirilebilir dosya ayarlarını görüntüleyin";
 
 /* Accessibility label for the items inside a Shipping Label package */
-"View items in this shipping label package." = "View items in this shipping label package.";
+"View items in this shipping label package." = "Bu gönderi etiketi paketindeki öğeleri görüntüleyin.";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "Daha önce verilen destek biletlerini görüntüleyin";
@@ -3398,7 +3398,7 @@
 "We can’t display your store’s analytics" = "Mağazanızın analizlerini görüntüleyemiyoruz";
 
 /* The title of the Error Loading Data banner */
-"We couldn't load your data" = "We couldn't load your data";
+"We couldn't load your data" = "Verileriniz yüklenemedi";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "Girilen adresi biraz değiştirdik. Doğruysa, teslimatın doğru yapılması için lütfen önerilen adresi kullanın.";
@@ -3463,13 +3463,13 @@
 "What is Jetpack?" = "Jetpack nedir?";
 
 /* Shipping Labels: info title about WooCommerce Services discount */
-"What is WooCommerce Services discount?" = "What is WooCommerce Services discount?";
+"What is WooCommerce Services discount?" = "WooCommerce Hizmetleri indirimi nedir?";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "Sitemin adresi ne?";
 
 /* Shipping Labels: info description about WooCommerce Services discount */
-"When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices.";
+"When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "WooCommerce ile gönderi etiketleri satın alırken indirimli ticari fiyatlara erişebilirsiniz.";
 
 /* An error message shown when a wpcom user provides the wrong password. */
 "Whoops, something went wrong and we couldn't log you in. Please try again!" = "Amanın, bir şeyler yanlış gitti ve giriş yapmanızı sağlayamadık. Lütfen tekrar deneyin!";
@@ -3487,7 +3487,7 @@
 "WooCommerce" = "WooCommerce";
 
 /* Create Shipping Label form -> WooCommerce Discount label */
-"WooCommerce Discount" = "WooCommerce Discount";
+"WooCommerce Discount" = "WooCommerce İndirimi";
 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce Shipping";
@@ -3515,7 +3515,7 @@
 "Yesterday" = "Dün";
 
 /* Info notice at the bottom of the product add-ons screen */
-"You can edit product add-ons in the web dashboard." = "You can edit product add-ons in the web dashboard.";
+"You can edit product add-ons in the web dashboard." = "Ürün eklentilerini web panosunda düzenleyebilirsiniz.";
 
 /* The info of the top banner on the Products tab. */
 "You can now create and manage product variations!" = "Artık ürün çeşitleri oluşturabilir ve yönetebilirsiniz";

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-06-30 13:50:52+0000 */
+/* Translation-Revision-Date: 2021-07-07 13:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -648,7 +648,7 @@
 "Connected Stores" = "Anslutna butiker";
 
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
-"Connecting reader failed" = "Connecting reader failed";
+"Connecting reader failed" = "Det gick inte att ansluta läsaren";
 
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "Ansluter till WordPress.com";
@@ -779,7 +779,7 @@
 "Customer Provided Note" = "Kundnotering";
 
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
-"Customer paid a %1$@ of %2$@ for shipping" = "Customer paid a %1$@ of %2$@ for shipping";
+"Customer paid a %1$@ of %2$@ for shipping" = "Kunden betalade en %1$@ på %2$@ för frakt";
 
 /* Details text in the shipping label creation info screen */
 "Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Skippa kön på postkontoret genom att skriva ut fraktetiketter till rabatterade priser hemma med din telefon!";
@@ -1139,7 +1139,7 @@
 "Generate New Variation" = "Generera ny variation";
 
 /* Title of the action to generate the first variation */
-"Generate Variation" = "Generate Variation";
+"Generate Variation" = "Generera variation";
 
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "Genererar variation";
@@ -1293,7 +1293,7 @@
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "Du kan hitta e-postadressen som du använde för att ansluta till WordPress.com i Jetpack-instrumentpanelen under Anslutningar > Kontoanslutning";
 
 /* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} Parameters: %1$@ - order number, %2$@ - store name */
-"In-Person Payment for Order #%1$@ for %2$@" = "In-Person Payment for Order #%1$@ for %2$@";
+"In-Person Payment for Order #%1$@ for %2$@" = "Personlig betalning för beställning #%1$@ för %2$@";
 
 /* Application's Inactive State */
 "Inactive" = "Inaktiv";
@@ -1690,7 +1690,7 @@
 "No shipping classes yet" = "Inga fraktklasser ännu";
 
 /* Error state title in shipping label carrier and rates screen */
-"No shipping rates available" = "No shipping rates available";
+"No shipping rates available" = "Det finns inga fraktavgifter tillgängliga";
 
 /* Placeholder of the Product Tags row on Product main screen */
 "No tags" = "Inga etiketter";
@@ -1716,7 +1716,7 @@
 "Note to customer" = "Kundmeddelande";
 
 /* Info text for the generate first variation screen */
-"Now that you’ve added attributes, you can create your first variation!" = "Now that you’ve added attributes, you can create your first variation!";
+"Now that you’ve added attributes, you can create your first variation!" = "Nu när du har lagt till attribut kan du skapa din första variation!";
 
 /* Alert dismissal title
    Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for reprinting - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
@@ -1753,7 +1753,7 @@
 "Only one photo can be displayed by variation" = "Endast ett foto kan visas per variation";
 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
-"Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods.";
+"Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Det är bara webbplatsens ägare som kan hantera betalningsmetoderna för fraktetiketter. Kontakta %1$@ (%2$@) för att hantera betalningsmetoder.";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Öppna enhetsinställningar";
@@ -1921,7 +1921,7 @@
 "Placing your product in the trash..." = "Placerar din produkt i papperskorgen …";
 
 /* Error state description in shipping label carrier and rates screen */
-"Please double check your package dimensions and weightor try using a different package in Package Details." = "Please double check your package dimensions and weightor try using a different package in Package Details.";
+"Please double check your package dimensions and weightor try using a different package in Package Details." = "Dubbelkolla måtten eller vikten på ditt paket eller prova att använda ett annat paket i Paketinformation.";
 
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "Ange en URL";
@@ -1969,7 +1969,7 @@
 "Please remove card" = "Ta bort kort";
 
 /* The info of the Error Loading Data banner */
-"Please try again later or reach out to us and we'll be happy to assist you!" = "Please try again later or reach out to us and we'll be happy to assist you!";
+"Please try again later or reach out to us and we'll be happy to assist you!" = "Försök igen senare eller kontakta oss så hjälper vi dig gärna!";
 
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "Försök igen.";
@@ -2009,7 +2009,7 @@
 "Powered by Automattic" = "Drivs av Automattic";
 
 /* Label within the modal dialog that appears when searching for a card reader */
-"Press the power button of your reader until you see a flashing blue light" = "Press the power button of your reader until you see a flashing blue light";
+"Press the power button of your reader until you see a flashing blue light" = "Tryck på knappen på din läsare tills du ser ett blinkande blått ljus";
 
 /* A label representing the amount that was previously refunded for the order. */
 "Previously Refunded" = "Tidigare återbetalt";
@@ -2499,7 +2499,7 @@
 "Shipping details" = "Leveransadress";
 
 /* Header of the order summary section in the shipping label creation form */
-"Shipping label order summary" = "Shipping label order summary";
+"Shipping label order summary" = "Beställningssammanfattning för fraktetiketter";
 
 /* VoiceOver accessibility label for the shipping notice about the order */
 "Shipping notice about the order" = "Fraktmeddelande om beställningen";
@@ -2537,7 +2537,7 @@
 "Show the billing details for this order." = "Visa faktureringsinformationen för den här ordern.";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view the items inside the shipping label package */
-"Show the items included inside this shipping label package." = "Show the items included inside this shipping label package.";
+"Show the items included inside this shipping label package." = "Visa artiklarna som ingår i detta fraktetikettpaket.";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details. */
 "Show the shipment details for this shipping label." = "Visa försändelseinformationen för den här fraktetiketten.";
@@ -3174,7 +3174,7 @@
 "Unable to refresh list" = "Kunde inte uppdatera listan";
 
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
-"Unable to save changes to the payment method" = "Unable to save changes to the payment method";
+"Unable to save changes to the payment method" = "Det gick inte att spara ändringarna av betalningsmetoden";
 
 /* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
 "Unable to successfully connect to %@" = "Det går inte att ansluta till %@";
@@ -3300,14 +3300,14 @@
 "Variable product" = "Variabel produkt";
 
 /* Text for the notice after creating the first variation. */
-"Variation created" = "Variation created";
+"Variation created" = "Variationen har skapats";
 
 /* Title for the generate first variation screen
    Title of the Product Variations row on Product main screen for a variable product - Title that appears on top of the Product Variation List screen. */
 "Variations" = "Varianter";
 
 /* Title of the variations attributes row on Product screen */
-"Variations Attributes" = "Variations Attributes";
+"Variations Attributes" = "Variationsattribut.";
 
 /* two factor code placeholder */
 "Verification code" = "Verifieringskod";
@@ -3343,7 +3343,7 @@
 "View downloadable file settings" = "Visa inställningar för nedladdningsbar fil";
 
 /* Accessibility label for the items inside a Shipping Label package */
-"View items in this shipping label package." = "View items in this shipping label package.";
+"View items in this shipping label package." = "Visa artiklar i detta fraktetikettpaket.";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "Visa tidigare inskickade supportärenden";
@@ -3463,13 +3463,13 @@
 "What is Jetpack?" = "Vad är Jetpack?";
 
 /* Shipping Labels: info title about WooCommerce Services discount */
-"What is WooCommerce Services discount?" = "What is WooCommerce Services discount?";
+"What is WooCommerce Services discount?" = "Vad innebär rabatt på WooCommerce-tjänster?";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "Vilken adress har min webbplats?";
 
 /* Shipping Labels: info description about WooCommerce Services discount */
-"When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices.";
+"When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "När du köper fraktetiketter med WooCommerce får du tillgång till rabatterade kommersiella priser.";
 
 /* An error message shown when a wpcom user provides the wrong password. */
 "Whoops, something went wrong and we couldn't log you in. Please try again!" = "Ojdå. Något blev fel. Vi lyckades inte logga in dig. Försök igen!";
@@ -3487,7 +3487,7 @@
 "WooCommerce" = "WooCommerce";
 
 /* Create Shipping Label form -> WooCommerce Discount label */
-"WooCommerce Discount" = "WooCommerce Discount";
+"WooCommerce Discount" = "WooCommerce-rabatt";
 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce Shipping";
@@ -3515,7 +3515,7 @@
 "Yesterday" = "Igår";
 
 /* Info notice at the bottom of the product add-ons screen */
-"You can edit product add-ons in the web dashboard." = "You can edit product add-ons in the web dashboard.";
+"You can edit product add-ons in the web dashboard." = "Du kan redigera produkttillägg i webbadminpanelen.";
 
 /* The info of the top banner on the Products tab. */
 "You can now create and manage product variations!" = "Du kan nu skapa och hantera produktvariationer!";

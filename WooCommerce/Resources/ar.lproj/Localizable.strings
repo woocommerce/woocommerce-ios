@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-06-09 11:54:03+0000 */
+/* Translation-Revision-Date: 2021-07-07 15:54:04+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -10,7 +10,7 @@
 "%1$@" = "%1$@";
 
 /* Format for each Product attribute in singular form */
-"%1$@ (%2$ld option)" = "%1$@ (%2$ld option)";
+"%1$@ (%2$ld option)" = "%1$@ (⁦%2$l⁩ خيار)";
 
 /* Format for each Product attribute in plural form */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld من الخيارات)";
@@ -67,16 +67,16 @@
 "%1$d business days" = "⁦%1$d⁩ من أيام العمل";
 
 /* For example: `1 item` in Shipping Label package row */
-"%1$d item" = "%1$d item";
+"%1$d item" = "⁦%1$d⁩ العنصر";
 
 /* For example: `5 items` in Shipping Label package row */
-"%1$d items" = "%1$d items";
+"%1$d items" = "⁦%1$d⁩ العناصر";
 
 /* Format for the variations detail row in singular form. Reads, `1 variation` */
-"%1$ld variation" = "%1$ld variation";
+"%1$ld variation" = "⁦%1$l⁩ مجموعة";
 
 /* Format for the variations detail row in plural form. Reads, `2 variations` */
-"%1$ld variations" = "%1$ld variations";
+"%1$ld variations" = "⁦%1$l⁩ من المجموعات";
 
 /* 1 Item */
 "%@ Item" = "%@ من العناصر";
@@ -94,10 +94,10 @@
 "%@ via %@" = "%1$@ بواسطة %2$@";
 
 /* For example: `1 item` in Aggregated Product List */
-"%d item" = "%d item";
+"%d item" = "%d العنصر";
 
 /* For example: `5 items` in Aggregated Product List */
-"%d items" = "%d items";
+"%d items" = "%d العناصر";
 
 /* Title of the label indicating that there are multiple items to refund. */
 "%d items selected" = "%d تم تحديد عناصر";
@@ -304,7 +304,7 @@
 
 /* Banner caption in my store when the stats will be deprecated
    Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
-"Add price to your variations to make them visible on your store" = "Add price to your variations to make them visible on your store";
+"Add price to your variations to make them visible on your store" = "إضافة سعر إلى مجموعاتك لجعلها مرئية على مخزنك";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "إضافة رابط المنتج";
@@ -452,7 +452,7 @@
 "Attributes" = "السمات";
 
 /* Primary text for the generate first variation screen */
-"Attributes added!" = "Attributes added!";
+"Attributes added!" = "تمت إضافة السمات!";
 
 /* No comment provided by engineer. */
 "Authenticating" = "مصادقة";
@@ -648,7 +648,7 @@
 "Connected Stores" = "المخازن التي تم الاتصال بها";
 
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
-"Connecting reader failed" = "Connecting reader failed";
+"Connecting reader failed" = "فشل الربط بالقارئ";
 
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "الاتصال بـ WordPress.com";
@@ -779,7 +779,7 @@
 "Customer Provided Note" = "الملاحظة المقدمة إلى العميل";
 
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
-"Customer paid a %1$@ of %2$@ for shipping" = "Customer paid a %1$@ of %2$@ for shipping";
+"Customer paid a %1$@ of %2$@ for shipping" = "دفع العميل %1$@ من %2$@ مقابل الشحن";
 
 /* Details text in the shipping label creation info screen */
 "Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "توقف عن الذهاب إلى مكتب البريد عن طريق طباعة ملصقات الشحن في المنزل باستخدام هاتفك بأسعار مخفضة!";
@@ -1139,7 +1139,7 @@
 "Generate New Variation" = "إنشاء مجموعة متنوعة جديدة";
 
 /* Title of the action to generate the first variation */
-"Generate Variation" = "Generate Variation";
+"Generate Variation" = "إنشاء مجموعة";
 
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "إنشاء مجموعة";
@@ -1293,7 +1293,7 @@
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "في صفحة مسؤول موقعك، يمكنك العثور على البريد الإلكتروني الذي استخدمته للاتصال بووردبريس.كوم من لوحة تحكم Jetpack أسفل الاتصالات > الاتصال بالحساب";
 
 /* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} Parameters: %1$@ - order number, %2$@ - store name */
-"In-Person Payment for Order #%1$@ for %2$@" = "In-Person Payment for Order #%1$@ for %2$@";
+"In-Person Payment for Order #%1$@ for %2$@" = "الدفع بشكل شخصي للطلب رقم %1$@ for %2$@";
 
 /* Application's Inactive State */
 "Inactive" = "غير نشط";
@@ -1459,7 +1459,7 @@
 "Loading Product" = "تحميل المنتج";
 
 /* Text of the loading banner in Order Detail when loaded for the first time */
-"Loading content" = "Loading content";
+"Loading content" = "تحميل المحتوى";
 
 /* Loading tags in Product Tags screen */
 "Loading..." = "جاري التحميل ...";
@@ -1552,7 +1552,7 @@
 "Mark Order Complete" = "وضع علامة مكتمل على الطلب";
 
 /* Create Shipping Label form -> Mark order as complete label */
-"Mark this order as complete and notify the customer" = "Mark this order as complete and notify the customer";
+"Mark this order as complete and notify the customer" = "وضع علامة على هذا الطلب على أنه مكتمل وإخطار العميل";
 
 /* VoiceOver accessibility hint for the Mark All Reviews as Read Action */
 "Marks Every Review as Read" = "يوسم كل مراجعة كمقروءة";
@@ -1690,7 +1690,7 @@
 "No shipping classes yet" = "لا توجد فئات للشحن حتى الآن";
 
 /* Error state title in shipping label carrier and rates screen */
-"No shipping rates available" = "No shipping rates available";
+"No shipping rates available" = "لا توجد أسعار شحن متاحة";
 
 /* Placeholder of the Product Tags row on Product main screen */
 "No tags" = "لا أوسمة";
@@ -1716,7 +1716,7 @@
 "Note to customer" = "ملاحظة إلى العميل";
 
 /* Info text for the generate first variation screen */
-"Now that you’ve added attributes, you can create your first variation!" = "Now that you’ve added attributes, you can create your first variation!";
+"Now that you’ve added attributes, you can create your first variation!" = "لقد قمت الآن بإضافة السمات، يمكنك إنشاء مجموعتك الأولى!";
 
 /* Alert dismissal title
    Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for reprinting - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
@@ -1753,7 +1753,7 @@
 "Only one photo can be displayed by variation" = "لا يمكن عرض سوى صورة واحدة فقط لكل مجموعة متنوعة";
 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
-"Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods.";
+"Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "يمكن لمالك الموقع فقط إدارة طرق دفع ملصقات الشحن. يرجى الاتصال بـ %1$@ (%2$@) لإدارة طرق الدفع.";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "فتح إعدادات الجهاز";
@@ -1921,7 +1921,7 @@
 "Placing your product in the trash..." = "جارٍ وضع منتجك في سلة المهملات...";
 
 /* Error state description in shipping label carrier and rates screen */
-"Please double check your package dimensions and weightor try using a different package in Package Details." = "Please double check your package dimensions and weightor try using a different package in Package Details.";
+"Please double check your package dimensions and weightor try using a different package in Package Details." = "يرجى التحقُّق مرة أخرى من أبعاد حزمتك ووزنها، أو حاول استخدام حزمة مختلفة في تفاصيل الحزمة.";
 
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "يرجى إدخال عنوان URL";
@@ -1969,7 +1969,7 @@
 "Please remove card" = "يرجى إزالة البطاقة";
 
 /* The info of the Error Loading Data banner */
-"Please try again later or reach out to us and we'll be happy to assist you!" = "Please try again later or reach out to us and we'll be happy to assist you!";
+"Please try again later or reach out to us and we'll be happy to assist you!" = "يرجى المحاولة مرة أخرى لاحقًا أو تواصل معنا وستسرنا مساعدتك!";
 
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "يُرجى المحاولة مرة أخرى.";
@@ -2009,7 +2009,7 @@
 "Powered by Automattic" = "مدعوم من Automattic";
 
 /* Label within the modal dialog that appears when searching for a card reader */
-"Press the power button of your reader until you see a flashing blue light" = "Press the power button of your reader until you see a flashing blue light";
+"Press the power button of your reader until you see a flashing blue light" = "اضغط على زر الطاقة الخاص بالقارئ لديك حتى ترى ضوءًا أزرق وامضًا";
 
 /* A label representing the amount that was previously refunded for the order. */
 "Previously Refunded" = "تم استرداد المبلغ سابقًا";
@@ -2134,7 +2134,7 @@
 "Purchase Date" = "تاريخ الشراء";
 
 /* Create Shipping Label form -> Purchase Label button */
-"Purchase Label" = "Purchase Label";
+"Purchase Label" = "ملصق الشراء";
 
 /* Product Note navigation title
    Purchase note label in Product Settings */
@@ -2178,7 +2178,7 @@
 "Reason for refunding order" = "سبب طلب استرداد الأموال";
 
 /* The title of the view containing a receipt preview */
-"Receipt" = "Receipt";
+"Receipt" = "الاستلام";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "إعادة المبلغ";
@@ -2499,7 +2499,7 @@
 "Shipping details" = "تفاصيل الشحن";
 
 /* Header of the order summary section in the shipping label creation form */
-"Shipping label order summary" = "Shipping label order summary";
+"Shipping label order summary" = "ملخص طلبات ملصق الشحن";
 
 /* VoiceOver accessibility label for the shipping notice about the order */
 "Shipping notice about the order" = "إشعار الشحن حول الطلب";
@@ -2537,7 +2537,7 @@
 "Show the billing details for this order." = "اعرض تفاصيل الفوترة لهذا الطلب.";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view the items inside the shipping label package */
-"Show the items included inside this shipping label package." = "Show the items included inside this shipping label package.";
+"Show the items included inside this shipping label package." = "أظهر العناصر المُضمَّنة داخل حزمة ملصق الشحن هذه.";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details. */
 "Show the shipment details for this shipping label." = "اعرض تفاصيل الشحنة لبطاقة الشحن هذه.";
@@ -3101,7 +3101,7 @@
 "Trash" = "سلة المهملات";
 
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
-"Troubleshoot" = "Troubleshoot";
+"Troubleshoot" = "حل المشكلات";
 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "الثقة";
@@ -3174,7 +3174,7 @@
 "Unable to refresh list" = "يتعذر تحديث القائمة";
 
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
-"Unable to save changes to the payment method" = "Unable to save changes to the payment method";
+"Unable to save changes to the payment method" = "يتعذر حفظ التغييرات على طريقة الدفع";
 
 /* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
 "Unable to successfully connect to %@" = "تعذر الاتصال بـ %@ بنجاح";
@@ -3300,14 +3300,14 @@
 "Variable product" = "منتج متعدد الأنواع";
 
 /* Text for the notice after creating the first variation. */
-"Variation created" = "Variation created";
+"Variation created" = "تم إنشاء مجموعة";
 
 /* Title for the generate first variation screen
    Title of the Product Variations row on Product main screen for a variable product - Title that appears on top of the Product Variation List screen. */
 "Variations" = "التباينات";
 
 /* Title of the variations attributes row on Product screen */
-"Variations Attributes" = "Variations Attributes";
+"Variations Attributes" = "سمات المجموعة";
 
 /* two factor code placeholder */
 "Verification code" = "رمز التحقق";
@@ -3343,7 +3343,7 @@
 "View downloadable file settings" = "عرض إعدادات الملف القابلة للتنزيل";
 
 /* Accessibility label for the items inside a Shipping Label package */
-"View items in this shipping label package." = "View items in this shipping label package.";
+"View items in this shipping label package." = "اعرض العناصر الموجودة في حزمة ملصق الشحن هذه.";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "عرض تذاكر الدعم التي تم إرسالها مسبقًا";
@@ -3398,7 +3398,7 @@
 "We can’t display your store’s analytics" = "يتعذر علينا عرض تحليلات مخزنك";
 
 /* The title of the Error Loading Data banner */
-"We couldn't load your data" = "We couldn't load your data";
+"We couldn't load your data" = "تعذَّر علينا تحميل بياناتك";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "لقد أجرينا تعديلاً طفيفًا على العنوان الذي تم إدخاله. إذا كان صحيحًا، فيرجى استخدام العنوان المقترح لضمان التوصيل الدقيق.";
@@ -3463,13 +3463,13 @@
 "What is Jetpack?" = "ما المقصود بـ Jetpack؟";
 
 /* Shipping Labels: info title about WooCommerce Services discount */
-"What is WooCommerce Services discount?" = "What is WooCommerce Services discount?";
+"What is WooCommerce Services discount?" = "ما المقصود بخصم خدمات WooCommerce؟";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "ما عنوان الموقع الخاص بي؟";
 
 /* Shipping Labels: info description about WooCommerce Services discount */
-"When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices.";
+"When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "عند شراء ملصقات شحن باستخدام WooCommerce، يمكنك الوصول إلى أسعار تجارية مُخفضة.";
 
 /* An error message shown when a wpcom user provides the wrong password. */
 "Whoops, something went wrong and we couldn't log you in. Please try again!" = "عذرًا، حدث خطأ ما وتعذر عليك تسجيل الدخول. يرجى المحاولة مرة أخرى!";
@@ -3487,7 +3487,7 @@
 "WooCommerce" = "WooCommerce";
 
 /* Create Shipping Label form -> WooCommerce Discount label */
-"WooCommerce Discount" = "WooCommerce Discount";
+"WooCommerce Discount" = "خصم WooCommerce";
 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "الشحن عبر WooCommerce";
@@ -3515,7 +3515,7 @@
 "Yesterday" = "أمس";
 
 /* Info notice at the bottom of the product add-ons screen */
-"You can edit product add-ons in the web dashboard." = "You can edit product add-ons in the web dashboard.";
+"You can edit product add-ons in the web dashboard." = "يمكنك تحرير وظائف المنتج الإضافية في لوحة تحكم الويب.";
 
 /* The info of the top banner on the Products tab. */
 "You can now create and manage product variations!" = "يمكنك الآن إنشاء أنواع المنتجات وإدارتها!";

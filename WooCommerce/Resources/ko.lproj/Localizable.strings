@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-06-11 15:45:38+0000 */
+/* Translation-Revision-Date: 2021-07-07 11:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -10,7 +10,7 @@
 "%1$@" = "%1$@";
 
 /* Format for each Product attribute in singular form */
-"%1$@ (%2$ld option)" = "%1$@ (%2$ld option)";
+"%1$@ (%2$ld option)" = "%1$@(%2$l개 옵션)";
 
 /* Format for each Product attribute in plural form */
 "%1$@ (%2$ld options)" = "%1$@(옵션 %2$ld개)";
@@ -67,16 +67,16 @@
 "%1$d business days" = "%1$d영업일";
 
 /* For example: `1 item` in Shipping Label package row */
-"%1$d item" = "%1$d item";
+"%1$d item" = "%1$d개 아이템";
 
 /* For example: `5 items` in Shipping Label package row */
-"%1$d items" = "%1$d items";
+"%1$d items" = "%1$d개 아이템";
 
 /* Format for the variations detail row in singular form. Reads, `1 variation` */
-"%1$ld variation" = "%1$ld variation";
+"%1$ld variation" = "%1$l개 변형";
 
 /* Format for the variations detail row in plural form. Reads, `2 variations` */
-"%1$ld variations" = "%1$ld variations";
+"%1$ld variations" = "%1$l개 변형";
 
 /* 1 Item */
 "%@ Item" = "%@개 항목";
@@ -94,10 +94,10 @@
 "%@ via %@" = "%2$@을(를) 통한 %1$@";
 
 /* For example: `1 item` in Aggregated Product List */
-"%d item" = "%d item";
+"%d item" = "%d개 아이템";
 
 /* For example: `5 items` in Aggregated Product List */
-"%d items" = "%d items";
+"%d items" = "%d개 아이템";
 
 /* Title of the label indicating that there are multiple items to refund. */
 "%d items selected" = "%d 아이템 선택됨";
@@ -304,7 +304,7 @@
 
 /* Banner caption in my store when the stats will be deprecated
    Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
-"Add price to your variations to make them visible on your store" = "Add price to your variations to make them visible on your store";
+"Add price to your variations to make them visible on your store" = "변형이 스토어에 표시되도록 가격 추가";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "제품 링크 추가";
@@ -452,7 +452,7 @@
 "Attributes" = "속성";
 
 /* Primary text for the generate first variation screen */
-"Attributes added!" = "Attributes added!";
+"Attributes added!" = "속성이 추가되었습니다!";
 
 /* No comment provided by engineer. */
 "Authenticating" = "인증하기";
@@ -648,7 +648,7 @@
 "Connected Stores" = "연결된 스토어";
 
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
-"Connecting reader failed" = "Connecting reader failed";
+"Connecting reader failed" = "리더를 연결하지 못했음";
 
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "워드프레스닷컴에 접속 중입니다";
@@ -779,7 +779,7 @@
 "Customer Provided Note" = "고객이 남긴 메모";
 
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
-"Customer paid a %1$@ of %2$@ for shipping" = "Customer paid a %1$@ of %2$@ for shipping";
+"Customer paid a %1$@ of %2$@ for shipping" = "배송에 대해 고객이 결제한 %1$@\/%2$@";
 
 /* Details text in the shipping label creation info screen */
 "Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "집에서 휴대폰으로 배송 레이블을 할인된 요금으로 인쇄하여 우체국에 가는 시간을 줄이세요!";
@@ -1139,7 +1139,7 @@
 "Generate New Variation" = "새 변형 생성";
 
 /* Title of the action to generate the first variation */
-"Generate Variation" = "Generate Variation";
+"Generate Variation" = "변형 생성";
 
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "변형 생성 중";
@@ -1293,7 +1293,7 @@
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "사이트 관리자의 연결 > 계정 연결 아래 Jetpack 대시보드에서 워드프레스닷컴에 연결하는 데 사용한 이메일을 찾을 수 있습니다.";
 
 /* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} Parameters: %1$@ - order number, %2$@ - store name */
-"In-Person Payment for Order #%1$@ for %2$@" = "In-Person Payment for Order #%1$@ for %2$@";
+"In-Person Payment for Order #%1$@ for %2$@" = "%2$@에 대한 주문 #%1$@의 대면 결제";
 
 /* Application's Inactive State */
 "Inactive" = "비활성";
@@ -1459,7 +1459,7 @@
 "Loading Product" = "제품 로드 중";
 
 /* Text of the loading banner in Order Detail when loaded for the first time */
-"Loading content" = "Loading content";
+"Loading content" = "콘텐츠 로드 중";
 
 /* Loading tags in Product Tags screen */
 "Loading..." = "로딩 중...";
@@ -1552,7 +1552,7 @@
 "Mark Order Complete" = "주문을 완료로 표시";
 
 /* Create Shipping Label form -> Mark order as complete label */
-"Mark this order as complete and notify the customer" = "Mark this order as complete and notify the customer";
+"Mark this order as complete and notify the customer" = "이 주문을 완료로 표시하고 고객에게 알립니다.";
 
 /* VoiceOver accessibility hint for the Mark All Reviews as Read Action */
 "Marks Every Review as Read" = "모든 리뷰를 읽음으로 표시";
@@ -1690,7 +1690,7 @@
 "No shipping classes yet" = "아직 배송 클래스가 없음";
 
 /* Error state title in shipping label carrier and rates screen */
-"No shipping rates available" = "No shipping rates available";
+"No shipping rates available" = "사용 가능한 배송비 없음";
 
 /* Placeholder of the Product Tags row on Product main screen */
 "No tags" = "태그 없음";
@@ -1716,7 +1716,7 @@
 "Note to customer" = "고객에게 남길 메모";
 
 /* Info text for the generate first variation screen */
-"Now that you’ve added attributes, you can create your first variation!" = "Now that you’ve added attributes, you can create your first variation!";
+"Now that you’ve added attributes, you can create your first variation!" = "이제 속성을 추가했으니 첫 번째 변형을 만드실 수 있습니다!";
 
 /* Alert dismissal title
    Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for reprinting - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
@@ -1753,7 +1753,7 @@
 "Only one photo can be displayed by variation" = "변형당 하나의 사진만 표시할 수 있습니다.";
 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
-"Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods.";
+"Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "사이트 소유자만 배송 레이블 결제 수단을 관리할 수 있습니다. 결제 수단 관리는 %1$@(%2$@)에게 문의하세요.";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "기기 설정 열기";
@@ -1921,7 +1921,7 @@
 "Placing your product in the trash..." = "제품을 휴지통에 버리는 중";
 
 /* Error state description in shipping label carrier and rates screen */
-"Please double check your package dimensions and weightor try using a different package in Package Details." = "Please double check your package dimensions and weightor try using a different package in Package Details.";
+"Please double check your package dimensions and weightor try using a different package in Package Details." = "패키지 규격과 무게를 다시 확인하거나 패키지 상세 정보의 다른 패키지를 사용해 보세요.";
 
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "URL을 입력하세요.";
@@ -1969,7 +1969,7 @@
 "Please remove card" = "카드를 제거하세요";
 
 /* The info of the Error Loading Data banner */
-"Please try again later or reach out to us and we'll be happy to assist you!" = "Please try again later or reach out to us and we'll be happy to assist you!";
+"Please try again later or reach out to us and we'll be happy to assist you!" = "나중에 다시 시도해 보세요. 또는 당사에 연락하면 기꺼이 도와드리겠습니다!";
 
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "다시 시도하세요.";
@@ -2009,7 +2009,7 @@
 "Powered by Automattic" = "Automattic 제공";
 
 /* Label within the modal dialog that appears when searching for a card reader */
-"Press the power button of your reader until you see a flashing blue light" = "Press the power button of your reader until you see a flashing blue light";
+"Press the power button of your reader until you see a flashing blue light" = "파란불이 깜박일 때까지 리더의 전원 버튼 누르기";
 
 /* A label representing the amount that was previously refunded for the order. */
 "Previously Refunded" = "이전에 환불됨";
@@ -2134,7 +2134,7 @@
 "Purchase Date" = "구매 날짜";
 
 /* Create Shipping Label form -> Purchase Label button */
-"Purchase Label" = "Purchase Label";
+"Purchase Label" = "레이블 구매";
 
 /* Product Note navigation title
    Purchase note label in Product Settings */
@@ -2178,7 +2178,7 @@
 "Reason for refunding order" = "주문 환불 사유";
 
 /* The title of the view containing a receipt preview */
-"Receipt" = "Receipt";
+"Receipt" = "영수증";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "환불";
@@ -2499,7 +2499,7 @@
 "Shipping details" = "배송 상세 내역";
 
 /* Header of the order summary section in the shipping label creation form */
-"Shipping label order summary" = "Shipping label order summary";
+"Shipping label order summary" = "배송 레이블 주문 요약";
 
 /* VoiceOver accessibility label for the shipping notice about the order */
 "Shipping notice about the order" = "주문 관련 배송 알림";
@@ -2537,7 +2537,7 @@
 "Show the billing details for this order." = "이 주문에 대한 청구 상세 내역을 표시합니다.";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view the items inside the shipping label package */
-"Show the items included inside this shipping label package." = "Show the items included inside this shipping label package.";
+"Show the items included inside this shipping label package." = "이 배송 레이블 패키지 안에 포함된 아이템을 표시하세요.";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details. */
 "Show the shipment details for this shipping label." = "이 배송 레이블에 대한 배송 상세 정보를 표시하세요.";
@@ -3101,7 +3101,7 @@
 "Trash" = "휴지통";
 
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
-"Troubleshoot" = "Troubleshoot";
+"Troubleshoot" = "문제 해결";
 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "신뢰함";
@@ -3174,7 +3174,7 @@
 "Unable to refresh list" = "목록을 새로 고칠 수 없음";
 
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
-"Unable to save changes to the payment method" = "Unable to save changes to the payment method";
+"Unable to save changes to the payment method" = "변경 사항을 지급 방법에 저장할 수 없음";
 
 /* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
 "Unable to successfully connect to %@" = "%@에 연결할 수 없습니다.";
@@ -3300,14 +3300,14 @@
 "Variable product" = "옵션 상품";
 
 /* Text for the notice after creating the first variation. */
-"Variation created" = "Variation created";
+"Variation created" = "변형 생성됨";
 
 /* Title for the generate first variation screen
    Title of the Product Variations row on Product main screen for a variable product - Title that appears on top of the Product Variation List screen. */
 "Variations" = "변형";
 
 /* Title of the variations attributes row on Product screen */
-"Variations Attributes" = "Variations Attributes";
+"Variations Attributes" = "변형 속성";
 
 /* two factor code placeholder */
 "Verification code" = "확인 코드";
@@ -3343,7 +3343,7 @@
 "View downloadable file settings" = "다운로드 가능한 파일 설정 보기";
 
 /* Accessibility label for the items inside a Shipping Label package */
-"View items in this shipping label package." = "View items in this shipping label package.";
+"View items in this shipping label package." = "이 배송 레이블 패키지의 아이템을 보세요.";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "이전에 제출한 지원 티켓 보기";
@@ -3398,7 +3398,7 @@
 "We can’t display your store’s analytics" = "스토어 분석을 표시할 수 없습니다.";
 
 /* The title of the Error Loading Data banner */
-"We couldn't load your data" = "We couldn't load your data";
+"We couldn't load your data" = "데이터를 로드할 수 없음";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "입력된 주소를 약간 수정했습니다. 제안된 주소가 올바르면 정확한 배송 확인에 사용하세요.";
@@ -3463,13 +3463,13 @@
 "What is Jetpack?" = "Jetpack이란 무엇인가요?";
 
 /* Shipping Labels: info title about WooCommerce Services discount */
-"What is WooCommerce Services discount?" = "What is WooCommerce Services discount?";
+"What is WooCommerce Services discount?" = "WooCommerce 서비스 할인이란?";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "내 사이트 주소는 무엇인가요?";
 
 /* Shipping Labels: info description about WooCommerce Services discount */
-"When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices.";
+"When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "WooCommerce를 통해 배송 레이블을 구매하면 할인된 시중 가격을 이용하실 수 있습니다.";
 
 /* An error message shown when a wpcom user provides the wrong password. */
 "Whoops, something went wrong and we couldn't log you in. Please try again!" = "문제가 발생하여 로그인할 수 없습니다. 다시 시도하세요.";
@@ -3487,7 +3487,7 @@
 "WooCommerce" = "WooCommerce";
 
 /* Create Shipping Label form -> WooCommerce Discount label */
-"WooCommerce Discount" = "WooCommerce Discount";
+"WooCommerce Discount" = "WooCommerce 할인";
 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce 배송";
@@ -3515,7 +3515,7 @@
 "Yesterday" = "어제";
 
 /* Info notice at the bottom of the product add-ons screen */
-"You can edit product add-ons in the web dashboard." = "You can edit product add-ons in the web dashboard.";
+"You can edit product add-ons in the web dashboard." = "웹 대시보드에서 상품 애드온을 편집하실 수 있습니다.";
 
 /* The info of the top banner on the Products tab. */
 "You can now create and manage product variations!" = "이제 제품 변형을 만들고 관리할 수 있습니다.";

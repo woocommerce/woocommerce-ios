@@ -60,7 +60,7 @@ extension DeprecatedDashboardStatsViewController: DashboardUI {
     }
 
     func remindStatsUpgradeLater() {}
-    func reloadData(completion: @escaping () -> Void) {}
+    func reloadData(forced: Bool, completion: @escaping () -> Void) {}
 }
 
 // MARK: Constants

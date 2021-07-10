@@ -210,6 +210,21 @@ public enum WooAnalyticsStat: String {
     case shipmentTrackingMenuAction = "shipment_tracking_menu_action"
     case shippingLabelsAPIRequest = "shipping_label_api_request"
 
+    // MARK: Shipping Labels Creation Events
+    //
+    case shippingLabelPurchaseFlow = "shipping_label_purchase_flow"
+    case shippingLabelOrderFulfillSucceeded = "shipping_label_order_fulfill_succeeded"
+    case shippingLabelOrderFulfillFailed = "shipping_label_order_fulfill_failed"
+    case shippingLabelDiscountInfoButtonTapped = "shipping_label_discount_info_button_tapped"
+    case shippingLabelEditAddressOpenMapButtonTapped = "shipping_label_edit_address_open_map_button_tapped"
+    case shippingLabelEditAddressDoneButtonTapped = "shipping_label_edit_address_done_button_tapped"
+    case shippingLabelEditAddressUseAddressAsIsButtonTapped = "shipping_label_edit_address_use_address_as_is_button_tapped"
+    case shippingLabelEditAddressContactCustomerButtonTapped = "shipping_label_edit_address_contact_customer_button_tapped"
+    case shippingLabelAddressSuggestionsUseSelectedAddressButtonTapped = "shipping_label_address_suggestions_use_selected_address_button_tapped"
+    case shippingLabelAddressSuggestionsEditSelectedAddressButtonTapped = "shipping_label_address_suggestions_edit_selected_address_button_tapped"
+    case shippingLabelAddressValidationFailed = "shipping_label_address_validation_failed"
+    case shippingLabelAddressValidationSucceeded = "shipping_label_address_validation_succeeded"
+
     // MARK: Receipt Events
     //
     case receiptViewTapped                      = "receipt_view_tapped"

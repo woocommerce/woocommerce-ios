@@ -42,13 +42,21 @@ final class ShippingLabelSuggestedAddressViewController: UIViewController {
         }
     }
 
+    private(set) var countries: [Country]
+
     /// Init
     ///
-    init(siteID: Int64, type: ShipType, address: ShippingLabelAddress?, suggestedAddress: ShippingLabelAddress?, completion: @escaping Completion) {
+    init(siteID: Int64,
+         type: ShipType,
+         address: ShippingLabelAddress?,
+         suggestedAddress: ShippingLabelAddress?,
+         countries: [Country],
+         completion: @escaping Completion) {
         self.siteID = siteID
         self.type = type
         self.address = address
         self.suggestedAddress = suggestedAddress
+        self.countries = countries
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
@@ -137,9 +145,11 @@ private extension ShippingLabelSuggestedAddressViewController {
     @objc func didTapUseAddressButton() {
         switch selectedAddress {
         case .entered:
+            ServiceLocator.analytics.track(.shippingLabelAddressSuggestionsUseSelectedAddressButtonTapped, withProperties: ["type": "original"])
             onCompletion(address)
             navigationController?.popViewController(animated: true)
         case .suggested:
+            ServiceLocator.analytics.track(.shippingLabelAddressSuggestionsUseSelectedAddressButtonTapped, withProperties: ["type": "suggested"])
             onCompletion(suggestedAddress)
             navigationController?.popViewController(animated: true)
         }
@@ -148,8 +158,10 @@ private extension ShippingLabelSuggestedAddressViewController {
     @objc func didTapEditAddressButton() {
         switch selectedAddress {
         case .entered:
+            ServiceLocator.analytics.track(.shippingLabelAddressSuggestionsEditSelectedAddressButtonTapped, withProperties: ["type": "original"])
             displayEditAddressFormVC(address: address, type: type)
         case .suggested:
+            ServiceLocator.analytics.track(.shippingLabelAddressSuggestionsEditSelectedAddressButtonTapped, withProperties: ["type": "suggested"])
             displayEditAddressFormVC(address: suggestedAddress, type: type)
         }
 
@@ -161,6 +173,7 @@ private extension ShippingLabelSuggestedAddressViewController {
             type: type,
             address: address,
             validationError: nil,
+            countries: countries,
             completion: { [weak self] (newShippingLabelAddress) in
                 guard let self = self else { return }
                 self.onCompletion(newShippingLabelAddress)

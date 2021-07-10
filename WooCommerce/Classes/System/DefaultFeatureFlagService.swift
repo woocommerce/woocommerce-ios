@@ -8,12 +8,14 @@ struct DefaultFeatureFlagService: FeatureFlagService {
         case .largeTitles:
             return true
         case .shippingLabelsM2M3:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .shippingLabelsM4:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .addOnsI1:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .sitePlugins:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .cardPresentKnownReader:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

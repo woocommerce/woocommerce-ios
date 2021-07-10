@@ -768,6 +768,31 @@ platform :ios do
   end
 end
 
+  def fastlane_directory()
+    File.expand_path File.dirname(__FILE__)
+  end
+
+  def derived_data_directory()
+    File.join(fastlane_directory, "DerivedData")
+  end
+
+  def screenshots_directory()
+    File.join(fastlane_directory, "screenshots")
+  end
+
+  def screenshot_devices()
+    [
+      "iPhone 11 Pro Max",
+      "iPhone 8 Plus",
+      "iPad Pro (12.9-inch) (2nd generation)",
+      "iPad Pro (12.9-inch) (3rd generation)",
+    ]
+  end
+
+  def simulator_version()
+    return '14.4'
+  end
+
 ########################################################################
 # Test Lanes
 ########################################################################

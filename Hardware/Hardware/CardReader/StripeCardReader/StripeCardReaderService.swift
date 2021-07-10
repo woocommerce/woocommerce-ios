@@ -153,14 +153,14 @@ extension StripeCardReaderService: CardReaderService {
                 // Horrible, terrible workaround.
                 // And yet, it is the classic "dispatch to the next run cycle".
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [discoveryLock] in
-                    // When we're done with the completion, we let go of the discovery lock
-                    defer { discoveryLock.unlock() }
                     guard let error = error else {
                         self?.switchStatusToIdle()
+                        discoveryLock.unlock()
                         return promise(.success(()))
                     }
 
                     self?.internalError(error)
+                    discoveryLock.unlock()
                     promise(.failure(error))
                 }
             }

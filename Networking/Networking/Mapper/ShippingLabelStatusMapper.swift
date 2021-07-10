@@ -15,9 +15,9 @@ struct ShippingLabelStatusMapper: Mapper {
     ///
     let orderID: Int64
 
-    /// (Attempts) to convert a dictionary into [ShippingLabel].
+    /// (Attempts) to convert a dictionary into `ShippingLabelStatusPollingResponse`.
     ///
-    func map(response: Data) throws -> [ShippingLabel] {
+    func map(response: Data) throws -> [ShippingLabelStatusPollingResponse] {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .millisecondsSince1970
         decoder.userInfo = [
@@ -46,7 +46,7 @@ private struct ShippingLabelStatusResponse: Decodable {
 /// `Check Shipping Labels Status` endpoint returns the shipping label purchases in the `data.labels` key.
 ///
 private struct ShippingLabelStatusEnvelope: Decodable {
-    let labels: [ShippingLabel]
+    let labels: [ShippingLabelStatusPollingResponse]
 
     private enum CodingKeys: String, CodingKey {
         case labels

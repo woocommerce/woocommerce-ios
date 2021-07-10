@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a Shipment Tracking Entity (from the WC Shipment Tracking extension).
 ///
-public struct ShipmentTracking: Decodable, GeneratedFakeable {
+public struct ShipmentTracking: Decodable, GeneratedFakeable, GeneratedCopiable {
 
     /// Site Identifier.
     ///

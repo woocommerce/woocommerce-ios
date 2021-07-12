@@ -333,7 +333,7 @@ private extension ProductsViewController {
     func configureTableView() {
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToAllEdges(tableView)
+        view.pinSubviewToSafeArea(tableView)
 
         tableView.dataSource = self
         tableView.delegate = self

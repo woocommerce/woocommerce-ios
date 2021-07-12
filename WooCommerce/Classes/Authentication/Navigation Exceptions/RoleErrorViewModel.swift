@@ -2,18 +2,11 @@ import Foundation
 import UIKit
 
 final class RoleErrorViewModel {
-    /// The name of the user on the store.
-    private(set) var nameText: String
+    /// Provides the content for title label.
+    private(set) var titleText: String
 
-    /// Assigned roles text for the user.
-    private var roles: [String] = [] {
-        didSet {
-            roleText = humanizedRolesText(from: roles)
-        }
-    }
-
-    /// Presentable version of the user's roles.
-    private(set) var roleText: String = ""
+    /// Provides the content for subtitle label.
+    private(set) var subtitleText: String = ""
 
     /// An illustration accompanying the error.
     /// This is intended as a computed property to adjust to runtime color appearance changes.
@@ -45,12 +38,9 @@ final class RoleErrorViewModel {
 
     // MARK: Lifecycle
 
-    init(displayName: String, roles: [String]) {
-        self.nameText = displayName
-        self.roles = roles
-
-        // Note: assignment during initialization will not trigger didSet.
-        roleText = humanizedRolesText(from: roles)
+    init(title: String, subtitle: String) {
+        self.titleText = title
+        self.subtitleText = subtitle
     }
 
     func didTapPrimaryButton() {
@@ -63,19 +53,6 @@ final class RoleErrorViewModel {
 
     func didTapAuxiliaryButton() {
         output?.displayWebContent(for: linkDestinationURL)
-    }
-
-    // MARK: Private Helpers
-
-    /// try to "humanize" the roles. e.g., "shop_manager" to "Shop Manager".
-    /// given multiple roles, it will all be joined with a comma separator.
-    private func humanizedRolesText(from roles: [String]) -> String {
-        return roles.map {
-            guard $0.contains("_") else {
-                return $0.capitalized
-            }
-            return $0.components(separatedBy: "_").map { $0.capitalized }.joined(separator: " ")
-        }.joined(separator: ", ")
     }
 }
 

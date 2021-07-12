@@ -1429,6 +1429,10 @@ private extension OrderDetailsDataSource {
             return false
         }
 
+        guard let totalAmount = currencyFormatter.convertToDecimal(from: order.total), totalAmount.decimalValue > 0 else {
+            return false
+        }
+
         // If there is a discrepancy between the orderTotal and the remaining amount to collect, it is not eligible
         // This is a temporary solution that will exclude, for example:
         // * orders that have been partially refunded.

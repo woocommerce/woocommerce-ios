@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+7.2
+-----
+- [*] Updated success notice message for Order Fulfillment [https://github.com/woocommerce/woocommerce-ios/pull/4589]
+
 7.1
 -----
 - [***] Merchants from US can create shipping labels for physical orders from the app. The feature supports for now only orders where the shipping address is in the US. [https://github.com/woocommerce/woocommerce-ios/pull/4578]

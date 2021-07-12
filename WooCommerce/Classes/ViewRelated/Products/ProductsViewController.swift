@@ -544,15 +544,15 @@ private extension ProductsViewController {
     ///
     func reloadTableAndView() {
         showOrHideToolBar()
-        showOrHideOverlay()
+        addOrRemoveOverlay()
         tableView.reloadData()
     }
 
-    /// Show or hide the overlay based on number of products
-    /// If there is 0 products, overlay appears
-    /// if there is 1 or more products, toolbar will be hidden
+    /// Add or remove the overlay based on number of products
+    /// If there is 0 products, overlay will be added
+    /// if there is 1 or more products, toolbar will be removed
     ///
-    func showOrHideOverlay() {
+    func addOrRemoveOverlay() {
         guard isEmpty else {
             removeAllOverlays()
             return

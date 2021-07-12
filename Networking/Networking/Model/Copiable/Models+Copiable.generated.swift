@@ -682,6 +682,36 @@ extension ProductVariation {
     }
 }
 
+extension ShipmentTracking {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        orderID: CopiableProp<Int64> = .copy,
+        trackingID: CopiableProp<String> = .copy,
+        trackingNumber: CopiableProp<String> = .copy,
+        trackingProvider: NullableCopiableProp<String> = .copy,
+        trackingURL: NullableCopiableProp<String> = .copy,
+        dateShipped: NullableCopiableProp<Date> = .copy
+    ) -> ShipmentTracking {
+        let siteID = siteID ?? self.siteID
+        let orderID = orderID ?? self.orderID
+        let trackingID = trackingID ?? self.trackingID
+        let trackingNumber = trackingNumber ?? self.trackingNumber
+        let trackingProvider = trackingProvider ?? self.trackingProvider
+        let trackingURL = trackingURL ?? self.trackingURL
+        let dateShipped = dateShipped ?? self.dateShipped
+
+        return ShipmentTracking(
+            siteID: siteID,
+            orderID: orderID,
+            trackingID: trackingID,
+            trackingNumber: trackingNumber,
+            trackingProvider: trackingProvider,
+            trackingURL: trackingURL,
+            dateShipped: dateShipped
+        )
+    }
+}
+
 extension Refund {
     public func copy(
         refundID: CopiableProp<Int64> = .copy,

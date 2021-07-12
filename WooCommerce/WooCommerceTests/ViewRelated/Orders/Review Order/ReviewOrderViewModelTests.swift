@@ -8,7 +8,7 @@ import protocol Storage.StorageManagerType
 
 class ReviewOrderViewModelTests: XCTestCase {
 
-    private let orderID: Int64 = 543
+    private let orderID: Int64 = 396
     private let productID: Int64 = 1_00
     private let siteID: Int64 = 123
 
@@ -247,6 +247,139 @@ class ReviewOrderViewModelTests: XCTestCase {
         })
         XCTAssertNotNil(customerAddressRow)
     }
+
+    func test_tracking_section_is_not_shown_when_there_is_nonrefunded_shipping_labels() {
+        // Given
+        let shippingLabel = ShippingLabel.fake().copy(siteID: siteID, orderID: orderID, refund: nil)
+        insertShippingLabel(shippingLabel)
+        let item = OrderItem.fake().copy(productID: productID)
+        let order = Order.fake().copy(siteID: siteID, orderID: orderID, status: .processing, items: [item], shippingAddress: Address.fake())
+        let product = Product().copy(productID: productID, virtual: false)
+
+        // When
+        let viewModel = ReviewOrderViewModel(order: order, products: [product], showAddOns: false, storageManager: storageManager)
+        viewModel.configureResultsControllers {}
+        viewModel.syncTrackingsHidingAddButtonIfNecessary {}
+
+        // Then
+        XCTAssertNil(viewModel.sections.first(where: { $0.category == .tracking }))
+    }
+
+    func test_add_tracking_is_shown_when_there_is_no_nonrefunded_shipping_labels_and_tracking_is_reachable() {
+        // Given
+        let shippingLabel = ShippingLabel.fake().copy(siteID: siteID, orderID: orderID, refund: ShippingLabelRefund.fake())
+        insertShippingLabel(shippingLabel)
+        let item = OrderItem.fake().copy(productID: productID)
+        let order = Order.fake().copy(siteID: siteID, orderID: orderID, status: .processing, items: [item], shippingAddress: Address.fake())
+        let product = Product().copy(productID: productID, virtual: false)
+        let stores = MockShipmentActionStoresManager(syncSuccessfully: true)
+
+        // When
+        let viewModel = ReviewOrderViewModel(order: order, products: [product], showAddOns: false, stores: stores, storageManager: storageManager)
+        viewModel.configureResultsControllers {}
+        viewModel.syncTrackingsHidingAddButtonIfNecessary {}
+
+        // Then
+        let trackingSection = viewModel.sections.first(where: { $0.category == .tracking })
+        XCTAssertNotNil(trackingSection)
+        let addTrackingRow = trackingSection?.rows.first(where: {
+            if case .trackingAdd = $0 {
+                return true
+            }
+            return false
+        })
+        XCTAssertNotNil(addTrackingRow)
+    }
+
+    func test_add_tracking_is_shown_when_there_is_no_shipping_labels_and_tracking_is_reachable() {
+        // Given
+        let item = OrderItem.fake().copy(productID: productID)
+        let order = Order.fake().copy(orderID: orderID, status: .processing, items: [item], shippingAddress: Address.fake())
+        let product = Product().copy(productID: productID, virtual: false)
+        let stores = MockShipmentActionStoresManager(syncSuccessfully: true)
+
+        // When
+        let viewModel = ReviewOrderViewModel(order: order, products: [product], showAddOns: false, stores: stores)
+        viewModel.configureResultsControllers {}
+        viewModel.syncTrackingsHidingAddButtonIfNecessary {}
+
+        // Then
+        let trackingSection = viewModel.sections.first(where: { $0.category == .tracking })
+        XCTAssertNotNil(trackingSection)
+        let addTrackingRow = trackingSection?.rows.first(where: {
+            if case .trackingAdd = $0 {
+                return true
+            }
+            return false
+        })
+        XCTAssertNotNil(addTrackingRow)
+    }
+
+    func test_tracking_section_is_not_shown_when_tracking_is_not_reachable() {
+        // Given
+        let item = OrderItem.fake().copy(productID: productID)
+        let order = Order.fake().copy(orderID: orderID, status: .processing, items: [item], shippingAddress: Address.fake())
+        let product = Product().copy(productID: productID, virtual: false)
+        let stores = MockShipmentActionStoresManager(syncSuccessfully: false)
+
+        // When
+        let viewModel = ReviewOrderViewModel(order: order, products: [product], showAddOns: false, stores: stores)
+        viewModel.configureResultsControllers {}
+        viewModel.syncTrackingsHidingAddButtonIfNecessary {}
+
+        // Then
+        XCTAssertNil(viewModel.sections.first(where: { $0.category == .tracking }))
+    }
+
+    func test_no_tracking_row_is_shown_when_there_is_no_shipment_tracking() {
+        // Given
+        let item = OrderItem.fake().copy(productID: productID)
+        let order = Order.fake().copy(orderID: orderID, status: .processing, items: [item], shippingAddress: Address.fake())
+        let product = Product().copy(productID: productID, virtual: false)
+        let stores = MockShipmentActionStoresManager(syncSuccessfully: true)
+
+        // When
+        let viewModel = ReviewOrderViewModel(order: order, products: [product], showAddOns: false, stores: stores)
+        viewModel.configureResultsControllers {}
+        viewModel.syncTrackingsHidingAddButtonIfNecessary {}
+
+        // Then
+        let trackingSection = viewModel.sections.first(where: { $0.category == .tracking })
+        XCTAssertNotNil(trackingSection)
+        let trackingRow = trackingSection?.rows.first(where: {
+            if case .tracking = $0 {
+                return true
+            }
+            return false
+        })
+        XCTAssertNil(trackingRow)
+    }
+
+    func test_tracking_row_is_shown_when_there_is_shipment_tracking() {
+        // Given
+        let item = OrderItem.fake().copy(productID: productID)
+        let order = Order.fake().copy(siteID: siteID, orderID: orderID, status: .processing, items: [item], shippingAddress: Address.fake())
+        let product = Product().copy(productID: productID, virtual: false)
+        let stores = MockShipmentActionStoresManager(syncSuccessfully: true)
+        let shipmentTracking = ShipmentTracking.fake().copy(siteID: siteID, orderID: orderID, dateShipped: Date())
+        insertShipmentTracking(shipmentTracking)
+
+        // When
+        let viewModel = ReviewOrderViewModel(order: order, products: [product], showAddOns: false, stores: stores, storageManager: storageManager)
+        viewModel.configureResultsControllers {}
+        viewModel.syncTrackingsHidingAddButtonIfNecessary {}
+
+        // Then
+        let trackingSection = viewModel.sections.first(where: { $0.category == .tracking })
+        XCTAssertNotNil(trackingSection)
+        let trackingRow = trackingSection?.rows.first(where: {
+            if case .tracking = $0 {
+                return true
+            }
+            return false
+        })
+        XCTAssertNotNil(trackingRow)
+    }
 }
 
 private extension ReviewOrderViewModelTests {
@@ -258,6 +391,23 @@ private extension ReviewOrderViewModelTests {
             storageItem.update(with: $0)
             return storageItem
         })
+        storage.saveIfNeeded()
+    }
+
+    func insertShippingLabel(_ readOnlyLabel: ShippingLabel) {
+        let storageLabel = storage.insertNewObject(ofType: StorageShippingLabel.self)
+        storageLabel.update(with: readOnlyLabel)
+        if let readOnlyRefund = readOnlyLabel.refund {
+            let storageRefund = storage.insertNewObject(ofType: StorageShippingLabelRefund.self)
+            storageRefund.update(with: readOnlyRefund)
+            storageLabel.refund = storageRefund
+        }
+        storage.saveIfNeeded()
+    }
+
+    func insertShipmentTracking(_ readOnlyTracking: ShipmentTracking) {
+        let storageTracking = storage.insertNewObject(ofType: StorageShipmentTracking.self)
+        storageTracking.update(with: readOnlyTracking)
         storage.saveIfNeeded()
     }
 }

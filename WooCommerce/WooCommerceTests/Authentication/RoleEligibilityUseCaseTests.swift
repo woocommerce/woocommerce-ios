@@ -123,48 +123,48 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
 
     // MARK: checkEligibility
 
-    func test_roleEligibilityUseCase_checkEligibility_returns_when_not_authenticated() {
+    func test_roleEligibilityUseCase_checkEligibility_returns_failure_when_not_authenticated() {
         // Given
         let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
 
         // When
-        let result: RoleEligibilityError? = waitFor { promise in
-            useCase.checkEligibility(for: 123) { error in
-                promise(error)
+        let result: Result<Void, RoleEligibilityError> = waitFor { promise in
+            useCase.checkEligibility(for: 123) { result in
+                promise(result)
             }
         }
 
         // Then
-        XCTAssertNotNil(result)
-        guard case RoleEligibilityError.notAuthenticated = result! else {
+        XCTAssertTrue(result.isFailure)
+        guard case RoleEligibilityError.notAuthenticated = result.failure! else {
             XCTFail()
             return
         }
     }
 
-    func test_roleEligibilityUseCase_checkEligibility_returns_when_storeID_isInvalid() {
+    func test_roleEligibilityUseCase_checkEligibility_returns_failure_when_storeID_isInvalid() {
         // Given
         stores.authenticate(credentials: SessionSettings.credentials)
         let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
         let storeID: Int64 = 0
 
         // When
-        let result: RoleEligibilityError? = waitFor { promise in
-            useCase.checkEligibility(for: storeID) { error in
-                promise(error)
+        let result: Result<Void, RoleEligibilityError> = waitFor { promise in
+            useCase.checkEligibility(for: storeID) { result in
+                promise(result)
             }
         }
 
         // Then
-        XCTAssertNotNil(result)
-        guard case let RoleEligibilityError.invalidStoreId(id) = result! else {
+        XCTAssertTrue(result.isFailure)
+        guard case let RoleEligibilityError.invalidStoreId(id) = result.failure! else {
             XCTFail()
             return
         }
         XCTAssertEqual(id, storeID)
     }
 
-    func test_roleEligibilityUseCase_checkEligibility_returns_unknown_when_receiving_unknown_errors() {
+    func test_roleEligibilityUseCase_checkEligibility_returns_failure_when_receiving_unknown_errors() {
         // Given
         stores.authenticate(credentials: SessionSettings.credentials)
         stores.whenReceivingAction(ofType: UserAction.self) { action in
@@ -176,15 +176,15 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
         let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
 
         // When
-        let result: RoleEligibilityError? = waitFor { promise in
-            useCase.checkEligibility(for: 123) { error in
-                promise(error)
+        let result: Result<Void, RoleEligibilityError> = waitFor { promise in
+            useCase.checkEligibility(for: 123) { result in
+                promise(result)
             }
         }
 
         // Then
-        XCTAssertNotNil(result)
-        guard case let RoleEligibilityError.unknown(error) = result! else {
+        XCTAssertTrue(result.isFailure)
+        guard case let RoleEligibilityError.unknown(error) = result.failure! else {
             XCTFail()
             return
         }
@@ -204,15 +204,15 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
         let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
 
         // When
-        let result: RoleEligibilityError? = waitFor { promise in
-            useCase.checkEligibility(for: 123) { error in
-                promise(error)
+        let result: Result<Void, RoleEligibilityError> = waitFor { promise in
+            useCase.checkEligibility(for: 123) { result in
+                promise(result)
             }
         }
 
         // Then
-        XCTAssertNotNil(result)
-        guard case let RoleEligibilityError.insufficientRole(info) = result! else {
+        XCTAssertTrue(result.isFailure)
+        guard case let RoleEligibilityError.insufficientRole(info) = result.failure! else {
             XCTFail()
             return
         }
@@ -220,7 +220,7 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
         XCTAssertEqual(info.roles, sampleUser.roles)
     }
 
-    func test_roleEligibilityUseCase_checkEligibility_returns_nil_when_user_is_eligible() {
+    func test_roleEligibilityUseCase_checkEligibility_returns_success_when_user_is_eligible() {
         // Given
         let sampleUser = self.makeUser(eligible: true)
         stores.authenticate(credentials: SessionSettings.credentials)
@@ -233,14 +233,14 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
         let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
 
         // When
-        let result: RoleEligibilityError? = waitFor { promise in
+        let result: Result<Void, RoleEligibilityError> = waitFor { promise in
             useCase.checkEligibility(for: 123) { error in
                 promise(error)
             }
         }
 
         // Then
-        XCTAssertNil(result)
+        XCTAssertTrue(result.isSuccess)
     }
 
     // MARK: lastEligibilityErrorInfo

@@ -1,1 +1,3 @@
-Zum Abrufen von Attributen eines variablen Produkts musst du nun weniger oft tippen – du findest sie direkt in den Produktdetails! Wir haben auch verbessert, wie die Details zu einer Bestellung visuell und im Hintergrund geladen werden – hoffentlich machen sich die Verbesserungen für dich bemerkbar!
+Wie uns mitgeteilt wurde, kann die Abwicklung von Bestellungen, die mehrere Konfigurationen desselben variablen Produkts enthalten, mit der App verwirrend sein. Mit diesem Update wird dieses Problem behoben und die Elemente werden separat angezeigt, was die Lesbarkeit vereinfacht. Entsprechend werden auch Bestellungen mit mehreren Sendungen aus der WooCommerce Shipping & Tax-Erweiterung als separate Abschnitte angezeigt.
+
+Wenn die App Probleme beim Laden von Daten hat, zeigen wir jetzt eine nützliche Meldung mit Anweisungen an, wie du Hilfe anfordern kannst. Meistens bereitet ein Plugin ein solches Problem, aber wir können dir helfen, es zu lösen!

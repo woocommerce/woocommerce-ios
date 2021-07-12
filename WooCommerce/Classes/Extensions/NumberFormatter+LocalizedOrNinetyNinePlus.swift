@@ -16,7 +16,7 @@ extension NumberFormatter {
         static let ninetyNinePlus = NSLocalizedString(
             "99+",
             comment: "Please limit to 3 characters if possible. This is used if " +
-                "there are more than 99 items like in the Orders tab."
+                "there are more than 99 items in a tab, like Orders."
         )
     }
 }

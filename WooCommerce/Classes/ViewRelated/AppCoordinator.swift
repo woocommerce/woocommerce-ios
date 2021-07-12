@@ -12,6 +12,7 @@ final class AppCoordinator {
     private let window: UIWindow
     private let stores: StoresManager
     private let authenticationManager: Authentication
+    private let roleEligibilityUseCase: RoleEligibilityUseCaseProtocol
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var cancellable: AnyCancellable?
@@ -19,7 +20,8 @@ final class AppCoordinator {
 
     init(window: UIWindow,
          stores: StoresManager = ServiceLocator.stores,
-         authenticationManager: Authentication = ServiceLocator.authenticationManager) {
+         authenticationManager: Authentication = ServiceLocator.authenticationManager,
+         roleEligibilityUseCase: RoleEligibilityUseCaseProtocol = RoleEligibilityUseCase()) {
         self.window = window
         self.tabBarController = {
             let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard
@@ -30,6 +32,7 @@ final class AppCoordinator {
         }()
         self.stores = stores
         self.authenticationManager = authenticationManager
+        self.roleEligibilityUseCase = roleEligibilityUseCase
     }
 
     func start() {
@@ -66,6 +69,14 @@ private extension AppCoordinator {
     /// Displays logged in tab bar UI.
     ///
     func displayLoggedInUI() {
+        // if the previous role check indicates that the user is ineligible, then we want to show the error message.
+        // Eligibility status is stored locally in user defaults, and updated asynchronously upon app launch.
+        if let errorInfo = roleEligibilityUseCase.lastEligibilityErrorInfo(),
+           let siteID = stores.sessionManager.defaultStoreID {
+            displayRoleErrorUI(for: siteID, errorInfo: errorInfo)
+            return
+        }
+
         setWindowRootViewControllerAndAnimateIfNeeded(tabBarController)
     }
 
@@ -89,6 +100,25 @@ private extension AppCoordinator {
                 self.displayAuthenticator()
             }
         }
+    }
+
+    /// Displays the role error page as the root view.
+    ///
+    func displayRoleErrorUI(for siteID: Int64, errorInfo: EligibilityErrorInfo) {
+        let errorViewModel = RoleErrorViewModel(siteID: siteID, title: errorInfo.name, subtitle: errorInfo.humanizedRoles)
+        let errorViewController = RoleErrorViewController(viewModel: errorViewModel)
+
+        // when the retry is successful, resume the intention to display the main tab bar.
+        errorViewModel.onSuccess = {
+            self.displayLoggedInUI()
+        }
+
+        errorViewModel.onDeauthenticationRequest = {
+            self.stores.deauthenticate()
+        }
+
+        // this needs to be wrapped within a navigation controller to properly show the right bar button for Help.
+        setWindowRootViewControllerAndAnimateIfNeeded(UINavigationController(rootViewController: errorViewController))
     }
 }
 

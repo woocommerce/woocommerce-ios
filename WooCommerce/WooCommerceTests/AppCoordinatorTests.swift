@@ -8,6 +8,7 @@ final class AppCoordinatorTests: XCTestCase {
     private var sessionManager: SessionManager!
     private var stores: StoresManager!
     private var authenticationManager: AuthenticationManager!
+    private var defaults: UserDefaults!
 
     private let window = UIWindow(frame: UIScreen.main.bounds)
 
@@ -16,6 +17,7 @@ final class AppCoordinatorTests: XCTestCase {
 
         window.makeKeyAndVisible()
 
+        defaults = UserDefaults(suiteName: Constants.suiteName)
         sessionManager = .makeForTesting(authenticated: false)
         stores = MockStoresManager(sessionManager: sessionManager)
         authenticationManager = AuthenticationManager()
@@ -27,6 +29,7 @@ final class AppCoordinatorTests: XCTestCase {
         sessionManager.defaultStoreID = nil
         stores = nil
         sessionManager = nil
+        defaults.removePersistentDomain(forName: Constants.suiteName)
 
         // If not resetting the window, `AsyncDictionaryTests.testAsyncUpdatesWhereTheFirstOperationFinishesLast` fails.
         window.resignKey()
@@ -74,6 +77,25 @@ final class AppCoordinatorTests: XCTestCase {
         assertThat(window.rootViewController, isAnInstanceOf: MainTabBarController.self)
     }
 
+    func test_starting_app_logged_in_with_selected_site_and_ineligible_status_presents_role_error() throws {
+        // Given
+        stores.authenticate(credentials: SessionSettings.credentials)
+        sessionManager.defaultStoreID = 134
+        defaults.setValue(Constants.sampleErrorInfoDictionary, forKey: Constants.errorInfoUDKey) // set mock data in defaults
+        let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
+        let appCoordinator = AppCoordinator(window: window, stores: stores, authenticationManager: authenticationManager, roleEligibilityUseCase: useCase)
+
+        // When
+        appCoordinator.start()
+
+        // Then
+        guard let navigationController = window.rootViewController as? UINavigationController else {
+            XCTFail()
+            return
+        }
+        assertThat(navigationController.visibleViewController, isAnInstanceOf: RoleErrorViewController.self)
+    }
+
     func test_starting_app_logged_in_then_logging_out_presents_authentication() throws {
         // Given
         stores.authenticate(credentials: SessionSettings.credentials)
@@ -86,5 +108,13 @@ final class AppCoordinatorTests: XCTestCase {
 
         // Then
         assertThat(window.rootViewController, isAnInstanceOf: LoginNavigationController.self)
+    }
+}
+
+private extension AppCoordinatorTests {
+    struct Constants {
+        static let sampleErrorInfoDictionary = ["name": "Patrick", "roles": "author,editor"]
+        static let errorInfoUDKey = "wc_eligibility_error_info"
+        static let suiteName = "AppCoordinatorTests"
     }
 }

@@ -1,1 +1,3 @@
-Er zijn minder tiks nodig om naar de eigenschappen van een variabel product te gaan. Ze staan gewoon bij de productgegevens! We hebben ook verbeterd hoe de gegevens van een bestelling worden geladen, zowel visueel als op de achtergrond. We hopen dat je het verschil merkt!
+We hebben gehoord dat bestellingen met meerdere configuraties van hetzelfde variabele product verwarrend zijn om met de app af te ronden. Deze update lost dit probleem op door ervoor te zorgen dat deze artikelen afzonderlijk worden weergegeven, wat een duidelijker overzicht geeft. En we hebben iets soortgelijks toegepast voor bestellingen met meerdere verzendingen vanuit de WooCommerce Shipping en Tax-extensie: deze verschijnen nu als afzonderlijke secties.
+
+Als de app geen gegevens kan laden, tonen we nu een handige melding met instructies om ondersteuning te bereiken. In de meeste gevallen ontstaat dit probleem door een plug-in, maar we kunnen je door de stappen lopen om het op te lossen.

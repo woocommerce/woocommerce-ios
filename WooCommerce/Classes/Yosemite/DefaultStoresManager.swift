@@ -121,6 +121,10 @@ class DefaultStoresManager: StoresManager {
 
         group.enter()
         synchronizeAccount { _ in
+            group.enter()
+            self.synchronizeAccountSettings { _ in
+                group.leave()
+            }
             group.leave()
         }
 
@@ -130,10 +134,7 @@ class DefaultStoresManager: StoresManager {
         }
 
         group.notify(queue: .main) {
-            // Wait to synchronize account settings because it depends on the userID from synchronizeAccount
-            self.synchronizeAccountSettings { _ in
-                onCompletion?()
-            }
+            onCompletion?()
         }
 
         return self

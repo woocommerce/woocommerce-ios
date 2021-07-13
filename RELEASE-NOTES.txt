@@ -2,7 +2,7 @@
 
 7.2
 -----
-
+- [*] Updated success notice message for Order Fulfillment [https://github.com/woocommerce/woocommerce-ios/pull/4589]
 
 7.1
 -----

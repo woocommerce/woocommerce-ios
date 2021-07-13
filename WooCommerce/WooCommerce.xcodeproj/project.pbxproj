@@ -470,6 +470,7 @@
 		314DC4C1268D28B100444C9E /* CardReaderSettingsKnownReadersStoredListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314DC4C0268D28B100444C9E /* CardReaderSettingsKnownReadersStoredListTests.swift */; };
 		314DC4C3268D2F1000444C9E /* MockAppSettingsStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314DC4C2268D2F1000444C9E /* MockAppSettingsStoresManager.swift */; };
 		31595CAD25E966380033F0FF /* ConnectedReaderTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31595CAC25E966380033F0FF /* ConnectedReaderTableViewCell.xib */; };
+		315E14F42698DA24000AD5FF /* PassKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 315E14F32698DA24000AD5FF /* PassKit.framework */; };
 		316837DA25CCA90C00E36B2F /* OrderStatusListDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316837D925CCA90C00E36B2F /* OrderStatusListDataSource.swift */; };
 		3178C1F726409216000D771A /* CardReaderSettingsConnectedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3178C1F626409216000D771A /* CardReaderSettingsConnectedViewModel.swift */; };
 		3178C1FD26409360000D771A /* CardReaderSettingsConnectedViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3178C1FC26409360000D771A /* CardReaderSettingsConnectedViewModelTests.swift */; };
@@ -1773,6 +1774,7 @@
 		314DC4C0268D28B100444C9E /* CardReaderSettingsKnownReadersStoredListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsKnownReadersStoredListTests.swift; sourceTree = "<group>"; };
 		314DC4C2268D2F1000444C9E /* MockAppSettingsStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAppSettingsStoresManager.swift; sourceTree = "<group>"; };
 		31595CAC25E966380033F0FF /* ConnectedReaderTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConnectedReaderTableViewCell.xib; sourceTree = "<group>"; };
+		315E14F32698DA24000AD5FF /* PassKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PassKit.framework; path = System/Library/Frameworks/PassKit.framework; sourceTree = SDKROOT; };
 		316837D925CCA90C00E36B2F /* OrderStatusListDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusListDataSource.swift; sourceTree = "<group>"; };
 		3178C1F626409216000D771A /* CardReaderSettingsConnectedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsConnectedViewModel.swift; sourceTree = "<group>"; };
 		3178C1FC26409360000D771A /* CardReaderSettingsConnectedViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsConnectedViewModelTests.swift; sourceTree = "<group>"; };
@@ -2585,6 +2587,7 @@
 				D88FDB4525DD223B00CB0DBD /* Hardware.framework in Frameworks */,
 				263E37E12641AD8300260D3B /* Codegen in Frameworks */,
 				5744BEB1248FE44D000A6FE2 /* SwiftUI.framework in Frameworks */,
+				315E14F42698DA24000AD5FF /* PassKit.framework in Frameworks */,
 				B5C3B5E720D189ED0072CB9D /* Yosemite.framework in Frameworks */,
 				B5C3B5E520D189EA0072CB9D /* Storage.framework in Frameworks */,
 				B5C3B5E320D189E60072CB9D /* Networking.framework in Frameworks */,
@@ -4505,6 +4508,7 @@
 		88A44ABE866401E6DB03AC60 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				315E14F32698DA24000AD5FF /* PassKit.framework */,
 				D88FDB4425DD223B00CB0DBD /* Hardware.framework */,
 				26FB056725F6CB6000A40B26 /* Fakes.framework */,
 				5744BEB0248FE44C000A6FE2 /* SwiftUI.framework */,

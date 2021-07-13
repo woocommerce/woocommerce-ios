@@ -1,4 +1,6 @@
 import Yosemite
+import PassKit
+
 /// Orchestrates the sequence of actions required to capture a payment:
 /// 1. Check if there is a card reader connected
 /// 2. Launch the reader discovering and pairing UI if there is no reader connected
@@ -9,6 +11,8 @@ final class PaymentCaptureOrchestrator {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
     private let celebration = PaymentCaptureCelebration()
+
+    private var walletSuppressionRequestToken = PKSuppressionRequestToken(0)
 
     func collectPayment(for order: Order,
                         paymentsAccount: PaymentGatewayAccount?,
@@ -21,6 +25,12 @@ final class PaymentCaptureOrchestrator {
             onCompletion(.failure(CardReaderServiceError.paymentCapture()))
             return
         }
+
+        /// Briefly suppress wallet presentation so that the merchant's wallet doesn't attempt to pay for the buyer's order when the
+        /// reader begins to collect payment.
+        ///
+        suppressWalletPresentation()
+
         let action = CardPresentPaymentAction.collectPayment(siteID: order.siteID,
                                                              orderID: order.orderID, parameters: parameters,
                                                              onCardReaderMessage: { (event) in
@@ -35,6 +45,7 @@ final class PaymentCaptureOrchestrator {
                                                                     break
                                                                 }
                                                              }, onCompletion: { [weak self] result in
+                                                                self?.allowWalletPresentation()
                                                                 onProcessingMessage()
                                                                 self?.completePaymentIntentCapture(order: order,
                                                                                                  captureResult: result,
@@ -79,6 +90,33 @@ final class PaymentCaptureOrchestrator {
     }
 }
 
+private extension PaymentCaptureOrchestrator {
+    /// Supress wallet presentation. This requires a special entitlement from Apple:
+    /// `com.apple.developer.passkit.pass-presentation-suppression`
+    /// See Woo-*.entitlements in WooCommerce/Resources
+    ///
+    func suppressWalletPresentation() {
+        guard !PKPassLibrary.isSuppressingAutomaticPassPresentation() else {
+            return
+        }
+
+        walletSuppressionRequestToken = PKPassLibrary.requestAutomaticPassPresentationSuppression() { result in
+            guard result == .success else {
+                DDLogWarn("Disabling wallet presentation failed. Reason: \(result.rawValue)")
+                return
+            }
+        }
+    }
+
+    /// Restore wallet presentation.
+    func allowWalletPresentation() {
+        guard walletSuppressionRequestToken != 0 else {
+            return
+        }
+
+        PKPassLibrary.endAutomaticPassPresentationSuppression(withRequestToken: walletSuppressionRequestToken)
+    }
+}
 
 private extension PaymentCaptureOrchestrator {
     func completePaymentIntentCapture(order: Order,

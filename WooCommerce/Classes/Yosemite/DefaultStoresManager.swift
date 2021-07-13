@@ -129,11 +129,6 @@ class DefaultStoresManager: StoresManager {
             group.leave()
         }
 
-        group.enter()
-        synchronizeSitePlan { _ in
-            group.leave()
-        }
-
         group.notify(queue: .main) {
             // Wait to synchronize account settings because it depends on the userID from synchronizeAccount
             self.synchronizeAccountSettings { _ in
@@ -315,6 +310,14 @@ private extension DefaultStoresManager {
             group.leave()
         }
         dispatch(productSettingsAction)
+
+        group.enter()
+        synchronizeSitePlan { result in
+            if case let .failure(error) = result {
+                errors.append(error)
+            }
+            group.leave()
+        }
 
         group.notify(queue: .main) {
             if errors.isEmpty {

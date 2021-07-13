@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
-
 # Supported languages:
-# ar,zh-Hans,zh-Hant,nl,fr,de,he,id,ko,pt,ru,es,sv,tr,ja,it 
+# ar,zh-Hans,zh-Hant,nl,fr,de,he,id,ko,pt,ru,es,sv,tr,ja,it
 # * Arabic
 # * Chinese (China) [zh-Hans]
 # * Chinese (Taiwan) [zh-Hant]
@@ -20,13 +18,12 @@
 # * Japanese
 # * Italian
 
-
 if Dir.pwd =~ /Scripts/
-  puts "Must run script from root folder"
+  puts 'Must run script from root folder'
   exit
 end
 
-ALL_LANGS={
+ALL_LANGS = {
   'ar' => 'ar',         # Arabic
   'de' => 'de',         # German
   'es' => 'es',         # Spanish
@@ -42,12 +39,12 @@ ALL_LANGS={
   'sv' => 'sv',         # Swedish
   'tr' => 'tr',         # Turkish
   'zh-cn' => 'zh-Hans', # Chinese (China)
-  'zh-tw' => 'zh-Hant', # Chinese (Taiwan)
+  'zh-tw' => 'zh-Hant' # Chinese (Taiwan)
 }
 
 langs = {}
 if ARGV.count > 0
-  for key in ARGV
+  ARGV.each do |key|
     unless local = ALL_LANGS[key]
       puts "Unknown language #{key}"
       exit 1
@@ -58,7 +55,7 @@ else
   langs = ALL_LANGS
 end
 
-langs.each do |code,local|
+langs.each do |code, local|
   lang_dir = File.join('WooCommerce', 'Resources', "#{local}.lproj")
   puts "Updating #{code}"
   system "mkdir -p #{lang_dir}"

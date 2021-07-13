@@ -614,11 +614,14 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
             progressViewController.dismiss(animated: true)
 
             guard let self = self else { return }
-            guard let updatedProduct = try? result.get() else {
-                return self.noticePresenter.enqueue(notice: .init(title: Localization.generateVariationError, feedbackType: .error))
+            switch result {
+            case .success(let updatedProduct):
+                self.noticePresenter.enqueue(notice: .init(title: Localization.variationCreated, feedbackType: .success))
+                self.product = updatedProduct
+            case .failure(let error):
+                self.noticePresenter.enqueue(notice: .init(title: Localization.generateVariationError, feedbackType: .error))
+                DDLogError("⛔️ Error generating variation: \(error)")
             }
-
-            self.product = updatedProduct
         }
     }
 }

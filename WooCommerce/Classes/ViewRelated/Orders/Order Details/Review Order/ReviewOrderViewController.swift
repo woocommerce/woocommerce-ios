@@ -1,3 +1,4 @@
+import SafariServices
 import UIKit
 import Yosemite
 
@@ -10,6 +11,10 @@ final class ReviewOrderViewController: UIViewController {
     ///
     private let viewModel: ReviewOrderViewModel
 
+    /// Handler block to call when order is marked completed
+    ///
+    private let markOrderCompleteHandler: () -> Void
+
     /// Image service needed for order item cells
     ///
     private let imageService: ImageService = ServiceLocator.imageService
@@ -18,8 +23,21 @@ final class ReviewOrderViewController: UIViewController {
     ///
     @IBOutlet private var tableView: UITableView!
 
-    init(viewModel: ReviewOrderViewModel) {
+    /// Haptic Feedback!
+    ///
+    private let hapticGenerator = UINotificationFeedbackGenerator()
+
+    /// Reuse notices from Order Details
+    ///
+    private let notices = OrderDetailsNotices()
+
+    /// Footer of the table view
+    ///
+    private lazy var footerView: UIView = configureTableFooterView()
+
+    init(viewModel: ReviewOrderViewModel, markOrderCompleteHandler: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.markOrderCompleteHandler = markOrderCompleteHandler
         super.init(nibName: Self.nibName, bundle: nil)
     }
 
@@ -35,6 +53,17 @@ final class ReviewOrderViewController: UIViewController {
         configureViewModel()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.syncTrackingsHidingAddButtonIfNecessary { [weak self] in
+            self?.tableView.reloadData()
+        }
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.updateFooterHeight()
+    }
 }
 
 // MARK: - UI Configuration
@@ -58,8 +87,48 @@ private extension ReviewOrderViewController {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
+        tableView.tableFooterView = footerView
+
+        // workaround to fix extra space on top
+        tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: CGFloat.leastNormalMagnitude))
+
         tableView.dataSource = self
         tableView.delegate = self
+    }
+
+    func configureTableFooterView() -> UIView {
+        let containerView = UIView(frame: .zero)
+        containerView.backgroundColor = .listBackground
+
+        let emailLabel = UILabel(frame: .zero)
+        emailLabel.text = Localization.emailMessage
+        emailLabel.applySecondaryBodyStyle()
+        emailLabel.numberOfLines = 2
+        emailLabel.lineBreakMode = .byWordWrapping
+        emailLabel.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(emailLabel)
+
+        NSLayoutConstraint.activate([
+            emailLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
+            emailLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 24),
+            containerView.trailingAnchor.constraint(equalTo: emailLabel.trailingAnchor, constant: 16)
+        ])
+
+        let actionButton = UIButton(frame: .zero)
+        actionButton.applyPrimaryButtonStyle()
+        actionButton.setTitle(Localization.markOrderCompleteTitle, for: .normal)
+        actionButton.addTarget(self, action: #selector(markOrderComplete), for: .touchUpInside)
+        actionButton.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(actionButton)
+
+        NSLayoutConstraint.activate([
+            actionButton.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 16),
+            actionButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
+            containerView.safeBottomAnchor.constraint(equalTo: actionButton.bottomAnchor, constant: 24),
+            containerView.trailingAnchor.constraint(equalTo: actionButton.trailingAnchor, constant: 16)
+        ])
+
+        return containerView
     }
 
     func registerHeaderTypes() {
@@ -166,6 +235,8 @@ extension ReviewOrderViewController: UITableViewDelegate {
         switch row {
         case .billingDetail:
             billingInformationTapped()
+        case .trackingAdd:
+            addTrackingTapped()
         default:
             break
         }
@@ -189,9 +260,10 @@ private extension ReviewOrderViewController {
             setupShippingMethodCell(cell, method: method)
         case .billingDetail:
             setupBillingDetail(cell)
-        default:
-            // TODO: setup
-            break
+        case .trackingAdd:
+            setupTrackingAddCell(cell)
+        case .tracking:
+            setupTrackingCell(cell, at: indexPath)
         }
     }
 
@@ -264,6 +336,47 @@ private extension ReviewOrderViewController {
         cell.accessibilityLabel = Localization.showBillingAccessibilityLabel
         cell.accessibilityHint = Localization.showBillingAccessibilityHint
     }
+
+    /// Setup: Add Tracking Cell
+    ///
+    func setupTrackingAddCell(_ cell: UITableViewCell) {
+        guard let cell = cell as? LeftImageTableViewCell else {
+            fatalError("⛔ Incorrect cell type for Add Tracking cell")
+        }
+
+        let cellTextContent = Localization.addTrackingTitle
+        cell.leftImage = .addOutlineImage
+        cell.imageView?.tintColor = .accent
+        cell.labelText = cellTextContent
+
+        cell.isAccessibilityElement = true
+
+        cell.accessibilityLabel = cellTextContent
+        cell.accessibilityTraits = .button
+        cell.accessibilityHint = Localization.addTrackingAccessibilityHint
+    }
+
+    /// Setup: Shipment Tracking cells
+    ///
+    func setupTrackingCell(_ cell: UITableViewCell, at indexPath: IndexPath) {
+        guard let cell = cell as? OrderTrackingTableViewCell else {
+            fatalError("⛔ Incorrect cell type for Tracking cell")
+        }
+        guard let tracking = viewModel.orderTracking(at: indexPath.row) else { return }
+
+        cell.topText = tracking.trackingProvider
+        cell.middleText = tracking.trackingNumber
+
+        cell.onEllipsisTouchUp = { [weak self] in
+            self?.shipmentTrackingTapped(at: indexPath)
+        }
+
+        if let dateShipped = tracking.dateShipped?.toString(dateStyle: .long, timeStyle: .none) {
+            cell.bottomText = String.localizedStringWithFormat(Localization.shippedTitle, dateShipped)
+        } else {
+            cell.bottomText = Localization.notShippedYetTitle
+        }
+    }
 }
 
 // MARK: - Actions
@@ -283,6 +396,111 @@ private extension ReviewOrderViewController {
     func billingInformationTapped() {
         let billingInformationViewController = BillingInformationViewController(order: viewModel.order)
         navigationController?.pushViewController(billingInformationViewController, animated: true)
+    }
+
+    /// Handle add tracking
+    ///
+    func addTrackingTapped() {
+        let addTrackingViewModel = AddTrackingViewModel(order: viewModel.order)
+        let addTracking = ManualTrackingViewController(viewModel: addTrackingViewModel)
+        let navController = WooNavigationController(rootViewController: addTracking)
+        present(navController, animated: true, completion: nil)
+    }
+
+    /// Handle shipment tracking tapped
+    ///
+    func shipmentTrackingTapped(at indexPath: IndexPath) {
+        guard let cell = tableView.cellForRow(at: indexPath) as? OrderTrackingTableViewCell else {
+            return
+        }
+
+        guard let tracking = viewModel.orderTracking(at: indexPath.row) else {
+            return
+        }
+
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+
+        actionSheet.addCancelActionWithTitle(TrackingAction.dismiss)
+
+        actionSheet.addDefaultActionWithTitle(TrackingAction.copyTrackingNumber) { [weak self] _ in
+            self?.sendToPasteboard(tracking.trackingNumber, includeTrailingNewline: false)
+        }
+
+        if tracking.trackingURL?.isEmpty == false {
+            actionSheet.addDefaultActionWithTitle(TrackingAction.trackShipment) { [weak self] _ in
+                self?.openTrackingDetails(tracking)
+            }
+        }
+
+        actionSheet.addDestructiveActionWithTitle(TrackingAction.deleteTracking) { [weak self] _ in
+            ServiceLocator.analytics.track(.orderDetailTrackingDeleteButtonTapped)
+            self?.deleteTracking(tracking)
+        }
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.sourceView = cell
+        popoverController?.sourceRect = cell.bounds
+
+        present(actionSheet, animated: true)
+    }
+
+    /// Sends the provided text to the general pasteboard and triggers a success haptic.
+    ///
+    func sendToPasteboard(_ text: String?, includeTrailingNewline: Bool = true) {
+        guard var text = text, text.isEmpty == false else {
+            return
+        }
+
+        if includeTrailingNewline {
+            text += "\n"
+        }
+
+        UIPasteboard.general.string = text
+        hapticGenerator.notificationOccurred(.success)
+    }
+
+    /// Opens details of the shipment tracking in a web view
+    ///
+    func openTrackingDetails(_ tracking: ShipmentTracking) {
+        guard let trackingURL = tracking.trackingURL?.addHTTPSSchemeIfNecessary(),
+              let url = URL(string: trackingURL) else {
+            return
+        }
+        let safariViewController = SFSafariViewController(url: url)
+        present(safariViewController, animated: true, completion: nil)
+    }
+
+    /// Trigger view model to delete specified tracking and then reload data
+    ///
+    func deleteTracking(_ tracking: ShipmentTracking) {
+        let order = viewModel.order
+        viewModel.deleteTracking(tracking) { [weak self] error in
+            if let _ = error {
+                self?.displayDeleteErrorNotice(order: order, tracking: tracking)
+                return
+            }
+            self?.tableView.reloadData()
+        }
+    }
+
+    /// Displays the `Unable to delete tracking` Notice.
+    ///
+    func displayDeleteErrorNotice(order: Order, tracking: ShipmentTracking) {
+        notices.displayDeleteErrorNotice(order: order, tracking: tracking) { [weak self] in
+            self?.deleteTracking(tracking)
+        }
+    }
+
+    /// Marks order complete and pop the view
+    ///
+    @objc func markOrderComplete() {
+        markOrderCompleteHandler()
+        // delay to let the above block take some time to execute
+        // to avoid potential problems caused by deiniting the controller
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        }
     }
 }
 
@@ -322,5 +540,29 @@ private extension ReviewOrderViewController {
             "Show the billing details for this order.",
             comment: "VoiceOver accessibility hint, informing the user that the button can be used to view billing information."
         )
+        static let addTrackingTitle = NSLocalizedString("Add Tracking", comment: "Add Tracking row label")
+        static let addTrackingAccessibilityHint = NSLocalizedString(
+            "Adds tracking to an order.",
+            comment: "VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period."
+        )
+        static let shippedTitle = NSLocalizedString("Shipped %@",
+                                                    comment: "Date an item was shipped")
+        static let notShippedYetTitle = NSLocalizedString("Not shipped yet",
+                                                          comment: "Order details > tracking. " +
+                          " This is where the shipping date would normally display.")
+        static let emailMessage = NSLocalizedString(
+            "The customer will receive an email once order is completed",
+            comment: "Message at the bottom of Review Order screen to inform of emailing the customer upon completing order"
+        )
+        static let markOrderCompleteTitle = NSLocalizedString("Mark Order Complete", comment: "Action button on Review Order screen")
+    }
+
+    /// Localized copies for Shipment Tracking action
+    ///
+    enum TrackingAction {
+        static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the shipment tracking action sheet")
+        static let copyTrackingNumber = NSLocalizedString("Copy Tracking Number", comment: "Copy tracking number button title")
+        static let trackShipment = NSLocalizedString("Track Shipment", comment: "Track shipment button title")
+        static let deleteTracking = NSLocalizedString("Delete Tracking", comment: "Delete tracking button title")
     }
 }

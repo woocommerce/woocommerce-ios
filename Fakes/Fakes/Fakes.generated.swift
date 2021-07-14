@@ -1363,6 +1363,23 @@ extension StoredProductSettings {
         )
     }
 }
+extension SystemPlugin {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> SystemPlugin {
+        .init(
+            siteID: .fake(),
+            plugin: .fake(),
+            name: .fake(),
+            version: .fake(),
+            versionLatest: .fake(),
+            url: .fake(),
+            authorName: .fake(),
+            authorUrl: .fake(),
+            networkActivated: .fake()
+        )
+    }
+}
 extension TaxClass {
     /// Returns a "ready to use" type filled with fake values.
     ///

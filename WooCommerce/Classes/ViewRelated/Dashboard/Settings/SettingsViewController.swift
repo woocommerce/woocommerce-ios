@@ -538,7 +538,8 @@ private extension SettingsViewController {
     }
 
     func inPersonPaymentsWasPressed() {
-        // To be implemented
+        let viewController = InPersonPaymentsViewController()
+        show(viewController, sender: self)
     }
 
     func privacyWasPressed() {

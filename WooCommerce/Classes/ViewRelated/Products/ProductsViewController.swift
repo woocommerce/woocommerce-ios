@@ -355,6 +355,7 @@ private extension ProductsViewController {
         tableView.addSubview(refreshControl)
 
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
+        headerContainer.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
         headerContainer.addSubview(topStackView)
         headerContainer.pinSubviewToSafeArea(topStackView, insets: Constants.headerContainerInsets)
         let bottomBorderView = UIView.createBorderView()

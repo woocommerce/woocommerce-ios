@@ -37,4 +37,8 @@ enum FeatureFlag: Int {
     /// Automatically Reconnect to a Known Card Reader
     ///
     case cardPresentKnownReader
+
+    /// Card-Present Payments Onboarding
+    ///
+    case cardPresentOnboarding
 }

@@ -4,7 +4,7 @@ import WordPressAuthenticator
 
 /// RoleErrorOutput enables communication from the view model to the view controller.
 /// Note that it's important for the view model to weakly retain the view controller.
-protocol RoleErrorOutput: class {
+protocol RoleErrorOutput: AnyObject {
     /// Updates title and subtitle label text with latest content.
     func refreshTitleLabels()
 
@@ -80,6 +80,15 @@ class RoleErrorViewController: UIViewController {
 
     func configureLinkButton() {
         linkButton.applyLinkButtonStyle()
+
+        // enable multi line for accessibility support
+        linkButton.titleLabel?.textAlignment = .center
+        linkButton.titleLabel?.adjustsFontForContentSizeCategory = true
+        linkButton.titleLabel?.lineBreakMode = .byWordWrapping
+        if let linkTitleLabel = linkButton.titleLabel {
+            linkButton.pinSubviewToAllEdgeMargins(linkTitleLabel)
+        }
+
         linkButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
         linkButton.on(.touchUpInside) { [weak self] _ in
             self?.viewModel.didTapAuxiliaryButton()
@@ -88,6 +97,14 @@ class RoleErrorViewController: UIViewController {
 
     func configurePrimaryActionButton() {
         primaryActionButton.applyPrimaryButtonStyle()
+
+        // Since the buttons are vertically stacked, override the font
+        // on iPhone interface idioms so we get a maximum font size to give
+        // space for the content above the button container.
+        if WPDeviceIdentification.isiPhone() {
+            primaryActionButton.titleLabel?.font = StyleManager.headlineSemiBold
+        }
+
         primaryActionButton.setTitle(viewModel.primaryButtonTitle, for: .normal)
         primaryActionButton.on(.touchUpInside) { [weak self] _ in
             self?.viewModel.didTapPrimaryButton()
@@ -96,6 +113,14 @@ class RoleErrorViewController: UIViewController {
 
     func configureSecondaryActionButton() {
         secondaryActionButton.applySecondaryButtonStyle()
+
+        // Since the buttons are vertically stacked, override the font
+        // on iPhone interface idioms so we get a maximum font size to give
+        // space for the content above the button container.
+        if WPDeviceIdentification.isiPhone() {
+            secondaryActionButton.titleLabel?.font = StyleManager.headlineSemiBold
+        }
+
         secondaryActionButton.setTitle(viewModel.secondaryButtonTitle, for: .normal)
         secondaryActionButton.on(.touchUpInside) { [weak self] _ in
             self?.viewModel.didTapSecondaryButton()

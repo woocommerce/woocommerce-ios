@@ -56,10 +56,9 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
 REPOSITORY_NAME="woocommerce-ios"
 GH_ORG_NAME="woocommerce"
 
-
 lane :test_lane do
-  alpha_code_signing
-  UI.success 'Test lane was successful 🎉'
+  update_certs_and_profiles
+  build_and_upload_itc(skip_confirm: true, skip_prechecks: true)
 end
 
 ########################################################################

@@ -42,7 +42,8 @@ public enum CardPresentPaymentOnboardingState {
     ///
     case stripeAccountOverdueRequirement
 
-    /// The Stripe account was rejected by Stripe. This can happen for example when the account is flagged as fraudulent or the merchant violates the terms of service.
+    /// The Stripe account was rejected by Stripe.
+    /// This can happen for example when the account is flagged as fraudulent or the merchant violates the terms of service.
     ///
     case stripeAccountRejected
 

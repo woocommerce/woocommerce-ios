@@ -541,7 +541,7 @@ public extension StorageType {
     
     // MARK: - System plugins
     
-    /// Returns all stored  system plugins for a provided `siteID`.
+    /// Returns all stored system plugins for a provided `siteID`.
     ///
     func loadSystemPlugins(siteID: Int64) -> [SystemPlugin] {
         let predicate = \SystemPlugin.siteID == siteID
@@ -549,7 +549,7 @@ public extension StorageType {
         return allObjects(ofType: SystemPlugin.self, matching: predicate, sortedBy: [descriptor])
     }
     
-    /// Returns a plugin with a specified `siteID` and `name`
+    /// Returns a system plugin with a specified `siteID` and `name`
     ///
     func loadSystemPlugin(siteID: Int64, name: String) -> SystemPlugin? {
         let predicate = \SystemPlugin.siteID == siteID && \SystemPlugin.name == name

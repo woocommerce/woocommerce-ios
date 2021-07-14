@@ -1,3 +1,6 @@
-We heard that orders containing multiple configurations of the same variable product can be confusing to fulfill with the app. This update fixes that and makes those items appear separately, making it easier to read. In that same spirit, orders with multiple shipments from the WooCommerce Shipping & Tax extension will show as separate sections.
+- [***] Merchants from US can create shipping labels for physical orders from the app. The feature supports for now only orders where the shipping address is in the US. [https://github.com/woocommerce/woocommerce-ios/pull/4578]
+- [**] Due to popular demand, the Order fulfill is displayed once again when clicking on the Mark order complete button. [https://github.com/woocommerce/woocommerce-ios/pull/4567]
+- [*] Fix: Interactive pop gesture on Order Details and Settings screen. [https://github.com/woocommerce/woocommerce-ios/pull/4504]
+- [*] Fix: Frozen refresh control and placeholder when switching tabs [https://github.com/woocommerce/woocommerce-ios/pull/4505]
+- [internal] Stats tab: added network sync throttling [https://github.com/woocommerce/woocommerce-ios/pull/4494]
 
-If the app has trouble loading data, we now show a helpful message with instructions on how to reach out for help. Most times, it’s a plugin causing issues, but we can help walk you through resolving it!

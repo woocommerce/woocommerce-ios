@@ -20,6 +20,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
     private lazy var topBannerView: TopBannerView = {
         let topBanner = ShippingLabelAddressTopBannerFactory.addressErrorTopBannerView(shipType: viewModel.type) { [weak self] in
             MapsHelper.openAppleMaps(address: self?.viewModel.address?.formattedPostalAddress) { [weak self] (result) in
+                ServiceLocator.analytics.track(.shippingLabelEditAddressOpenMapButtonTapped)
                 switch result {
                 case .success:
                     break
@@ -28,6 +29,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
                 }
             }
         } contactCustomerPressed: { [weak self] in
+            ServiceLocator.analytics.track(.shippingLabelEditAddressContactCustomerButtonTapped)
             if PhoneHelper.callPhoneNumber(phone: self?.viewModel.address?.phone) == false {
                 self?.displayPhoneNumberErrorNotice()
             }
@@ -61,6 +63,12 @@ final class ShippingLabelAddressFormViewController: UIViewController {
         viewModel = ShippingLabelAddressFormViewModel(siteID: siteID, type: type, address: address, validationError: validationError, countries: countries)
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
+        switch type {
+        case .origin:
+            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "origin_address_started"])
+        case .destination:
+            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "destination_address_started"])
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -179,6 +187,7 @@ private extension ShippingLabelAddressFormViewController {
 private extension ShippingLabelAddressFormViewController {
 
     @objc func doneButtonTapped() {
+        ServiceLocator.analytics.track(.shippingLabelEditAddressDoneButtonTapped)
         viewModel.validateAddress(onlyLocally: false) { [weak self] (result) in
             guard let self = self else { return }
             switch result {
@@ -192,6 +201,7 @@ private extension ShippingLabelAddressFormViewController {
     }
 
     @objc func confirmButtonTapped() {
+        ServiceLocator.analytics.track(.shippingLabelEditAddressUseAddressAsIsButtonTapped)
         viewModel.validateAddress(onlyLocally: true) { [weak self] (result) in
             guard let self = self else { return }
             switch result {

@@ -278,6 +278,24 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertEqual(updatedRows?[2].displayMode, .editable)
     }
 
+    func test_validateAddress_returns_validation_error_when_missing_name() {
+        // Given
+        let expectedValidationError = ShippingLabelAddressValidationError(addressError: nil, generalError: "Name is required")
+        let originAddress = Address.fake()
+        let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                                    originAddress: originAddress,
+                                                                    destinationAddress: nil)
+
+        // When
+        shippingLabelFormViewModel.validateAddress(type: .origin) { validationState, validationSuccess in
+            guard case let .validationError(error) = validationState else {
+                XCTFail("Validation error was not returned")
+                return
+            }
+            XCTAssertEqual(error, expectedValidationError)
+        }
+    }
+
     func test_handlePaymentMethodValueChanges_returns_updated_data_and_state_with_no_selected_payment_method() {
         // Given
         let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),

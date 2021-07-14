@@ -38,7 +38,7 @@ enum FeatureFlag: Int {
     ///
     case cardPresentKnownReader
 
-    /// Show Review order screen upon marking order complete
+    /// Card-Present Payments Onboarding
     ///
-    case reviewOrder
+    case cardPresentOnboarding
 }

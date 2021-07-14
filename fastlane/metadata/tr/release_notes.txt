@@ -1,1 +1,3 @@
-Artık değişken bir ürünün özelliklerine daha az dokunuşla ulaşabilirsiniz. Bunlar ürün ayrntılarında listelenmiştir. Ayrıca bir siparişin ayrıntılarının hem görsel olarak hem de sahne arkasında yüklenme biçimini iyileştirdik. Umarız iyileştirmeleri fark edersiniz.
+Aynı değişken ürünün birden fazla yapılandırmasını içeren siparişlerin uygulama ile gönderilmesinin kafa karıştırıcı olabileceğini duyduk. Bu güncelleme bu durumu düzeltecek ve bu öğelerin ayrı görünmesini sağlayarak okumayı kolaylaştıracaktır. Aynı şekilde, WooCommerce Shipping & Tax uzantısından gelen birden fazla gönderi içeren siparişler de ayrı bölümler olarak gösterilecektir.
+
+Uygulama veri yüklemekte sorun yaşıyorsa, şimdi yardıma nasıl ulaşacağınıza ilişkin talimatların yer aldığı faydalı bir mesaj gösteriyoruz. Çoğu zaman sorunlara neden olan bir eklentidir, ancak sorunu çözmenize yardımcı olabiliriz!

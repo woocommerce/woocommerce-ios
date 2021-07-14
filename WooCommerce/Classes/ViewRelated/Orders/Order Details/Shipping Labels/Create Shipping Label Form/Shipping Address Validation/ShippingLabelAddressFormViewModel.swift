@@ -222,16 +222,19 @@ extension ShippingLabelAddressFormViewModel {
         let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { [weak self] (result) in
             switch result {
             case .success:
+                ServiceLocator.analytics.track(.shippingLabelAddressValidationSucceeded)
                 self?.addressValidated = .remote
                 self?.addressValidationError = nil
                 self?.state.isLoading = false
                 completion(.success(()))
             case .failure(let error as ShippingLabelAddressValidationError):
+                ServiceLocator.analytics.track(.shippingLabelAddressValidationFailed, withProperties: ["error": error.localizedDescription])
                 self?.addressValidated = .none
                 self?.addressValidationError = error
                 self?.state.isLoading = false
                 completion(.failure(.remote(error)))
             case .failure(let error):
+                ServiceLocator.analytics.track(.shippingLabelAddressValidationFailed, withProperties: ["error": error.localizedDescription])
                 DDLogError("⛔️ Error validating shipping label address: \(error)")
                 self?.addressValidated = .none
                 self?.addressValidationError = ShippingLabelAddressValidationError(addressError: nil, generalError: error.localizedDescription)

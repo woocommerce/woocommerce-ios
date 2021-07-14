@@ -20,9 +20,10 @@ struct ShippingLabelPackageList: View {
                         let selected = package == viewModel.selectedCustomPackage
                         SelectableItemRow(title: package.title, subtitle: package.dimensions + " \(viewModel.dimensionUnit)", selected: selected).onTapGesture {
                             viewModel.didSelectPackage(package.title)
+                            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "packages_selected"])
                         }
-                        Divider().padding(.leading, Constants.dividerPadding)
                     }
+
 
                     /// Predefined Packages
                     ///
@@ -35,8 +36,9 @@ struct ShippingLabelPackageList: View {
                             SelectableItemRow(title: package.title,
                                               subtitle: package.dimensions + " \(viewModel.dimensionUnit)",
                                               selected: selected).onTapGesture {
-                                viewModel.didSelectPackage(package.id)
-                            }
+                                                viewModel.didSelectPackage(package.id)
+                                                ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "packages_selected"])
+                                              }
                             Divider().padding(.leading, Constants.dividerPadding)
                         }
                     }

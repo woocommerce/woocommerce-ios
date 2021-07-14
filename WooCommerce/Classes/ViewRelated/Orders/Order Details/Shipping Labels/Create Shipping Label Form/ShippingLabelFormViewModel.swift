@@ -139,6 +139,10 @@ final class ShippingLabelFormViewModel {
         // We reset the carrier and rates selected because if the address change
         // the carrier and rate change accordingly
         handleCarrierAndRatesValueChanges(selectedRate: nil, selectedSignatureRate: nil, selectedAdultSignatureRate: nil, editable: false)
+
+        if dateState == .validated {
+            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "origin_address_complete"])
+        }
     }
 
     func handleDestinationAddressValueChanges(address: ShippingLabelAddress?, validated: Bool) {
@@ -149,6 +153,10 @@ final class ShippingLabelFormViewModel {
         // We reset the carrier and rates selected because if the address change
         // the carrier and rate change accordingly
         handleCarrierAndRatesValueChanges(selectedRate: nil, selectedSignatureRate: nil, selectedAdultSignatureRate: nil, editable: false)
+
+        if dateState == .validated {
+            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "destination_address_complete"])
+        }
     }
 
     func handlePackageDetailsValueChanges(selectedPackageID: String?, totalPackageWeight: String?) {
@@ -490,6 +498,14 @@ extension ShippingLabelFormViewModel {
 
         let addressToBeVerified = ShippingLabelAddressVerification(address: address, type: type)
 
+        // Validate name field locally before validating the address remotely.
+        // The name field cannot be empty when creating a shipping label, but this is not part of the remote validation.
+        // See: https://github.com/Automattic/woocommerce-services/issues/2457
+        if address.name.isEmpty {
+            let missingNameError = ShippingLabelAddressValidationError(addressError: nil, generalError: "Name is required")
+            onCompletion?(.validationError(missingNameError), nil)
+        }
+
         updateValidatingAddressState(true, type: type)
 
         let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { [weak self] (result) in
@@ -555,7 +571,7 @@ extension ShippingLabelFormViewModel {
     /// Purchases a shipping label with the origin and destination address, package, and rate selected in the Shipping Label Form.
     /// - Parameter onCompletion: Closure to be executed on completion with the success/failure result of the purchase.
     ///
-    func purchaseLabel(onCompletion: @escaping ((Result<Void, Error>) -> Void)) {
+    func purchaseLabel(onCompletion: @escaping ((Result<TimeInterval, Error>) -> Void)) {
         guard let originAddress = originAddress,
               let destinationAddress = destinationAddress,
               let selectedPackage = selectedPackage,
@@ -567,6 +583,7 @@ extension ShippingLabelFormViewModel {
 
         let productIDs = order.items.map { $0.productOrVariationID }
         let package = ShippingLabelPackagePurchase(package: selectedPackage, rate: selectedRate, productIDs: productIDs)
+        let startTime = Date()
         let action = ShippingLabelAction.purchaseShippingLabel(siteID: siteID,
                                                                orderID: order.orderID,
                                                                originAddress: originAddress,
@@ -576,7 +593,7 @@ extension ShippingLabelFormViewModel {
             switch result {
             case .success(let labels):
                 self.purchasedShippingLabel = labels.first(where: { $0.productIDs == productIDs })
-                onCompletion(.success(()))
+                onCompletion(.success(Date().timeIntervalSince(startTime)))
             case .failure(let error):
                 onCompletion(.failure(error))
             }

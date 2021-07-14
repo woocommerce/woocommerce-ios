@@ -32,6 +32,7 @@ public struct ShippingLabel: Equatable, GeneratedCopiable, GeneratedFakeable {
     public let trackingNumber: String
 
     /// The name of service for the shipping label (e.g. "USPS - Media Mail").
+    /// Can sometimes be empty, see: https://github.com/woocommerce/woocommerce-ios/issues/4568
     public let serviceName: String
 
     /// The amount that is refundable.
@@ -115,7 +116,7 @@ extension ShippingLabel: Decodable {
         let rate = try container.decode(Double.self, forKey: .rate)
         let currency = try container.decode(String.self, forKey: .currency)
         let trackingNumber = try container.decode(String.self, forKey: .trackingNumber)
-        let serviceName = try container.decode(String.self, forKey: .serviceName)
+        let serviceName = try container.decodeIfPresent(String.self, forKey: .serviceName) ?? ""
         let refund = try container.decodeIfPresent(ShippingLabelRefund.self, forKey: .refund)
         let refundableAmount = try container.decode(Double.self, forKey: .refundableAmount)
 

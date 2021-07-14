@@ -271,18 +271,6 @@ private extension DefaultStoresManager {
         dispatch(action)
     }
 
-    /// Synchronizes the WordPress.com Site Plan.
-    ///
-    func synchronizeSitePlan(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        guard let siteID = sessionManager.defaultSite?.siteID else {
-            onCompletion(.failure(StoresManagerError.missingDefaultSite))
-            return
-        }
-
-        let action = AccountAction.synchronizeSitePlan(siteID: siteID, onCompletion: onCompletion)
-        dispatch(action)
-    }
-
     /// Synchronizes the settings for the specified site, if possible.
     ///
     func synchronizeSettings(with siteID: Int64, onCompletion: @escaping () -> Void) {
@@ -313,12 +301,13 @@ private extension DefaultStoresManager {
         dispatch(productSettingsAction)
 
         group.enter()
-        synchronizeSitePlan { result in
+        let sitePlanAction = AccountAction.synchronizeSitePlan(siteID: siteID) { result in
             if case let .failure(error) = result {
                 errors.append(error)
             }
             group.leave()
         }
+        dispatch(sitePlanAction)
 
         group.notify(queue: .main) {
             if errors.isEmpty {

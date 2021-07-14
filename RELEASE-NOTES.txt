@@ -3,6 +3,7 @@
 7.2
 -----
 - [*] Updated success notice message for Order Fulfillment [https://github.com/woocommerce/woocommerce-ios/pull/4589]
+- [*] Shipping Labels: Updated address validation to make sure a name is entered for each address. [https://github.com/woocommerce/woocommerce-ios/pull/4601]
 
 7.1
 -----

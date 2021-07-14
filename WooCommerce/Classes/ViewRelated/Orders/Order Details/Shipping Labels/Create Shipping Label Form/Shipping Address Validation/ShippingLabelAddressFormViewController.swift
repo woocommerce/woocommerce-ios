@@ -20,6 +20,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
     private lazy var topBannerView: TopBannerView = {
         let topBanner = ShippingLabelAddressTopBannerFactory.addressErrorTopBannerView(shipType: viewModel.type) { [weak self] in
             MapsHelper.openAppleMaps(address: self?.viewModel.address?.formattedPostalAddress) { [weak self] (result) in
+                ServiceLocator.analytics.track(.shippingLabelEditAddressOpenMapButtonTapped)
                 switch result {
                 case .success:
                     break
@@ -28,6 +29,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
                 }
             }
         } contactCustomerPressed: { [weak self] in
+            ServiceLocator.analytics.track(.shippingLabelEditAddressContactCustomerButtonTapped)
             if PhoneHelper.callPhoneNumber(phone: self?.viewModel.address?.phone) == false {
                 self?.displayPhoneNumberErrorNotice()
             }
@@ -56,10 +58,17 @@ final class ShippingLabelAddressFormViewController: UIViewController {
          type: ShipType,
          address: ShippingLabelAddress?,
          validationError: ShippingLabelAddressValidationError?,
+         countries: [Country],
          completion: @escaping Completion ) {
-        viewModel = ShippingLabelAddressFormViewModel(siteID: siteID, type: type, address: address, validationError: validationError)
+        viewModel = ShippingLabelAddressFormViewModel(siteID: siteID, type: type, address: address, validationError: validationError, countries: countries)
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
+        switch type {
+        case .origin:
+            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "origin_address_started"])
+        case .destination:
+            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "destination_address_started"])
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -120,6 +129,7 @@ private extension ShippingLabelAddressFormViewController {
         registerTableViewCells()
 
         tableView.dataSource = self
+        tableView.delegate = self
     }
 
     func registerTableViewCells() {
@@ -177,6 +187,7 @@ private extension ShippingLabelAddressFormViewController {
 private extension ShippingLabelAddressFormViewController {
 
     @objc func doneButtonTapped() {
+        ServiceLocator.analytics.track(.shippingLabelEditAddressDoneButtonTapped)
         viewModel.validateAddress(onlyLocally: false) { [weak self] (result) in
             guard let self = self else { return }
             switch result {
@@ -190,6 +201,7 @@ private extension ShippingLabelAddressFormViewController {
     }
 
     @objc func confirmButtonTapped() {
+        ServiceLocator.analytics.track(.shippingLabelEditAddressUseAddressAsIsButtonTapped)
         viewModel.validateAddress(onlyLocally: true) { [weak self] (result) in
             guard let self = self else { return }
             switch result {
@@ -238,6 +250,33 @@ extension ShippingLabelAddressFormViewController: UITableViewDataSource {
         configure(cell, for: row, at: indexPath)
 
         return cell
+    }
+}
+
+// MARK: - UITableViewDelegate Conformance
+//
+extension ShippingLabelAddressFormViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let row = viewModel.sections[indexPath.section].rows[indexPath.row]
+        switch row {
+        case .state:
+            let states = viewModel.statesOfSelectedCountry
+            let selectedState = states.first { $0.code == viewModel.address?.state }
+            let command = ShippingLabelStateOfACountryListSelectorCommand(states: states, selected: selectedState)
+            let listSelector = ListSelectorViewController(command: command) { [weak self] state in
+                self?.viewModel.handleAddressValueChanges(row: .state, newValue: state?.code)
+                self?.tableView.reloadData()
+            }
+            show(listSelector, sender: self)
+            break
+        case .country:
+            // The country is not editable in M2/M3 (because we support just US).
+            // It will be editable in M4 or M5.
+            let notice = Notice(title: Localization.countryNotEditable, feedbackType: .warning)
+            ServiceLocator.noticePresenter.enqueue(notice: notice)
+        default:
+            break
+        }
     }
 }
 
@@ -383,26 +422,26 @@ private extension ShippingLabelAddressFormViewController {
 
     func configureState(cell: TitleAndTextFieldTableViewCell, row: Row) {
         let cellViewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.stateField,
-                                                                     text: viewModel.address?.state,
+                                                                     text: viewModel.extendedStateName,
                                                                      placeholder: Localization.stateFieldPlaceholder,
                                                                      state: .normal,
                                                                      keyboardType: .default,
-                                                                     textFieldAlignment: .leading) { [weak self] (newText) in
-            self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
+                                                                     textFieldAlignment: .leading) { _ in
         }
         cell.configure(viewModel: cellViewModel)
+        cell.enableTextField(false)
     }
 
     func configureCountry(cell: TitleAndTextFieldTableViewCell, row: Row) {
         let cellViewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.countryField,
-                                                                     text: viewModel.address?.country,
+                                                                     text: viewModel.extendedCountryName,
                                                                      placeholder: Localization.countryFieldPlaceholder,
                                                                      state: .normal,
                                                                      keyboardType: .default,
-                                                                     textFieldAlignment: .leading) { [weak self] (newText) in
-            self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
+                                                                     textFieldAlignment: .leading) { _ in
         }
         cell.configure(viewModel: cellViewModel)
+        cell.enableTextField(false)
     }
 }
 
@@ -489,5 +528,7 @@ private extension ShippingLabelAddressFormViewController {
                                                             comment: "Error in finding the address in the Shipping Label Address Validation in Apple Maps")
         static let phoneNumberErrorNotice = NSLocalizedString("The phone number is not valid or you can't call the customer from this device.",
             comment: "Error in calling the phone number of the customer in the Shipping Label Address Validation")
+        static let countryNotEditable = NSLocalizedString("Currently we support just the United States from mobile.",
+                                                          comment: "Error when the user tap on Country field in Shipping Label Address Validation")
     }
 }

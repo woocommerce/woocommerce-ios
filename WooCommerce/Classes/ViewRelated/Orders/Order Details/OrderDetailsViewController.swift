@@ -58,7 +58,7 @@ final class OrderDetailsViewController: UIViewController {
     /// Orchestrates what needs to be presented in the modal views
     /// that provide user-facing feedback about the card present payment process.
     private lazy var paymentAlerts: OrderDetailsPaymentAlerts = {
-        OrderDetailsPaymentAlerts()
+        OrderDetailsPaymentAlerts(presentingController: self)
     }()
 
     /// Subscription that listens for connected readers while we are trying to connect to one to capture payment
@@ -95,22 +95,17 @@ final class OrderDetailsViewController: UIViewController {
         super.viewWillAppear(animated)
         syncEverything { [weak self] in
             self?.topLoaderView.isHidden = true
+
+            /// We add the refresh control to the tableview just after the `topLoaderView` disappear for the first time.
+            if self?.tableView.refreshControl == nil {
+                self?.tableView.refreshControl = self?.refreshControl
+            }
         }
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.updateHeaderHeight()
-    }
-
-    private func syncTrackingsHidingAddButtonIfNecessary() {
-        syncTracking { [weak self] error in
-            if error == nil {
-                self?.viewModel.trackingIsReachable = true
-            }
-
-            self?.reloadTableViewSectionsAndData()
-        }
     }
 }
 
@@ -132,7 +127,6 @@ private extension OrderDetailsViewController {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.refreshControl = refreshControl
 
         tableView.dataSource = viewModel.dataSource
     }
@@ -341,7 +335,7 @@ private extension OrderDetailsViewController {
         }
 
         group.enter()
-        syncTracking { _ in
+        syncTrackingsEnablingAddButtonIfReachable {
             group.leave()
         }
 
@@ -408,6 +402,17 @@ private extension OrderDetailsViewController {
 
     func syncSavedReceipts(onCompletion: ((Error?) -> ())? = nil) {
         viewModel.syncSavedReceipts(onCompletion: onCompletion)
+    }
+
+    func syncTrackingsEnablingAddButtonIfReachable(onCompletion: (() -> Void)? = nil) {
+        syncTracking { [weak self] error in
+            if error == nil {
+                self?.viewModel.trackingIsReachable = true
+            }
+
+            self?.reloadTableViewSectionsAndData()
+            onCompletion?()
+        }
     }
 
     func checkShippingLabelCreationEligibility(onCompletion: (() -> Void)? = nil) {
@@ -493,10 +498,19 @@ private extension OrderDetailsViewController {
                 assertionFailure("Cannot reprint a shipping label because `navigationController` is nil")
                 return
             }
-            let coordinator = ReprintShippingLabelCoordinator(shippingLabel: shippingLabel, sourceViewController: navigationController)
-            coordinator.showReprintUI()
+            let coordinator = PrintShippingLabelCoordinator(shippingLabel: shippingLabel, printType: .reprint, sourceViewController: navigationController)
+            coordinator.showPrintUI()
         case .createShippingLabel:
             let shippingLabelFormVC = ShippingLabelFormViewController(order: viewModel.order)
+            shippingLabelFormVC.onLabelPurchase = { [weak self] isOrderComplete in
+                if isOrderComplete {
+                    self?.markOrderCompleteFromShippingLabels()
+                }
+            }
+            shippingLabelFormVC.onLabelSave = { [weak self] in
+                guard let self = self else { return }
+                self.navigationController?.popToViewController(self, animated: true)
+            }
             navigationController?.show(shippingLabelFormVC, sender: self)
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
@@ -507,11 +521,42 @@ private extension OrderDetailsViewController {
 
     func markOrderCompleteWasPressed() {
         ServiceLocator.analytics.track(.orderFulfillmentCompleteButtonTapped)
+        let reviewOrderViewModel = ReviewOrderViewModel(order: viewModel.order, products: viewModel.products, showAddOns: viewModel.dataSource.showAddOns)
+        let controller = ReviewOrderViewController(viewModel: reviewOrderViewModel) { [weak self] in
+            guard let self = self else { return }
+            ServiceLocator.analytics.track(
+                .orderStatusChange,
+                withProperties: [
+                    "id": self.viewModel.order.orderID,
+                    "from": self.viewModel.order.status.rawValue,
+                    "to": OrderStatusEnum.completed.rawValue
+                ])
+            let fulfillmentProcess = self.viewModel.markCompleted()
+            let presenter = OrderFulfillmentNoticePresenter()
+            presenter.present(process: fulfillmentProcess)
+        }
+        navigationController?.pushViewController(controller, animated: true)
+    }
 
-        let fulfillmentProcess = viewModel.markCompleted()
+    func markOrderCompleteFromShippingLabels() {
+        let fulfillmentProcess = self.viewModel.markCompleted()
 
-        let presenter = OrderFulfillmentNoticePresenter()
-        presenter.present(process: fulfillmentProcess)
+        var cancellables = Set<AnyCancellable>()
+        var cancellable: AnyCancellable = AnyCancellable { }
+        cancellable = fulfillmentProcess.result.sink { completion in
+            if case .failure(_) = completion {
+                ServiceLocator.analytics.track(.shippingLabelOrderFulfillFailed)
+            }
+            else {
+                ServiceLocator.analytics.track(.shippingLabelOrderFulfillSucceeded)
+            }
+            cancellables.remove(cancellable)
+        } receiveValue: {
+            // Noop. There is no value to receive or act on.
+        }
+
+        // Insert in `cancellables` to keep the `sink` handler active.
+        cancellables.insert(cancellable)
     }
 
     func trackingWasPressed(at indexPath: IndexPath) {
@@ -611,8 +656,7 @@ private extension OrderDetailsViewController {
         let unit = ServiceLocator.currencySettings.symbol(from: currencyCode)
         let value = currencyFormatter.formatAmount(viewModel.order.total, with: unit) ?? ""
 
-        paymentAlerts.readerIsReady(from: self,
-                                    title: viewModel.collectPaymentFrom,
+        paymentAlerts.readerIsReady(title: viewModel.collectPaymentFrom,
                                     amount: value)
 
         ServiceLocator.analytics.track(.collectPaymentTapped)

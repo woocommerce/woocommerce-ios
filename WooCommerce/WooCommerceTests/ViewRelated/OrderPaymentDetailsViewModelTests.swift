@@ -177,4 +177,16 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
 
         XCTAssertTrue(refundAmount.hasPrefix("-"))
     }
+
+    func test_has_been_partially_charged_returns_true_when_there_is_a_partial_refund() {
+        XCTAssertTrue(orderWithAPIRefundsViewModel.hasBeenPartiallyCharged)
+    }
+
+    func test_has_been_partially_charged_returns_true_when_there_is_a_transient_refund() {
+        XCTAssertTrue(orderWithTransientRefundsViewModel.hasBeenPartiallyCharged)
+    }
+
+    func test_has_been_partially_charged_returns_false_when_there_are_no_refunds() {
+        XCTAssertFalse(viewModel.hasBeenPartiallyCharged)
+    }
 }

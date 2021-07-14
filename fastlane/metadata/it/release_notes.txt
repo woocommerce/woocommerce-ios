@@ -1,0 +1,3 @@
+Sappiamo che l'evasione degli ordini che contengono più configurazioni dello stesso prodotto variabile dall'app può creare confusione. Questo aggiornamento risolve questo problema: gli articoli in questione, infatti, vengono visualizzati separatamente, semplificando la lettura. Con lo stesso intento, gli ordini con più spedizioni dall'estensione WooCommerce Shipping & Tax appariranno come sezioni separate.
+
+Se il caricamento dei dati dall'app risulta problematico, viene ora visualizzato un utile messaggio che contiene istruzioni su come richiedere assistenza. La maggior parte delle volte, il problema è causato da un plugin, ma possiamo guidarti nella risoluzione.

@@ -11,6 +11,7 @@ final class CardPresentPaymentsModalViewController: UIViewController {
 
     @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var mainStackView: UIStackView!
+    @IBOutlet weak var primaryActionButtonsStackView: UIStackView!
     @IBOutlet private weak var topTitleLabel: UILabel!
     @IBOutlet private weak var topSubtitleLabel: UILabel!
     @IBOutlet private weak var bottomTitleLabel: UILabel!
@@ -52,7 +53,9 @@ final class CardPresentPaymentsModalViewController: UIViewController {
     func setViewModel(_ newViewModel: CardPresentPaymentsModalViewModel) {
         self.viewModel = newViewModel
 
-        populateContent()
+        if isViewLoaded {
+            populateContent()
+        }
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -62,12 +65,15 @@ final class CardPresentPaymentsModalViewController: UIViewController {
 
     private func resetHeightAndWidth() {
         if traitCollection.containsTraits(in: UITraitCollection(verticalSizeClass: .compact)) {
-            mainStackView.axis = .horizontal
+            primaryActionButtonsStackView.axis = .horizontal
+            imageView.isHidden = true
+
             mainStackView.distribution = .fillProportionally
             heightConstraint.constant = Constants.modalWidth
             widthConstraint.constant = Constants.modalHeight
         } else {
-            mainStackView.axis = .vertical
+            primaryActionButtonsStackView.axis = .vertical
+            imageView.isHidden = false
             mainStackView.distribution = .fill
             heightConstraint.constant = Constants.modalHeight
             widthConstraint.constant = Constants.modalWidth
@@ -140,11 +146,7 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func styleSecondaryButton() {
-        if viewModel.actionsMode == .secondaryOnlyAction {
-            secondaryButton.applyPaymentsModalCancelButtonStyle()
-        } else {
-            secondaryButton.applySecondaryLightButtonStyle()
-        }
+        secondaryButton.applyPaymentsModalCancelButtonStyle()
         secondaryButton.titleLabel?.adjustsFontSizeToFitWidth = true
         secondaryButton.titleLabel?.minimumScaleFactor = 0.5
     }

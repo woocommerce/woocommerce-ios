@@ -144,6 +144,7 @@
 		26E5A09225A8A453000DF8F6 /* ProductAttributeTermStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E5A09125A8A453000DF8F6 /* ProductAttributeTermStoreTests.swift */; };
 		26FB056A25F6CB7600A40B26 /* Fakes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26FB056925F6CB7600A40B26 /* Fakes.framework */; };
 		312A3D6E266AEA6900D28BC9 /* PaymentGatewayAccount+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312A3D6D266AEA6900D28BC9 /* PaymentGatewayAccount+ReadOnlyConvertible.swift */; };
+		312DB64D268BD22B00AA0EE9 /* AppSettingsStoreTests+CardReaderSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312DB64C268BD22B00AA0EE9 /* AppSettingsStoreTests+CardReaderSettings.swift */; };
 		3147030626701E2800EF253A /* PaymentGatewayAccountAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3147030526701E2800EF253A /* PaymentGatewayAccountAction.swift */; };
 		3147030A2670295300EF253A /* PaymentGatewayAccountStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314703092670295300EF253A /* PaymentGatewayAccountStore.swift */; };
 		3147030C2670333200EF253A /* WCPayAccount+PaymentGatewayAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3147030B2670333200EF253A /* WCPayAccount+PaymentGatewayAccount.swift */; };
@@ -495,6 +496,7 @@
 		26E5A09125A8A453000DF8F6 /* ProductAttributeTermStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributeTermStoreTests.swift; sourceTree = "<group>"; };
 		26FB056925F6CB7600A40B26 /* Fakes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Fakes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		312A3D6D266AEA6900D28BC9 /* PaymentGatewayAccount+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PaymentGatewayAccount+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		312DB64C268BD22B00AA0EE9 /* AppSettingsStoreTests+CardReaderSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppSettingsStoreTests+CardReaderSettings.swift"; sourceTree = "<group>"; };
 		3147030526701E2800EF253A /* PaymentGatewayAccountAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGatewayAccountAction.swift; sourceTree = "<group>"; };
 		314703092670295300EF253A /* PaymentGatewayAccountStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGatewayAccountStore.swift; sourceTree = "<group>"; };
 		3147030B2670333200EF253A /* WCPayAccount+PaymentGatewayAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayAccount+PaymentGatewayAccount.swift"; sourceTree = "<group>"; };
@@ -1213,6 +1215,7 @@
 				578CE7862475D6FA00492EBF /* ProductReview */,
 				D87F615D2265B1BC0031A13B /* AppSettingsStoreTests.swift */,
 				0202B6982387B01500F3EBE0 /* AppSettingsStoreTests+ProductsFeatureSwitch.swift */,
+				312DB64C268BD22B00AA0EE9 /* AppSettingsStoreTests+CardReaderSettings.swift */,
 				02DA641A2313D6D200284168 /* AppSettingsStoreTests+StatsVersion.swift */,
 				458C6DE725ACC554009B300D /* AppSettingsStoreTests+ProductsSettings.swift */,
 				B5BC736720D1AA8F00B5B6FA /* AccountStoreTests.swift */,
@@ -1903,6 +1906,7 @@
 				578CE7882475D70F00492EBF /* RetrieveProductReviewFromNoteUseCaseTests.swift in Sources */,
 				02FF056723DEB2180058E6E7 /* MediaStoreTests.swift in Sources */,
 				B5C9DE272087FF20006B910A /* MockAcountStore.swift in Sources */,
+				312DB64D268BD22B00AA0EE9 /* AppSettingsStoreTests+CardReaderSettings.swift in Sources */,
 				2614E12D24C745B2007CEE60 /* LeaderboardStatsConverterTests.swift in Sources */,
 				02DA641B2313D6D200284168 /* AppSettingsStoreTests+StatsVersion.swift in Sources */,
 				026D52C0238235930092AE05 /* ProductVariationStoreTests.swift in Sources */,

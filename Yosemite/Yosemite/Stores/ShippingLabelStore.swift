@@ -415,14 +415,15 @@ private extension ShippingLabelStore {
                          completion: @escaping (Result<[ShippingLabel], Error>) -> Void) {
         remote.checkLabelStatus(siteID: siteID, orderID: orderID, labelIDs: labelIDs) { result in
             switch result {
-            case .success(let labels):
+            case .success(let labelStatusResponse):
                 // If all labels have PURCHASED status, stop polling
-                if labels.allSatisfy({ $0.status == .purchased }) {
+                if labelStatusResponse.allSatisfy({ $0.status == .purchased }) {
+                    let labels = labelStatusResponse.compactMap { $0.getPurchasedLabel() }
                     completion(.success(labels))
                 }
 
                 // If any label has PURCHASE_ERROR status, return error and stop polling
-                else if labels.contains(where: { $0.status == .purchaseError }) {
+                else if labelStatusResponse.contains(where: { $0.status == .purchaseError }) {
                     DDLogError("⛔️ Error purchasing shipping label for order \(orderID)")
                     completion(.failure(LabelPurchaseError.purchaseErrorStatus))
                 }

@@ -1,56 +1,72 @@
 import UIKit
 import Yosemite
 
-/// Coordinates navigation actions for reprinting a shipping label.
-final class ReprintShippingLabelCoordinator {
+/// Coordinates navigation actions for printing a shipping label.
+final class PrintShippingLabelCoordinator {
     private let sourceViewController: UIViewController
     private let shippingLabel: ShippingLabel
     private let stores: StoresManager
     private let analytics: Analytics
+    private let printType: PrintType
+    private let onCompletion: (() -> Void)?
 
-    /// - Parameter shippingLabel: The shipping label to reprint.
-    /// - Parameter sourceViewController: The view controller that shows the reprint UI in the first place.
+    /// - Parameter shippingLabel: The shipping label to print.
+    /// - Parameter printType: Whether the label is being printed for the first time or reprinted.
+    /// - Parameter sourceViewController: The view controller that shows the print UI in the first place.
     /// - Parameter stores: Handles Yosemite store actions.
     /// - Parameter analytics: Tracks analytics events.
     init(shippingLabel: ShippingLabel,
+         printType: PrintType,
          sourceViewController: UIViewController,
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         onCompletion: (() -> Void)? = nil) {
         self.shippingLabel = shippingLabel
+        self.printType = printType
         self.sourceViewController = sourceViewController
         self.stores = stores
         self.analytics = analytics
+        self.onCompletion = onCompletion
     }
 
-    /// Shows the main screen for reprinting a shipping label.
+    /// Shows the main screen for printing a shipping label.
     /// `self` is retained in the action callbacks so that the coordinator has the same life cycle as the main view controller
-    /// (`ReprintShippingLabelViewController`).
-    func showReprintUI() {
-        let reprintViewController = ReprintShippingLabelViewController(shippingLabel: shippingLabel)
+    /// (`PrintShippingLabelViewController`).
+    func showPrintUI() {
+        let printViewController = PrintShippingLabelViewController(shippingLabel: shippingLabel, printType: printType)
 
-        reprintViewController.onAction = { actionType in
+        printViewController.onAction = { actionType in
             switch actionType {
             case .showPaperSizeSelector(let paperSizeOptions, let selectedPaperSize, let onSelection):
                 self.showPaperSizeSelector(paperSizeOptions: paperSizeOptions,
                                            selectedPaperSize: selectedPaperSize,
                                            onPaperSizeSelected: onSelection)
-            case .reprint(let paperSize):
-                self.reprintShippingLabel(paperSize: paperSize)
+            case .print(let paperSize):
+                self.printShippingLabel(paperSize: paperSize)
             case .presentPaperSizeOptions:
                 self.presentPaperSizeOptions()
             case .presentPrintingInstructions:
                 self.presentPrintingInstructions()
+            case .saveLabelForLater:
+                self.saveLabelForLater()
             }
         }
 
-        // Since the reprint UI could make an API request for printing data, disables the bottom bar (tab bar) to simplify app states.
-        reprintViewController.hidesBottomBarWhenPushed = true
-        sourceViewController.show(reprintViewController, sender: sourceViewController)
+        // Since the print UI could make an API request for printing data, disables the bottom bar (tab bar) to simplify app states.
+        printViewController.hidesBottomBarWhenPushed = true
+        sourceViewController.show(printViewController, sender: sourceViewController)
+    }
+}
+
+extension PrintShippingLabelCoordinator {
+    enum PrintType {
+        case print
+        case reprint
     }
 }
 
 // MARK: Navigation actions
-private extension ReprintShippingLabelCoordinator {
+private extension PrintShippingLabelCoordinator {
     func showPaperSizeSelector(paperSizeOptions: [ShippingLabelPaperSize],
                                selectedPaperSize: ShippingLabelPaperSize?,
                                onPaperSizeSelected: @escaping (ShippingLabelPaperSize?) -> Void) {
@@ -61,28 +77,28 @@ private extension ReprintShippingLabelCoordinator {
         sourceViewController.show(listSelector, sender: sourceViewController)
     }
 
-    func reprintShippingLabel(paperSize: ShippingLabelPaperSize) {
-        presentReprintInProgressUI()
+    func printShippingLabel(paperSize: ShippingLabelPaperSize) {
+        presentPrintInProgressUI()
         requestDocumentForPrinting(paperSize: paperSize) { result in
-            self.dismissReprintInProgressUI()
+            self.dismissPrintInProgressUI()
             switch result {
             case .success(let printData):
                 self.presentAirPrint(printData: printData)
             case .failure(let error):
                 DDLogError("Error generating shipping label document for printing: \(error)")
-                self.presentErrorAlert(title: Localization.reprintErrorAlertTitle)
+                self.presentErrorAlert(title: Localization.printErrorAlertTitle)
             }
         }
     }
 
-    func presentReprintInProgressUI() {
+    func presentPrintInProgressUI() {
         let viewProperties = InProgressViewProperties(title: Localization.inProgressTitle, message: Localization.inProgressMessage)
         let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
         inProgressViewController.modalPresentationStyle = .overCurrentContext
         sourceViewController.present(inProgressViewController, animated: true, completion: nil)
     }
 
-    func dismissReprintInProgressUI() {
+    func dismissPrintInProgressUI() {
         sourceViewController.dismiss(animated: true)
     }
 
@@ -103,11 +119,15 @@ private extension ReprintShippingLabelCoordinator {
         let navigationController = WooNavigationController(rootViewController: printingInstructionsViewController)
         sourceViewController.present(navigationController, animated: true, completion: nil)
     }
+
+    func saveLabelForLater() {
+        onCompletion?()
+    }
 }
 
 // MARK: Store actions
-private extension ReprintShippingLabelCoordinator {
-    /// Requests document data for reprinting a shipping label with the selected paper size.
+private extension PrintShippingLabelCoordinator {
+    /// Requests document data for printing a shipping label with the selected paper size.
     func requestDocumentForPrinting(paperSize: ShippingLabelPaperSize, completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
         analytics.track(.shippingLabelReprintRequested)
         let action = ShippingLabelAction.printShippingLabel(siteID: shippingLabel.siteID,
@@ -120,27 +140,27 @@ private extension ReprintShippingLabelCoordinator {
 }
 
 // MARK: Private helpers
-private extension ReprintShippingLabelCoordinator {
+private extension PrintShippingLabelCoordinator {
     func presentErrorAlert(title: String?) {
         let alertController = UIAlertController(title: title, message: nil, preferredStyle: .alert)
         alertController.view.tintColor = .text
 
-        alertController.addCancelActionWithTitle(Localization.reprintErrorAlertDismissAction)
+        alertController.addCancelActionWithTitle(Localization.printErrorAlertDismissAction)
 
         sourceViewController.present(alertController, animated: true)
     }
 }
 
-private extension ReprintShippingLabelCoordinator {
+private extension PrintShippingLabelCoordinator {
     enum Localization {
         static let inProgressTitle = NSLocalizedString("Printing Label",
-                                                       comment: "Title of in-progress modal when requesting shipping label document for reprinting")
+                                                       comment: "Title of in-progress modal when requesting shipping label document for printing")
         static let inProgressMessage = NSLocalizedString("Please wait",
-                                                         comment: "Message of in-progress modal when requesting shipping label document for reprinting")
-        static let reprintErrorAlertTitle = NSLocalizedString("Error previewing shipping label",
-                                                         comment: "Alert title when there is an error requesting shipping label document for reprinting")
-        static let reprintErrorAlertDismissAction = NSLocalizedString(
+                                                         comment: "Message of in-progress modal when requesting shipping label document for printing")
+        static let printErrorAlertTitle = NSLocalizedString("Error previewing shipping label",
+                                                         comment: "Alert title when there is an error requesting shipping label document for printing")
+        static let printErrorAlertDismissAction = NSLocalizedString(
             "OK",
-            comment: "Dismiss button on the alert when there is an error requesting shipping label document for reprinting")
+            comment: "Dismiss button on the alert when there is an error requesting shipping label document for printing")
     }
 }

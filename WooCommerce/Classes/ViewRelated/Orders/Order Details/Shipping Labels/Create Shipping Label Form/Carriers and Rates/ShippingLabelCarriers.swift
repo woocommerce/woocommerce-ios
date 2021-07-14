@@ -20,6 +20,7 @@ struct ShippingLabelCarriers: View {
          completion: @escaping Completion) {
         self.viewModel = viewModel
         onCompletion = completion
+        ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "carrier_rates_started"])
     }
 
     var body: some View {
@@ -62,6 +63,7 @@ struct ShippingLabelCarriers: View {
                 onCompletion(viewModel.getSelectedRates().selectedRate,
                              viewModel.getSelectedRates().selectedSignatureRate,
                              viewModel.getSelectedRates().selectedAdultSignatureRate)
+                ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "carrier_rates_selected"])
                 presentation.wrappedValue.dismiss()
             }, label: {
                 Text(Localization.doneButton)
@@ -83,7 +85,7 @@ private extension ShippingLabelCarriers {
         static let doneButton = NSLocalizedString("Done", comment: "Done navigation button in shipping label carrier and rates screen")
         static let emptyStateTitle = NSLocalizedString("No shipping rates available",
                                                        comment: "Error state title in shipping label carrier and rates screen")
-        static let emptyStateDescription = NSLocalizedString("Please double check your package dimensions and weight" +
+        static let emptyStateDescription = NSLocalizedString("Please double check your package dimensions and weight " +
                                                                 "or try using a different package in Package Details.",
                                                              comment: "Error state description in shipping label carrier and rates screen")
     }

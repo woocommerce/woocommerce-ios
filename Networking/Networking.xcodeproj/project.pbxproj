@@ -422,6 +422,7 @@
 		CCB2CA9E262091CB00285CA0 /* SuccessDataResultMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB2CA9D262091CB00285CA0 /* SuccessDataResultMapper.swift */; };
 		CCB2CAA226209A1200285CA0 /* generic_success_data.json in Resources */ = {isa = PBXBuildFile; fileRef = CCB2CAA126209A1200285CA0 /* generic_success_data.json */; };
 		CCB2CAA82620ABCC00285CA0 /* shipping-label-create-package-error.json in Resources */ = {isa = PBXBuildFile; fileRef = CCB2CAA72620ABCC00285CA0 /* shipping-label-create-package-error.json */; };
+		CCB573AA268CCFE90070FBB0 /* ShippingLabelStatusPollingResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB573A9268CCFE90070FBB0 /* ShippingLabelStatusPollingResponse.swift */; };
 		CCF48AD4262864CB0034EA83 /* ShippingLabelAccountSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCF48AD3262864CB0034EA83 /* ShippingLabelAccountSettings.swift */; };
 		CCF48B1E26288FEC0034EA83 /* ShippingLabelPaymentMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCF48B1D26288FEC0034EA83 /* ShippingLabelPaymentMethod.swift */; };
 		CCF48B24262890BB0034EA83 /* ShippingLabelPaymentCardType.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCF48B23262890BB0034EA83 /* ShippingLabelPaymentCardType.swift */; };
@@ -974,6 +975,7 @@
 		CCB2CA9D262091CB00285CA0 /* SuccessDataResultMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessDataResultMapper.swift; sourceTree = "<group>"; };
 		CCB2CAA126209A1200285CA0 /* generic_success_data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = generic_success_data.json; sourceTree = "<group>"; };
 		CCB2CAA72620ABCC00285CA0 /* shipping-label-create-package-error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-create-package-error.json"; sourceTree = "<group>"; };
+		CCB573A9268CCFE90070FBB0 /* ShippingLabelStatusPollingResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelStatusPollingResponse.swift; sourceTree = "<group>"; };
 		CCF48AD3262864CB0034EA83 /* ShippingLabelAccountSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAccountSettings.swift; sourceTree = "<group>"; };
 		CCF48B1D26288FEC0034EA83 /* ShippingLabelPaymentMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPaymentMethod.swift; sourceTree = "<group>"; };
 		CCF48B23262890BB0034EA83 /* ShippingLabelPaymentCardType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPaymentCardType.swift; sourceTree = "<group>"; };
@@ -1134,6 +1136,7 @@
 			children = (
 				02C2548325635BD000A04423 /* ShippingLabelPaperSize.swift */,
 				02C254AB2563781800A04423 /* ShippingLabelStatus.swift */,
+				CCB573A9268CCFE90070FBB0 /* ShippingLabelStatusPollingResponse.swift */,
 				02C254AF256378D000A04423 /* ShippingLabelRefundStatus.swift */,
 				CCF48B23262890BB0034EA83 /* ShippingLabelPaymentCardType.swift */,
 			);
@@ -2427,6 +2430,7 @@
 				26B2F74124C1F2C10065CCC8 /* LeaderboardsRemote.swift in Sources */,
 				CCF48B24262890BB0034EA83 /* ShippingLabelPaymentCardType.swift in Sources */,
 				26455E2725F669EA008A1D32 /* ProductAttributeTermListMapper.swift in Sources */,
+				CCB573AA268CCFE90070FBB0 /* ShippingLabelStatusPollingResponse.swift in Sources */,
 				B524193F21AC5FE400D6FC0A /* DotcomDeviceMapper.swift in Sources */,
 				021EAA5625493B3600AA8CCD /* OrderItemAttribute.swift in Sources */,
 				77CE40602514CB3E003FF69D /* ProductDownloadDragAndDrop.swift in Sources */,

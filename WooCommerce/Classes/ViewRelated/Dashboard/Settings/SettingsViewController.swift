@@ -206,6 +206,17 @@ private extension SettingsViewController {
         canCollectPayments = paymentGatewayAccounts.contains(where: \.isCardPresentEligible)
     }
 
+    private var storeSettingsRows: [Row] {
+        var result = [Row]()
+        if canCollectPayments {
+            result.append(.cardReadersV2)
+        }
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentOnboarding) {
+            result.append(.inPersonPayments)
+        }
+        return result
+    }
+
     func configureTableViewFooter() {
         // `tableView.tableFooterView` can't handle a footerView that uses autolayout only.
         // Hence the container view with a defined frame.
@@ -276,10 +287,10 @@ private extension SettingsViewController {
         }
 
         // Store Settings
-        if canCollectPayments {
+        if storeSettingsRows.isNotEmpty {
             sections.append(
                 Section(title: storeSettingsTitle,
-                        rows: [.cardReadersV2],
+                        rows: storeSettingsRows,
                         footerHeight: UITableView.automaticDimension)
             )
         }
@@ -327,6 +338,8 @@ private extension SettingsViewController {
             configureSupport(cell: cell)
         case let cell as BasicTableViewCell where row == .cardReadersV2:
             configureCardReadersV2(cell: cell)
+        case let cell as BasicTableViewCell where row == .inPersonPayments:
+            configureInPersonPayments(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
             configurePrivacy(cell: cell)
         case let cell as BasicTableViewCell where row == .betaFeatures:
@@ -377,6 +390,12 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Manage Card Reader", comment: "Navigates to Card Reader management screen")
+    }
+
+    func configureInPersonPayments(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("In-Person Payments", comment: "Navigates to In-Person Payments screen")
     }
 
     func configurePrivacy(cell: BasicTableViewCell) {
@@ -518,6 +537,11 @@ private extension SettingsViewController {
         show(viewController, sender: self)
     }
 
+    func inPersonPaymentsWasPressed() {
+        let viewController = InPersonPaymentsViewController()
+        show(viewController, sender: self)
+    }
+
     func privacyWasPressed() {
         ServiceLocator.analytics.track(.settingsPrivacySettingsTapped)
         guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: PrivacySettingsViewController.self) else {
@@ -654,6 +678,8 @@ extension SettingsViewController: UITableViewDelegate {
             supportWasPressed()
         case .cardReadersV2:
             cardReadersV2WasPressed()
+        case .inPersonPayments:
+            inPersonPaymentsWasPressed()
         case .privacy:
             privacyWasPressed()
         case .betaFeatures:
@@ -696,6 +722,7 @@ private enum Row: CaseIterable {
     case plugins
     case support
     case cardReadersV2
+    case inPersonPayments
     case logout
     case privacy
     case betaFeatures
@@ -716,6 +743,8 @@ private enum Row: CaseIterable {
         case .support:
             return BasicTableViewCell.self
         case .cardReadersV2:
+            return BasicTableViewCell.self
+        case .inPersonPayments:
             return BasicTableViewCell.self
         case .logout:
             return BasicTableViewCell.self

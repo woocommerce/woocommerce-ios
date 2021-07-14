@@ -4,6 +4,10 @@
 import Combine
 
 public enum CardPresentPaymentAction: Action {
+    /// Checks the onboarding state for a site.
+    ///
+    case checkOnboardingState(siteID: Int64, onCompletion: (CardPresentPaymentOnboardingState) -> Void)
+
     /// Start the Card Reader discovery process.
     ///
     case startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: ([CardReader]) -> Void, onError: (Error) -> Void)

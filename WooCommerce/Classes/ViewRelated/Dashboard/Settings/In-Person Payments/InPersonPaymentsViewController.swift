@@ -1,8 +1,8 @@
 import SwiftUI
 
 final class InPersonPaymentsViewController: UIHostingController<InPersonPaymentsView> {
-    init() {
-        super.init(rootView: InPersonPaymentsView())
+    init(viewModel: InPersonPaymentsViewModel) {
+        super.init(rootView: InPersonPaymentsView(viewModel: viewModel))
     }
 
     @objc required dynamic init?(coder aDecoder: NSCoder) {
@@ -11,9 +11,18 @@ final class InPersonPaymentsViewController: UIHostingController<InPersonPayments
 }
 
 struct InPersonPaymentsView: View {
+    @StateObject var viewModel: InPersonPaymentsViewModel
+
     var body: some View {
-        InPersonPaymentsUnavailableView()
-            .navigationTitle(Localization.title)
+        Group {
+            switch viewModel.state {
+            case .completed:
+                CardReaderSettingsPresentingView()
+            default:
+                InPersonPaymentsUnavailableView()
+            }
+        }
+        .navigationTitle(Localization.title)
     }
 }
 
@@ -37,7 +46,7 @@ private enum Localization {
 struct InPersonPaymentsView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            InPersonPaymentsView()
+            InPersonPaymentsView(viewModel: InPersonPaymentsViewModel(initialState: .genericError))
         }
     }
 }

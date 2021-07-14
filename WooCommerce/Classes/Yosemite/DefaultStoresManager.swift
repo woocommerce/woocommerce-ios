@@ -120,9 +120,9 @@ class DefaultStoresManager: StoresManager {
         let group = DispatchGroup()
 
         group.enter()
-        synchronizeAccount { _ in
+        synchronizeAccount { [weak self] _ in
             group.enter()
-            self.synchronizeAccountSettings { _ in
+            self?.synchronizeAccountSettings { _ in
                 group.leave()
             }
             group.leave()

@@ -539,11 +539,20 @@ public extension StorageType {
         return firstObject(ofType: PaymentGatewayAccount.self, matching: predicate)
     }
     
+    // MARK: - System plugins
+    
     /// Returns all stored  system plugins for a provided `siteID`.
     ///
     func loadSystemPlugins(siteID: Int64) -> [SystemPlugin] {
         let predicate = \SystemPlugin.siteID == siteID
         let descriptor = NSSortDescriptor(keyPath: \SystemPlugin.name, ascending: true)
         return allObjects(ofType: SystemPlugin.self, matching: predicate, sortedBy: [descriptor])
+    }
+    
+    /// Returns a plugin with a specified `siteID` and `name`
+    ///
+    func loadSystemPlugin(siteID: Int64, name: String) -> SystemPlugin? {
+        let predicate = \SystemPlugin.siteID == siteID && \SystemPlugin.name == name
+        return firstObject(ofType: SystemPlugin.self, matching: predicate)
     }
 }

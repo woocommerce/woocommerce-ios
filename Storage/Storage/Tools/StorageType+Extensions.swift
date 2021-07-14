@@ -537,4 +537,13 @@ public extension StorageType {
     func loadPaymentGatewayAccount(siteID: Int64, gatewayID: String) -> PaymentGatewayAccount? {
         let predicate = \PaymentGatewayAccount.siteID == siteID && \PaymentGatewayAccount.gatewayID == gatewayID
         return firstObject(ofType: PaymentGatewayAccount.self, matching: predicate)
-    }}
+    }
+    
+    /// Returns all stored  system plugins for a provided `siteID`.
+    ///
+    func loadSystemPlugins(siteID: Int64) -> [SystemPlugin] {
+        let predicate = \SystemPlugin.siteID == siteID
+        let descriptor = NSSortDescriptor(keyPath: \SystemPlugin.name, ascending: true)
+        return allObjects(ofType: SystemPlugin.self, matching: predicate, sortedBy: [descriptor])
+    }
+}

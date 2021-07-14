@@ -1104,7 +1104,7 @@ class StorageTypeExtensionsTests: XCTestCase {
 
         // When
         let foundSystemPlugin = try XCTUnwrap(storage.loadSystemPlugin(siteID: sampleSiteID, name: "Plugin 2"))
-        
+
         // Then
         XCTAssertEqual(foundSystemPlugin, systemPlugin2)
     }

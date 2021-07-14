@@ -19,11 +19,6 @@ struct InPersonPaymentsUnavailableView: View {
 }
 
 private enum Localization {
-    static let title = NSLocalizedString(
-        "In-Person Payments",
-        comment: "Title for the In-Person Payments settings screen"
-    )
-
     static let unavailable = NSLocalizedString(
         "In-Person Payments is currently unavailable",
         comment: "Title for the error screen when In-Person Payments is unavailable"

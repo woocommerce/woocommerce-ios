@@ -26,10 +26,6 @@ enum FeatureFlag: Int {
     ///
     case shippingLabelsM4
 
-    /// Product AddOns first iteration
-    ///
-    case addOnsI1
-
     /// Site Plugin list entry point on Settings screen
     ///
     case sitePlugins

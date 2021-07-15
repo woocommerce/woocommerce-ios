@@ -22,6 +22,7 @@ final class CardReaderSettingsUnknownViewController: UIHostingController<CardRea
 
 struct CardReaderSettingsUnknownView: View {
     @State var viewModel: CardReaderSettingsUnknownViewModel
+    @State var presentedURL: URL? = nil
 
     var body: some View {
         ScrollView {
@@ -50,8 +51,10 @@ struct CardReaderSettingsUnknownView: View {
                         .frame(width: 20, height: 20)
                     AttributedText(Localization.learnMore)
                         .accentColor(Color(.textLink))
+                        .customOpenURL(binding: $presentedURL)
                 }
             }
+            .safariSheet(url: $presentedURL)
             .padding(.horizontal, 20)
             .navigationTitle(Localization.title)
         }

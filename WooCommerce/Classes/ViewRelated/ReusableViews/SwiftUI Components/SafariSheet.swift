@@ -21,4 +21,21 @@ extension View {
             SafariSheetView(url: url)
         }
     }
+
+    func safariSheet(url: Binding<URL?>) -> some View {
+        sheet(isPresented: url.notNil()) {
+            if let url = url.wrappedValue {
+                SafariSheetView(url: url)
+            }
+        }
+    }
+}
+
+private extension Binding {
+    func notNil<V>() -> Binding<Bool> where Value == V? {
+        Binding<Bool>(
+            get: { self.wrappedValue != nil },
+            set: { self.wrappedValue = $0 ? self.wrappedValue : nil }
+        )
+    }
 }

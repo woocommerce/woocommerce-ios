@@ -119,7 +119,7 @@ private extension _CardReaderSettingsUnknownViewController {
             return
         }
 
-        guard let name = viewModel.foundReaderSerialNumber else {
+        guard let name = viewModel.foundReaderID else {
             return
         }
 
@@ -405,7 +405,7 @@ private extension _CardReaderSettingsUnknownViewController {
             comment: "Settings > Manage Card Reader > Connect > A button to begin a search for a reader"
         )
 
-        static var learnMore: NSAttributedString {
+        static let learnMore: NSAttributedString = {
             let learnMoreText = NSLocalizedString(
                 "<a href=\"https://woocommerce.com/payments\">Learn more</a> about accepting payments with your mobile device and ordering card readers",
                 comment: "A label prompting users to learn more about card readers with an embedded hyperlink"
@@ -422,6 +422,6 @@ private extension _CardReaderSettingsUnknownViewController {
             learnMoreAttrText.addAttributes(learnMoreAttributes, range: range)
 
             return learnMoreAttrText
-        }
+        }()
     }
 }

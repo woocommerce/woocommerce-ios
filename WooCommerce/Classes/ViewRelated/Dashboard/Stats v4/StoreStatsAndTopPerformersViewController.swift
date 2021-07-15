@@ -31,6 +31,9 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
 
     private var periodVCs = [StoreStatsAndTopPerformersPeriodViewController]()
     private let siteID: Int64
+    private var isSyncing = false
+    private var lastFullSyncTimestamp: Date?
+    private let minimalIntervalBetweenSync: TimeInterval = 30
 
     // MARK: - View Lifecycle
 
@@ -77,10 +80,10 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
 }
 
 extension StoreStatsAndTopPerformersViewController: DashboardUI {
-    func reloadData(completion: @escaping () -> Void) {
-        syncAllStats { _ in
+    func reloadData(forced: Bool, completion: @escaping () -> Void) {
+        syncAllStats(forced: forced, onCompletion: { _ in
             completion()
-        }
+        })
     }
 
     func remindStatsUpgradeLater() {
@@ -91,26 +94,39 @@ extension StoreStatsAndTopPerformersViewController: DashboardUI {
 // MARK: - Syncing Data
 //
 private extension StoreStatsAndTopPerformersViewController {
-    func syncAllStats(onCompletion: ((Error?) -> Void)? = nil) {
+    func syncAllStats(forced: Bool, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
+        guard !isSyncing else {
+            return
+        }
+
+        if !forced, let lastFullSyncTimestamp = lastFullSyncTimestamp, Date().timeIntervalSince(lastFullSyncTimestamp) < minimalIntervalBetweenSync {
+            // less than 30 s from last full sync
+            return
+        }
+
+        isSyncing = true
+
         let group = DispatchGroup()
 
         var syncError: Error? = nil
 
         ensureGhostContentIsDisplayed()
-
         showSpinner(shouldShowSpinner: true)
 
         defer {
             group.notify(queue: .main) { [weak self] in
+                self?.isSyncing = false
                 self?.removeGhostContent()
                 self?.showSpinner(shouldShowSpinner: false)
                 if let error = syncError {
                     DDLogError("⛔️ Error loading dashboard: \(error)")
                     self?.handleSyncError(error: error)
+                    onCompletion?(.failure(error))
                 } else {
+                    self?.lastFullSyncTimestamp = Date()
                     self?.showSiteVisitors(true)
+                    onCompletion?(.success(()))
                 }
-                onCompletion?(syncError)
             }
         }
 

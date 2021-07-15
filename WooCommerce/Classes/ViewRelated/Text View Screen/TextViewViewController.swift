@@ -1,6 +1,6 @@
 import UIKit
 
-protocol TextViewViewControllerDelegate: class {
+protocol TextViewViewControllerDelegate: AnyObject {
 
     // Text validation.
     func validate(text: String) -> Bool

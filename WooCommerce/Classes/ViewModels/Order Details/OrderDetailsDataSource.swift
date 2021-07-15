@@ -45,7 +45,8 @@ final class OrderDetailsDataSource: NSObject {
     /// Whether the order is eligible for card present payment.
     ///
     var isEligibleForCardPresentPayment: Bool {
-        return isOrderStatusEligibleForCardPayment() &&
+        return isOrderAmountEligibleForCardPayment() &&
+            isOrderStatusEligibleForCardPayment() &&
             isOrderPaymentMethodEligibleForCardPayment() &&
             hasCardPresentEligiblePaymentGatewayAccount()
     }
@@ -1422,6 +1423,25 @@ extension OrderDetailsDataSource {
 // MARK: - Private Payments Logic
 
 private extension OrderDetailsDataSource {
+    func isOrderAmountEligibleForCardPayment() -> Bool {
+        // If the order is paid, it is not eligible.
+        guard order.datePaid == nil else {
+            return false
+        }
+
+        guard let totalAmount = currencyFormatter.convertToDecimal(from: order.total), totalAmount.decimalValue > 0 else {
+            return false
+        }
+
+        // If there is a discrepancy between the orderTotal and the remaining amount to collect, it is not eligible
+        // This is a temporary solution that will exclude, for example:
+        // * orders that have been partially refunded.
+        // * orders where the merchant has applied a discount manually
+        // * in general, all orders where we might want to capture a payment for less than the total order amount
+        let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
+        return !paymentViewModel.hasBeenPartiallyCharged
+    }
+
     func isOrderStatusEligibleForCardPayment() -> Bool {
         (order.status == .pending || order.status == .onHold || order.status == .processing)
     }

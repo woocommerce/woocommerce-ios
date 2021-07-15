@@ -5,7 +5,7 @@ enum ProductFormEditAction: Equatable {
     case images(editable: Bool)
     case name(editable: Bool)
     case description(editable: Bool)
-    case priceSettings(editable: Bool)
+    case priceSettings(editable: Bool, hideSeparator: Bool)
     case reviews
     case productType(editable: Bool)
     case inventorySettings(editable: Bool)
@@ -21,7 +21,7 @@ enum ProductFormEditAction: Equatable {
     // Grouped products only
     case groupedProducts(editable: Bool)
     // Variable products only
-    case variations
+    case variations(hideSeparator: Bool)
     // Variation only
     case variationName
     case noPriceWarning
@@ -109,7 +109,7 @@ private extension ProductFormActionsFactory {
         let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
 
         let actions: [ProductFormEditAction?] = [
-            .priceSettings(editable: editable),
+            .priceSettings(editable: editable, hideSeparator: false),
             shouldShowReviewsRow ? .reviews: nil,
             shouldShowShippingSettingsRow ? .shippingSettings(editable: editable): nil,
             .inventorySettings(editable: canEditInventorySettingsRow),
@@ -131,7 +131,7 @@ private extension ProductFormActionsFactory {
         let canEditProductType = formType != .add && editable
 
         let actions: [ProductFormEditAction?] = [
-            .priceSettings(editable: editable),
+            .priceSettings(editable: editable, hideSeparator: false),
             shouldShowReviewsRow ? .reviews: nil,
             shouldShowExternalURLRow ? .externalURL(editable: editable): nil,
             shouldShowSKURow ? .sku(editable: editable): nil,
@@ -176,7 +176,7 @@ private extension ProductFormActionsFactory {
         }()
 
         let actions: [ProductFormEditAction?] = [
-            .variations,
+            .variations(hideSeparator: shouldShowNoPriceWarningRow),
             shouldShowNoPriceWarningRow ? .noPriceWarning : nil,
             shouldShowAttributesRow ? .attributes(editable: editable) : nil,
             shouldShowReviewsRow ? .reviews: nil,
@@ -197,7 +197,7 @@ private extension ProductFormActionsFactory {
         let shouldShowReviewsRow = product.reviewsAllowed
 
         let actions: [ProductFormEditAction?] = [
-            shouldShowPriceSettingsRow ? .priceSettings(editable: false): nil,
+            shouldShowPriceSettingsRow ? .priceSettings(editable: false, hideSeparator: false): nil,
             shouldShowReviewsRow ? .reviews: nil,
             .inventorySettings(editable: false),
             .categories(editable: editable),

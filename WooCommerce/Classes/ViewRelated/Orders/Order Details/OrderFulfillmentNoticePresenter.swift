@@ -48,7 +48,7 @@ final class OrderFulfillmentNoticePresenter {
     /// executed.
     ///
     private func displayOptimisticFulfillmentNotice(_ fulfillmentProcess: OrderFulfillmentUseCase.FulfillmentProcess) {
-        let message = NSLocalizedString("Order marked as fulfilled", comment: "Order fulfillment success notice")
+        let message = NSLocalizedString("🎉 Order Completed", comment: "Success notice when tapping Mark Order Complete on Review Order screen")
         let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
         let notice = Notice(title: message, feedbackType: .success, actionTitle: actionTitle) {
             self.analytics.track(.orderMarkedCompleteUndoButtonTapped)

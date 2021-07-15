@@ -690,6 +690,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let mockAddress = ShippingLabelAddress.fake()
         let mockPackages = [ShippingLabelPackagePurchase.fake()]
         let expectedLabel = ShippingLabel.fake().copy(shippingLabelID: 13579)
+        let labelStatusResponse = ShippingLabelStatusPollingResponse.purchased(expectedLabel)
         let remote = MockShippingLabelRemote()
         remote.whenPurchaseShippingLabel(siteID: sampleSiteID,
                                          orderID: sampleOrderID,
@@ -701,7 +702,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         remote.whenCheckLabelStatus(siteID: sampleSiteID,
                                     orderID: sampleOrderID,
                                     labelIDs: [13579],
-                                    thenReturn: .success([expectedLabel]))
+                                    thenReturn: .success([labelStatusResponse]))
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
@@ -798,6 +799,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let mockAddress = ShippingLabelAddress.fake()
         let mockPackages = [ShippingLabelPackagePurchase.fake()]
         let expectedLabel = ShippingLabel.fake().copy(shippingLabelID: 13579, status: .purchaseError)
+        let labelStatusResponse = ShippingLabelStatusPollingResponse.purchased(expectedLabel)
         let remote = MockShippingLabelRemote()
         remote.whenPurchaseShippingLabel(siteID: sampleSiteID,
                                          orderID: sampleOrderID,
@@ -809,7 +811,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         remote.whenCheckLabelStatus(siteID: sampleSiteID,
                                     orderID: sampleOrderID,
                                     labelIDs: [13579],
-                                    thenReturn: .success([expectedLabel]))
+                                    thenReturn: .success([labelStatusResponse]))
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
@@ -835,6 +837,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let mockAddress = ShippingLabelAddress.fake()
         let mockPackages = [ShippingLabelPackagePurchase.fake()]
         let expectedLabel = ShippingLabel.fake().copy(shippingLabelID: 13579, status: .purchaseInProgress)
+        let labelStatusResponse = ShippingLabelStatusPollingResponse.purchased(expectedLabel)
         let remote = MockShippingLabelRemote()
         remote.whenPurchaseShippingLabel(siteID: sampleSiteID,
                                          orderID: sampleOrderID,
@@ -846,7 +849,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         remote.whenCheckLabelStatus(siteID: sampleSiteID,
                                     orderID: sampleOrderID,
                                     labelIDs: [13579],
-                                    thenReturn: .success([expectedLabel]))
+                                    thenReturn: .success([labelStatusResponse]))
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When

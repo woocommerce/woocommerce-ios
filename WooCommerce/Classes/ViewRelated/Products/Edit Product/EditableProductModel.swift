@@ -177,6 +177,10 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
     func isShippingEnabled() -> Bool {
         product.downloadable == false && product.virtual == false
     }
+
+    var existsRemotely: Bool {
+        product.existsRemotely
+    }
 }
 
 extension EditableProductModel: Equatable {

@@ -48,12 +48,6 @@ private extension ProductDefaultAttribute {
 // MARK: - Comparable Conformance
 //
 extension ProductDefaultAttribute: Comparable {
-    public static func == (lhs: ProductDefaultAttribute, rhs: ProductDefaultAttribute) -> Bool {
-        return lhs.attributeID == rhs.attributeID &&
-            lhs.name == rhs.name &&
-            lhs.option == rhs.option
-    }
-
     public static func < (lhs: ProductDefaultAttribute, rhs: ProductDefaultAttribute) -> Bool {
         let lhsName = lhs.name ?? ""
         let rhsName = rhs.name ?? ""

@@ -12,7 +12,7 @@ final class PaymentCaptureOrchestrator {
 
     private let celebration = PaymentCaptureCelebration()
 
-    private var walletSuppressionRequestToken = PKSuppressionRequestToken(0)
+    private var walletSuppressionRequestToken: PKSuppressionRequestToken?
 
     func collectPayment(for order: Order,
                         paymentsAccount: PaymentGatewayAccount?,
@@ -26,10 +26,10 @@ final class PaymentCaptureOrchestrator {
             return
         }
 
-        /// Briefly suppress wallet presentation so that the merchant's wallet doesn't attempt to pay for the buyer's order when the
+        /// Briefly suppress pass (wallet) presentation so that the merchant doesn't attempt to pay for the buyer's order when the
         /// reader begins to collect payment.
         ///
-        suppressWalletPresentation()
+        suppressPassPresentation()
 
         let action = CardPresentPaymentAction.collectPayment(siteID: order.siteID,
                                                              orderID: order.orderID, parameters: parameters,
@@ -45,7 +45,7 @@ final class PaymentCaptureOrchestrator {
                                                                     break
                                                                 }
                                                              }, onCompletion: { [weak self] result in
-                                                                self?.allowWalletPresentation()
+                                                                self?.allowPassPresentation()
                                                                 onProcessingMessage()
                                                                 self?.completePaymentIntentCapture(order: order,
                                                                                                  captureResult: result,
@@ -56,7 +56,11 @@ final class PaymentCaptureOrchestrator {
     }
 
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let action = CardPresentPaymentAction.cancelPayment(onCompletion: onCompletion)
+        let action = CardPresentPaymentAction.cancelPayment(onCompletion: { [weak self] result in
+            self?.allowPassPresentation()
+            onCompletion(result)
+        })
+
         ServiceLocator.stores.dispatch(action)
     }
 
@@ -95,22 +99,54 @@ private extension PaymentCaptureOrchestrator {
     /// `com.apple.developer.passkit.pass-presentation-suppression`
     /// See Woo-*.entitlements in WooCommerce/Resources
     ///
-    func suppressWalletPresentation() {
+    func suppressPassPresentation() {
+        /// iPads don't support NFC passes. Attempting to call `requestAutomaticPassPresentationSuppression` on them will
+        /// return 0 `notSupported`
+        ///
+        guard !UIDevice.isPad() else {
+            return
+        }
+
+        /// The suppression API should not be called if the application is in the background state.
+        ///
+        guard UIApplication.shared.applicationState != .background else {
+            return
+        }
+
         guard !PKPassLibrary.isSuppressingAutomaticPassPresentation() else {
             return
         }
 
         walletSuppressionRequestToken = PKPassLibrary.requestAutomaticPassPresentationSuppression() { result in
             guard result == .success else {
-                DDLogWarn("Disabling wallet presentation failed. Reason: \(result.rawValue)")
+                DDLogWarn("Automatic pass presentation suppression request failed. Reason: \(result.rawValue)")
+
+                let logProperties: [String: Any] = ["PKAutomaticPassPresentationSuppressionResult": result.rawValue]
+                ServiceLocator.crashLogging.logMessage(
+                    "Automatic pass presentation suppression request failed",
+                    properties: logProperties,
+                    level: .warning
+                )
                 return
             }
         }
     }
 
     /// Restore wallet presentation.
-    func allowWalletPresentation() {
-        guard walletSuppressionRequestToken != 0 else {
+    func allowPassPresentation() {
+        /// iPads don't have passes (wallets) to present
+        ///
+        guard !UIDevice.isPad() else {
+            return
+        }
+
+        guard let walletSuppressionRequestToken = walletSuppressionRequestToken, walletSuppressionRequestToken != 0 else {
+            return
+        }
+
+        /// The suppression API should not be called if the application is in the background state.
+        ///
+        guard UIApplication.shared.applicationState != .background else {
             return
         }
 

@@ -53,16 +53,18 @@ class StorageTypeDeletionsTests: XCTestCase {
 
     // MARK: - System plugins
 
-    func test_deleteSystemPlugins_deletes_all_system_plugins() throws {
+    func test_deleteStaleSystemPlugins_deletes_systemPlugins_not_included_in_currentSystemPlugins() throws {
         // Given
         _ = createSystemPlugin(name: "Plugin 1")
         _ = createSystemPlugin(name: "Plugin 2")
+        let systemPlugin3 = createSystemPlugin(name: "Plugin 3")
 
         // When
-        storage.deleteSystemPlugins(siteID: sampleSiteID)
+        storage.deleteStaleSystemPlugins(siteID: sampleSiteID, currentSystemPlugins: ["Plugin 3"])
 
         // Then
-        XCTAssertTrue(storage.loadSystemPlugins(siteID: sampleSiteID).isEmpty)
+        let currrentSystemPlugin = storage.loadSystemPlugins(siteID: sampleSiteID)
+        XCTAssertEqual(currrentSystemPlugin, [systemPlugin3])
     }
 }
 

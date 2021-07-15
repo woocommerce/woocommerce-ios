@@ -60,7 +60,6 @@ public struct SystemPlugin: Decodable, GeneratedFakeable, GeneratedCopiable {
         self.authorUrl = authorUrl
         self.networkActivated = networkActivated
     }
-
     /// The public initializer for SystemPlugin.
     ///
     public init(from decoder: Decoder) throws {
@@ -87,7 +86,6 @@ public struct SystemPlugin: Decodable, GeneratedFakeable, GeneratedCopiable {
                   authorUrl: authorUrl,
                   networkActivated: networkActivated)
     }
-
 }
 
 /// Defines all of the SystemPlugin CodingKeys.

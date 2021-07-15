@@ -162,7 +162,7 @@
 /* Settings > Manage Card Reader > Connect > Help hint number 3 */
 "3" = "3";
 
-/* Shown when there are more than 99 items of something (e.g. Processing Orders). */
+/* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
 
 /* A label prompting users to learn more about card readers with an embedded hyperlink */
@@ -286,8 +286,7 @@
 /* Title for adding the price settings row on Product main screen */
 "Add Price" = "Add Price";
 
-/* Banner caption in my store when the stats will be deprecated
-   Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
+/* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
 "Add price to your variations to make them visible on your store" = "Add price to your variations to make them visible on your store";
 
 /* Action to add product on the placeholder overlay when there are no products on the Products tab */
@@ -588,6 +587,9 @@
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "Check your email!";
 
+/* Navigation title on the shipping label states of a country selector screen */
+"Choose a State" = "Choose a State";
+
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "Choose from device";
 
@@ -760,6 +762,9 @@
 /* Cell title: the current date. */
 "Current" = "Current";
 
+/* Error when the user tap on Country field in Shipping Label Address Validation */
+"Currently we support just the United States from mobile." = "Currently we support just the United States from mobile.";
+
 /* Name of the section for custom shipment tracking carriers */
 "Custom" = "Custom";
 
@@ -770,13 +775,15 @@
 /* Header for the Custom Packages section in Shipping Label Package listing */
 "CUSTOM PACKAGES" = "CUSTOM PACKAGES";
 
-/* Customer info section title */
+/* Customer info section title
+   Customer info section title in Review Order screen */
 "Customer" = "Customer";
 
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
 "Customer paid a %1$@ of %2$@ for shipping" = "Customer paid a %1$@ of %2$@ for shipping";
 
-/* Customer note section title */
+/* Customer note row title
+   Customer note section title */
 "Customer Provided Note" = "Customer Provided Note";
 
 /* Details text in the shipping label creation info screen */
@@ -1045,8 +1052,11 @@
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Error in finding the address in Apple Maps";
 
-/* Alert title when there is an error requesting shipping label document for reprinting */
+/* Alert title when there is an error requesting shipping label document for printing */
 "Error previewing shipping label" = "Error previewing shipping label";
+
+/* Notice displayed when the label purchase fails */
+"Error purchasing the label" = "Error purchasing the label";
 
 /* Placeholder for the site url textfield.
    Site Address placeholder */
@@ -1556,7 +1566,8 @@
 /* Accessibility label for the Mark All Reviews as Read Button */
 "Mark All as Read" = "Mark All as Read";
 
-/* Fulfill Order Action Button */
+/* Action button on Review Order screen
+   Fulfill Order Action Button */
 "Mark Order Complete" = "Mark Order Complete";
 
 /* Create Shipping Label form -> Mark order as complete label */
@@ -1730,7 +1741,7 @@
 "Off" = "Off";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for reprinting - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for printing - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "OK";
 
 /* +2 Days Section Header */
@@ -1864,7 +1875,7 @@
 /* The title for the customer payment cell */
 "Paid" = "Paid";
 
-/* Title of the paper size selector row for reprinting a shipping label */
+/* Title of the paper size selector row for printing a shipping label */
 "Paper Size" = "Paper Size";
 
 /* Add Product Category. Title of cell presenting the parent category. */
@@ -1929,7 +1940,7 @@
 "Placing your product in the trash..." = "Placing your product in the trash...";
 
 /* Error state description in shipping label carrier and rates screen */
-"Please double check your package dimensions and weightor try using a different package in Package Details." = "Please double check your package dimensions and weightor try using a different package in Package Details.";
+"Please double check your package dimensions and weight or try using a different package in Package Details." = "Please double check your package dimensions and weight or try using a different package in Package Details.";
 
 /* Error message shown when a URL is invalid. */
 "Please enter a complete website address, like example.com." = "Please enter a complete website address, like example.com.";
@@ -1982,8 +1993,8 @@
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "Please try again.";
 
-/* Message of in-progress modal when requesting shipping label document for reprinting
-   Text on the loading view of the survey screen indicating the user to wait */
+/* Message of in-progress modal when requesting shipping label document for printing
+   Message of the in-progress UI while purchasing a shipping label - Text on the loading view of the survey screen indicating the user to wait */
 "Please wait" = "Please wait";
 
 /* Instructions for the progress screen while generating a variation */
@@ -2039,7 +2050,7 @@
 /* The title of the shipping labels top banner in order details */
 "Print shipping labels from your device!" = "Print shipping labels from your device!";
 
-/* Title of in-progress modal when requesting shipping label document for reprinting */
+/* Title of in-progress modal when requesting shipping label document for printing */
 "Printing Label" = "Printing Label";
 
 /* Opens the California Privacy Policy web page */
@@ -2068,7 +2079,7 @@
 "Processing payment..." = "Processing payment...";
 
 /* Description for Top Performers left column header
-   Product section title - Product section title if there is only one product. */
+   Product section title - Product section title if there is only one product. - Product section title in Review Order screen if there is one product. */
 "Product" = "Product";
 
 /* Product section title */
@@ -2107,7 +2118,7 @@
 "Product URL" = "Product URL";
 
 /* Product section title if there is more than one product.
-   Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
+   Product section title in Review Order screen if there is more than one product. - Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "Products";
 
 /* Cell description for Cross-sells products in Linked Products Settings screen */
@@ -2153,6 +2164,9 @@
 /* Product Note navigation title
    Purchase note label in Product Settings */
 "Purchase Note" = "Purchase Note";
+
+/* Title of the in-progress UI while purchasing a shipping label */
+"Purchasing Label" = "Purchasing Label";
 
 /* Quantity abbreviation for section title */
 "Qty" = "Qty";
@@ -2307,6 +2321,9 @@
 /* Review moderation success notice message. It reads: Review marked as {new status} */
 "Review marked as %@" = "Review marked as %@";
 
+/* Title of Review Order screen */
+"Review Order" = "Review Order";
+
 /* Title of the Reviews row on Product main screen
    Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). - Title that appears on top of the Product Reviews screen. */
 "Reviews" = "Reviews";
@@ -2338,6 +2355,9 @@
 
 /* Button title to save a product as draft in Discard Changes Action Sheet */
 "Save as Draft" = "Save as Draft";
+
+/* Button title to save a shipping label to print later */
+"Save for Later" = "Save for Later";
 
 /* Message text in the shipping label creation info screen */
 "Save time and money by fulfilling with WooCommerce Shipping" = "Save time and money by fulfilling with WooCommerce Shipping";
@@ -2474,6 +2494,9 @@
    Shipping label for payment view - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "Shipping";
 
+/* Shipping Address title for customer info section */
+"Shipping Address" = "Shipping Address";
+
 /* Add / Edit shipping carrier. Title of cell presenting name */
 "Shipping carrier" = "Shipping carrier";
 
@@ -2496,7 +2519,11 @@
 /* Header of the order summary section in the shipping label creation form */
 "Shipping label order summary" = "Shipping label order summary";
 
-/* Shipping method title for customer info cell */
+/* Header text when printing a newly purchased shipping label */
+"Shipping label purchased!" = "Shipping label purchased!";
+
+/* Shipping method title for customer info cell
+   Shipping method title for customer info section */
 "Shipping Method" = "Shipping Method";
 
 /* VoiceOver accessibility label for the shipping notice about the order */
@@ -2604,9 +2631,6 @@
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS Sent";
-
-/* Banner title in product variation list top banner when some variations do not have a price */
-"Some variations do not have prices" = "Some variations do not have prices";
 
 /* A unit test for reviews, checking that anonymous users are added as the author named `someone`
    Indicates the reviewer does not have a name. It reads { Someone left a review} */
@@ -2904,6 +2928,9 @@
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?";
 
+/* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
+"The customer will receive an email once order is completed" = "The customer will receive an email once order is completed";
+
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "The Google account \"%@\" doesn't match any account on WordPress.com";
 
@@ -3102,7 +3129,8 @@
 /* Track shipment button title */
 "Track Shipment" = "Track Shipment";
 
-/* Order tracking section title */
+/* Order tracking section title
+   Tracking section title in Review Order screen */
 "Tracking" = "Tracking";
 
 /* Add custom shipping carrier. Title of cell presenting carrier link */
@@ -3161,6 +3189,9 @@
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "Unable to delete tracking for order #%1$d" = "Unable to delete tracking for order #%1$d";
+
+/* Unable to fetch countries action failed in Shipping Label Form */
+"Unable to fetch countries." = "Unable to fetch countries.";
 
 /* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
 "Unable to fulfill order #%1$d" = "Unable to fulfill order #%1$d";

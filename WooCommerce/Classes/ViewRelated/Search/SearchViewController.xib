@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -23,21 +22,21 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ncr-u2-zVd" userLabel="Borders View" customClass="BordersView" customModule="WooCommerce" customModuleProvider="target">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="56"/>
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="51"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="boolean" keyPath="bottomVisible" value="YES"/>
                     </userDefinedRuntimeAttributes>
                 </view>
                 <searchBar contentMode="redraw" searchBarStyle="minimal" translatesAutoresizingMaskIntoConstraints="NO" id="cOC-iR-MJr">
-                    <rect key="frame" x="8" y="0.0" width="297" height="56"/>
+                    <rect key="frame" x="8" y="0.0" width="305" height="51"/>
                     <textInputTraits key="textInputTraits"/>
                     <connections>
                         <outlet property="delegate" destination="-1" id="CeV-H5-n3x"/>
                     </connections>
                 </searchBar>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YBC-g3-0LP">
-                    <rect key="frame" x="308" y="10.5" width="51" height="33"/>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YBC-g3-0LP">
+                    <rect key="frame" x="316" y="10" width="43" height="29"/>
                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                     <state key="normal" title="Button"/>
                     <connections>
@@ -45,7 +44,7 @@
                     </connections>
                 </button>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="y9n-QI-xEB">
-                    <rect key="frame" x="0.0" y="56" width="375" height="611"/>
+                    <rect key="frame" x="0.0" y="51" width="375" height="616"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <connections>
                         <outlet property="dataSource" destination="-1" id="qvh-01-20Z"/>
@@ -53,24 +52,24 @@
                     </connections>
                 </tableView>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="l4O-t2-oPf"/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
+                <constraint firstItem="Ncr-u2-zVd" firstAttribute="leading" secondItem="chb-2b-70h" secondAttribute="leading" id="3GU-ol-Uc5"/>
                 <constraint firstItem="cOC-iR-MJr" firstAttribute="bottom" secondItem="Ncr-u2-zVd" secondAttribute="bottom" id="A3E-fX-OKH"/>
-                <constraint firstItem="l4O-t2-oPf" firstAttribute="trailing" secondItem="Ncr-u2-zVd" secondAttribute="trailing" id="Af1-Kn-ttP"/>
-                <constraint firstItem="y9n-QI-xEB" firstAttribute="leading" secondItem="l4O-t2-oPf" secondAttribute="leading" id="CiP-i6-rg3"/>
+                <constraint firstItem="y9n-QI-xEB" firstAttribute="leading" secondItem="chb-2b-70h" secondAttribute="leading" id="B3k-rC-VuB"/>
                 <constraint firstItem="l4O-t2-oPf" firstAttribute="trailing" secondItem="YBC-g3-0LP" secondAttribute="trailing" constant="16" id="Dvf-RD-FUS"/>
                 <constraint firstItem="YBC-g3-0LP" firstAttribute="centerY" secondItem="cOC-iR-MJr" secondAttribute="centerY" constant="-1" id="JLs-22-kWd"/>
                 <constraint firstItem="y9n-QI-xEB" firstAttribute="top" secondItem="cOC-iR-MJr" secondAttribute="bottom" id="QMH-4a-wFC"/>
-                <constraint firstItem="l4O-t2-oPf" firstAttribute="trailing" secondItem="y9n-QI-xEB" secondAttribute="trailing" id="VSS-q1-BvR"/>
                 <constraint firstItem="cOC-iR-MJr" firstAttribute="top" secondItem="l4O-t2-oPf" secondAttribute="top" id="c7h-ay-W2D"/>
-                <constraint firstItem="Ncr-u2-zVd" firstAttribute="leading" secondItem="l4O-t2-oPf" secondAttribute="leading" id="h0G-Xc-ogd"/>
                 <constraint firstItem="YBC-g3-0LP" firstAttribute="leading" secondItem="cOC-iR-MJr" secondAttribute="trailing" constant="3" id="nSK-Od-9bp"/>
+                <constraint firstAttribute="trailing" secondItem="y9n-QI-xEB" secondAttribute="trailing" id="qbt-la-21b"/>
                 <constraint firstItem="l4O-t2-oPf" firstAttribute="bottom" secondItem="y9n-QI-xEB" secondAttribute="bottom" id="rig-yz-o3K"/>
                 <constraint firstItem="cOC-iR-MJr" firstAttribute="leading" secondItem="l4O-t2-oPf" secondAttribute="leading" constant="8" id="uzQ-AI-YZl"/>
                 <constraint firstItem="Ncr-u2-zVd" firstAttribute="top" secondItem="chb-2b-70h" secondAttribute="top" id="vuY-pt-mhn"/>
+                <constraint firstAttribute="trailing" secondItem="Ncr-u2-zVd" secondAttribute="trailing" id="wiA-kQ-6Lf"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
-            <viewLayoutGuide key="safeArea" id="l4O-t2-oPf"/>
             <point key="canvasLocation" x="108" y="139.880059970015"/>
         </view>
     </objects>

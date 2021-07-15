@@ -14,6 +14,7 @@ struct ShippingLabelPackageDetails: View {
     init(viewModel: ShippingLabelPackageDetailsViewModel, completion: @escaping Completion) {
         self.viewModel = viewModel
         onCompletion = completion
+        ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "packages_started"])
     }
 
     var body: some View {

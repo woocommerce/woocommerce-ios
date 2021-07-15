@@ -1,1 +1,3 @@
-São necessários menos toques para acessar os atributos de um produto variável: eles são listados nos detalhes do produto! Também aprimoramos o carregamento visual e interno dos detalhes do pedido. Esperamos que você perceba as melhorias!
+Ficamos sabendo que pedidos com várias configurações do mesmo produto variável podem causar confusão na hora de preencher as informações no app. Esta atualização corrige isso e exibe os itens separadamente, facilitando a leitura. Aproveitando o embalo, agora pedidos com vários envios da extensão WooCommerce Shipping & Tax serão exibidos em seções separadas.
+
+Se o app tiver problemas para carregar dados, você verá uma mensagem com instruções para obter ajuda. Geralmente um plugin é o responsável, mas podemos ajudar você a resolver o problema!

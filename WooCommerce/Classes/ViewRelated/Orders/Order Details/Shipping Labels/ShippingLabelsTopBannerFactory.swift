@@ -105,7 +105,7 @@ private extension ShippingLabelsTopBannerFactory {
         static let info =
             NSLocalizedString(
                 "You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. "
-                    + "Tap on Create shipping label to try our beta feature!",
+                    + "Tap on Create Shipping Label to try our beta feature!",
                 comment: "The info of the shipping labels top banner in order details")
         static let giveFeedback =
             NSLocalizedString("Give feedback",

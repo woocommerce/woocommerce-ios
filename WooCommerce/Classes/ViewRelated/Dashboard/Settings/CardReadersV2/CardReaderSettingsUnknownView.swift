@@ -1,6 +1,5 @@
 import Foundation
 import SwiftUI
-import AttributedText
 
 final class CardReaderSettingsUnknownViewController: UIHostingController<CardReaderSettingsUnknownView>, CardReaderSettingsViewModelPresenter {
     func configure(viewModel: CardReaderSettingsPresentedViewModel) {

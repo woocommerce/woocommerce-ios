@@ -103,7 +103,6 @@ struct TextViewWrapper: UIViewRepresentable {
         uiView.backgroundColor = .clear
         uiView.textContainerInset = .zero
         uiView.isEditable = false
-        uiView.isSelectable = false
         uiView.isScrollEnabled = false
         uiView.textContainer.lineFragmentPadding = 0
         uiView.delegate = context.coordinator

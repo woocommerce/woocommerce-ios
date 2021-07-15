@@ -95,11 +95,11 @@ public struct SystemPlugin: Decodable, GeneratedFakeable, GeneratedCopiable {
 private extension SystemPlugin {
 
     enum CodingKeys: String, CodingKey {
-        case plugin              = "plugin"
-        case name                = "name"
-        case version             = "version"
+        case plugin
+        case name
+        case version
         case versionLatest       = "version_latest"
-        case url                 = "url"
+        case url
         case authorName          = "author_name"
         case authorUrl           = "author_url"
         case networkActivated    = "network_activated"

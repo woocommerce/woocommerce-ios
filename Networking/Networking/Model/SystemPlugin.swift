@@ -38,7 +38,7 @@ public struct SystemPlugin: Decodable, GeneratedFakeable, GeneratedCopiable {
     ///
     public init(from decoder: Decoder) throws {
         guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
-            throw SitePluginError.missingSiteID
+            throw SystemPluginError.missingSiteID
         }
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let plugin = try container.decode(String.self, forKey: .plugin)

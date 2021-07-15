@@ -2,15 +2,42 @@ import Foundation
 import Codegen
 
 public struct SystemPlugin: Decodable, GeneratedFakeable, GeneratedCopiable {
+
+    /// WordPress.com Site Identifier.
+    ///
     public let siteID: Int64
-    public let plugin: String           // e.g. woocommerce/woocommerce.php
-    public let name: String             // e.g. WooCommerce
-    public let version: String          // e.g. 3.0.0-rc.1
-    public let versionLatest: String    // e.g. 2.6.14
-    public let url: String              // e.g. https://woocommerce.com/
-    public let authorName: String       // e.g. Automattic
-    public let authorUrl: String        // e.g. https://woocommerce.com
-    public let networkActivated: Bool   // i.g false | true
+
+    /// Plugin reference, e.g. woocommerce/woocommerce.php
+    ///
+    public let plugin: String
+
+    /// Plugin name, e.g. WooCommerce
+    ///
+    public let name: String
+
+    /// Version, e.g. 3.0.0-rc.1
+    ///
+    public let version: String
+
+    /// Version latest, e.g. 2.6.14
+    ///
+    public let versionLatest: String
+
+    /// Plugin url, e.g. https://woocommerce.com/
+    ///
+    public let url: String
+
+    /// Author Name, e.g. Automattic
+    ///
+    public let authorName: String
+
+    /// Author url, e.g. https://woocommerce.com
+    ///
+    public let authorUrl: String
+
+    /// Network activated, i.g false | true
+    ///
+    public let networkActivated: Bool
 
     /// Struct initializer.
     ///

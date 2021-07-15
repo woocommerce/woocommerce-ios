@@ -104,11 +104,6 @@ private extension SystemPlugin {
         case authorUrl           = "author_url"
         case networkActivated    = "network_activated"
     }
-
-    enum DescriptionCodingKeys: String, CodingKey {
-        case raw      = "raw"
-        case rendered = "rendered"
-    }
 }
 
 // MARK: - Decoding Errors

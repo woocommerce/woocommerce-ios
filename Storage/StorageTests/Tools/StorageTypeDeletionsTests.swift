@@ -50,7 +50,7 @@ class StorageTypeDeletionsTests: XCTestCase {
         let currentPlugins = storage.loadPlugins(siteID: sampleSiteID)
         XCTAssertEqual(currentPlugins, [plugin1, plugin3])
     }
-    
+
     // MARK: - System plugins
 
     func test_deleteSystemPlugins_deletes_all_system_plugins() throws {

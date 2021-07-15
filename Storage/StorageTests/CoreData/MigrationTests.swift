@@ -676,7 +676,7 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "StateOfACountry"), 2)
         XCTAssertEqual(insertedCountry, country)
     }
-    
+
     func test_migrating_from_53_to_54_enables_creating_new_systemPlugin_entities() throws {
         // Arrange
         let sourceContainer = try startPersistentContainer("Model 53")
@@ -1063,7 +1063,7 @@ private extension MigrationTests {
         context.insert(entityName: "StateOfACountry", properties:
             ["code": code, "name": name])
     }
-    
+
     @discardableResult
     func insertSystemPlugin(to context: NSManagedObjectContext) -> NSManagedObject {
         context.insert(entityName: "SystemPlugin", properties: [

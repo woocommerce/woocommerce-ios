@@ -68,13 +68,13 @@ public struct SystemPlugin: Decodable, GeneratedFakeable, GeneratedCopiable {
         }
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let plugin = try container.decode(String.self, forKey: .plugin)
-        let name = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
-        let version = try container.decodeIfPresent(String.self, forKey: .version) ?? ""
-        let versionLatest = try container.decodeIfPresent(String.self, forKey: .versionLatest) ?? ""
-        let url = try container.decodeIfPresent(String.self, forKey: .url) ?? ""
-        let authorName = try container.decodeIfPresent(String.self, forKey: .authorName) ?? ""
-        let authorUrl = try container.decodeIfPresent(String.self, forKey: .authorUrl) ?? ""
-        let networkActivated = try container.decodeIfPresent(Bool.self, forKey: .networkActivated) ?? false
+        let name = try container.decode(String.self, forKey: .name)
+        let version = try container.decode(String.self, forKey: .version)
+        let versionLatest = try container.decode(String.self, forKey: .versionLatest)
+        let url = try container.decode(String.self, forKey: .url)
+        let authorName = try container.decode(String.self, forKey: .authorName)
+        let authorUrl = try container.decode(String.self, forKey: .authorUrl)
+        let networkActivated = try container.decode(Bool.self, forKey: .networkActivated)
 
         self.init(siteID: siteID,
                   plugin: plugin,

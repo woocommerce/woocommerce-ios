@@ -1068,4 +1068,44 @@ class StorageTypeExtensionsTests: XCTestCase {
         // Then
         XCTAssertEqual(foundAccount, account)
     }
+
+    // MARK: - System plugins
+
+    func test_loadSystemPlugins_by_siteID_and_sorted_by_name() throws {
+        // Given
+        let systemPlugin1 = storage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin1.name = "Plugin 1"
+        systemPlugin1.siteID = sampleSiteID
+
+        let systemPlugin2 = storage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin2.name = "Plugin 2"
+        systemPlugin2.siteID = sampleSiteID + 1
+
+        let systemPlugin3 = storage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin3.name = "Plugin 3"
+        systemPlugin3.siteID = sampleSiteID
+
+        // When
+        let storedSystemPlugins = try XCTUnwrap(storage.loadSystemPlugins(siteID: sampleSiteID))
+
+        // Then
+        XCTAssertEqual(storedSystemPlugins, [systemPlugin1, systemPlugin3])
+    }
+
+    func test_loadSystemPlugin_by_siteID_and_name() throws {
+        // Given
+        let systemPlugin1 = storage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin1.name = "Plugin 1"
+        systemPlugin1.siteID = sampleSiteID
+
+        let systemPlugin2 = storage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin2.name = "Plugin 2"
+        systemPlugin2.siteID = sampleSiteID
+
+        // When
+        let foundSystemPlugin = try XCTUnwrap(storage.loadSystemPlugin(siteID: sampleSiteID, name: "Plugin 2"))
+
+        // Then
+        XCTAssertEqual(foundSystemPlugin, systemPlugin2)
+    }
 }

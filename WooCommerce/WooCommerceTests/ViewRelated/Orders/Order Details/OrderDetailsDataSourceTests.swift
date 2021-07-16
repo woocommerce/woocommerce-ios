@@ -277,7 +277,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
     func test_create_shipping_label_button_is_visible_for_eligible_order_with_only_refunded_labels() throws {
         // Given
         let order = makeOrder()
-        let refundedShippingLabel = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID, refund: .init(dateRequested: Date(), status: .pending))
+        let refundedShippingLabel = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID, refund: ShippingLabelRefund.fake())
         insert(shippingLabel: refundedShippingLabel)
 
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)

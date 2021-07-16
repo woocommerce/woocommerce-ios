@@ -67,7 +67,7 @@ extension Order {
         let customerNote = customerNote ?? self.customerNote
         let dateCreated = dateCreated ?? self.dateCreated
         let dateModified = dateModified ?? self.dateModified
-        let datePaid = datePaid ?? nil
+        let datePaid = datePaid ?? self.datePaid
         let discountTotal = discountTotal ?? self.discountTotal
         let discountTax = discountTax ?? self.discountTax
         let shippingTotal = shippingTotal ?? self.shippingTotal

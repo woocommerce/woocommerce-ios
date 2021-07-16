@@ -133,7 +133,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         storageManager.viewStorage.saveIfNeeded()
 
         // Given
-        let order = makeOrder().copy(status: .processing, datePaid: nil, paymentMethodID: "cod")
+        let order = makeOrder().copy(status: .processing, datePaid: .some(nil), paymentMethodID: "cod")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
         dataSource.configureResultsControllers { }
 
@@ -221,7 +221,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         storageManager.viewStorage.saveIfNeeded()
 
         // Given
-        let order = makeOrder().copy(status: .processing, datePaid: nil, total: "1", paymentMethodID: "cod")
+        let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "1", paymentMethodID: "cod")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
         dataSource.configureResultsControllers { }
 

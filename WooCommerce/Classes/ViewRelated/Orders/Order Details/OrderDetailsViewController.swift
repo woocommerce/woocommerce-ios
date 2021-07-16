@@ -228,7 +228,8 @@ private extension OrderDetailsViewController {
 //
 private extension OrderDetailsViewController {
     func updateTopBannerView() {
-        let factory = ShippingLabelsTopBannerFactory(shippingLabels: viewModel.dataSource.shippingLabels)
+        let factory = ShippingLabelsTopBannerFactory(isEligibleForShippingLabelCreation: viewModel.dataSource.isEligibleForShippingLabelCreation,
+                                                     shippingLabels: viewModel.dataSource.shippingLabels)
         let isExpanded = topBannerView?.isExpanded ?? false
         factory.createTopBannerIfNeeded(isExpanded: isExpanded,
                                         expandedStateChangeHandler: { [weak self] in
@@ -273,7 +274,7 @@ private extension OrderDetailsViewController {
     }
 
     func presentShippingLabelsFeedbackSurvey() {
-        let navigationController = SurveyCoordinatingController(survey: .shippingLabelsRelease1Feedback)
+        let navigationController = SurveyCoordinatingController(survey: .shippingLabelsRelease3Feedback)
         present(navigationController, animated: true, completion: nil)
     }
 

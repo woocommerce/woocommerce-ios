@@ -57,11 +57,11 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v7.0-whats-new"
+msgctxt "v7.1-whats-new"
 msgid ""
-"We heard that orders containing multiple configurations of the same variable product can be confusing to fulfill with the app. This update fixes that and makes those items appear separately, making it easier to read. In that same spirit, orders with multiple shipments from the WooCommerce Shipping & Tax extension will show as separate sections.\n"
+"Due to popular demand, we’ve brought back the order fulfillment screen when tapping on Mark Order Complete. Thank you to everyone who reached out to let us know your interest in that functionality!\n"
 "\n"
-"If the app has trouble loading data, we now show a helpful message with instructions on how to reach out for help. Most times, it’s a plugin causing issues, but we can help walk you through resolving it!\n"
+"We’ve added initial support for creating shipping labels to the app! Want to give it a try? Install and activate the WooCommerce Shipping & Tax extension in your store. Right now, we support merchants in the USA shipping to USA addresses. We welcome your feedback!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

@@ -60,8 +60,8 @@ extension WooAnalyticsEvent {
         case general
         /// Shown in products banner for Variations release.
         case productsVariations = "products_variations"
-        /// Shown in shipping labels banner for Milestone 1 features.
-        case shippingLabelsRelease1 = "shipping_labels_m1"
+        /// Shown in shipping labels banner for Milestone 3 features.
+        case shippingLabelsRelease3 = "shipping_labels_m3"
         /// Shown in beta feature banner for order add-ons.
         case addOnsI1 = "add-ons_i1"
     }

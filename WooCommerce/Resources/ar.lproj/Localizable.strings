@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-07-07 15:54:04+0000 */
+/* Translation-Revision-Date: 2021-07-09 22:56:15+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -73,10 +73,10 @@
 "%1$d items" = "⁦%1$d⁩ العناصر";
 
 /* Format for the variations detail row in singular form. Reads, `1 variation` */
-"%1$ld variation" = "⁦%1$ld مجموعة";
+"%1$ld variation" = "%1$ld مجموعة";
 
 /* Format for the variations detail row in plural form. Reads, `2 variations` */
-"%1$ld variations" = "⁦%1$ld من المجموعات";
+"%1$ld variations" = "%1$ld من المجموعات";
 
 /* 1 Item */
 "%@ Item" = "%@ من العناصر";
@@ -167,7 +167,7 @@
 /* Settings > Manage Card Reader > Connect > Help hint number 3 */
 "3" = "3";
 
-/* Shown when there are more than 99 items of something (e.g. Processing Orders). */
+/* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
 
 /* A label prompting users to learn more about card readers with an embedded hyperlink */
@@ -302,8 +302,7 @@
 /* Voiceover accessibility label for the tags field in product tags. */
 "Add new tags, separated by commas." = "إضافة وسوم جديدة، مفصولة بفاصلة.";
 
-/* Banner caption in my store when the stats will be deprecated
-   Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
+/* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
 "Add price to your variations to make them visible on your store" = "إضافة سعر إلى مجموعاتك لجعلها مرئية على مخزنك";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
@@ -596,6 +595,9 @@
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "اختيار مقاس الورقة";
 
+/* Navigation title on the shipping label states of a country selector screen */
+"Choose a State" = "Choose a State";
+
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "الاختيار من جهاز";
 
@@ -765,6 +767,9 @@
 /* Cell title: the current date. */
 "Current" = "الحالي";
 
+/* Error when the user tap on Country field in Shipping Label Address Validation */
+"Currently we support just the United States from mobile." = "Currently we support just the United States from mobile.";
+
 /* Name of the section for custom shipment tracking carriers */
 "Custom" = "مخصص";
 
@@ -772,10 +777,12 @@
    Placeholder name of a custom shipment tracking carrier - Title of button to add a custom tracking carrier if filtering the list yields no results. */
 "Custom Carrier" = "شركة نقل مخصصة";
 
-/* Customer info section title */
+/* Customer info section title
+   Customer info section title in Review Order screen */
 "Customer" = "العميل";
 
-/* Customer note section title */
+/* Customer note row title
+   Customer note section title */
 "Customer Provided Note" = "الملاحظة المقدمة إلى العميل";
 
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
@@ -1047,8 +1054,11 @@
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "حدث خطأ في أثناء العثور على العنوان في خرائط Apple";
 
-/* Alert title when there is an error requesting shipping label document for reprinting */
+/* Alert title when there is an error requesting shipping label document for printing */
 "Error previewing shipping label" = "حدث خطأ في أثناء معاينة ملصق الشحن";
+
+/* Notice displayed when the label purchase fails */
+"Error purchasing the label" = "Error purchasing the label";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -1548,7 +1558,8 @@
 /* Accessibility label for the Mark All Reviews as Read Button */
 "Mark All as Read" = "وسم الكل كمقروء";
 
-/* Fulfill Order Action Button */
+/* Action button on Review Order screen
+   Fulfill Order Action Button */
 "Mark Order Complete" = "وضع علامة مكتمل على الطلب";
 
 /* Create Shipping Label form -> Mark order as complete label */
@@ -1719,7 +1730,7 @@
 "Now that you’ve added attributes, you can create your first variation!" = "لقد قمت الآن بإضافة السمات، يمكنك إنشاء مجموعتك الأولى!";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for reprinting - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for printing - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "موافق";
 
 /* Header of selected attribute options section in Add Attribute Options screen */
@@ -1859,7 +1870,7 @@
 /* The title for the customer payment cell */
 "Paid" = "مدفوع";
 
-/* Title of the paper size selector row for reprinting a shipping label */
+/* Title of the paper size selector row for printing a shipping label */
 "Paper Size" = "مقاس الورقة";
 
 /* Add Product Category. Title of cell presenting the parent category. */
@@ -1921,7 +1932,7 @@
 "Placing your product in the trash..." = "جارٍ وضع منتجك في سلة المهملات...";
 
 /* Error state description in shipping label carrier and rates screen */
-"Please double check your package dimensions and weightor try using a different package in Package Details." = "يرجى التحقُّق مرة أخرى من أبعاد حزمتك ووزنها، أو حاول استخدام حزمة مختلفة في تفاصيل الحزمة.";
+"Please double check your package dimensions and weight or try using a different package in Package Details." = "يرجى التحقُّق مرة أخرى من أبعاد حزمتك ووزنها، أو حاول استخدام حزمة مختلفة في تفاصيل الحزمة.";
 
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "يرجى إدخال عنوان URL";
@@ -1974,8 +1985,8 @@
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "يُرجى المحاولة مرة أخرى.";
 
-/* Message of in-progress modal when requesting shipping label document for reprinting
-   Text on the loading view of the survey screen indicating the user to wait */
+/* Message of in-progress modal when requesting shipping label document for printing
+   Message of the in-progress UI while purchasing a shipping label - Text on the loading view of the survey screen indicating the user to wait */
 "Please wait" = "يُرجى الانتظار";
 
 /* Instructions for the progress screen while generating a variation */
@@ -2031,7 +2042,7 @@
 /* The title of the shipping labels top banner in order details */
 "Print shipping labels from your device!" = "طباعة ملصقات الشحن من جهازك!";
 
-/* Title of in-progress modal when requesting shipping label document for reprinting */
+/* Title of in-progress modal when requesting shipping label document for printing */
 "Printing Label" = "طباعة الملصق";
 
 /* Opens the California Privacy Policy web page */
@@ -2060,7 +2071,7 @@
 "Processing payment..." = "جارٍ معالجة الدفع...";
 
 /* Description for Top Performers left column header
-   Product section title - Product section title if there is only one product. */
+   Product section title - Product section title if there is only one product. - Product section title in Review Order screen if there is one product. */
 "Product" = "المنتج";
 
 /* The title on the navigation bar when viewing an order item add-ons
@@ -2096,7 +2107,7 @@
 "Product type" = "نوع المنتج";
 
 /* Product section title if there is more than one product.
-   Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
+   Product section title in Review Order screen if there is more than one product. - Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "المنتجات";
 
 /* Label for computed value `product refunds + taxes = subtotal`.
@@ -2142,6 +2153,9 @@
 
 /* Title for purchase note alert. */
 "Purchase note" = "ملحوظة الشراء";
+
+/* Title of the in-progress UI while purchasing a shipping label */
+"Purchasing Label" = "Purchasing Label";
 
 /* Quantity abbreviation for section title */
 "QTY" = "الكمية";
@@ -2287,6 +2301,9 @@
 /* Revenue stat label on dashboard. */
 "Revenue" = "الإيراد";
 
+/* Title of Review Order screen */
+"Review Order" = "Review Order";
+
 /* Review moderation success notice message. It reads: Review marked as {new status} */
 "Review marked as %@" = "Review marked as %@";
 
@@ -2337,6 +2354,9 @@
 
 /* Button title to save a product as draft in Product More Options Action Sheet */
 "Save as draft" = "حفظ كمسودة";
+
+/* Button title to save a shipping label to print later */
+"Save for Later" = "Save for Later";
 
 /* Message text in the shipping label creation info screen */
 "Save time and money by fulfilling with WooCommerce Shipping" = "ادخر الوقت والمال عن طريق الالتزام بالشحن عبر WooCommerce";
@@ -2473,6 +2493,9 @@
    Shipping label for payment view - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "الشحن";
 
+/* Shipping Address title for customer info section */
+"Shipping Address" = "Shipping Address";
+
 /* Title of shipping carrier and rates in shipping label details
    Title of the cell Shipping Carrier inside Create Shipping Label form */
 "Shipping Carrier and Rates" = "شركة الشحن وأسعارها";
@@ -2480,7 +2503,8 @@
 /* Title of view displaying all available Shipment Tracking Carriers */
 "Shipping Carriers" = "شركات النقل المخصصة للشحن";
 
-/* Shipping method title for customer info cell */
+/* Shipping method title for customer info cell
+   Shipping method title for customer info section */
 "Shipping Method" = "طريقة الشحن";
 
 /* Title on the refund screen that lists the shipping total cost */
@@ -2500,6 +2524,9 @@
 
 /* Header of the order summary section in the shipping label creation form */
 "Shipping label order summary" = "ملخص طلبات ملصق الشحن";
+
+/* Header text when printing a newly purchased shipping label */
+"Shipping label purchased!" = "Shipping label purchased!";
 
 /* VoiceOver accessibility label for the shipping notice about the order */
 "Shipping notice about the order" = "إشعار الشحن حول الطلب";
@@ -2587,9 +2614,6 @@
 /* Placeholder in the Product Slug row on Edit Product Slug screen.
    Product Slug navigation title - Slug label in Product Settings */
 "Slug" = "الاسم اللطيف";
-
-/* Banner title in product variation list top banner when some variations do not have a price */
-"Some variations do not have prices" = "لا تتضمن بعض التباينات أي أسعار";
 
 /* A unit test for reviews, checking that anonymous users are added as the author named `someone`
    Indicates the reviewer does not have a name. It reads { Someone left a review} */
@@ -2896,6 +2920,9 @@
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "شهادة هذا الخادم غير صالحة. قد تكون مرتبطًا بخادم يبدو &quot;%@&quot; والذي قد يجعل معلوماتك السرية في خطر.\n\nهل تريد أن تثق في الشهادة على أية حال؟";
 
+/* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
+"The customer will receive an email once order is completed" = "The customer will receive an email once order is completed";
+
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "رقم الهاتف غير صالح، أو يتعذر عليك الاتصال بالعميل من هذا الجهاز.";
 
@@ -3082,7 +3109,8 @@
 /* Track shipment of a shipping label from the shipping label tracking more menu action sheet */
 "Track shipment" = "تعقب الشحنة";
 
-/* Order tracking section title */
+/* Order tracking section title
+   Tracking section title in Review Order screen */
 "Tracking" = "التعقب";
 
 /* Add custom shipping carrier. Title of cell presenting carrier link */
@@ -3145,6 +3173,9 @@
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "Unable to delete tracking for order #%1$d" = "يتعذر حذف تعقب الطلب رقم ⁦%1$d⁩";
+
+/* Unable to fetch countries action failed in Shipping Label Form */
+"Unable to fetch countries." = "Unable to fetch countries.";
 
 /* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
 "Unable to fulfill order #%1$d" = "يتعذر تنفيذ الطلب رقم ⁦%1$d⁩";

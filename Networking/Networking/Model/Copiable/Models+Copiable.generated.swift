@@ -682,36 +682,6 @@ extension ProductVariation {
     }
 }
 
-extension ShipmentTracking {
-    public func copy(
-        siteID: CopiableProp<Int64> = .copy,
-        orderID: CopiableProp<Int64> = .copy,
-        trackingID: CopiableProp<String> = .copy,
-        trackingNumber: CopiableProp<String> = .copy,
-        trackingProvider: NullableCopiableProp<String> = .copy,
-        trackingURL: NullableCopiableProp<String> = .copy,
-        dateShipped: NullableCopiableProp<Date> = .copy
-    ) -> ShipmentTracking {
-        let siteID = siteID ?? self.siteID
-        let orderID = orderID ?? self.orderID
-        let trackingID = trackingID ?? self.trackingID
-        let trackingNumber = trackingNumber ?? self.trackingNumber
-        let trackingProvider = trackingProvider ?? self.trackingProvider
-        let trackingURL = trackingURL ?? self.trackingURL
-        let dateShipped = dateShipped ?? self.dateShipped
-
-        return ShipmentTracking(
-            siteID: siteID,
-            orderID: orderID,
-            trackingID: trackingID,
-            trackingNumber: trackingNumber,
-            trackingProvider: trackingProvider,
-            trackingURL: trackingURL,
-            dateShipped: dateShipped
-        )
-    }
-}
-
 extension Refund {
     public func copy(
         refundID: CopiableProp<Int64> = .copy,
@@ -750,6 +720,36 @@ extension Refund {
             createAutomated: createAutomated,
             items: items,
             shippingLines: shippingLines
+        )
+    }
+}
+
+extension ShipmentTracking {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        orderID: CopiableProp<Int64> = .copy,
+        trackingID: CopiableProp<String> = .copy,
+        trackingNumber: CopiableProp<String> = .copy,
+        trackingProvider: NullableCopiableProp<String> = .copy,
+        trackingURL: NullableCopiableProp<String> = .copy,
+        dateShipped: NullableCopiableProp<Date> = .copy
+    ) -> ShipmentTracking {
+        let siteID = siteID ?? self.siteID
+        let orderID = orderID ?? self.orderID
+        let trackingID = trackingID ?? self.trackingID
+        let trackingNumber = trackingNumber ?? self.trackingNumber
+        let trackingProvider = trackingProvider ?? self.trackingProvider
+        let trackingURL = trackingURL ?? self.trackingURL
+        let dateShipped = dateShipped ?? self.dateShipped
+
+        return ShipmentTracking(
+            siteID: siteID,
+            orderID: orderID,
+            trackingID: trackingID,
+            trackingNumber: trackingNumber,
+            trackingProvider: trackingProvider,
+            trackingURL: trackingURL,
+            dateShipped: dateShipped
         )
     }
 }
@@ -1011,6 +1011,42 @@ extension SitePlugin {
             requiresWPVersion: requiresWPVersion,
             requiresPHPVersion: requiresPHPVersion,
             textDomain: textDomain
+        )
+    }
+}
+
+extension SystemPlugin {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        plugin: CopiableProp<String> = .copy,
+        name: CopiableProp<String> = .copy,
+        version: CopiableProp<String> = .copy,
+        versionLatest: CopiableProp<String> = .copy,
+        url: CopiableProp<String> = .copy,
+        authorName: CopiableProp<String> = .copy,
+        authorUrl: CopiableProp<String> = .copy,
+        networkActivated: CopiableProp<Bool> = .copy
+    ) -> SystemPlugin {
+        let siteID = siteID ?? self.siteID
+        let plugin = plugin ?? self.plugin
+        let name = name ?? self.name
+        let version = version ?? self.version
+        let versionLatest = versionLatest ?? self.versionLatest
+        let url = url ?? self.url
+        let authorName = authorName ?? self.authorName
+        let authorUrl = authorUrl ?? self.authorUrl
+        let networkActivated = networkActivated ?? self.networkActivated
+
+        return SystemPlugin(
+            siteID: siteID,
+            plugin: plugin,
+            name: name,
+            version: version,
+            versionLatest: versionLatest,
+            url: url,
+            authorName: authorName,
+            authorUrl: authorUrl,
+            networkActivated: networkActivated
         )
     }
 }

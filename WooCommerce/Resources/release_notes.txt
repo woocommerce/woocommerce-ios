@@ -1,6 +1,3 @@
-- [***] Merchants from US can create shipping labels for physical orders from the app. The feature supports for now only orders where the shipping address is in the US. [https://github.com/woocommerce/woocommerce-ios/pull/4578]
-- [**] Due to popular demand, the Order fulfill is displayed once again when clicking on the Mark order complete button. [https://github.com/woocommerce/woocommerce-ios/pull/4567]
-- [*] Fix: Interactive pop gesture on Order Details and Settings screen. [https://github.com/woocommerce/woocommerce-ios/pull/4504]
-- [*] Fix: Frozen refresh control and placeholder when switching tabs [https://github.com/woocommerce/woocommerce-ios/pull/4505]
-- [internal] Stats tab: added network sync throttling [https://github.com/woocommerce/woocommerce-ios/pull/4494]
+Due to popular demand, we’ve brought back the order fulfillment screen when tapping on Mark Order Complete. Thank you to everyone who reached out to let us know your interest in that functionality!
 
+We’ve added initial support for creating shipping labels to the app! Want to give it a try? Install and activate the WooCommerce Shipping & Tax extension in your store. Right now, we support merchants in the USA shipping to USA addresses. We welcome your feedback!

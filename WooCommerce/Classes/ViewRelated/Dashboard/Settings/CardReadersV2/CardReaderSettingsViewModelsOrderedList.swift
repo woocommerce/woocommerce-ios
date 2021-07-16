@@ -20,12 +20,7 @@ final class CardReaderSettingsViewModelsOrderedList: CardReaderSettingsPrioritiz
     init() {
         /// Initialize dependencies for viewmodels first, then viewmodels
         ///
-
-        /// Enable remembering readers by feature flag
-        ///
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentKnownReader) {
-            knownReadersProvider = CardReaderSettingsKnownReadersStoredList()
-        }
+        knownReadersProvider = CardReaderSettingsKnownReadersStoredList()
 
         /// Instantiate and add each viewmodel related to card reader settings to the
         /// array. Viewmodels will be evaluated for shouldShow starting at the top
@@ -44,6 +39,19 @@ final class CardReaderSettingsViewModelsOrderedList: CardReaderSettingsPrioritiz
                 viewIdentifier: "CardReaderSettingsUnknownViewController"
             )
         )
+
+        viewModelsAndViews.append(
+            CardReaderSettingsViewModelAndView(
+                viewModel: CardReaderSettingsKnownViewModel(
+                    didChangeShouldShow: { [weak self] state in
+                        self?.onDidChangeShouldShow(state)
+                    },
+                    knownReadersProvider: knownReadersProvider
+                ),
+                viewIdentifier: "CardReaderSettingsKnownViewController"
+            )
+        )
+
         viewModelsAndViews.append(
             CardReaderSettingsViewModelAndView(
                 viewModel: CardReaderSettingsConnectedViewModel(

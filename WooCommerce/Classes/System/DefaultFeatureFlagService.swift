@@ -13,8 +13,6 @@ struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .sitePlugins:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .cardPresentKnownReader:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .cardPresentOnboarding:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:

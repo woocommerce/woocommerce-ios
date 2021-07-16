@@ -49,8 +49,6 @@ public final class CardPresentPaymentStore: Store {
             connect(reader: reader, onCompletion: completion)
         case .disconnect(let completion):
             disconnect(onCompletion: completion)
-        case .observeKnownReaders(let completion):
-            observeKnownReaders(onCompletion: completion)
         case .observeConnectedReaders(let completion):
             observeConnectedReaders(onCompletion: completion)
         case .collectPayment(let siteID, let orderID, let parameters, let event, let completion):
@@ -159,13 +157,6 @@ private extension CardPresentPaymentStore {
                 onCompletion(.success(result))
             }
         ))
-    }
-
-    /// Calls the completion block everytime the list of known readers changes
-    ///
-    func observeKnownReaders(onCompletion: @escaping ([Yosemite.CardReader]) -> Void) {
-        // TODO: Hook up to storage (see #3559) - for now, we return an empty array
-        onCompletion([])
     }
 
     /// Calls the completion block everytime the list of connected readers changes

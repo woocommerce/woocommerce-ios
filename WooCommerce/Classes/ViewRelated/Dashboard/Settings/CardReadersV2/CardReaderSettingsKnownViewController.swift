@@ -28,12 +28,14 @@ final class CardReaderSettingsKnownViewController: UIViewController, CardReaderS
     /// Accept our viewmodel and listen for changes on it
     ///
     func configure(viewModel: CardReaderSettingsPresentedViewModel) {
-        guard let viewModel = viewModel as? CardReaderSettingsKnownViewModel else {
+        self.viewModel = viewModel as? CardReaderSettingsKnownViewModel
+
+        guard self.viewModel != nil else {
             DDLogError("Unexpectedly unable to downcast to CardReaderSettingsKnownViewModel")
             return
         }
 
-        viewModel.didUpdate = onViewModelDidUpdate
+        self.viewModel?.didUpdate = onViewModelDidUpdate
     }
 
     // MARK: - Overridden Methods
@@ -45,6 +47,10 @@ final class CardReaderSettingsKnownViewController: UIViewController, CardReaderS
         configureNavigation()
         configureSections()
         configureTable()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
 
         /// Unlike CardReaderSettingsUnknownViewController, we know we've connected to a reader
         /// in the past already, so immediately trigger the search
@@ -381,7 +387,7 @@ private extension CardReaderSettingsKnownViewController {
 
         static let connectYourCardReaderTitle = NSLocalizedString(
             "Connect your card reader",
-            comment: "Settings > Manage Card Reader > Prompt user to connect their first reader"
+            comment: "Settings > Manage Card Reader > Prompt user to connect their reader"
         )
 
         static let hintOneTitle = NSLocalizedString(

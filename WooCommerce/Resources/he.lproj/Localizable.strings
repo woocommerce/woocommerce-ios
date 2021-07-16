@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-07-09 22:57:28+0000 */
+/* Translation-Revision-Date: 2021-07-16 15:45:00+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -76,7 +76,7 @@
 "%1$ld variation" = "%1$ld סוג";
 
 /* Format for the variations detail row in plural form. Reads, `2 variations` */
-"%1$ld variations" = "1$ld סוגים";
+"%1$ld variations" = "1$ld% סוגים";
 
 /* 1 Item */
 "%@ Item" = "פריט %@";

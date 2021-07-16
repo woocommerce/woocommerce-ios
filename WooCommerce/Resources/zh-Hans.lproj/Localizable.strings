@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-07-09 23:02:39+0000 */
+/* Translation-Revision-Date: 2021-07-16 15:46:22+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -73,10 +73,10 @@
 "%1$d items" = "%1$d 个项目";
 
 /* Format for the variations detail row in singular form. Reads, `1 variation` */
-"%1$ld variation" = "%1$l 个变体";
+"%1$ld variation" = "%1$ld 个变体";
 
 /* Format for the variations detail row in plural form. Reads, `2 variations` */
-"%1$ld variations" = "%1$l 个变体";
+"%1$ld variations" = "%1$ld 个变体";
 
 /* 1 Item */
 "%@ Item" = "%@ 个项目";

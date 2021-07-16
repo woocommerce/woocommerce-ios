@@ -19,10 +19,11 @@ final class ShippingLabelsTopBannerFactoryTests: XCTestCase {
         XCTAssertNil(topBannerView)
     }
 
-    func test_creating_top_banner_with_a_refunded_shipping_label_returns_nil() throws {
+    func test_creating_top_banner_with_a_refunded_shipping_label_and_eligible_for_creation_returns_banner() throws {
         // Given
         let refundedShippingLabel = MockShippingLabel.emptyLabel().copy(refund: .init(dateRequested: Date(), status: .pending))
-        let factory = ShippingLabelsTopBannerFactory(isEligibleForShippingLabelCreation: true, shippingLabels: [refundedShippingLabel])
+        let stores = createStores(feedbackVisibilityResult: .success(true))
+        let factory = ShippingLabelsTopBannerFactory(isEligibleForShippingLabelCreation: true, shippingLabels: [refundedShippingLabel], stores: stores)
 
         // When
         let topBannerView = waitFor { promise in
@@ -33,7 +34,7 @@ final class ShippingLabelsTopBannerFactoryTests: XCTestCase {
         }
 
         // Then
-        XCTAssertNil(topBannerView)
+        XCTAssertNotNil(topBannerView)
     }
 
     func test_creating_top_banner_with_empty_shipping_labels_and_eligible_for_creation_returns_banner() throws {

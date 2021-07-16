@@ -109,9 +109,9 @@ private extension ReviewOrderViewController {
         containerView.addSubview(emailLabel)
 
         NSLayoutConstraint.activate([
-            emailLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
+            emailLabel.leadingAnchor.constraint(equalTo: containerView.safeLeadingAnchor, constant: 16),
             emailLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 24),
-            containerView.trailingAnchor.constraint(equalTo: emailLabel.trailingAnchor, constant: 16)
+            containerView.safeTrailingAnchor.constraint(equalTo: emailLabel.trailingAnchor, constant: 16)
         ])
 
         let actionButton = UIButton(frame: .zero)
@@ -123,9 +123,9 @@ private extension ReviewOrderViewController {
 
         NSLayoutConstraint.activate([
             actionButton.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 16),
-            actionButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
+            actionButton.leadingAnchor.constraint(equalTo: containerView.safeLeadingAnchor, constant: 16),
             containerView.safeBottomAnchor.constraint(equalTo: actionButton.bottomAnchor, constant: 24),
-            containerView.trailingAnchor.constraint(equalTo: actionButton.trailingAnchor, constant: 16)
+            containerView.safeTrailingAnchor.constraint(equalTo: actionButton.trailingAnchor, constant: 16)
         ])
 
         return containerView

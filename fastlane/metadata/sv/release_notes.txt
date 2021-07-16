@@ -1,3 +1,0 @@
-Vi har hört att beställningar som innehåller flera konfigurationer av samma variabla produkt kan vara förvirrande att slutföra med appen. Den här uppdateringen åtgärdar det och gör att dessa artiklar visas separat, vilket gör det lättare att läsa. I samma anda kommer beställningar med flera försändelser från WooCommerce Shipping & Tax-utökningen att visas som separata avsnitt.
-
-Om appen har problem med att läsa in data visar vi nu ett användbart meddelande med instruktioner om hur du kan få hjälp. Oftast är det ett tillägg som orsakar problem, men vi kan hjälpa dig att lösa det!

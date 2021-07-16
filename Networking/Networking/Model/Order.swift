@@ -220,6 +220,7 @@ private extension Order {
 // MARK: - Comparable Conformance
 //
 extension Order: Comparable {
+    // custom implementation to ignore order for shippingLines, coupons, refunds, items
     public static func == (lhs: Order, rhs: Order) -> Bool {
         return lhs.siteID == rhs.siteID &&
             lhs.orderID == rhs.orderID &&

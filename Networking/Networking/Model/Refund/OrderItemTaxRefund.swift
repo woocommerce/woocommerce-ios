@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a Tax Refund for a specific Order Item.
 ///
-public struct OrderItemTaxRefund: Codable, GeneratedFakeable {
+public struct OrderItemTaxRefund: Codable, Equatable, GeneratedFakeable {
 
     /// Tax ID for line item
     ///
@@ -64,12 +64,6 @@ private extension OrderItemTaxRefund {
 // MARK: - Comparable Conformance
 //
 extension OrderItemTaxRefund: Comparable {
-    public static func == (lhs: OrderItemTaxRefund, rhs: OrderItemTaxRefund) -> Bool {
-        return lhs.taxID == rhs.taxID &&
-            lhs.subtotal == rhs.subtotal &&
-            lhs.total == rhs.total
-    }
-
     public static func < (lhs: OrderItemTaxRefund, rhs: OrderItemTaxRefund) -> Bool {
         return lhs.taxID < rhs.taxID ||
             (lhs.taxID == rhs.taxID && lhs.subtotal < rhs.subtotal) ||

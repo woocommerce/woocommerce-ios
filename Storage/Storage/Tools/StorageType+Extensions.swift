@@ -532,6 +532,14 @@ public extension StorageType {
         return firstObject(ofType: SitePlugin.self, matching: predicate)
     }
 
+    /// Returns all payment gateway accounts for a provided `siteID`
+    ///
+    func loadPaymentGatewayAccounts(siteID: Int64) -> [PaymentGatewayAccount] {
+        let predicate = \PaymentGatewayAccount.siteID == siteID
+        let descriptor = NSSortDescriptor(keyPath: \PaymentGatewayAccount.gatewayID, ascending: true)
+        return allObjects(ofType: PaymentGatewayAccount.self, matching: predicate, sortedBy: [descriptor])
+    }
+
     /// Returns a payment gateway account with a specified `siteID` and `gatewayID`
     ///
     func loadPaymentGatewayAccount(siteID: Int64, gatewayID: String) -> PaymentGatewayAccount? {

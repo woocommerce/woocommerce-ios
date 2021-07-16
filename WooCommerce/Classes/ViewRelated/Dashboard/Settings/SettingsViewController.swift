@@ -538,8 +538,15 @@ private extension SettingsViewController {
     }
 
     func inPersonPaymentsWasPressed() {
-        let viewController = InPersonPaymentsViewController()
-        show(viewController, sender: self)
+        guard let siteID = self.siteID else {
+            return
+        }
+        let action = CardPresentPaymentAction.checkOnboardingState(siteID: siteID) { [weak self] state in
+            let viewModel = InPersonPaymentsViewModel(initialState: state)
+            let viewController = InPersonPaymentsViewController(viewModel: viewModel)
+            self?.show(viewController, sender: self)
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 
     func privacyWasPressed() {

@@ -49,7 +49,7 @@ final class ShippingLabelsTopBannerFactory {
 
 private extension ShippingLabelsTopBannerFactory {
     func determineIfTopBannerShouldBeShown(onCompletion: @escaping (_ shouldShow: Bool) -> Void) {
-        guard isEligibleForShippingLabelCreation && shippingLabels.isEmpty else {
+        guard isEligibleForShippingLabelCreation && shippingLabels.nonRefunded.isEmpty else {
             onCompletion(false)
             return
         }

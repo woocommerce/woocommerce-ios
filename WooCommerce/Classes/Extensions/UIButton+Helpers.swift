@@ -101,12 +101,17 @@ extension UIButton {
 
     /// Applies the Link Button Style: Clear BG / Brand Text Color
     ///
-    func applyLinkButtonStyle() {
+    func applyLinkButtonStyle(enableMultipleLines: Bool = false) {
         backgroundColor = .clear
         contentEdgeInsets = Style.defaultEdgeInsets
         tintColor = .accent
         titleLabel?.applyBodyStyle()
         titleLabel?.textAlignment = .natural
+
+        if enableMultipleLines {
+            self.enableMultipleLines()
+        }
+
         setTitleColor(.accent, for: .normal)
         setTitleColor(.accentDark, for: .highlighted)
     }

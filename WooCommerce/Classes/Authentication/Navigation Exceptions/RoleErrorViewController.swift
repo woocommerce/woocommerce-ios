@@ -79,16 +79,7 @@ class RoleErrorViewController: UIViewController {
     }
 
     func configureLinkButton() {
-        linkButton.applyLinkButtonStyle()
-
-        // enable multi line for accessibility support
-        linkButton.titleLabel?.textAlignment = .center
-        linkButton.titleLabel?.adjustsFontForContentSizeCategory = true
-        linkButton.titleLabel?.lineBreakMode = .byWordWrapping
-        if let linkTitleLabel = linkButton.titleLabel {
-            linkButton.pinSubviewToAllEdgeMargins(linkTitleLabel)
-        }
-
+        linkButton.applyLinkButtonStyle(enableMultipleLines: true)
         linkButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
         linkButton.on(.touchUpInside) { [weak self] _ in
             self?.viewModel.didTapAuxiliaryButton()

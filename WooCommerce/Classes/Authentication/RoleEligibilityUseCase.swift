@@ -15,9 +15,6 @@ protocol RoleEligibilityUseCaseProtocol {
 
     /// Returns the last error information encountered by the authenticated user.
     func lastEligibilityErrorInfo() -> EligibilityErrorInfo?
-
-    /// Removes any stored error information.
-    func reset()
 }
 
 
@@ -61,11 +58,8 @@ extension RoleEligibilityUseCase: RoleEligibilityUseCaseProtocol {
         }
 
         checkEligibility(for: storeID) { result in
+            // We only care when an error occurs during sync. if the request is successful, then do nothing.
             switch result {
-            case .success:
-                // If the user is eligible, reset the stored error information.
-                self.lastErrorInfo = nil
-
             case .failure(let error):
                 // For errors other than `insufficientRole` (e.g. network errors), do nothing for now.
                 // In case of network errors, it's best to depend on currently available information.
@@ -75,6 +69,9 @@ extension RoleEligibilityUseCase: RoleEligibilityUseCaseProtocol {
                 }
                 // store the information locally.
                 self.lastErrorInfo = errorInfo
+
+            default:
+                break
             }
         }
     }
@@ -102,6 +99,7 @@ extension RoleEligibilityUseCase: RoleEligibilityUseCaseProtocol {
                     return
                 }
                 // reaching this means there's nothing else to do, as the user is eligible to access the store.
+                self.resetErrorInfo()
                 completion(.success(()))
 
             case .failure(let error):
@@ -115,7 +113,8 @@ extension RoleEligibilityUseCase: RoleEligibilityUseCaseProtocol {
         return lastErrorInfo
     }
 
-    func reset() {
+    /// Removes any stored error information.
+    private func resetErrorInfo() {
         lastErrorInfo = nil
     }
 }

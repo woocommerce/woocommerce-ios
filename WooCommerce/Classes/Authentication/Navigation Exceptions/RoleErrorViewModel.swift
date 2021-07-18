@@ -58,26 +58,27 @@ final class RoleErrorViewModel {
     /// If the request is successful, the stored error info will be cleared and `onSuccess` will be called.
     /// Otherwise, the view will be refreshed and a notice will be shown.
     func didTapPrimaryButton() {
-        roleEligibilityUseCase.checkEligibility(for: siteID) { [weak self] error in
+        roleEligibilityUseCase.checkEligibility(for: siteID) { [weak self] result in
             guard let self = self else { return }
 
-            guard let error = error else {
-                self.roleEligibilityUseCase.reset()
+            switch result {
+            case .success:
                 self.onSuccess?()
-                return
-            }
+                break
 
-            // update the view and show notice that the user's role is still not eligible.
-            if case let RoleEligibilityError.insufficientRole(errorInfo) = error {
-                self.titleText = errorInfo.name
-                self.subtitleText = errorInfo.humanizedRoles
-                self.output?.refreshTitleLabels()
-                self.output?.displayNotice(message: .insufficientRolesErrorMessage)
-                return
-            }
+            case .failure(let error):
+                // update the view and show notice that the user's role is still not eligible.
+                if case let RoleEligibilityError.insufficientRole(errorInfo) = error {
+                    self.titleText = errorInfo.name
+                    self.subtitleText = errorInfo.humanizedRoles
+                    self.output?.refreshTitleLabels()
+                    self.output?.displayNotice(message: .insufficientRolesErrorMessage)
+                    break
+                }
 
-            // show notice that the role check failed for some reason.
-            self.output?.displayNotice(message: .retrieveErrorMessage)
+                // otherwise, show notice that the role check failed for some reason.
+                self.output?.displayNotice(message: .retrieveErrorMessage)
+            }
         }
     }
 

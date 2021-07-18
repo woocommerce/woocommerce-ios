@@ -268,20 +268,6 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
         // Then
         XCTAssertNil(errorInfo)
     }
-
-    // MARK: Reset
-
-    func test_roleEligibilityUseCase_reset_correctly_deletes_stored_errorInfo() {
-        // Given
-        defaults.setValue(Constants.sampleDictionary, forKey: .errorInfoKey)
-        let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
-
-        // When
-        useCase.reset()
-
-        // Then
-        XCTAssertNil(defaults.value(forKey: .errorInfoKey))
-    }
 }
 
 private extension RoleEligibilityUseCaseTests {

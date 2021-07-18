@@ -227,9 +227,13 @@ private class FakeRoleUseCase: RoleEligibilityUseCaseProtocol {
         syncEligibilityCallCount += 1
     }
 
-    func checkEligibility(for storeID: Int64, completion: @escaping (RoleEligibilityError?) -> Void) {
+    func checkEligibility(for storeID: Int64, completion: @escaping (Result<Void, RoleEligibilityError>) -> Void) {
         lastCheckedStoreID = storeID
-        completion(errorToReturn)
+        if let error = errorToReturn {
+            completion(.failure(error))
+        } else {
+            completion(.success(()))
+        }
     }
 
     func lastEligibilityErrorInfo() -> EligibilityErrorInfo? {

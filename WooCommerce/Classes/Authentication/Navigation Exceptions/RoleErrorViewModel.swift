@@ -17,8 +17,10 @@ final class RoleErrorViewModel {
         .incorrectRoleError
     }
 
+    /// A closure that will be called when the current user is eligible after retrying the role check.
     var onSuccess: (() -> Void)?
 
+    /// A closure that will be called when the user selected the option to try with another account.
     var onDeauthenticationRequest: (() -> Void)?
 
     /// Extended description of the error.
@@ -52,6 +54,9 @@ final class RoleErrorViewModel {
         self.roleEligibilityUseCase = useCase
     }
 
+    /// When the primary button is tapped, the role check request will be retried.
+    /// If the request is successful, the stored error info will be cleared and `onSuccess` will be called.
+    /// Otherwise, the view will be refreshed and a notice will be shown.
     func didTapPrimaryButton() {
         roleEligibilityUseCase.checkEligibility(for: siteID) { [weak self] error in
             guard let self = self else { return }
@@ -62,6 +67,7 @@ final class RoleErrorViewModel {
                 return
             }
 
+            // update the view and show notice that the user's role is still not eligible.
             if case let RoleEligibilityError.insufficientRole(errorInfo) = error {
                 self.titleText = errorInfo.name
                 self.subtitleText = errorInfo.humanizedRoles
@@ -70,6 +76,7 @@ final class RoleErrorViewModel {
                 return
             }
 
+            // show notice that the role check failed for some reason.
             self.output?.displayNotice(message: .retrieveErrorMessage)
         }
     }

@@ -129,7 +129,7 @@ private extension StorePickerCoordinator {
         while let presented = topNavigationController.presentedViewController as? UINavigationController {
             topNavigationController = presented
         }
-        topNavigationController.pushViewController(errorViewController, animated: true)
+        topNavigationController.show(errorViewController, sender: self)
     }
 
 }

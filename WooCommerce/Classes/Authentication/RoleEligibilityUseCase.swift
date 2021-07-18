@@ -112,11 +112,6 @@ extension RoleEligibilityUseCase: RoleEligibilityUseCaseProtocol {
     func lastEligibilityErrorInfo() -> EligibilityErrorInfo? {
         return lastErrorInfo
     }
-
-    /// Removes any stored error information.
-    private func resetErrorInfo() {
-        lastErrorInfo = nil
-    }
 }
 
 /// Convenient error class that helps with categorizing errors related to role eligibility checks.
@@ -149,6 +144,11 @@ private extension RoleEligibilityUseCase {
         }
 
         return EligibilityErrorInfo(from: errorInfoDictionary)
+    }
+
+    /// Removes any stored error information.
+    func resetErrorInfo() {
+        lastErrorInfo = nil
     }
 }
 

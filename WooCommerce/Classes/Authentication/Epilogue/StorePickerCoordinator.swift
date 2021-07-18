@@ -91,6 +91,8 @@ private extension StorePickerCoordinator {
         }
     }
 
+    /// Switches the current user's default store to the one having the provided `storeID`.
+    /// After successfully switching, the store picker screen should be dismissed.
     func switchStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
         switchStoreUseCase.switchStore(with: storeID) { [weak self] siteChanged in
             if self?.selectedConfiguration == .login {

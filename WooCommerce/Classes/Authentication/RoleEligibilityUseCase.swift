@@ -11,7 +11,7 @@ protocol RoleEligibilityUseCaseProtocol {
     /// - Parameters:
     ///   - storeID: The dotcom site ID of the store.
     ///   - completion: The block to be called when the check completes, with an optional RoleEligibilityError.
-    func checkEligibility(for storeID: Int64, completion: @escaping (RoleEligibilityError?) -> Void)
+    func checkEligibility(for storeID: Int64, completion: @escaping (Result<Void, RoleEligibilityError>) -> Void)
 
     /// Returns the last error information encountered by the authenticated user.
     func lastEligibilityErrorInfo() -> EligibilityErrorInfo?
@@ -60,35 +60,35 @@ extension RoleEligibilityUseCase: RoleEligibilityUseCaseProtocol {
             return
         }
 
-        checkEligibility(for: storeID) { error in
-            guard let error = error else {
+        checkEligibility(for: storeID) { result in
+            switch result {
+            case .success:
                 // If the user is eligible, reset the stored error information.
                 self.lastErrorInfo = nil
-                return
-            }
 
-            guard case .insufficientRole(let errorInfo) = error else {
+            case .failure(let error):
                 // For errors other than `insufficientRole` (e.g. network errors), do nothing for now.
                 // In case of network errors, it's best to depend on currently available information.
                 // i.e., if the user is previously ineligible, then assume they are still ineligible now.
-                return
+                guard case let .insufficientRole(errorInfo) = error else {
+                    break
+                }
+                // store the information locally.
+                self.lastErrorInfo = errorInfo
             }
-
-            // store the user information locally.
-            self.lastErrorInfo = errorInfo
         }
     }
 
-    func checkEligibility(for storeID: Int64, completion: @escaping (RoleEligibilityError?) -> Void) {
+    func checkEligibility(for storeID: Int64, completion: @escaping (Result<Void, RoleEligibilityError>) -> Void) {
         guard stores.isAuthenticated else {
             // TODO: It's not expected to enter this path. Maybe log something here?
-            completion(.notAuthenticated)
+            completion(.failure(.notAuthenticated))
             return
         }
 
         // handle edge case to prevent extra, unnecessary request.
         guard storeID > 0 else {
-            completion(.invalidStoreId(id: storeID))
+            completion(.failure(.invalidStoreId(id: storeID)))
             return
         }
 
@@ -98,14 +98,14 @@ extension RoleEligibilityUseCase: RoleEligibilityUseCaseProtocol {
                 guard user.hasEligibleRoles() else {
                     // Report back with the display information for the error page.
                     let errorInfo = EligibilityErrorInfo(name: user.displayName(), roles: user.roles)
-                    completion(.insufficientRole(info: errorInfo))
+                    completion(.failure(.insufficientRole(info: errorInfo)))
                     return
                 }
                 // reaching this means there's nothing else to do, as the user is eligible to access the store.
-                completion(nil)
+                completion(.success(()))
 
             case .failure(let error):
-                completion(.unknown(error: error))
+                completion(.failure(.unknown(error: error)))
             }
         }
         stores.dispatch(action)

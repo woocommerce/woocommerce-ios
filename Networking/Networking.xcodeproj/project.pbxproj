@@ -1517,11 +1517,8 @@
 				D8EDFE2125EE88C9003D2213 /* WCPayConnectionToken.swift */,
 				31054705262E278100C5C02B /* WCPayPaymentIntent.swift */,
 				3105470B262E27F000C5C02B /* WCPayPaymentIntentStatusEnum.swift */,
-<<<<<<< HEAD
 				FE28F6E126840DED004465C7 /* User.swift */,
-=======
 				077F39C7269F2C7E00ABEADC /* SystemPlugin.swift */,
->>>>>>> develop
 			);
 			path = Model;
 			sourceTree = "<group>";

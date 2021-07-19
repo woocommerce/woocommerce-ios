@@ -68,45 +68,19 @@ extension UIButton {
         setBackgroundImage(disabledBackgroundImage, for: .disabled)
     }
 
-    /// Applies the Secondary Button Style: Solid BG, always light!
-    ///
-    func applySecondaryLightButtonStyle() {
-        contentEdgeInsets = Style.defaultEdgeInsets
-        layer.borderColor = UIColor.primaryButtonBorder.cgColor
-        layer.borderWidth = Style.defaultBorderWidth
-        layer.cornerRadius = Style.defaultCornerRadius
-        titleLabel?.applyHeadlineStyle()
-        enableMultipleLines()
-        titleLabel?.textAlignment = .center
-
-        setTitleColor(.black, for: .normal)
-        setTitleColor(.black, for: .highlighted)
-        setTitleColor(.buttonDisabledTitle, for: .disabled)
-
-        let normalBackgroundImage = UIImage.renderBackgroundImage(fill: .secondaryLightButtonBackground,
-                                                                  border: .secondaryLightButtonBackground)
-            .applyTintColorToiOS13(.secondaryLightButtonBackground)
-        setBackgroundImage(normalBackgroundImage, for: .normal)
-
-        let highlightedBackgroundImage = UIImage.renderBackgroundImage(fill: .primaryButtonDownBackground,
-                                                                       border: .primaryButtonDownBorder)
-            .applyTintColorToiOS13(.primaryButtonDownBackground)
-        setBackgroundImage(highlightedBackgroundImage, for: .highlighted)
-
-        let disabledBackgroundImage = UIImage.renderBackgroundImage(fill: .buttonDisabledBackground,
-                                                                    border: .buttonDisabledBorder)
-            .applyTintColorToiOS13(.buttonDisabledBorder) // Use border as tint color since the background is clear
-        setBackgroundImage(disabledBackgroundImage, for: .disabled)
-    }
-
     /// Applies the Link Button Style: Clear BG / Brand Text Color
     ///
-    func applyLinkButtonStyle() {
+    func applyLinkButtonStyle(enableMultipleLines: Bool = false) {
         backgroundColor = .clear
         contentEdgeInsets = Style.defaultEdgeInsets
         tintColor = .accent
         titleLabel?.applyBodyStyle()
         titleLabel?.textAlignment = .natural
+
+        if enableMultipleLines {
+            self.enableMultipleLines()
+        }
+
         setTitleColor(.accent, for: .normal)
         setTitleColor(.accentDark, for: .highlighted)
     }

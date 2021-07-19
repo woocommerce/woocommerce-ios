@@ -56,12 +56,6 @@ private extension ProductDownload {
 // MARK: - Comparable Conformance
 //
 extension ProductDownload: Comparable {
-    public static func == (lhs: ProductDownload, rhs: ProductDownload) -> Bool {
-        return lhs.downloadID == rhs.downloadID &&
-            lhs.name == rhs.name &&
-            lhs.fileURL == rhs.fileURL
-    }
-
     public static func < (lhs: ProductDownload, rhs: ProductDownload) -> Bool {
         return lhs.downloadID < rhs.downloadID
     }

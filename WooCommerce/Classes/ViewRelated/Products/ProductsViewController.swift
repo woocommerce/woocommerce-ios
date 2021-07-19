@@ -65,9 +65,7 @@ final class ProductsViewController: UIViewController {
     ///
     private lazy var resultsController: ResultsController<StorageProduct> = {
         let resultsController = createResultsController(siteID: siteID)
-        configureResultsController(resultsController) { [weak self] in
-            self?.tableView.reloadData()
-        }
+        configureResultsController(resultsController, onReload: reloadTableAndView)
         return resultsController
     }()
 
@@ -164,6 +162,7 @@ final class ProductsViewController: UIViewController {
         configureNavigationBar()
         configureMainView()
         configureTableView()
+        configureToolBarView()
         configureSyncingCoordinator()
         registerTableViewCells()
 
@@ -185,6 +184,15 @@ final class ProductsViewController: UIViewController {
 
         if AppRatingManager.shared.shouldPromptForAppReview() {
             displayRatingPrompt()
+        }
+
+        // Fix any incomplete animation of the refresh control
+        // when switching tabs mid-animation
+        refreshControl.resetAnimation(in: tableView) { [unowned self] in
+            // ghost animation is also removed after switching tabs
+            // show make sure it's displayed again
+            self.removePlaceholderProducts()
+            self.displayPlaceholderProducts()
         }
     }
 
@@ -347,6 +355,7 @@ private extension ProductsViewController {
         tableView.addSubview(refreshControl)
 
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
+        headerContainer.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
         headerContainer.addSubview(topStackView)
         headerContainer.pinSubviewToSafeArea(topStackView, insets: Constants.headerContainerInsets)
         let bottomBorderView = UIView.createBorderView()
@@ -360,6 +369,12 @@ private extension ProductsViewController {
 
         // Updates products tab state after table view is configured, otherwise the initial state is always showing results.
         stateCoordinator.transitionToResultsUpdatedState(hasData: !isEmpty)
+    }
+
+    /// Configure toolbar view by number of products
+    ///
+    func configureToolBarView() {
+        showOrHideToolBar()
     }
 
     func createToolbar() -> ToolbarView {
@@ -394,6 +409,15 @@ private extension ProductsViewController {
     ///
     func registerTableViewCells() {
         tableView.register(ProductsTabProductTableViewCell.self)
+    }
+
+    /// Show or hide the toolbar based on number of products
+    /// if there is any filter applied, toolbar must be always visible
+    /// If there is 0 products, toolbar will be hidden
+    /// if there is 1 or more products, toolbar will be visible
+    ///
+    func showOrHideToolBar() {
+        toolbar.isHidden = filters.numberOfActiveFilters == 0 ? isEmpty : false
     }
 }
 
@@ -490,14 +514,11 @@ private extension ProductsViewController {
                                                  sortOrder: sortOrder)
     }
 
+    /// Configure resultController.
+    /// Assign closures and start performBatch
+    ///
     func configureResultsController(_ resultsController: ResultsController<StorageProduct>, onReload: @escaping () -> Void) {
-        resultsController.onDidChangeContent = {
-            onReload()
-        }
-
-        resultsController.onDidResetContent = {
-            onReload()
-        }
+        setClosuresToResultController(resultsController, onReload: onReload)
 
         do {
             try resultsController.performFetch()
@@ -506,6 +527,38 @@ private extension ProductsViewController {
         }
 
         tableView.reloadData()
+    }
+
+    /// Set closure  to methods `onDidChangeContent` and `onDidResetContent
+    ///
+    func setClosuresToResultController(_ resultsController: ResultsController<StorageProduct>, onReload: @escaping () -> Void) {
+        resultsController.onDidChangeContent = {
+            onReload()
+        }
+
+        resultsController.onDidResetContent = {
+            onReload()
+        }
+    }
+
+    /// Manages view components and reload tableview
+    ///
+    func reloadTableAndView() {
+        showOrHideToolBar()
+        addOrRemoveOverlay()
+        tableView.reloadData()
+    }
+
+    /// Add or remove the overlay based on number of products
+    /// If there is 0 products, overlay will be added
+    /// if there is 1 or more products, toolbar will be removed
+    ///
+    func addOrRemoveOverlay() {
+        guard isEmpty else {
+            removeAllOverlays()
+            return
+        }
+        displayNoResultsOverlay()
     }
 }
 
@@ -654,7 +707,6 @@ private extension ProductsViewController {
         let options = GhostOptions(reuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier, rowsPerSection: Constants.placeholderRowsPerSection)
         tableView.displayGhostContent(options: options,
         style: .wooDefaultGhostStyle)
-
         resultsController.stopForwardingEvents()
     }
 
@@ -662,7 +714,8 @@ private extension ProductsViewController {
     ///
     func removePlaceholderProducts() {
         tableView.removeGhostContent()
-        resultsController.startForwardingEvents(to: tableView)
+        // Assign again the original closure
+        setClosuresToResultController(resultsController, onReload: reloadTableAndView)
         tableView.reloadData()
     }
 

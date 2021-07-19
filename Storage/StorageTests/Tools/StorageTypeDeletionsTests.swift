@@ -50,6 +50,22 @@ class StorageTypeDeletionsTests: XCTestCase {
         let currentPlugins = storage.loadPlugins(siteID: sampleSiteID)
         XCTAssertEqual(currentPlugins, [plugin1, plugin3])
     }
+
+    // MARK: - System plugins
+
+    func test_deleteStaleSystemPlugins_deletes_systemPlugins_not_included_in_currentSystemPlugins() throws {
+        // Given
+        _ = createSystemPlugin(name: "Plugin 1")
+        _ = createSystemPlugin(name: "Plugin 2")
+        let systemPlugin3 = createSystemPlugin(name: "Plugin 3")
+
+        // When
+        storage.deleteStaleSystemPlugins(siteID: sampleSiteID, currentSystemPlugins: ["Plugin 3"])
+
+        // Then
+        let currrentSystemPlugin = storage.loadSystemPlugins(siteID: sampleSiteID)
+        XCTAssertEqual(currrentSystemPlugin, [systemPlugin3])
+    }
 }
 
 private extension StorageTypeDeletionsTests {
@@ -70,5 +86,14 @@ private extension StorageTypeDeletionsTests {
         plugin.siteID = sampleSiteID
         plugin.name = name
         return plugin
+    }
+
+    /// Creates and inserts a `SystemPlugin` entity with a given name
+    ///
+    func createSystemPlugin(name: String) -> SystemPlugin {
+        let systemPlugin = storage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin.siteID = sampleSiteID
+        systemPlugin.name = name
+        return systemPlugin
     }
 }

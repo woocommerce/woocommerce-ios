@@ -67,14 +67,6 @@ private extension ProductCategory {
 // MARK: - Comparable Conformance
 //
 extension ProductCategory: Comparable {
-    public static func == (lhs: ProductCategory, rhs: ProductCategory) -> Bool {
-        return lhs.categoryID == rhs.categoryID &&
-        lhs.siteID == rhs.siteID &&
-        lhs.parentID == rhs.parentID &&
-        lhs.name == rhs.name &&
-        lhs.slug == rhs.slug
-    }
-
     public static func < (lhs: ProductCategory, rhs: ProductCategory) -> Bool {
         return lhs.categoryID < rhs.categoryID ||
             (lhs.categoryID == rhs.categoryID && lhs.name < rhs.name) ||

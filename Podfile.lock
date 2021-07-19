@@ -6,7 +6,7 @@ PODS:
     - AppAuth/ExternalUserAgent (= 1.4.0)
   - AppAuth/Core (1.4.0)
   - AppAuth/ExternalUserAgent (1.4.0)
-  - Automattic-Tracks-iOS (0.9.0-beta.1):
+  - Automattic-Tracks-iOS (0.9.0):
     - CocoaLumberjack (~> 3)
     - Reachability (~> 3)
     - Sentry (~> 6)
@@ -31,7 +31,7 @@ PODS:
   - GTMAppAuth (1.2.2):
     - AppAuth/Core (~> 1.4)
     - GTMSessionFetcher/Core (~> 1.5)
-  - GTMSessionFetcher/Core (1.5.0)
+  - GTMSessionFetcher/Core (1.6.1)
   - KeychainAccess (3.2.1)
   - Kingfisher (5.11.0):
     - Kingfisher/Core (= 5.11.0)
@@ -63,7 +63,7 @@ PODS:
     - WordPressKit (~> 4.18-beta)
     - WordPressShared (~> 1.12-beta)
     - WordPressUI (~> 1.7-beta)
-  - WordPressKit (4.32.0):
+  - WordPressKit (4.37.0):
     - Alamofire (~> 4.8.0)
     - CocoaLumberjack (~> 3.4)
     - NSObject-SafeExpectations (= 0.0.4)
@@ -73,7 +73,7 @@ PODS:
   - WordPressShared (1.15.0):
     - CocoaLumberjack (~> 3.4)
     - FormatterKit/TimeIntervalFormatter (~> 1.8)
-  - WordPressUI (1.12.1-beta.3)
+  - WordPressUI (1.12.1)
   - Wormholy (1.6.4)
   - WPMediaPicker (1.7.1)
   - wpxmlrpc (0.9.0)
@@ -95,7 +95,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.8)
-  - Automattic-Tracks-iOS (~> 0.9.0-beta.1)
+  - Automattic-Tracks-iOS (~> 0.9.0)
   - Charts (~> 3.6.0)
   - CocoaLumberjack (~> 3.5)
   - CocoaLumberjack/Swift (~> 3.5)
@@ -106,9 +106,9 @@ DEPENDENCIES:
   - StripeTerminal (~> 1.4.0)
   - WordPress-Editor-iOS (~> 1.11.0)
   - WordPressAuthenticator (~> 1.38.0)
-  - WordPressKit (~> 4.32.0)
+  - WordPressKit (~> 4.37.0)
   - WordPressShared (~> 1.15)
-  - WordPressUI (~> 1.12.1-beta.3)
+  - WordPressUI (~> 1.12.1)
   - Wormholy (~> 1.6.4)
   - WPMediaPicker (~> 1.7.1)
   - XLPagerTabStrip (~> 9.0)
@@ -117,7 +117,6 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/wordpress-mobile/cocoapods-specs.git:
     - WordPressAuthenticator
-    - WordPressKit
     - WordPressShared
   trunk:
     - 1PasswordExtension
@@ -145,6 +144,7 @@ SPEC REPOS:
     - UIDeviceIdentifier
     - WordPress-Aztec-iOS
     - WordPress-Editor-iOS
+    - WordPressKit
     - WordPressUI
     - Wormholy
     - WPMediaPicker
@@ -162,14 +162,14 @@ SPEC CHECKSUMS:
   1PasswordExtension: f97cc80ae58053c331b2b6dc8843ba7103b33794
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
-  Automattic-Tracks-iOS: 59b9722299d6adbb2e4bc643553d84b41170d075
+  Automattic-Tracks-iOS: f6ece12d2e630b55b701bac8bcf4301fcce9a327
   Charts: b1e3a1f5a1c9ba5394438ca3b91bd8c9076310af
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   FormatterKit: 184db51bf120b633693a73624a4cede89ec51a41
   GoogleSignIn: 7137d297ddc022a7e0aa4619c86d72c909fa7213
   Gridicons: f032dbc3350f8648e0fabe3e531b72cf97d428a9
   GTMAppAuth: ad5c2b70b9a8689e1a04033c9369c4915bfcbe89
-  GTMSessionFetcher: b3503b20a988c4e20cc189aa798fd18220133f52
+  GTMSessionFetcher: 36689134877faeb055b27dfa4ccc9ceaa42e029e
   KeychainAccess: d5470352939ced6d6f7fb51cb2e67aae51fc294f
   Kingfisher: 4569606189149e19c7d9439f47e885d0679b7a90
   lottie-ios: 3a3758ef5a008e762faec9c9d50a39842f26d124
@@ -185,9 +185,9 @@ SPEC CHECKSUMS:
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
   WordPressAuthenticator: 4ccd7f41bae37247883922ad92a14f18cc759bf3
-  WordPressKit: 438af1e601ca74ff0d68efa17b4528cb7d8638a7
+  WordPressKit: bd2386909067b48b5525569cefac206bc4234eb5
   WordPressShared: e1915cf3b4ac33f41c47610693b9ca30c0cdab45
-  WordPressUI: cf3b3ef744663811a8d8a9844f42386e1826f512
+  WordPressUI: 414bf3a7d007618f94a1c7969d6e849779877d5d
   Wormholy: 2e70f64227e010d363f8d33268369f77faf12471
   WPMediaPicker: 46ae5807c8f64d30a39c28812ad150837a424ed2
   wpxmlrpc: bf55a43a7e710bd2a4fb8c02dfe83b1246f14f13
@@ -200,6 +200,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: ab3c7a0484657da5aa58fda8681b8a4b623070a5
+PODFILE CHECKSUM: c9a31c3fd5cf78df537a8d96d76f6e345586d178
 
 COCOAPODS: 1.10.1

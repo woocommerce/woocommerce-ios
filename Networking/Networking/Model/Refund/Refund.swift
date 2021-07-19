@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a decoded Refund entity.
 ///
-public struct Refund: Codable, GeneratedFakeable {
+public struct Refund: Codable, GeneratedFakeable, GeneratedCopiable {
     public let refundID: Int64
     public let orderID: Int64
     public let siteID: Int64
@@ -140,6 +140,7 @@ private extension Refund {
 // MARK: - Comparable Conformance
 //
 extension Refund: Comparable {
+    // custom implementation to ignore `createAutomated` and order for items
     public static func == (lhs: Refund, rhs: Refund) -> Bool {
         return lhs.refundID == rhs.refundID &&
             lhs.orderID == rhs.orderID &&

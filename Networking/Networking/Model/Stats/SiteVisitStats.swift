@@ -64,6 +64,7 @@ private extension SiteVisitStats {
 // MARK: - Comparable Conformance
 //
 extension SiteVisitStats: Comparable {
+    // custom implementation to ignore order for items
     public static func == (lhs: SiteVisitStats, rhs: SiteVisitStats) -> Bool {
         return lhs.siteID == rhs.siteID &&
             lhs.date == rhs.date &&

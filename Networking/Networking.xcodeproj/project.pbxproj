@@ -69,6 +69,7 @@
 		02E7FFCF25621C7900C53030 /* shipping-label-print.json in Resources */ = {isa = PBXBuildFile; fileRef = 02E7FFCE25621C7900C53030 /* shipping-label-print.json */; };
 		02F096C22406691100C0C1D5 /* media-library.json in Resources */ = {isa = PBXBuildFile; fileRef = 02F096C12406691100C0C1D5 /* media-library.json */; };
 		077F39C8269F2C7E00ABEADC /* SystemPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39C7269F2C7E00ABEADC /* SystemPlugin.swift */; };
+		077F39D426A58DE700ABEADC /* SystemPluginsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39D326A58DE700ABEADC /* SystemPluginsMapper.swift */; };
 		21DB5B99C4107CF69C0A57EC /* Pods_NetworkingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */; };
 		24F98C522502E79800F49B68 /* FeatureFlagsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C512502E79800F49B68 /* FeatureFlagsRemote.swift */; };
 		24F98C542502E8DD00F49B68 /* Bundle+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C532502E8DD00F49B68 /* Bundle+Woo.swift */; };
@@ -612,6 +613,7 @@
 		02E7FFCE25621C7900C53030 /* shipping-label-print.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-print.json"; sourceTree = "<group>"; };
 		02F096C12406691100C0C1D5 /* media-library.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-library.json"; sourceTree = "<group>"; };
 		077F39C7269F2C7E00ABEADC /* SystemPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPlugin.swift; sourceTree = "<group>"; };
+		077F39D326A58DE700ABEADC /* SystemPluginsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPluginsMapper.swift; sourceTree = "<group>"; };
 		24F98C512502E79800F49B68 /* FeatureFlagsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagsRemote.swift; sourceTree = "<group>"; };
 		24F98C532502E8DD00F49B68 /* Bundle+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Woo.swift"; sourceTree = "<group>"; };
 		24F98C552502EA4800F49B68 /* FeatureFlag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlag.swift; sourceTree = "<group>"; };
@@ -1742,6 +1744,7 @@
 				CC9A24F32642CF37005DE56E /* ShippingLabelCreationEligibilityMapper.swift */,
 				CC0786602677B2DA00BA9AC1 /* ShippingLabelPurchaseMapper.swift */,
 				CC0786C4267BAF0F00BA9AC1 /* ShippingLabelStatusMapper.swift */,
+				077F39D326A58DE700ABEADC /* SystemPluginsMapper.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -2466,6 +2469,7 @@
 				B557DA0B20975D7E005962F4 /* WooAPIVersion.swift in Sources */,
 				45150A9E26836A57006922EA /* CountryListMapper.swift in Sources */,
 				CE6BFEE82236D133005C79FB /* ProductDimensions.swift in Sources */,
+				077F39D426A58DE700ABEADC /* SystemPluginsMapper.swift in Sources */,
 				45152811257A81730076B03C /* ProductAttributeMapper.swift in Sources */,
 				B505F6D120BEE39600BB1B69 /* AccountRemote.swift in Sources */,
 				B567AF2B20A0FA4200AB6C62 /* OrderListMapper.swift in Sources */,

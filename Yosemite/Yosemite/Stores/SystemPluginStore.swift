@@ -30,7 +30,7 @@ public final class SystemPluginStore: Store {
         case .synchronizeSystemPlugins(let siteID, let onCompletion):
             synchronizeSystemPlugins(siteID: siteID, completionHandler: onCompletion)
         case .fetchSystemPlugins(let siteID, let onCompletion):
-            return
+            fetchSystemPlugins(siteID: siteID, completionHandler: onCompletion)
         }
     }
 }
@@ -90,5 +90,13 @@ private extension SystemPluginStore {
         // remove stale system plugins
         let currentSystemPlugins = readonlySystemPlugins.map(\.name)
         storage.deleteStaleSystemPlugins(siteID: siteID, currentSystemPlugins: currentSystemPlugins)
+    }
+
+    /// Retrieve `SystemPlugin` entities of a specified storage by siteID
+    ///
+    func fetchSystemPlugins(siteID: Int64, completionHandler: @escaping ([SystemPlugin]?) -> Void) {
+        let writerStorage = storageManager.writerDerivedStorage
+        let systemPlugins = writerStorage.loadSystemPlugins(siteID: siteID).map { $0.toReadOnly() }
+        completionHandler(systemPlugins)
     }
 }

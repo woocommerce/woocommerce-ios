@@ -33,12 +33,6 @@ private extension ProductDimensions {
 // MARK: - Comparable Conformance
 //
 extension ProductDimensions: Comparable {
-    public static func == (lhs: ProductDimensions, rhs: ProductDimensions) -> Bool {
-        return lhs.length == rhs.length &&
-            lhs.width == rhs.width &&
-            lhs.height == rhs.height
-    }
-
     public static func < (lhs: ProductDimensions, rhs: ProductDimensions) -> Bool {
         return lhs.length < rhs.length ||
             (lhs.length == rhs.length && lhs.width < rhs.width) ||

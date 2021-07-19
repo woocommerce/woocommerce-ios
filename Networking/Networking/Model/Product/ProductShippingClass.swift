@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a ProductShippingClass entity.
 ///
-public struct ProductShippingClass: Decodable, GeneratedFakeable {
+public struct ProductShippingClass: Decodable, Equatable, GeneratedFakeable {
     // Entities.
     public let count: Int64
     public let descriptionHTML: String?
@@ -67,20 +67,6 @@ private extension ProductShippingClass {
         case shippingClassID = "id"
         case siteID
         case slug
-    }
-}
-
-
-// MARK: - Equatable Conformance
-//
-extension ProductShippingClass: Equatable {
-    public static func == (lhs: ProductShippingClass, rhs: ProductShippingClass) -> Bool {
-        return lhs.count == rhs.count &&
-            lhs.descriptionHTML == rhs.descriptionHTML &&
-            lhs.name == rhs.name &&
-            lhs.shippingClassID == rhs.shippingClassID &&
-            lhs.siteID == rhs.siteID &&
-            lhs.slug == rhs.slug
     }
 }
 

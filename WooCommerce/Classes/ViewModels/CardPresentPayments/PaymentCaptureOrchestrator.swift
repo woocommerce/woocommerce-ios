@@ -56,11 +56,7 @@ final class PaymentCaptureOrchestrator {
     }
 
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let action = CardPresentPaymentAction.cancelPayment(onCompletion: { [weak self] result in
-            self?.allowPassPresentation()
-            onCompletion(result)
-        })
-
+        let action = CardPresentPaymentAction.cancelPayment(onCompletion: onCompletion)
         ServiceLocator.stores.dispatch(action)
     }
 
@@ -107,12 +103,6 @@ private extension PaymentCaptureOrchestrator {
             return
         }
 
-        /// The suppression API should not be called if the application is in the background state.
-        ///
-        guard UIApplication.shared.applicationState != .background else {
-            return
-        }
-
         guard !PKPassLibrary.isSuppressingAutomaticPassPresentation() else {
             return
         }
@@ -141,12 +131,6 @@ private extension PaymentCaptureOrchestrator {
         }
 
         guard let walletSuppressionRequestToken = walletSuppressionRequestToken, walletSuppressionRequestToken != 0 else {
-            return
-        }
-
-        /// The suppression API should not be called if the application is in the background state.
-        ///
-        guard UIApplication.shared.applicationState != .background else {
             return
         }
 

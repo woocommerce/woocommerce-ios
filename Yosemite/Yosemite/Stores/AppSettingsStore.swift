@@ -51,27 +51,6 @@ public class AppSettingsStore: Store {
         return documents!.appendingPathComponent(Constants.statsVersionLastShownFileName)
     }()
 
-    /// URL to the plist file that we use to determine the visibility for Product features.
-    ///
-    private lazy var productsFeatureSwitchURL: URL = {
-        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        return documents!.appendingPathComponent(Constants.productsFeatureSwitchFileName)
-    }()
-
-    /// URL to the plist file that we use to determine the visibility for Product features M3.
-    ///
-    private lazy var productsRelease3FeatureSwitchURL: URL = {
-        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        return documents!.appendingPathComponent(Constants.productsRelease3FeatureSwitchFileName)
-    }()
-
-    /// URL to the plist file that we use to determine the visibility for Product features M4.
-    ///
-    private lazy var productsRelease4FeatureSwitchURL: URL = {
-        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        return documents!.appendingPathComponent(Constants.productsRelease4FeatureSwitchFileName)
-    }()
-
     private lazy var generalAppSettingsFileURL: URL! = {
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
         return documents!.appendingPathComponent(Constants.generalAppSettingsFileName)
@@ -130,12 +109,6 @@ public class AppSettingsStore: Store {
             setStatsVersionBannerVisibility(banner: banner, shouldShowBanner: shouldShowBanner)
         case .resetStatsVersionStates:
             resetStatsVersionStates()
-        case .loadProductsFeatureSwitch(let onCompletion):
-            loadProductsFeatureSwitch(onCompletion: onCompletion)
-        case .setProductsFeatureSwitch(let isEnabled, let onCompletion):
-            setProductsFeatureSwitch(isEnabled: isEnabled, onCompletion: onCompletion)
-        case .resetFeatureSwitches:
-            resetFeatureSwitches()
         case .setInstallationDateIfNecessary(let date, let onCompletion):
             setInstallationDateIfNecessary(date: date, onCompletion: onCompletion)
         case .updateFeedbackStatus(let type, let status, let onCompletion):
@@ -157,6 +130,12 @@ public class AppSettingsStore: Store {
             setOrderAddOnsFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadOrderAddOnsSwitchState(onCompletion: let onCompletion):
             loadOrderAddOnsSwitchState(onCompletion: onCompletion)
+        case .rememberCardReader(cardReaderID: let cardReaderID, onCompletion: let onCompletion):
+            rememberCardReader(cardReaderID: cardReaderID, onCompletion: onCompletion)
+        case .forgetCardReader(cardReaderID: let cardReaderID, onCompletion: let onCompletion):
+            forgetCardReader(cardReaderID: cardReaderID, onCompletion: onCompletion)
+        case .loadCardReaders(onCompletion: let onCompletion):
+            loadCardReaders(onCompletion: onCompletion)
         }
     }
 }
@@ -235,7 +214,7 @@ private extension AppSettingsStore {
     /// Load the `GeneralAppSettings` from file or create an empty one if it doesn't exist.
     func loadOrCreateGeneralAppSettings() -> GeneralAppSettings {
         guard let settings: GeneralAppSettings = try? fileStorage.data(for: generalAppSettingsFileURL) else {
-            return GeneralAppSettings(installationDate: nil, feedbacks: [:], isViewAddOnsSwitchEnabled: false)
+            return GeneralAppSettings(installationDate: nil, feedbacks: [:], isViewAddOnsSwitchEnabled: false, knownCardReaders: [])
         }
 
         return settings
@@ -244,6 +223,61 @@ private extension AppSettingsStore {
     /// Save the `GeneralAppSettings` to the appropriate file.
     func saveGeneralAppSettings(_ settings: GeneralAppSettings) throws {
         try fileStorage.write(settings, to: generalAppSettingsFileURL)
+    }
+}
+
+// MARK: - Card Reader Actions
+//
+private extension AppSettingsStore {
+    /// Remember the given card reader (to support automatic reconnection)
+    /// where `cardReaderID` is a String e.g. "CHB204909005931"
+    ///
+    func rememberCardReader(cardReaderID: String, onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings()
+
+            guard !settings.knownCardReaders.contains(cardReaderID) else {
+                return onCompletion(.success(()))
+            }
+
+            let knownCardReadersToSave = settings.knownCardReaders + [cardReaderID]
+            let settingsToSave = settings.copy(knownCardReaders: knownCardReadersToSave)
+            try saveGeneralAppSettings(settingsToSave)
+
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+    }
+
+    /// Forget the given card reader (i.e. automatic reconnection is no longer desired)
+    /// where `cardReaderID` is a String e.g. "CHB204909005931"
+    ///
+    func forgetCardReader(cardReaderID: String, onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings()
+
+            guard settings.knownCardReaders.contains(cardReaderID) else {
+                return onCompletion(.success(()))
+            }
+
+            let knownCardReadersToSave = settings.knownCardReaders.filter { $0 != cardReaderID }
+            let settingsToSave = settings.copy(knownCardReaders: knownCardReadersToSave)
+            try saveGeneralAppSettings(settingsToSave)
+
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+    }
+
+    /// Loads the list of all known (remembered) readers (i.e. card readers that, if discovered, should be reconnected automatically)
+    /// E.g.  ["CHB204909005931"]
+    /// Note: will pass [] to the completion if there are no known readers
+    ///
+    func loadCardReaders(onCompletion: (Result<[String], Error>) -> Void) {
+        let settings = loadOrCreateGeneralAppSettings()
+        onCompletion(.success(settings.knownCardReaders))
     }
 }
 
@@ -477,36 +511,6 @@ private extension AppSettingsStore {
             DDLogError("⛔️ Deleting the stats version files failed. Error: \(error)")
         }
     }
-
-    func loadProductsFeatureSwitch(onCompletion: (Bool) -> Void) {
-        guard let existingData: ProductsFeatureSwitchPListWrapper = try? fileStorage.data(for: productsRelease4FeatureSwitchURL) else {
-            onCompletion(false)
-            return
-        }
-        onCompletion(existingData.isEnabled)
-    }
-
-    func setProductsFeatureSwitch(isEnabled: Bool, onCompletion: () -> Void) {
-        let fileURL = productsRelease4FeatureSwitchURL
-        let wrapper = ProductsFeatureSwitchPListWrapper(isEnabled: isEnabled)
-        do {
-            try fileStorage.write(wrapper, to: fileURL)
-            onCompletion()
-        } catch {
-            DDLogError("⛔️ Saving the Products visibility to \(isEnabled) failed: \(error)")
-            onCompletion()
-        }
-    }
-
-    func resetFeatureSwitches() {
-        do {
-            try fileStorage.deleteFile(at: productsFeatureSwitchURL)
-            try fileStorage.deleteFile(at: productsRelease3FeatureSwitchURL)
-            try fileStorage.deleteFile(at: productsRelease4FeatureSwitchURL)
-        } catch {
-            DDLogError("⛔️ Deleting the product feature switch files failed. Error: \(error)")
-        }
-    }
 }
 
 // MARK: - Products Settings
@@ -593,9 +597,6 @@ private enum Constants {
     static let customShipmentProvidersFileName = "custom-shipment-providers.plist"
     static let statsVersionBannerVisibilityFileName = "stats-version-banner-visibility.plist"
     static let statsVersionLastShownFileName = "stats-version-last-shown.plist"
-    static let productsFeatureSwitchFileName = "products-feature-switch.plist"
-    static let productsRelease3FeatureSwitchFileName = "products-m3-feature-switch.plist"
-    static let productsRelease4FeatureSwitchFileName = "products-m4-feature-switch.plist"
     static let generalAppSettingsFileName = "general-app-settings.plist"
     static let productsSettings = "products-settings.plist"
 }

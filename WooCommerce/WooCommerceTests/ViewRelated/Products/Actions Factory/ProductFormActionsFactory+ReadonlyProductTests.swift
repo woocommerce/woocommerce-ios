@@ -29,7 +29,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: false), .name(editable: false), .description(editable: false)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: false),
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: false, hideSeparator: false),
                                                                        .reviews,
                                                                        .shippingSettings(editable: false),
                                                                        .inventorySettings(editable: false),
@@ -53,7 +53,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
         let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true),
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
                                                                        .reviews,
                                                                        .shippingSettings(editable: true),
                                                                        .inventorySettings(editable: false),
@@ -76,7 +76,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: false), .name(editable: false), .description(editable: false)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: false),
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: false, hideSeparator: false),
                                                                        .reviews,
                                                                        .externalURL(editable: false),
                                                                        .sku(editable: false),
@@ -103,7 +103,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: false), .name(editable: false), .description(editable: false)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: false),
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: false, hideSeparator: false),
                                                                        .reviews,
                                                                        .categories(editable: false),
                                                                        .tags(editable: false),
@@ -183,7 +183,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: false), .name(editable: false), .description(editable: false)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.variations,
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.variations(hideSeparator: false),
                                                                        .reviews,
                                                                        .shippingSettings(editable: false),
                                                                        .inventorySettings(editable: false),
@@ -207,7 +207,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
         let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.variations,
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.variations(hideSeparator: false),
                                                                        .reviews,
                                                                        .shippingSettings(editable: true),
                                                                        .inventorySettings(editable: false),

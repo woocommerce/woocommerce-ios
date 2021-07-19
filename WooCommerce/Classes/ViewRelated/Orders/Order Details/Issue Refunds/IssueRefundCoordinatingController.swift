@@ -164,7 +164,7 @@ private extension IssueRefundCoordinatingController {
 
 /// Conform to this protocol to allow custom behaviour on when to allow an interactive dismiss gesture.
 ///
-protocol IssueRefundInteractiveDismissDelegate: class {
+protocol IssueRefundInteractiveDismissDelegate: AnyObject {
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool
 }
 

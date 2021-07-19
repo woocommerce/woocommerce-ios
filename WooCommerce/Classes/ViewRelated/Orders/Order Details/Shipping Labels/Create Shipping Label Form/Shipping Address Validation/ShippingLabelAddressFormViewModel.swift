@@ -46,12 +46,27 @@ final class ShippingLabelAddressFormViewModel {
 
     var sections: [Section] = []
 
+    private(set) var countries: [Country]
+
+    var statesOfSelectedCountry: [StateOfACountry] {
+        countries.first { $0.code == address?.country }?.states.sorted { $0.name < $1.name } ?? []
+    }
+
+    var extendedCountryName: String? {
+        return countries.first { $0.code == address?.country }?.name
+    }
+
+    var extendedStateName: String? {
+        return statesOfSelectedCountry.first { $0.code == address?.state }?.name
+    }
+
     init(
         siteID: Int64,
         type: ShipType,
         address: ShippingLabelAddress?,
         stores: StoresManager = ServiceLocator.stores,
-        validationError: ShippingLabelAddressValidationError?
+        validationError: ShippingLabelAddressValidationError?,
+        countries: [Country]
     ) {
         self.siteID = siteID
         self.type = type
@@ -61,6 +76,7 @@ final class ShippingLabelAddressFormViewModel {
             addressValidationError = validationError
             addressValidated = .remote
         }
+        self.countries = countries
         updateSections()
     }
 
@@ -206,16 +222,19 @@ extension ShippingLabelAddressFormViewModel {
         let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { [weak self] (result) in
             switch result {
             case .success:
+                ServiceLocator.analytics.track(.shippingLabelAddressValidationSucceeded)
                 self?.addressValidated = .remote
                 self?.addressValidationError = nil
                 self?.state.isLoading = false
                 completion(.success(()))
             case .failure(let error as ShippingLabelAddressValidationError):
+                ServiceLocator.analytics.track(.shippingLabelAddressValidationFailed, withProperties: ["error": error.localizedDescription])
                 self?.addressValidated = .none
                 self?.addressValidationError = error
                 self?.state.isLoading = false
                 completion(.failure(.remote(error)))
             case .failure(let error):
+                ServiceLocator.analytics.track(.shippingLabelAddressValidationFailed, withProperties: ["error": error.localizedDescription])
                 DDLogError("⛔️ Error validating shipping label address: \(error)")
                 self?.addressValidated = .none
                 self?.addressValidationError = ShippingLabelAddressValidationError(addressError: nil, generalError: error.localizedDescription)

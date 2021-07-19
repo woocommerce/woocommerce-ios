@@ -15,6 +15,12 @@ enum ActionButtonType {
     case more
 }
 
+/// The type of save message when saving a product.
+enum SaveMessageType {
+    case publish
+    case save
+}
+
 /// A view model for `ProductFormViewController` to add/edit a generic product model (e.g. `Product` or `ProductVariation`).
 ///
 protocol ProductFormViewModelProtocol {
@@ -138,5 +144,18 @@ protocol ProductFormViewModelProtocol {
 extension ProductFormViewModelProtocol {
     func shouldShowMoreOptionsMenu() -> Bool {
         canSaveAsDraft() || canEditProductSettings() || canViewProductInStore() || canShareProduct() || canDeleteProduct()
+    }
+
+    /// Returns `.publish` when the product does not exists remotely and it's gonna be published for the first time.
+    /// Returns `.publish` when the product is going to be published from a different status (eg: from draft).
+    /// Returns `.save` for any other case.
+    ///
+    func saveMessageType(for productStatus: ProductStatus) -> SaveMessageType {
+        switch productStatus {
+        case .publish where !productModel.existsRemotely || originalProductModel.status != .publish:
+            return .publish
+        default:
+            return .save
+        }
     }
 }

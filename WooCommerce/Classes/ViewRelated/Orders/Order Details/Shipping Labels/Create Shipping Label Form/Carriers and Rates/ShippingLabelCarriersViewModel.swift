@@ -129,7 +129,12 @@ private extension ShippingLabelCarriersViewModel {
             switch result {
             case .success(let response):
                 self.generateRows(response: response)
-                self.syncStatus = .success
+                if self.rows.isEmpty {
+                    self.syncStatus = .error
+                }
+                else {
+                    self.syncStatus = .success
+                }
             case .failure:
                 self.rows = []
                 self.syncStatus = .error

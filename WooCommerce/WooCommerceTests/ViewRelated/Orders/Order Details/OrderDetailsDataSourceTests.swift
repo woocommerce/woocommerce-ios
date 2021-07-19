@@ -133,7 +133,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         storageManager.viewStorage.saveIfNeeded()
 
         // Given
-        let order = makeOrder().copy(status: .processing, paymentMethodID: "cod")
+        let order = makeOrder().copy(status: .processing, datePaid: .some(nil), paymentMethodID: "cod")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
         dataSource.configureResultsControllers { }
 
@@ -155,7 +155,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         storageManager.viewStorage.saveIfNeeded()
 
         // Given
-        let order = makeOrder().copy(status: .processing, paymentMethodID: "stripe")
+        let order = makeOrder().copy(status: .processing, datePaid: nil, paymentMethodID: "stripe")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
         dataSource.configureResultsControllers { }
 
@@ -177,7 +177,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         storageManager.viewStorage.saveIfNeeded()
 
         // Given
-        let order = makeOrder().copy(status: .processing, paymentMethodID: "stripe")
+        let order = makeOrder().copy(status: .processing, datePaid: nil, paymentMethodID: "stripe")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
         dataSource.configureResultsControllers { }
 
@@ -191,6 +191,140 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Clean up
         storageManager.viewStorage.deleteObject(account)
         storageManager.viewStorage.saveIfNeeded()
+    }
+
+    func test_collect_payment_button_is_not_visible_if_order_is_eligible_for_cash_on_delivery_and_total_amount_is_zero() throws {
+        // Setup
+        let account = storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+
+        // Given
+        let order = makeOrder().copy(status: .processing, datePaid: nil, total: "0", paymentMethodID: "cod")
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        dataSource.configureResultsControllers { }
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
+
+        // Clean up
+        storageManager.viewStorage.deleteObject(account)
+        storageManager.viewStorage.saveIfNeeded()
+    }
+
+    func test_collect_payment_button_is_visible_if_order_is_eligible_for_cash_on_delivery_and_total_amount_is_greater_than_zero() throws {
+        // Setup
+        let account = storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+
+        // Given
+        let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "1", paymentMethodID: "cod")
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        dataSource.configureResultsControllers { }
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        XCTAssertNotNil(row(row: .collectCardPaymentButton, in: paymentSection))
+
+        // Clean up
+        storageManager.viewStorage.deleteObject(account)
+        storageManager.viewStorage.saveIfNeeded()
+    }
+
+    func test_collect_payment_button_is_not_visible_if_date_paid_is_not_nil() throws {
+        // Setup
+        let account = storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+
+        // Given
+        let order = makeOrder().copy(status: .processing, datePaid: Date(), total: "0", paymentMethodID: "cod")
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        dataSource.configureResultsControllers { }
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
+
+        // Clean up
+        storageManager.viewStorage.deleteObject(account)
+        storageManager.viewStorage.saveIfNeeded()
+    }
+
+    func test_create_shipping_label_button_is_visible_for_eligible_order_with_no_labels() throws {
+        // Given
+        let order = makeOrder()
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        dataSource.isEligibleForShippingLabelCreation = true
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let productSection = try section(withTitle: Title.products, from: dataSource)
+        let createShippingLabelRow = row(row: .shippingLabelCreateButton, in: productSection)
+        XCTAssertNotNil(createShippingLabelRow)
+    }
+
+    func test_create_shipping_label_button_is_visible_for_eligible_order_with_only_refunded_labels() throws {
+        // Given
+        let order = makeOrder()
+        let refundedShippingLabel = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID, refund: ShippingLabelRefund.fake())
+        insert(shippingLabel: refundedShippingLabel)
+
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        dataSource.isEligibleForShippingLabelCreation = true
+        dataSource.configureResultsControllers { }
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let productSection = try section(withTitle: Title.products, from: dataSource)
+        let createShippingLabelRow = row(row: .shippingLabelCreateButton, in: productSection)
+        XCTAssertNotNil(createShippingLabelRow)
+    }
+
+    func test_create_shipping_label_button_is_not_visible_for_eligible_order_with_labels() throws {
+        // Given
+        let order = makeOrder()
+        let shippingLabel = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID)
+        insert(shippingLabel: shippingLabel)
+
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        dataSource.isEligibleForShippingLabelCreation = true
+        dataSource.configureResultsControllers { }
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let productSection = try section(withTitle: Title.products, from: dataSource)
+        let createShippingLabelRow = row(row: .shippingLabelCreateButton, in: productSection)
+        XCTAssertNil(createShippingLabelRow)
+    }
+
+    func test_create_shipping_label_button_is_not_visible_for_ineligible_order() throws {
+        // Given
+        let order = makeOrder()
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        dataSource.isEligibleForShippingLabelCreation = false
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let productSection = try section(withTitle: Title.products, from: dataSource)
+        let createShippingLabelRow = row(row: .shippingLabelCreateButton, in: productSection)
+        XCTAssertNil(createShippingLabelRow)
     }
 
 }
@@ -256,6 +390,18 @@ private extension OrderDetailsDataSourceTests {
         let storageRefund = storage.insertNewObject(ofType: StorageRefund.self)
         storageRefund.update(with: refund)
         storageRefund.addToItems(storageOrderItemRefunds as NSSet)
+    }
+
+    /// Inserts the shipping label into storage
+    ///
+    func insert(shippingLabel: ShippingLabel) {
+        let storageShippingLabel = storage.insertNewObject(ofType: StorageShippingLabel.self)
+        storageShippingLabel.update(with: shippingLabel)
+        if let shippingLabelRefund = shippingLabel.refund {
+            let storageRefund = storage.insertNewObject(ofType: StorageShippingLabelRefund.self)
+            storageRefund.update(with: shippingLabelRefund)
+            storageShippingLabel.refund = storageRefund
+        }
     }
 
     /// Finds first section with a given title from the provided data source.

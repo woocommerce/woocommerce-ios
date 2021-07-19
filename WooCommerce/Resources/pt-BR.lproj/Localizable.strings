@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-06-11 08:54:43+0000 */
+/* Translation-Revision-Date: 2021-07-08 14:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -9,7 +9,10 @@
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
 "%1$@" = "%1$@";
 
-/* Format for each Product attribute */
+/* Format for each Product attribute in singular form */
+"%1$@ (%2$ld option)" = "%1$@ (%2$ld opção)";
+
+/* Format for each Product attribute in plural form */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld opções)";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
@@ -63,6 +66,18 @@
 /* Plural format of number of business days in Shipping Labels > Carrier and Rates */
 "%1$d business days" = "%1$d dias úteis";
 
+/* For example: `1 item` in Shipping Label package row */
+"%1$d item" = "%1$d item";
+
+/* For example: `5 items` in Shipping Label package row */
+"%1$d items" = "%1$d itens";
+
+/* Format for the variations detail row in singular form. Reads, `1 variation` */
+"%1$ld variation" = "%1$ld variação";
+
+/* Format for the variations detail row in plural form. Reads, `2 variations` */
+"%1$ld variations" = "%1$ld variações";
+
 /* 1 Item */
 "%@ Item" = "%@ item";
 
@@ -77,6 +92,12 @@
 
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
 "%@ via %@" = "%1$@ via %2$@";
+
+/* For example: `1 item` in Aggregated Product List */
+"%d item" = "%d item";
+
+/* For example: `5 items` in Aggregated Product List */
+"%d items" = "%d itens";
 
 /* Title of the label indicating that there are multiple items to refund. */
 "%d items selected" = "%d Itens selecionados";
@@ -146,7 +167,7 @@
 /* Settings > Manage Card Reader > Connect > Help hint number 3 */
 "3" = "3";
 
-/* Shown when there are more than 99 items of something (e.g. Processing Orders). */
+/* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "Mais de 99";
 
 /* A label prompting users to learn more about card readers with an embedded hyperlink */
@@ -280,6 +301,9 @@
 
 /* Voiceover accessibility label for the tags field in product tags. */
 "Add new tags, separated by commas." = "Adicione novas tags separadas por vírgula.";
+
+/* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
+"Add price to your variations to make them visible on your store" = "Adicione o preço das suas variações para torná-las visíveis na sua loja";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Adicionar link do produto";
@@ -426,6 +450,9 @@
    Title of the attributes row on Product Variation main screen */
 "Attributes" = "Atributos";
 
+/* Primary text for the generate first variation screen */
+"Attributes added!" = "Atributos adicionados!";
+
 /* No comment provided by engineer. */
 "Authenticating" = "Autenticando";
 
@@ -568,6 +595,9 @@
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "Escolher o tamanho do papel";
 
+/* Navigation title on the shipping label states of a country selector screen */
+"Choose a State" = "Choose a State";
+
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "Escolher no dispositivo";
 
@@ -619,6 +649,9 @@
 /* Page title for the list of connected stores */
 "Connected Stores" = "Lojas conectadas";
 
+/* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
+"Connecting reader failed" = "Falha na conexão do leitor";
+
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "Conectando com WordPress.com";
 
@@ -631,7 +664,8 @@
 /* Contact Email title */
 "Contact Email" = "E-mail de contato";
 
-/* Contact Support title */
+/* Contact Support title
+   The title of the button to contact support in the Error Loading Data banner */
 "Contact Support" = "Entre em contato com o suporte";
 
 /* Title of a button to contact support in the survey complete screen */
@@ -733,6 +767,9 @@
 /* Cell title: the current date. */
 "Current" = "Atual";
 
+/* Error when the user tap on Country field in Shipping Label Address Validation */
+"Currently we support just the United States from mobile." = "Currently we support just the United States from mobile.";
+
 /* Name of the section for custom shipment tracking carriers */
 "Custom" = "Personalizada";
 
@@ -740,11 +777,16 @@
    Placeholder name of a custom shipment tracking carrier - Title of button to add a custom tracking carrier if filtering the list yields no results. */
 "Custom Carrier" = "Transportadora personalizada";
 
-/* Customer info section title */
+/* Customer info section title
+   Customer info section title in Review Order screen */
 "Customer" = "Cliente";
 
-/* Customer note section title */
+/* Customer note row title
+   Customer note section title */
 "Customer Provided Note" = "Nota fornecida pelo cliente";
+
+/* Title of the banner notice in Shipping Labels -> Carrier and Rates */
+"Customer paid a %1$@ of %2$@ for shipping" = "O cliente pagou %1$@ de %2$@ de frete";
 
 /* Details text in the shipping label creation info screen */
 "Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Pule a fila dos correios imprimindo as etiquetas de envio em casa pelo seu celular a preços com desconto!";
@@ -777,9 +819,6 @@
 /* The navigation bar title of the Aztec editor screen.
    Title in the Product description row on Product form screen when the description is non-empty. */
 "Description" = "Descrição";
-
-/* The row label to tap for a detailed product list */
-"Details" = "Detalhes";
 
 /* Screen title: Details Order number. Parameters: %1$@ - order number */
 "Details Order #%1$@" = "Detalhes do pedido %1$@";
@@ -1015,8 +1054,11 @@
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Erro ao encontrar o endereço no Apple Maps";
 
-/* Alert title when there is an error requesting shipping label document for reprinting */
+/* Alert title when there is an error requesting shipping label document for printing */
 "Error previewing shipping label" = "Erro ao visualizar a etiqueta de envio";
+
+/* Notice displayed when the label purchase fails */
+"Error purchasing the label" = "Error purchasing the label";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -1103,11 +1145,11 @@
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Obtenha informações sobre o desempenho dos produtos de sua loja";
 
-/* Action to generate attributes on the Product Attributes screen */
-"Generate" = "Gerar";
-
 /* Action to add new variation on the variations list */
 "Generate New Variation" = "Gerar nova variação";
+
+/* Title of the action to generate the first variation */
+"Generate Variation" = "Gerar variação";
 
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "Criando variação";
@@ -1259,6 +1301,9 @@
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "Na administração do seu site, é possível encontrar o e-mail utilizado para se conectar ao WordPress.com no painel do Jetpack em Conexões > Conexão da conta";
+
+/* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} Parameters: %1$@ - order number, %2$@ - store name */
+"In-Person Payment for Order #%1$@ for %2$@" = "Pagamento presencial do pedido #%1$@ para %2$@";
 
 /* Application's Inactive State */
 "Inactive" = "Inativas";
@@ -1423,6 +1468,9 @@
 /* Displayed when an Product is being retrieved */
 "Loading Product" = "Carregando produto";
 
+/* Text of the loading banner in Order Detail when loaded for the first time */
+"Loading content" = "Carregando conteúdo";
+
 /* Loading tags in Product Tags screen */
 "Loading..." = "Carregando...";
 
@@ -1510,8 +1558,12 @@
 /* Accessibility label for the Mark All Reviews as Read Button */
 "Mark All as Read" = "Marcar todas como lidas";
 
-/* Fulfill Order Action Button */
+/* Action button on Review Order screen
+   Fulfill Order Action Button */
 "Mark Order Complete" = "Marcar pedido como concluído";
+
+/* Create Shipping Label form -> Mark order as complete label */
+"Mark this order as complete and notify the customer" = "Marcar este pedido como concluído e notificar o cliente";
 
 /* VoiceOver accessibility hint for the Mark All Reviews as Read Action */
 "Marks Every Review as Read" = "Marca todas as avaliações como lidas";
@@ -1603,8 +1655,8 @@
 /* The title of the top banner on the Products tab. */
 "New features available!" = "Novas funcionalidades disponíveis!";
 
-/* Next nav bar button title in Add Product Attribute Options screen
-   Next nav bar button title in Add Product Attribute screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
+/* Action navigate to the variation creation screen
+   Next nav bar button title in Add Product Attribute Options screen - Next nav bar button title in Add Product Attribute screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "Próximo";
 
 /* Default text for Top Performers section when no data exists for a given period. */
@@ -1648,13 +1700,17 @@
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "Não há classes de envio";
 
+/* Error state title in shipping label carrier and rates screen */
+"No shipping rates available" = "Nenhuma tarifa de envio disponível";
+
 /* Placeholder of the Product Tags row on Product main screen */
 "No tags" = "Nenhuma tag";
 
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "Não há classes de imposto";
 
-/* Button to dismiss modal overlay. Presented to users after a payment has been successfully collected */
+/* Button to dismiss modal overlay. Presented to users after a payment has been successfully collected
+   Button to dismiss modal overlay. Presented to users after collecting a payment fails */
 "No thanks" = "Não obrigado";
 
 /* Display label for the order fee's tax status setting option
@@ -1670,8 +1726,11 @@
 /* Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Nota para o cliente";
 
+/* Info text for the generate first variation screen */
+"Now that you’ve added attributes, you can create your first variation!" = "Agora que adicionou atributos, você pode criar sua primeira variação!";
+
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for reprinting - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for printing - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "OK";
 
 /* Header of selected attribute options section in Add Attribute Options screen */
@@ -1703,6 +1762,9 @@
 
 /* Helper text above photo list in Product images screen */
 "Only one photo can be displayed by variation" = "Apenas uma foto pode ser exibida por variação";
+
+/* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
+"Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Apenas o proprietário do site pode gerenciar as formas de pagamento de etiquetas de envio. Fale com %1$@ (%2$@) para gerenciá-las.";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Abrir configurações do dispositivo";
@@ -1759,7 +1821,8 @@
    The section title for the list of Order statuses in the Order Search. */
 "Order Status" = "Status do pedido";
 
-/* Order Total label for payment view */
+/* Create Shipping Label form -> Order Total label
+   Order Total label for payment view */
 "Order Total" = "Total de pedidos";
 
 /* Order fulfillment success notice */
@@ -1807,7 +1870,7 @@
 /* The title for the customer payment cell */
 "Paid" = "Pago";
 
-/* Title of the paper size selector row for reprinting a shipping label */
+/* Title of the paper size selector row for printing a shipping label */
 "Paper Size" = "Tamanho do papel";
 
 /* Add Product Category. Title of cell presenting the parent category. */
@@ -1868,6 +1931,9 @@
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "Colocando seu produto na lixeira...";
 
+/* Error state description in shipping label carrier and rates screen */
+"Please double check your package dimensions and weight or try using a different package in Package Details." = "Verifique novamente as dimensões e o peso do seu pacote ou use outro em Detalhes do pacote.";
+
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "Insira uma URL";
 
@@ -1913,11 +1979,14 @@
 /* Label asking users to remove card. Presented to users when a payment is in the process of being collected */
 "Please remove card" = "Remova o cartão";
 
+/* The info of the Error Loading Data banner */
+"Please try again later or reach out to us and we'll be happy to assist you!" = "Tente novamente mais tarde ou fale conosco. Teremos prazer em ajudar você!";
+
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "Tente novamente.";
 
-/* Message of in-progress modal when requesting shipping label document for reprinting
-   Text on the loading view of the survey screen indicating the user to wait */
+/* Message of in-progress modal when requesting shipping label document for printing
+   Message of the in-progress UI while purchasing a shipping label - Text on the loading view of the survey screen indicating the user to wait */
 "Please wait" = "Aguarde";
 
 /* Instructions for the progress screen while generating a variation */
@@ -1950,6 +2019,9 @@
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Com tecnologia Automattic";
 
+/* Label within the modal dialog that appears when searching for a card reader */
+"Press the power button of your reader until you see a flashing blue light" = "Pressione o botão liga\/desliga do seu leitor até aparecer uma luz azul piscando";
+
 /* A label representing the amount that was previously refunded for the order. */
 "Previously Refunded" = "Já reembolsado";
 
@@ -1957,7 +2029,8 @@
    Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
 "Price" = "Preço";
 
-/* Button title to generate a shipping label document for printing */
+/* Button title to generate a shipping label document for printing
+   Navigation bar title to print a shipping label - Text on the button that prints a shipping label */
 "Print Shipping Label" = "Imprimir etiqueta de envio";
 
 /* Navigation bar title of shipping label printing instructions screen */
@@ -1969,7 +2042,7 @@
 /* The title of the shipping labels top banner in order details */
 "Print shipping labels from your device!" = "Imprima etiquetas de envio a partir do seu dispositivo!";
 
-/* Title of in-progress modal when requesting shipping label document for reprinting */
+/* Title of in-progress modal when requesting shipping label document for printing */
 "Printing Label" = "Imprimindo etiqueta";
 
 /* Opens the California Privacy Policy web page */
@@ -1998,10 +2071,11 @@
 "Processing payment..." = "Processando pagamento...";
 
 /* Description for Top Performers left column header
-   Product section title - Product section title if there is only one product. */
+   Product section title - Product section title if there is only one product. - Product section title in Review Order screen if there is one product. */
 "Product" = "Produto";
 
-/* The title on the navigation bar when viewing an order item add-ons */
+/* The title on the navigation bar when viewing an order item add-ons
+   Title for Add-ons row in the product form screen. - Title for the product add-ons screen */
 "Product Add-ons" = "Complementos do produto";
 
 /* Edit Product External Link navigation title */
@@ -2033,7 +2107,7 @@
 "Product type" = "Tipo de produto";
 
 /* Product section title if there is more than one product.
-   Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
+   Product section title in Review Order screen if there is more than one product. - Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "Produtos";
 
 /* Label for computed value `product refunds + taxes = subtotal`.
@@ -2070,12 +2144,18 @@
 /* Title of shipping label purchase date in Refund Shipping Label screen */
 "Purchase Date" = "Data da compra";
 
+/* Create Shipping Label form -> Purchase Label button */
+"Purchase Label" = "Comprar etiqueta";
+
 /* Product Note navigation title
    Purchase note label in Product Settings */
 "Purchase Note" = "Observação de compra";
 
 /* Title for purchase note alert. */
 "Purchase note" = "Nota de compra";
+
+/* Title of the in-progress UI while purchasing a shipping label */
+"Purchasing Label" = "Purchasing Label";
 
 /* Quantity abbreviation for section title */
 "QTY" = "QTD";
@@ -2111,8 +2191,8 @@
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "Motivo do reembolso do pedido";
 
-/* Message included in emailed receipts.Reads as: Receipt from @{store name}Parameters: %1$@ - store name */
-"Receipt from %1$@" = "Recibo de %1$@";
+/* The title of the view containing a receipt preview */
+"Receipt" = "Recibo";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "Reembolso";
@@ -2195,10 +2275,6 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "Reportar travamentos";
 
-/* Navigation bar title to reprint a shipping label
-   Text on the button that reprints a shipping label */
-"Reprint Shipping Label" = "Reimprimir etiqueta de envio";
-
 /* Navigation bar title to request a refund for a shipping label
    Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "Solicitar um reembolso";
@@ -2224,6 +2300,9 @@
 
 /* Revenue stat label on dashboard. */
 "Revenue" = "Receita";
+
+/* Title of Review Order screen */
+"Review Order" = "Review Order";
 
 /* Review moderation success notice message. It reads: Review marked as {new status} */
 "Review marked as %@" = "Avaliação marcada como %@";
@@ -2275,6 +2354,9 @@
 
 /* Button title to save a product as draft in Product More Options Action Sheet */
 "Save as draft" = "Salvar como rascunho";
+
+/* Button title to save a shipping label to print later */
+"Save for Later" = "Save for Later";
 
 /* Message text in the shipping label creation info screen */
 "Save time and money by fulfilling with WooCommerce Shipping" = "Economize tempo e dinheiro com o WooCommerce Shipping";
@@ -2411,6 +2493,9 @@
    Shipping label for payment view - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "Envio";
 
+/* Shipping Address title for customer info section */
+"Shipping Address" = "Shipping Address";
+
 /* Title of shipping carrier and rates in shipping label details
    Title of the cell Shipping Carrier inside Create Shipping Label form */
 "Shipping Carrier and Rates" = "Transportadora e tarifas";
@@ -2418,7 +2503,8 @@
 /* Title of view displaying all available Shipment Tracking Carriers */
 "Shipping Carriers" = "Transportadoras";
 
-/* Shipping method title for customer info cell */
+/* Shipping method title for customer info cell
+   Shipping method title for customer info section */
 "Shipping Method" = "Método de envio";
 
 /* Title on the refund screen that lists the shipping total cost */
@@ -2435,6 +2521,12 @@
 
 /* Shipping title for customer info cell */
 "Shipping details" = "Detalhes de envio";
+
+/* Header of the order summary section in the shipping label creation form */
+"Shipping label order summary" = "Resumo do pedido de etiqueta de envio";
+
+/* Header text when printing a newly purchased shipping label */
+"Shipping label purchased!" = "Shipping label purchased!";
 
 /* VoiceOver accessibility label for the shipping notice about the order */
 "Shipping notice about the order" = "Aviso de envio sobre o pedido";
@@ -2470,6 +2562,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show the billing details for this order." = "Exibe os detalhes de cobrança para este pedido.";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to view the items inside the shipping label package */
+"Show the items included inside this shipping label package." = "Mostre os itens incluídos neste pacote de etiqueta de envio.";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details. */
 "Show the shipment details for this shipping label." = "Mostrar detalhes do envio para esta etiqueta.";
@@ -2519,9 +2614,6 @@
 /* Placeholder in the Product Slug row on Edit Product Slug screen.
    Product Slug navigation title - Slug label in Product Settings */
 "Slug" = "Slug";
-
-/* Banner title in product variation list top banner when some variations do not have a price */
-"Some variations do not have prices" = "Algumas variações não têm preço";
 
 /* A unit test for reviews, checking that anonymous users are added as the author named `someone`
    Indicates the reviewer does not have a name. It reads { Someone left a review} */
@@ -2639,8 +2731,8 @@
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "Tachado";
 
-/* Subtotal label for a refund details view
-   Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost */
+/* Create Shipping Label form -> Subtotal label
+   Subtotal label for a refund details view - Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost */
 "Subtotal" = "Subtotal";
 
 /* Title of the footer in Shipping Label Package Detail screen */
@@ -2828,6 +2920,9 @@
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "O certificado para este servidor é inválido. Você talvez esteja conectando a um servidor que está fingindo ser \"%@\", o que poderia colocar suas informações confidenciais em risco.";
 
+/* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
+"The customer will receive an email once order is completed" = "The customer will receive an email once order is completed";
+
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "O número de telefone não é válido ou não é possível ligar para o cliente usando esse dispositivo.";
 
@@ -3014,7 +3109,8 @@
 /* Track shipment of a shipping label from the shipping label tracking more menu action sheet */
 "Track shipment" = "Rastrear envio";
 
-/* Order tracking section title */
+/* Order tracking section title
+   Tracking section title in Review Order screen */
 "Tracking" = "Rastreamento";
 
 /* Add custom shipping carrier. Title of cell presenting carrier link */
@@ -3031,6 +3127,9 @@
 /* Display label for the review's trash status
    Move a comment to the trash */
 "Trash" = "Enviar para a lixeira";
+
+/* The title of the button to get troubleshooting information in the Error Loading Data banner */
+"Troubleshoot" = "Solução de problemas";
 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Confiar";
@@ -3056,9 +3155,6 @@
 /* Settings > Manage Card Reader > Connect > Hint to enable Bluetooth */
 "Turn mobile device Bluetooth on" = "Ligue o Bluetooth do dispositivo móvel";
 
-/* Label within the modal dialog that appears when searching for a card reader */
-"Turn on your reader by pressing its power button" = "Pressione o botão de energia para ligar seu leitor";
-
 /* Navigation bar title for editing the URL of a text link
    URL text field placeholder */
 "URL" = "URL";
@@ -3077,6 +3173,9 @@
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "Unable to delete tracking for order #%1$d" = "Não foi possível excluir o rastreamento para o pedido %1$d";
+
+/* Unable to fetch countries action failed in Shipping Label Form */
+"Unable to fetch countries." = "Unable to fetch countries.";
 
 /* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
 "Unable to fulfill order #%1$d" = "Não foi possível concluir o pedido %1$d";
@@ -3104,6 +3203,9 @@
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "Não foi possível atualizar a lista";
+
+/* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
+"Unable to save changes to the payment method" = "Não é possível salvar alterações da forma de pagamento";
 
 /* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
 "Unable to successfully connect to %@" = "Não foi possível conectar corretamente a %@";
@@ -3228,15 +3330,15 @@
 /* Action sheet option when the user wants to change the Product type to varible product */
 "Variable product" = "Produto variável";
 
-/* Title of the Product Variations row on Product main screen for a variable product
-   Title that appears on top of the Product Variation List screen. */
+/* Text for the notice after creating the first variation. */
+"Variation created" = "Variação criada";
+
+/* Title for the generate first variation screen
+   Title of the Product Variations row on Product main screen for a variable product - Title that appears on top of the Product Variation List screen. */
 "Variations" = "Variações";
 
-/* Banner caption in my store when the stats will be deprecated */
-"Variations without price will not be shown in your store." = "Variações sem preço não serão mostradas na sua loja.";
-
-/* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
-"Variations without price won’t be shown in your store" = "Variações sem preço não serão mostradas na sua loja";
+/* Title of the variations attributes row on Product screen */
+"Variations Attributes" = "Atributos de variações";
 
 /* two factor code placeholder */
 "Verification code" = "Código de verificação";
@@ -3270,6 +3372,9 @@
 
 /* The action to update downloadable files settings for a product */
 "View downloadable file settings" = "Veja as configurações do arquivo para download";
+
+/* Accessibility label for the items inside a Shipping Label package */
+"View items in this shipping label package." = "Veja os itens neste pacote de etiqueta de envio.";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "Visualizar tíquetes de suporte enviados anteriormente";
@@ -3322,6 +3427,9 @@
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "Não é possível exibir a análise da sua loja";
+
+/* The title of the Error Loading Data banner */
+"We couldn't load your data" = "Não foi possível carregar seus dados";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "Modificamos um pouco o endereço inserido. Se estiver certo, use o endereço sugerido para garantir uma entrega precisa.";
@@ -3385,8 +3493,14 @@
    Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "What is Jetpack?" = "O que é o Jetpack?";
 
+/* Shipping Labels: info title about WooCommerce Services discount */
+"What is WooCommerce Services discount?" = "O que é o desconto do WooCommerce Services?";
+
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "O que é o endereço do meu site?";
+
+/* Shipping Labels: info description about WooCommerce Services discount */
+"When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "Ao comprar etiquetas de envio com o WooCommerce, você obtém acesso a preços comerciais promocionais.";
 
 /* An error message shown when a wpcom user provides the wrong password. */
 "Whoops, something went wrong and we couldn't log you in. Please try again!" = "Oops, não conseguimos realizar seu login. Tente novamente!";
@@ -3402,6 +3516,9 @@
 
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
+
+/* Create Shipping Label form -> WooCommerce Discount label */
+"WooCommerce Discount" = "Desconto do WooCommerce";
 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce Shipping";
@@ -3427,6 +3544,9 @@
 
 /* Yesterday Section Header */
 "Yesterday" = "Ontem";
+
+/* Info notice at the bottom of the product add-ons screen */
+"You can edit product add-ons in the web dashboard." = "Você pode editar complementos de produtos no painel da Web.";
 
 /* The info of the top banner on the Products tab. */
 "You can now create and manage product variations!" = "Agora é possível criar e gerenciar variações de produtos!";

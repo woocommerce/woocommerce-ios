@@ -56,6 +56,7 @@ private extension TopEarnerStats {
 // MARK: - Comparable Conformance
 //
 extension TopEarnerStats: Comparable {
+    // custom implementation to ignore order for items
     public static func == (lhs: TopEarnerStats, rhs: TopEarnerStats) -> Bool {
         return lhs.siteID == rhs.siteID &&
             lhs.date == rhs.date &&

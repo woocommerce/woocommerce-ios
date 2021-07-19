@@ -6,7 +6,7 @@ import enum Yosemite.OrderStatusEnum
 import struct Yosemite.Note
 
 /// Relays the scroll events to a delegate for navigation bar large title workaround.
-protocol OrdersTabbedViewControllerScrollDelegate: class {
+protocol OrdersTabbedViewControllerScrollDelegate: AnyObject {
     /// Called when an order list `UIScrollView`'s `scrollViewDidScroll` event is triggered from the user.
     func orderListScrollViewDidScroll(_ scrollView: UIScrollView)
 }
@@ -144,8 +144,8 @@ private extension OrdersTabbedViewController {
 
         NSLayoutConstraint.activate([
             border.topAnchor.constraint(equalTo: buttonBarView.bottomAnchor),
-            border.leadingAnchor.constraint(equalTo: buttonBarView.leadingAnchor),
-            border.trailingAnchor.constraint(equalTo: buttonBarView.trailingAnchor)
+            border.leadingAnchor.constraint(equalTo: superView.leadingAnchor),
+            border.trailingAnchor.constraint(equalTo: superView.trailingAnchor)
         ])
     }
 

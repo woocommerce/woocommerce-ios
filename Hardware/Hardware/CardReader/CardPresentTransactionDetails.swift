@@ -1,5 +1,5 @@
 /// An object representing details from a transaction using a card_present payment method.
-public struct CardPresentTransactionDetails: Codable {
+public struct CardPresentTransactionDetails: Codable, Equatable {
     /// The last 4 digits of the card.
     public let last4: String
 
@@ -28,20 +28,6 @@ public struct CardPresentTransactionDetails: Codable {
 
     /// (Only applicable to EMV payments) The authorization data from the card issuer.
     public let emvAuthData: String?
-}
-
-extension CardPresentTransactionDetails: Equatable {
-    public static func ==(lhs: CardPresentTransactionDetails, rhs: CardPresentTransactionDetails) -> Bool {
-        return lhs.last4 == rhs.last4 &&
-            lhs.expMonth == rhs.expMonth &&
-            lhs.expYear == rhs.expYear &&
-            lhs.cardholderName == rhs.cardholderName &&
-            lhs.brand == rhs.brand &&
-            lhs.fingerprint == rhs.fingerprint &&
-            lhs.generatedCard == rhs.generatedCard &&
-            lhs.receipt == rhs.receipt &&
-            lhs.emvAuthData == rhs.emvAuthData
-    }
 }
 
 extension CardPresentTransactionDetails {

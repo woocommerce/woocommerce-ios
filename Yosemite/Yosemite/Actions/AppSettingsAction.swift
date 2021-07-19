@@ -116,4 +116,12 @@ public enum AppSettingsAction: Action {
     /// Note: will pass [] to the completion if there are no known readers
     ///
     case loadCardReaders(onCompletion: (Result<[String], Error>) -> Void)
+
+    /// Loads the persisted eligibility error information.
+    ///
+    case loadEligibilityErrorInfo(onCompletion: (Result<EligibilityErrorInfo, Error>) -> Void)
+
+    /// Clears the persisted eligibility error information.
+    ///
+    case resetEligibilityErrorInfo(onCompletion: (Result<Void, Error>) -> Void)
 }

@@ -1,3 +1,0 @@
-Kami dengar pesanan dengan banyak konfigurasi dari produk variabel yang sama akan membingungkan jika ditangani dengan aplikasi. Pembaruan ini memperbaiki masalah tersebut dan memisahkan tampilan item sehingga lebih mudah dibaca. Sama halnya pada pesanan dengan banyak pengiriman dari ekstensi WooCommerce Shipping & Tax, pesanan tersebut kini akan ditampilkan sebagai bagian yang terpisah.
-
-Jika terjadi masalah pada aplikasi saat memuat data, kami sekarang menampilkan pesan praktis berisi petunjuk untuk menghubungi kami jika butuh bantuan. Meski masalah tersebut biasanya disebabkan oleh plugin, kami tetap dapat membantu Anda memperbaikinya!

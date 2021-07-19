@@ -113,16 +113,6 @@ private extension ProductAttribute {
 // MARK: - Comparable Conformance
 //
 extension ProductAttribute: Comparable {
-    public static func == (lhs: ProductAttribute, rhs: ProductAttribute) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.attributeID == rhs.attributeID &&
-            lhs.name == rhs.name &&
-            lhs.position == rhs.position &&
-            lhs.visible == rhs.visible &&
-            lhs.variation == rhs.variation &&
-            lhs.options == rhs.options
-    }
-
     public static func < (lhs: ProductAttribute, rhs: ProductAttribute) -> Bool {
         return lhs.attributeID < rhs.attributeID ||
             (lhs.attributeID == rhs.attributeID && lhs.name < rhs.name) ||

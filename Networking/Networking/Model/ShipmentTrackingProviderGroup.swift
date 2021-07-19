@@ -29,6 +29,7 @@ public struct ShipmentTrackingProviderGroup: GeneratedFakeable {
 }
 
 extension ShipmentTrackingProviderGroup: Comparable {
+    // custom implementation to ignore order for providers
     public static func ==(lhs: ShipmentTrackingProviderGroup, rhs: ShipmentTrackingProviderGroup) -> Bool {
         return lhs.name == rhs.name &&
             lhs.siteID == rhs.siteID &&

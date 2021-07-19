@@ -14,7 +14,7 @@ struct InPersonPaymentsUnavailableView: View {
                 .font(.callout)
                 .multilineTextAlignment(.center)
         }
-        .padding()
+        .padding(24.0)
     }
 }
 

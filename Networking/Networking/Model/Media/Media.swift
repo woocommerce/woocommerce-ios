@@ -2,7 +2,7 @@ import Codegen
 
 /// WordPress Site Media
 ///
-public struct Media: GeneratedFakeable {
+public struct Media: Equatable, GeneratedFakeable {
     public let mediaID: Int64
     public let date: Date    // gmt iso8601
     public let fileExtension: String

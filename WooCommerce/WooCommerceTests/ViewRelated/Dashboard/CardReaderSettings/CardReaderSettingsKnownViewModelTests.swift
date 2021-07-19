@@ -12,7 +12,6 @@ final class CardReaderSettingsKnownViewModelTests: XCTestCase {
         let mockKnownReadersProvider = MockKnownReadersProvider()
 
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
-            knownReaders: [], // TODO - Remove when cardPresentKnownReaders feature is complete
             connectedReaders: [],
             sessionManager: SessionManager.testingInstance
         )
@@ -31,7 +30,6 @@ final class CardReaderSettingsKnownViewModelTests: XCTestCase {
         let mockKnownReadersProvider = MockKnownReadersProvider(knownReaders: [TestConstants.mockReaderID])
 
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
-            knownReaders: [],  // TODO - Remove when cardPresentKnownReaders feature is complete
             connectedReaders: [],
             sessionManager: SessionManager.testingInstance
         )
@@ -50,7 +48,6 @@ final class CardReaderSettingsKnownViewModelTests: XCTestCase {
         let mockKnownReadersProvider = MockKnownReadersProvider()
 
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
-            knownReaders: [],  // TODO - Remove when cardPresentKnownReaders feature is complete
             connectedReaders: [MockCardReader.bbposChipper2XBT()],
             sessionManager: SessionManager.testingInstance
         )

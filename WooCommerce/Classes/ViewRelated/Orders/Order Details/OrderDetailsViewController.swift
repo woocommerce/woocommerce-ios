@@ -228,7 +228,8 @@ private extension OrderDetailsViewController {
 //
 private extension OrderDetailsViewController {
     func updateTopBannerView() {
-        let factory = ShippingLabelsTopBannerFactory(shippingLabels: viewModel.dataSource.shippingLabels)
+        let factory = ShippingLabelsTopBannerFactory(isEligibleForShippingLabelCreation: viewModel.dataSource.isEligibleForShippingLabelCreation,
+                                                     shippingLabels: viewModel.dataSource.shippingLabels)
         let isExpanded = topBannerView?.isExpanded ?? false
         factory.createTopBannerIfNeeded(isExpanded: isExpanded,
                                         expandedStateChangeHandler: { [weak self] in
@@ -256,7 +257,7 @@ private extension OrderDetailsViewController {
         // top banner view can be Auto Layout based with dynamic height.
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
         headerContainer.addSubview(topBannerView)
-        headerContainer.pinSubviewToSafeArea(topBannerView, insets: Constants.headerContainerInsets)
+        headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)
         tableView.tableHeaderView = headerContainer
         tableView.updateHeaderHeight()
     }
@@ -273,7 +274,7 @@ private extension OrderDetailsViewController {
     }
 
     func presentShippingLabelsFeedbackSurvey() {
-        let navigationController = SurveyCoordinatingController(survey: .shippingLabelsRelease1Feedback)
+        let navigationController = SurveyCoordinatingController(survey: .shippingLabelsRelease3Feedback)
         present(navigationController, animated: true, completion: nil)
     }
 

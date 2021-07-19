@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-07-07 11:54:04+0000 */
+/* Translation-Revision-Date: 2021-07-16 15:45:25+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -167,7 +167,7 @@
 /* Settings > Manage Card Reader > Connect > Help hint number 3 */
 "3" = "3개";
 
-/* Shown when there are more than 99 items of something (e.g. Processing Orders). */
+/* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
 
 /* A label prompting users to learn more about card readers with an embedded hyperlink */
@@ -302,8 +302,7 @@
 /* Voiceover accessibility label for the tags field in product tags. */
 "Add new tags, separated by commas." = "새 태그를 쉼표로 구분하여 추가하세요.";
 
-/* Banner caption in my store when the stats will be deprecated
-   Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
+/* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
 "Add price to your variations to make them visible on your store" = "변형이 스토어에 표시되도록 가격 추가";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
@@ -596,6 +595,9 @@
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "용지 크기 선택";
 
+/* Navigation title on the shipping label states of a country selector screen */
+"Choose a State" = "Choose a State";
+
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "기기에서 선택";
 
@@ -765,6 +767,9 @@
 /* Cell title: the current date. */
 "Current" = "현재";
 
+/* Error when the user tap on Country field in Shipping Label Address Validation */
+"Currently we support just the United States from mobile." = "Currently we support just the United States from mobile.";
+
 /* Name of the section for custom shipment tracking carriers */
 "Custom" = "사용자 정의";
 
@@ -772,10 +777,12 @@
    Placeholder name of a custom shipment tracking carrier - Title of button to add a custom tracking carrier if filtering the list yields no results. */
 "Custom Carrier" = "사용자 정의 운송업체";
 
-/* Customer info section title */
+/* Customer info section title
+   Customer info section title in Review Order screen */
 "Customer" = "고객";
 
-/* Customer note section title */
+/* Customer note row title
+   Customer note section title */
 "Customer Provided Note" = "고객이 남긴 메모";
 
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
@@ -1047,8 +1054,11 @@
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Apple Maps에서 주소를 찾는 중 오류 발생";
 
-/* Alert title when there is an error requesting shipping label document for reprinting */
+/* Alert title when there is an error requesting shipping label document for printing */
 "Error previewing shipping label" = "배송 레이블을 미리 보는 중 오류 발생";
+
+/* Notice displayed when the label purchase fails */
+"Error purchasing the label" = "Error purchasing the label";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -1548,7 +1558,8 @@
 /* Accessibility label for the Mark All Reviews as Read Button */
 "Mark All as Read" = "모두 읽음으로 표시";
 
-/* Fulfill Order Action Button */
+/* Action button on Review Order screen
+   Fulfill Order Action Button */
 "Mark Order Complete" = "주문을 완료로 표시";
 
 /* Create Shipping Label form -> Mark order as complete label */
@@ -1719,7 +1730,7 @@
 "Now that you’ve added attributes, you can create your first variation!" = "이제 속성을 추가했으니 첫 번째 변형을 만드실 수 있습니다!";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for reprinting - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for printing - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "확인";
 
 /* Header of selected attribute options section in Add Attribute Options screen */
@@ -1859,7 +1870,7 @@
 /* The title for the customer payment cell */
 "Paid" = "유료";
 
-/* Title of the paper size selector row for reprinting a shipping label */
+/* Title of the paper size selector row for printing a shipping label */
 "Paper Size" = "용지 크기";
 
 /* Add Product Category. Title of cell presenting the parent category. */
@@ -1921,7 +1932,7 @@
 "Placing your product in the trash..." = "제품을 휴지통에 버리는 중";
 
 /* Error state description in shipping label carrier and rates screen */
-"Please double check your package dimensions and weightor try using a different package in Package Details." = "패키지 규격과 무게를 다시 확인하거나 패키지 상세 정보의 다른 패키지를 사용해 보세요.";
+"Please double check your package dimensions and weight or try using a different package in Package Details." = "패키지 규격과 무게를 다시 확인하거나 패키지 상세 정보의 다른 패키지를 사용해 보세요.";
 
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "URL을 입력하세요.";
@@ -1974,8 +1985,8 @@
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "다시 시도하세요.";
 
-/* Message of in-progress modal when requesting shipping label document for reprinting
-   Text on the loading view of the survey screen indicating the user to wait */
+/* Message of in-progress modal when requesting shipping label document for printing
+   Message of the in-progress UI while purchasing a shipping label - Text on the loading view of the survey screen indicating the user to wait */
 "Please wait" = "기다려 주세요.";
 
 /* Instructions for the progress screen while generating a variation */
@@ -2031,7 +2042,7 @@
 /* The title of the shipping labels top banner in order details */
 "Print shipping labels from your device!" = "기기에서 배송 레이블을 인쇄하세요!";
 
-/* Title of in-progress modal when requesting shipping label document for reprinting */
+/* Title of in-progress modal when requesting shipping label document for printing */
 "Printing Label" = "레이블 인쇄";
 
 /* Opens the California Privacy Policy web page */
@@ -2060,7 +2071,7 @@
 "Processing payment..." = "결제 처리 중...";
 
 /* Description for Top Performers left column header
-   Product section title - Product section title if there is only one product. */
+   Product section title - Product section title if there is only one product. - Product section title in Review Order screen if there is one product. */
 "Product" = "상품";
 
 /* The title on the navigation bar when viewing an order item add-ons
@@ -2096,7 +2107,7 @@
 "Product type" = "제품 유형";
 
 /* Product section title if there is more than one product.
-   Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
+   Product section title in Review Order screen if there is more than one product. - Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "상품";
 
 /* Label for computed value `product refunds + taxes = subtotal`.
@@ -2142,6 +2153,9 @@
 
 /* Title for purchase note alert. */
 "Purchase note" = "구매 메모";
+
+/* Title of the in-progress UI while purchasing a shipping label */
+"Purchasing Label" = "Purchasing Label";
 
 /* Quantity abbreviation for section title */
 "QTY" = "수량";
@@ -2287,6 +2301,9 @@
 /* Revenue stat label on dashboard. */
 "Revenue" = "수익";
 
+/* Title of Review Order screen */
+"Review Order" = "Review Order";
+
 /* Review moderation success notice message. It reads: Review marked as {new status} */
 "Review marked as %@" = "리뷰를 %@(으)로 표시했습니다.";
 
@@ -2337,6 +2354,9 @@
 
 /* Button title to save a product as draft in Product More Options Action Sheet */
 "Save as draft" = "임시글로 저장";
+
+/* Button title to save a shipping label to print later */
+"Save for Later" = "Save for Later";
 
 /* Message text in the shipping label creation info screen */
 "Save time and money by fulfilling with WooCommerce Shipping" = "WooCommerce 배송으로 처리하여 시간과 비용 절약";
@@ -2473,6 +2493,9 @@
    Shipping label for payment view - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "배송";
 
+/* Shipping Address title for customer info section */
+"Shipping Address" = "Shipping Address";
+
 /* Title of shipping carrier and rates in shipping label details
    Title of the cell Shipping Carrier inside Create Shipping Label form */
 "Shipping Carrier and Rates" = "운송업체 및 요금";
@@ -2480,7 +2503,8 @@
 /* Title of view displaying all available Shipment Tracking Carriers */
 "Shipping Carriers" = "운송업체";
 
-/* Shipping method title for customer info cell */
+/* Shipping method title for customer info cell
+   Shipping method title for customer info section */
 "Shipping Method" = "배송 방법";
 
 /* Title on the refund screen that lists the shipping total cost */
@@ -2500,6 +2524,9 @@
 
 /* Header of the order summary section in the shipping label creation form */
 "Shipping label order summary" = "배송 레이블 주문 요약";
+
+/* Header text when printing a newly purchased shipping label */
+"Shipping label purchased!" = "Shipping label purchased!";
 
 /* VoiceOver accessibility label for the shipping notice about the order */
 "Shipping notice about the order" = "주문 관련 배송 알림";
@@ -2587,9 +2614,6 @@
 /* Placeholder in the Product Slug row on Edit Product Slug screen.
    Product Slug navigation title - Slug label in Product Settings */
 "Slug" = "슬러그";
-
-/* Banner title in product variation list top banner when some variations do not have a price */
-"Some variations do not have prices" = "일부 선택사항에 가격이 없습니다.";
 
 /* A unit test for reviews, checking that anonymous users are added as the author named `someone`
    Indicates the reviewer does not have a name. It reads { Someone left a review} */
@@ -2896,6 +2920,9 @@
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "이 서버의 인증서가 올바르지 않습니다. “%@”(으)로 사칭한 서버에 연결 중일 수 있습니다. 기밀 정보가 노출될 수 있습니다.\n\n그래도 인증서를 신뢰하시겠어요?";
 
+/* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
+"The customer will receive an email once order is completed" = "The customer will receive an email once order is completed";
+
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "전화번호가 유효하지 않거나 이 기기에서 고객에게 전화를 걸 수 없습니다.";
 
@@ -3082,7 +3109,8 @@
 /* Track shipment of a shipping label from the shipping label tracking more menu action sheet */
 "Track shipment" = "배송 추적";
 
-/* Order tracking section title */
+/* Order tracking section title
+   Tracking section title in Review Order screen */
 "Tracking" = "추적";
 
 /* Add custom shipping carrier. Title of cell presenting carrier link */
@@ -3145,6 +3173,9 @@
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "Unable to delete tracking for order #%1$d" = "%1$d번 주문에 대한 추적을 삭제할 수 없음";
+
+/* Unable to fetch countries action failed in Shipping Label Form */
+"Unable to fetch countries." = "Unable to fetch countries.";
 
 /* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
 "Unable to fulfill order #%1$d" = "%1$d번 주문을 처리할 수 없음";

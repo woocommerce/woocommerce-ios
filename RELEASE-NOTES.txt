@@ -5,6 +5,7 @@
 - [*] Order Fulfillment: Updated success notice message [https://github.com/woocommerce/woocommerce-ios/pull/4589]
 - [*] Order Fulfillment: Fixed issue footer view getting clipped of by iPhone notch [https://github.com/woocommerce/woocommerce-ios/pull/4631]
 - [*] Shipping Labels: Updated address validation to make sure a name is entered for each address. [https://github.com/woocommerce/woocommerce-ios/pull/4601]
+- [*] Reviews and Review Details: Updated edge-to-edge table views for consistent look across the app. [https://github.com/woocommerce/woocommerce-ios/pull/4637]
 
 7.1
 -----

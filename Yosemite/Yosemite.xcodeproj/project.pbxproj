@@ -91,6 +91,7 @@
 		077F39DE26A5A1CB00ABEADC /* SystemPluginAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39DD26A5A1CB00ABEADC /* SystemPluginAction.swift */; };
 		077F39E026A5A6F500ABEADC /* SystemPluginStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39DF26A5A6F500ABEADC /* SystemPluginStore.swift */; };
 		077F39E226A5AFCA00ABEADC /* SystemPlugin+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39E126A5AFCA00ABEADC /* SystemPlugin+ReadOnlyConvertible.swift */; };
+		077F39E526A5C98200ABEADC /* SystemPluginStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39E426A5C98200ABEADC /* SystemPluginStoreTests.swift */; };
 		0E67B79585034C4DD75C8117 /* Pods_Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C25501C7F936D2FD32FAF3F4 /* Pods_Yosemite.framework */; };
 		24163B9E257F41A600F94EC3 /* StoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24163B9D257F41A600F94EC3 /* StoresManager.swift */; };
 		24163BA8257F41C500F94EC3 /* SessionManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24163BA7257F41C500F94EC3 /* SessionManagerProtocol.swift */; };
@@ -448,6 +449,7 @@
 		077F39DD26A5A1CB00ABEADC /* SystemPluginAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPluginAction.swift; sourceTree = "<group>"; };
 		077F39DF26A5A6F500ABEADC /* SystemPluginStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPluginStore.swift; sourceTree = "<group>"; };
 		077F39E126A5AFCA00ABEADC /* SystemPlugin+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemPlugin+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		077F39E426A5C98200ABEADC /* SystemPluginStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPluginStoreTests.swift; sourceTree = "<group>"; };
 		24163B9D257F41A600F94EC3 /* StoresManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoresManager.swift; sourceTree = "<group>"; };
 		24163BA7257F41C500F94EC3 /* SessionManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManagerProtocol.swift; sourceTree = "<group>"; };
 		247CE7AA2582DB9300F9D9D1 /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
@@ -1255,6 +1257,7 @@
 				022F00C62472963E008CD97F /* NotificationCountStoreTests.swift */,
 				02E7FFD42562226B00C53030 /* ShippingLabelStoreTests.swift */,
 				DE6831DC26445B2B00E88B9E /* SitePluginStoreTests.swift */,
+				077F39E426A5C98200ABEADC /* SystemPluginStoreTests.swift */,
 			);
 			path = Stores;
 			sourceTree = "<group>";
@@ -1960,6 +1963,7 @@
 				578CE7902475EBAB00492EBF /* MockProductReviewsRemote.swift in Sources */,
 				D87F615E2265B1BC0031A13B /* AppSettingsStoreTests.swift in Sources */,
 				02E7FFD52562226B00C53030 /* ShippingLabelStoreTests.swift in Sources */,
+				077F39E526A5C98200ABEADC /* SystemPluginStoreTests.swift in Sources */,
 				022F931D257F27B40011CD94 /* MockShippingLabelAddress.swift in Sources */,
 				02FF056923DECD5B0058E6E7 /* MediaImageExporterTests.swift in Sources */,
 				02BA23C622EEF092009539E7 /* StatsV4AvailabilityStoreTests.swift in Sources */,

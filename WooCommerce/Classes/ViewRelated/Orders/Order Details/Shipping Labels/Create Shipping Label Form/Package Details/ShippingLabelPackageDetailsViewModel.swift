@@ -174,7 +174,9 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
                 product = products.first { $0.productID == item.productID }
             }
             if product?.virtual == false || productVariation?.virtual == false {
-                tempTotalWeight += Double(productVariation?.weight ?? product?.weight ?? "0") ?? 0
+                for _ in 0..<item.quantity.intValue {
+                    tempTotalWeight += Double(productVariation?.weight ?? product?.weight ?? "0") ?? 0
+                }
             }
         }
 

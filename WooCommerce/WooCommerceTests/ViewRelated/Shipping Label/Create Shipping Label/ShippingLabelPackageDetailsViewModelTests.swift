@@ -273,7 +273,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         // When
         insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "123"))
         insert(Product.fake().copy(siteID: sampleSiteID, productID: 33, virtual: true, weight: "9"))
-        insert(Product.fake().copy(siteID: sampleSiteID, productID: 23, virtual: false, weight: "1"))
+        insert(Product.fake().copy(siteID: sampleSiteID, productID: 23, virtual: false, weight: "1.44"))
         insert(ProductVariation.fake().copy(siteID: sampleSiteID,
                                             productID: 49,
                                             productVariationID: 49,
@@ -290,7 +290,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
 
 
         // Then
-        XCTAssertEqual(viewModel.totalWeight, "124.0")
+        XCTAssertEqual(viewModel.totalWeight, "125.88")
     }
 
     func test_totalWeight_returns_the_expected_value_when_already_set() {

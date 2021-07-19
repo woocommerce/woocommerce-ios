@@ -126,7 +126,6 @@ final class RoleErrorViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(successCalled)
-        XCTAssertEqual(fakeUseCase.resetCallCount, 1)
     }
 
     func test_when_retry_failed_viewModel_should_inform_output_to_notify_error() {
@@ -218,7 +217,6 @@ private class FakeRoleErrorOutput: RoleErrorOutput {
 /// Convenient fake class for the RoleEligibilityUseCase protocol.
 private class FakeRoleUseCase: RoleEligibilityUseCaseProtocol {
     var syncEligibilityCallCount = 0
-    var resetCallCount = 0
     var lastCheckedStoreID: Int64 = -1
     var errorToReturn: RoleEligibilityError? = nil
     var errorInfoToReturn: EligibilityErrorInfo? = nil
@@ -238,10 +236,6 @@ private class FakeRoleUseCase: RoleEligibilityUseCaseProtocol {
 
     func lastEligibilityErrorInfo() -> EligibilityErrorInfo? {
         errorInfoToReturn
-    }
-
-    func reset() {
-        resetCallCount += 1
     }
 }
 

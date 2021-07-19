@@ -101,12 +101,11 @@ private extension OrdersRootViewController {
             view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
         }
 
-        // A container view is added to respond to safe area insets from the view controller.
-        // This is needed when the child view controller's view has to use a frame-based layout
-        // (e.g. when the child view controller is a `ButtonBarPagerTabStripViewController` subclass).
+        // A container view is pinned to all edges of the view controller.
+        // to keep the consistent edge-to-edge look across app.
         view.addSubview(containerView)
         containerView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToSafeArea(containerView)
+        view.pinSubviewToAllEdges(containerView)
     }
 
     func configureChildViewController() {

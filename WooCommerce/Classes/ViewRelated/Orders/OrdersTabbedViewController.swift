@@ -144,8 +144,8 @@ private extension OrdersTabbedViewController {
 
         NSLayoutConstraint.activate([
             border.topAnchor.constraint(equalTo: buttonBarView.bottomAnchor),
-            border.leadingAnchor.constraint(equalTo: buttonBarView.leadingAnchor),
-            border.trailingAnchor.constraint(equalTo: buttonBarView.trailingAnchor)
+            border.leadingAnchor.constraint(equalTo: superView.leadingAnchor),
+            border.trailingAnchor.constraint(equalTo: superView.trailingAnchor)
         ])
     }
 

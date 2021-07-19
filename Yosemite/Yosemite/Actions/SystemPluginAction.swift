@@ -10,5 +10,5 @@ public enum SystemPluginAction: Action {
     
     /// Fetch all system plugins for a site given its ID
     ///
-    case fetchSystemPlugins(siteID: Int64, onCompletion: ([SystemPlugin]?, Error) -> Void)
+    case fetchSystemPlugins(siteID: Int64, onCompletion: ([SystemPlugin]?) -> Void)
 }

@@ -140,6 +140,7 @@ private extension Refund {
 // MARK: - Comparable Conformance
 //
 extension Refund: Comparable {
+    // custom implementation to ignore `createAutomated` and order for items
     public static func == (lhs: Refund, rhs: Refund) -> Bool {
         return lhs.refundID == rhs.refundID &&
             lhs.orderID == rhs.orderID &&

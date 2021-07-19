@@ -61,13 +61,6 @@ private extension ProductTag {
 // MARK: - Comparable Conformance
 //
 extension ProductTag: Comparable {
-    public static func == (lhs: ProductTag, rhs: ProductTag) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.tagID == rhs.tagID &&
-            lhs.name == rhs.name &&
-            lhs.slug == rhs.slug
-    }
-
     public static func < (lhs: ProductTag, rhs: ProductTag) -> Bool {
         return lhs.tagID < rhs.tagID ||
             (lhs.tagID == rhs.tagID && lhs.name < rhs.name) ||

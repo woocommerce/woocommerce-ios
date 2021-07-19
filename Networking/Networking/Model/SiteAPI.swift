@@ -3,7 +3,7 @@ import Codegen
 
 /// Encapsulates API Information for a given site
 ///
-public struct SiteAPI: Decodable, GeneratedFakeable {
+public struct SiteAPI: Decodable, Equatable, GeneratedFakeable {
 
     /// Site Identifier.
     ///
@@ -52,13 +52,6 @@ public struct SiteAPI: Decodable, GeneratedFakeable {
 // MARK: - Comparable Conformance
 //
 extension SiteAPI: Comparable {
-    public static func == (lhs: SiteAPI, rhs: SiteAPI) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.namespaces == rhs.namespaces &&
-            lhs.highestWooVersion == rhs.highestWooVersion
-
-    }
-
     public static func < (lhs: SiteAPI, rhs: SiteAPI) -> Bool {
         return lhs.siteID < rhs.siteID
     }

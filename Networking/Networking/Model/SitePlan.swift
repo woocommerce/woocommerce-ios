@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a WordPress.com default Site's plan.
 ///
-public struct SitePlan: Decodable, GeneratedFakeable {
+public struct SitePlan: Decodable, Equatable, GeneratedFakeable {
 
     /// WordPress.com Site Identifier.
     ///
@@ -41,11 +41,6 @@ public struct SitePlan: Decodable, GeneratedFakeable {
 extension SitePlan: Comparable {
     public static func < (lhs: SitePlan, rhs: SitePlan) -> Bool {
         return lhs.siteID < rhs.siteID
-    }
-
-    public static func == (lhs: SitePlan, rhs: SitePlan) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.shortName == rhs.shortName
     }
 }
 

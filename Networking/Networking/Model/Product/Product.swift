@@ -640,56 +640,6 @@ private extension Product {
 }
 
 
-// MARK: - Comparable Conformance
-//
-extension Product: Comparable {
-    public static func < (lhs: Product, rhs: Product) -> Bool {
-        /// Note: stockQuantity can be `null` in the API,
-        /// which is why we are unable to sort by it here.
-        ///
-        return lhs.siteID < rhs.siteID ||
-            (lhs.siteID == rhs.siteID && lhs.productID < rhs.productID) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name < rhs.name) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug < rhs.slug) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug == rhs.slug &&
-                lhs.dateCreated < rhs.dateCreated) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug == rhs.slug &&
-                lhs.dateCreated == rhs.dateCreated &&
-                lhs.productTypeKey < rhs.productTypeKey) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug == rhs.slug &&
-                lhs.dateCreated == rhs.dateCreated &&
-                lhs.productTypeKey == rhs.productTypeKey &&
-                lhs.statusKey < rhs.statusKey) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug == rhs.slug &&
-                lhs.dateCreated == rhs.dateCreated &&
-                lhs.productTypeKey == rhs.productTypeKey &&
-                lhs.statusKey == rhs.statusKey &&
-                lhs.stockStatusKey < rhs.stockStatusKey) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug == rhs.slug &&
-                lhs.dateCreated == rhs.dateCreated &&
-                lhs.productTypeKey == rhs.productTypeKey &&
-                lhs.statusKey == rhs.statusKey &&
-                lhs.stockStatusKey == rhs.stockStatusKey &&
-                lhs.averageRating < rhs.averageRating) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug == rhs.slug &&
-                lhs.dateCreated == rhs.dateCreated &&
-                lhs.productTypeKey == rhs.productTypeKey &&
-                lhs.statusKey == rhs.statusKey &&
-                lhs.stockStatusKey == rhs.stockStatusKey &&
-                lhs.averageRating == rhs.averageRating &&
-                lhs.ratingCount < rhs.ratingCount)
-    }
-}
-
-
 // MARK: - Constants!
 //
 private extension Product {

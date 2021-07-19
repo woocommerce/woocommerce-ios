@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a ProductDefaultAttribute entity.
 ///
-public struct ProductDefaultAttribute: Decodable, GeneratedFakeable {
+public struct ProductDefaultAttribute: Decodable, Equatable, GeneratedFakeable {
     public let attributeID: Int64
     public let name: String?
     public let option: String?

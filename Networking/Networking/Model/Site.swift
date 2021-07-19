@@ -92,17 +92,6 @@ public struct Site: Decodable, Equatable, GeneratedFakeable {
 }
 
 
-// MARK: - Comparable Conformance
-//
-extension Site: Comparable {
-    public static func < (lhs: Site, rhs: Site) -> Bool {
-        return lhs.siteID < rhs.siteID ||
-            (lhs.siteID == rhs.siteID && lhs.name < rhs.name) ||
-            (lhs.siteID == rhs.siteID && lhs.name == rhs.name && lhs.description < rhs.description)
-    }
-}
-
-
 /// Defines all of the Site CodingKeys.
 ///
 private extension Site {

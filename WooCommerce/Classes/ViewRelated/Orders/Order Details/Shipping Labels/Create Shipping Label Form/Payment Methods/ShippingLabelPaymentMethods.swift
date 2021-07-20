@@ -21,11 +21,12 @@ struct ShippingLabelPaymentMethods: View {
             ScrollView {
                 VStack(spacing: 0) {
                     // Banner displayed when user can't edit payment methods
+                    let bannerEdgeInsets = EdgeInsets(top: 0, leading: geometry.safeAreaInsets.leading, bottom: 0, trailing: geometry.safeAreaInsets.trailing)
                     ShippingLabelPaymentMethodsTopBanner(width: geometry.size.width,
+                                                         edgeInsets: bannerEdgeInsets,
                                                          storeOwnerDisplayName: viewModel.storeOwnerDisplayName,
                                                          storeOwnerUsername:
                                                             viewModel.storeOwnerUsername)
-                        .addSafeAreaPaddings(geometry.safeAreaInsets, edges: .horizontal)
                         .renderedIf(!viewModel.canEditPaymentMethod)
 
                     // Payment Methods list
@@ -55,7 +56,6 @@ struct ShippingLabelPaymentMethods: View {
 
                     Spacer()
                         .frame(height: Constants.spacerHeight)
-                        .addSafeAreaPaddings(geometry.safeAreaInsets, edges: .horizontal)
 
                     // Email Receipts setting toggle
                     TitleAndToggleRow(title: String.localizedStringWithFormat(Localization.emailReceipt,

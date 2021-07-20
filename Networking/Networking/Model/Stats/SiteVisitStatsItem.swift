@@ -23,9 +23,4 @@ extension SiteVisitStatsItem: Comparable {
         return lhs.period < rhs.period ||
             (lhs.period == rhs.period && lhs.visitors < rhs.visitors)
     }
-
-    public static func > (lhs: SiteVisitStatsItem, rhs: SiteVisitStatsItem) -> Bool {
-        return lhs.period > rhs.period ||
-            (lhs.period == rhs.period && lhs.visitors > rhs.visitors)
-    }
 }

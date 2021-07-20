@@ -53,9 +53,9 @@ private extension TopEarnerStats {
 }
 
 
-// MARK: - Comparable Conformance
+// MARK: - Equatable Conformance
 //
-extension TopEarnerStats: Comparable {
+extension TopEarnerStats: Equatable {
     // custom implementation to ignore order for items
     public static func == (lhs: TopEarnerStats, rhs: TopEarnerStats) -> Bool {
         return lhs.siteID == rhs.siteID &&
@@ -64,11 +64,6 @@ extension TopEarnerStats: Comparable {
             lhs.limit == rhs.limit &&
             lhs.items?.count == rhs.items?.count &&
             lhs.items?.sorted() == rhs.items?.sorted()
-    }
-
-    public static func < (lhs: TopEarnerStats, rhs: TopEarnerStats) -> Bool {
-        return lhs.date < rhs.date ||
-            (lhs.date == rhs.date && lhs.limit < rhs.limit)
     }
 }
 

@@ -11,7 +11,7 @@ class SystemPluginsMapperTests: XCTestCase {
 
     /// Verifies the SystemPlugin fields are parsed correctly.
     ///
-    func test_SystemPlugin_fields_are_properly_parsed() {
+    func test_SystemPlugin_fields_are_properly_parsed() throws {
         // Given
         let expectedSiteId: Int64 = 999999
         let expectedPlugin = "woocommerce/woocommerce.php"
@@ -24,7 +24,7 @@ class SystemPluginsMapperTests: XCTestCase {
         let expectedNetworkActivated = false
 
         // When
-        let systemPlugins = mapLoadSystemPluginsResponse()
+        let systemPlugins = try mapLoadSystemPluginsResponse()
 
         // Then
         XCTAssertEqual(systemPlugins.count, 3)
@@ -49,17 +49,17 @@ private extension SystemPluginsMapperTests {
 
     /// Returns the SystemPluginsMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapPlugins(from filename: String) -> [SystemPlugin] {
+    func mapPlugins(from filename: String) throws -> [SystemPlugin] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try! SystemPluginsMapper(siteID: dummySiteID).map(response: response)
+        return try SystemPluginsMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the SystemPluginsMapper output upon receiving `systemPlugins`
     ///
-    func mapLoadSystemPluginsResponse() -> [SystemPlugin] {
-        return mapPlugins(from: "systemPlugins")
+    func mapLoadSystemPluginsResponse() throws -> [SystemPlugin] {
+        return try mapPlugins(from: "systemPlugins")
     }
 }

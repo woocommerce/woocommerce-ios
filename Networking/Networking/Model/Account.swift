@@ -50,14 +50,3 @@ private extension Account {
         case gravatarUrl    = "avatar_URL"
     }
 }
-
-
-// MARK: - Comparable Conformance
-//
-extension Account: Comparable {
-    public static func < (lhs: Account, rhs: Account) -> Bool {
-        return lhs.userID < rhs.userID ||
-            (lhs.userID == rhs.userID && lhs.username < rhs.username) ||
-            (lhs.userID == rhs.userID && lhs.username == rhs.username && lhs.displayName < rhs.displayName)
-    }
-}

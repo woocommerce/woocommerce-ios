@@ -36,15 +36,6 @@ public struct SitePlan: Decodable, Equatable, GeneratedFakeable {
 }
 
 
-// MARK: - Comparable Conformance
-//
-extension SitePlan: Comparable {
-    public static func < (lhs: SitePlan, rhs: SitePlan) -> Bool {
-        return lhs.siteID < rhs.siteID
-    }
-}
-
-
 /// Defines all of the SitePlan CodingKeys.
 ///
 private extension SitePlan {

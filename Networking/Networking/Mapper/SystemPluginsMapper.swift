@@ -17,18 +17,27 @@ struct SystemPluginsMapper: Mapper {
             .siteID: siteID
         ]
 
-        return try decoder.decode(SystemPluginsEnvelope.self, from: response).activePlugins
+        return try decoder.decode(SystemPluginsEnvelope.self, from: response).data.activePlugins
     }
 }
 
-/// SystemPluginsEnvelope Disposable Entity:
+/// SystemPluginsActivePluginsEnvelope Disposable Entity:
 /// The plugins endpoint returns the document within a `active_plugins` key. This entity
 /// allows us to do parse all the things with JSONDecoder.
 ///
-private struct SystemPluginsEnvelope: Decodable {
+private struct SystemPluginsActivePluginsEnvelope: Decodable {
+
     let activePlugins: [SystemPlugin]
 
     private enum CodingKeys: String, CodingKey {
         case activePlugins = "active_plugins"
     }
+}
+
+/// SystemPluginsEnvelope Disposable Entity:
+/// The plugins endpoint returns the document within a `data` key. This entity
+/// allows us to do parse the object `SystemPluginsActivePluginsEnvelope`.
+///
+private struct SystemPluginsEnvelope: Decodable {
+    let data: SystemPluginsActivePluginsEnvelope
 }

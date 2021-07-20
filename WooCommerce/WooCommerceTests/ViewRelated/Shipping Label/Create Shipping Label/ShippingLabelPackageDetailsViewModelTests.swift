@@ -259,7 +259,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
     func test_totalWeight_returns_the_expected_value() {
         // Given
         let orderItemAttributes = [OrderItemAttribute(metaID: 170, name: "Packaging", value: "Box")]
-        let items = [MockOrderItem.sampleItem(name: "Easter Egg", productID: 1, quantity: 1),
+        let items = [MockOrderItem.sampleItem(name: "Easter Egg", productID: 1, quantity: 0.5),
                      MockOrderItem.sampleItem(name: "Jacket", productID: 33, quantity: 1),
                      MockOrderItem.sampleItem(name: "Italian Jacket", productID: 23, quantity: 2),
                      MockOrderItem.sampleItem(name: "Jeans",
@@ -271,7 +271,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
 
         // When
-        insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "123"))
+        insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120"))
         insert(Product.fake().copy(siteID: sampleSiteID, productID: 33, virtual: true, weight: "9"))
         insert(Product.fake().copy(siteID: sampleSiteID, productID: 23, virtual: false, weight: "1.44"))
         insert(ProductVariation.fake().copy(siteID: sampleSiteID,
@@ -290,7 +290,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
 
 
         // Then
-        XCTAssertEqual(viewModel.totalWeight, "125.88")
+        XCTAssertEqual(viewModel.totalWeight, "62.88")
     }
 
     func test_totalWeight_returns_the_expected_value_when_already_set() {

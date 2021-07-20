@@ -66,6 +66,10 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     @Published private(set) var selectedPredefinedPackage: ShippingLabelPredefinedPackage?
     @Published var totalWeight: String
 
+    /// Whether the user has edited the total package weight. If true, we won't make any automatic changes to the total weight.
+    ///
+    @Published var isPackageWeightEdited: Bool = false
+
     /// Returns if the custom packages header should be shown in Package List
     ///
     var showCustomPackagesHeader: Bool {
@@ -90,6 +94,9 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         self.packagesResponse = packagesResponse
         self.selectedPackageID = selectedPackageID
         self.totalWeight = totalWeight ?? ""
+        if totalWeight != nil {
+            self.isPackageWeightEdited = true
+        }
         configureResultsControllers()
         syncProducts()
         syncProductVariations()

@@ -13,18 +13,28 @@ public class SystemPluginsRemote: Remote {
     public func loadSystemPlugins(for siteID: Int64,
                             completion: @escaping (Result<[SystemPlugin], Error>) -> Void) {
         let path = Constants.systemPluginsPath
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
+        let parameters = [
+            ParameterKeys.fields: ParameterValues.activeFieldValues
+        ]
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
         let mapper = SystemPluginsMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }
 }
 
-
 // MARK: - Constants!
 //
 private extension SystemPluginsRemote {
     enum Constants {
         static let systemPluginsPath: String = "system_status"
+    }
+
+    enum ParameterValues {
+        static let activeFieldValues: String = "active_plugins"
+    }
+
+    enum ParameterKeys {
+        static let fields: String = "_fields"
     }
 }

@@ -120,6 +120,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         products = resultsControllers?.products ?? []
         productVariations = resultsControllers?.productVariations ?? []
         itemsRows = generateItemsRows()
+        setTotalWeight()
     }
 
     /// Generate the items rows, creating an element in the array for every item (eg. if there is an item with quantity 3,

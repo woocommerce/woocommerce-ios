@@ -46,12 +46,10 @@ struct ShippingLabelPackageDetails: View {
                                      text: $viewModel.totalWeight,
                                      symbol: viewModel.weightUnit,
                                      keyboardType: .decimalPad,
-                                     onEditingChanged: { isEditing in
-                                        // We don't have a Return button to commit the change
-                                        // so we can track when editing is ended to know if a change was made.
-                                        if !isEditing {
-                                            viewModel.isPackageWeightEdited = true
-                                        }
+                                     onEditingChanged: { _ in
+                                        // We don't have a Return button to track committed changes to this field,
+                                        // so if the user starts editing the field we assume it was edited.
+                                        viewModel.isPackageWeightEdited = true
                                      })
                 Divider()
 
@@ -69,19 +67,6 @@ struct ShippingLabelPackageDetails: View {
             Text(Localization.doneButton)
         })
         .disabled(!viewModel.isPackageDetailsDoneButtonEnabled()))
-        .onTapGesture {
-            hideKeyboard()
-        }
-    }
-}
-
-private extension View {
-    /// Hides the keyboard (needed as long as we supported iOS 14).
-    /// See: https://www.hackingwithswift.com/quick-start/swiftui/how-to-dismiss-the-keyboard-for-a-textfield
-    ///
-    func hideKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
-                                    to: nil, from: nil, for: nil)
     }
 }
 

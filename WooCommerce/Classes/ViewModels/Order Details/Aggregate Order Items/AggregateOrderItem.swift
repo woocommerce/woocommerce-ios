@@ -49,16 +49,6 @@ struct AggregateOrderItem: Equatable, GeneratedCopiable {
 }
 
 
-// MARK: - Comparable Conformance
-//
-extension AggregateOrderItem: Comparable {
-    public static func < (lhs: AggregateOrderItem, rhs: AggregateOrderItem) -> Bool {
-        return lhs.productID < rhs.productID ||
-            (lhs.productID == rhs.productID && lhs.variationID < rhs.variationID)
-    }
-}
-
-
 // MARK: - Hashable Conformance
 //
 extension AggregateOrderItem: Hashable {

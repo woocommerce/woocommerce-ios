@@ -70,9 +70,4 @@ extension TopEarnerStatsItem: Comparable {
         return lhs.total < rhs.total ||
             (lhs.total == rhs.total && lhs.quantity < rhs.quantity)
     }
-
-    public static func > (lhs: TopEarnerStatsItem, rhs: TopEarnerStatsItem) -> Bool {
-        return lhs.total > rhs.total ||
-            (lhs.total == rhs.total && lhs.quantity > rhs.quantity)
-    }
 }

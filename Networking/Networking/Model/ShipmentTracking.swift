@@ -111,11 +111,4 @@ extension ShipmentTracking: Comparable {
             (lhs.siteID == rhs.siteID && lhs.orderID == rhs.orderID && lhs.trackingID < rhs.trackingID) ||
             (lhs.siteID == rhs.siteID && lhs.orderID == rhs.orderID && lhs.trackingID == rhs.trackingID && lhs.trackingNumber < rhs.trackingNumber)
     }
-
-    public static func > (lhs: ShipmentTracking, rhs: ShipmentTracking) -> Bool {
-        return lhs.siteID > rhs.siteID ||
-            (lhs.siteID == rhs.siteID && lhs.orderID > rhs.orderID) ||
-            (lhs.siteID == rhs.siteID && lhs.orderID == rhs.orderID && lhs.trackingID > rhs.trackingID) ||
-            (lhs.siteID == rhs.siteID && lhs.orderID == rhs.orderID && lhs.trackingID == rhs.trackingID && lhs.trackingNumber > rhs.trackingNumber)
-    }
 }

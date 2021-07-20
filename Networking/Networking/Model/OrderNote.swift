@@ -47,14 +47,3 @@ private extension OrderNote {
         case author         = "author"
     }
 }
-
-
-// MARK: - Comparable Conformance
-//
-extension OrderNote: Comparable {
-    public static func < (lhs: OrderNote, rhs: OrderNote) -> Bool {
-        return lhs.noteID < rhs.noteID ||
-            (lhs.noteID == rhs.noteID && lhs.dateCreated < rhs.dateCreated) ||
-            (lhs.noteID == rhs.noteID && lhs.dateCreated == rhs.dateCreated && lhs.note < rhs.note)
-    }
-}

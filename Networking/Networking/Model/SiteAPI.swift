@@ -49,19 +49,6 @@ public struct SiteAPI: Decodable, Equatable, GeneratedFakeable {
 }
 
 
-// MARK: - Comparable Conformance
-//
-extension SiteAPI: Comparable {
-    public static func < (lhs: SiteAPI, rhs: SiteAPI) -> Bool {
-        return lhs.siteID < rhs.siteID
-    }
-
-    public static func > (lhs: SiteAPI, rhs: SiteAPI) -> Bool {
-        return lhs.siteID > rhs.siteID
-    }
-}
-
-
 /// Defines all of the SiteAPI CodingKeys.
 ///
 private extension SiteAPI {

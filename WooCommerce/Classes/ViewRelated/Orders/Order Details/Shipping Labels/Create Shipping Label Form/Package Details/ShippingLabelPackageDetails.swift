@@ -18,42 +18,65 @@ struct ShippingLabelPackageDetails: View {
     }
 
     var body: some View {
-        ScrollView {
-            LazyVStack(spacing: 0) {
-                ShippingLabelPackageNumberRow(packageNumber: 1, numberOfItems: viewModel.itemsRows.count)
+        GeometryReader { proxy in
+            let safeAreaInsets = proxy.safeAreaInsets
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    VStack(spacing: 0) {
+                        ShippingLabelPackageNumberRow(packageNumber: 1, numberOfItems: viewModel.itemsRows.count)
+                            .addSafeAreasPaddings(safeAreaInsets)
 
-                ListHeaderView(text: Localization.itemsToFulfillHeader, alignment: .left)
-                    .background(Color(.listBackground))
+                        Divider()
+                    }
+                    .background(Color(.systemBackground))
 
-                ForEach(viewModel.itemsRows) { productItemRow in
-                    Divider().padding(.leading, Constants.dividerPadding)
-                    productItemRow
+                    ListHeaderView(text: Localization.itemsToFulfillHeader, alignment: .left)
+                        .addSafeAreasPaddings(safeAreaInsets)
+
+                    ForEach(viewModel.itemsRows) { productItemRow in
+                        productItemRow
+                            .addSafeAreasPaddings(safeAreaInsets)
+                            .background(Color(.systemBackground))
+                        Divider()
+                            .addSafeAreasPaddings(safeAreaInsets)
+                            .padding(.leading, Constants.dividerPadding)
+                    }
+
+                    ListHeaderView(text: Localization.packageDetailsHeader, alignment: .left)
+                        .addSafeAreasPaddings(safeAreaInsets)
+
+                    VStack(spacing: 0) {
+                        Divider()
+
+                        TitleAndValueRow(title: Localization.packageSelected, value: viewModel.selectedPackageName, selectable: true) {
+                            showingAddPackage.toggle()
+                        }
+                        .addSafeAreasPaddings(safeAreaInsets)
+                        .sheet(isPresented: $showingAddPackage, content: {
+                            ShippingLabelPackageList(viewModel: viewModel)
+                        })
+
+                        Divider()
+
+                        TitleAndTextFieldRow(title: Localization.totalPackageWeight,
+                                             placeholder: "0",
+                                             text: $viewModel.totalWeight,
+                                             symbol: viewModel.weightUnit,
+                                             keyboardType: .decimalPad)
+                            .addSafeAreasPaddings(safeAreaInsets)
+
+                        Divider()
+                    }
+                    .background(Color(.systemBackground))
+
+                    ListHeaderView(text: Localization.footer, alignment: .left)
+                        .addSafeAreasPaddings(safeAreaInsets)
                 }
 
-                ListHeaderView(text: Localization.packageDetailsHeader, alignment: .left)
-                    .background(Color(.listBackground))
-
-                TitleAndValueRow(title: Localization.packageSelected, value: viewModel.selectedPackageName, selectable: true) {
-                    showingAddPackage.toggle()
-                }.sheet(isPresented: $showingAddPackage, content: {
-                    ShippingLabelPackageList(viewModel: viewModel)
-                })
-
-                Divider()
-
-                TitleAndTextFieldRow(title: Localization.totalPackageWeight,
-                                     placeholder: "0",
-                                     text: $viewModel.totalWeight,
-                                     symbol: viewModel.weightUnit,
-                                     keyboardType: .decimalPad)
-                Divider()
-
-                ListHeaderView(text: Localization.footer, alignment: .left)
-                    .background(Color(.listBackground))
             }
-            .background(Color(.systemBackground))
+            .background(Color(.listBackground))
+            .ignoresSafeArea(.container, edges: .horizontal)
         }
-        .background(Color(.listBackground))
         .navigationTitle(Localization.title)
         .navigationBarItems(trailing: Button(action: {
             onCompletion(viewModel.selectedPackageID, viewModel.totalWeight)

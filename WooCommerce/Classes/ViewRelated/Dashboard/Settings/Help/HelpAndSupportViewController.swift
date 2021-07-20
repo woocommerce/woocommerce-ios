@@ -97,6 +97,7 @@ private extension HelpAndSupportViewController {
         sections = [
             Section(title: helpAndSupportTitle, rows: [.helpCenter,
                                                        .contactSupport,
+                                                       .contactWCPaySupport,
                                                        .myTickets,
                                                        .contactEmail,
                                                        .applicationLog])
@@ -136,6 +137,8 @@ private extension HelpAndSupportViewController {
             configureHelpCenter(cell: cell)
         case let cell as ValueOneTableViewCell where row == .contactSupport:
             configureContactSupport(cell: cell)
+        case let cell as ValueOneTableViewCell where row == .contactWCPaySupport:
+            configureContactWCPaySupport(cell: cell)
         case let cell as ValueOneTableViewCell where row == .myTickets:
             configureMyTickets(cell: cell)
         case let cell as ValueOneTableViewCell where row == .contactEmail:
@@ -162,6 +165,18 @@ private extension HelpAndSupportViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Contact Support", comment: "Contact Support title")
+        cell.detailTextLabel?.text = NSLocalizedString(
+            "Reach our happiness engineers who can help answer tough questions",
+            comment: "Subtitle for Contact Support"
+        )
+    }
+
+    /// Contact WCPay Support cell.
+    ///
+    func configureContactWCPaySupport(cell: ValueOneTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Contact WCPay Support", comment: "Contact WCPay Support title")
         cell.detailTextLabel?.text = NSLocalizedString(
             "Reach our happiness engineers who can help answer tough questions",
             comment: "Subtitle for Contact Support"
@@ -227,6 +242,16 @@ private extension HelpAndSupportViewController {
         }
 
         ZendeskManager.shared.showNewRequestIfPossible(from: navController)
+    }
+
+    /// Contact WCPay Support action
+    ///
+    func contactWCPaySupportWasPressed() {
+        guard let navController = navigationController else {
+            return
+        }
+
+        ZendeskManager.shared.showNewWCPayRequestIfPossible(from: navController)
     }
 
     /// My Tickets action
@@ -320,6 +345,8 @@ extension HelpAndSupportViewController: UITableViewDelegate {
             helpCenterWasPressed()
         case .contactSupport:
             contactSupportWasPressed()
+        case .contactWCPaySupport:
+            contactWCPaySupportWasPressed()
         case .myTickets:
             myTicketsWasPressed()
         case .contactEmail:
@@ -346,6 +373,7 @@ private struct Section {
 private enum Row: CaseIterable {
     case helpCenter
     case contactSupport
+    case contactWCPaySupport
     case myTickets
     case contactEmail
     case applicationLog
@@ -355,6 +383,8 @@ private enum Row: CaseIterable {
         case .helpCenter:
             return ValueOneTableViewCell.self
         case .contactSupport:
+            return ValueOneTableViewCell.self
+        case .contactWCPaySupport:
             return ValueOneTableViewCell.self
         case .myTickets:
             return ValueOneTableViewCell.self

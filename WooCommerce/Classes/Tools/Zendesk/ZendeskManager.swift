@@ -22,6 +22,10 @@ protocol ZendeskManagerProtocol {
     /// Displays the Zendesk New Request view from the given controller, for users to submit new tickets.
     ///
     func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: String?)
+
+    /// Displays a Zendesk New Request view from the given controller, tagged to show in the WCPay queues, for users to submit new tickets.
+    ///
+    func showNewWCPayRequestIfPossible(from controller: UIViewController, with sourceTag: String?)
 }
 
 /// This class provides the functionality to communicate with Zendesk for Help Center and support ticket interaction,
@@ -125,6 +129,22 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     ///
     func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {
 
+        createIdentity(presentIn: controller) { success in
+            guard success else {
+                return
+            }
+
+            ServiceLocator.analytics.track(.supportNewRequestViewed)
+
+            let newRequestConfig = self.createRequest(supportSourceTag: sourceTag)
+            let newRequestController = RequestUi.buildRequestUi(with: [newRequestConfig])
+            self.showZendeskView(newRequestController, from: controller)
+        }
+    }
+
+    /// Displays a Zendesk New Request view from the given controller, tagged to show in the WCPay queues, for users to submit new tickets.
+    ///
+    func showNewWCPayRequestIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {
         createIdentity(presentIn: controller) { success in
             guard success else {
                 return
@@ -429,6 +449,38 @@ private extension ZendeskManager {
     /// Without it, the tickets won't appear in the correct view(s) in the web portal and they won't contain all the metadata needed to solve a ticket.
     ///
     func createRequest(supportSourceTag: String?) -> RequestUiConfiguration {
+
+        let requestConfig = RequestUiConfiguration()
+
+        // Set Zendesk ticket form to use
+        requestConfig.ticketFormID = TicketFieldIDs.form as NSNumber
+
+        // Set form field values
+        let ticketFields = [
+            CustomField(fieldId: TicketFieldIDs.appVersion, value: Bundle.main.version),
+            CustomField(fieldId: TicketFieldIDs.deviceFreeSpace, value: getDeviceFreeSpace()),
+            CustomField(fieldId: TicketFieldIDs.networkInformation, value: getNetworkInformation()),
+            CustomField(fieldId: TicketFieldIDs.logs, value: getLogFile()),
+            CustomField(fieldId: TicketFieldIDs.currentSite, value: getCurrentSiteDescription()),
+            CustomField(fieldId: TicketFieldIDs.sourcePlatform, value: Constants.sourcePlatform),
+            CustomField(fieldId: TicketFieldIDs.appLanguage, value: Locale.preferredLanguage),
+            CustomField(fieldId: TicketFieldIDs.subcategory, value: Constants.subcategory)
+        ].compactMap { $0 }
+
+        requestConfig.customFields = ticketFields
+
+        // Set tags
+        requestConfig.tags = getTags(supportSourceTag: supportSourceTag)
+
+        // Set the ticket subject
+        requestConfig.subject = Constants.ticketSubject
+
+        // No extra config needed to attach an image. Hooray!
+
+        return requestConfig
+    }
+
+    func createWCPayRequest(supportSourceTag: String?) -> RequestUiConfiguration {
 
         let requestConfig = RequestUiConfiguration()
 
@@ -826,6 +878,10 @@ private extension ZendeskManager {
         static let nameFieldCharacterLimit = 50
         static let sourcePlatform = "mobile_-_woo_ios"
         static let subcategory = "WooCommerce Mobile Apps"
+        static let paymentsCategory = "support"
+        static let paymentsSubcategory = "payment"
+        static let paymentsProduct = "woocommerce_payments"
+        static let paymentsProductArea = "product_area_woo_payment_gateway"
     }
 
     // Zendesk expects these as NSNumber. However, they are defined as UInt64 to satisfy 32-bit devices (ex: iPhone 5).

@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a Dimensions Entity.
 ///
-public struct ProductDimensions: Codable, GeneratedFakeable {
+public struct ProductDimensions: Codable, Equatable, GeneratedFakeable {
     public let length: String
     public let width: String
     public let height: String
@@ -27,15 +27,5 @@ private extension ProductDimensions {
         case length
         case width
         case height
-    }
-}
-
-// MARK: - Comparable Conformance
-//
-extension ProductDimensions: Comparable {
-    public static func < (lhs: ProductDimensions, rhs: ProductDimensions) -> Bool {
-        return lhs.length < rhs.length ||
-            (lhs.length == rhs.length && lhs.width < rhs.width) ||
-            (lhs.length == rhs.length && lhs.width == rhs.width && lhs.height < rhs.height)
     }
 }

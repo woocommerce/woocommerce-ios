@@ -217,9 +217,9 @@ private extension Order {
 }
 
 
-// MARK: - Comparable Conformance
+// MARK: - Equatable Conformance
 //
-extension Order: Comparable {
+extension Order: Equatable {
     // custom implementation to ignore order for shippingLines, coupons, refunds, items
     public static func == (lhs: Order, rhs: Order) -> Bool {
         return lhs.siteID == rhs.siteID &&
@@ -249,12 +249,6 @@ extension Order: Comparable {
             lhs.refunds.sorted() == rhs.refunds.sorted() &&
             lhs.items.count == rhs.items.count &&
             lhs.items.sorted() == rhs.items.sorted()
-    }
-
-    public static func < (lhs: Order, rhs: Order) -> Bool {
-        return lhs.orderID < rhs.orderID ||
-            (lhs.orderID == rhs.orderID && lhs.dateCreated < rhs.dateCreated) ||
-            (lhs.orderID == rhs.orderID && lhs.dateCreated == rhs.dateCreated && lhs.dateModified < rhs.dateModified)
     }
 }
 

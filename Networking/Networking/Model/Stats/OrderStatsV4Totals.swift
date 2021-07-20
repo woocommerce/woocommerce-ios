@@ -62,13 +62,6 @@ public struct OrderStatsV4Totals: Decodable, Equatable, GeneratedFakeable {
     }
 }
 
-extension OrderStatsV4Totals: Comparable {
-    public static func < (lhs: OrderStatsV4Totals, rhs: OrderStatsV4Totals) -> Bool {
-        return lhs.grossRevenue < rhs.grossRevenue ||
-            (lhs.grossRevenue == rhs.grossRevenue && lhs.totalOrders < rhs.totalOrders)
-    }
-}
-
 
 // MARK: - Constants!
 //

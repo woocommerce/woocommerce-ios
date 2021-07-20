@@ -90,15 +90,3 @@ private extension Address {
         case email      = "email"
     }
 }
-
-
-// MARK: - Comparable Conformance
-//
-extension Address: Comparable {
-    public static func < (lhs: Address, rhs: Address) -> Bool {
-        return lhs.city < rhs.city ||
-        (lhs.city == rhs.city && lhs.state < rhs.state) ||
-        (lhs.city == rhs.city && lhs.state == rhs.state && lhs.postcode < rhs.postcode) ||
-        (lhs.city == rhs.city && lhs.state == rhs.state && lhs.postcode == rhs.postcode && lhs.lastName < rhs.lastName)
-    }
-}

@@ -24,26 +24,26 @@ struct ShippingLabelPackageDetails: View {
                 LazyVStack(spacing: 0) {
                     VStack(spacing: 0) {
                         ShippingLabelPackageNumberRow(packageNumber: 1, numberOfItems: viewModel.itemsRows.count)
-                            .addSafeAreasPaddings(safeAreaInsets)
+                            .addSafeAreaPaddings(safeAreaInsets)
 
                         Divider()
                     }
                     .background(Color(.systemBackground))
 
                     ListHeaderView(text: Localization.itemsToFulfillHeader, alignment: .left)
-                        .addSafeAreasPaddings(safeAreaInsets)
+                        .addSafeAreaPaddings(safeAreaInsets)
 
                     ForEach(viewModel.itemsRows) { productItemRow in
                         productItemRow
-                            .addSafeAreasPaddings(safeAreaInsets)
+                            .addSafeAreaPaddings(safeAreaInsets)
                             .background(Color(.systemBackground))
                         Divider()
-                            .addSafeAreasPaddings(safeAreaInsets)
+                            .addSafeAreaPaddings(safeAreaInsets)
                             .padding(.leading, Constants.dividerPadding)
                     }
 
                     ListHeaderView(text: Localization.packageDetailsHeader, alignment: .left)
-                        .addSafeAreasPaddings(safeAreaInsets)
+                        .addSafeAreaPaddings(safeAreaInsets)
 
                     VStack(spacing: 0) {
                         Divider()
@@ -51,7 +51,7 @@ struct ShippingLabelPackageDetails: View {
                         TitleAndValueRow(title: Localization.packageSelected, value: viewModel.selectedPackageName, selectable: true) {
                             showingAddPackage.toggle()
                         }
-                        .addSafeAreasPaddings(safeAreaInsets)
+                        .addSafeAreaPaddings(safeAreaInsets)
                         .sheet(isPresented: $showingAddPackage, content: {
                             ShippingLabelPackageList(viewModel: viewModel)
                         })
@@ -63,14 +63,14 @@ struct ShippingLabelPackageDetails: View {
                                              text: $viewModel.totalWeight,
                                              symbol: viewModel.weightUnit,
                                              keyboardType: .decimalPad)
-                            .addSafeAreasPaddings(safeAreaInsets)
+                            .addSafeAreaPaddings(safeAreaInsets)
 
                         Divider()
                     }
                     .background(Color(.systemBackground))
 
                     ListHeaderView(text: Localization.footer, alignment: .left)
-                        .addSafeAreasPaddings(safeAreaInsets)
+                        .addSafeAreaPaddings(safeAreaInsets)
                 }
 
             }

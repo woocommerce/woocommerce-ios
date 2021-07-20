@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Custom view modifer for adding paddings based on safe areas.
-struct SafeAreasPaddings: ViewModifier {
+struct SafeAreaPaddings: ViewModifier {
     /// Safe area insets to for paddings.
     let insets: EdgeInsets
 
@@ -39,7 +39,7 @@ extension View {
     ///   - insets: Safe area insets to for paddings
     ///   - edges: Edges to add paddings to. Default to `.horizontal` as this is the most common value needed for edge-to-edge look of scroll views.
     /// - Returns: the modified `View` with paddings.
-    func addSafeAreasPaddings(_ insets: EdgeInsets, edges: Edge.Set = .horizontal) -> some View {
-        self.modifier(SafeAreasPaddings(insets: insets, edges: edges))
+    func addSafeAreaPaddings(_ insets: EdgeInsets, edges: Edge.Set = .horizontal) -> some View {
+        self.modifier(SafeAreaPaddings(insets: insets, edges: edges))
     }
 }

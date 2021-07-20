@@ -6,54 +6,60 @@ struct ShippingLabelPackageList: View {
     @Environment(\.presentationMode) var presentation
 
     var body: some View {
-        NavigationView {
-            ScrollView {
-                LazyVStack(spacing: 0) {
-
-                    /// Custom Packages
-                    ///
-                    if viewModel.showCustomPackagesHeader {
-                        ListHeaderView(text: Localization.customPackageHeader.uppercased(), alignment: .left)
-                            .background(Color(.listBackground))
-                    }
-                    ForEach(viewModel.customPackages, id: \.title) { package in
-                        let selected = package == viewModel.selectedCustomPackage
-                        SelectableItemRow(title: package.title, subtitle: package.dimensions + " \(viewModel.dimensionUnit)", selected: selected).onTapGesture {
-                            viewModel.didSelectPackage(package.title)
-                            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "packages_selected"])
+        GeometryReader { geometry in
+            NavigationView {
+                ScrollView {
+                    LazyVStack(spacing: 0) {
+                        /// Custom Packages
+                        ///
+                        if viewModel.showCustomPackagesHeader {
+                            ListHeaderView(text: Localization.customPackageHeader.uppercased(), alignment: .left)
+                                .addSafeAreaPaddings(geometry.safeAreaInsets, edges: .horizontal)
                         }
-                    }
-
-
-                    /// Predefined Packages
-                    ///
-                    ForEach(viewModel.predefinedOptions, id: \.title) { option in
-
-                        ListHeaderView(text: option.title.uppercased(), alignment: .left)
-                            .background(Color(.listBackground))
-                        ForEach(option.predefinedPackages) { package in
-                            let selected = package == viewModel.selectedPredefinedPackage
-                            SelectableItemRow(title: package.title,
-                                              subtitle: package.dimensions + " \(viewModel.dimensionUnit)",
-                                              selected: selected).onTapGesture {
-                                                viewModel.didSelectPackage(package.id)
-                                                ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "packages_selected"])
-                                              }
+                        ForEach(viewModel.customPackages, id: \.title) { package in
+                            let selected = package == viewModel.selectedCustomPackage
+                            SelectableItemRow(title: package.title, subtitle: package.dimensions + " \(viewModel.dimensionUnit)", selected: selected)
+                                .onTapGesture {
+                                    viewModel.didSelectPackage(package.title)
+                                    ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "packages_selected"])
+                                }
+                                .addSafeAreaPaddings(geometry.safeAreaInsets, edges: .horizontal)
+                                .background(Color(.systemBackground))
                             Divider().padding(.leading, Constants.dividerPadding)
+                        }
+
+                        /// Predefined Packages
+                        ///
+                        ForEach(viewModel.predefinedOptions, id: \.title) { option in
+
+                            ListHeaderView(text: option.title.uppercased(), alignment: .left)
+                                .addSafeAreaPaddings(geometry.safeAreaInsets, edges: .horizontal)
+                            ForEach(option.predefinedPackages) { package in
+                                let selected = package == viewModel.selectedPredefinedPackage
+                                SelectableItemRow(title: package.title,
+                                                  subtitle: package.dimensions + " \(viewModel.dimensionUnit)",
+                                                  selected: selected).onTapGesture {
+                                                    viewModel.didSelectPackage(package.id)
+                                                    ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "packages_selected"])
+                                                  }
+                                    .addSafeAreaPaddings(geometry.safeAreaInsets, edges: .horizontal)
+                                    .background(Color(.systemBackground))
+                                Divider().padding(.leading, Constants.dividerPadding)
+                            }
                         }
                     }
                 }
-                .background(Color(.systemBackground))
+                .background(Color(.listBackground))
+                .ignoresSafeArea(.container, edges: .horizontal)
+                .navigationTitle(Localization.title)
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarItems(trailing: Button(action: {
+                    viewModel.confirmPackageSelection()
+                    presentation.wrappedValue.dismiss()
+                }, label: {
+                    Text(Localization.doneButton)
+                }))
             }
-            .background(Color(.listBackground))
-            .navigationTitle(Localization.title)
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(trailing: Button(action: {
-                viewModel.confirmPackageSelection()
-                presentation.wrappedValue.dismiss()
-            }, label: {
-                Text(Localization.doneButton)
-            }))
         }
     }
 }

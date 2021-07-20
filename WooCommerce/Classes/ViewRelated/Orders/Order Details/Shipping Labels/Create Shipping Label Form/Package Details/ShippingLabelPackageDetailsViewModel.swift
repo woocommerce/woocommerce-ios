@@ -111,18 +111,15 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
             guard let self = self else { return }
             self.products = products
             self.itemsRows = self.generateItemsRows()
-            self.setTotalWeight()
         }, onProductVariationsReload: { [weak self] (productVariations) in
             guard let self = self else { return }
             self.productVariations = productVariations
             self.itemsRows = self.generateItemsRows()
-            self.setTotalWeight()
         })
 
         products = resultsControllers?.products ?? []
         productVariations = resultsControllers?.productVariations ?? []
         itemsRows = generateItemsRows()
-        setTotalWeight()
     }
 
     /// Generate the items rows, creating an element in the array for every item (eg. if there is an item with quantity 3,
@@ -163,16 +160,17 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         return itemsToFulfill
     }
 
-    /// Set the total weight based on the weight of products and products variation inside the order items,
-    /// only if they are not virtual products.
+    /// Set the total weight based on the weight of the selected package and
+    /// the products and products variation inside the order items, only if they are not virtual products.
     ///
     private func setTotalWeight() {
-        guard totalWeight.isEmpty else {
+        guard !isPackageWeightEdited else {
             return
         }
 
         var tempTotalWeight: Double = 0
 
+        // Add each order item's weight to the total weight.
         for item in orderItems {
             let isVariation = item.variationID > 0
             var product: Product?
@@ -188,6 +186,12 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
                 let itemWeight = Double(productVariation?.weight ?? product?.weight ?? "0") ?? 0
                 tempTotalWeight += itemWeight * Double(truncating: item.quantity as NSDecimalNumber)
             }
+        }
+
+        // Add selected package weight to the total weight.
+        // Only custom packages have a defined weight, so we only do this if a custom package is selected.
+        if let selectedPackage = selectedCustomPackage {
+            tempTotalWeight += selectedPackage.boxWeight
         }
 
         totalWeight = String(tempTotalWeight)
@@ -240,7 +244,8 @@ extension ShippingLabelPackageDetailsViewModel {
         }
     }
 
-    /// Writes into the binding variable the final package selection value when confirmed
+    /// Writes into the binding variable the final package selection value when confirmed.
+    /// Also sets the total weight for the package, including the selected package weight (if any).
     ///
     func confirmPackageSelection() {
         if let selectedCustomPackage = selectedCustomPackage {
@@ -249,6 +254,7 @@ extension ShippingLabelPackageDetailsViewModel {
         else if let selectedPredefinedPackage = selectedPredefinedPackage {
             selectedPackageID = selectedPredefinedPackage.id
         }
+        setTotalWeight()
     }
 
     /// Sets the package passed through the init method, or set the last selected package, if any, as the default selected package

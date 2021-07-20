@@ -25,11 +25,13 @@ struct ShippingLabelPaymentMethods: View {
                                                          storeOwnerDisplayName: viewModel.storeOwnerDisplayName,
                                                          storeOwnerUsername:
                                                             viewModel.storeOwnerUsername)
+                        .addSafeAreaPaddings(geometry.safeAreaInsets, edges: .horizontal)
                         .renderedIf(!viewModel.canEditPaymentMethod)
 
                     // Payment Methods list
                     ListHeaderView(text: Localization.paymentMethodsHeader, alignment: .left)
                         .textCase(.uppercase)
+                        .addSafeAreaPaddings(geometry.safeAreaInsets, edges: .horizontal)
 
                     ForEach(viewModel.paymentMethods, id: \.paymentMethodID) { method in
                         let selected = method.paymentMethodID == viewModel.selectedPaymentMethodID
@@ -39,6 +41,7 @@ struct ShippingLabelPaymentMethods: View {
                             .onTapGesture {
                                 viewModel.didSelectPaymentMethod(withID: method.paymentMethodID)
                             }
+                            .addSafeAreaPaddings(geometry.safeAreaInsets, edges: .horizontal)
                             .background(Color(.systemBackground))
                         Divider().padding(.leading, Constants.dividerPadding)
                     }
@@ -48,9 +51,11 @@ struct ShippingLabelPaymentMethods: View {
                                                                           viewModel.storeOwnerWPcomUsername,
                                                                           viewModel.storeOwnerWPcomEmail),
                                    alignment: .left)
+                        .addSafeAreaPaddings(geometry.safeAreaInsets, edges: .horizontal)
 
                     Spacer()
                         .frame(height: Constants.spacerHeight)
+                        .addSafeAreaPaddings(geometry.safeAreaInsets, edges: .horizontal)
 
                     // Email Receipts setting toggle
                     TitleAndToggleRow(title: String.localizedStringWithFormat(Localization.emailReceipt,
@@ -58,11 +63,13 @@ struct ShippingLabelPaymentMethods: View {
                                                                               viewModel.storeOwnerUsername,
                                                                               viewModel.storeOwnerWPcomEmail),
                                       isOn: $viewModel.isEmailReceiptsEnabled)
+                        .addSafeAreaPaddings(geometry.safeAreaInsets, edges: .horizontal)
                         .background(Color(.systemBackground))
                         .disabled(!viewModel.canEditNonpaymentSettings)
                 }
             }
             .background(Color(.listBackground))
+            .edgesIgnoringSafeArea(.horizontal)
             .navigationBarTitle(Localization.navigationBarTitle)
             .navigationBarItems(trailing: Button(action: {
                 viewModel.updateShippingLabelAccountSettings { newSettings in
@@ -77,7 +84,7 @@ struct ShippingLabelPaymentMethods: View {
                     Text(Localization.doneButton)
                 }
             })
-        .disabled(!viewModel.isDoneButtonEnabled()))
+            .disabled(!viewModel.isDoneButtonEnabled()))
         }
     }
 }

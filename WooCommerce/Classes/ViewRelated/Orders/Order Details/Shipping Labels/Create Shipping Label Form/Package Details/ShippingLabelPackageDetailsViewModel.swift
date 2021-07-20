@@ -135,14 +135,18 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
                 product = products.first { $0.productID == item.productID }
             }
             if product?.virtual == false || productVariation?.virtual == false {
+                var tempItemQuantity = Double(truncating: item.quantity as NSDecimalNumber)
 
-                /// We do not consider fractional quantities because the backend will return always int values for the quantity.
-                /// We are also showing items only when the quantity is > 1, because in that case we are not considering it a valid value.
-                ///
                 for _ in 0..<item.quantity.intValue {
                     let attributes = item.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) }
+                    var weight = Double(productVariation?.weight ?? product?.weight ?? "0") ?? 0
+                    if tempItemQuantity < 1 {
+                        weight *= tempItemQuantity
+                    } else {
+                        tempItemQuantity -= 1
+                    }
                     let unit: String = weightUnit ?? ""
-                    let subtitle = Localization.subtitle(weight: isVariation ? productVariation?.weight : product?.weight,
+                    let subtitle = Localization.subtitle(weight: weight.description,
                                                          weightUnit: unit,
                                                          attributes: attributes)
                     itemsToFulfill.append(ItemToFulfillRow(title: item.name, subtitle: subtitle))
@@ -174,9 +178,8 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
                 product = products.first { $0.productID == item.productID }
             }
             if product?.virtual == false || productVariation?.virtual == false {
-                for _ in 0..<item.quantity.intValue {
-                    tempTotalWeight += Double(productVariation?.weight ?? product?.weight ?? "0") ?? 0
-                }
+                let itemWeight = Double(productVariation?.weight ?? product?.weight ?? "0") ?? 0
+                tempTotalWeight += itemWeight * Double(truncating: item.quantity as NSDecimalNumber)
             }
         }
 

@@ -1216,6 +1216,7 @@
 		DE4B3B2C2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4B3B2B2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift */; };
 		DE4B3B2E269455D400EEF2D8 /* MockShipmentActionStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4B3B2D269455D400EEF2D8 /* MockShipmentActionStoresManager.swift */; };
 		DE4B3B5626A68DD000EEF2D8 /* View+SafeAreaPaddings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4B3B5526A68DD000EEF2D8 /* View+SafeAreaPaddings.swift */; };
+		DE4B3B5826A7041800EEF2D8 /* EdgeInsets+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4B3B5726A7041800EEF2D8 /* EdgeInsets+Woo.swift */; };
 		DE525499268C8B32007A5829 /* UIRefreshControl+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE525498268C8B32007A5829 /* UIRefreshControl+Woo.swift */; };
 		DE8C94662646990000C94823 /* PluginListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8C94652646990000C94823 /* PluginListViewController.swift */; };
 		DE8C946E264699B600C94823 /* PluginListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8C946D264699B600C94823 /* PluginListViewModel.swift */; };
@@ -2539,6 +2540,7 @@
 		DE4B3B2B2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewModelTests.swift; sourceTree = "<group>"; };
 		DE4B3B2D269455D400EEF2D8 /* MockShipmentActionStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockShipmentActionStoresManager.swift; sourceTree = "<group>"; };
 		DE4B3B5526A68DD000EEF2D8 /* View+SafeAreaPaddings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+SafeAreaPaddings.swift"; sourceTree = "<group>"; };
+		DE4B3B5726A7041800EEF2D8 /* EdgeInsets+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EdgeInsets+Woo.swift"; sourceTree = "<group>"; };
 		DE525498268C8B32007A5829 /* UIRefreshControl+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIRefreshControl+Woo.swift"; sourceTree = "<group>"; };
 		DE8C94652646990000C94823 /* PluginListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginListViewController.swift; sourceTree = "<group>"; };
 		DE8C946D264699B600C94823 /* PluginListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginListViewModel.swift; sourceTree = "<group>"; };
@@ -5390,6 +5392,7 @@
 				025C00B925514A7100FAC222 /* BarcodeScannerFrameScaler.swift */,
 				023D877825EC8BCB00625963 /* UIScrollView+LargeTitleWorkaround.swift */,
 				DE525498268C8B32007A5829 /* UIRefreshControl+Woo.swift */,
+				DE4B3B5726A7041800EEF2D8 /* EdgeInsets+Woo.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -7060,6 +7063,7 @@
 				26A630FE253F63C300CBC3B1 /* RefundableOrderItem.swift in Sources */,
 				02404EDA2314C36300FF1170 /* StatsVersionCoordinator.swift in Sources */,
 				CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */,
+				DE4B3B5826A7041800EEF2D8 /* EdgeInsets+Woo.swift in Sources */,
 				74A33D8021C3F234009E25DE /* LicensesViewController.swift in Sources */,
 				934CB123224EAB150005CCB9 /* main.swift in Sources */,
 				456396AE25C81D81001F1A26 /* ShippingLabelFormViewModel.swift in Sources */,

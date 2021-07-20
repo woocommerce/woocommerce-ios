@@ -37,7 +37,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
                 feedbacks: [FeedbackType: FeedbackSettings],
                 isViewAddOnsSwitchEnabled: Bool,
                 knownCardReaders: [String],
-                lastEligibilityErrorInfo: EligibilityErrorInfo?) {
+                lastEligibilityErrorInfo: EligibilityErrorInfo? = nil) {
         self.installationDate = installationDate
         self.feedbacks = feedbacks
         self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled

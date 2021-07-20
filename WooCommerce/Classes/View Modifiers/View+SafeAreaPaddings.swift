@@ -37,9 +37,9 @@ extension View {
     /// This is useful for keeping scroll views edge-to-edge.
     /// - Parameters:
     ///   - insets: Safe area insets to for paddings
-    ///   - edges: Edges to add paddings to. Default to `.horizontal` as this is the most common value needed for edge-to-edge look of scroll views.
+    ///   - edges: Edges to add paddings to. Default to `.all`
     /// - Returns: the modified `View` with paddings.
-    func addSafeAreaPaddings(_ insets: EdgeInsets, edges: Edge.Set = .horizontal) -> some View {
+    func addSafeAreaPaddings(_ insets: EdgeInsets, edges: Edge.Set = .all) -> some View {
         self.modifier(SafeAreaPaddings(insets: insets, edges: edges))
     }
 }

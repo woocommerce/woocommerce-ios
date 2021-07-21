@@ -68,7 +68,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
 
     /// Whether the user has edited the total package weight. If true, we won't make any automatic changes to the total weight.
     ///
-    @Published var isPackageWeightEdited: Bool = false
+    var isPackageWeightEdited: Bool = false
 
     /// Returns if the custom packages header should be shown in Package List
     ///
@@ -111,10 +111,12 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
             guard let self = self else { return }
             self.products = products
             self.itemsRows = self.generateItemsRows()
+            self.setTotalWeight()
         }, onProductVariationsReload: { [weak self] (productVariations) in
             guard let self = self else { return }
             self.productVariations = productVariations
             self.itemsRows = self.generateItemsRows()
+            self.setTotalWeight()
         })
 
         products = resultsControllers?.products ?? []

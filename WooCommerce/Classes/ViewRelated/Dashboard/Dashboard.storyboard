@@ -177,7 +177,7 @@
         <!--Card Reader Settings Presenting View Controller-->
         <scene sceneID="NEs-n8-mBS">
             <objects>
-                <viewController storyboardIdentifier="CardReaderSettingsPresentingViewController" id="PIe-XS-6gZ" customClass="CardReaderSettingsPresentingViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CardReaderSettingsPresentingViewController" hidesBottomBarWhenPushed="YES" id="PIe-XS-6gZ" customClass="CardReaderSettingsPresentingViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="EOU-z7-aBS">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

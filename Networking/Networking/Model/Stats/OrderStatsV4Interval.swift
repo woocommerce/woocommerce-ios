@@ -35,16 +35,6 @@ public struct OrderStatsV4Interval: Decodable, Equatable, GeneratedFakeable {
 }
 
 
-// MARK: - Conformance to Comparable
-//
-extension OrderStatsV4Interval: Comparable {
-    public static func < (lhs: OrderStatsV4Interval, rhs: OrderStatsV4Interval) -> Bool {
-        return lhs.interval < rhs.interval ||
-            (lhs.interval == rhs.interval && lhs.subtotals < rhs.subtotals)
-    }
-}
-
-
 // MARK: - Constants!
 //
 private extension OrderStatsV4Interval {

@@ -72,11 +72,6 @@ extension SiteSetting: Comparable {
         return lhs.settingID < rhs.settingID ||
             (lhs.settingID == rhs.settingID && lhs.label < rhs.label)
     }
-
-    public static func > (lhs: SiteSetting, rhs: SiteSetting) -> Bool {
-        return lhs.settingID > rhs.settingID ||
-            (lhs.settingID == rhs.settingID && lhs.label > rhs.label)
-    }
 }
 
 

@@ -138,8 +138,10 @@ public class AppSettingsStore: Store {
             loadCardReaders(onCompletion: onCompletion)
         case .loadEligibilityErrorInfo(onCompletion: let onCompletion):
             loadEligibilityErrorInfo(onCompletion: onCompletion)
-        case .resetEligibilityErrorInfo(onCompletion: let onCompletion):
-            resetEligibilityErrorInfo(onCompletion: onCompletion)
+        case .setEligibilityErrorInfo(errorInfo: let errorInfo, onCompletion: let onCompletion):
+            setEligibilityErrorInfo(errorInfo: errorInfo, onCompletion: onCompletion)
+        case .resetEligibilityErrorInfo:
+            setEligibilityErrorInfo(errorInfo: nil)
         }
     }
 }
@@ -228,15 +230,13 @@ private extension AppSettingsStore {
         onCompletion(.success(errorInfo))
     }
 
-    /// Removes any persisted eligibility error information locally
-    ///
-    func resetEligibilityErrorInfo(onCompletion: (Result<Void, Error>) -> Void) {
+    func setEligibilityErrorInfo(errorInfo: EligibilityErrorInfo?, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         do {
-            let settings = loadOrCreateGeneralAppSettings().copy(lastEligibilityErrorInfo: nil)
+            let settings = loadOrCreateGeneralAppSettings().copy(lastEligibilityErrorInfo: errorInfo)
             try saveGeneralAppSettings(settings)
-            onCompletion(.success(()))
+            onCompletion?(.success(()))
         } catch {
-            onCompletion(.failure(error))
+            onCompletion?(.failure(error))
         }
     }
 

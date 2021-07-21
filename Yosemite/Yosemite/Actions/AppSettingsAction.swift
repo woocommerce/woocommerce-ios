@@ -121,7 +121,12 @@ public enum AppSettingsAction: Action {
     ///
     case loadEligibilityErrorInfo(onCompletion: (Result<EligibilityErrorInfo, Error>) -> Void)
 
+    /// Saves an `EligibilityErrorInfo` locally.
+    /// There can only be one persisted instance. Subsequent calls will overwrite the existing data.
+    ///
+    case setEligibilityErrorInfo(errorInfo: EligibilityErrorInfo, onCompletion: (Result<Void, Error>) -> Void)
+
     /// Clears the persisted eligibility error information.
     ///
-    case resetEligibilityErrorInfo(onCompletion: (Result<Void, Error>) -> Void)
+    case resetEligibilityErrorInfo
 }

@@ -31,7 +31,7 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
 
     func test_roleEligibilityUseCase_checkEligibility_returns_failure_when_not_authenticated() {
         // Given
-        let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
+        let useCase = RoleEligibilityUseCase(stores: stores)
 
         // When
         let result: Result<Void, RoleEligibilityError> = waitFor { promise in
@@ -51,7 +51,7 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
     func test_roleEligibilityUseCase_checkEligibility_returns_failure_when_storeID_isInvalid() {
         // Given
         stores.authenticate(credentials: SessionSettings.credentials)
-        let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
+        let useCase = RoleEligibilityUseCase(stores: stores)
         let storeID: Int64 = 0
 
         // When
@@ -79,7 +79,7 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
             }
             completion(.failure(SampleError.first)) // returns unknown error (for caller)
         }
-        let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
+        let useCase = RoleEligibilityUseCase(stores: stores)
 
         // When
         let result: Result<Void, RoleEligibilityError> = waitFor { promise in
@@ -107,7 +107,7 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
             }
             completion(.success(sampleUser))
         }
-        let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
+        let useCase = RoleEligibilityUseCase(stores: stores)
 
         // When
         let result: Result<Void, RoleEligibilityError> = waitFor { promise in
@@ -146,7 +146,7 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
             errorInfoSaved = true
             completion(.success(()))
         }
-        let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
+        let useCase = RoleEligibilityUseCase(stores: stores)
 
         // When
         let result: Result<Void, RoleEligibilityError> = waitFor { promise in
@@ -178,7 +178,7 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
             errorInfoSaved = true
             completion(.success(()))
         }
-        let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
+        let useCase = RoleEligibilityUseCase(stores: stores)
 
         // When
         let result: Result<Void, RoleEligibilityError> = waitFor { promise in
@@ -208,7 +208,7 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
             }
             resetErrorInfoInvoked = true
         }
-        let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
+        let useCase = RoleEligibilityUseCase(stores: stores)
 
         // When
         let result: Result<Void, RoleEligibilityError> = waitFor { promise in

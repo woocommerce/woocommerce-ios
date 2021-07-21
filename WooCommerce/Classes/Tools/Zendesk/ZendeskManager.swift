@@ -896,7 +896,10 @@ private extension ZendeskManager {
         static let currentSite: Int64 = 360000103103
         static let sourcePlatform: Int64 = 360009311651
         static let appLanguage: Int64 = 360008583691
+        static let category: Int64 = 25176003
         static let subcategory: Int64 = 25176023
+        static let product: Int64 = 25254766
+        static let productArea: Int64 = 360025069951
     }
 
     struct LocalizedText {

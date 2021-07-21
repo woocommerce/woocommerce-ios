@@ -1,4 +1,6 @@
 import XCTest
+import Yosemite
+
 @testable import WooCommerce
 
 final class RoleErrorViewModelTests: XCTestCase {
@@ -219,11 +221,7 @@ private class FakeRoleUseCase: RoleEligibilityUseCaseProtocol {
     var syncEligibilityCallCount = 0
     var lastCheckedStoreID: Int64 = -1
     var errorToReturn: RoleEligibilityError? = nil
-    var errorInfoToReturn: EligibilityErrorInfo? = nil
-
-    func syncEligibilityStatusIfNeeded() {
-        syncEligibilityCallCount += 1
-    }
+    var errorInfoToReturn: StorageEligibilityErrorInfo? = nil
 
     func checkEligibility(for storeID: Int64, completion: @escaping (Result<Void, RoleEligibilityError>) -> Void) {
         lastCheckedStoreID = storeID
@@ -232,10 +230,6 @@ private class FakeRoleUseCase: RoleEligibilityUseCaseProtocol {
         } else {
             completion(.success(()))
         }
-    }
-
-    func lastEligibilityErrorInfo() -> EligibilityErrorInfo? {
-        errorInfoToReturn
     }
 }
 
@@ -246,7 +240,7 @@ private enum Expectations {
     static let titleText = "John Appleseed"
     static let subtitleText = "Author, Editor"
     static let image = UIImage.incorrectRoleError
-    static let errorInfo = EligibilityErrorInfo(name: "Billie Jean", roles: ["skater", "writer"])
+    static let errorInfo = StorageEligibilityErrorInfo(name: "Billie Jean", roles: ["skater", "writer"])
     static let descriptionText = NSLocalizedString("This app supports only Administrator and Shop Manager user roles. "
                                                     + "Please contact your store owner to upgrade your role.",
                                                    comment: "Message explaining more detail on why the user's role is incorrect.")

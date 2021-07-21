@@ -136,6 +136,12 @@ public class AppSettingsStore: Store {
             forgetCardReader(cardReaderID: cardReaderID, onCompletion: onCompletion)
         case .loadCardReaders(onCompletion: let onCompletion):
             loadCardReaders(onCompletion: onCompletion)
+        case .loadEligibilityErrorInfo(onCompletion: let onCompletion):
+            loadEligibilityErrorInfo(onCompletion: onCompletion)
+        case .setEligibilityErrorInfo(errorInfo: let errorInfo, onCompletion: let onCompletion):
+            setEligibilityErrorInfo(errorInfo: errorInfo, onCompletion: onCompletion)
+        case .resetEligibilityErrorInfo:
+            setEligibilityErrorInfo(errorInfo: nil)
         }
     }
 }
@@ -211,10 +217,36 @@ private extension AppSettingsStore {
         onCompletion(.success(settings.isViewAddOnsSwitchEnabled))
     }
 
+    /// Loads the last persisted eligibility error information from `GeneralAppSettings`
+    ///
+    func loadEligibilityErrorInfo(onCompletion: (Result<EligibilityErrorInfo, Error>) -> Void) {
+        let settings = loadOrCreateGeneralAppSettings()
+
+        guard let errorInfo = settings.lastEligibilityErrorInfo else {
+            return onCompletion(.failure(AppSettingsStoreErrors.noEligibilityErrorInfo))
+        }
+
+        onCompletion(.success(errorInfo))
+    }
+
+    func setEligibilityErrorInfo(errorInfo: EligibilityErrorInfo?, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings().copy(lastEligibilityErrorInfo: errorInfo)
+            try saveGeneralAppSettings(settings)
+            onCompletion?(.success(()))
+        } catch {
+            onCompletion?(.failure(error))
+        }
+    }
+
     /// Load the `GeneralAppSettings` from file or create an empty one if it doesn't exist.
     func loadOrCreateGeneralAppSettings() -> GeneralAppSettings {
         guard let settings: GeneralAppSettings = try? fileStorage.data(for: generalAppSettingsFileURL) else {
-            return GeneralAppSettings(installationDate: nil, feedbacks: [:], isViewAddOnsSwitchEnabled: false, knownCardReaders: [])
+            return GeneralAppSettings(installationDate: nil,
+                                      feedbacks: [:],
+                                      isViewAddOnsSwitchEnabled: false,
+                                      knownCardReaders: [],
+                                      lastEligibilityErrorInfo: nil)
         }
 
         return settings
@@ -583,6 +615,7 @@ enum AppSettingsStoreErrors: Error {
     case deleteStatsVersionStates
     case noProductsSettings
     case writeProductsSettings
+    case noEligibilityErrorInfo
 }
 
 

@@ -9,4 +9,9 @@ public struct EligibilityErrorInfo: Codable, Equatable {
 
     /// The roles of the ineligible user, for display purposes.
     public let roles: [String]
+
+    public init(name: String, roles: [String]) {
+        self.name = name
+        self.roles = roles
+    }
 }

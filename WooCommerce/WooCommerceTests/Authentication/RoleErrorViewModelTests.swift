@@ -9,50 +9,26 @@ final class RoleErrorViewModelTests: XCTestCase {
 
     // MARK: Default value verifications
 
-    func test_viewModel_provides_expected_name_text() {
+    func test_viewModel_provides_expected_title_text() {
         // Given
         let viewModel = factory.makeViewModel()
 
         // When
-        let nameText = viewModel.nameText
+        let titleText = viewModel.titleText
 
         // Then
-        XCTAssertEqual(nameText, Expectations.nameText)
+        XCTAssertEqual(titleText, Expectations.titleText)
     }
 
-    func test_viewModel_provides_expected_roles_text() {
+    func test_viewModel_provides_expected_subtitle_text() {
         // Given
         let viewModel = factory.makeViewModel()
 
         // When
-        let roleText = viewModel.roleText
+        let subtitleText = viewModel.subtitleText
 
         // Then
-        XCTAssertEqual(roleText, Expectations.rolesText)
-    }
-
-    func test_given_multipleRoles_viewModel_formats_roles_correctly() {
-        // Given
-        let testRoles = ["author", "editor"]
-        let viewModel = factory.makeViewModel(roles: testRoles)
-
-        // When
-        let roleText = viewModel.roleText
-
-        // Then
-        XCTAssertEqual(roleText, "Author, Editor")
-    }
-
-    func test_given_multipleRoles_containingSnakeCase_viewModel_format_roles_correctly() {
-        // Given
-        let testRoles = ["gold_customer", "cool_cucumber"]
-        let viewModel = factory.makeViewModel(roles: testRoles)
-
-        // When
-        let roleText = viewModel.roleText
-
-        // Then
-        XCTAssertEqual(roleText, "Gold Customer, Cool Cucumber")
+        XCTAssertEqual(subtitleText, Expectations.subtitleText)
     }
 
     func test_viewModel_provides_expected_image() {
@@ -158,10 +134,10 @@ final class RoleErrorViewModelTests: XCTestCase {
 private struct RoleErrorTestsMockFactory {
     /// Convenient method to generate RoleErrorViewModel objects with its dependencies injectable
     /// through this method's parameters.
-    func makeViewModel(displayName: String = Expectations.nameText,
-                       roles: [String] = Expectations.roles,
+    func makeViewModel(title: String = Expectations.titleText,
+                       subtitle: String = Expectations.subtitleText,
                        output: RoleErrorOutput = FakeRoleErrorOutput()) -> RoleErrorViewModel {
-        let viewModel = RoleErrorViewModel(displayName: displayName, roles: roles)
+        let viewModel = RoleErrorViewModel(title: title, subtitle: subtitle)
         viewModel.output = output
 
         return viewModel
@@ -188,11 +164,9 @@ private class FakeRoleErrorOutput: RoleErrorOutput {
 
 private enum Expectations {
     static let linkURL = WooConstants.URLs.rolesAndPermissionsInfo.asURL()
-    static let nameText = "John Appleseed"
-    static let roles = ["editor"]
+    static let titleText = "John Appleseed"
+    static let subtitleText = "Author, Editor"
     static let image = UIImage.incorrectRoleError
-
-    static let rolesText = "Editor"
     static let descriptionText = NSLocalizedString("This app supports only Administrator and Shop Manager user roles. "
                                                     + "Please contact your store owner to upgrade your role.",
                                                    comment: "Message explaining more detail on why the user's role is incorrect.")

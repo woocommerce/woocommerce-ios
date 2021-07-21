@@ -151,8 +151,8 @@ extension RoleErrorViewController: RoleErrorOutput {
     func refreshTitleLabels() {
         // these are the only components that may change on runtime, e.g. the role changed
         // to something else, but still incorrect; or the user updated their display name.
-        titleLabel.text = viewModel.nameText
-        subtitleLabel.text = viewModel.roleText
+        titleLabel.text = viewModel.titleText
+        subtitleLabel.text = viewModel.subtitleText
     }
 
     func displayWebContent(for url: URL) {

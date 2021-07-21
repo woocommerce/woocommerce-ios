@@ -111,6 +111,7 @@ public typealias SystemPlugin = Networking.SystemPlugin
 public typealias TaxClass = Networking.TaxClass
 public typealias TopEarnerStats = Networking.TopEarnerStats
 public typealias TopEarnerStatsItem = Networking.TopEarnerStatsItem
+public typealias User = Networking.User
 public typealias WooAPIVersion = Networking.WooAPIVersion
 public typealias StoredProductSettings = Networking.StoredProductSettings
 public typealias CardReader = Hardware.CardReader

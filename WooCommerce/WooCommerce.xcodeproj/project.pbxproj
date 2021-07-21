@@ -1265,9 +1265,14 @@
 		F997174923DC0A7800592D8E /* PeriodStatsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997174823DC0A7800592D8E /* PeriodStatsTable.swift */; };
 		F997174B23DC10B300592D8E /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997174A23DC10B300592D8E /* SnapshotHelper.swift */; };
 		F9F01DDC23E214D800418BE8 /* ApiCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8F8A720B84D3F00D211DE /* ApiCredentials.swift */; };
+		FE28F6F4268477C1004465C7 /* RoleEligibilityUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6F3268477C1004465C7 /* RoleEligibilityUseCase.swift */; };
 		FE28F7122684CA29004465C7 /* RoleErrorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F7102684CA29004465C7 /* RoleErrorViewController.swift */; };
 		FE28F7132684CA29004465C7 /* RoleErrorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE28F7112684CA29004465C7 /* RoleErrorViewController.xib */; };
 		FE28F7182684EE6A004465C7 /* RoleErrorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F7172684EE6A004465C7 /* RoleErrorViewModel.swift */; };
+		FE3E427726A8545B00C596CE /* MockRoleEligibilityUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE3E427626A8545B00C596CE /* MockRoleEligibilityUseCase.swift */; };
+		FEDD70AF26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEDD70AE26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift */; };
+		FEEB2F61268A215E0075A6E0 /* StorageEligibilityErrorInfoWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEB2F60268A215E0075A6E0 /* StorageEligibilityErrorInfoWooTests.swift */; };
+		FEEB2F6E268A2F7B0075A6E0 /* RoleEligibilityUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEB2F6D268A2F7B0075A6E0 /* RoleEligibilityUseCaseTests.swift */; };
 		FEED57FA2686544D00E47FD9 /* RoleErrorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEED57F92686544D00E47FD9 /* RoleErrorViewModelTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -2589,9 +2594,14 @@
 		F997174623DC070C00592D8E /* XLPagerStrip+AccessibilityIdentifierTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XLPagerStrip+AccessibilityIdentifierTests.swift"; sourceTree = "<group>"; };
 		F997174823DC0A7800592D8E /* PeriodStatsTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodStatsTable.swift; sourceTree = "<group>"; };
 		F997174A23DC10B300592D8E /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
+		FE28F6F3268477C1004465C7 /* RoleEligibilityUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleEligibilityUseCase.swift; sourceTree = "<group>"; };
 		FE28F7102684CA29004465C7 /* RoleErrorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleErrorViewController.swift; sourceTree = "<group>"; };
 		FE28F7112684CA29004465C7 /* RoleErrorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RoleErrorViewController.xib; sourceTree = "<group>"; };
 		FE28F7172684EE6A004465C7 /* RoleErrorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleErrorViewModel.swift; sourceTree = "<group>"; };
+		FE3E427626A8545B00C596CE /* MockRoleEligibilityUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRoleEligibilityUseCase.swift; sourceTree = "<group>"; };
+		FEDD70AE26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageEligibilityErrorInfo+Woo.swift"; sourceTree = "<group>"; };
+		FEEB2F60268A215E0075A6E0 /* StorageEligibilityErrorInfoWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEligibilityErrorInfoWooTests.swift; sourceTree = "<group>"; };
+		FEEB2F6D268A2F7B0075A6E0 /* RoleEligibilityUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleEligibilityUseCaseTests.swift; sourceTree = "<group>"; };
 		FEED57F92686544D00E47FD9 /* RoleErrorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleErrorViewModelTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -4251,6 +4261,7 @@
 				D89C009925B4EEA4000E4683 /* WrongAccountErrorViewModelTests.swift */,
 				5768315026694ADC00FDFB6C /* AuthenticationManagerTests.swift */,
 				FEED57F92686544D00E47FD9 /* RoleErrorViewModelTests.swift */,
+				FEEB2F6D268A2F7B0075A6E0 /* RoleEligibilityUseCaseTests.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -4417,6 +4428,7 @@
 				314DC4C2268D2F1000444C9E /* MockAppSettingsStoresManager.swift */,
 				31F21B5F263CB78A0035B50A /* MockCardReader.swift */,
 				DE4B3B2D269455D400EEF2D8 /* MockShipmentActionStoresManager.swift */,
+				FE3E427626A8545B00C596CE /* MockRoleEligibilityUseCase.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -4681,6 +4693,7 @@
 				CE16177921B7192A00B82A47 /* AuthenticationConstants.swift */,
 				027A2E132513124E00DA6ACB /* Keychain+Entries.swift */,
 				027A2E152513356100DA6ACB /* AppleIDCredentialChecker.swift */,
+				FE28F6F3268477C1004465C7 /* RoleEligibilityUseCase.swift */,
 				D89CFE8F25B256E9000E4683 /* ULAccountMatcher.swift */,
 			);
 			path = Authentication;
@@ -4876,6 +4889,7 @@
 				CE24BCD7212F25D4001CD12E /* StorageOrder+Woo.swift */,
 				743EDD9E214B05350039071B /* TopEarnerStatsItem+Woo.swift */,
 				D8EF1E552605121C00380EA4 /* OrderPaymentMethod.swift */,
+				FEDD70AE26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -5071,6 +5085,7 @@
 				7435E58F21C0162C00216F0F /* OrderNoteWooTests.swift */,
 				6856D1A5F72A36AB3704D19D /* AgeTests.swift */,
 				455A2FDA246B1349000CA72C /* ProductVisibilityTests.swift */,
+				FEEB2F60268A215E0075A6E0 /* StorageEligibilityErrorInfoWooTests.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -6670,6 +6685,7 @@
 				7459A6C621B0680300F83A78 /* RequirementsChecker.swift in Sources */,
 				CE1D5A55228A0AD200DF3715 /* TwoColumnTableViewCell.swift in Sources */,
 				74460D4222289C7A00D7316A /* StorePickerCoordinator.swift in Sources */,
+				FEDD70AF26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift in Sources */,
 				CE15524A21FFB10100EAA690 /* ApplicationLogViewController.swift in Sources */,
 				57C503DC23E8C70C00EC0790 /* OrdersTabbedViewController.swift in Sources */,
 				02E8B17A23E2C4BD00A43403 /* CircleSpinnerView.swift in Sources */,
@@ -6808,6 +6824,7 @@
 				CE22E3F72170E23C005A6BEF /* PrivacySettingsViewController.swift in Sources */,
 				021125482577CC650075AD2A /* ShippingLabelDetailsViewModel.swift in Sources */,
 				316837DA25CCA90C00E36B2F /* OrderStatusListDataSource.swift in Sources */,
+				FE28F6F4268477C1004465C7 /* RoleEligibilityUseCase.swift in Sources */,
 				57C5FF7A25091A350074EC26 /* OrderListSyncActionUseCase.swift in Sources */,
 				B58B4AB32108F01700076FDD /* DefaultNoticePresenter.swift in Sources */,
 				4512055224655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.swift in Sources */,
@@ -7351,6 +7368,7 @@
 				023EC2E624DAB1270021DA91 /* EditableProductVariationModelTests.swift in Sources */,
 				E17E3BF9266917C10009D977 /* CardPresentModalScanningFailedTests.swift in Sources */,
 				02BA128B24616B48008D8325 /* ProductFormActionsFactory+VisibilityTests.swift in Sources */,
+				FEEB2F6E268A2F7B0075A6E0 /* RoleEligibilityUseCaseTests.swift in Sources */,
 				D85B8336222FCDA1002168F3 /* StatusListTableViewCellTests.swift in Sources */,
 				3198A1E82694DC7200597213 /* MockKnownReadersProvider.swift in Sources */,
 				26B119C224D1CD3500FED5C7 /* WooConstantsTests.swift in Sources */,
@@ -7434,6 +7452,7 @@
 				0215320D2423309B003F2BBD /* UIStackView+SubviewsTests.swift in Sources */,
 				027B8BBD23FE0DE10040944E /* ProductImageActionHandlerTests.swift in Sources */,
 				B5980A6521AC905C00EBF596 /* UIDeviceWooTests.swift in Sources */,
+				FEEB2F61268A215E0075A6E0 /* StorageEligibilityErrorInfoWooTests.swift in Sources */,
 				31F21B02263C8E150035B50A /* CardReaderSettingsUnknownViewModelTests.swift in Sources */,
 				45EF798624509B4C00B22BA2 /* ArrayIndexPathTests.swift in Sources */,
 				D8610BDD256F5ABF00A5DF27 /* JetpackErrorViewModelTests.swift in Sources */,
@@ -7454,6 +7473,7 @@
 				2667BFE92530ECE4008099D4 /* RefundProductsTotalViewModelTests.swift in Sources */,
 				D810F8F82639EDE900437C67 /* CardPresentPaymentsModalViewControllerTests.swift in Sources */,
 				02A275C623FE9EFC005C560F /* MockFeatureFlagService.swift in Sources */,
+				FE3E427726A8545B00C596CE /* MockRoleEligibilityUseCase.swift in Sources */,
 				02F67FF525806E0100C3BAD2 /* ShippingLabelTrackingURLGeneratorTests.swift in Sources */,
 				570AAB052472FACB00516C0C /* OrderDetailsDataSourceTests.swift in Sources */,
 				B517EA1A218B2D2600730EC4 /* StringFormatterTests.swift in Sources */,

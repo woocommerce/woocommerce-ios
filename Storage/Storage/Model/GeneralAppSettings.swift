@@ -29,11 +29,20 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public let knownCardReaders: [String]
 
-    public init(installationDate: Date?, feedbacks: [FeedbackType: FeedbackSettings], isViewAddOnsSwitchEnabled: Bool, knownCardReaders: [String]) {
+    /// The last known eligibility error information persisted locally.
+    ///
+    public let lastEligibilityErrorInfo: EligibilityErrorInfo?
+
+    public init(installationDate: Date?,
+                feedbacks: [FeedbackType: FeedbackSettings],
+                isViewAddOnsSwitchEnabled: Bool,
+                knownCardReaders: [String],
+                lastEligibilityErrorInfo: EligibilityErrorInfo? = nil) {
         self.installationDate = installationDate
         self.feedbacks = feedbacks
         self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled
         self.knownCardReaders = knownCardReaders
+        self.lastEligibilityErrorInfo = lastEligibilityErrorInfo
     }
 
     /// Returns the status of a given feedback type. If the feedback is not stored in the feedback array. it is assumed that it has a pending status.
@@ -57,7 +66,8 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             installationDate: installationDate,
             feedbacks: updatedFeedbacks,
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
-            knownCardReaders: knownCardReaders
+            knownCardReaders: knownCardReaders,
+            lastEligibilityErrorInfo: lastEligibilityErrorInfo
         )
     }
 }

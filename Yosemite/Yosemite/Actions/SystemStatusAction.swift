@@ -2,7 +2,7 @@ import Foundation
 
 /// Defines all actions supported by `SystemPluginStore`
 ///
-public enum SystemPluginAction: Action {
+public enum SystemStatusAction: Action {
 
     /// Synchronize all system plugins for a site given its ID
     ///

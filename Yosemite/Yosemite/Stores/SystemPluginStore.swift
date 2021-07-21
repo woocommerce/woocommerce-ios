@@ -2,7 +2,7 @@ import Foundation
 import Networking
 import Storage
 
-/// Implements `SystemPluginActions` actions
+/// Implements `SystemStatusActions` actions
 ///
 public final class SystemPluginStore: Store {
     private let remote: SystemPluginsRemote
@@ -15,13 +15,13 @@ public final class SystemPluginStore: Store {
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
-        dispatcher.register(processor: self, for: SystemPluginAction.self)
+        dispatcher.register(processor: self, for: SystemStatusAction.self)
     }
 
     /// Receives and executes Actions.
     ///
     public override func onAction(_ action: Action) {
-        guard let action = action as? SystemPluginAction else {
+        guard let action = action as? SystemStatusAction else {
             assertionFailure("SystemPluginStore receives an unsupported action!")
             return
         }

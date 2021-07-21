@@ -42,7 +42,7 @@ class SystemPluginStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = SystemPluginAction.synchronizeSystemPlugins(siteID: self.sampleSiteID) { result in
+            let action = SystemStatusAction.synchronizeSystemPlugins(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -66,7 +66,7 @@ class SystemPluginStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = SystemPluginAction.synchronizeSystemPlugins(siteID: self.sampleSiteID) { result in
+            let action = SystemStatusAction.synchronizeSystemPlugins(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -92,7 +92,7 @@ class SystemPluginStoreTests: XCTestCase {
 
         // When
         let data: [Yosemite.SystemPlugin]? = waitFor { promise in
-            let action = SystemPluginAction.fetchSystemPlugins(siteID: self.sampleSiteID) { result in
+            let action = SystemStatusAction.fetchSystemPlugins(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
             store.onAction(action)

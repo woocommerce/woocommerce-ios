@@ -17,7 +17,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
 
     /// Top banner that shows a warning in case there is an error in the address validation.
     ///
-    private lazy var topBannerView: TopBannerView = {
+    private var topBannerView: TopBannerView {
         let topBanner = ShippingLabelAddressTopBannerFactory.addressErrorTopBannerView(
             shipType: viewModel.type,
             phoneNumber: viewModel.address?.phone
@@ -40,7 +40,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
 
         topBanner.translatesAutoresizingMaskIntoConstraints = false
         return topBanner
-    }()
+    }
 
     private let viewModel: ShippingLabelAddressFormViewModel
 

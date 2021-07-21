@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a ProductImage entity.
 ///
-public struct ProductImage: Codable, GeneratedCopiable, GeneratedFakeable {
+public struct ProductImage: Codable, Equatable, GeneratedCopiable, GeneratedFakeable {
     public let imageID: Int64
     public let dateCreated: Date    // gmt
     public let dateModified: Date?  // gmt
@@ -59,16 +59,5 @@ private extension ProductImage {
         case src            = "src"
         case name           = "name"
         case alt            = "alt"
-    }
-}
-
-
-// MARK: - Comparable Conformance
-//
-extension ProductImage: Comparable {
-    public static func < (lhs: ProductImage, rhs: ProductImage) -> Bool {
-        return lhs.imageID < rhs.imageID ||
-            (lhs.imageID == rhs.imageID && lhs.dateCreated < rhs.dateCreated) ||
-            (lhs.imageID == rhs.imageID && lhs.dateCreated == rhs.dateCreated && lhs.src < rhs.src)
     }
 }

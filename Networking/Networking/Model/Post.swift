@@ -46,13 +46,3 @@ private extension Post {
         case password       = "password"
     }
 }
-
-
-// MARK: - Comparable Conformance
-//
-extension Post: Comparable {
-    public static func < (lhs: Post, rhs: Post) -> Bool {
-        return lhs.siteID < rhs.siteID
-    }
-
-}

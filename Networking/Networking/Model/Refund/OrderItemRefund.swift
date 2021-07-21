@@ -141,17 +141,6 @@ private extension OrderItemRefund {
 }
 
 
-// MARK: - Comparable Conformance
-//
-extension OrderItemRefund: Comparable {
-    public static func < (lhs: OrderItemRefund, rhs: OrderItemRefund) -> Bool {
-        return lhs.itemID < rhs.itemID ||
-            (lhs.itemID == rhs.itemID && lhs.productID < rhs.productID) ||
-            (lhs.itemID == rhs.itemID && lhs.productID == rhs.productID && lhs.name < rhs.name)
-    }
-}
-
-
 // MARK: - Hashable Conformance
 //
 extension OrderItemRefund: Hashable {

@@ -91,14 +91,15 @@ class SystemStatusStoreTests: XCTestCase {
         let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let data: [Yosemite.SystemPlugin]? = waitFor { promise in
-            let action = SystemStatusAction.fetchSystemPlugins(siteID: self.sampleSiteID) { result in
+        let systemPluginResult: Yosemite.SystemPlugin? = waitFor { promise in
+            let action = SystemStatusAction.fetchSystemPlugins(siteID: self.sampleSiteID,
+                                                               systemPluginName: "Plugin 3") { result in
                 promise(result)
             }
             store.onAction(action)
         }
 
         // Then
-        XCTAssertEqual(data?.count, 2) // number of systemPlugins in storage
+        XCTAssertEqual(systemPluginResult?.name, "Plugin 3") // number of systemPlugins in storage
     }
 }

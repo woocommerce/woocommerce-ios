@@ -32,7 +32,7 @@ struct ShippingLabelPaymentMethods: View {
                     // Payment Methods list
                     ListHeaderView(text: Localization.paymentMethodsHeader, alignment: .left)
                         .textCase(.uppercase)
-                        .addSafeAreaPaddings(geometry.safeAreaInsets, edges: .horizontal)
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
 
                     ForEach(viewModel.paymentMethods, id: \.paymentMethodID) { method in
                         let selected = method.paymentMethodID == viewModel.selectedPaymentMethodID
@@ -42,7 +42,7 @@ struct ShippingLabelPaymentMethods: View {
                             .onTapGesture {
                                 viewModel.didSelectPaymentMethod(withID: method.paymentMethodID)
                             }
-                            .addSafeAreaPaddings(geometry.safeAreaInsets, edges: .horizontal)
+                            .padding(.horizontal, insets: geometry.safeAreaInsets)
                             .background(Color(.systemBackground))
                         Divider().padding(.leading, Constants.dividerPadding)
                     }
@@ -52,7 +52,7 @@ struct ShippingLabelPaymentMethods: View {
                                                                           viewModel.storeOwnerWPcomUsername,
                                                                           viewModel.storeOwnerWPcomEmail),
                                    alignment: .left)
-                        .addSafeAreaPaddings(geometry.safeAreaInsets, edges: .horizontal)
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
 
                     Spacer()
                         .frame(height: Constants.spacerHeight)
@@ -63,7 +63,7 @@ struct ShippingLabelPaymentMethods: View {
                                                                               viewModel.storeOwnerUsername,
                                                                               viewModel.storeOwnerWPcomEmail),
                                       isOn: $viewModel.isEmailReceiptsEnabled)
-                        .addSafeAreaPaddings(geometry.safeAreaInsets, edges: .horizontal)
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
                         .background(Color(.systemBackground))
                         .disabled(!viewModel.canEditNonpaymentSettings)
                 }

@@ -14,7 +14,7 @@ struct ShippingLabelPackageList: View {
                         ///
                         if viewModel.showCustomPackagesHeader {
                             ListHeaderView(text: Localization.customPackageHeader.uppercased(), alignment: .left)
-                                .addSafeAreaPaddings(geometry.safeAreaInsets, edges: .horizontal)
+                                .padding(.horizontal, insets: geometry.safeAreaInsets)
                         }
                         ForEach(viewModel.customPackages, id: \.title) { package in
                             let selected = package == viewModel.selectedCustomPackage
@@ -23,7 +23,7 @@ struct ShippingLabelPackageList: View {
                                     viewModel.didSelectPackage(package.title)
                                     ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "packages_selected"])
                                 }
-                                .addSafeAreaPaddings(geometry.safeAreaInsets, edges: .horizontal)
+                                .padding(.horizontal, insets: geometry.safeAreaInsets)
                                 .background(Color(.systemBackground))
                             Divider().padding(.leading, Constants.dividerPadding)
                         }
@@ -33,7 +33,7 @@ struct ShippingLabelPackageList: View {
                         ForEach(viewModel.predefinedOptions, id: \.title) { option in
 
                             ListHeaderView(text: option.title.uppercased(), alignment: .left)
-                                .addSafeAreaPaddings(geometry.safeAreaInsets, edges: .horizontal)
+                                .padding(.horizontal, insets: geometry.safeAreaInsets)
                             ForEach(option.predefinedPackages) { package in
                                 let selected = package == viewModel.selectedPredefinedPackage
                                 SelectableItemRow(title: package.title,
@@ -42,7 +42,7 @@ struct ShippingLabelPackageList: View {
                                                     viewModel.didSelectPackage(package.id)
                                                     ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "packages_selected"])
                                                   }
-                                    .addSafeAreaPaddings(geometry.safeAreaInsets, edges: .horizontal)
+                                    .padding(.horizontal, insets: geometry.safeAreaInsets)
                                     .background(Color(.systemBackground))
                                 Divider().padding(.leading, Constants.dividerPadding)
                             }

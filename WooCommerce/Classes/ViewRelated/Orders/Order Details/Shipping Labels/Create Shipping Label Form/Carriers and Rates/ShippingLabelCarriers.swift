@@ -31,7 +31,7 @@ struct ShippingLabelCarriers: View {
                     case .loading:
                         ForEach(viewModel.ghostRows) { ghostRowVM in
                             ShippingLabelCarrierRow(ghostRowVM)
-                                .addSafeAreaPaddings(geometry.safeAreaInsets, edges: .horizontal)
+                                .padding(.horizontal, insets: geometry.safeAreaInsets)
                                 .redacted(reason: .placeholder)
                                 .shimmering()
                             Divider().padding(.leading, Constants.dividerPadding)
@@ -46,7 +46,7 @@ struct ShippingLabelCarriers: View {
                             ShippingLabelCarrierRow(carrierRowVM)
                             Divider().padding(.leading, Constants.dividerPadding)
                         }
-                        .addSafeAreaPaddings(geometry.safeAreaInsets, edges: .horizontal)
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
                     case .error:
                         VStack {
                             HStack (alignment: .center) {

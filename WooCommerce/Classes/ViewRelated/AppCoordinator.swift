@@ -47,7 +47,9 @@ final class AppCoordinator {
                 case (true, true):
                     self.displayStorePicker()
                 case (true, false):
-                    self.displayLoggedInUI()
+                    self.validateRoleEligibility {
+                        self.displayLoggedInUI()
+                    }
                 }
                 self.isLoggedIn = isLoggedIn
             }
@@ -69,14 +71,6 @@ private extension AppCoordinator {
     /// Displays logged in tab bar UI.
     ///
     func displayLoggedInUI() {
-        // if the previous role check indicates that the user is ineligible, then we want to show the error message.
-        // Eligibility status is stored locally in user defaults, and updated asynchronously upon app launch.
-        if let errorInfo = roleEligibilityUseCase.lastEligibilityErrorInfo(),
-           let siteID = stores.sessionManager.defaultStoreID {
-            displayRoleErrorUI(for: siteID, errorInfo: errorInfo)
-            return
-        }
-
         setWindowRootViewControllerAndAnimateIfNeeded(tabBarController)
     }
 
@@ -104,7 +98,7 @@ private extension AppCoordinator {
 
     /// Displays the role error page as the root view.
     ///
-    func displayRoleErrorUI(for siteID: Int64, errorInfo: EligibilityErrorInfo) {
+    func displayRoleErrorUI(for siteID: Int64, errorInfo: StorageEligibilityErrorInfo) {
         let errorViewModel = RoleErrorViewModel(siteID: siteID, title: errorInfo.name, subtitle: errorInfo.humanizedRoles)
         let errorViewController = RoleErrorViewController(viewModel: errorViewModel)
 
@@ -119,6 +113,42 @@ private extension AppCoordinator {
 
         // this needs to be wrapped within a navigation controller to properly show the right bar button for Help.
         setWindowRootViewControllerAndAnimateIfNeeded(WooNavigationController(rootViewController: errorViewController))
+    }
+
+    /// Synchronously check if there's any `EligibilityErrorInfo` stored locally. If there is, then let's show the role error UI instead.
+    ///
+    /// Note: this method should be *only* be called in authenticated state, and defaultStoreID exists.
+    /// otherwise, this may indicate an implementation error.
+    ///
+    /// - Parameter onSuccess: Closure to be called when the user is eligible.
+    ///
+    func validateRoleEligibility(onSuccess: @escaping () -> Void) {
+        guard stores.isAuthenticated, let storeID = stores.sessionManager.defaultStoreID else {
+            return
+        }
+
+        let action = AppSettingsAction.loadEligibilityErrorInfo { [weak self] result in
+            guard let self = self else { return }
+
+            // if the previous role check indicates that the user is ineligible, let's show the error message.
+            if let errorInfo = try? result.get() {
+                self.displayRoleErrorUI(for: storeID, errorInfo: errorInfo)
+                return
+            }
+
+            // Even if the previous check was successful, we need to check if the user is still eligible *now*.
+            // The latest eligibility status will be fetched asynchronously.
+            self.roleEligibilityUseCase.checkEligibility(for: storeID) { result in
+                // we only care about the insufficientRole error, because that indicates that the user is no longer eligible.
+                // in this case, we'll forcefully show the role error page.
+                if let error = result.failure, case let .insufficientRole(errorInfo) = error {
+                    self.displayRoleErrorUI(for: storeID, errorInfo: errorInfo)
+                }
+            }
+
+            onSuccess()
+        }
+        stores.dispatch(action)
     }
 }
 

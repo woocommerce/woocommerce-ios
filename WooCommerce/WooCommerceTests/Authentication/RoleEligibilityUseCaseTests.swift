@@ -6,23 +6,18 @@ import Yosemite
 final class RoleEligibilityUseCaseTests: XCTestCase {
     private var sessionManager: SessionManager!
     private var stores: MockStoresManager!
-    private var defaults: UserDefaults!
 
     override func setUp() {
         super.setUp()
 
         sessionManager = .makeForTesting(authenticated: false)
         stores = MockStoresManager(sessionManager: sessionManager)
-        defaults = UserDefaults(suiteName: Constants.suiteName)
-        defaults.removePersistentDomain(forName: Constants.suiteName)
     }
 
     override func tearDown() {
         sessionManager.defaultStoreID = nil
-        defaults.removePersistentDomain(forName: Constants.suiteName)
         stores = nil
         sessionManager = nil
-        defaults = nil
 
         super.tearDown()
     }
@@ -227,17 +222,10 @@ private extension RoleEligibilityUseCaseTests {
     struct Constants {
         static let eligibleRoles = ["shop_manager", "editor"]
         static let ineligibleRoles = ["author", "editor"]
-        static let sampleDictionary = ["name": "Jane", "roles": "shop_manager,editor"]
-        static let suiteName = "RoleEligibilityUseCaseTests"
     }
 
     func makeUser(eligible: Bool = false) -> User {
         return User(localID: 0, siteID: 0, wpcomID: 0, email: "email", username: "username", firstName: "first", lastName: "last",
                     nickname: "nick", roles: eligible ? Constants.eligibleRoles : Constants.ineligibleRoles)
     }
-}
-
-private extension String {
-    // Constants.eligibilityErrorInfoKey
-    static let errorInfoKey = "wc_eligibility_error_info"
 }

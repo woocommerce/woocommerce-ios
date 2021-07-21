@@ -31,6 +31,28 @@ class HelpAndSupportViewController: UIViewController {
         return NSLocalizedString("Set email", comment: "Tells user to set an email that support can use for replies")
     }
 
+    /// Payment Gateway Accounts Results Controller: Loads Payment Gateway Accounts from the Storage Layer
+    /// e.g. WooCommerce Payments, but eventually other in-person payment accounts too
+    ///
+    private var paymentGatewayAccountsResultsController: ResultsController<StoragePaymentGatewayAccount>? = {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return nil
+        }
+
+        let storageManager = ServiceLocator.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
+    private var isPaymentsAvailable: Bool {
+        guard let accounts = paymentGatewayAccountsResultsController?.fetchedObjects else {
+            return false
+        }
+
+        return accounts.contains(where: \.isCardPresentEligible)
+    }
+
     /// Indicates if the NavBar should display a dismiss button
     ///
     var displaysDismissAction = false
@@ -46,6 +68,9 @@ class HelpAndSupportViewController: UIViewController {
         configureSections()
         configureTableView()
         registerTableViewCells()
+        configureResultsControllers { [weak self] in
+            self?.configureSections()
+        }
         warnDeveloperIfNeeded()
     }
 }
@@ -84,6 +109,21 @@ private extension HelpAndSupportViewController {
         tableView.backgroundColor = .listBackground
     }
 
+    func configureResultsControllers(onReload: @escaping () -> Void) {
+        guard paymentGatewayAccountsResultsController != nil else {
+            return
+        }
+
+        paymentGatewayAccountsResultsController?.onDidChangeContent = { onReload()
+        }
+
+        paymentGatewayAccountsResultsController?.onDidResetContent = {
+            onReload()
+        }
+
+        try? paymentGatewayAccountsResultsController?.performFetch()
+    }
+
     /// Disable Zendesk if configuration on ZD init fails.
     ///
     func configureSections() {
@@ -95,13 +135,25 @@ private extension HelpAndSupportViewController {
         }
 
         sections = [
-            Section(title: helpAndSupportTitle, rows: [.helpCenter,
-                                                       .contactSupport,
-                                                       .contactWCPaySupport,
-                                                       .myTickets,
-                                                       .contactEmail,
-                                                       .applicationLog])
+            Section(title: helpAndSupportTitle, rows: calculateRows())
         ]
+    }
+
+    private func calculateRows() -> [Row] {
+        if isPaymentsAvailable {
+            return [.helpCenter,
+                    .contactSupport,
+                    .contactWCPaySupport,
+                    .myTickets,
+                    .contactEmail,
+                    .applicationLog]
+        } else {
+            return [.helpCenter,
+                    .contactSupport,
+                    .myTickets,
+                    .contactEmail,
+                    .applicationLog]
+        }
     }
 
     /// Register table cells.

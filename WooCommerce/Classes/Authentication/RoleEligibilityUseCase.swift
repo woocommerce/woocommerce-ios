@@ -21,13 +21,10 @@ final class RoleEligibilityUseCase {
 
     private let stores: StoresManager
 
-    private let defaults: UserDefaults
-
     // MARK: Initialization
 
-    init(stores: StoresManager = ServiceLocator.stores, defaults: UserDefaults = UserDefaults.standard) {
+    init(stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
-        self.defaults = defaults
     }
 
     // MARK: Private Methods

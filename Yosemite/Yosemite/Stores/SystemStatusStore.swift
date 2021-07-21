@@ -4,7 +4,7 @@ import Storage
 
 /// Implements `SystemStatusActions` actions
 ///
-public final class SystemPluginStore: Store {
+public final class SystemStatusStore: Store {
     private let remote: SystemPluginsRemote
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
@@ -37,7 +37,7 @@ public final class SystemPluginStore: Store {
 
 // MARK: - Network request
 //
-private extension SystemPluginStore {
+private extension SystemStatusStore {
     func synchronizeSystemPlugins(siteID: Int64, completionHandler: @escaping (Result<Void, Error>) -> Void) {
         remote.loadSystemPlugins(for: siteID) { [weak self] result in
             guard let self = self else { return }
@@ -53,7 +53,7 @@ private extension SystemPluginStore {
 
 // MARK: - Storage
 //
-private extension SystemPluginStore {
+private extension SystemStatusStore {
 
     /// Updates or inserts Readonly `SystemPlugin` entities in background.
     /// Triggers `completionHandler` on main thread.

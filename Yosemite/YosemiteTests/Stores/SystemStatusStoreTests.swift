@@ -5,7 +5,7 @@ import Fakes
 @testable import Networking
 @testable import Storage
 
-class SystemPluginStoreTests: XCTestCase {
+class SystemStatusStoreTests: XCTestCase {
     /// Mock Dispatcher
     ///
     private var dispatcher: Dispatcher!
@@ -38,7 +38,7 @@ class SystemPluginStoreTests: XCTestCase {
     func test_synchronizeSystemPlugins_stores_systemPlugins_correctly() {
         // Given
         network.simulateResponse(requestUrlSuffix: "system_status", filename: "systemPlugins")
-        let store = SystemPluginStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
@@ -62,7 +62,7 @@ class SystemPluginStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageSystemPlugin.self), 1)
 
         network.simulateResponse(requestUrlSuffix: "system_status", filename: "systemPlugins")
-        let store = SystemPluginStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
@@ -88,7 +88,7 @@ class SystemPluginStoreTests: XCTestCase {
         systemPlugin3.name = "Plugin 3"
         systemPlugin3.siteID = sampleSiteID
 
-        let store = SystemPluginStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
         let data: [Yosemite.SystemPlugin]? = waitFor { promise in

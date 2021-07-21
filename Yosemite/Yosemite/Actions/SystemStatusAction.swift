@@ -8,7 +8,7 @@ public enum SystemStatusAction: Action {
     ///
     case synchronizeSystemPlugins(siteID: Int64, onCompletion: (Result<Void, Error>) -> Void)
 
-    /// Fetch all system plugins for a site given its ID
+    /// Fetch an specific systemPlugin by siteID and name
     ///
-    case fetchSystemPlugins(siteID: Int64, onCompletion: ([SystemPlugin]?) -> Void)
+    case fetchSystemPlugins(siteID: Int64, systemPluginName: String, onCompletion: (SystemPlugin?) -> Void)
 }

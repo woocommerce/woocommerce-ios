@@ -29,8 +29,8 @@ public final class SystemStatusStore: Store {
         switch action {
         case .synchronizeSystemPlugins(let siteID, let onCompletion):
             synchronizeSystemPlugins(siteID: siteID, completionHandler: onCompletion)
-        case .fetchSystemPlugins(let siteID, let onCompletion):
-            fetchSystemPlugins(siteID: siteID, completionHandler: onCompletion)
+        case .fetchSystemPlugins(let siteID, let systemPluginName, let onCompletion):
+            fetchSystemPlugins(siteID: siteID, systemPluginName: systemPluginName, completionHandler: onCompletion)
         }
     }
 }
@@ -92,11 +92,11 @@ private extension SystemStatusStore {
         storage.deleteStaleSystemPlugins(siteID: siteID, currentSystemPlugins: currentSystemPlugins)
     }
 
-    /// Retrieve `SystemPlugin` entities of a specified storage by siteID
+    /// Retrieve `SystemPlugin` entitie of a specified storage by siteID and systemPluginName
     ///
-    func fetchSystemPlugins(siteID: Int64, completionHandler: @escaping ([SystemPlugin]?) -> Void) {
+    func fetchSystemPlugins(siteID: Int64, systemPluginName: String, completionHandler: @escaping (SystemPlugin?) -> Void) {
         let viewStorage = storageManager.viewStorage
-        let systemPlugins = viewStorage.loadSystemPlugins(siteID: siteID).map { $0.toReadOnly() }
-        completionHandler(systemPlugins)
+        let systemPlugin = viewStorage.loadSystemPlugin(siteID: siteID, name: systemPluginName)?.toReadOnly()
+        completionHandler(systemPlugin)
     }
 }

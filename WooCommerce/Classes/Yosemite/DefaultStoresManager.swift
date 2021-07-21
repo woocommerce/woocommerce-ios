@@ -358,17 +358,6 @@ private extension DefaultStoresManager {
         dispatch(action)
     }
 
-    /// Synchronizes all plugins for the store with specified ID.
-    ///
-    func synchronizePlugins(siteID: Int64) {
-        let action = SitePluginAction.synchronizeSitePlugins(siteID: siteID) { result in
-            if let error = result.failure {
-                DDLogError("⛔️ Failed to sync plugins for siteID: \(siteID). Error: \(error)")
-            }
-        }
-        dispatch(action)
-    }
-
     /// Synchronizes all system plugins for the store with specifie ID
     ///
     func synchronizeSystemPlugins(siteID: Int64) {

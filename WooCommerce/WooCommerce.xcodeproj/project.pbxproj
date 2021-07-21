@@ -1269,7 +1269,6 @@
 		FE28F7132684CA29004465C7 /* RoleErrorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE28F7112684CA29004465C7 /* RoleErrorViewController.xib */; };
 		FE28F7182684EE6A004465C7 /* RoleErrorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F7172684EE6A004465C7 /* RoleErrorViewModel.swift */; };
 		FEDD70AF26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEDD70AE26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift */; };
-		FEEB2F552689FEA40075A6E0 /* EligibilityErrorInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEB2F542689FEA40075A6E0 /* EligibilityErrorInfo.swift */; };
 		FEEB2F61268A215E0075A6E0 /* EligibilityErrorInfoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEB2F60268A215E0075A6E0 /* EligibilityErrorInfoTests.swift */; };
 		FEEB2F6E268A2F7B0075A6E0 /* RoleEligibilityUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEB2F6D268A2F7B0075A6E0 /* RoleEligibilityUseCaseTests.swift */; };
 		FEED57FA2686544D00E47FD9 /* RoleErrorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEED57F92686544D00E47FD9 /* RoleErrorViewModelTests.swift */; };
@@ -2597,7 +2596,6 @@
 		FE28F7112684CA29004465C7 /* RoleErrorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RoleErrorViewController.xib; sourceTree = "<group>"; };
 		FE28F7172684EE6A004465C7 /* RoleErrorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleErrorViewModel.swift; sourceTree = "<group>"; };
 		FEDD70AE26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageEligibilityErrorInfo+Woo.swift"; sourceTree = "<group>"; };
-		FEEB2F542689FEA40075A6E0 /* EligibilityErrorInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EligibilityErrorInfo.swift; sourceTree = "<group>"; };
 		FEEB2F60268A215E0075A6E0 /* EligibilityErrorInfoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EligibilityErrorInfoTests.swift; sourceTree = "<group>"; };
 		FEEB2F6D268A2F7B0075A6E0 /* RoleEligibilityUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleEligibilityUseCaseTests.swift; sourceTree = "<group>"; };
 		FEED57F92686544D00E47FD9 /* RoleErrorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleErrorViewModelTests.swift; sourceTree = "<group>"; };
@@ -4884,7 +4882,6 @@
 				CE24BCD7212F25D4001CD12E /* StorageOrder+Woo.swift */,
 				743EDD9E214B05350039071B /* TopEarnerStatsItem+Woo.swift */,
 				D8EF1E552605121C00380EA4 /* OrderPaymentMethod.swift */,
-				FEEB2F542689FEA40075A6E0 /* EligibilityErrorInfo.swift */,
 				FEDD70AE26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift */,
 			);
 			path = Model;
@@ -6751,7 +6748,6 @@
 				0286B27F23C70557003D784B /* ColumnFlowLayout.swift in Sources */,
 				451A997D260E393B0059D135 /* ShippingLabelPackageDetails.swift in Sources */,
 				450C2CB624D1ABB200D570DD /* ProductImagesGalleryViewController.swift in Sources */,
-				FEEB2F552689FEA40075A6E0 /* EligibilityErrorInfo.swift in Sources */,
 				7435E58E21C0151B00216F0F /* OrderNote+Woo.swift in Sources */,
 				451A04F42386F7C900E368C9 /* AddProductImageCollectionViewCell.swift in Sources */,
 				D843D5CB22437E59001BFA55 /* TitleAndEditableValueTableViewCell.swift in Sources */,

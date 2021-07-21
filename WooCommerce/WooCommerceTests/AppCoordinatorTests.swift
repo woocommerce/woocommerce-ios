@@ -6,9 +6,8 @@ import Yosemite
 
 final class AppCoordinatorTests: XCTestCase {
     private var sessionManager: SessionManager!
-    private var stores: StoresManager!
+    private var stores: MockStoresManager!
     private var authenticationManager: AuthenticationManager!
-    private var defaults: UserDefaults!
 
     private let window = UIWindow(frame: UIScreen.main.bounds)
 
@@ -17,7 +16,6 @@ final class AppCoordinatorTests: XCTestCase {
 
         window.makeKeyAndVisible()
 
-        defaults = UserDefaults(suiteName: Constants.suiteName)
         sessionManager = .makeForTesting(authenticated: false)
         stores = MockStoresManager(sessionManager: sessionManager)
         authenticationManager = AuthenticationManager()
@@ -29,7 +27,6 @@ final class AppCoordinatorTests: XCTestCase {
         sessionManager.defaultStoreID = nil
         stores = nil
         sessionManager = nil
-        defaults.removePersistentDomain(forName: Constants.suiteName)
 
         // If not resetting the window, `AsyncDictionaryTests.testAsyncUpdatesWhereTheFirstOperationFinishesLast` fails.
         window.resignKey()
@@ -40,7 +37,7 @@ final class AppCoordinatorTests: XCTestCase {
 
     func test_starting_app_logged_out_presents_authentication() throws {
         // Given
-        let appCoordinator = AppCoordinator(window: window, stores: stores, authenticationManager: authenticationManager)
+        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager)
 
         // When
         appCoordinator.start()
@@ -54,7 +51,7 @@ final class AppCoordinatorTests: XCTestCase {
         // Authenticates the app without selecting a site, so that the store picker is shown.
         stores.authenticate(credentials: SessionSettings.credentials)
         sessionManager.defaultStoreID = nil
-        let appCoordinator = AppCoordinator(window: window, stores: stores, authenticationManager: authenticationManager)
+        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager)
 
         // When
         appCoordinator.start()
@@ -67,8 +64,15 @@ final class AppCoordinatorTests: XCTestCase {
     func test_starting_app_logged_in_with_selected_site_stays_on_tabbar() throws {
         // Given
         stores.authenticate(credentials: SessionSettings.credentials)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            guard case let AppSettingsAction.loadEligibilityErrorInfo(completion) = action else {
+                return
+            }
+            // any failure except `.insufficientRole` will be treated as having an eligible status.
+            completion(.failure(SampleError.first))
+        }
         sessionManager.defaultStoreID = 134
-        let appCoordinator = AppCoordinator(window: window, stores: stores, authenticationManager: authenticationManager)
+        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager)
 
         // When
         appCoordinator.start()
@@ -80,10 +84,17 @@ final class AppCoordinatorTests: XCTestCase {
     func test_starting_app_logged_in_with_selected_site_and_ineligible_status_presents_role_error() throws {
         // Given
         stores.authenticate(credentials: SessionSettings.credentials)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            guard case let AppSettingsAction.loadEligibilityErrorInfo(completion) = action else {
+                return
+            }
+            // returning an error info means that it will be treated as ineligible.
+            let errorInfo = StorageEligibilityErrorInfo(name: "John Doe", roles: ["author", "editor"])
+            completion(.success(errorInfo))
+        }
         sessionManager.defaultStoreID = 134
-        defaults.setValue(Constants.sampleErrorInfoDictionary, forKey: Constants.errorInfoUDKey) // set mock data in defaults
         let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
-        let appCoordinator = AppCoordinator(window: window, stores: stores, authenticationManager: authenticationManager, roleEligibilityUseCase: useCase)
+        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager, roleEligibilityUseCase: useCase)
 
         // When
         appCoordinator.start()
@@ -100,7 +111,7 @@ final class AppCoordinatorTests: XCTestCase {
         // Given
         stores.authenticate(credentials: SessionSettings.credentials)
         sessionManager.defaultStoreID = 134
-        let appCoordinator = AppCoordinator(window: window, stores: stores, authenticationManager: authenticationManager)
+        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager)
 
         // When
         appCoordinator.start()
@@ -112,9 +123,14 @@ final class AppCoordinatorTests: XCTestCase {
 }
 
 private extension AppCoordinatorTests {
-    struct Constants {
-        static let sampleErrorInfoDictionary = ["name": "Patrick", "roles": "author,editor"]
-        static let errorInfoUDKey = "wc_eligibility_error_info"
-        static let suiteName = "AppCoordinatorTests"
+    /// Convenience method to make AppCoordinator instances.
+    func makeCoordinator(window: UIWindow? = nil,
+                         stores: StoresManager? = nil,
+                         authenticationManager: Authentication? = nil,
+                         roleEligibilityUseCase: RoleEligibilityUseCaseProtocol? = nil) -> AppCoordinator {
+        return AppCoordinator(window: window ?? self.window,
+                              stores: stores ?? self.stores,
+                              authenticationManager: authenticationManager ?? self.authenticationManager,
+                              roleEligibilityUseCase: roleEligibilityUseCase ?? MockRoleEligibilityUseCase())
     }
 }

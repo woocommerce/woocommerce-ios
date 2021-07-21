@@ -103,7 +103,7 @@ final class RoleErrorViewModelTests: XCTestCase {
 
     func test_when_primaryButton_isTapped_viewModel_should_trigger_retry() {
         // Given
-        let fakeUseCase = FakeRoleUseCase()
+        let fakeUseCase = MockRoleEligibilityUseCase()
         let expectedStoreID: Int64 = 1234
         let viewModel = factory.makeViewModel(siteID: expectedStoreID, useCase: fakeUseCase)
 
@@ -116,7 +116,7 @@ final class RoleErrorViewModelTests: XCTestCase {
 
     func test_when_retry_succeeded_viewModel_should_redirect_to_main_content() {
         // Given
-        let fakeUseCase = FakeRoleUseCase()
+        let fakeUseCase = MockRoleEligibilityUseCase()
         let viewModel = factory.makeViewModel(siteID: 123, useCase: fakeUseCase)
         var successCalled = false
         viewModel.onSuccess = {
@@ -132,7 +132,7 @@ final class RoleErrorViewModelTests: XCTestCase {
 
     func test_when_retry_failed_viewModel_should_inform_output_to_notify_error() {
         // Given
-        let fakeUseCase = FakeRoleUseCase()
+        let fakeUseCase = MockRoleEligibilityUseCase()
         let fakeOutput = FakeRoleErrorOutput()
         fakeUseCase.errorToReturn = RoleEligibilityError.insufficientRole(info: Expectations.errorInfo)
         let viewModel = factory.makeViewModel(siteID: 123, output: fakeOutput, useCase: fakeUseCase)
@@ -185,7 +185,7 @@ private struct RoleErrorTestsMockFactory {
                        title: String = Expectations.titleText,
                        subtitle: String = Expectations.subtitleText,
                        output: RoleErrorOutput = FakeRoleErrorOutput(),
-                       useCase: RoleEligibilityUseCaseProtocol = FakeRoleUseCase()) -> RoleErrorViewModel {
+                       useCase: RoleEligibilityUseCaseProtocol = MockRoleEligibilityUseCase()) -> RoleErrorViewModel {
         let viewModel = RoleErrorViewModel(siteID: siteID, title: title, subtitle: subtitle, useCase: useCase)
         viewModel.output = output
 
@@ -213,23 +213,6 @@ private class FakeRoleErrorOutput: RoleErrorOutput {
     func displayNotice(message: String) {
         displayNoticeCallCount += 1
         lastNoticeMessage = message
-    }
-}
-
-/// Convenient fake class for the RoleEligibilityUseCase protocol.
-private class FakeRoleUseCase: RoleEligibilityUseCaseProtocol {
-    var syncEligibilityCallCount = 0
-    var lastCheckedStoreID: Int64 = -1
-    var errorToReturn: RoleEligibilityError? = nil
-    var errorInfoToReturn: StorageEligibilityErrorInfo? = nil
-
-    func checkEligibility(for storeID: Int64, completion: @escaping (Result<Void, RoleEligibilityError>) -> Void) {
-        lastCheckedStoreID = storeID
-        if let error = errorToReturn {
-            completion(.failure(error))
-        } else {
-            completion(.success(()))
-        }
     }
 }
 

@@ -95,8 +95,8 @@ private extension SystemPluginStore {
     /// Retrieve `SystemPlugin` entities of a specified storage by siteID
     ///
     func fetchSystemPlugins(siteID: Int64, completionHandler: @escaping ([SystemPlugin]?) -> Void) {
-        let writerStorage = storageManager.writerDerivedStorage
-        let systemPlugins = writerStorage.loadSystemPlugins(siteID: siteID).map { $0.toReadOnly() }
+        let viewStorage = storageManager.viewStorage
+        let systemPlugins = viewStorage.loadSystemPlugins(siteID: siteID).map { $0.toReadOnly() }
         completionHandler(systemPlugins)
     }
 }

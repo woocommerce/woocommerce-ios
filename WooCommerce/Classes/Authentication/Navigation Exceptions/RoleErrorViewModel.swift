@@ -2,6 +2,9 @@ import Foundation
 import UIKit
 
 final class RoleErrorViewModel {
+    private let siteID: Int64
+    private let roleEligibilityUseCase: RoleEligibilityUseCaseProtocol
+
     /// Provides the content for title label.
     private(set) var titleText: String
 
@@ -13,6 +16,12 @@ final class RoleErrorViewModel {
     var image: UIImage {
         .incorrectRoleError
     }
+
+    /// A closure that will be called when the current user is eligible after retrying the role check.
+    var onSuccess: (() -> Void)?
+
+    /// A closure that will be called when the user selected the option to try with another account.
+    var onDeauthenticationRequest: (() -> Void)?
 
     /// Extended description of the error.
     let descriptionText: String = .errorMessageText
@@ -38,17 +47,43 @@ final class RoleErrorViewModel {
 
     // MARK: Lifecycle
 
-    init(title: String, subtitle: String) {
+    init(siteID: Int64, title: String, subtitle: String, useCase: RoleEligibilityUseCaseProtocol = RoleEligibilityUseCase()) {
+        self.siteID = siteID
         self.titleText = title
         self.subtitleText = subtitle
+        self.roleEligibilityUseCase = useCase
     }
 
+    /// When the primary button is tapped, the role check request will be retried.
+    /// If the request is successful, the stored error info will be cleared and `onSuccess` will be called.
+    /// Otherwise, the view will be refreshed and a notice will be shown.
     func didTapPrimaryButton() {
-        // TODO: Implement retry functionality
+        roleEligibilityUseCase.checkEligibility(for: siteID) { [weak self] result in
+            guard let self = self else { return }
+
+            switch result {
+            case .success:
+                self.onSuccess?()
+                break
+
+            case .failure(let error):
+                // update the view and show notice that the user's role is still not eligible.
+                if case let RoleEligibilityError.insufficientRole(errorInfo) = error {
+                    self.titleText = errorInfo.name
+                    self.subtitleText = errorInfo.humanizedRoles
+                    self.output?.refreshTitleLabels()
+                    self.output?.displayNotice(message: .insufficientRolesErrorMessage)
+                    break
+                }
+
+                // otherwise, show notice that the role check failed for some reason.
+                self.output?.displayNotice(message: .retrieveErrorMessage)
+            }
+        }
     }
 
     func didTapSecondaryButton() {
-        // TODO: Implement log out functionality
+        onDeauthenticationRequest?()
     }
 
     func didTapAuxiliaryButton() {
@@ -76,4 +111,12 @@ private extension String {
                                                         + "Presented when logging in with a site address that does not have a valid Jetpack installation")
 
     static let helpBarButtonItemTitle = NSLocalizedString("Help", comment: "Help button")
+
+    static let insufficientRolesErrorMessage = NSLocalizedString("You are not authorized to access this store.",
+                                                                 comment: "An error message shown after the user retried checking their roles,"
+                                                                    + "but they still don't have enough permission to access the store through the app.")
+
+    static let retrieveErrorMessage = NSLocalizedString("Unable to retrieve user roles.",
+                                                        comment: "An error message shown when failing to retrieve information about user roles, "
+                                                            + "before letting the user in to manage the store.")
 }

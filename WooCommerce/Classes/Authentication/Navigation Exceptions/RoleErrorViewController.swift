@@ -10,6 +10,8 @@ protocol RoleErrorOutput: AnyObject {
 
     /// Tells the output to display a web content.
     func displayWebContent(for url: URL)
+
+    func displayNotice(message: String)
 }
 
 // MARK: - View Controller
@@ -29,7 +31,17 @@ class RoleErrorViewController: UIViewController {
 
     // MARK: Properties
 
-    let viewModel: RoleErrorViewModel
+    private let viewModel: RoleErrorViewModel
+
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        traitCollection.userInterfaceStyle == .light ? .darkContent : .lightContent
+    }
+
+    private lazy var noticePresenter: DefaultNoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
 
     // MARK: Lifecycle
 
@@ -49,7 +61,17 @@ class RoleErrorViewController: UIViewController {
         configureViews()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        configureNavigationBar()
+    }
+
     // MARK: View Configurations
+
+    func configureNavigationBar() {
+        navigationController?.setNavigationBarHidden(false, animated: true)
+    }
 
     /// styles up the views. this should ideally only be called once.
     func configureViews() {
@@ -157,5 +179,10 @@ extension RoleErrorViewController: RoleErrorOutput {
 
     func displayWebContent(for url: URL) {
         WebviewHelper.launch(url, with: self)
+    }
+
+    func displayNotice(message: String) {
+        let notice = Notice(title: message)
+        noticePresenter.enqueue(notice: notice)
     }
 }

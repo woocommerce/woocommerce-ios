@@ -93,7 +93,7 @@ final class AppCoordinatorTests: XCTestCase {
             completion(.success(errorInfo))
         }
         sessionManager.defaultStoreID = 134
-        let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
+        let useCase = RoleEligibilityUseCase(stores: stores)
         let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager, roleEligibilityUseCase: useCase)
 
         // When

@@ -64,7 +64,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     }
     @Published private(set) var selectedCustomPackage: ShippingLabelCustomPackage?
     @Published private(set) var selectedPredefinedPackage: ShippingLabelPredefinedPackage?
-    @Published var totalWeight: String
+    @Published var totalWeight: String = ""
 
     /// Whether the user has edited the total package weight. If true, we won't make any automatic changes to the total weight.
     ///
@@ -93,14 +93,11 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         self.weightUnit = weightUnit
         self.packagesResponse = packagesResponse
         self.selectedPackageID = selectedPackageID
-        self.totalWeight = totalWeight ?? ""
-        if totalWeight != nil {
-            self.isPackageWeightEdited = true
-        }
         configureResultsControllers()
         syncProducts()
         syncProductVariations()
         setDefaultPackage()
+        setTotalWeight(using: totalWeight)
     }
 
     private func configureResultsControllers() {
@@ -166,7 +163,9 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     /// Set the total weight based on the weight of the selected package and
     /// the products and products variation inside the order items, only if they are not virtual products.
     ///
-    private func setTotalWeight() {
+    /// - Parameter initialWeight: An initial value used to set the total package weight if it was input manually.
+    ///
+    private func setTotalWeight(using initialWeight: String? = nil) {
         guard !isPackageWeightEdited else {
             return
         }
@@ -197,7 +196,13 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
             tempTotalWeight += selectedPackage.boxWeight
         }
 
-        totalWeight = String(tempTotalWeight)
+        // Set the total weight as the initial value if it was input manually; otherwise use the calculated weight.
+        if let initialWeight = initialWeight, initialWeight != String(tempTotalWeight) {
+            isPackageWeightEdited = true
+            totalWeight = initialWeight
+        } else {
+            totalWeight = String(tempTotalWeight)
+        }
     }
 }
 

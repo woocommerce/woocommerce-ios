@@ -475,44 +475,12 @@ private extension ZendeskManager {
             CustomField(fieldId: TicketFieldIDs.sourcePlatform, value: Constants.sourcePlatform),
             CustomField(fieldId: TicketFieldIDs.appLanguage, value: Locale.preferredLanguage),
             CustomField(fieldId: TicketFieldIDs.category, value: Constants.paymentsCategory),
-            CustomField(fieldId: TicketFieldIDs.subcategory, value: Constants.subcategory),
+            CustomField(fieldId: TicketFieldIDs.subcategory, value: Constants.paymentsSubcategory),
             CustomField(fieldId: TicketFieldIDs.product, value: Constants.paymentsProduct),
             CustomField(fieldId: TicketFieldIDs.productArea, value: Constants.paymentsProductArea),
         ].compactMap { $0 }
 
         return createRequest(supportSourceTag: supportSourceTag, ticketFields: ticketFields)
-
-//        let requestConfig = RequestUiConfiguration()
-//
-//        // Set Zendesk ticket form to use
-//        requestConfig.ticketFormID = TicketFieldIDs.form as NSNumber
-//
-//        // Set form field values
-//        let ticketFields = [
-//            CustomField(fieldId: TicketFieldIDs.appVersion, value: Bundle.main.version),
-//            CustomField(fieldId: TicketFieldIDs.deviceFreeSpace, value: getDeviceFreeSpace()),
-//            CustomField(fieldId: TicketFieldIDs.networkInformation, value: getNetworkInformation()),
-//            CustomField(fieldId: TicketFieldIDs.logs, value: getLogFile()),
-//            CustomField(fieldId: TicketFieldIDs.currentSite, value: getCurrentSiteDescription()),
-//            CustomField(fieldId: TicketFieldIDs.sourcePlatform, value: Constants.sourcePlatform),
-//            CustomField(fieldId: TicketFieldIDs.appLanguage, value: Locale.preferredLanguage),
-//            CustomField(fieldId: TicketFieldIDs.category, value: Constants.paymentsCategory),
-//            CustomField(fieldId: TicketFieldIDs.subcategory, value: Constants.subcategory),
-//            CustomField(fieldId: TicketFieldIDs.product, value: Constants.paymentsProduct),
-//            CustomField(fieldId: TicketFieldIDs.productArea, value: Constants.paymentsProductArea),
-//        ].compactMap { $0 }
-//
-//        requestConfig.customFields = ticketFields
-//
-//        // Set tags
-//        requestConfig.tags = getTags(supportSourceTag: supportSourceTag)
-//
-//        // Set the ticket subject
-//        requestConfig.subject = Constants.ticketSubject
-//
-//        // No extra config needed to attach an image. Hooray!
-//
-//        return requestConfig
     }
 
     func createRequest(supportSourceTag: String?, ticketFields: [CustomField]) -> RequestUiConfiguration {

@@ -142,20 +142,20 @@ private extension HelpAndSupportViewController {
     }
 
     private func calculateRows() -> [Row] {
-        if isPaymentsAvailable {
-            return [.helpCenter,
-                    .contactSupport,
-                    .contactWCPaySupport,
-                    .myTickets,
-                    .contactEmail,
-                    .applicationLog]
-        } else {
+        guard isPaymentsAvailable else {
             return [.helpCenter,
                     .contactSupport,
                     .myTickets,
                     .contactEmail,
                     .applicationLog]
         }
+
+        return [.helpCenter,
+                .contactSupport,
+                .contactWCPaySupport,
+                .myTickets,
+                .contactEmail,
+                .applicationLog]
     }
 
     /// Register table cells.

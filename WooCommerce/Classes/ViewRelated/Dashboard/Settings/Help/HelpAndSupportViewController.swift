@@ -69,9 +69,10 @@ class HelpAndSupportViewController: UIViewController {
         configureTableView()
         registerTableViewCells()
         configureResultsControllers { [weak self] in
-            self?.configureSections()
+            self?.refreshViewContent()
         }
         warnDeveloperIfNeeded()
+        refreshViewContent()
     }
 }
 
@@ -114,7 +115,8 @@ private extension HelpAndSupportViewController {
             return
         }
 
-        paymentGatewayAccountsResultsController?.onDidChangeContent = { onReload()
+        paymentGatewayAccountsResultsController?.onDidChangeContent = {
+            onReload()
         }
 
         paymentGatewayAccountsResultsController?.onDidResetContent = {
@@ -263,6 +265,11 @@ private extension HelpAndSupportViewController {
             "Advanced tool to review the app status",
             comment: "Cell subtitle explaining why you might want to navigate to view the application log."
         )
+    }
+
+    func refreshViewContent() {
+        configureSections()
+        tableView.reloadData()
     }
 }
 

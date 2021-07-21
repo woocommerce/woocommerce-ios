@@ -223,8 +223,7 @@ private extension AppSettingsStore {
         let settings = loadOrCreateGeneralAppSettings()
 
         guard let errorInfo = settings.lastEligibilityErrorInfo else {
-            onCompletion(.failure(AppSettingsStoreErrors.noEligibilityErrorInfo))
-            return
+            return onCompletion(.failure(AppSettingsStoreErrors.noEligibilityErrorInfo))
         }
 
         onCompletion(.success(errorInfo))

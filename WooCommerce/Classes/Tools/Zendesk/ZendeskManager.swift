@@ -152,7 +152,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
 
             ServiceLocator.analytics.track(.supportNewRequestViewed)
 
-            let newRequestConfig = self.createRequest(supportSourceTag: sourceTag)
+            let newRequestConfig = self.createWCPayRequest(supportSourceTag: sourceTag)
             let newRequestController = RequestUi.buildRequestUi(with: [newRequestConfig])
             self.showZendeskView(newRequestController, from: controller)
         }
@@ -496,7 +496,10 @@ private extension ZendeskManager {
             CustomField(fieldId: TicketFieldIDs.currentSite, value: getCurrentSiteDescription()),
             CustomField(fieldId: TicketFieldIDs.sourcePlatform, value: Constants.sourcePlatform),
             CustomField(fieldId: TicketFieldIDs.appLanguage, value: Locale.preferredLanguage),
-            CustomField(fieldId: TicketFieldIDs.subcategory, value: Constants.subcategory)
+            CustomField(fieldId: TicketFieldIDs.category, value: Constants.paymentsCategory),
+            CustomField(fieldId: TicketFieldIDs.subcategory, value: Constants.subcategory),
+            CustomField(fieldId: TicketFieldIDs.product, value: Constants.paymentsProduct),
+            CustomField(fieldId: TicketFieldIDs.productArea, value: Constants.paymentsProductArea),
         ].compactMap { $0 }
 
         requestConfig.customFields = ticketFields

@@ -92,7 +92,7 @@ class SystemStatusStoreTests: XCTestCase {
 
         // When
         let systemPluginResult: Yosemite.SystemPlugin? = waitFor { promise in
-            let action = SystemStatusAction.fetchSystemPlugins(siteID: self.sampleSiteID,
+            let action = SystemStatusAction.fetchSystemPlugin(siteID: self.sampleSiteID,
                                                                systemPluginName: "Plugin 3") { result in
                 promise(result)
             }

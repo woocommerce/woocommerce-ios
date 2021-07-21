@@ -3,6 +3,7 @@ import Networking
 import Storage
 
 // MARK: - DataStore
+// API: https://woocommerce.github.io/woocommerce-rest-api-docs/#data
 //
 public final class DataStore: Store {
     private let remote: DataRemote
@@ -52,12 +53,12 @@ private extension DataStore {
             guard let self = self else { return }
 
             switch result {
-            case .failure(let error):
-                completion(.failure(error))
             case .success(let countries):
                 self.insertCountriesInBackground(countries: countries) {
                     completion(.success(countries))
                 }
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
     }

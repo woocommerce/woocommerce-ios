@@ -55,19 +55,6 @@ public enum AppSettingsAction: Action {
     ///
     case resetStatsVersionStates
 
-    /// Loads the user preferred Product feature switch given the latest app settings
-    ///
-    case loadProductsFeatureSwitch(onCompletion: (Bool) -> Void)
-
-    /// Sets the user preferred Product feature switch
-    /// If on, Products M2 features are available
-    ///
-    case setProductsFeatureSwitch(isEnabled: Bool, onCompletion: () -> Void)
-
-    /// Clears all the app settings on feature switches
-    ///
-    case resetFeatureSwitches
-
     // MARK: - Products Settings
 
     /// Loads the products settings
@@ -113,4 +100,33 @@ public enum AppSettingsAction: Action {
     /// Loads the most recent state for the Order Add-ons beta feature switch
     ///
     case loadOrderAddOnsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Remember the given card reader (to support automatic reconnection)
+    /// where `cardReaderID` is a String e.g. "CHB204909005931"
+    ///
+    case rememberCardReader(cardReaderID: String, onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Forget the given card reader (i.e. automatic reconnection is no longer desired)
+    /// where `cardReaderID` is a String e.g. "CHB204909005931"
+    ///
+    case forgetCardReader(cardReaderID: String, onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Loads the list of all known (remembered) readers (i.e. card readers that, if discovered, should be reconnected automatically)
+    /// E.g.  ["CHB204909005931"]
+    /// Note: will pass [] to the completion if there are no known readers
+    ///
+    case loadCardReaders(onCompletion: (Result<[String], Error>) -> Void)
+
+    /// Loads the persisted eligibility error information.
+    ///
+    case loadEligibilityErrorInfo(onCompletion: (Result<EligibilityErrorInfo, Error>) -> Void)
+
+    /// Saves an `EligibilityErrorInfo` locally.
+    /// There can only be one persisted instance. Subsequent calls will overwrite the existing data.
+    ///
+    case setEligibilityErrorInfo(errorInfo: EligibilityErrorInfo, onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Clears the persisted eligibility error information.
+    ///
+    case resetEligibilityErrorInfo
 }

@@ -27,100 +27,6 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: syncEligibilityStatusIfNeeded
-
-    func test_roleEligibilityUseCase_sync_returns_when_not_authenticated() {
-        // Given
-        let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
-
-        // When
-        useCase.syncEligibilityStatusIfNeeded()
-
-        // Then
-        XCTAssertEqual(stores.receivedActions.count, 0)
-    }
-
-    func test_roleEligibilityUseCase_sync_returns_when_authenticated_without_storeID() {
-        // Given
-        stores.authenticate(credentials: SessionSettings.credentials)
-        sessionManager.defaultStoreID = nil
-        let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
-
-        // When
-        useCase.syncEligibilityStatusIfNeeded()
-
-        // Then
-        XCTAssertEqual(stores.receivedActions.count, 0)
-    }
-
-    func test_roleEligibilityUseCase_sync_resets_errorInfo_when_user_is_eligible() {
-        // Given
-        defaults.setValue(Constants.sampleDictionary, forKey: .errorInfoKey)
-        stores.authenticate(credentials: SessionSettings.credentials)
-        stores.whenReceivingAction(ofType: UserAction.self) { action in
-            guard case let .retrieveUser(_, completion) = action else {
-                return
-            }
-            completion(.success(self.makeUser(eligible: true)))
-        }
-        sessionManager.defaultStoreID = 123
-        let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
-
-        // When
-        useCase.syncEligibilityStatusIfNeeded()
-
-        // Then
-        XCTAssertEqual(stores.receivedActions.count, 1)
-        XCTAssertNil(defaults.value(forKey: .errorInfoKey))
-    }
-
-    func test_roleEligibilityUseCase_sync_updates_errorInfo_when_user_is_ineligible() {
-        // Given
-        stores.authenticate(credentials: SessionSettings.credentials)
-        stores.whenReceivingAction(ofType: UserAction.self) { action in
-            guard case let .retrieveUser(_, completion) = action else {
-                return
-            }
-            completion(.success(self.makeUser()))
-        }
-        sessionManager.defaultStoreID = 123
-        let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
-
-        // When
-        useCase.syncEligibilityStatusIfNeeded()
-        let errorInfo = useCase.lastEligibilityErrorInfo()
-
-        // Then
-        XCTAssertEqual(stores.receivedActions.count, 1)
-        XCTAssertNotNil(errorInfo)
-        XCTAssertEqual(errorInfo?.name, "first last")
-        XCTAssertEqual(errorInfo?.roles, ["author", "editor"])
-    }
-
-    func test_roleEligibilityUseCase_sync_returns_when_unknown_error_encountered() {
-        // Given
-        defaults.setValue(Constants.sampleDictionary, forKey: .errorInfoKey)
-        stores.authenticate(credentials: SessionSettings.credentials)
-        stores.whenReceivingAction(ofType: UserAction.self) { action in
-            guard case let .retrieveUser(_, completion) = action else {
-                return
-            }
-            completion(.failure(SampleError.first)) // returns unknown error (for caller)
-        }
-        sessionManager.defaultStoreID = 123
-        let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
-
-        // When
-        useCase.syncEligibilityStatusIfNeeded()
-        let errorInfo = useCase.lastEligibilityErrorInfo()
-
-        // Then
-        XCTAssertEqual(stores.receivedActions.count, 1)
-        // ensure that the existing errorInfo is kept as is.
-        XCTAssertNotNil(errorInfo)
-        XCTAssertEqual(errorInfo?.toDictionary(), Constants.sampleDictionary)
-    }
-
     // MARK: checkEligibility
 
     func test_roleEligibilityUseCase_checkEligibility_returns_failure_when_not_authenticated() {
@@ -193,13 +99,13 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
 
     func test_roleEligibilityUseCase_checkEligibility_returns_insufficientRoleError_when_user_is_ineligible() {
         // Given
-        let sampleUser = self.makeUser()
+        let sampleUser = makeUser()
         stores.authenticate(credentials: SessionSettings.credentials)
         stores.whenReceivingAction(ofType: UserAction.self) { action in
             guard case let .retrieveUser(_, completion) = action else {
                 return
             }
-            completion(.success(sampleUser)) // returns unknown error (for caller)
+            completion(.success(sampleUser))
         }
         let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
 
@@ -220,15 +126,87 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
         XCTAssertEqual(info.roles, sampleUser.roles)
     }
 
-    func test_roleEligibilityUseCase_checkEligibility_returns_success_when_user_is_eligible() {
+    func test_roleEligibilityUseCase_checkEligibility_persists_errorInfo_when_insufficientRoleError_and_storeID_matches_defaultStoreID() {
         // Given
-        let sampleUser = self.makeUser(eligible: true)
+        let ineligibleUser = makeUser()
+        let storeID: Int64 = 123
+        var errorInfoSaved = false
+        sessionManager.setStoreId(storeID)
         stores.authenticate(credentials: SessionSettings.credentials)
         stores.whenReceivingAction(ofType: UserAction.self) { action in
             guard case let .retrieveUser(_, completion) = action else {
                 return
             }
-            completion(.success(sampleUser)) // returns unknown error (for caller)
+            completion(.success(ineligibleUser))
+        }
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            guard case let AppSettingsAction.setEligibilityErrorInfo(_, completion) = action else {
+                return
+            }
+            errorInfoSaved = true
+            completion(.success(()))
+        }
+        let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
+
+        // When
+        let result: Result<Void, RoleEligibilityError> = waitFor { promise in
+            useCase.checkEligibility(for: storeID) { promise($0) }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertTrue(errorInfoSaved)
+    }
+
+    func test_roleEligibilityUseCase_checkEligibility_shouldNot_persist_errorInfo_when_storeID_doesNot_match_defaultStoreID() {
+        // Given
+        let ineligibleUser = makeUser()
+        let storeID: Int64 = 123
+        var errorInfoSaved = false
+        sessionManager.setStoreId(storeID)
+        stores.authenticate(credentials: SessionSettings.credentials)
+        stores.whenReceivingAction(ofType: UserAction.self) { action in
+            guard case let .retrieveUser(_, completion) = action else {
+                return
+            }
+            completion(.success(ineligibleUser))
+        }
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            guard case let AppSettingsAction.setEligibilityErrorInfo(_, completion) = action else {
+                return
+            }
+            errorInfoSaved = true
+            completion(.success(()))
+        }
+        let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
+
+        // When
+        let result: Result<Void, RoleEligibilityError> = waitFor { promise in
+            // calling eligibility check with a different store ID!
+            useCase.checkEligibility(for: 456) { promise($0) }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertFalse(errorInfoSaved)
+    }
+
+    func test_roleEligibilityUseCase_checkEligibility_returns_success_when_user_is_eligible() {
+        // Given
+        let eligibleUser = makeUser(eligible: true)
+        var resetErrorInfoInvoked = false
+        stores.authenticate(credentials: SessionSettings.credentials)
+        stores.whenReceivingAction(ofType: UserAction.self) { action in
+            guard case let .retrieveUser(_, completion) = action else {
+                return
+            }
+            completion(.success(eligibleUser))
+        }
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            guard case AppSettingsAction.resetEligibilityErrorInfo = action else {
+                return
+            }
+            resetErrorInfoInvoked = true
         }
         let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
 
@@ -241,32 +219,7 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
-    }
-
-    // MARK: lastEligibilityErrorInfo
-
-    func test_roleEligibilityUseCase_lastEligibilityErrorInfo_returns_object_when_errorInfo_exists() {
-        // Given
-        defaults.setValue(Constants.sampleDictionary, forKey: .errorInfoKey)
-        let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
-
-        // When
-        let errorInfo = useCase.lastEligibilityErrorInfo()
-
-        // Then
-        XCTAssertNotNil(errorInfo)
-        XCTAssertEqual(errorInfo?.toDictionary(), Constants.sampleDictionary)
-    }
-
-    func test_roleEligibilityUseCase_lastEligibilityErrorInfo_returns_nil_when_errorInfo_notExist() {
-        // Given
-        let useCase = RoleEligibilityUseCase(stores: stores, defaults: defaults)
-
-        // When
-        let errorInfo = useCase.lastEligibilityErrorInfo()
-
-        // Then
-        XCTAssertNil(errorInfo)
+        XCTAssertTrue(resetErrorInfoInvoked)
     }
 }
 

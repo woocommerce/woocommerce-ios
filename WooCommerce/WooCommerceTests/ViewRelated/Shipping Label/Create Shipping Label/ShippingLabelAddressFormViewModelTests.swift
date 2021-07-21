@@ -8,7 +8,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
 
         // Given
         let shippingAddress = MockShippingLabelAddress.sampleAddress()
-        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, validationError: nil)
+        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, validationError: nil, countries: [])
 
         // When
         viewModel.handleAddressValueChanges(row: .name, newValue: "Skylar Ferry")
@@ -46,7 +46,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
                                                    postcode: "94121-2303")
 
         // When
-        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, validationError: nil)
+        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, validationError: nil, countries: [])
 
         // Then
         let expectedRows: [ShippingLabelAddressFormViewModel.Row] = [.name, .company, .phone, .address, .address2, .city, .postcode, .state, .country]
@@ -69,7 +69,12 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
             }
         }
 
-        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, stores: stores, validationError: nil)
+        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10,
+                                                          type: .origin,
+                                                          address: shippingAddress,
+                                                          stores: stores,
+                                                          validationError: nil,
+                                                          countries: [])
         viewModel.validateAddress(onlyLocally: false) { (result) in
         }
 
@@ -117,7 +122,12 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
             }
         }
 
-        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, stores: stores, validationError: nil)
+        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10,
+                                                          type: .origin,
+                                                          address: shippingAddress,
+                                                          stores: stores,
+                                                          validationError: nil,
+                                                          countries: [])
         viewModel.validateAddress(onlyLocally: false) { (result) in
         }
 
@@ -150,7 +160,12 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
             }
         }
 
-        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, stores: stores, validationError: nil)
+        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10,
+                                                          type: .origin,
+                                                          address: shippingAddress,
+                                                          stores: stores,
+                                                          validationError: nil,
+                                                          countries: [])
         viewModel.validateAddress(onlyLocally: false) { (result) in
         }
 
@@ -183,7 +198,12 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
             }
         }
 
-        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, stores: stores, validationError: nil)
+        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10,
+                                                          type: .origin,
+                                                          address: shippingAddress,
+                                                          stores: stores,
+                                                          validationError: nil,
+                                                          countries: [])
         viewModel.validateAddress(onlyLocally: false) { (result) in
         }
 
@@ -220,7 +240,12 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
             }
         }
 
-        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, stores: stores, validationError: nil)
+        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10,
+                                                          type: .origin,
+                                                          address: shippingAddress,
+                                                          stores: stores,
+                                                          validationError: nil,
+                                                          countries: [])
         viewModel.validateAddress(onlyLocally: false) { (result) in
         }
 
@@ -229,5 +254,49 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         waitUntil { () -> Bool in
             !viewModel.showLoadingIndicator
         }
+    }
+
+    func test_extended_country_and_state_name_return_the_correct_values() {
+        // Given
+        let shippingAddress = ShippingLabelAddress(company: "Automattic Inc.",
+                                                   name: "Skylar Ferry",
+                                                   phone: "12345",
+                                                   country: "US",
+                                                   state: "CA",
+                                                   address1: "60 29th",
+                                                   address2: "Street #343",
+                                                   city: "San Francisco",
+                                                   postcode: "94121-2303")
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+
+
+        // When
+        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10,
+                                                          type: .origin,
+                                                          address: shippingAddress,
+                                                          stores: stores,
+                                                          validationError: nil,
+                                                          countries: sampleCountries())
+
+
+        // Then
+        XCTAssertEqual(viewModel.extendedCountryName, "United States")
+        XCTAssertEqual(viewModel.extendedStateName, "California")
+    }
+}
+
+private extension ShippingLabelAddressFormViewModelTests {
+    func sampleCountries() -> [Country] {
+        let state1 = StateOfACountry(code: "CA", name: "California")
+        let state2 = StateOfACountry(code: "DE", name: "Delaware")
+        let state3 = StateOfACountry(code: "DC", name: "District Of Columbia")
+        let country1 = Country(code: "US", name: "United States", states: [state1, state2, state3])
+
+        let state4 = StateOfACountry(code: "AG", name: "Agrigento")
+        let state5 = StateOfACountry(code: "RC", name: "Reggio Calabria")
+        let state6 = StateOfACountry(code: "RM", name: "Roma")
+        let country2 = Country(code: "IT", name: "Italy", states: [state4, state5, state6])
+
+        return [country1, country2]
     }
 }

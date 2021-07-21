@@ -4,6 +4,10 @@
 import Combine
 
 public enum CardPresentPaymentAction: Action {
+    /// Checks the onboarding state for a site.
+    ///
+    case checkOnboardingState(siteID: Int64, onCompletion: (CardPresentPaymentOnboardingState) -> Void)
+
     /// Start the Card Reader discovery process.
     ///
     case startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: ([CardReader]) -> Void, onError: (Error) -> Void)
@@ -20,16 +24,6 @@ public enum CardPresentPaymentAction: Action {
     /// Disconnect from currently connected Reader
     ///
     case disconnect(onCompletion: (Result<Void, Error>) -> Void)
-
-    /// Calls the completion block everytime the list of known readers changes
-    /// with an array of readers known to us.
-    ///
-    /// What does "known" mean?
-    /// If the user connects to a reader, we declare it known. If the user explicitly disconnects from a reader,
-    /// we treat that as a "forget" request and un-declare known-ness. During discovery, if a known reader is
-    /// detected, it should be connected to automatically. The list of known readers (most merchants will only
-    /// have 1 or 2) will be persisted across application sessions.
-    case observeKnownReaders(onCompletion: ([CardReader]) -> Void)
 
     /// Calls the completion block everytime the list of connected readers changes
     /// with an array of connected readers.

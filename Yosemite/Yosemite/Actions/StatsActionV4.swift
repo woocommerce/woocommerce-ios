@@ -16,7 +16,7 @@ public enum StatsActionV4: Action {
         earliestDateToInclude: Date,
         latestDateToInclude: Date,
         quantity: Int,
-        onCompletion: (Error?) -> Void)
+        onCompletion: (Result<Void, Error>) -> Void)
 
     /// Synchronizes `SiteVisitStats` for the provided siteID, time range, and date.
     ///
@@ -24,7 +24,7 @@ public enum StatsActionV4: Action {
         siteTimezone: TimeZone,
         timeRange: StatsTimeRangeV4,
         latestDateToInclude: Date,
-        onCompletion: (Error?) -> Void)
+        onCompletion: (Result<Void, Error>) -> Void)
 
     /// Synchronizes `TopEarnerStats` for the provided siteID, time range, and date.
     ///
@@ -32,5 +32,5 @@ public enum StatsActionV4: Action {
         timeRange: StatsTimeRangeV4,
         earliestDateToInclude: Date,
         latestDateToInclude: Date,
-        onCompletion: (Error?) -> Void)
+        onCompletion: (Result<Void, Error>) -> Void)
 }

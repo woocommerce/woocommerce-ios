@@ -4,7 +4,7 @@ import WordPressAuthenticator
 
 /// RoleErrorOutput enables communication from the view model to the view controller.
 /// Note that it's important for the view model to weakly retain the view controller.
-protocol RoleErrorOutput: class {
+protocol RoleErrorOutput: AnyObject {
     /// Updates title and subtitle label text with latest content.
     func refreshTitleLabels()
 
@@ -101,7 +101,8 @@ class RoleErrorViewController: UIViewController {
     }
 
     func configureLinkButton() {
-        linkButton.applyLinkButtonStyle()
+        linkButton.applyLinkButtonStyle(enableMultipleLines: true)
+        linkButton.titleLabel?.textAlignment = .center
         linkButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
         linkButton.on(.touchUpInside) { [weak self] _ in
             self?.viewModel.didTapAuxiliaryButton()
@@ -177,8 +178,7 @@ extension RoleErrorViewController: RoleErrorOutput {
     }
 
     func displayWebContent(for url: URL) {
-        let safariViewController = SFSafariViewController(url: url)
-        present(safariViewController, animated: true, completion: nil)
+        WebviewHelper.launch(url, with: self)
     }
 
     func displayNotice(message: String) {

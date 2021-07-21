@@ -9,7 +9,8 @@ private extension ProductFormSection.SettingsRow.ViewModel {
                                                            image: icon,
                                                            imageTintColor: tintColor ?? .textSubtle,
                                                            numberOfLinesForText: numberOfLinesForDetails,
-                                                           isActionable: isActionable)
+                                                           isActionable: isActionable,
+                                                           showsSeparator: !hideSeparator)
     }
 }
 
@@ -273,6 +274,7 @@ private extension ProductFormTableViewDataSource {
                     data: .init(title: viewModel.title,
                                 image: viewModel.icon,
                                 numberOfLinesForTitle: 0,
-                                isActionable: false))
+                                isActionable: false,
+                                showsSeparator: false))
     }
 }

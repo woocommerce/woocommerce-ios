@@ -4,9 +4,7 @@ install! 'cocoapods', warn_for_multiple_pod_sources: false
 source 'https://github.com/wordpress-mobile/cocoapods-specs.git'
 source 'https://cdn.cocoapods.org/'
 
-unless ['BUNDLE_BIN_PATH', 'BUNDLE_GEMFILE'].any? { |k| ENV.key?(k) }
-  raise 'Please run CocoaPods via `bundle exec`'
-end
+raise 'Please run CocoaPods via `bundle exec`' unless %w[BUNDLE_BIN_PATH BUNDLE_GEMFILE].any? { |k| ENV.key?(k) }
 
 inhibit_all_warnings!
 use_frameworks! # Defaulting to use_frameworks! See pre_install hook below for static linking.
@@ -30,13 +28,12 @@ end
 target 'WooCommerce' do
   project 'WooCommerce/WooCommerce.xcodeproj'
 
-
   # Automattic Libraries
   # ====================
   #
 
   #pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => 'add/build-configuration'
-  pod 'Automattic-Tracks-iOS', '~> 0.9.0-beta.1'
+  pod 'Automattic-Tracks-iOS', '~> 0.9.0'
 
   pod 'Gridicons', '~> 1.0'
 
@@ -47,12 +44,12 @@ target 'WooCommerce' do
   # pod 'WordPressAuthenticator', :path => '../WordPressAuthenticator-iOS'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressKit', '~> 4.32.0'
+  pod 'WordPressKit', '~> 4.37.0'
   # pod 'WordPressKit', :git => 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', :branch => ''
 
   pod 'WordPressShared', '~> 1.15'
 
-  pod 'WordPressUI', '~> 1.12.1-beta.3'
+  pod 'WordPressUI', '~> 1.12.1'
   # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
 
   aztec
@@ -71,7 +68,7 @@ target 'WooCommerce' do
   pod 'ZendeskSupportSDK', '~> 5.0'
   pod 'Kingfisher', '~> 5.11.0'
   pod 'StripeTerminal', '~> 1.4.0'
-  pod 'Wormholy', '~> 1.6.4', :configurations => ['Debug']
+  pod 'Wormholy', '~> 1.6.4', configurations: ['Debug']
 
   # Unit Tests
   # ==========
@@ -79,7 +76,6 @@ target 'WooCommerce' do
   target 'WooCommerceTests' do
     inherit! :search_paths
   end
-
 end
 
 # Yosemite Layer:
@@ -118,7 +114,7 @@ def networking_pods
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
 
-  pod 'Sourcery', '~> 1.0.3', :configuration => 'Debug'
+  pod 'Sourcery', '~> 1.0.3', configuration: 'Debug'
 
   # Used for HTML parsing
   aztec
@@ -139,7 +135,6 @@ target 'NetworkingTests' do
   project 'Networking/Networking.xcodeproj'
   networking_pods
 end
-
 
 # Storage Layer:
 # ==============
@@ -208,7 +203,7 @@ end
 # Make all pods that are not shared across multiple targets into static frameworks by overriding the static_framework? function to return true
 # Linking the shared frameworks statically would lead to duplicate symbols
 # A future version of CocoaPods may make this easier to do. See https://github.com/CocoaPods/CocoaPods/issues/7428
-shared_targets = ['Storage', 'Networking', 'Yosemite', 'Hardware']
+shared_targets = %w[Storage Networking Yosemite Hardware]
 # Statically linking Sentry results in a conflict with `NSDictionary.objectAtKeyPath`, but dynamically
 # linking it resolves this.
 dynamic_pods = ['Sentry']
@@ -222,7 +217,7 @@ pre_install do |installer|
       next
     end
     static << pod
-    def pod.static_framework?;
+    def pod.static_framework?
       true
     end
   end
@@ -232,14 +227,11 @@ pre_install do |installer|
 
   # Force CocoaLumberjack Swift version
   installer.analysis_result.specifications.each do |s|
-    if s.name == 'CocoaLumberjack'
-      s.swift_version = '5.0'
-    end
+    s.swift_version = '5.0' if s.name == 'CocoaLumberjack'
   end
 end
 
 post_install do |installer|
-
   # Workaround: Drop 32 Bit Architectures
   # =====================================
   #
@@ -252,10 +244,12 @@ post_install do |installer|
   # =====================================
   #
   installer.pods_project.targets.each do |target|
-      target.build_configurations.each do |configuration|
-         pod_ios_deployment_target = Gem::Version.new(configuration.build_settings['IPHONEOS_DEPLOYMENT_TARGET'])
-         configuration.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET' if pod_ios_deployment_target <= app_ios_deployment_target
+    target.build_configurations.each do |configuration|
+      pod_ios_deployment_target = Gem::Version.new(configuration.build_settings['IPHONEOS_DEPLOYMENT_TARGET'])
+      if pod_ios_deployment_target <= app_ios_deployment_target
+        configuration.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET'
       end
+    end
   end
 
   # Flag Alpha builds for Tracks
@@ -268,4 +262,3 @@ post_install do |installer|
     end
   end
 end
-

@@ -59,14 +59,3 @@ private extension OrderItemTaxRefund {
         case total
     }
 }
-
-
-// MARK: - Comparable Conformance
-//
-extension OrderItemTaxRefund: Comparable {
-    public static func < (lhs: OrderItemTaxRefund, rhs: OrderItemTaxRefund) -> Bool {
-        return lhs.taxID < rhs.taxID ||
-            (lhs.taxID == rhs.taxID && lhs.subtotal < rhs.subtotal) ||
-            (lhs.taxID == rhs.taxID && lhs.subtotal == rhs.subtotal && lhs.total < rhs.total)
-    }
-}

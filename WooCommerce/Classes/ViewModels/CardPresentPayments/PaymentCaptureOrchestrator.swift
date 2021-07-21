@@ -1,4 +1,6 @@
 import Yosemite
+import PassKit
+
 /// Orchestrates the sequence of actions required to capture a payment:
 /// 1. Check if there is a card reader connected
 /// 2. Launch the reader discovering and pairing UI if there is no reader connected
@@ -9,6 +11,8 @@ final class PaymentCaptureOrchestrator {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
     private let celebration = PaymentCaptureCelebration()
+
+    private var walletSuppressionRequestToken: PKSuppressionRequestToken?
 
     func collectPayment(for order: Order,
                         paymentsAccount: PaymentGatewayAccount?,
@@ -21,6 +25,12 @@ final class PaymentCaptureOrchestrator {
             onCompletion(.failure(CardReaderServiceError.paymentCapture()))
             return
         }
+
+        /// Briefly suppress pass (wallet) presentation so that the merchant doesn't attempt to pay for the buyer's order when the
+        /// reader begins to collect payment.
+        ///
+        suppressPassPresentation()
+
         let action = CardPresentPaymentAction.collectPayment(siteID: order.siteID,
                                                              orderID: order.orderID, parameters: parameters,
                                                              onCardReaderMessage: { (event) in
@@ -35,6 +45,7 @@ final class PaymentCaptureOrchestrator {
                                                                     break
                                                                 }
                                                              }, onCompletion: { [weak self] result in
+                                                                self?.allowPassPresentation()
                                                                 onProcessingMessage()
                                                                 self?.completePaymentIntentCapture(order: order,
                                                                                                  captureResult: result,
@@ -79,6 +90,53 @@ final class PaymentCaptureOrchestrator {
     }
 }
 
+private extension PaymentCaptureOrchestrator {
+    /// Supress wallet presentation. This requires a special entitlement from Apple:
+    /// `com.apple.developer.passkit.pass-presentation-suppression`
+    /// See Woo-*.entitlements in WooCommerce/Resources
+    ///
+    func suppressPassPresentation() {
+        /// iPads don't support NFC passes. Attempting to call `requestAutomaticPassPresentationSuppression` on them will
+        /// return 0 `notSupported`
+        ///
+        guard !UIDevice.isPad() else {
+            return
+        }
+
+        guard !PKPassLibrary.isSuppressingAutomaticPassPresentation() else {
+            return
+        }
+
+        walletSuppressionRequestToken = PKPassLibrary.requestAutomaticPassPresentationSuppression() { result in
+            guard result == .success else {
+                DDLogWarn("Automatic pass presentation suppression request failed. Reason: \(result.rawValue)")
+
+                let logProperties: [String: Any] = ["PKAutomaticPassPresentationSuppressionResult": result.rawValue]
+                ServiceLocator.crashLogging.logMessage(
+                    "Automatic pass presentation suppression request failed",
+                    properties: logProperties,
+                    level: .warning
+                )
+                return
+            }
+        }
+    }
+
+    /// Restore wallet presentation.
+    func allowPassPresentation() {
+        /// iPads don't have passes (wallets) to present
+        ///
+        guard !UIDevice.isPad() else {
+            return
+        }
+
+        guard let walletSuppressionRequestToken = walletSuppressionRequestToken, walletSuppressionRequestToken != 0 else {
+            return
+        }
+
+        PKPassLibrary.endAutomaticPassPresentationSuppression(withRequestToken: walletSuppressionRequestToken)
+    }
+}
 
 private extension PaymentCaptureOrchestrator {
     func completePaymentIntentCapture(order: Order,

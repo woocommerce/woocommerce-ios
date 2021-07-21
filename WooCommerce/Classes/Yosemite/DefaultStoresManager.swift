@@ -379,7 +379,7 @@ private extension DefaultStoresManager {
         }
         dispatch(action)
     }
-    
+
     /// Loads the Default Site into the current Session, if possible.
     ///
     func restoreSessionSiteIfPossible() {
@@ -395,7 +395,6 @@ private extension DefaultStoresManager {
         retrieveOrderStatus(with: siteID)
         synchronizePaymentGateways(siteID: siteID)
         synchronizeAddOnsGroups(siteID: siteID)
-        synchronizePlugins(siteID: siteID)
         synchronizeSystemPlugins(siteID: siteID)
     }
 

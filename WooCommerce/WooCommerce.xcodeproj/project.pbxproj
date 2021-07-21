@@ -1268,6 +1268,7 @@
 		FE28F7122684CA29004465C7 /* RoleErrorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F7102684CA29004465C7 /* RoleErrorViewController.swift */; };
 		FE28F7132684CA29004465C7 /* RoleErrorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE28F7112684CA29004465C7 /* RoleErrorViewController.xib */; };
 		FE28F7182684EE6A004465C7 /* RoleErrorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F7172684EE6A004465C7 /* RoleErrorViewModel.swift */; };
+		FEDD70AF26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEDD70AE26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift */; };
 		FEEB2F552689FEA40075A6E0 /* EligibilityErrorInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEB2F542689FEA40075A6E0 /* EligibilityErrorInfo.swift */; };
 		FEEB2F61268A215E0075A6E0 /* EligibilityErrorInfoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEB2F60268A215E0075A6E0 /* EligibilityErrorInfoTests.swift */; };
 		FEEB2F6E268A2F7B0075A6E0 /* RoleEligibilityUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEB2F6D268A2F7B0075A6E0 /* RoleEligibilityUseCaseTests.swift */; };
@@ -2595,6 +2596,7 @@
 		FE28F7102684CA29004465C7 /* RoleErrorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleErrorViewController.swift; sourceTree = "<group>"; };
 		FE28F7112684CA29004465C7 /* RoleErrorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RoleErrorViewController.xib; sourceTree = "<group>"; };
 		FE28F7172684EE6A004465C7 /* RoleErrorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleErrorViewModel.swift; sourceTree = "<group>"; };
+		FEDD70AE26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageEligibilityErrorInfo+Woo.swift"; sourceTree = "<group>"; };
 		FEEB2F542689FEA40075A6E0 /* EligibilityErrorInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EligibilityErrorInfo.swift; sourceTree = "<group>"; };
 		FEEB2F60268A215E0075A6E0 /* EligibilityErrorInfoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EligibilityErrorInfoTests.swift; sourceTree = "<group>"; };
 		FEEB2F6D268A2F7B0075A6E0 /* RoleEligibilityUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleEligibilityUseCaseTests.swift; sourceTree = "<group>"; };
@@ -4883,6 +4885,7 @@
 				743EDD9E214B05350039071B /* TopEarnerStatsItem+Woo.swift */,
 				D8EF1E552605121C00380EA4 /* OrderPaymentMethod.swift */,
 				FEEB2F542689FEA40075A6E0 /* EligibilityErrorInfo.swift */,
+				FEDD70AE26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -6678,6 +6681,7 @@
 				7459A6C621B0680300F83A78 /* RequirementsChecker.swift in Sources */,
 				CE1D5A55228A0AD200DF3715 /* TwoColumnTableViewCell.swift in Sources */,
 				74460D4222289C7A00D7316A /* StorePickerCoordinator.swift in Sources */,
+				FEDD70AF26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift in Sources */,
 				CE15524A21FFB10100EAA690 /* ApplicationLogViewController.swift in Sources */,
 				57C503DC23E8C70C00EC0790 /* OrdersTabbedViewController.swift in Sources */,
 				02E8B17A23E2C4BD00A43403 /* CircleSpinnerView.swift in Sources */,

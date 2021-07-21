@@ -131,6 +131,7 @@ public typealias StorageAccount = Storage.Account
 public typealias StorageAccountSettings = Storage.AccountSettings
 public typealias StorageAttribute = Storage.GenericAttribute
 public typealias StorageAddOnGroup = Storage.AddOnGroup
+public typealias StorageEligibilityErrorInfo = Storage.EligibilityErrorInfo
 public typealias StorageNote = Storage.Note
 public typealias StorageOrder = Storage.Order
 public typealias StorageOrderItemAttribute = Storage.OrderItemAttribute

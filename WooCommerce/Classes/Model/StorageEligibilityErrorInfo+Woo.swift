@@ -1,9 +1,9 @@
-//
-//  StorageEligibilityErrorInfo+Woo.swift
-//  WooCommerce
-//
-//  Created by David Christiandy on 20/07/21.
-//  Copyright © 2021 Automattic. All rights reserved.
-//
+import Yosemite
 
-import Foundation
+extension StorageEligibilityErrorInfo {
+    /// Convenience method that converts the roles to a display-friendly format.
+    /// e.g. ["author", "shop_manager"] -> "Author, Shop Manager"
+    var humanizedRoles: String {
+        roles.map { User.Role.displayText(for: $0) }.joined(separator: ", ")
+    }
+}

@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import Yosemite
 
 
 /// Simplifies and decouples the store picker from the caller
@@ -110,7 +111,7 @@ private extension StorePickerCoordinator {
 
     /// Shows a Role Error page using the provided error information.
     /// The error page is pushed to the navigation stack so the user is not locked out, and can go back to select another store.
-    func showRoleErrorScreen(for siteID: Int64, errorInfo: EligibilityErrorInfo, onCompletion: @escaping SelectStoreClosure) {
+    func showRoleErrorScreen(for siteID: Int64, errorInfo: StorageEligibilityErrorInfo, onCompletion: @escaping SelectStoreClosure) {
         let errorViewModel = RoleErrorViewModel(siteID: siteID, title: errorInfo.name, subtitle: errorInfo.humanizedRoles, useCase: self.roleEligibilityUseCase)
         let errorViewController = RoleErrorViewController(viewModel: errorViewModel)
 

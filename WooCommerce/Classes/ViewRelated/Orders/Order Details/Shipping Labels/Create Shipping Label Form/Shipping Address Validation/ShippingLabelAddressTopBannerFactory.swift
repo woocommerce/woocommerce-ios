@@ -8,7 +8,8 @@ final class ShippingLabelAddressTopBannerFactory {
                                           phoneNumber: String?,
                                           openMapPressed: @escaping () -> Void,
                                           contactCustomerPressed: @escaping () -> Void) -> TopBannerView {
-        // Set banner text and action buttons based on shipping address type (origin or destination).
+        // Set banner text and action buttons based on shipping address type (origin or destination),
+        // and whether phone number is missing.
         let missingPhoneNumber = phoneNumber == nil || phoneNumber?.isEmpty == true
         let infoText: String = {
             if shipType == .origin {

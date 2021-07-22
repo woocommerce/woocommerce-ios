@@ -30,8 +30,8 @@ private extension TopPerformersSectionHeaderView {
         label.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             label.topAnchor.constraint(greaterThanOrEqualTo: topAnchor),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.labelInsets.left),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constants.labelInsets.right),
+            label.leadingAnchor.constraint(equalTo: safeLeadingAnchor, constant: Constants.labelInsets.left),
+            label.trailingAnchor.constraint(equalTo: safeTrailingAnchor, constant: -Constants.labelInsets.right),
             label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constants.labelInsets.bottom)
             ])
     }

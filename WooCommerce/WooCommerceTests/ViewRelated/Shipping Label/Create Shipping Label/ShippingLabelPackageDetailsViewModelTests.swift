@@ -282,7 +282,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
 
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageID: nil,
+                                                             selectedPackageID: "Box",
                                                              totalWeight: nil,
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
@@ -290,7 +290,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
 
 
         // Then
-        XCTAssertEqual(viewModel.totalWeight, "62.88")
+        XCTAssertEqual(viewModel.totalWeight, "72.88")
     }
 
     func test_totalWeight_returns_the_expected_value_when_already_set() {
@@ -335,6 +335,97 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         }
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+    }
+
+    func test_totalWeight_updates_when_selected_package_changes() {
+        // Given
+        let items = [MockOrderItem.sampleItem(name: "Easter Egg", productID: 1, quantity: 1)]
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120"))
+
+        let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
+                                                             packagesResponse: mockPackageResponse(),
+                                                             selectedPackageID: nil,
+                                                             totalWeight: nil,
+                                                             formatter: currencyFormatter,
+                                                             storageManager: storageManager,
+                                                             weightUnit: "kg")
+
+        // Then
+        XCTAssertEqual(viewModel.totalWeight, "120.0")
+
+        // When
+        viewModel.didSelectPackage("Box")
+        viewModel.confirmPackageSelection()
+
+        // Then
+        XCTAssertEqual(viewModel.totalWeight, "130.0")
+    }
+
+    func test_totalWeight_does_not_update_when_initial_weight_is_arbitrary_value() {
+        // Given
+        let items = [MockOrderItem.sampleItem(name: "Easter Egg", productID: 1, quantity: 1)]
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120"))
+
+        let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
+                                                             packagesResponse: mockPackageResponse(),
+                                                             selectedPackageID: nil,
+                                                             totalWeight: "500",
+                                                             formatter: currencyFormatter,
+                                                             storageManager: storageManager,
+                                                             weightUnit: "kg")
+
+        // Then
+        XCTAssertEqual(viewModel.totalWeight, "500")
+
+        // When new package with additional weight is selected
+        viewModel.didSelectPackage("Box")
+        viewModel.confirmPackageSelection()
+
+        // Then
+        XCTAssertEqual(viewModel.totalWeight, "500")
+    }
+
+    func test_totalWeight_does_not_update_after_new_weight_is_input_manually() {
+        // Given
+        let items = [MockOrderItem.sampleItem(name: "Easter Egg", productID: 1, quantity: 1)]
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120"))
+
+        let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
+                                                             packagesResponse: mockPackageResponse(),
+                                                             selectedPackageID: nil,
+                                                             totalWeight: nil,
+                                                             formatter: currencyFormatter,
+                                                             storageManager: storageManager,
+                                                             weightUnit: "kg")
+
+        // Then
+        XCTAssertEqual(viewModel.totalWeight, "120.0")
+
+        // When new weight is input manually
+        viewModel.totalWeight = "500"
+        viewModel.isPackageWeightEdited = true
+
+        // Then
+        XCTAssertEqual(viewModel.totalWeight, "500")
+
+        // When new package with additional weight is selected
+        viewModel.didSelectPackage("Box")
+        viewModel.confirmPackageSelection()
+
+        // Then
+        XCTAssertEqual(viewModel.totalWeight, "500")
     }
 }
 

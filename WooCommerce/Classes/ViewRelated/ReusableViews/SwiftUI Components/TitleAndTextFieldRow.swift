@@ -8,6 +8,7 @@ struct TitleAndTextFieldRow: View {
     @Binding var text: String
     let symbol: String?
     let keyboardType: UIKeyboardType
+    var onEditingChanged: ((Bool) -> Void)? = nil
 
     var body: some View {
         HStack {
@@ -16,7 +17,7 @@ struct TitleAndTextFieldRow: View {
                 .lineLimit(1)
                 .fixedSize()
             Spacer()
-            TextField(placeholder, text: $text)
+            TextField(placeholder, text: $text, onEditingChanged: onEditingChanged ?? { _ in })
                 .multilineTextAlignment(.trailing)
                 .font(.body)
                 .keyboardType(keyboardType)

@@ -45,7 +45,12 @@ struct ShippingLabelPackageDetails: View {
                                      placeholder: "0",
                                      text: $viewModel.totalWeight,
                                      symbol: viewModel.weightUnit,
-                                     keyboardType: .decimalPad)
+                                     keyboardType: .decimalPad,
+                                     onEditingChanged: { _ in
+                                        // We don't have a Return button to track committed changes to this field,
+                                        // so if the user starts editing the field we assume it was edited.
+                                        viewModel.isPackageWeightEdited = true
+                                     })
                 Divider()
 
                 ListHeaderView(text: Localization.footer, alignment: .left)

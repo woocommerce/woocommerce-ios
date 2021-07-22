@@ -97,7 +97,7 @@ private extension PluginListViewController {
 // MARK: - Actions
 //
 private extension PluginListViewController {
-    
+
     /// resyncPlugins is used when the view need to resynchronize data
     ///
     @objc func resyncPlugins() {

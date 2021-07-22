@@ -2,6 +2,7 @@ import Foundation
 import MobileCoreServices
 import AVFoundation
 import Photos
+import UniformTypeIdentifiers
 
 /// Exports a media item of `PHAsset` type to be uploadable.
 ///
@@ -108,8 +109,7 @@ private extension MediaAssetExporter {
         }
 
         guard allowableFileExtensions.isEmpty == false,
-            let extensionType = UTTypeCopyPreferredTagWithClass(uti as CFString, kUTTagClassFilenameExtension)?.takeRetainedValue() as String?
-            else {
+              let extensionType = UTType(uti)?.preferredFilenameExtension else {
                 return nil
         }
         guard allowableFileExtensions.contains(extensionType) else {

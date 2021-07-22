@@ -146,6 +146,18 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         super.viewDidAppear(animated)
         viewModel.onViewDidAppear()
     }
+
+    override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+
+        // Fix for child controllers not receiving an update on safe area insets
+        // when they're partially not showing
+        childViewContrllers.forEach { controller in
+            let oldInsets = controller.additionalSafeAreaInsets
+            controller.additionalSafeAreaInsets = view.safeAreaInsets
+            controller.additionalSafeAreaInsets = oldInsets
+        }
+    }
 }
 
 extension StoreStatsAndTopPerformersPeriodViewController: UIScrollViewDelegate {

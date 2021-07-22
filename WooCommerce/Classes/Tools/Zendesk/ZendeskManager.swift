@@ -487,7 +487,10 @@ private extension ZendeskManager {
             CustomField(fieldId: TicketFieldIDs.subcategory, value: Constants.subcategory)
         ].compactMap { $0 }
 
-        return createRequest(supportSourceTag: supportSourceTag, formID: TicketFieldIDs.form, ticketFields: ticketFields, tags: getTags(supportSourceTag: supportSourceTag))
+        return createRequest(supportSourceTag: supportSourceTag,
+                             formID: TicketFieldIDs.form,
+                             ticketFields: ticketFields,
+                             tags: getTags(supportSourceTag: supportSourceTag))
     }
 
     func createWCPayRequest(supportSourceTag: String?) -> RequestUiConfiguration {
@@ -503,8 +506,6 @@ private extension ZendeskManager {
             CustomField(fieldId: TicketFieldIDs.appLanguage, value: Locale.preferredLanguage),
             CustomField(fieldId: TicketFieldIDs.category, value: Constants.paymentsCategory),
             CustomField(fieldId: TicketFieldIDs.subcategory, value: Constants.paymentsSubcategory),
-            CustomField(fieldId: TicketFieldIDs.product, value: Constants.paymentsProduct),
-            CustomField(fieldId: TicketFieldIDs.productArea, value: Constants.paymentsProductArea),
         ].compactMap { $0 }
 
         return createRequest(supportSourceTag: supportSourceTag,

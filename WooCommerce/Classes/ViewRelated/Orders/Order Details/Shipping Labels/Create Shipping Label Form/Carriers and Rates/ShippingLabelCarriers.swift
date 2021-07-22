@@ -31,18 +31,22 @@ struct ShippingLabelCarriers: View {
                     case .loading:
                         ForEach(viewModel.ghostRows) { ghostRowVM in
                             ShippingLabelCarrierRow(ghostRowVM)
+                                .padding(.horizontal, insets: geometry.safeAreaInsets)
                                 .redacted(reason: .placeholder)
                                 .shimmering()
                             Divider().padding(.leading, Constants.dividerPadding)
                         }
                     case .success:
+                        let edgeInsets = EdgeInsets(top: 0, leading: geometry.safeAreaInsets.leading, bottom: 0, trailing: geometry.safeAreaInsets.trailing)
                         ShippingLabelCarrierAndRatesTopBanner(width: geometry.size.width,
+                                                              edgeInsets: edgeInsets,
                                                               shippingMethod: viewModel.shippingMethod,
                                                               shippingCost: viewModel.shippingCost).renderedIf(viewModel.shouldDisplayTopBanner)
                         ForEach(viewModel.rows) { carrierRowVM in
                             ShippingLabelCarrierRow(carrierRowVM)
                             Divider().padding(.leading, Constants.dividerPadding)
                         }
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
                     case .error:
                         VStack {
                             HStack (alignment: .center) {
@@ -58,6 +62,7 @@ struct ShippingLabelCarriers: View {
                     }
                 }
             }
+            .edgesIgnoringSafeArea(.horizontal)
             .navigationTitle(Localization.titleView)
             .navigationBarItems(trailing: Button(action: {
                 onCompletion(viewModel.getSelectedRates().selectedRate,

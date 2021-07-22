@@ -1,3 +1,4 @@
+import SwiftUI
 import UIKit
 
 /// Class that wraps a `TopBannerView` instance in order to provide an explicit `intrinsicContentSize`.
@@ -12,6 +13,34 @@ final class TopBannerWrapperView: UIView {
     ///
     var bannerView: TopBannerView?
 
+    /// SwiftUI edge insets to add to paddings of the banner view
+    ///
+    var edgeInsets: EdgeInsets = .zero {
+        didSet {
+            removeConstraints(constraints)
+            bannerView?.pinSubviewToAllEdges(self, insets: contentInsets)
+        }
+    }
+
+    /// Calculated paddings for the banner view based on edge insets
+    ///
+    private var contentInsets: UIEdgeInsets {
+        let direction = UIApplication.shared.userInterfaceLayoutDirection
+        let orientation = UIDevice.current.orientation
+        let contentInsets: UIEdgeInsets
+        switch (orientation, direction) {
+        case (.landscapeLeft, .rightToLeft),
+             (.landscapeRight, .rightToLeft):
+            contentInsets = .init(top: edgeInsets.top, left: -edgeInsets.trailing, bottom: edgeInsets.bottom, right: -edgeInsets.leading)
+        case (.landscapeLeft, .leftToRight),
+             (.landscapeRight, .leftToRight):
+            contentInsets = .init(top: edgeInsets.top, left: -edgeInsets.leading, bottom: edgeInsets.bottom, right: -edgeInsets.trailing)
+        default:
+            contentInsets = .zero
+        }
+        return contentInsets
+    }
+
     init() {
         super.init(frame: .zero)
     }
@@ -20,13 +49,14 @@ final class TopBannerWrapperView: UIView {
     /// Discussion: The banner view is intentionally received as a function parameter(rather than in `init`) to allow consumer
     /// references to `TopBannerWrapperView` in  view model closures.
     ///
-    func setBanner(_ bannerView: TopBannerView) {
+    func setBanner(_ bannerView: TopBannerView, edgeInsets: EdgeInsets = .zero) {
         self.bannerView?.removeFromSuperview()
 
         bannerView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(bannerView)
-        bannerView.pinSubviewToAllEdges(self)
+        self.edgeInsets = edgeInsets
         self.bannerView = bannerView
+        self.backgroundColor = bannerView.backgroundColor
     }
 
     /// Returns the preferred size of the view using on a fixed width.

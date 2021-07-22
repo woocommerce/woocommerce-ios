@@ -8,6 +8,10 @@ struct ShippingLabelCarrierAndRatesTopBanner: UIViewRepresentable {
     ///
     private let width: CGFloat
 
+    /// Insets to add to edges of the TopBannerView
+    ///
+    private let edgeInsets: EdgeInsets
+
     /// Shipping method
     ///
     private let shippingMethod: String
@@ -18,8 +22,9 @@ struct ShippingLabelCarrierAndRatesTopBanner: UIViewRepresentable {
 
     /// Create a view with the desired `width`. Needed to calculate a correct view `height` later.
     ///
-    init(width: CGFloat, shippingMethod: String, shippingCost: String) {
+    init(width: CGFloat, edgeInsets: EdgeInsets, shippingMethod: String, shippingCost: String) {
         self.width = width
+        self.edgeInsets = edgeInsets
         self.shippingMethod = shippingMethod
         self.shippingCost = shippingCost
     }
@@ -39,12 +44,14 @@ struct ShippingLabelCarrierAndRatesTopBanner: UIViewRepresentable {
 
         // Set the current super view width and the real view to be displayed inside the wrapper.
         context.coordinator.bannerWrapper.width = width
-        context.coordinator.bannerWrapper.setBanner(mainBanner)
+        context.coordinator.bannerWrapper.edgeInsets = edgeInsets
+        context.coordinator.bannerWrapper.setBanner(mainBanner, edgeInsets: edgeInsets)
         return context.coordinator.bannerWrapper
     }
 
     func updateUIView(_ uiView: UIView, context: Context) {
         context.coordinator.bannerWrapper.width = width
+        context.coordinator.bannerWrapper.edgeInsets = edgeInsets
     }
 }
 

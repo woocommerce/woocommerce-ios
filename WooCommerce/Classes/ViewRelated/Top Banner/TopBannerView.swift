@@ -73,7 +73,7 @@ private extension TopBannerView {
     func configureSubviews(with viewModel: TopBannerViewModel) {
         let mainStackView = createMainStackView(with: viewModel)
         addSubview(mainStackView)
-        pinSubviewToAllEdges(mainStackView)
+        pinSubviewToSafeArea(mainStackView)
 
         titleLabel.applyHeadlineStyle()
         titleLabel.numberOfLines = 0

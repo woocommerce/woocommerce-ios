@@ -162,9 +162,6 @@ private extension DashboardViewController {
             view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
         }
 
-        // A container view is added to respond to safe area insets from the view controller.
-        // This is needed when the child view controller's view has to use a frame-based layout
-        // (e.g. when the child view controller is a `ButtonBarPagerTabStripViewController` subclass).
         view.addSubview(containerView)
         containerView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToAllEdges(containerView)

@@ -224,7 +224,7 @@ class PluginListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.cellModelForRow(at: IndexPath(row: 0, section: 0)).name, plugin2.name)
     }
 
-    func test_resyncPlugins_dispatches_synchronizeSitePlugins_action_with_correct_siteID() {
+    func test_syncPlugins_dispatches_synchronizeSitePlugins_action_with_correct_siteID() {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
         var triggeredSiteID: Int64?
@@ -237,13 +237,13 @@ class PluginListViewModelTests: XCTestCase {
         let viewModel = PluginListViewModel(siteID: sampleSiteID, storesManager: storesManager)
 
         // When
-        viewModel.resyncPlugins { _ in }
+        viewModel.syncPlugins { _ in }
 
         // Then
         XCTAssertEqual(triggeredSiteID, sampleSiteID)
     }
 
-    func test_resyncPlugins_returns_success_when_synchronizeSitePlugins_action_completes_successfully() {
+    func test_syncPlugins_returns_success_when_synchronizeSitePlugins_action_completes_successfully() {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
         storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
@@ -256,7 +256,7 @@ class PluginListViewModelTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            viewModel.resyncPlugins { result in
+            viewModel.syncPlugins { result in
                 promise(result)
             }
         }
@@ -265,7 +265,7 @@ class PluginListViewModelTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
-    func test_resyncPlugins_returns_error_when_synchronizeSitePlugins_action_fails() {
+    func test_syncPlugins_returns_error_when_synchronizeSitePlugins_action_fails() {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
         storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
@@ -278,7 +278,7 @@ class PluginListViewModelTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            viewModel.resyncPlugins { result in
+            viewModel.syncPlugins { result in
                 promise(result)
             }
         }

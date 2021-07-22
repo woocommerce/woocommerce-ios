@@ -232,7 +232,7 @@ extension StoreStatsV4PeriodViewController {
 
         placeholderChartsView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(placeholderChartsView)
-        view.pinSubviewToAllEdges(placeholderChartsView)
+        view.pinSubviewToSafeArea(placeholderChartsView)
     }
 
 }

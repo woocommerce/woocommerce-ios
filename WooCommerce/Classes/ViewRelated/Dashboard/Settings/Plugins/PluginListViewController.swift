@@ -17,7 +17,7 @@ final class PluginListViewController: UIViewController {
     ///
     private lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(resyncPlugins), for: .valueChanged)
+        refreshControl.addTarget(self, action: #selector(syncPlugins), for: .valueChanged)
         return refreshControl
     }()
 
@@ -91,16 +91,21 @@ private extension PluginListViewController {
         viewModel.observePlugins { [weak self] in
             self?.tableView.reloadData()
         }
+
+        syncPlugins()
     }
 }
 
 // MARK: - Actions
 //
 private extension PluginListViewController {
-    @objc func resyncPlugins() {
+
+    /// syncPlugins synchronizes all plugins
+    ///
+    @objc func syncPlugins() {
         removeErrorStateView()
         startGhostAnimation()
-        viewModel.resyncPlugins { [weak self] result in
+        viewModel.syncPlugins { [weak self] result in
             guard let self = self else { return }
             self.refreshControl.endRefreshing()
             self.stopGhostAnimation()
@@ -178,7 +183,7 @@ private extension PluginListViewController {
             image: .pluginListError,
             details: details,
             buttonTitle: buttonTitle) { [weak self] button in
-            self?.resyncPlugins()
+            self?.syncPlugins()
         }
     }
 }

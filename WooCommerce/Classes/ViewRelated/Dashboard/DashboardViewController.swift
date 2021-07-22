@@ -167,7 +167,7 @@ private extension DashboardViewController {
         // (e.g. when the child view controller is a `ButtonBarPagerTabStripViewController` subclass).
         view.addSubview(containerView)
         containerView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToSafeArea(containerView)
+        view.pinSubviewToAllEdges(containerView)
     }
 
     func reloadDashboardUIStatsVersion(forced: Bool) {

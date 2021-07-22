@@ -43,7 +43,7 @@ final class PluginListViewController: UIViewController {
         configureNavigation()
         configureTableView()
         configureGhostTableView()
-        configureViewModel()
+        syncPlugins(onCompletion: configureViewModel)
     }
 }
 
@@ -97,16 +97,27 @@ private extension PluginListViewController {
 // MARK: - Actions
 //
 private extension PluginListViewController {
+    
+    /// resyncPlugins is used when the view need to resynchronize data
+    ///
     @objc func resyncPlugins() {
+        syncPlugins(onCompletion: nil)
+    }
+
+    /// syncPlugins synchronizes all plugins and execute onCompletion when is finished
+    ///
+    @objc func syncPlugins(onCompletion: (() -> Void)?) {
         removeErrorStateView()
         startGhostAnimation()
-        viewModel.resyncPlugins { [weak self] result in
+        viewModel.syncPlugins { [weak self] result in
             guard let self = self else { return }
             self.refreshControl.endRefreshing()
             self.stopGhostAnimation()
             if result.isFailure {
                 self.displayErrorStateView()
             }
+            guard let onCompletion = onCompletion else { return }
+            onCompletion()
         }
     }
 }

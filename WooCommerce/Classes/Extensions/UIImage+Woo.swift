@@ -420,6 +420,10 @@ extension UIImage {
         return UIImage(named: "woo-plugins-error")!.imageFlippedForRightToLeftLayoutDirection()
     }
 
+    static var incorrectRoleError: UIImage {
+        return UIImage(named: "woo-incorrect-role-error")!.imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Mail Icon
     ///
     static var mailImage: UIImage {

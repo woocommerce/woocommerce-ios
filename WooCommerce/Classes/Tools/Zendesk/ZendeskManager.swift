@@ -216,51 +216,42 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     /// The SDK tag is used in a trigger and displays tickets in Woo > Mobile Apps New.
     ///
     func getTags(supportSourceTag: String?) -> [String] {
-        var tags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag]
-        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
-            return tags
-        }
+        let tags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag]
 
-        if site.isWordPressStore == true {
-            tags.append(Constants.wpComTag)
-        }
-
-        if site.plan.isEmpty == false {
-            tags.append(site.plan)
-        }
-
-        if let sourceTagOrigin = supportSourceTag, sourceTagOrigin.isEmpty == false {
-            tags.append(sourceTagOrigin)
-        }
-
-        return tags
+        return decorateTags(tags: tags, supportSourceTag: supportSourceTag)
     }
 
     func getWCPayTags(supportSourceTag: String?) -> [String] {
-        var tags = [Constants.platformTag,
+        let tags = [Constants.platformTag,
                     Constants.sdkTag,
                     Constants.paymentsProduct,
                     Constants.paymentsCategory,
                     Constants.paymentsSubcategory,
                     Constants.paymentsProductArea]
 
+        return decorateTags(tags: tags, supportSourceTag: supportSourceTag)
+    }
+
+    func decorateTags(tags: [String], supportSourceTag: String?) -> [String] {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return tags
         }
 
+        var decoratedTags = tags
+
         if site.isWordPressStore == true {
-            tags.append(Constants.wpComTag)
+            decoratedTags.append(Constants.wpComTag)
         }
 
         if site.plan.isEmpty == false {
-            tags.append(site.plan)
+            decoratedTags.append(site.plan)
         }
 
         if let sourceTagOrigin = supportSourceTag, sourceTagOrigin.isEmpty == false {
-            tags.append(sourceTagOrigin)
+            decoratedTags.append(sourceTagOrigin)
         }
 
-        return tags
+        return decoratedTags
     }
 }
 

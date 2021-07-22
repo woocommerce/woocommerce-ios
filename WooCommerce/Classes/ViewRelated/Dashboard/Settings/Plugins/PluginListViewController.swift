@@ -17,7 +17,7 @@ final class PluginListViewController: UIViewController {
     ///
     private lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(resyncPlugins), for: .valueChanged)
+        refreshControl.addTarget(self, action: #selector(syncPlugins), for: .valueChanged)
         return refreshControl
     }()
 
@@ -43,7 +43,7 @@ final class PluginListViewController: UIViewController {
         configureNavigation()
         configureTableView()
         configureGhostTableView()
-        syncPlugins(onCompletion: configureViewModel)
+        configureViewModel()
     }
 }
 
@@ -91,6 +91,8 @@ private extension PluginListViewController {
         viewModel.observePlugins { [weak self] in
             self?.tableView.reloadData()
         }
+
+        syncPlugins()
     }
 }
 
@@ -98,15 +100,9 @@ private extension PluginListViewController {
 //
 private extension PluginListViewController {
 
-    /// resyncPlugins is used when the view need to resynchronize data
+    /// syncPlugins synchronizes all plugins
     ///
-    @objc func resyncPlugins() {
-        syncPlugins(onCompletion: nil)
-    }
-
-    /// syncPlugins synchronizes all plugins and execute onCompletion when is finished
-    ///
-    @objc func syncPlugins(onCompletion: (() -> Void)?) {
+    @objc func syncPlugins() {
         removeErrorStateView()
         startGhostAnimation()
         viewModel.syncPlugins { [weak self] result in
@@ -116,8 +112,6 @@ private extension PluginListViewController {
             if result.isFailure {
                 self.displayErrorStateView()
             }
-            guard let onCompletion = onCompletion else { return }
-            onCompletion()
         }
     }
 }
@@ -189,7 +183,7 @@ private extension PluginListViewController {
             image: .pluginListError,
             details: details,
             buttonTitle: buttonTitle) { [weak self] button in
-            self?.resyncPlugins()
+            self?.syncPlugins()
         }
     }
 }

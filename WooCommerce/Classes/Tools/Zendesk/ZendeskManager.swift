@@ -235,6 +235,33 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
 
         return tags
     }
+
+    func getWCPayTags(supportSourceTag: String?) -> [String] {
+        var tags = [Constants.platformTag,
+                    Constants.sdkTag,
+                    Constants.paymentsProduct,
+                    Constants.paymentsCategory,
+                    Constants.paymentsSubcategory,
+                    Constants.paymentsProductArea]
+
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+            return tags
+        }
+
+        if site.isWordPressStore == true {
+            tags.append(Constants.wpComTag)
+        }
+
+        if site.plan.isEmpty == false {
+            tags.append(site.plan)
+        }
+
+        if let sourceTagOrigin = supportSourceTag, sourceTagOrigin.isEmpty == false {
+            tags.append(sourceTagOrigin)
+        }
+
+        return tags
+    }
 }
 
 // MARK: - Push Notifications
@@ -460,7 +487,7 @@ private extension ZendeskManager {
             CustomField(fieldId: TicketFieldIDs.subcategory, value: Constants.subcategory)
         ].compactMap { $0 }
 
-        return createRequest(supportSourceTag: supportSourceTag, ticketFields: ticketFields)
+        return createRequest(supportSourceTag: supportSourceTag, formID: TicketFieldIDs.form, ticketFields: ticketFields, tags: getTags(supportSourceTag: supportSourceTag))
     }
 
     func createWCPayRequest(supportSourceTag: String?) -> RequestUiConfiguration {
@@ -480,19 +507,22 @@ private extension ZendeskManager {
             CustomField(fieldId: TicketFieldIDs.productArea, value: Constants.paymentsProductArea),
         ].compactMap { $0 }
 
-        return createRequest(supportSourceTag: supportSourceTag, ticketFields: ticketFields)
+        return createRequest(supportSourceTag: supportSourceTag,
+                             formID: TicketFieldIDs.paymentsForm,
+                             ticketFields: ticketFields,
+                             tags: getWCPayTags(supportSourceTag: supportSourceTag))
     }
 
-    func createRequest(supportSourceTag: String?, ticketFields: [CustomField]) -> RequestUiConfiguration {
+    func createRequest(supportSourceTag: String?, formID: Int64, ticketFields: [CustomField], tags: [String]) -> RequestUiConfiguration {
         let requestConfig = RequestUiConfiguration()
 
         // Set Zendesk ticket form to use
-        requestConfig.ticketFormID = TicketFieldIDs.form as NSNumber
+        requestConfig.ticketFormID = formID as NSNumber
 
         requestConfig.customFields = ticketFields
 
         // Set tags
-        requestConfig.tags = getTags(supportSourceTag: supportSourceTag)
+        requestConfig.tags = tags
 
         // Set the ticket subject
         requestConfig.subject = Constants.ticketSubject
@@ -878,6 +908,8 @@ private extension ZendeskManager {
     // Which means they then have to be converted to NSNumber when sending to Zendesk.
     struct TicketFieldIDs {
         static let form: Int64 = 360000010286
+        static let paymentsForm: Int64 = 189946
+        static let paymentsGroup: Int64 = 27709263
         static let appVersion: Int64 = 360000086866
         static let allBlogs: Int64 = 360000087183
         static let deviceFreeSpace: Int64 = 360000089123

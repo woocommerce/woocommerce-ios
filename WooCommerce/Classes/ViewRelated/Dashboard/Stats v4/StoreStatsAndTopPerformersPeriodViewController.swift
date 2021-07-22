@@ -229,7 +229,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
 
     func configureSubviews() {
         view.addSubview(scrollView)
-        view.pinSubviewToSafeArea(scrollView)
+        view.pinSubviewToAllEdges(scrollView)
 
         scrollView.refreshControl = refreshControl
         scrollView.delegate = self

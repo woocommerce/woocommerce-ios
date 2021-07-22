@@ -622,10 +622,7 @@ private extension GetStartedViewController {
             return
         }
 
-        let safariViewController = SFSafariViewController(url: url)
-        safariViewController.modalPresentationStyle = .pageSheet
-        safariViewController.delegate = self
-        self.present(safariViewController, animated: true, completion: nil)
+        UIApplication.shared.open(url)
     }
 }
 

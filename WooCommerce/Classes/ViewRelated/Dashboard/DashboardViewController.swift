@@ -322,17 +322,6 @@ private extension DashboardViewController {
         ServiceLocator.analytics.track(.dashboardPulledToRefresh)
         reloadDashboardUIStatsVersion(forced: true)
     }
-
-    func displaySyncingErrorNotice() {
-        let title = NSLocalizedString("My store", comment: "My Store Notice Title for loading error")
-        let message = NSLocalizedString("Unable to load content", comment: "Load Action Failed")
-        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: title, message: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
-            self?.reloadData(forced: true)
-        }
-
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
-    }
 }
 
 // MARK: - Private Helpers

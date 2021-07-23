@@ -2,6 +2,7 @@ import UIKit
 import Gridicons
 import WordPressUI
 import Yosemite
+import SafariServices.SFSafariViewController
 
 
 // MARK: - DashboardViewController
@@ -52,6 +53,21 @@ final class DashboardViewController: UIViewController {
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
     private let hiddenScrollView = UIScrollView()
+
+    /// Top banner that shows an error if there is a problem loading data
+    ///
+    private lazy var topBannerView = {
+        ErrorTopBannerFactory.createTopBanner(isExpanded: false,
+                                              expandedStateChangeHandler: {},
+                                              onTroubleshootButtonPressed: { [weak self] in
+                                                let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
+                                                self?.present(safariViewController, animated: true, completion: nil)
+                                              },
+                                              onContactSupportButtonPressed: { [weak self] in
+                                                guard let self = self else { return }
+                                                ZendeskManager.shared.showNewRequestIfPossible(from: self, with: nil)
+                                              })
+    }()
 
     // MARK: View Lifecycle
 

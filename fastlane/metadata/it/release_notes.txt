@@ -1,0 +1,3 @@
+A grande richiesta, abbiamo ripristinato la schermata di evasione dell'ordine quando si tocca Contrassegna ordine come completo. Grazie a tutti coloro che ci hanno contattato per comunicarci l'interesse per questa funzionalità.
+
+Abbiamo aggiunto il supporto iniziale per la creazione di etichette di spedizione all'app. Vuoi provare? Installa e attiva l'estensione WooCommerce Shipping & Tax nel tuo negozio. In questo momento, supportiamo i commercianti negli USA che spediscono a indirizzi statunitensi. Accogliamo volentieri il tuo feedback.

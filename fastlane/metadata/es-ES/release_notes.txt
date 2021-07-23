@@ -1,0 +1,3 @@
+Por petición popular, hemos recuperado la pantalla de completar el pedido al tocar en Marcar el pedido como completado. Gracias por poneros en contacto con nosotros para hacernos saber que os interesaba esa funcionalidad.
+
+Hemos añadido asistencia inicial para crear etiquetas de envío en la aplicación. ¿Quieres probarlo? Instala y activa la extensión WooCommerce Shipping & Tax en tu tienda. Actualmente, está disponible para vendedores en Estados Unidos que hacen envíos a direcciones en Estados Unidos. ¡Agradecemos tu opinión!

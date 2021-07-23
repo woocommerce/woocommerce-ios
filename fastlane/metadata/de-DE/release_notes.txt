@@ -1,0 +1,3 @@
+Aufgrund der hohen Nachfrage haben wir den Bildschirm mit abgeschlossenen Bestellungen wieder eingeführt, der erscheint, wenn du auf „Bestellung als abgeschlossen markieren“ tippst. Vielen Dank an alle Nutzer, die ihr Interesse an dieser Funktion bekundet haben!
+
+Wir haben anfänglichen Support für die Erstellung von Versandetiketten in der App hinzugefügt!  Möchtest du es ausprobieren? Installiere und aktiviere die Erweiterung „WooCommerce Shipping & Tax“ in deinem Store. Derzeit unterstützen wir den Versand innerhalb der USA für Verkäufer in den USA. Wir wissen dein Feedback zu schätzen!

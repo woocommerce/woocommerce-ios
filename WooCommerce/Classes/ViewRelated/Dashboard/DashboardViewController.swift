@@ -229,7 +229,7 @@ private extension DashboardViewController {
                 contentView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
             ])
         }
-        contentView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 8).isActive = true
+        contentView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: Constants.bannerBottomMargin).isActive = true
     }
 
     /// Hide the error banner
@@ -346,5 +346,6 @@ private extension DashboardViewController {
 
     enum Constants {
         static let animationDuration = 0.2
+        static let bannerBottomMargin = CGFloat(8)
     }
 }

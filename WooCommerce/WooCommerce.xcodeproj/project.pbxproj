@@ -1272,6 +1272,7 @@
 		FE28F7132684CA29004465C7 /* RoleErrorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE28F7112684CA29004465C7 /* RoleErrorViewController.xib */; };
 		FE28F7182684EE6A004465C7 /* RoleErrorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F7172684EE6A004465C7 /* RoleErrorViewModel.swift */; };
 		FE3E427726A8545B00C596CE /* MockRoleEligibilityUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE3E427626A8545B00C596CE /* MockRoleEligibilityUseCase.swift */; };
+		FE6BCDFC26A9D0E700D96FE2 /* rest_v2_sites_users_me.json in Resources */ = {isa = PBXBuildFile; fileRef = FE6BCDFB26A9D0E700D96FE2 /* rest_v2_sites_users_me.json */; };
 		FEDD70AF26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEDD70AE26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift */; };
 		FEEB2F61268A215E0075A6E0 /* StorageEligibilityErrorInfoWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEB2F60268A215E0075A6E0 /* StorageEligibilityErrorInfoWooTests.swift */; };
 		FEEB2F6E268A2F7B0075A6E0 /* RoleEligibilityUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEEB2F6D268A2F7B0075A6E0 /* RoleEligibilityUseCaseTests.swift */; };
@@ -2603,6 +2604,7 @@
 		FE28F7112684CA29004465C7 /* RoleErrorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RoleErrorViewController.xib; sourceTree = "<group>"; };
 		FE28F7172684EE6A004465C7 /* RoleErrorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleErrorViewModel.swift; sourceTree = "<group>"; };
 		FE3E427626A8545B00C596CE /* MockRoleEligibilityUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRoleEligibilityUseCase.swift; sourceTree = "<group>"; };
+		FE6BCDFB26A9D0E700D96FE2 /* rest_v2_sites_users_me.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = rest_v2_sites_users_me.json; sourceTree = "<group>"; };
 		FEDD70AE26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageEligibilityErrorInfo+Woo.swift"; sourceTree = "<group>"; };
 		FEEB2F60268A215E0075A6E0 /* StorageEligibilityErrorInfoWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEligibilityErrorInfoWooTests.swift; sourceTree = "<group>"; };
 		FEEB2F6D268A2F7B0075A6E0 /* RoleEligibilityUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleEligibilityUseCaseTests.swift; sourceTree = "<group>"; };
@@ -5274,6 +5276,7 @@
 			children = (
 				CCFC00D723E9BD5500157A78 /* rest_v11_me.json */,
 				CCFC00D823E9BD5500157A78 /* rest_v11_me_sites.json */,
+				FE6BCDFB26A9D0E700D96FE2 /* rest_v2_sites_users_me.json */,
 			);
 			path = me;
 			sourceTree = "<group>";
@@ -6469,6 +6472,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D8CD0605258B384E00B52D63 /* oauth2_token-error.json in Resources */,
+				FE6BCDFC26A9D0E700D96FE2 /* rest_v2_sites_users_me.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

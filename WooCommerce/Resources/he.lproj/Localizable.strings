@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-07-16 16:04:11+0000 */
+/* Translation-Revision-Date: 2021-07-23 11:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -596,7 +596,7 @@
 "Choose Paper Size" = "יש לבחור גודל נייר";
 
 /* Navigation title on the shipping label states of a country selector screen */
-"Choose a State" = "Choose a State";
+"Choose a State" = "בחר מדינה";
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "לבחור מהמכשיר";
@@ -768,7 +768,7 @@
 "Current" = "נוכחי";
 
 /* Error when the user tap on Country field in Shipping Label Address Validation */
-"Currently we support just the United States from mobile." = "Currently we support just the United States from mobile.";
+"Currently we support just the United States from mobile." = "אנו תומכים מהנייד היום רק בארה\"ב.";
 
 /* Name of the section for custom shipment tracking carriers */
 "Custom" = "התאמה אישית";
@@ -1058,7 +1058,7 @@
 "Error previewing shipping label" = "אירעה שגיאה בתצוגה המקדימה של תווית המשלוח";
 
 /* Notice displayed when the label purchase fails */
-"Error purchasing the label" = "Error purchasing the label";
+"Error purchasing the label" = "שגיאה ברכישת התוויות";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -2155,7 +2155,7 @@
 "Purchase note" = "הערת רכישה";
 
 /* Title of the in-progress UI while purchasing a shipping label */
-"Purchasing Label" = "Purchasing Label";
+"Purchasing Label" = "רכישת תוויות";
 
 /* Quantity abbreviation for section title */
 "QTY" = "כמות";
@@ -2302,7 +2302,7 @@
 "Revenue" = "הכנסה";
 
 /* Title of Review Order screen */
-"Review Order" = "Review Order";
+"Review Order" = "לבדוק את ההזמנה";
 
 /* Review moderation success notice message. It reads: Review marked as {new status} */
 "Review marked as %@" = "הביקורת סומנה בתור \"%@\"";
@@ -2356,7 +2356,7 @@
 "Save as draft" = "לשמור כטיוטה";
 
 /* Button title to save a shipping label to print later */
-"Save for Later" = "Save for Later";
+"Save for Later" = "שמירה למועד מאוחר יותר";
 
 /* Message text in the shipping label creation info screen */
 "Save time and money by fulfilling with WooCommerce Shipping" = "כדאי לחסוך זמן וכסף על ידי השלמת ההזמנה עם WooCommerce Shipping";
@@ -2494,7 +2494,7 @@
 "Shipping" = "משלוח";
 
 /* Shipping Address title for customer info section */
-"Shipping Address" = "Shipping Address";
+"Shipping Address" = "כתובת משלוח";
 
 /* Title of shipping carrier and rates in shipping label details
    Title of the cell Shipping Carrier inside Create Shipping Label form */
@@ -2526,7 +2526,7 @@
 "Shipping label order summary" = "סיכום ההזמנה לתווית המשלוח";
 
 /* Header text when printing a newly purchased shipping label */
-"Shipping label purchased!" = "Shipping label purchased!";
+"Shipping label purchased!" = "תווית המשלוח נרכשה!";
 
 /* VoiceOver accessibility label for the shipping notice about the order */
 "Shipping notice about the order" = "הודעה לגבי המשלוח של הזמנה זו";
@@ -2921,7 +2921,7 @@
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "האישור עבור שרת זה אינו חוקי. ייתכן שאתה מתחבר לשרת שמתחזה ל-&quot;%@&quot;, מה שעלול לסכן את המידע הסודי שלך.\n\nלבטוח באישור בכל מקרה?";
 
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
-"The customer will receive an email once order is completed" = "The customer will receive an email once order is completed";
+"The customer will receive an email once order is completed" = "הלקוח יקבל אימייל כאשר ההזמנה הושלמה";
 
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "מספר הטלפון לא תקין או שאין לך אפשרות להתקשר ללקוח ממכשיר זה.";
@@ -3175,7 +3175,7 @@
 "Unable to delete tracking for order #%1$d" = "אין אפשרות למחוק את המעקב אחר ההזמנה ⁦%1$d⁩#";
 
 /* Unable to fetch countries action failed in Shipping Label Form */
-"Unable to fetch countries." = "Unable to fetch countries.";
+"Unable to fetch countries." = "אין אפשרות למצא את המדינות.";
 
 /* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
 "Unable to fulfill order #%1$d" = "אין אפשרות להשלים את ההזמנה ⁦%1$d⁩#";

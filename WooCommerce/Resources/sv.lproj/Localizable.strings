@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-07-14 10:09:22+0000 */
+/* Translation-Revision-Date: 2021-07-20 12:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -768,7 +768,7 @@
 "Current" = "Nuvarande";
 
 /* Error when the user tap on Country field in Shipping Label Address Validation */
-"Currently we support just the United States from mobile." = "Currently we support just the United States from mobile.";
+"Currently we support just the United States from mobile." = "För närvarande har vi bara stöd för USA via mobil.";
 
 /* Name of the section for custom shipment tracking carriers */
 "Custom" = "Anpassad";
@@ -1058,7 +1058,7 @@
 "Error previewing shipping label" = "Fel vid förhandsgranskning av fraktetikett";
 
 /* Notice displayed when the label purchase fails */
-"Error purchasing the label" = "Error purchasing the label";
+"Error purchasing the label" = "Ett fel uppstod vid köp av etiketten";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -2526,7 +2526,7 @@
 "Shipping label order summary" = "Beställningssammanfattning för fraktetiketter";
 
 /* Header text when printing a newly purchased shipping label */
-"Shipping label purchased!" = "Shipping label purchased!";
+"Shipping label purchased!" = "Fraktetikett köpt!";
 
 /* VoiceOver accessibility label for the shipping notice about the order */
 "Shipping notice about the order" = "Fraktmeddelande om beställningen";
@@ -3175,7 +3175,7 @@
 "Unable to delete tracking for order #%1$d" = "Det går inte att radera spårning för order nummer%1$d";
 
 /* Unable to fetch countries action failed in Shipping Label Form */
-"Unable to fetch countries." = "Unable to fetch countries.";
+"Unable to fetch countries." = "Det gick inte att hämta länder.";
 
 /* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
 "Unable to fulfill order #%1$d" = "Det gick inte att uppfylla order nummer%1$d";

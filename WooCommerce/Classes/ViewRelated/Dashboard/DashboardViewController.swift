@@ -31,7 +31,9 @@ final class DashboardViewController: UIViewController {
     // MARK: Subviews
 
     private lazy var containerView: UIView = {
-        return UIView(frame: .zero)
+        let container = UIView(frame: .zero)
+        container.backgroundColor = .listBackground
+        return container
     }()
 
     private lazy var storeNameLabel: UILabel = {
@@ -42,12 +44,22 @@ final class DashboardViewController: UIViewController {
         return label
     }()
 
+    /// A stack view to hold `storeNameLabel`
+    ///
+    private lazy var innerStackView: UIStackView = {
+        let view = UIStackView()
+        view.layoutMargins = UIEdgeInsets(top: 0, left: navigationController?.navigationBar.directionalLayoutMargins.leading ?? 0, bottom: 0, right: 0)
+        view.isLayoutMarginsRelativeArrangement = true
+        return view
+    }()
+
+    /// A stack view to hold `storeNameLabel` and `topBannerView`, as needed
+    ///
     private lazy var stackView: UIStackView = {
         let view = UIStackView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .listForeground
-        view.layoutMargins = UIEdgeInsets(top: 0, left: navigationController?.navigationBar.directionalLayoutMargins.leading ?? 0, bottom: 0, right: 0)
-        view.isLayoutMarginsRelativeArrangement = true
+        view.axis = .vertical
         return view
     }()
 
@@ -130,9 +142,9 @@ private extension DashboardViewController {
         guard shouldShowStoreNameAsSubtitle else {
             return
         }
-        containerView.backgroundColor = .listForeground
         storeNameLabel.text = ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.title
-        stackView.addArrangedSubview(storeNameLabel)
+        innerStackView.addArrangedSubview(storeNameLabel)
+        stackView.addArrangedSubview(innerStackView)
         containerView.addSubview(stackView)
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: containerView.topAnchor),
@@ -146,8 +158,11 @@ private extension DashboardViewController {
             return
         }
         contentView.translatesAutoresizingMaskIntoConstraints = false
+        // Set the top anchor constraint as non-required so additional space can be added when the top banner is displayed
+        let topAnchorConstraint = contentView.topAnchor.constraint(equalTo: stackView.bottomAnchor)
+        topAnchorConstraint.priority = .defaultHigh
         NSLayoutConstraint.activate([
-            contentView.topAnchor.constraint(equalTo: stackView.bottomAnchor),
+            topAnchorConstraint,
             contentView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
@@ -193,6 +208,35 @@ private extension DashboardViewController {
             }
             self?.onDashboardUIUpdate(forced: forced, updatedDashboardUI: dashboardUI)
         })
+    }
+
+    /// Display the error banner at the top of the dashboard content (below the site title)
+    ///
+    func showTopBannerView() {
+        guard let dashboardUI = dashboardUI, let contentView = dashboardUI.view else {
+            return
+        }
+        stackView.addArrangedSubview(topBannerView)
+        if !shouldShowStoreNameAsSubtitle {
+            containerView.addSubview(stackView)
+            contentView.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                stackView.topAnchor.constraint(equalTo: containerView.topAnchor),
+                stackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+                stackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+                contentView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+                contentView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+                contentView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
+            ])
+        }
+        contentView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 8).isActive = true
+    }
+
+    /// Hide the error banner
+    ///
+    func hideTopBannerView() {
+        dashboardUI?.view.topAnchor.constraint(equalTo: stackView.bottomAnchor).isActive = true
+        topBannerView.removeFromSuperview()
     }
 }
 
@@ -246,10 +290,11 @@ private extension DashboardViewController {
         addViewBellowSubtitle(contentView: contentView)
 
         updatedDashboardUI.onPullToRefresh = { [weak self] in
+            self?.hideTopBannerView()
             self?.pullToRefresh()
         }
         updatedDashboardUI.displaySyncingErrorNotice = { [weak self] in
-            self?.displaySyncingErrorNotice()
+            self?.showTopBannerView()
         }
     }
 }

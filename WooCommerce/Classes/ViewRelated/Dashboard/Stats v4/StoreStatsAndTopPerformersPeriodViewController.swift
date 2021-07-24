@@ -136,7 +136,6 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
         // Fix any incomplete animation of the refresh control
         // when switching tabs mid-animation
         refreshControl.resetAnimation(in: scrollView)
@@ -145,24 +144,14 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         viewModel.onViewDidAppear()
-    }
-
-    override func viewSafeAreaInsetsDidChange() {
-        super.viewSafeAreaInsetsDidChange()
-
-        // Fix for child controllers not receiving an update on safe area insets
-        // when they're partially not showing
-        childViewContrllers.forEach { controller in
-            let oldInsets = controller.additionalSafeAreaInsets
-            controller.additionalSafeAreaInsets = view.safeAreaInsets
-            controller.additionalSafeAreaInsets = oldInsets
-        }
+        updateSafeAreaInsets()
     }
 }
 
 extension StoreStatsAndTopPerformersPeriodViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         scrollDelegate?.dashboardUIScrollViewDidScroll(scrollView)
+        updateSafeAreaInsets()
     }
 }
 
@@ -356,5 +345,18 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
 private extension StoreStatsAndTopPerformersPeriodViewController {
     @objc func pullToRefresh() {
         onPullToRefresh()
+    }
+}
+
+// MARK: - Safe area adjustments
+private extension StoreStatsAndTopPerformersPeriodViewController {
+    /// Adjust additional safe area insets based on parent safe area insets.
+    ///
+    func updateSafeAreaInsets() {
+        guard let parent = parent else {
+            return
+        }
+        additionalSafeAreaInsets = parent.view.safeAreaInsets
+        additionalSafeAreaInsets = .zero
     }
 }

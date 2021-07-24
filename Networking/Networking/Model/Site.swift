@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a WordPress.com Site.
 ///
-public struct Site: Decodable, GeneratedFakeable {
+public struct Site: Decodable, Equatable, GeneratedFakeable {
 
     /// WordPress.com Site Identifier.
     ///
@@ -88,28 +88,6 @@ public struct Site: Decodable, GeneratedFakeable {
         self.isWooCommerceActive = isWooCommerceActive
         self.timezone = timezone
         self.gmtOffset = gmtOffset
-    }
-}
-
-
-// MARK: - Comparable Conformance
-//
-extension Site: Comparable {
-    public static func == (lhs: Site, rhs: Site) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.name == rhs.name &&
-            lhs.description == rhs.description &&
-            lhs.url == rhs.url &&
-            lhs.plan == rhs.plan &&
-            lhs.isWooCommerceActive == rhs.isWooCommerceActive &&
-            lhs.isWordPressStore == rhs.isWordPressStore &&
-            lhs.gmtOffset == rhs.gmtOffset
-    }
-
-    public static func < (lhs: Site, rhs: Site) -> Bool {
-        return lhs.siteID < rhs.siteID ||
-            (lhs.siteID == rhs.siteID && lhs.name < rhs.name) ||
-            (lhs.siteID == rhs.siteID && lhs.name == rhs.name && lhs.description < rhs.description)
     }
 }
 

@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a specific setting entity for a specific site.
 ///
-public struct SiteSetting: Decodable, GeneratedFakeable {
+public struct SiteSetting: Decodable, Equatable, GeneratedFakeable {
     public let siteID: Int64
     public let settingID: String
     public let label: String
@@ -68,23 +68,9 @@ private extension SiteSetting {
 // MARK: - Comparable Conformance
 //
 extension SiteSetting: Comparable {
-    public static func == (lhs: SiteSetting, rhs: SiteSetting) -> Bool {
-        return lhs.settingID == rhs.settingID &&
-            lhs.label == rhs.label &&
-            lhs.settingDescription == rhs.settingDescription &&
-            lhs.value == rhs.value &&
-            lhs.settingGroupKey == rhs.settingGroupKey
-
-    }
-
     public static func < (lhs: SiteSetting, rhs: SiteSetting) -> Bool {
         return lhs.settingID < rhs.settingID ||
             (lhs.settingID == rhs.settingID && lhs.label < rhs.label)
-    }
-
-    public static func > (lhs: SiteSetting, rhs: SiteSetting) -> Bool {
-        return lhs.settingID > rhs.settingID ||
-            (lhs.settingID == rhs.settingID && lhs.label > rhs.label)
     }
 }
 

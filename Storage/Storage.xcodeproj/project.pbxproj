@@ -34,6 +34,8 @@
 		02DA64172313C26400284168 /* StatsVersionBySite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DA64162313C26400284168 /* StatsVersionBySite.swift */; };
 		02DA64192313C2AA00284168 /* StatsVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DA64182313C2AA00284168 /* StatsVersion.swift */; };
 		02EAB6D72480A86D00FD873C /* CrashLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EAB6D62480A86D00FD873C /* CrashLogger.swift */; };
+		077F39C4269F1F4600ABEADC /* SystemPlugin+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39C3269F1F4600ABEADC /* SystemPlugin+CoreDataClass.swift */; };
+		077F39C6269F1F7C00ABEADC /* SystemPlugin+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39C5269F1F7C00ABEADC /* SystemPlugin+CoreDataProperties.swift */; };
 		2618707325409C65006522A1 /* ShippingLineTax+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2618707125409C65006522A1 /* ShippingLineTax+CoreDataClass.swift */; };
 		2618707425409C65006522A1 /* ShippingLineTax+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2618707225409C65006522A1 /* ShippingLineTax+CoreDataProperties.swift */; };
 		2619F71925AF95030006DAFF /* StorageTypeExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2619F71825AF95020006DAFF /* StorageTypeExtensionsTests.swift */; };
@@ -45,7 +47,7 @@
 		262B270E2621412000A421CF /* ProductAddOn+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262B26752621401A00A421CF /* ProductAddOn+CoreDataProperties.swift */; };
 		262B27132621412700A421CF /* ProductAddOnOption+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262B26762621401A00A421CF /* ProductAddOnOption+CoreDataClass.swift */; };
 		262B27182621412D00A421CF /* ProductAddOnOption+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262B26772621401A00A421CF /* ProductAddOnOption+CoreDataProperties.swift */; };
-		263E37D72641AD5100260D3B /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 263E37D62641AD5100260D3B /* SwiftPackageProductDependency */; };
+		263E37D72641AD5100260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E37D62641AD5100260D3B /* Codegen */; };
 		26577519243D808B003168A5 /* WooCommerceModelV26toV27.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 26577518243D808B003168A5 /* WooCommerceModelV26toV27.xcmappingmodel */; };
 		267439D624E5D45A0090696C /* FeedbackSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267439D524E5D45A0090696C /* FeedbackSettings.swift */; };
 		2685C108263C88B000D9EE97 /* AddOnGroup+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2685C106263C88B000D9EE97 /* AddOnGroup+CoreDataClass.swift */; };
@@ -71,7 +73,7 @@
 		45E4620A2684BCEE00011BF2 /* Country+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E462062684BCEE00011BF2 /* Country+CoreDataClass.swift */; };
 		5707FBC425B5FE2200B7C1A6 /* CoreDataIterativeMigrator+MigrationStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5707FBC325B5FE2200B7C1A6 /* CoreDataIterativeMigrator+MigrationStep.swift */; };
 		5707FBC825B610DA00B7C1A6 /* CoreDataIterativeMigrator+MigrationStepTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5707FBC725B610DA00B7C1A6 /* CoreDataIterativeMigrator+MigrationStepTests.swift */; };
-		57150E1324F462DF00E81611 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 57150E1224F462DF00E81611 /* SwiftPackageProductDependency */; };
+		57150E1324F462DF00E81611 /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 57150E1224F462DF00E81611 /* TestKit */; };
 		572B40E425A5414D00DB20E0 /* DeleteEntityObjectsMigrationPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572B40E325A5414D00DB20E0 /* DeleteEntityObjectsMigrationPolicy.swift */; };
 		572C099625475208005372E1 /* SpyFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572C099525475208005372E1 /* SpyFileManager.swift */; };
 		5736878E24AAADAE00B528FE /* ManagedObjectModelsInventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5736878D24AAADAE00B528FE /* ManagedObjectModelsInventory.swift */; };
@@ -195,6 +197,7 @@
 		D8FBFF5A22D66A06006E3336 /* OrderStatsV4+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF5422D66A06006E3336 /* OrderStatsV4+CoreDataProperties.swift */; };
 		DEFD6D422641B70400E51E0D /* SitePlugin+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D412641B70400E51E0D /* SitePlugin+CoreDataProperties.swift */; };
 		DEFD6D432641B70400E51E0D /* SitePlugin+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D402641B70400E51E0D /* SitePlugin+CoreDataClass.swift */; };
+		FEDD70AD26A5DBDD00194C3A /* EligibilityErrorInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEDD70AC26A5DBDD00194C3A /* EligibilityErrorInfo.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -259,6 +262,9 @@
 		02DA64182313C2AA00284168 /* StatsVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsVersion.swift; sourceTree = "<group>"; };
 		02E4F5E223CD552F003B0010 /* Model 26.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 26.xcdatamodel"; sourceTree = "<group>"; };
 		02EAB6D62480A86D00FD873C /* CrashLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashLogger.swift; sourceTree = "<group>"; };
+		077F39C2269F1E2F00ABEADC /* Model 54.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 54.xcdatamodel"; sourceTree = "<group>"; };
+		077F39C3269F1F4600ABEADC /* SystemPlugin+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemPlugin+CoreDataClass.swift"; sourceTree = "<group>"; };
+		077F39C5269F1F7C00ABEADC /* SystemPlugin+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemPlugin+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		261870702540944C006522A1 /* Model 34.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 34.xcdatamodel"; sourceTree = "<group>"; };
 		2618707125409C65006522A1 /* ShippingLineTax+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLineTax+CoreDataClass.swift"; sourceTree = "<group>"; };
 		2618707225409C65006522A1 /* ShippingLineTax+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLineTax+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -469,6 +475,7 @@
 		DEFD6D412641B70400E51E0D /* SitePlugin+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SitePlugin+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DF3D3B298350F68191CD1DAD /* Pods_Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F0439F2ADB3B211DF5C44D83 /* Pods-StorageTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StorageTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-StorageTests/Pods-StorageTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		FEDD70AC26A5DBDD00194C3A /* EligibilityErrorInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EligibilityErrorInfo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -476,7 +483,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				263E37D72641AD5100260D3B /* BuildFile in Frameworks */,
+				263E37D72641AD5100260D3B /* Codegen in Frameworks */,
 				B54CA5B520A4BC0300F38CD1 /* CoreData.framework in Frameworks */,
 				7028A41485A08AC748206184 /* Pods_Storage.framework in Frameworks */,
 			);
@@ -486,7 +493,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				57150E1324F462DF00E81611 /* BuildFile in Frameworks */,
+				57150E1324F462DF00E81611 /* TestKit in Frameworks */,
 				B54CA5A320A4BBA600F38CD1 /* Storage.framework in Frameworks */,
 				68BC97FB41770051C287D1A8 /* Pods_StorageTests.framework in Frameworks */,
 			);
@@ -566,6 +573,7 @@
 				57A8819F24CA396D00AE0943 /* GeneralAppSettings.swift */,
 				267439D524E5D45A0090696C /* FeedbackSettings.swift */,
 				26EA01D024EC3AEA00176A57 /* FeedbackType.swift */,
+				FEDD70AC26A5DBDD00194C3A /* EligibilityErrorInfo.swift */,
 			);
 			name = AppSettings;
 			sourceTree = "<group>";
@@ -855,6 +863,8 @@
 				4501068A2399AC9B00E24722 /* TaxClass+CoreDataProperties.swift */,
 				7471A518216CF12900219F7E /* Stats */,
 				D87F614D22657C2F0031A13B /* PreselectedProvider.swift */,
+				077F39C3269F1F4600ABEADC /* SystemPlugin+CoreDataClass.swift */,
+				077F39C5269F1F7C00ABEADC /* SystemPlugin+CoreDataProperties.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -920,7 +930,7 @@
 			);
 			name = Storage;
 			packageProductDependencies = (
-				263E37D62641AD5100260D3B /* SwiftPackageProductDependency */,
+				263E37D62641AD5100260D3B /* Codegen */,
 			);
 			productName = Storage;
 			productReference = B54CA59920A4BBA500F38CD1 /* Storage.framework */;
@@ -943,7 +953,7 @@
 			);
 			name = StorageTests;
 			packageProductDependencies = (
-				57150E1224F462DF00E81611 /* SwiftPackageProductDependency */,
+				57150E1224F462DF00E81611 /* TestKit */,
 			);
 			productName = StorageTests;
 			productReference = B54CA5A220A4BBA600F38CD1 /* StorageTests.xctest */;
@@ -1070,6 +1080,7 @@
 			files = (
 				02D200D8253FDEE500840173 /* WooCommerceModelV32toV33.xcmappingmodel in Sources */,
 				26B64557259CE7A900EF3FB3 /* ProductAttributeTerm+CoreDataClass.swift in Sources */,
+				FEDD70AD26A5DBDD00194C3A /* EligibilityErrorInfo.swift in Sources */,
 				CC2C030A262DCC6900928C9C /* ShippingLabelPaymentMethod+CoreDataClass.swift in Sources */,
 				B5B914C520EFF03500F2F832 /* Site+CoreDataClass.swift in Sources */,
 				D8550D03230D3F8B00AAC4F8 /* ProductReview+CoreDataClass.swift in Sources */,
@@ -1162,8 +1173,10 @@
 				747453A62242C85E00E0B5EE /* ProductDefaultAttribute+CoreDataProperties.swift in Sources */,
 				028296F3237D404F00E84012 /* ProductVariation+CoreDataProperties.swift in Sources */,
 				5772842325BF465A0092FB2C /* NSPersistentStoreCoordinator+PersistentStoreCoordinatorProtocol.swift in Sources */,
+				077F39C4269F1F4600ABEADC /* SystemPlugin+CoreDataClass.swift in Sources */,
 				B54CA5C920A4C17800F38CD1 /* NSObject+Storage.swift in Sources */,
 				7471A516216CF0FE00219F7E /* SiteVisitStatsItem+CoreDataClass.swift in Sources */,
+				077F39C6269F1F7C00ABEADC /* SystemPlugin+CoreDataProperties.swift in Sources */,
 				CC2C0309262DCC6900928C9C /* ShippingLabelAccountSettings+CoreDataProperties.swift in Sources */,
 				31D9C8C826684AEC000AC134 /* PaymentGatewayAccount+CoreDataClass.swift in Sources */,
 				B505F6DA20BEEA3200BB1B69 /* Account+CoreDataProperties.swift in Sources */,
@@ -1642,11 +1655,11 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		263E37D62641AD5100260D3B /* SwiftPackageProductDependency */ = {
+		263E37D62641AD5100260D3B /* Codegen */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Codegen;
 		};
-		57150E1224F462DF00E81611 /* SwiftPackageProductDependency */ = {
+		57150E1224F462DF00E81611 /* TestKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TestKit;
 		};
@@ -1656,6 +1669,7 @@
 		B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				077F39C2269F1E2F00ABEADC /* Model 54.xcdatamodel */,
 				45E462022684B86F00011BF2 /* Model 53.xcdatamodel */,
 				31D9C881266844B8000AC134 /* Model 52.xcdatamodel */,
 				AEBAAFAE2657C5AC00404651 /* Model 51.xcdatamodel */,
@@ -1710,7 +1724,7 @@
 				746A9D14214071F90013F6FF /* Model 2.xcdatamodel */,
 				B59E11D920A9D00C004121A4 /* Model.xcdatamodel */,
 			);
-			currentVersion = 45E462022684B86F00011BF2 /* Model 53.xcdatamodel */;
+			currentVersion = 077F39C2269F1E2F00ABEADC /* Model 54.xcdatamodel */;
 			path = WooCommerce.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

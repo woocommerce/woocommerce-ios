@@ -21,7 +21,9 @@ struct ShippingLabelPaymentMethods: View {
             ScrollView {
                 VStack(spacing: 0) {
                     // Banner displayed when user can't edit payment methods
+                    let bannerEdgeInsets = EdgeInsets(top: 0, leading: geometry.safeAreaInsets.leading, bottom: 0, trailing: geometry.safeAreaInsets.trailing)
                     ShippingLabelPaymentMethodsTopBanner(width: geometry.size.width,
+                                                         edgeInsets: bannerEdgeInsets,
                                                          storeOwnerDisplayName: viewModel.storeOwnerDisplayName,
                                                          storeOwnerUsername:
                                                             viewModel.storeOwnerUsername)
@@ -30,6 +32,7 @@ struct ShippingLabelPaymentMethods: View {
                     // Payment Methods list
                     ListHeaderView(text: Localization.paymentMethodsHeader, alignment: .left)
                         .textCase(.uppercase)
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
 
                     ForEach(viewModel.paymentMethods, id: \.paymentMethodID) { method in
                         let selected = method.paymentMethodID == viewModel.selectedPaymentMethodID
@@ -39,6 +42,7 @@ struct ShippingLabelPaymentMethods: View {
                             .onTapGesture {
                                 viewModel.didSelectPaymentMethod(withID: method.paymentMethodID)
                             }
+                            .padding(.horizontal, insets: geometry.safeAreaInsets)
                             .background(Color(.systemBackground))
                         Divider().padding(.leading, Constants.dividerPadding)
                     }
@@ -48,6 +52,7 @@ struct ShippingLabelPaymentMethods: View {
                                                                           viewModel.storeOwnerWPcomUsername,
                                                                           viewModel.storeOwnerWPcomEmail),
                                    alignment: .left)
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
 
                     Spacer()
                         .frame(height: Constants.spacerHeight)
@@ -58,11 +63,13 @@ struct ShippingLabelPaymentMethods: View {
                                                                               viewModel.storeOwnerUsername,
                                                                               viewModel.storeOwnerWPcomEmail),
                                       isOn: $viewModel.isEmailReceiptsEnabled)
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
                         .background(Color(.systemBackground))
                         .disabled(!viewModel.canEditNonpaymentSettings)
                 }
             }
             .background(Color(.listBackground))
+            .edgesIgnoringSafeArea(.horizontal)
             .navigationBarTitle(Localization.navigationBarTitle)
             .navigationBarItems(trailing: Button(action: {
                 viewModel.updateShippingLabelAccountSettings { newSettings in
@@ -77,7 +84,7 @@ struct ShippingLabelPaymentMethods: View {
                     Text(Localization.doneButton)
                 }
             })
-        .disabled(!viewModel.isDoneButtonEnabled()))
+            .disabled(!viewModel.isDoneButtonEnabled()))
         }
     }
 }

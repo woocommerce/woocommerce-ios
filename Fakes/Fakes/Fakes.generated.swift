@@ -1363,6 +1363,23 @@ extension StoredProductSettings {
         )
     }
 }
+extension SystemPlugin {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> SystemPlugin {
+        .init(
+            siteID: .fake(),
+            plugin: .fake(),
+            name: .fake(),
+            version: .fake(),
+            versionLatest: .fake(),
+            url: .fake(),
+            authorName: .fake(),
+            authorUrl: .fake(),
+            networkActivated: .fake()
+        )
+    }
+}
 extension TaxClass {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -1410,6 +1427,23 @@ extension UploadableMedia {
             localURL: .fake(),
             filename: .fake(),
             mimeType: .fake()
+        )
+    }
+}
+extension User {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> User {
+        .init(
+            localID: .fake(),
+            siteID: .fake(),
+            wpcomID: .fake(),
+            email: .fake(),
+            username: .fake(),
+            firstName: .fake(),
+            lastName: .fake(),
+            nickname: .fake(),
+            roles: .fake()
         )
     }
 }

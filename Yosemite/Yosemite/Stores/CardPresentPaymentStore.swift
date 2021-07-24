@@ -39,6 +39,8 @@ public final class CardPresentPaymentStore: Store {
         }
 
         switch action {
+        case .checkOnboardingState(let siteID, let onCompletion):
+            checkOnboardingState(siteID: siteID, onCompletion: onCompletion)
         case .startCardReaderDiscovery(let siteID, let onReaderDiscovered, let onError):
             startCardReaderDiscovery(siteID: siteID, onReaderDiscovered: onReaderDiscovered, onError: onError)
         case .cancelCardReaderDiscovery(let completion):
@@ -47,8 +49,6 @@ public final class CardPresentPaymentStore: Store {
             connect(reader: reader, onCompletion: completion)
         case .disconnect(let completion):
             disconnect(onCompletion: completion)
-        case .observeKnownReaders(let completion):
-            observeKnownReaders(onCompletion: completion)
         case .observeConnectedReaders(let completion):
             observeConnectedReaders(onCompletion: completion)
         case .collectPayment(let siteID, let orderID, let parameters, let event, let completion):
@@ -75,6 +75,19 @@ public final class CardPresentPaymentStore: Store {
 // MARK: - Services
 //
 private extension CardPresentPaymentStore {
+    func checkOnboardingState(siteID: Int64, onCompletion: (CardPresentPaymentOnboardingState) -> Void) {
+        let canCollectPayments = storageManager.viewStorage
+            .loadPaymentGatewayAccounts(siteID: siteID)
+            .contains(where: \.isCardPresentEligible)
+        let state: CardPresentPaymentOnboardingState
+        if canCollectPayments {
+            state = .completed
+        } else {
+            state = .genericError
+        }
+        onCompletion(state)
+    }
+
     func startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: @escaping (_ readers: [CardReader]) -> Void, onError: @escaping (Error) -> Void) {
         do {
             try cardReaderService.start(WCPayTokenProvider(siteID: siteID, remote: self.remote))
@@ -144,13 +157,6 @@ private extension CardPresentPaymentStore {
                 onCompletion(.success(result))
             }
         ))
-    }
-
-    /// Calls the completion block everytime the list of known readers changes
-    ///
-    func observeKnownReaders(onCompletion: @escaping ([Yosemite.CardReader]) -> Void) {
-        // TODO: Hook up to storage (see #3559) - for now, we return an empty array
-        onCompletion([])
     }
 
     /// Calls the completion block everytime the list of connected readers changes

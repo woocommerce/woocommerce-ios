@@ -676,6 +676,27 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "StateOfACountry"), 2)
         XCTAssertEqual(insertedCountry, country)
     }
+
+    func test_migrating_from_53_to_54_enables_creating_new_systemPlugin_entities() throws {
+        // Arrange
+        let sourceContainer = try startPersistentContainer("Model 53")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 54")
+        let targetContext = targetContainer.viewContext
+
+        // Assert
+        XCTAssertEqual(try targetContext.count(entityName: "SystemPlugin"), 0)
+
+        let systemPlugin = insertSystemPlugin(to: targetContext)
+        let insertedSystemPlugin = try XCTUnwrap(targetContext.firstObject(ofType: SystemPlugin.self))
+
+        XCTAssertEqual(try targetContext.count(entityName: "SystemPlugin"), 1)
+        XCTAssertEqual(insertedSystemPlugin, systemPlugin)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -1041,5 +1062,20 @@ private extension MigrationTests {
     func insertStateOfACountry(code: String, name: String, to context: NSManagedObjectContext) -> NSManagedObject {
         context.insert(entityName: "StateOfACountry", properties:
             ["code": code, "name": name])
+    }
+
+    @discardableResult
+    func insertSystemPlugin(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "SystemPlugin", properties: [
+            "siteID": 1372,
+            "plugin": "hello",
+            "name": "Hello Dolly",
+            "url": "http://wordpress.org/plugins/hello-dolly/",
+            "authorName": "Matt Mullenweg",
+            "authorUrl": "http://ma.tt/",
+            "version": "1.7.2",
+            "versionLatest": "1.7.2",
+            "networkActivated": false
+        ])
     }
 }

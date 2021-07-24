@@ -257,7 +257,7 @@ private extension OrderDetailsViewController {
         // top banner view can be Auto Layout based with dynamic height.
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
         headerContainer.addSubview(topBannerView)
-        headerContainer.pinSubviewToSafeArea(topBannerView, insets: Constants.headerContainerInsets)
+        headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)
         tableView.tableHeaderView = headerContainer
         tableView.updateHeaderHeight()
     }
@@ -525,6 +525,13 @@ private extension OrderDetailsViewController {
         let reviewOrderViewModel = ReviewOrderViewModel(order: viewModel.order, products: viewModel.products, showAddOns: viewModel.dataSource.showAddOns)
         let controller = ReviewOrderViewController(viewModel: reviewOrderViewModel) { [weak self] in
             guard let self = self else { return }
+            ServiceLocator.analytics.track(
+                .orderStatusChange,
+                withProperties: [
+                    "id": self.viewModel.order.orderID,
+                    "from": self.viewModel.order.status.rawValue,
+                    "to": OrderStatusEnum.completed.rawValue
+                ])
             let fulfillmentProcess = self.viewModel.markCompleted()
             let presenter = OrderFulfillmentNoticePresenter()
             presenter.present(process: fulfillmentProcess)

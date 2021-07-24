@@ -53,9 +53,9 @@ final class PluginListViewModel {
         resultsController.onDidChangeContent = onDataChanged
     }
 
-    /// Manually resync plugins.
+    /// Manually sync plugins.
     ///
-    func resyncPlugins(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func syncPlugins(onCompletion: @escaping (Result<Void, Error>) -> Void) {
         let action = SitePluginAction.synchronizeSitePlugins(siteID: siteID, onCompletion: onCompletion)
         storesManager.dispatch(action)
     }

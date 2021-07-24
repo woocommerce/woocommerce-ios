@@ -1429,11 +1429,17 @@ private extension OrderDetailsDataSource {
             return false
         }
 
-        guard let totalAmount = currencyFormatter.convertToDecimal(from: order.total) else {
+        guard let totalAmount = currencyFormatter.convertToDecimal(from: order.total), totalAmount.decimalValue > 0 else {
             return false
         }
 
-        return totalAmount.decimalValue > 0
+        // If there is a discrepancy between the orderTotal and the remaining amount to collect, it is not eligible
+        // This is a temporary solution that will exclude, for example:
+        // * orders that have been partially refunded.
+        // * orders where the merchant has applied a discount manually
+        // * in general, all orders where we might want to capture a payment for less than the total order amount
+        let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
+        return !paymentViewModel.hasBeenPartiallyCharged
     }
 
     func isOrderStatusEligibleForCardPayment() -> Bool {

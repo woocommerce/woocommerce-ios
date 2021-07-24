@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import Yosemite
 
 enum CardReaderSettingsUnknownViewModelDiscoveryState {
@@ -21,6 +22,18 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
     private let knownReadersProvider: CardReaderSettingsKnownReadersProvider?
     private let siteID: Int64
 
+    private var subscriptions = Set<AnyCancellable>()
+
+    private var knownReaderIDs: [String]? {
+        didSet {
+            guard let knownReaderIDs = knownReaderIDs else {
+                noKnownReaders = .isUnknown
+                return
+            }
+
+            noKnownReaders = knownReaderIDs.isEmpty ? .isTrue : .isFalse
+        }
+    }
     private var foundReader: CardReader?
 
     var discoveryState: CardReaderSettingsUnknownViewModelDiscoveryState = .notSearching {
@@ -36,23 +49,35 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
         self.didChangeShouldShow = didChangeShouldShow
         self.siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
         self.knownReadersProvider = knownReadersProvider
-        beginObservation()
+
+        beginKnownReaderObservation()
+        beginConnectedReaderObservation()
     }
 
-    /// Dispatches actions to the CardPresentPaymentStore so that we can monitor changes to the list of known
-    /// and connected readers.
-    ///
-    private func beginObservation() {
-        // This completion should be called repeatedly as the list of known readers changes
-        let knownAction = CardPresentPaymentAction.observeKnownReaders() { [weak self] readers in
-            guard let self = self else {
-                return
-            }
-            self.noKnownReaders = readers.isEmpty ? .isTrue : .isFalse
-            self.reevaluateShouldShow()
-        }
-        ServiceLocator.stores.dispatch(knownAction)
+    deinit {
+        subscriptions.removeAll()
+    }
 
+    /// Monitor the list of known readers
+    ///
+    private func beginKnownReaderObservation() {
+        guard knownReadersProvider != nil else {
+            self.knownReaderIDs = []
+            self.reevaluateShouldShow()
+            return
+        }
+
+        knownReadersProvider?.knownReaders
+            .sink(receiveValue: { [weak self] readerIDs in
+                self?.knownReaderIDs = readerIDs
+                self?.reevaluateShouldShow()
+            })
+            .store(in: &subscriptions)
+    }
+
+    /// Set up to observe readers connecting / disconnecting
+    ///
+    private func beginConnectedReaderObservation() {
         // This completion should be called repeatedly as the list of connected readers changes
         let connectedAction = CardPresentPaymentAction.observeConnectedReaders() { [weak self] readers in
             guard let self = self else {

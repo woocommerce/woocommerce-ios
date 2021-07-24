@@ -17,8 +17,11 @@ final class ShippingLabelAddressFormViewController: UIViewController {
 
     /// Top banner that shows a warning in case there is an error in the address validation.
     ///
-    private lazy var topBannerView: TopBannerView = {
-        let topBanner = ShippingLabelAddressTopBannerFactory.addressErrorTopBannerView(shipType: viewModel.type) { [weak self] in
+    private var topBannerView: TopBannerView {
+        let topBanner = ShippingLabelAddressTopBannerFactory.addressErrorTopBannerView(
+            shipType: viewModel.type,
+            phoneNumber: viewModel.address?.phone
+        ) { [weak self] in
             MapsHelper.openAppleMaps(address: self?.viewModel.address?.formattedPostalAddress) { [weak self] (result) in
                 ServiceLocator.analytics.track(.shippingLabelEditAddressOpenMapButtonTapped)
                 switch result {
@@ -37,7 +40,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
 
         topBanner.translatesAutoresizingMaskIntoConstraints = false
         return topBanner
-    }()
+    }
 
     private let viewModel: ShippingLabelAddressFormViewModel
 
@@ -159,7 +162,9 @@ private extension ShippingLabelAddressFormViewController {
         // Configure header container view
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
         headerContainer.addSubview(topStackView)
-        headerContainer.pinSubviewToSafeArea(topStackView)
+        headerContainer.pinSubviewToAllEdges(topStackView)
+
+        topStackView.removeAllArrangedSubviews()
         topStackView.addArrangedSubview(topBannerView)
 
         tableView.tableHeaderView = headerContainer

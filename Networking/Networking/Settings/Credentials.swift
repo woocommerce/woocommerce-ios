@@ -45,13 +45,6 @@ public struct Credentials: Equatable {
     }
 }
 
-
-/// Equatable Support
-///
-public func ==(lhs: Credentials, rhs: Credentials) -> Bool {
-    return lhs.authToken == rhs.authToken && lhs.username == rhs.username
-}
-
 private extension Credentials {
     struct Constants {
         static let placeholderSiteAddress = "https://wordpress.com"

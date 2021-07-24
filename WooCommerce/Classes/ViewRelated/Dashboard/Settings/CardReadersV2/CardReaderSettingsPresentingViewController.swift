@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import SwiftUI
 
 final class CardReaderSettingsPresentingViewController: UIViewController {
 
@@ -68,6 +69,26 @@ private extension CardReaderSettingsPresentingViewController {
 
     private func configureNavigation() {
         title = Localization.screenTitle
+    }
+}
+
+// MARK: - SwiftUI compatibility
+//
+
+/// SwiftUI wrapper for CardReaderSettingsPresentingViewController
+///
+struct CardReaderSettingsPresentingView: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> some UIViewController {
+        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsPresentingViewController.self) else {
+            fatalError("Cannot instantiate `CardReaderSettingsPresentingViewController` from Dashboard storyboard")
+        }
+
+        let viewModelsAndViews = CardReaderSettingsViewModelsOrderedList()
+        viewController.configure(viewModelsAndViews: viewModelsAndViews)
+        return viewController
+    }
+
+    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
     }
 }
 

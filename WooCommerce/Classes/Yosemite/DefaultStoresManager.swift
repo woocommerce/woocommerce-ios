@@ -120,22 +120,16 @@ class DefaultStoresManager: StoresManager {
         let group = DispatchGroup()
 
         group.enter()
-        synchronizeAccount { _ in
-            group.leave()
-        }
-
-        group.enter()
-        synchronizeAccountSettings { _ in
+        synchronizeAccount { [weak self] _ in
+            group.enter()
+            self?.synchronizeAccountSettings { _ in
+                group.leave()
+            }
             group.leave()
         }
 
         group.enter()
         synchronizeSites { _ in
-            group.leave()
-        }
-
-        group.enter()
-        synchronizeSitePlan { _ in
             group.leave()
         }
 
@@ -277,18 +271,6 @@ private extension DefaultStoresManager {
         dispatch(action)
     }
 
-    /// Synchronizes the WordPress.com Site Plan.
-    ///
-    func synchronizeSitePlan(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        guard let siteID = sessionManager.defaultSite?.siteID else {
-            onCompletion(.failure(StoresManagerError.missingDefaultSite))
-            return
-        }
-
-        let action = AccountAction.synchronizeSitePlan(siteID: siteID, onCompletion: onCompletion)
-        dispatch(action)
-    }
-
     /// Synchronizes the settings for the specified site, if possible.
     ///
     func synchronizeSettings(with siteID: Int64, onCompletion: @escaping () -> Void) {
@@ -317,6 +299,15 @@ private extension DefaultStoresManager {
             group.leave()
         }
         dispatch(productSettingsAction)
+
+        group.enter()
+        let sitePlanAction = AccountAction.synchronizeSitePlan(siteID: siteID) { result in
+            if case let .failure(error) = result {
+                errors.append(error)
+            }
+            group.leave()
+        }
+        dispatch(sitePlanAction)
 
         group.notify(queue: .main) {
             if errors.isEmpty {
@@ -367,12 +358,12 @@ private extension DefaultStoresManager {
         dispatch(action)
     }
 
-    /// Synchronizes all plugins for the store with specified ID.
+    /// Synchronizes all system plugins for the store with specifie ID
     ///
-    func synchronizePlugins(siteID: Int64) {
-        let action = SitePluginAction.synchronizeSitePlugins(siteID: siteID) { result in
+    func synchronizeSystemPlugins(siteID: Int64) {
+        let action = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { result in
             if let error = result.failure {
-                DDLogError("⛔️ Failed to sync plugins for siteID: \(siteID). Error: \(error)")
+                DDLogError("⛔️ Failed to sync sytem plugins for siteID: \(siteID). Error: \(error)")
             }
         }
         dispatch(action)
@@ -393,7 +384,7 @@ private extension DefaultStoresManager {
         retrieveOrderStatus(with: siteID)
         synchronizePaymentGateways(siteID: siteID)
         synchronizeAddOnsGroups(siteID: siteID)
-        synchronizePlugins(siteID: siteID)
+        synchronizeSystemPlugins(siteID: siteID)
     }
 
     /// Loads the specified siteID into the Session, if possible.

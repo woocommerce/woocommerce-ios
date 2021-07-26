@@ -749,8 +749,9 @@ platform :ios do
     match(
       type: 'appstore',
       team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
-      readonly: true,
-      app_identifier: ['com.automattic.woocommerce']
+      readonly: false,
+      app_identifier: ['com.automattic.woocommerce'],
+      template_name: 'Apple Pay Pass Suppression',
     )
   end
 

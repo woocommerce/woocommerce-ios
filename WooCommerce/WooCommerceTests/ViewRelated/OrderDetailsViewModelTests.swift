@@ -146,7 +146,9 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
     func test_checkShippingLabelCreationEligibility_dispatches_correct_check_when_M2M3_international_and_addPaymentMethod_flags_are_enabled() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isShippingLabelsM2M3On: true, isInternationalShippingLabelsOn: true, isShippingLabelsPaymentMethodCreationOn: true)
+        let featureFlagService = MockFeatureFlagService(isShippingLabelsM2M3On: true,
+                                                        isInternationalShippingLabelsOn: true,
+                                                        isShippingLabelsPaymentMethodCreationOn: true)
         ServiceLocator.setFeatureFlagService(featureFlagService)
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
@@ -174,9 +176,12 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(canCreatePackage)
     }
 
-    func test_checkShippingLabelCreationEligibility_dispatches_correct_check_when_M2M3_international_addPaymentMethod_and_addCustomPackage_flags_are_enabled() throws {
+    func test_checkShippingLabelCreationEligibility_dispatches_correct_check_when_M2M3_and_M4_flags_are_enabled() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isShippingLabelsM2M3On: true, isInternationalShippingLabelsOn: true, isShippingLabelsPaymentMethodCreationOn: true, isShippingLabelsPackageCreationOn: true)
+        let featureFlagService = MockFeatureFlagService(isShippingLabelsM2M3On: true,
+                                                        isInternationalShippingLabelsOn: true,
+                                                        isShippingLabelsPaymentMethodCreationOn: true,
+                                                        isShippingLabelsPackageCreationOn: true)
         ServiceLocator.setFeatureFlagService(featureFlagService)
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 

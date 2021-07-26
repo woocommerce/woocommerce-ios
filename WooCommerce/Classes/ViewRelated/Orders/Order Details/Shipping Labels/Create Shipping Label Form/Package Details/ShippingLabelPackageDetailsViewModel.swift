@@ -64,7 +64,11 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     }
     @Published private(set) var selectedCustomPackage: ShippingLabelCustomPackage?
     @Published private(set) var selectedPredefinedPackage: ShippingLabelPredefinedPackage?
-    @Published var totalWeight: String
+    @Published var totalWeight: String = ""
+
+    /// Whether the user has edited the total package weight. If true, we won't make any automatic changes to the total weight.
+    ///
+    var isPackageWeightEdited: Bool = false
 
     /// Returns if the custom packages header should be shown in Package List
     ///
@@ -89,11 +93,11 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         self.weightUnit = weightUnit
         self.packagesResponse = packagesResponse
         self.selectedPackageID = selectedPackageID
-        self.totalWeight = totalWeight ?? ""
         configureResultsControllers()
         syncProducts()
         syncProductVariations()
         setDefaultPackage()
+        setTotalWeight(using: totalWeight)
     }
 
     private func configureResultsControllers() {
@@ -135,14 +139,18 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
                 product = products.first { $0.productID == item.productID }
             }
             if product?.virtual == false || productVariation?.virtual == false {
+                var tempItemQuantity = Double(truncating: item.quantity as NSDecimalNumber)
 
-                /// We do not consider fractional quantities because the backend will return always int values for the quantity.
-                /// We are also showing items only when the quantity is > 1, because in that case we are not considering it a valid value.
-                ///
                 for _ in 0..<item.quantity.intValue {
                     let attributes = item.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) }
+                    var weight = Double(productVariation?.weight ?? product?.weight ?? "0") ?? 0
+                    if tempItemQuantity < 1 {
+                        weight *= tempItemQuantity
+                    } else {
+                        tempItemQuantity -= 1
+                    }
                     let unit: String = weightUnit ?? ""
-                    let subtitle = Localization.subtitle(weight: isVariation ? productVariation?.weight : product?.weight,
+                    let subtitle = Localization.subtitle(weight: weight.description,
                                                          weightUnit: unit,
                                                          attributes: attributes)
                     itemsToFulfill.append(ItemToFulfillRow(title: item.name, subtitle: subtitle))
@@ -152,16 +160,19 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         return itemsToFulfill
     }
 
-    /// Set the total weight based on the weight of products and products variation inside the order items,
-    /// only if they are not virtual products.
+    /// Set the total weight based on the weight of the selected package and
+    /// the products and products variation inside the order items, only if they are not virtual products.
     ///
-    private func setTotalWeight() {
-        guard totalWeight.isEmpty else {
+    /// - Parameter initialWeight: An initial value used to set the total package weight if it was input manually.
+    ///
+    private func setTotalWeight(using initialWeight: String? = nil) {
+        guard !isPackageWeightEdited else {
             return
         }
 
         var tempTotalWeight: Double = 0
 
+        // Add each order item's weight to the total weight.
         for item in orderItems {
             let isVariation = item.variationID > 0
             var product: Product?
@@ -174,11 +185,24 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
                 product = products.first { $0.productID == item.productID }
             }
             if product?.virtual == false || productVariation?.virtual == false {
-                tempTotalWeight += Double(productVariation?.weight ?? product?.weight ?? "0") ?? 0
+                let itemWeight = Double(productVariation?.weight ?? product?.weight ?? "0") ?? 0
+                tempTotalWeight += itemWeight * Double(truncating: item.quantity as NSDecimalNumber)
             }
         }
 
-        totalWeight = String(tempTotalWeight)
+        // Add selected package weight to the total weight.
+        // Only custom packages have a defined weight, so we only do this if a custom package is selected.
+        if let selectedPackage = selectedCustomPackage {
+            tempTotalWeight += selectedPackage.boxWeight
+        }
+
+        // Set the total weight as the initial value if it was input manually; otherwise use the calculated weight.
+        if let initialWeight = initialWeight, initialWeight != String(tempTotalWeight) {
+            isPackageWeightEdited = true
+            totalWeight = initialWeight
+        } else {
+            totalWeight = String(tempTotalWeight)
+        }
     }
 }
 
@@ -228,7 +252,8 @@ extension ShippingLabelPackageDetailsViewModel {
         }
     }
 
-    /// Writes into the binding variable the final package selection value when confirmed
+    /// Writes into the binding variable the final package selection value when confirmed.
+    /// Also sets the total weight for the package, including the selected package weight (if any).
     ///
     func confirmPackageSelection() {
         if let selectedCustomPackage = selectedCustomPackage {
@@ -237,6 +262,7 @@ extension ShippingLabelPackageDetailsViewModel {
         else if let selectedPredefinedPackage = selectedPredefinedPackage {
             selectedPackageID = selectedPredefinedPackage.id
         }
+        setTotalWeight()
     }
 
     /// Sets the package passed through the init method, or set the last selected package, if any, as the default selected package

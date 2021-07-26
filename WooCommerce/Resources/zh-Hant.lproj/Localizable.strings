@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-07-08 09:54:58+0000 */
+/* Translation-Revision-Date: 2021-07-22 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -596,7 +596,7 @@
 "Choose Paper Size" = "選擇紙張大小";
 
 /* Navigation title on the shipping label states of a country selector screen */
-"Choose a State" = "Choose a State";
+"Choose a State" = "選擇州";
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "從裝置中選擇";
@@ -768,7 +768,7 @@
 "Current" = "最新";
 
 /* Error when the user tap on Country field in Shipping Label Address Validation */
-"Currently we support just the United States from mobile." = "Currently we support just the United States from mobile.";
+"Currently we support just the United States from mobile." = "我們目前只支援美國的手機使用者。";
 
 /* Name of the section for custom shipment tracking carriers */
 "Custom" = "自訂";
@@ -1058,7 +1058,7 @@
 "Error previewing shipping label" = "預覽郵寄標籤時發生錯誤";
 
 /* Notice displayed when the label purchase fails */
-"Error purchasing the label" = "Error purchasing the label";
+"Error purchasing the label" = "購買標籤時發生錯誤";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -2155,7 +2155,7 @@
 "Purchase note" = "購買備註";
 
 /* Title of the in-progress UI while purchasing a shipping label */
-"Purchasing Label" = "Purchasing Label";
+"Purchasing Label" = "購買標籤";
 
 /* Quantity abbreviation for section title */
 "QTY" = "數量";
@@ -2302,7 +2302,7 @@
 "Revenue" = "收益";
 
 /* Title of Review Order screen */
-"Review Order" = "Review Order";
+"Review Order" = "檢閱訂單";
 
 /* Review moderation success notice message. It reads: Review marked as {new status} */
 "Review marked as %@" = "已將評論標記為%@";
@@ -2356,7 +2356,7 @@
 "Save as draft" = "儲存為草稿";
 
 /* Button title to save a shipping label to print later */
-"Save for Later" = "Save for Later";
+"Save for Later" = "儲存以供稍後使用";
 
 /* Message text in the shipping label creation info screen */
 "Save time and money by fulfilling with WooCommerce Shipping" = "使用 WooCommerce Shipping 完成運送，省時又省錢";
@@ -2494,7 +2494,7 @@
 "Shipping" = "運送方式";
 
 /* Shipping Address title for customer info section */
-"Shipping Address" = "Shipping Address";
+"Shipping Address" = "運送地址";
 
 /* Title of shipping carrier and rates in shipping label details
    Title of the cell Shipping Carrier inside Create Shipping Label form */
@@ -2526,7 +2526,7 @@
 "Shipping label order summary" = "郵寄標籤訂單摘要";
 
 /* Header text when printing a newly purchased shipping label */
-"Shipping label purchased!" = "Shipping label purchased!";
+"Shipping label purchased!" = "已購買郵寄標籤！";
 
 /* VoiceOver accessibility label for the shipping notice about the order */
 "Shipping notice about the order" = "訂單的運送通知";
@@ -2921,7 +2921,7 @@
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "此伺服器的憑證無效。你可能正連線至冒充為「%@」的伺服器，而這可能洩漏你的機密資料。\n\n是否仍然要信任憑證？";
 
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
-"The customer will receive an email once order is completed" = "The customer will receive an email once order is completed";
+"The customer will receive an email once order is completed" = "訂單完成後，客戶會收到電子郵件";
 
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "電話號碼無效，或是你無法使用此裝置致電顧客。";
@@ -3175,7 +3175,7 @@
 "Unable to delete tracking for order #%1$d" = "無法刪除訂單 #%1$d 的追蹤";
 
 /* Unable to fetch countries action failed in Shipping Label Form */
-"Unable to fetch countries." = "Unable to fetch countries.";
+"Unable to fetch countries." = "無法擷取國家\/地區。";
 
 /* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
 "Unable to fulfill order #%1$d" = "無法完成訂單 #%1$d";

@@ -1,0 +1,3 @@
+Atendendo a pedidos, a tela de conclusão de pedido está de volta ao tocar em Marcar pedido como concluído. Agradecemos a todos que entraram em contato conosco para manisfestar seu interesse nessa funcionalidade!
+
+Adicionamos ao aplicativo suporte inicial para criação de etiquetas de envio. Quer experimentar? Instale e ative a extensão WooCommerce Shipping & Tax na sua loja. No momento, oferecemos suporte a comerciantes nos EUA que enviam produtos para endereços dentro do país. Adoraríamos receber seu feedback!

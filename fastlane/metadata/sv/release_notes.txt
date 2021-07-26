@@ -1,0 +1,3 @@
+På allmän begäran har vi tagit tillbaka skärmen för beställningsbehandling när man trycker på Markera beställning som slutförd. Tack till alla som har hört av sig och visat intresse för funktionen!
+
+Vi har lagt till grundläggande support för att skapa fraktetiketter i appen! Vill du prova? Installera och aktivera WooCommerce Shipping & Tax-utökningen i din butik. För tillfället stöder vi handlare i USA med frakt till amerikanska adresser. Vi välkomnar din feedback!

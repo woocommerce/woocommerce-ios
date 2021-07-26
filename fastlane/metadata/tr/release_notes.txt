@@ -1,0 +1,3 @@
+Yaygın talepler doğrultusunda, Siparişi Tamamlandı Olarak İşaretle seçeneğine dokunduğunuzda görüntülenen sipariş tamamlandı ekranını geri getirdik. Bu özelliğe duyduğu ilgiyi bizlere ulaşarak gösteren herkese teşekkür ederiz!
+
+Gönderim etiketlerinin oluşturulması işlemi için uygulamaya ilk desteği ekledik! Bu özelliği denemek ister misiniz? Dükkanınızda WooCommerce Shipping & Tax uzantısını indirerek etkinleştirin. Şu anda, yalnızca ABD adreslerine satış yapan ABD'deki satıcıları destekliyoruz. Geri bildirimleriniz bizim için değerli!

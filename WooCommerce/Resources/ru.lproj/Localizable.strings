@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-07-07 09:54:04+0000 */
+/* Translation-Revision-Date: 2021-07-20 12:54:04+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -596,7 +596,7 @@
 "Choose Paper Size" = "Выбрать размер бумаги";
 
 /* Navigation title on the shipping label states of a country selector screen */
-"Choose a State" = "Choose a State";
+"Choose a State" = "Выберите штат";
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "Выбрать с устройства";
@@ -768,7 +768,7 @@
 "Current" = "Текущая дата";
 
 /* Error when the user tap on Country field in Shipping Label Address Validation */
-"Currently we support just the United States from mobile." = "Currently we support just the United States from mobile.";
+"Currently we support just the United States from mobile." = "В настоящее время с мобильных устройств мы поддерживаем только США.";
 
 /* Name of the section for custom shipment tracking carriers */
 "Custom" = "Дополнительно";
@@ -1058,7 +1058,7 @@
 "Error previewing shipping label" = "Не удалось выполнить предварительный просмотр транспортной этикетки";
 
 /* Notice displayed when the label purchase fails */
-"Error purchasing the label" = "Error purchasing the label";
+"Error purchasing the label" = "Ошибка при покупке этикетки";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -2155,7 +2155,7 @@
 "Purchase note" = "Уведомление о приобретении";
 
 /* Title of the in-progress UI while purchasing a shipping label */
-"Purchasing Label" = "Purchasing Label";
+"Purchasing Label" = "Покупка этикетки";
 
 /* Quantity abbreviation for section title */
 "QTY" = "КОЛ-ВО";
@@ -2302,7 +2302,7 @@
 "Revenue" = "Доход";
 
 /* Title of Review Order screen */
-"Review Order" = "Review Order";
+"Review Order" = "Просмотреть заказ";
 
 /* Review moderation success notice message. It reads: Review marked as {new status} */
 "Review marked as %@" = "Обзор помечен как %@";
@@ -2356,7 +2356,7 @@
 "Save as draft" = "Сохранить как черновик";
 
 /* Button title to save a shipping label to print later */
-"Save for Later" = "Save for Later";
+"Save for Later" = "Сохранить для последующего использования";
 
 /* Message text in the shipping label creation info screen */
 "Save time and money by fulfilling with WooCommerce Shipping" = "Экономьте время и деньги, выполняя заказы с помощью WooCommerce Shipping";
@@ -2494,7 +2494,7 @@
 "Shipping" = "Доставка";
 
 /* Shipping Address title for customer info section */
-"Shipping Address" = "Shipping Address";
+"Shipping Address" = "Адрес доставки";
 
 /* Title of shipping carrier and rates in shipping label details
    Title of the cell Shipping Carrier inside Create Shipping Label form */
@@ -2526,7 +2526,7 @@
 "Shipping label order summary" = "Сводка по заказу на транспортные этикетки";
 
 /* Header text when printing a newly purchased shipping label */
-"Shipping label purchased!" = "Shipping label purchased!";
+"Shipping label purchased!" = "Транспортная этикетка приобретена!";
 
 /* VoiceOver accessibility label for the shipping notice about the order */
 "Shipping notice about the order" = "Уведомление о доставке заказа";
@@ -2921,7 +2921,7 @@
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Сертификат для этого сервера недействителен. Возможно, вы пытаетесь подключиться к серверу, который имитирует «%@». Это может представлять риск для конфиденциальности вашей информации.\n\nДоверять этому сертификату?";
 
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
-"The customer will receive an email once order is completed" = "The customer will receive an email once order is completed";
+"The customer will receive an email once order is completed" = "После выполнения заказа клиент получит сообщение по электронной почте.";
 
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "Неверный номер телефона, или невозможно позвонить клиенту с этого устройства.";
@@ -3175,7 +3175,7 @@
 "Unable to delete tracking for order #%1$d" = "Не удаётся отменить отслеживание для заказа № %1$d";
 
 /* Unable to fetch countries action failed in Shipping Label Form */
-"Unable to fetch countries." = "Unable to fetch countries.";
+"Unable to fetch countries." = "Не удалось получить данные о странах.";
 
 /* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
 "Unable to fulfill order #%1$d" = "Не удалось выполнить заказ № %1$d";

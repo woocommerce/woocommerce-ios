@@ -1,0 +1,3 @@
+Suite à une demande récurrente, nous avons rétabli l’écran d’exécution de commande lorsque la fonction Marquer la commande comme terminée est sélectionnée. Merci à tous ceux qui ont partagé leur intérêt pour cette fonctionnalité !
+
+Nous avons ajouté la prise en charge initiale de création des étiquettes d’expédition dans l’application ! Voulez-vous essayer ? Installez et activez l’extension WooCommerce Shipping & Tax depuis votre boutique. Nous soutenons désormais les commerçants américains qui livrent aux États-Unis. N’hésitez pas à donner votre avis !

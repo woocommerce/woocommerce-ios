@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-07-07 11:54:03+0000 */
+/* Translation-Revision-Date: 2021-07-23 11:54:08+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -596,7 +596,7 @@
 "Choose Paper Size" = "Papiergröße auswählen";
 
 /* Navigation title on the shipping label states of a country selector screen */
-"Choose a State" = "Choose a State";
+"Choose a State" = "Staat wählen";
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "Von Gerät auswählen";
@@ -768,7 +768,7 @@
 "Current" = "Aktuell";
 
 /* Error when the user tap on Country field in Shipping Label Address Validation */
-"Currently we support just the United States from mobile." = "Currently we support just the United States from mobile.";
+"Currently we support just the United States from mobile." = "Derzeit unterstützen wir nur die USA über die mobile Version.";
 
 /* Name of the section for custom shipment tracking carriers */
 "Custom" = "Individuell";
@@ -1058,7 +1058,7 @@
 "Error previewing shipping label" = "Fehler bei der Vorschau des Versandetiketts";
 
 /* Notice displayed when the label purchase fails */
-"Error purchasing the label" = "Error purchasing the label";
+"Error purchasing the label" = "Fehler beim Kauf der Etiketten";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -2155,7 +2155,7 @@
 "Purchase note" = "Kaufbestätigung";
 
 /* Title of the in-progress UI while purchasing a shipping label */
-"Purchasing Label" = "Purchasing Label";
+"Purchasing Label" = "Versandetiketten werden gekauft";
 
 /* Quantity abbreviation for section title */
 "QTY" = "MGE";
@@ -2302,7 +2302,7 @@
 "Revenue" = "Umsatz";
 
 /* Title of Review Order screen */
-"Review Order" = "Review Order";
+"Review Order" = "Bestellung überprüfen";
 
 /* Review moderation success notice message. It reads: Review marked as {new status} */
 "Review marked as %@" = "Bewertung markiert als %@";
@@ -2356,7 +2356,7 @@
 "Save as draft" = "Als Entwurf speichern";
 
 /* Button title to save a shipping label to print later */
-"Save for Later" = "Save for Later";
+"Save for Later" = "Für später speichern";
 
 /* Message text in the shipping label creation info screen */
 "Save time and money by fulfilling with WooCommerce Shipping" = "Spare durch die Ausführung mit WooCommerce Shipping Zeit und Geld";
@@ -2494,7 +2494,7 @@
 "Shipping" = "Versand";
 
 /* Shipping Address title for customer info section */
-"Shipping Address" = "Shipping Address";
+"Shipping Address" = "Lieferadresse";
 
 /* Title of shipping carrier and rates in shipping label details
    Title of the cell Shipping Carrier inside Create Shipping Label form */
@@ -2526,7 +2526,7 @@
 "Shipping label order summary" = "Zusammenfassung der Versandetiketten-Bestellung";
 
 /* Header text when printing a newly purchased shipping label */
-"Shipping label purchased!" = "Shipping label purchased!";
+"Shipping label purchased!" = "Versandetikett gekauft!";
 
 /* VoiceOver accessibility label for the shipping notice about the order */
 "Shipping notice about the order" = "Versandmitteilung zur Bestellung";
@@ -2921,7 +2921,7 @@
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Das Zertifikat für diesen Server ist ungültig. Du könntest zu einem Server verbinden, der nur vorgibt \"%@\" zu sein, was ein Sicherheitsrisiko darstellt.\n\nMöchtest Du dem Zertifikat trotzdem vertrauen?";
 
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
-"The customer will receive an email once order is completed" = "The customer will receive an email once order is completed";
+"The customer will receive an email once order is completed" = "Der Kunde erhält eine E-Mail, sobald die Bestellung abgeschlossen ist.";
 
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "Die Telefonnummer ist entweder ungültig oder du kannst den Kunden von diesem Gerät aus nicht anrufen.";
@@ -3175,7 +3175,7 @@
 "Unable to delete tracking for order #%1$d" = "Sendungsverfolgung für Bestellung Nr.%1$d kann nicht gelöscht werden";
 
 /* Unable to fetch countries action failed in Shipping Label Form */
-"Unable to fetch countries." = "Unable to fetch countries.";
+"Unable to fetch countries." = "Länder konnten nicht abgerufen werden.";
 
 /* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
 "Unable to fulfill order #%1$d" = "Bestellung Nr. %1$d konnte nicht erfüllt werden";

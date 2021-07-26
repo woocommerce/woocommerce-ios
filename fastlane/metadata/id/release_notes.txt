@@ -1,0 +1,3 @@
+Karena banyak yang meminta, kami menampilkan kembali layar pemenuhan pesanan saat Tandai Pesanan Selesai diketuk. Terima kasih untuk semua pengguna yang telah menghubungi dan memberi tahu kami minatnya pada fungsi ini.
+
+Kami menambahkan dukungan awal untuk membuat label pengiriman dari aplikasi. Ingin mencoba fitur ini? Instal dan aktifkan ekstensi WooCommerce Shipping & Tax di toko Anda. Saat ini, kami mendukung penjual di Amerika Serikat yang ingin mengirim ke berbagai alamat di Amerika Serikat. Kami pasti mendengar masukan Anda.

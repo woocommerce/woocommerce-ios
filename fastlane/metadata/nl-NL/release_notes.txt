@@ -1,0 +1,3 @@
+Omdat er zo vaak om werd gevraagd, hebben we het scherm Bestelling voltooien opnieuw geïntroduceerd wanneer je tikt op Bestelling markeren als voltooid. We bedanken iedereen die ons liet weten deze functie graag terug te zien!
+
+We hebben aanvankelijke ondersteuning toegevoegd voor het aanmaken van verzendlabels in de app! Probeer het eens uit! Installeer en activeer de extensie WooCommerce Shipping en Tax in je winkel. Op dit moment ondersteunen we verkopers in de VS die binnen de VS verzenden. We horen graag je feedback!

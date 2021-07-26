@@ -22,10 +22,6 @@ enum FeatureFlag: Int {
     ///
     case shippingLabelsM2M3
 
-    /// Shipping labels - Milestone 4
-    ///
-    case shippingLabelsM4
-
     /// Shipping labels - International Shipping
     ///
     case shippingLabelsInternational

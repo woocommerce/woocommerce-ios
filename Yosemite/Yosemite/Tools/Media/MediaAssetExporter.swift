@@ -2,7 +2,6 @@ import Foundation
 import MobileCoreServices
 import AVFoundation
 import Photos
-import UniformTypeIdentifiers
 
 /// Exports a media item of `PHAsset` type to be uploadable.
 ///
@@ -109,10 +108,10 @@ private extension MediaAssetExporter {
         }
 
         guard allowableFileExtensions.isEmpty == false,
-              let extensionType = UTType(uti)?.preferredFilenameExtension else {
+              let fileExtensionForType = URL.fileExtensionForUTType(uti) else {
                 return nil
         }
-        guard allowableFileExtensions.contains(extensionType) else {
+        guard allowableFileExtensions.contains(fileExtensionForType) else {
             return kUTTypeJPEG as String
         }
         return uti

@@ -11,6 +11,14 @@ struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .shippingLabelsM4:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .shippingLabelsInternational:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .shippingLabelsAddPaymentMethods:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .shippingLabelsAddCustomPackages:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .shippingLabelsMultiPackage:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .sitePlugins:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .cardPresentOnboarding:

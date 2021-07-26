@@ -26,6 +26,22 @@ enum FeatureFlag: Int {
     ///
     case shippingLabelsM4
 
+    /// Shipping labels - International Shipping
+    ///
+    case shippingLabelsInternational
+
+    /// Shipping labels - Add payment methods
+    ///
+    case shippingLabelsAddPaymentMethods
+
+    /// Shipping labels - Add custom packages
+    ///
+    case shippingLabelsAddCustomPackages
+
+    /// Shipping labels - Multi-package support
+    ///
+    case shippingLabelsMultiPackage
+
     /// Site Plugin list entry point on Settings screen
     ///
     case sitePlugins

@@ -61,7 +61,12 @@ struct ShippingLabelPackageDetails: View {
                                              placeholder: "0",
                                              text: $viewModel.totalWeight,
                                              symbol: viewModel.weightUnit,
-                                             keyboardType: .decimalPad)
+                                             keyboardType: .decimalPad,
+                                             onEditingChanged: { _ in
+                                                // We don't have a Return button to track committed changes to this field,
+                                                // so if the user starts editing the field we assume it was edited.
+                                                viewModel.isPackageWeightEdited = true
+                                             })
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
 
                         Divider()
@@ -71,32 +76,6 @@ struct ShippingLabelPackageDetails: View {
                     ListHeaderView(text: Localization.footer, alignment: .left)
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
                 }
-
-                ListHeaderView(text: Localization.packageDetailsHeader, alignment: .left)
-                    .background(Color(.listBackground))
-
-                TitleAndValueRow(title: Localization.packageSelected, value: viewModel.selectedPackageName, selectable: true) {
-                    showingAddPackage.toggle()
-                }.sheet(isPresented: $showingAddPackage, content: {
-                    ShippingLabelPackageList(viewModel: viewModel)
-                })
-
-                Divider()
-
-                TitleAndTextFieldRow(title: Localization.totalPackageWeight,
-                                     placeholder: "0",
-                                     text: $viewModel.totalWeight,
-                                     symbol: viewModel.weightUnit,
-                                     keyboardType: .decimalPad,
-                                     onEditingChanged: { _ in
-                                        // We don't have a Return button to track committed changes to this field,
-                                        // so if the user starts editing the field we assume it was edited.
-                                        viewModel.isPackageWeightEdited = true
-                                     })
-                Divider()
-
-                ListHeaderView(text: Localization.footer, alignment: .left)
-                    .background(Color(.listBackground))
             }
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: .horizontal)

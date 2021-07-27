@@ -108,7 +108,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     private func configureItemRows() {
         $products.combineLatest($productVariations) { [weak self] (products, variations) in
             guard let self = self else { return [] }
-            return self.generateItemsRows(from: products, variations: variations)
+            return self.generateItemsRows(products: products, productVariations: variations)
         }
         .assign(to: &$itemsRows)
     }
@@ -135,7 +135,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     /// Generate the items rows, creating an element in the array for every item (eg. if there is an item with quantity 3,
     /// we will generate 3 different items), and we will remove virtual products. 
     ///
-    private func generateItemsRows(from products: [Product], variations: [ProductVariation]) -> [ItemToFulfillRow] {
+    private func generateItemsRows(products: [Product], productVariations: [ProductVariation]) -> [ItemToFulfillRow] {
         var itemsToFulfill: [ItemToFulfillRow] = []
         for item in orderItems {
             let isVariation = item.variationID > 0

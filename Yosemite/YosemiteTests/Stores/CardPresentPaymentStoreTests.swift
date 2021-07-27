@@ -234,4 +234,35 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         XCTAssertTrue(mockCardReaderService.didHitDisconnect)
     }
+
+    // MARK: - CardPresentPaymentAction.checkOnboardingState
+    func test_onboarding_returns_generic_error_by_default() {
+        // This is not the desired final state, but we will use a generic error for any case
+        // that is not implemented yet
+        let state = checkOnboardingState()
+        XCTAssertEqual(state, .genericError)
+    }
+}
+
+private extension CardPresentPaymentStoreTests {
+    /// Returns the current onboarding state
+    ///
+    /// This is a helper method to avoid repeating boilerplate in all the different test cases, so the actual tested logic is more apparent.
+    ///
+    func checkOnboardingState() -> CardPresentPaymentOnboardingState {
+        let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
+                                                       storageManager: storageManager,
+                                                       network: network,
+                                                       cardReaderService: mockCardReaderService)
+        let expectation = self.expectation(description: "Check onboarding state")
+
+        var returnedState: CardPresentPaymentOnboardingState? = nil
+        let action = CardPresentPaymentAction.checkOnboardingState(siteID: sampleSiteID) { state in
+            returnedState = state
+            expectation.fulfill()
+        }
+        cardPresentStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        return returnedState!
+    }
 }

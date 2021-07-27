@@ -118,7 +118,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         .assign(to: &$itemsRows)
     }
 
-    /// Observe changes in selected package ID, products and variations to update total package weight.
+    /// Observe changes in selected custom package, products and variations to update total package weight.
     ///
     private func configureTotalWeights() {
         $selectedCustomPackage.combineLatest($products, $productVariations) { (customPackage, products, variations) in

@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 import SwiftUI
 import Yosemite
@@ -17,11 +18,11 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
 
     /// Products contained inside the Order and fetched from Core Data
     ///
-    private var products: [Product] = []
+    @Published private var products: [Product] = []
 
     /// ProductVariations contained inside the Order and fetched from Core Data
     ///
-    private var productVariations: [ProductVariation] = []
+    @Published private var productVariations: [ProductVariation] = []
 
     /// The packages  response fetched from API
     ///
@@ -93,11 +94,23 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         self.weightUnit = weightUnit
         self.packagesResponse = packagesResponse
         self.selectedPackageID = selectedPackageID
+
+        configureItemRows()
         configureResultsControllers()
         syncProducts()
         syncProductVariations()
         setDefaultPackage()
         setTotalWeight(using: totalWeight)
+    }
+
+    /// Observe changes in products and variations to update item rows.
+    ///
+    private func configureItemRows() {
+        $products.combineLatest($productVariations) { [weak self] (products, variations) in
+            guard let self = self else { return [] }
+            return self.generateItemsRows(from: products, variations: variations)
+        }
+        .assign(to: &$itemsRows)
     }
 
     private func configureResultsControllers() {
@@ -107,25 +120,22 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
            onProductReload: { [weak self] (products) in
             guard let self = self else { return }
             self.products = products
-            self.itemsRows = self.generateItemsRows()
             self.setTotalWeight()
         }, onProductVariationsReload: { [weak self] (productVariations) in
             guard let self = self else { return }
             self.productVariations = productVariations
-            self.itemsRows = self.generateItemsRows()
             self.setTotalWeight()
         })
 
         products = resultsControllers?.products ?? []
         productVariations = resultsControllers?.productVariations ?? []
-        itemsRows = generateItemsRows()
         setTotalWeight()
     }
 
     /// Generate the items rows, creating an element in the array for every item (eg. if there is an item with quantity 3,
     /// we will generate 3 different items), and we will remove virtual products. 
     ///
-    private func generateItemsRows() -> [ItemToFulfillRow] {
+    private func generateItemsRows(from products: [Product], variations: [ProductVariation]) -> [ItemToFulfillRow] {
         var itemsToFulfill: [ItemToFulfillRow] = []
         for item in orderItems {
             let isVariation = item.variationID > 0

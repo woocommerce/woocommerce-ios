@@ -114,9 +114,74 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(canCreatePackage)
     }
 
-    func test_checkShippingLabelCreationEligibility_dispatches_eligibility_check_with_client_features_when_both_flags_are_enabled() throws {
+    func test_checkShippingLabelCreationEligibility_dispatches_correct_check_when_M2M3_and_international_flags_are_enabled() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isShippingLabelsM2M3On: true, isShippingLabelsM4On: true)
+        let featureFlagService = MockFeatureFlagService(isShippingLabelsM2M3On: true, isInternationalShippingLabelsOn: true)
+        ServiceLocator.setFeatureFlagService(featureFlagService)
+        XCTAssertEqual(storesManager.receivedActions.count, 0)
+
+        // When
+        viewModel.checkShippingLabelCreationEligibility()
+
+        // Then
+        XCTAssertEqual(storesManager.receivedActions.count, 1)
+
+        let action = try XCTUnwrap(storesManager.receivedActions.first as? ShippingLabelAction)
+        guard case let ShippingLabelAction.checkCreationEligibility(siteID: siteID,
+                                                                    orderID: orderID,
+                                                                    canCreatePaymentMethod: canCreatePaymentMethod,
+                                                                    canCreateCustomsForm: canCreateCustomsForm,
+                                                                    canCreatePackage: canCreatePackage,
+                                                                    onCompletion: _) = action else {
+            XCTFail("Expected \(action) to be \(ShippingLabelAction.self)")
+            return
+        }
+
+        XCTAssertEqual(siteID, order.siteID)
+        XCTAssertEqual(orderID, order.orderID)
+        XCTAssertFalse(canCreatePaymentMethod)
+        XCTAssertTrue(canCreateCustomsForm)
+        XCTAssertFalse(canCreatePackage)
+    }
+
+    func test_checkShippingLabelCreationEligibility_dispatches_correct_check_when_M2M3_international_and_addPaymentMethod_flags_are_enabled() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isShippingLabelsM2M3On: true,
+                                                        isInternationalShippingLabelsOn: true,
+                                                        isShippingLabelsPaymentMethodCreationOn: true)
+        ServiceLocator.setFeatureFlagService(featureFlagService)
+        XCTAssertEqual(storesManager.receivedActions.count, 0)
+
+        // When
+        viewModel.checkShippingLabelCreationEligibility()
+
+        // Then
+        XCTAssertEqual(storesManager.receivedActions.count, 1)
+
+        let action = try XCTUnwrap(storesManager.receivedActions.first as? ShippingLabelAction)
+        guard case let ShippingLabelAction.checkCreationEligibility(siteID: siteID,
+                                                                    orderID: orderID,
+                                                                    canCreatePaymentMethod: canCreatePaymentMethod,
+                                                                    canCreateCustomsForm: canCreateCustomsForm,
+                                                                    canCreatePackage: canCreatePackage,
+                                                                    onCompletion: _) = action else {
+            XCTFail("Expected \(action) to be \(ShippingLabelAction.self)")
+            return
+        }
+
+        XCTAssertEqual(siteID, order.siteID)
+        XCTAssertEqual(orderID, order.orderID)
+        XCTAssertTrue(canCreatePaymentMethod)
+        XCTAssertTrue(canCreateCustomsForm)
+        XCTAssertFalse(canCreatePackage)
+    }
+
+    func test_checkShippingLabelCreationEligibility_dispatches_correct_check_when_M2M3_and_M4_flags_are_enabled() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isShippingLabelsM2M3On: true,
+                                                        isInternationalShippingLabelsOn: true,
+                                                        isShippingLabelsPaymentMethodCreationOn: true,
+                                                        isShippingLabelsPackageCreationOn: true)
         ServiceLocator.setFeatureFlagService(featureFlagService)
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 

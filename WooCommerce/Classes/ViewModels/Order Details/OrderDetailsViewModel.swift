@@ -439,12 +439,14 @@ extension OrderDetailsViewModel {
 
         // Check shipping label creation eligibility remotely, according to client features available in Shipping Labels Milestone 4
         // like creating Shipping Labels outside of United States
-        let isFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsM4)
+        let isCustomsFormEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsInternational)
+        let isPaymentMethodCreationEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsAddPaymentMethods)
+        let isPackageCreationEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsAddCustomPackages)
         let action = ShippingLabelAction.checkCreationEligibility(siteID: order.siteID,
                                                                   orderID: order.orderID,
-                                                                  canCreatePaymentMethod: isFeatureFlagEnabled,
-                                                                  canCreateCustomsForm: isFeatureFlagEnabled,
-                                                                  canCreatePackage: isFeatureFlagEnabled) { [weak self] isEligible in
+                                                                  canCreatePaymentMethod: isPaymentMethodCreationEnabled,
+                                                                  canCreateCustomsForm: isCustomsFormEnabled,
+                                                                  canCreatePackage: isPackageCreationEnabled) { [weak self] isEligible in
             self?.dataSource.isEligibleForShippingLabelCreation = isEligible
             onCompletion?()
         }

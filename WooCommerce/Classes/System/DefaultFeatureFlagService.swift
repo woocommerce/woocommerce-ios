@@ -9,7 +9,13 @@ struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .shippingLabelsM2M3:
             return true
-        case .shippingLabelsM4:
+        case .shippingLabelsInternational:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .shippingLabelsAddPaymentMethods:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .shippingLabelsAddCustomPackages:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .shippingLabelsMultiPackage:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .sitePlugins:
             return buildConfig == .localDeveloper || buildConfig == .alpha

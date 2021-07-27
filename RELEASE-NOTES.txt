@@ -2,7 +2,7 @@
 
 7.3
 -----
-- [*] Order Detail: now we do not offer the "email note to customer" option if no email is available.
+- [*] Order Detail: now we do not offer the "email note to customer" option if no email is available. [https://github.com/woocommerce/woocommerce-ios/pull/4680]
 
 7.2
 -----

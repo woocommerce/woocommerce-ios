@@ -105,9 +105,12 @@ private extension NewNoteViewController {
     private func loadSections() {
         let writeNoteSectionTitle = NSLocalizedString("WRITE NOTE", comment: "Add a note screen - Write Note section title")
         let writeNoteSection = Section(title: writeNoteSectionTitle, rows: [.writeNote])
-        let emailCustomerSection = Section(title: nil, rows: [.emailCustomer])
+        var emailCustomerSection: Section? = nil
+        if viewModel.order.billingAddress?.hasEmailAddress == true {
+            emailCustomerSection = Section(title: nil, rows: [.emailCustomer])
+        }
 
-        sections = [writeNoteSection, emailCustomerSection]
+        sections = [writeNoteSection, emailCustomerSection].compactMap { $0 }
     }
 
     /// Cell Configuration

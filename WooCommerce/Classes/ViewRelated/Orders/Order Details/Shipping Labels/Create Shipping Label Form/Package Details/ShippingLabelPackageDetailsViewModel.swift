@@ -77,6 +77,10 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         return customPackages.count > 0
     }
 
+    /// Initially input package weight if any
+    ///
+    private var initialTotalWeight: String?
+
     init(order: Order,
          packagesResponse: ShippingLabelPackagesResponse?,
          selectedPackageID: String?,
@@ -94,13 +98,14 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         self.weightUnit = weightUnit
         self.packagesResponse = packagesResponse
         self.selectedPackageID = selectedPackageID
+        self.initialTotalWeight = totalWeight
 
         configureItemRows()
+        configureTotalWeights()
         configureResultsControllers()
         syncProducts()
         syncProductVariations()
         setDefaultPackage()
-        setTotalWeight(using: totalWeight)
     }
 
     /// Observe changes in products and variations to update item rows.
@@ -113,6 +118,30 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         .assign(to: &$itemsRows)
     }
 
+    /// Observe changes in selected package ID, products and variations to update total package weight.
+    ///
+    private func configureTotalWeights() {
+        $selectedCustomPackage.combineLatest($products, $productVariations) { (customPackage, products, variations) in
+            (customPackage, products, variations)
+        }
+        .filter { [weak self] _ in self?.isPackageWeightEdited == false }
+        .map { [weak self] (customPackage, products, variations) -> Double in
+            self?.calculateTotalWeight(products: products, productVariations: variations, customPackage: customPackage) ?? 0
+        }
+        .map { [weak self] in
+            let calculatedWeight = String($0)
+            // Set the total weight as the initial value if it was input manually; otherwise use the calculated weight.
+            if let initialTotalWeight = self?.initialTotalWeight,
+               calculatedWeight != initialTotalWeight {
+                self?.initialTotalWeight = nil
+                self?.isPackageWeightEdited = true
+                return initialTotalWeight
+            }
+            return calculatedWeight
+        }
+        .assign(to: &$totalWeight)
+    }
+
     private func configureResultsControllers() {
         resultsControllers = ShippingLabelPackageDetailsResultsControllers(siteID: order.siteID,
                                                                            orderItems: order.items,
@@ -120,16 +149,13 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
            onProductReload: { [weak self] (products) in
             guard let self = self else { return }
             self.products = products
-            self.setTotalWeight()
         }, onProductVariationsReload: { [weak self] (productVariations) in
             guard let self = self else { return }
             self.productVariations = productVariations
-            self.setTotalWeight()
         })
 
         products = resultsControllers?.products ?? []
         productVariations = resultsControllers?.productVariations ?? []
-        setTotalWeight()
     }
 }
 
@@ -173,16 +199,10 @@ private extension ShippingLabelPackageDetailsViewModel {
         return itemsToFulfill
     }
 
-    /// Set the total weight based on the weight of the selected package and
-    /// the products and products variation inside the order items, only if they are not virtual products.
+    /// Calculate total weight based on the weight of the selected package if it's a custom package;
+    /// And the products and products variation inside the order items, only if they are not virtual products.
     ///
-    /// - Parameter initialWeight: An initial value used to set the total package weight if it was input manually.
-    ///
-    func setTotalWeight(using initialWeight: String? = nil) {
-        guard !isPackageWeightEdited else {
-            return
-        }
-
+    func calculateTotalWeight(products: [Product], productVariations: [ProductVariation], customPackage: ShippingLabelCustomPackage?) -> Double {
         var tempTotalWeight: Double = 0
 
         // Add each order item's weight to the total weight.
@@ -205,17 +225,10 @@ private extension ShippingLabelPackageDetailsViewModel {
 
         // Add selected package weight to the total weight.
         // Only custom packages have a defined weight, so we only do this if a custom package is selected.
-        if let selectedPackage = selectedCustomPackage {
+        if let selectedPackage = customPackage {
             tempTotalWeight += selectedPackage.boxWeight
         }
-
-        // Set the total weight as the initial value if it was input manually; otherwise use the calculated weight.
-        if let initialWeight = initialWeight, initialWeight != String(tempTotalWeight) {
-            isPackageWeightEdited = true
-            totalWeight = initialWeight
-        } else {
-            totalWeight = String(tempTotalWeight)
-        }
+        return tempTotalWeight
     }
 }
 
@@ -275,7 +288,6 @@ extension ShippingLabelPackageDetailsViewModel {
         else if let selectedPredefinedPackage = selectedPredefinedPackage {
             selectedPackageID = selectedPredefinedPackage.id
         }
-        setTotalWeight()
     }
 
     /// Sets the package passed through the init method, or set the last selected package, if any, as the default selected package

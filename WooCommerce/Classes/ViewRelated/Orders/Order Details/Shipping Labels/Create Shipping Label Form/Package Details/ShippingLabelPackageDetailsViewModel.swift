@@ -121,25 +121,23 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     /// Observe changes in selected custom package, products and variations to update total package weight.
     ///
     private func configureTotalWeights() {
-        $selectedCustomPackage.combineLatest($products, $productVariations) { (customPackage, products, variations) in
-            (customPackage, products, variations)
-        }
-        .filter { [weak self] _ in self?.isPackageWeightEdited == false }
-        .map { [weak self] (customPackage, products, variations) -> Double in
-            self?.calculateTotalWeight(products: products, productVariations: variations, customPackage: customPackage) ?? 0
-        }
-        .map { [weak self] in
-            let calculatedWeight = String($0)
-            // Set the total weight as the initial value if it was input manually; otherwise use the calculated weight.
-            if let initialTotalWeight = self?.initialTotalWeight,
-               calculatedWeight != initialTotalWeight {
-                self?.initialTotalWeight = nil
-                self?.isPackageWeightEdited = true
-                return initialTotalWeight
+        $selectedCustomPackage.combineLatest($products, $productVariations)
+            .filter { [weak self] _ in self?.isPackageWeightEdited == false }
+            .map { [weak self] (customPackage, products, variations) -> Double in
+                self?.calculateTotalWeight(products: products, productVariations: variations, customPackage: customPackage) ?? 0
             }
-            return calculatedWeight
-        }
-        .assign(to: &$totalWeight)
+            .map { [weak self] in
+                let calculatedWeight = String($0)
+                // Set the total weight as the initial value if it was input manually; otherwise use the calculated weight.
+                if let initialTotalWeight = self?.initialTotalWeight,
+                   calculatedWeight != initialTotalWeight {
+                    self?.initialTotalWeight = nil
+                    self?.isPackageWeightEdited = true
+                    return initialTotalWeight
+                }
+                return calculatedWeight
+            }
+            .assign(to: &$totalWeight)
     }
 
     private func configureResultsControllers() {

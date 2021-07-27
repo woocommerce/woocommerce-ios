@@ -131,11 +131,14 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         productVariations = resultsControllers?.productVariations ?? []
         setTotalWeight()
     }
+}
 
+// MARK: - Helper methods
+private extension ShippingLabelPackageDetailsViewModel {
     /// Generate the items rows, creating an element in the array for every item (eg. if there is an item with quantity 3,
-    /// we will generate 3 different items), and we will remove virtual products. 
+    /// we will generate 3 different items), and we will remove virtual products.
     ///
-    private func generateItemsRows(products: [Product], productVariations: [ProductVariation]) -> [ItemToFulfillRow] {
+    func generateItemsRows(products: [Product], productVariations: [ProductVariation]) -> [ItemToFulfillRow] {
         var itemsToFulfill: [ItemToFulfillRow] = []
         for item in orderItems {
             let isVariation = item.variationID > 0
@@ -175,7 +178,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     ///
     /// - Parameter initialWeight: An initial value used to set the total package weight if it was input manually.
     ///
-    private func setTotalWeight(using initialWeight: String? = nil) {
+    func setTotalWeight(using initialWeight: String? = nil) {
         guard !isPackageWeightEdited else {
             return
         }

@@ -350,17 +350,6 @@ private enum Row: CaseIterable {
     }
 }
 
-// MARK: - UITextViewDelegate Conformance
-//
-extension CardReaderSettingsUnknownViewController: UITextViewDelegate {
-
-    func textView(_ textView: UITextView, shouldInteractWith URL: URL,
-                  in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        urlWasPressed(url: URL)
-        return false
-    }
-}
-
 // MARK: - Localization
 //
 private extension CardReaderSettingsUnknownViewController {

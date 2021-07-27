@@ -192,23 +192,23 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedPackageName, "Small")
     }
 
-    func test_isPackageDetailsDoneButtonEnabled_returns_the_expected_value() {
+    func test_isPackageDetailsDoneButtonEnabled_returns_true_initially() {
         // Given
-        let order = MockOrders().empty().copy(siteID: sampleSiteID)
+        let items = [MockOrderItem.sampleItem(name: "Easter Egg", productID: 1, quantity: 0.5)]
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120"))
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageID: nil,
+                                                             selectedPackageID: "Box",
                                                              totalWeight: nil,
                                                              formatter: currencyFormatter,
-                                                             stores: stores,
                                                              storageManager: storageManager,
                                                              weightUnit: "kg")
 
-        XCTAssertFalse(viewModel.isPackageDetailsDoneButtonEnabled())
-
         // When
-        viewModel.totalWeight = "10"
         viewModel.selectedPackageID = "sample-package"
 
         // Then
@@ -217,25 +217,26 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
 
     func test_isPackageDetailsDoneButtonEnabled_returns_the_expected_value_when_the_totalWeight_is_not_valid() {
         // Given
-        let order = MockOrders().empty().copy(siteID: sampleSiteID)
+        // Given
+        let items = [MockOrderItem.sampleItem(name: "Easter Egg", productID: 1, quantity: 0.5)]
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120"))
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageID: nil,
+                                                             selectedPackageID: "Box",
                                                              totalWeight: nil,
                                                              formatter: currencyFormatter,
-                                                             stores: stores,
                                                              storageManager: storageManager,
                                                              weightUnit: "kg")
 
-        XCTAssertFalse(viewModel.isPackageDetailsDoneButtonEnabled())
-
         // When
-        viewModel.totalWeight = "0"
         viewModel.selectedPackageID = "sample-package"
 
         // Then
-        XCTAssertFalse(viewModel.isPackageDetailsDoneButtonEnabled())
+        XCTAssertTrue(viewModel.isPackageDetailsDoneButtonEnabled())
 
         // When
         viewModel.totalWeight = "0.0"

@@ -6111,7 +6111,6 @@
 				B56DB3C42049BFAA00D4AA8E /* Resources */,
 				B5650B1020A4CD7F009702D0 /* Embed Frameworks */,
 				B7A94351C1ADC31EA528B895 /* [CP] Embed Pods Frameworks */,
-				CE1445302188ED0300A991D8 /* Zendesk Strip Frameworks */,
 				59DF5B32D7C07692EC8B4C59 /* [CP] Copy Pods Resources */,
 				095040D72655531C001D08FA /* Check for nested frameworks */,
 			);
@@ -6629,20 +6628,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
-		};
-		CE1445302188ED0300A991D8 /* Zendesk Strip Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Zendesk Strip Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Per Zendesk documentation (https://developer.zendesk.com/embeddables/docs/ios_support_sdk/sdk_add#adding-the-sdk-with-cocoapods):\n# This script should be the last step in your projects \"Build Phases\".\n# This step is required to work around an App store submission bug when archiving universal binaries.\n\nbash \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZendeskCoreSDK.framework/strip-frameworks.sh\"\n";
 		};
 		E8FC62641D61F33F705BC760 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

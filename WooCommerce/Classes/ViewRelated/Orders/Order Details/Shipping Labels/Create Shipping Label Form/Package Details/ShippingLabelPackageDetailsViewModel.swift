@@ -77,10 +77,6 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         return customPackages.count > 0
     }
 
-    /// Initially input package weight if any
-    ///
-    private var initialTotalWeight: String?
-
     init(order: Order,
          packagesResponse: ShippingLabelPackagesResponse?,
          selectedPackageID: String?,
@@ -98,14 +94,13 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         self.weightUnit = weightUnit
         self.packagesResponse = packagesResponse
         self.selectedPackageID = selectedPackageID
-        self.initialTotalWeight = totalWeight
 
+        setDefaultPackage()
         configureItemRows()
-        configureTotalWeights()
+        configureTotalWeights(initialTotalWeight: totalWeight)
         configureResultsControllers()
         syncProducts()
         syncProductVariations()
-        setDefaultPackage()
     }
 
     /// Observe changes in products and variations to update item rows.
@@ -119,24 +114,36 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     }
 
     /// Observe changes in selected custom package, products and variations to update total package weight.
+    /// - Parameter initialTotalWeight: the weight value that was input initially.
+    /// If this value is different from the calculated weight, we can assume that user has updated the weight manually.
     ///
-    private func configureTotalWeights() {
-        $selectedCustomPackage.combineLatest($products, $productVariations)
+    private func configureTotalWeights(initialTotalWeight: String?) {
+        let calculatedWeight = $selectedCustomPackage.combineLatest($products, $productVariations)
             .filter { [weak self] _ in self?.isPackageWeightEdited == false }
             .map { [weak self] (customPackage, products, variations) -> Double in
                 self?.calculateTotalWeight(products: products, productVariations: variations, customPackage: customPackage) ?? 0
             }
-            .map { [weak self] in
-                let calculatedWeight = String($0)
-                // Set the total weight as the initial value if it was input manually; otherwise use the calculated weight.
-                if let initialTotalWeight = self?.initialTotalWeight,
+            .share()
+
+        calculatedWeight
+            .first()
+            .map { [weak self] numericWeight in
+                let calculatedWeight = String(numericWeight)
+
+                // Set the total weight as the initial value if it was input manually;
+                // otherwise use the calculated weight.
+                if let initialTotalWeight = initialTotalWeight,
                    calculatedWeight != initialTotalWeight {
-                    self?.initialTotalWeight = nil
                     self?.isPackageWeightEdited = true
                     return initialTotalWeight
                 }
                 return calculatedWeight
             }
+            .assign(to: &$totalWeight)
+
+        calculatedWeight
+            .dropFirst()
+            .map { String($0) }
             .assign(to: &$totalWeight)
     }
 

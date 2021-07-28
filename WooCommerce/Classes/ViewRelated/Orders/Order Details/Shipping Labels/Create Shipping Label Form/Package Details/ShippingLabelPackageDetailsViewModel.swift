@@ -96,11 +96,11 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         self.selectedPackageID = selectedPackageID
 
         setDefaultPackage()
-        configureItemRows()
-        configureTotalWeights(initialTotalWeight: totalWeight)
         configureResultsControllers()
         syncProducts()
         syncProductVariations()
+        configureItemRows()
+        configureTotalWeights(initialTotalWeight: totalWeight)
     }
 
     /// Observe changes in products and variations to update item rows.
@@ -119,12 +119,13 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     ///
     private func configureTotalWeights(initialTotalWeight: String?) {
         let calculatedWeight = $selectedCustomPackage.combineLatest($products, $productVariations)
-            .filter { [weak self] _ in self?.isPackageWeightEdited == false }
             .map { [weak self] (customPackage, products, variations) -> Double in
                 self?.calculateTotalWeight(products: products, productVariations: variations, customPackage: customPackage) ?? 0
             }
             .share()
 
+        // grab the first calculated weight, check with initialTotalWeight
+        // to determine if the weight was manually updated
         calculatedWeight
             .first()
             .map { [weak self] numericWeight in
@@ -141,8 +142,11 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
             }
             .assign(to: &$totalWeight)
 
+        // From 2nd element onward, send the calculated weight to total weight
+        // if user has not updated the weight manually
         calculatedWeight
             .dropFirst()
+            .filter { [weak self] _ in self?.isPackageWeightEdited == false }
             .map { String($0) }
             .assign(to: &$totalWeight)
     }

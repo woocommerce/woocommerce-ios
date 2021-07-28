@@ -375,6 +375,17 @@ extension StripeCardReaderService: CardReaderService {
 
 // MARK: - Payment collection
 private extension StripeCardReaderService {
+    /// Returns the id of the connected reader, if any
+    ///
+    func readerIDForIntent() -> String? {
+        let connectedReaders = connectedReadersSubject.value
+        guard connectedReaders.count == 1 else {
+            return nil
+        }
+
+        return connectedReaders[0].id
+    }
+
     func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<StripeTerminal.PaymentIntent, Error> {
         return Future() { [weak self] promise in
             // Shortcircuit if we have an inconsistent set of parameters
@@ -382,6 +393,10 @@ private extension StripeCardReaderService {
                 promise(.failure(CardReaderServiceError.intentCreation()))
                 return
             }
+
+            /// Add the reader_ID to the request metadata so we can attribute this intent to the connected reader
+            ///
+            parameters.metadata?[Constants.readerIDMetadataKey] = self?.readerIDForIntent()
 
             Terminal.shared.createPaymentIntent(parameters) { (intent, error) in
                 if let error = error {
@@ -547,6 +562,18 @@ private extension StripeCardReaderService {
 private extension StripeCardReaderService {
     func internalError(_ error: Error) {
         // Empty for now. Will be implemented later
+    }
+}
+
+// MARK: - Constants
+//
+private extension StripeCardReaderService {
+    enum Constants {
+        /// Used to decorate the payment intent with the reader ID so that we can correctly count
+        /// the number of active readers for a store for a given time period. This key is also used
+        /// by the Android app.
+        ///
+        static let readerIDMetadataKey = "reader_ID"
     }
 }
 

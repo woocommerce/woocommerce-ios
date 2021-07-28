@@ -20,6 +20,7 @@ class LearnMoreTableViewCell: UITableViewCell {
             .foregroundColor: UIColor.textLink,
             .underlineColor: UIColor.clear
         ]
+        learnMoreTextView.delegate = self
     }
 
     func configure(text: NSAttributedString?, onUrlPressed: ((_ url: URL) -> Void)? = nil ) {

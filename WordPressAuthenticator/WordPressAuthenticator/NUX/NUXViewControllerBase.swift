@@ -267,6 +267,7 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
     private func addHelpButton(to superView: UIView) {
         helpButton.setTitle(NSLocalizedString("Help", comment: "Help button"), for: .normal)
         setHelpButtonTextColor(forUnified: false)
+        helpButton.accessibilityIdentifier = "authenticator-help-button"
 
         helpButton.on(.touchUpInside) { [weak self] control in
             self?.handleHelpButtonTapped(control)

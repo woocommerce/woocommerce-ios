@@ -200,6 +200,8 @@ private extension ShippingLabelPackageDetailsViewModel {
     /// Calculate total weight based on the weight of the selected package if it's a custom package;
     /// And the products and products variation inside the order items, only if they are not virtual products.
     ///
+    /// Note: Only custom package is needed for input because only custom packages have weight to be included in the total weight.
+    ///
     func calculateTotalWeight(products: [Product], productVariations: [ProductVariation], customPackage: ShippingLabelCustomPackage?) -> Double {
         var tempTotalWeight: Double = 0
 

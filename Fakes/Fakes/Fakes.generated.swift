@@ -471,6 +471,25 @@ extension PaymentGateway {
         )
     }
 }
+extension PaymentGatewayAccount {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> PaymentGatewayAccount {
+        .init(
+            siteID: .fake(),
+            gatewayID: .fake(),
+            status: .fake(),
+            hasPendingRequirements: .fake(),
+            hasOverdueRequirements: .fake(),
+            currentDeadline: .fake(),
+            statementDescriptor: .fake(),
+            defaultCurrency: .fake(),
+            supportedCurrencies: .fake(),
+            country: .fake(),
+            isCardPresentEligible: .fake()
+        )
+    }
+}
 extension Post {
     /// Returns a "ready to use" type filled with fake values.
     ///

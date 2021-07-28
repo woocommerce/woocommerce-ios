@@ -1,4 +1,5 @@
 import XCTest
+import Fakes
 @testable import Yosemite
 @testable import Networking
 @testable import Storage
@@ -237,10 +238,51 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
     // MARK: - CardPresentPaymentAction.checkOnboardingState
     func test_onboarding_returns_generic_error_by_default() {
+        // Given
+
+        // When
+        let state = checkOnboardingState()
+
+        // Then
         // This is not the desired final state, but we will use a generic error for any case
         // that is not implemented yet
-        let state = checkOnboardingState()
         XCTAssertEqual(state, .genericError)
+    }
+
+    func test_onboarding_returns_generic_error_when_account_is_not_eligible() {
+        // Given
+        let paymentGatewayAccount = PaymentGatewayAccount
+            .fake()
+            .copy(
+                siteID: sampleSiteID,
+                isCardPresentEligible: false
+            )
+        storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
+
+        // When
+        let state = checkOnboardingState()
+
+        // Then
+        // This is not the desired final state, but we will use a generic error for any case
+        // that is not implemented yet
+        XCTAssertEqual(state, .genericError)
+    }
+
+    func test_onboarding_returns_complete_when_account_is_setup_successfully() {
+        // Given
+        let paymentGatewayAccount = PaymentGatewayAccount
+            .fake()
+            .copy(
+                siteID: sampleSiteID,
+                isCardPresentEligible: true
+            )
+        storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
+
+        // When
+        let state = checkOnboardingState()
+
+        // Then
+        XCTAssertEqual(state, .completed)
     }
 }
 

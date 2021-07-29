@@ -335,6 +335,20 @@ final class ShippingLabelFormViewModel {
 
         return price
     }
+
+    /// Filter country for picking based on ship type.
+    ///
+    /// For origin address, country list should show only US or any of its territories that have at least one USPS postal office.
+    /// For destination address, country list should show countries that the store sells to.
+    ///
+    func filteredCountries(for type: ShipType) -> [Country] {
+        switch type {
+        case .origin:
+            return countries.filter { Constants.acceptedUSPSCountries.contains($0.code) }
+        case .destination:
+            return []
+        }
+    }
 }
 
 // MARK: - State Machine
@@ -625,5 +639,19 @@ private extension ShippingLabelFormViewModel {
                               comment: "Selected credit card in Shipping Label form. %1$@ is a placeholder for the last four digits of the credit card.")
         static let orderSummaryHeader = NSLocalizedString("Shipping label order summary",
                                                           comment: "Header of the order summary section in the shipping label creation form")
+    }
+
+    enum Constants {
+        static let acceptedUSPSCountries = [
+            "US", // United States
+            "PR", // Puerto Rico
+            "VI", // Virgin Islands
+            "GU", // Guam
+            "AS", // American Samoa
+            "UM", // United States Minor Outlying Islands
+            "MH", // Marshall Islands
+            "FM", // Micronesia
+            "MP" // Northern Mariana Islands
+        ]
     }
 }

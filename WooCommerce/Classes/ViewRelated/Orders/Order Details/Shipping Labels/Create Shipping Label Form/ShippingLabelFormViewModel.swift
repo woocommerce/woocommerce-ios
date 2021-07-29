@@ -339,14 +339,14 @@ final class ShippingLabelFormViewModel {
     /// Filter country for picking based on ship type.
     ///
     /// For origin address, country list should show only US or any of its territories that have at least one USPS postal office.
-    /// For destination address, country list should show countries that the store sells to.
+    /// Destination address should allow picking from the complete country list.
     ///
     func filteredCountries(for type: ShipType) -> [Country] {
         switch type {
         case .origin:
             return countries.filter { Constants.acceptedUSPSCountries.contains($0.code) }
         case .destination:
-            return []
+            return countries
         }
     }
 }

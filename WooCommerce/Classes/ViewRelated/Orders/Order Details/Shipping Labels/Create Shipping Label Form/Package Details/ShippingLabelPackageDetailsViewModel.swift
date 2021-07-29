@@ -95,8 +95,8 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         self.packagesResponse = packagesResponse
         self.selectedPackageID = selectedPackageID
 
-        setDefaultPackage()
         configureResultsControllers()
+        setDefaultPackage()
         syncProducts()
         syncProductVariations()
         configureItemRows()

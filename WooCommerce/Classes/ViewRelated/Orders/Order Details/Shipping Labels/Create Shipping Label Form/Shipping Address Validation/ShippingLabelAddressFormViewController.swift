@@ -273,12 +273,25 @@ extension ShippingLabelAddressFormViewController: UITableViewDelegate {
                 self?.tableView.reloadData()
             }
             show(listSelector, sender: self)
-            break
+
         case .country:
             // The country is not editable in M2/M3 (because we support just US).
             // It will be editable in M4 or M5.
-            let notice = Notice(title: Localization.countryNotEditable, feedbackType: .warning)
-            ServiceLocator.noticePresenter.enqueue(notice: notice)
+            guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsInternational) else {
+                let notice = Notice(title: Localization.countryNotEditable, feedbackType: .warning)
+                ServiceLocator.noticePresenter.enqueue(notice: notice)
+                return
+            }
+
+            let countries = viewModel.countries
+            let selectedCountry = countries.first { $0.code == viewModel.address?.country }
+            let command = ShippingLabelCountryListSelectorCommand(countries: countries, selected: selectedCountry)
+            let listSelector = ListSelectorViewController(command: command) { [weak self] country in
+                self?.viewModel.handleAddressValueChanges(row: .country, newValue: country?.code)
+                self?.tableView.reloadData()
+            }
+            show(listSelector, sender: self)
+
         default:
             break
         }

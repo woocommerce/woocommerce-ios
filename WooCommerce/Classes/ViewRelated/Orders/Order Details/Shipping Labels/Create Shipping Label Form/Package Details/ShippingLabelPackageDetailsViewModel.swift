@@ -69,7 +69,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
 
     /// Whether the user has edited the total package weight. If true, we won't make any automatic changes to the total weight.
     ///
-    var isPackageWeightEdited: Bool = false
+    @Published var isPackageWeightEdited: Bool = false
 
     /// Returns if the custom packages header should be shown in Package List
     ///
@@ -124,7 +124,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
             }
             .share()
 
-        // grab the first calculated weight, check with initialTotalWeight
+        // Grab the first calculated weight, check with initialTotalWeight
         // to determine if the weight was manually updated
         calculatedWeight
             .first()
@@ -142,12 +142,16 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
             }
             .assign(to: &$totalWeight)
 
-        // From 2nd element onward, send the calculated weight to total weight
-        // if user has not updated the weight manually
-        calculatedWeight
-            .dropFirst()
-            .filter { [weak self] _ in self?.isPackageWeightEdited == false }
-            .map { String($0) }
+        // Send the calculated weight to total weight; or raise error to cancel the stream
+        // if user has updated the weight manually.
+        calculatedWeight.combineLatest($isPackageWeightEdited)
+            .tryMap { (weight, isEdited) in
+                guard !isEdited else {
+                    throw Errors.overridenTotalWeight
+                }
+                return String(weight)
+            }
+            .catch { _ in Empty() }
             .assign(to: &$totalWeight)
     }
 
@@ -165,6 +169,13 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
 
         products = resultsControllers?.products ?? []
         productVariations = resultsControllers?.productVariations ?? []
+    }
+}
+
+// MARK: - Subtypes
+private extension ShippingLabelPackageDetailsViewModel {
+    enum Errors: Error {
+        case overridenTotalWeight
     }
 }
 

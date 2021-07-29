@@ -368,4 +368,26 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         let paymentMethodBody = viewModel.getPaymentMethodBody()
         XCTAssertEqual(paymentMethodBody, "Credit card ending in 4242")
     }
+
+    func test_filteredCountries_returns_only_USPS_supported_countries_for_origin_address() {
+        // Given
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: nil, destinationAddress: nil)
+
+        // When
+        let filteredCountries = viewModel.filteredCountries(for: .origin)
+
+        // Then
+        XCTAssertEqual(filteredCountries.count, 9)
+    }
+
+    func test_filteredCountries_returns_complete_country_list_for_destination_address() {
+        // Given
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: nil, destinationAddress: nil)
+
+        // When
+        let filteredCountries = viewModel.filteredCountries(for: .destination)
+
+        // Then
+        XCTAssertEqual(filteredCountries.count, viewModel.countries.count)
+    }
 }

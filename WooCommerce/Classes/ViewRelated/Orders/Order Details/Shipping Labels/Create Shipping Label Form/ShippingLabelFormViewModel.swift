@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import protocol Storage.StorageManagerType
 
 /// Provides view data for Create Shipping Label, and handles init/UI/navigation actions needed.
 ///
@@ -79,10 +80,8 @@ final class ShippingLabelFormViewModel {
 
     /// ResultsController: Loads Countries from the Storage Layer.
     ///
-    private let resultsController: ResultsController<StorageCountry> = {
-        let storageManager = ServiceLocator.storageManager
+    private lazy var resultsController: ResultsController<StorageCountry> = {
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
-
         return ResultsController(storageManager: storageManager, matching: nil, sortedBy: [descriptor])
     }()
 
@@ -91,6 +90,8 @@ final class ShippingLabelFormViewModel {
     }
 
     private let stores: StoresManager
+
+    private let storageManager: StorageManagerType
 
     /// Closure to notify the `ViewController` when the view model properties change.
     ///
@@ -107,7 +108,8 @@ final class ShippingLabelFormViewModel {
     init(order: Order,
          originAddress: Address?,
          destinationAddress: Address?,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
 
         self.siteID = order.siteID
         self.order = order
@@ -125,6 +127,7 @@ final class ShippingLabelFormViewModel {
 
         state.sections = ShippingLabelFormViewModel.generateInitialSections()
         self.stores = stores
+        self.storageManager = storageManager
 
         syncShippingLabelAccountSettings()
         syncPackageDetails()

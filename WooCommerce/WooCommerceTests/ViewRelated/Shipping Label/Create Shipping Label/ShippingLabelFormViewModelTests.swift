@@ -1,8 +1,25 @@
 import XCTest
 @testable import WooCommerce
 import Yosemite
+@testable import Storage
 
 final class ShippingLabelFormViewModelTests: XCTestCase {
+
+    private var storageManager: StorageManagerType!
+
+    private var storage: StorageType {
+        storageManager.viewStorage
+    }
+
+    override func setUp() {
+        super.setUp()
+        storageManager = MockStorageManager()
+    }
+
+    override func tearDown() {
+        storageManager = nil
+        super.tearDown()
+    }
 
     func test_conversion_from_Address_to_ShippingLabelAddress_returns_correct_data() {
 
@@ -371,23 +388,41 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
 
     func test_filteredCountries_returns_only_USPS_supported_countries_for_origin_address() {
         // Given
-        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: nil, destinationAddress: nil)
+        let country1 = Country(code: "US", name: "United States", states: [])
+        let country2 = Country(code: "IT", name: "Italy", states: [])
+        insert(country1)
+        insert(country2)
+
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: nil, destinationAddress: nil, storageManager: storageManager)
 
         // When
         let filteredCountries = viewModel.filteredCountries(for: .origin)
 
         // Then
-        XCTAssertEqual(filteredCountries.count, 9)
+        XCTAssertEqual(filteredCountries.count, 1)
     }
 
     func test_filteredCountries_returns_complete_country_list_for_destination_address() {
         // Given
-        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: nil, destinationAddress: nil)
+        let country1 = Country(code: "US", name: "United States", states: [])
+        let country2 = Country(code: "IT", name: "Italy", states: [])
+        insert(country1)
+        insert(country2)
+
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: nil, destinationAddress: nil, storageManager: storageManager)
 
         // When
         let filteredCountries = viewModel.filteredCountries(for: .destination)
 
         // Then
-        XCTAssertEqual(filteredCountries.count, viewModel.countries.count)
+        XCTAssertEqual(filteredCountries.count, 2)
+    }
+}
+
+// MARK: - Utils
+private extension ShippingLabelFormViewModelTests {
+    func insert(_ readOnlyCountry: Yosemite.Country) {
+        let country = storage.insertNewObject(ofType: StorageCountry.self)
+        country.update(with: readOnlyCountry)
     }
 }

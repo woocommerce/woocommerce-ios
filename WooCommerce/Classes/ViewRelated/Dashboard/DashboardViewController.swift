@@ -31,9 +31,7 @@ final class DashboardViewController: UIViewController {
     // MARK: Subviews
 
     private lazy var containerView: UIView = {
-        let container = UIView(frame: .zero)
-        container.backgroundColor = .listBackground
-        return container
+        return UIView(frame: .zero)
     }()
 
     private lazy var storeNameLabel: UILabel = {
@@ -44,7 +42,7 @@ final class DashboardViewController: UIViewController {
         return label
     }()
 
-    /// A stack view to hold `storeNameLabel`
+    /// A stack view to display `storeNameLabel` with additional margins
     ///
     private lazy var innerStackView: UIStackView = {
         let view = UIStackView()
@@ -53,7 +51,7 @@ final class DashboardViewController: UIViewController {
         return view
     }()
 
-    /// A stack view to hold `storeNameLabel` and `topBannerView`, as needed
+    /// A stack view for views displayed between the navigation bar and content (e.g. store name subtitle, top banner)
     ///
     private lazy var stackView: UIStackView = {
         let view = UIStackView()
@@ -81,10 +79,11 @@ final class DashboardViewController: UIViewController {
                                               })
     }()
 
-    /// Top anchor constraint for Dashboard UI. Can be updated e.g. to change the margin between the stack view and dashboard UI.
-    ///
-    private lazy var dashboardUITopAnchor: NSLayoutConstraint = {
-        dashboardUI!.view.topAnchor.constraint(equalTo: stackView.bottomAnchor)
+    private lazy var spacerView: UIView = {
+        let view = UIView()
+        view.heightAnchor.constraint(equalToConstant: Constants.bannerBottomMargin).isActive = true
+        view.backgroundColor = .listBackground
+        return view
     }()
 
     // MARK: View Lifecycle
@@ -165,7 +164,7 @@ private extension DashboardViewController {
         }
         contentView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            dashboardUITopAnchor,
+            contentView.topAnchor.constraint(equalTo: stackView.bottomAnchor),
             contentView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
@@ -220,6 +219,7 @@ private extension DashboardViewController {
             return
         }
         stackView.addArrangedSubview(topBannerView)
+        stackView.addArrangedSubview(spacerView)
         if !shouldShowStoreNameAsSubtitle {
             containerView.addSubview(stackView)
             dashboardUI.view.translatesAutoresizingMaskIntoConstraints = false
@@ -227,20 +227,19 @@ private extension DashboardViewController {
                 stackView.topAnchor.constraint(equalTo: containerView.topAnchor),
                 stackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
                 stackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-                dashboardUITopAnchor,
+                dashboardUI.view.topAnchor.constraint(equalTo: stackView.bottomAnchor),
                 dashboardUI.view.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
                 dashboardUI.view.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
                 dashboardUI.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
             ])
         }
-        dashboardUITopAnchor.constant = Constants.bannerBottomMargin
     }
 
     /// Hide the error banner
     ///
     func hideTopBannerView() {
         topBannerView.removeFromSuperview()
-        dashboardUITopAnchor.constant = CGFloat(0)
+        spacerView.removeFromSuperview()
     }
 }
 

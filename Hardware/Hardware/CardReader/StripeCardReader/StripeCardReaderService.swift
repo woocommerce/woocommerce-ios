@@ -383,7 +383,7 @@ private extension StripeCardReaderService {
             return nil
         }
 
-        return connectedReaders[0].id
+        return connectedReaders.first?.id
     }
 
     func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<StripeTerminal.PaymentIntent, Error> {

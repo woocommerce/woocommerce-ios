@@ -344,7 +344,7 @@ private extension ShippingLabelFormViewController {
             type: type,
             address: address,
             validationError: validationError,
-            countries: viewModel.countries,
+            countries: viewModel.filteredCountries(for: type),
             completion: { [weak self] (newShippingLabelAddress) in
                 guard let self = self else { return }
                 switch type {

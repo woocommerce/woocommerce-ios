@@ -179,7 +179,9 @@ extension ShippingLabelAddressFormViewModel {
             if addressToBeValidated.postcode.isEmpty {
                 errors.append(.postcode)
             }
-            if addressToBeValidated.state.isEmpty {
+
+            let stateList = countries.first { $0.code == addressToBeValidated.country }?.states ?? []
+            if addressToBeValidated.state.isEmpty && !stateList.isEmpty {
                 errors.append(.state)
             }
             if addressToBeValidated.country.isEmpty {

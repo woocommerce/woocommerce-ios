@@ -266,6 +266,9 @@ extension ShippingLabelAddressFormViewController: UITableViewDelegate {
         switch row {
         case .state:
             let states = viewModel.statesOfSelectedCountry
+            guard !states.isEmpty else {
+                return
+            }
             let selectedState = states.first { $0.code == viewModel.address?.state }
             let command = ShippingLabelStateOfACountryListSelectorCommand(states: states, selected: selectedState)
             let listSelector = ListSelectorViewController(command: command) { [weak self] state in
@@ -445,7 +448,7 @@ private extension ShippingLabelAddressFormViewController {
                                                                      textFieldAlignment: .leading) { _ in
         }
         cell.configure(viewModel: cellViewModel)
-        cell.enableTextField(false)
+        cell.enableTextField(viewModel.statesOfSelectedCountry.isEmpty)
     }
 
     func configureCountry(cell: TitleAndTextFieldTableViewCell, row: Row) {

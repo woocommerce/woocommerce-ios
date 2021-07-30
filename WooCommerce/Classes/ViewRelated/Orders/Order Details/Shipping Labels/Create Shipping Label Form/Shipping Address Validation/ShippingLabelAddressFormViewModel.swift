@@ -52,6 +52,10 @@ final class ShippingLabelAddressFormViewModel {
         countries.first { $0.code == address?.country }?.states.sorted { $0.name < $1.name } ?? []
     }
 
+    var stateOfCountryRequired: Bool {
+        !statesOfSelectedCountry.isEmpty
+    }
+
     var extendedCountryName: String? {
         return countries.first { $0.code == address?.country }?.name
     }
@@ -179,9 +183,7 @@ extension ShippingLabelAddressFormViewModel {
             if addressToBeValidated.postcode.isEmpty {
                 errors.append(.postcode)
             }
-
-            let stateList = countries.first { $0.code == addressToBeValidated.country }?.states ?? []
-            if addressToBeValidated.state.isEmpty && !stateList.isEmpty {
+            if addressToBeValidated.state.isEmpty && stateOfCountryRequired {
                 errors.append(.state)
             }
             if addressToBeValidated.country.isEmpty {

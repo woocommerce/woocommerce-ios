@@ -53,7 +53,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.sections, [ShippingLabelAddressFormViewModel.Section(rows: expectedRows)])
     }
 
-    func test_sections_are_returned_correctly_if_an_address_validation_error_occurs() {
+    func test_sections_are_returned_correctly_if_an_address_validation_error_occurs_for_all_empty_rows() {
         // Given
         let shippingAddress = MockShippingLabelAddress.sampleAddress()
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -75,8 +75,90 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
                                                           stores: stores,
                                                           validationError: nil,
                                                           countries: [])
-        viewModel.validateAddress(onlyLocally: false) { (result) in
+        viewModel.validateAddress(onlyLocally: false) { _ in }
+
+        // Then
+        let expectedRows: [ShippingLabelAddressFormViewModel.Row] = [.name,
+                                                                     .fieldError(.name),
+                                                                     .company,
+                                                                     .phone,
+                                                                     .address,
+                                                                     .fieldError(.address),
+                                                                     .address2,
+                                                                     .city,
+                                                                     .fieldError(.city),
+                                                                     .postcode,
+                                                                     .fieldError(.postcode),
+                                                                     .state,
+                                                                     .country,
+                                                                     .fieldError(.country)]
+        XCTAssertEqual(viewModel.sections, [ShippingLabelAddressFormViewModel.Section(rows: expectedRows)])
+    }
+
+    func test_sections_are_returned_correctly_if_stateOfCountry_is_not_required() {
+        // Given
+        let shippingAddress = MockShippingLabelAddress.sampleAddress(country: "VN")
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let validationError = ShippingLabelAddressValidationError(addressError: "Error", generalError: nil)
+
+        // When
+        stores.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
+            switch action {
+            case let .validateAddress(_, _, onCompletion):
+                onCompletion(.failure(validationError))
+            default:
+                break
+            }
         }
+
+        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10,
+                                                          type: .origin,
+                                                          address: shippingAddress,
+                                                          stores: stores,
+                                                          validationError: nil,
+                                                          countries: sampleCountries())
+        viewModel.validateAddress(onlyLocally: false) { _ in }
+
+        // Then
+        let expectedRows: [ShippingLabelAddressFormViewModel.Row] = [.name,
+                                                                     .fieldError(.name),
+                                                                     .company,
+                                                                     .phone,
+                                                                     .address,
+                                                                     .fieldError(.address),
+                                                                     .address2,
+                                                                     .city,
+                                                                     .fieldError(.city),
+                                                                     .postcode,
+                                                                     .fieldError(.postcode),
+                                                                     .state,
+                                                                     .country]
+        XCTAssertEqual(viewModel.sections, [ShippingLabelAddressFormViewModel.Section(rows: expectedRows)])
+    }
+
+    func test_sections_are_returned_correctly_if_stateOfCountry_is_required() {
+        // Given
+        let shippingAddress = MockShippingLabelAddress.sampleAddress(country: "US")
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let validationError = ShippingLabelAddressValidationError(addressError: "Error", generalError: nil)
+
+        // When
+        stores.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
+            switch action {
+            case let .validateAddress(_, _, onCompletion):
+                onCompletion(.failure(validationError))
+            default:
+                break
+            }
+        }
+
+        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10,
+                                                          type: .origin,
+                                                          address: shippingAddress,
+                                                          stores: stores,
+                                                          validationError: nil,
+                                                          countries: sampleCountries())
+        viewModel.validateAddress(onlyLocally: false) { _ in }
 
         // Then
         let expectedRows: [ShippingLabelAddressFormViewModel.Row] = [.name,
@@ -92,8 +174,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
                                                                      .fieldError(.postcode),
                                                                      .state,
                                                                      .fieldError(.state),
-                                                                     .country,
-                                                                     .fieldError(.country)]
+                                                                     .country]
         XCTAssertEqual(viewModel.sections, [ShippingLabelAddressFormViewModel.Section(rows: expectedRows)])
     }
 
@@ -297,6 +378,8 @@ private extension ShippingLabelAddressFormViewModelTests {
         let state6 = StateOfACountry(code: "RM", name: "Roma")
         let country2 = Country(code: "IT", name: "Italy", states: [state4, state5, state6])
 
-        return [country1, country2]
+        let country3 = Country(code: "VN", name: "Vietnam", states: [])
+
+        return [country1, country2, country3]
     }
 }

@@ -1,5 +1,5 @@
 Merchants in the US wanting to create shipping labels for their US customers will find several minor improvements. If you’re not already printing labels from the app, start by installing the WooCommerce Shipping & Tax extension on your site.
 
-We also looked around at the app on different screen sizes and phone types. We corrected a bunch of minor but meaningful visual issues, especially noticeable on iPads.
+We also took a look at how the app looked on different screen sizes and phone types. We corrected a bunch of minor but meaningful visual issues, especially noticeable on iPads.
 
 As always, we welcome your feedback about the app. Reach out to us through the app under Settings in the My store tab.

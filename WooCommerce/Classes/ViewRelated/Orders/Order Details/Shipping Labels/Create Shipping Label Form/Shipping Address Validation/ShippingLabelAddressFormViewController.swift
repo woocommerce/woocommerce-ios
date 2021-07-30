@@ -275,8 +275,6 @@ extension ShippingLabelAddressFormViewController: UITableViewDelegate {
             show(listSelector, sender: self)
 
         case .country:
-            // The country is not editable in M2/M3 (because we support just US).
-            // It will be editable in M4 or M5.
             guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsInternational) else {
                 let notice = Notice(title: Localization.countryNotEditable, feedbackType: .warning)
                 ServiceLocator.noticePresenter.enqueue(notice: notice)

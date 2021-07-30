@@ -645,6 +645,9 @@ private extension ShippingLabelFormViewModel {
     }
 
     enum Constants {
+        /// This is hardcoded for now based on: https://git.io/JBuja.
+        /// It would be great if this can be fetched remotely.
+        ///
         static let acceptedUSPSCountries = [
             "US", // United States
             "PR", // Puerto Rico

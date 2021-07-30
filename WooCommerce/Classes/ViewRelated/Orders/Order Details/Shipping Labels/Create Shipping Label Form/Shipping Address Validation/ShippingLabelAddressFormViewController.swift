@@ -527,8 +527,10 @@ private extension ShippingLabelAddressFormViewController {
         static let postcodeFieldPlaceholder = NSLocalizedString("Required", comment: "Text field placeholder in Shipping Label Address Validation")
         static let stateField = NSLocalizedString("State", comment: "Text field state in Shipping Label Address Validation")
         static let stateFieldPlaceholder = NSLocalizedString("Required", comment: "Text field placeholder in Shipping Label Address Validation")
-        static let stateFieldPlaceholderOptional = NSLocalizedString("Optional",
-                                                                     comment: "Text field placeholder in Shipping Label Address Validation when specified country has no state")
+        static let stateFieldPlaceholderOptional = NSLocalizedString(
+            "Optional",
+            comment: "Text field placeholder in Shipping Label Address Validation when specified country has no state"
+        )
         static let countryField = NSLocalizedString("Country", comment: "Text field country in Shipping Label Address Validation")
         static let countryFieldPlaceholder = NSLocalizedString("Required", comment: "Text field placeholder in Shipping Label Address Validation")
 

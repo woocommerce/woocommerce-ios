@@ -48,7 +48,7 @@ final class DashboardViewController: UIViewController {
     ///
     private lazy var innerStackView: UIStackView = {
         let view = UIStackView()
-        view.layoutMargins = UIEdgeInsets(top: 0, left: navigationController?.navigationBar.directionalLayoutMargins.leading ?? 0, bottom: 0, right: 0)
+        view.layoutMargins = UIEdgeInsets(top: 0, left: Constants.leadingMargin, bottom: 0, right: 0)
         view.isLayoutMarginsRelativeArrangement = true
         return view
     }()
@@ -148,8 +148,8 @@ private extension DashboardViewController {
         containerView.addSubview(stackView)
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: containerView.topAnchor),
-            stackView.leadingAnchor.constraint(equalTo: containerView.layoutMarginsGuide.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: containerView.layoutMarginsGuide.trailingAnchor)
+            stackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor)
         ])
     }
 
@@ -347,5 +347,6 @@ private extension DashboardViewController {
     enum Constants {
         static let animationDuration = 0.2
         static let bannerBottomMargin = CGFloat(8)
+        static let leadingMargin = CGFloat(16)
     }
 }

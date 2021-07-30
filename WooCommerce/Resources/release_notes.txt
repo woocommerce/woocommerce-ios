@@ -1,9 +1,5 @@
-- [*] Order Fulfillment: Updated success notice message [https://github.com/woocommerce/woocommerce-ios/pull/4589]
-- [*] Order Fulfillment: Fixed issue footer view getting clipped of by iPhone notch [https://github.com/woocommerce/woocommerce-ios/pull/4631]
-- [*] Shipping Labels: Updated address validation to make sure a name is entered for each address. [https://github.com/woocommerce/woocommerce-ios/pull/4601]
-- [*] Shipping Labels: Hide Contact button on Shipping To Address form when customer phone number is not provided. [https://github.com/woocommerce/woocommerce-ios/pull/4663]
-- [*] Shipping Labels: Updated edge-to-edge table views for all forms. [https://github.com/woocommerce/woocommerce-ios/pull/4657]
-- [*] Orders and Order Details: Updated edge-to-edge table views for consistent look across the app. [https://github.com/woocommerce/woocommerce-ios/pull/4638]
-- [*] Reviews and Review Details: Updated edge-to-edge table views for consistent look across the app. [https://github.com/woocommerce/woocommerce-ios/pull/4637]
-- [*] New error screen displayed to users without the required roles to access the store. [https://github.com/woocommerce/woocommerce-ios/pull/4493]
+Merchants in the US wanting to create shipping labels for their US customers will find several minor improvements. If you’re not already printing labels from the app, start by installing the WooCommerce Shipping & Tax extension on your site.
 
+We also looked around at the app on different screen sizes and phone types. We corrected a bunch of minor but meaningful visual issues, especially noticeable on iPads.
+
+As always, we welcome your feedback about the app. Reach out to us through the app under Settings in the My store tab.

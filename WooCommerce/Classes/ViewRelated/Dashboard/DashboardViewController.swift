@@ -297,7 +297,7 @@ private extension DashboardViewController {
             self?.hideTopBannerView()
             self?.pullToRefresh()
         }
-        updatedDashboardUI.displaySyncingErrorNotice = { [weak self] in
+        updatedDashboardUI.displaySyncingError = { [weak self] in
             self?.showTopBannerView()
         }
     }

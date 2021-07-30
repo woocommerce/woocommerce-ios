@@ -274,6 +274,9 @@ private extension DashboardViewController {
             reloadData(forced: forced)
         }
 
+        // Optimistically hide the error banner any time the dashboard UI updates (not just pull to refresh)
+        hideTopBannerView()
+
         // No need to continue replacing the dashboard UI child view controller if the updated dashboard UI is the same as the currently displayed one.
         guard dashboardUI !== updatedDashboardUI else {
             return
@@ -293,7 +296,6 @@ private extension DashboardViewController {
         addViewBellowSubtitle(contentView: contentView)
 
         updatedDashboardUI.onPullToRefresh = { [weak self] in
-            self?.hideTopBannerView()
             self?.pullToRefresh()
         }
         updatedDashboardUI.displaySyncingError = { [weak self] in

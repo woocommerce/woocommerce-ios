@@ -167,8 +167,8 @@ struct ProductDetailsCellViewModel {
                   imageURL: product?.imageURL,
                   name: refundedItem.name,
                   positiveQuantity: abs(refundedItem.quantity),
-                  total: formatter.convertToDecimal(from: refundedItem.total)?.abs() ?? NSDecimalNumber.zero,
-                  price: refundedItem.price.abs(),
+                  total: formatter.convertToDecimal(from: refundedItem.total) ?? NSDecimalNumber.zero,
+                  price: refundedItem.price,
                   skuText: refundedItem.sku,
                   attributes: [], // Attributes are not supported for a refund item yet.
                   hasAddOns: false) // AddOns are not supported for a refund item yet.

@@ -354,6 +354,12 @@ extension UIImage {
         return UIImage(named: "card-reader-found")!
     }
 
+    /// Person with mobile device standing next to card reader with radio waves
+    ///
+    static var cardReaderConnect: UIImage {
+        return UIImage(named: "card-reader-connect")!
+    }
+
     /// Connecting to Card Reader, Card Reader with radio waves
     ///
     static var cardReaderConnecting: UIImage {

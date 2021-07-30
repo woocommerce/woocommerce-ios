@@ -78,20 +78,19 @@ PODS:
   - WPMediaPicker (1.7.1)
   - wpxmlrpc (0.9.0)
   - XLPagerTabStrip (9.0.0)
-  - ZendeskCommonUISDK (4.2.0):
-    - ZendeskSDKConfigurationsSDK (~> 1.1.2)
-  - ZendeskCoreSDK (2.2.2)
-  - ZendeskMessagingAPISDK (3.2.0):
-    - ZendeskSDKConfigurationsSDK (~> 1.1.2)
-  - ZendeskMessagingSDK (3.2.0):
-    - ZendeskCommonUISDK (~> 4.2.0)
-    - ZendeskMessagingAPISDK (~> 3.2.0)
-  - ZendeskSDKConfigurationsSDK (1.1.3)
-  - ZendeskSupportProvidersSDK (5.0.1):
-    - ZendeskCoreSDK (~> 2.2.1)
-  - ZendeskSupportSDK (5.0.1):
-    - ZendeskMessagingSDK (~> 3.2.0)
-    - ZendeskSupportProvidersSDK (~> 5.0.1)
+  - ZendeskCommonUISDK (6.1.1)
+  - ZendeskCoreSDK (2.5.1)
+  - ZendeskMessagingAPISDK (3.8.2):
+    - ZendeskSDKConfigurationsSDK (~> 1.1.8)
+  - ZendeskMessagingSDK (3.8.2):
+    - ZendeskCommonUISDK (~> 6.1.1)
+    - ZendeskMessagingAPISDK (~> 3.8.2)
+  - ZendeskSDKConfigurationsSDK (1.1.8)
+  - ZendeskSupportProvidersSDK (5.3.0):
+    - ZendeskCoreSDK (~> 2.5.1)
+  - ZendeskSupportSDK (5.3.0):
+    - ZendeskMessagingSDK (~> 3.8.2)
+    - ZendeskSupportProvidersSDK (~> 5.3.0)
 
 DEPENDENCIES:
   - Alamofire (~> 4.8)
@@ -192,13 +191,13 @@ SPEC CHECKSUMS:
   WPMediaPicker: 46ae5807c8f64d30a39c28812ad150837a424ed2
   wpxmlrpc: bf55a43a7e710bd2a4fb8c02dfe83b1246f14f13
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
-  ZendeskCommonUISDK: afbee7c58c04cf88012a48c079599ec0d1590d16
-  ZendeskCoreSDK: 86513e62c1ab68913416c9044463d9b687ca944f
-  ZendeskMessagingAPISDK: c12dacdb94a89a957d911d5cff82a7cc9ee9666b
-  ZendeskMessagingSDK: 9cd3a5af8bc0766b5e4774d8cbd8a0468263af97
-  ZendeskSDKConfigurationsSDK: 918241bc7ec30e0af9e1b16333d54a584ee8ab9e
-  ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
-  ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
+  ZendeskCommonUISDK: 5808802951ad2bb424f0bed4259dc3c0ce9b52ec
+  ZendeskCoreSDK: 19a18e5ef2edcb18f4dbc0ea0d12bd31f515712a
+  ZendeskMessagingAPISDK: 144e0fb0e633a3c4e73149b781ab65338938d5a8
+  ZendeskMessagingSDK: 500e83d9413481e95180c37ddca0d4ef9d515600
+  ZendeskSDKConfigurationsSDK: 8371b468db0d09e9198f6c5a97818826943ee1ee
+  ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
+  ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
 PODFILE CHECKSUM: c9a31c3fd5cf78df537a8d96d76f6e345586d178
 

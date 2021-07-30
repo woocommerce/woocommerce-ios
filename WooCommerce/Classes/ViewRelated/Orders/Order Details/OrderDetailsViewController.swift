@@ -708,15 +708,8 @@ private extension OrderDetailsViewController {
     }
 
     private func connectToCardReader() {
-        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsPresentingViewController.self) else {
-            fatalError("Cannot instantiate `CardReaderSettingsPresentingViewController` from Dashboard storyboard")
-        }
-
-        let viewModelsAndViews = CardReaderSettingsViewModelsOrderedList()
-        viewController.configure(viewModelsAndViews: viewModelsAndViews)
-        viewController.presentationController?.delegate = self
-
-        present(viewController, animated: true)
+        let connectionController = CardReaderConnectionController(from: self, forSiteID: viewModel.order.siteID)
+        connectionController.start()
     }
 
     private func cancelObservingCardReader() {

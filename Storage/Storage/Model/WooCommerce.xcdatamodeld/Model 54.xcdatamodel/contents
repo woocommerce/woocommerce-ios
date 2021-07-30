@@ -637,7 +637,7 @@
         <attribute name="name" attributeType="String"/>
         <relationship name="relationship" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Country" inverseName="states" inverseEntity="Country"/>
     </entity>
-    <entity name="SystemPlugin" representedClassName="SystemPlugin" syncable="YES" codeGenerationType="class">
+    <entity name="SystemPlugin" representedClassName="SystemPlugin" syncable="YES">
         <attribute name="authorName" attributeType="String"/>
         <attribute name="authorUrl" attributeType="String"/>
         <attribute name="name" attributeType="String"/>

@@ -30,6 +30,16 @@ extension MockStorageManager {
         return newAccountSettings
     }
 
+    /// Inserts a new (Sample) Payment Gateway Account into the specified context.
+    ///
+    @discardableResult
+    func insertSamplePaymentGatewayAccount(readOnlyAccount: PaymentGatewayAccount) -> StoragePaymentGatewayAccount {
+        let newAccount = viewStorage.insertNewObject(ofType: StoragePaymentGatewayAccount.self)
+        newAccount.update(with: readOnlyAccount)
+
+        return newAccount
+    }
+
     /// Inserts a new (Sample) Product into the specified context.
     ///
     @discardableResult

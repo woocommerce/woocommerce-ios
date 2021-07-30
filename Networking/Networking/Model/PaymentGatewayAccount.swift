@@ -1,8 +1,9 @@
 import Foundation
+import Codegen
 
 /// Represents a Payment Gateway Account.
 ///
-public struct PaymentGatewayAccount {
+public struct PaymentGatewayAccount: GeneratedCopiable, GeneratedFakeable {
 
     /// Site identifier.
     ///

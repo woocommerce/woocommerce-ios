@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import protocol Storage.StorageManagerType
 
 /// Provides view data for Create Shipping Label, and handles init/UI/navigation actions needed.
 ///
@@ -79,10 +80,8 @@ final class ShippingLabelFormViewModel {
 
     /// ResultsController: Loads Countries from the Storage Layer.
     ///
-    private let resultsController: ResultsController<StorageCountry> = {
-        let storageManager = ServiceLocator.storageManager
+    private lazy var resultsController: ResultsController<StorageCountry> = {
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
-
         return ResultsController(storageManager: storageManager, matching: nil, sortedBy: [descriptor])
     }()
 
@@ -91,6 +90,8 @@ final class ShippingLabelFormViewModel {
     }
 
     private let stores: StoresManager
+
+    private let storageManager: StorageManagerType
 
     /// Closure to notify the `ViewController` when the view model properties change.
     ///
@@ -107,7 +108,8 @@ final class ShippingLabelFormViewModel {
     init(order: Order,
          originAddress: Address?,
          destinationAddress: Address?,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
 
         self.siteID = order.siteID
         self.order = order
@@ -125,6 +127,7 @@ final class ShippingLabelFormViewModel {
 
         state.sections = ShippingLabelFormViewModel.generateInitialSections()
         self.stores = stores
+        self.storageManager = storageManager
 
         syncShippingLabelAccountSettings()
         syncPackageDetails()
@@ -334,6 +337,20 @@ final class ShippingLabelFormViewModel {
         let price = currencyFormatter.formatAmount(Decimal(rate)) ?? ""
 
         return price
+    }
+
+    /// Filter country for picking based on ship type.
+    ///
+    /// For origin address, country list should show only US or any of its territories that have at least one USPS postal office.
+    /// Destination address should allow picking from the complete country list.
+    ///
+    func filteredCountries(for type: ShipType) -> [Country] {
+        switch type {
+        case .origin:
+            return countries.filter { Constants.acceptedUSPSCountries.contains($0.code) }
+        case .destination:
+            return countries
+        }
     }
 }
 
@@ -625,5 +642,22 @@ private extension ShippingLabelFormViewModel {
                               comment: "Selected credit card in Shipping Label form. %1$@ is a placeholder for the last four digits of the credit card.")
         static let orderSummaryHeader = NSLocalizedString("Shipping label order summary",
                                                           comment: "Header of the order summary section in the shipping label creation form")
+    }
+
+    enum Constants {
+        /// This is hardcoded for now based on: https://git.io/JBuja.
+        /// It would be great if this can be fetched remotely.
+        ///
+        static let acceptedUSPSCountries = [
+            "US", // United States
+            "PR", // Puerto Rico
+            "VI", // Virgin Islands
+            "GU", // Guam
+            "AS", // American Samoa
+            "UM", // United States Minor Outlying Islands
+            "MH", // Marshall Islands
+            "FM", // Micronesia
+            "MP" // Northern Mariana Islands
+        ]
     }
 }

@@ -1,4 +1,5 @@
 import XCTest
+import Fakes
 @testable import Yosemite
 @testable import Networking
 @testable import Storage
@@ -233,5 +234,77 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         cardPresentStore.onAction(action)
 
         XCTAssertTrue(mockCardReaderService.didHitDisconnect)
+    }
+
+    // MARK: - CardPresentPaymentAction.checkOnboardingState
+    func test_onboarding_returns_generic_error_by_default() {
+        // Given
+
+        // When
+        let state = checkOnboardingState()
+
+        // Then
+        // This is not the desired final state, but we will use a generic error for any case
+        // that is not implemented yet
+        XCTAssertEqual(state, .genericError)
+    }
+
+    func test_onboarding_returns_generic_error_when_account_is_not_eligible() {
+        // Given
+        let paymentGatewayAccount = PaymentGatewayAccount
+            .fake()
+            .copy(
+                siteID: sampleSiteID,
+                isCardPresentEligible: false
+            )
+        storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
+
+        // When
+        let state = checkOnboardingState()
+
+        // Then
+        // This is not the desired final state, but we will use a generic error for any case
+        // that is not implemented yet
+        XCTAssertEqual(state, .genericError)
+    }
+
+    func test_onboarding_returns_complete_when_account_is_setup_successfully() {
+        // Given
+        let paymentGatewayAccount = PaymentGatewayAccount
+            .fake()
+            .copy(
+                siteID: sampleSiteID,
+                isCardPresentEligible: true
+            )
+        storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
+
+        // When
+        let state = checkOnboardingState()
+
+        // Then
+        XCTAssertEqual(state, .completed)
+    }
+}
+
+private extension CardPresentPaymentStoreTests {
+    /// Returns the current onboarding state
+    ///
+    /// This is a helper method to avoid repeating boilerplate in all the different test cases, so the actual tested logic is more apparent.
+    ///
+    func checkOnboardingState() -> CardPresentPaymentOnboardingState {
+        let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
+                                                       storageManager: storageManager,
+                                                       network: network,
+                                                       cardReaderService: mockCardReaderService)
+        let expectation = self.expectation(description: "Check onboarding state")
+
+        var returnedState: CardPresentPaymentOnboardingState? = nil
+        let action = CardPresentPaymentAction.checkOnboardingState(siteID: sampleSiteID) { state in
+            returnedState = state
+            expectation.fulfill()
+        }
+        cardPresentStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        return returnedState!
     }
 }

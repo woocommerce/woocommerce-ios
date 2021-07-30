@@ -81,6 +81,12 @@ final class DashboardViewController: UIViewController {
                                               })
     }()
 
+    /// Top anchor constraint for Dashboard UI. Can be updated e.g. to change the margin between the stack view and dashboard UI.
+    ///
+    private lazy var dashboardUITopAnchor: NSLayoutConstraint = {
+        dashboardUI!.view.topAnchor.constraint(equalTo: stackView.bottomAnchor)
+    }()
+
     // MARK: View Lifecycle
 
     init(siteID: Int64) {
@@ -158,11 +164,8 @@ private extension DashboardViewController {
             return
         }
         contentView.translatesAutoresizingMaskIntoConstraints = false
-        // Set the top anchor constraint as non-required so additional space can be added when the top banner is displayed
-        let topAnchorConstraint = contentView.topAnchor.constraint(equalTo: stackView.bottomAnchor)
-        topAnchorConstraint.priority = .defaultHigh
         NSLayoutConstraint.activate([
-            topAnchorConstraint,
+            dashboardUITopAnchor,
             contentView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
@@ -213,30 +216,31 @@ private extension DashboardViewController {
     /// Display the error banner at the top of the dashboard content (below the site title)
     ///
     func showTopBannerView() {
-        guard let dashboardUI = dashboardUI, let contentView = dashboardUI.view else {
+        guard let dashboardUI = dashboardUI else {
             return
         }
         stackView.addArrangedSubview(topBannerView)
         if !shouldShowStoreNameAsSubtitle {
             containerView.addSubview(stackView)
-            contentView.translatesAutoresizingMaskIntoConstraints = false
+            dashboardUI.view.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
                 stackView.topAnchor.constraint(equalTo: containerView.topAnchor),
                 stackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
                 stackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-                contentView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-                contentView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-                contentView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
+                dashboardUITopAnchor,
+                dashboardUI.view.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+                dashboardUI.view.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+                dashboardUI.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
             ])
         }
-        contentView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: Constants.bannerBottomMargin).isActive = true
+        dashboardUITopAnchor.constant = Constants.bannerBottomMargin
     }
 
     /// Hide the error banner
     ///
     func hideTopBannerView() {
-        dashboardUI?.view.topAnchor.constraint(equalTo: stackView.bottomAnchor).isActive = true
         topBannerView.removeFromSuperview()
+        dashboardUITopAnchor.constant = CGFloat(0)
     }
 }
 

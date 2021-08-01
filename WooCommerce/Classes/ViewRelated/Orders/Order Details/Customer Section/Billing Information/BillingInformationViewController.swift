@@ -388,7 +388,10 @@ private extension BillingInformationViewController {
             }
 
             let title = NSLocalizedString("Contact Details", comment: "Section header title for contact details in billing information")
-            return Section(title: title, secondaryTitle: nil, rows: rows)
+            if(rows.count ===0){
+               return nil
+            }
+             return Section(title: title, secondaryTitle: nil, rows: rows)
         }()
 
         sections =  [billingAddress, contactDetails].compactMap { $0 }

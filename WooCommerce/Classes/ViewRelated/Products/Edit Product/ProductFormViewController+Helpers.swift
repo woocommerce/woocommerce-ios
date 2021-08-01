@@ -33,7 +33,6 @@ extension ProductFormViewController {
         alertController.addAction(confirm)
         present(alertController, animated: true)
     }
-    
     /// Product Confirmation Save alert
     ///
     func presentProductConfirmationSaveAlert() {
@@ -44,7 +43,6 @@ extension ProductFormViewController {
         }()
         contextNoticePresenter.enqueue(notice: .init(title: Localization.Alert.productSavedConfirmationTitle))
     }
-    
     /// Product Confirmation Delete alert
     ///
     func presentProductConfirmationDeleteAlert(completion: @escaping (_ isConfirmed: Bool) -> ()) {
@@ -123,7 +121,6 @@ private enum Localization {
         // Product saved or updated
         static let productSavedConfirmationTitle = NSLocalizedString("Product saved",
         comment: "Title of the alert when a user is saving a product")
-        
         // Product type change
         static let productTypeChangeTitle = NSLocalizedString("Are you sure you want to change the product type?",
                                                               comment: "Title of the alert when a user is changing the product type")

@@ -41,7 +41,7 @@ extension ProductFormViewController {
             noticePresenter.presentingViewController = self
             return noticePresenter
         }()
-        contextNoticePresenter.enqueue(notice: .init(title: Localization.Alert.productSavedConfirmationTitle))
+        contextNoticePresenter.enqueue(notice: .init(title: Localization.Alert.presentProductConfirmationSaveAlert))
     }
     /// Product Confirmation Delete alert
     ///
@@ -112,14 +112,14 @@ private extension ProductFormViewController {
         let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
         inProgressViewController.modalPresentationStyle = .overCurrentContext
 
-        navigationController?.present(inProgressViewController, animated: true, completion: presentProductConfirmationSaveAlert)
+        navigationController?.present(inProgressViewController, animated: true, completion: nil)
     }
 }
 
 private enum Localization {
     enum Alert {
         // Product saved or updated
-        static let productSavedConfirmationTitle = NSLocalizedString("Product saved",
+        static let presentProductConfirmationSaveAlert = NSLocalizedString("Product saved",
         comment: "Title of the alert when a user is saving a product")
         // Product type change
         static let productTypeChangeTitle = NSLocalizedString("Are you sure you want to change the product type?",

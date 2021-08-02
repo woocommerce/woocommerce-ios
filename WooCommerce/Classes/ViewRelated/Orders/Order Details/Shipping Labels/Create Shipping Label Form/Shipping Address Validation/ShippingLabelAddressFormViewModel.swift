@@ -20,6 +20,7 @@ final class ShippingLabelAddressFormViewModel {
     private(set) var address: ShippingLabelAddress?
     private(set) var addressValidationError: ShippingLabelAddressValidationError?
     private(set) var addressValidated: Validation = .none
+    private let phoneNumberRequired: Bool
 
     private let stores: StoresManager
 
@@ -68,6 +69,7 @@ final class ShippingLabelAddressFormViewModel {
         siteID: Int64,
         type: ShipType,
         address: ShippingLabelAddress?,
+        phoneNumberRequired: Bool = false,
         stores: StoresManager = ServiceLocator.stores,
         validationError: ShippingLabelAddressValidationError?,
         countries: [Country]
@@ -75,6 +77,7 @@ final class ShippingLabelAddressFormViewModel {
         self.siteID = siteID
         self.type = type
         self.address = address
+        self.phoneNumberRequired = phoneNumberRequired
         self.stores = stores
         if let validationError = validationError {
             addressValidationError = validationError
@@ -165,6 +168,7 @@ extension ShippingLabelAddressFormViewModel {
         case postcode
         case state
         case country
+        case phoneNumber
     }
 
     private func validateAddressLocally() -> [ValidationError] {
@@ -188,6 +192,9 @@ extension ShippingLabelAddressFormViewModel {
             }
             if addressToBeValidated.country.isEmpty {
                 errors.append(.country)
+            }
+            if addressToBeValidated.phone.isEmpty && phoneNumberRequired {
+                errors.append(.phoneNumber)
             }
         }
 

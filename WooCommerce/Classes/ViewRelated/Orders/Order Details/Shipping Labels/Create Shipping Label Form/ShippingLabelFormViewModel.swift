@@ -89,6 +89,16 @@ final class ShippingLabelFormViewModel {
         resultsController.fetchedObjects
     }
 
+    /// If whether destination country is other than US,
+    /// phone number for origin address is required.
+    ///
+    var originAddressPhoneRequired: Bool {
+        guard let destinationCountry = destinationAddress?.country else {
+            return false
+        }
+        return !Constants.destinationCountriesWithoutPhoneRequirement.contains(destinationCountry)
+    }
+
     private let stores: StoresManager
 
     private let storageManager: StorageManagerType
@@ -658,6 +668,10 @@ private extension ShippingLabelFormViewModel {
             "MH", // Marshall Islands
             "FM", // Micronesia
             "MP" // Northern Mariana Islands
+        ]
+
+        static let destinationCountriesWithoutPhoneRequirement = [
+            "US", // United States
         ]
     }
 }

@@ -20,7 +20,7 @@ final class ShippingLabelAddressFormViewModel {
     private(set) var address: ShippingLabelAddress?
     private(set) var addressValidationError: ShippingLabelAddressValidationError?
     private(set) var addressValidated: Validation = .none
-    private let phoneNumberRequired: Bool
+    private(set) var phoneNumberRequired: Bool
 
     private let stores: StoresManager
 
@@ -69,7 +69,7 @@ final class ShippingLabelAddressFormViewModel {
         siteID: Int64,
         type: ShipType,
         address: ShippingLabelAddress?,
-        phoneNumberRequired: Bool = false,
+        phoneNumberRequired: Bool,
         stores: StoresManager = ServiceLocator.stores,
         validationError: ShippingLabelAddressValidationError?,
         countries: [Country]
@@ -145,6 +145,11 @@ final class ShippingLabelAddressFormViewModel {
         if localErrors.contains(.country) {
             if let index = rows.firstIndex(where: { $0 == .country }) {
                 rows.insert(.fieldError(.country), at: rows.index(after: index))
+            }
+        }
+        if localErrors.contains(.phoneNumber) {
+            if let index = rows.firstIndex(where: { $0 == .phone }) {
+                rows.insert(.fieldError(.phoneNumber), at: rows.index(after: index))
             }
         }
         sections = [Section(rows: rows)]

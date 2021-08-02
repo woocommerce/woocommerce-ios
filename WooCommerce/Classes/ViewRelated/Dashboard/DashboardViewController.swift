@@ -46,7 +46,7 @@ final class DashboardViewController: UIViewController {
     ///
     private lazy var innerStackView: UIStackView = {
         let view = UIStackView()
-        view.layoutMargins = UIEdgeInsets(top: 0, left: Constants.leadingMargin, bottom: 0, right: 0)
+        view.layoutMargins = UIEdgeInsets(top: 0, left: Constants.horizontalMargin, bottom: 0, right: Constants.horizontalMargin)
         view.isLayoutMarginsRelativeArrangement = true
         return view
     }()
@@ -352,6 +352,6 @@ private extension DashboardViewController {
     enum Constants {
         static let animationDuration = 0.2
         static let bannerBottomMargin = CGFloat(8)
-        static let leadingMargin = CGFloat(16)
+        static let horizontalMargin = CGFloat(16)
     }
 }

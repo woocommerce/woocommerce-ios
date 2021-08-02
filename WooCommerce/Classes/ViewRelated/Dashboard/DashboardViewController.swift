@@ -131,7 +131,7 @@ private extension DashboardViewController {
 
     func configureNavigation() {
         configureTitle()
-        configureSubtitle()
+        configureHeaderStackView()
         configureNavigationItem()
     }
 
@@ -145,13 +145,9 @@ private extension DashboardViewController {
         navigationItem.title = titleName
     }
 
-    func configureSubtitle() {
-        guard shouldShowStoreNameAsSubtitle else {
-            return
-        }
-        storeNameLabel.text = ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.title
-        innerStackView.addArrangedSubview(storeNameLabel)
-        headerStackView.addArrangedSubview(innerStackView)
+    func configureHeaderStackView() {
+        configureSubtitle()
+        configureErrorBanner()
         containerView.addSubview(headerStackView)
         NSLayoutConstraint.activate([
             headerStackView.topAnchor.constraint(equalTo: containerView.topAnchor),
@@ -160,10 +156,23 @@ private extension DashboardViewController {
         ])
     }
 
-    func addViewBellowSubtitle(contentView: UIView) {
+    func configureSubtitle() {
         guard shouldShowStoreNameAsSubtitle else {
             return
         }
+        storeNameLabel.text = ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.title
+        innerStackView.addArrangedSubview(storeNameLabel)
+        headerStackView.addArrangedSubview(innerStackView)
+    }
+
+    func configureErrorBanner() {
+        headerStackView.addArrangedSubviews([topBannerView, spacerView])
+        // Don't show the error banner subviews until they are needed
+        topBannerView.isHidden = true
+        spacerView.isHidden = true
+    }
+
+    func addViewBelowHeaderStackView(contentView: UIView) {
         contentView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             contentView.topAnchor.constraint(equalTo: headerStackView.bottomAnchor),
@@ -217,31 +226,15 @@ private extension DashboardViewController {
     /// Display the error banner at the top of the dashboard content (below the site title)
     ///
     func showTopBannerView() {
-        guard let dashboardUI = dashboardUI else {
-            return
-        }
-        headerStackView.addArrangedSubview(topBannerView)
-        headerStackView.addArrangedSubview(spacerView)
-        if !shouldShowStoreNameAsSubtitle {
-            containerView.addSubview(headerStackView)
-            dashboardUI.view.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                headerStackView.topAnchor.constraint(equalTo: containerView.topAnchor),
-                headerStackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-                headerStackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-                dashboardUI.view.topAnchor.constraint(equalTo: headerStackView.bottomAnchor),
-                dashboardUI.view.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-                dashboardUI.view.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-                dashboardUI.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
-            ])
-        }
+        topBannerView.isHidden = false
+        spacerView.isHidden = false
     }
 
     /// Hide the error banner
     ///
     func hideTopBannerView() {
-        topBannerView.removeFromSuperview()
-        spacerView.removeFromSuperview()
+        topBannerView.isHidden = true
+        spacerView.isHidden = true
     }
 }
 
@@ -295,7 +288,7 @@ private extension DashboardViewController {
         addChild(updatedDashboardUI)
         containerView.addSubview(contentView)
         updatedDashboardUI.didMove(toParent: self)
-        addViewBellowSubtitle(contentView: contentView)
+        addViewBelowHeaderStackView(contentView: contentView)
 
         updatedDashboardUI.onPullToRefresh = { [weak self] in
             self?.pullToRefresh()

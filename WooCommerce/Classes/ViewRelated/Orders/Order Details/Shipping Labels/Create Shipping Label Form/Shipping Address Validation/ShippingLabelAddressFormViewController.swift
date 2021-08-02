@@ -266,6 +266,9 @@ extension ShippingLabelAddressFormViewController: UITableViewDelegate {
         switch row {
         case .state:
             let states = viewModel.statesOfSelectedCountry
+            guard states.isNotEmpty else {
+                return
+            }
             let selectedState = states.first { $0.code == viewModel.address?.state }
             let command = ShippingLabelStateOfACountryListSelectorCommand(states: states, selected: selectedState)
             let listSelector = ListSelectorViewController(command: command) { [weak self] state in
@@ -437,15 +440,16 @@ private extension ShippingLabelAddressFormViewController {
     }
 
     func configureState(cell: TitleAndTextFieldTableViewCell, row: Row) {
+        let placeholder = viewModel.stateOfCountryRequired ? Localization.stateFieldPlaceholder : Localization.stateFieldPlaceholderOptional
         let cellViewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.stateField,
                                                                      text: viewModel.extendedStateName,
-                                                                     placeholder: Localization.stateFieldPlaceholder,
+                                                                     placeholder: placeholder,
                                                                      state: .normal,
                                                                      keyboardType: .default,
                                                                      textFieldAlignment: .leading) { _ in
         }
         cell.configure(viewModel: cellViewModel)
-        cell.enableTextField(false)
+        cell.enableTextField(viewModel.statesOfSelectedCountry.isEmpty)
     }
 
     func configureCountry(cell: TitleAndTextFieldTableViewCell, row: Row) {
@@ -523,6 +527,10 @@ private extension ShippingLabelAddressFormViewController {
         static let postcodeFieldPlaceholder = NSLocalizedString("Required", comment: "Text field placeholder in Shipping Label Address Validation")
         static let stateField = NSLocalizedString("State", comment: "Text field state in Shipping Label Address Validation")
         static let stateFieldPlaceholder = NSLocalizedString("Required", comment: "Text field placeholder in Shipping Label Address Validation")
+        static let stateFieldPlaceholderOptional = NSLocalizedString(
+            "Optional",
+            comment: "Text field placeholder in Shipping Label Address Validation when specified country has no state"
+        )
         static let countryField = NSLocalizedString("Country", comment: "Text field country in Shipping Label Address Validation")
         static let countryFieldPlaceholder = NSLocalizedString("Required", comment: "Text field placeholder in Shipping Label Address Validation")
 

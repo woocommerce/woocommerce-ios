@@ -60,10 +60,16 @@ final class ShippingLabelAddressFormViewController: UIViewController {
     init(siteID: Int64,
          type: ShipType,
          address: ShippingLabelAddress?,
+         phoneNumberRequired: Bool = false,
          validationError: ShippingLabelAddressValidationError?,
          countries: [Country],
          completion: @escaping Completion ) {
-        viewModel = ShippingLabelAddressFormViewModel(siteID: siteID, type: type, address: address, validationError: validationError, countries: countries)
+        viewModel = ShippingLabelAddressFormViewModel(siteID: siteID,
+                                                      type: type,
+                                                      address: address,
+                                                      phoneNumberRequired: phoneNumberRequired,
+                                                      validationError: validationError,
+                                                      countries: countries)
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
         switch type {
@@ -357,9 +363,10 @@ private extension ShippingLabelAddressFormViewController {
     }
 
     func configurePhone(cell: TitleAndTextFieldTableViewCell, row: Row) {
+        let placeholder = viewModel.phoneNumberRequired ? Localization.phoneFieldPlaceholderRequired : Localization.phoneFieldPlaceholder
         let cellViewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.phoneField,
                                                                      text: viewModel.address?.phone,
-                                                                     placeholder: Localization.phoneFieldPlaceholder,
+                                                                     placeholder: placeholder,
                                                                      state: .normal,
                                                                      keyboardType: .phonePad,
                                                                      textFieldAlignment: .leading) { [weak self] (newText) in
@@ -408,10 +415,13 @@ private extension ShippingLabelAddressFormViewController {
             errorMessage = Localization.missingState
         case .country:
             errorMessage = Localization.missingCountry
+        case .phoneNumber:
+            errorMessage = Localization.missingPhoneNumber
         }
 
         cell.textLabel?.text = errorMessage
         cell.textLabel?.textColor = .error
+        cell.textLabel?.numberOfLines = 0
         cell.backgroundColor = .listBackground
     }
 
@@ -517,6 +527,9 @@ private extension ShippingLabelAddressFormViewController {
         static let companyFieldPlaceholder = NSLocalizedString("Optional", comment: "Text field placeholder in Shipping Label Address Validation")
         static let phoneField = NSLocalizedString("Phone", comment: "Text field phone in Shipping Label Address Validation")
         static let phoneFieldPlaceholder = NSLocalizedString("Optional", comment: "Text field placeholder in Shipping Label Address Validation")
+        static let phoneFieldPlaceholderRequired = NSLocalizedString("Required",
+                                                                     comment: "Text field placeholder in Shipping Label Address Validation " +
+                                                                     "when phone number is required")
         static let addressField = NSLocalizedString("Address", comment: "Text field address in Shipping Label Address Validation")
         static let addressFieldPlaceholder = NSLocalizedString("Required", comment: "Text field placeholder in Shipping Label Address Validation")
         static let address2Field = NSLocalizedString("Address 2", comment: "Text field address 2 in Shipping Label Address Validation")
@@ -548,6 +561,9 @@ private extension ShippingLabelAddressFormViewController {
                                                     comment: "Error showed in Shipping Label Address Validation for the state field")
         static let missingCountry = NSLocalizedString("Country missing",
                                                       comment: "Error showed in Shipping Label Address Validation for the country field")
+        static let missingPhoneNumber = NSLocalizedString("A phone number is required because this shipment requires a customs form",
+                                                          comment: "Error showed in Shipping Label Origin Address Validation for the " +
+                                                          "phone number field for international shipment")
         static let appleMapsErrorNotice = NSLocalizedString("Error in finding the address in Apple Maps",
                                                             comment: "Error in finding the address in the Shipping Label Address Validation in Apple Maps")
         static let phoneNumberErrorNotice = NSLocalizedString("The phone number is not valid or you can't call the customer from this device.",

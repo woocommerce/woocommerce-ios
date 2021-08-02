@@ -69,7 +69,7 @@ final class ShippingLabelAddressFormViewModel {
         siteID: Int64,
         type: ShipType,
         address: ShippingLabelAddress?,
-        phoneNumberRequired: Bool,
+        phoneNumberRequired: Bool = false,
         stores: StoresManager = ServiceLocator.stores,
         validationError: ShippingLabelAddressValidationError?,
         countries: [Country]

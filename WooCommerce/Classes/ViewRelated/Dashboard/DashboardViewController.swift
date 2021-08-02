@@ -53,7 +53,7 @@ final class DashboardViewController: UIViewController {
 
     /// A stack view for views displayed between the navigation bar and content (e.g. store name subtitle, top banner)
     ///
-    private lazy var stackView: UIStackView = {
+    private lazy var headerStackView: UIStackView = {
         let view = UIStackView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .listForeground
@@ -79,6 +79,8 @@ final class DashboardViewController: UIViewController {
                                               })
     }()
 
+    /// A spacer view to add a margin below the top banner (between the banner and dashboard UI)
+    ///
     private lazy var spacerView: UIView = {
         let view = UIView()
         view.heightAnchor.constraint(equalToConstant: Constants.bannerBottomMargin).isActive = true
@@ -149,12 +151,12 @@ private extension DashboardViewController {
         }
         storeNameLabel.text = ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.title
         innerStackView.addArrangedSubview(storeNameLabel)
-        stackView.addArrangedSubview(innerStackView)
-        containerView.addSubview(stackView)
+        headerStackView.addArrangedSubview(innerStackView)
+        containerView.addSubview(headerStackView)
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: containerView.topAnchor),
-            stackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor)
+            headerStackView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            headerStackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            headerStackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor)
         ])
     }
 
@@ -164,7 +166,7 @@ private extension DashboardViewController {
         }
         contentView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            contentView.topAnchor.constraint(equalTo: stackView.bottomAnchor),
+            contentView.topAnchor.constraint(equalTo: headerStackView.bottomAnchor),
             contentView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
@@ -218,16 +220,16 @@ private extension DashboardViewController {
         guard let dashboardUI = dashboardUI else {
             return
         }
-        stackView.addArrangedSubview(topBannerView)
-        stackView.addArrangedSubview(spacerView)
+        headerStackView.addArrangedSubview(topBannerView)
+        headerStackView.addArrangedSubview(spacerView)
         if !shouldShowStoreNameAsSubtitle {
-            containerView.addSubview(stackView)
+            containerView.addSubview(headerStackView)
             dashboardUI.view.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
-                stackView.topAnchor.constraint(equalTo: containerView.topAnchor),
-                stackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-                stackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-                dashboardUI.view.topAnchor.constraint(equalTo: stackView.bottomAnchor),
+                headerStackView.topAnchor.constraint(equalTo: containerView.topAnchor),
+                headerStackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+                headerStackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+                dashboardUI.view.topAnchor.constraint(equalTo: headerStackView.bottomAnchor),
                 dashboardUI.view.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
                 dashboardUI.view.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
                 dashboardUI.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
@@ -253,8 +255,8 @@ extension DashboardViewController: DashboardUIScrollDelegate {
         guard shouldShowStoreNameAsSubtitle else {
             return
         }
-        storeNameLabel.isHidden = offset > stackView.frame.height
-        if offset < -stackView.frame.height {
+        storeNameLabel.isHidden = offset > headerStackView.frame.height
+        if offset < -headerStackView.frame.height {
             UIView.transition(with: storeNameLabel, duration: Constants.animationDuration,
                               options: .showHideTransitionViews,
                               animations: { [weak self] in

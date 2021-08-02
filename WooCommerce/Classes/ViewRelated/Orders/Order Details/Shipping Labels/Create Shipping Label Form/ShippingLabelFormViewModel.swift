@@ -89,10 +89,9 @@ final class ShippingLabelFormViewModel {
         resultsController.fetchedObjects
     }
 
-    /// If whether destination country is other than US,
-    /// phone number for origin address is required.
+    /// Check for international shipping based on whether destination country is other than US.
     ///
-    var originAddressPhoneRequired: Bool {
+    var isInternationalShipping: Bool {
         guard let destinationCountry = destinationAddress?.country else {
             return false
         }

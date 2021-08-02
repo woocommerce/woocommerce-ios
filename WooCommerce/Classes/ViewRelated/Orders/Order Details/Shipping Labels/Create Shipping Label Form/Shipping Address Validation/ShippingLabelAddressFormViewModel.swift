@@ -53,7 +53,7 @@ final class ShippingLabelAddressFormViewModel {
     }
 
     var stateOfCountryRequired: Bool {
-        !statesOfSelectedCountry.isEmpty
+        statesOfSelectedCountry.isNotEmpty
     }
 
     var extendedCountryName: String? {

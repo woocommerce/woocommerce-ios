@@ -266,7 +266,7 @@ extension ShippingLabelAddressFormViewController: UITableViewDelegate {
         switch row {
         case .state:
             let states = viewModel.statesOfSelectedCountry
-            guard !states.isEmpty else {
+            guard states.isNotEmpty else {
                 return
             }
             let selectedState = states.first { $0.code == viewModel.address?.state }

@@ -147,9 +147,13 @@ final class ShippingLabelAddressFormViewModel {
                 rows.insert(.fieldError(.country), at: rows.index(after: index))
             }
         }
-        if localErrors.contains(.phoneNumber) {
+        if localErrors.contains(.missingPhoneNumber) {
             if let index = rows.firstIndex(where: { $0 == .phone }) {
-                rows.insert(.fieldError(.phoneNumber), at: rows.index(after: index))
+                rows.insert(.fieldError(.missingPhoneNumber), at: rows.index(after: index))
+            }
+        } else if localErrors.contains(.invalidPhoneNumber) {
+            if let index = rows.firstIndex(where: { $0 == .phone }) {
+                rows.insert(.fieldError(.invalidPhoneNumber), at: rows.index(after: index))
             }
         }
         sections = [Section(rows: rows)]
@@ -173,7 +177,25 @@ extension ShippingLabelAddressFormViewModel {
         case postcode
         case state
         case country
-        case phoneNumber
+        case missingPhoneNumber
+        case invalidPhoneNumber
+    }
+
+    /// Validates phone number for origin address.
+    /// This take into account whether phone is not empty,
+    /// has length 10 with additional "1" area code for US.
+    ///
+    /// Note: This logic may need to be updated if there is a need for validating other cases.
+    ///
+    private var isPhoneNumberValid: Bool {
+        guard let phone = address?.phone, phone.isNotEmpty else {
+            return false
+        }
+        if phone.hasPrefix("1") {
+            return phone.count == 11
+        } else {
+            return phone.count == 10
+        }
     }
 
     private func validateAddressLocally() -> [ValidationError] {
@@ -198,8 +220,12 @@ extension ShippingLabelAddressFormViewModel {
             if addressToBeValidated.country.isEmpty {
                 errors.append(.country)
             }
-            if addressToBeValidated.phone.isEmpty && phoneNumberRequired {
-                errors.append(.phoneNumber)
+            if phoneNumberRequired {
+                if addressToBeValidated.phone.isEmpty {
+                    errors.append(.missingPhoneNumber)
+                } else if !isPhoneNumberValid {
+                    errors.append(.invalidPhoneNumber)
+                }
             }
         }
 

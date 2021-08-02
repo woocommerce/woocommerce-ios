@@ -415,8 +415,10 @@ private extension ShippingLabelAddressFormViewController {
             errorMessage = Localization.missingState
         case .country:
             errorMessage = Localization.missingCountry
-        case .phoneNumber:
+        case .missingPhoneNumber:
             errorMessage = Localization.missingPhoneNumber
+        case .invalidPhoneNumber:
+            errorMessage = Localization.invalidPhoneNumber
         }
 
         cell.textLabel?.text = errorMessage
@@ -562,8 +564,11 @@ private extension ShippingLabelAddressFormViewController {
         static let missingCountry = NSLocalizedString("Country missing",
                                                       comment: "Error showed in Shipping Label Address Validation for the country field")
         static let missingPhoneNumber = NSLocalizedString("A phone number is required because this shipment requires a customs form",
-                                                          comment: "Error showed in Shipping Label Origin Address Validation for the " +
+                                                          comment: "Error shown in Shipping Label Origin Address validation for " +
                                                           "phone number field for international shipment")
+        static let invalidPhoneNumber = NSLocalizedString("Custom forms require a 10-digit phone number",
+                                                          comment: "Error shown in Shipping Label Origin Address validation for " +
+                                                            "phone number when the it doesn't have expected length for international shipment.")
         static let appleMapsErrorNotice = NSLocalizedString("Error in finding the address in Apple Maps",
                                                             comment: "Error in finding the address in the Shipping Label Address Validation in Apple Maps")
         static let phoneNumberErrorNotice = NSLocalizedString("The phone number is not valid or you can't call the customer from this device.",

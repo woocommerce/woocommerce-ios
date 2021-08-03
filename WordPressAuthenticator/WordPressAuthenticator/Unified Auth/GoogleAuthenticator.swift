@@ -164,22 +164,16 @@ private extension GoogleAuthenticator {
             track(.createAccountInitiated)
         }
 
-        guard let googleInstance = GIDSignIn.sharedInstance() else {
-            DDLogError("GoogleAuthenticator: Failed to get `GIDSignIn.sharedInstance()`.")
-            return
-        }
+        let googleInstance = GIDSignIn.sharedInstance
+        let configuration = GIDConfiguration(clientID: authConfig.googleLoginClientId, serverClientID: authConfig.googleLoginServerClientId)
 
         googleInstance.disconnect()
 
-        // This has no effect since we don't use Google UI, but presentingViewController is required, so here we are.
-        googleInstance.presentingViewController = viewController
-
-        googleInstance.delegate = self
-        googleInstance.clientID = authConfig.googleLoginClientId
-        googleInstance.serverClientID = authConfig.googleLoginServerClientId
-
         // Start the Google auth process. This presents the Google account selection view.
-        googleInstance.signIn()
+        // Assigning the view controller has no effect since we don't use Google UI, but it's is required, so here we are.
+        googleInstance.signIn(with: configuration, presenting: viewController) { user, error in
+            self.didSignIn(for: user, error: error)
+        }
     }
 
     func track(_ event: WPAnalyticsStat, properties: [AnyHashable: Any] = [:]) {
@@ -198,14 +192,13 @@ private extension GoogleAuthenticator {
 
 // MARK: - GIDSignInDelegate
 
-extension GoogleAuthenticator: GIDSignInDelegate {
+extension GoogleAuthenticator {
 
-    func sign(_ signIn: GIDSignIn?, didSignInFor user: GIDGoogleUser?, withError error: Error?) {
-
+    func didSignIn(for user: GIDGoogleUser?, error: Error?) {
         // Get account information
         guard let user = user,
             let token = user.authentication.idToken,
-            let email = user.profile.email else {
+            let email = user.profile?.email else {
 
                 // The Google SignIn may have been cancelled.
                 let failure = error?.localizedDescription ?? "Unknown error"
@@ -261,7 +254,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
     // Google account login was successful.
     func finishedLogin(withGoogleIDToken googleIDToken: String, authToken: String) {
         SVProgressHUD.dismiss()
-        GIDSignIn.sharedInstance().disconnect()
+        GIDSignIn.sharedInstance.disconnect()
 
         // This stat is part of a funnel that provides critical information.  Please
         // consult with your lead before removing this event.
@@ -284,7 +277,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
     // Google account login was successful, but a WP 2FA code is required.
     func needsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
         SVProgressHUD.dismiss()
-        GIDSignIn.sharedInstance().disconnect()
+        GIDSignIn.sharedInstance.disconnect()
 
         loginFields.nonceInfo = nonceInfo
         loginFields.nonceUserID = userID
@@ -300,7 +293,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
     // Google account login was successful, but a WP password is required.
     func existingUserNeedsConnection(_ email: String) {
         SVProgressHUD.dismiss()
-        GIDSignIn.sharedInstance().disconnect()
+        GIDSignIn.sharedInstance.disconnect()
 
         loginFields.username = email
         loginFields.emailAddress = email
@@ -316,7 +309,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
     // Google account login failed.
     func displayRemoteError(_ error: Error) {
         SVProgressHUD.dismiss()
-        GIDSignIn.sharedInstance().disconnect()
+        GIDSignIn.sharedInstance.disconnect()
 
         var errorTitle = LocalizedText.googleUnableToConnect
         var errorDescription = error.localizedDescription

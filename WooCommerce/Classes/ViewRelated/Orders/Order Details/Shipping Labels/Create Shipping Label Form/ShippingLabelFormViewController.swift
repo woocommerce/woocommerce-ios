@@ -186,6 +186,8 @@ private extension ShippingLabelFormViewController {
             configureShipTo(cell: cell, row: row)
         case let cell as ShippingLabelFormStepTableViewCell where row.type == .packageDetails:
             configurePackageDetails(cell: cell, row: row)
+        case let cell as ShippingLabelFormStepTableViewCell where row.type == .customs:
+            configureCustoms(cell: cell, row: row)
         case let cell as ShippingLabelFormStepTableViewCell where row.type == .shippingCarrierAndRates:
             configureShippingCarrierAndRates(cell: cell, row: row)
         case let cell as ShippingLabelFormStepTableViewCell where row.type == .paymentMethod:
@@ -261,6 +263,16 @@ private extension ShippingLabelFormViewController {
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
             self?.displayPackageDetailsVC(selectedPackageID: self?.viewModel.selectedPackageID,
                                           totalPackageWeight: self?.viewModel.totalPackageWeight)
+        }
+    }
+
+    func configureCustoms(cell: ShippingLabelFormStepTableViewCell, row: Row) {
+        cell.configure(state: row.cellState,
+                       icon: .globeImage,
+                       title: Localization.customsCellTitle,
+                       body: Localization.customsCellSubtitle,
+                       buttonTitle: Localization.continueButtonInCells) {
+            // TODO: show customs form creation view
         }
     }
 

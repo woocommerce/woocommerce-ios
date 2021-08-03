@@ -370,7 +370,8 @@ private extension ShippingLabelAddressFormViewController {
                                                                      state: .normal,
                                                                      keyboardType: .phonePad,
                                                                      textFieldAlignment: .leading) { [weak self] (newText) in
-            self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
+            let phone = newText?.filter { $0.isNumber }
+            self?.viewModel.handleAddressValueChanges(row: row, newValue: phone)
         }
         cell.configure(viewModel: cellViewModel)
     }

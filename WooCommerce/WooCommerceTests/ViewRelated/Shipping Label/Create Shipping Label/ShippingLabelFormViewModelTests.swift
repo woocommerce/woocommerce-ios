@@ -418,9 +418,19 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertEqual(filteredCountries.count, 2)
     }
 
-    func test_isInternationalShipping_returns_false_for_destination_in_US() {
+    func test_customsFormRequired_returns_false_for_origin_and_destination_in_US() {
         // Given
-        let originAddress = Address.fake()
+        let originAddress = Address(firstName: "Skylar",
+                                    lastName: "Ferry",
+                                    company: "Automattic Inc.",
+                                    address1: "60 29th Street #343",
+                                    address2: nil,
+                                    city: "New York",
+                                    state: "NY",
+                                    postcode: "94121-2303",
+                                    country: "US",
+                                    phone: nil,
+                                    email: nil)
         let destinationAddress = Address(firstName: "Skylar",
                                          lastName: "Ferry",
                                          company: "Automattic Inc.",
@@ -437,12 +447,22 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: originAddress, destinationAddress: destinationAddress)
 
         // Then
-        XCTAssertFalse(viewModel.isInternationalShipping)
+        XCTAssertFalse(viewModel.customsFormRequired)
     }
 
-    func test_isInternationalShipping_returns_true_for_destination_outside_US() {
+    func test_customsFormRequired_returns_true_for_military_state_origin() {
         // Given
-        let originAddress = Address.fake()
+        let originAddress = Address(firstName: "Skylar",
+                                    lastName: "Ferry",
+                                    company: "Automattic Inc.",
+                                    address1: "60 29th Street #343",
+                                    address2: nil,
+                                    city: "Milatry City",
+                                    state: "AA",
+                                    postcode: "94121-2303",
+                                    country: "US",
+                                    phone: nil,
+                                    email: nil)
         let destinationAddress = Address(firstName: "Skylar",
                                          lastName: "Ferry",
                                          company: "Automattic Inc.",
@@ -459,7 +479,71 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: originAddress, destinationAddress: destinationAddress)
 
         // Then
-        XCTAssertTrue(viewModel.isInternationalShipping)
+        XCTAssertTrue(viewModel.customsFormRequired)
+    }
+
+    func test_customsFormRequired_returns_true_for_military_state_destination() {
+        // Given
+        let originAddress = Address(firstName: "Skylar",
+                                    lastName: "Ferry",
+                                    company: "Automattic Inc.",
+                                    address1: "60 Hang Bong",
+                                    address2: nil,
+                                    city: "Hanoi",
+                                    state: "",
+                                    postcode: "94121-2303",
+                                    country: "VN",
+                                    phone: nil,
+                                    email: nil)
+        let destinationAddress = Address(firstName: "Skylar",
+                                         lastName: "Ferry",
+                                         company: "Automattic Inc.",
+                                         address1: "60 29th Street #343",
+                                         address2: nil,
+                                         city: "Milatry City",
+                                         state: "AA",
+                                         postcode: "94121-2303",
+                                         country: "US",
+                                         phone: nil,
+                                         email: nil)
+
+        // When
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: originAddress, destinationAddress: destinationAddress)
+
+        // Then
+        XCTAssertTrue(viewModel.customsFormRequired)
+    }
+
+    func test_customsFormRequired_returns_true_for_destination_country_different_from_origin_country() {
+        // Given
+        let originAddress = Address(firstName: "Skylar",
+                                    lastName: "Ferry",
+                                    company: "Automattic Inc.",
+                                    address1: "60 29th Street #343",
+                                    address2: nil,
+                                    city: "San Francisco",
+                                    state: "CA",
+                                    postcode: "94121-2303",
+                                    country: "US",
+                                    phone: nil,
+                                    email: nil)
+        let destinationAddress = Address(firstName: "Skylar",
+                                         lastName: "Ferry",
+                                         company: "Automattic Inc.",
+                                         address1: "60 Hang Bong",
+                                         address2: nil,
+                                         city: "Hanoi",
+                                         state: "",
+                                         postcode: "94121-2303",
+                                         country: "VN",
+                                         phone: nil,
+                                         email: nil)
+
+        // When
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: originAddress, destinationAddress: destinationAddress)
+
+        // Then
+        XCTAssertTrue(viewModel.customsFormRequired)
     }
 }
 

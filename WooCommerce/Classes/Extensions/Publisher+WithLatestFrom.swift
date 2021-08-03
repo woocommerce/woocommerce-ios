@@ -4,8 +4,7 @@ extension Publishers {
     /// When upstream publisher emits an event, this will combine it with
     /// latest event of the other publisher into a tuple to send downstream.
     ///
-    public struct WithLatestFrom<Upstream: Publisher, Other: Publisher>:
-        Publisher where Upstream.Failure == Other.Failure {
+    public struct WithLatestFrom<Upstream: Publisher, Other: Publisher>: Publisher where Upstream.Failure == Other.Failure {
         // MARK: - Types
         public typealias Output = (Upstream.Output, Other.Output)
         public typealias Failure = Upstream.Failure

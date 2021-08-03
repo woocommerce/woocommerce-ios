@@ -708,7 +708,12 @@ private extension OrderDetailsViewController {
     }
 
     private func connectToCardReader() {
-        let connectionController = CardReaderConnectionController(from: self, forSiteID: viewModel.order.siteID)
+        let knownReadersProvider = CardReaderSettingsKnownReadersStoredList()
+        let connectionController = CardReaderConnectionController(
+            from: self,
+            forSiteID: viewModel.order.siteID,
+            knownReadersProvider: knownReadersProvider
+        )
         connectionController.start()
     }
 

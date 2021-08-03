@@ -210,7 +210,7 @@ private extension ShippingLabelFormViewController {
                 let shippingLabelAddress = self.viewModel.originAddress
                 switch validationState {
                 case .validated:
-                    self.viewModel.handleOriginAddressValueChanges(address: shippingLabelAddress,
+                    self.viewModel.handleOriginAddressValueChanges(address: response?.address,
                                                                    validated: true)
                 case .suggestedAddress:
                     self.displaySuggestedAddressVC(address: shippingLabelAddress, suggestedAddress: response?.address, type: .origin)
@@ -237,8 +237,8 @@ private extension ShippingLabelFormViewController {
                 let shippingLabelAddress = self.viewModel.destinationAddress
                 switch validationState {
                 case .validated:
-                    self.viewModel.handleDestinationAddressValueChanges(address: shippingLabelAddress,
-                                                                   validated: true)
+                    self.viewModel.handleDestinationAddressValueChanges(address: response?.address,
+                                                                        validated: true)
                 case .suggestedAddress:
                     self.displaySuggestedAddressVC(address: shippingLabelAddress, suggestedAddress: response?.address, type: .destination)
                 case .validationError(let validationError):

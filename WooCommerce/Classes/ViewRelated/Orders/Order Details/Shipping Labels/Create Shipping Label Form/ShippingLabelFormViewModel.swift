@@ -89,9 +89,9 @@ final class ShippingLabelFormViewModel {
         resultsController.fetchedObjects
     }
 
-    /// Check for international shipping based on whether destination country is other than US.
+    /// Check for the need of customs form
     ///
-    var isInternationalShipping: Bool {
+    var customsFormRequired: Bool {
         guard let originAddress = originAddress,
               let destinationAddress = destinationAddress else {
             return false

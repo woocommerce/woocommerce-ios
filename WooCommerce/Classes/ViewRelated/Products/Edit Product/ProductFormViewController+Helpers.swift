@@ -120,7 +120,8 @@ private enum Localization {
     enum Alert {
         // Product saved or updated
         static let presentProductConfirmationSaveAlert = NSLocalizedString("Product saved",
-        comment: "Title of the alert when a user is saving a product")
+                                                                           comment: "Title of the alert when a user is saving a product")
+        
         // Product type change
         static let productTypeChangeTitle = NSLocalizedString("Are you sure you want to change the product type?",
                                                               comment: "Title of the alert when a user is changing the product type")

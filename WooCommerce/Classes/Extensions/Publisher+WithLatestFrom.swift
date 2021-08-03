@@ -1,9 +1,11 @@
 import Combine
 
 extension Publishers {
+    /// When upstream publisher emits an event, this will combine it with
+    /// latest event of the other publisher into a tuple to send downstream.
+    ///
     public struct WithLatestFrom<Upstream: Publisher, Other: Publisher>:
-        Publisher where Upstream.Failure == Other.Failure
-    {
+        Publisher where Upstream.Failure == Other.Failure {
         // MARK: - Types
         public typealias Output = (Upstream.Output, Other.Output)
         public typealias Failure = Upstream.Failure
@@ -20,8 +22,7 @@ extension Publishers {
 
         // MARK: - Publisher Lifecycle
         public func receive<S: Subscriber>(subscriber: S)
-            where S.Failure == Failure, S.Input == Output
-        {
+            where S.Failure == Failure, S.Input == Output {
             let merged = mergedStream(upstream, other)
             let result = resultStream(from: merged)
             result.subscribe(subscriber)
@@ -43,8 +44,7 @@ private extension Publishers.WithLatestFrom {
 
     // MARK: - Pipelines
     func mergedStream(_ upstream1: Upstream, _ upstream2: Other)
-        -> AnyPublisher<MergedElement, Failure>
-    {
+        -> AnyPublisher<MergedElement, Failure> {
         let mergedElementUpstream1 = upstream1
             .map { MergedElement.upstream1($0) }
         let mergedElementUpstream2 = upstream2
@@ -56,8 +56,7 @@ private extension Publishers.WithLatestFrom {
 
     func resultStream(
         from mergedStream: AnyPublisher<MergedElement, Failure>
-    ) -> AnyPublisher<Output, Failure>
-    {
+    ) -> AnyPublisher<Output, Failure> {
         mergedStream
             .scan(nil) {
                 (prevResult: ScanResult?,
@@ -88,9 +87,13 @@ private extension Publishers.WithLatestFrom {
 }
 
 extension Publisher {
+    /// A Combine operator similar to RxSwift's withLatestFrom.
+    /// When current publisher emits a new event, this operator will
+    /// pick the latest event from the other publisher and combine them
+    /// together into a tuple to send downstream.
+    ///
     func withLatestFrom<Other: Publisher>(_ other: Other)
-        -> Publishers.WithLatestFrom<Self, Other>
-    {
+        -> Publishers.WithLatestFrom<Self, Other> {
         return .init(upstream: self, other: other)
     }
 }

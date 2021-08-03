@@ -327,6 +327,20 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(createShippingLabelRow)
     }
 
+    func test_create_shipping_label_button_is_not_visible_for_cash_on_delivery_order() throws {
+        // Given
+        let order = makeOrder().copy(status: .processing, datePaid: .some(nil), paymentMethodID: "cod")
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        dataSource.isEligibleForShippingLabelCreation = false
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let productSection = try section(withTitle: Title.products, from: dataSource)
+        let createShippingLabelRow = row(row: .shippingLabelCreateButton, in: productSection)
+        XCTAssertNil(createShippingLabelRow)
+    }
 }
 
 // MARK: - Test Data

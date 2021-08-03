@@ -26,8 +26,16 @@ final class ShippingLabelFormViewModel {
 
     /// Address
     ///
-    private(set) var originAddress: ShippingLabelAddress?
-    private(set) var destinationAddress: ShippingLabelAddress?
+    private(set) var originAddress: ShippingLabelAddress? {
+        didSet {
+            updateRowsForCustomsIfNeeded()
+        }
+    }
+    private(set) var destinationAddress: ShippingLabelAddress? {
+        didSet {
+            updateRowsForCustomsIfNeeded()
+        }
+    }
 
     /// Packages
     ///
@@ -145,10 +153,10 @@ final class ShippingLabelFormViewModel {
                                                                account: defaultAccount)
         self.destinationAddress = ShippingLabelFormViewModel.fromAddressToShippingLabelAddress(address: destinationAddress)
 
-        state.sections = ShippingLabelFormViewModel.generateInitialSections()
         self.stores = stores
         self.storageManager = storageManager
 
+        state.sections = generateInitialSections()
         syncShippingLabelAccountSettings()
         syncPackageDetails()
         fetchCountries()
@@ -224,13 +232,19 @@ final class ShippingLabelFormViewModel {
         updateRowState(type: .paymentMethod, dataState: .validated, displayMode: displayMode)
     }
 
-    private static func generateInitialSections() -> [Section] {
+    private func generateInitialSections() -> [Section] {
         let shipFrom = Row(type: .shipFrom, dataState: .pending, displayMode: .editable)
         let shipTo = Row(type: .shipTo, dataState: .pending, displayMode: .disabled)
         let packageDetails = Row(type: .packageDetails, dataState: .pending, displayMode: .disabled)
+        let customs: Row? = {
+            guard customsFormRequired else {
+                return nil
+            }
+            return Row(type: .customs, dataState: .pending, displayMode: .disabled)
+        }()
         let shippingCarrierAndRates = Row(type: .shippingCarrierAndRates, dataState: .pending, displayMode: .disabled)
         let paymentMethod = Row(type: .paymentMethod, dataState: .pending, displayMode: .disabled)
-        let rows: [Row] = [shipFrom, shipTo, packageDetails, shippingCarrierAndRates, paymentMethod]
+        let rows: [Row] = [shipFrom, shipTo, packageDetails, customs, shippingCarrierAndRates, paymentMethod].compactMap { $0 }
         return [Section(title: nil, rows: rows)]
     }
 
@@ -403,6 +417,37 @@ private extension ShippingLabelFormViewModel {
             }
         }
 
+        // Insert customs row if necessary
+        if customsFormRequired && rows.firstIndex(where: { $0.type == .customs }) == nil {
+            guard let packageDetailsRow = rows.first(where: { $0.type == .packageDetails }),
+                  let packageDetailsRowIndex = rows.firstIndex(of: packageDetailsRow) else {
+                return
+            }
+
+            // Decide display mode for customs row based on whether package details has been validated
+            let customsRowState: ShippingLabelFormViewController.DisplayMode = packageDetailsRow.dataState == .pending ? .disabled : .editable
+            let customsRowIndex = rows.index(after: packageDetailsRowIndex)
+            let customsRow = Row(type: .customs, dataState: .pending, displayMode: customsRowState)
+            rows.insert(customsRow, at: customsRowIndex)
+        }
+
+        // Remove customs row if necessary
+        if !customsFormRequired,
+           let customsRowIndex = rows.firstIndex(where: { $0.type == .customs }) {
+            rows.remove(at: customsRowIndex)
+        }
+
+        // Find first row with .pending data state,
+        // and update its following rows to be .disabled if their display mode is .editable.
+        if let firstPendingRow = rows.firstIndex(where: { $0.dataState == .pending }) {
+            for index in rows.index(after: firstPendingRow) ..< rows.count {
+                let nextRow = rows[index]
+                if nextRow.displayMode == .editable {
+                    rows[index] = Row(type: nextRow.type, dataState: nextRow.dataState, displayMode: .disabled)
+                }
+            }
+        }
+
         var summarySection: Section?
         if rows.allSatisfy({ (row) -> Bool in
             row.dataState == .validated && row.displayMode == .editable
@@ -412,6 +457,16 @@ private extension ShippingLabelFormViewModel {
         }
 
         state.sections = [Section(title: nil, rows: rows), summarySection].compactMap { $0 }
+    }
+
+    func updateRowsForCustomsIfNeeded() {
+        guard let originAddress = originAddress else {
+            return
+        }
+        // Require user to update phone address if customs form is required
+        if customsFormRequired && originAddress.phone.isEmpty {
+            updateRowState(type: .shipFrom, dataState: .pending, displayMode: .editable)
+        }
     }
 }
 

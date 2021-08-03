@@ -1,11 +1,54 @@
 import Foundation
 import Storage
 
-struct CardPresentPaymentsOnboardingUseCase {
+public struct CardPresentPaymentsOnboardingUseCase {
     let storageManager: StorageManagerType
+    let dispatch: (Action) -> Void
     let siteID: Int64
 
-    func checkOnboardingState() -> CardPresentPaymentOnboardingState {
+    public init(siteID: Int64, storageManager: StorageManagerType, dispatch: @escaping (Action) -> Void) {
+        self.storageManager = storageManager
+        self.dispatch = dispatch
+        self.siteID = siteID
+    }
+
+    public func synchronizeRequiredData(completion: @escaping () -> Void) {
+        let group = DispatchGroup()
+
+        // We need to sync settings to check the store's country
+        let settingsAction = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { error in
+            if let error = error {
+                DDLogError("[CardPresentPaymentsOnboarding] Error syncing site settings: \(error)")
+            }
+            group.leave()
+        }
+        group.enter()
+        dispatch(settingsAction)
+
+        // We need to sync plugins to check if WCPay is installed, up to date, and active
+        let sitePluginsAction = SitePluginAction.synchronizeSitePlugins(siteID: siteID) { result in
+            if case let .failure(error) = result {
+                DDLogError("[CardPresentPaymentsOnboarding] Error syncing site plugins: \(error)")
+            }
+            group.leave()
+        }
+        group.enter()
+        dispatch(sitePluginsAction)
+
+        // We need to sync payment gateway accounts to see if WCPay is set up correctly
+        let paymentGatewayAccountsAction = PaymentGatewayAccountAction.loadAccounts(siteID: siteID) { result in
+            if case let .failure(error) = result {
+                DDLogError("[CardPresentPaymentsOnboarding] Error syncing payment gateway accounts: \(error)")
+            }
+            group.leave()
+        }
+        group.enter()
+        dispatch(paymentGatewayAccountsAction)
+
+        group.notify(queue: .main, execute: completion)
+    }
+
+    public func checkOnboardingState() -> CardPresentPaymentOnboardingState {
         // Country checks
         guard isCountrySupported() else {
             return .countryNotSupported

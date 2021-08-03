@@ -182,18 +182,8 @@ private extension GoogleAuthenticator {
         WordPressAuthenticator.track(event, properties: trackProperties)
     }
 
-    enum LocalizedText {
-        static let googleConnected = NSLocalizedString("Connected But…", comment: "Title shown when a user logs in with Google but no matching WordPress.com account is found")
-        static let googleConnectedError = NSLocalizedString("The Google account \"%@\" doesn't match any account on WordPress.com", comment: "Description shown when a user logs in with Google but no matching WordPress.com account is found")
-        static let googleUnableToConnect = NSLocalizedString("Unable To Connect", comment: "Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com")
-    }
-
-}
-
-// MARK: - GIDSignInDelegate
-
-extension GoogleAuthenticator {
-
+    /// Handles when the sign in process is either succeeded or failed.
+    /// This is invoked after signing in through `GIDSignIn`'s `signIn` method.
     func didSignIn(for user: GIDGoogleUser?, error: Error?) {
         // Get account information
         guard let user = user,
@@ -243,6 +233,12 @@ extension GoogleAuthenticator {
         // Initiate unified path by attempting to login first.
         SVProgressHUD.show()
         loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.google.rawValue)
+    }
+
+    enum LocalizedText {
+        static let googleConnected = NSLocalizedString("Connected But…", comment: "Title shown when a user logs in with Google but no matching WordPress.com account is found")
+        static let googleConnectedError = NSLocalizedString("The Google account \"%@\" doesn't match any account on WordPress.com", comment: "Description shown when a user logs in with Google but no matching WordPress.com account is found")
+        static let googleUnableToConnect = NSLocalizedString("Unable To Connect", comment: "Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com")
     }
 
 }

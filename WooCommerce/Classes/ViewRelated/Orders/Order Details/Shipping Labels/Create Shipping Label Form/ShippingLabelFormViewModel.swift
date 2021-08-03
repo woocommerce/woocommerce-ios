@@ -92,10 +92,21 @@ final class ShippingLabelFormViewModel {
     /// Check for international shipping based on whether destination country is other than US.
     ///
     var isInternationalShipping: Bool {
-        guard let destinationCountry = destinationAddress?.country else {
+        guard let originAddress = originAddress,
+              let destinationAddress = destinationAddress else {
             return false
         }
-        return !Constants.destinationCountriesWithoutPhoneRequirement.contains(destinationCountry)
+        // Special case: Any shipment from/to military addresses must have Customs
+        if originAddress.country == Constants.usCountryCode,
+           Constants.usMilitaryStates.contains(where: { $0 == originAddress.state }) {
+            return true
+        }
+        if destinationAddress.country == Constants.usCountryCode,
+           Constants.usMilitaryStates.contains(where: { $0 == destinationAddress.state }) {
+            return true
+        }
+
+        return originAddress.country != destinationAddress.country
     }
 
     private let stores: StoresManager
@@ -669,8 +680,12 @@ private extension ShippingLabelFormViewModel {
             "MP" // Northern Mariana Islands
         ]
 
-        static let destinationCountriesWithoutPhoneRequirement = [
-            "US", // United States
-        ]
+        /// Country code for US - to check for international shipment
+        ///
+        static let usCountryCode = "US"
+
+        /// These US states are a special case because they represent military bases. They're considered "domestic",
+        /// but they require a Customs form to ship from/to them.
+        static let usMilitaryStates = ["AA", "AE", "AP"]
     }
 }

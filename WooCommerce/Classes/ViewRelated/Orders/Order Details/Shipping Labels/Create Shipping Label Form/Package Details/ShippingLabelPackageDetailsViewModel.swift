@@ -69,7 +69,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
 
     /// Whether the user has edited the total package weight. If true, we won't make any automatic changes to the total weight.
     ///
-    @Published var isPackageWeightEdited: Bool = false
+    @Published private var isPackageWeightEdited: Bool = false
 
     /// Returns if the custom packages header should be shown in Package List
     ///
@@ -118,41 +118,28 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     /// If this value is different from the calculated weight, we can assume that user has updated the weight manually.
     ///
     private func configureTotalWeights(initialTotalWeight: String?) {
+        if let initialTotalWeight = initialTotalWeight {
+            totalWeight = initialTotalWeight
+        }
+
         let calculatedWeight = $selectedCustomPackage.combineLatest($products, $productVariations)
             .map { [weak self] (customPackage, products, variations) -> Double in
                 self?.calculateTotalWeight(products: products, productVariations: variations, customPackage: customPackage) ?? 0
             }
-            .share()
+            .combineLatest($isPackageWeightEdited)
+            .prefix(while: { (_, isEdited) in !isEdited })
+            .map { (weight, _) in
+                String(weight)
+            }
 
-        // Grab the first calculated weight, check with initialTotalWeight
-        // to determine if the weight was manually updated
         calculatedWeight
-            .first()
-            .map { [weak self] numericWeight in
-                let calculatedWeight = String(numericWeight)
-
-                // Set the total weight as the initial value if it was input manually;
-                // otherwise use the calculated weight.
-                if let initialTotalWeight = initialTotalWeight,
-                   calculatedWeight != initialTotalWeight {
-                    self?.isPackageWeightEdited = true
-                    return initialTotalWeight
-                }
-                return calculatedWeight
-            }
             .assign(to: &$totalWeight)
 
-        // Send the calculated weight to total weight; or raise error to cancel the stream
-        // if user has updated the weight manually.
-        calculatedWeight.combineLatest($isPackageWeightEdited)
-            .tryMap { (weight, isEdited) in
-                guard !isEdited else {
-                    throw Errors.overridenTotalWeight
-                }
-                return String(weight)
+        $totalWeight.withLatestFrom(calculatedWeight)
+            .map { (totalWeight, calculatedWeight) -> Bool in
+                totalWeight != calculatedWeight
             }
-            .catch { _ in Empty() }
-            .assign(to: &$totalWeight)
+            .assign(to: &$isPackageWeightEdited)
     }
 
     private func configureResultsControllers() {
@@ -169,13 +156,6 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
 
         products = resultsControllers?.products ?? []
         productVariations = resultsControllers?.productVariations ?? []
-    }
-}
-
-// MARK: - Subtypes
-private extension ShippingLabelPackageDetailsViewModel {
-    enum Errors: Error {
-        case overridenTotalWeight
     }
 }
 

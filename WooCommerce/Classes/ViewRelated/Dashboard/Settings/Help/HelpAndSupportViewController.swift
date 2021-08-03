@@ -230,10 +230,10 @@ private extension HelpAndSupportViewController {
     func configureContactWCPaySupport(cell: ValueOneTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Contact WCPay Support", comment: "Contact WCPay Support title")
+        cell.textLabel?.text = NSLocalizedString("Contact WooCommerce Payments Support", comment: "Contact WooComerce Payments Support title")
         cell.detailTextLabel?.text = NSLocalizedString(
-            "Reach our happiness engineers who can help answer tough questions",
-            comment: "Subtitle for Contact Support"
+            "Reach our happiness engineers who can help answer payments related questions",
+            comment: "Subtitle for Contact WooCommerce Payments Support"
         )
     }
 

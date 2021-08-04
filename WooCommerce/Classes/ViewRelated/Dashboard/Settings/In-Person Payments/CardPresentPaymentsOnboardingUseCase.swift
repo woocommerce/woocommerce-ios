@@ -2,8 +2,8 @@ import Foundation
 import Storage
 import Yosemite
 
-typealias SitePlugin = Yosemite.SitePlugin
-typealias PaymentGatewayAccount = Yosemite.PaymentGatewayAccount
+private typealias SitePlugin = Yosemite.SitePlugin
+private typealias PaymentGatewayAccount = Yosemite.PaymentGatewayAccount
 
 struct CardPresentPaymentsOnboardingUseCase {
     let storageManager: StorageManagerType
@@ -59,7 +59,11 @@ struct CardPresentPaymentsOnboardingUseCase {
 
     public func checkOnboardingState() -> CardPresentPaymentOnboardingState {
         // Country checks
-        guard isCountrySupported() else {
+        guard let countryCode = storeCountryCode else {
+            return .genericError
+        }
+
+        guard isCountrySupported(countryCode: countryCode) else {
             return .countryNotSupported
         }
 
@@ -109,9 +113,16 @@ private extension CardPresentPaymentsOnboardingUseCase {
         stores.sessionManager.defaultStoreID
     }
 
-    func isCountrySupported() -> Bool {
-        // TODO: not implemented yet
-        return true
+    var storeCountryCode: String? {
+        let siteSettings = SelectedSiteSettings(stores: stores, storageManager: storageManager).siteSettings
+        let storeAddress = SiteAddress(siteSettings: siteSettings)
+        let storeCountryCode = storeAddress.countryCode
+
+        return storeCountryCode.nonEmptyString()
+    }
+
+    func isCountrySupported(countryCode: String) -> Bool {
+        return Constants.supportedCountryCodes.contains(countryCode)
     }
 
     func getWCPayPlugin() -> SitePlugin? {
@@ -182,4 +193,5 @@ private extension CardPresentPaymentsOnboardingUseCase {
 
 private enum Constants {
     static let pluginName = "WooCommerce Payments"
+    static let supportedCountryCodes = ["US"]
 }

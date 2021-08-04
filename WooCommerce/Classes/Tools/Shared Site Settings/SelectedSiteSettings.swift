@@ -1,21 +1,25 @@
 import Foundation
 import Yosemite
+import Storage
 
 /// Settings for the selected Site
 ///
 final class SelectedSiteSettings: NSObject {
+    private let stores: StoresManager
+    private let storageManager: StorageManagerType
 
     /// ResultsController: Whenever settings change, I will change. We both change. The world changes.
     ///
     private lazy var resultsController: ResultsController<StorageSiteSetting> = {
-        let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageSiteSetting.siteID, ascending: false)
         return ResultsController<StorageSiteSetting>(storageManager: storageManager, sortedBy: [descriptor])
     }()
 
-    public private(set) var siteSettings: [SiteSetting] = []
+    public private(set) var siteSettings: [Yosemite.SiteSetting] = []
 
-    override init() {
+    init(stores: StoresManager = ServiceLocator.stores, storageManager: StorageManagerType = ServiceLocator.storageManager) {
+        self.stores = stores
+        self.storageManager = storageManager
         super.init()
         configureResultsController()
     }
@@ -43,7 +47,7 @@ extension SelectedSiteSettings {
     }
 
     private func refreshResultsPredicate() {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+        guard let siteID = stores.sessionManager.defaultStoreID else {
             DDLogError("Error: no siteID found when attempting to refresh CurrencySettings results predicate.")
             return
         }

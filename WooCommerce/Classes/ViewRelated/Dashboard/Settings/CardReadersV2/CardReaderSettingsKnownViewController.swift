@@ -211,34 +211,43 @@ private extension CardReaderSettingsKnownViewController {
     }
 
     private func configureHeader(cell: HeadlineTableViewCell) {
-        cell.headlineLabel?.text = Localization.connectYourCardReaderTitle
+        cell.configure(headline: Localization.connectYourCardReaderTitle)
         cell.backgroundColor = .systemBackground
         cell.selectionStyle = .none
     }
 
     private func configureImage(cell: ImageTableViewCell) {
-        cell.detailImageView?.image = UIImage(named: "card-reader-connect")
+        cell.configure(image: .cardReaderConnect)
         cell.backgroundColor = .systemBackground
         cell.selectionStyle = .none
     }
 
     private func configureHelpHintChargeReader(cell: NumberedListItemTableViewCell) {
-        cell.numberLabel?.text = Localization.hintOneTitle
-        cell.itemTextLabel?.text = Localization.hintOne
+        let cellViewModel = NumberedListItemTableViewCell.ViewModel(
+            itemNumber: Localization.hintOneTitle,
+            itemText: Localization.hintOne
+        )
+        cell.configure(viewModel: cellViewModel)
         cell.backgroundColor = .systemBackground
         cell.selectionStyle = .none
     }
 
     private func configureHelpHintTurnOnReader(cell: NumberedListItemTableViewCell) {
-        cell.numberLabel?.text = Localization.hintTwoTitle
-        cell.itemTextLabel?.text = Localization.hintTwo
+        let cellViewModel = NumberedListItemTableViewCell.ViewModel(
+            itemNumber: Localization.hintTwoTitle,
+            itemText: Localization.hintTwo
+        )
+        cell.configure(viewModel: cellViewModel)
         cell.backgroundColor = .systemBackground
         cell.selectionStyle = .none
     }
 
     private func configureHelpHintEnableBluetooth(cell: NumberedListItemTableViewCell) {
-        cell.numberLabel?.text = Localization.hintThreeTitle
-        cell.itemTextLabel?.text = Localization.hintThree
+        let cellViewModel = NumberedListItemTableViewCell.ViewModel(
+            itemNumber: Localization.hintThreeTitle,
+            itemText: Localization.hintThree
+        )
+        cell.configure(viewModel: cellViewModel)
         cell.backgroundColor = .systemBackground
         cell.selectionStyle = .none
    }
@@ -253,13 +262,9 @@ private extension CardReaderSettingsKnownViewController {
     }
 
     private func configureLearnMore(cell: LearnMoreTableViewCell) {
-        cell.learnMoreTextView.attributedText = Localization.learnMore
-        cell.learnMoreTextView.tintColor = .textLink
-        cell.learnMoreTextView.delegate = self
-        cell.learnMoreTextView.linkTextAttributes = [
-            .foregroundColor: UIColor.textLink,
-            .underlineColor: UIColor.clear
-        ]
+        cell.configure(text: Localization.learnMore) { [weak self] url in
+            self?.urlWasPressed(url: url)
+        }
         cell.backgroundColor = .systemBackground
         cell.selectionStyle = .none
     }
@@ -362,17 +367,6 @@ private enum Row: CaseIterable {
 
     var reuseIdentifier: String {
         return type.reuseIdentifier
-    }
-}
-
-// MARK: - UITextViewDelegate Conformance
-//
-extension CardReaderSettingsKnownViewController: UITextViewDelegate {
-
-    func textView(_ textView: UITextView, shouldInteractWith URL: URL,
-                  in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        urlWasPressed(url: URL)
-        return false
     }
 }
 

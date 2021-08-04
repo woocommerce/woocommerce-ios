@@ -541,12 +541,9 @@ private extension SettingsViewController {
         guard let siteID = self.siteID else {
             return
         }
-        let action = CardPresentPaymentAction.checkOnboardingState(siteID: siteID) { [weak self] state in
-            let viewModel = InPersonPaymentsViewModel(initialState: state)
-            let viewController = InPersonPaymentsViewController(viewModel: viewModel)
-            self?.show(viewController, sender: self)
-        }
-        ServiceLocator.stores.dispatch(action)
+        let viewModel = InPersonPaymentsViewModel(siteID: siteID)
+        let viewController = InPersonPaymentsViewController(viewModel: viewModel)
+        show(viewController, sender: self)
     }
 
     func privacyWasPressed() {

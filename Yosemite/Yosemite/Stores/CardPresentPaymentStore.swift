@@ -39,8 +39,6 @@ public final class CardPresentPaymentStore: Store {
         }
 
         switch action {
-        case .checkOnboardingState(let siteID, let onCompletion):
-            checkOnboardingState(siteID: siteID, onCompletion: onCompletion)
         case .startCardReaderDiscovery(let siteID, let onReaderDiscovered, let onError):
             startCardReaderDiscovery(siteID: siteID, onReaderDiscovered: onReaderDiscovered, onError: onError)
         case .cancelCardReaderDiscovery(let completion):
@@ -75,19 +73,6 @@ public final class CardPresentPaymentStore: Store {
 // MARK: - Services
 //
 private extension CardPresentPaymentStore {
-    func checkOnboardingState(siteID: Int64, onCompletion: (CardPresentPaymentOnboardingState) -> Void) {
-        let canCollectPayments = storageManager.viewStorage
-            .loadPaymentGatewayAccounts(siteID: siteID)
-            .contains(where: \.isCardPresentEligible)
-        let state: CardPresentPaymentOnboardingState
-        if canCollectPayments {
-            state = .completed
-        } else {
-            state = .genericError
-        }
-        onCompletion(state)
-    }
-
     func startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: @escaping (_ readers: [CardReader]) -> Void, onError: @escaping (Error) -> Void) {
         do {
             try cardReaderService.start(WCPayTokenProvider(siteID: siteID, remote: self.remote))

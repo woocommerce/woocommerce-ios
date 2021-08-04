@@ -476,8 +476,6 @@
 		3178C1F726409216000D771A /* CardReaderSettingsConnectedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3178C1F626409216000D771A /* CardReaderSettingsConnectedViewModel.swift */; };
 		3178C1FD26409360000D771A /* CardReaderSettingsConnectedViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3178C1FC26409360000D771A /* CardReaderSettingsConnectedViewModelTests.swift */; };
 		317F679826420E9D00BA2A7A /* CardReaderSettingsViewModelsOrderedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317F679726420E9D00BA2A7A /* CardReaderSettingsViewModelsOrderedList.swift */; };
-		318109C625E59E4000EE0BE7 /* TitleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318109C525E59E4000EE0BE7 /* TitleTableViewCell.swift */; };
-		318109D625E5A7E300EE0BE7 /* TitleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 318109D525E5A7E300EE0BE7 /* TitleTableViewCell.xib */; };
 		318109DC25E5B51900EE0BE7 /* ImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318109DB25E5B51900EE0BE7 /* ImageTableViewCell.swift */; };
 		318109E225E5B55C00EE0BE7 /* ImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 318109E125E5B55C00EE0BE7 /* ImageTableViewCell.xib */; };
 		318109E825E5B8D600EE0BE7 /* NumberedListItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318109E725E5B8D600EE0BE7 /* NumberedListItemTableViewCell.swift */; };
@@ -1213,6 +1211,7 @@
 		DE1B030D268DD01A00804330 /* ReviewOrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1B030B268DD01A00804330 /* ReviewOrderViewController.swift */; };
 		DE1B030E268DD01A00804330 /* ReviewOrderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DE1B030C268DD01A00804330 /* ReviewOrderViewController.xib */; };
 		DE1B0310268EB2FB00804330 /* ReviewOrderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1B030F268EB2FB00804330 /* ReviewOrderViewModel.swift */; };
+		DE46133926B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE46133826B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift */; };
 		DE4B3B2C2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4B3B2B2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift */; };
 		DE4B3B2E269455D400EEF2D8 /* MockShipmentActionStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4B3B2D269455D400EEF2D8 /* MockShipmentActionStoresManager.swift */; };
 		DE4B3B5626A68DD000EEF2D8 /* View+InsetPaddings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4B3B5526A68DD000EEF2D8 /* View+InsetPaddings.swift */; };
@@ -1796,8 +1795,6 @@
 		3178C1F626409216000D771A /* CardReaderSettingsConnectedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsConnectedViewModel.swift; sourceTree = "<group>"; };
 		3178C1FC26409360000D771A /* CardReaderSettingsConnectedViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsConnectedViewModelTests.swift; sourceTree = "<group>"; };
 		317F679726420E9D00BA2A7A /* CardReaderSettingsViewModelsOrderedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsViewModelsOrderedList.swift; sourceTree = "<group>"; };
-		318109C525E59E4000EE0BE7 /* TitleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleTableViewCell.swift; sourceTree = "<group>"; };
-		318109D525E5A7E300EE0BE7 /* TitleTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TitleTableViewCell.xib; sourceTree = "<group>"; };
 		318109DB25E5B51900EE0BE7 /* ImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageTableViewCell.swift; sourceTree = "<group>"; };
 		318109E125E5B55C00EE0BE7 /* ImageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImageTableViewCell.xib; sourceTree = "<group>"; };
 		318109E725E5B8D600EE0BE7 /* NumberedListItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberedListItemTableViewCell.swift; sourceTree = "<group>"; };
@@ -2547,6 +2544,7 @@
 		DE1B030B268DD01A00804330 /* ReviewOrderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewController.swift; sourceTree = "<group>"; };
 		DE1B030C268DD01A00804330 /* ReviewOrderViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReviewOrderViewController.xib; sourceTree = "<group>"; };
 		DE1B030F268EB2FB00804330 /* ReviewOrderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewModel.swift; sourceTree = "<group>"; };
+		DE46133826B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCountryListSelectorCommand.swift; sourceTree = "<group>"; };
 		DE4B3B2B2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewModelTests.swift; sourceTree = "<group>"; };
 		DE4B3B2D269455D400EEF2D8 /* MockShipmentActionStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockShipmentActionStoresManager.swift; sourceTree = "<group>"; };
 		DE4B3B5526A68DD000EEF2D8 /* View+InsetPaddings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+InsetPaddings.swift"; sourceTree = "<group>"; };
@@ -3827,6 +3825,7 @@
 				4515C89725D6C00E0099C8E3 /* ShippingLabelAddressFormViewModel.swift */,
 				45C91CFD25E55A1200FD8812 /* ShippingLabelAddressTopBannerFactory.swift */,
 				45BBE5C6268CBB090017D8F8 /* ShippingLabelStateOfACountryListSelectorCommand.swift */,
+				DE46133826B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift */,
 			);
 			path = "Shipping Address Validation";
 			sourceTree = "<group>";
@@ -5731,8 +5730,6 @@
 				026B3C56249A046E00F7823C /* TextFieldTextAlignment.swift */,
 				CE583A092107937F00D73C1C /* TextViewTableViewCell.swift */,
 				CE583A0A2107937F00D73C1C /* TextViewTableViewCell.xib */,
-				318109C525E59E4000EE0BE7 /* TitleTableViewCell.swift */,
-				318109D525E5A7E300EE0BE7 /* TitleTableViewCell.xib */,
 				020BE74B23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.swift */,
 				020BE74C23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.xib */,
 				4512055024655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.swift */,
@@ -6111,7 +6108,6 @@
 				B56DB3C42049BFAA00D4AA8E /* Resources */,
 				B5650B1020A4CD7F009702D0 /* Embed Frameworks */,
 				B7A94351C1ADC31EA528B895 /* [CP] Embed Pods Frameworks */,
-				CE1445302188ED0300A991D8 /* Zendesk Strip Frameworks */,
 				59DF5B32D7C07692EC8B4C59 /* [CP] Copy Pods Resources */,
 				095040D72655531C001D08FA /* Check for nested frameworks */,
 			);
@@ -6310,7 +6306,6 @@
 				45AE582D230D9D35001901E3 /* OrderNoteHeaderTableViewCell.xib in Resources */,
 				B5D1AFC820BC7B9600DB0E8C /* StorePickerViewController.xib in Resources */,
 				45CDAFAF2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.xib in Resources */,
-				318109D625E5A7E300EE0BE7 /* TitleTableViewCell.xib in Resources */,
 				CE1D5A56228A0AD200DF3715 /* TwoColumnTableViewCell.xib in Resources */,
 				B57C744320F54F1C00EEFC87 /* AccountHeaderView.xib in Resources */,
 				4506BD722461965300FE6377 /* ProductVisibilityViewController.xib in Resources */,
@@ -6630,20 +6625,6 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		CE1445302188ED0300A991D8 /* Zendesk Strip Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Zendesk Strip Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Per Zendesk documentation (https://developer.zendesk.com/embeddables/docs/ios_support_sdk/sdk_add#adding-the-sdk-with-cocoapods):\n# This script should be the last step in your projects \"Build Phases\".\n# This step is required to work around an App store submission bug when archiving universal binaries.\n\nbash \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZendeskCoreSDK.framework/strip-frameworks.sh\"\n";
-		};
 		E8FC62641D61F33F705BC760 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -6686,7 +6667,6 @@
 				B509FED121C041DF000076A9 /* Locale+Woo.swift in Sources */,
 				B5DB01B52114AB2D00A4F797 /* WooCrashLoggingStack.swift in Sources */,
 				024DF31E23743045006658FE /* TextList+AztecFormatting.swift in Sources */,
-				318109C625E59E4000EE0BE7 /* TitleTableViewCell.swift in Sources */,
 				0260F40123224E8100EDA10A /* ProductsViewController.swift in Sources */,
 				4569D3C325DC008700CDC3E2 /* SiteAddress.swift in Sources */,
 				31FE28C225E6D338003519F2 /* LearnMoreTableViewCell.swift in Sources */,
@@ -6799,6 +6779,7 @@
 				028BAC4722F3B550008BB4AF /* StatsTimeRangeV4+UI.swift in Sources */,
 				024DF32123744798006658FE /* AztecFormatBarCommandCoordinator.swift in Sources */,
 				B5AA7B3F20ED81C2004DA14F /* UserDefaults+Woo.swift in Sources */,
+				DE46133926B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift in Sources */,
 				0211259F2578DE310075AD2A /* ShippingLabelPrintingStepView.swift in Sources */,
 				B58B4AB22108F01700076FDD /* NoticeView.swift in Sources */,
 				74B5713621CD7604008F9B8E /* SharingHelper.swift in Sources */,

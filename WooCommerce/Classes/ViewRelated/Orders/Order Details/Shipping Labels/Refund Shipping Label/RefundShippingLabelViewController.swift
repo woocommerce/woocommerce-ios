@@ -90,7 +90,6 @@ private extension RefundShippingLabelViewController {
     }
 
     func configureCellCommonProperties(_ cell: ValueOneTableViewCell) {
-        cell.detailTextLabel?.textColor = Constants.cellValueTextColor
         cell.selectionStyle = .none
         cell.accessoryType = .none
     }

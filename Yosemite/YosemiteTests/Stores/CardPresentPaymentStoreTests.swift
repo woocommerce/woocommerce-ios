@@ -1,4 +1,5 @@
 import XCTest
+import Fakes
 @testable import Yosemite
 @testable import Networking
 @testable import Storage

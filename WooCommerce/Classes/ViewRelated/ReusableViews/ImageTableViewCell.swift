@@ -1,15 +1,19 @@
 import UIKit
 
 class ImageTableViewCell: UITableViewCell {
-    @IBOutlet weak var detailImageView: UIImageView!
+    @IBOutlet private weak var detailImageView: UIImageView!
 
     override func awakeFromNib() {
         super.awakeFromNib()
         configureCell()
     }
 
-    func configureCell() {
+    private func configureCell() {
         applyDefaultBackgroundStyle()
         setNeedsLayout()
+    }
+
+    func configure(image: UIImage?) {
+        detailImageView.image = image
     }
 }

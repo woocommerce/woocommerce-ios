@@ -119,7 +119,11 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     ///
     private func configureTotalWeights(initialTotalWeight: String?) {
         if let initialTotalWeight = initialTotalWeight {
-            totalWeight = initialTotalWeight
+            let calculatedWeight = calculateTotalWeight(products: products, productVariations: productVariations, customPackage: selectedCustomPackage)
+            if initialTotalWeight != String(calculatedWeight) {
+                isPackageWeightEdited = true
+                return totalWeight = initialTotalWeight
+            }
         }
 
         let calculatedWeight = $selectedCustomPackage.combineLatest($products, $productVariations)

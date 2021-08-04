@@ -416,7 +416,6 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
 
         // When new weight is input manually
         viewModel.totalWeight = "500"
-        viewModel.isPackageWeightEdited = true
 
         // Then
         XCTAssertEqual(viewModel.totalWeight, "500")

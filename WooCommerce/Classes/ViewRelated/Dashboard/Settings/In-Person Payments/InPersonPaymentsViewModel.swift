@@ -1,5 +1,5 @@
-import Yosemite
 import Combine
+import Yosemite
 
 final class InPersonPaymentsViewModel: ObservableObject {
     @Published var state: CardPresentPaymentOnboardingState

@@ -1223,6 +1223,8 @@
 		DEFD6E86264ABFB700E51E0D /* PluginListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DEFD6E85264ABFB700E51E0D /* PluginListViewController.xib */; };
 		E10DFC78267331590083AFF2 /* ApplicationLogViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10DFC77267331590083AFF2 /* ApplicationLogViewModelTests.swift */; };
 		E10DFC7A2673595A0083AFF2 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10DFC792673595A0083AFF2 /* ShareSheet.swift */; };
+		E12AF69926BA8ADC00C371C1 /* CardPresentPaymentsOnboardingUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12AF69826BA8ADC00C371C1 /* CardPresentPaymentsOnboardingUseCase.swift */; };
+		E12AF69B26BA8B2000C371C1 /* CardPresentPaymentsOnboardingUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12AF69A26BA8B2000C371C1 /* CardPresentPaymentsOnboardingUseCaseTests.swift */; };
 		E12FB786266E0CAE0039E9C2 /* ApllicationLogDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12FB785266E0CAE0039E9C2 /* ApllicationLogDetailView.swift */; };
 		E138D4F4269ED9C3006EA5C6 /* InPersonPaymentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E138D4F3269ED9C3006EA5C6 /* InPersonPaymentsViewController.swift */; };
 		E138D4F6269EDE77006EA5C6 /* InPersonPaymentsUnavailableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E138D4F5269EDE77006EA5C6 /* InPersonPaymentsUnavailableView.swift */; };
@@ -2556,6 +2558,8 @@
 		DEFD6E85264ABFB700E51E0D /* PluginListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PluginListViewController.xib; sourceTree = "<group>"; };
 		E10DFC77267331590083AFF2 /* ApplicationLogViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLogViewModelTests.swift; sourceTree = "<group>"; };
 		E10DFC792673595A0083AFF2 /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
+		E12AF69826BA8ADC00C371C1 /* CardPresentPaymentsOnboardingUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsOnboardingUseCase.swift; sourceTree = "<group>"; };
+		E12AF69A26BA8B2000C371C1 /* CardPresentPaymentsOnboardingUseCaseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsOnboardingUseCaseTests.swift; sourceTree = "<group>"; };
 		E12FB785266E0CAE0039E9C2 /* ApllicationLogDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApllicationLogDetailView.swift; sourceTree = "<group>"; };
 		E138D4F3269ED9C3006EA5C6 /* InPersonPaymentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsViewController.swift; sourceTree = "<group>"; };
 		E138D4F5269EDE77006EA5C6 /* InPersonPaymentsUnavailableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsUnavailableView.swift; sourceTree = "<group>"; };
@@ -5796,6 +5800,7 @@
 		D810F8F62639EDD900437C67 /* CardPresentPayments */ = {
 			isa = PBXGroup;
 			children = (
+				E12AF69A26BA8B2000C371C1 /* CardPresentPaymentsOnboardingUseCaseTests.swift */,
 				D810F8F72639EDE900437C67 /* CardPresentPaymentsModalViewControllerTests.swift */,
 			);
 			path = CardPresentPayments;
@@ -5985,6 +5990,7 @@
 		E138D4F2269ED99A006EA5C6 /* In-Person Payments */ = {
 			isa = PBXGroup;
 			children = (
+				E12AF69826BA8ADC00C371C1 /* CardPresentPaymentsOnboardingUseCase.swift */,
 				E138D4F3269ED9C3006EA5C6 /* InPersonPaymentsViewController.swift */,
 				E138D4F5269EDE77006EA5C6 /* InPersonPaymentsUnavailableView.swift */,
 				E138D4FB269EEAFE006EA5C6 /* InPersonPaymentsViewModel.swift */,
@@ -7033,6 +7039,7 @@
 				02535CBB25823F7A00E137BB /* ShippingLabelPaperSize+UI.swift in Sources */,
 				CCD2E67E25DD4DC900BD975D /* ProductVariationsViewModel.swift in Sources */,
 				02C2756824F4E77F00286C04 /* ProductShippingSettingsViewModel.swift in Sources */,
+				E12AF69926BA8ADC00C371C1 /* CardPresentPaymentsOnboardingUseCase.swift in Sources */,
 				45C11B7C2508E156006C2089 /* SelectedSiteSettings.swift in Sources */,
 				B5A56BF3219F46470065A902 /* UIButton+Animations.swift in Sources */,
 				B54FBE552111F70700390F57 /* ResultsController+UIKit.swift in Sources */,
@@ -7489,6 +7496,7 @@
 				B57C5C9A21B80E7100FF82B2 /* DataWooTests.swift in Sources */,
 				B53A56A42112483E000776C9 /* Constants.swift in Sources */,
 				2667BFE72530E78F008099D4 /* RefundItemsValuesCalculationUseCaseTests.swift in Sources */,
+				E12AF69B26BA8B2000C371C1 /* CardPresentPaymentsOnboardingUseCaseTests.swift in Sources */,
 				D802549B265531D4001B2CC1 /* CardPresentModalConnectingToReaderTests.swift in Sources */,
 				AEE1D4FF25D1580E006A490B /* AttributeOptionListSelectorCommandTests.swift in Sources */,
 				02B296A922FA6E0000FD7A4C /* DateStartAndEndTests.swift in Sources */,

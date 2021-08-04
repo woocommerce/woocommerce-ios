@@ -1,6 +1,6 @@
 import XCTest
 import Fakes
-@testable import Yosemite
+@testable import WooCommerce
 
 class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
     /// Mock Storage: InMemory

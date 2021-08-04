@@ -1,5 +1,9 @@
 import Foundation
 import Storage
+import Yosemite
+
+typealias SitePlugin = Yosemite.SitePlugin
+typealias PaymentGatewayAccount = Yosemite.PaymentGatewayAccount
 
 public struct CardPresentPaymentsOnboardingUseCase {
     let storageManager: StorageManagerType

@@ -44,7 +44,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     func test_onboarding_returns_country_unsupported_with_unsupported_country() {
         // Given
-        storageManager.insertSampleSiteSetting(readOnlySiteSetting: unsupportedCountrySetting)
+        setupCountry(country: .es)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
@@ -58,7 +58,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     func test_onboarding_returns_wcpay_not_installed_without_wcpay_plugin() {
         // Given
-        storageManager.insertSampleSiteSetting(readOnlySiteSetting: supportedCountrySetting)
+        setupCountry(country: .us)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
@@ -71,7 +71,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     func test_onboarding_returns_wcpay_not_activated_when_wcpay_installed_but_not_active() {
         // Given
-        storageManager.insertSampleSiteSetting(readOnlySiteSetting: supportedCountrySetting)
+        setupCountry(country: .us)
         setupPlugin(status: .inactive, version: .supported)
 
         // When
@@ -84,7 +84,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     func test_onboarding_returns_wcpay_unsupported_version_when_wcpay_outdated() {
         // Given
-        storageManager.insertSampleSiteSetting(readOnlySiteSetting: supportedCountrySetting)
+        setupCountry(country: .us)
         setupPlugin(status: .active, version: .unsupported)
 
         // When
@@ -97,9 +97,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     func test_onboarding_returns_complete_when_supported_exact() {
         // Given
-        storageManager.insertSampleSiteSetting(readOnlySiteSetting: supportedCountrySetting)
-
+        setupCountry(country: .us)
         setupPlugin(status: .networkActive, version: .supportedExact)
+
         let paymentGatewayAccount = PaymentGatewayAccount
             .fake()
             .copy(
@@ -118,9 +118,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     func test_onboarding_returns_complete_when_active() {
         // Given
-        storageManager.insertSampleSiteSetting(readOnlySiteSetting: supportedCountrySetting)
-
+        setupCountry(country: .us)
         setupPlugin(status: .networkActive, version: .supported)
+
         let paymentGatewayAccount = PaymentGatewayAccount
             .fake()
             .copy(
@@ -139,9 +139,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     func test_onboarding_returns_complete_when_network_active() {
         // Given
-        storageManager.insertSampleSiteSetting(readOnlySiteSetting: supportedCountrySetting)
-
+        setupCountry(country: .us)
         setupPlugin(status: .networkActive, version: .supported)
+
         let paymentGatewayAccount = PaymentGatewayAccount
             .fake()
             .copy(
@@ -162,8 +162,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     func test_onboarding_returns_generic_error_with_no_account() {
         // Given
-        storageManager.insertSampleSiteSetting(readOnlySiteSetting: supportedCountrySetting)
-
+        setupCountry(country: .us)
         setupPlugin(status: .active, version: .supported)
 
         // When
@@ -176,9 +175,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     func test_onboarding_returns_generic_error_when_account_is_not_eligible() {
         // Given
-        storageManager.insertSampleSiteSetting(readOnlySiteSetting: supportedCountrySetting)
-
+        setupCountry(country: .us)
         setupPlugin(status: .active, version: .supported)
+
         let paymentGatewayAccount = PaymentGatewayAccount
             .fake()
             .copy(
@@ -197,9 +196,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     func test_onboarding_returns_complete_when_account_is_setup_successfully() {
         // Given
-        storageManager.insertSampleSiteSetting(readOnlySiteSetting: supportedCountrySetting)
-
+        setupCountry(country: .us)
         setupPlugin(status: .active, version: .supported)
+
         let paymentGatewayAccount = PaymentGatewayAccount
             .fake()
             .copy(
@@ -219,21 +218,20 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
 // MARK: - Country helpers
 private extension CardPresentPaymentsOnboardingUseCaseTests {
-    var countrySettingBase: SiteSetting {
-        SiteSetting.fake()
+    func setupCountry(country: Country) {
+        let setting = SiteSetting.fake()
             .copy(
                 siteID: sampleSiteID,
                 settingID: "woocommerce_default_country",
+                value: country.rawValue,
                 settingGroupKey: SiteSettingGroup.general.rawValue
             )
+        storageManager.insertSampleSiteSetting(readOnlySiteSetting: setting)
     }
 
-    var supportedCountrySetting: SiteSetting {
-        countrySettingBase.copy(value: "US:CA")
-    }
-
-    var unsupportedCountrySetting: SiteSetting {
-        countrySettingBase.copy(value: "ES")
+    enum Country: String {
+        case us = "US:CA"
+        case es = "ES"
     }
 }
 

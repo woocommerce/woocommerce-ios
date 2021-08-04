@@ -16,7 +16,7 @@ PLIST_TEMPLATE_PATH=${SOURCE_ROOT}/Credentials/Templates/InfoPlist-Template.h
 BASH_INPUT_PATH=${SOURCE_ROOT}/Credentials/bash_secrets.tpl
 BASH_OUTPUT_PATH=${DERIVED_PATH}/bash_secrets
 
-SECRETS_PATH="${SRCROOT}/../.configure-files/woo_app_credentials.json"
+SECRETS_PATH="${HOME}/.configure/woocommerce-ios/secrets/woo_app_credentials.json"
 
 ## Validate Secrets!
 ##

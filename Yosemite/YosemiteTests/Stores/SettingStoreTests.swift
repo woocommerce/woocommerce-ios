@@ -566,7 +566,8 @@ private extension SettingStoreTests {
         return SiteSetting(siteID: sampleSiteID,
                            settingID: "woocommerce_currency",
                            label: "Currency",
-                           settingDescription: "This controls what currency prices are listed at in the catalog and which currency gateways will take payments in.",
+                           settingDescription: "This controls what currency prices are listed at in the catalog"
+                            + " and which currency gateways will take payments in.",
                            value: "USD",
                            settingGroupKey: SiteSettingGroup.general.rawValue)
     }

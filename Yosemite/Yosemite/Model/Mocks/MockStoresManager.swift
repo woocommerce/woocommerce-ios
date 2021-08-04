@@ -158,4 +158,8 @@ public class MockStoresManager: StoresManager {
             .removeDuplicates()
             .eraseToAnyPublisher()
     }
+
+    public func updateDefaultRoles(_ roles: [String]) {
+        // No op
+    }
 }

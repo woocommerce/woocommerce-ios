@@ -59,9 +59,12 @@ extension RoleEligibilityUseCase: RoleEligibilityUseCaseProtocol {
             return
         }
 
-        let action = UserAction.retrieveUser(siteID: storeID) { result in
+        let action = UserAction.retrieveUser(siteID: storeID) { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let user):
+                self.stores.updateDefaultRoles(user.roles)
+
                 guard user.hasEligibleRoles() else {
                     let errorInfo = StorageEligibilityErrorInfo(name: user.displayName(), roles: user.roles)
 

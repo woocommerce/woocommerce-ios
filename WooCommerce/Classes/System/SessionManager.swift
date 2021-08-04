@@ -95,6 +95,17 @@ final class SessionManager: SessionManagerProtocol {
         }
     }
 
+    /// Roles for the default Store Site.
+    ///
+    var defaultRoles: [String] {
+        get {
+            defaults[.defaultRoles] ?? []
+        }
+        set {
+            defaults[.defaultRoles] = newValue
+        }
+    }
+
     var defaultStoreIDPublisher: AnyPublisher<Int64?, Never> {
         defaultStoreIDSubject.eraseToAnyPublisher()
     }

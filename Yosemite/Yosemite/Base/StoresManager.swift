@@ -60,4 +60,8 @@ public protocol StoresManager {
     /// SessionManagerProtocol: Persistent Storage for Session-Y Properties.
     /// This property is thread safe
     var sessionManager: SessionManagerProtocol { get }
+
+    /// Update the user roles for the default site.
+    ///
+    func updateDefaultRoles(_ roles: [String])
 }

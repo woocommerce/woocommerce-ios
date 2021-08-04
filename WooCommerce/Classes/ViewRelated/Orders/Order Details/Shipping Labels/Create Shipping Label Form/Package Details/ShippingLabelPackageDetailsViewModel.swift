@@ -120,12 +120,17 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     private func configureTotalWeights(initialTotalWeight: String?) {
         if let initialTotalWeight = initialTotalWeight {
             let calculatedWeight = calculateTotalWeight(products: products, productVariations: productVariations, customPackage: selectedCustomPackage)
+            // Return early if manual input is detected
             if initialTotalWeight != String(calculatedWeight) {
                 isPackageWeightEdited = true
                 return totalWeight = initialTotalWeight
             }
         }
 
+        // Create a stream of changes of calculated weight.
+        // This takes into account changes of selected custom package, products and variations.
+        // The stream should be completed immediately if manual input of package weight is detected.
+        //
         let calculatedWeight = $selectedCustomPackage.combineLatest($products, $productVariations)
             .map { [weak self] (customPackage, products, variations) -> Double in
                 self?.calculateTotalWeight(products: products, productVariations: variations, customPackage: customPackage) ?? 0
@@ -136,9 +141,15 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
                 String(weight)
             }
 
+        // Display calculated weight on UI
+        //
         calculatedWeight
             .assign(to: &$totalWeight)
 
+        // With every change of total weight, check with latest calculated weight.
+        // If the values are different, we can assume that the weight was manually input,
+        // and update `isPackageWeightEdited` to true to complete all Combine streams.
+        //
         $totalWeight.withLatestFrom(calculatedWeight)
             .map { (totalWeight, calculatedWeight) -> Bool in
                 totalWeight != calculatedWeight

@@ -4,6 +4,9 @@ extension Publishers {
     /// When upstream publisher emits an event, this will combine it with
     /// latest event of the other publisher into a tuple to send downstream.
     ///
+    /// Origin of implementation: https://medium.com/@sergebouts/combine-withlatestfrom-operator-8c529e809fd3.
+    /// RxMarbles for withLatestFrom: https://rxmarbles.com/#withLatestFrom.
+    ///
     public struct WithLatestFrom<Upstream: Publisher, Other: Publisher>: Publisher where Upstream.Failure == Other.Failure {
         // MARK: - Types
         public typealias Output = (Upstream.Output, Other.Output)
@@ -42,6 +45,8 @@ private extension Publishers.WithLatestFrom {
          value2: Other.Output?, shouldEmit: Bool)
 
     // MARK: - Pipelines
+    /// Create a Merge for the two publishers
+    ///
     func mergedStream(_ upstream1: Upstream, _ upstream2: Other)
         -> AnyPublisher<MergedElement, Failure> {
         let mergedElementUpstream1 = upstream1
@@ -53,6 +58,9 @@ private extension Publishers.WithLatestFrom {
             .eraseToAnyPublisher()
     }
 
+    /// Scan the merge of two streams and emit the combined values of them
+    /// only when the first stream emits new event and second stream has emitted at least one event.
+    ///
     func resultStream(
         from mergedStream: AnyPublisher<MergedElement, Failure>
     ) -> AnyPublisher<Output, Failure> {

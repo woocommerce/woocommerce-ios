@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash -euo pipefail
 
 DERIVED_PATH=${SOURCE_ROOT}/DerivedSources
 SCRIPT_PATH=${SOURCE_ROOT}/Credentials/replace_secrets.rb

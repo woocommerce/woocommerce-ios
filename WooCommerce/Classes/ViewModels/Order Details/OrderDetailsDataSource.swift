@@ -53,7 +53,7 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Whether the button to create shipping labels should be visible.
     ///
-    private var shouldShowShippingLabelCreation: Bool {
+    var shouldShowShippingLabelCreation: Bool {
         return isEligibleForShippingLabelCreation && shippingLabels.nonRefunded.isEmpty &&
             !isEligibleForCardPresentPayment
     }

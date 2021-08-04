@@ -228,7 +228,7 @@ private extension OrderDetailsViewController {
 //
 private extension OrderDetailsViewController {
     func updateTopBannerView() {
-        let factory = ShippingLabelsTopBannerFactory(isEligibleForShippingLabelCreation: viewModel.dataSource.isEligibleForShippingLabelCreation,
+        let factory = ShippingLabelsTopBannerFactory(isEligibleForShippingLabelCreation: viewModel.dataSource.shouldShowShippingLabelCreation,
                                                      shippingLabels: viewModel.dataSource.shippingLabels)
         let isExpanded = topBannerView?.isExpanded ?? false
         factory.createTopBannerIfNeeded(isExpanded: isExpanded,

@@ -438,11 +438,11 @@ private extension ShippingLabelFormViewModel {
         }
 
         // Find first row with .pending data state,
-        // and update its following rows to be .disabled if their display mode is .editable.
+        // and update its following rows to be .disabled if their display mode is .editable and data state is .pending.
         if let firstPendingRow = rows.firstIndex(where: { $0.dataState == .pending }) {
             for index in rows.index(after: firstPendingRow) ..< rows.count {
                 let nextRow = rows[index]
-                if nextRow.displayMode == .editable {
+                if nextRow.displayMode == .editable && nextRow.dataState == .pending {
                     rows[index] = Row(type: nextRow.type, dataState: nextRow.dataState, displayMode: .disabled)
                 }
             }

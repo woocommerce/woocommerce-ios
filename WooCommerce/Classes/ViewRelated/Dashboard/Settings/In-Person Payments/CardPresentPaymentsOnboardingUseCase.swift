@@ -60,6 +60,7 @@ struct CardPresentPaymentsOnboardingUseCase {
     public func checkOnboardingState() -> CardPresentPaymentOnboardingState {
         // Country checks
         guard let countryCode = storeCountryCode else {
+            DDLogError("[CardPresentPaymentsOnboarding] Couldn't determine country for store")
             return .genericError
         }
 

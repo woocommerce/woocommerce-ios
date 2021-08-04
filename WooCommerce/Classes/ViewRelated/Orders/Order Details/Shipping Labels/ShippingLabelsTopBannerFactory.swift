@@ -4,16 +4,16 @@ import Yosemite
 /// The top banner has two actions: "give feedback" and "dismiss".
 /// This class is not meant to be retained since it uses strong `self` in action handling, so that it has the same life cycle as the top banner.
 final class ShippingLabelsTopBannerFactory {
-    private var isEligibleForShippingLabelCreation: Bool
+    private var shouldShowShippingLabelCreation: Bool
     private let shippingLabels: [ShippingLabel]
     private let stores: StoresManager
     private let analytics: Analytics
 
-    init(isEligibleForShippingLabelCreation: Bool,
+    init(shouldShowShippingLabelCreation: Bool,
          shippingLabels: [ShippingLabel],
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
-        self.isEligibleForShippingLabelCreation = isEligibleForShippingLabelCreation
+        self.shouldShowShippingLabelCreation = shouldShowShippingLabelCreation
         self.shippingLabels = shippingLabels
         self.stores = stores
         self.analytics = analytics
@@ -49,7 +49,7 @@ final class ShippingLabelsTopBannerFactory {
 
 private extension ShippingLabelsTopBannerFactory {
     func determineIfTopBannerShouldBeShown(onCompletion: @escaping (_ shouldShow: Bool) -> Void) {
-        guard isEligibleForShippingLabelCreation && shippingLabels.nonRefunded.isEmpty else {
+        guard shouldShowShippingLabelCreation && shippingLabels.nonRefunded.isEmpty else {
             onCompletion(false)
             return
         }

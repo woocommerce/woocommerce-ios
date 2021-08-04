@@ -130,4 +130,14 @@ extension MockStorageManager {
 
         return newOrder
     }
+
+    /// Inserts a new (Sample) PLugin into the specified context.
+    ///
+    @discardableResult
+    func insertSampleSitePlugin(readOnlySitePlugin: SitePlugin) -> StorageSitePlugin {
+        let newPlugin = viewStorage.insertNewObject(ofType: StorageSitePlugin.self)
+        newPlugin.update(with: readOnlySitePlugin)
+
+        return newPlugin
+    }
 }

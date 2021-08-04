@@ -76,15 +76,8 @@ public final class CardPresentPaymentStore: Store {
 //
 private extension CardPresentPaymentStore {
     func checkOnboardingState(siteID: Int64, onCompletion: (CardPresentPaymentOnboardingState) -> Void) {
-        let canCollectPayments = storageManager.viewStorage
-            .loadPaymentGatewayAccounts(siteID: siteID)
-            .contains(where: \.isCardPresentEligible)
-        let state: CardPresentPaymentOnboardingState
-        if canCollectPayments {
-            state = .completed
-        } else {
-            state = .genericError
-        }
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, siteID: siteID)
+        let state = useCase.checkOnboardingState()
         onCompletion(state)
     }
 

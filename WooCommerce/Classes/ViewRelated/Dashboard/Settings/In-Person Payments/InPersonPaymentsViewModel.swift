@@ -7,11 +7,7 @@ final class InPersonPaymentsViewModel: ObservableObject {
     /// Initializes the view model for a specific site
     ///
     init(siteID: Int64) {
-        let useCase = CardPresentPaymentsOnboardingUseCase(
-            siteID: siteID,
-            storageManager: ServiceLocator.storageManager,
-            dispatch: { action in ServiceLocator.stores.dispatch(action) }
-        )
+        let useCase = CardPresentPaymentsOnboardingUseCase()
         state = useCase.checkOnboardingState()
         useCase.synchronizeRequiredData { [weak self] in
             guard let self = self else {

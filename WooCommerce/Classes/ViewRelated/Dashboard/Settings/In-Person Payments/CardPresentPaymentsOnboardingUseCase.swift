@@ -5,18 +5,23 @@ import Yosemite
 typealias SitePlugin = Yosemite.SitePlugin
 typealias PaymentGatewayAccount = Yosemite.PaymentGatewayAccount
 
-public struct CardPresentPaymentsOnboardingUseCase {
+struct CardPresentPaymentsOnboardingUseCase {
     let storageManager: StorageManagerType
-    let dispatch: (Action) -> Void
-    let siteID: Int64
+    let stores: StoresManager
 
-    public init(siteID: Int64, storageManager: StorageManagerType, dispatch: @escaping (Action) -> Void) {
+    init(
+        storageManager: StorageManagerType = ServiceLocator.storageManager,
+        stores: StoresManager = ServiceLocator.stores
+    ) {
         self.storageManager = storageManager
-        self.dispatch = dispatch
-        self.siteID = siteID
+        self.stores = stores
     }
 
     public func synchronizeRequiredData(completion: @escaping () -> Void) {
+        guard let siteID = siteID else {
+            return completion()
+        }
+
         let group = DispatchGroup()
 
         // We need to sync settings to check the store's country
@@ -27,7 +32,7 @@ public struct CardPresentPaymentsOnboardingUseCase {
             group.leave()
         }
         group.enter()
-        dispatch(settingsAction)
+        stores.dispatch(settingsAction)
 
         // We need to sync plugins to check if WCPay is installed, up to date, and active
         let sitePluginsAction = SitePluginAction.synchronizeSitePlugins(siteID: siteID) { result in
@@ -37,7 +42,7 @@ public struct CardPresentPaymentsOnboardingUseCase {
             group.leave()
         }
         group.enter()
-        dispatch(sitePluginsAction)
+        stores.dispatch(sitePluginsAction)
 
         // We need to sync payment gateway accounts to see if WCPay is set up correctly
         let paymentGatewayAccountsAction = PaymentGatewayAccountAction.loadAccounts(siteID: siteID) { result in
@@ -47,7 +52,7 @@ public struct CardPresentPaymentsOnboardingUseCase {
             group.leave()
         }
         group.enter()
-        dispatch(paymentGatewayAccountsAction)
+        stores.dispatch(paymentGatewayAccountsAction)
 
         group.notify(queue: .main, execute: completion)
     }
@@ -100,13 +105,20 @@ public struct CardPresentPaymentsOnboardingUseCase {
 }
 
 private extension CardPresentPaymentsOnboardingUseCase {
+    var siteID: Int64? {
+        stores.sessionManager.defaultStoreID
+    }
+
     func isCountrySupported() -> Bool {
         // TODO: not implemented yet
         return true
     }
 
     func getWCPayPlugin() -> SitePlugin? {
-        storageManager.viewStorage
+        guard let siteID = siteID else {
+            return nil
+        }
+        return storageManager.viewStorage
             .loadPlugin(siteID: siteID, name: Constants.pluginName)?
             .toReadOnly()
     }
@@ -122,7 +134,10 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func getWCPayAccount() -> PaymentGatewayAccount? {
-        storageManager.viewStorage
+        guard let siteID = siteID else {
+            return nil
+        }
+        return storageManager.viewStorage
             .loadPaymentGatewayAccounts(siteID: siteID)
             .first(where: \.isCardPresentEligible)?
             .toReadOnly()

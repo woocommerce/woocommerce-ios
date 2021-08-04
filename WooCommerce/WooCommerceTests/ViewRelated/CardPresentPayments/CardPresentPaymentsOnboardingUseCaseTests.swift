@@ -7,6 +7,10 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
     ///
     private var storageManager: MockStorageManager!
 
+    /// Mock Stores
+    ///
+    private var stores: MockStoresManager!
+
     /// Dummy Site ID
     ///
     private let sampleSiteID: Int64 = 1234
@@ -14,10 +18,13 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
         storageManager = MockStorageManager()
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.updateDefaultStore(storeID: sampleSiteID)
     }
 
     override func tearDownWithError() throws {
         storageManager = nil
+        stores = nil
         try super.tearDownWithError()
     }
 
@@ -31,7 +38,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         storageManager.insertSampleSitePlugin(readOnlySitePlugin: plugin)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(siteID: sampleSiteID, storageManager: storageManager, dispatch: { _ in })
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
         let state = useCase.checkOnboardingState()
 
         // Then
@@ -55,7 +62,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(siteID: sampleSiteID, storageManager: storageManager, dispatch: { _ in })
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
         let state = useCase.checkOnboardingState()
 
         // Then
@@ -79,7 +86,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(siteID: sampleSiteID, storageManager: storageManager, dispatch: { _ in })
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
         let state = useCase.checkOnboardingState()
 
         // Then

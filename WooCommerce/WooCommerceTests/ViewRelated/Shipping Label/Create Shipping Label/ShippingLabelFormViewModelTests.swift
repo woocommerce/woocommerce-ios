@@ -188,6 +188,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         let expectedPackageID = "my-package-id"
         let expectedPackageWeight = "55"
 
+        shippingLabelFormViewModel.handleOriginAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(), validated: true)
+        shippingLabelFormViewModel.handleDestinationAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(), validated: true)
         shippingLabelFormViewModel.handleCarrierAndRatesValueChanges(selectedRate: MockShippingLabelCarrierRate.makeRate(),
                                                                      selectedSignatureRate: nil,
                                                                      selectedAdultSignatureRate: nil,

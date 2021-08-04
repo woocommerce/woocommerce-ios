@@ -606,7 +606,6 @@ private extension ProductFormViewController {
         let productStatus = status ?? product.status
         let messageType = viewModel.saveMessageType(for: productStatus)
         showSavingProgress(messageType)
-
         saveImagesAndProductRemotely(status: status)
     }
 
@@ -660,8 +659,9 @@ private extension ProductFormViewController {
                     self?.displayError(error: error)
                 }
             case .success:
-                // Dismisses the in-progress UI.
+                // Dismisses the in-progress UI, then presents the confirmation alert.
                 self?.navigationController?.dismiss(animated: true, completion: nil)
+                self?.presentProductConfirmationSaveAlert()
             }
         }
     }

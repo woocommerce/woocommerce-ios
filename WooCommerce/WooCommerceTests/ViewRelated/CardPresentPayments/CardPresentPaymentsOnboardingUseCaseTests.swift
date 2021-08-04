@@ -99,14 +99,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         // Given
         setupCountry(country: .us)
         setupPlugin(status: .networkActive, version: .supportedExact)
-
-        let paymentGatewayAccount = PaymentGatewayAccount
-            .fake()
-            .copy(
-                siteID: sampleSiteID,
-                isCardPresentEligible: true
-            )
-        storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
+        setupPaymentGatewayAccount(isCardPresentEligible: true)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
@@ -120,14 +113,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         // Given
         setupCountry(country: .us)
         setupPlugin(status: .networkActive, version: .supported)
-
-        let paymentGatewayAccount = PaymentGatewayAccount
-            .fake()
-            .copy(
-                siteID: sampleSiteID,
-                isCardPresentEligible: true
-            )
-        storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
+        setupPaymentGatewayAccount(isCardPresentEligible: true)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
@@ -141,14 +127,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         // Given
         setupCountry(country: .us)
         setupPlugin(status: .networkActive, version: .supported)
-
-        let paymentGatewayAccount = PaymentGatewayAccount
-            .fake()
-            .copy(
-                siteID: sampleSiteID,
-                isCardPresentEligible: true
-            )
-        storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
+        setupPaymentGatewayAccount(isCardPresentEligible: true)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
@@ -177,14 +156,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         // Given
         setupCountry(country: .us)
         setupPlugin(status: .active, version: .supported)
-
-        let paymentGatewayAccount = PaymentGatewayAccount
-            .fake()
-            .copy(
-                siteID: sampleSiteID,
-                isCardPresentEligible: false
-            )
-        storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
+        setupPaymentGatewayAccount(isCardPresentEligible: false)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
@@ -198,14 +170,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         // Given
         setupCountry(country: .us)
         setupPlugin(status: .active, version: .supported)
-
-        let paymentGatewayAccount = PaymentGatewayAccount
-            .fake()
-            .copy(
-                siteID: sampleSiteID,
-                isCardPresentEligible: true
-            )
-        storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
+        setupPaymentGatewayAccount(isCardPresentEligible: true)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
@@ -254,5 +219,18 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
         case supported = "2.6.1"
         case supportedExact = "2.5"
         case unsupported = "2.4.2"
+    }
+}
+
+// MARK: - Account helpers
+private extension CardPresentPaymentsOnboardingUseCaseTests {
+    func setupPaymentGatewayAccount(isCardPresentEligible: Bool) {
+        let paymentGatewayAccount = PaymentGatewayAccount
+            .fake()
+            .copy(
+                siteID: sampleSiteID,
+                isCardPresentEligible: isCardPresentEligible
+            )
+        storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
     }
 }

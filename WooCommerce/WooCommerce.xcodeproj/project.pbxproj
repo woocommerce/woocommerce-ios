@@ -7895,7 +7895,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_PREFIX_HEADER = InfoPlist.h;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SECRETS_PATH = "$(SRCROOT)/../.configure-files/woo_app_credentials.json";
 				VALID_ARCHS = "$(inherited)";
 			};
 			name = "Release-Alpha";
@@ -7906,7 +7905,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_PREFIX_HEADER = InfoPlist.h;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SECRETS_PATH = "$(SRCROOT)/../.configure-files/woo_app_credentials.json";
 				VALID_ARCHS = "$(inherited)";
 			};
 			name = Debug;
@@ -7917,7 +7915,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_PREFIX_HEADER = InfoPlist.h;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SECRETS_PATH = "$(SRCROOT)/../.configure-files/woo_app_credentials.json";
 				VALID_ARCHS = "$(inherited)";
 			};
 			name = Release;

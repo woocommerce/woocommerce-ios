@@ -6,6 +6,7 @@
 - [*] My Store: If there are errors loading the My Store screen, a banner now appears at the top of the screen with links to troubleshoot or contact support. [https://github.com/woocommerce/woocommerce-ios/pull/4704]
 - [internal] Upgraded Zendesk SDK to version 5.3.0 [https://github.com/woocommerce/woocommerce-ios/pull/4699]
 - [*] Fix: Added 'Product saved' confirmation message when a product is updated [https://github.com/woocommerce/woocommerce-ios/pull/4709]
+- [*] Shipping Labels: Updated address validation to automatically use trivially normalized address for origin and destination. [https://github.com/woocommerce/woocommerce-ios/pull/4719]
 
 7.2
 -----

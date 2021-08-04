@@ -20,6 +20,8 @@ BASH_OUTPUT_PATH=${DERIVED_PATH}/bash_secrets
 ##
 if [ ! -f $SECRETS_PATH ]; then
 
+    echo "warning: Could not find secrets at $SECRETS_PATH. This is likely due to the secrets folder being missing. Falling back to templated secrets. If you are an internal contributor, run \`bundle exec fastlane run configure_apply\` to update your secrets"
+
     echo ">> Using Templated Secrets"
 
     ## Generate the Derived Folder. If needed

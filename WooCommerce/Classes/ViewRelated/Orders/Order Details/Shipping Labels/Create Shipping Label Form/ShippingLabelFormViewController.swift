@@ -212,8 +212,14 @@ private extension ShippingLabelFormViewController {
                 let shippingLabelAddress = self.viewModel.originAddress
                 switch validationState {
                 case .validated:
-                    self.viewModel.handleOriginAddressValueChanges(address: shippingLabelAddress,
-                                                                   validated: true)
+                    // Navigate to edit address if phone number is required but empty
+                    if self.viewModel.customsFormRequired &&
+                        shippingLabelAddress?.phone.isEmpty == true {
+                        self.displayEditAddressFormVC(address: response?.address, validationError: nil, type: .origin)
+                    } else {
+                        self.viewModel.handleOriginAddressValueChanges(address: response?.address,
+                                                                       validated: true)
+                    }
                 case .suggestedAddress:
                     self.displaySuggestedAddressVC(address: shippingLabelAddress, suggestedAddress: response?.address, type: .origin)
                 default:

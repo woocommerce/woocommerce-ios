@@ -31,7 +31,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         storageManager.insertSampleSitePlugin(readOnlySitePlugin: plugin)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, siteID: sampleSiteID)
+        let useCase = CardPresentPaymentsOnboardingUseCase(siteID: sampleSiteID, storageManager: storageManager, dispatch: { _ in })
         let state = useCase.checkOnboardingState()
 
         // Then
@@ -55,7 +55,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, siteID: sampleSiteID)
+        let useCase = CardPresentPaymentsOnboardingUseCase(siteID: sampleSiteID, storageManager: storageManager, dispatch: { _ in })
         let state = useCase.checkOnboardingState()
 
         // Then
@@ -79,7 +79,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
 
         // When
-        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, siteID: sampleSiteID)
+        let useCase = CardPresentPaymentsOnboardingUseCase(siteID: sampleSiteID, storageManager: storageManager, dispatch: { _ in })
         let state = useCase.checkOnboardingState()
 
         // Then

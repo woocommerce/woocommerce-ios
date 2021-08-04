@@ -36,7 +36,7 @@ private enum Localization {
 struct InPersonPaymentsView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            InPersonPaymentsView(viewModel: InPersonPaymentsViewModel(initialState: .genericError))
+            InPersonPaymentsView(viewModel: InPersonPaymentsViewModel(fixedState: .genericError))
         }
     }
 }

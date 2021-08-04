@@ -29,6 +29,8 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         try super.tearDownWithError()
     }
 
+    // MARK: - Country checks
+
     func test_onboarding_returns_generic_error_with_no_country() {
         // Given
 
@@ -52,16 +54,117 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .countryNotSupported)
     }
 
+    // MARK: - Plugin checks
+
+    func test_onboarding_returns_wcpay_not_installed_without_wcpay_plugin() {
+        // Given
+        storageManager.insertSampleSiteSetting(readOnlySiteSetting: supportedCountrySetting)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.checkOnboardingState()
+
+        // Then
+        XCTAssertEqual(state, .wcpayNotInstalled)
+
+    }
+
+    func test_onboarding_returns_wcpay_not_activated_when_wcpay_installed_but_not_active() {
+        // Given
+        storageManager.insertSampleSiteSetting(readOnlySiteSetting: supportedCountrySetting)
+        setupPlugin(status: .inactive, version: .supported)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.checkOnboardingState()
+
+        // Then
+        XCTAssertEqual(state, .wcpayNotActivated)
+    }
+
+    func test_onboarding_returns_wcpay_unsupported_version_when_wcpay_outdated() {
+        // Given
+        storageManager.insertSampleSiteSetting(readOnlySiteSetting: supportedCountrySetting)
+        setupPlugin(status: .active, version: .unsupported)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.checkOnboardingState()
+
+        // Then
+        XCTAssertEqual(state, .wcpayUnsupportedVersion)
+    }
+
+    func test_onboarding_returns_complete_when_supported_exact() {
+        // Given
+        storageManager.insertSampleSiteSetting(readOnlySiteSetting: supportedCountrySetting)
+
+        setupPlugin(status: .networkActive, version: .supportedExact)
+        let paymentGatewayAccount = PaymentGatewayAccount
+            .fake()
+            .copy(
+                siteID: sampleSiteID,
+                isCardPresentEligible: true
+            )
+        storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.checkOnboardingState()
+
+        // Then
+        XCTAssertEqual(state, .completed)
+    }
+
+    func test_onboarding_returns_complete_when_active() {
+        // Given
+        storageManager.insertSampleSiteSetting(readOnlySiteSetting: supportedCountrySetting)
+
+        setupPlugin(status: .networkActive, version: .supported)
+        let paymentGatewayAccount = PaymentGatewayAccount
+            .fake()
+            .copy(
+                siteID: sampleSiteID,
+                isCardPresentEligible: true
+            )
+        storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.checkOnboardingState()
+
+        // Then
+        XCTAssertEqual(state, .completed)
+    }
+
+    func test_onboarding_returns_complete_when_network_active() {
+        // Given
+        storageManager.insertSampleSiteSetting(readOnlySiteSetting: supportedCountrySetting)
+
+        setupPlugin(status: .networkActive, version: .supported)
+        let paymentGatewayAccount = PaymentGatewayAccount
+            .fake()
+            .copy(
+                siteID: sampleSiteID,
+                isCardPresentEligible: true
+            )
+        storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.checkOnboardingState()
+
+        // Then
+        XCTAssertEqual(state, .completed)
+    }
+
+    // MARK: - Payment Account checks
+
     func test_onboarding_returns_generic_error_with_no_account() {
         // Given
         storageManager.insertSampleSiteSetting(readOnlySiteSetting: supportedCountrySetting)
 
-        let plugin = wcPayPluginBase
-            .copy(
-                status: .active,
-                version: "2.5"
-            )
-        storageManager.insertSampleSitePlugin(readOnlySitePlugin: plugin)
+        setupPlugin(status: .active, version: .supported)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
@@ -75,12 +178,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         // Given
         storageManager.insertSampleSiteSetting(readOnlySiteSetting: supportedCountrySetting)
 
-        let plugin = wcPayPluginBase
-            .copy(
-                status: .active,
-                version: "2.5"
-            )
-        storageManager.insertSampleSitePlugin(readOnlySitePlugin: plugin)
+        setupPlugin(status: .active, version: .supported)
         let paymentGatewayAccount = PaymentGatewayAccount
             .fake()
             .copy(
@@ -101,12 +199,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         // Given
         storageManager.insertSampleSiteSetting(readOnlySiteSetting: supportedCountrySetting)
 
-        let plugin = wcPayPluginBase
-            .copy(
-                status: .active,
-                version: "2.5"
-            )
-        storageManager.insertSampleSitePlugin(readOnlySitePlugin: plugin)
+        setupPlugin(status: .active, version: .supported)
         let paymentGatewayAccount = PaymentGatewayAccount
             .fake()
             .copy(
@@ -124,17 +217,8 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
     }
 }
 
+// MARK: - Country helpers
 private extension CardPresentPaymentsOnboardingUseCaseTests {
-    var wcPayPluginBase: SitePlugin {
-        SitePlugin
-            .fake()
-            .copy(
-                siteID: sampleSiteID,
-                plugin: "woocommerce-payments",
-                name: "WooCommerce Payments"
-            )
-    }
-
     var countrySettingBase: SiteSetting {
         SiteSetting.fake()
             .copy(
@@ -151,5 +235,26 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
     var unsupportedCountrySetting: SiteSetting {
         countrySettingBase.copy(value: "ES")
     }
+}
 
+// MARK: - Plugin helpers
+private extension CardPresentPaymentsOnboardingUseCaseTests {
+    func setupPlugin(status: SitePluginStatusEnum, version: PluginVersion) {
+        let plugin = SitePlugin
+            .fake()
+            .copy(
+                siteID: sampleSiteID,
+                plugin: "woocommerce-payments",
+                status: status,
+                name: "WooCommerce Payments",
+                version: version.rawValue
+            )
+        storageManager.insertSampleSitePlugin(readOnlySitePlugin: plugin)
+    }
+
+    enum PluginVersion: String {
+        case supported = "2.6.1"
+        case supportedExact = "2.5"
+        case unsupported = "2.4.2"
+    }
 }

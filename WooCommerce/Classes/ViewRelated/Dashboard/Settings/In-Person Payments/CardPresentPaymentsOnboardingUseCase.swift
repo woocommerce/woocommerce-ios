@@ -136,13 +136,11 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func isWCPayVersionSupported(plugin: SitePlugin) -> Bool {
-        // TODO: not implemented yet
-        return true
+        plugin.version.compare(Constants.supportedWCPayVersion, options: .numeric) != .orderedAscending
     }
 
     func isWCPayActivated(plugin: SitePlugin) -> Bool {
-        // TODO: not implemented yet
-        return true
+        plugin.status.isActive
     }
 
     func getWCPayAccount() -> PaymentGatewayAccount? {
@@ -194,5 +192,6 @@ private extension CardPresentPaymentsOnboardingUseCase {
 
 private enum Constants {
     static let pluginName = "WooCommerce Payments"
+    static let supportedWCPayVersion = "2.5"
     static let supportedCountryCodes = ["US"]
 }

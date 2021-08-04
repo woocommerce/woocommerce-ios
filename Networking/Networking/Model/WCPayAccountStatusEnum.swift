@@ -18,6 +18,11 @@ public enum WCPayAccountStatusEnum: Decodable, Hashable, GeneratedFakeable {
     /// review by Stripe and the merchant will probably not be able to collect card present payments.
     case restricted
 
+    /// This state occurs when there is required business information missing from the account but the
+    /// currentDeadline hasn't passed yet (aka there are no overdueRequirements). The merchant will probably be able
+    /// to collect card present payments.
+    case restrictedSoon
+
     /// This state occurs when our payment processor rejects the merchant account due to suspected fraudulent
     /// activity. The merchant will NOT be able to collect card present payments.
     case rejectedFraud
@@ -56,6 +61,8 @@ extension WCPayAccountStatusEnum: RawRepresentable {
             self = .complete
         case Keys.restricted:
             self = .restricted
+        case Keys.restrictedSoon:
+            self = .restrictedSoon
         case Keys.rejectedFraud:
             self = .rejectedFraud
         case Keys.rejectedTermsOfService:
@@ -77,6 +84,7 @@ extension WCPayAccountStatusEnum: RawRepresentable {
         switch self {
         case .complete:               return Keys.complete
         case .restricted:             return Keys.restricted
+        case .restrictedSoon:         return Keys.restrictedSoon
         case .rejectedFraud:          return Keys.rejectedFraud
         case .rejectedTermsOfService: return Keys.rejectedTermsOfService
         case .rejectedListed:         return Keys.rejectedListed
@@ -94,6 +102,8 @@ private enum Keys {
     static let complete               = "complete"
     /// The WCPay account is restricted - it is under review or has pending or overdue requirements.
     static let restricted             = "restricted"
+    /// The WCPay account has required information missing but it's not restricted yet.
+    static let restrictedSoon         = "restricted_soon"
     /// The WCPay account has been rejected due to fradulent activity.
     static let rejectedFraud          = "rejected.fraud"
     /// The WCPay account has been rejected due to violating the terms of service.

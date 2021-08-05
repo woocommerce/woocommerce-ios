@@ -118,7 +118,7 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
         if buttonViewController?.isViewLoaded == true, let buttonsView = buttonViewController?.view {
             view.accessibilityElements = [
                 buttonsView,
-                dismissButton
+                dismissButton as Any
             ]
         }
     }

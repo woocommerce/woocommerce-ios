@@ -1,6 +1,6 @@
 // MARK: - WordPressAuthenticator Delegate Protocol
 //
-public protocol WordPressAuthenticatorDelegate: class {
+public protocol WordPressAuthenticatorDelegate: AnyObject {
 
     /// Indicates if the active Authenticator can be dismissed, or not.
     ///

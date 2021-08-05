@@ -3,7 +3,7 @@ import WordPressShared
 
 // MARK: - SearchTableViewCellDelegate
 //
-public protocol SearchTableViewCellDelegate: class {
+public protocol SearchTableViewCellDelegate: AnyObject {
     func startSearch(for: String)
 }
 

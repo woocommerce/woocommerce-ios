@@ -6,7 +6,7 @@ let NUXKeyboardDefaultFormVerticalOffset: CGFloat = -64.0
 /// A protocol and extension encapsulating common keyboard releated logic for
 /// Signin controllers.
 ///
-public protocol NUXKeyboardResponder: class {
+public protocol NUXKeyboardResponder: AnyObject {
     var bottomContentConstraint: NSLayoutConstraint? {get}
     var verticalCenterConstraint: NSLayoutConstraint? {get}
 

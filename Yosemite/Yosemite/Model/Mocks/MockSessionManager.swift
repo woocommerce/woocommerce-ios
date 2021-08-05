@@ -24,6 +24,8 @@ public struct MockSessionManager: SessionManagerProtocol {
 
     public var defaultStoreID: Int64?
 
+    public var defaultRoles: [User.Role] = []
+
     public var defaultStoreIDPublisher: AnyPublisher<Int64?, Never>
 
     public var defaultCredentials: Credentials?

@@ -176,6 +176,12 @@ class DefaultStoresManager: StoresManager {
 
         NotificationCenter.default.post(name: .StoresManagerDidUpdateDefaultSite, object: nil)
     }
+
+    /// Updates the user roles for the default Store site.
+    ///
+    func updateDefaultRoles(_ roles: [User.Role]) {
+        sessionManager.defaultRoles = roles
+    }
 }
 
 

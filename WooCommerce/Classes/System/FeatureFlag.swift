@@ -38,10 +38,6 @@ enum FeatureFlag: Int {
     ///
     case shippingLabelsMultiPackage
 
-    /// Site Plugin list entry point on Settings screen
-    ///
-    case sitePlugins
-
     /// Card-Present Payments Onboarding
     ///
     case cardPresentOnboarding

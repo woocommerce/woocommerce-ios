@@ -1105,7 +1105,8 @@ extension ShippingLabelPackageSelected {
             width: .fake(),
             height: .fake(),
             weight: .fake(),
-            isLetter: .fake()
+            isLetter: .fake(),
+            customsForm: .fake()
         )
     }
 }

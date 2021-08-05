@@ -114,7 +114,13 @@ final class ShippingLabelFormViewModel {
             return true
         }
 
-        return originAddress.country != destinationAddress.country
+        if originAddress.country == destinationAddress.country {
+            return false
+        }
+
+        // Shipments between US, Puerto Rico and Virgin Islands don't need Customs, everything else does
+        return !Constants.domesticUSTerritories.contains(originAddress.country) ||
+            !Constants.domesticUSTerritories.contains(destinationAddress.country)
     }
 
     private let stores: StoresManager
@@ -750,5 +756,11 @@ private extension ShippingLabelFormViewModel {
         /// These US states are a special case because they represent military bases. They're considered "domestic",
         /// but they require a Customs form to ship from/to them.
         static let usMilitaryStates = ["AA", "AE", "AP"]
+
+        // Packages shipping to or from the US, Puerto Rico and Virgin Islands don't need a Customs form
+        static let domesticUSTerritories = ["US", "PR", "VI"]
+
+        // These destination countries require an ITN regardless of shipment value
+        static let uspsITNRequiredDestination = ["IR", "SY", "KP", "CU", "SD"]
     }
 }

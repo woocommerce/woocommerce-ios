@@ -140,4 +140,14 @@ extension MockStorageManager {
 
         return newPlugin
     }
+
+    /// Inserts a new (Sample) Setting into the specified context.
+    ///
+    @discardableResult
+    func insertSampleSiteSetting(readOnlySiteSetting: SiteSetting) -> StorageSiteSetting {
+        let newSetting = viewStorage.insertNewObject(ofType: StorageSiteSetting.self)
+        newSetting.update(with: readOnlySiteSetting)
+
+        return newSetting
+    }
 }

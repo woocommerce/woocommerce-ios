@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 import SwiftUI
 import Yosemite
@@ -17,11 +18,11 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
 
     /// Products contained inside the Order and fetched from Core Data
     ///
-    private var products: [Product] = []
+    @Published private var products: [Product] = []
 
     /// ProductVariations contained inside the Order and fetched from Core Data
     ///
-    private var productVariations: [ProductVariation] = []
+    @Published private var productVariations: [ProductVariation] = []
 
     /// The packages  response fetched from API
     ///
@@ -68,7 +69,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
 
     /// Whether the user has edited the total package weight. If true, we won't make any automatic changes to the total weight.
     ///
-    var isPackageWeightEdited: Bool = false
+    @Published private var isPackageWeightEdited: Bool = false
 
     /// Returns if the custom packages header should be shown in Package List
     ///
@@ -93,11 +94,67 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         self.weightUnit = weightUnit
         self.packagesResponse = packagesResponse
         self.selectedPackageID = selectedPackageID
+
         configureResultsControllers()
+        setDefaultPackage()
         syncProducts()
         syncProductVariations()
-        setDefaultPackage()
-        setTotalWeight(using: totalWeight)
+        configureItemRows()
+        configureTotalWeights(initialTotalWeight: totalWeight)
+    }
+
+    /// Observe changes in products and variations to update item rows.
+    ///
+    private func configureItemRows() {
+        $products.combineLatest($productVariations) { [weak self] (products, variations) in
+            guard let self = self else { return [] }
+            return self.generateItemsRows(products: products, productVariations: variations)
+        }
+        .assign(to: &$itemsRows)
+    }
+
+    /// Observe changes in selected custom package, products and variations to update total package weight.
+    /// - Parameter initialTotalWeight: the weight value that was input initially.
+    /// If this value is different from the calculated weight, we can assume that user has updated the weight manually.
+    ///
+    private func configureTotalWeights(initialTotalWeight: String?) {
+        if let initialTotalWeight = initialTotalWeight {
+            let calculatedWeight = calculateTotalWeight(products: products, productVariations: productVariations, customPackage: selectedCustomPackage)
+            // Return early if manual input is detected
+            if initialTotalWeight != String(calculatedWeight) {
+                isPackageWeightEdited = true
+                return totalWeight = initialTotalWeight
+            }
+        }
+
+        // Create a stream of changes of calculated weight.
+        // This takes into account changes of selected custom package, products and variations.
+        // The stream should be completed immediately if manual input of package weight is detected.
+        //
+        let calculatedWeight = $selectedCustomPackage.combineLatest($products, $productVariations)
+            .map { [weak self] (customPackage, products, variations) -> Double in
+                self?.calculateTotalWeight(products: products, productVariations: variations, customPackage: customPackage) ?? 0
+            }
+            .combineLatest($isPackageWeightEdited)
+            .prefix(while: { (_, isEdited) in !isEdited })
+            .map { (weight, _) in
+                String(weight)
+            }
+
+        // Display calculated weight on UI
+        //
+        calculatedWeight
+            .assign(to: &$totalWeight)
+
+        // With every change of total weight, check with latest calculated weight.
+        // If the values are different, we can assume that the weight was manually input,
+        // and update `isPackageWeightEdited` to true to complete all Combine streams.
+        //
+        $totalWeight.withLatestFrom(calculatedWeight)
+            .map { (totalWeight, calculatedWeight) -> Bool in
+                totalWeight != calculatedWeight
+            }
+            .assign(to: &$isPackageWeightEdited)
     }
 
     private func configureResultsControllers() {
@@ -107,25 +164,22 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
            onProductReload: { [weak self] (products) in
             guard let self = self else { return }
             self.products = products
-            self.itemsRows = self.generateItemsRows()
-            self.setTotalWeight()
         }, onProductVariationsReload: { [weak self] (productVariations) in
             guard let self = self else { return }
             self.productVariations = productVariations
-            self.itemsRows = self.generateItemsRows()
-            self.setTotalWeight()
         })
 
         products = resultsControllers?.products ?? []
         productVariations = resultsControllers?.productVariations ?? []
-        itemsRows = generateItemsRows()
-        setTotalWeight()
     }
+}
 
+// MARK: - Helper methods
+private extension ShippingLabelPackageDetailsViewModel {
     /// Generate the items rows, creating an element in the array for every item (eg. if there is an item with quantity 3,
-    /// we will generate 3 different items), and we will remove virtual products. 
+    /// we will generate 3 different items), and we will remove virtual products.
     ///
-    private func generateItemsRows() -> [ItemToFulfillRow] {
+    func generateItemsRows(products: [Product], productVariations: [ProductVariation]) -> [ItemToFulfillRow] {
         var itemsToFulfill: [ItemToFulfillRow] = []
         for item in orderItems {
             let isVariation = item.variationID > 0
@@ -160,16 +214,12 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         return itemsToFulfill
     }
 
-    /// Set the total weight based on the weight of the selected package and
-    /// the products and products variation inside the order items, only if they are not virtual products.
+    /// Calculate total weight based on the weight of the selected package if it's a custom package;
+    /// And the products and products variation inside the order items, only if they are not virtual products.
     ///
-    /// - Parameter initialWeight: An initial value used to set the total package weight if it was input manually.
+    /// Note: Only custom package is needed for input because only custom packages have weight to be included in the total weight.
     ///
-    private func setTotalWeight(using initialWeight: String? = nil) {
-        guard !isPackageWeightEdited else {
-            return
-        }
-
+    func calculateTotalWeight(products: [Product], productVariations: [ProductVariation], customPackage: ShippingLabelCustomPackage?) -> Double {
         var tempTotalWeight: Double = 0
 
         // Add each order item's weight to the total weight.
@@ -192,17 +242,10 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
 
         // Add selected package weight to the total weight.
         // Only custom packages have a defined weight, so we only do this if a custom package is selected.
-        if let selectedPackage = selectedCustomPackage {
+        if let selectedPackage = customPackage {
             tempTotalWeight += selectedPackage.boxWeight
         }
-
-        // Set the total weight as the initial value if it was input manually; otherwise use the calculated weight.
-        if let initialWeight = initialWeight, initialWeight != String(tempTotalWeight) {
-            isPackageWeightEdited = true
-            totalWeight = initialWeight
-        } else {
-            totalWeight = String(tempTotalWeight)
-        }
+        return tempTotalWeight
     }
 }
 
@@ -262,7 +305,6 @@ extension ShippingLabelPackageDetailsViewModel {
         else if let selectedPredefinedPackage = selectedPredefinedPackage {
             selectedPackageID = selectedPredefinedPackage.id
         }
-        setTotalWeight()
     }
 
     /// Sets the package passed through the init method, or set the last selected package, if any, as the default selected package

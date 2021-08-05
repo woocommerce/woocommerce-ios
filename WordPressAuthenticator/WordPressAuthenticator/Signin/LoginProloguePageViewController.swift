@@ -53,7 +53,7 @@ class LoginProloguePageViewController: UIPageViewController {
 
     @objc func handlePageControlValueChanged(sender: UIPageControl) {
         guard let currentPage = viewControllers?.first,
-            let currentIndex = pages.index(of: currentPage) else {
+            let currentIndex = pages.firstIndex(of: currentPage) else {
             return
         }
 
@@ -66,7 +66,7 @@ class LoginProloguePageViewController: UIPageViewController {
 extension LoginProloguePageViewController: UIPageViewControllerDataSource {
 
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        guard let index = pages.index(of: viewController) else {
+        guard let index = pages.firstIndex(of: viewController) else {
             return nil
         }
         if index > 0 {
@@ -76,7 +76,7 @@ extension LoginProloguePageViewController: UIPageViewControllerDataSource {
     }
 
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        guard let index = pages.index(of: viewController) else {
+        guard let index = pages.firstIndex(of: viewController) else {
             return nil
         }
         if index < pages.count - 1 {
@@ -89,7 +89,7 @@ extension LoginProloguePageViewController: UIPageViewControllerDataSource {
 extension LoginProloguePageViewController: UIPageViewControllerDelegate {
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         let toVC = previousViewControllers[0]
-        guard let index = pages.index(of: toVC) else {
+        guard let index = pages.firstIndex(of: toVC) else {
             return
         }
         if !completed {
@@ -101,7 +101,7 @@ extension LoginProloguePageViewController: UIPageViewControllerDelegate {
 
     func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
         let toVC = pendingViewControllers[0]
-        guard let index = pages.index(of: toVC) else {
+        guard let index = pages.firstIndex(of: toVC) else {
             return
         }
         pageControl?.currentPage = index

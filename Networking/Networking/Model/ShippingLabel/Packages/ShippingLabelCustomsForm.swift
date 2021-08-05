@@ -19,8 +19,8 @@ public struct ShippingLabelCustomsForm: Equatable, GeneratedFakeable {
     /// Option if delivery fails.
     public let nonDeliveryOption: NonDeliveryOption
 
-    /// Internal Transaction Number (optional).
-    public let itn: String?
+    /// Internal Transaction Number, empty if not applicable.
+    public let itn: String
 
     /// Items in the package to declare.
     public let items: [Item]
@@ -30,7 +30,7 @@ public struct ShippingLabelCustomsForm: Equatable, GeneratedFakeable {
                 restrictionType: ShippingLabelCustomsForm.RestrictionType,
                 restrictionComments: String,
                 nonDeliveryOption: ShippingLabelCustomsForm.NonDeliveryOption,
-                itn: String?,
+                itn: String,
                 items: [ShippingLabelCustomsForm.Item]) {
         self.contentsType = contentsType
         self.contentExplanation = contentExplanation
@@ -47,7 +47,7 @@ public struct ShippingLabelCustomsForm: Equatable, GeneratedFakeable {
 public extension ShippingLabelCustomsForm {
     /// Types of contents to declare with customs.
     ///
-    enum ContentsType: String {
+    enum ContentsType: String, Codable {
         case merchandise
         case documents
         case gift
@@ -57,7 +57,7 @@ public extension ShippingLabelCustomsForm {
 
     /// Types of restriction of contents to declare with customs.
     ///
-    enum RestrictionType: String {
+    enum RestrictionType: String, Codable {
         case none
         case quarantine
         case sanitaryOrPhytosanitaryInspection = "sanitary_phytosanitary_inspection"
@@ -66,14 +66,14 @@ public extension ShippingLabelCustomsForm {
 
     /// Options if delivery fails.
     ///
-    enum NonDeliveryOption: String {
+    enum NonDeliveryOption: String, Codable {
         case `return`
         case abandon
     }
 
     /// Information about a item to declare with customs.
     ///
-    struct Item: Encodable, Equatable, GeneratedFakeable {
+    struct Item: Codable, Equatable, GeneratedFakeable {
         /// Description of item.
         public let description: String
 
@@ -109,8 +109,8 @@ public extension ShippingLabelCustomsForm {
 
 // MARK: - Codable
 //
-private extension ShippingLabelCustomsForm.Item {
-    enum CodingKeys: String, CodingKey {
+extension ShippingLabelCustomsForm.Item {
+    private enum CodingKeys: String, CodingKey {
         case description
         case quantity
         case value
@@ -118,5 +118,19 @@ private extension ShippingLabelCustomsForm.Item {
         case hsTariffNumber = "hs_tariff_number"
         case originCountry = "origin_country"
         case productID = "product_id"
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        let description = try container.decode(String.self, forKey: .description)
+        let quantity = try container.decode(Int.self, forKey: .quantity)
+        let value = try container.decode(Double.self, forKey: .value)
+        let weight = try container.decode(Double.self, forKey: .weight)
+        let hsTariffNumber = (try? container.decode(String.self, forKey: .hsTariffNumber)) ?? ""
+        let originCountry = try container.decode(String.self, forKey: .originCountry)
+        let productID = try container.decode(Int64.self, forKey: .productID)
+
+        self.init(description: description, quantity: quantity, value: value, weight: weight, hsTariffNumber: hsTariffNumber, originCountry: originCountry, productID: productID)
     }
 }

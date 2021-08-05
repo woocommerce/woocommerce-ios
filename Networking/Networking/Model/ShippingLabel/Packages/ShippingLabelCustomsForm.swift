@@ -24,6 +24,22 @@ public struct ShippingLabelCustomsForm: Equatable, GeneratedFakeable {
 
     /// Items in the package to declare.
     public let items: [Item]
+
+    public init(contentsType: ShippingLabelCustomsForm.ContentsType,
+                contentExplanation: String,
+                restrictionType: ShippingLabelCustomsForm.RestrictionType,
+                restrictionComments: String,
+                nonDeliveryOption: ShippingLabelCustomsForm.NonDeliveryOption,
+                itn: String?,
+                items: [ShippingLabelCustomsForm.Item]) {
+        self.contentsType = contentsType
+        self.contentExplanation = contentExplanation
+        self.restrictionType = restrictionType
+        self.restrictionComments = restrictionComments
+        self.nonDeliveryOption = nonDeliveryOption
+        self.itn = itn
+        self.items = items
+    }
 }
 
 // MARK: - Subtypes
@@ -78,6 +94,16 @@ public extension ShippingLabelCustomsForm {
 
         /// Product ID of item.
         public let productID: Int64
+
+        public init(description: String, quantity: Int, value: Double, weight: Double, hsTariffNumber: String, originCountry: String, productID: Int64) {
+            self.description = description
+            self.quantity = quantity
+            self.value = value
+            self.weight = weight
+            self.hsTariffNumber = hsTariffNumber
+            self.originCountry = originCountry
+            self.productID = productID
+        }
     }
 }
 

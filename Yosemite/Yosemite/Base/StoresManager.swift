@@ -63,5 +63,5 @@ public protocol StoresManager {
 
     /// Update the user roles for the default site.
     ///
-    func updateDefaultRoles(_ roles: [String])
+    func updateDefaultRoles(_ roles: [User.Role])
 }

@@ -237,7 +237,7 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
         }
 
         // Then
-        assertEqual(stores.sessionManager.defaultRoles, eligibleUser.roles)
+        assertEqual(stores.sessionManager.defaultRoles.map(\.rawValue), eligibleUser.roles)
     }
 }
 

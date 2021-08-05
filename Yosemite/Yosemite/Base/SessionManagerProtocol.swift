@@ -22,7 +22,7 @@ public protocol SessionManagerProtocol {
 
     /// Roles for the default Store Site.
     ///
-    var defaultRoles: [String] { get set }
+    var defaultRoles: [User.Role] { get set }
 
     /// Publishes default store ID on change.
     ///

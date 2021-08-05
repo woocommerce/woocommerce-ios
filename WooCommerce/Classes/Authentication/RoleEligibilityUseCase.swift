@@ -64,7 +64,8 @@ extension RoleEligibilityUseCase: RoleEligibilityUseCaseProtocol {
             guard let self = self else { return }
             switch result {
             case .success(let user):
-                self.stores.updateDefaultRoles(user.roles)
+                let roles = user.roles.compactMap { User.Role(rawValue: $0) }
+                self.stores.updateDefaultRoles(roles)
 
                 guard user.hasEligibleRoles() else {
                     let errorInfo = StorageEligibilityErrorInfo(name: user.displayName(), roles: user.roles)

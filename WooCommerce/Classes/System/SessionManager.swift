@@ -97,12 +97,15 @@ final class SessionManager: SessionManagerProtocol {
 
     /// Roles for the default Store Site.
     ///
-    var defaultRoles: [String] {
+    var defaultRoles: [User.Role] {
         get {
-            defaults[.defaultRoles] ?? []
+            guard let rawRoles = defaults[.defaultRoles] as? [String] else {
+                return []
+            }
+            return rawRoles.compactMap { User.Role(rawValue: $0) }
         }
         set {
-            defaults[.defaultRoles] = newValue
+            defaults[.defaultRoles] = newValue.map(\.rawValue)
         }
     }
 

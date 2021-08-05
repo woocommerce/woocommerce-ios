@@ -179,7 +179,7 @@ class DefaultStoresManager: StoresManager {
 
     /// Updates the user roles for the default Store site.
     ///
-    func updateDefaultRoles(_ roles: [String]) {
+    func updateDefaultRoles(_ roles: [User.Role]) {
         sessionManager.defaultRoles = roles
     }
 }

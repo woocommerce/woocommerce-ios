@@ -468,8 +468,7 @@ private extension SettingsViewController {
     /// Returns `true` if the user has an `admin` role for the default store site.
     ///
     func shouldShowPluginsSection() -> Bool {
-        let roles = ServiceLocator.stores.sessionManager.defaultRoles.compactMap { User.Role(rawValue: $0) }
-        return roles.contains(.administrator)
+        ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)
     }
 }
 

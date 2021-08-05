@@ -159,7 +159,7 @@ public class MockStoresManager: StoresManager {
             .eraseToAnyPublisher()
     }
 
-    public func updateDefaultRoles(_ roles: [String]) {
+    public func updateDefaultRoles(_ roles: [User.Role]) {
         // No op
     }
 }

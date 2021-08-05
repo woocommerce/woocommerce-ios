@@ -1314,7 +1314,7 @@ extension SiteSetting {
             siteID: .fake(),
             settingID: .fake(),
             label: .fake(),
-            description: .fake(),
+            settingDescription: .fake(),
             value: .fake(),
             settingGroupKey: .fake()
         )

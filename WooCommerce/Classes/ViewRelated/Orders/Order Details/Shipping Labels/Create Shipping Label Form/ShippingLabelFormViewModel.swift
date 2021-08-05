@@ -55,22 +55,26 @@ final class ShippingLabelFormViewModel {
         let weight = Double(totalPackageWeight ?? "0") ?? .zero
 
         if let customPackage = packagesResponse.customPackages.first(where: { $0.title == selectedPackageID }) {
+            // TODO: set customs forms
             return ShippingLabelPackageSelected(boxID: customPackage.title,
                                                 length: customPackage.getLength(),
                                                 width: customPackage.getWidth(),
                                                 height: customPackage.getHeight(),
                                                 weight: weight,
-                                                isLetter: customPackage.isLetter)
+                                                isLetter: customPackage.isLetter,
+                                                customsForm: nil)
         }
 
         for option in packagesResponse.predefinedOptions {
             if let predefinedPackage = option.predefinedPackages.first(where: { $0.id == selectedPackageID }) {
+                // TODO: set customs forms
                 return ShippingLabelPackageSelected(boxID: predefinedPackage.id,
                                                     length: predefinedPackage.getLength(),
                                                     width: predefinedPackage.getWidth(),
                                                     height: predefinedPackage.getHeight(),
                                                     weight: weight,
-                                                    isLetter: predefinedPackage.isLetter)
+                                                    isLetter: predefinedPackage.isLetter,
+                                                    customsForm: nil)
             }
         }
 

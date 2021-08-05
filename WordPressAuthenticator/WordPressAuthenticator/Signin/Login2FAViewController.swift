@@ -170,7 +170,7 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         syncWPComAndPresentEpilogue(credentials: credentials)
 
         // Disconnect now that we're done with Google.
-        GIDSignIn.sharedInstance().disconnect()
+        GIDSignIn.sharedInstance.disconnect()
 
         // This stat is part of a funnel that provides critical information.  Please
         // consult with your lead before removing this event.

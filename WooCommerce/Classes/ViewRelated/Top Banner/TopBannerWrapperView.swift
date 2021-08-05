@@ -54,8 +54,8 @@ final class TopBannerWrapperView: UIView {
 
         bannerView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(bannerView)
-        self.edgeInsets = edgeInsets
         self.bannerView = bannerView
+        self.edgeInsets = edgeInsets
         self.backgroundColor = bannerView.backgroundColor
     }
 

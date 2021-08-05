@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash -euo pipefail
 
 DERIVED_PATH=${SOURCE_ROOT}/DerivedSources
 SCRIPT_PATH=${SOURCE_ROOT}/Credentials/replace_secrets.rb
@@ -16,9 +16,13 @@ PLIST_TEMPLATE_PATH=${SOURCE_ROOT}/Credentials/Templates/InfoPlist-Template.h
 BASH_INPUT_PATH=${SOURCE_ROOT}/Credentials/bash_secrets.tpl
 BASH_OUTPUT_PATH=${DERIVED_PATH}/bash_secrets
 
+SECRETS_PATH="${HOME}/.configure/woocommerce-ios/secrets/woo_app_credentials.json"
+
 ## Validate Secrets!
 ##
 if [ ! -f $SECRETS_PATH ]; then
+
+    echo "warning: Could not find secrets at $SECRETS_PATH. This is likely due to the secrets folder being missing. Falling back to templated secrets. If you are an internal contributor, run \`bundle exec fastlane run configure_apply\` to update your secrets"
 
     echo ">> Using Templated Secrets"
 

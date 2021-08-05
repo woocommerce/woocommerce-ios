@@ -282,7 +282,7 @@ private extension SettingsViewController {
         ]
 
         // Plugins
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sitePlugins) {
+        if shouldShowPluginsSection() {
             sections.append(Section(title: pluginsTitle, rows: [.plugins], footerHeight: UITableView.automaticDimension))
         }
 
@@ -463,6 +463,13 @@ private extension SettingsViewController {
     /// Returns `true` for the add-ons workaround.
     func couldShowBetaFeaturesRow() -> Bool {
         true
+    }
+
+    /// Returns `true` if the user has an `admin` role for the default store site.
+    ///
+    func shouldShowPluginsSection() -> Bool {
+        let roles = ServiceLocator.stores.sessionManager.defaultRoles.compactMap { User.Role(rawValue: $0) }
+        return roles.contains(.administrator)
     }
 }
 

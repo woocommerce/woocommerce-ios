@@ -131,6 +131,12 @@ extension ShippingLabelCustomsForm.Item {
         let originCountry = try container.decode(String.self, forKey: .originCountry)
         let productID = try container.decode(Int64.self, forKey: .productID)
 
-        self.init(description: description, quantity: quantity, value: value, weight: weight, hsTariffNumber: hsTariffNumber, originCountry: originCountry, productID: productID)
+        self.init(description: description,
+                  quantity: quantity,
+                  value: value,
+                  weight: weight,
+                  hsTariffNumber: hsTariffNumber,
+                  originCountry: originCountry,
+                  productID: productID)
     }
 }

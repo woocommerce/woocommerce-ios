@@ -192,10 +192,6 @@ private extension CardReaderConnectionController {
     /// Opens a confirmation modal for the user to accept the found reader (or keep searching)
     ///
     func onFoundReader() {
-        guard foundReader != nil else {
-            return
-        }
-
         guard let name = foundReader?.id else {
             return
         }

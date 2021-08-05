@@ -11,7 +11,8 @@ protocol RoleEligibilityUseCaseProtocol {
     func checkEligibility(for storeID: Int64, completion: @escaping (Result<Void, RoleEligibilityError>) -> Void)
 }
 
-/// This component checks user's eligibility to access/manage the store, and *only* saves the data when the user has insufficient role.
+/// This component checks user's eligibility to access/manage the store, It saves the eligibility error data when the user has insufficient role
+/// and populates the session manager with the role information for the default store.
 /// Currently, user eligibility check is performed from:
 ///     1. The store picker screen, when the user tapped "Continue".
 ///     2. App launch, to check if the current user is still eligible to access the store.

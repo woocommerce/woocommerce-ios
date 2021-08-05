@@ -222,6 +222,20 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .stripeAccountOverdueRequirement)
     }
 
+    func test_onboarding_returns_overdue_requirements_when_account_is_restricted_with_overdue_and_pending_requirements() {
+        // Given
+        setupCountry(country: .us)
+        setupPlugin(status: .active, version: .supported)
+        setupPaymentGatewayAccount(status: .restricted, hasPendingRequirements: true, hasOverdueRequirements: true)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.checkOnboardingState()
+
+        // Then
+        XCTAssertEqual(state, .stripeAccountOverdueRequirement)
+    }
+
     func test_onboarding_returns_review_when_account_is_restricted_with_no_requirements() {
         // Given
         setupCountry(country: .us)

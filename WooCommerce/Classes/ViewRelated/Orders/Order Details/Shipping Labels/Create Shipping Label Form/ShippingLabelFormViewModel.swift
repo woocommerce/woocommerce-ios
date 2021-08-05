@@ -417,26 +417,6 @@ private extension ShippingLabelFormViewModel {
             }
         }
 
-        // Insert customs row if necessary
-        if customsFormRequired && rows.firstIndex(where: { $0.type == .customs }) == nil {
-            guard let packageDetailsRow = rows.first(where: { $0.type == .packageDetails }),
-                  let packageDetailsRowIndex = rows.firstIndex(of: packageDetailsRow) else {
-                return
-            }
-
-            // Decide display mode for customs row based on whether package details has been validated
-            let customsRowState: ShippingLabelFormViewController.DisplayMode = packageDetailsRow.dataState == .pending ? .disabled : .editable
-            let customsRowIndex = rows.index(after: packageDetailsRowIndex)
-            let customsRow = Row(type: .customs, dataState: .pending, displayMode: customsRowState)
-            rows.insert(customsRow, at: customsRowIndex)
-        }
-
-        // Remove customs row if necessary
-        if !customsFormRequired,
-           let customsRowIndex = rows.firstIndex(where: { $0.type == .customs }) {
-            rows.remove(at: customsRowIndex)
-        }
-
         // Find first row with .pending data state,
         // and update its following rows to be .disabled if their display mode is .editable and data state is .pending.
         if let firstPendingRow = rows.firstIndex(where: { $0.dataState == .pending }) {
@@ -460,12 +440,40 @@ private extension ShippingLabelFormViewModel {
     }
 
     func updateRowsForCustomsIfNeeded() {
+        insertOrRemoveCustomsRowIfNeeded()
+
         guard let originAddress = originAddress else {
             return
         }
         // Require user to update phone address if customs form is required
         if customsFormRequired && originAddress.phone.isEmpty {
             updateRowState(type: .shipFrom, dataState: .pending, displayMode: .editable)
+        }
+    }
+
+    func insertOrRemoveCustomsRowIfNeeded() {
+        guard var rows = state.sections.first?.rows else {
+            return
+        }
+        // Add customs row if customs form is required
+        if customsFormRequired, rows.firstIndex(where: { $0.type == .customs }) == nil {
+            guard let packageDetailsRow = rows.first(where: { $0.type == .packageDetails }),
+                  let packageDetailsRowIndex = rows.firstIndex(of: packageDetailsRow) else {
+                return
+            }
+
+            // Decide display mode for customs row based on whether package details has been validated
+            let customsRowState: ShippingLabelFormViewController.DisplayMode = packageDetailsRow.dataState == .pending ? .disabled : .editable
+            let customsRowIndex = rows.index(after: packageDetailsRowIndex)
+            let customsRow = Row(type: .customs, dataState: .pending, displayMode: customsRowState)
+            rows.insert(customsRow, at: customsRowIndex)
+            state.sections[0] = Section(title: nil, rows: rows)
+        }
+
+        // Remove customs row if customs form is not required
+        if !customsFormRequired, let index = rows.firstIndex(where: { $0.type == .customs }) {
+            rows.remove(at: index)
+            state.sections[0] = Section(title: nil, rows: rows)
         }
     }
 }

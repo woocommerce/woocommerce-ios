@@ -7,6 +7,7 @@
 - [internal] Upgraded Zendesk SDK to version 5.3.0 [https://github.com/woocommerce/woocommerce-ios/pull/4699]
 - [*] Fix: Added 'Product saved' confirmation message when a product is updated [https://github.com/woocommerce/woocommerce-ios/pull/4709]
 - [*] Shipping Labels: Updated address validation to automatically use trivially normalized address for origin and destination. [https://github.com/woocommerce/woocommerce-ios/pull/4719]
+- [*] Plugins: Added list of active and inactive plugins that can be reached by admins in the settings screen. [https://github.com/woocommerce/woocommerce-ios/pull/4735]
 
 7.2
 -----

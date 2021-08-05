@@ -1068,6 +1068,13 @@ extension ShippingLabelCustomsForm {
         )
     }
 }
+extension ShippingLabelCustomsForm.ContentsType {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ShippingLabelCustomsForm.ContentsType {
+        .merchandise
+    }
+}
 extension ShippingLabelCustomsForm.Item {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -1081,6 +1088,20 @@ extension ShippingLabelCustomsForm.Item {
             originCountry: .fake(),
             productID: .fake()
         )
+    }
+}
+extension ShippingLabelCustomsForm.NonDeliveryOption {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ShippingLabelCustomsForm.NonDeliveryOption {
+        .`return`
+    }
+}
+extension ShippingLabelCustomsForm.RestrictionType {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ShippingLabelCustomsForm.RestrictionType {
+        .none
     }
 }
 extension ShippingLabelPackagePurchase {

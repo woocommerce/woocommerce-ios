@@ -47,7 +47,7 @@ public struct ShippingLabelCustomsForm: Equatable, GeneratedFakeable {
 public extension ShippingLabelCustomsForm {
     /// Types of contents to declare with customs.
     ///
-    enum ContentsType: String, Codable {
+    enum ContentsType: String, Codable, GeneratedFakeable {
         case merchandise
         case documents
         case gift
@@ -57,7 +57,7 @@ public extension ShippingLabelCustomsForm {
 
     /// Types of restriction of contents to declare with customs.
     ///
-    enum RestrictionType: String, Codable {
+    enum RestrictionType: String, Codable, GeneratedFakeable {
         case none
         case quarantine
         case sanitaryOrPhytosanitaryInspection = "sanitary_phytosanitary_inspection"
@@ -66,7 +66,7 @@ public extension ShippingLabelCustomsForm {
 
     /// Options if delivery fails.
     ///
-    enum NonDeliveryOption: String, Codable {
+    enum NonDeliveryOption: String, Codable, GeneratedFakeable {
         case `return`
         case abandon
     }

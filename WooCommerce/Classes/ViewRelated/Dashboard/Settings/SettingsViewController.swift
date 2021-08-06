@@ -547,7 +547,7 @@ private extension SettingsViewController {
         guard let siteID = self.siteID else {
             return
         }
-        let viewModel = InPersonPaymentsViewModel(siteID: siteID)
+        let viewModel = InPersonPaymentsViewModel()
         let viewController = InPersonPaymentsViewController(viewModel: viewModel)
         show(viewController, sender: self)
     }

@@ -216,6 +216,18 @@ final class ShippingLabelFormViewModel {
         }
         updateRowState(type: .packageDetails, dataState: .validated, displayMode: .editable)
 
+        // We reset the selected customs forms & carrier & rates because if the package change
+        // these change accordingly.
+        handleCustomsFormsValueChanges(customsForms: [])
+        handleCarrierAndRatesValueChanges(selectedRate: nil, selectedSignatureRate: nil, selectedAdultSignatureRate: nil, editable: false)
+    }
+
+    func handleCustomsFormsValueChanges(customsForms: [ShippingLabelCustomsForm]) {
+        self.customsForms = customsForms
+        guard customsForms.isNotEmpty else {
+            return updateRowState(type: .customs, dataState: .pending, displayMode: .editable)
+        }
+        updateRowState(type: .customs, dataState: .validated, displayMode: .editable)
         // We reset the carrier and rates selected because if the package change
         // the carrier and rate change accordingly
         handleCarrierAndRatesValueChanges(selectedRate: nil, selectedSignatureRate: nil, selectedAdultSignatureRate: nil, editable: false)

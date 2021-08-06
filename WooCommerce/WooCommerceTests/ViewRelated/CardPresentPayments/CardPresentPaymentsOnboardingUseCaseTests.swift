@@ -99,14 +99,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         // Given
         setupCountry(country: .us)
         setupPlugin(status: .networkActive, version: .supportedExact)
-
-        let paymentGatewayAccount = PaymentGatewayAccount
-            .fake()
-            .copy(
-                siteID: sampleSiteID,
-                isCardPresentEligible: true
-            )
-        storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
+        setupPaymentGatewayAccount(status: .complete)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
@@ -120,14 +113,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         // Given
         setupCountry(country: .us)
         setupPlugin(status: .networkActive, version: .supported)
-
-        let paymentGatewayAccount = PaymentGatewayAccount
-            .fake()
-            .copy(
-                siteID: sampleSiteID,
-                isCardPresentEligible: true
-            )
-        storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
+        setupPaymentGatewayAccount(status: .complete)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
@@ -141,14 +127,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         // Given
         setupCountry(country: .us)
         setupPlugin(status: .networkActive, version: .supported)
-
-        let paymentGatewayAccount = PaymentGatewayAccount
-            .fake()
-            .copy(
-                siteID: sampleSiteID,
-                isCardPresentEligible: true
-            )
-        storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
+        setupPaymentGatewayAccount(status: .complete)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
@@ -177,14 +156,162 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         // Given
         setupCountry(country: .us)
         setupPlugin(status: .active, version: .supported)
+        setupPaymentGatewayAccount(status: .complete, isCardPresentEligible: false)
 
-        let paymentGatewayAccount = PaymentGatewayAccount
-            .fake()
-            .copy(
-                siteID: sampleSiteID,
-                isCardPresentEligible: false
-            )
-        storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.checkOnboardingState()
+
+        // Then
+        XCTAssertEqual(state, .genericError)
+    }
+
+    func test_onboarding_returns_not_completed_when_account_is_not_connected() {
+        // Given
+        setupCountry(country: .us)
+        setupPlugin(status: .active, version: .supported)
+        setupPaymentGatewayAccount(status: .noAccount)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.checkOnboardingState()
+
+        // Then
+        XCTAssertEqual(state, .wcpaySetupNotCompleted)
+    }
+
+    func test_onboarding_returns_pending_requirements_when_account_is_restricted_with_pending_requirements() {
+        // Given
+        setupCountry(country: .us)
+        setupPlugin(status: .active, version: .supported)
+        setupPaymentGatewayAccount(status: .restricted, hasPendingRequirements: true)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.checkOnboardingState()
+
+        // Then
+        XCTAssertEqual(state, .stripeAccountPendingRequirement)
+    }
+
+    func test_onboarding_returns_pending_requirements_when_account_is_restricted_soon_with_pending_requirements() {
+        // Given
+        setupCountry(country: .us)
+        setupPlugin(status: .active, version: .supported)
+        setupPaymentGatewayAccount(status: .restrictedSoon, hasPendingRequirements: true)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.checkOnboardingState()
+
+        // Then
+        XCTAssertEqual(state, .stripeAccountPendingRequirement)
+    }
+
+    func test_onboarding_returns_overdue_requirements_when_account_is_restricted_with_overdue_requirements() {
+        // Given
+        setupCountry(country: .us)
+        setupPlugin(status: .active, version: .supported)
+        setupPaymentGatewayAccount(status: .restricted, hasOverdueRequirements: true)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.checkOnboardingState()
+
+        // Then
+        XCTAssertEqual(state, .stripeAccountOverdueRequirement)
+    }
+
+    func test_onboarding_returns_overdue_requirements_when_account_is_restricted_with_overdue_and_pending_requirements() {
+        // Given
+        setupCountry(country: .us)
+        setupPlugin(status: .active, version: .supported)
+        setupPaymentGatewayAccount(status: .restricted, hasPendingRequirements: true, hasOverdueRequirements: true)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.checkOnboardingState()
+
+        // Then
+        XCTAssertEqual(state, .stripeAccountOverdueRequirement)
+    }
+
+    func test_onboarding_returns_review_when_account_is_restricted_with_no_requirements() {
+        // Given
+        setupCountry(country: .us)
+        setupPlugin(status: .active, version: .supported)
+        setupPaymentGatewayAccount(status: .restricted)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.checkOnboardingState()
+
+        // Then
+        XCTAssertEqual(state, .stripeAccountUnderReview)
+    }
+
+
+    func test_onboarding_returns_rejected_when_account_is_rejected_for_fraud() {
+        // Given
+        setupCountry(country: .us)
+        setupPlugin(status: .active, version: .supported)
+        setupPaymentGatewayAccount(status: .rejectedFraud)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.checkOnboardingState()
+
+        // Then
+        XCTAssertEqual(state, .stripeAccountRejected)
+    }
+
+    func test_onboarding_returns_rejected_when_account_is_rejected_for_tos() {
+        // Given
+        setupCountry(country: .us)
+        setupPlugin(status: .active, version: .supported)
+        setupPaymentGatewayAccount(status: .rejectedTermsOfService)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.checkOnboardingState()
+
+        // Then
+        XCTAssertEqual(state, .stripeAccountRejected)
+    }
+
+    func test_onboarding_returns_rejected_when_account_is_listed() {
+        // Given
+        setupCountry(country: .us)
+        setupPlugin(status: .active, version: .supported)
+        setupPaymentGatewayAccount(status: .rejectedListed)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.checkOnboardingState()
+
+        // Then
+        XCTAssertEqual(state, .stripeAccountRejected)
+    }
+
+    func test_onboarding_returns_rejected_when_account_is_rejected_for_other_reasons() {
+        // Given
+        setupCountry(country: .us)
+        setupPlugin(status: .active, version: .supported)
+        setupPaymentGatewayAccount(status: .rejectedOther)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.checkOnboardingState()
+
+        // Then
+        XCTAssertEqual(state, .stripeAccountRejected)
+    }
+
+    func test_onboarding_returns_generic_error_when_account_status_unknown() {
+        // Given
+        setupCountry(country: .us)
+        setupPlugin(status: .active, version: .supported)
+        setupPaymentGatewayAccount(status: .unknown)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
@@ -198,14 +325,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         // Given
         setupCountry(country: .us)
         setupPlugin(status: .active, version: .supported)
-
-        let paymentGatewayAccount = PaymentGatewayAccount
-            .fake()
-            .copy(
-                siteID: sampleSiteID,
-                isCardPresentEligible: true
-            )
-        storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
+        setupPaymentGatewayAccount(status: .complete)
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
@@ -254,5 +374,27 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
         case supported = "2.6.1"
         case supportedExact = "2.5"
         case unsupported = "2.4.2"
+    }
+}
+
+// MARK: - Account helpers
+private extension CardPresentPaymentsOnboardingUseCaseTests {
+    func setupPaymentGatewayAccount(
+        status: WCPayAccountStatusEnum,
+        hasPendingRequirements: Bool = false,
+        hasOverdueRequirements: Bool = false,
+        isCardPresentEligible: Bool = true
+    ) {
+        let paymentGatewayAccount = PaymentGatewayAccount
+            .fake()
+            .copy(
+                siteID: sampleSiteID,
+                gatewayID: WCPayAccount.gatewayID,
+                status: status.rawValue,
+                hasPendingRequirements: hasPendingRequirements,
+                hasOverdueRequirements: hasOverdueRequirements,
+                isCardPresentEligible: isCardPresentEligible
+            )
+        storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
     }
 }

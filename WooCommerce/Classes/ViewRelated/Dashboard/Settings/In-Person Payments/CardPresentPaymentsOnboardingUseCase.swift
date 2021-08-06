@@ -92,11 +92,11 @@ struct CardPresentPaymentsOnboardingUseCase {
         guard !isStripeAccountUnderReview(account: account) else {
             return .stripeAccountUnderReview
         }
-        guard !isStripeAccountPendingRequirements(account: account) else {
-            return .stripeAccountPendingRequirement
-        }
         guard !isStripeAccountOverdueRequirements(account: account) else {
             return .stripeAccountOverdueRequirement
+        }
+        guard !isStripeAccountPendingRequirements(account: account) else {
+            return .stripeAccountPendingRequirement
         }
         guard !isStripeAccountRejected(account: account) else {
             return .stripeAccountRejected
@@ -154,8 +154,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func isWCPaySetupCompleted(account: PaymentGatewayAccount) -> Bool {
-        // TODO: not implemented yet
-        return true
+        account.wcpayStatus != .noAccount
     }
 
     func isWCPayInTestModeWithLiveStripeAccount(account: PaymentGatewayAccount) -> Bool {
@@ -164,30 +163,37 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func isStripeAccountUnderReview(account: PaymentGatewayAccount) -> Bool {
-        // TODO: not implemented yet
-        return false
+        account.wcpayStatus == .restricted
+            && !account.hasPendingRequirements
+            && !account.hasOverdueRequirements
     }
 
     func isStripeAccountPendingRequirements(account: PaymentGatewayAccount) -> Bool {
-        // TODO: not implemented yet
-        return false
+        account.wcpayStatus == .restricted
+            && account.hasPendingRequirements
+            || account.wcpayStatus == .restrictedSoon
     }
 
     func isStripeAccountOverdueRequirements(account: PaymentGatewayAccount) -> Bool {
-        // TODO: not implemented yet
-        return false
+        account.wcpayStatus == .restricted && account.hasOverdueRequirements
     }
 
     func isStripeAccountRejected(account: PaymentGatewayAccount) -> Bool {
-        // TODO: not implemented yet
-        return false
+        account.wcpayStatus == .rejectedFraud
+            || account.wcpayStatus == .rejectedListed
+            || account.wcpayStatus == .rejectedTermsOfService
+            || account.wcpayStatus == .rejectedOther
     }
 
     func isInUndefinedState(account: PaymentGatewayAccount) -> Bool {
-        // TODO: not implemented yet
-        return false
+        account.wcpayStatus != .complete
     }
+}
 
+private extension PaymentGatewayAccount {
+    var wcpayStatus: WCPayAccountStatusEnum {
+        .init(rawValue: status)
+    }
 }
 
 private enum Constants {

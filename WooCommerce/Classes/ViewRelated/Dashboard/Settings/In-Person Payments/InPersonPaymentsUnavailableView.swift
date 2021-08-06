@@ -2,17 +2,25 @@ import SwiftUI
 
 struct InPersonPaymentsUnavailableView: View {
     var body: some View {
-        VStack(alignment: .center, spacing: 42) {
-            Text(Localization.unavailable)
-                .font(.headline)
-                .multilineTextAlignment(.center)
-            Image(uiImage: .paymentErrorImage)
-                .resizable()
-                .scaledToFit()
-                .frame(height: 180.0)
-            Text(Localization.acceptCash)
-                .font(.callout)
-                .multilineTextAlignment(.center)
+        VStack {
+            Spacer()
+
+            VStack(alignment: .center, spacing: 42) {
+                Text(Localization.unavailable)
+                    .font(.headline)
+                    .multilineTextAlignment(.center)
+                Image(uiImage: .paymentErrorImage)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 180.0)
+                Text(Localization.acceptCash)
+                    .font(.callout)
+                    .multilineTextAlignment(.center)
+            }
+
+            Spacer()
+
+            InPersonPaymentsLearnMore()
         }
         .padding(24.0)
     }

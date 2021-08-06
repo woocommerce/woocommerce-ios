@@ -455,6 +455,12 @@ extension UIImage {
         return UIImage(named: "woo-payments-error")!
     }
 
+    /// Payments plugin
+    ///
+    static var paymentsPlugin: UIImage {
+        return UIImage(named: "woo-payments-plugin")!
+    }
+
     /// Price Icon
     ///
     static var priceImage: UIImage {

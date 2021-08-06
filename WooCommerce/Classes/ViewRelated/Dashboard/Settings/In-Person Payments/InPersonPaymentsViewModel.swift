@@ -4,17 +4,13 @@ import Yosemite
 final class InPersonPaymentsViewModel: ObservableObject {
     @Published var state: CardPresentPaymentOnboardingState
 
+    private let useCase = CardPresentPaymentsOnboardingUseCase()
+
     /// Initializes the view model for a specific site
     ///
-    init(siteID: Int64) {
-        let useCase = CardPresentPaymentsOnboardingUseCase()
+    init() {
         state = useCase.checkOnboardingState()
-        useCase.synchronizeRequiredData { [weak self] in
-            guard let self = self else {
-                return
-            }
-            self.state = useCase.checkOnboardingState()
-        }
+        refresh()
     }
 
     /// Initializes the view model with a fixed state that never changes.
@@ -22,5 +18,16 @@ final class InPersonPaymentsViewModel: ObservableObject {
     ///
     init(fixedState: CardPresentPaymentOnboardingState) {
         state = fixedState
+    }
+
+    /// Synchronizes the required data from the server and recalculates the state
+    ///
+    func refresh() {
+        useCase.synchronizeRequiredData { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.state = self.useCase.checkOnboardingState()
+        }
     }
 }

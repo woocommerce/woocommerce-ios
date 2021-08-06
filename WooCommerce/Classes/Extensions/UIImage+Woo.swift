@@ -596,6 +596,12 @@ extension UIImage {
         UIImage(named: "woo-shipping-label-creation")!
     }
 
+    /// Globe Image
+    ///
+    static var globeImage: UIImage {
+        UIImage.gridicon(.globe)
+    }
+
     /// Returns a star icon with the given size
     ///
     /// - Parameters:

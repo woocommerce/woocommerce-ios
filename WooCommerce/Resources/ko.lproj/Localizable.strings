@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-07-23 11:54:03+0000 */
+/* Translation-Revision-Date: 2021-08-04 10:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -631,7 +631,8 @@
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "리더에 연결";
 
-/* Settings > Manage Card Reader > Prompt user to connect their first reader */
+/* Settings > Manage Card Reader > Prompt user to connect their first reader
+   Settings > Manage Card Reader > Prompt user to connect their reader */
 "Connect your card reader" = "카드 리더 연결";
 
 /* Link on the store picker when there are no stores available. Opens a webview about Jetpack setup. */
@@ -747,6 +748,9 @@
 /* Create Shipping Label form navigation title
    Text on the button that starts shipping label creation */
 "Create Shipping Label" = "배송 레이블 만들기";
+
+/* The title of the shipping labels top banner in order details */
+"Create shipping labels from your device!" = "기기에서 배송 레이블을 만드세요!";
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "첫 번째 변형 생성";
@@ -1305,6 +1309,13 @@
 /* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} Parameters: %1$@ - order number, %2$@ - store name */
 "In-Person Payment for Order #%1$@ for %2$@" = "%2$@에 대한 주문 #%1$@의 대면 결제";
 
+/* Navigates to In-Person Payments screen
+   Title for the In-Person Payments settings screen */
+"In-Person Payments" = "대면 결제";
+
+/* Title for the error screen when In-Person Payments is unavailable */
+"In-Person Payments is currently unavailable" = "현재 대면 결제 사용 불가능";
+
 /* Application's Inactive State */
 "Inactive" = "비활성";
 
@@ -1423,6 +1434,9 @@
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
 "Learn more about creating labels with your phone" = "휴대폰으로 레이블 만들기에 대해 자세히 알아보기";
+
+/* Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
+"Learn more about roles and permissions" = "역할 및 권한에 대해 더 알아보기";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "법률 문서(8.5 x 14in)";
@@ -1825,9 +1839,6 @@
    Order Total label for payment view */
 "Order Total" = "주문 총계";
 
-/* Order fulfillment success notice */
-"Order marked as fulfilled" = "주문이 이행됨으로 표시됨";
-
 /* Order status update success notice */
 "Order status updated" = "주문 상태 업데이트됨";
 
@@ -2038,9 +2049,6 @@
 
 /* Button to print receipts. Presented to users after a payment has been successfully collected */
 "Print receipt" = "영수증 인쇄";
-
-/* The title of the shipping labels top banner in order details */
-"Print shipping labels from your device!" = "기기에서 배송 레이블을 인쇄하세요!";
 
 /* Title of in-progress modal when requesting shipping label document for printing */
 "Printing Label" = "레이블 인쇄";
@@ -2294,8 +2302,8 @@
 /* VoiceOver accessibility hint, informing the user the button can be used to search products. */
 "Retrieves a list of products that contain a given keyword." = "지정된 키워드가 있는 제품 목록을 검색합니다.";
 
-/* Retry Action
-   Retry the last action */
+/* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
+   Retry Action - Retry the last action */
 "Retry" = "재실행";
 
 /* Revenue stat label on dashboard. */
@@ -3001,6 +3009,9 @@
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "이 앱을 사용하려면 서버에 WooCommerce 3.5를 설치해야 합니다. 설치되지 않은 경우 앱이 정상적으로 작동하지 않습니다. 이 앱을 계속 사용하려면 가능한 한 빨리 업데이트하세요.";
 
+/* Message explaining more detail on why the user's role is incorrect. */
+"This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "이 앱에서는 관리자와 상점 관리자만 사용자 역할이 지원됩니다. 역할을 업그레이드하려면 스토어 소유자에게 문의하세요.";
+
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "이 이메일 주소는 워드프레스닷컴에 등록되어 있지 않습니다.";
 
@@ -3203,6 +3214,9 @@
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "목록을 새로 고칠 수 없음";
+
+/* An error message shown when failing to retrieve information about user roles, before letting the user in to manage the store. */
+"Unable to retrieve user roles." = "사용자 역할을 검색할 수 없습니다.";
 
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
 "Unable to save changes to the payment method" = "변경 사항을 지급 방법에 저장할 수 없음";
@@ -3419,9 +3433,6 @@
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Watch your audience grow with in-depth analytics." = "심층 분석으로 방문자 수가 늘어나는 것을 지켜보세요.";
 
-/* The info of the shipping labels top banner in order details */
-"We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "기기에서 바로 더 쉽게 배송 레이블을 인쇄할 수 있도록 노력하고 있습니다. 지금은 WooCommerce 배송으로 스토어 관리자에서 이 주문의 레이블을 만든 경우 여기의 주문 상세 정보에서 레이블을 인쇄할 수 있습니다.";
-
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "기기에서 제품 애드온을 더 쉽게 보실 수 있도록 하려고 작업하는 중입니다. 지금 당장은 주문에 대한 애드온을 보실 수 있습니다. 웹 대시보드에서 이러한 애드온을 생성하고 편집하실 수 있습니다.";
 
@@ -3448,6 +3459,9 @@
 
 /* Banner caption in Shipping Label Address Validation when the destination address can't be verified. */
 "We were unable to automatically verify the shipping address. View on Apple Maps or try contacting the customer to make sure the address is correct." = "배송 주소를 자동으로 확인할 수 없었습니다. Apple Maps에서 조회하거나 고객에게 문의하여 주소가 올바른지 확인하세요.";
+
+/* Banner caption in Shipping Label Address Validation when the destination address can't be verified and no customer phone number is found. */
+"We were unable to automatically verify the shipping address. View on Apple Maps to make sure the address is correct." = "배송 주소를 자동으로 확인할 수 없었습니다. Apple Maps에서 보며 주소가 올바른지 확인하세요.";
 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "지금은 회원님에게 이메일을 보낼 수 없습니다. 나중에 다시 시도하세요.";
@@ -3545,14 +3559,23 @@
 /* Yesterday Section Header */
 "Yesterday" = "어제";
 
+/* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
+"You are not authorized to access this store." = "이 블로그에 접근할 권한이 없습니다.";
+
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "웹 대시보드에서 상품 애드온을 편집하실 수 있습니다.";
 
 /* The info of the top banner on the Products tab. */
 "You can now create and manage product variations!" = "이제 제품 변형을 만들고 관리할 수 있습니다.";
 
+/* The info of the shipping labels top banner in order details */
+"You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "이제 무료 WooCommerce 배송 플러그인이 있는 기기에서 바로 모든 실물 주문의 배송 레이블을 만들 수 있습니다. \"배송 레이블 만들기\"를 눌러 베타 기능을 사용해 보세요!";
+
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "패키지를 배송하는 데 사용되지 않은 배송 레이블은 환불을 요청할 수 있습니다.\n처리되는 데 14일 이상 걸립니다.";
+
+/* Generic error message when In-Person Payments is unavailable */
+"You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "스토어에서 \"배송 시 현금 결제\"를 결제 수단으로 활성화하면 대면 현금 결제를 계속 수락할 수 있습니다.";
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "해당 이메일 주소를 회원가입하는데 사용할 수 없습니다. 우리의 이메일을 차단하는 문제를 일으킵니다. 다른 이메일 제공자를 사용하세요.";
@@ -3615,6 +3638,9 @@
 
 /* Customer note, wrapped in quotes */
 "“%@”" = "“%@”";
+
+/* Success notice when tapping Mark Order Complete on Review Order screen */
+"🎉 Order Completed" = "🎉 주문 완료됨";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉개 제품이 환불되었음";

@@ -14,10 +14,14 @@ public struct ShippingLabelPackagePurchase: Equatable, GeneratedFakeable {
     /// IDs for the products to be shipped
     public let productIDs: [Int64]
 
-    public init(package: ShippingLabelPackageSelected, rate: ShippingLabelCarrierRate, productIDs: [Int64]) {
+    /// Customs forms if applicable
+    public let customsForm: ShippingLabelCustomsForm?
+
+    public init(package: ShippingLabelPackageSelected, rate: ShippingLabelCarrierRate, productIDs: [Int64], customsForm: ShippingLabelCustomsForm?) {
         self.package = package
         self.rate = rate
         self.productIDs = productIDs
+        self.customsForm = customsForm
     }
 }
 
@@ -40,6 +44,15 @@ extension ShippingLabelPackagePurchase: Encodable {
         try container.encode(rate.carrierID, forKey: .carrierID)
         try container.encode(rate.title, forKey: .serviceName)
         try container.encode(productIDs, forKey: .products)
+        if let form = customsForm {
+            try container.encode(form.contentsType.rawValue, forKey: .contentsType)
+            try container.encode(form.contentExplanation, forKey: .contentsExplanation)
+            try container.encode(form.restrictionType.rawValue, forKey: .restrictionType)
+            try container.encode(form.restrictionComments, forKey: .restrictionComments)
+            try container.encode(form.nonDeliveryOption.rawValue, forKey: .nonDeliveryOption)
+            try container.encode(form.itn, forKey: .itn)
+            try container.encode(form.items, forKey: .items)
+        }
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -56,5 +69,12 @@ extension ShippingLabelPackagePurchase: Encodable {
         case carrierID = "carrier_id"
         case serviceName = "service_name"
         case products
+        case contentsType = "contents_type"
+        case contentsExplanation = "contents_explanation"
+        case restrictionType = "restriction_type"
+        case restrictionComments = "restriction_comments"
+        case nonDeliveryOption = "non_delivery_option"
+        case itn
+        case items
     }
 }

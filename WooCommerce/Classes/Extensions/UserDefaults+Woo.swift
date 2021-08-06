@@ -11,6 +11,7 @@ extension UserDefaults {
         case defaultSiteAddress
         case defaultStoreID
         case defaultAnonymousID
+        case defaultRoles
         case deviceID
         case deviceToken
         case userOptedInAnalytics

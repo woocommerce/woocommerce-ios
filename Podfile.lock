@@ -23,8 +23,8 @@ PODS:
   - FormatterKit/Resources (1.9.0)
   - FormatterKit/TimeIntervalFormatter (1.9.0):
     - FormatterKit/Resources
-  - GoogleSignIn (5.0.2):
-    - AppAuth (~> 1.2)
+  - GoogleSignIn (6.0.1):
+    - AppAuth (~> 1.4)
     - GTMAppAuth (~> 1.0)
     - GTMSessionFetcher/Core (~> 1.1)
   - Gridicons (1.0)
@@ -51,11 +51,11 @@ PODS:
   - WordPress-Aztec-iOS (1.11.0)
   - WordPress-Editor-iOS (1.11.0):
     - WordPress-Aztec-iOS (= 1.11.0)
-  - WordPressAuthenticator (1.38.0):
+  - WordPressAuthenticator (1.41.0-beta.3):
     - 1PasswordExtension (~> 1.8.6)
     - Alamofire (~> 4.8)
     - CocoaLumberjack (~> 3.5)
-    - GoogleSignIn (~> 5.0.2)
+    - GoogleSignIn (~> 6.0.1)
     - Gridicons (~> 1.0)
     - lottie-ios (~> 3.1.6)
     - "NSURL+IDN (= 0.4)"
@@ -104,7 +104,7 @@ DEPENDENCIES:
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 1.4.0)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (~> 1.38.0)
+  - WordPressAuthenticator (~> 1.41.0-beta)
   - WordPressKit (~> 4.37.0)
   - WordPressShared (~> 1.15)
   - WordPressUI (~> 1.12.1)
@@ -165,7 +165,7 @@ SPEC CHECKSUMS:
   Charts: b1e3a1f5a1c9ba5394438ca3b91bd8c9076310af
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   FormatterKit: 184db51bf120b633693a73624a4cede89ec51a41
-  GoogleSignIn: 7137d297ddc022a7e0aa4619c86d72c909fa7213
+  GoogleSignIn: 1b0c4ec33a6fe282f4fa35d8ac64263230ddaf36
   Gridicons: f032dbc3350f8648e0fabe3e531b72cf97d428a9
   GTMAppAuth: ad5c2b70b9a8689e1a04033c9369c4915bfcbe89
   GTMSessionFetcher: 36689134877faeb055b27dfa4ccc9ceaa42e029e
@@ -183,7 +183,7 @@ SPEC CHECKSUMS:
   UIDeviceIdentifier: a79ccdfc940373835a7d8e9fc7541e6bf61b6319
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
-  WordPressAuthenticator: 4ccd7f41bae37247883922ad92a14f18cc759bf3
+  WordPressAuthenticator: c44c7b7c0bed771e3815a7de264e5d682705f893
   WordPressKit: bd2386909067b48b5525569cefac206bc4234eb5
   WordPressShared: 5477f179c7fe03b5d574f91adda66f67d131827e
   WordPressUI: 414bf3a7d007618f94a1c7969d6e849779877d5d
@@ -199,6 +199,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: c9a31c3fd5cf78df537a8d96d76f6e345586d178
+PODFILE CHECKSUM: f25cc4b1389ea91efc15f230b5d0f2fcf26b3f5c
 
 COCOAPODS: 1.10.1

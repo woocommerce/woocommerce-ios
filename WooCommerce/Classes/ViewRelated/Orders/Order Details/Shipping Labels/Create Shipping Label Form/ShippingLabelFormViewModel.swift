@@ -46,6 +46,17 @@ final class ShippingLabelFormViewModel {
     ///
     private (set) var customsForms: [ShippingLabelCustomsForm] = []
 
+    /// Temporary solution for creating default customs forms.
+    /// When multi-package support is available, we should create separate form for each package ID.
+    ///
+    var defaultCustomsForms: [ShippingLabelCustomsForm] {
+        guard let packageID = selectedPackageID else {
+            return []
+        }
+        let productIDs = order.items.map { $0.productOrVariationID }
+        return [ShippingLabelCustomsForm(packageID: packageID, productIDs: productIDs)]
+    }
+
     /// Carrier and Rates
     ///
     private(set) var selectedRate: ShippingLabelCarrierRate?

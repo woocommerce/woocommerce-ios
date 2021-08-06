@@ -244,6 +244,34 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertEqual(carrierRow?.displayMode, .disabled)
     }
 
+    func test_handleCustomsFormsValueChanges_resets_carrier_and_rates_selection() {
+        // Given
+        let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                                    originAddress: nil,
+                                                                    destinationAddress: nil)
+
+        shippingLabelFormViewModel.handleOriginAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(phone: "0123456789", country: "US"),
+                                                                   validated: true)
+        shippingLabelFormViewModel.handleDestinationAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(country: "VN"), validated: true)
+        shippingLabelFormViewModel.handleCustomsFormsValueChanges(customsForms: [ShippingLabelCustomsForm.fake()])
+        shippingLabelFormViewModel.handleCarrierAndRatesValueChanges(selectedRate: MockShippingLabelCarrierRate.makeRate(),
+                                                                     selectedSignatureRate: nil,
+                                                                     selectedAdultSignatureRate: nil,
+                                                                     editable: true)
+        XCTAssertNotNil(shippingLabelFormViewModel.selectedRate)
+
+        // When
+        shippingLabelFormViewModel.handleCustomsFormsValueChanges(customsForms: [ShippingLabelCustomsForm.fake()])
+
+        // Then
+        XCTAssertNil(shippingLabelFormViewModel.selectedRate)
+
+        let rows = shippingLabelFormViewModel.state.sections.first?.rows
+        let carrierRow = rows?.first { $0.type == .shippingCarrierAndRates }
+        XCTAssertEqual(carrierRow?.dataState, .pending)
+        XCTAssertEqual(carrierRow?.displayMode, .disabled)
+    }
+
     func test_handleCarrierAndRatesValueChanges_returns_updated_data() {
         // Given
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),

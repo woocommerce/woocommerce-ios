@@ -47,38 +47,7 @@ public struct ShippingLabelPackageSelected: Equatable, GeneratedFakeable {
 }
 
 // MARK: Codable
-extension ShippingLabelPackageSelected: Codable {
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-
-        let boxID = try container.decode(String.self, forKey: .boxID)
-        let length = try container.decode(Double.self, forKey: .length)
-        let width = try container.decode(Double.self, forKey: .width)
-        let height = try container.decode(Double.self, forKey: .height)
-        let weight = try container.decode(Double.self, forKey: .weight)
-        let isLetter = try container.decode(Bool.self, forKey: .isLetter)
-
-        let customsForm: ShippingLabelCustomsForm? = try? {
-            let contentsType = try container.decode(ShippingLabelCustomsForm.ContentsType.self, forKey: .contentsType)
-            let contentsExplanation = (try? container.decode(String.self, forKey: .contentsExplanation)) ?? ""
-            let restrictionType = try container.decode(ShippingLabelCustomsForm.RestrictionType.self, forKey: .restrictionType)
-            let restrictionComments = (try? container.decode(String.self, forKey: .restrictionComments)) ?? ""
-            let nonDeliveryOption = try container.decode(ShippingLabelCustomsForm.NonDeliveryOption.self, forKey: .nonDeliveryOption)
-            let itn = (try? container.decode(String.self, forKey: .itn)) ?? ""
-            let items = try container.decode([ShippingLabelCustomsForm.Item].self, forKey: .items)
-
-            return ShippingLabelCustomsForm(contentsType: contentsType,
-                                            contentExplanation: contentsExplanation,
-                                            restrictionType: restrictionType,
-                                            restrictionComments: restrictionComments,
-                                            nonDeliveryOption: nonDeliveryOption,
-                                            itn: itn,
-                                            items: items)
-        }()
-
-        self.init(boxID: boxID, length: length, width: width, height: height, weight: weight, isLetter: isLetter, customsForm: customsForm)
-    }
+extension ShippingLabelPackageSelected: Encodable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)

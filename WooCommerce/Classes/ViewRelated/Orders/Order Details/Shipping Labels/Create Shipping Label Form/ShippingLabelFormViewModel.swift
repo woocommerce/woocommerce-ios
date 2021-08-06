@@ -42,6 +42,10 @@ final class ShippingLabelFormViewModel {
     private(set) var packagesResponse: ShippingLabelPackagesResponse?
     private(set) var selectedPackageID: String?
 
+    /// Customs forms
+    ///
+    private (set) var customsForms: [ShippingLabelCustomsForm] = []
+
     /// Carrier and Rates
     ///
     private(set) var selectedRate: ShippingLabelCarrierRate?
@@ -55,26 +59,28 @@ final class ShippingLabelFormViewModel {
         let weight = Double(totalPackageWeight ?? "0") ?? .zero
 
         if let customPackage = packagesResponse.customPackages.first(where: { $0.title == selectedPackageID }) {
-            // TODO: set customs forms
-            return ShippingLabelPackageSelected(boxID: customPackage.title,
+            let boxID = customPackage.title
+            let customsForm = customsForms.first(where: { $0.packageID == boxID })
+            return ShippingLabelPackageSelected(boxID: boxID,
                                                 length: customPackage.getLength(),
                                                 width: customPackage.getWidth(),
                                                 height: customPackage.getHeight(),
                                                 weight: weight,
                                                 isLetter: customPackage.isLetter,
-                                                customsForm: nil)
+                                                customsForm: customsForm)
         }
 
         for option in packagesResponse.predefinedOptions {
             if let predefinedPackage = option.predefinedPackages.first(where: { $0.id == selectedPackageID }) {
-                // TODO: set customs forms
-                return ShippingLabelPackageSelected(boxID: predefinedPackage.id,
+                let boxID = predefinedPackage.id
+                let customsForm = customsForms.first(where: { $0.packageID == boxID })
+                return ShippingLabelPackageSelected(boxID: boxID,
                                                     length: predefinedPackage.getLength(),
                                                     width: predefinedPackage.getWidth(),
                                                     height: predefinedPackage.getHeight(),
                                                     weight: weight,
                                                     isLetter: predefinedPackage.isLetter,
-                                                    customsForm: nil)
+                                                    customsForm: customsForm)
             }
         }
 
@@ -692,8 +698,10 @@ extension ShippingLabelFormViewModel {
         }
 
         let productIDs = order.items.map { $0.productOrVariationID }
-        // TODO: get customs form for the selected package and send to the model
-        let package = ShippingLabelPackagePurchase(package: selectedPackage, rate: selectedRate, productIDs: productIDs, customsForm: nil)
+        let package = ShippingLabelPackagePurchase(package: selectedPackage,
+                                                   rate: selectedRate,
+                                                   productIDs: productIDs,
+                                                   customsForm: selectedPackage.customsForm)
         let startTime = Date()
         let action = ShippingLabelAction.purchaseShippingLabel(siteID: siteID,
                                                                orderID: order.orderID,

@@ -161,6 +161,8 @@ extension ShippingLabelFormViewController: UITableViewDelegate {
         case Row(type: .packageDetails, dataState: .validated, displayMode: .editable):
             displayPackageDetailsVC(selectedPackageID: viewModel.selectedPackageID,
                                     totalPackageWeight: viewModel.totalPackageWeight)
+        case Row(type: .customs, dataState: .validated, displayMode: .editable):
+            displayCustomsFormListVC(customsForms: viewModel.customsForms)
         case Row(type: .shippingCarrierAndRates, dataState: .validated, displayMode: .editable):
             displayCarriersAndRatesVC(selectedRate: viewModel.selectedRate,
                                       selectedSignatureRate: viewModel.selectedSignatureRate,
@@ -278,8 +280,9 @@ private extension ShippingLabelFormViewController {
                        icon: .globeImage,
                        title: Localization.customsCellTitle,
                        body: Localization.customsCellSubtitle,
-                       buttonTitle: Localization.continueButtonInCells) {
-            // TODO: show customs form creation view
+                       buttonTitle: Localization.continueButtonInCells) { [weak self] in
+            guard let self = self else { return }
+            self.displayCustomsFormListVC(customsForms: self.viewModel.customsForms)
         }
     }
 
@@ -416,6 +419,15 @@ private extension ShippingLabelFormViewController {
         }
 
         let hostingVC = UIHostingController(rootView: packageDetails)
+        navigationController?.show(hostingVC, sender: nil)
+    }
+
+    func displayCustomsFormListVC(customsForms: [ShippingLabelCustomsForm]) {
+        let vm = ShippingLabelCustomsFormListViewModel(order: viewModel.order, customsForms: viewModel.customsForms)
+        let formList = ShippingLabelCustomsFormList(viewModel: vm) { [weak self] forms in
+            self?.viewModel.handleCustomsFormsValueChanges(customsForms: forms)
+        }
+        let hostingVC = UIHostingController(rootView: formList)
         navigationController?.show(hostingVC, sender: nil)
     }
 

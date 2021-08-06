@@ -20,6 +20,10 @@ public protocol SessionManagerProtocol {
     ///
     var defaultStoreID: Int64? { get set }
 
+    /// Roles for the default Store Site.
+    ///
+    var defaultRoles: [User.Role] { get set }
+
     /// Publishes default store ID on change.
     ///
     var defaultStoreIDPublisher: AnyPublisher<Int64?, Never> { get }

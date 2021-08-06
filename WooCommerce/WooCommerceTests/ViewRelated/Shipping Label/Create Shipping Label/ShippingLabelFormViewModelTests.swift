@@ -188,6 +188,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         let expectedPackageID = "my-package-id"
         let expectedPackageWeight = "55"
 
+        shippingLabelFormViewModel.handleOriginAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(), validated: true)
+        shippingLabelFormViewModel.handleDestinationAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(), validated: true)
         shippingLabelFormViewModel.handleCarrierAndRatesValueChanges(selectedRate: MockShippingLabelCarrierRate.makeRate(),
                                                                      selectedSignatureRate: nil,
                                                                      selectedAdultSignatureRate: nil,
@@ -544,6 +546,264 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.customsFormRequired)
+    }
+
+    func test_customsFormRequired_returns_false_for_shipping_from_US_to_domestic_terristories() {
+        // Given
+        let originAddress = Address(firstName: "Skylar",
+                                    lastName: "Ferry",
+                                    company: "Automattic Inc.",
+                                    address1: "60 29th Street #343",
+                                    address2: nil,
+                                    city: "San Francisco",
+                                    state: "CA",
+                                    postcode: "94121-2303",
+                                    country: "US",
+                                    phone: nil,
+                                    email: nil)
+        let destinationAddress = Address(firstName: "Skylar",
+                                         lastName: "Ferry",
+                                         company: "Automattic Inc.",
+                                         address1: "60 Main Street",
+                                         address2: nil,
+                                         city: "Random City",
+                                         state: "",
+                                         postcode: "",
+                                         country: "VI", // Virgin Islands
+                                         phone: nil,
+                                         email: nil)
+
+        // When
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: originAddress, destinationAddress: destinationAddress)
+
+        // Then
+        XCTAssertFalse(viewModel.customsFormRequired)
+    }
+
+    func test_customsFormRequired_returns_false_for_shipping_from_domestic_terristories_to_US() {
+        // Given
+        let originAddress = Address(firstName: "Skylar",
+                                    lastName: "Ferry",
+                                    company: "Automattic Inc.",
+                                    address1: "60 Main Street",
+                                    address2: nil,
+                                    city: "Random City",
+                                    state: "",
+                                    postcode: "",
+                                    country: "VI", // Virgin Islands
+                                    phone: nil,
+                                    email: nil)
+        let destinationAddress = Address(firstName: "Skylar",
+                                         lastName: "Ferry",
+                                         company: "Automattic Inc.",
+                                         address1: "60 29th Street #343",
+                                         address2: nil,
+                                         city: "San Francisco",
+                                         state: "CA",
+                                         postcode: "94121-2303",
+                                         country: "US",
+                                         phone: nil,
+                                         email: nil)
+
+        // When
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: originAddress, destinationAddress: destinationAddress)
+
+        // Then
+        XCTAssertFalse(viewModel.customsFormRequired)
+    }
+
+    func test_customsFormRequired_returns_true_for_shipping_from_domestic_terristories_to_other_international_country() {
+        // Given
+        let originAddress = Address(firstName: "Skylar",
+                                    lastName: "Ferry",
+                                    company: "Automattic Inc.",
+                                    address1: "60 Main Street",
+                                    address2: nil,
+                                    city: "Random City",
+                                    state: "",
+                                    postcode: "",
+                                    country: "VI", // Virgin Islands
+                                    phone: nil,
+                                    email: nil)
+        let destinationAddress = Address(firstName: "Skylar",
+                                         lastName: "Ferry",
+                                         company: "Automattic Inc.",
+                                         address1: "20 Hang Bong",
+                                         address2: nil,
+                                         city: "Hanoi",
+                                         state: "",
+                                         postcode: "",
+                                         country: "VN", // Vietnam
+                                         phone: nil,
+                                         email: nil)
+
+        // When
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: originAddress, destinationAddress: destinationAddress)
+
+        // Then
+        XCTAssertTrue(viewModel.customsFormRequired)
+    }
+
+    func test_customs_row_is_not_present_initially_if_both_origin_and_destination_countries_are_US() {
+        // Given
+        let originAddress = Address(firstName: "Skylar",
+                                    lastName: "Ferry",
+                                    company: "Automattic Inc.",
+                                    address1: "60 29th Street #343",
+                                    address2: nil,
+                                    city: "New York",
+                                    state: "NY",
+                                    postcode: "94121-2303",
+                                    country: "US",
+                                    phone: nil,
+                                    email: nil)
+        let destinationAddress = Address(firstName: "Skylar",
+                                         lastName: "Ferry",
+                                         company: "Automattic Inc.",
+                                         address1: "60 29th Street #343",
+                                         address2: nil,
+                                         city: "San Francisco",
+                                         state: "CA",
+                                         postcode: "94121-2303",
+                                         country: "US",
+                                         phone: nil,
+                                         email: nil)
+
+        // When
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: originAddress, destinationAddress: destinationAddress)
+
+        // Then
+        let firstSection = viewModel.state.sections.first
+        XCTAssertNotNil(firstSection)
+        XCTAssertNil(firstSection?.rows.first(where: { $0.type == .customs }))
+    }
+
+    func test_customs_row_is_present_initially_when_customs_form_is_required() {
+        // Given
+        let originAddress = Address(firstName: "Skylar",
+                                    lastName: "Ferry",
+                                    company: "Automattic Inc.",
+                                    address1: "60 29th Street #343",
+                                    address2: nil,
+                                    city: "New York",
+                                    state: "NY",
+                                    postcode: "94121-2303",
+                                    country: "US",
+                                    phone: nil,
+                                    email: nil)
+        let destinationAddress = Address(firstName: "Skylar",
+                                         lastName: "Ferry",
+                                         company: "Automattic Inc.",
+                                         address1: "60 Hang Bong",
+                                         address2: nil,
+                                         city: "Hanoi",
+                                         state: "",
+                                         postcode: "94121-2303",
+                                         country: "VN",
+                                         phone: nil,
+                                         email: nil)
+
+        // When
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: originAddress, destinationAddress: destinationAddress)
+
+        // Then
+        let firstSection = viewModel.state.sections.first
+        XCTAssertNotNil(firstSection?.rows.first(where: { $0.type == .customs }))
+    }
+
+    func test_updateRowsForCustomsIfNeeded_removes_customs_row_when_destination_is_updated_to_US() {
+        // Given
+        let originAddress = Address(firstName: "Skylar",
+                                    lastName: "Ferry",
+                                    company: "Automattic Inc.",
+                                    address1: "60 29th Street #343",
+                                    address2: nil,
+                                    city: "New York",
+                                    state: "NY",
+                                    postcode: "94121-2303",
+                                    country: "US",
+                                    phone: nil,
+                                    email: nil)
+        let destinationAddress = Address(firstName: "Skylar",
+                                         lastName: "Ferry",
+                                         company: "Automattic Inc.",
+                                         address1: "60 Hang Bong",
+                                         address2: nil,
+                                         city: "Hanoi",
+                                         state: "",
+                                         postcode: "94121-2303",
+                                         country: "VN",
+                                         phone: nil,
+                                         email: nil)
+
+        // When
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: originAddress, destinationAddress: destinationAddress)
+        let newAddress = MockShippingLabelAddress.sampleAddress(country: "US", state: "NY")
+        viewModel.handleDestinationAddressValueChanges(address: newAddress, validated: true)
+
+        // Then
+        XCTAssertNil(viewModel.state.sections.first?.rows.first(where: { $0.type == .customs }))
+    }
+
+    func test_updateRowsForCustomsIfNeeded_adds_customs_row_when_destination_is_updated_to_nonUS() {
+        // Given
+        let originAddress = Address(firstName: "Skylar",
+                                    lastName: "Ferry",
+                                    company: "Automattic Inc.",
+                                    address1: "60 29th Street #343",
+                                    address2: nil,
+                                    city: "New York",
+                                    state: "NY",
+                                    postcode: "94121-2303",
+                                    country: "US",
+                                    phone: nil,
+                                    email: nil)
+        let destinationAddress = Address(firstName: "Skylar",
+                                         lastName: "Ferry",
+                                         company: "Automattic Inc.",
+                                         address1: "60 29th Street #343",
+                                         address2: nil,
+                                         city: "San Francisco",
+                                         state: "CA",
+                                         postcode: "94121-2303",
+                                         country: "US",
+                                         phone: nil,
+                                         email: nil)
+
+        // When
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: originAddress, destinationAddress: destinationAddress)
+        let newAddress = MockShippingLabelAddress.sampleAddress(country: "VN", state: "")
+        viewModel.handleDestinationAddressValueChanges(address: newAddress, validated: true)
+
+        // Then
+        XCTAssertNotNil(viewModel.state.sections.first?.rows.first(where: { $0.type == .customs }))
+    }
+
+    func test_updateRowsForCustomsIfNeeded_updates_row_states_correctly() {
+        // Given
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: nil, destinationAddress: nil)
+        viewModel.handleOriginAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(country: "US", state: "CA"), validated: true)
+        viewModel.handleDestinationAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(country: "US", state: "NY"), validated: true)
+
+        let rows = viewModel.state.sections.first?.rows
+        XCTAssertEqual(rows?[0].dataState, .validated)
+        XCTAssertEqual(rows?[0].displayMode, .editable)
+        XCTAssertEqual(rows?[1].dataState, .validated)
+        XCTAssertEqual(rows?[1].displayMode, .editable)
+        XCTAssertEqual(rows?[2].dataState, .pending)
+        XCTAssertEqual(rows?[2].displayMode, .editable)
+
+        // When
+        viewModel.handleDestinationAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(country: "VN", state: ""), validated: true)
+
+        // Then
+        let updatedRows = viewModel.state.sections.first?.rows
+        XCTAssertEqual(updatedRows?[0].dataState, .pending)
+        XCTAssertEqual(updatedRows?[0].displayMode, .editable)
+        XCTAssertEqual(updatedRows?[1].dataState, .validated)
+        XCTAssertEqual(updatedRows?[1].displayMode, .editable)
+        XCTAssertEqual(updatedRows?[2].dataState, .pending)
+        XCTAssertEqual(updatedRows?[2].displayMode, .disabled)
     }
 }
 

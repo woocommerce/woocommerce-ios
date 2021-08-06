@@ -216,6 +216,29 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
         XCTAssertTrue(resetErrorInfoInvoked)
     }
+
+    func test_roleEligibilityUseCase_updates_roles_in_sessionManager() throws {
+        // Given
+        let eligibleUser = makeUser(eligible: true)
+        stores.authenticate(credentials: SessionSettings.credentials)
+        stores.whenReceivingAction(ofType: UserAction.self) { action in
+            guard case let .retrieveUser(_, completion) = action else {
+                return
+            }
+            completion(.success(eligibleUser))
+        }
+        let useCase = RoleEligibilityUseCase(stores: stores)
+
+        // When
+        _ = waitFor { promise in
+            useCase.checkEligibility(for: 123) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        assertEqual(stores.sessionManager.defaultRoles.map(\.rawValue), eligibleUser.roles)
+    }
 }
 
 private extension RoleEligibilityUseCaseTests {

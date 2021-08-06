@@ -282,7 +282,7 @@ private extension SettingsViewController {
         ]
 
         // Plugins
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sitePlugins) {
+        if shouldShowPluginsSection() {
             sections.append(Section(title: pluginsTitle, rows: [.plugins], footerHeight: UITableView.automaticDimension))
         }
 
@@ -464,6 +464,12 @@ private extension SettingsViewController {
     func couldShowBetaFeaturesRow() -> Bool {
         true
     }
+
+    /// Returns `true` if the user has an `admin` role for the default store site.
+    ///
+    func shouldShowPluginsSection() -> Bool {
+        ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)
+    }
 }
 
 
@@ -541,7 +547,7 @@ private extension SettingsViewController {
         guard let siteID = self.siteID else {
             return
         }
-        let viewModel = InPersonPaymentsViewModel(siteID: siteID)
+        let viewModel = InPersonPaymentsViewModel()
         let viewController = InPersonPaymentsViewController(viewModel: viewModel)
         show(viewController, sender: self)
     }

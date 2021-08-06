@@ -1238,6 +1238,7 @@
 		E16715CD2666543000326230 /* CardPresentModalSuccessWithoutEmailTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16715CC2666543000326230 /* CardPresentModalSuccessWithoutEmailTests.swift */; };
 		E17E3BF9266917C10009D977 /* CardPresentModalScanningFailedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17E3BF8266917C10009D977 /* CardPresentModalScanningFailedTests.swift */; };
 		E17E3BFB266917E20009D977 /* CardPresentModalBluetoothRequiredTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17E3BFA266917E20009D977 /* CardPresentModalBluetoothRequiredTests.swift */; };
+		E1BAAEA026BBECEF00F2C037 /* ButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BAAE9F26BBECEF00F2C037 /* ButtonStyles.swift */; };
 		E1BE703A265E6F47006CA4D9 /* CardPresentModalScanningFailed.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BE7039265E6F47006CA4D9 /* CardPresentModalScanningFailed.swift */; };
 		E1C47209267A1ECC00D06DA1 /* CrashLoggingStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C47208267A1ECC00D06DA1 /* CrashLoggingStack.swift */; };
 		E1D4E84426776A6B00256B83 /* HeadlineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D4E84326776A6A00256B83 /* HeadlineTableViewCell.swift */; };
@@ -2578,6 +2579,7 @@
 		E16715CC2666543000326230 /* CardPresentModalSuccessWithoutEmailTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalSuccessWithoutEmailTests.swift; sourceTree = "<group>"; };
 		E17E3BF8266917C10009D977 /* CardPresentModalScanningFailedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalScanningFailedTests.swift; sourceTree = "<group>"; };
 		E17E3BFA266917E20009D977 /* CardPresentModalBluetoothRequiredTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalBluetoothRequiredTests.swift; sourceTree = "<group>"; };
+		E1BAAE9F26BBECEF00F2C037 /* ButtonStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonStyles.swift; sourceTree = "<group>"; };
 		E1BE7039265E6F47006CA4D9 /* CardPresentModalScanningFailed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalScanningFailed.swift; sourceTree = "<group>"; };
 		E1C47208267A1ECC00D06DA1 /* CrashLoggingStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashLoggingStack.swift; sourceTree = "<group>"; };
 		E1D4E84226776A6A00256B83 /* HeadlineTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HeadlineTableViewCell.xib; sourceTree = "<group>"; };
@@ -4146,6 +4148,7 @@
 				E10DFC792673595A0083AFF2 /* ShareSheet.swift */,
 				E15FC74026BC1CED00CF83E6 /* AttributedText.swift */,
 				E15FC74226BC1D2700CF83E6 /* SafariSheet.swift */,
+				E1BAAE9F26BBECEF00F2C037 /* ButtonStyles.swift */,
 			);
 			path = "SwiftUI Components";
 			sourceTree = "<group>";
@@ -6722,6 +6725,7 @@
 				456931842653E9F2009ED69D /* ShippingLabelCarrierRow.swift in Sources */,
 				CE32B11A20BF8E32006FBCF4 /* UIButton+Helpers.swift in Sources */,
 				CE0F17D222A8308900964A63 /* FancyAlertController+PurchaseNote.swift in Sources */,
+				E1BAAEA026BBECEF00F2C037 /* ButtonStyles.swift in Sources */,
 				B59D1EEA2190AE96009D1978 /* StorageNote+Woo.swift in Sources */,
 				024DF3072372C18D006658FE /* AztecUIConfigurator.swift in Sources */,
 				020BE74823B05CF2007FE54C /* ProductInventoryEditableData.swift in Sources */,

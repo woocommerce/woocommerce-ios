@@ -30,22 +30,46 @@ private struct PrimaryButton: View {
 
     var body: some View {
         BaseButton(configuration: configuration)
-            .foregroundColor(Color(isEnabled ? .primaryButtonTitle : .buttonDisabledTitle))
+            .foregroundColor(Color(foregroundColor))
             .background(
                 RoundedRectangle(cornerRadius: Style.defaultCornerRadius)
-                    .fill(Color(isEnabled
-                                        ? configuration.isPressed ? .primaryButtonDownBackground : .primaryButtonBackground
-                                        : .buttonDisabledBackground))
+                    .fill(Color(backgroundColor))
             )
             .overlay(
                 RoundedRectangle(cornerRadius: Style.defaultCornerRadius)
                     .strokeBorder(
-                        Color(isEnabled
-                                    ? configuration.isPressed ? .primaryButtonDownBorder : .primaryButtonBorder
-                                    : .buttonDisabledBorder),
+                        Color(borderColor),
                         lineWidth: Style.defaultBorderWidth
                     )
             )
+    }
+
+    var foregroundColor: UIColor {
+        isEnabled ? .primaryButtonTitle : .buttonDisabledTitle
+    }
+
+    var backgroundColor: UIColor {
+        if isEnabled {
+            if configuration.isPressed {
+                return .primaryButtonDownBackground
+            } else {
+                return .primaryButtonBackground
+            }
+        } else {
+            return .buttonDisabledBackground
+        }
+    }
+
+    var borderColor: UIColor {
+        if isEnabled {
+            if configuration.isPressed {
+                return .primaryButtonDownBorder
+            } else {
+                return .primaryButtonBorder
+            }
+        } else {
+            return .buttonDisabledBorder
+        }
     }
 }
 
@@ -56,22 +80,46 @@ private struct SecondaryButton: View {
 
     var body: some View {
         BaseButton(configuration: configuration)
-            .foregroundColor(Color(isEnabled ? .secondaryButtonTitle : .buttonDisabledTitle))
+            .foregroundColor(Color(foregroundColor))
             .background(
                 RoundedRectangle(cornerRadius: Style.defaultCornerRadius)
-                    .fill(Color(isEnabled
-                                        ? configuration.isPressed ? .secondaryButtonDownBackground : .secondaryButtonBackground
-                                        : .buttonDisabledBackground))
+                    .fill(Color(backgroundColor))
             )
             .overlay(
                 RoundedRectangle(cornerRadius: Style.defaultCornerRadius)
                     .strokeBorder(
-                        Color(isEnabled
-                                    ? configuration.isPressed ? .secondaryButtonDownBorder : .secondaryButtonBorder
-                                    : .buttonDisabledBorder),
+                        Color(borderColor),
                         lineWidth: Style.defaultBorderWidth
                     )
             )
+    }
+
+    var foregroundColor: UIColor {
+        isEnabled ? .secondaryButtonTitle : .buttonDisabledTitle
+    }
+
+    var backgroundColor: UIColor {
+        if isEnabled {
+            if configuration.isPressed {
+                return .secondaryButtonDownBackground
+            } else {
+                return .secondaryButtonBackground
+            }
+        } else {
+            return .buttonDisabledBackground
+        }
+    }
+
+    var borderColor: UIColor {
+        if isEnabled {
+            if configuration.isPressed {
+                return .secondaryButtonDownBorder
+            } else {
+                return .secondaryButtonBorder
+            }
+        } else {
+            return .buttonDisabledBorder
+        }
     }
 }
 

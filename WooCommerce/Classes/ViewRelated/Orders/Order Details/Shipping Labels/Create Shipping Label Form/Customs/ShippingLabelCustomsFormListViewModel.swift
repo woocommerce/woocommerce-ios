@@ -2,9 +2,9 @@ import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
 
-/// View model for ShippingLabelsCustomsFormInput
+/// View model for ShippingLabelsCustomsFormList
 ///
-final class ShippingLabelCustomsFormViewModel: ObservableObject {
+final class ShippingLabelCustomsFormListViewModel: ObservableObject {
 
     /// Associated order of the shipping label.
     ///

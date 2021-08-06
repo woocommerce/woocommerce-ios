@@ -2,10 +2,10 @@ import SwiftUI
 import Yosemite
 
 struct ShippingLabelCustomsFormList: View {
-    @ObservedObject private var viewModel: ShippingLabelCustomsFormViewModel
+    @ObservedObject private var viewModel: ShippingLabelCustomsFormListViewModel
     private let onCompletion: ([ShippingLabelCustomsForm]) -> Void
 
-    init(viewModel: ShippingLabelCustomsFormViewModel,
+    init(viewModel: ShippingLabelCustomsFormListViewModel,
          onCompletion: @escaping ([ShippingLabelCustomsForm]) -> Void) {
         self.viewModel = viewModel
         self.onCompletion = onCompletion
@@ -17,10 +17,10 @@ struct ShippingLabelCustomsFormList: View {
 }
 
 struct ShippingLabelCustomsFormList_Previews: PreviewProvider {
-    static let sampleViewModel: ShippingLabelCustomsFormViewModel = {
+    static let sampleViewModel: ShippingLabelCustomsFormListViewModel = {
         let sampleOrder = ShippingLabelPackageDetailsViewModel.sampleOrder()
         let sampleForm = ShippingLabelCustomsForm(packageID: "Food Package", productIDs: sampleOrder.items.map { $0.productID })
-        return ShippingLabelCustomsFormViewModel(order: sampleOrder, customsForms: [sampleForm])
+        return ShippingLabelCustomsFormListViewModel(order: sampleOrder, customsForms: [sampleForm])
     }()
 
     static var previews: some View {

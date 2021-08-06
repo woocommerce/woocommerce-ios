@@ -1057,6 +1057,33 @@ extension SitePlugin {
     }
 }
 
+extension SiteSetting {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        settingID: CopiableProp<String> = .copy,
+        label: CopiableProp<String> = .copy,
+        settingDescription: CopiableProp<String> = .copy,
+        value: CopiableProp<String> = .copy,
+        settingGroupKey: CopiableProp<String> = .copy
+    ) -> SiteSetting {
+        let siteID = siteID ?? self.siteID
+        let settingID = settingID ?? self.settingID
+        let label = label ?? self.label
+        let settingDescription = settingDescription ?? self.settingDescription
+        let value = value ?? self.value
+        let settingGroupKey = settingGroupKey ?? self.settingGroupKey
+
+        return SiteSetting(
+            siteID: siteID,
+            settingID: settingID,
+            label: label,
+            settingDescription: settingDescription,
+            value: value,
+            settingGroupKey: settingGroupKey
+        )
+    }
+}
+
 extension SystemPlugin {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

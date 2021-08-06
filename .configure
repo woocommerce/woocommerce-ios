@@ -10,7 +10,7 @@
     },
     {
       "file": "iOS/WCiOS/woo_app_credentials.json",
-      "destination": ".configure-files/woo_app_credentials.json",
+      "destination": "~/.configure/woocommerce-ios/secrets/woo_app_credentials.json",
       "encrypt": true
     },
     {

@@ -39,6 +39,15 @@ extension SitePluginStatusEnum: RawRepresentable {
         case .unknown:       return Keys.unknown
         }
     }
+
+    /// Returns true if the plugin is active, either individually or network-wide
+    ///
+    public var isActive: Bool {
+        switch self {
+        case .active, .networkActive:   return true
+        case .inactive, .unknown:       return false
+        }
+    }
 }
 
 /// Enum containing all possible plugin status keys

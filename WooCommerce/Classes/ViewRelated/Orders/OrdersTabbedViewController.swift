@@ -17,6 +17,11 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
     /// For navigation bar large title workaround.
     weak var scrollDelegate: OrdersTabbedViewControllerScrollDelegate?
 
+    /// Background view to keep button bar the edge-to-edge look.
+    /// The trick is to set this view the same background color with the button bar's.
+    ///
+    @IBOutlet private var buttonBarBackgroundView: UIView!
+
     private lazy var analytics = ServiceLocator.analytics
 
     private lazy var viewModel = OrdersTabbedViewModel(siteID: siteID)
@@ -108,6 +113,7 @@ private extension OrdersTabbedViewController {
     /// Initialize the tab bar containing the "Processing" and "All Orders" buttons.
     ///
     func configureTabStrip() {
+        buttonBarBackgroundView.backgroundColor = .listForeground
         settings.style.buttonBarBackgroundColor = .listForeground
         settings.style.buttonBarItemBackgroundColor = .listForeground
         settings.style.selectedBarBackgroundColor = .primary

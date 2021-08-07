@@ -81,9 +81,8 @@ private extension ProductFormTableViewDataSource {
 private extension ProductFormTableViewDataSource {
     func configureCellInPrimaryFieldsSection(_ cell: UITableViewCell, row: ProductFormSection.PrimaryFieldRow) {
         switch row {
-        case .images(let editable, let allowsMultipleImages):
-            configureImages(cell: cell, isEditable: editable, allowsMultipleImages: allowsMultipleImages)
-            configureProductLabel(cell: cell)
+        case .images(let editable, let allowsMultipleImages, let productLabel):
+            configureImages(cell: cell, isEditable: editable, allowsMultipleImages: allowsMultipleImages, productLabel: productLabel)
         case .name(let name, let editable):
             configureName(cell: cell, name: name, isEditable: editable)
         case .variationName(let name):
@@ -92,7 +91,7 @@ private extension ProductFormTableViewDataSource {
             configureDescription(cell: cell, description: description, isEditable: editable)
         }
     }
-    func configureImages(cell: UITableViewCell, isEditable: Bool, allowsMultipleImages: Bool) {
+    func configureImages(cell: UITableViewCell, isEditable: Bool, allowsMultipleImages: Bool, productLabel: String) {
         guard let cell = cell as? ProductImagesHeaderTableViewCell else {
             fatalError()
         }
@@ -110,7 +109,6 @@ private extension ProductFormTableViewDataSource {
                            productUIImageLoader: productUIImageLoader)
             return
         }
-
         if productImageStatuses.count > 0 {
             if allowsMultipleImages {
                 cell.configure(with: productImageStatuses, config: .addImages, productUIImageLoader: productUIImageLoader)
@@ -121,20 +119,17 @@ private extension ProductFormTableViewDataSource {
         else {
             cell.configure(with: productImageStatuses, config: .extendedAddImages, productUIImageLoader: productUIImageLoader)
         }
-
+        if productLabel.contains("draft") {
+            cell.productStatusLabel.text? = productLabel.capitalized
+        } else {
+            cell.productStatusLabel.text = ""
+        }
         cell.onImageSelected = { [weak self] (productImage, indexPath) in
             self?.onAddImage?()
         }
         cell.onAddImage = { [weak self] in
             self?.onAddImage?()
         }
-    }
-    func configureProductLabel(cell: UITableViewCell) {
-        let label = UILabel()
-        label.applyStyle(for: .completed)
-        label.text = ProductStatus.draft.rawValue.capitalized
-        cell.textLabel?.textAlignment = .natural // Left by default. RTL for RTL-layouts
-        cell.textLabel?.text = NSLocalizedString("\(label.text ?? "")", comment: "Label that displays 'Draft' when editing a draft product.")
     }
 
     func configureName(cell: UITableViewCell, name: String?, isEditable: Bool) {

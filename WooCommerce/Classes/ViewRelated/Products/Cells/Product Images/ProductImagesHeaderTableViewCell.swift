@@ -4,6 +4,7 @@ import Yosemite
 final class ProductImagesHeaderTableViewCell: UITableViewCell {
 
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var productStatusLabel: UILabel!
 
     /// View Model
     ///

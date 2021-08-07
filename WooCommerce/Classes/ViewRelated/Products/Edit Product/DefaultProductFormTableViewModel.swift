@@ -33,7 +33,7 @@ private extension DefaultProductFormTableViewModel {
         return actions.map { action in
             switch action {
             case .images(let editable):
-                return .images(isEditable: editable, allowsMultiple: product.allowsMultipleImages())
+                return .images(isEditable: editable, allowsMultiple: product.allowsMultipleImages(), productLabel: product.status.rawValue)
             case .name(let editable):
                 return .name(name: product.name, isEditable: editable)
             case .variationName:

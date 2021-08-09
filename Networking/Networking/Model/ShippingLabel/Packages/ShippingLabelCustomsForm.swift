@@ -4,6 +4,13 @@ import Codegen
 /// Represents customs info for a shipping label package
 ///
 public struct ShippingLabelCustomsForm: Equatable, GeneratedFakeable {
+    /// ID of the associated package.
+    ///
+    /// This is for identifying the package when inputing customs form only,
+    /// no need for encoding and sending to remote.
+    ///
+    public let packageID: String
+
     /// Type of contents to declare with customs.
     public let contentsType: ContentsType
 
@@ -25,13 +32,17 @@ public struct ShippingLabelCustomsForm: Equatable, GeneratedFakeable {
     /// Items in the package to declare.
     public let items: [Item]
 
-    public init(contentsType: ShippingLabelCustomsForm.ContentsType,
+    /// Memberwise initializer
+    ///
+    public init(packageID: String,
+                contentsType: ShippingLabelCustomsForm.ContentsType,
                 contentExplanation: String,
                 restrictionType: ShippingLabelCustomsForm.RestrictionType,
                 restrictionComments: String,
                 nonDeliveryOption: ShippingLabelCustomsForm.NonDeliveryOption,
                 itn: String,
                 items: [ShippingLabelCustomsForm.Item]) {
+        self.packageID = packageID
         self.contentsType = contentsType
         self.contentExplanation = contentExplanation
         self.restrictionType = restrictionType
@@ -39,6 +50,22 @@ public struct ShippingLabelCustomsForm: Equatable, GeneratedFakeable {
         self.nonDeliveryOption = nonDeliveryOption
         self.itn = itn
         self.items = items
+    }
+
+    /// Convenient intializer
+    ///
+    public init(packageID: String, productIDs: [Int64]) {
+        let items = productIDs.map { id in
+            Item(description: "", quantity: 1, value: 0, weight: 0, hsTariffNumber: "", originCountry: "", productID: id)
+        }
+        self.init(packageID: packageID,
+                  contentsType: .merchandise,
+                  contentExplanation: "",
+                  restrictionType: .none,
+                  restrictionComments: "",
+                  nonDeliveryOption: .return,
+                  itn: "",
+                  items: items)
     }
 }
 

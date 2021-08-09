@@ -85,6 +85,7 @@ public typealias ShippingLabelAddressValidationError = Networking.ShippingLabelA
 public typealias ShippingLabelCustomPackage = Networking.ShippingLabelCustomPackage
 public typealias ShippingLabelPackagePurchase = Networking.ShippingLabelPackagePurchase
 public typealias ShippingLabelPackageSelected = Networking.ShippingLabelPackageSelected
+public typealias ShippingLabelCustomsForm = Networking.ShippingLabelCustomsForm
 public typealias ShippingLabelPredefinedOption = Networking.ShippingLabelPredefinedOption
 public typealias ShippingLabelPredefinedPackage = Networking.ShippingLabelPredefinedPackage
 public typealias ShippingLabelPaperSize = Networking.ShippingLabelPaperSize

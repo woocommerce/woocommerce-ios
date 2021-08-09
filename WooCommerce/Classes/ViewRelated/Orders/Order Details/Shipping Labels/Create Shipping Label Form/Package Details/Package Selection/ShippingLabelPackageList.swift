@@ -72,13 +72,13 @@ struct ShippingLabelPackageList: View {
                                     Image(uiImage: .plusImage)
                                     Text(Localization.createPackageButton)
                                     Spacer()
-                                }.padding(.bottom, geometry.safeAreaInsets.bottom)
+                                }
                             }
                             .buttonStyle(LinkButtonStyle())
                             .background(Color(.listForeground))
-                        }
+                        }.edgesIgnoringSafeArea([.bottom])
                     }
-                }.edgesIgnoringSafeArea([.bottom])
+                }
             }
         }
     }

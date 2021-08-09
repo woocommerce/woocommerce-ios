@@ -1,18 +1,27 @@
 import Foundation
 import Storage
+import Yosemite
 
-public struct CardPresentPaymentsOnboardingUseCase {
+private typealias SitePlugin = Yosemite.SitePlugin
+private typealias PaymentGatewayAccount = Yosemite.PaymentGatewayAccount
+
+struct CardPresentPaymentsOnboardingUseCase {
     let storageManager: StorageManagerType
-    let dispatch: (Action) -> Void
-    let siteID: Int64
+    let stores: StoresManager
 
-    public init(siteID: Int64, storageManager: StorageManagerType, dispatch: @escaping (Action) -> Void) {
+    init(
+        storageManager: StorageManagerType = ServiceLocator.storageManager,
+        stores: StoresManager = ServiceLocator.stores
+    ) {
         self.storageManager = storageManager
-        self.dispatch = dispatch
-        self.siteID = siteID
+        self.stores = stores
     }
 
     public func synchronizeRequiredData(completion: @escaping () -> Void) {
+        guard let siteID = siteID else {
+            return completion()
+        }
+
         let group = DispatchGroup()
 
         // We need to sync settings to check the store's country
@@ -23,7 +32,7 @@ public struct CardPresentPaymentsOnboardingUseCase {
             group.leave()
         }
         group.enter()
-        dispatch(settingsAction)
+        stores.dispatch(settingsAction)
 
         // We need to sync plugins to check if WCPay is installed, up to date, and active
         let sitePluginsAction = SitePluginAction.synchronizeSitePlugins(siteID: siteID) { result in
@@ -33,7 +42,7 @@ public struct CardPresentPaymentsOnboardingUseCase {
             group.leave()
         }
         group.enter()
-        dispatch(sitePluginsAction)
+        stores.dispatch(sitePluginsAction)
 
         // We need to sync payment gateway accounts to see if WCPay is set up correctly
         let paymentGatewayAccountsAction = PaymentGatewayAccountAction.loadAccounts(siteID: siteID) { result in
@@ -43,14 +52,19 @@ public struct CardPresentPaymentsOnboardingUseCase {
             group.leave()
         }
         group.enter()
-        dispatch(paymentGatewayAccountsAction)
+        stores.dispatch(paymentGatewayAccountsAction)
 
         group.notify(queue: .main, execute: completion)
     }
 
     public func checkOnboardingState() -> CardPresentPaymentOnboardingState {
         // Country checks
-        guard isCountrySupported() else {
+        guard let countryCode = storeCountryCode else {
+            DDLogError("[CardPresentPaymentsOnboarding] Couldn't determine country for store")
+            return .genericError
+        }
+
+        guard isCountrySupported(countryCode: countryCode) else {
             return .countryNotSupported
         }
 
@@ -78,11 +92,11 @@ public struct CardPresentPaymentsOnboardingUseCase {
         guard !isStripeAccountUnderReview(account: account) else {
             return .stripeAccountUnderReview
         }
-        guard !isStripeAccountPendingRequirements(account: account) else {
-            return .stripeAccountPendingRequirement
-        }
         guard !isStripeAccountOverdueRequirements(account: account) else {
             return .stripeAccountOverdueRequirement
+        }
+        guard !isStripeAccountPendingRequirements(account: account) else {
+            return .stripeAccountPendingRequirement
         }
         guard !isStripeAccountRejected(account: account) else {
             return .stripeAccountRejected
@@ -96,37 +110,51 @@ public struct CardPresentPaymentsOnboardingUseCase {
 }
 
 private extension CardPresentPaymentsOnboardingUseCase {
-    func isCountrySupported() -> Bool {
-        // TODO: not implemented yet
-        return true
+    var siteID: Int64? {
+        stores.sessionManager.defaultStoreID
+    }
+
+    var storeCountryCode: String? {
+        let siteSettings = SelectedSiteSettings(stores: stores, storageManager: storageManager).siteSettings
+        let storeAddress = SiteAddress(siteSettings: siteSettings)
+        let storeCountryCode = storeAddress.countryCode
+
+        return storeCountryCode.nonEmptyString()
+    }
+
+    func isCountrySupported(countryCode: String) -> Bool {
+        return Constants.supportedCountryCodes.contains(countryCode)
     }
 
     func getWCPayPlugin() -> SitePlugin? {
-        storageManager.viewStorage
+        guard let siteID = siteID else {
+            return nil
+        }
+        return storageManager.viewStorage
             .loadPlugin(siteID: siteID, name: Constants.pluginName)?
             .toReadOnly()
     }
 
     func isWCPayVersionSupported(plugin: SitePlugin) -> Bool {
-        // TODO: not implemented yet
-        return true
+        plugin.version.compare(Constants.supportedWCPayVersion, options: .numeric) != .orderedAscending
     }
 
     func isWCPayActivated(plugin: SitePlugin) -> Bool {
-        // TODO: not implemented yet
-        return true
+        plugin.status.isActive
     }
 
     func getWCPayAccount() -> PaymentGatewayAccount? {
-        storageManager.viewStorage
+        guard let siteID = siteID else {
+            return nil
+        }
+        return storageManager.viewStorage
             .loadPaymentGatewayAccounts(siteID: siteID)
             .first(where: \.isCardPresentEligible)?
             .toReadOnly()
     }
 
     func isWCPaySetupCompleted(account: PaymentGatewayAccount) -> Bool {
-        // TODO: not implemented yet
-        return true
+        account.wcpayStatus != .noAccount
     }
 
     func isWCPayInTestModeWithLiveStripeAccount(account: PaymentGatewayAccount) -> Bool {
@@ -135,32 +163,41 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func isStripeAccountUnderReview(account: PaymentGatewayAccount) -> Bool {
-        // TODO: not implemented yet
-        return false
+        account.wcpayStatus == .restricted
+            && !account.hasPendingRequirements
+            && !account.hasOverdueRequirements
     }
 
     func isStripeAccountPendingRequirements(account: PaymentGatewayAccount) -> Bool {
-        // TODO: not implemented yet
-        return false
+        account.wcpayStatus == .restricted
+            && account.hasPendingRequirements
+            || account.wcpayStatus == .restrictedSoon
     }
 
     func isStripeAccountOverdueRequirements(account: PaymentGatewayAccount) -> Bool {
-        // TODO: not implemented yet
-        return false
+        account.wcpayStatus == .restricted && account.hasOverdueRequirements
     }
 
     func isStripeAccountRejected(account: PaymentGatewayAccount) -> Bool {
-        // TODO: not implemented yet
-        return false
+        account.wcpayStatus == .rejectedFraud
+            || account.wcpayStatus == .rejectedListed
+            || account.wcpayStatus == .rejectedTermsOfService
+            || account.wcpayStatus == .rejectedOther
     }
 
     func isInUndefinedState(account: PaymentGatewayAccount) -> Bool {
-        // TODO: not implemented yet
-        return false
+        account.wcpayStatus != .complete
     }
+}
 
+private extension PaymentGatewayAccount {
+    var wcpayStatus: WCPayAccountStatusEnum {
+        .init(rawValue: status)
+    }
 }
 
 private enum Constants {
     static let pluginName = "WooCommerce Payments"
+    static let supportedWCPayVersion = "2.5"
+    static let supportedCountryCodes = ["US"]
 }

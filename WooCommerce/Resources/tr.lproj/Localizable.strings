@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-07-23 08:54:04+0000 */
+/* Translation-Revision-Date: 2021-08-03 11:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -631,7 +631,8 @@
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "Okuyucuya Bağlan";
 
-/* Settings > Manage Card Reader > Prompt user to connect their first reader */
+/* Settings > Manage Card Reader > Prompt user to connect their first reader
+   Settings > Manage Card Reader > Prompt user to connect their reader */
 "Connect your card reader" = "Kart okuyucunuzu bağlayın";
 
 /* Link on the store picker when there are no stores available. Opens a webview about Jetpack setup. */
@@ -747,6 +748,9 @@
 /* Create Shipping Label form navigation title
    Text on the button that starts shipping label creation */
 "Create Shipping Label" = "Gönderi Etiketi Oluşturun";
+
+/* The title of the shipping labels top banner in order details */
+"Create shipping labels from your device!" = "Cihazınızdan gönderim etiketleri oluşturun!";
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "İlk varyasyonunuzu oluşturun";
@@ -1305,6 +1309,13 @@
 /* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} Parameters: %1$@ - order number, %2$@ - store name */
 "In-Person Payment for Order #%1$@ for %2$@" = "%1$@ numaralı Sipariş (%2$@) için Şahsen Ödeme";
 
+/* Navigates to In-Person Payments screen
+   Title for the In-Person Payments settings screen */
+"In-Person Payments" = "Şahsen Ödemeler";
+
+/* Title for the error screen when In-Person Payments is unavailable */
+"In-Person Payments is currently unavailable" = "Şahsen Ödemeler şu anda kullanılamıyor";
+
 /* Application's Inactive State */
 "Inactive" = "Etkin değil";
 
@@ -1423,6 +1434,9 @@
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
 "Learn more about creating labels with your phone" = "Telefonunuzla etiket oluşturma hakkında daha fazla bilgi edinin";
+
+/* Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
+"Learn more about roles and permissions" = "Roller ve izinler hakkında daha fazla bilgi edinin";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal (8,5 x 14 inç)";
@@ -1825,9 +1839,6 @@
    Order Total label for payment view */
 "Order Total" = "Sipariş Toplamı";
 
-/* Order fulfillment success notice */
-"Order marked as fulfilled" = "Sipariş, yerine getirildi olarak işaretlendi";
-
 /* Order status update success notice */
 "Order status updated" = "Sipariş durumu güncellendi";
 
@@ -2038,9 +2049,6 @@
 
 /* Button to print receipts. Presented to users after a payment has been successfully collected */
 "Print receipt" = "Makbuz yazdır";
-
-/* The title of the shipping labels top banner in order details */
-"Print shipping labels from your device!" = "Cihazınızdan kargo etiketleri yazdırın!";
 
 /* Title of in-progress modal when requesting shipping label document for printing */
 "Printing Label" = "Etiket Yazdırma";
@@ -2294,8 +2302,8 @@
 /* VoiceOver accessibility hint, informing the user the button can be used to search products. */
 "Retrieves a list of products that contain a given keyword." = "Belirli bir anahtar sözcüğü içeren ürünlerin bir listesini alır.";
 
-/* Retry Action
-   Retry the last action */
+/* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
+   Retry Action - Retry the last action */
 "Retry" = "Tekrar";
 
 /* Revenue stat label on dashboard. */
@@ -3001,6 +3009,9 @@
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "Bu uygulama için sunucunuza WooCommerce 3.5'i yüklemeniz gerekir; bu olmadan düzgün çalışmaz. Bu uygulamayı kullanmaya devam etmek için mümkün olan en kısa süre içinde güncelleyin.";
 
+/* Message explaining more detail on why the user's role is incorrect. */
+"This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "Bu uygulama yalnızca Yönetici ve Mağaza Yöneticisi kullanıcı rollerini destekler. Rolünüzü yükseltmek için lütfen mağazanızın sahibiyle iletişime geçin.";
+
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "Bu e-posta adresi WordPress.com üzerinde kayıtlı değil.";
 
@@ -3203,6 +3214,9 @@
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "Liste yenilenemedi";
+
+/* An error message shown when failing to retrieve information about user roles, before letting the user in to manage the store. */
+"Unable to retrieve user roles." = "Kullanıcı rolleri alınamıyor.";
 
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
 "Unable to save changes to the payment method" = "Ödeme yöntemindeki değişiklikler kaydedilemiyor";
@@ -3419,9 +3433,6 @@
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Watch your audience grow with in-depth analytics." = "Kapsamlı analizlerle kitlenizin nasıl büyüdüğünü izleyin.";
 
-/* The info of the shipping labels top banner in order details */
-"We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "Gönderim etiketlerini doğrudan cihazınızdan yazdırmayı kolaylaştırmak için çalışmalarımız devam ediyor. Mağaza yöneticinizde WooCommerce Shipping ile bir sipariş için gönderim etiketleri oluşturduysanız, şimdilik bunları burada, yani Sipariş detayları bölümünüzde yazdırabilirsiniz.";
-
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "Ürün eklentilerini cihazınızdan görmenizi kolaylaştırmak için çalışıyoruz. Şimdilik, siparişleriniz için eklentileri görebilirsiniz. Bu eklentileri web yönetim panelinizde oluşturabilir ve düzenleyebilirsiniz.";
 
@@ -3448,6 +3459,9 @@
 
 /* Banner caption in Shipping Label Address Validation when the destination address can't be verified. */
 "We were unable to automatically verify the shipping address. View on Apple Maps or try contacting the customer to make sure the address is correct." = "Gönderim adresini otomatik olarak doğrulayamadık. Apple Haritalar'da görüntüleyin veya adresin doğru olduğundan emin olmak için müşteriyle iletişim kurmayı deneyin.";
+
+/* Banner caption in Shipping Label Address Validation when the destination address can't be verified and no customer phone number is found. */
+"We were unable to automatically verify the shipping address. View on Apple Maps to make sure the address is correct." = "Gönderim adresini otomatik olarak doğrulayamadık. Adresin doğru olduğundan emin olmak için Apple Haritalar'da görüntüleyin.";
 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "Size şu anda e-posta gönderemedik. Lütfen daha sonra tekrar deneyin.";
@@ -3545,14 +3559,23 @@
 /* Yesterday Section Header */
 "Yesterday" = "Dün";
 
+/* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
+"You are not authorized to access this store." = "Bu mağazaya erişme yetkiniz yok.";
+
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "Ürün eklentilerini web panosunda düzenleyebilirsiniz.";
 
 /* The info of the top banner on the Products tab. */
 "You can now create and manage product variations!" = "Artık ürün çeşitleri oluşturabilir ve yönetebilirsiniz";
 
+/* The info of the shipping labels top banner in order details */
+"You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "Artık ücretsiz WooCommerce Shipping eklentisi ile tüm fiziksel siparişler için gönderi etiketlerini doğrudan cihazınızdan oluşturabilirsiniz. Beta özelliğimizi denemek için Gönderi Etiketi Oluştur üzerine dokunun!";
+
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "Bir paketi göndermek için kullanılmamış bir gönderi etiketi için para iadesi talep edebilirsiniz.\nİşleme alınması en az 14 gün sürer.";
+
+/* Generic error message when In-Person Payments is unavailable */
+"You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "Mağazanızda \"Kapıda Nakit\" ödeme yöntemini etkinleştirerek elden şahsen nakit ödeme kabul edebilirsiniz.";
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "Bu e-posta adresini kayıt olmak için kullanamazsınız. Bazı e-postalarımızın engellenmesiyle ilgili problem yaşıyoruz. Farklı bir e-posta sağlayıcısı kullanın.";
@@ -3615,6 +3638,9 @@
 
 /* Customer note, wrapped in quotes */
 "“%@”" = "“%@”";
+
+/* Success notice when tapping Mark Order Complete on Review Order screen */
+"🎉 Order Completed" = "🎉 Sipariş Tamamlandı";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 Ürünlerin geri ödemesi başarıyla yapıldı";

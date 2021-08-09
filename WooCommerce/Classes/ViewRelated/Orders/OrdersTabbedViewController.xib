@@ -10,6 +10,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="OrdersTabbedViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
+                <outlet property="buttonBarBackgroundView" destination="wqX-zR-Ley" id="n0e-zz-Fag"/>
                 <outlet property="buttonBarView" destination="7lu-ed-U2a" id="CeJ-gT-RxY"/>
                 <outlet property="containerView" destination="VD7-Yu-YwE" id="3vO-sb-eUc"/>
                 <outlet property="view" destination="xuO-pm-Bnd" id="21G-dF-888"/>
@@ -20,6 +21,13 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wqX-zR-Ley">
+                    <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="44" id="G6J-ed-pDG"/>
+                    </constraints>
+                </view>
                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="7lu-ed-U2a" customClass="ButtonBarView" customModule="XLPagerTabStrip">
                     <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -45,9 +53,12 @@
                 <constraint firstAttribute="trailing" secondItem="VD7-Yu-YwE" secondAttribute="trailing" id="9vb-3t-PWE"/>
                 <constraint firstItem="VD7-Yu-YwE" firstAttribute="top" secondItem="7lu-ed-U2a" secondAttribute="bottom" id="L4N-Ce-OKC"/>
                 <constraint firstItem="rGE-vr-B04" firstAttribute="bottom" secondItem="VD7-Yu-YwE" secondAttribute="bottom" id="LZC-0z-fDh"/>
+                <constraint firstItem="wqX-zR-Ley" firstAttribute="leading" secondItem="xuO-pm-Bnd" secondAttribute="leading" id="Lo6-gd-Emr"/>
                 <constraint firstItem="7lu-ed-U2a" firstAttribute="top" secondItem="rGE-vr-B04" secondAttribute="top" id="Rct-WJ-OQP"/>
+                <constraint firstAttribute="trailing" secondItem="wqX-zR-Ley" secondAttribute="trailing" id="SAn-A3-97p"/>
                 <constraint firstItem="7lu-ed-U2a" firstAttribute="leading" secondItem="rGE-vr-B04" secondAttribute="leading" id="Zdd-er-iM1"/>
                 <constraint firstItem="rGE-vr-B04" firstAttribute="trailing" secondItem="7lu-ed-U2a" secondAttribute="trailing" id="lJ7-pc-DWf"/>
+                <constraint firstItem="wqX-zR-Ley" firstAttribute="top" secondItem="rGE-vr-B04" secondAttribute="top" id="nZy-cJ-0KO"/>
             </constraints>
             <point key="canvasLocation" x="-317" y="153"/>
         </view>

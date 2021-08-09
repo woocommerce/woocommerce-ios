@@ -95,6 +95,20 @@ final class SessionManager: SessionManagerProtocol {
         }
     }
 
+    /// Roles for the default Store Site.
+    ///
+    var defaultRoles: [User.Role] {
+        get {
+            guard let rawRoles = defaults[.defaultRoles] as? [String] else {
+                return []
+            }
+            return rawRoles.compactMap { User.Role(rawValue: $0) }
+        }
+        set {
+            defaults[.defaultRoles] = newValue.map(\.rawValue)
+        }
+    }
+
     var defaultStoreIDPublisher: AnyPublisher<Int64?, Never> {
         defaultStoreIDSubject.eraseToAnyPublisher()
     }

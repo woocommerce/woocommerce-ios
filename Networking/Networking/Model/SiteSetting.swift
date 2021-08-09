@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a specific setting entity for a specific site.
 ///
-public struct SiteSetting: Decodable, Equatable, GeneratedFakeable {
+public struct SiteSetting: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
     public let siteID: Int64
     public let settingID: String
     public let label: String
@@ -13,11 +13,11 @@ public struct SiteSetting: Decodable, Equatable, GeneratedFakeable {
 
     /// OrderNote struct initializer.
     ///
-    public init(siteID: Int64, settingID: String, label: String, description: String, value: String, settingGroupKey: String) {
+    public init(siteID: Int64, settingID: String, label: String, settingDescription: String, value: String, settingGroupKey: String) {
         self.siteID = siteID
         self.settingID = settingID
         self.label = label
-        self.settingDescription = description
+        self.settingDescription = settingDescription
         self.value = value
         self.settingGroupKey = settingGroupKey
     }
@@ -47,7 +47,7 @@ public struct SiteSetting: Decodable, Equatable, GeneratedFakeable {
             DDLogWarn("⚠️ Could not successfully decode SiteSetting value for \(settingID)")
         }
 
-        self.init(siteID: siteID, settingID: settingID, label: label, description: settingDescription, value: value, settingGroupKey: settingGroupKey)
+        self.init(siteID: siteID, settingID: settingID, label: label, settingDescription: settingDescription, value: value, settingGroupKey: settingGroupKey)
     }
 }
 

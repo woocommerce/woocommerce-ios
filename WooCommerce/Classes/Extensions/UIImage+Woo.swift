@@ -455,6 +455,12 @@ extension UIImage {
         return UIImage(named: "woo-payments-error")!
     }
 
+    /// Payments plugin
+    ///
+    static var paymentsPlugin: UIImage {
+        return UIImage(named: "woo-payments-plugin")!
+    }
+
     /// Price Icon
     ///
     static var priceImage: UIImage {
@@ -594,6 +600,12 @@ extension UIImage {
 
     static var shippingLabelCreationInfoImage: UIImage {
         UIImage(named: "woo-shipping-label-creation")!
+    }
+
+    /// Globe Image
+    ///
+    static var globeImage: UIImage {
+        UIImage.gridicon(.globe)
     }
 
     /// Returns a star icon with the given size

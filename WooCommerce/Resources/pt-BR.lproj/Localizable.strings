@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-07-19 21:54:44+0000 */
+/* Translation-Revision-Date: 2021-08-04 14:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -168,7 +168,7 @@
 "3" = "3";
 
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
-"99+" = "Mais de 99";
+"99+" = "99+";
 
 /* A label prompting users to learn more about card readers with an embedded hyperlink */
 "<a href=\"https:\/\/woocommerce.com\/payments\">Learn more<\/a> about accepting payments with your mobile device and ordering card readers" = "<a href=\"https:\/\/woocommerce.com\/payments\">Saiba mais<\/a> sobre como aceitar pagamentos com seu dispositivo móvel e como solicitar leitores de cartão";
@@ -631,7 +631,8 @@
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "Conectar-se ao leitor";
 
-/* Settings > Manage Card Reader > Prompt user to connect their first reader */
+/* Settings > Manage Card Reader > Prompt user to connect their first reader
+   Settings > Manage Card Reader > Prompt user to connect their reader */
 "Connect your card reader" = "Conecte seu leitor de cartão";
 
 /* Link on the store picker when there are no stores available. Opens a webview about Jetpack setup. */
@@ -747,6 +748,9 @@
 /* Create Shipping Label form navigation title
    Text on the button that starts shipping label creation */
 "Create Shipping Label" = "Criar etiqueta de envio";
+
+/* The title of the shipping labels top banner in order details */
+"Create shipping labels from your device!" = "Crie etiquetas de envio pelo seu dispositivo!";
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "Crie sua primeira variação";
@@ -1305,6 +1309,13 @@
 /* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} Parameters: %1$@ - order number, %2$@ - store name */
 "In-Person Payment for Order #%1$@ for %2$@" = "Pagamento presencial do pedido #%1$@ para %2$@";
 
+/* Navigates to In-Person Payments screen
+   Title for the In-Person Payments settings screen */
+"In-Person Payments" = "Pagamentos presenciais";
+
+/* Title for the error screen when In-Person Payments is unavailable */
+"In-Person Payments is currently unavailable" = "O pagamento presencial não está disponível";
+
 /* Application's Inactive State */
 "Inactive" = "Inativas";
 
@@ -1423,6 +1434,9 @@
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
 "Learn more about creating labels with your phone" = "Saiba mais sobre como criar etiquetas no seu celular";
+
+/* Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
+"Learn more about roles and permissions" = "Saiba mais sobre funções e permissões";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal (22 x 36 cm)";
@@ -1825,9 +1839,6 @@
    Order Total label for payment view */
 "Order Total" = "Total de pedidos";
 
-/* Order fulfillment success notice */
-"Order marked as fulfilled" = "Pedido marcado como concluído";
-
 /* Order status update success notice */
 "Order status updated" = "Status do pedido atualizado";
 
@@ -2038,9 +2049,6 @@
 
 /* Button to print receipts. Presented to users after a payment has been successfully collected */
 "Print receipt" = "Imprimir recibo";
-
-/* The title of the shipping labels top banner in order details */
-"Print shipping labels from your device!" = "Imprima etiquetas de envio a partir do seu dispositivo!";
 
 /* Title of in-progress modal when requesting shipping label document for printing */
 "Printing Label" = "Imprimindo etiqueta";
@@ -2294,8 +2302,8 @@
 /* VoiceOver accessibility hint, informing the user the button can be used to search products. */
 "Retrieves a list of products that contain a given keyword." = "Recupera uma lista de produtos que contêm determinada palavra-chave.";
 
-/* Retry Action
-   Retry the last action */
+/* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
+   Retry Action - Retry the last action */
 "Retry" = "Tentar novamente";
 
 /* Revenue stat label on dashboard. */
@@ -3001,6 +3009,9 @@
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "Esse aplicativo requer a instalação do WooCommerce 3.5 no seu servidor e não funcionará adequadamente sem ele. Atualize o quanto antes para continuar a usar esse aplicativo.";
 
+/* Message explaining more detail on why the user's role is incorrect. */
+"This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "Este aplicativo é compatível somente com as funções de administrador e gerente da loja. Entre em contato com o proprietário da loja para fazer upgrade da sua função.";
+
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "Este endereço de e-mail não está registrado no WordPress.com.";
 
@@ -3203,6 +3214,9 @@
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "Não foi possível atualizar a lista";
+
+/* An error message shown when failing to retrieve information about user roles, before letting the user in to manage the store. */
+"Unable to retrieve user roles." = "Não foi possível recuperar as funções de usuário.";
 
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
 "Unable to save changes to the payment method" = "Não é possível salvar alterações da forma de pagamento";
@@ -3419,9 +3433,6 @@
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Watch your audience grow with in-depth analytics." = "Veja seu público-alvo aumentar usando análises detalhadas.";
 
-/* The info of the shipping labels top banner in order details */
-"We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "Estamos trabalhando para facilitar a impressão de etiquetas de envio diretamente do seu dispositivo! Por enquanto, se você criou etiquetas para um pedido na administração da sua loja com o WooCommerce Shipping, pode imprimi-las aqui em Detalhes do pedido.";
-
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "Estamos trabalhando para facilitar a visualização de complementos de produtos diretamente no seu dispositivo! Por enquanto, você poderá ver os complementos dos seus pedidos. É possível criar e editar esses complementos no seu painel da Web.";
 
@@ -3448,6 +3459,9 @@
 
 /* Banner caption in Shipping Label Address Validation when the destination address can't be verified. */
 "We were unable to automatically verify the shipping address. View on Apple Maps or try contacting the customer to make sure the address is correct." = "Não foi possível verificar automaticamente o endereço de envio. Encontre-o no Apple Maps ou tente entrar em contato com o cliente para confirmar se o endereço está correto.";
+
+/* Banner caption in Shipping Label Address Validation when the destination address can't be verified and no customer phone number is found. */
+"We were unable to automatically verify the shipping address. View on Apple Maps to make sure the address is correct." = "Não foi possível verificar automaticamente o endereço de envio. Encontre-o no Apple Maps para confirmar se o endereço está correto.";
 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "Não foi possível enviar um e-mail para você no momento. Tente novamente mais tarde.";
@@ -3545,14 +3559,23 @@
 /* Yesterday Section Header */
 "Yesterday" = "Ontem";
 
+/* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
+"You are not authorized to access this store." = "Você não está autorizado a acessar esta loja.";
+
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "Você pode editar complementos de produtos no painel da Web.";
 
 /* The info of the top banner on the Products tab. */
 "You can now create and manage product variations!" = "Agora é possível criar e gerenciar variações de produtos!";
 
+/* The info of the shipping labels top banner in order details */
+"You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "Agora você pode criar etiquetas de envio para todos os pedidos físicos diretamente no seu dispositivo com o plugin gratuito do WooCommerce Shipping. Toque em Criar etiqueta de envio para experimentar nossa funcionalidade beta!";
+
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "É possível solicitar o reembolso de uma etiqueta de envio que não tenha sido usada para enviar um pacote.\nO processamento levará pelo menos 14 dias.";
+
+/* Generic error message when In-Person Payments is unavailable */
+"You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "Você ainda pode aceitar pagamentos em dinheiro pessoalmente ativando a opção \"Pagamento na entrega\" na sua loja.";
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "Você não pode usar este endereço de e-mail para se inscrever. Esse provedor bloqueia alguns de nossos e-mails. Use outro provedor de e-mail.";
@@ -3615,6 +3638,9 @@
 
 /* Customer note, wrapped in quotes */
 "“%@”" = "“%@”";
+
+/* Success notice when tapping Mark Order Complete on Review Order screen */
+"🎉 Order Completed" = "🎉 Pedido concluído";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 produtos reembolsados com êxito";

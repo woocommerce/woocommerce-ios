@@ -26,13 +26,29 @@ final class ShippingLabelFormViewModel {
 
     /// Address
     ///
-    private(set) var originAddress: ShippingLabelAddress?
-    private(set) var destinationAddress: ShippingLabelAddress?
+    private(set) var originAddress: ShippingLabelAddress? {
+        didSet {
+            updateRowsForCustomsIfNeeded()
+        }
+    }
+    private(set) var destinationAddress: ShippingLabelAddress? {
+        didSet {
+            updateRowsForCustomsIfNeeded()
+        }
+    }
 
     /// Packages
     ///
     private(set) var packagesResponse: ShippingLabelPackagesResponse?
-    private(set) var selectedPackageID: String?
+    private(set) var selectedPackageID: String? {
+        didSet {
+            setDefaultCustomsFormsIfNeeded()
+        }
+    }
+
+    /// Customs forms
+    ///
+    private (set) var customsForms: [ShippingLabelCustomsForm] = []
 
     /// Carrier and Rates
     ///
@@ -47,22 +63,28 @@ final class ShippingLabelFormViewModel {
         let weight = Double(totalPackageWeight ?? "0") ?? .zero
 
         if let customPackage = packagesResponse.customPackages.first(where: { $0.title == selectedPackageID }) {
-            return ShippingLabelPackageSelected(boxID: customPackage.title,
+            let boxID = customPackage.title
+            let customsForm = customsForms.first(where: { $0.packageID == boxID })
+            return ShippingLabelPackageSelected(boxID: boxID,
                                                 length: customPackage.getLength(),
                                                 width: customPackage.getWidth(),
                                                 height: customPackage.getHeight(),
                                                 weight: weight,
-                                                isLetter: customPackage.isLetter)
+                                                isLetter: customPackage.isLetter,
+                                                customsForm: customsForm)
         }
 
         for option in packagesResponse.predefinedOptions {
             if let predefinedPackage = option.predefinedPackages.first(where: { $0.id == selectedPackageID }) {
-                return ShippingLabelPackageSelected(boxID: predefinedPackage.id,
+                let boxID = predefinedPackage.id
+                let customsForm = customsForms.first(where: { $0.packageID == boxID })
+                return ShippingLabelPackageSelected(boxID: boxID,
                                                     length: predefinedPackage.getLength(),
                                                     width: predefinedPackage.getWidth(),
                                                     height: predefinedPackage.getHeight(),
                                                     weight: weight,
-                                                    isLetter: predefinedPackage.isLetter)
+                                                    isLetter: predefinedPackage.isLetter,
+                                                    customsForm: customsForm)
             }
         }
 
@@ -106,7 +128,13 @@ final class ShippingLabelFormViewModel {
             return true
         }
 
-        return originAddress.country != destinationAddress.country
+        if originAddress.country == destinationAddress.country {
+            return false
+        }
+
+        // Shipments between US, Puerto Rico and Virgin Islands don't need Customs, everything else does
+        return !Constants.domesticUSTerritories.contains(originAddress.country) ||
+            !Constants.domesticUSTerritories.contains(destinationAddress.country)
     }
 
     private let stores: StoresManager
@@ -145,10 +173,10 @@ final class ShippingLabelFormViewModel {
                                                                account: defaultAccount)
         self.destinationAddress = ShippingLabelFormViewModel.fromAddressToShippingLabelAddress(address: destinationAddress)
 
-        state.sections = ShippingLabelFormViewModel.generateInitialSections()
         self.stores = stores
         self.storageManager = storageManager
 
+        state.sections = generateInitialSections()
         syncShippingLabelAccountSettings()
         syncPackageDetails()
         fetchCountries()
@@ -192,6 +220,18 @@ final class ShippingLabelFormViewModel {
         }
         updateRowState(type: .packageDetails, dataState: .validated, displayMode: .editable)
 
+        // We reset the selected customs forms & carrier & rates because if the package change
+        // these change accordingly.
+        handleCustomsFormsValueChanges(customsForms: [])
+        handleCarrierAndRatesValueChanges(selectedRate: nil, selectedSignatureRate: nil, selectedAdultSignatureRate: nil, editable: false)
+    }
+
+    func handleCustomsFormsValueChanges(customsForms: [ShippingLabelCustomsForm]) {
+        self.customsForms = customsForms
+        guard customsForms.isNotEmpty else {
+            return updateRowState(type: .customs, dataState: .pending, displayMode: .editable)
+        }
+        updateRowState(type: .customs, dataState: .validated, displayMode: .editable)
         // We reset the carrier and rates selected because if the package change
         // the carrier and rate change accordingly
         handleCarrierAndRatesValueChanges(selectedRate: nil, selectedSignatureRate: nil, selectedAdultSignatureRate: nil, editable: false)
@@ -224,13 +264,19 @@ final class ShippingLabelFormViewModel {
         updateRowState(type: .paymentMethod, dataState: .validated, displayMode: displayMode)
     }
 
-    private static func generateInitialSections() -> [Section] {
+    private func generateInitialSections() -> [Section] {
         let shipFrom = Row(type: .shipFrom, dataState: .pending, displayMode: .editable)
         let shipTo = Row(type: .shipTo, dataState: .pending, displayMode: .disabled)
         let packageDetails = Row(type: .packageDetails, dataState: .pending, displayMode: .disabled)
+        let customs: Row? = {
+            guard customsFormRequired else {
+                return nil
+            }
+            return Row(type: .customs, dataState: .pending, displayMode: .disabled)
+        }()
         let shippingCarrierAndRates = Row(type: .shippingCarrierAndRates, dataState: .pending, displayMode: .disabled)
         let paymentMethod = Row(type: .paymentMethod, dataState: .pending, displayMode: .disabled)
-        let rows: [Row] = [shipFrom, shipTo, packageDetails, shippingCarrierAndRates, paymentMethod]
+        let rows: [Row] = [shipFrom, shipTo, packageDetails, customs, shippingCarrierAndRates, paymentMethod].compactMap { $0 }
         return [Section(title: nil, rows: rows)]
     }
 
@@ -403,6 +449,17 @@ private extension ShippingLabelFormViewModel {
             }
         }
 
+        // Find first row with .pending data state,
+        // and update its following rows to be .disabled if their display mode is .editable and data state is .pending.
+        if let firstPendingRow = rows.firstIndex(where: { $0.dataState == .pending }) {
+            for index in rows.index(after: firstPendingRow) ..< rows.count {
+                let nextRow = rows[index]
+                if nextRow.displayMode == .editable && nextRow.dataState == .pending {
+                    rows[index] = Row(type: nextRow.type, dataState: nextRow.dataState, displayMode: .disabled)
+                }
+            }
+        }
+
         var summarySection: Section?
         if rows.allSatisfy({ (row) -> Bool in
             row.dataState == .validated && row.displayMode == .editable
@@ -412,6 +469,44 @@ private extension ShippingLabelFormViewModel {
         }
 
         state.sections = [Section(title: nil, rows: rows), summarySection].compactMap { $0 }
+    }
+
+    func updateRowsForCustomsIfNeeded() {
+        insertOrRemoveCustomsRowIfNeeded()
+
+        guard let originAddress = originAddress else {
+            return
+        }
+        // Require user to update phone address if customs form is required
+        if customsFormRequired && originAddress.phone.isEmpty {
+            updateRowState(type: .shipFrom, dataState: .pending, displayMode: .editable)
+        }
+    }
+
+    func insertOrRemoveCustomsRowIfNeeded() {
+        guard var rows = state.sections.first?.rows else {
+            return
+        }
+        // Add customs row if customs form is required
+        if customsFormRequired, rows.firstIndex(where: { $0.type == .customs }) == nil {
+            guard let packageDetailsRow = rows.first(where: { $0.type == .packageDetails }),
+                  let packageDetailsRowIndex = rows.firstIndex(of: packageDetailsRow) else {
+                return
+            }
+
+            // Decide display mode for customs row based on whether package details has been validated
+            let customsRowState: ShippingLabelFormViewController.DisplayMode = packageDetailsRow.dataState == .pending ? .disabled : .editable
+            let customsRowIndex = rows.index(after: packageDetailsRowIndex)
+            let customsRow = Row(type: .customs, dataState: .pending, displayMode: customsRowState)
+            rows.insert(customsRow, at: customsRowIndex)
+            state.sections[0] = Section(title: nil, rows: rows)
+        }
+
+        // Remove customs row if customs form is not required
+        if !customsFormRequired, let index = rows.firstIndex(where: { $0.type == .customs }) {
+            rows.remove(at: index)
+            state.sections[0] = Section(title: nil, rows: rows)
+        }
     }
 }
 
@@ -509,6 +604,17 @@ private extension ShippingLabelFormViewModel {
         }
 
         return nil
+    }
+
+    /// Temporary solution for creating default customs forms.
+    /// When multi-package support is available, we should create separate form for each package ID.
+    ///
+    private func setDefaultCustomsFormsIfNeeded() {
+        guard customsFormRequired, let packageID = selectedPackageID else {
+            return customsForms = []
+        }
+        let productIDs = order.items.map { $0.productOrVariationID }
+        customsForms = [ShippingLabelCustomsForm(packageID: packageID, productIDs: productIDs)]
     }
 }
 
@@ -619,7 +725,10 @@ extension ShippingLabelFormViewModel {
         }
 
         let productIDs = order.items.map { $0.productOrVariationID }
-        let package = ShippingLabelPackagePurchase(package: selectedPackage, rate: selectedRate, productIDs: productIDs)
+        let package = ShippingLabelPackagePurchase(package: selectedPackage,
+                                                   rate: selectedRate,
+                                                   productIDs: productIDs,
+                                                   customsForm: selectedPackage.customsForm)
         let startTime = Date()
         let action = ShippingLabelAction.purchaseShippingLabel(siteID: siteID,
                                                                orderID: order.orderID,
@@ -687,5 +796,11 @@ private extension ShippingLabelFormViewModel {
         /// These US states are a special case because they represent military bases. They're considered "domestic",
         /// but they require a Customs form to ship from/to them.
         static let usMilitaryStates = ["AA", "AE", "AP"]
+
+        // Packages shipping to or from the US, Puerto Rico and Virgin Islands don't need a Customs form
+        static let domesticUSTerritories = ["US", "PR", "VI"]
+
+        // These destination countries require an ITN regardless of shipment value
+        static let uspsITNRequiredDestination = ["IR", "SY", "KP", "CU", "SD"]
     }
 }

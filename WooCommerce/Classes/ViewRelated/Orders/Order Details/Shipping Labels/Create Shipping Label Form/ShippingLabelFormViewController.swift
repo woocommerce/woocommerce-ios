@@ -161,6 +161,8 @@ extension ShippingLabelFormViewController: UITableViewDelegate {
         case Row(type: .packageDetails, dataState: .validated, displayMode: .editable):
             displayPackageDetailsVC(selectedPackageID: viewModel.selectedPackageID,
                                     totalPackageWeight: viewModel.totalPackageWeight)
+        case Row(type: .customs, dataState: .validated, displayMode: .editable):
+            displayCustomsFormListVC(customsForms: viewModel.customsForms)
         case Row(type: .shippingCarrierAndRates, dataState: .validated, displayMode: .editable):
             displayCarriersAndRatesVC(selectedRate: viewModel.selectedRate,
                                       selectedSignatureRate: viewModel.selectedSignatureRate,
@@ -186,6 +188,8 @@ private extension ShippingLabelFormViewController {
             configureShipTo(cell: cell, row: row)
         case let cell as ShippingLabelFormStepTableViewCell where row.type == .packageDetails:
             configurePackageDetails(cell: cell, row: row)
+        case let cell as ShippingLabelFormStepTableViewCell where row.type == .customs:
+            configureCustoms(cell: cell, row: row)
         case let cell as ShippingLabelFormStepTableViewCell where row.type == .shippingCarrierAndRates:
             configureShippingCarrierAndRates(cell: cell, row: row)
         case let cell as ShippingLabelFormStepTableViewCell where row.type == .paymentMethod:
@@ -205,6 +209,13 @@ private extension ShippingLabelFormViewController {
                        body: viewModel.originAddress?.fullNameWithCompanyAndAddress,
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
             guard let self = self else { return }
+            // Skip remote validation and navigate to edit address
+            // if customs form is required and phone number is not found.
+            if self.viewModel.customsFormRequired,
+               let originAddress = self.viewModel.originAddress,
+               originAddress.phone.isEmpty {
+                return self.displayEditAddressFormVC(address: originAddress, validationError: nil, type: .origin)
+            }
             self.viewModel.validateAddress(type: .origin) { [weak self] (validationState, response) in
                 guard let self = self else { return }
                 let shippingLabelAddress = self.viewModel.originAddress
@@ -261,6 +272,17 @@ private extension ShippingLabelFormViewController {
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
             self?.displayPackageDetailsVC(selectedPackageID: self?.viewModel.selectedPackageID,
                                           totalPackageWeight: self?.viewModel.totalPackageWeight)
+        }
+    }
+
+    func configureCustoms(cell: ShippingLabelFormStepTableViewCell, row: Row) {
+        cell.configure(state: row.cellState,
+                       icon: .globeImage,
+                       title: Localization.customsCellTitle,
+                       body: Localization.customsCellSubtitle,
+                       buttonTitle: Localization.continueButtonInCells) { [weak self] in
+            guard let self = self else { return }
+            self.displayCustomsFormListVC(customsForms: self.viewModel.customsForms)
         }
     }
 
@@ -400,6 +422,15 @@ private extension ShippingLabelFormViewController {
         navigationController?.show(hostingVC, sender: nil)
     }
 
+    func displayCustomsFormListVC(customsForms: [ShippingLabelCustomsForm]) {
+        let vm = ShippingLabelCustomsFormListViewModel(order: viewModel.order, customsForms: viewModel.customsForms)
+        let formList = ShippingLabelCustomsFormList(viewModel: vm) { [weak self] forms in
+            self?.viewModel.handleCustomsFormsValueChanges(customsForms: forms)
+        }
+        let hostingVC = UIHostingController(rootView: formList)
+        navigationController?.show(hostingVC, sender: nil)
+    }
+
     func displayCarriersAndRatesVC(selectedRate: ShippingLabelCarrierRate?,
                                    selectedSignatureRate: ShippingLabelCarrierRate?,
                                    selectedAdultSignatureRate: ShippingLabelCarrierRate?) {
@@ -528,13 +559,14 @@ extension ShippingLabelFormViewController {
         case shipFrom
         case shipTo
         case packageDetails
+        case customs
         case shippingCarrierAndRates
         case paymentMethod
         case orderSummary
 
         fileprivate var type: UITableViewCell.Type {
             switch self {
-            case .shipFrom, .shipTo, .packageDetails, .shippingCarrierAndRates, .paymentMethod:
+            case .shipFrom, .shipTo, .packageDetails, .customs, .shippingCarrierAndRates, .paymentMethod:
                 return ShippingLabelFormStepTableViewCell.self
             case .orderSummary:
                 return ShippingLabelSummaryTableViewCell.self
@@ -560,6 +592,8 @@ private extension ShippingLabelFormViewController {
                                                               comment: "Title of the cell Payment Method inside Create Shipping Label form")
         static let continueButtonInCells = NSLocalizedString("Continue",
                                                              comment: "Continue button inside every cell inside Create Shipping Label form")
+        static let customsCellTitle = NSLocalizedString("Customs", comment: "Title of the cell Customs inside Create Shipping Label form")
+        static let customsCellSubtitle = NSLocalizedString("Fill out customs form", comment: "Subtitle of the cell Customs inside Create Shipping Label form")
         // Purchase progress view
         static let purchaseProgressTitle = NSLocalizedString("Purchasing Label", comment: "Title of the in-progress UI while purchasing a shipping label")
         static let purchaseProgressMessage = NSLocalizedString("Please wait", comment: "Message of the in-progress UI while purchasing a shipping label")

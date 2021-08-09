@@ -49,6 +49,12 @@ struct ShippingLabelCustomsFormInput: View {
                     .padding(.bottom, Constants.verticalPadding)
                     .padding(.horizontal, Constants.horizontalPadding)
                     .padding(.horizontal, insets: safeAreaInsets)
+
+                TitleAndValueRow(title: Localization.contentTypeTitle, value: viewModel.customsForm.contentsType.localizedName, selectable: true) {}
+                .padding(.horizontal, insets: safeAreaInsets)
+
+                Divider()
+                    .padding(.leading, Constants.horizontalPadding)
             }
         }
         .padding(.top, Constants.verticalPadding)
@@ -59,12 +65,20 @@ struct ShippingLabelCustomsFormInput: View {
 private extension ShippingLabelCustomsFormInput {
     enum Constants {
         static let horizontalPadding: CGFloat = 16
-        static let verticalPadding: CGFloat = 13
+        static let verticalPadding: CGFloat = 8
     }
     enum Localization {
         static let packageNumber = NSLocalizedString("Package %1$d", comment: "Package index in Customs screen of Shipping Label flow")
         static let returnPolicyTitle = NSLocalizedString("Return to sender if package is unabled to be delivered",
                                                          comment: "Title for the return policy in Customs screen of Shipping Label flow")
+        static let contentTypeTitle = NSLocalizedString("Content Type",
+                                                        comment: "Title for the Content Type row in Customs screen of Shipping Label flow")
+        static let restrictionTypeTitle = NSLocalizedString("Restriction Type",
+                                                            comment: "Title for the Restriction Type row in Customs screen of Shipping Label flow")
+        static let itnTitle = NSLocalizedString("ITN",
+                                                comment: "Title for the ITN row in Customs screen of Shipping Label flow")
+        static let itnPlaceholder = NSLocalizedString("Enter ITN (optional)",
+                                                      comment: "Placeholder for the ITN row in Customs screen of Shippling Label flow")
     }
 }
 

@@ -18,6 +18,8 @@ struct InPersonPaymentsView: View {
             switch viewModel.state {
             case .wcpayNotInstalled:
                 InPersonPaymentsPluginNotInstalled(onRefresh: viewModel.refresh)
+            case .wcpayNotActivated:
+                InPersonPaymentsPluginNotActivatedView(onRefresh: viewModel.refresh)
             case .completed:
                 CardReaderSettingsPresentingView()
             default:

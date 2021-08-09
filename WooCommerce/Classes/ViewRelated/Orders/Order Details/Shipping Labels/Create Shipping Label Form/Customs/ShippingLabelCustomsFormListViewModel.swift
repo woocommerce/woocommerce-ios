@@ -13,7 +13,7 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
 
     /// References of input view models.
     ///
-    private(set) var inputViewModels: [ShippingLabelCustomsFormInputViewModel] = []
+    private(set) var inputViewModels: [ShippingLabelCustomsFormInputViewModel]
 
     /// Input customs forms of the shipping label if added initially.
     ///
@@ -43,5 +43,6 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
         self.customsForms = customsForms
         self.stores = stores
         self.storageManager = storageManager
+        self.inputViewModels = customsForms.map { .init(customsForm: $0) }
     }
 }

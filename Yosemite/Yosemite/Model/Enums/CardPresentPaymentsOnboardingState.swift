@@ -1,12 +1,12 @@
 /// Represents the possible states for onboarding to In-Person payments
-public enum CardPresentPaymentOnboardingState {
+public enum CardPresentPaymentOnboardingState: Equatable {
     /// All the requirements are met and the feature is ready to use
     ///
     case completed
 
     /// Store is not located in one of the supported countries.
     ///
-    case countryNotSupported
+    case countryNotSupported(countryCode: String)
 
     /// WCPay plugin is not installed on the store.
     ///

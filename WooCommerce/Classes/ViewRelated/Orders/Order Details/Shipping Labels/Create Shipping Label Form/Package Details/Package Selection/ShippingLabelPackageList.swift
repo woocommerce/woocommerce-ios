@@ -8,7 +8,7 @@ struct ShippingLabelPackageList: View {
     var body: some View {
         GeometryReader { geometry in
             NavigationView {
-                ZStack(alignment: .bottom) {
+                VStack(spacing: 0) {
                     ScrollView {
                         LazyVStack(spacing: 0) {
                             /// Custom Packages

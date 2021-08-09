@@ -28,7 +28,7 @@ struct ShippingLabelCustomsFormInput: View {
                         .font(.headline)
                     Text("-")
                         .font(.body)
-                    Text("TODO: get package name")
+                    Text(viewModel.customsForm.packageName)
                         .font(.body)
                     Spacer()
                     if isCollapsible {
@@ -71,7 +71,7 @@ private extension ShippingLabelCustomsFormInput {
 struct ShippingLabelCustomsFormInput_Previews: PreviewProvider {
     static let sampleViewModel: ShippingLabelCustomsFormInputViewModel = {
         let sampleOrder = ShippingLabelPackageDetailsViewModel.sampleOrder()
-        let sampleForm = ShippingLabelCustomsForm(packageID: "Food Package", productIDs: sampleOrder.items.map { $0.productID })
+        let sampleForm = ShippingLabelCustomsForm(packageID: "Food Package", packageName: "Food Package", productIDs: sampleOrder.items.map { $0.productID })
         return .init(customsForm: sampleForm)
     }()
 

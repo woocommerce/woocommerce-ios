@@ -1059,6 +1059,7 @@ extension ShippingLabelCustomsForm {
     public static func fake() -> ShippingLabelCustomsForm {
         .init(
             packageID: .fake(),
+            packageName: .fake(),
             contentsType: .fake(),
             contentExplanation: .fake(),
             restrictionType: .fake(),

@@ -11,6 +11,13 @@ public struct ShippingLabelCustomsForm: Hashable, Equatable, GeneratedFakeable {
     ///
     public let packageID: String
 
+    /// Name of the associated package.
+    ///
+    /// This is for identifying the package when inputing customs form only,
+    /// no need for encoding and sending to remote.
+    ///
+    public let packageName: String
+
     /// Type of contents to declare with customs.
     public let contentsType: ContentsType
 
@@ -35,6 +42,7 @@ public struct ShippingLabelCustomsForm: Hashable, Equatable, GeneratedFakeable {
     /// Memberwise initializer
     ///
     public init(packageID: String,
+                packageName: String,
                 contentsType: ShippingLabelCustomsForm.ContentsType,
                 contentExplanation: String,
                 restrictionType: ShippingLabelCustomsForm.RestrictionType,
@@ -43,6 +51,7 @@ public struct ShippingLabelCustomsForm: Hashable, Equatable, GeneratedFakeable {
                 itn: String,
                 items: [ShippingLabelCustomsForm.Item]) {
         self.packageID = packageID
+        self.packageName = packageName
         self.contentsType = contentsType
         self.contentExplanation = contentExplanation
         self.restrictionType = restrictionType
@@ -54,11 +63,12 @@ public struct ShippingLabelCustomsForm: Hashable, Equatable, GeneratedFakeable {
 
     /// Convenient intializer
     ///
-    public init(packageID: String, productIDs: [Int64]) {
+    public init(packageID: String, packageName: String, productIDs: [Int64]) {
         let items = productIDs.map { id in
             Item(description: "", quantity: 1, value: 0, weight: 0, hsTariffNumber: "", originCountry: "", productID: id)
         }
         self.init(packageID: packageID,
+                  packageName: packageName,
                   contentsType: .merchandise,
                   contentExplanation: "",
                   restrictionType: .none,

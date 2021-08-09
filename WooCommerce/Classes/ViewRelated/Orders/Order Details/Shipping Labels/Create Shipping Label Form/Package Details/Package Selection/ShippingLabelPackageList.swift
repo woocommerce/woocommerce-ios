@@ -63,20 +63,12 @@ struct ShippingLabelPackageList: View {
                     }))
 
                     if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsAddCustomPackages) {
-                        VStack(spacing: 0) {
-                            Divider()
-                            Button(action: {
-                                // TODO-3909: Navigate to create custom package screen
-                            }) {
-                                HStack {
-                                    Image(uiImage: .plusImage)
-                                    Text(Localization.createPackageButton)
-                                    Spacer()
-                                }
-                            }
-                            .buttonStyle(LinkButtonStyle())
-                            .background(Color(.listForeground))
-                        }.edgesIgnoringSafeArea([.bottom])
+                        BottomButtonView(style: LinkButtonStyle(),
+                                         title: Localization.createPackageButton,
+                                         image: .plusImage,
+                                         onButtonTapped: {
+                                            // TODO-3909: Navigate to create custom package screen
+                                         })
                     }
                 }
             }

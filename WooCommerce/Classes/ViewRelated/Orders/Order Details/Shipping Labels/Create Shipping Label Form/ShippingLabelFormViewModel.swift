@@ -40,11 +40,7 @@ final class ShippingLabelFormViewModel {
     /// Packages
     ///
     private(set) var packagesResponse: ShippingLabelPackagesResponse?
-    private(set) var selectedPackageID: String? {
-        didSet {
-            setDefaultCustomsFormsIfNeeded()
-        }
-    }
+    private(set) var selectedPackageID: String?
 
     /// Customs forms
     ///
@@ -222,13 +218,14 @@ final class ShippingLabelFormViewModel {
 
         // We reset the selected customs forms & carrier & rates because if the package change
         // these change accordingly.
-        handleCustomsFormsValueChanges(customsForms: [])
+        let forms = createDefaultCustomsFormsIfNeeded()
+        handleCustomsFormsValueChanges(customsForms: forms, isValidated: false)
         handleCarrierAndRatesValueChanges(selectedRate: nil, selectedSignatureRate: nil, selectedAdultSignatureRate: nil, editable: false)
     }
 
-    func handleCustomsFormsValueChanges(customsForms: [ShippingLabelCustomsForm]) {
+    func handleCustomsFormsValueChanges(customsForms: [ShippingLabelCustomsForm], isValidated: Bool) {
         self.customsForms = customsForms
-        guard customsForms.isNotEmpty else {
+        guard isValidated else {
             return updateRowState(type: .customs, dataState: .pending, displayMode: .editable)
         }
         updateRowState(type: .customs, dataState: .validated, displayMode: .editable)
@@ -609,12 +606,12 @@ private extension ShippingLabelFormViewModel {
     /// Temporary solution for creating default customs forms.
     /// When multi-package support is available, we should create separate form for each package ID.
     ///
-    private func setDefaultCustomsFormsIfNeeded() {
+    private func createDefaultCustomsFormsIfNeeded() -> [ShippingLabelCustomsForm] {
         guard customsFormRequired, let packageID = selectedPackageID else {
-            return customsForms = []
+            return []
         }
         let productIDs = order.items.map { $0.productOrVariationID }
-        customsForms = [ShippingLabelCustomsForm(packageID: packageID, productIDs: productIDs)]
+        return [ShippingLabelCustomsForm(packageID: packageID, productIDs: productIDs)]
     }
 }
 

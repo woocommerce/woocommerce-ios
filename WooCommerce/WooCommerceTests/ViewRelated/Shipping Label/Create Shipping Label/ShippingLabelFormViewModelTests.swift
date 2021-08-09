@@ -219,7 +219,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         shippingLabelFormViewModel.handleOriginAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(phone: "0123456789", country: "US"),
                                                                    validated: true)
         shippingLabelFormViewModel.handleDestinationAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(country: "VN"), validated: true)
-        shippingLabelFormViewModel.handleCustomsFormsValueChanges(customsForms: [ShippingLabelCustomsForm.fake()])
+        shippingLabelFormViewModel.handleCustomsFormsValueChanges(customsForms: [ShippingLabelCustomsForm.fake()], isValidated: true)
         shippingLabelFormViewModel.handleCarrierAndRatesValueChanges(selectedRate: MockShippingLabelCarrierRate.makeRate(),
                                                                      selectedSignatureRate: nil,
                                                                      selectedAdultSignatureRate: nil,
@@ -231,7 +231,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         shippingLabelFormViewModel.handlePackageDetailsValueChanges(selectedPackageID: expectedPackageID, totalPackageWeight: expectedPackageWeight)
 
         // Then
-        XCTAssertTrue(shippingLabelFormViewModel.customsForms.isEmpty)
+        XCTAssertEqual(shippingLabelFormViewModel.customsForms.first?.packageID, expectedPackageID)
         XCTAssertNil(shippingLabelFormViewModel.selectedRate)
 
         let rows = shippingLabelFormViewModel.state.sections.first?.rows
@@ -253,7 +253,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         shippingLabelFormViewModel.handleOriginAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(phone: "0123456789", country: "US"),
                                                                    validated: true)
         shippingLabelFormViewModel.handleDestinationAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(country: "VN"), validated: true)
-        shippingLabelFormViewModel.handleCustomsFormsValueChanges(customsForms: [ShippingLabelCustomsForm.fake()])
+        shippingLabelFormViewModel.handleCustomsFormsValueChanges(customsForms: [ShippingLabelCustomsForm.fake()], isValidated: true)
         shippingLabelFormViewModel.handleCarrierAndRatesValueChanges(selectedRate: MockShippingLabelCarrierRate.makeRate(),
                                                                      selectedSignatureRate: nil,
                                                                      selectedAdultSignatureRate: nil,
@@ -261,7 +261,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertNotNil(shippingLabelFormViewModel.selectedRate)
 
         // When
-        shippingLabelFormViewModel.handleCustomsFormsValueChanges(customsForms: [ShippingLabelCustomsForm.fake()])
+        shippingLabelFormViewModel.handleCustomsFormsValueChanges(customsForms: [ShippingLabelCustomsForm.fake()], isValidated: true)
 
         // Then
         XCTAssertNil(shippingLabelFormViewModel.selectedRate)
@@ -884,13 +884,11 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         viewModel.handlePackageDetailsValueChanges(selectedPackageID: expectedPackageID, totalPackageWeight: "55")
 
         // Then
-        DispatchQueue.main.async {
-            let defaultForms = viewModel.customsForms
-            XCTAssertEqual(defaultForms.count, 1)
-            XCTAssertEqual(defaultForms.first?.packageID, expectedPackageID)
-            XCTAssertEqual(defaultForms.first?.items.count, 1)
-            XCTAssertEqual(defaultForms.first?.items.first?.productID, expectedProductID)
-        }
+        let defaultForms = viewModel.customsForms
+        XCTAssertEqual(defaultForms.count, 1)
+        XCTAssertEqual(defaultForms.first?.packageID, expectedPackageID)
+        XCTAssertEqual(defaultForms.first?.items.count, 1)
+        XCTAssertEqual(defaultForms.first?.items.first?.productID, expectedProductID)
     }
 }
 

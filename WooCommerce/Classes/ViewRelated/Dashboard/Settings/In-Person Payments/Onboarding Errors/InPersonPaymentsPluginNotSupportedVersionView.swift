@@ -10,15 +10,14 @@ struct InPersonPaymentsPluginNotSupportedVersionView: View {
             VStack(alignment: .center, spacing: 42) {
                 Text(Localization.title)
                     .font(.headline)
-                    .multilineTextAlignment(.center)
                 Image(uiImage: .paymentsPlugin)
                     .resizable()
                     .scaledToFit()
                     .frame(height: 108.0)
                 Text(Localization.message)
                     .font(.callout)
-                    .multilineTextAlignment(.center)
             }
+            .multilineTextAlignment(.center)
 
             Spacer()
 

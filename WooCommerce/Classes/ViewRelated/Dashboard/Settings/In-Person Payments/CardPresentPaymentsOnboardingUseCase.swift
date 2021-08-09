@@ -65,7 +65,7 @@ struct CardPresentPaymentsOnboardingUseCase {
         }
 
         guard isCountrySupported(countryCode: countryCode) else {
-            return .countryNotSupported
+            return .countryNotSupported(countryCode: countryCode)
         }
 
         // Plugin checks

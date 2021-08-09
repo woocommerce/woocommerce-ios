@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-07-20 10:54:04+0000 */
+/* Translation-Revision-Date: 2021-08-04 12:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -631,7 +631,8 @@
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "连接读卡器";
 
-/* Settings > Manage Card Reader > Prompt user to connect their first reader */
+/* Settings > Manage Card Reader > Prompt user to connect their first reader
+   Settings > Manage Card Reader > Prompt user to connect their reader */
 "Connect your card reader" = "连接您的读卡器";
 
 /* Link on the store picker when there are no stores available. Opens a webview about Jetpack setup. */
@@ -747,6 +748,9 @@
 /* Create Shipping Label form navigation title
    Text on the button that starts shipping label creation */
 "Create Shipping Label" = "创建配送标签";
+
+/* The title of the shipping labels top banner in order details */
+"Create shipping labels from your device!" = "通过您的设备创建配送标签！";
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "创建您的第一个变体";
@@ -1305,6 +1309,13 @@
 /* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} Parameters: %1$@ - order number, %2$@ - store name */
 "In-Person Payment for Order #%1$@ for %2$@" = "对 %2$@ 的订单 #%1$@ 面对面付款";
 
+/* Navigates to In-Person Payments screen
+   Title for the In-Person Payments settings screen */
+"In-Person Payments" = "现场付款";
+
+/* Title for the error screen when In-Person Payments is unavailable */
+"In-Person Payments is currently unavailable" = "当前不支持现场付款";
+
 /* Application's Inactive State */
 "Inactive" = "未激活";
 
@@ -1423,6 +1434,9 @@
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
 "Learn more about creating labels with your phone" = "详细了解如何使用手机创建配送标签";
+
+/* Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
+"Learn more about roles and permissions" = "了解更多关于角色和权限的信息";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal（8.5 x 14 英寸）";
@@ -1825,9 +1839,6 @@
    Order Total label for payment view */
 "Order Total" = "订单总计";
 
-/* Order fulfillment success notice */
-"Order marked as fulfilled" = "已将订单标记为已完成";
-
 /* Order status update success notice */
 "Order status updated" = "订单状态已更新";
 
@@ -2038,9 +2049,6 @@
 
 /* Button to print receipts. Presented to users after a payment has been successfully collected */
 "Print receipt" = "打印收据";
-
-/* The title of the shipping labels top banner in order details */
-"Print shipping labels from your device!" = "通过您的设备打印配送标签！";
 
 /* Title of in-progress modal when requesting shipping label document for printing */
 "Printing Label" = "打印标签";
@@ -2294,8 +2302,8 @@
 /* VoiceOver accessibility hint, informing the user the button can be used to search products. */
 "Retrieves a list of products that contain a given keyword." = "检索包含给定关键字的产品列表。";
 
-/* Retry Action
-   Retry the last action */
+/* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
+   Retry Action - Retry the last action */
 "Retry" = "重试";
 
 /* Revenue stat label on dashboard. */
@@ -3001,6 +3009,9 @@
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "此应用程序需要您在服务器上安装 WooCommerce 3.5，否则无法正常运行。请尽快更新以便继续使用此应用程序。";
 
+/* Message explaining more detail on why the user's role is incorrect. */
+"This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "此应用程序仅支持管理员和商店经理用户角色。 请联系商店所有者，升级角色。";
+
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "此电子邮件地址并未在 WordPress.com 上注册。";
 
@@ -3203,6 +3214,9 @@
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "无法刷新列表";
+
+/* An error message shown when failing to retrieve information about user roles, before letting the user in to manage the store. */
+"Unable to retrieve user roles." = "无法检索用户角色。";
 
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
 "Unable to save changes to the payment method" = "无法保存对付款方式的更改";
@@ -3419,9 +3433,6 @@
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Watch your audience grow with in-depth analytics." = "通过深入分析观察您的受众增长。";
 
-/* The info of the shipping labels top banner in order details */
-"We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "我们正竭力让您可以更轻松地直接通过设备打印配送标签！ 现在，如果您使用 WooCommerce Shipping 在商店管理中为某个订单创建了标签，则可以在此处的“订单详情”中打印标签。";
-
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "我们正竭力让您可以更轻松地直接通过设备查看产品加载项！ 目前，您可以看到适合您的订单的加载项。 您可以在 Web 控制面板中创建并编辑这些加载项。";
 
@@ -3448,6 +3459,9 @@
 
 /* Banner caption in Shipping Label Address Validation when the destination address can't be verified. */
 "We were unable to automatically verify the shipping address. View on Apple Maps or try contacting the customer to make sure the address is correct." = "我们无法自动验证配送地址。 请在 Apple Maps 上查看或尝试联系客户以确保地址正确。";
+
+/* Banner caption in Shipping Label Address Validation when the destination address can't be verified and no customer phone number is found. */
+"We were unable to automatically verify the shipping address. View on Apple Maps to make sure the address is correct." = "我们无法自动验证配送地址。 请在 Apple Maps 上查看，以确保地址正确。";
 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "此时，我们无法向您发送电子邮件。请稍后重试。";
@@ -3545,14 +3559,23 @@
 /* Yesterday Section Header */
 "Yesterday" = "昨天";
 
+/* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
+"You are not authorized to access this store." = "您无权访问此商店。";
+
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "您可以在 Web 仪表盘中编辑产品加载项。";
 
 /* The info of the top banner on the Products tab. */
 "You can now create and manage product variations!" = "您现在可以创建和管理产品变体！";
 
+/* The info of the shipping labels top banner in order details */
+"You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "现在，您可以利用免费的 WooCommerce Shipping 插件，直接通过您的设备为所有实体订单创建配送标签。 轻按“创建配送标签”试用我们的 Beta 版功能！";
+
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "您可以对尚未用于配送包裹的配送标签申请退款。\n此过程至少需要 14 天的处理时间。";
+
+/* Generic error message when In-Person Payments is unavailable */
+"You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "您仍然可以在商店中启用“货到付款”的支付方式，来接受现场现金付款。";
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "这个 E-mail 地址不可用。我们发现这个 E-mail 提供商会屏蔽我们的邮件，请更换一个。";
@@ -3615,6 +3638,9 @@
 
 /* Customer note, wrapped in quotes */
 "“%@”" = "“%@”";
+
+/* Success notice when tapping Mark Order Complete on Review Order screen */
+"🎉 Order Completed" = "🎉 订单已完成";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 产品已成功退款";

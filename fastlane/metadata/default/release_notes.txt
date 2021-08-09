@@ -1,3 +1,5 @@
-Due to popular demand, we’ve brought back the order fulfillment screen when tapping on Mark Order Complete. Thank you to everyone who reached out to let us know your interest in that functionality!
+Merchants in the US wanting to create shipping labels for their US customers will find several minor improvements. If you’re not already printing labels from the app, start by installing the WooCommerce Shipping & Tax extension on your site.
 
-We’ve added initial support for creating shipping labels to the app! Want to give it a try? Install and activate the WooCommerce Shipping & Tax extension in your store. Right now, we support merchants in the USA shipping to USA addresses. We welcome your feedback!
+We also took a look at how the app looked on different screen sizes and phone types. We corrected a bunch of minor but meaningful visual issues, especially noticeable on iPads.
+
+As always, we welcome your feedback about the app. Reach out to us through the app under Settings in the My store tab.

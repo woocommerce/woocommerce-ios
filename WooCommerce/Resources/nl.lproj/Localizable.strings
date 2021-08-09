@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-07-23 11:54:04+0000 */
+/* Translation-Revision-Date: 2021-08-04 14:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -631,7 +631,8 @@
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "Verbinding maken met lezer";
 
-/* Settings > Manage Card Reader > Prompt user to connect their first reader */
+/* Settings > Manage Card Reader > Prompt user to connect their first reader
+   Settings > Manage Card Reader > Prompt user to connect their reader */
 "Connect your card reader" = "Je kaartlezer koppelen";
 
 /* Link on the store picker when there are no stores available. Opens a webview about Jetpack setup. */
@@ -747,6 +748,9 @@
 /* Create Shipping Label form navigation title
    Text on the button that starts shipping label creation */
 "Create Shipping Label" = "Verzendlabel aanmaken";
+
+/* The title of the shipping labels top banner in order details */
+"Create shipping labels from your device!" = "Maak verzendlabels vanaf je apparaat!";
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "Je eerste variatie maken";
@@ -1305,6 +1309,13 @@
 /* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} Parameters: %1$@ - order number, %2$@ - store name */
 "In-Person Payment for Order #%1$@ for %2$@" = "Fysieke betaling voor bestelnr. %1$@ voor %2$@";
 
+/* Navigates to In-Person Payments screen
+   Title for the In-Person Payments settings screen */
+"In-Person Payments" = "Fysieke betalingen";
+
+/* Title for the error screen when In-Person Payments is unavailable */
+"In-Person Payments is currently unavailable" = "Fysieke betalingen zijn momenteel niet beschikbaar.";
+
 /* Application's Inactive State */
 "Inactive" = "Inactief";
 
@@ -1423,6 +1434,9 @@
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
 "Learn more about creating labels with your phone" = "Meer informatie over labels met je telefoon aanmaken";
+
+/* Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
+"Learn more about roles and permissions" = "Meer informatie over rollen en machtigingen";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal (8,5 x 14 inch)";
@@ -1825,9 +1839,6 @@
    Order Total label for payment view */
 "Order Total" = "Totaalaantal bestellingen";
 
-/* Order fulfillment success notice */
-"Order marked as fulfilled" = "Bestelling gemarkeerd als voltooid";
-
 /* Order status update success notice */
 "Order status updated" = "Bestelstatus bijgewerkt";
 
@@ -2038,9 +2049,6 @@
 
 /* Button to print receipts. Presented to users after a payment has been successfully collected */
 "Print receipt" = "Kwitantie afdrukken";
-
-/* The title of the shipping labels top banner in order details */
-"Print shipping labels from your device!" = "Verzendlabels afdrukken vanaf je apparaat!";
 
 /* Title of in-progress modal when requesting shipping label document for printing */
 "Printing Label" = "Label wordt afgedrukt";
@@ -2294,8 +2302,8 @@
 /* VoiceOver accessibility hint, informing the user the button can be used to search products. */
 "Retrieves a list of products that contain a given keyword." = "Haalt een lijst op met producten die een bepaald trefwoord bevatten.";
 
-/* Retry Action
-   Retry the last action */
+/* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
+   Retry Action - Retry the last action */
 "Retry" = "Opnieuw";
 
 /* Revenue stat label on dashboard. */
@@ -3001,6 +3009,9 @@
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "Voor deze app moet WooCommerce 3.5 op je server zijn geïnstalleerd. Zonder deze versie zal de app niet goed werken. Werk WooCommerce zo snel mogelijk bij om deze app te blijven gebruiken.";
 
+/* Message explaining more detail on why the user's role is incorrect. */
+"This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "Deze app ondersteunt alleen de gebruikersrollen Beheerder en Winkelmanager. Neem contact op met je winkeleigenaar voor het upgraden van je rol.";
+
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "Dit e-mailadres is niet geregistreerd op WordPress.com.";
 
@@ -3203,6 +3214,9 @@
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "Kan lijst niet vernieuwen";
+
+/* An error message shown when failing to retrieve information about user roles, before letting the user in to manage the store. */
+"Unable to retrieve user roles." = "Kon gebruikersrollen niet ophalen.";
 
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
 "Unable to save changes to the payment method" = "Kan wijzigingen aan de betalingsmethode niet opslaan";
@@ -3419,9 +3433,6 @@
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Watch your audience grow with in-depth analytics." = "Zie hoe je publiek groeit met uitgebreide statistieken.";
 
-/* The info of the shipping labels top banner in order details */
-"We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "We zijn bezig om het eenvoudiger voor je te maken om verzendlabels rechtstreeks vanaf je apparaat af te drukken! Als je met WooCommerce Shipping labels voor een bestelling hebt aangemaakt bij je winkelbeheer, kan je ze voorlopig hier, bij je bestelgegevens, afdrukken.";
-
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "We zijn bezig om het eenvoudiger voor je te maken om extra opties voor je product vanaf je apparaat te bekijken! Voor nu kun je de extra opties voor je bestellingen weergeven. Je kunt deze extra opties maken en bewerken vanaf je webdashboard.";
 
@@ -3448,6 +3459,9 @@
 
 /* Banner caption in Shipping Label Address Validation when the destination address can't be verified. */
 "We were unable to automatically verify the shipping address. View on Apple Maps or try contacting the customer to make sure the address is correct." = "We konden het verzendadres niet automatisch verifiëren. Bekijk op Apple Maps of probeer contact op te nemen met de klant om te controleren of het adres klopt.";
+
+/* Banner caption in Shipping Label Address Validation when the destination address can't be verified and no customer phone number is found. */
+"We were unable to automatically verify the shipping address. View on Apple Maps to make sure the address is correct." = "We konden het verzendadres niet automatisch verifiëren. Bekijk op Apple Maps om te controleren of het adres klopt.";
 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "We konden je op dit moment geen e-mail sturen. Probeer het later nogmaals.";
@@ -3545,14 +3559,23 @@
 /* Yesterday Section Header */
 "Yesterday" = "Gisteren";
 
+/* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
+"You are not authorized to access this store." = "Je bent niet gemachtigd deze winkel te openen.";
+
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "Je kunt deze productaddons bewerken vanaf je webdashboard.";
 
 /* The info of the top banner on the Products tab. */
 "You can now create and manage product variations!" = "Je kunt nu productvariaties aanmaken en beheren!";
 
+/* The info of the shipping labels top banner in order details */
+"You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "Je kunt nu verzendlabels rechtstreeks vanaf je apparaat aanmaken voor alle fysieke bestellingen met de gratis WooCommerce Shipping-plugin. Tik op 'Verzendlabel aanmaken' om onze bètafunctie te proberen!";
+
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "Je kan een terugbetaling aanvragen voor een verzendlabel dat niet is gebruikt om een pakket te verzenden.\nHet duurt minimaal 14 dagen voordat dit is verwerkt.";
+
+/* Generic error message when In-Person Payments is unavailable */
+"You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "Je kunt nog altijd fysieke cashbetalingen door de betaalmethode 'Contant betalen bij ontvangst' in te schakelen in je winkel.";
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "Je kan dat e-mailadres niet gebruiken om je aan te melden. We hebben problemen met het blokkeren van sommige e-mailadressen. Probeer een andere e-mail provider.";
@@ -3615,6 +3638,9 @@
 
 /* Customer note, wrapped in quotes */
 "“%@”" = "“%@”";
+
+/* Success notice when tapping Mark Order Complete on Review Order screen */
+"🎉 Order Completed" = "🎉 Bestelling voltooid";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 Producten zijn terugbetaald";

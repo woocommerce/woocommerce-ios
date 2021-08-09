@@ -2,14 +2,14 @@ import SwiftUI
 import Yosemite
 
 struct ShippingLabelCustomsFormInput: View {
-    private let isCollasible: Bool
+    private let isCollapsible: Bool
     private let packageNumber: Int
     private let safeAreaInsets: EdgeInsets
     @ObservedObject private var viewModel: ShippingLabelCustomsFormInputViewModel
     @State private var isCollapsed = false
 
-    init(isCollasible: Bool, packageNumber: Int, safeAreaInsets: EdgeInsets, viewModel: ShippingLabelCustomsFormInputViewModel) {
-        self.isCollasible = isCollasible
+    init(isCollapsible: Bool, packageNumber: Int, safeAreaInsets: EdgeInsets, viewModel: ShippingLabelCustomsFormInputViewModel) {
+        self.isCollapsible = isCollapsible
         self.packageNumber = packageNumber
         self.safeAreaInsets = safeAreaInsets
         self.viewModel = viewModel
@@ -18,8 +18,10 @@ struct ShippingLabelCustomsFormInput: View {
     var body: some View {
         VStack(spacing: Constants.verticalPadding) {
             Button(action: {
-                guard isCollasible else { return }
-                isCollapsed.toggle()
+                guard isCollapsible else { return }
+                withAnimation {
+                    isCollapsed.toggle()
+                }
             }, label: {
                 HStack {
                     Text(String(format: Localization.packageNumber, packageNumber))
@@ -29,7 +31,7 @@ struct ShippingLabelCustomsFormInput: View {
                     Text("TODO: get package name")
                         .font(.body)
                     Spacer()
-                    if isCollasible {
+                    if isCollapsible {
                         Image(uiImage: isCollapsed ? .chevronDownImage : .chevronUpImage)
                     }
                 }
@@ -39,15 +41,17 @@ struct ShippingLabelCustomsFormInput: View {
             .padding(.horizontal, insets: safeAreaInsets)
 
             Divider()
-                .padding(.leading, Constants.horizontalPadding)
 
-            Toggle(Localization.returnPolicyTitle, isOn: $viewModel.returnOnNonDelivery)
-                .font(.body)
-                .lineLimit(2)
-                .padding(.horizontal, Constants.horizontalPadding)
-                .padding(.horizontal, insets: safeAreaInsets)
+            if !isCollapsed {
+                Toggle(Localization.returnPolicyTitle, isOn: $viewModel.returnOnNonDelivery)
+                    .font(.body)
+                    .lineLimit(2)
+                    .padding(.bottom, Constants.verticalPadding)
+                    .padding(.horizontal, Constants.horizontalPadding)
+                    .padding(.horizontal, insets: safeAreaInsets)
+            }
         }
-        .padding(.vertical, Constants.verticalPadding)
+        .padding(.top, Constants.verticalPadding)
         .background(Color(.listForeground))
     }
 }
@@ -72,6 +76,6 @@ struct ShippingLabelCustomsFormInput_Previews: PreviewProvider {
     }()
 
     static var previews: some View {
-        ShippingLabelCustomsFormInput(isCollasible: true, packageNumber: 1, safeAreaInsets: .zero, viewModel: sampleViewModel)
+        ShippingLabelCustomsFormInput(isCollapsible: true, packageNumber: 1, safeAreaInsets: .zero, viewModel: sampleViewModel)
     }
 }

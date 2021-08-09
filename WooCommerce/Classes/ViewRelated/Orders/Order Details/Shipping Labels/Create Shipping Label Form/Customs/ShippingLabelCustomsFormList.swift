@@ -18,7 +18,7 @@ struct ShippingLabelCustomsFormList: View {
                 ForEach(Array(viewModel.customsForms.enumerated()), id: \.element) { (index, item) in
                     viewModel.inputViewModels.first(where: { $0.customsForm == item })
                         .map { inputModel in
-                            ShippingLabelCustomsFormInput(isCollasible: viewModel.multiplePackagesDetected,
+                            ShippingLabelCustomsFormInput(isCollapsible: viewModel.multiplePackagesDetected,
                                                           packageNumber: index + 1,
                                                           safeAreaInsets: geometry.safeAreaInsets,
                                                           viewModel: inputModel)

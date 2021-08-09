@@ -5,14 +5,27 @@ import protocol Storage.StorageManagerType
 /// View model for ShippingLabelsCustomsFormList
 ///
 final class ShippingLabelCustomsFormListViewModel: ObservableObject {
+    /// Whether packages multiple packages are found.
+    ///
+    lazy var multiplePackagesDetected: Bool = {
+        customsForms.count > 1
+    }()
+
+    /// References of input view models.
+    ///
+    private(set) var inputViewModels: [ShippingLabelCustomsFormInputViewModel] = []
+
+    /// Input customs forms of the shipping label if added initially.
+    ///
+    @Published var customsForms: [ShippingLabelCustomsForm] {
+        didSet {
+            inputViewModels = customsForms.map { .init(customsForm: $0) }
+        }
+    }
 
     /// Associated order of the shipping label.
     ///
     private let order: Order
-
-    /// Input customs forms of the shipping label if added initially.
-    ///
-    private let customsForms: [ShippingLabelCustomsForm]
 
     /// Stores to sync data of products and variations.
     ///

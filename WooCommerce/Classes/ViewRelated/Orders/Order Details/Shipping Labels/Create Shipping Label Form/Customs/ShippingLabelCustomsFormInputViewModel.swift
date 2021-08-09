@@ -7,7 +7,7 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
 
     /// Input customs forms to be updated
     ///
-    private let customsForm: ShippingLabelCustomsForm
+    private(set) var customsForm: ShippingLabelCustomsForm
 
     init(customsForm: ShippingLabelCustomsForm) {
         self.customsForm = customsForm

@@ -15,10 +15,18 @@ struct ShippingLabelCustomsFormList: View {
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
-        
+                ForEach(Array(viewModel.customsForms.enumerated()), id: \.element) { (index, item) in
+                    viewModel.inputViewModels.first(where: { $0.customsForm == item })
+                        .map { inputModel in
+                            ShippingLabelCustomsFormInput(isCollasible: viewModel.multiplePackagesDetected,
+                                                          packageNumber: index + 1,
+                                                          safeAreaInsets: geometry.safeAreaInsets,
+                                                          viewModel: inputModel)
+                        }
+                }
             }
             .background(Color(.listBackground))
-            .ignoresSafeArea()
+            .ignoresSafeArea(.container, edges: .horizontal)
         }
         .navigationTitle(Localization.navigationTitle)
         .navigationBarItems(trailing: Button(action: {

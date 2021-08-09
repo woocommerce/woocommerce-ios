@@ -21,7 +21,10 @@ public struct OrderItemAttribute: Decodable, Hashable, Equatable, GeneratedFakea
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let metaID = try container.decode(Int64.self, forKey: .metaID)
         let name = try container.decode(String.self, forKey: .name)
-        let value = try container.decode(String.self, forKey: .value)
+
+        /// Some extensions send the `value` field with non-string format.
+        /// We don't support those, but we also don't want the whole decoding to fail.
+        let value = container.failsafeDecodeIfPresent(String.self, forKey: .value) ?? ""
 
         // initialize the struct
         self.init(metaID: metaID, name: name, value: value)

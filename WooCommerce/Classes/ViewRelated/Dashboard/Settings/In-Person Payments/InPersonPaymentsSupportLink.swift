@@ -14,6 +14,7 @@ struct InPersonPaymentsSupportLink: View {
 
         let commonAttributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.callout,
+            .foregroundColor: UIColor.text,
             .paragraphStyle: paragraphStyle
         ]
         let result = NSMutableAttributedString()

@@ -62,19 +62,21 @@ struct ShippingLabelPackageList: View {
                         Text(Localization.doneButton)
                     }))
 
-                    VStack(spacing: 0) {
-                        Divider()
-                        Button(action: {
-                            // TODO-3909: Navigate to create custom package screen
-                        }) {
-                            HStack {
-                                Image(uiImage: .plusImage)
-                                Text(Localization.createPackageButton)
-                                Spacer()
-                            }.padding(.bottom, geometry.safeAreaInsets.bottom)
+                    if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsAddCustomPackages) {
+                        VStack(spacing: 0) {
+                            Divider()
+                            Button(action: {
+                                // TODO-3909: Navigate to create custom package screen
+                            }) {
+                                HStack {
+                                    Image(uiImage: .plusImage)
+                                    Text(Localization.createPackageButton)
+                                    Spacer()
+                                }.padding(.bottom, geometry.safeAreaInsets.bottom)
+                            }
+                            .buttonStyle(LinkButtonStyle())
+                            .background(Color(.listForeground))
                         }
-                        .buttonStyle(LinkButtonStyle())
-                        .background(Color(.listForeground))
                     }
                 }.edgesIgnoringSafeArea([.bottom])
             }

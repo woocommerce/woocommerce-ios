@@ -2,6 +2,7 @@ import SwiftUI
 import Yosemite
 
 struct ShippingLabelCustomsFormList: View {
+    @Environment(\.presentationMode) var presentation
     @ObservedObject private var viewModel: ShippingLabelCustomsFormListViewModel
     private let onCompletion: ([ShippingLabelCustomsForm]) -> Void
 
@@ -12,7 +13,27 @@ struct ShippingLabelCustomsFormList: View {
     }
 
     var body: some View {
-        Text("Hello, World!")
+        GeometryReader { geometry in
+            ScrollView {
+        
+            }
+            .background(Color(.listBackground))
+            .ignoresSafeArea()
+        }
+        .navigationTitle(Localization.navigationTitle)
+        .navigationBarItems(trailing: Button(action: {
+            onCompletion(viewModel.customsForms)
+            presentation.wrappedValue.dismiss()
+        }, label: {
+            Text(Localization.doneButton)
+        }))
+    }
+}
+
+private extension ShippingLabelCustomsFormList {
+    enum Localization {
+        static let navigationTitle = NSLocalizedString("Customs", comment: "Navigation title for Customs screen in Shipping Label flow")
+        static let doneButton = NSLocalizedString("Done", comment: "Done navigation button in the Customs screen in Shipping Label flow")
     }
 }
 

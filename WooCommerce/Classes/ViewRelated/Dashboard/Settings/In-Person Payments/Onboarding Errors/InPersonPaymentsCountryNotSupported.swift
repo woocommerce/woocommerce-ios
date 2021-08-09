@@ -14,7 +14,7 @@ struct InPersonPaymentsCountryNotSupported: View {
                 Image(uiImage: .paymentErrorImage)
                     .resizable()
                     .scaledToFit()
-                    .frame(height: 126.0)
+                    .frame(height: 180.0)
                 Text(Localization.message)
                     .font(.callout)
                     .multilineTextAlignment(.center)

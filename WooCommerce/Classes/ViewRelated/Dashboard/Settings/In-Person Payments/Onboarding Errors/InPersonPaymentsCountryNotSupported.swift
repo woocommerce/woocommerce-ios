@@ -10,15 +10,15 @@ struct InPersonPaymentsCountryNotSupported: View {
             VStack(alignment: .center, spacing: 42) {
                 Text(title)
                     .font(.headline)
-                    .multilineTextAlignment(.center)
                 Image(uiImage: .paymentErrorImage)
                     .resizable()
                     .scaledToFit()
                     .frame(height: 180.0)
                 Text(Localization.message)
                     .font(.callout)
-                    .multilineTextAlignment(.center)
+                InPersonPaymentsSupportLink()
             }
+            .multilineTextAlignment(.center)
 
             Spacer()
 

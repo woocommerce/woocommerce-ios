@@ -16,6 +16,8 @@ struct InPersonPaymentsView: View {
     var body: some View {
         Group {
             switch viewModel.state {
+            case .countryNotSupported(let countryCode):
+                InPersonPaymentsCountryNotSupported(countryCode: countryCode)
             case .wcpayNotInstalled:
                 InPersonPaymentsPluginNotInstalled(onRefresh: viewModel.refresh)
             case .completed:

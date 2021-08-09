@@ -870,7 +870,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertEqual(updatedRows?[2].displayMode, .disabled)
     }
 
-    func test_defaultCustomsForms_returns_correctly_with_a_selectedPackageID() {
+    func test_customsForms_returns_correctly_when_updating_selectedPackageID() {
         // Given
         let expectedProductID: Int64 = 123
         let expectedPackageID = "Food Package"
@@ -879,14 +879,18 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         let viewModel = ShippingLabelFormViewModel(order: order, originAddress: nil, destinationAddress: nil)
 
         // When
+        viewModel.handleOriginAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(phone: "0123456789", country: "US"), validated: true)
+        viewModel.handleDestinationAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(country: "VN"), validated: true)
         viewModel.handlePackageDetailsValueChanges(selectedPackageID: expectedPackageID, totalPackageWeight: "55")
 
         // Then
-        let defaultForms = viewModel.defaultCustomsForms
-        XCTAssertEqual(defaultForms.count, 1)
-        XCTAssertEqual(defaultForms.first?.packageID, expectedPackageID)
-        XCTAssertEqual(defaultForms.first?.items.count, 1)
-        XCTAssertEqual(defaultForms.first?.items.first?.productID, expectedProductID)
+        DispatchQueue.main.async {
+            let defaultForms = viewModel.customsForms
+            XCTAssertEqual(defaultForms.count, 1)
+            XCTAssertEqual(defaultForms.first?.packageID, expectedPackageID)
+            XCTAssertEqual(defaultForms.first?.items.count, 1)
+            XCTAssertEqual(defaultForms.first?.items.first?.productID, expectedProductID)
+        }
     }
 }
 

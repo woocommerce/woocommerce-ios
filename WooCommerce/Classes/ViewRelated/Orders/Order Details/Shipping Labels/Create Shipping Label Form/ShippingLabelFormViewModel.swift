@@ -40,22 +40,15 @@ final class ShippingLabelFormViewModel {
     /// Packages
     ///
     private(set) var packagesResponse: ShippingLabelPackagesResponse?
-    private(set) var selectedPackageID: String?
+    private(set) var selectedPackageID: String? {
+        didSet {
+            setDefaultCustomsFormsIfNeeded()
+        }
+    }
 
     /// Customs forms
     ///
     private (set) var customsForms: [ShippingLabelCustomsForm] = []
-
-    /// Temporary solution for creating default customs forms.
-    /// When multi-package support is available, we should create separate form for each package ID.
-    ///
-    var defaultCustomsForms: [ShippingLabelCustomsForm] {
-        guard let packageID = selectedPackageID else {
-            return []
-        }
-        let productIDs = order.items.map { $0.productOrVariationID }
-        return [ShippingLabelCustomsForm(packageID: packageID, productIDs: productIDs)]
-    }
 
     /// Carrier and Rates
     ///
@@ -611,6 +604,17 @@ private extension ShippingLabelFormViewModel {
         }
 
         return nil
+    }
+
+    /// Temporary solution for creating default customs forms.
+    /// When multi-package support is available, we should create separate form for each package ID.
+    ///
+    private func setDefaultCustomsFormsIfNeeded() {
+        guard customsFormRequired, let packageID = selectedPackageID else {
+            return customsForms = []
+        }
+        let productIDs = order.items.map { $0.productOrVariationID }
+        customsForms = [ShippingLabelCustomsForm(packageID: packageID, productIDs: productIDs)]
     }
 }
 

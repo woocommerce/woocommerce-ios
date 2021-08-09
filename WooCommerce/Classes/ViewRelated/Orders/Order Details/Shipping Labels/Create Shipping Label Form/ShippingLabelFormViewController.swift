@@ -282,7 +282,7 @@ private extension ShippingLabelFormViewController {
                        body: Localization.customsCellSubtitle,
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
             guard let self = self else { return }
-            self.displayCustomsFormListVC(customsForms: self.viewModel.defaultCustomsForms)
+            self.displayCustomsFormListVC(customsForms: self.viewModel.customsForms)
         }
     }
 

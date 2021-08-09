@@ -60,19 +60,22 @@ struct ShippingLabelPackageList: View {
                         presentation.wrappedValue.dismiss()
                     }, label: {
                         Text(Localization.doneButton)
-                }))
+                    }))
 
-                    Button(action: {
-                        // TODO-3909: Navigate to create custom package screen
-                    }) {
-                        HStack {
-                            Image(uiImage: .plusImage)
-                            Text(Localization.createPackageButton)
-                            Spacer()
-                        }.padding(.bottom, geometry.safeAreaInsets.bottom)
+                    VStack(spacing: 0) {
+                        Divider()
+                        Button(action: {
+                            // TODO-3909: Navigate to create custom package screen
+                        }) {
+                            HStack {
+                                Image(uiImage: .plusImage)
+                                Text(Localization.createPackageButton)
+                                Spacer()
+                            }.padding(.bottom, geometry.safeAreaInsets.bottom)
+                        }
+                        .buttonStyle(LinkButtonStyle())
+                        .background(Color(.listForeground))
                     }
-                    .buttonStyle(LinkButtonStyle())
-                    .background(Color(.listForeground))
                 }.edgesIgnoringSafeArea([.bottom])
             }
         }

@@ -120,7 +120,12 @@ private extension ProductFormTableViewDataSource {
             cell.configure(with: productImageStatuses, config: .extendedAddImages, productUIImageLoader: productUIImageLoader)
         }
         if productLabel.contains("draft") {
-            cell.productStatusLabel.text? = productLabel.capitalized
+            let statusLabel = NSLocalizedString("Draft", comment: "Display label for the product's draft status")
+            cell.productStatusLabel.text? = statusLabel
+            cell.productStatusLabel.textColor = UIColor.white
+            cell.productStatusLabel.font = UIFont.preferredFont(forTextStyle: .body)
+            cell.productStatusLabel.applyBodyStyle()
+            cell.productStatusLabel.applyStyle(for: .completed)
         } else {
             cell.productStatusLabel.text = ""
         }

@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+7.4
+-----
+
+
 7.3
 -----
 - [*] Order Detail: now we do not offer the "email note to customer" option if no email is available. [https://github.com/woocommerce/woocommerce-ios/pull/4680]

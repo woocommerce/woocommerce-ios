@@ -22,7 +22,7 @@ public struct OrderItemAttribute: Decodable, Hashable, Equatable, GeneratedFakea
         let metaID = try container.decode(Int64.self, forKey: .metaID)
         let name = try container.decode(String.self, forKey: .name)
 
-        /// Some extensions sent the `value` field with non-string format.
+        /// Some extensions send the `value` field with non-string format.
         /// We don't support those, but we also don't want the whole decoding to fail.
         let value = container.failsafeDecodeIfPresent(String.self, forKey: .value) ?? ""
 

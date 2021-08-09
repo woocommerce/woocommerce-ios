@@ -338,6 +338,7 @@ private extension OrderMapperTests {
     }
 
     /// Returns the OrderMapper output upon receiving `order-with-faulty-attributes`
+    /// Where the `value` to `_measurement_data` is not a `string` but a `JSON object`
     ///
     func mapLoadOrderWithFaultyAttributesResponse() -> Order? {
         return mapOrder(from: "order-with-faulty-attributes")

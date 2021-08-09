@@ -29,6 +29,8 @@ struct InPersonPaymentsView: View {
                 InPersonPaymentsCountryNotSupported(countryCode: countryCode)
             case .wcpayNotInstalled:
                 InPersonPaymentsPluginNotInstalled(onRefresh: viewModel.refresh)
+            case .wcpayUnsupportedVersion:
+                InPersonPaymentsPluginNotSupportedVersionView(onRefresh: viewModel.refresh)
             case .wcpayNotActivated:
                 InPersonPaymentsPluginNotActivatedView(onRefresh: viewModel.refresh)
             case .completed:

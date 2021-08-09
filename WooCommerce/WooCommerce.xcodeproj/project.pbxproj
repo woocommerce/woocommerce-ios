@@ -1137,7 +1137,8 @@
 		D85136DD231E613900DD0539 /* ReviewsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85136DC231E613900DD0539 /* ReviewsViewModelTests.swift */; };
 		D85806292642BA5400A8AB6C /* PaymentCaptureOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85806282642BA5400A8AB6C /* PaymentCaptureOrchestrator.swift */; };
 		D85A3C5026C153A500C0E026 /* InPersonPaymentsPluginNotActivatedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85A3C4F26C153A500C0E026 /* InPersonPaymentsPluginNotActivatedView.swift */; };
-		D85A3C5426C1906300C0E026 /* InPersonPaymentsPluginNotInstalledView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85A3C5326C1906300C0E026 /* InPersonPaymentsPluginNotInstalledView.swift */; };
+		D85A3C5226C15DE200C0E026 /* InPersonPaymentsPluginNotSupportedVersionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85A3C5126C15DE200C0E026 /* InPersonPaymentsPluginNotSupportedVersionView.swift */; };
+		D85A3C5626C1911600C0E026 /* InPersonPaymentsPluginNotInstalledView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85A3C5526C1911600C0E026 /* InPersonPaymentsPluginNotInstalledView.swift */; };
 		D85B8333222FABD1002168F3 /* StatusListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85B8331222FABD1002168F3 /* StatusListTableViewCell.swift */; };
 		D85B8334222FABD1002168F3 /* StatusListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D85B8332222FABD1002168F3 /* StatusListTableViewCell.xib */; };
 		D85B8336222FCDA1002168F3 /* StatusListTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85B8335222FCDA1002168F3 /* StatusListTableViewCellTests.swift */; };
@@ -2487,7 +2488,8 @@
 		D85136DC231E613900DD0539 /* ReviewsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReviewsViewModelTests.swift; path = WooCommerceTests/Reviews/ReviewsViewModelTests.swift; sourceTree = SOURCE_ROOT; };
 		D85806282642BA5400A8AB6C /* PaymentCaptureOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentCaptureOrchestrator.swift; sourceTree = "<group>"; };
 		D85A3C4F26C153A500C0E026 /* InPersonPaymentsPluginNotActivatedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsPluginNotActivatedView.swift; sourceTree = "<group>"; };
-		D85A3C5326C1906300C0E026 /* InPersonPaymentsPluginNotInstalledView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsPluginNotInstalledView.swift; sourceTree = "<group>"; };
+		D85A3C5126C15DE200C0E026 /* InPersonPaymentsPluginNotSupportedVersionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsPluginNotSupportedVersionView.swift; sourceTree = "<group>"; };
+		D85A3C5526C1911600C0E026 /* InPersonPaymentsPluginNotInstalledView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsPluginNotInstalledView.swift; sourceTree = "<group>"; };
 		D85B8331222FABD1002168F3 /* StatusListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusListTableViewCell.swift; sourceTree = "<group>"; };
 		D85B8332222FABD1002168F3 /* StatusListTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StatusListTableViewCell.xib; sourceTree = "<group>"; };
 		D85B8335222FCDA1002168F3 /* StatusListTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StatusListTableViewCellTests.swift; path = WooCommerceTests/ViewRelated/StatusListTableViewCellTests.swift; sourceTree = SOURCE_ROOT; };
@@ -6027,8 +6029,10 @@
 		E107FCDD26C1295600BAF51B /* Onboarding Errors */ = {
 			isa = PBXGroup;
 			children = (
-				D85A3C5326C1906300C0E026 /* InPersonPaymentsPluginNotInstalledView.swift */,
+				D85A3C5126C15DE200C0E026 /* InPersonPaymentsPluginNotSupportedVersionView.swift */,
+				D85A3C5526C1911600C0E026 /* InPersonPaymentsPluginNotInstalledView.swift */,
 				E107FCE026C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift */,
+				D85A3C4F26C153A500C0E026 /* InPersonPaymentsPluginNotActivatedView.swift */,
 			);
 			path = "Onboarding Errors";
 			sourceTree = "<group>";
@@ -6050,7 +6054,6 @@
 				E138D4F5269EDE77006EA5C6 /* InPersonPaymentsUnavailableView.swift */,
 				E138D4FB269EEAFE006EA5C6 /* InPersonPaymentsViewModel.swift */,
 				E15FC74426BC213500CF83E6 /* InPersonPaymentsLearnMore.swift */,
-				D85A3C4F26C153A500C0E026 /* InPersonPaymentsPluginNotActivatedView.swift */,
 				E107FCE226C13A0D00BAF51B /* InPersonPaymentsSupportLink.swift */,
 			);
 			path = "In-Person Payments";
@@ -6777,6 +6780,7 @@
 				B541B220218A007C008FE7C1 /* NSMutableParagraphStyle+Helpers.swift in Sources */,
 				45AE582C230D9D35001901E3 /* OrderNoteHeaderTableViewCell.swift in Sources */,
 				E1C47209267A1ECC00D06DA1 /* CrashLoggingStack.swift in Sources */,
+				D85A3C5226C15DE200C0E026 /* InPersonPaymentsPluginNotSupportedVersionView.swift in Sources */,
 				CE583A0B2107937F00D73C1C /* TextViewTableViewCell.swift in Sources */,
 				45AE150224A23F03005AA948 /* ProductParentCategoriesViewController.swift in Sources */,
 				B557652B20F681E800185843 /* StoreTableViewCell.swift in Sources */,
@@ -7172,7 +7176,7 @@
 				0272C00322EE9C3200D7CA2C /* AsyncDictionary.swift in Sources */,
 				57C503E023E8D4D600EC0790 /* OrdersTabbedViewModel.swift in Sources */,
 				028BAC3D22F2DECE008BB4AF /* StoreStatsAndTopPerformersViewController.swift in Sources */,
-				D85A3C5426C1906300C0E026 /* InPersonPaymentsPluginNotInstalledView.swift in Sources */,
+				D85A3C5626C1911600C0E026 /* InPersonPaymentsPluginNotInstalledView.swift in Sources */,
 				B59D1EDF219072CC009D1978 /* ProductReviewTableViewCell.swift in Sources */,
 				AEE1D4F525D14F88006A490B /* AttributeOptionListSelectorCommand.swift in Sources */,
 				020DD48A23229495005822B1 /* ProductsTabProductTableViewCell.swift in Sources */,

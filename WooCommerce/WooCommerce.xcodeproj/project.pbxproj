@@ -6018,6 +6018,14 @@
 			path = Plugins;
 			sourceTree = "<group>";
 		};
+		E107FCDD26C1295600BAF51B /* Onboarding Errors */ = {
+			isa = PBXGroup;
+			children = (
+				E1DD368226BD2BA20095EFBF /* InPersonPaymentsPluginNotInstalledView.swift */,
+			);
+			path = "Onboarding Errors";
+			sourceTree = "<group>";
+		};
 		E10DFC76267331450083AFF2 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -6029,12 +6037,12 @@
 		E138D4F2269ED99A006EA5C6 /* In-Person Payments */ = {
 			isa = PBXGroup;
 			children = (
+				E107FCDD26C1295600BAF51B /* Onboarding Errors */,
 				E12AF69826BA8ADC00C371C1 /* CardPresentPaymentsOnboardingUseCase.swift */,
 				E138D4F3269ED9C3006EA5C6 /* InPersonPaymentsViewController.swift */,
 				E138D4F5269EDE77006EA5C6 /* InPersonPaymentsUnavailableView.swift */,
 				E138D4FB269EEAFE006EA5C6 /* InPersonPaymentsViewModel.swift */,
 				E15FC74426BC213500CF83E6 /* InPersonPaymentsLearnMore.swift */,
-				E1DD368226BD2BA20095EFBF /* InPersonPaymentsPluginNotInstalledView.swift */,
 			);
 			path = "In-Person Payments";
 			sourceTree = "<group>";

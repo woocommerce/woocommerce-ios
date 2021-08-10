@@ -4,6 +4,7 @@ import Yosemite
 struct ShippingLabelPackageList: View {
     @ObservedObject var viewModel: ShippingLabelPackageDetailsViewModel
     @Environment(\.presentationMode) var presentation
+    @State private var isShowingNewPackageCreation = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -63,11 +64,14 @@ struct ShippingLabelPackageList: View {
                     }))
 
                     if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsAddCustomPackages) {
+                        NavigationLink(destination: ShippingLabelAddNewPackage(), isActive: $isShowingNewPackageCreation) {
+                            EmptyView()
+                        }
                         BottomButtonView(style: LinkButtonStyle(),
                                          title: Localization.createPackageButton,
                                          image: .plusImage,
                                          onButtonTapped: {
-                                            // TODO-3909: Navigate to create custom package screen
+                                            self.isShowingNewPackageCreation = true
                                          })
                     }
                 }

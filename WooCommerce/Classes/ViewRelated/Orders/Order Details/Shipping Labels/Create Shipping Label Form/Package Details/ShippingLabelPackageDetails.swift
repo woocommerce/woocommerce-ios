@@ -3,6 +3,7 @@ import Yosemite
 
 struct ShippingLabelPackageDetails: View {
     @ObservedObject private var viewModel: ShippingLabelPackageDetailsViewModel
+    @State private var showingPackageList = false
     @State private var showingAddPackage = false
     @Environment(\.presentationMode) var presentation
 
@@ -48,11 +49,18 @@ struct ShippingLabelPackageDetails: View {
                         Divider()
 
                         TitleAndValueRow(title: Localization.packageSelected, value: viewModel.selectedPackageName, selectable: true) {
-                            showingAddPackage.toggle()
+                            if viewModel.hasCustomOrPredefinedPackages() {
+                                showingPackageList.toggle()
+                            } else {
+                                showingAddPackage.toggle()
+                            }
                         }
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
-                        .sheet(isPresented: $showingAddPackage, content: {
+                        .sheet(isPresented: $showingPackageList, content: {
                             ShippingLabelPackageList(viewModel: viewModel)
+                        })
+                        .sheet(isPresented: $showingAddPackage, content: {
+                            ShippingLabelAddNewPackage()
                         })
 
                         Divider()

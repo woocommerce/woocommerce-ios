@@ -5,26 +5,28 @@ struct ShippingLabelAddNewPackage: View {
     @ObservedObject private var viewModel = ShippingLabelAddNewPackageViewModel()
 
     var body: some View {
-        VStack(spacing: 0) {
+        NavigationView {
             VStack(spacing: 0) {
-                SegmentedView(selection: $viewModel.selectedIndex, views: [Text(Localization.customPackage), Text(Localization.servicePackage)])
-                    .frame(height: 44)
-                Divider()
-            }
-            ScrollView {
-            }
-        }
-        .navigationTitle(Localization.title)
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    presentation.wrappedValue.dismiss()
-                } label: {
-                    Image(uiImage: .chevronImage.withHorizontallyFlippedOrientation())
+                VStack(spacing: 0) {
+                    SegmentedView(selection: $viewModel.selectedIndex, views: [Text(Localization.customPackage), Text(Localization.servicePackage)])
+                        .frame(height: 44)
+                    Divider()
                 }
+                ScrollView {
+                }
+            }
+            .navigationTitle(Localization.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        presentation.wrappedValue.dismiss()
+                    } label: {
+                        Image(uiImage: .chevronImage.withHorizontallyFlippedOrientation())
+                    }
 
+                }
             }
         }
     }

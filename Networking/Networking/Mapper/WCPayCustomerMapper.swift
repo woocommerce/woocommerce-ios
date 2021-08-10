@@ -13,7 +13,7 @@ struct WCPayCustomerMapper: Mapper {
     }
 }
 
-/// WCPayPaymentIntentEnvelope Disposable Entity
+/// WCPayCustomerEnvelope Disposable Entity
 ///
 /// Endpoint returns the customer in the `data` key. This entity
 /// allows us to parse it with JSONDecoder.

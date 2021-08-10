@@ -38,20 +38,20 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
     ///
     func configure(with productImageStatuses: [ProductImageStatus],
                    config: ProductImagesCellConfig,
-                   productUIImageLoader: ProductUIImageLoader) {
-        let viewModel = ProductImagesHeaderViewModel(productImageStatuses: productImageStatuses,
-                                               config: config)
+                   productUIImageLoader: ProductUIImageLoader,
+                   productStatusLabel: ProductStatus
+                    ) {
+        let viewModel = ProductImagesHeaderViewModel(productImageStatuses: productImageStatuses, config: config)
         self.viewModel = viewModel
         dataSource = ProductImagesCollectionViewDataSource(viewModel: viewModel,
                                                            productUIImageLoader: productUIImageLoader)
-
         configureCollectionView(config: config)
-
         viewModel.registerCollectionViewCells(collectionView)
 
         if viewModel.shouldScrollToStart {
             collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .centeredHorizontally, animated: false)
         }
+        configureProductStatusLabel(productStatus: productStatusLabel)
     }
 
     /// Rotation management
@@ -143,5 +143,23 @@ private extension ProductImagesHeaderTableViewCell {
         default:
             collectionView.collectionViewLayout = ProductImagesFlowLayout(itemSize: ProductImagesHeaderViewModel.defaultCollectionViewCellSize, config: config)
         }
+    }
+    func configureProductStatusLabel(productStatus: ProductStatus) {
+        if productStatus == ProductStatus.draft {
+            productStatusLabelHolder.isHidden = false
+            productStatusLabelHolder.backgroundColor = UIColor.gray
+            productStatusLabelHolder.layer.cornerRadius = CGFloat(2.0)
+            productStatusLabelHolder.layer.borderWidth = CGFloat(0.5)
+            let statusLabel = NSLocalizedString(productStatus.description, comment: "Display label for the product's draft status")
+            productStatusLabel.isHidden = false
+            productStatusLabel.text? = statusLabel
+            productStatusLabel.font = UIFont.preferredFont(forTextStyle: .body)
+            productStatusLabel.textColor = UIColor.white
+        } else {
+            self.productStatusLabel.text? = ""
+            self.productStatusLabelHolder.isHidden = true
+            self.productStatusLabel.isHidden = true
+        }
+
     }
 }

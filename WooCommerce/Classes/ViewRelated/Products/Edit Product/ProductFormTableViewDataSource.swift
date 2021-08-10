@@ -91,7 +91,7 @@ private extension ProductFormTableViewDataSource {
             configureDescription(cell: cell, description: description, isEditable: editable)
         }
     }
-    func configureImages(cell: UITableViewCell, isEditable: Bool, allowsMultipleImages: Bool, productLabel: String) {
+    func configureImages(cell: UITableViewCell, isEditable: Bool, allowsMultipleImages: Bool, productLabel: ProductStatus) {
         guard let cell = cell as? ProductImagesHeaderTableViewCell else {
             fatalError()
         }
@@ -106,29 +106,22 @@ private extension ProductFormTableViewDataSource {
         guard isEditable else {
             cell.configure(with: productImageStatuses,
                            config: .images,
-                           productUIImageLoader: productUIImageLoader)
+                           productUIImageLoader: productUIImageLoader,
+                           productStatusLabel: productLabel)
             return
         }
         if productImageStatuses.count > 0 {
             if allowsMultipleImages {
-                cell.configure(with: productImageStatuses, config: .addImages, productUIImageLoader: productUIImageLoader)
+                cell.configure(with: productImageStatuses,
+                               config: .addImages,
+                               productUIImageLoader: productUIImageLoader,
+                               productStatusLabel: productLabel)
             } else {
-                cell.configure(with: productImageStatuses, config: .images, productUIImageLoader: productUIImageLoader)
+                cell.configure(with: productImageStatuses, config: .images, productUIImageLoader: productUIImageLoader, productStatusLabel: productLabel)
             }
         }
         else {
-            cell.configure(with: productImageStatuses, config: .extendedAddImages, productUIImageLoader: productUIImageLoader)
-        }
-        if productLabel.contains("draft") {
-            cell.productStatusLabelHolder.backgroundColor = UIColor.gray
-            cell.productStatusLabelHolder.layer.cornerRadius = CGFloat(2.0)
-            cell.productStatusLabelHolder.layer.borderWidth = CGFloat(0.5)
-            let statusLabel = NSLocalizedString("Draft", comment: "Display label for the product's draft status")
-            cell.productStatusLabel.text? = statusLabel
-            cell.productStatusLabel.font = UIFont.preferredFont(forTextStyle: .body)
-            cell.productStatusLabel.textColor = UIColor.white
-        } else {
-            cell.productStatusLabel.text = ""
+            cell.configure(with: productImageStatuses, config: .extendedAddImages, productUIImageLoader: productUIImageLoader, productStatusLabel: productLabel)
         }
         cell.onImageSelected = { [weak self] (productImage, indexPath) in
             self?.onAddImage?()
@@ -137,7 +130,6 @@ private extension ProductFormTableViewDataSource {
             self?.onAddImage?()
         }
     }
-
     func configureName(cell: UITableViewCell, name: String?, isEditable: Bool) {
         if isEditable {
             configureEditableName(cell: cell, name: name)

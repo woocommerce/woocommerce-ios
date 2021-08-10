@@ -232,11 +232,7 @@ private extension CardReaderConnectionController {
             return
         }
 
-        let action = CardPresentPaymentAction.connect(reader: reader) { [weak self] result in
-            guard let self = self else {
-                return
-            }
-
+        let action = CardPresentPaymentAction.connect(reader: reader) { result in
             switch result {
             case .success(let reader):
                 self.knownCardReadersProvider.rememberCardReader(cardReaderID: reader.id)

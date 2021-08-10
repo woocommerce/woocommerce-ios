@@ -43,7 +43,7 @@ struct InPersonPaymentsView: View {
                 case .completed:
                     CardReaderSettingsPresentingView()
                 default:
-                    InPersonPaymentsUnavailableView()
+                    InPersonPaymentsUnavailable()
                 }
             }
         }

@@ -1,11 +1,3 @@
-//
-//  InPersonPaymentsStripeAcountReview.swift
-//  WooCommerce
-//
-//  Created by Cesar Tardaguila on 2021-08-10.
-//  Copyright © 2021 Automattic. All rights reserved.
-//
-
 import SwiftUI
 
 struct InPersonPaymentsStripeAcountReview: View {

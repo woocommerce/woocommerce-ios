@@ -1,14 +1,6 @@
-//
-//  InPersonPaymentsStripeAccountPendingView.swift
-//  WooCommerce
-//
-//  Created by Cesar Tardaguila on 2021-08-10.
-//  Copyright © 2021 Automattic. All rights reserved.
-//
-
 import SwiftUI
 
-struct InPersonPaymentsStripeAccountPendingView: View {
+struct InPersonPaymentsStripeAccountPending: View {
     let deadline: Date?
 
     var body: some View {
@@ -68,8 +60,8 @@ private enum Localization {
      )
  }
 
-struct InPersonPaymentsStripeAccountPendingView_Previews: PreviewProvider {
+struct InPersonPaymentsStripeAccountPending_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsStripeAccountPendingView(deadline: Date())
+        InPersonPaymentsStripeAccountPending(deadline: Date())
     }
 }

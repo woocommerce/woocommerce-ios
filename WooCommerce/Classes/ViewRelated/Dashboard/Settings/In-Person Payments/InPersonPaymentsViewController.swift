@@ -37,7 +37,7 @@ struct InPersonPaymentsView: View {
                 case .wcpayNotActivated:
                     InPersonPaymentsPluginNotActivated(onRefresh: viewModel.refresh)
                 case .stripeAccountPendingRequirement(let deadline):
-                    InPersonPaymentsStripeAccountPendingView(deadline: deadline)
+                    InPersonPaymentsStripeAccountPending(deadline: deadline)
                 case .stripeAccountUnderReview:
                     InPersonPaymentsStripeAcountReview()
                 case .completed:

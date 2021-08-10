@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// Renders a view that can be toggled to show / hide contents.
+///
 struct CollapsibleView<Label: View, Content: View>: View {
     private let label: Label
     private let content: Content

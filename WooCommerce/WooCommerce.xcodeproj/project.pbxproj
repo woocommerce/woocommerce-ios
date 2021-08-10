@@ -3894,7 +3894,7 @@
 			isa = PBXGroup;
 			children = (
 				451A997C260E393B0059D135 /* ShippingLabelPackageDetails.swift */,
-				451A9962260E31480059D135 /* ShippingLabelPackageDetailsViewModel.swift */,
+				DEC2962826C20ECB005A056B /* CollapsibleView.swift */,
 				45DB705F2614C7E80064A6CF /* ShippingLabelPackageDetailsResultsControllers.swift */,
 				451A9972260E39270059D135 /* ShippingLabelPackageNumberRow.swift */,
 				45CE2D302625AA7900E3CA00 /* Package Selection */,
@@ -4166,6 +4166,7 @@
 				E15FC74026BC1CED00CF83E6 /* AttributedText.swift */,
 				E15FC74226BC1D2700CF83E6 /* SafariSheet.swift */,
 				E1BAAE9F26BBECEF00F2C037 /* ButtonStyles.swift */,
+				451A9962260E31480059D135 /* ShippingLabelPackageDetailsViewModel.swift */,
 			);
 			path = "SwiftUI Components";
 			sourceTree = "<group>";
@@ -6014,7 +6015,6 @@
 				DEC2962026BD1627005A056B /* ShippingLabelCustomsFormList.swift */,
 				DEC2962226BD4E6E005A056B /* ShippingLabelCustomsFormInput.swift */,
 				DEC2962426C122DF005A056B /* ShippingLabelCustomsFormInputViewModel.swift */,
-				DEC2962826C20ECB005A056B /* CollapsibleView.swift */,
 			);
 			path = Customs;
 			sourceTree = "<group>";

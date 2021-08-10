@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct InPersonPaymentsPluginNotSupportedVersionView: View {
+struct InPersonPaymentsPluginNotSupportedVersion: View {
     let onRefresh: () -> Void
 
     var body: some View {
@@ -48,8 +48,8 @@ private enum Localization {
     )
 }
 
-struct InPersonPaymentsPluginNotSupportedVersionView_Previews: PreviewProvider {
+struct InPersonPaymentsPluginNotSupportedVersion_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsPluginNotSupportedVersionView(onRefresh: {})
+        InPersonPaymentsPluginNotSupportedVersion(onRefresh: {})
     }
 }

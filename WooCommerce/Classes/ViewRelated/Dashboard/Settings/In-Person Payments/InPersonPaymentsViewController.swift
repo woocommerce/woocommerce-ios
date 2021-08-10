@@ -24,19 +24,23 @@ struct InPersonPaymentsView: View {
 
     var body: some View {
         Group {
-            switch viewModel.state {
-            case .countryNotSupported(let countryCode):
-                InPersonPaymentsCountryNotSupported(countryCode: countryCode)
-            case .wcpayNotInstalled:
-                InPersonPaymentsPluginNotInstalled(onRefresh: viewModel.refresh)
-            case .wcpayUnsupportedVersion:
-                InPersonPaymentsPluginNotSupportedVersionView(onRefresh: viewModel.refresh)
-            case .wcpayNotActivated:
-                InPersonPaymentsPluginNotActivatedView(onRefresh: viewModel.refresh)
-            case .completed:
-                CardReaderSettingsPresentingView()
-            default:
-                InPersonPaymentsUnavailableView()
+            if viewModel.showLoadingScreen {
+                InPersonPaymentsLoading()
+            } else {
+                switch viewModel.state {
+                case .countryNotSupported(let countryCode):
+                    InPersonPaymentsCountryNotSupported(countryCode: countryCode)
+                case .wcpayNotInstalled:
+                    InPersonPaymentsPluginNotInstalled(onRefresh: viewModel.refresh)
+                case .wcpayUnsupportedVersion:
+                    InPersonPaymentsPluginNotSupportedVersionView(onRefresh: viewModel.refresh)
+                case .wcpayNotActivated:
+                    InPersonPaymentsPluginNotActivatedView(onRefresh: viewModel.refresh)
+                case .completed:
+                    CardReaderSettingsPresentingView()
+                default:
+                    InPersonPaymentsUnavailableView()
+                }
             }
         }
         .customOpenURL(action: { url in

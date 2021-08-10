@@ -156,9 +156,9 @@ private extension ProductImagesHeaderTableViewCell {
             productStatusLabel.font = UIFont.preferredFont(forTextStyle: .body)
             productStatusLabel.textColor = UIColor.white
         } else {
-            self.productStatusLabel.text? = ""
-            self.productStatusLabelHolder.isHidden = true
-            self.productStatusLabel.isHidden = true
+            productStatusLabel.text? = ""
+            productStatusLabelHolder.isHidden = true
+            productStatusLabel.isHidden = true
         }
 
     }

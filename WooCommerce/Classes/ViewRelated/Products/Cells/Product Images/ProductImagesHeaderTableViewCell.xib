@@ -31,13 +31,11 @@
                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         </collectionViewFlowLayout>
                     </collectionView>
-                    <view contentMode="center" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="szQ-FE-l5e">
-                        <rect key="frame" x="10" y="130" width="50" height="20"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <view contentMode="center" translatesAutoresizingMaskIntoConstraints="NO" id="szQ-FE-l5e">
+                        <rect key="frame" x="10" y="130" width="52" height="20"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Status" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="61K-e8-7z4">
-                                <rect key="frame" x="0.077922077922039534" y="0.13636363636365445" width="49" height="20.5"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Status" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="61K-e8-7z4">
+                                <rect key="frame" x="0.0" y="0.0" width="51.5" height="20.5"/>
                                 <accessibility key="accessibilityConfiguration" label="Product status"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
@@ -45,11 +43,20 @@
                             </label>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="61K-e8-7z4" firstAttribute="height" secondItem="szQ-FE-l5e" secondAttribute="height" id="BUa-ot-fyD"/>
+                            <constraint firstAttribute="width" secondItem="szQ-FE-l5e" secondAttribute="height" multiplier="5:2" id="Eov-WV-bDu"/>
+                            <constraint firstItem="61K-e8-7z4" firstAttribute="top" secondItem="szQ-FE-l5e" secondAttribute="top" constant="0.13636363636365445" id="RtM-c4-VF7"/>
+                            <constraint firstItem="61K-e8-7z4" firstAttribute="width" secondItem="szQ-FE-l5e" secondAttribute="width" id="i6I-oU-Jon"/>
+                            <constraint firstItem="61K-e8-7z4" firstAttribute="leading" secondItem="szQ-FE-l5e" secondAttribute="leading" constant="0.077922077922039534" id="iMb-7U-9mp"/>
+                        </constraints>
                     </view>
                 </subviews>
                 <constraints>
+                    <constraint firstItem="szQ-FE-l5e" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="10" id="H3f-Ko-CNv"/>
                     <constraint firstItem="WFL-te-HOK" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="PDR-n7-9mK"/>
                     <constraint firstAttribute="bottom" secondItem="WFL-te-HOK" secondAttribute="bottom" id="b2N-Ek-wUv"/>
+                    <constraint firstAttribute="bottom" secondItem="szQ-FE-l5e" secondAttribute="bottom" constant="10" id="mzM-hp-3ev"/>
                     <constraint firstAttribute="trailing" secondItem="WFL-te-HOK" secondAttribute="trailing" id="qbp-mF-mga"/>
                     <constraint firstItem="WFL-te-HOK" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="vH3-dk-bIR"/>
                 </constraints>

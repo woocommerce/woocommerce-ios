@@ -38,6 +38,8 @@ struct InPersonPaymentsView: View {
                     InPersonPaymentsPluginNotActivated(onRefresh: viewModel.refresh)
                 case .stripeAccountUnderReview:
                     InPersonPaymentsStripeAcountReview()
+                case .stripeAccountRejected:
+                    InPersonPaymentsStripeRejected()
                 case .completed:
                     CardReaderSettingsPresentingView()
                 default:

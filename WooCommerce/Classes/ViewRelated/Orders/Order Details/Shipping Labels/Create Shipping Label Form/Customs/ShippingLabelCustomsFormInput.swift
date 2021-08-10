@@ -20,9 +20,7 @@ struct ShippingLabelCustomsFormInput: View {
             headerView
         }, content: {
             VStack {
-                Toggle(Localization.returnPolicyTitle, isOn: $viewModel.returnOnNonDelivery)
-                    .font(.body)
-                    .lineLimit(2)
+                TitleAndToggleRow(title: Localization.returnPolicyTitle, isSubheadline: true, isOn: $viewModel.returnOnNonDelivery)
                     .padding(.bottom, Constants.verticalPadding)
                     .padding(.horizontal, Constants.horizontalPadding)
                     .padding(.horizontal, insets: safeAreaInsets)

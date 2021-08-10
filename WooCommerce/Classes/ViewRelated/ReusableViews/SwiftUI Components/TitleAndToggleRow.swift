@@ -4,14 +4,33 @@ import SwiftUI
 ///
 struct TitleAndToggleRow: View {
     let title: String
+    let isSubheadline: Bool
     @Binding var isOn: Bool
     @Environment(\.isEnabled) var isEnabled
 
+    init(title: String, isSubheadline: Bool = false, isOn: Binding<Bool>) {
+        self.title = title
+        self.isSubheadline = isSubheadline
+        self._isOn = isOn
+    }
+
     var body: some View {
-        Toggle(title, isOn: $isOn)
-            .bodyStyle(isEnabled)
+        toggle
             .toggleStyle(SwitchToggleStyle.init(tint: isEnabled ? Color(.primary) : Color(.switchDisabledColor)))
-            .padding(Constants.padding)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private var toggle: some View {
+        Group {
+            if isSubheadline {
+                Toggle(title, isOn: $isOn)
+                    .font(.subheadline)
+                    .foregroundColor(isEnabled ? Color(.text) : Color(.textSubtle))
+            } else {
+                Toggle(title, isOn: $isOn)
+                    .bodyStyle(isEnabled)
+            }
+        }
     }
 }
 

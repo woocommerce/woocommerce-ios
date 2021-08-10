@@ -55,6 +55,25 @@ public class WCPayRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Creates a (or returns an existing) Stripe Connect customer for an order. See https://stripe.com/docs/api/customers/create
+    /// Updates the order meta with the Customer for us.
+    /// Also note that the JSON returned by the WCPay endpoint is an abridged copy of Stripe's response.
+    /// - Parameters:
+    ///   - siteID: Site for which we'll create (or simply return) the customer.
+    ///   - orderID: Order for which we'll create (or simply return) the customer.
+    ///   - completion: Closure to be run on completion.
+    public func fetchOrderCustomer(for siteID: Int64,
+                               orderID: Int64,
+                               completion: @escaping (Result<WCPayCustomer, Error>) -> Void) {
+        let path = "\(Path.orders)/\(orderID)/\(Path.createCustomer)"
+
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: [:])
+
+        let mapper = WCPayCustomerMapper()
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 // MARK: - Constants!
@@ -65,6 +84,7 @@ private extension WCPayRemote {
         static let accounts = "payments/accounts"
         static let orders = "payments/orders"
         static let captureTerminalPayment = "capture_terminal_payment"
+        static let createCustomer = "create_customer"
     }
 
     enum AccountParameterKeys {

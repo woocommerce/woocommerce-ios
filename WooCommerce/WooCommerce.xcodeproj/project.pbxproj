@@ -491,6 +491,8 @@
 		31F92DE125E85F6A00DE04DF /* ConnectedReaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F92DE025E85F6A00DE04DF /* ConnectedReaderTableViewCell.swift */; };
 		31FE28C225E6D338003519F2 /* LearnMoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31FE28C125E6D338003519F2 /* LearnMoreTableViewCell.swift */; };
 		31FE28C825E6D384003519F2 /* LearnMoreTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31FE28C725E6D384003519F2 /* LearnMoreTableViewCell.xib */; };
+		3FF2247326706AA3008FFA87 /* ScreenObject in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF2247226706AA3008FFA87 /* ScreenObject */; };
+		3FF2248A267073AE008FFA87 /* ScreenObject in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF22489267073AE008FFA87 /* ScreenObject */; };
 		4506BD712461965300FE6377 /* ProductVisibilityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4506BD6F2461965300FE6377 /* ProductVisibilityViewController.swift */; };
 		4506BD722461965300FE6377 /* ProductVisibilityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4506BD702461965300FE6377 /* ProductVisibilityViewController.xib */; };
 		4508BF622660E34A00707869 /* ShippingLabelCarrierAndRatesTopBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4508BF612660E34A00707869 /* ShippingLabelCarrierAndRatesTopBanner.swift */; };
@@ -2674,6 +2676,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				247CE89C2583402A00F9D9D1 /* Embassy in Frameworks */,
+				3FF2247326706AA3008FFA87 /* ScreenObject in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2682,6 +2685,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				24C5AC7625A53021008FD769 /* Embassy in Frameworks */,
+				3FF2248A267073AE008FFA87 /* ScreenObject in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6227,6 +6231,9 @@
 				CCDC49D023FFFFF4003166BA /* PBXTargetDependency */,
 			);
 			name = WooCommerceUITests;
+			packageProductDependencies = (
+				3FF2247226706AA3008FFA87 /* ScreenObject */,
+			);
 			productName = WooCommerceUITests;
 			productReference = CCDC49CA23FFFFF4003166BA /* WooCommerceUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -6248,6 +6255,7 @@
 			name = WooCommerceScreenshots;
 			packageProductDependencies = (
 				247CE89B2583402A00F9D9D1 /* Embassy */,
+				3FF22489267073AE008FFA87 /* ScreenObject */,
 			);
 			productName = WooCommerceScreenshots;
 			productReference = F997170223DBB97500592D8E /* WooCommerceScreenshots.xctest */;
@@ -6332,6 +6340,7 @@
 			packageReferences = (
 				247CE89A2583402A00F9D9D1 /* XCRemoteSwiftPackageReference "Embassy" */,
 				45455E302657C3F300BBB0C4 /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */,
+				3FF2247126706AA3008FFA87 /* XCRemoteSwiftPackageReference "ScreenObject" */,
 			);
 			productRefGroup = B56DB3C72049BFAA00D4AA8E /* Products */;
 			projectDirPath = "";
@@ -8432,6 +8441,14 @@
 				minimumVersion = 4.1.2;
 			};
 		};
+		3FF2247126706AA3008FFA87 /* XCRemoteSwiftPackageReference "ScreenObject" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Automattic/ScreenObject";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.0;
+			};
+		};
 		45455E302657C3F300BBB0C4 /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/markiv/SwiftUI-Shimmer";
@@ -8455,6 +8472,16 @@
 		263E38452641FF3400260D3B /* Codegen */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Codegen;
+		};
+		3FF2247226706AA3008FFA87 /* ScreenObject */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3FF2247126706AA3008FFA87 /* XCRemoteSwiftPackageReference "ScreenObject" */;
+			productName = ScreenObject;
+		};
+		3FF22489267073AE008FFA87 /* ScreenObject */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3FF2247126706AA3008FFA87 /* XCRemoteSwiftPackageReference "ScreenObject" */;
+			productName = ScreenObject;
 		};
 		45455E312657C3F300BBB0C4 /* Shimmer */ = {
 			isa = XCSwiftPackageProductDependency;

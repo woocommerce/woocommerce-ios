@@ -21,6 +21,7 @@ extension View {
     func safariSheet(isPresented: Binding<Bool>, url: URL, onDismiss: (() -> Void)? = nil) -> some View {
         sheet(isPresented: isPresented, onDismiss: onDismiss) {
             SafariSheetView(url: url)
+                .ignoresSafeArea()
         }
     }
 
@@ -32,6 +33,7 @@ extension View {
         sheet(isPresented: url.notNil(), onDismiss: onDismiss) {
             if let url = url.wrappedValue {
                 SafariSheetView(url: url)
+                    .ignoresSafeArea()
             }
         }
     }

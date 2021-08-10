@@ -1,0 +1,104 @@
+{
+  "data" : {
+    "billing" : {
+      "phone" : "",
+      "city" : "",
+      "country" : "",
+      "address_1" : "",
+      "last_name" : "",
+      "company" : "",
+      "postcode" : "",
+      "email" : "",
+      "address_2" : "",
+      "state" : "",
+      "first_name" : ""
+    },
+    "status" : "processing",
+    "total" : "378.23",
+    "shipping" : {
+      "city" : "",
+      "country" : "",
+      "address_1" : "",
+      "last_name" : "",
+      "company" : "",
+      "postcode" : "",
+      "address_2" : "",
+      "state" : "",
+      "first_name" : ""
+    },
+    "refunds" : [],
+    "currency" : "USD",
+    "parent_id" : 0,
+    "line_items" : [
+      {
+        "id" : 473,
+        "quantity" : 2,
+        "tax_class" : "",
+        "subtotal_tax" : "30.21",
+        "meta_data" : [
+          {
+            "display_value" : "2.3",
+            "id" : 3665,
+            "key" : "Required Weight (kg)",
+            "value" : "2.3",
+            "display_key" : "Required Weight (kg)"
+          },
+          {
+            "display_value" : {
+              "_measurement_needed" : 2.2999999999999998,
+              "_measurement_needed_unit" : "kg",
+              "weight" : {
+                "value" : "2.3",
+                "unit" : "kg"
+              }
+            },
+            "id" : 3666,
+            "key" : "_measurement_data",
+            "value" : {
+              "_measurement_needed" : 2.2999999999999998,
+              "_measurement_needed_unit" : "kg",
+              "weight" : {
+                "value" : "2.3",
+                "unit" : "kg"
+              }
+            },
+            "display_key" : "_measurement_data"
+          }
+        ],
+        "parent_name" : null,
+        "total" : "340.40",
+        "total_tax" : "30.21",
+        "sku" : "",
+        "subtotal" : "340.40",
+        "price" : 170.19999999999999,
+        "product_id" : 80,
+        "taxes" : [
+          {
+            "id" : 1,
+            "total" : "30.21",
+            "subtotal" : "30.21"
+          }
+        ],
+        "variation_id" : 0,
+        "name" : "Boldenona"
+      }
+    ],
+    "shipping_total" : "0.00",
+    "customer_id" : 1,
+    "date_paid_gmt" : null,
+    "total_tax" : "30.83",
+    "payment_method" : "cod",
+    "fee_lines" : [],
+    "id" : 656,
+    "shipping_tax" : "0.62",
+    "number" : "656",
+    "payment_method_title" : "Cash on delivery",
+    "discount_total" : "0.00",
+    "customer_note" : "",
+    "shipping_lines" : [],
+    "date_created_gmt" : "2021-08-04T19:28:01",
+    "date_modified_gmt" : "2021-08-04T19:28:01",
+    "coupon_lines" : [],
+    "discount_tax" : "0.00"
+  }
+}

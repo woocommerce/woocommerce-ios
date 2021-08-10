@@ -1,8 +1,6 @@
 import SwiftUI
 
 struct InPersonPaymentsLearnMore: View {
-    @State var presentedURL: URL? = nil
-
     var body: some View {
         HStack(alignment: .center, spacing: 20) {
             Image(uiImage: .infoOutlineImage)
@@ -10,9 +8,7 @@ struct InPersonPaymentsLearnMore: View {
                 .frame(width: 20, height: 20)
             AttributedText(Localization.learnMore)
                 .accentColor(Color(.textLink))
-                .customOpenURL(binding: $presentedURL)
         }
-        .safariSheet(url: $presentedURL)
     }
 }
 

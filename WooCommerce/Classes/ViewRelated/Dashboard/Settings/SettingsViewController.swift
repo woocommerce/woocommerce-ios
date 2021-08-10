@@ -544,9 +544,6 @@ private extension SettingsViewController {
     }
 
     func inPersonPaymentsWasPressed() {
-        guard let siteID = self.siteID else {
-            return
-        }
         let viewModel = InPersonPaymentsViewModel()
         let viewController = InPersonPaymentsViewController(viewModel: viewModel)
         show(viewController, sender: self)

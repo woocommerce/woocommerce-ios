@@ -1,5 +1,11 @@
-Merchants in the US wanting to create shipping labels for their US customers will find several minor improvements. If you’re not already printing labels from the app, start by installing the WooCommerce Shipping & Tax extension on your site.
+- [*] Order Detail: now we do not offer the "email note to customer" option if no email is available. [https://github.com/woocommerce/woocommerce-ios/pull/4680]
+- [*] My Store: If there are errors loading the My Store screen, a banner now appears at the top of the screen with links to troubleshoot or contact support. [https://github.com/woocommerce/woocommerce-ios/pull/4704]
+- [*] Fix: Added 'Product saved' confirmation message when a product is updated [https://github.com/woocommerce/woocommerce-ios/pull/4709]
+- [*] Shipping Labels: Updated address validation to automatically use trivially normalized address for origin and destination. [https://github.com/woocommerce/woocommerce-ios/pull/4719]
+- [*] Fix: Order details for products with negative prices now will show correctly [https://github.com/woocommerce/woocommerce-ios/pull/4683]
+- [*] Fix: Order list not extend edge-to-edge in dark mode. [https://github.com/woocommerce/woocommerce-ios/pull/4728]
+- [*] Plugins: Added list of active and inactive plugins that can be reached by admins in the settings screen. [https://github.com/woocommerce/woocommerce-ios/pull/4735]
+- [*] Login: Updated appearance of back buttons in navigation bar to minimal style. [https://github.com/woocommerce/woocommerce-ios/pull/4726]
+- [internal] Upgraded Zendesk SDK to version 5.3.0. [https://github.com/woocommerce/woocommerce-ios/pull/4699]
+- [internal] Updated GoogleSignIn to version 6.0.1 through WordPressAuthenticator. There should be no functional changes, but may impact Google sign in flow. [https://github.com/woocommerce/woocommerce-ios/pull/4725]
 
-We also took a look at how the app looked on different screen sizes and phone types. We corrected a bunch of minor but meaningful visual issues, especially noticeable on iPads.
-
-As always, we welcome your feedback about the app. Reach out to us through the app under Settings in the My store tab.

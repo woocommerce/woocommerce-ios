@@ -51,7 +51,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.checkOnboardingState()
 
         // Then
-        XCTAssertEqual(state, .countryNotSupported)
+        XCTAssertEqual(state, .countryNotSupported(countryCode: "ES"))
     }
 
     // MARK: - Plugin checks

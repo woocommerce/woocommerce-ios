@@ -12,13 +12,18 @@ struct SecondaryButtonStyle: ButtonStyle {
     }
 }
 
+struct LinkButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        LinkButton(configuration: configuration)
+    }
+}
+
 private struct BaseButton: View {
     let configuration: ButtonStyleConfiguration
 
     var body: some View {
         configuration.label
             .frame(maxWidth: .infinity)
-            .font(.headline)
             .padding(Style.defaultEdgeInsets)
     }
 }
@@ -31,6 +36,7 @@ private struct PrimaryButton: View {
     var body: some View {
         BaseButton(configuration: configuration)
             .foregroundColor(Color(foregroundColor))
+            .font(.headline)
             .background(
                 RoundedRectangle(cornerRadius: Style.defaultCornerRadius)
                     .fill(Color(backgroundColor))
@@ -81,6 +87,7 @@ private struct SecondaryButton: View {
     var body: some View {
         BaseButton(configuration: configuration)
             .foregroundColor(Color(foregroundColor))
+            .font(.headline)
             .background(
                 RoundedRectangle(cornerRadius: Style.defaultCornerRadius)
                     .fill(Color(backgroundColor))
@@ -123,6 +130,20 @@ private struct SecondaryButton: View {
     }
 }
 
+private struct LinkButton: View {
+    let configuration: ButtonStyleConfiguration
+
+    var body: some View {
+        BaseButton(configuration: configuration)
+            .foregroundColor(Color(foregroundColor))
+            .background(Color(.clear))
+    }
+
+    var foregroundColor: UIColor {
+        configuration.isPressed ? .accentDark : .accent
+    }
+}
+
 private enum Style {
     static let defaultCornerRadius = CGFloat(8.0)
     static let defaultBorderWidth = CGFloat(1.0)
@@ -145,6 +166,9 @@ struct PrimaryButton_Previews: PreviewProvider {
             Button("Secondary button (disabled)") {}
                 .buttonStyle(SecondaryButtonStyle())
                 .disabled(true)
+
+            Button("Link button") {}
+                .buttonStyle(LinkButtonStyle())
         }
         .padding()
     }

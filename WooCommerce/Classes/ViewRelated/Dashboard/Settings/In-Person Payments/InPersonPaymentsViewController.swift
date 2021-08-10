@@ -37,7 +37,7 @@ struct InPersonPaymentsView: View {
                 case .wcpayNotActivated:
                     InPersonPaymentsPluginNotActivatedView(onRefresh: viewModel.refresh)
                 case .stripeAccountUnderReview:
-                    InPersonPaymentsStripeAcountReviewView()
+                    InPersonPaymentsStripeAcountReview()
                 case .completed:
                     CardReaderSettingsPresentingView()
                 default:

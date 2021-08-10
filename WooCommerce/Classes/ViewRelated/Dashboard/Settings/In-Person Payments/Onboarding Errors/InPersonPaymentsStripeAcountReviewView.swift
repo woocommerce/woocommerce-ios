@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct InPersonPaymentsStripeAcountReviewView: View {
+struct InPersonPaymentsStripeAcountReview: View {
     var body: some View {
         VStack {
             Spacer()
@@ -48,6 +48,6 @@ private enum Localization {
 
 struct InPersonPaymentsStripeAcountReview_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsStripeAcountReviewView()
+        InPersonPaymentsStripeAcountReview()
     }
 }

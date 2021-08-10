@@ -19,7 +19,7 @@ struct BottomButtonView<Style>: View where Style: ButtonStyle {
                 }
             }
             .buttonStyle(style)
-        }.edgesIgnoringSafeArea([.bottom])
+        }
     }
 }
 

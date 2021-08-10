@@ -930,6 +930,8 @@
 		CC078531266E706300BA9AC1 /* ErrorTopBannerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC078530266E706300BA9AC1 /* ErrorTopBannerFactory.swift */; };
 		CC07860526736B6500BA9AC1 /* ErrorTopBannerFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC07860426736B6500BA9AC1 /* ErrorTopBannerFactoryTests.swift */; };
 		CC254F2D26C17AB5005F3C82 /* BottomButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC254F2C26C17AB5005F3C82 /* BottomButtonView.swift */; };
+		CC254F3026C2A53D005F3C82 /* ShippingLabelAddNewPackage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC254F2F26C2A53D005F3C82 /* ShippingLabelAddNewPackage.swift */; };
+		CC254F3226C2BCCF005F3C82 /* ShippingLabelAddNewPackageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC254F3126C2BCCF005F3C82 /* ShippingLabelAddNewPackageViewModel.swift */; };
 		CC4A4E962655273D00B75DCD /* ShippingLabelPaymentMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4A4E952655273D00B75DCD /* ShippingLabelPaymentMethods.swift */; };
 		CC4A4ED82655478D00B75DCD /* ShippingLabelPaymentMethodsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4A4ED72655478D00B75DCD /* ShippingLabelPaymentMethodsViewModel.swift */; };
 		CC4A4FF126557D0E00B75DCD /* TitleAndToggleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4A4FF026557D0E00B75DCD /* TitleAndToggleRow.swift */; };
@@ -2296,6 +2298,8 @@
 		CC078530266E706300BA9AC1 /* ErrorTopBannerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorTopBannerFactory.swift; sourceTree = "<group>"; };
 		CC07860426736B6500BA9AC1 /* ErrorTopBannerFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorTopBannerFactoryTests.swift; sourceTree = "<group>"; };
 		CC254F2C26C17AB5005F3C82 /* BottomButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomButtonView.swift; sourceTree = "<group>"; };
+		CC254F2F26C2A53D005F3C82 /* ShippingLabelAddNewPackage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddNewPackage.swift; sourceTree = "<group>"; };
+		CC254F3126C2BCCF005F3C82 /* ShippingLabelAddNewPackageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddNewPackageViewModel.swift; sourceTree = "<group>"; };
 		CC4A4E952655273D00B75DCD /* ShippingLabelPaymentMethods.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPaymentMethods.swift; sourceTree = "<group>"; };
 		CC4A4ED72655478D00B75DCD /* ShippingLabelPaymentMethodsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPaymentMethodsViewModel.swift; sourceTree = "<group>"; };
 		CC4A4FF026557D0E00B75DCD /* TitleAndToggleRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndToggleRow.swift; sourceTree = "<group>"; };
@@ -3905,6 +3909,7 @@
 				45DB705F2614C7E80064A6CF /* ShippingLabelPackageDetailsResultsControllers.swift */,
 				451A9972260E39270059D135 /* ShippingLabelPackageNumberRow.swift */,
 				45CE2D302625AA7900E3CA00 /* Package Selection */,
+				CC254F2E26C2A4E6005F3C82 /* Package Creation */,
 			);
 			path = "Package Details";
 			sourceTree = "<group>";
@@ -5140,6 +5145,15 @@
 				FEEB2F60268A215E0075A6E0 /* StorageEligibilityErrorInfoWooTests.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		CC254F2E26C2A4E6005F3C82 /* Package Creation */ = {
+			isa = PBXGroup;
+			children = (
+				CC254F2F26C2A53D005F3C82 /* ShippingLabelAddNewPackage.swift */,
+				CC254F3126C2BCCF005F3C82 /* ShippingLabelAddNewPackageViewModel.swift */,
+			);
+			path = "Package Creation";
 			sourceTree = "<group>";
 		};
 		CC4A4E91265523DB00B75DCD /* Payment Methods */ = {
@@ -6963,6 +6977,7 @@
 				024A543422BA6F8F00F4F38E /* DeveloperEmailChecker.swift in Sources */,
 				027B8BB823FE0CB30040944E /* DefaultProductUIImageLoader.swift in Sources */,
 				314265AC26459F7300500598 /* CardReaderSettingsSearchingViewController.swift in Sources */,
+				CC254F3226C2BCCF005F3C82 /* ShippingLabelAddNewPackageViewModel.swift in Sources */,
 				0202B6922387AB0C00F3EBE0 /* WooTab+Tag.swift in Sources */,
 				D8736B5A22F07D7100A14A29 /* MainTabViewModel.swift in Sources */,
 				02619858256B53DD00E321E9 /* AggregatedShippingLabelOrderItems.swift in Sources */,
@@ -7059,6 +7074,7 @@
 				45527A412472C6160078D609 /* SwitchStoreUseCase.swift in Sources */,
 				D82DFB4A225F22D400EFE2CB /* UISearchBar+Appearance.swift in Sources */,
 				571B850224CF7E3100CF58A7 /* InAppFeedbackCardViewController.swift in Sources */,
+				CC254F3026C2A53D005F3C82 /* ShippingLabelAddNewPackage.swift in Sources */,
 				7441E1D221503F77004E6ECE /* IntrinsicTableView.swift in Sources */,
 				B517EA1D218B41F200730EC4 /* String+Woo.swift in Sources */,
 				26B3D8A0252235C50054C319 /* RefundShippingDetailsViewModel.swift in Sources */,

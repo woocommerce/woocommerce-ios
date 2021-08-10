@@ -35,7 +35,7 @@ struct InPersonPaymentsView: View {
                 case .wcpayUnsupportedVersion:
                     InPersonPaymentsPluginNotSupportedVersion(onRefresh: viewModel.refresh)
                 case .wcpayNotActivated:
-                    InPersonPaymentsPluginNotActivatedView(onRefresh: viewModel.refresh)
+                    InPersonPaymentsPluginNotActivated(onRefresh: viewModel.refresh)
                 case .stripeAccountUnderReview:
                     InPersonPaymentsStripeAcountReview()
                 case .completed:

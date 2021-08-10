@@ -100,7 +100,7 @@ extension ShippingLabelCustomsForm.Item {
 public extension ShippingLabelCustomsForm {
     /// Types of contents to declare with customs.
     ///
-    enum ContentsType: String, Codable, GeneratedFakeable {
+    enum ContentsType: String, CaseIterable, Codable, GeneratedFakeable {
         case merchandise
         case documents
         case gift

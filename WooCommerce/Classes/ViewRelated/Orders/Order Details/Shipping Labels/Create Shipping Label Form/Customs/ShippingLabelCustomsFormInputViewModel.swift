@@ -9,7 +9,7 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
 
     /// Content type of the items to be declared in the customs form.
     ///
-    @Published var contentType: ShippingLabelCustomsForm.ContentsType
+    @Published var contentsType: ShippingLabelCustomsForm.ContentsType
 
     /// Input customs forms to be updated
     ///
@@ -18,7 +18,7 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
     init(customsForm: ShippingLabelCustomsForm) {
         self.customsForm = customsForm
         self.returnOnNonDelivery = customsForm.nonDeliveryOption == .return
-        self.contentType = customsForm.contentsType
+        self.contentsType = customsForm.contentsType
     }
 }
 

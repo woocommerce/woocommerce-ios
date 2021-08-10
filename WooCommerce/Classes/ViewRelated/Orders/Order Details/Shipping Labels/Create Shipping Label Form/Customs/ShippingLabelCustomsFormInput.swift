@@ -5,8 +5,9 @@ struct ShippingLabelCustomsFormInput: View {
     private let isCollapsible: Bool
     private let packageNumber: Int
     private let safeAreaInsets: EdgeInsets
+
     @ObservedObject private var viewModel: ShippingLabelCustomsFormInputViewModel
-    @State private var isCollapsed = false
+    @State private var showingContentTypes = false
 
     init(isCollapsible: Bool, packageNumber: Int, safeAreaInsets: EdgeInsets, viewModel: ShippingLabelCustomsFormInputViewModel) {
         self.isCollapsible = isCollapsible
@@ -25,8 +26,18 @@ struct ShippingLabelCustomsFormInput: View {
                     .padding(.horizontal, Constants.horizontalPadding)
                     .padding(.horizontal, insets: safeAreaInsets)
 
-                TitleAndValueRow(title: Localization.contentTypeTitle, value: viewModel.customsForm.contentsType.localizedName, selectable: true) {}
+                TitleAndValueRow(title: Localization.contentTypeTitle, value: viewModel.contentsType.localizedName, selectable: true) {
+                    showingContentTypes.toggle()
+                }
                 .padding(.horizontal, insets: safeAreaInsets)
+                .sheet(isPresented: $showingContentTypes, content: {
+                    SelectionList(title: Localization.contentTypeTitle,
+                                  items: ShippingLabelCustomsForm.ContentsType.allCases,
+                                  contentKeyPath: \.localizedName,
+                                  selected: $viewModel.contentsType) { type in
+                        viewModel.contentsType = type
+                    }
+                })
 
                 Divider()
                     .padding(.leading, Constants.horizontalPadding)

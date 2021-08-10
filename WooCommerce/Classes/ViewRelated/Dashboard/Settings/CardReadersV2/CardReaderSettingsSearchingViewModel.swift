@@ -2,13 +2,21 @@ import Foundation
 import Combine
 import Yosemite
 
-final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewModel {
+final class CardReaderSettingsSearchingViewModel: CardReaderSettingsPresentedViewModel {
     private(set) var shouldShow: CardReaderSettingsTriState = .isUnknown
     var didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?
     var didUpdate: (() -> Void)?
 
-    private var noConnectedReaders: CardReaderSettingsTriState = .isUnknown
-    private var noKnownReaders: CardReaderSettingsTriState = .isUnknown
+    private(set) var noConnectedReader: CardReaderSettingsTriState = .isUnknown {
+        didSet {
+            didUpdate?()
+        }
+    }
+    private(set) var noKnownReader: CardReaderSettingsTriState = .isUnknown {
+        didSet {
+            didUpdate?()
+        }
+    }
     private(set) var knownReadersProvider: CardReaderSettingsKnownReadersProvider?
     private(set) var siteID: Int64
 
@@ -17,11 +25,11 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
     private var knownReaderIDs: [String]? {
         didSet {
             guard let knownReaderIDs = knownReaderIDs else {
-                noKnownReaders = .isUnknown
+                noKnownReader = .isUnknown
                 return
             }
 
-            noKnownReaders = knownReaderIDs.isEmpty ? .isTrue : .isFalse
+            noKnownReader = knownReaderIDs.isEmpty ? .isTrue : .isFalse
         }
     }
     private var foundReader: CardReader?
@@ -68,7 +76,7 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
             guard let self = self else {
                 return
             }
-            self.noConnectedReaders = readers.isEmpty ? .isTrue : .isFalse
+            self.noConnectedReader = readers.isEmpty ? .isTrue : .isFalse
             self.reevaluateShouldShow()
         }
         ServiceLocator.stores.dispatch(connectedAction)
@@ -78,15 +86,7 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
     /// Notifes the viewModel owner if a change occurs via didChangeShouldShow
     ///
     private func reevaluateShouldShow() {
-        var newShouldShow: CardReaderSettingsTriState = .isUnknown
-
-        if (noKnownReaders == .isUnknown) || (noConnectedReaders == .isUnknown) {
-            newShouldShow = .isUnknown
-        } else if (noKnownReaders == .isTrue) && (noConnectedReaders == .isTrue) {
-            newShouldShow = .isTrue
-        } else {
-            newShouldShow = .isFalse
-        }
+        let newShouldShow: CardReaderSettingsTriState = noConnectedReader
 
         let didChange = newShouldShow != shouldShow
 

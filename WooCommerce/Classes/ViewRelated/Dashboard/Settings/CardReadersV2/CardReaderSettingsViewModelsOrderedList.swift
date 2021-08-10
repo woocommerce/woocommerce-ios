@@ -30,25 +30,13 @@ final class CardReaderSettingsViewModelsOrderedList: CardReaderSettingsPrioritiz
         ///
         viewModelsAndViews.append(
             CardReaderSettingsViewModelAndView(
-                viewModel: CardReaderSettingsUnknownViewModel(
+                viewModel: CardReaderSettingsSearchingViewModel(
                     didChangeShouldShow: { [weak self] state in
                         self?.onDidChangeShouldShow(state)
                     },
                     knownReadersProvider: knownReadersProvider
                 ),
-                viewIdentifier: "CardReaderSettingsUnknownViewController"
-            )
-        )
-
-        viewModelsAndViews.append(
-            CardReaderSettingsViewModelAndView(
-                viewModel: CardReaderSettingsKnownViewModel(
-                    didChangeShouldShow: { [weak self] state in
-                        self?.onDidChangeShouldShow(state)
-                    },
-                    knownReadersProvider: knownReadersProvider
-                ),
-                viewIdentifier: "CardReaderSettingsKnownViewController"
+                viewIdentifier: "CardReaderSettingsSearchingViewController"
             )
         )
 

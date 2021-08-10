@@ -16,33 +16,10 @@ struct ShippingLabelCustomsFormInput: View {
     }
 
     var body: some View {
-        VStack(spacing: Constants.verticalPadding) {
-            Button(action: {
-                guard isCollapsible else { return }
-                withAnimation {
-                    isCollapsed.toggle()
-                }
-            }, label: {
-                HStack {
-                    Text(String(format: Localization.packageNumber, packageNumber))
-                        .font(.headline)
-                    Text("-")
-                        .font(.body)
-                    Text(viewModel.customsForm.packageName)
-                        .font(.body)
-                    Spacer()
-                    if isCollapsible {
-                        Image(uiImage: isCollapsed ? .chevronDownImage : .chevronUpImage)
-                    }
-                }
-            })
-            .buttonStyle(PlainButtonStyle())
-            .padding(.horizontal, Constants.horizontalPadding)
-            .padding(.horizontal, insets: safeAreaInsets)
-
-            Divider()
-
-            if !isCollapsed {
+        CollapsibleView(isCollapsible: isCollapsible, safeAreaInsets: safeAreaInsets, label: {
+            headerView
+        }, content: {
+            VStack {
                 Toggle(Localization.returnPolicyTitle, isOn: $viewModel.returnOnNonDelivery)
                     .font(.body)
                     .lineLimit(2)
@@ -56,9 +33,18 @@ struct ShippingLabelCustomsFormInput: View {
                 Divider()
                     .padding(.leading, Constants.horizontalPadding)
             }
+        })
+    }
+
+    private var headerView: some View {
+        HStack {
+            Text(String(format: Localization.packageNumber, packageNumber))
+                .font(.headline)
+            Text("-")
+                .font(.body)
+            Text(viewModel.customsForm.packageName)
+                .font(.body)
         }
-        .padding(.top, Constants.verticalPadding)
-        .background(Color(.listForeground))
     }
 }
 

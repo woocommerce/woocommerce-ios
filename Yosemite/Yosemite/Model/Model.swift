@@ -126,6 +126,7 @@ public typealias PrintingResult = Hardware.PrintingResult
 public typealias CardPresentReceiptParameters = Hardware.CardPresentReceiptParameters
 public typealias WCPayAccount = Networking.WCPayAccount
 public typealias WCPayAccountStatusEnum = Networking.WCPayAccountStatusEnum
+public typealias WCPayCustomer = Networking.WCPayCustomer
 
 // MARK: - Exported Storage Symbols
 

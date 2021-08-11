@@ -35,9 +35,7 @@ struct ShippingLabelCustomsFormInput: View {
                     SelectionList(title: Localization.contentTypeTitle,
                                   items: ShippingLabelCustomsForm.ContentsType.allCases,
                                   contentKeyPath: \.localizedName,
-                                  selected: $viewModel.contentsType) { type in
-                        viewModel.contentsType = type
-                    }
+                                  selected: $viewModel.contentsType)
                 })
 
                 Divider()

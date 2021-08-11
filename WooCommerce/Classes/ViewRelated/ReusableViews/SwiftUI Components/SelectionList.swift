@@ -11,12 +11,12 @@ struct SelectionList<T: Hashable>: View {
     private let contentKeyPath: KeyPath<T, String>
 
     /// Callback for selection
-    private let onSelection: (T) -> Void
+    private let onSelection: ((T) -> Void)?
 
     @Binding private var selected: T
     @Environment(\.presentationMode) var presentation
 
-    init(title: String, items: [T], contentKeyPath: KeyPath<T, String>, selected: Binding<T>, onSelection: @escaping (T) -> Void) {
+    init(title: String, items: [T], contentKeyPath: KeyPath<T, String>, selected: Binding<T>, onSelection: ((T) -> Void)? = nil) {
         self.title = title
         self.items = items
         self.contentKeyPath = contentKeyPath
@@ -36,7 +36,7 @@ struct SelectionList<T: Hashable>: View {
                                     .background(Color(.listForeground))
                                     .onTapGesture {
                                         selected = item
-                                        onSelection(item)
+                                        onSelection?(item)
                                     }
                                 Divider()
                             }

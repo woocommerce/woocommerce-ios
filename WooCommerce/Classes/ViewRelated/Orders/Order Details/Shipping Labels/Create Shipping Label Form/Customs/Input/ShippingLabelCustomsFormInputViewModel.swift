@@ -27,12 +27,11 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
     ///
     @Published var itn: String
 
-    /// Input customs forms to be updated
+    /// Validated customs form
     ///
-    private(set) var customsForm: ShippingLabelCustomsForm
+    private(set) var validatedCustomsForm: ShippingLabelCustomsForm?
 
     init(customsForm: ShippingLabelCustomsForm) {
-        self.customsForm = customsForm
         self.returnOnNonDelivery = customsForm.nonDeliveryOption == .return
         self.contentsType = customsForm.contentsType
         self.contentExplanation = customsForm.contentExplanation

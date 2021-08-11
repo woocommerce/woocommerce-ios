@@ -36,10 +36,12 @@ struct InPersonPaymentsView: View {
                     InPersonPaymentsPluginNotSupportedVersion(onRefresh: viewModel.refresh)
                 case .wcpayNotActivated:
                     InPersonPaymentsPluginNotActivated(onRefresh: viewModel.refresh)
+                case .stripeAccountPendingRequirement(let deadline):
+                    InPersonPaymentsStripeAccountPending(deadline: deadline)
+                case .stripeAccountUnderReview:
+                    InPersonPaymentsStripeAcountReview()                    
                 case .wcpaySetupNotCompleted:
                     InPersonPaymentsWCPayNotSetup(onRefresh: viewModel.refresh)
-                case .stripeAccountUnderReview:
-                    InPersonPaymentsStripeAcountReview()
                 case .completed:
                     CardReaderSettingsPresentingView()
                 default:

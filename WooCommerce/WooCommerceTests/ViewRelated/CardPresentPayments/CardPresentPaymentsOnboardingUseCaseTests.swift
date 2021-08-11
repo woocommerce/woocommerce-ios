@@ -191,7 +191,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.checkOnboardingState()
 
         // Then
-        XCTAssertEqual(state, .stripeAccountPendingRequirement)
+        XCTAssertEqual(state, .stripeAccountPendingRequirement(deadline: nil))
     }
 
     func test_onboarding_returns_pending_requirements_when_account_is_restricted_soon_with_pending_requirements() {
@@ -205,7 +205,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.checkOnboardingState()
 
         // Then
-        XCTAssertEqual(state, .stripeAccountPendingRequirement)
+        XCTAssertEqual(state, .stripeAccountPendingRequirement(deadline: nil))
     }
 
     func test_onboarding_returns_overdue_requirements_when_account_is_restricted_with_overdue_requirements() {

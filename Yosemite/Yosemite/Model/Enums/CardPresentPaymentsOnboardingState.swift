@@ -36,7 +36,7 @@ public enum CardPresentPaymentOnboardingState: Equatable {
     /// There are some pending requirements on the connected Stripe account. The merchant still has some time before the deadline to fix them expires.
     /// In-person payments should work without issues.
     ///
-    case stripeAccountPendingRequirement
+    case stripeAccountPendingRequirement(deadline: Date?)
 
     /// There are some overdue requirements on the connected Stripe account. Connecting to a reader or accepting payments is not supported in this state.
     ///

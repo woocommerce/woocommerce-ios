@@ -932,6 +932,7 @@
 		CC254F2D26C17AB5005F3C82 /* BottomButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC254F2C26C17AB5005F3C82 /* BottomButtonView.swift */; };
 		CC254F3026C2A53D005F3C82 /* ShippingLabelAddNewPackage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC254F2F26C2A53D005F3C82 /* ShippingLabelAddNewPackage.swift */; };
 		CC254F3226C2BCCF005F3C82 /* ShippingLabelAddNewPackageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC254F3126C2BCCF005F3C82 /* ShippingLabelAddNewPackageViewModel.swift */; };
+		CC254F3426C4113B005F3C82 /* ShippingLabelPackageSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC254F3326C4113B005F3C82 /* ShippingLabelPackageSelection.swift */; };
 		CC4A4E962655273D00B75DCD /* ShippingLabelPaymentMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4A4E952655273D00B75DCD /* ShippingLabelPaymentMethods.swift */; };
 		CC4A4ED82655478D00B75DCD /* ShippingLabelPaymentMethodsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4A4ED72655478D00B75DCD /* ShippingLabelPaymentMethodsViewModel.swift */; };
 		CC4A4FF126557D0E00B75DCD /* TitleAndToggleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4A4FF026557D0E00B75DCD /* TitleAndToggleRow.swift */; };
@@ -2300,6 +2301,7 @@
 		CC254F2C26C17AB5005F3C82 /* BottomButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomButtonView.swift; sourceTree = "<group>"; };
 		CC254F2F26C2A53D005F3C82 /* ShippingLabelAddNewPackage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddNewPackage.swift; sourceTree = "<group>"; };
 		CC254F3126C2BCCF005F3C82 /* ShippingLabelAddNewPackageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddNewPackageViewModel.swift; sourceTree = "<group>"; };
+		CC254F3326C4113B005F3C82 /* ShippingLabelPackageSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackageSelection.swift; sourceTree = "<group>"; };
 		CC4A4E952655273D00B75DCD /* ShippingLabelPaymentMethods.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPaymentMethods.swift; sourceTree = "<group>"; };
 		CC4A4ED72655478D00B75DCD /* ShippingLabelPaymentMethodsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPaymentMethodsViewModel.swift; sourceTree = "<group>"; };
 		CC4A4FF026557D0E00B75DCD /* TitleAndToggleRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndToggleRow.swift; sourceTree = "<group>"; };
@@ -3909,7 +3911,6 @@
 				45DB705F2614C7E80064A6CF /* ShippingLabelPackageDetailsResultsControllers.swift */,
 				451A9972260E39270059D135 /* ShippingLabelPackageNumberRow.swift */,
 				45CE2D302625AA7900E3CA00 /* Package Selection */,
-				CC254F2E26C2A4E6005F3C82 /* Package Creation */,
 			);
 			path = "Package Details";
 			sourceTree = "<group>";
@@ -4158,6 +4159,8 @@
 			isa = PBXGroup;
 			children = (
 				45CE2D312625AA9A00E3CA00 /* ShippingLabelPackageList.swift */,
+				CC254F3326C4113B005F3C82 /* ShippingLabelPackageSelection.swift */,
+				CC254F2E26C2A4E6005F3C82 /* Package Creation */,
 			);
 			path = "Package Selection";
 			sourceTree = "<group>";
@@ -6886,6 +6889,7 @@
 				0286B27D23C7051F003D784B /* ProductImagesViewController.swift in Sources */,
 				4569317F2653E82B009ED69D /* ShippingLabelCarriers.swift in Sources */,
 				024DF30B23742297006658FE /* AztecFormatBarCommand.swift in Sources */,
+				CC254F3426C4113B005F3C82 /* ShippingLabelPackageSelection.swift in Sources */,
 				45E9A6E724DAE23300A600E8 /* ProductReviewsViewModel.swift in Sources */,
 				028BAC4222F30B05008BB4AF /* StoreStatsV4PeriodViewController.swift in Sources */,
 				740987B321B87760000E4C80 /* FancyAnimatedButton+Woo.swift in Sources */,

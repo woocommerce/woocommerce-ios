@@ -38,6 +38,12 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         return packagesResponse?.predefinedOptions ?? []
     }
 
+    /// Whether there are saved custom or predefined packages to select from.
+    ///
+    var hasCustomOrPredefinedPackages: Bool {
+        return customPackages.isNotEmpty || predefinedOptions.isNotEmpty
+    }
+
     /// The weight unit used in the Store
     ///
     let weightUnit: String?
@@ -255,12 +261,6 @@ extension ShippingLabelPackageDetailsViewModel {
     // Return true if the done button in the package details screen should be enabled
     func isPackageDetailsDoneButtonEnabled() -> Bool {
         return !selectedPackageID.isNilOrEmpty && totalWeight.isNotEmpty && Double(totalWeight) != 0 && Double(totalWeight) != nil
-    }
-
-    /// Return true if there are custom or predefined packages to select from
-    ///
-    func hasCustomOrPredefinedPackages() -> Bool {
-        return customPackages.isNotEmpty || predefinedOptions.isNotEmpty
     }
 }
 

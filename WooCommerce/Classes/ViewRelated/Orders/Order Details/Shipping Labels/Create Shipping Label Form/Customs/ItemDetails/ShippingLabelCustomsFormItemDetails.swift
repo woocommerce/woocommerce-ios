@@ -5,6 +5,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
     private let itemNumber: Int
     private let safeAreaInsets: EdgeInsets
 
+    @State private var isCollapsed: Bool = true
     @ObservedObject private var viewModel: ShippingLabelCustomsFormItemDetailsViewModel
 
     init(itemNumber: Int, viewModel: ShippingLabelCustomsFormItemDetailsViewModel, safeAreaInsets: EdgeInsets = .zero) {
@@ -14,7 +15,50 @@ struct ShippingLabelCustomsFormItemDetails: View {
     }
 
     var body: some View {
-        Text("Hello, World!")
+        CollapsibleView(isCollapsed: $isCollapsed, safeAreaInsets: safeAreaInsets, label: {
+            HStack(spacing: Constants.horizontalSpacing) {
+                Image(uiImage: .inventoryImage)
+                Text(String(format: Localization.customLineTitle, itemNumber))
+                    .font(.body)
+            }
+        }, content: {
+            VStack(spacing: 0) {
+                TitleAndTextFieldRow(title: Localization.descriptionTitle,
+                                     placeholder: Localization.descriptionTitle,
+                                     text: $viewModel.description)
+                    .padding(.horizontal, insets: safeAreaInsets)
+                Divider()
+                    .padding(.leading, Constants.horizontalSpacing)
+                    .padding(.horizontal, insets: safeAreaInsets)
+
+                TitleAndTextFieldRow(title: Localization.hsTariffNumberTitle,
+                                     placeholder: Localization.hsTariffNumberPlaceholder,
+                                     text: $viewModel.hsTariffNumber)
+                    .padding(.horizontal, insets: safeAreaInsets)
+                Divider()
+                    .padding(.leading, Constants.horizontalSpacing)
+                    .padding(.horizontal, insets: safeAreaInsets)
+            }
+            .background(Color(.listForeground))
+        })
+    }
+}
+
+private extension ShippingLabelCustomsFormItemDetails {
+    enum Constants {
+        static let horizontalSpacing: CGFloat = 16
+    }
+
+    enum Localization {
+        static let customLineTitle = NSLocalizedString("Custom Line %1$d", comment: "Custom line index in Customs Form of Shipping Label flow")
+        static let descriptionTitle = NSLocalizedString("Description",
+                                                        comment: "Title of Description row in Package Content section in Customs screen of Shipping Label flow")
+        static let hsTariffNumberTitle = NSLocalizedString("HS Tariff Number",
+                                                           comment: "Title of HS Tariff Number row in Package Content" +
+                                                                " section in Customs screen of Shipping Label flow")
+        static let hsTariffNumberPlaceholder = NSLocalizedString("Enter number (Optional)",
+                                                                 comment: "Placeholder of HS Tariff Number row in Package" +
+                                                                    " Content section in Customs screen of Shipping Label flow")
     }
 }
 

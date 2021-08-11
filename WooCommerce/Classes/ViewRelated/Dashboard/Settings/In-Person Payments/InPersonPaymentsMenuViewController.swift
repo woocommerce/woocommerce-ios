@@ -83,7 +83,7 @@ private extension InPersonPaymentsMenuViewController {
 //
 extension InPersonPaymentsMenuViewController {
     func orderCardReaderWasPressed() {
-        // TODO
+        WebviewHelper.launch(Constants.woocommercePurchaseCardReaderURL, with: self)
     }
 
     func manageCardReaderWasPressed() {
@@ -148,6 +148,10 @@ private enum Row: CaseIterable {
     var reuseIdentifier: String {
         return type.reuseIdentifier
     }
+}
+
+private enum Constants {
+    static let woocommercePurchaseCardReaderURL = URL(string: "https://woocommerce.com/products/bbpos-chipper2xbt-card-reader")!
 }
 
 // MARK: - SwiftUI compatibility

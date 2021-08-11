@@ -8,10 +8,6 @@ var isIpad: Bool {
     return UIDevice.current.userInterfaceIdiom == .pad
 }
 
-var isDarkMode: Bool {
-    return UIViewController().traitCollection.userInterfaceStyle == .dark
-}
-
 let navBackButton = XCUIApplication().navigationBars.element(boundBy: 0).buttons.element(boundBy: 0)
 
 extension XCUIElement {

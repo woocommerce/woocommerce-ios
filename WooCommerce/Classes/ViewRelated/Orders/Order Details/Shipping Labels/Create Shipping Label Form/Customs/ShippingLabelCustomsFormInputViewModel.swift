@@ -35,6 +35,18 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
     ///
     @Published var itn: String
 
+    /// Items contained in the package.
+    ///
+    @Published var items: [ShippingLabelCustomsForm.Item] {
+        didSet {
+            itemViewModels = items.map { .init(item: $0) }
+        }
+    }
+
+    /// References of item view models.
+    ///
+    private(set) var itemViewModels: [ShippingLabelCustomsFormItemDetailsViewModel]
+
     /// Validated customs form
     ///
     private(set) var validatedCustomsForm: ShippingLabelCustomsForm?
@@ -48,6 +60,8 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
         self.restrictionType = customsForm.restrictionType
         self.restrictionComments = customsForm.restrictionComments
         self.itn = customsForm.itn
+        self.items = customsForm.items
+        self.itemViewModels = customsForm.items.map { .init(item: $0) }
     }
 }
 

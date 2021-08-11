@@ -2,6 +2,10 @@ import Foundation
 import Yosemite
 
 final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
+    /// Product ID of the item.
+    ///
+    let productID: Int64
+
     /// Description for the item.
     ///
     @Published var description: String
@@ -27,6 +31,7 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
     private(set) var validatedItem: ShippingLabelCustomsForm.Item?
 
     init(item: ShippingLabelCustomsForm.Item) {
+        self.productID = item.productID
         self.description = item.description
         self.value = item.value
         self.weight = item.weight

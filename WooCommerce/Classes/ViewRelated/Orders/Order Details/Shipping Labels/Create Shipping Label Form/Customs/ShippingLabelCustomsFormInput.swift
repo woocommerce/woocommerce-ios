@@ -44,9 +44,7 @@ struct ShippingLabelCustomsFormInput: View {
                 if viewModel.contentsType == .other {
                     TitleAndTextFieldRow(title: Localization.contentExplanationTitle,
                                          placeholder: Localization.contentExplanationPlaceholder,
-                                         text: $viewModel.contentExplanation,
-                                         symbol: nil,
-                                         keyboardType: .default)
+                                         text: $viewModel.contentExplanation)
                         .padding(.horizontal, insets: safeAreaInsets)
                     Divider()
                         .padding(.leading, Constants.horizontalPadding)
@@ -70,9 +68,7 @@ struct ShippingLabelCustomsFormInput: View {
                 if viewModel.restrictionType == .other {
                     TitleAndTextFieldRow(title: Localization.restrictionCommentTitle,
                                          placeholder: Localization.restrictionCommentPlaceholder,
-                                         text: $viewModel.restrictionComments,
-                                         symbol: nil,
-                                         keyboardType: .default)
+                                         text: $viewModel.restrictionComments)
                         .padding(.horizontal, insets: safeAreaInsets)
                     Divider()
                         .padding(.leading, Constants.horizontalPadding)
@@ -81,9 +77,7 @@ struct ShippingLabelCustomsFormInput: View {
 
                 TitleAndTextFieldRow(title: Localization.itnTitle,
                                      placeholder: Localization.itnPlaceholder,
-                                     text: $viewModel.itn,
-                                     symbol: nil,
-                                     keyboardType: .default)
+                                     text: $viewModel.itn)
                     .padding(.horizontal, insets: safeAreaInsets)
                 Divider()
                     .padding(.leading, Constants.horizontalPadding)
@@ -98,6 +92,13 @@ struct ShippingLabelCustomsFormInput: View {
             VStack(spacing: 0) {
                 ListHeaderView(text: Localization.packageContentSection.uppercased(), alignment: .left)
                     .padding(.horizontal, insets: safeAreaInsets)
+
+                ForEach(Array(viewModel.items.enumerated()), id: \.element) { (index, item) in
+                    viewModel.itemViewModels.first(where: { $0.productID == item.productID })
+                        .map { inputModel in
+                            ShippingLabelCustomsFormItemDetails(itemNumber: index + 1, viewModel: inputModel, safeAreaInsets: safeAreaInsets)
+                        }
+                }
             }
         })
     }

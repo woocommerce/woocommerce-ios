@@ -3,6 +3,14 @@ import Yosemite
 
 /// View model for ShippingLabelCustomsFormInput
 final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
+    /// ID of current package.
+    ///
+    let packageID: String
+
+    /// Name of current package.
+    ///
+    let packageName: String
+
     /// Whether to return package if delivery fails.
     ///
     @Published var returnOnNonDelivery: Bool
@@ -32,6 +40,8 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
     private(set) var validatedCustomsForm: ShippingLabelCustomsForm?
 
     init(customsForm: ShippingLabelCustomsForm) {
+        self.packageID = customsForm.packageID
+        self.packageName = customsForm.packageName
         self.returnOnNonDelivery = customsForm.nonDeliveryOption == .return
         self.contentsType = customsForm.contentsType
         self.contentExplanation = customsForm.contentExplanation

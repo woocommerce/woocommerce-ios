@@ -108,7 +108,7 @@ struct ShippingLabelCustomsFormInput: View {
                 .font(.headline)
             Text("-")
                 .font(.body)
-            Text(viewModel.customsForm.packageName)
+            Text(viewModel.packageName)
                 .font(.body)
         }
     }

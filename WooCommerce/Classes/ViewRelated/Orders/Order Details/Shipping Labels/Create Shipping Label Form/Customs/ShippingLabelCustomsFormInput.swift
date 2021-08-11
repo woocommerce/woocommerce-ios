@@ -60,13 +60,22 @@ struct ShippingLabelCustomsFormInput: View {
                     SelectionList(title: Localization.restrictionTypeTitle,
                                   items: ShippingLabelCustomsForm.RestrictionType.allCases,
                                   contentKeyPath: \.localizedName,
-                                  selected: $viewModel.restrictionType) { type in
-                        viewModel.restrictionType = type
-                    }
+                                  selected: $viewModel.restrictionType)
                 })
 
                 Divider()
                     .padding(.leading, Constants.horizontalPadding)
+
+                if viewModel.restrictionType == .other {
+                    TitleAndTextFieldRow(title: Localization.restrictionCommentTitle,
+                                         placeholder: Localization.restrictionCommentPlaceholder,
+                                         text: $viewModel.restrictionComments,
+                                         symbol: nil,
+                                         keyboardType: .default)
+                        .padding(.horizontal, insets: safeAreaInsets)
+                    Divider()
+                        .padding(.leading, Constants.horizontalPadding)
+                }
             }
         })
     }
@@ -96,11 +105,16 @@ private extension ShippingLabelCustomsFormInput {
                                                         comment: "Title for the Content Type row in Customs screen of Shipping Label flow")
         static let contentExplanationTitle = NSLocalizedString("Content Details",
                                                                comment: "Title for the Content Details row in Customs screen of Shipping Label flow")
-        static let contentExplanationPlaceholder = NSLocalizedString("Description of contents",
+        static let contentExplanationPlaceholder = NSLocalizedString("Type of contents",
                                                                      comment: "Placeholder for the Content Details row " +
                                                                         "in Customs screen of Shipping Label flow")
         static let restrictionTypeTitle = NSLocalizedString("Restriction Type",
                                                             comment: "Title for the Restriction Type row in Customs screen of Shipping Label flow")
+        static let restrictionCommentTitle = NSLocalizedString("Restriction Details",
+                                                               comment: "Title for the Restriction Details row in Customs screen of Shipping Label flow")
+        static let restrictionCommentPlaceholder = NSLocalizedString("Type of restriction",
+                                                                     comment: "Placeholder for the Restriction Details row in " +
+                                                                        "Customs screen of Shipping Label flow")
         static let itnTitle = NSLocalizedString("ITN",
                                                 comment: "Title for the ITN row in Customs screen of Shipping Label flow")
         static let itnPlaceholder = NSLocalizedString("Enter ITN (optional)",

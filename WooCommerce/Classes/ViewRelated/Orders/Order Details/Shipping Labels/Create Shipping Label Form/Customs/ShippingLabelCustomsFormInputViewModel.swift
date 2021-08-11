@@ -15,6 +15,14 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
     ///
     @Published var contentExplanation: String
 
+    /// Restriction type of items to be declared in the customs form.
+    ///
+    @Published var restrictionType: ShippingLabelCustomsForm.RestrictionType
+
+    /// Description of restriction type, required if the type is other.
+    ///
+    @Published var restrictionComments: String
+
     /// Input customs forms to be updated
     ///
     private(set) var customsForm: ShippingLabelCustomsForm
@@ -24,6 +32,8 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
         self.returnOnNonDelivery = customsForm.nonDeliveryOption == .return
         self.contentsType = customsForm.contentsType
         self.contentExplanation = customsForm.contentExplanation
+        self.restrictionType = customsForm.restrictionType
+        self.restrictionComments = customsForm.restrictionComments
     }
 }
 

@@ -110,7 +110,7 @@ public extension ShippingLabelCustomsForm {
 
     /// Types of restriction of contents to declare with customs.
     ///
-    enum RestrictionType: String, Codable, GeneratedFakeable {
+    enum RestrictionType: String, CaseIterable, Codable, GeneratedFakeable {
         case none
         case quarantine
         case sanitaryOrPhytosanitaryInspection = "sanitary_phytosanitary_inspection"

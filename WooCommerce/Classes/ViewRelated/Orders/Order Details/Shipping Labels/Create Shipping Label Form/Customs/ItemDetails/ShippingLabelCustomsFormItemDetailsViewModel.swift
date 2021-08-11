@@ -12,11 +12,11 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
 
     /// Price of item per unit.
     ///
-    @Published var value: Double
+    @Published var value: String
 
     /// Weight of item per unit.
     ///
-    @Published var weight: Double
+    @Published var weight: String
 
     /// HS tariff number, empty if N/A.
     ///
@@ -26,6 +26,10 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
     ///
     @Published var originCountry: String
 
+    /// Persisted countries to select from.
+    ///
+    @Published var allCountries: [Country] = []
+
     /// Validated item if all fields are valid.
     ///
     private(set) var validatedItem: ShippingLabelCustomsForm.Item?
@@ -33,8 +37,8 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
     init(item: ShippingLabelCustomsForm.Item) {
         self.productID = item.productID
         self.description = item.description
-        self.value = item.value
-        self.weight = item.weight
+        self.value = String(item.value)
+        self.weight = String(item.weight)
         self.hsTariffNumber = item.hsTariffNumber
         self.originCountry = item.originCountry
     }

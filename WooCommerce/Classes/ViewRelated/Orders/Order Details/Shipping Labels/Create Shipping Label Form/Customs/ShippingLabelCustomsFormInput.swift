@@ -25,67 +25,58 @@ struct ShippingLabelCustomsFormInput: View {
                 TitleAndToggleRow(title: Localization.returnPolicyTitle, isSubheadline: true, isOn: $viewModel.returnOnNonDelivery)
                     .padding(.bottom, Constants.verticalPadding)
                     .padding(.horizontal, Constants.horizontalPadding)
-                    .padding(.horizontal, insets: safeAreaInsets)
 
                 TitleAndValueRow(title: Localization.contentTypeTitle, value: viewModel.contentsType.localizedName, selectable: true) {
                     showingContentTypes.toggle()
                 }
-                .padding(.horizontal, insets: safeAreaInsets)
                 .sheet(isPresented: $showingContentTypes, content: {
                     SelectionList(title: Localization.contentTypeTitle,
                                   items: ShippingLabelCustomsForm.ContentsType.allCases,
                                   contentKeyPath: \.localizedName,
+                                  selectionKeyPath: \.self,
                                   selected: $viewModel.contentsType)
                 })
                 Divider()
                     .padding(.leading, Constants.horizontalPadding)
-                    .padding(.horizontal, insets: safeAreaInsets)
 
                 if viewModel.contentsType == .other {
                     TitleAndTextFieldRow(title: Localization.contentExplanationTitle,
                                          placeholder: Localization.contentExplanationPlaceholder,
                                          text: $viewModel.contentExplanation)
-                        .padding(.horizontal, insets: safeAreaInsets)
                     Divider()
                         .padding(.leading, Constants.horizontalPadding)
-                        .padding(.horizontal, insets: safeAreaInsets)
                 }
 
                 TitleAndValueRow(title: Localization.restrictionTypeTitle, value: viewModel.restrictionType.localizedName, selectable: true) {
                     showingRestrictionTypes.toggle()
                 }
-                .padding(.horizontal, insets: safeAreaInsets)
                 .sheet(isPresented: $showingRestrictionTypes, content: {
                     SelectionList(title: Localization.restrictionTypeTitle,
                                   items: ShippingLabelCustomsForm.RestrictionType.allCases,
                                   contentKeyPath: \.localizedName,
+                                  selectionKeyPath: \.self,
                                   selected: $viewModel.restrictionType)
                 })
                 Divider()
                     .padding(.leading, Constants.horizontalPadding)
-                    .padding(.horizontal, insets: safeAreaInsets)
 
                 if viewModel.restrictionType == .other {
                     TitleAndTextFieldRow(title: Localization.restrictionCommentTitle,
                                          placeholder: Localization.restrictionCommentPlaceholder,
                                          text: $viewModel.restrictionComments)
-                        .padding(.horizontal, insets: safeAreaInsets)
                     Divider()
                         .padding(.leading, Constants.horizontalPadding)
-                        .padding(.horizontal, insets: safeAreaInsets)
                 }
 
                 TitleAndTextFieldRow(title: Localization.itnTitle,
                                      placeholder: Localization.itnPlaceholder,
                                      text: $viewModel.itn)
-                    .padding(.horizontal, insets: safeAreaInsets)
                 Divider()
                     .padding(.leading, Constants.horizontalPadding)
-                    .padding(.horizontal, insets: safeAreaInsets)
 
                 LearnMoreRow(localizedStringWithHyperlink: Localization.learnMoreITNText)
-                    .padding(.horizontal, insets: safeAreaInsets)
             }
+            .padding(.horizontal, insets: safeAreaInsets)
             .padding(.top, Constants.verticalPadding)
             .background(Color(.listForeground))
 

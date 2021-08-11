@@ -8,7 +8,21 @@ struct TitleAndTextFieldRow: View {
     @Binding var text: String
     let symbol: String?
     let keyboardType: UIKeyboardType
-    var onEditingChanged: ((Bool) -> Void)? = nil
+    let onEditingChanged: ((Bool) -> Void)?
+
+    init(title: String,
+         placeholder: String,
+         text: Binding<String>,
+         symbol: String? = nil,
+         keyboardType: UIKeyboardType = .default,
+         onEditingChanged: ((Bool) -> Void)? = nil) {
+        self.title = title
+        self.placeholder = placeholder
+        self._text = text
+        self.symbol = symbol
+        self.keyboardType = keyboardType
+        self.onEditingChanged = onEditingChanged
+    }
 
     var body: some View {
         HStack {

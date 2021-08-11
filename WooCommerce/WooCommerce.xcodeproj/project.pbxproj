@@ -6001,24 +6001,6 @@
 			path = "Stripe Integration Tests";
 			sourceTree = "<group>";
 		};
-		DE19BB1426C3B58C00AB70D9 /* List */ = {
-			isa = PBXGroup;
-			children = (
-				DEC2961E26BD1605005A056B /* ShippingLabelCustomsFormListViewModel.swift */,
-				DEC2962026BD1627005A056B /* ShippingLabelCustomsFormList.swift */,
-			);
-			path = List;
-			sourceTree = "<group>";
-		};
-		DE19BB1526C3B59400AB70D9 /* Input */ = {
-			isa = PBXGroup;
-			children = (
-				DEC2962226BD4E6E005A056B /* ShippingLabelCustomsFormInput.swift */,
-				DEC2962426C122DF005A056B /* ShippingLabelCustomsFormInputViewModel.swift */,
-			);
-			path = Input;
-			sourceTree = "<group>";
-		};
 		DE19BB1626C3B5A800AB70D9 /* ItemDetails */ = {
 			isa = PBXGroup;
 			children = (
@@ -6059,9 +6041,11 @@
 		DEC2961D26BD15D3005A056B /* Customs */ = {
 			isa = PBXGroup;
 			children = (
+				DEC2961E26BD1605005A056B /* ShippingLabelCustomsFormListViewModel.swift */,
+				DEC2962026BD1627005A056B /* ShippingLabelCustomsFormList.swift */,
+				DEC2962226BD4E6E005A056B /* ShippingLabelCustomsFormInput.swift */,
+				DEC2962426C122DF005A056B /* ShippingLabelCustomsFormInputViewModel.swift */,
 				DE19BB1626C3B5A800AB70D9 /* ItemDetails */,
-				DE19BB1426C3B58C00AB70D9 /* List */,
-				DE19BB1526C3B59400AB70D9 /* Input */,
 			);
 			path = Customs;
 			sourceTree = "<group>";

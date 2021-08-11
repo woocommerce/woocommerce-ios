@@ -56,7 +56,7 @@ private enum Localization {
 
      static let message = NSLocalizedString(
          "There are pending requirements in your account. Please complete those requirements by",
-         comment: "Error message when WooCommerce Payments is not supported because the Stripe account is under review"
+         comment: "Error message when the Stripe account is restricted because there are pending requirements"
      )
  }
 

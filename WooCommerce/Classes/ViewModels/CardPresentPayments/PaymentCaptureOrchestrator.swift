@@ -1,5 +1,4 @@
 import Yosemite
-import Networking
 import PassKit
 
 /// Orchestrates the sequence of actions required to capture a payment:

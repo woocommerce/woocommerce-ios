@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a Country Entity.
 ///
-public struct Country: Decodable, Equatable, GeneratedFakeable {
+public struct Country: Decodable, Equatable, Hashable, GeneratedFakeable {
 
     // ISO-3166 two letter country code, e.g. CA for Canada
     public let code: String

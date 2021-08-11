@@ -62,7 +62,7 @@ private extension ShippingLabelCustomsFormInput {
     }
     enum Localization {
         static let packageNumber = NSLocalizedString("Package %1$d", comment: "Package index in Customs screen of Shipping Label flow")
-        static let returnPolicyTitle = NSLocalizedString("Return to sender if package is unabled to be delivered",
+        static let returnPolicyTitle = NSLocalizedString("Return to sender if package is unable to be delivered",
                                                          comment: "Title for the return policy in Customs screen of Shipping Label flow")
         static let contentTypeTitle = NSLocalizedString("Content Type",
                                                         comment: "Title for the Content Type row in Customs screen of Shipping Label flow")

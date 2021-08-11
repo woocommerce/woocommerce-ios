@@ -5,7 +5,7 @@ import protocol Storage.StorageManagerType
 /// View model for ShippingLabelsCustomsFormList
 ///
 final class ShippingLabelCustomsFormListViewModel: ObservableObject {
-    /// Whether packages multiple packages are found.
+    /// Whether multiple packages are found.
     ///
     lazy var multiplePackagesDetected: Bool = {
         customsForms.count > 1

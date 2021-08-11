@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct SelectionList<T: Hashable>: View {
+struct SelectionList<T: Hashable, U: Equatable>: View {
     /// Title of the screen
     private let title: String
 
@@ -10,16 +10,25 @@ struct SelectionList<T: Hashable>: View {
     /// Key path to find the content to be displayed
     private let contentKeyPath: KeyPath<T, String>
 
+    /// Key path to find the value to be binded for selection
+    private let selectionKeyPath: KeyPath<T, U>
+
     /// Callback for selection
     private let onSelection: ((T) -> Void)?
 
-    @Binding private var selected: T
+    @Binding private var selected: U
     @Environment(\.presentationMode) var presentation
 
-    init(title: String, items: [T], contentKeyPath: KeyPath<T, String>, selected: Binding<T>, onSelection: ((T) -> Void)? = nil) {
+    init(title: String,
+         items: [T],
+         contentKeyPath: KeyPath<T, String>,
+         selectionKeyPath: KeyPath<T, U>,
+         selected: Binding<U>,
+         onSelection: ((T) -> Void)? = nil) {
         self.title = title
         self.items = items
         self.contentKeyPath = contentKeyPath
+        self.selectionKeyPath = selectionKeyPath
         self.onSelection = onSelection
         self._selected = selected
     }
@@ -31,11 +40,15 @@ struct SelectionList<T: Hashable>: View {
                     VStack(spacing: 0) {
                         ForEach(items, id: contentKeyPath) { item in
                             VStack(spacing: 0) {
-                                SelectableItemRow(title: item[keyPath: contentKeyPath], selected: item == selected, displayMode: .compact, alignment: .trailing)
+                                SelectableItemRow(
+                                    title: item[keyPath: contentKeyPath],
+                                    selected: item[keyPath: selectionKeyPath] == selected,
+                                    displayMode: .compact,
+                                    alignment: .trailing)
                                     .padding(.horizontal, insets: geometry.safeAreaInsets)
                                     .background(Color(.listForeground))
                                     .onTapGesture {
-                                        selected = item
+                                        selected = item[keyPath: selectionKeyPath]
                                         onSelection?(item)
                                     }
                                 Divider()
@@ -59,6 +72,10 @@ struct SelectionList<T: Hashable>: View {
 
 struct SelectionList_Previews: PreviewProvider {
     static var previews: some View {
-        SelectionList(title: "Lunch", items: ["🥪", "🥓", "🥗"], contentKeyPath: \.self, selected: .constant("🥓")) { _ in }
+        SelectionList(title: "Lunch",
+                      items: ["🥪", "🥓", "🥗"],
+                      contentKeyPath: \.self,
+                      selectionKeyPath: \.self,
+                      selected: .constant("🥓")) { _ in }
     }
 }

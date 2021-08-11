@@ -41,6 +41,17 @@ struct ShippingLabelCustomsFormInput: View {
 
                 Divider()
                     .padding(.leading, Constants.horizontalPadding)
+
+                if viewModel.contentsType == .other {
+                    TitleAndTextFieldRow(title: Localization.contentExplanationTitle,
+                                         placeholder: Localization.contentExplanationPlaceholder,
+                                         text: $viewModel.contentExplanation,
+                                         symbol: nil,
+                                         keyboardType: .default)
+                        .padding(.horizontal, insets: safeAreaInsets)
+                    Divider()
+                        .padding(.leading, Constants.horizontalPadding)
+                }
             }
         })
     }
@@ -68,6 +79,11 @@ private extension ShippingLabelCustomsFormInput {
                                                          comment: "Title for the return policy in Customs screen of Shipping Label flow")
         static let contentTypeTitle = NSLocalizedString("Content Type",
                                                         comment: "Title for the Content Type row in Customs screen of Shipping Label flow")
+        static let contentExplanationTitle = NSLocalizedString("Content Details",
+                                                               comment: "Title for the Content Details row in Customs screen of Shipping Label flow")
+        static let contentExplanationPlaceholder = NSLocalizedString("Description of contents",
+                                                                     comment: "Placeholder for the Content Details row" +
+                                                                        "in Customs screen of Shipping Label flow")
         static let restrictionTypeTitle = NSLocalizedString("Restriction Type",
                                                             comment: "Title for the Restriction Type row in Customs screen of Shipping Label flow")
         static let itnTitle = NSLocalizedString("ITN",

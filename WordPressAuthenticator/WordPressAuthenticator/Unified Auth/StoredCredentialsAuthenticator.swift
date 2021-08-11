@@ -132,6 +132,8 @@ class StoredCredentialsAuthenticator: NSObject {
             // project in a conversation between myself (Diego Rey Mendez) and Renan Ferrari.
             break
         case .failed, .invalidResponse, .notHandled, .unknown:
+            fallthrough
+        @unknown default:
             tracker.track(failure: authError.localizedDescription)
             DDLogError("ASAuthorizationError: \(authError.localizedDescription)")
         }

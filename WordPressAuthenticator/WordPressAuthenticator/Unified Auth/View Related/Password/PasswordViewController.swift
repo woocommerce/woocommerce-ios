@@ -444,7 +444,7 @@ private extension PasswordViewController {
     func configureForAccessibility() {
         view.accessibilityElements = [
             passwordField as Any,
-            tableView,
+            tableView as Any,
             submitButton as Any
         ]
 

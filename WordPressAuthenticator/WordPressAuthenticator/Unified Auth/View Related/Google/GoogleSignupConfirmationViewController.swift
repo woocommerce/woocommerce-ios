@@ -184,7 +184,7 @@ private extension GoogleSignupConfirmationViewController {
     ///
     func configureForAccessibility() {
         view.accessibilityElements = [
-            tableView,
+            tableView as Any,
             submitButton as Any
         ]
 

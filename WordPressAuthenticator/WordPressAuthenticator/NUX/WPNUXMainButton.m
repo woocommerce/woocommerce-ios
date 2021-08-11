@@ -44,7 +44,7 @@
     self.titleLabel.font = [WPFontManager systemRegularFontOfSize:18.0];
     [self setColor:[UIColor colorWithRed:0/255.0f green:116/255.0f blue:162/255.0f alpha:1.0f]];
 
-    activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
     activityIndicator.hidesWhenStopped = YES;
     [self addSubview:activityIndicator];
 }

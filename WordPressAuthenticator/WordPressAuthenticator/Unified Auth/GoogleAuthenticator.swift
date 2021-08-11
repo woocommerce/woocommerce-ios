@@ -6,7 +6,7 @@ import SVProgressHUD
 /// Contains delegate methods for Google authentication unified auth flow.
 /// Both Login and Signup are handled via this delegate.
 ///
-protocol GoogleAuthenticatorDelegate: class {
+protocol GoogleAuthenticatorDelegate: AnyObject {
     // Google account login was successful.
     func googleFinishedLogin(credentials: AuthenticatorCredentials, loginFields: LoginFields)
 
@@ -47,7 +47,7 @@ enum GoogleAuthType {
 /// Contains delegate methods for Google login specific flow.
 /// When separate Google Login and Signup flows are no longer used, this no longer needed.
 ///
-protocol GoogleAuthenticatorLoginDelegate: class {
+protocol GoogleAuthenticatorLoginDelegate: AnyObject {
     // Google account login was successful.
     func googleFinishedLogin(credentials: AuthenticatorCredentials, loginFields: LoginFields)
 
@@ -64,7 +64,7 @@ protocol GoogleAuthenticatorLoginDelegate: class {
 /// Contains delegate methods for Google signup specific flow.
 /// When separate Google Login and Signup flows are no longer used, this no longer needed.
 ///
-protocol GoogleAuthenticatorSignupDelegate: class {
+protocol GoogleAuthenticatorSignupDelegate: AnyObject {
     // Google account signup was successful.
     func googleFinishedSignup(credentials: AuthenticatorCredentials, loginFields: LoginFields)
 

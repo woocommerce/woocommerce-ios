@@ -454,7 +454,7 @@ private extension TwoFAViewController {
     func configureForAccessibility() {
         view.accessibilityElements = [
             codeField as Any,
-            tableView,
+            tableView as Any,
             submitButton as Any
         ]
 

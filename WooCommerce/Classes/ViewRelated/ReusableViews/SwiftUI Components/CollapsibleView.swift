@@ -8,20 +8,26 @@ struct CollapsibleView<Label: View, Content: View>: View {
     private let safeAreaInsets: EdgeInsets
     private let isCollapsible: Bool
 
-    @State private var isCollapsed = false
+    @Binding private var isCollapsed: Bool
 
     private let horizontalPadding: CGFloat = 16
     private let verticalPadding: CGFloat = 8
 
-    init(isCollapsible: Bool = true, safeAreaInsets: EdgeInsets = .zero, @ViewBuilder label: () -> Label, @ViewBuilder content: () -> Content) {
+    init(isCollapsible: Bool = true,
+         isCollapsed: Binding<Bool> = .constant(false),
+         safeAreaInsets: EdgeInsets = .zero,
+         @ViewBuilder label: () -> Label,
+         @ViewBuilder content: () -> Content) {
         self.label = label()
         self.content = content()
         self.safeAreaInsets = safeAreaInsets
         self.isCollapsible = isCollapsible
+        self._isCollapsed = isCollapsed
     }
 
     var body: some View {
         VStack(spacing: 0) {
+            Divider()
             Button(action: {
                 guard isCollapsible else { return }
                 withAnimation {

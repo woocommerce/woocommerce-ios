@@ -44,7 +44,7 @@ private enum Localization {
 
     static let messageDeadline = NSLocalizedString(
         "There are pending requirements in your account. Please complete those requirements by %1$@ to keep accepting in-Person Payments.",
-        comment: "Error message when WooCommerce Payments is not supported because there are pending requirements in the Stripe account (with a known deadline)"
+        comment: "Error message when WooCommerce Payments is not supported because there are pending requirements in the Stripe account. %1$d will contain the localized deadline (e.g. August 11, 2021)"
     )
 
     static let messageUnknownDeadline = NSLocalizedString(

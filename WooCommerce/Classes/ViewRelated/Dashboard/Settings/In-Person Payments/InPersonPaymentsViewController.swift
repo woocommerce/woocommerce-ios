@@ -44,6 +44,8 @@ struct InPersonPaymentsView: View {
                     InPersonPaymentsStripeAccountPending(deadline: deadline)
                 case .stripeAccountUnderReview:
                     InPersonPaymentsStripeAcountReview()
+                case .stripeAccountRejected:
+                    InPersonPaymentsStripeRejected()
                 case .completed:
                     CardReaderSettingsPresentingView()
                 default:

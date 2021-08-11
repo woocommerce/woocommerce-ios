@@ -1192,6 +1192,7 @@
 		D8B4D5F226C2CF5B00F34E94 /* InPersonPaymentsStripeAccountOverdueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B4D5F126C2CF5B00F34E94 /* InPersonPaymentsStripeAccountOverdueView.swift */; };
 		D8B4D5F026C2C7EC00F34E94 /* InPersonPaymentsStripeAccountPendingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B4D5EF26C2C7EC00F34E94 /* InPersonPaymentsStripeAccountPendingView.swift */; };
 		D8B4D5EE26C2C26C00F34E94 /* InPersonPaymentsStripeAcountReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B4D5ED26C2C26C00F34E94 /* InPersonPaymentsStripeAcountReviewView.swift */; };
+		D8B4D5F426C30E7C00F34E94 /* InPersonPaymentsStripeRejectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B4D5F326C30E7C00F34E94 /* InPersonPaymentsStripeRejectedView.swift */; };
 		D8C11A4E22DD235F00D4A88D /* OrderDetailsResultsControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A4D22DD235F00D4A88D /* OrderDetailsResultsControllers.swift */; };
 		D8C11A5E22E2440400D4A88D /* OrderPaymentDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A5D22E2440400D4A88D /* OrderPaymentDetailsViewModel.swift */; };
 		D8C11A6022E2479800D4A88D /* OrderPaymentDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A5F22E2479800D4A88D /* OrderPaymentDetailsViewModelTests.swift */; };
@@ -2545,6 +2546,7 @@
 		D8B4D5F126C2CF5B00F34E94 /* InPersonPaymentsStripeAccountOverdueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsStripeAccountOverdueView.swift; sourceTree = "<group>"; };
 		D8B4D5EF26C2C7EC00F34E94 /* InPersonPaymentsStripeAccountPendingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsStripeAccountPendingView.swift; sourceTree = "<group>"; };
 		D8B4D5ED26C2C26C00F34E94 /* InPersonPaymentsStripeAcountReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsStripeAcountReviewView.swift; sourceTree = "<group>"; };
+		D8B4D5F326C30E7C00F34E94 /* InPersonPaymentsStripeRejectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsStripeRejectedView.swift; sourceTree = "<group>"; };
 		D8C11A4D22DD235F00D4A88D /* OrderDetailsResultsControllers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsResultsControllers.swift; sourceTree = "<group>"; };
 		D8C11A5D22E2440400D4A88D /* OrderPaymentDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderPaymentDetailsViewModel.swift; sourceTree = "<group>"; };
 		D8C11A5F22E2479800D4A88D /* OrderPaymentDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OrderPaymentDetailsViewModelTests.swift; path = WooCommerceTests/ViewRelated/OrderPaymentDetailsViewModelTests.swift; sourceTree = SOURCE_ROOT; };
@@ -6048,6 +6050,7 @@
 				D8B4D5EF26C2C7EC00F34E94 /* InPersonPaymentsStripeAccountPendingView.swift */,
 				E1C5E78126C2A971008D4C47 /* InPersonPaymentsWCPayNotSetup.swift */,
 				D8B4D5ED26C2C26C00F34E94 /* InPersonPaymentsStripeAcountReviewView.swift */,
+				D8B4D5F326C30E7C00F34E94 /* InPersonPaymentsStripeRejectedView.swift */,
 			);
 			path = "Onboarding Errors";
 			sourceTree = "<group>";
@@ -7118,6 +7121,7 @@
 				024EFA6923FCC10B00F36918 /* Product+Media.swift in Sources */,
 				5795F23023E26B5300F6707C /* OrderSearchStarterViewModel.swift in Sources */,
 				0202B68D23876BC100F3EBE0 /* ProductsTabProductViewModel+ProductVariation.swift in Sources */,
+				D8B4D5F426C30E7C00F34E94 /* InPersonPaymentsStripeRejectedView.swift in Sources */,
 				57612989245888E2007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlus.swift in Sources */,
 				B5A8532220BDBFAF00FAAB4D /* CircularImageView.swift in Sources */,
 				CE1F51252064179A00C6C810 /* UILabel+Helpers.swift in Sources */,

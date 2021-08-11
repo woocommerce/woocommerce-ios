@@ -18,9 +18,10 @@ struct SafariSheetView: UIViewControllerRepresentable {
 extension View {
     /// Presents a sheet with a browser when a binding to a Boolean value that you provide is true
     ///
-    func safariSheet(isPresented: Binding<Bool>, url: URL) -> some View {
-        sheet(isPresented: isPresented) {
+    func safariSheet(isPresented: Binding<Bool>, url: URL, onDismiss: (() -> Void)? = nil) -> some View {
+        sheet(isPresented: isPresented, onDismiss: onDismiss) {
             SafariSheetView(url: url)
+                .ignoresSafeArea()
         }
     }
 
@@ -28,10 +29,11 @@ extension View {
     ///
     /// When the sheet is dismissed, the binding's value will be set to nil.
     ///
-    func safariSheet(url: Binding<URL?>) -> some View {
-        sheet(isPresented: url.notNil()) {
+    func safariSheet(url: Binding<URL?>, onDismiss: (() -> Void)? = nil) -> some View {
+        sheet(isPresented: url.notNil(), onDismiss: onDismiss) {
             if let url = url.wrappedValue {
                 SafariSheetView(url: url)
+                    .ignoresSafeArea()
             }
         }
     }

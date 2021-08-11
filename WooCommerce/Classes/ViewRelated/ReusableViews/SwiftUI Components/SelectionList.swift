@@ -16,6 +16,8 @@ struct SelectionList<T: Hashable>: View {
     @Binding private var selected: T
     @Environment(\.presentationMode) var presentation
 
+    private let horizontalSpacing: CGFloat = 16
+
     init(title: String, items: [T], contentKeyPath: KeyPath<T, String>, selected: Binding<T>, onSelection: ((T) -> Void)? = nil) {
         self.title = title
         self.items = items
@@ -39,6 +41,8 @@ struct SelectionList<T: Hashable>: View {
                                         onSelection?(item)
                                     }
                                 Divider()
+                                    .padding(.leading, horizontalSpacing)
+                                    .padding(.horizontal, insets: geometry.safeAreaInsets)
                             }
                         }
                     }

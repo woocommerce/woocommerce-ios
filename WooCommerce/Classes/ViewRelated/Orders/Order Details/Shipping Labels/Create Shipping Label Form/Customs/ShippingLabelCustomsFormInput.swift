@@ -39,6 +39,7 @@ struct ShippingLabelCustomsFormInput: View {
                 })
                 Divider()
                     .padding(.leading, Constants.horizontalPadding)
+                    .padding(.horizontal, insets: safeAreaInsets)
 
                 if viewModel.contentsType == .other {
                     TitleAndTextFieldRow(title: Localization.contentExplanationTitle,
@@ -49,6 +50,7 @@ struct ShippingLabelCustomsFormInput: View {
                         .padding(.horizontal, insets: safeAreaInsets)
                     Divider()
                         .padding(.leading, Constants.horizontalPadding)
+                        .padding(.horizontal, insets: safeAreaInsets)
                 }
 
                 TitleAndValueRow(title: Localization.restrictionTypeTitle, value: viewModel.restrictionType.localizedName, selectable: true) {
@@ -63,6 +65,7 @@ struct ShippingLabelCustomsFormInput: View {
                 })
                 Divider()
                     .padding(.leading, Constants.horizontalPadding)
+                    .padding(.horizontal, insets: safeAreaInsets)
 
                 if viewModel.restrictionType == .other {
                     TitleAndTextFieldRow(title: Localization.restrictionCommentTitle,
@@ -73,6 +76,7 @@ struct ShippingLabelCustomsFormInput: View {
                         .padding(.horizontal, insets: safeAreaInsets)
                     Divider()
                         .padding(.leading, Constants.horizontalPadding)
+                        .padding(.horizontal, insets: safeAreaInsets)
                 }
 
                 TitleAndTextFieldRow(title: Localization.itnTitle,
@@ -83,8 +87,16 @@ struct ShippingLabelCustomsFormInput: View {
                     .padding(.horizontal, insets: safeAreaInsets)
                 Divider()
                     .padding(.leading, Constants.horizontalPadding)
+                    .padding(.horizontal, insets: safeAreaInsets)
 
                 LearnMoreRow(localizedStringWithHyperlink: Localization.learnMoreITNText)
+                    .padding(.horizontal, insets: safeAreaInsets)
+            }
+            .padding(.top, Constants.verticalPadding)
+            .background(Color(.listForeground))
+
+            VStack(spacing: 0) {
+                ListHeaderView(text: Localization.packageContentSection.uppercased(), alignment: .left)
                     .padding(.horizontal, insets: safeAreaInsets)
             }
         })
@@ -132,6 +144,8 @@ private extension ShippingLabelCustomsFormInput {
         static let learnMoreITNText = NSLocalizedString("<a href=\"https://pe.usps.com/text/imm/immc5_010.htm\">Learn more</a> about International Tax Number",
                                                         comment: "A label prompting users to learn more about international " +
                                                             "tax number with an embedded hyperlink")
+        static let packageContentSection = NSLocalizedString("Package Content",
+                                                             comment: "Title of Package Content section in Customs screen of Shipping Label flow")
     }
 }
 

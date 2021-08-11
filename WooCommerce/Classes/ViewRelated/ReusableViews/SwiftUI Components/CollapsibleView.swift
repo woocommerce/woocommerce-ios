@@ -21,7 +21,7 @@ struct CollapsibleView<Label: View, Content: View>: View {
     }
 
     var body: some View {
-        VStack(spacing: verticalPadding) {
+        VStack(spacing: 0) {
             Button(action: {
                 guard isCollapsible else { return }
                 withAnimation {
@@ -39,6 +39,8 @@ struct CollapsibleView<Label: View, Content: View>: View {
             .buttonStyle(PlainButtonStyle())
             .padding(.horizontal, horizontalPadding)
             .padding(.horizontal, insets: safeAreaInsets)
+            .padding(.vertical, verticalPadding)
+            .background(Color(.listForeground))
 
             Divider()
 
@@ -46,8 +48,6 @@ struct CollapsibleView<Label: View, Content: View>: View {
                 content
             }
         }
-        .padding(.top, verticalPadding)
-        .background(Color(.listForeground))
     }
 }
 

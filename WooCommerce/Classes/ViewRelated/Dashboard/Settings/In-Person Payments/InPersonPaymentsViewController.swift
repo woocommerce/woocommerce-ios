@@ -36,16 +36,18 @@ struct InPersonPaymentsView: View {
                     InPersonPaymentsPluginNotSupportedVersion(onRefresh: viewModel.refresh)
                 case .wcpayNotActivated:
                     InPersonPaymentsPluginNotActivated(onRefresh: viewModel.refresh)
+                case .wcpaySetupNotCompleted:
+                    InPersonPaymentsWCPayNotSetup(onRefresh: viewModel.refresh)
+                case .stripeAccountOverdueRequirement:
+                    InPersonPaymentsStripeAccountOverdue()
                 case .stripeAccountPendingRequirement(let deadline):
                     InPersonPaymentsStripeAccountPending(deadline: deadline)
                 case .stripeAccountUnderReview:
-                    InPersonPaymentsStripeAcountReview()                    
-                case .wcpaySetupNotCompleted:
-                    InPersonPaymentsWCPayNotSetup(onRefresh: viewModel.refresh)
+                    InPersonPaymentsStripeAcountReview()
                 case .completed:
                     CardReaderSettingsPresentingView()
                 default:
-                    InPersonPaymentsUnavailableView()
+                    InPersonPaymentsUnavailable()
                 }
             }
         }

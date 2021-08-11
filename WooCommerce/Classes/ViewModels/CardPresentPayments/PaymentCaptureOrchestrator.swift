@@ -27,7 +27,7 @@ final class PaymentCaptureOrchestrator {
             switch result {
             case .success(let customer):
                 customerID = customer.id
-            case .failure(_):
+            case .failure:
                 // It is not ideal but ok to proceed to payment intent creation without a customer ID
                 DDLogWarn("Warning: failed to fetch customer ID for an order")
             }

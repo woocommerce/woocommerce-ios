@@ -23,6 +23,10 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
     ///
     @Published var restrictionComments: String
 
+    /// International tax number for package.
+    ///
+    @Published var itn: String
+
     /// Input customs forms to be updated
     ///
     private(set) var customsForm: ShippingLabelCustomsForm
@@ -34,6 +38,7 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
         self.contentExplanation = customsForm.contentExplanation
         self.restrictionType = customsForm.restrictionType
         self.restrictionComments = customsForm.restrictionComments
+        self.itn = customsForm.itn
     }
 }
 

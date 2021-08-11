@@ -21,7 +21,7 @@ struct ShippingLabelCustomsFormInput: View {
         CollapsibleView(isCollapsible: isCollapsible, safeAreaInsets: safeAreaInsets, label: {
             headerView
         }, content: {
-            VStack {
+            VStack(spacing: 0) {
                 TitleAndToggleRow(title: Localization.returnPolicyTitle, isSubheadline: true, isOn: $viewModel.returnOnNonDelivery)
                     .padding(.bottom, Constants.verticalPadding)
                     .padding(.horizontal, Constants.horizontalPadding)
@@ -37,7 +37,6 @@ struct ShippingLabelCustomsFormInput: View {
                                   contentKeyPath: \.localizedName,
                                   selected: $viewModel.contentsType)
                 })
-
                 Divider()
                     .padding(.leading, Constants.horizontalPadding)
 
@@ -62,7 +61,6 @@ struct ShippingLabelCustomsFormInput: View {
                                   contentKeyPath: \.localizedName,
                                   selected: $viewModel.restrictionType)
                 })
-
                 Divider()
                     .padding(.leading, Constants.horizontalPadding)
 
@@ -76,6 +74,18 @@ struct ShippingLabelCustomsFormInput: View {
                     Divider()
                         .padding(.leading, Constants.horizontalPadding)
                 }
+
+                TitleAndTextFieldRow(title: Localization.itnTitle,
+                                     placeholder: Localization.itnPlaceholder,
+                                     text: $viewModel.itn,
+                                     symbol: nil,
+                                     keyboardType: .default)
+                    .padding(.horizontal, insets: safeAreaInsets)
+                Divider()
+                    .padding(.leading, Constants.horizontalPadding)
+
+                LearnMoreRow(localizedStringWithHyperlink: Localization.learnMoreITNText)
+                    .padding(.horizontal, insets: safeAreaInsets)
             }
         })
     }
@@ -119,6 +129,9 @@ private extension ShippingLabelCustomsFormInput {
                                                 comment: "Title for the ITN row in Customs screen of Shipping Label flow")
         static let itnPlaceholder = NSLocalizedString("Enter ITN (optional)",
                                                       comment: "Placeholder for the ITN row in Customs screen of Shippling Label flow")
+        static let learnMoreITNText = NSLocalizedString("<a href=\"https://pe.usps.com/text/imm/immc5_010.htm\">Learn more</a> about International Tax Number",
+                                                        comment: "A label prompting users to learn more about international " +
+                                                            "tax number with an embedded hyperlink")
     }
 }
 

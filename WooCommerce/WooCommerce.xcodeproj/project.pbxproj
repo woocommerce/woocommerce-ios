@@ -6194,7 +6194,6 @@
 				B56DB3C42049BFAA00D4AA8E /* Resources */,
 				B5650B1020A4CD7F009702D0 /* Embed Frameworks */,
 				B7A94351C1ADC31EA528B895 /* [CP] Embed Pods Frameworks */,
-				59DF5B32D7C07692EC8B4C59 /* [CP] Copy Pods Resources */,
 				095040D72655531C001D08FA /* Check for nested frameworks */,
 			);
 			buildRules = (
@@ -6642,23 +6641,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
 			shellScript = "$SRCROOT/../Scripts/build-phases/swiftlint.sh\n";
-		};
-		59DF5B32D7C07692EC8B4C59 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WooCommerce/Pods-WooCommerce-resources.sh\"\n";
-			showEnvVarsInLog = 0;
 		};
 		91990E72B3E1D58AC13D7628 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

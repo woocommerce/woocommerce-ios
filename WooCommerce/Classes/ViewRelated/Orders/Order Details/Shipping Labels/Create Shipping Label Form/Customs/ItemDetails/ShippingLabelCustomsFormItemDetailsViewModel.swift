@@ -1,7 +1,7 @@
 import Foundation
 import Yosemite
 
-final class ShippingLabelCustomsFormItemDetailsViewModel {
+final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
     /// Description for the item.
     ///
     @Published var description: String

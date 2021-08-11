@@ -16,7 +16,7 @@ struct ShippingLabelCustomsFormList: View {
         GeometryReader { geometry in
             ScrollView {
                 ForEach(Array(viewModel.customsForms.enumerated()), id: \.element) { (index, item) in
-                    viewModel.inputViewModels.first(where: { $0.customsForm == item })
+                    viewModel.inputViewModels.first(where: { $0.packageID == item.packageID })
                         .map { inputModel in
                             ShippingLabelCustomsFormInput(isCollapsible: viewModel.multiplePackagesDetected,
                                                           packageNumber: index + 1,

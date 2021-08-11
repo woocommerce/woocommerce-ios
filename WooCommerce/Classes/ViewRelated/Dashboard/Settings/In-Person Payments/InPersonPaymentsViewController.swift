@@ -39,7 +39,9 @@ struct InPersonPaymentsView: View {
                 case .stripeAccountPendingRequirement(let deadline):
                     InPersonPaymentsStripeAccountPending(deadline: deadline)
                 case .stripeAccountUnderReview:
-                    InPersonPaymentsStripeAcountReview()
+                    InPersonPaymentsStripeAcountReview()                    
+                case .wcpaySetupNotCompleted:
+                    InPersonPaymentsWCPayNotSetup(onRefresh: viewModel.refresh)
                 case .completed:
                     CardReaderSettingsPresentingView()
                 default:

@@ -22,7 +22,7 @@ struct ShippingLabelAddNewPackage: View {
                 Button {
                     presentation.wrappedValue.dismiss()
                 } label: {
-                    Image(uiImage: .chevronImage.withHorizontallyFlippedOrientation())
+                    Image(uiImage: .chevronImage.withHorizontallyFlippedOrientation().imageFlippedForRightToLeftLayoutDirection())
                 }
 
             }

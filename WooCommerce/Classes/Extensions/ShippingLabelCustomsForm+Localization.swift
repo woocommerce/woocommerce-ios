@@ -47,14 +47,14 @@ extension ShippingLabelCustomsForm.RestrictionType {
 
     private enum Localization {
         static let restrictionTypeNone = NSLocalizedString("None",
-                                                           comment: "Restriction type None for contents the customs form for Shipping Label flow")
+                                                           comment: "Restriction type None for contents declared in the customs form for Shipping Label flow")
         static let restrictionTypeQuarantine = NSLocalizedString("Quarantine",
-                                                                 comment: "Restriction type Quarantine for contents in the " +
+                                                                 comment: "Restriction type Quarantine for contents declared in the " +
                                                                     "customs form for Shipping Label flow")
         static let restrictionTypeSanitary = NSLocalizedString("Sanitary / Phytosanitary Inspection",
                                                                comment: "Restriction type Sanitary / Phytosanitary Inspection for " +
-                                                                "contents in the customs form for Shipping Label flow")
+                                                                "contents declared in the customs form for Shipping Label flow")
         static let restrictionTypeOther = NSLocalizedString("Other",
-                                                            comment: "Restriction type Other for contents in the customs form for Shipping Label flow")
+                                                            comment: "Restriction type Other for contents declared in the customs form for Shipping Label flow")
     }
 }

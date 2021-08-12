@@ -972,8 +972,9 @@ extension OrderDetailsDataSource {
             if shouldShowReceipts {
                 rows.append(.seeReceipt)
             }
-
-            if !isRefundedStatus && !isEligibleForCardPresentPayment {
+            let orderTotal = Double(order.total) ?? 0
+            let isEligibleForRefund = orderTotal > 0
+            if !isRefundedStatus && !isEligibleForCardPresentPayment && isEligibleForRefund {
                 rows.append(.issueRefundButton)
             }
 

@@ -47,7 +47,7 @@ struct InPersonPaymentsView: View {
                 case .stripeAccountRejected:
                     InPersonPaymentsStripeRejected()
                 case .completed:
-                    CardReaderSettingsPresentingView()
+                    InPersonPaymentsMenu()
                 default:
                     InPersonPaymentsUnavailable()
                 }

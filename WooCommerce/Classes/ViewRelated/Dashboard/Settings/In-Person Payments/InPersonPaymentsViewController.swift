@@ -24,33 +24,33 @@ struct InPersonPaymentsView: View {
 
     var body: some View {
         Group {
-            if viewModel.showLoadingScreen {
+            switch viewModel.state {
+            case .loading:
                 InPersonPaymentsLoading()
-            } else {
-                switch viewModel.state {
-                case .countryNotSupported(let countryCode):
-                    InPersonPaymentsCountryNotSupported(countryCode: countryCode)
-                case .wcpayNotInstalled:
-                    InPersonPaymentsPluginNotInstalled(onRefresh: viewModel.refresh)
-                case .wcpayUnsupportedVersion:
-                    InPersonPaymentsPluginNotSupportedVersion(onRefresh: viewModel.refresh)
-                case .wcpayNotActivated:
-                    InPersonPaymentsPluginNotActivated(onRefresh: viewModel.refresh)
-                case .wcpaySetupNotCompleted:
-                    InPersonPaymentsWCPayNotSetup(onRefresh: viewModel.refresh)
-                case .stripeAccountOverdueRequirement:
-                    InPersonPaymentsStripeAccountOverdue()
-                case .stripeAccountPendingRequirement(let deadline):
-                    InPersonPaymentsStripeAccountPending(deadline: deadline)
-                case .stripeAccountUnderReview:
-                    InPersonPaymentsStripeAcountReview()
-                case .stripeAccountRejected:
-                    InPersonPaymentsStripeRejected()
-                case .completed:
-                    InPersonPaymentsMenu()
-                default:
-                    InPersonPaymentsUnavailable()
-                }
+            case .countryNotSupported(let countryCode):
+                InPersonPaymentsCountryNotSupported(countryCode: countryCode)
+            case .wcpayNotInstalled:
+                InPersonPaymentsPluginNotInstalled(onRefresh: viewModel.refresh)
+            case .wcpayUnsupportedVersion:
+                InPersonPaymentsPluginNotSupportedVersion(onRefresh: viewModel.refresh)
+            case .wcpayNotActivated:
+                InPersonPaymentsPluginNotActivated(onRefresh: viewModel.refresh)
+            case .wcpaySetupNotCompleted:
+                InPersonPaymentsWCPayNotSetup(onRefresh: viewModel.refresh)
+            case .stripeAccountOverdueRequirement:
+                InPersonPaymentsStripeAccountOverdue()
+            case .stripeAccountPendingRequirement(let deadline):
+                InPersonPaymentsStripeAccountPending(deadline: deadline)
+            case .stripeAccountUnderReview:
+                InPersonPaymentsStripeAcountReview()
+            case .stripeAccountRejected:
+                InPersonPaymentsStripeRejected()
+            case .completed:
+                InPersonPaymentsMenu()
+            case .noConnectionError:
+                InPersonPaymentsNoConnection(onRefresh: viewModel.refresh)
+            default:
+                InPersonPaymentsUnavailable()
             }
         }
         .customOpenURL(action: { url in

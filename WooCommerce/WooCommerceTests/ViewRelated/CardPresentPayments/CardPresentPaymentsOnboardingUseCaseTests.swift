@@ -36,7 +36,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        let state = useCase.checkOnboardingState()
+        let state = useCase.state
 
         // Then
         XCTAssertEqual(state, .genericError)
@@ -48,7 +48,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        let state = useCase.checkOnboardingState()
+        let state = useCase.state
 
         // Then
         XCTAssertEqual(state, .countryNotSupported(countryCode: "ES"))
@@ -62,7 +62,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        let state = useCase.checkOnboardingState()
+        let state = useCase.state
 
         // Then
         XCTAssertEqual(state, .wcpayNotInstalled)
@@ -76,7 +76,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        let state = useCase.checkOnboardingState()
+        let state = useCase.state
 
         // Then
         XCTAssertEqual(state, .wcpayNotActivated)
@@ -89,7 +89,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        let state = useCase.checkOnboardingState()
+        let state = useCase.state
 
         // Then
         XCTAssertEqual(state, .wcpayUnsupportedVersion)
@@ -103,7 +103,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        let state = useCase.checkOnboardingState()
+        let state = useCase.state
 
         // Then
         XCTAssertEqual(state, .completed)
@@ -117,7 +117,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        let state = useCase.checkOnboardingState()
+        let state = useCase.state
 
         // Then
         XCTAssertEqual(state, .completed)
@@ -131,7 +131,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        let state = useCase.checkOnboardingState()
+        let state = useCase.state
 
         // Then
         XCTAssertEqual(state, .completed)
@@ -146,7 +146,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        let state = useCase.checkOnboardingState()
+        let state = useCase.state
 
         // Then
         XCTAssertEqual(state, .genericError)
@@ -160,7 +160,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        let state = useCase.checkOnboardingState()
+        let state = useCase.state
 
         // Then
         XCTAssertEqual(state, .genericError)
@@ -174,7 +174,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        let state = useCase.checkOnboardingState()
+        let state = useCase.state
 
         // Then
         XCTAssertEqual(state, .wcpaySetupNotCompleted)
@@ -188,7 +188,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        let state = useCase.checkOnboardingState()
+        let state = useCase.state
 
         // Then
         XCTAssertEqual(state, .stripeAccountPendingRequirement(deadline: nil))
@@ -202,7 +202,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        let state = useCase.checkOnboardingState()
+        let state = useCase.state
 
         // Then
         XCTAssertEqual(state, .stripeAccountPendingRequirement(deadline: nil))
@@ -216,7 +216,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        let state = useCase.checkOnboardingState()
+        let state = useCase.state
 
         // Then
         XCTAssertEqual(state, .stripeAccountOverdueRequirement)
@@ -230,7 +230,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        let state = useCase.checkOnboardingState()
+        let state = useCase.state
 
         // Then
         XCTAssertEqual(state, .stripeAccountOverdueRequirement)
@@ -244,7 +244,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        let state = useCase.checkOnboardingState()
+        let state = useCase.state
 
         // Then
         XCTAssertEqual(state, .stripeAccountUnderReview)
@@ -259,7 +259,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        let state = useCase.checkOnboardingState()
+        let state = useCase.state
 
         // Then
         XCTAssertEqual(state, .stripeAccountRejected)
@@ -273,7 +273,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        let state = useCase.checkOnboardingState()
+        let state = useCase.state
 
         // Then
         XCTAssertEqual(state, .stripeAccountRejected)
@@ -287,7 +287,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        let state = useCase.checkOnboardingState()
+        let state = useCase.state
 
         // Then
         XCTAssertEqual(state, .stripeAccountRejected)
@@ -301,7 +301,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        let state = useCase.checkOnboardingState()
+        let state = useCase.state
 
         // Then
         XCTAssertEqual(state, .stripeAccountRejected)
@@ -315,7 +315,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        let state = useCase.checkOnboardingState()
+        let state = useCase.state
 
         // Then
         XCTAssertEqual(state, .genericError)
@@ -329,7 +329,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
         // When
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
-        let state = useCase.checkOnboardingState()
+        let state = useCase.state
 
         // Then
         XCTAssertEqual(state, .completed)

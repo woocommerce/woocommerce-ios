@@ -16,17 +16,7 @@ struct ShippingLabelAddNewPackage: View {
         }
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    presentation.wrappedValue.dismiss()
-                } label: {
-                    Image(uiImage: .chevronLeftImage.imageFlippedForRightToLeftLayoutDirection())
-                }
-
-            }
-        }
+        .minimalNavigationBarBackButton()
     }
 }
 

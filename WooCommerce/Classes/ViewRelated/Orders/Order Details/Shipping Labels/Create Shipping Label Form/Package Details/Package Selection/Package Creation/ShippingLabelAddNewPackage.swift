@@ -5,18 +5,30 @@ struct ShippingLabelAddNewPackage: View {
     @ObservedObject private var viewModel = ShippingLabelAddNewPackageViewModel()
 
     var body: some View {
-        VStack(spacing: 0) {
+        GeometryReader { geometry in
             VStack(spacing: 0) {
-                SegmentedView(selection: $viewModel.selectedIndex, views: [Text(Localization.customPackage), Text(Localization.servicePackage)])
-                    .frame(height: 44)
-                Divider()
+                VStack(spacing: 0) {
+                    SegmentedView(selection: $viewModel.selectedIndex, views: [Text(Localization.customPackage), Text(Localization.servicePackage)])
+                        .frame(height: 44)
+                    Divider()
+                }
+                .padding(.horizontal, insets: geometry.safeAreaInsets)
+
+                ScrollView {
+                    switch viewModel.selectedView {
+                    case .customPackage:
+                        ShippingLabelCustomPackageForm(safeAreaInsets: geometry.safeAreaInsets)
+                    case .servicePackage:
+                        EmptyView() // TODO-4743: Show service package view
+                    }
+                }
+                 .background(Color(.listBackground).ignoresSafeArea(.container, edges: .bottom))
             }
-            ScrollView {
-            }
+            .ignoresSafeArea(.container, edges: .horizontal)
+            .navigationTitle(Localization.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .minimalNavigationBarBackButton()
         }
-        .navigationTitle(Localization.title)
-        .navigationBarTitleDisplayMode(.inline)
-        .minimalNavigationBarBackButton()
     }
 }
 

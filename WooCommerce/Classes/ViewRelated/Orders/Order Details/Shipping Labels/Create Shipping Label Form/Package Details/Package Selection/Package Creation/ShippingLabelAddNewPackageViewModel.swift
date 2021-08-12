@@ -5,6 +5,9 @@ import SwiftUI
 ///
 final class ShippingLabelAddNewPackageViewModel: ObservableObject {
     @Published var selectedIndex: Int
+    var selectedView: SelectedIndex {
+        SelectedIndex(rawValue: selectedIndex) ?? .customPackage
+    }
 
     init(_ selectedIndex: Int = SelectedIndex.customPackage.rawValue) {
         self.selectedIndex = selectedIndex

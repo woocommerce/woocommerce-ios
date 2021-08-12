@@ -14,6 +14,7 @@ final class InPersonPaymentsViewModel: ObservableObject {
             // Debounce values to prevent the loading screen flashing when there is no connection
             .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
             .assign(to: &$state)
+        refresh()
     }
 
     /// Initializes the view model with a fixed state that never changes.

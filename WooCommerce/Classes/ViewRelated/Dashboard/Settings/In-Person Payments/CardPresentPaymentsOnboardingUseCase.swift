@@ -19,7 +19,6 @@ final class CardPresentPaymentsOnboardingUseCase: ObservableObject {
         self.stores = stores
 
         updateState()
-        refresh()
     }
 
     func refresh() {

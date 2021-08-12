@@ -3,6 +3,7 @@
 7.4
 -----
 - [*] Fix an issue where some extension was not shown in order item details. [https://github.com/woocommerce/woocommerce-ios/pull/4753]
+- [*] Fix: The refund button within Order Details will be hidden if the refund is zero. [https://github.com/woocommerce/woocommerce-ios/pull/4789]
 
 7.3
 -----

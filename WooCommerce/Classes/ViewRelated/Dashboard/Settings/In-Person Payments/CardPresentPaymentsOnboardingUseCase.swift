@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import Networking
 import Storage
 import Yosemite
 
@@ -9,7 +10,21 @@ private typealias PaymentGatewayAccount = Yosemite.PaymentGatewayAccount
 final class CardPresentPaymentsOnboardingUseCase: ObservableObject {
     let storageManager: StorageManagerType
     let stores: StoresManager
-    @Published var state: CardPresentPaymentOnboardingState = .loading
+
+    @Published var state: CardPresentPaymentOnboardingState = .loading {
+        didSet {
+            if state == .noConnectionError && oldValue != .noConnectionError {
+                // Start auto-retry when reachable
+                autoRetryWhenReachable()
+            }
+        }
+    }
+
+    private var autoRetryCancellable: AnyCancellable? = nil {
+        didSet {
+            oldValue?.cancel()
+        }
+    }
 
     init(
         storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -23,6 +38,7 @@ final class CardPresentPaymentsOnboardingUseCase: ObservableObject {
     }
 
     func refresh() {
+        autoRetryCancellable = nil
         if state != .completed {
             state = .loading
         }
@@ -39,6 +55,22 @@ final class CardPresentPaymentsOnboardingUseCase: ObservableObject {
 // MARK: - Internal state
 //
 private extension CardPresentPaymentsOnboardingUseCase {
+    func autoRetryWhenReachable() {
+        // Don't start auto-retry if there is another one in progress
+        guard autoRetryCancellable == nil else {
+            return
+        }
+
+        autoRetryCancellable = NetworkingReachability.notifyOnceWhenApiReachable()
+            .sink { [weak self] _ in
+                // Only auto-refresh if we are still in a "No connection" state
+                guard self?.state == .noConnectionError else {
+                    return
+                }
+                self?.refresh()
+            }
+    }
+
     func synchronizeRequiredData(completion: () -> Void) {
         guard let siteID = siteID else {
             completion()

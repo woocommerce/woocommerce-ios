@@ -115,11 +115,6 @@ extension XCTestCase {
         guard element.exists && !element.frame.isEmpty && element.isHittable else { return false }
         return XCUIApplication().windows.element(boundBy: 0).frame.contains(element.frame)
     }
-
-    // A shortcut to scroll TableViews or CollectionViews to top
-    func tapStatusBarToScrollToTop() {
-        XCUIApplication().statusBars.firstMatch.tap()
-    }
 }
 
 extension XCUIElement {

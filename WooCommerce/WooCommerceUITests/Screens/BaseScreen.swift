@@ -47,13 +47,6 @@ class BaseScreen {
         _ = XCTWaiter.wait(for: [networkLoadingIndicatorDisappeared], timeout: timeout)
     }
 
-    func tapStatusBarToScrollToTop() {
-        // A hack to work around there being no status bar – just tap the appropriate spot on the navigation bar
-        XCUIApplication().navigationBars.allElementsBoundByIndex.forEach {
-           $0.coordinate(withNormalizedOffset: CGVector(dx: 20, dy: -20)).tap()
-        }
-    }
-
     /// Scroll an element into view within another element.
     /// scrollView can be a UIScrollView, or anything that subclasses it like UITableView
     ///

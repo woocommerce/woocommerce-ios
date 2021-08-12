@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Storage
 import Yosemite
@@ -5,9 +6,10 @@ import Yosemite
 private typealias SitePlugin = Yosemite.SitePlugin
 private typealias PaymentGatewayAccount = Yosemite.PaymentGatewayAccount
 
-struct CardPresentPaymentsOnboardingUseCase {
+final class CardPresentPaymentsOnboardingUseCase: ObservableObject {
     let storageManager: StorageManagerType
     let stores: StoresManager
+    @Published var state: CardPresentPaymentOnboardingState = .loading
 
     init(
         storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -15,19 +17,42 @@ struct CardPresentPaymentsOnboardingUseCase {
     ) {
         self.storageManager = storageManager
         self.stores = stores
+
+        updateState()
+        refresh()
     }
 
-    public func synchronizeRequiredData(completion: @escaping () -> Void) {
+    func refresh() {
+        if state != .completed {
+            state = .loading
+        }
+        synchronizeRequiredData { [weak self] in
+            self?.updateState()
+        }
+    }
+
+    func updateState() {
+        state = checkOnboardingState()
+    }
+}
+
+// MARK: - Internal state
+//
+private extension CardPresentPaymentsOnboardingUseCase {
+    func synchronizeRequiredData(completion: () -> Void) {
         guard let siteID = siteID else {
-            return completion()
+            completion()
+            return
         }
 
         let group = DispatchGroup()
+        var errors = [Error]()
 
         // We need to sync settings to check the store's country
         let settingsAction = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { error in
             if let error = error {
                 DDLogError("[CardPresentPaymentsOnboarding] Error syncing site settings: \(error)")
+                errors.append(error)
             }
             group.leave()
         }
@@ -38,6 +63,7 @@ struct CardPresentPaymentsOnboardingUseCase {
         let sitePluginsAction = SitePluginAction.synchronizeSitePlugins(siteID: siteID) { result in
             if case let .failure(error) = result {
                 DDLogError("[CardPresentPaymentsOnboarding] Error syncing site plugins: \(error)")
+                errors.append(error)
             }
             group.leave()
         }
@@ -48,16 +74,25 @@ struct CardPresentPaymentsOnboardingUseCase {
         let paymentGatewayAccountsAction = PaymentGatewayAccountAction.loadAccounts(siteID: siteID) { result in
             if case let .failure(error) = result {
                 DDLogError("[CardPresentPaymentsOnboarding] Error syncing payment gateway accounts: \(error)")
+                errors.append(error)
             }
             group.leave()
         }
         group.enter()
         stores.dispatch(paymentGatewayAccountsAction)
 
-        group.notify(queue: .main, execute: completion)
+        group.notify(queue: .main, execute: { [weak self] in
+            guard let self = self else { return }
+            if errors.isNotEmpty,
+               errors.contains(where: self.isNetworkError(_:)) {
+                self.state = .noConnectionError
+            } else {
+                self.updateState()
+            }
+        })
     }
 
-    public func checkOnboardingState() -> CardPresentPaymentOnboardingState {
+    func checkOnboardingState() -> CardPresentPaymentOnboardingState {
         // Country checks
         guard let countryCode = storeCountryCode else {
             DDLogError("[CardPresentPaymentsOnboarding] Couldn't determine country for store")
@@ -109,6 +144,7 @@ struct CardPresentPaymentsOnboardingUseCase {
     }
 }
 
+// MARK: - Convenience methods
 private extension CardPresentPaymentsOnboardingUseCase {
     var siteID: Int64? {
         stores.sessionManager.defaultStoreID
@@ -188,7 +224,13 @@ private extension CardPresentPaymentsOnboardingUseCase {
     func isInUndefinedState(account: PaymentGatewayAccount) -> Bool {
         account.wcpayStatus != .complete
     }
+
+    func isNetworkError(_ error: Error) -> Bool {
+        (error as NSError).domain == NSURLErrorDomain
+    }
 }
+
+// MARK: -
 
 private extension PaymentGatewayAccount {
     var wcpayStatus: WCPayAccountStatusEnum {

@@ -1,5 +1,9 @@
 /// Represents the possible states for onboarding to In-Person payments
 public enum CardPresentPaymentOnboardingState: Equatable {
+    /// The app is loading the required data to check for the current state
+    ///
+    case loading
+
     /// All the requirements are met and the feature is ready to use
     ///
     case completed

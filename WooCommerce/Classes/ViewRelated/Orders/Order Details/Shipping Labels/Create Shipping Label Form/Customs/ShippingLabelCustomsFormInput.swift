@@ -9,16 +9,18 @@ struct ShippingLabelCustomsFormInput: View {
     @ObservedObject private var viewModel: ShippingLabelCustomsFormInputViewModel
     @State private var showingContentTypes = false
     @State private var showingRestrictionTypes = false
+    @State private var isCollapsed: Bool = false
 
     init(isCollapsible: Bool, packageNumber: Int, safeAreaInsets: EdgeInsets, viewModel: ShippingLabelCustomsFormInputViewModel) {
         self.isCollapsible = isCollapsible
         self.packageNumber = packageNumber
         self.safeAreaInsets = safeAreaInsets
         self.viewModel = viewModel
+        self.isCollapsed = packageNumber > 1
     }
 
     var body: some View {
-        CollapsibleView(isCollapsible: isCollapsible, safeAreaInsets: safeAreaInsets, label: {
+        CollapsibleView(isCollapsible: isCollapsible, isCollapsed: $isCollapsed, safeAreaInsets: safeAreaInsets, label: {
             headerView
         }, content: {
             VStack(spacing: 0) {

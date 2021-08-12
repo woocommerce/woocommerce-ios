@@ -33,9 +33,6 @@ final class OrderDetailsDataSource: NSObject {
     private var isRefundedStatus: Bool {
         return order.status == OrderStatusEnum.refunded
     }
-    /// Is this order eligible for a refund?
-    ///
-    var isEligibleForRefund: Bool = true
 
     /// Is the shipment tracking plugin available?
     ///
@@ -975,12 +972,8 @@ extension OrderDetailsDataSource {
             if shouldShowReceipts {
                 rows.append(.seeReceipt)
             }
-
-            if let orderTotal = Double(self.order.total) {
-                if orderTotal <= 0.0 {
-                    isEligibleForRefund = false
-                }
-            }
+            let orderTotal = Double(self.order.total) ?? 0
+            let isEligibleForRefund = orderTotal > 0
             if !isRefundedStatus && !isEligibleForCardPresentPayment && isEligibleForRefund {
                 rows.append(.issueRefundButton)
             }

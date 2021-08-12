@@ -35,7 +35,7 @@ final class OrderDetailsDataSource: NSObject {
     }
     /// Is this order eligible for a refund?
     ///
-    var isEligibleForRefund : Bool = true
+    var isEligibleForRefund: Bool = true
 
     /// Is the shipment tracking plugin available?
     ///

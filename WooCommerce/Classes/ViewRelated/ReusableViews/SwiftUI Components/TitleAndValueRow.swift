@@ -9,29 +9,30 @@ struct TitleAndValueRow: View {
     var action: () -> Void
 
     var body: some View {
-        HStack {
-            Text(title)
-                .bodyStyle()
-            Spacer()
-            Text(value)
-                .font(.body)
-                .foregroundColor(Color(.textSubtle))
-
-            if selectable {
-                Image(uiImage: .chevronImage)
-                    .frame(width: Constants.imageSize, height: Constants.imageSize)
-                    .foregroundColor(Color(UIColor.gray(.shade30)))
-            }
-        }
-        .contentShape(Rectangle())
-        .frame(height: Constants.height)
-        .padding([.leading, .trailing], Constants.padding)
-        .onTapGesture {
+        Button(action: {
             guard selectable else {
                 return
             }
             action()
-         }
+        }, label: {
+            HStack {
+                Text(title)
+                    .bodyStyle()
+                Spacer()
+                Text(value)
+                    .font(.body)
+                    .foregroundColor(Color(.textSubtle))
+
+                Image(uiImage: .chevronImage)
+                    .flipsForRightToLeftLayoutDirection(true)
+                    .renderedIf(selectable)
+                    .frame(width: Constants.imageSize, height: Constants.imageSize)
+                    .foregroundColor(Color(UIColor.gray(.shade30)))
+            }
+            .contentShape(Rectangle())
+        })
+        .frame(height: Constants.height)
+        .padding(.horizontal, Constants.padding)
     }
 }
 

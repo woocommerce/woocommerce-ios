@@ -38,6 +38,12 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         return packagesResponse?.predefinedOptions ?? []
     }
 
+    /// Whether there are saved custom or predefined packages to select from.
+    ///
+    var hasCustomOrPredefinedPackages: Bool {
+        return customPackages.isNotEmpty || predefinedOptions.isNotEmpty
+    }
+
     /// The weight unit used in the Store
     ///
     let weightUnit: String?
@@ -60,7 +66,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
             return selectedPredefinedPackage.title
         }
         else {
-            return ""
+            return Localization.selectPackagePlaceholder
         }
     }
     @Published private(set) var selectedCustomPackage: ShippingLabelCustomPackage?
@@ -368,6 +374,8 @@ private extension ShippingLabelPackageDetailsViewModel {
                 return String.localizedStringWithFormat(subtitleWithAttributesFormat, attributesText, weight)
             }
         }
+        static let selectPackagePlaceholder = NSLocalizedString("Select a package",
+                                                                comment: "Placeholder for the selected package in the Shipping Labels Package Details screen")
     }
 }
 

@@ -26,6 +26,10 @@ public enum CardPresentPaymentAction: Action {
     ///
     case observeConnectedReaders(onCompletion: ([CardReader]) -> Void)
 
+    /// Get a Stripe Customer for an order.
+    ///
+    case fetchOrderCustomer(siteID: Int64, orderID: Int64, onCompletion: (Result<WCPayCustomer, Error>) -> Void)
+
     /// Collected payment for an order.
     ///
     case collectPayment(siteID: Int64,

@@ -529,7 +529,6 @@ extension OrderDetailsViewModel {
                         onClearMessage: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
-
         /// We don't have a concept of priority yet, so use the first paymentGatewayAccount for now
         /// since we can't yet have multiple accounts
         ///

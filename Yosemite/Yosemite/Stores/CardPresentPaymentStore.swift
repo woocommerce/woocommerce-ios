@@ -49,6 +49,8 @@ public final class CardPresentPaymentStore: Store {
             disconnect(onCompletion: completion)
         case .observeConnectedReaders(let completion):
             observeConnectedReaders(onCompletion: completion)
+        case .fetchOrderCustomer(let siteID, let orderID, let completion):
+            fetchOrderCustomer(siteID: siteID, orderID: orderID, completion: completion)
         case .collectPayment(let siteID, let orderID, let parameters, let event, let completion):
             collectPayment(siteID: siteID,
                            orderID: orderID,
@@ -174,6 +176,10 @@ private extension CardPresentPaymentStore {
         } receiveValue: { intent in
             onCompletion(.success(intent))
         }
+    }
+
+    func fetchOrderCustomer(siteID: Int64, orderID: Int64, completion: @escaping (Result<WCPayCustomer, Error>) -> Void) {
+        remote.fetchOrderCustomer(for: siteID, orderID: orderID, completion: completion)
     }
 
     func cancelPayment(onCompletion: ((Result<Void, Error>) -> Void)?) {

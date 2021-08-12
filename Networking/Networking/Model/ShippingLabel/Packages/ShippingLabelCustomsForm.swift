@@ -3,13 +3,20 @@ import Codegen
 
 /// Represents customs info for a shipping label package
 ///
-public struct ShippingLabelCustomsForm: Equatable, GeneratedFakeable {
+public struct ShippingLabelCustomsForm: Hashable, Equatable, GeneratedFakeable {
     /// ID of the associated package.
     ///
     /// This is for identifying the package when inputing customs form only,
     /// no need for encoding and sending to remote.
     ///
     public let packageID: String
+
+    /// Name of the associated package.
+    ///
+    /// This is for identifying the package when inputing customs form only,
+    /// no need for encoding and sending to remote.
+    ///
+    public let packageName: String
 
     /// Type of contents to declare with customs.
     public let contentsType: ContentsType
@@ -35,6 +42,7 @@ public struct ShippingLabelCustomsForm: Equatable, GeneratedFakeable {
     /// Memberwise initializer
     ///
     public init(packageID: String,
+                packageName: String,
                 contentsType: ShippingLabelCustomsForm.ContentsType,
                 contentExplanation: String,
                 restrictionType: ShippingLabelCustomsForm.RestrictionType,
@@ -43,6 +51,7 @@ public struct ShippingLabelCustomsForm: Equatable, GeneratedFakeable {
                 itn: String,
                 items: [ShippingLabelCustomsForm.Item]) {
         self.packageID = packageID
+        self.packageName = packageName
         self.contentsType = contentsType
         self.contentExplanation = contentExplanation
         self.restrictionType = restrictionType
@@ -54,11 +63,12 @@ public struct ShippingLabelCustomsForm: Equatable, GeneratedFakeable {
 
     /// Convenient intializer
     ///
-    public init(packageID: String, productIDs: [Int64]) {
+    public init(packageID: String, packageName: String, productIDs: [Int64]) {
         let items = productIDs.map { id in
             Item(description: "", quantity: 1, value: 0, weight: 0, hsTariffNumber: "", originCountry: "", productID: id)
         }
         self.init(packageID: packageID,
+                  packageName: packageName,
                   contentsType: .merchandise,
                   contentExplanation: "",
                   restrictionType: .none,
@@ -69,12 +79,28 @@ public struct ShippingLabelCustomsForm: Equatable, GeneratedFakeable {
     }
 }
 
+// MARK: - Identifiable
+//
+extension ShippingLabelCustomsForm: Identifiable {
+    /// Defaults to return the package ID.
+    public var id: String {
+        packageID
+    }
+}
+
+extension ShippingLabelCustomsForm.Item {
+    /// Defaults to return the associating product ID.
+    public var id: Int64 {
+        productID
+    }
+}
+
 // MARK: - Subtypes
 //
 public extension ShippingLabelCustomsForm {
     /// Types of contents to declare with customs.
     ///
-    enum ContentsType: String, Codable, GeneratedFakeable {
+    enum ContentsType: String, CaseIterable, Codable, GeneratedFakeable {
         case merchandise
         case documents
         case gift
@@ -100,7 +126,7 @@ public extension ShippingLabelCustomsForm {
 
     /// Information about a item to declare with customs.
     ///
-    struct Item: Codable, Equatable, GeneratedFakeable {
+    struct Item: Codable, Hashable, Equatable, GeneratedFakeable {
         /// Description of item.
         public let description: String
 

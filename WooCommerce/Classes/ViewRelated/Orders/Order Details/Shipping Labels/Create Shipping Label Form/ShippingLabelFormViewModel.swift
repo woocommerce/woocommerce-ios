@@ -40,11 +40,7 @@ final class ShippingLabelFormViewModel {
     /// Packages
     ///
     private(set) var packagesResponse: ShippingLabelPackagesResponse?
-    private(set) var selectedPackageID: String? {
-        didSet {
-            setDefaultCustomsFormsIfNeeded()
-        }
-    }
+    private(set) var selectedPackageID: String?
 
     /// Customs forms
     ///
@@ -128,13 +124,7 @@ final class ShippingLabelFormViewModel {
             return true
         }
 
-        if originAddress.country == destinationAddress.country {
-            return false
-        }
-
-        // Shipments between US, Puerto Rico and Virgin Islands don't need Customs, everything else does
-        return !Constants.domesticUSTerritories.contains(originAddress.country) ||
-            !Constants.domesticUSTerritories.contains(destinationAddress.country)
+        return originAddress.country != destinationAddress.country
     }
 
     private let stores: StoresManager
@@ -222,13 +212,14 @@ final class ShippingLabelFormViewModel {
 
         // We reset the selected customs forms & carrier & rates because if the package change
         // these change accordingly.
-        handleCustomsFormsValueChanges(customsForms: [])
+        let forms = createDefaultCustomsFormsIfNeeded()
+        handleCustomsFormsValueChanges(customsForms: forms, isValidated: false)
         handleCarrierAndRatesValueChanges(selectedRate: nil, selectedSignatureRate: nil, selectedAdultSignatureRate: nil, editable: false)
     }
 
-    func handleCustomsFormsValueChanges(customsForms: [ShippingLabelCustomsForm]) {
+    func handleCustomsFormsValueChanges(customsForms: [ShippingLabelCustomsForm], isValidated: Bool) {
         self.customsForms = customsForms
-        guard customsForms.isNotEmpty else {
+        guard isValidated else {
             return updateRowState(type: .customs, dataState: .pending, displayMode: .editable)
         }
         updateRowState(type: .customs, dataState: .validated, displayMode: .editable)
@@ -609,12 +600,29 @@ private extension ShippingLabelFormViewModel {
     /// Temporary solution for creating default customs forms.
     /// When multi-package support is available, we should create separate form for each package ID.
     ///
-    private func setDefaultCustomsFormsIfNeeded() {
+    private func createDefaultCustomsFormsIfNeeded() -> [ShippingLabelCustomsForm] {
         guard customsFormRequired, let packageID = selectedPackageID else {
-            return customsForms = []
+            return []
         }
+        let packageName: String = {
+            guard let response = packagesResponse else {
+                return ""
+            }
+
+            if let customPackage = response.customPackages.first(where: { $0.title == packageID }) {
+                return customPackage.title
+            }
+
+            for option in response.predefinedOptions {
+                if let package = option.predefinedPackages.first(where: { $0.id == packageID }) {
+                    return package.title
+                }
+            }
+
+            return ""
+        }()
         let productIDs = order.items.map { $0.productOrVariationID }
-        customsForms = [ShippingLabelCustomsForm(packageID: packageID, productIDs: productIDs)]
+        return [ShippingLabelCustomsForm(packageID: packageID, packageName: packageName, productIDs: productIDs)]
     }
 }
 
@@ -796,9 +804,6 @@ private extension ShippingLabelFormViewModel {
         /// These US states are a special case because they represent military bases. They're considered "domestic",
         /// but they require a Customs form to ship from/to them.
         static let usMilitaryStates = ["AA", "AE", "AP"]
-
-        // Packages shipping to or from the US, Puerto Rico and Virgin Islands don't need a Customs form
-        static let domesticUSTerritories = ["US", "PR", "VI"]
 
         // These destination countries require an ITN regardless of shipment value
         static let uspsITNRequiredDestination = ["IR", "SY", "KP", "CU", "SD"]

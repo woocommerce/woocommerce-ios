@@ -425,7 +425,7 @@ private extension ShippingLabelFormViewController {
     func displayCustomsFormListVC(customsForms: [ShippingLabelCustomsForm]) {
         let vm = ShippingLabelCustomsFormListViewModel(order: viewModel.order, customsForms: viewModel.customsForms)
         let formList = ShippingLabelCustomsFormList(viewModel: vm) { [weak self] forms in
-            self?.viewModel.handleCustomsFormsValueChanges(customsForms: forms)
+            self?.viewModel.handleCustomsFormsValueChanges(customsForms: forms, isValidated: true)
         }
         let hostingVC = UIHostingController(rootView: formList)
         navigationController?.show(hostingVC, sender: nil)

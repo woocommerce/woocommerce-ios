@@ -129,9 +129,6 @@ extension XCUIElement {
 }
 
 extension XCUIElementQuery {
-    var lastMatch: XCUIElement? {
-        return self.allElementsBoundByIndex.last
-    }
 
     var allElementsShareCommonXAxis: Bool {
         let elementXPositions = allElementsBoundByIndex.map { $0.frame.minX }

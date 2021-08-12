@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct InPersonPaymentsUnavailableView: View {
+struct InPersonPaymentsUnavailable: View {
     var body: some View {
         VStack {
             Spacer()
@@ -38,8 +38,8 @@ private enum Localization {
     )
 }
 
-struct InPersonPaymentsUnavailableView_Previews: PreviewProvider {
+struct InPersonPaymentsUnavailable_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsUnavailableView()
+        InPersonPaymentsUnavailable()
     }
 }

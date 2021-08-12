@@ -96,7 +96,7 @@ struct CardPresentPaymentsOnboardingUseCase {
             return .stripeAccountOverdueRequirement
         }
         guard !isStripeAccountPendingRequirements(account: account) else {
-            return .stripeAccountPendingRequirement
+            return .stripeAccountPendingRequirement(deadline: account.currentDeadline)
         }
         guard !isStripeAccountRejected(account: account) else {
             return .stripeAccountRejected

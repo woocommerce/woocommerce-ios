@@ -250,6 +250,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.paymentErrorImage)
     }
 
+    func test_payments_loading_not_nil() {
+        XCTAssertNotNil(UIImage.paymentsLoading)
+    }
+
     func test_payments_plugin_not_nil() {
         XCTAssertNotNil(UIImage.paymentsPlugin)
     }

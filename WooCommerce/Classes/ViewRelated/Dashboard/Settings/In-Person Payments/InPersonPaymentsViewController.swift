@@ -24,19 +24,33 @@ struct InPersonPaymentsView: View {
 
     var body: some View {
         Group {
-            switch viewModel.state {
-            case .countryNotSupported(let countryCode):
-                InPersonPaymentsCountryNotSupported(countryCode: countryCode)
-            case .wcpayNotInstalled:
-                InPersonPaymentsPluginNotInstalled(onRefresh: viewModel.refresh)
-            case .wcpayUnsupportedVersion:
-                InPersonPaymentsPluginNotSupportedVersionView(onRefresh: viewModel.refresh)
-            case .wcpayNotActivated:
-                InPersonPaymentsPluginNotActivatedView(onRefresh: viewModel.refresh)
-            case .completed:
-                CardReaderSettingsPresentingView()
-            default:
-                InPersonPaymentsUnavailableView()
+            if viewModel.showLoadingScreen {
+                InPersonPaymentsLoading()
+            } else {
+                switch viewModel.state {
+                case .countryNotSupported(let countryCode):
+                    InPersonPaymentsCountryNotSupported(countryCode: countryCode)
+                case .wcpayNotInstalled:
+                    InPersonPaymentsPluginNotInstalled(onRefresh: viewModel.refresh)
+                case .wcpayUnsupportedVersion:
+                    InPersonPaymentsPluginNotSupportedVersion(onRefresh: viewModel.refresh)
+                case .wcpayNotActivated:
+                    InPersonPaymentsPluginNotActivated(onRefresh: viewModel.refresh)
+                case .wcpaySetupNotCompleted:
+                    InPersonPaymentsWCPayNotSetup(onRefresh: viewModel.refresh)
+                case .stripeAccountOverdueRequirement:
+                    InPersonPaymentsStripeAccountOverdue()
+                case .stripeAccountPendingRequirement(let deadline):
+                    InPersonPaymentsStripeAccountPending(deadline: deadline)
+                case .stripeAccountUnderReview:
+                    InPersonPaymentsStripeAcountReview()
+                case .stripeAccountRejected:
+                    InPersonPaymentsStripeRejected()
+                case .completed:
+                    CardReaderSettingsPresentingView()
+                default:
+                    InPersonPaymentsUnavailable()
+                }
             }
         }
         .customOpenURL(action: { url in

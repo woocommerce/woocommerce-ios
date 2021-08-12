@@ -32,7 +32,7 @@ final class SettingsScreen: BaseScreen {
 
         // Some localizations have very long "log out" text, which causes the UIAlertView
         // to stack. We need to detect these cases in order to reliably tap the correct button
-        if logOutAlert.buttons.allElementsShareCommonXAxis {
+        if logOutAlert.buttons.allElementsShareCommonAxisX {
             logOutAlert.buttons.element(boundBy: 0).tap()
         }
         else {

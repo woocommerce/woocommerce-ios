@@ -127,13 +127,3 @@ extension XCUIElement {
         startCoordinate.press(forDuration: 0.01, thenDragTo: destination)
     }
 }
-
-extension XCUIElementQuery {
-
-    var allElementsShareCommonXAxis: Bool {
-        let elementXPositions = allElementsBoundByIndex.map { $0.frame.minX }
-
-        // Use a set to remove duplicates – if all elements are the same, only one should remain
-        return Set(elementXPositions).count == 1
-    }
-}

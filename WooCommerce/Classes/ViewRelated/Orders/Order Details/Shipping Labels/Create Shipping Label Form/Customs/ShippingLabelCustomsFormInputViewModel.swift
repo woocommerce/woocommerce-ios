@@ -39,7 +39,7 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
     ///
     @Published var items: [ShippingLabelCustomsForm.Item] {
         didSet {
-            itemViewModels = items.map { .init(item: $0) }
+            itemViewModels = items.map { .init(item: $0, countries: allCountries) }
         }
     }
 
@@ -51,7 +51,11 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
     ///
     private(set) var validatedCustomsForm: ShippingLabelCustomsForm?
 
-    init(customsForm: ShippingLabelCustomsForm) {
+    /// Persisted countries to send to item details form.
+    ///
+    private let allCountries: [Country]
+
+    init(customsForm: ShippingLabelCustomsForm, countries: [Country]) {
         self.packageID = customsForm.packageID
         self.packageName = customsForm.packageName
         self.returnOnNonDelivery = customsForm.nonDeliveryOption == .return
@@ -61,7 +65,8 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
         self.restrictionComments = customsForm.restrictionComments
         self.itn = customsForm.itn
         self.items = customsForm.items
-        self.itemViewModels = customsForm.items.map { .init(item: $0) }
+        self.allCountries = countries
+        self.itemViewModels = customsForm.items.map { .init(item: $0, countries: countries) }
     }
 }
 

@@ -74,15 +74,14 @@ struct ShippingLabelCustomsFormItemDetails: View {
             .background(Color(.listForeground))
 
             VStack(spacing: 0) {
-                TitleAndValueRow(title: Localization.originTitle, value: viewModel.originCountry, selectable: true) {
+                TitleAndValueRow(title: Localization.originTitle, value: viewModel.originCountry.name, selectable: true) {
                     isShowingCountries.toggle()
                 }
                 .sheet(isPresented: $isShowingCountries, content: {
-                    // TODO: fetch countries 🌏
                     SelectionList(title: Localization.originTitle,
                                   items: viewModel.allCountries,
                                   contentKeyPath: \.name,
-                                  selectionKeyPath: \.code,
+                                  selectionKeyPath: \.self,
                                   selected: $viewModel.originCountry)
                 })
                 Divider()
@@ -148,7 +147,7 @@ struct ShippingLabelCustomsFormItemDetails_Previews: PreviewProvider {
                                                              originCountry: "US",
                                                              productID: 123)
 
-    static let sampleViewModel = ShippingLabelCustomsFormItemDetailsViewModel(item: sampleDetails)
+    static let sampleViewModel = ShippingLabelCustomsFormItemDetailsViewModel(item: sampleDetails, countries: [])
 
     static var previews: some View {
         ShippingLabelCustomsFormItemDetails(itemNumber: 1, viewModel: sampleViewModel, safeAreaInsets: .zero)

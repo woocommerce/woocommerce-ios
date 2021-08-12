@@ -423,7 +423,7 @@ private extension ShippingLabelFormViewController {
     }
 
     func displayCustomsFormListVC(customsForms: [ShippingLabelCustomsForm]) {
-        let vm = ShippingLabelCustomsFormListViewModel(order: viewModel.order, customsForms: viewModel.customsForms)
+        let vm = ShippingLabelCustomsFormListViewModel(order: viewModel.order, customsForms: viewModel.customsForms, countries: viewModel.countries)
         let formList = ShippingLabelCustomsFormList(viewModel: vm) { [weak self] forms in
             self?.viewModel.handleCustomsFormsValueChanges(customsForms: forms, isValidated: true)
         }

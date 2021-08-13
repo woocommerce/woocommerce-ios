@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct SelectionList<T: Hashable, U: Equatable>: View {
+struct SelectionList<T: Hashable>: View {
     /// Title of the screen
     private let title: String
 
@@ -10,13 +10,10 @@ struct SelectionList<T: Hashable, U: Equatable>: View {
     /// Key path to find the content to be displayed
     private let contentKeyPath: KeyPath<T, String>
 
-    /// Key path to find the value to be binded for selection
-    private let selectionKeyPath: KeyPath<T, U>
-
     /// Callback for selection
     private let onSelection: ((T) -> Void)?
 
-    @Binding private var selected: U
+    @Binding private var selected: T
     @Environment(\.presentationMode) var presentation
 
     private let horizontalSpacing: CGFloat = 16
@@ -24,13 +21,11 @@ struct SelectionList<T: Hashable, U: Equatable>: View {
     init(title: String,
          items: [T],
          contentKeyPath: KeyPath<T, String>,
-         selectionKeyPath: KeyPath<T, U>,
-         selected: Binding<U>,
+         selected: Binding<T>,
          onSelection: ((T) -> Void)? = nil) {
         self.title = title
         self.items = items
         self.contentKeyPath = contentKeyPath
-        self.selectionKeyPath = selectionKeyPath
         self.onSelection = onSelection
         self._selected = selected
     }
@@ -44,19 +39,19 @@ struct SelectionList<T: Hashable, U: Equatable>: View {
                             VStack(spacing: 0) {
                                 SelectableItemRow(
                                     title: item[keyPath: contentKeyPath],
-                                    selected: item[keyPath: selectionKeyPath] == selected,
+                                    selected: item == selected,
                                     displayMode: .compact,
                                     alignment: .trailing)
                                     .padding(.horizontal, insets: geometry.safeAreaInsets)
-                                    .background(Color(.listForeground))
                                     .onTapGesture {
-                                        selected = item[keyPath: selectionKeyPath]
+                                        selected = item
                                         onSelection?(item)
                                     }
                                 Divider()
                                     .padding(.leading, horizontalSpacing)
                                     .padding(.horizontal, insets: geometry.safeAreaInsets)
                             }
+                            .background(Color(.listForeground))
                         }
                     }
                 }
@@ -79,7 +74,6 @@ struct SelectionList_Previews: PreviewProvider {
         SelectionList(title: "Lunch",
                       items: ["🥪", "🥓", "🥗"],
                       contentKeyPath: \.self,
-                      selectionKeyPath: \.self,
                       selected: .constant("🥓")) { _ in }
     }
 }

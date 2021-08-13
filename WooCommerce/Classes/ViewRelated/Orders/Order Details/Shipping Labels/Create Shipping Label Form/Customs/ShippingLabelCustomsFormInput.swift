@@ -35,7 +35,6 @@ struct ShippingLabelCustomsFormInput: View {
                     SelectionList(title: Localization.contentTypeTitle,
                                   items: ShippingLabelCustomsForm.ContentsType.allCases,
                                   contentKeyPath: \.localizedName,
-                                  selectionKeyPath: \.self,
                                   selected: $viewModel.contentsType)
                 })
                 Divider()
@@ -56,7 +55,6 @@ struct ShippingLabelCustomsFormInput: View {
                     SelectionList(title: Localization.restrictionTypeTitle,
                                   items: ShippingLabelCustomsForm.RestrictionType.allCases,
                                   contentKeyPath: \.localizedName,
-                                  selectionKeyPath: \.self,
                                   selected: $viewModel.restrictionType)
                 })
                 Divider()
@@ -135,7 +133,8 @@ private extension ShippingLabelCustomsFormInput {
                                                 comment: "Title for the ITN row in Customs screen of Shipping Label flow")
         static let itnPlaceholder = NSLocalizedString("Enter ITN (optional)",
                                                       comment: "Placeholder for the ITN row in Customs screen of Shippling Label flow")
-        static let learnMoreITNText = NSLocalizedString("<a href=\"https://pe.usps.com/text/imm/immc5_010.htm\">Learn more</a> about Internal Transaction Number",
+        static let learnMoreITNText = NSLocalizedString("<a href=\"https://pe.usps.com/text/imm/immc5_010.htm\">" +
+                                                            "Learn more</a> about Internal Transaction Number",
                                                         comment: "A label prompting users to learn more about international " +
                                                             "tax number with an embedded hyperlink")
         static let packageContentSection = NSLocalizedString("Package Content",

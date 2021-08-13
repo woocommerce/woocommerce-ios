@@ -81,7 +81,6 @@ struct ShippingLabelCustomsFormItemDetails: View {
                     SelectionList(title: Localization.originTitle,
                                   items: viewModel.allCountries,
                                   contentKeyPath: \.name,
-                                  selectionKeyPath: \.self,
                                   selected: $viewModel.originCountry)
                 })
                 Divider()

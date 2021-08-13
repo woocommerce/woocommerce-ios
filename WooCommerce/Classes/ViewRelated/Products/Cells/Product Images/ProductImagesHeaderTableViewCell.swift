@@ -32,6 +32,7 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
 
         configureBackground()
         configureSeparator()
+        configureLabelDetails()
     }
 
     /// Configure cell
@@ -124,6 +125,12 @@ private extension ProductImagesHeaderTableViewCell {
     func configureSeparator() {
         separatorInset.left = 0
     }
+    func configureLabelDetails() {
+        productStatusLabelHolder.layer.cornerRadius = CGFloat(4.0)
+        productStatusLabelHolder.backgroundColor = .gray(.shade5)
+        productStatusLabel.font = UIFont.preferredFont(forTextStyle: .body)
+        productStatusLabel.textAlignment = .center
+    }
 
     func configureCollectionView(config: ProductImagesCellConfig) {
         collectionView.delegate = self
@@ -146,15 +153,10 @@ private extension ProductImagesHeaderTableViewCell {
     }
     func configureProductStatusLabel(productStatus: ProductStatus) {
         if productStatus == ProductStatus.draft {
-            productStatusLabelHolder.isHidden = false
-            productStatusLabelHolder.backgroundColor = UIColor.gray
-            productStatusLabelHolder.layer.cornerRadius = CGFloat(2.0)
-            productStatusLabelHolder.layer.borderWidth = CGFloat(0.5)
             let statusLabel = NSLocalizedString(productStatus.description, comment: "Display label for the product's draft status")
+            productStatusLabelHolder.isHidden = false
             productStatusLabel.isHidden = false
             productStatusLabel.text? = statusLabel
-            productStatusLabel.font = UIFont.preferredFont(forTextStyle: .body)
-            productStatusLabel.textColor = UIColor.white
         } else {
             productStatusLabel.text? = ""
             productStatusLabelHolder.isHidden = true

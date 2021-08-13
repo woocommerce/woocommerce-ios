@@ -10,7 +10,7 @@ struct ShippingLabelCustomPackageForm: View {
     }
 
     var body: some View {
-            VStack {
+        VStack(spacing: Constants.verticalSpacing) {
                 ListHeaderView(text: Localization.customPackageHeader, alignment: .left)
                     .padding(.horizontal, insets: safeAreaInsets)
 
@@ -131,6 +131,7 @@ private extension ShippingLabelCustomPackageForm {
 
     enum Constants {
         static let horizontalPadding: CGFloat = 16
+        static let verticalSpacing: CGFloat = 16
     }
 }
 

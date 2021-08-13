@@ -126,7 +126,7 @@ private extension ShippingLabelCustomsFormListViewModel {
                 }()
 
                 return .init(description: orderItem.name,
-                             quantity: orderItem.quantity.intValue, // TODO: is this safe?
+                             quantity: orderItem.quantity,
                              value: orderItem.price.doubleValue,
                              weight: weight,
                              hsTariffNumber: "",

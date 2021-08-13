@@ -131,7 +131,7 @@ public extension ShippingLabelCustomsForm {
         public let description: String
 
         /// Quantity of item
-        public let quantity: Int
+        public let quantity: Decimal
 
         /// Price of item per unit.
         public let value: Double
@@ -148,7 +148,7 @@ public extension ShippingLabelCustomsForm {
         /// Product ID of item.
         public let productID: Int64
 
-        public init(description: String, quantity: Int, value: Double, weight: Double, hsTariffNumber: String, originCountry: String, productID: Int64) {
+        public init(description: String, quantity: Decimal, value: Double, weight: Double, hsTariffNumber: String, originCountry: String, productID: Int64) {
             self.description = description
             self.quantity = quantity
             self.value = value
@@ -177,7 +177,7 @@ extension ShippingLabelCustomsForm.Item {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let description = try container.decode(String.self, forKey: .description)
-        let quantity = try container.decode(Int.self, forKey: .quantity)
+        let quantity = try container.decode(Decimal.self, forKey: .quantity)
         let value = try container.decode(Double.self, forKey: .value)
         let weight = try container.decode(Double.self, forKey: .weight)
         let hsTariffNumber = (try? container.decode(String.self, forKey: .hsTariffNumber)) ?? ""

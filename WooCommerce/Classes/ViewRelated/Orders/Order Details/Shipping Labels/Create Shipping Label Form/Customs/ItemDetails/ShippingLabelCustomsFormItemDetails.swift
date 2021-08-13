@@ -52,10 +52,10 @@ struct ShippingLabelCustomsFormItemDetails: View {
             .background(Color(.listForeground))
 
             VStack(spacing: 0) {
-                // TODO: get weight unit for item ⚖️
-                TitleAndTextFieldRow(title: String(format: Localization.weightTitle, "oz"),
+                TitleAndTextFieldRow(title: String(format: Localization.weightTitle, viewModel.weightUnit),
                                      placeholder: "0",
-                                     text: $viewModel.weight)
+                                     text: $viewModel.weight,
+                                     keyboardType: .decimalPad)
                 Divider()
                     .padding(.leading, Constants.horizontalSpacing)
             }
@@ -65,7 +65,8 @@ struct ShippingLabelCustomsFormItemDetails: View {
             VStack(spacing: 0) {
                 TitleAndTextFieldRow(title: String(format: Localization.valueTitle, viewModel.currency),
                                      placeholder: "0",
-                                     text: $viewModel.value)
+                                     text: $viewModel.value,
+                                     keyboardType: .decimalPad)
                 Divider()
                     .padding(.leading, Constants.horizontalSpacing)
             }

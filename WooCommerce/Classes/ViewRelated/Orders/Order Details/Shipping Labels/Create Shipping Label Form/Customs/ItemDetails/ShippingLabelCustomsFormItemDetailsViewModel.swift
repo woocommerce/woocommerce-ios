@@ -10,6 +10,10 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
     ///
     let currency: String
 
+    /// Weight unit used in store.
+    ///
+    let weightUnit: String
+
     /// Description for the item.
     ///
     @Published var description: String
@@ -38,7 +42,7 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
     ///
     private(set) var validatedItem: ShippingLabelCustomsForm.Item?
 
-    init(item: ShippingLabelCustomsForm.Item, countries: [Country], currency: String) {
+    init(item: ShippingLabelCustomsForm.Item, countries: [Country], currency: String, weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
         self.productID = item.productID
         self.description = item.description
         self.value = String(item.value)
@@ -46,6 +50,7 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
         self.hsTariffNumber = item.hsTariffNumber
         self.allCountries = countries
         self.currency = currency
+        self.weightUnit = weightUnit ?? ""
         self.originCountry = countries.first(where: { $0.code == item.originCountry }) ?? Country(code: "", name: "", states: [])
     }
 }

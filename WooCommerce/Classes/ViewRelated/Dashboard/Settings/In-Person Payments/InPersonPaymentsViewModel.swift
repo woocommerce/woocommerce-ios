@@ -13,6 +13,8 @@ final class InPersonPaymentsViewModel: ObservableObject {
         useCase.$state
             // Debounce values to prevent the loading screen flashing when there is no connection
             .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
+            .removeDuplicates()
+            .handleEvents(receiveOutput: trackState(_:))
             .assign(to: &$state)
         refresh()
     }
@@ -29,4 +31,14 @@ final class InPersonPaymentsViewModel: ObservableObject {
     func refresh() {
         useCase.refresh()
     }
+}
+
+private func trackState(_ state: CardPresentPaymentOnboardingState) {
+    guard let reason = state.reasonForAnalytics else {
+        return
+    }
+    let properties = [
+        "reason": reason
+    ]
+    ServiceLocator.analytics.track(.cardPresentOnboardingNotCompleted, withProperties: properties)
 }

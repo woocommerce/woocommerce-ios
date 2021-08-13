@@ -5,15 +5,15 @@ import SwiftUI
 ///
 final class ShippingLabelAddNewPackageViewModel: ObservableObject {
     @Published var selectedIndex: Int
-    var selectedView: SelectedIndex {
-        SelectedIndex(rawValue: selectedIndex) ?? .customPackage
+    var selectedView: PackageViewType {
+        PackageViewType(rawValue: selectedIndex) ?? .customPackage
     }
 
-    init(_ selectedIndex: Int = SelectedIndex.customPackage.rawValue) {
+    init(_ selectedIndex: Int = PackageViewType.customPackage.rawValue) {
         self.selectedIndex = selectedIndex
     }
 
-    enum SelectedIndex: Int {
+    enum PackageViewType: Int {
         case customPackage = 0
         case servicePackage = 1
     }

@@ -59,3 +59,38 @@ public enum CardPresentPaymentOnboardingState: Equatable {
     ///
     case noConnectionError
 }
+
+extension CardPresentPaymentOnboardingState {
+    public var reasonForAnalytics: String? {
+        switch self {
+        case .loading:
+            return nil
+        case .completed:
+            return nil
+        case .countryNotSupported(countryCode: _):
+            return "country_not_supported"
+        case .wcpayNotInstalled:
+            return "wcpay_not_installed"
+        case .wcpayUnsupportedVersion:
+            return "wcpay_unsupported_version"
+        case .wcpayNotActivated:
+            return "wcpay_not_activated"
+        case .wcpaySetupNotCompleted:
+            return "wcpay_setup_not_completed"
+        case .wcpayInTestModeWithLiveStripeAccount:
+            return "wcpay_in_test_mode_with_live_account"
+        case .stripeAccountUnderReview:
+            return "account_under_review"
+        case .stripeAccountPendingRequirement(deadline: _):
+            return "account_pending_requirements"
+        case .stripeAccountOverdueRequirement:
+            return "account_overdue_requirements"
+        case .stripeAccountRejected:
+            return "account_rejected"
+        case .genericError:
+            return "generic_error"
+        case .noConnectionError:
+            return "no_connection_error"
+        }
+    }
+}

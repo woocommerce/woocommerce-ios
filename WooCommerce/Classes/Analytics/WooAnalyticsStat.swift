@@ -149,6 +149,10 @@ public enum WooAnalyticsStat: String {
     case cardReaderConnectionSuccess            = "card_reader_connection_success"
     case cardReaderDisconnectTapped             = "card_reader_disconnect_tapped"
 
+    // MARK: Card-Present Payments Onboarding
+    case cardPresentOnboardingLearnMoreTapped   = "card_present_onboarding_learn_more_tapped"
+    case cardPresentOnboardingNotCompleted      = "card_present_onboarding_not_completed"
+
     // MARK: Order View Events
     //
     case ordersSelected                         = "main_tab_orders_selected"

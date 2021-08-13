@@ -135,8 +135,8 @@ private extension ShippingLabelCustomsFormInput {
                                                       comment: "Placeholder for the ITN row in Customs screen of Shippling Label flow")
         static let learnMoreITNText = NSLocalizedString("<a href=\"https://pe.usps.com/text/imm/immc5_010.htm\">" +
                                                             "Learn more</a> about Internal Transaction Number",
-                                                        comment: "A label prompting users to learn more about international " +
-                                                            "tax number with an embedded hyperlink")
+                                                        comment: "A label prompting users to learn more about internal " +
+                                                            "transaction number with an embedded hyperlink")
         static let packageContentSection = NSLocalizedString("Package Content",
                                                              comment: "Title of Package Content section in Customs screen of Shipping Label flow")
     }

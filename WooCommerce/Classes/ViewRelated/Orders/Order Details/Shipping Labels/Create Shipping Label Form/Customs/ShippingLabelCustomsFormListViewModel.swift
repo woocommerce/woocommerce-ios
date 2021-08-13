@@ -19,7 +19,7 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
     ///
     @Published var customsForms: [ShippingLabelCustomsForm] {
         didSet {
-            inputViewModels = customsForms.map { .init(customsForm: $0) }
+            inputViewModels = customsForms.map { .init(customsForm: $0, countries: allCountries) }
         }
     }
 
@@ -35,14 +35,20 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
     ///
     private let storageManager: StorageManagerType
 
+    /// Persisted countries to send to item details form.
+    ///
+    private let allCountries: [Country]
+
     init(order: Order,
          customsForms: [ShippingLabelCustomsForm],
+         countries: [Country],
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.order = order
         self.customsForms = customsForms
         self.stores = stores
         self.storageManager = storageManager
-        self.inputViewModels = customsForms.map { .init(customsForm: $0) }
+        self.allCountries = countries
+        self.inputViewModels = customsForms.map { .init(customsForm: $0, countries: countries) }
     }
 }

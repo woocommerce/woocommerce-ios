@@ -16,7 +16,7 @@ struct ShippingLabelCustomsFormList: View {
         GeometryReader { geometry in
             ScrollView {
                 ForEach(Array(viewModel.customsForms.enumerated()), id: \.element) { (index, item) in
-                    viewModel.inputViewModels.first(where: { $0.customsForm == item })
+                    viewModel.inputViewModels.first(where: { $0.packageID == item.packageID })
                         .map { inputModel in
                             ShippingLabelCustomsFormInput(isCollapsible: viewModel.multiplePackagesDetected,
                                                           packageNumber: index + 1,
@@ -49,7 +49,7 @@ struct ShippingLabelCustomsFormList_Previews: PreviewProvider {
     static let sampleViewModel: ShippingLabelCustomsFormListViewModel = {
         let sampleOrder = ShippingLabelPackageDetailsViewModel.sampleOrder()
         let sampleForm = ShippingLabelCustomsForm(packageID: "Food Package", packageName: "Food Package", productIDs: sampleOrder.items.map { $0.productID })
-        return ShippingLabelCustomsFormListViewModel(order: sampleOrder, customsForms: [sampleForm])
+        return ShippingLabelCustomsFormListViewModel(order: sampleOrder, customsForms: [sampleForm], countries: [])
     }()
 
     static var previews: some View {

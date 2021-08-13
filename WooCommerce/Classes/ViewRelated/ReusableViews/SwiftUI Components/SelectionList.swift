@@ -18,7 +18,11 @@ struct SelectionList<T: Hashable>: View {
 
     private let horizontalSpacing: CGFloat = 16
 
-    init(title: String, items: [T], contentKeyPath: KeyPath<T, String>, selected: Binding<T>, onSelection: ((T) -> Void)? = nil) {
+    init(title: String,
+         items: [T],
+         contentKeyPath: KeyPath<T, String>,
+         selected: Binding<T>,
+         onSelection: ((T) -> Void)? = nil) {
         self.title = title
         self.items = items
         self.contentKeyPath = contentKeyPath
@@ -33,9 +37,12 @@ struct SelectionList<T: Hashable>: View {
                     VStack(spacing: 0) {
                         ForEach(items, id: contentKeyPath) { item in
                             VStack(spacing: 0) {
-                                SelectableItemRow(title: item[keyPath: contentKeyPath], selected: item == selected, displayMode: .compact, alignment: .trailing)
+                                SelectableItemRow(
+                                    title: item[keyPath: contentKeyPath],
+                                    selected: item == selected,
+                                    displayMode: .compact,
+                                    alignment: .trailing)
                                     .padding(.horizontal, insets: geometry.safeAreaInsets)
-                                    .background(Color(.listForeground))
                                     .onTapGesture {
                                         selected = item
                                         onSelection?(item)
@@ -44,6 +51,7 @@ struct SelectionList<T: Hashable>: View {
                                     .padding(.leading, horizontalSpacing)
                                     .padding(.horizontal, insets: geometry.safeAreaInsets)
                             }
+                            .background(Color(.listForeground))
                         }
                     }
                 }
@@ -63,6 +71,9 @@ struct SelectionList<T: Hashable>: View {
 
 struct SelectionList_Previews: PreviewProvider {
     static var previews: some View {
-        SelectionList(title: "Lunch", items: ["🥪", "🥓", "🥗"], contentKeyPath: \.self, selected: .constant("🥓")) { _ in }
+        SelectionList(title: "Lunch",
+                      items: ["🥪", "🥓", "🥗"],
+                      contentKeyPath: \.self,
+                      selected: .constant("🥓")) { _ in }
     }
 }

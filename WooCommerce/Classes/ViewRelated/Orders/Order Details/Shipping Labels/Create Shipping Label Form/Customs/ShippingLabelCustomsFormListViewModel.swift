@@ -104,9 +104,9 @@ private extension ShippingLabelCustomsFormListViewModel {
 
         for form in customsForms {
             let updatedItems = form.items.map { item -> ShippingLabelCustomsForm.Item in
-                // Only proceed for default items (with empty description).
-                // If an item has been validated, its description should not be empty.
-                guard item.description.isEmpty else {
+                // Only proceed for default items.
+                // If an item has been validated, its weight should be larger than 0.
+                guard item.weight == 0 else {
                     return item
                 }
 

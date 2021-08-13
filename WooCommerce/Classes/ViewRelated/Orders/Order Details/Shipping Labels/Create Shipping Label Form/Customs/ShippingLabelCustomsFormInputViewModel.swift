@@ -31,7 +31,7 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
     ///
     @Published var restrictionComments: String
 
-    /// International tax number for package.
+    /// Internal transaction number for package.
     ///
     @Published var itn: String
 

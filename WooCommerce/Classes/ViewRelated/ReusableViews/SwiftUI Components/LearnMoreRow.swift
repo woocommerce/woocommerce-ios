@@ -38,6 +38,6 @@ private extension LearnMoreRow {
 
 struct LearnMoreRow_Previews: PreviewProvider {
     static var previews: some View {
-        LearnMoreRow(localizedStringWithHyperlink: "<a href=\"https://pe.usps.com/text/imm/immc5_010.htm\">Learn more</a> about International Tax Number")
+        LearnMoreRow(localizedStringWithHyperlink: "<a href=\"https://pe.usps.com/text/imm/immc5_010.htm\">Learn more</a> about Internal Transaction Number")
     }
 }

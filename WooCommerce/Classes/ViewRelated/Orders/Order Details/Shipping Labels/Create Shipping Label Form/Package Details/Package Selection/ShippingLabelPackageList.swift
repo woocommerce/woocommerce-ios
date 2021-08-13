@@ -53,7 +53,7 @@ struct ShippingLabelPackageList: View {
                 }
                 .background(Color(.listBackground))
                 .ignoresSafeArea(.container, edges: .horizontal)
-                .navigationTitle(Localization.title)
+                .dynamicNavigationTitle(hidden: $isShowingNewPackageCreation, title: Localization.title)
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarItems(trailing: Button(action: {
                     viewModel.confirmPackageSelection()

@@ -27,7 +27,6 @@ struct ShippingLabelAddNewPackage: View {
             .ignoresSafeArea(.container, edges: .horizontal)
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
-            .minimalNavigationBarBackButton()
         }
     }
 }

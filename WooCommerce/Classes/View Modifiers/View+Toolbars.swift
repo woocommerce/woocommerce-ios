@@ -25,3 +25,22 @@ extension View {
         self.modifier(MinimalNavigationBarBackButton())
     }
 }
+
+
+struct DynamicTitle: ViewModifier {
+
+    let hidden: Binding<Bool>
+    let title: String
+
+    func body(content: Content) -> some View {
+        content
+            .navigationTitle(!hidden.wrappedValue ? title : "")
+    }
+}
+
+extension View {
+    /// Displays a minimal back button in the navigation bar
+    func dynamicNavigationTitle(hidden: Binding<Bool>, title: String) -> some View {
+        self.modifier(DynamicTitle(hidden: hidden, title: title))
+    }
+}

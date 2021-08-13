@@ -104,6 +104,12 @@ private extension ShippingLabelCustomsFormListViewModel {
 
         for form in customsForms {
             let updatedItems = form.items.map { item -> ShippingLabelCustomsForm.Item in
+                // Only proceed for default items (with empty description).
+                // If an item has been validated, its description should not be empty.
+                guard item.description.isEmpty else {
+                    return item
+                }
+
                 // Find the matching order item
                 guard let orderItem = order.items.first(where: { $0.variationID == item.productID || $0.productID == item.productID }) else {
                     return item

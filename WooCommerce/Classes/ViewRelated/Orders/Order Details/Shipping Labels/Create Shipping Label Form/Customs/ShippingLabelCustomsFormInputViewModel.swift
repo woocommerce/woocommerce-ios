@@ -37,11 +37,7 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
 
     /// Items contained in the package.
     ///
-    @Published var items: [ShippingLabelCustomsForm.Item] {
-        didSet {
-            itemViewModels = items.map { .init(item: $0, countries: allCountries, currency: currency) }
-        }
-    }
+    @Published var items: [ShippingLabelCustomsForm.Item]
 
     /// References of item view models.
     ///

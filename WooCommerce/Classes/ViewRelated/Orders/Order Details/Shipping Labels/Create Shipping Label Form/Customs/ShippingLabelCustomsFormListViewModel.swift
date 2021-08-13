@@ -19,7 +19,7 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
     ///
     @Published var customsForms: [ShippingLabelCustomsForm] {
         didSet {
-            inputViewModels = customsForms.map { .init(customsForm: $0, countries: allCountries) }
+            inputViewModels = customsForms.map { .init(customsForm: $0, countries: allCountries, currency: order.currency) }
         }
     }
 
@@ -49,6 +49,6 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.allCountries = countries
-        self.inputViewModels = customsForms.map { .init(customsForm: $0, countries: countries) }
+        self.inputViewModels = customsForms.map { .init(customsForm: $0, countries: countries, currency: order.currency) }
     }
 }

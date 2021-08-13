@@ -6,6 +6,10 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
     ///
     let productID: Int64
 
+    /// Currency used in store.
+    ///
+    let currency: String
+
     /// Description for the item.
     ///
     @Published var description: String
@@ -34,13 +38,14 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
     ///
     private(set) var validatedItem: ShippingLabelCustomsForm.Item?
 
-    init(item: ShippingLabelCustomsForm.Item, countries: [Country]) {
+    init(item: ShippingLabelCustomsForm.Item, countries: [Country], currency: String) {
         self.productID = item.productID
         self.description = item.description
         self.value = String(item.value)
         self.weight = String(item.weight)
         self.hsTariffNumber = item.hsTariffNumber
         self.allCountries = countries
+        self.currency = currency
         self.originCountry = countries.first(where: { $0.code == item.originCountry }) ?? Country(code: "", name: "", states: [])
     }
 }

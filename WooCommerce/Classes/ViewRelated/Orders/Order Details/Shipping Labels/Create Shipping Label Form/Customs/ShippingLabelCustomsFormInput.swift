@@ -146,7 +146,7 @@ struct ShippingLabelCustomsFormInput_Previews: PreviewProvider {
     static let sampleViewModel: ShippingLabelCustomsFormInputViewModel = {
         let sampleOrder = ShippingLabelPackageDetailsViewModel.sampleOrder()
         let sampleForm = ShippingLabelCustomsForm(packageID: "Food Package", packageName: "Food Package", productIDs: sampleOrder.items.map { $0.productID })
-        return .init(customsForm: sampleForm, countries: [])
+        return .init(customsForm: sampleForm, countries: [], currency: "$")
     }()
 
     static var previews: some View {

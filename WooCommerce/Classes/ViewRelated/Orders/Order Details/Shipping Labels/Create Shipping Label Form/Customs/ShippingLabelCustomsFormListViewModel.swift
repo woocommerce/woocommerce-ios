@@ -116,7 +116,6 @@ private extension ShippingLabelCustomsFormListViewModel {
                     } else if let product = products.first(where: { $0.productID == orderItem.productID }) {
                         return Double(product.weight ?? "0") ?? 0
                     }
-
                     return 0
                 }()
 
@@ -125,7 +124,7 @@ private extension ShippingLabelCustomsFormListViewModel {
                              value: orderItem.price.doubleValue,
                              weight: weight,
                              hsTariffNumber: "",
-                             originCountry: "",
+                             originCountry: SiteAddress().countryCode, // Default value
                              productID: item.productID)
             }
 

@@ -103,6 +103,12 @@ extension UIImage {
         return UIImage.gridicon(.chevronRight)
     }
 
+    /// Chevron Pointing Left
+    ///
+    static var chevronLeftImage: UIImage {
+        return UIImage.gridicon(.chevronLeft)
+    }
+
     /// Chevron Pointing Down
     ///
     static var chevronDownImage: UIImage {

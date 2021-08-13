@@ -55,6 +55,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.chevronImage)
     }
 
+    func testChevronLeftImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.chevronLeftImage)
+    }
+
     func testChevronDownImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.chevronDownImage)
     }

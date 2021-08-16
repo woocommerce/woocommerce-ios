@@ -6,6 +6,10 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
     ///
     let productID: Int64
 
+    /// Quantity of items to be declared.
+    ///
+    let quantity: Decimal
+
     /// Currency used in store.
     ///
     let currency: String
@@ -60,10 +64,6 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
                                              originCountry: originCountry.code,
                                              productID: productID)
     }
-
-    /// Quantity of items to be declared.
-    ///
-    private let quantity: Decimal
 
     init(item: ShippingLabelCustomsForm.Item, countries: [Country], currency: String, weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
         self.quantity = item.quantity

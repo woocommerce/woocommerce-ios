@@ -49,7 +49,7 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
 
     /// Destination country for the shipment.
     ///
-    private let destinationCountry: Country
+    let destinationCountry: Country
 
     /// Persisted countries to send to item detail forms.
     ///
@@ -116,12 +116,12 @@ extension ShippingLabelCustomsFormInputViewModel {
         return false
     }
 
-    var hasValidITN: Bool {
+    var invalidITN: Bool {
         if itn.isNotEmpty,
            itn.range(of: Constants.itnRegex, options: .regularExpression, range: nil, locale: nil) == nil {
-            return false
+            return true
         }
-        return true
+        return false
     }
 }
 

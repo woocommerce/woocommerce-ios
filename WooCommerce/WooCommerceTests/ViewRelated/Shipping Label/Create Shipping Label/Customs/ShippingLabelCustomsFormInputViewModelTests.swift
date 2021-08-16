@@ -94,7 +94,7 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.missingRestrictionComments)
     }
 
-    func test_missingITN_returns_false_when_ITN_validation_is_not_required() {
+    func test_missingITNForDestination_returns_false_when_ITN_validation_is_not_required() {
         // Given
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
                                                                destinationCountry: Country.fake(),
@@ -108,7 +108,7 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.missingITNForDestination)
     }
 
-    func test_missingITN_returns_true_when_ITN_validation_is_required_for_destination_and_itn_is_empty() {
+    func test_missingITNForDestination_returns_true_when_ITN_validation_is_required_for_destination_and_itn_is_empty() {
         // Given
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
                                                                destinationCountry: Country(code: "IR", name: "Iran", states: []),
@@ -122,7 +122,7 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.missingITNForDestination)
     }
 
-    func test_missingITN_returns_true_when_there_is_total_of_more_than_$2500_value_for_a_tariff_number_and_itn_is_empty() {
+    func test_missingITNForClassesAbove2500usd_returns_true_when_there_is_total_of_more_than_$2500_value_for_a_tariff_number_and_itn_is_empty() {
         // Given
         let item = ShippingLabelCustomsForm.Item.fake().copy(quantity: 1)
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake().copy(items: [item]),
@@ -137,6 +137,34 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.missingITNForClassesAbove2500usd)
+    }
+
+    func test_invalidITN_returns_false_when_itn_format_is_correct() {
+        // Given
+        let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
+                                                               destinationCountry: Country.fake(),
+                                                               countries: [],
+                                                               currency: "$")
+
+        // When
+        viewModel.itn = "AES X20080930987654"
+
+        // Then
+        XCTAssertFalse(viewModel.invalidITN)
+    }
+
+    func test_invalidITN_returns_true_when_itn_format_is_incorrect() {
+        // Given
+        let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
+                                                               destinationCountry: Country.fake(),
+                                                               countries: [],
+                                                               currency: "$")
+
+        // When
+        viewModel.itn = "X2014@"
+
+        // Then
+        XCTAssertTrue(viewModel.invalidITN)
     }
 
     func test_contentExplanation_is_reset_when_contentType_is_not_other() {

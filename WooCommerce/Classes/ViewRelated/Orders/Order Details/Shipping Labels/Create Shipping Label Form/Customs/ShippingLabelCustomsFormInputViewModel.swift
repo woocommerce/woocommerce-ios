@@ -55,7 +55,11 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
     ///
     private let currency: String
 
-    init(customsForm: ShippingLabelCustomsForm, countries: [Country], currency: String) {
+    /// Whether ITN validation is required.
+    ///
+    private let itnValidationRequired: Bool
+
+    init(customsForm: ShippingLabelCustomsForm, countries: [Country], itnValidationRequired: Bool, currency: String) {
         self.packageID = customsForm.packageID
         self.packageName = customsForm.packageName
         self.returnOnNonDelivery = customsForm.nonDeliveryOption == .return
@@ -67,6 +71,7 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
         self.items = customsForm.items
         self.allCountries = countries
         self.currency = currency
+        self.itnValidationRequired = itnValidationRequired
         self.itemViewModels = customsForm.items.map { .init(item: $0, countries: countries, currency: currency) }
 
         resetContentExplanationIfNeeded()

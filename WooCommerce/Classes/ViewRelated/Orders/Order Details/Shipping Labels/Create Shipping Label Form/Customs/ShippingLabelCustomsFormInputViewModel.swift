@@ -95,8 +95,23 @@ extension ShippingLabelCustomsFormInputViewModel {
         }
         return true
     }
+
+    var missingITN: Bool {
+        itnValidationRequired && itn.isEmpty
+    }
+
+    var hasValidITN: Bool {
+        if itn.isNotEmpty,
+           itn.range(of: Constants.itnRegex, options: .regularExpression, range: nil, locale: nil) == nil {
+            return false
+        }
+
+        return true
+    }
 }
 
+// MARK: - Private helpers
+//
 private extension ShippingLabelCustomsFormInputViewModel {
     /// Reset content explanation if content type is not Other.
     ///
@@ -114,5 +129,11 @@ private extension ShippingLabelCustomsFormInputViewModel {
             .filter { $0 != .other }
             .map { _ -> String in "" }
             .assign(to: &$restrictionComments)
+    }
+}
+
+private extension ShippingLabelCustomsFormInputViewModel {
+    enum Constants {
+        static let itnRegex = "^(?:(?:AES X\\d{14})|(?:NOEEI 30\\.\\d{1,2}(?:\\([a-z]\\)(?:\\(\\d\\))?)?))$"
     }
 }

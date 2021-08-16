@@ -127,15 +127,6 @@ final class ShippingLabelFormViewModel {
         return originAddress.country != destinationAddress.country
     }
 
-    /// Check for the need of validation for ITN number in customs form.
-    ///
-    var itnValidationRequired: Bool {
-        guard let destinationAddress = destinationAddress else {
-            return false
-        }
-        return Constants.uspsITNRequiredDestinations.contains(destinationAddress.country)
-    }
-
     private let stores: StoresManager
 
     private let storageManager: StorageManagerType
@@ -813,8 +804,5 @@ private extension ShippingLabelFormViewModel {
         /// These US states are a special case because they represent military bases. They're considered "domestic",
         /// but they require a Customs form to ship from/to them.
         static let usMilitaryStates = ["AA", "AE", "AP"]
-
-        // These destination countries require an ITN regardless of shipment value
-        static let uspsITNRequiredDestinations = ["IR", "SY", "KP", "CU", "SD"]
     }
 }

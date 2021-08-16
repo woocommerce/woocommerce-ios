@@ -47,6 +47,10 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
     ///
     private(set) var validatedCustomsForm: ShippingLabelCustomsForm?
 
+    /// Destination country for the shipment.
+    ///
+    private let destinationCountry: Country
+
     /// Persisted countries to send to item detail forms.
     ///
     private let allCountries: [Country]
@@ -57,9 +61,11 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
 
     /// Whether ITN validation is required.
     ///
-    private let itnValidationRequired: Bool
+    private lazy var itnValidationRequired: Bool = {
+        Constants.uspsITNRequiredDestinations.contains(destinationCountry.code)
+    }()
 
-    init(customsForm: ShippingLabelCustomsForm, countries: [Country], itnValidationRequired: Bool, currency: String) {
+    init(customsForm: ShippingLabelCustomsForm, destinationCountry: Country, countries: [Country], currency: String) {
         self.packageID = customsForm.packageID
         self.packageName = customsForm.packageName
         self.returnOnNonDelivery = customsForm.nonDeliveryOption == .return
@@ -69,9 +75,9 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
         self.restrictionComments = customsForm.restrictionComments
         self.itn = customsForm.itn
         self.items = customsForm.items
+        self.destinationCountry = destinationCountry
         self.allCountries = countries
         self.currency = currency
-        self.itnValidationRequired = itnValidationRequired
         self.itemViewModels = customsForm.items.map { .init(item: $0, countries: countries, currency: currency) }
 
         resetContentExplanationIfNeeded()
@@ -96,10 +102,14 @@ extension ShippingLabelCustomsFormInputViewModel {
         return false
     }
 
-    var missingITN: Bool {
+    var missingITNForDestination: Bool {
         if itnValidationRequired && itn.isEmpty {
             return true
         }
+        return false
+    }
+
+    var missingITNForClassesAbove2500usd: Bool {
         if !classesAbove2500usd.isEmpty && itn.isEmpty {
             return true
         }
@@ -160,5 +170,8 @@ private extension ShippingLabelCustomsFormInputViewModel {
     enum Constants {
         static let itnRegex = "^(?:(?:AES X\\d{14})|(?:NOEEI 30\\.\\d{1,2}(?:\\([a-z]\\)(?:\\(\\d\\))?)?))$"
         static let minimumValueRequiredForITNValidation: Decimal = 2_500
+
+        // These destination countries require an ITN regardless of shipment value
+        static let uspsITNRequiredDestinations = ["IR", "SY", "KP", "CU", "SD"]
     }
 }

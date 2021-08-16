@@ -35,9 +35,9 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
     ///
     private let allCountries: [Country]
 
-    /// Whether ITN validation is required.
+    /// Destination country for the shipment.
     ///
-    private let itnValidationRequired: Bool
+    private let destinationCountry: Country
 
     /// Reusing Package Details results controllers since we're interested in the same models.
     ///
@@ -53,8 +53,8 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
 
     init(order: Order,
          customsForms: [ShippingLabelCustomsForm],
+         destinationCountry: Country,
          countries: [Country],
-         itnValidationRequired: Bool,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.order = order
@@ -62,10 +62,9 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.allCountries = countries
-        self.itnValidationRequired = itnValidationRequired
+        self.destinationCountry = destinationCountry
         self.inputViewModels = customsForms.map { .init(customsForm: $0,
-                                                        countries: countries,
-                                                        itnValidationRequired: itnValidationRequired,
+                                                        destinationCountry: destinationCountry, countries: countries,
                                                         currency: order.currency) }
 
         configureResultsControllers()
@@ -86,8 +85,8 @@ private extension ShippingLabelCustomsFormListViewModel {
         .handleEvents(receiveOutput: { [weak self] customsForms in
             guard let self = self else { return }
             self.inputViewModels = customsForms.map { .init(customsForm: $0,
+                                                            destinationCountry: self.destinationCountry,
                                                             countries: self.allCountries,
-                                                            itnValidationRequired: self.itnValidationRequired,
                                                             currency: self.order.currency) }
         })
         .assign(to: &$customsForms)

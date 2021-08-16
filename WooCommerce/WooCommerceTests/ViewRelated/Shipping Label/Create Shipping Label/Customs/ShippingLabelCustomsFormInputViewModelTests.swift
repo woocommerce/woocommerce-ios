@@ -4,7 +4,7 @@ import Yosemite
 
 final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
 
-    func test_hasValidContentExplanation_returns_true_when_contentType_is_not_other() {
+    func test_missingContentExplanation_returns_false_when_contentType_is_not_other() {
         // Given
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
                                                                countries: [],
@@ -16,10 +16,10 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         viewModel.contentExplanation = ""
 
         // Then
-        XCTAssertTrue(viewModel.hasValidContentExplanation)
+        XCTAssertFalse(viewModel.missingContentExplanation)
     }
 
-    func test_hasValidContentExplanation_returns_true_when_contentType_is_other_and_explanation_is_not_empty() {
+    func test_missingContentExplanation_returns_false_when_contentType_is_other_and_explanation_is_not_empty() {
         // Given
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
                                                                countries: [],
@@ -31,10 +31,10 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         viewModel.contentExplanation = "Test contents"
 
         // Then
-        XCTAssertTrue(viewModel.hasValidContentExplanation)
+        XCTAssertFalse(viewModel.missingContentExplanation)
     }
 
-    func test_hasValidContentExplanation_returns_false_when_contentType_is_other_and_explanation_is_empty() {
+    func test_missingContentExplanation_returns_true_when_contentType_is_other_and_explanation_is_empty() {
         // Given
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
                                                                countries: [],
@@ -46,10 +46,10 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         viewModel.contentExplanation = ""
 
         // Then
-        XCTAssertFalse(viewModel.hasValidContentExplanation)
+        XCTAssertTrue(viewModel.missingContentExplanation)
     }
 
-    func test_hasValidRestrictionComments_returns_true_when_restrictionType_is_not_other() {
+    func test_missingRestrictionComments_returns_false_when_restrictionType_is_not_other() {
         // Given
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
                                                                countries: [],
@@ -61,10 +61,10 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         viewModel.restrictionComments = ""
 
         // Then
-        XCTAssertTrue(viewModel.hasValidRestrictionComments)
+        XCTAssertFalse(viewModel.missingRestrictionComments)
     }
 
-    func test_hasValidRestrictionComments_returns_true_when_restrictionType_is_other_and_comment_is_not_empty() {
+    func test_missingRestrictionComments_returns_false_when_restrictionType_is_other_and_comment_is_not_empty() {
         // Given
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
                                                                countries: [],
@@ -76,10 +76,10 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         viewModel.restrictionComments = "Test restriction"
 
         // Then
-        XCTAssertTrue(viewModel.hasValidRestrictionComments)
+        XCTAssertFalse(viewModel.missingRestrictionComments)
     }
 
-    func test_hasValidRestrictionComments_returns_false_when_restrictionType_is_other_and_comment_is_empty() {
+    func test_missingRestrictionComments_returns_true_when_restrictionType_is_other_and_comment_is_empty() {
         // Given
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
                                                                countries: [],
@@ -91,7 +91,7 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         viewModel.restrictionComments = ""
 
         // Then
-        XCTAssertFalse(viewModel.hasValidRestrictionComments)
+        XCTAssertTrue(viewModel.missingRestrictionComments)
     }
 
     func test_missingITN_returns_false_when_ITN_validation_is_not_required() {
@@ -137,5 +137,37 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.missingITN)
+    }
+
+    func test_contentExplanation_is_reset_when_contentType_is_not_other() {
+        // Given
+        let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
+                                                               countries: [],
+                                                               itnValidationRequired: false,
+                                                               currency: "$")
+
+        // When
+        viewModel.contentsType = .other
+        viewModel.contentExplanation = "Test"
+        viewModel.contentsType = .documents
+
+        // Then
+        XCTAssertTrue(viewModel.contentExplanation.isEmpty)
+    }
+
+    func test_restrictionComment_is_reset_when_restrictionType_is_not_other() {
+        // Given
+        let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
+                                                               countries: [],
+                                                               itnValidationRequired: false,
+                                                               currency: "$")
+
+        // When
+        viewModel.restrictionType = .other
+        viewModel.restrictionComments = "Test"
+        viewModel.restrictionType = .sanitaryOrPhytosanitaryInspection
+
+        // Then
+        XCTAssertTrue(viewModel.restrictionComments.isEmpty)
     }
 }

@@ -47,6 +47,10 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
     ///
     @Published private var productVariations: [ProductVariation] = []
 
+    /// Symbol of currency in the order.
+    ///
+    private let currencySymbol: String
+
     init(order: Order,
          customsForms: [ShippingLabelCustomsForm],
          countries: [Country],
@@ -57,7 +61,14 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.allCountries = countries
-        self.inputViewModels = customsForms.map { .init(customsForm: $0, countries: countries, currency: order.currency) }
+        let currencySymbol: String = {
+            guard let currencyCode = CurrencySettings.CurrencyCode(rawValue: order.currency) else {
+                return ""
+            }
+            return ServiceLocator.currencySettings.symbol(from: currencyCode)
+        }()
+        self.currencySymbol = currencySymbol
+        self.inputViewModels = customsForms.map { .init(customsForm: $0, countries: countries, currency: currencySymbol) }
 
         configureResultsControllers()
         updateItemDetails()
@@ -76,7 +87,7 @@ private extension ShippingLabelCustomsFormListViewModel {
         }
         .handleEvents(receiveOutput: { [weak self] customsForms in
             guard let self = self else { return }
-            self.inputViewModels = customsForms.map { .init(customsForm: $0, countries: self.allCountries, currency: self.order.currency) }
+            self.inputViewModels = customsForms.map { .init(customsForm: $0, countries: self.allCountries, currency: self.currencySymbol) }
         })
         .assign(to: &$customsForms)
     }

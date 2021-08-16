@@ -82,18 +82,18 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
 // MARK: - Validation
 //
 extension ShippingLabelCustomsFormInputViewModel {
-    var hasValidContentExplanation: Bool {
+    var missingContentExplanation: Bool {
         if contentsType == .other, contentExplanation.isEmpty {
-            return false
+            return true
         }
-        return true
+        return false
     }
 
-    var hasValidRestrictionComments: Bool {
+    var missingRestrictionComments: Bool {
         if restrictionType == .other, restrictionComments.isEmpty {
-            return false
+            return true
         }
-        return true
+        return false
     }
 
     var missingITN: Bool {

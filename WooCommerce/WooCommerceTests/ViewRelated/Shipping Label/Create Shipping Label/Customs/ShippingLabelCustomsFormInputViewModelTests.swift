@@ -93,4 +93,49 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.hasValidRestrictionComments)
     }
+
+    func test_missingITN_returns_false_when_ITN_validation_is_not_required() {
+        // Given
+        let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
+                                                               countries: [],
+                                                               itnValidationRequired: false,
+                                                               currency: "$")
+
+        // When
+        viewModel.itn = ""
+
+        // Then
+        XCTAssertFalse(viewModel.missingITN)
+    }
+
+    func test_missingITN_returns_true_when_ITN_validation_is_required_and_itn_is_empty() {
+        // Given
+        let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),
+                                                               countries: [],
+                                                               itnValidationRequired: true,
+                                                               currency: "$")
+
+        // When
+        viewModel.itn = ""
+
+        // Then
+        XCTAssertTrue(viewModel.missingITN)
+    }
+
+    func test_missingITN_returns_true_when_there_is_total_of_more_than_$2500_value_for_a_tariff_number_and_itn_is_empty() {
+        // Given
+        let item = ShippingLabelCustomsForm.Item.fake().copy(quantity: 1)
+        let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake().copy(items: [item]),
+                                                               countries: [],
+                                                               itnValidationRequired: false,
+                                                               currency: "$")
+
+        // When
+        viewModel.itn = ""
+        viewModel.itemViewModels.first?.hsTariffNumber = "123456"
+        viewModel.itemViewModels.first?.value = "2600"
+
+        // Then
+        XCTAssertTrue(viewModel.missingITN)
+    }
 }

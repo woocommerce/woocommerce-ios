@@ -68,6 +68,9 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
         self.allCountries = countries
         self.currency = currency
         self.itemViewModels = customsForm.items.map { .init(item: $0, countries: countries, currency: currency) }
+
+        resetContentExplanationIfNeeded()
+        resetRestrictionCommentsIfNeeded()
     }
 }
 
@@ -86,5 +89,25 @@ extension ShippingLabelCustomsFormInputViewModel {
             return false
         }
         return true
+    }
+}
+
+private extension ShippingLabelCustomsFormInputViewModel {
+    /// Reset content explanation if content type is not Other.
+    ///
+    func resetContentExplanationIfNeeded() {
+        $contentsType
+            .filter { $0 != .other }
+            .map { _ -> String in "" }
+            .assign(to: &$contentExplanation)
+    }
+
+    /// Reset restriction comments if restriction type is not Other.
+    ///
+    func resetRestrictionCommentsIfNeeded() {
+        $restrictionType
+            .filter { $0 != .other }
+            .map { _ -> String in "" }
+            .assign(to: &$restrictionComments)
     }
 }

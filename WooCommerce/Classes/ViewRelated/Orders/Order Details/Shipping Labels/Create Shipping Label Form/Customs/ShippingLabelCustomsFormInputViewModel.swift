@@ -97,7 +97,13 @@ extension ShippingLabelCustomsFormInputViewModel {
     }
 
     var missingITN: Bool {
-        itnValidationRequired && itn.isEmpty
+        if itnValidationRequired && itn.isEmpty {
+            return true
+        }
+        if !classesAbove2500usd.isEmpty && itn.isEmpty {
+            return true
+        }
+        return false
     }
 
     var hasValidITN: Bool {
@@ -105,7 +111,6 @@ extension ShippingLabelCustomsFormInputViewModel {
            itn.range(of: Constants.itnRegex, options: .regularExpression, range: nil, locale: nil) == nil {
             return false
         }
-
         return true
     }
 }
@@ -113,6 +118,25 @@ extension ShippingLabelCustomsFormInputViewModel {
 // MARK: - Private helpers
 //
 private extension ShippingLabelCustomsFormInputViewModel {
+    /// Check for items and list ones with same HS Tariff Number
+    /// whose values accumulate to more than $2500.
+    ///
+    var classesAbove2500usd: [String: Decimal] {
+        itemViewModels
+            .filter { $0.hsTariffNumber.isNotEmpty && $0.hasValidHSTariffNumber }
+            .reduce([String: Decimal]()) { accumulator, item in
+                var result = accumulator
+                let itemTotalValue = Decimal(Double(item.value) ?? 0) * item.quantity
+                if let currentTotal = result[item.hsTariffNumber] {
+                    result[item.hsTariffNumber] = currentTotal + itemTotalValue
+                } else {
+                    result[item.hsTariffNumber] = itemTotalValue
+                }
+                return result
+            }
+            .filter { $0.value > Constants.minimumValueRequiredForITNValidation }
+    }
+
     /// Reset content explanation if content type is not Other.
     ///
     func resetContentExplanationIfNeeded() {
@@ -135,5 +159,6 @@ private extension ShippingLabelCustomsFormInputViewModel {
 private extension ShippingLabelCustomsFormInputViewModel {
     enum Constants {
         static let itnRegex = "^(?:(?:AES X\\d{14})|(?:NOEEI 30\\.\\d{1,2}(?:\\([a-z]\\)(?:\\(\\d\\))?)?))$"
+        static let minimumValueRequiredForITNValidation: Decimal = 2_500
     }
 }

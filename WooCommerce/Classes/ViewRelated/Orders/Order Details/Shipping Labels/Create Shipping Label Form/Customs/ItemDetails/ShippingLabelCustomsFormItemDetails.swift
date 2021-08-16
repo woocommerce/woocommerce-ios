@@ -21,6 +21,10 @@ struct ShippingLabelCustomsFormItemDetails: View {
                 Image(uiImage: .inventoryImage)
                 Text(String(format: Localization.customLineTitle, itemNumber))
                     .bodyStyle()
+                Spacer()
+                Image(uiImage: .noticeImage)
+                    .foregroundColor(Color(.error))
+                    .renderedIf(viewModel.validatedItem == nil)
             }
         }, content: {
             // Item Description

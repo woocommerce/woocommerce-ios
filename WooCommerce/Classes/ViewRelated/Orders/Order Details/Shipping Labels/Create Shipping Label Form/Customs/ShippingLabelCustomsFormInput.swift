@@ -40,13 +40,22 @@ struct ShippingLabelCustomsFormInput: View {
                 Divider()
                     .padding(.leading, Constants.horizontalPadding)
 
-                if viewModel.contentsType == .other {
+                VStack(spacing: 0) {
                     TitleAndTextFieldRow(title: Localization.contentExplanationTitle,
                                          placeholder: Localization.contentExplanationPlaceholder,
                                          text: $viewModel.contentExplanation)
                     Divider()
                         .padding(.leading, Constants.horizontalPadding)
+
+                    VStack(spacing: 0) {
+                        ValidationErrorRow(errorMessage: Localization.contentExplanationMissing)
+                            .padding(.horizontal, Constants.horizontalPadding)
+                        Divider()
+                            .padding(.leading, Constants.horizontalPadding)
+                    }
+                    .renderedIf(viewModel.missingContentExplanation)
                 }
+                .renderedIf(viewModel.contentsType == .other)
 
                 TitleAndValueRow(title: Localization.restrictionTypeTitle, value: viewModel.restrictionType.localizedName, selectable: true) {
                     showingRestrictionTypes.toggle()
@@ -60,13 +69,22 @@ struct ShippingLabelCustomsFormInput: View {
                 Divider()
                     .padding(.leading, Constants.horizontalPadding)
 
-                if viewModel.restrictionType == .other {
+                VStack(spacing: 0) {
                     TitleAndTextFieldRow(title: Localization.restrictionCommentTitle,
                                          placeholder: Localization.restrictionCommentPlaceholder,
                                          text: $viewModel.restrictionComments)
                     Divider()
                         .padding(.leading, Constants.horizontalPadding)
+
+                    VStack(spacing: 0) {
+                        ValidationErrorRow(errorMessage: Localization.restrictionCommentMissing)
+                            .padding(.horizontal, Constants.horizontalPadding)
+                        Divider()
+                            .padding(.leading, Constants.horizontalPadding)
+                    }
+                    .renderedIf(viewModel.missingRestrictionComments)
                 }
+                .renderedIf(viewModel.restrictionType == .other)
 
                 TitleAndTextFieldRow(title: Localization.itnTitle,
                                      placeholder: Localization.itnPlaceholder,
@@ -122,6 +140,9 @@ private extension ShippingLabelCustomsFormInput {
         static let contentExplanationPlaceholder = NSLocalizedString("Type of contents",
                                                                      comment: "Placeholder for the Content Details row " +
                                                                         "in Customs screen of Shipping Label flow")
+        static let contentExplanationMissing = NSLocalizedString("Please describe what kind of goods this package contain",
+                                                                 comment: "Error message for missing explanation when Content Type" +
+                                                                    "is Other in Customs screen of Shipping Label flow")
         static let restrictionTypeTitle = NSLocalizedString("Restriction Type",
                                                             comment: "Title for the Restriction Type row in Customs screen of Shipping Label flow")
         static let restrictionCommentTitle = NSLocalizedString("Restriction Details",
@@ -129,6 +150,9 @@ private extension ShippingLabelCustomsFormInput {
         static let restrictionCommentPlaceholder = NSLocalizedString("Type of restriction",
                                                                      comment: "Placeholder for the Restriction Details row in " +
                                                                         "Customs screen of Shipping Label flow")
+        static let restrictionCommentMissing = NSLocalizedString("Please describe what kind of restrictions this package must have",
+                                                                 comment: "Error message for missing comments when Restriction Type" +
+                                                                    "is Other in Customs screen of Shipping Label flow")
         static let itnTitle = NSLocalizedString("ITN",
                                                 comment: "Title for the ITN row in Customs screen of Shipping Label flow")
         static let itnPlaceholder = NSLocalizedString("Enter ITN (Optional)",

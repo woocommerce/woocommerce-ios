@@ -799,6 +799,70 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertEqual(defaultForms.first?.items.first?.value, 0)
         XCTAssertEqual(defaultForms.first?.items.first?.originCountry, "")
     }
+
+    func test_itnRestrictionRequired_returns_correctly_for_not_required_destination() {
+        // Given
+        let originAddress = Address(firstName: "Skylar",
+                                    lastName: "Ferry",
+                                    company: "Automattic Inc.",
+                                    address1: "60 29th Street #343",
+                                    address2: nil,
+                                    city: "New York",
+                                    state: "NY",
+                                    postcode: "94121-2303",
+                                    country: "US",
+                                    phone: nil,
+                                    email: nil)
+        let destinationAddress = Address(firstName: "Skylar",
+                                         lastName: "Ferry",
+                                         company: "Automattic Inc.",
+                                         address1: "Main Street #12",
+                                         address2: nil,
+                                         city: "San Francisco",
+                                         state: "CA",
+                                         postcode: "94121-2303",
+                                         country: "US",
+                                         phone: nil,
+                                         email: nil)
+
+        // When
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: originAddress, destinationAddress: destinationAddress)
+
+        // Then
+        XCTAssertFalse(viewModel.itnValidationRequired)
+    }
+
+    func test_itnRestrictionRequired_returns_correctly_for_required_destination() {
+        // Given
+        let originAddress = Address(firstName: "Skylar",
+                                    lastName: "Ferry",
+                                    company: "Automattic Inc.",
+                                    address1: "60 29th Street #343",
+                                    address2: nil,
+                                    city: "New York",
+                                    state: "NY",
+                                    postcode: "94121-2303",
+                                    country: "US",
+                                    phone: nil,
+                                    email: nil)
+        let destinationAddress = Address(firstName: "Skylar",
+                                         lastName: "Ferry",
+                                         company: "Automattic Inc.",
+                                         address1: "Main Street #12",
+                                         address2: nil,
+                                         city: "Some City",
+                                         state: "",
+                                         postcode: "111111",
+                                         country: "IR",
+                                         phone: nil,
+                                         email: nil)
+
+        // When
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: originAddress, destinationAddress: destinationAddress)
+
+        // Then
+        XCTAssertTrue(viewModel.itnValidationRequired)
+    }
 }
 
 // MARK: - Utils

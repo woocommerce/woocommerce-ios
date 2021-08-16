@@ -20,7 +20,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
             HStack(spacing: Constants.horizontalSpacing) {
                 Image(uiImage: .inventoryImage)
                 Text(String(format: Localization.customLineTitle, itemNumber))
-                    .font(.body)
+                    .bodyStyle()
             }
         }, content: {
             VStack(spacing: 0) {
@@ -36,7 +36,8 @@ struct ShippingLabelCustomsFormItemDetails: View {
             VStack(spacing: 0) {
                 TitleAndTextFieldRow(title: Localization.hsTariffNumberTitle,
                                      placeholder: Localization.hsTariffNumberPlaceholder,
-                                     text: $viewModel.hsTariffNumber)
+                                     text: $viewModel.hsTariffNumber,
+                                     keyboardType: .numberPad)
                 Divider()
                     .padding(.leading, Constants.horizontalSpacing)
             }

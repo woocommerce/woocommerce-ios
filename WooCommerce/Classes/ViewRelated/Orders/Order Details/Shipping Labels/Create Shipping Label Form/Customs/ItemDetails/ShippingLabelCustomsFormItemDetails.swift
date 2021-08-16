@@ -23,79 +23,128 @@ struct ShippingLabelCustomsFormItemDetails: View {
                     .bodyStyle()
             }
         }, content: {
+            // Item Description
             VStack(spacing: 0) {
-                TitleAndTextFieldRow(title: Localization.descriptionTitle,
-                                     placeholder: Localization.descriptionPlaceholder,
-                                     text: $viewModel.description)
-                Divider()
-                    .padding(.leading, Constants.horizontalSpacing)
-            }
-            .padding(.horizontal, insets: safeAreaInsets)
-            .background(Color(.listForeground))
-
-            VStack(spacing: 0) {
-                TitleAndTextFieldRow(title: Localization.hsTariffNumberTitle,
-                                     placeholder: Localization.hsTariffNumberPlaceholder,
-                                     text: $viewModel.hsTariffNumber,
-                                     keyboardType: .numberPad)
-                Divider()
-                    .padding(.leading, Constants.horizontalSpacing)
-            }
-            .padding(.horizontal, insets: safeAreaInsets)
-            .background(Color(.listForeground))
-
-            VStack(spacing: 0) {
-                LearnMoreRow(localizedStringWithHyperlink: Localization.learnMoreHSTariffText)
-                Divider()
-                    .padding(.leading, Constants.horizontalSpacing)
-            }
-            .padding(.horizontal, insets: safeAreaInsets)
-            .background(Color(.listForeground))
-
-            VStack(spacing: 0) {
-                TitleAndTextFieldRow(title: String(format: Localization.weightTitle, viewModel.weightUnit),
-                                     placeholder: "0",
-                                     text: $viewModel.weight,
-                                     keyboardType: .decimalPad)
-                Divider()
-                    .padding(.leading, Constants.horizontalSpacing)
-            }
-            .padding(.horizontal, insets: safeAreaInsets)
-            .background(Color(.listForeground))
-
-            VStack(spacing: 0) {
-                TitleAndTextFieldRow(title: String(format: Localization.valueTitle, viewModel.currency),
-                                     placeholder: "0",
-                                     text: $viewModel.value,
-                                     keyboardType: .decimalPad)
-                Divider()
-                    .padding(.leading, Constants.horizontalSpacing)
-            }
-            .padding(.horizontal, insets: safeAreaInsets)
-            .background(Color(.listForeground))
-
-            VStack(spacing: 0) {
-                TitleAndValueRow(title: Localization.originTitle, value: viewModel.originCountry.name, selectable: true) {
-                    isShowingCountries.toggle()
+                VStack(spacing: 0) {
+                    TitleAndTextFieldRow(title: Localization.descriptionTitle,
+                                         placeholder: Localization.descriptionPlaceholder,
+                                         text: $viewModel.description)
+                    Divider()
+                        .padding(.leading, Constants.horizontalSpacing)
                 }
-                .sheet(isPresented: $isShowingCountries, content: {
-                    SelectionList(title: Localization.originTitle,
-                                  items: viewModel.allCountries,
-                                  contentKeyPath: \.name,
-                                  selected: $viewModel.originCountry)
-                })
-                Divider()
-                    .padding(.leading, Constants.horizontalSpacing)
+                .background(Color(.listForeground))
+
+                VStack(alignment: .leading, spacing: 0) {
+                    ValidationErrorRow(errorMessage: ("Item description is required"))
+                    Divider()
+                        .padding(.leading, Constants.horizontalSpacing)
+                }
+                .renderedIf(!viewModel.hasValidDescription)
             }
             .padding(.horizontal, insets: safeAreaInsets)
-            .background(Color(.listForeground))
 
-            Text(Localization.originDescription)
-                .footnoteStyle()
-                .padding(.horizontal, Constants.horizontalSpacing)
+            // HS Tariff Number, validation & learn more
+            VStack(spacing: 0) {
+                VStack(spacing: 0) {
+                    TitleAndTextFieldRow(title: Localization.hsTariffNumberTitle,
+                                         placeholder: Localization.hsTariffNumberPlaceholder,
+                                         text: $viewModel.hsTariffNumber,
+                                         keyboardType: .numberPad)
+                    Divider()
+                        .padding(.leading, Constants.horizontalSpacing)
+                }
                 .padding(.horizontal, insets: safeAreaInsets)
-                .padding(.vertical, Constants.verticalSpacing)
-                .padding(.bottom, Constants.verticalSpacing)
+                .background(Color(.listForeground))
+
+                VStack(alignment: .leading, spacing: 0) {
+                    ValidationErrorRow(errorMessage: ("HS Tariff Number must be 6 digits long"))
+                    Divider()
+                        .padding(.leading, Constants.horizontalSpacing)
+                }
+                .renderedIf(!viewModel.hasValidHSTariffNumber)
+
+                VStack(spacing: 0) {
+                    LearnMoreRow(localizedStringWithHyperlink: Localization.learnMoreHSTariffText)
+                    Divider()
+                        .padding(.leading, Constants.horizontalSpacing)
+                }
+                .background(Color(.listForeground))
+            }
+            .padding(.horizontal, insets: safeAreaInsets)
+
+            // Weight row and validation
+            VStack(spacing: 0) {
+                VStack(spacing: 0) {
+                    TitleAndTextFieldRow(title: String(format: Localization.weightTitle, viewModel.weightUnit),
+                                         placeholder: "0",
+                                         text: $viewModel.weight,
+                                         keyboardType: .decimalPad)
+                    Divider()
+                        .padding(.leading, Constants.horizontalSpacing)
+                }
+                .background(Color(.listForeground))
+
+                VStack(alignment: .leading, spacing: 0) {
+                    ValidationErrorRow(errorMessage: ("Item weight must be larger than 0"))
+                    Divider()
+                        .padding(.leading, Constants.horizontalSpacing)
+                }
+                .renderedIf(viewModel.validatedWeight == nil)
+            }
+            .padding(.horizontal, insets: safeAreaInsets)
+
+            // Value row & validation
+            VStack(spacing: 0) {
+                VStack(spacing: 0) {
+                    TitleAndTextFieldRow(title: String(format: Localization.valueTitle, viewModel.currency),
+                                         placeholder: "0",
+                                         text: $viewModel.value,
+                                         keyboardType: .decimalPad)
+                    Divider()
+                        .padding(.leading, Constants.horizontalSpacing)
+                }
+                .background(Color(.listForeground))
+
+                VStack(alignment: .leading, spacing: 0) {
+                    ValidationErrorRow(errorMessage: ("Item value must be larger than 0"))
+                    Divider()
+                        .padding(.leading, Constants.horizontalSpacing)
+                }
+                .renderedIf(viewModel.validatedValue == nil)
+            }
+            .padding(.horizontal, insets: safeAreaInsets)
+
+            // Origin country
+            VStack(alignment: .leading, spacing: 0) {
+                VStack(spacing: 0) {
+                    TitleAndValueRow(title: Localization.originTitle, value: viewModel.originCountry.name, selectable: true) {
+                        isShowingCountries.toggle()
+                    }
+                    .sheet(isPresented: $isShowingCountries, content: {
+                        SelectionList(title: Localization.originTitle,
+                                      items: viewModel.allCountries,
+                                      contentKeyPath: \.name,
+                                      selected: $viewModel.originCountry)
+                    })
+                    Divider()
+                        .padding(.leading, Constants.horizontalSpacing)
+                }
+                .background(Color(.listForeground))
+
+                VStack(alignment: .leading, spacing: 0) {
+                    ValidationErrorRow(errorMessage: ("Origin Country is required"))
+                    Divider()
+                        .padding(.leading, Constants.horizontalSpacing)
+                }
+                .renderedIf(!viewModel.hasValidOriginCountry)
+
+                Text(Localization.originDescription)
+                    .footnoteStyle()
+                    .padding(.horizontal, Constants.horizontalSpacing)
+                    .padding(.vertical, Constants.verticalSpacing)
+                    .padding(.bottom, Constants.verticalSpacing)
+            }
+            .padding(.horizontal, insets: safeAreaInsets)
         })
     }
 }

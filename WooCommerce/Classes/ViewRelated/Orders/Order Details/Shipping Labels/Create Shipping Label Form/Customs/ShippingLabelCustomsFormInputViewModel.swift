@@ -71,6 +71,20 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
     }
 }
 
-// MARK: - Helper methods
+// MARK: - Validation
 //
-private extension ShippingLabelCustomsFormInputViewModel {}
+extension ShippingLabelCustomsFormInputViewModel {
+    var hasValidContentExplanation: Bool {
+        if contentsType == .other, contentExplanation.isEmpty {
+            return false
+        }
+        return true
+    }
+
+    var hasValidRestrictionComments: Bool {
+        if restrictionType == .other, restrictionComments.isEmpty {
+            return false
+        }
+        return true
+    }
+}

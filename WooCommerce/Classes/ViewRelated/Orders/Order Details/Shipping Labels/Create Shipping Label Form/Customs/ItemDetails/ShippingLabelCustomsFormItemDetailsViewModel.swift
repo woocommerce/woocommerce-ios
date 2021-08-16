@@ -40,9 +40,29 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
 
     /// Validated item if all fields are valid.
     ///
-    private(set) var validatedItem: ShippingLabelCustomsForm.Item?
+    var validatedItem: ShippingLabelCustomsForm.Item? {
+        guard let value = validatedValue,
+              let weight = validatedWeight,
+              hasValidDescription,
+              hasValidHSTariffNumber,
+              hasValidOriginCountry else {
+            return nil
+        }
+        return ShippingLabelCustomsForm.Item(description: description,
+                                             quantity: quantity,
+                                             value: value,
+                                             weight: weight,
+                                             hsTariffNumber: hsTariffNumber,
+                                             originCountry: originCountry.code,
+                                             productID: productID)
+    }
+
+    /// Quantity of items to be declared.
+    ///
+    private let quantity: Decimal
 
     init(item: ShippingLabelCustomsForm.Item, countries: [Country], currency: String, weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
+        self.quantity = item.quantity
         self.productID = item.productID
         self.description = item.description
         self.value = String(item.value)
@@ -52,5 +72,40 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
         self.currency = currency
         self.weightUnit = weightUnit ?? ""
         self.originCountry = countries.first(where: { $0.code == item.originCountry }) ?? Country(code: "", name: "", states: [])
+    }
+}
+
+// MARK: - Validation
+//
+extension ShippingLabelCustomsFormItemDetailsViewModel {
+    var hasValidDescription: Bool {
+        description.trimmingCharacters(in: .whitespacesAndNewlines).isNotEmpty
+    }
+
+    var validatedValue: Double? {
+        guard let numericValue = Double(value), numericValue > 0 else {
+            return nil
+        }
+        return numericValue
+    }
+
+    var validatedWeight: Double? {
+        guard let numericWeight = Double(weight), numericWeight > 0 else {
+            return nil
+        }
+        return numericWeight
+    }
+
+    var hasValidOriginCountry: Bool {
+        originCountry.code.isNotEmpty
+    }
+
+    var hasValidHSTariffNumber: Bool {
+        if hsTariffNumber.isNotEmpty,
+           (hsTariffNumber.count != 6 ||
+                hsTariffNumber.filter({ "0"..."9" ~= $0 }).count != 6) {
+            return false
+        }
+        return true
     }
 }

@@ -35,7 +35,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                 .background(Color(.listForeground))
 
                 VStack(alignment: .leading, spacing: 0) {
-                    ValidationErrorRow(errorMessage: ("Item description is required"))
+                    ValidationErrorRow(errorMessage: Localization.descriptionError)
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)
                 }
@@ -57,7 +57,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                 .background(Color(.listForeground))
 
                 VStack(alignment: .leading, spacing: 0) {
-                    ValidationErrorRow(errorMessage: ("HS Tariff Number must be 6 digits long"))
+                    ValidationErrorRow(errorMessage: Localization.hsTariffNumberError)
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)
                 }
@@ -85,7 +85,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                 .background(Color(.listForeground))
 
                 VStack(alignment: .leading, spacing: 0) {
-                    ValidationErrorRow(errorMessage: ("Item weight must be larger than 0"))
+                    ValidationErrorRow(errorMessage: Localization.weightError)
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)
                 }
@@ -106,7 +106,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                 .background(Color(.listForeground))
 
                 VStack(alignment: .leading, spacing: 0) {
-                    ValidationErrorRow(errorMessage: ("Item value must be larger than 0"))
+                    ValidationErrorRow(errorMessage: Localization.valueError)
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)
                 }
@@ -132,7 +132,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                 .background(Color(.listForeground))
 
                 VStack(alignment: .leading, spacing: 0) {
-                    ValidationErrorRow(errorMessage: ("Origin Country is required"))
+                    ValidationErrorRow(errorMessage: Localization.originError)
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)
                 }
@@ -162,24 +162,34 @@ private extension ShippingLabelCustomsFormItemDetails {
         static let descriptionPlaceholder = NSLocalizedString("Enter description",
                                                               comment: "Placeholder of Description row of item details in " +
                                                                 "Customs screen of Shipping Label flow")
+        static let descriptionError = NSLocalizedString("Item description is required",
+                                                        comment: "Error message for missing value in Description row in Customs screen of Shipping Label flow")
         static let hsTariffNumberTitle = NSLocalizedString("HS Tariff Number",
                                                            comment: "Title of HS Tariff Number row in Package Content" +
                                                                 " section in Customs screen of Shipping Label flow")
         static let hsTariffNumberPlaceholder = NSLocalizedString("Enter number (Optional)",
                                                                  comment: "Placeholder of HS Tariff Number row in Package" +
                                                                     " Content section in Customs screen of Shipping Label flow")
+        static let hsTariffNumberError = NSLocalizedString("HS Tariff Number must be 6 digits long",
+                                                           comment: "Validation error for HS Tariff Number row in Customs screen of Shipping Label flow")
         static let learnMoreHSTariffText = NSLocalizedString(
             "<a href=\"https://docs.woocommerce.com/document/woocommerce-shipping-and-tax/woocommerce-shipping/#section-29\">Learn more</a> " +
                 "about HS Tariff Number",
             comment: "A label prompting users to learn more about HS Tariff Number with an embedded hyperlink in Customs screen of Shipping Label flow")
         static let weightTitle = NSLocalizedString("Weight (%1$@ per unit)",
                                                    comment: "Title for the Weight row in item details in Customs screen of Shipping Label flow")
+        static let weightError = NSLocalizedString("Item weight must be larger than 0",
+                                                   comment: "Error message for missing value in Weight row in Customs screen of Shipping Label flow")
         static let valueTitle = NSLocalizedString("Value (%1$@ per unit)",
                                                   comment: "Title for the Value row in item details in Customs screen of Shipping Label flow")
+        static let valueError = NSLocalizedString("Item value must be larger than 0",
+                                                  comment: "Error message for missing value in Value row in Customs screen of Shipping Label flow")
         static let originTitle = NSLocalizedString("Origin Country",
                                                    comment: "Title for the Origin Country row in Customs screen of Shipping Label flow")
         static let originDescription = NSLocalizedString("Country where the product was manufactured or assembled",
                                                          comment: "Description for the Origin Country row in Customs screen of Shipping Label flow")
+        static let originError = NSLocalizedString("Origin Country is required",
+                                                   comment: "Error message for missing value in Origin Country row in Customs screen of Shipping Label flow")
     }
 }
 

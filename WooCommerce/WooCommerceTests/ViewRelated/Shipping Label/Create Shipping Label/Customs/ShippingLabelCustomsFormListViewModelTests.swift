@@ -45,8 +45,8 @@ class ShippingLabelCustomsFormListViewModelTests: XCTestCase {
                                             weight: "10.0"))
         let viewModel = ShippingLabelCustomsFormListViewModel(order: order,
                                                               customsForms: [customsForm],
+                                                              destinationCountry: Country.fake(),
                                                               countries: [],
-                                                              itnValidationRequired: false,
                                                               storageManager: storageManager)
 
         // Then

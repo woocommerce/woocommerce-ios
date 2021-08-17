@@ -2,8 +2,10 @@ import SwiftUI
 
 /// Form to create a new custom package to use with shipping labels.
 struct ShippingLabelCustomPackageForm: View {
-    @ObservedObject private var viewModel = ShippingLabelCustomPackageFormViewModel()
     private let safeAreaInsets: EdgeInsets
+
+    @ObservedObject private var viewModel = ShippingLabelCustomPackageFormViewModel()
+    @State private var showingPackageTypes = false
 
     init(safeAreaInsets: EdgeInsets) {
         self.safeAreaInsets = safeAreaInsets
@@ -19,10 +21,16 @@ struct ShippingLabelCustomPackageForm: View {
 
                     VStack(spacing: 0) {
                         TitleAndValueRow(title: Localization.packageTypeLabel,
-                                         value: Localization.packageTypePlaceholder,
+                                         value: viewModel.packageType.localizedName,
                                          selectable: true) {
-                            // TODO-4743: Navigate to Package Type screen
+                            showingPackageTypes.toggle()
                         }
+                        .sheet(isPresented: $showingPackageTypes, content: {
+                            SelectionList(title: Localization.packageTypeLabel,
+                                          items: ShippingLabelCustomPackageFormViewModel.PackageType.allCases,
+                                          contentKeyPath: \.localizedName,
+                                          selected: $viewModel.packageType)
+                        })
 
                         Divider()
                             .padding(.leading, Constants.horizontalPadding)

@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
@@ -18,6 +19,10 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
     /// Input customs forms of the shipping label if added initially.
     ///
     @Published var customsForms: [ShippingLabelCustomsForm]
+
+    /// Whether done button should be enabled.
+    ///
+    @Published private(set) var doneButtonEnabled: Bool = false
 
     /// Associated order of the shipping label.
     ///
@@ -55,6 +60,14 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
     ///
     private let currencySymbol: String
 
+    private var customsFormValidation: [String: Bool] = [:] {
+        didSet {
+            doneButtonEnabled = customsFormValidation.values.first(where: { !$0 }) == nil
+        }
+    }
+
+    private var cancellables: Set<AnyCancellable> = []
+
     init(order: Order,
          customsForms: [ShippingLabelCustomsForm],
          destinationCountry: Country,
@@ -78,8 +91,23 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
                                                         destinationCountry: destinationCountry,
                                                         countries: countries,
                                                         currency: currencySymbol) }
+        configureFormsValidation()
         configureResultsControllers()
         updateItemDetails()
+    }
+}
+
+// MARK: - Validation
+//
+private extension ShippingLabelCustomsFormListViewModel {
+    func configureFormsValidation() {
+        inputViewModels.forEach { viewModel in
+            viewModel.$isFormValidated
+                .sink { [weak self] validated in
+                    self?.customsFormValidation[viewModel.packageID] = validated
+                }
+                .store(in: &cancellables)
+        }
     }
 }
 
@@ -99,6 +127,7 @@ private extension ShippingLabelCustomsFormListViewModel {
                                                             destinationCountry: self.destinationCountry,
                                                             countries: self.allCountries,
                                                             currency: self.currencySymbol) }
+            self.configureFormsValidation()
         })
         .assign(to: &$customsForms)
     }

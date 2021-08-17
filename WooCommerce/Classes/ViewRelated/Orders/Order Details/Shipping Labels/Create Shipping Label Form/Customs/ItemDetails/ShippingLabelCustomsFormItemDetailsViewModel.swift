@@ -38,6 +38,10 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
     ///
     @Published var originCountry: Country
 
+    /// Whether all fields are validated.
+    ///
+    @Published private(set) var isItemValidated: Bool = false
+
     /// Persisted countries to select from.
     ///
     let allCountries: [Country]
@@ -72,6 +76,8 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
         self.currency = currency
         self.weightUnit = weightUnit ?? ""
         self.originCountry = countries.first(where: { $0.code == item.originCountry }) ?? Country(code: "", name: "", states: [])
+
+        configureValidationCheck()
     }
 }
 
@@ -79,33 +85,77 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
 //
 extension ShippingLabelCustomsFormItemDetailsViewModel {
     var hasValidDescription: Bool {
-        description.trimmingCharacters(in: .whitespacesAndNewlines).isNotEmpty
+        validateDescription(description)
     }
 
     var validatedValue: Double? {
+        getValidatedValue(from: value)
+    }
+
+    var validatedWeight: Double? {
+        getValidatedWeight(from: weight)
+    }
+
+    var hasValidOriginCountry: Bool {
+        validateCountry(originCountry)
+    }
+
+    var hasValidHSTariffNumber: Bool {
+        validateHSTariffNumber(hsTariffNumber)
+    }
+}
+
+// MARK: - Helper methods
+//
+private extension ShippingLabelCustomsFormItemDetailsViewModel {
+    func validateDescription(_ description: String) -> Bool {
+        description.trimmingCharacters(in: .whitespacesAndNewlines).isNotEmpty
+    }
+
+    func getValidatedValue(from value: String) -> Double? {
         guard let numericValue = Double(value), numericValue > 0 else {
             return nil
         }
         return numericValue
     }
 
-    var validatedWeight: Double? {
+    func getValidatedWeight(from weight: String) -> Double? {
         guard let numericWeight = Double(weight), numericWeight > 0 else {
             return nil
         }
         return numericWeight
     }
 
-    var hasValidOriginCountry: Bool {
+    func validateCountry(_ originCountry: Country) -> Bool {
         originCountry.code.isNotEmpty
     }
 
-    var hasValidHSTariffNumber: Bool {
+    func validateHSTariffNumber(_ hsTariffNumber: String) -> Bool {
         if hsTariffNumber.isNotEmpty,
            (hsTariffNumber.count != 6 ||
                 hsTariffNumber.filter({ "0"..."9" ~= $0 }).count != 6) {
             return false
         }
         return true
+    }
+
+    func configureValidationCheck() {
+        let groupOne = $description.combineLatest($value, $weight)
+        let groupTwo = $hsTariffNumber.combineLatest($originCountry)
+        groupOne.combineLatest(groupTwo)
+            .map { [weak self] groupOne, groupTwo -> Bool in
+                guard let self = self else {
+                    return false
+                }
+                let (description, value, weight) = groupOne
+                let (hsTariffNumber, originCountry) = groupTwo
+                return self.validateDescription(description) &&
+                    self.validateCountry(originCountry) &&
+                    self.validateHSTariffNumber(hsTariffNumber) &&
+                    self.getValidatedValue(from: value) != nil &&
+                    self.getValidatedWeight(from: weight) != nil
+            }
+            .removeDuplicates()
+            .assign(to: &$isItemValidated)
     }
 }

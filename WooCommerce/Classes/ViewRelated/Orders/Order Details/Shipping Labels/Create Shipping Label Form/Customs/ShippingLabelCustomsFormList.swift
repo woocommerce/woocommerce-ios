@@ -34,7 +34,8 @@ struct ShippingLabelCustomsFormList: View {
             presentation.wrappedValue.dismiss()
         }, label: {
             Text(Localization.doneButton)
-        }))
+        }).disabled(!viewModel.doneButtonEnabled)
+        )
     }
 }
 

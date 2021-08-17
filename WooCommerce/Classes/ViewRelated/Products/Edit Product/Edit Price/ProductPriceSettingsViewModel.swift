@@ -238,7 +238,7 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
 
     func completeUpdating(onCompletion: ProductPriceSettingsViewController.Completion, onError: (ProductPriceSetingsError) -> Void) {
         // Check if sale price was set if there is a sale to be created
-        if dateOnSaleStart != nil && dateOnSaleEnd != nil && salePrice == nil {
+        if dateOnSaleStart != nil && dateOnSaleEnd != nil && getDecimalPrice(salePrice) == nil {
             onError(.newSaleWithEmptySalePrice)
             return
         }

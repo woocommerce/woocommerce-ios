@@ -60,6 +60,28 @@ class ShippingLabelCustomsFormListViewModelTests: XCTestCase {
         XCTAssertEqual(form?.items.last?.weight, Double(10))
         XCTAssertEqual(form?.items.last?.value, items.last?.price.doubleValue)
     }
+
+    func test_virtual_products_are_excluded_in_customs_item_list() {
+        // Given
+        let items = [MockOrderItem.sampleItem(name: "Easter Egg", productID: 1, quantity: 0.5, price: 15),
+                     MockOrderItem.sampleItem(name: "Ebook", productID: 49, quantity: 1, price: 15)]
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
+        let customsForm = ShippingLabelCustomsForm(packageID: "Custom package", packageName: "Custom package", productIDs: [1, 49])
+
+        // When
+        insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120.0"))
+        insert(Product.fake().copy(siteID: sampleSiteID, productID: 49, virtual: true, weight: "0"))
+        let viewModel = ShippingLabelCustomsFormListViewModel(order: order, customsForms: [customsForm], countries: [], storageManager: storageManager)
+
+        // Then
+        let form = viewModel.customsForms.first
+        XCTAssertEqual(form?.items.count, 1)
+        XCTAssertEqual(form?.items.first?.description, items.first?.name)
+        XCTAssertEqual(form?.items.first?.productID, items.first?.productID)
+        XCTAssertEqual(form?.items.first?.quantity, items.first?.quantity)
+        XCTAssertEqual(form?.items.first?.weight, Double(120))
+        XCTAssertEqual(form?.items.first?.value, items.first?.price.doubleValue)
+    }
 }
 
 // MARK: - Utils

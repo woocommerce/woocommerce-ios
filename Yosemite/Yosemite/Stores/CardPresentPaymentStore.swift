@@ -39,8 +39,6 @@ public final class CardPresentPaymentStore: Store {
         }
 
         switch action {
-        case .checkOnboardingState(let siteID, let onCompletion):
-            checkOnboardingState(siteID: siteID, onCompletion: onCompletion)
         case .startCardReaderDiscovery(let siteID, let onReaderDiscovered, let onError):
             startCardReaderDiscovery(siteID: siteID, onReaderDiscovered: onReaderDiscovered, onError: onError)
         case .cancelCardReaderDiscovery(let completion):
@@ -51,6 +49,8 @@ public final class CardPresentPaymentStore: Store {
             disconnect(onCompletion: completion)
         case .observeConnectedReaders(let completion):
             observeConnectedReaders(onCompletion: completion)
+        case .fetchOrderCustomer(let siteID, let orderID, let completion):
+            fetchOrderCustomer(siteID: siteID, orderID: orderID, completion: completion)
         case .collectPayment(let siteID, let orderID, let parameters, let event, let completion):
             collectPayment(siteID: siteID,
                            orderID: orderID,
@@ -75,19 +75,6 @@ public final class CardPresentPaymentStore: Store {
 // MARK: - Services
 //
 private extension CardPresentPaymentStore {
-    func checkOnboardingState(siteID: Int64, onCompletion: (CardPresentPaymentOnboardingState) -> Void) {
-        let canCollectPayments = storageManager.viewStorage
-            .loadPaymentGatewayAccounts(siteID: siteID)
-            .contains(where: \.isCardPresentEligible)
-        let state: CardPresentPaymentOnboardingState
-        if canCollectPayments {
-            state = .completed
-        } else {
-            state = .genericError
-        }
-        onCompletion(state)
-    }
-
     func startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: @escaping (_ readers: [CardReader]) -> Void, onError: @escaping (Error) -> Void) {
         do {
             try cardReaderService.start(WCPayTokenProvider(siteID: siteID, remote: self.remote))
@@ -189,6 +176,10 @@ private extension CardPresentPaymentStore {
         } receiveValue: { intent in
             onCompletion(.success(intent))
         }
+    }
+
+    func fetchOrderCustomer(siteID: Int64, orderID: Int64, completion: @escaping (Result<WCPayCustomer, Error>) -> Void) {
+        remote.fetchOrderCustomer(for: siteID, orderID: orderID, completion: completion)
     }
 
     func cancelPayment(onCompletion: ((Result<Void, Error>) -> Void)?) {

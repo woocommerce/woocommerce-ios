@@ -448,6 +448,10 @@ extension OrderDetailsViewModel {
                                                                   canCreateCustomsForm: isCustomsFormEnabled,
                                                                   canCreatePackage: isPackageCreationEnabled) { [weak self] isEligible in
             self?.dataSource.isEligibleForShippingLabelCreation = isEligible
+            if isEligible, let orderStatus = self?.orderStatus?.status.rawValue {
+                ServiceLocator.analytics.track(.shippingLabelOrderIsEligible,
+                                               withProperties: ["order_status": orderStatus])
+            }
             onCompletion?()
         }
         stores.dispatch(action)
@@ -525,7 +529,6 @@ extension OrderDetailsViewModel {
                         onClearMessage: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
-
         /// We don't have a concept of priority yet, so use the first paymentGatewayAccount for now
         /// since we can't yet have multiple accounts
         ///

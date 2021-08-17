@@ -228,7 +228,7 @@ private extension OrderDetailsViewController {
 //
 private extension OrderDetailsViewController {
     func updateTopBannerView() {
-        let factory = ShippingLabelsTopBannerFactory(isEligibleForShippingLabelCreation: viewModel.dataSource.isEligibleForShippingLabelCreation,
+        let factory = ShippingLabelsTopBannerFactory(shouldShowShippingLabelCreation: viewModel.dataSource.shouldShowShippingLabelCreation,
                                                      shippingLabels: viewModel.dataSource.shippingLabels)
         let isExpanded = topBannerView?.isExpanded ?? false
         factory.createTopBannerIfNeeded(isExpanded: isExpanded,
@@ -708,15 +708,15 @@ private extension OrderDetailsViewController {
     }
 
     private func connectToCardReader() {
-        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsPresentingViewController.self) else {
-            fatalError("Cannot instantiate `CardReaderSettingsPresentingViewController` from Dashboard storyboard")
+        let knownReadersProvider = CardReaderSettingsKnownReadersStoredList()
+        let connectionController = CardReaderConnectionController(
+            forSiteID: viewModel.order.siteID,
+            knownReadersProvider: knownReadersProvider
+        )
+        connectionController.searchAndConnect(from: self) { _ in
+            /// No need for logic here. Once connected, the connected reader will publish
+            /// through the `cardReaderAvailableSubscription`
         }
-
-        let viewModelsAndViews = CardReaderSettingsViewModelsOrderedList()
-        viewController.configure(viewModelsAndViews: viewModelsAndViews)
-        viewController.presentationController?.delegate = self
-
-        present(viewController, animated: true)
     }
 
     private func cancelObservingCardReader() {

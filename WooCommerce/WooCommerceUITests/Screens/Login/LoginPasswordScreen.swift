@@ -1,5 +1,5 @@
-import Foundation
 import XCTest
+import XCUITestHelpers
 
 private struct ElementStringIDs {
     static let passwordTextField = "Password"
@@ -28,7 +28,7 @@ final class LoginPasswordScreen: BaseScreen {
     func tryProceed(password: String) -> LoginPasswordScreen {
         XCTAssert(passwordTextField.waitForHittability(timeout: 3))
 
-        passwordTextField.pasteText(text: password)
+        passwordTextField.paste(text: password)
 
         XCTAssert(loginButton.waitForExistence(timeout: 3))
         XCTAssert(loginButton.waitForHittability(timeout: 3))

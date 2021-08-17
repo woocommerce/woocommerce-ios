@@ -11,7 +11,7 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
 
     // MARK: - DashboardUI protocol
 
-    var displaySyncingErrorNotice: () -> Void = {}
+    var displaySyncingError: () -> Void = {}
 
     var onPullToRefresh: () -> Void = {}
 
@@ -412,7 +412,7 @@ private extension StoreStatsAndTopPerformersViewController {
         case .statsModuleDisabled, .noPermission:
             showSiteVisitors(false)
         default:
-            displaySyncingErrorNotice()
+            displaySyncingError()
         }
     }
 
@@ -421,7 +421,7 @@ private extension StoreStatsAndTopPerformersViewController {
         case let siteVisitStatsStoreError as SiteVisitStatsStoreError:
             handleSiteVisitStatsStoreError(error: siteVisitStatsStoreError)
         default:
-            displaySyncingErrorNotice()
+            displaySyncingError()
         }
     }
 }

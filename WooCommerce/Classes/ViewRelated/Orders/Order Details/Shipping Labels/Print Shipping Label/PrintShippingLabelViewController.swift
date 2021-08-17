@@ -260,7 +260,7 @@ private extension PrintShippingLabelViewController {
     }
 
     func configureHeaderImage(cell: ImageTableViewCell) {
-        cell.detailImageView.image = .celebrationImage
+        cell.configure(image: .celebrationImage)
         cell.selectionStyle = .none
         cell.hideSeparator()
     }

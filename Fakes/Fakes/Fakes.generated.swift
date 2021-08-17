@@ -471,6 +471,25 @@ extension PaymentGateway {
         )
     }
 }
+extension PaymentGatewayAccount {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> PaymentGatewayAccount {
+        .init(
+            siteID: .fake(),
+            gatewayID: .fake(),
+            status: .fake(),
+            hasPendingRequirements: .fake(),
+            hasOverdueRequirements: .fake(),
+            currentDeadline: .fake(),
+            statementDescriptor: .fake(),
+            defaultCurrency: .fake(),
+            supportedCurrencies: .fake(),
+            country: .fake(),
+            isCardPresentEligible: .fake()
+        )
+    }
+}
 extension Post {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -1034,6 +1053,59 @@ extension ShippingLabelCustomPackage {
         )
     }
 }
+extension ShippingLabelCustomsForm {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ShippingLabelCustomsForm {
+        .init(
+            packageID: .fake(),
+            packageName: .fake(),
+            contentsType: .fake(),
+            contentExplanation: .fake(),
+            restrictionType: .fake(),
+            restrictionComments: .fake(),
+            nonDeliveryOption: .fake(),
+            itn: .fake(),
+            items: .fake()
+        )
+    }
+}
+extension ShippingLabelCustomsForm.ContentsType {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ShippingLabelCustomsForm.ContentsType {
+        .merchandise
+    }
+}
+extension ShippingLabelCustomsForm.Item {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ShippingLabelCustomsForm.Item {
+        .init(
+            description: .fake(),
+            quantity: .fake(),
+            value: .fake(),
+            weight: .fake(),
+            hsTariffNumber: .fake(),
+            originCountry: .fake(),
+            productID: .fake()
+        )
+    }
+}
+extension ShippingLabelCustomsForm.NonDeliveryOption {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ShippingLabelCustomsForm.NonDeliveryOption {
+        .`return`
+    }
+}
+extension ShippingLabelCustomsForm.RestrictionType {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ShippingLabelCustomsForm.RestrictionType {
+        .none
+    }
+}
 extension ShippingLabelPackagePurchase {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -1041,7 +1113,8 @@ extension ShippingLabelPackagePurchase {
         .init(
             package: .fake(),
             rate: .fake(),
-            productIDs: .fake()
+            productIDs: .fake(),
+            customsForm: .fake()
         )
     }
 }
@@ -1055,7 +1128,8 @@ extension ShippingLabelPackageSelected {
             width: .fake(),
             height: .fake(),
             weight: .fake(),
-            isLetter: .fake()
+            isLetter: .fake(),
+            customsForm: .fake()
         )
     }
 }
@@ -1295,7 +1369,7 @@ extension SiteSetting {
             siteID: .fake(),
             settingID: .fake(),
             label: .fake(),
-            description: .fake(),
+            settingDescription: .fake(),
             value: .fake(),
             settingGroupKey: .fake()
         )

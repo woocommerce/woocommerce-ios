@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-07-09 22:56:15+0000 */
+/* Translation-Revision-Date: 2021-08-04 18:54:03+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -596,7 +596,7 @@
 "Choose Paper Size" = "اختيار مقاس الورقة";
 
 /* Navigation title on the shipping label states of a country selector screen */
-"Choose a State" = "Choose a State";
+"Choose a State" = "اختيار بلد";
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "الاختيار من جهاز";
@@ -631,7 +631,8 @@
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "الربط بالقارئ";
 
-/* Settings > Manage Card Reader > Prompt user to connect their first reader */
+/* Settings > Manage Card Reader > Prompt user to connect their first reader
+   Settings > Manage Card Reader > Prompt user to connect their reader */
 "Connect your card reader" = "توصيل قارئ البطاقة الخاص بك";
 
 /* Link on the store picker when there are no stores available. Opens a webview about Jetpack setup. */
@@ -748,6 +749,9 @@
    Text on the button that starts shipping label creation */
 "Create Shipping Label" = "إنشاء ملصق الشحن";
 
+/* The title of the shipping labels top banner in order details */
+"Create shipping labels from your device!" = "قم بإنشاء ملصقات الشحن من جهازك!";
+
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "إنشاء مجموعتك المتنوعة الأولى";
 
@@ -768,7 +772,7 @@
 "Current" = "الحالي";
 
 /* Error when the user tap on Country field in Shipping Label Address Validation */
-"Currently we support just the United States from mobile." = "Currently we support just the United States from mobile.";
+"Currently we support just the United States from mobile." = "لا ندعم في الوقت الحالي سوى الولايات المتحدة من الهاتف المحمول.";
 
 /* Name of the section for custom shipment tracking carriers */
 "Custom" = "مخصص";
@@ -1058,7 +1062,7 @@
 "Error previewing shipping label" = "حدث خطأ في أثناء معاينة ملصق الشحن";
 
 /* Notice displayed when the label purchase fails */
-"Error purchasing the label" = "Error purchasing the label";
+"Error purchasing the label" = "حدث خطأ في أثناء شراء الملصق";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -1305,6 +1309,13 @@
 /* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} Parameters: %1$@ - order number, %2$@ - store name */
 "In-Person Payment for Order #%1$@ for %2$@" = "الدفع بشكل شخصي للطلب رقم %1$@ for %2$@";
 
+/* Navigates to In-Person Payments screen
+   Title for the In-Person Payments settings screen */
+"In-Person Payments" = "المدفوعات الشخصية";
+
+/* Title for the error screen when In-Person Payments is unavailable */
+"In-Person Payments is currently unavailable" = "المدفوعات الشخصية غير متاحة في الوقت الحالي";
+
 /* Application's Inactive State */
 "Inactive" = "غير نشط";
 
@@ -1423,6 +1434,9 @@
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
 "Learn more about creating labels with your phone" = "معرفة المزيد عن إنشاء ملصقات باستخدام هاتفك";
+
+/* Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
+"Learn more about roles and permissions" = "معرفة المزيد حول الرُتب والصلاحيات";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "قانوني (8.5 × 14 بوصة)";
@@ -1825,9 +1839,6 @@
    Order Total label for payment view */
 "Order Total" = "إجمالي الطلبات";
 
-/* Order fulfillment success notice */
-"Order marked as fulfilled" = "تم وسم الطلب كمُنجز";
-
 /* Order status update success notice */
 "Order status updated" = "تم تحديث حالة الطلب";
 
@@ -2039,9 +2050,6 @@
 /* Button to print receipts. Presented to users after a payment has been successfully collected */
 "Print receipt" = "طباعة إيصال";
 
-/* The title of the shipping labels top banner in order details */
-"Print shipping labels from your device!" = "طباعة ملصقات الشحن من جهازك!";
-
 /* Title of in-progress modal when requesting shipping label document for printing */
 "Printing Label" = "طباعة الملصق";
 
@@ -2155,7 +2163,7 @@
 "Purchase note" = "ملحوظة الشراء";
 
 /* Title of the in-progress UI while purchasing a shipping label */
-"Purchasing Label" = "Purchasing Label";
+"Purchasing Label" = "شراء ملصق";
 
 /* Quantity abbreviation for section title */
 "QTY" = "الكمية";
@@ -2294,15 +2302,15 @@
 /* VoiceOver accessibility hint, informing the user the button can be used to search products. */
 "Retrieves a list of products that contain a given keyword." = "يسترد قائمة المنتجات التي تحتوي على كلمة أساسية معيَّنة.";
 
-/* Retry Action
-   Retry the last action */
+/* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
+   Retry Action - Retry the last action */
 "Retry" = "إعادة المحاولة";
 
 /* Revenue stat label on dashboard. */
 "Revenue" = "الإيراد";
 
 /* Title of Review Order screen */
-"Review Order" = "Review Order";
+"Review Order" = "مراجعة الطلب";
 
 /* Review moderation success notice message. It reads: Review marked as {new status} */
 "Review marked as %@" = "Review marked as %@";
@@ -2356,7 +2364,7 @@
 "Save as draft" = "حفظ كمسودة";
 
 /* Button title to save a shipping label to print later */
-"Save for Later" = "Save for Later";
+"Save for Later" = "حفظ لوقت لاحق";
 
 /* Message text in the shipping label creation info screen */
 "Save time and money by fulfilling with WooCommerce Shipping" = "ادخر الوقت والمال عن طريق الالتزام بالشحن عبر WooCommerce";
@@ -2494,7 +2502,7 @@
 "Shipping" = "الشحن";
 
 /* Shipping Address title for customer info section */
-"Shipping Address" = "Shipping Address";
+"Shipping Address" = "عنوان الشحن";
 
 /* Title of shipping carrier and rates in shipping label details
    Title of the cell Shipping Carrier inside Create Shipping Label form */
@@ -2526,7 +2534,7 @@
 "Shipping label order summary" = "ملخص طلبات ملصق الشحن";
 
 /* Header text when printing a newly purchased shipping label */
-"Shipping label purchased!" = "Shipping label purchased!";
+"Shipping label purchased!" = "تم شراء ملصق الشحن!";
 
 /* VoiceOver accessibility label for the shipping notice about the order */
 "Shipping notice about the order" = "إشعار الشحن حول الطلب";
@@ -2921,7 +2929,7 @@
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "شهادة هذا الخادم غير صالحة. قد تكون مرتبطًا بخادم يبدو &quot;%@&quot; والذي قد يجعل معلوماتك السرية في خطر.\n\nهل تريد أن تثق في الشهادة على أية حال؟";
 
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
-"The customer will receive an email once order is completed" = "The customer will receive an email once order is completed";
+"The customer will receive an email once order is completed" = "سيتلقى العميل بريدًا إلكترونيًا بمجرد اكتمال الطلب";
 
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "رقم الهاتف غير صالح، أو يتعذر عليك الاتصال بالعميل من هذا الجهاز.";
@@ -3000,6 +3008,9 @@
 
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "يتطلب هذا التطبيق تثبيت WooCommerce 3.5 على خادمك، ولن يعمل بشكل سليم من دونه. يمكنك التحديث في أقرب وقت ممكن للاستمرار في استخدام هذا التطبيق.";
+
+/* Message explaining more detail on why the user's role is incorrect. */
+"This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "يدعم هذا التطبيق رُتب أعضاء المسؤول ومدير المتجر فقط. يرجى الاتصال بمالك مخزنك لترقية رتبتك.";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "عنوان البريد الإلكتروني هذا غير مسجَّل على وردبرس. كوم.";
@@ -3175,7 +3186,7 @@
 "Unable to delete tracking for order #%1$d" = "يتعذر حذف تعقب الطلب رقم ⁦%1$d⁩";
 
 /* Unable to fetch countries action failed in Shipping Label Form */
-"Unable to fetch countries." = "Unable to fetch countries.";
+"Unable to fetch countries." = "يتعذر إحضار البلدان.";
 
 /* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
 "Unable to fulfill order #%1$d" = "يتعذر تنفيذ الطلب رقم ⁦%1$d⁩";
@@ -3203,6 +3214,9 @@
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "يتعذر تحديث القائمة";
+
+/* An error message shown when failing to retrieve information about user roles, before letting the user in to manage the store. */
+"Unable to retrieve user roles." = "يتعذر استرداد رتب الأعضاء.";
 
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
 "Unable to save changes to the payment method" = "يتعذر حفظ التغييرات على طريقة الدفع";
@@ -3419,9 +3433,6 @@
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Watch your audience grow with in-depth analytics." = "شاهد جمهورك يتزايد من خلال التحليلات المتعمقة.";
 
-/* The info of the shipping labels top banner in order details */
-"We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "نحن نعمل على تسهيل طباعة ملصقات الشحن مباشرة من جهازك! في الوقت الحالي، إذا أنشأتَ ملصقات لهذا الطلب في مسؤول مخزنك باستخدام WooCommerce Shipping، فيمكنك طباعتها في تفاصيل طلبك هنا.";
-
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "نعمل على تسهيل اطلاعك على الوظائف الإضافية للمنتج مباشرةً من جهازك! في الوقت الحالي، ستتمكن من الاطلاع على الوظائف الإضافية لطلباتك. يمكنك إنشاء هذه الوظائف الإضافية وتحريرها في لوحة تحكم الويب الخاصة بك.";
 
@@ -3448,6 +3459,9 @@
 
 /* Banner caption in Shipping Label Address Validation when the destination address can't be verified. */
 "We were unable to automatically verify the shipping address. View on Apple Maps or try contacting the customer to make sure the address is correct." = "تعذر علينا التحقُّق من عنوان الشحن تلقائيًا. اعرضه على خرائط Apple أو حاول الاتصال بالعميل للتأكُّد من صحة العنوان.";
+
+/* Banner caption in Shipping Label Address Validation when the destination address can't be verified and no customer phone number is found. */
+"We were unable to automatically verify the shipping address. View on Apple Maps to make sure the address is correct." = "تعذر علينا التحقُّق من عنوان الشحن تلقائيًا. اعرضه على خرائط Apple للتأكُّد من صحة العنوان.";
 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "يتعذر علينا إرسال بريد إلكتروني في هذا الوقت. يُرجى المحاولة مرة أخرى لاحقًا.";
@@ -3545,14 +3559,23 @@
 /* Yesterday Section Header */
 "Yesterday" = "أمس";
 
+/* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
+"You are not authorized to access this store." = "إنك غير معتمد للوصول إلى هذا المخزن.";
+
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "يمكنك تحرير وظائف المنتج الإضافية في لوحة تحكم الويب.";
 
 /* The info of the top banner on the Products tab. */
 "You can now create and manage product variations!" = "يمكنك الآن إنشاء أنواع المنتجات وإدارتها!";
 
+/* The info of the shipping labels top banner in order details */
+"You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "يمكنك الآن إنشاء ملصقات شحن لجميع الطلبات المادية مباشرةً من جهازك باستخدام إضافة الشحن المجانية عبر WooCommerce. اضغط على \"إنشاء ملصق شحن\" لتجربة ميزة بيتا الخاصة بنا في المستقبل!";
+
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "يمكنك طلب استرداد أموال بطاقة الشحن التي لم يتم استخدامها لشحن طرد.\nسيستغرق الأمر 14 يومًا على الأقل للمعالجة.";
+
+/* Generic error message when In-Person Payments is unavailable */
+"You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "لا يزال بإمكانك قبول المدفوعات النقدية الشخصية عن طريق تمكين طريقة الدفع \"الدفع عند الاستلام\" على مخزنك.";
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "لا يمكنك استخدام عنوان البريد الإلكتروني هذا للتسجيل. تواجهنا مشكلات مع العناوين التي تحظر البريد الإلكتروني لدينا. يُرجى استخدام مزود بريد إلكتروني آخر.";
@@ -3615,6 +3638,9 @@
 
 /* Customer note, wrapped in quotes */
 "“%@”" = "\"%@\"";
+
+/* Success notice when tapping Mark Order Complete on Review Order screen */
+"🎉 Order Completed" = "🎉 تم اكتمال الطلب";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "تم استرداد أموال 🎉 من المنتجات بنجاح";

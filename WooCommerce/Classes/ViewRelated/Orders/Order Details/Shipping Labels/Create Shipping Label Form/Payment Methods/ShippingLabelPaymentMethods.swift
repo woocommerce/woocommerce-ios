@@ -63,6 +63,7 @@ struct ShippingLabelPaymentMethods: View {
                                                                               viewModel.storeOwnerUsername,
                                                                               viewModel.storeOwnerWPcomEmail),
                                       isOn: $viewModel.isEmailReceiptsEnabled)
+                        .padding(Constants.controlPadding)
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
                         .background(Color(.systemBackground))
                         .disabled(!viewModel.canEditNonpaymentSettings)
@@ -109,6 +110,7 @@ private extension ShippingLabelPaymentMethods {
 
     enum Constants {
         static let dividerPadding: CGFloat = 48
+        static let controlPadding: CGFloat = 16
         static let spacerHeight: CGFloat = 24
     }
 }

@@ -57,11 +57,13 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v7.1-whats-new"
+msgctxt "v7.3-whats-new"
 msgid ""
-"Due to popular demand, we’ve brought back the order fulfillment screen when tapping on Mark Order Complete. Thank you to everyone who reached out to let us know your interest in that functionality!\n"
+"E-mailing a note to a customer for an order with no e-mail address doesn’t make much sense – so we’re hiding that option now in that case.\n"
 "\n"
-"We’ve added initial support for creating shipping labels to the app! Want to give it a try? Install and activate the WooCommerce Shipping & Tax extension in your store. Right now, we support merchants in the USA shipping to USA addresses. We welcome your feedback!\n"
+"Some merchants mentioned to us that orders with negative prices weren’t showing up correctly. We’ve fixed that issue, and now you should feel more positive!\n"
+"\n"
+"This release also contains a bunch of tiny improvements to make your experience smoother overall. We hope you notice the love we put into our software.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

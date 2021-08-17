@@ -3,7 +3,7 @@ import Yosemite
 
 struct ShippingLabelPackageDetails: View {
     @ObservedObject private var viewModel: ShippingLabelPackageDetailsViewModel
-    @State private var showingAddPackage = false
+    @State private var showingPackageSelection = false
     @Environment(\.presentationMode) var presentation
 
     /// Completion callback
@@ -48,11 +48,11 @@ struct ShippingLabelPackageDetails: View {
                         Divider()
 
                         TitleAndValueRow(title: Localization.packageSelected, value: viewModel.selectedPackageName, selectable: true) {
-                            showingAddPackage.toggle()
+                            showingPackageSelection.toggle()
                         }
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
-                        .sheet(isPresented: $showingAddPackage, content: {
-                            ShippingLabelPackageList(viewModel: viewModel)
+                        .sheet(isPresented: $showingPackageSelection, content: {
+                            ShippingLabelPackageSelection(viewModel: viewModel)
                         })
 
                         Divider()
@@ -61,12 +61,7 @@ struct ShippingLabelPackageDetails: View {
                                              placeholder: "0",
                                              text: $viewModel.totalWeight,
                                              symbol: viewModel.weightUnit,
-                                             keyboardType: .decimalPad,
-                                             onEditingChanged: { _ in
-                                                // We don't have a Return button to track committed changes to this field,
-                                                // so if the user starts editing the field we assume it was edited.
-                                                viewModel.isPackageWeightEdited = true
-                                             })
+                                             keyboardType: .decimalPad)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
 
                         Divider()

@@ -60,10 +60,16 @@ final class ShippingLabelAddressFormViewController: UIViewController {
     init(siteID: Int64,
          type: ShipType,
          address: ShippingLabelAddress?,
+         phoneNumberRequired: Bool = false,
          validationError: ShippingLabelAddressValidationError?,
          countries: [Country],
          completion: @escaping Completion ) {
-        viewModel = ShippingLabelAddressFormViewModel(siteID: siteID, type: type, address: address, validationError: validationError, countries: countries)
+        viewModel = ShippingLabelAddressFormViewModel(siteID: siteID,
+                                                      type: type,
+                                                      address: address,
+                                                      phoneNumberRequired: phoneNumberRequired,
+                                                      validationError: validationError,
+                                                      countries: countries)
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
         switch type {
@@ -266,6 +272,9 @@ extension ShippingLabelAddressFormViewController: UITableViewDelegate {
         switch row {
         case .state:
             let states = viewModel.statesOfSelectedCountry
+            guard states.isNotEmpty else {
+                return
+            }
             let selectedState = states.first { $0.code == viewModel.address?.state }
             let command = ShippingLabelStateOfACountryListSelectorCommand(states: states, selected: selectedState)
             let listSelector = ListSelectorViewController(command: command) { [weak self] state in
@@ -273,12 +282,23 @@ extension ShippingLabelAddressFormViewController: UITableViewDelegate {
                 self?.tableView.reloadData()
             }
             show(listSelector, sender: self)
-            break
+
         case .country:
-            // The country is not editable in M2/M3 (because we support just US).
-            // It will be editable in M4 or M5.
-            let notice = Notice(title: Localization.countryNotEditable, feedbackType: .warning)
-            ServiceLocator.noticePresenter.enqueue(notice: notice)
+            guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsInternational) else {
+                let notice = Notice(title: Localization.countryNotEditable, feedbackType: .warning)
+                ServiceLocator.noticePresenter.enqueue(notice: notice)
+                return
+            }
+
+            let countries = viewModel.countries
+            let selectedCountry = countries.first { $0.code == viewModel.address?.country }
+            let command = ShippingLabelCountryListSelectorCommand(countries: countries, selected: selectedCountry)
+            let listSelector = ListSelectorViewController(command: command) { [weak self] country in
+                self?.viewModel.handleAddressValueChanges(row: .country, newValue: country?.code)
+                self?.tableView.reloadData()
+            }
+            show(listSelector, sender: self)
+
         default:
             break
         }
@@ -343,13 +363,15 @@ private extension ShippingLabelAddressFormViewController {
     }
 
     func configurePhone(cell: TitleAndTextFieldTableViewCell, row: Row) {
+        let placeholder = viewModel.phoneNumberRequired ? Localization.phoneFieldPlaceholderRequired : Localization.phoneFieldPlaceholder
         let cellViewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.phoneField,
                                                                      text: viewModel.address?.phone,
-                                                                     placeholder: Localization.phoneFieldPlaceholder,
+                                                                     placeholder: placeholder,
                                                                      state: .normal,
                                                                      keyboardType: .phonePad,
                                                                      textFieldAlignment: .leading) { [weak self] (newText) in
-            self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
+            let phone = newText?.filter { "0"..."9" ~= $0 }
+            self?.viewModel.handleAddressValueChanges(row: row, newValue: phone)
         }
         cell.configure(viewModel: cellViewModel)
     }
@@ -394,10 +416,15 @@ private extension ShippingLabelAddressFormViewController {
             errorMessage = Localization.missingState
         case .country:
             errorMessage = Localization.missingCountry
+        case .missingPhoneNumber:
+            errorMessage = Localization.missingPhoneNumber
+        case .invalidPhoneNumber:
+            errorMessage = Localization.invalidPhoneNumber
         }
 
         cell.textLabel?.text = errorMessage
         cell.textLabel?.textColor = .error
+        cell.textLabel?.numberOfLines = 0
         cell.backgroundColor = .listBackground
     }
 
@@ -426,15 +453,16 @@ private extension ShippingLabelAddressFormViewController {
     }
 
     func configureState(cell: TitleAndTextFieldTableViewCell, row: Row) {
+        let placeholder = viewModel.stateOfCountryRequired ? Localization.stateFieldPlaceholder : Localization.stateFieldPlaceholderOptional
         let cellViewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.stateField,
                                                                      text: viewModel.extendedStateName,
-                                                                     placeholder: Localization.stateFieldPlaceholder,
+                                                                     placeholder: placeholder,
                                                                      state: .normal,
                                                                      keyboardType: .default,
                                                                      textFieldAlignment: .leading) { _ in
         }
         cell.configure(viewModel: cellViewModel)
-        cell.enableTextField(false)
+        cell.enableTextField(viewModel.statesOfSelectedCountry.isEmpty)
     }
 
     func configureCountry(cell: TitleAndTextFieldTableViewCell, row: Row) {
@@ -502,6 +530,9 @@ private extension ShippingLabelAddressFormViewController {
         static let companyFieldPlaceholder = NSLocalizedString("Optional", comment: "Text field placeholder in Shipping Label Address Validation")
         static let phoneField = NSLocalizedString("Phone", comment: "Text field phone in Shipping Label Address Validation")
         static let phoneFieldPlaceholder = NSLocalizedString("Optional", comment: "Text field placeholder in Shipping Label Address Validation")
+        static let phoneFieldPlaceholderRequired = NSLocalizedString("Required",
+                                                                     comment: "Text field placeholder in Shipping Label Address Validation " +
+                                                                     "when phone number is required")
         static let addressField = NSLocalizedString("Address", comment: "Text field address in Shipping Label Address Validation")
         static let addressFieldPlaceholder = NSLocalizedString("Required", comment: "Text field placeholder in Shipping Label Address Validation")
         static let address2Field = NSLocalizedString("Address 2", comment: "Text field address 2 in Shipping Label Address Validation")
@@ -512,6 +543,10 @@ private extension ShippingLabelAddressFormViewController {
         static let postcodeFieldPlaceholder = NSLocalizedString("Required", comment: "Text field placeholder in Shipping Label Address Validation")
         static let stateField = NSLocalizedString("State", comment: "Text field state in Shipping Label Address Validation")
         static let stateFieldPlaceholder = NSLocalizedString("Required", comment: "Text field placeholder in Shipping Label Address Validation")
+        static let stateFieldPlaceholderOptional = NSLocalizedString(
+            "Optional",
+            comment: "Text field placeholder in Shipping Label Address Validation when specified country has no state"
+        )
         static let countryField = NSLocalizedString("Country", comment: "Text field country in Shipping Label Address Validation")
         static let countryFieldPlaceholder = NSLocalizedString("Required", comment: "Text field placeholder in Shipping Label Address Validation")
 
@@ -529,6 +564,12 @@ private extension ShippingLabelAddressFormViewController {
                                                     comment: "Error showed in Shipping Label Address Validation for the state field")
         static let missingCountry = NSLocalizedString("Country missing",
                                                       comment: "Error showed in Shipping Label Address Validation for the country field")
+        static let missingPhoneNumber = NSLocalizedString("A phone number is required because this shipment requires a customs form",
+                                                          comment: "Error shown in Shipping Label Origin Address validation for " +
+                                                          "phone number field for international shipment")
+        static let invalidPhoneNumber = NSLocalizedString("Custom forms require a 10-digit phone number",
+                                                          comment: "Error shown in Shipping Label Origin Address validation for " +
+                                                            "phone number when the it doesn't have expected length for international shipment.")
         static let appleMapsErrorNotice = NSLocalizedString("Error in finding the address in Apple Maps",
                                                             comment: "Error in finding the address in the Shipping Label Address Validation in Apple Maps")
         static let phoneNumberErrorNotice = NSLocalizedString("The phone number is not valid or you can't call the customer from this device.",

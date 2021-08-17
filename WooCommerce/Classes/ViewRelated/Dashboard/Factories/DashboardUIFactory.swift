@@ -9,7 +9,7 @@ protocol DashboardUI: UIViewController {
     var scrollDelegate: DashboardUIScrollDelegate? { get set }
 
     /// Called when the Dashboard should display syncing error
-    var displaySyncingErrorNotice: () -> Void { get set }
+    var displaySyncingError: () -> Void { get set }
 
     /// Called when the user pulls to refresh
     var onPullToRefresh: () -> Void { get set }

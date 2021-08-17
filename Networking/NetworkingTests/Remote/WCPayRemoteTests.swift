@@ -524,4 +524,45 @@ final class WCPayRemoteTests: XCTestCase {
 
         XCTAssertTrue(result.isFailure)
     }
+
+    /// Verifies that fetchOrderCustomer properly parses the nominal response
+    ///
+    func test_fetchOrderCustomer_properly_returns_customer() throws {
+        let remote = WCPayRemote(network: network)
+        let expectedCustomerID = "cus_0123456789abcd"
+
+        network.simulateResponse(
+            requestUrlSuffix: "payments/orders/\(sampleOrderID)/create_customer",
+            filename: "wcpay-customer"
+        )
+
+        let result: Result<WCPayCustomer, Error> = waitFor { promise in
+            remote.fetchOrderCustomer(for: self.sampleSiteID, orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(result.isSuccess)
+        let customer = try result.get()
+        XCTAssertEqual(customer.id, expectedCustomerID)
+    }
+
+    /// Verifies that fetchOrderCustomer properly handles an error response (i.e. the order does not exist)
+    ///
+    func test_fetchOrderCustomer_properly_handles_error_response() throws {
+        let remote = WCPayRemote(network: network)
+
+        network.simulateResponse(
+            requestUrlSuffix: "payments/orders/\(sampleOrderID)/create_customer",
+            filename: "wcpay-customer-error"
+        )
+
+        let result: Result<WCPayCustomer, Error> = waitFor { promise in
+            remote.fetchOrderCustomer(for: self.sampleSiteID, orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(result.isFailure)
+    }
 }

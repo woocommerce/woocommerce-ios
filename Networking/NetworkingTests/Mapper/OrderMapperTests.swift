@@ -278,6 +278,18 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(fee.taxes, [])
         XCTAssertEqual(fee.attributes, [])
     }
+
+    func test_order_line_item_attributes_handle_unexpected_formatted_attributes() throws {
+        // Given
+        let order = try XCTUnwrap(mapLoadOrderWithFaultyAttributesResponse())
+
+        // When
+        let attributes = try XCTUnwrap(order.items.first?.attributes)
+
+        // Then
+        let expectedAttributes = [OrderItemAttribute(metaID: 3665, name: "Required Weight (kg)", value: "2.3")]
+        assertEqual(attributes, expectedAttributes)
+    }
 }
 
 
@@ -323,6 +335,13 @@ private extension OrderMapperTests {
     ///
     func mapLoadOrderWithLineItemAttributesResponse() -> Order? {
         return mapOrder(from: "order-with-line-item-attributes")
+    }
+
+    /// Returns the OrderMapper output upon receiving `order-with-faulty-attributes`
+    /// Where the `value` to `_measurement_data` is not a `string` but a `JSON object`
+    ///
+    func mapLoadOrderWithFaultyAttributesResponse() -> Order? {
+        return mapOrder(from: "order-with-faulty-attributes")
     }
 
     /// Returns the OrderMapper output upon receiving `order-with-line-item-attributes-before-API-support`

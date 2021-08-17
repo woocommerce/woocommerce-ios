@@ -1,3 +1,5 @@
-Yaygın talepler doğrultusunda, Siparişi Tamamlandı Olarak İşaretle seçeneğine dokunduğunuzda görüntülenen sipariş tamamlandı ekranını geri getirdik. Bu özelliğe duyduğu ilgiyi bizlere ulaşarak gösteren herkese teşekkür ederiz!
+ABD'deki müşterileri için gönderim etiketleri oluşturmak isteyen ABD'deki satıcılar bazı küçük iyileştirmeler bulacaklar. Henüz uygulamadan etiket yazdırmıyorsanız, sitenize WooCommerce Gönderim ve Vergi uzantısını yükleyerek başlayın.
 
-Gönderim etiketlerinin oluşturulması işlemi için uygulamaya ilk desteği ekledik! Bu özelliği denemek ister misiniz? Dükkanınızda WooCommerce Shipping & Tax uzantısını indirerek etkinleştirin. Şu anda, yalnızca ABD adreslerine satış yapan ABD'deki satıcıları destekliyoruz. Geri bildirimleriniz bizim için değerli!
+Ayrıca uygulamanın farklı ekran boyutlarında ve telefon tiplerindeki görünme biçimini de ele aldık. Özellikle iPad'lerde fark edilen bir dizi küçük ama anlamlı görsel sorunu düzelttik.
+
+Her zaman olduğu gibi, uygulama hakkındaki görüşlerinizi bekliyoruz. Uygulamada Mağazam sekmesindeki Ayarlar altından bize ulaşın.

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-07-22 09:54:03+0000 */
+/* Translation-Revision-Date: 2021-08-05 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -168,7 +168,7 @@
 "3" = "3";
 
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
-"99+" = "99 筆以上";
+"99+" = "99+";
 
 /* A label prompting users to learn more about card readers with an embedded hyperlink */
 "<a href=\"https:\/\/woocommerce.com\/payments\">Learn more<\/a> about accepting payments with your mobile device and ordering card readers" = "<a href=\"https:\/\/woocommerce.com\/payments\">瞭解更多<\/a>有關使用行動裝置接受付款及訂購讀卡機的資訊";
@@ -631,7 +631,8 @@
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "連線至讀卡機";
 
-/* Settings > Manage Card Reader > Prompt user to connect their first reader */
+/* Settings > Manage Card Reader > Prompt user to connect their first reader
+   Settings > Manage Card Reader > Prompt user to connect their reader */
 "Connect your card reader" = "連接讀卡機";
 
 /* Link on the store picker when there are no stores available. Opens a webview about Jetpack setup. */
@@ -747,6 +748,9 @@
 /* Create Shipping Label form navigation title
    Text on the button that starts shipping label creation */
 "Create Shipping Label" = "建立運送標籤";
+
+/* The title of the shipping labels top banner in order details */
+"Create shipping labels from your device!" = "從你的裝置建立郵寄標籤！";
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "建立第一個款式";
@@ -1305,6 +1309,13 @@
 /* Message included in emailed receipts. Reads as: In-Person Payment for Order @{number} for @{store name} Parameters: %1$@ - order number, %2$@ - store name */
 "In-Person Payment for Order #%1$@ for %2$@" = "親自支付 %2$@ 訂單的 #%1$@ 費用";
 
+/* Navigates to In-Person Payments screen
+   Title for the In-Person Payments settings screen */
+"In-Person Payments" = "親自收款";
+
+/* Title for the error screen when In-Person Payments is unavailable */
+"In-Person Payments is currently unavailable" = "目前無法親自收款";
+
 /* Application's Inactive State */
 "Inactive" = "未啟用";
 
@@ -1423,6 +1434,9 @@
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
 "Learn more about creating labels with your phone" = "深入瞭解如何使用手機建立標籤";
+
+/* Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
+"Learn more about roles and permissions" = "瞭解更多有關角色和權限的資訊";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "法律文件紙 (8.5 x 14 吋)";
@@ -1825,9 +1839,6 @@
    Order Total label for payment view */
 "Order Total" = "訂單總額";
 
-/* Order fulfillment success notice */
-"Order marked as fulfilled" = "訂單標示為已履行";
-
 /* Order status update success notice */
 "Order status updated" = "已更新訂單狀態";
 
@@ -2038,9 +2049,6 @@
 
 /* Button to print receipts. Presented to users after a payment has been successfully collected */
 "Print receipt" = "列印收據";
-
-/* The title of the shipping labels top banner in order details */
-"Print shipping labels from your device!" = "從你的裝置列印郵寄標籤！";
 
 /* Title of in-progress modal when requesting shipping label document for printing */
 "Printing Label" = "列印標籤";
@@ -2294,8 +2302,8 @@
 /* VoiceOver accessibility hint, informing the user the button can be used to search products. */
 "Retrieves a list of products that contain a given keyword." = "擷取含有指定關鍵字的產品清單。";
 
-/* Retry Action
-   Retry the last action */
+/* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
+   Retry Action - Retry the last action */
 "Retry" = "重試";
 
 /* Revenue stat label on dashboard. */
@@ -3001,6 +3009,9 @@
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "此應用程式要求你在伺服器上安裝 WooCommerce 3.5，否則無法正常運作。請儘快更新以繼續使用此應用程式。";
 
+/* Message explaining more detail on why the user's role is incorrect. */
+"This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "此應用程式只支援「管理員」和「商店經理」使用者角色。 請聯絡商店擁有者以升級你的角色。";
+
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "這個電子郵件地址沒有在 WordPress.com 上註冊。";
 
@@ -3203,6 +3214,9 @@
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "無法重新整理清單";
+
+/* An error message shown when failing to retrieve information about user roles, before letting the user in to manage the store. */
+"Unable to retrieve user roles." = "無法擷取使用者角色。";
 
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
 "Unable to save changes to the payment method" = "無法儲存付款方式變更";
@@ -3419,9 +3433,6 @@
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Watch your audience grow with in-depth analytics." = "透過深入分析資料拓展讀者群。";
 
-/* The info of the shipping labels top banner in order details */
-"We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "我們致力讓你以更輕鬆的方式直接從裝置列印郵寄標籤！ 如果你已經使用 WooCommerce Shipping 在商店管理員中為訂單建立標籤，就可以在此處的「訂單詳細資料」中列印。";
-
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "我們正努力讓你能更輕鬆查看裝置的產品附加元件！ 你現在可以查看訂單的附加元件。 你可以在 Web 控制台中建立和編輯這些附加元件。";
 
@@ -3448,6 +3459,9 @@
 
 /* Banner caption in Shipping Label Address Validation when the destination address can't be verified. */
 "We were unable to automatically verify the shipping address. View on Apple Maps or try contacting the customer to make sure the address is correct." = "我們無法自動驗證運送地址。 請透過 Apple 地圖檢視該地址或與客戶聯絡，確認地址正確無誤。";
+
+/* Banner caption in Shipping Label Address Validation when the destination address can't be verified and no customer phone number is found. */
+"We were unable to automatically verify the shipping address. View on Apple Maps to make sure the address is correct." = "我們無法自動驗證運送地址。 請檢視 Apple 地圖，確認地址是否正確。";
 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "我們目前無法寄送電子郵件給你。請稍後再試一次。";
@@ -3545,14 +3559,23 @@
 /* Yesterday Section Header */
 "Yesterday" = "昨天";
 
+/* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
+"You are not authorized to access this store." = "你沒有存取此商店的權限。";
+
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "你可以在 Web 儀表板中編輯產品附加元件。";
 
 /* The info of the top banner on the Products tab. */
 "You can now create and manage product variations!" = "現在你可以建立和管理產品款式！";
 
+/* The info of the shipping labels top banner in order details */
+"You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "你現在可以使用免費的 WooCommerce Shipping 外掛程式，直接從你的裝置為所有實體訂單建立郵寄標籤。 點選「建立郵寄標籤」，開始試用搶鮮版 (Beta) 功能！";
+
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "你可以針對尚未用於運送包裹的郵寄標籤要求退款。\n需要至少 14 天來處理。";
+
+/* Generic error message when In-Person Payments is unavailable */
+"You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "你仍可採用「親自收取現金」，只要為商店啟用「貨到付款」付款方式即可。";
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "你無法使用該電子郵件地址註冊。我們無法使用這些電子郵件地址，因為它們會阻擋我們的某些郵件。請使用其他電子郵件供應商。";
@@ -3615,6 +3638,9 @@
 
 /* Customer note, wrapped in quotes */
 "“%@”" = "「%@」";
+
+/* Success notice when tapping Mark Order Complete on Review Order screen */
+"🎉 Order Completed" = "🎉 已完成訂單";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 已成功退還商品款項";

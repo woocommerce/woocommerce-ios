@@ -232,6 +232,48 @@ extension OrderItemRefund {
     }
 }
 
+extension PaymentGatewayAccount {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        gatewayID: CopiableProp<String> = .copy,
+        status: CopiableProp<String> = .copy,
+        hasPendingRequirements: CopiableProp<Bool> = .copy,
+        hasOverdueRequirements: CopiableProp<Bool> = .copy,
+        currentDeadline: NullableCopiableProp<Date> = .copy,
+        statementDescriptor: CopiableProp<String> = .copy,
+        defaultCurrency: CopiableProp<String> = .copy,
+        supportedCurrencies: CopiableProp<[String]> = .copy,
+        country: CopiableProp<String> = .copy,
+        isCardPresentEligible: CopiableProp<Bool> = .copy
+    ) -> PaymentGatewayAccount {
+        let siteID = siteID ?? self.siteID
+        let gatewayID = gatewayID ?? self.gatewayID
+        let status = status ?? self.status
+        let hasPendingRequirements = hasPendingRequirements ?? self.hasPendingRequirements
+        let hasOverdueRequirements = hasOverdueRequirements ?? self.hasOverdueRequirements
+        let currentDeadline = currentDeadline ?? self.currentDeadline
+        let statementDescriptor = statementDescriptor ?? self.statementDescriptor
+        let defaultCurrency = defaultCurrency ?? self.defaultCurrency
+        let supportedCurrencies = supportedCurrencies ?? self.supportedCurrencies
+        let country = country ?? self.country
+        let isCardPresentEligible = isCardPresentEligible ?? self.isCardPresentEligible
+
+        return PaymentGatewayAccount(
+            siteID: siteID,
+            gatewayID: gatewayID,
+            status: status,
+            hasPendingRequirements: hasPendingRequirements,
+            hasOverdueRequirements: hasOverdueRequirements,
+            currentDeadline: currentDeadline,
+            statementDescriptor: statementDescriptor,
+            defaultCurrency: defaultCurrency,
+            supportedCurrencies: supportedCurrencies,
+            country: country,
+            isCardPresentEligible: isCardPresentEligible
+        )
+    }
+}
+
 extension Product {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -1011,6 +1053,33 @@ extension SitePlugin {
             requiresWPVersion: requiresWPVersion,
             requiresPHPVersion: requiresPHPVersion,
             textDomain: textDomain
+        )
+    }
+}
+
+extension SiteSetting {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        settingID: CopiableProp<String> = .copy,
+        label: CopiableProp<String> = .copy,
+        settingDescription: CopiableProp<String> = .copy,
+        value: CopiableProp<String> = .copy,
+        settingGroupKey: CopiableProp<String> = .copy
+    ) -> SiteSetting {
+        let siteID = siteID ?? self.siteID
+        let settingID = settingID ?? self.settingID
+        let label = label ?? self.label
+        let settingDescription = settingDescription ?? self.settingDescription
+        let value = value ?? self.value
+        let settingGroupKey = settingGroupKey ?? self.settingGroupKey
+
+        return SiteSetting(
+            siteID: siteID,
+            settingID: settingID,
+            label: label,
+            settingDescription: settingDescription,
+            value: value,
+            settingGroupKey: settingGroupKey
         )
     }
 }

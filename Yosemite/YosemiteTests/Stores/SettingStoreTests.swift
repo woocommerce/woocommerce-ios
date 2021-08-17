@@ -566,7 +566,8 @@ private extension SettingStoreTests {
         return SiteSetting(siteID: sampleSiteID,
                            settingID: "woocommerce_currency",
                            label: "Currency",
-                           description: "This controls what currency prices are listed at in the catalog and which currency gateways will take payments in.",
+                           settingDescription: "This controls what currency prices are listed at in the catalog"
+                            + " and which currency gateways will take payments in.",
                            value: "USD",
                            settingGroupKey: SiteSettingGroup.general.rawValue)
     }
@@ -575,7 +576,7 @@ private extension SettingStoreTests {
         return SiteSetting(siteID: sampleSiteID,
                            settingID: "woocommerce_currency",
                            label: "Currency!",
-                           description: "This controls what currency prices are listed!",
+                           settingDescription: "This controls what currency prices are listed!",
                            value: "GBP",
                            settingGroupKey: SiteSettingGroup.general.rawValue)
     }
@@ -584,7 +585,7 @@ private extension SettingStoreTests {
         return SiteSetting(siteID: sampleSiteID,
                            settingID: "woocommerce_price_thousand_sep",
                            label: "Thousand separator",
-                           description: "This sets the thousand separator of displayed prices.",
+                           settingDescription: "This sets the thousand separator of displayed prices.",
                            value: ",",
                            settingGroupKey: SiteSettingGroup.general.rawValue)
     }
@@ -593,7 +594,7 @@ private extension SettingStoreTests {
         return SiteSetting(siteID: sampleSiteID,
                            settingID: "woocommerce_price_thousand_sep",
                            label: "Thousand separator!!",
-                           description: "This sets the thousand separator!!",
+                           settingDescription: "This sets the thousand separator!!",
                            value: "~",
                            settingGroupKey: SiteSettingGroup.general.rawValue)
     }
@@ -604,7 +605,7 @@ private extension SettingStoreTests {
         return SiteSetting(siteID: sampleSiteID,
                            settingID: "woocommerce_dimension_unit",
                            label: "Dimensions unit",
-                           description: "This controls what unit you will define lengths in.",
+                           settingDescription: "This controls what unit you will define lengths in.",
                            value: "m",
                            settingGroupKey: SiteSettingGroup.product.rawValue)
     }
@@ -613,7 +614,7 @@ private extension SettingStoreTests {
         return SiteSetting(siteID: sampleSiteID,
                            settingID: "woocommerce_dimension_unit",
                            label: "Dimension Fruit",
-                           description: "This controls what fruit you will define lengths in.",
+                           settingDescription: "This controls what fruit you will define lengths in.",
                            value: "Kumquat",
                            settingGroupKey: SiteSettingGroup.product.rawValue)
     }
@@ -622,7 +623,7 @@ private extension SettingStoreTests {
         return SiteSetting(siteID: sampleSiteID,
                            settingID: "woocommerce_weight_unit",
                            label: "Weight unit",
-                           description: "This controls what unit you will define weights in.",
+                           settingDescription: "This controls what unit you will define weights in.",
                            value: "kg",
                            settingGroupKey: SiteSettingGroup.product.rawValue)
     }
@@ -631,7 +632,7 @@ private extension SettingStoreTests {
         return SiteSetting(siteID: sampleSiteID,
                            settingID: "woocommerce_weight_unit",
                            label: "Animal unit",
-                           description: "This controls what animal you will define weights in.",
+                           settingDescription: "This controls what animal you will define weights in.",
                            value: "elephants",
                            settingGroupKey: SiteSettingGroup.product.rawValue)
     }

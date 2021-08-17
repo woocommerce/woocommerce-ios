@@ -5,7 +5,7 @@ import Yosemite
 final class ShippingLabelsTopBannerFactoryTests: XCTestCase {
     func test_creating_top_banner_with_empty_shipping_labels_and_not_eligible_for_creation_returns_nil() throws {
         // Given
-        let factory = ShippingLabelsTopBannerFactory(isEligibleForShippingLabelCreation: false, shippingLabels: [])
+        let factory = ShippingLabelsTopBannerFactory(shouldShowShippingLabelCreation: false, shippingLabels: [])
 
         // When
         let topBannerView = waitFor { promise in
@@ -23,7 +23,7 @@ final class ShippingLabelsTopBannerFactoryTests: XCTestCase {
         // Given
         let refundedShippingLabel = MockShippingLabel.emptyLabel().copy(refund: .init(dateRequested: Date(), status: .pending))
         let stores = createStores(feedbackVisibilityResult: .success(true))
-        let factory = ShippingLabelsTopBannerFactory(isEligibleForShippingLabelCreation: true, shippingLabels: [refundedShippingLabel], stores: stores)
+        let factory = ShippingLabelsTopBannerFactory(shouldShowShippingLabelCreation: true, shippingLabels: [refundedShippingLabel], stores: stores)
 
         // When
         let topBannerView = waitFor { promise in
@@ -40,7 +40,7 @@ final class ShippingLabelsTopBannerFactoryTests: XCTestCase {
     func test_creating_top_banner_with_empty_shipping_labels_and_eligible_for_creation_returns_banner() throws {
         // Given)
         let stores = createStores(feedbackVisibilityResult: .success(true))
-        let factory = ShippingLabelsTopBannerFactory(isEligibleForShippingLabelCreation: true, shippingLabels: [], stores: stores)
+        let factory = ShippingLabelsTopBannerFactory(shouldShowShippingLabelCreation: true, shippingLabels: [], stores: stores)
 
         // When
         let topBannerView = waitFor { promise in
@@ -58,7 +58,7 @@ final class ShippingLabelsTopBannerFactoryTests: XCTestCase {
         // Given
         let shippingLabel = MockShippingLabel.emptyLabel().copy(refund: nil)
         let stores = createStores(feedbackVisibilityResult: .success(false))
-        let factory = ShippingLabelsTopBannerFactory(isEligibleForShippingLabelCreation: true, shippingLabels: [shippingLabel], stores: stores)
+        let factory = ShippingLabelsTopBannerFactory(shouldShowShippingLabelCreation: true, shippingLabels: [shippingLabel], stores: stores)
 
         // When
         let topBannerView = waitFor { promise in
@@ -76,7 +76,7 @@ final class ShippingLabelsTopBannerFactoryTests: XCTestCase {
         // Given
         let shippingLabel = MockShippingLabel.emptyLabel().copy(refund: nil)
         let stores = createStores(feedbackVisibilityResult: .failure(SampleError.first))
-        let factory = ShippingLabelsTopBannerFactory(isEligibleForShippingLabelCreation: true, shippingLabels: [shippingLabel], stores: stores)
+        let factory = ShippingLabelsTopBannerFactory(shouldShowShippingLabelCreation: true, shippingLabels: [shippingLabel], stores: stores)
 
         // When
         let topBannerView = waitFor { promise in
@@ -93,7 +93,7 @@ final class ShippingLabelsTopBannerFactoryTests: XCTestCase {
     func test_top_banner_has_two_actions() throws {
         // Given
         let stores = createStores(feedbackVisibilityResult: .success(true))
-        let factory = ShippingLabelsTopBannerFactory(isEligibleForShippingLabelCreation: true, shippingLabels: [], stores: stores)
+        let factory = ShippingLabelsTopBannerFactory(shouldShowShippingLabelCreation: true, shippingLabels: [], stores: stores)
 
         // When
         let topBannerView = waitFor { promise in
@@ -116,7 +116,7 @@ final class ShippingLabelsTopBannerFactoryTests: XCTestCase {
         let stores = createStores(feedbackVisibilityResult: .success(true))
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let factory = ShippingLabelsTopBannerFactory(isEligibleForShippingLabelCreation: true,
+        let factory = ShippingLabelsTopBannerFactory(shouldShowShippingLabelCreation: true,
                                                      shippingLabels: [],
                                                      stores: stores, analytics: analytics)
 
@@ -163,7 +163,7 @@ final class ShippingLabelsTopBannerFactoryTests: XCTestCase {
         }
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let factory = ShippingLabelsTopBannerFactory(isEligibleForShippingLabelCreation: true, shippingLabels: [], stores: stores, analytics: analytics)
+        let factory = ShippingLabelsTopBannerFactory(shouldShowShippingLabelCreation: true, shippingLabels: [], stores: stores, analytics: analytics)
 
         // When
         var isDismissButtonPressed = false

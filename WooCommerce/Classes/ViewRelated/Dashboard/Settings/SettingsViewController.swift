@@ -282,7 +282,7 @@ private extension SettingsViewController {
         ]
 
         // Plugins
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sitePlugins) {
+        if shouldShowPluginsSection() {
             sections.append(Section(title: pluginsTitle, rows: [.plugins], footerHeight: UITableView.automaticDimension))
         }
 
@@ -464,6 +464,12 @@ private extension SettingsViewController {
     func couldShowBetaFeaturesRow() -> Bool {
         true
     }
+
+    /// Returns `true` if the user has an `admin` role for the default store site.
+    ///
+    func shouldShowPluginsSection() -> Bool {
+        ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)
+    }
 }
 
 
@@ -538,15 +544,9 @@ private extension SettingsViewController {
     }
 
     func inPersonPaymentsWasPressed() {
-        guard let siteID = self.siteID else {
-            return
-        }
-        let action = CardPresentPaymentAction.checkOnboardingState(siteID: siteID) { [weak self] state in
-            let viewModel = InPersonPaymentsViewModel(initialState: state)
-            let viewController = InPersonPaymentsViewController(viewModel: viewModel)
-            self?.show(viewController, sender: self)
-        }
-        ServiceLocator.stores.dispatch(action)
+        let viewModel = InPersonPaymentsViewModel()
+        let viewController = InPersonPaymentsViewController(viewModel: viewModel)
+        show(viewController, sender: self)
     }
 
     func privacyWasPressed() {

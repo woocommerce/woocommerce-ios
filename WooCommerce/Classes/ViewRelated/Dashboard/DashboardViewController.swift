@@ -2,6 +2,7 @@ import UIKit
 import Gridicons
 import WordPressUI
 import Yosemite
+import SafariServices.SFSafariViewController
 
 
 // MARK: - DashboardViewController
@@ -41,17 +42,51 @@ final class DashboardViewController: UIViewController {
         return label
     }()
 
-    private lazy var stackView: UIStackView = {
+    /// A stack view to display `storeNameLabel` with additional margins
+    ///
+    private lazy var innerStackView: UIStackView = {
+        let view = UIStackView()
+        view.layoutMargins = UIEdgeInsets(top: 0, left: Constants.horizontalMargin, bottom: 0, right: Constants.horizontalMargin)
+        view.isLayoutMarginsRelativeArrangement = true
+        return view
+    }()
+
+    /// A stack view for views displayed between the navigation bar and content (e.g. store name subtitle, top banner)
+    ///
+    private lazy var headerStackView: UIStackView = {
         let view = UIStackView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .listForeground
-        view.layoutMargins = UIEdgeInsets(top: 0, left: navigationController?.navigationBar.directionalLayoutMargins.leading ?? 0, bottom: 0, right: 0)
-        view.isLayoutMarginsRelativeArrangement = true
+        view.axis = .vertical
         return view
     }()
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
     private let hiddenScrollView = UIScrollView()
+
+    /// Top banner that shows an error if there is a problem loading data
+    ///
+    private lazy var topBannerView = {
+        ErrorTopBannerFactory.createTopBanner(isExpanded: false,
+                                              expandedStateChangeHandler: {},
+                                              onTroubleshootButtonPressed: { [weak self] in
+                                                let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
+                                                self?.present(safariViewController, animated: true, completion: nil)
+                                              },
+                                              onContactSupportButtonPressed: { [weak self] in
+                                                guard let self = self else { return }
+                                                ZendeskManager.shared.showNewRequestIfPossible(from: self, with: nil)
+                                              })
+    }()
+
+    /// A spacer view to add a margin below the top banner (between the banner and dashboard UI)
+    ///
+    private lazy var spacerView: UIView = {
+        let view = UIView()
+        view.heightAnchor.constraint(equalToConstant: Constants.bannerBottomMargin).isActive = true
+        view.backgroundColor = .listBackground
+        return view
+    }()
 
     // MARK: View Lifecycle
 
@@ -96,7 +131,7 @@ private extension DashboardViewController {
 
     func configureNavigation() {
         configureTitle()
-        configureSubtitle()
+        configureHeaderStackView()
         configureNavigationItem()
     }
 
@@ -110,28 +145,37 @@ private extension DashboardViewController {
         navigationItem.title = titleName
     }
 
+    func configureHeaderStackView() {
+        configureSubtitle()
+        configureErrorBanner()
+        containerView.addSubview(headerStackView)
+        NSLayoutConstraint.activate([
+            headerStackView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            headerStackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            headerStackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor)
+        ])
+    }
+
     func configureSubtitle() {
         guard shouldShowStoreNameAsSubtitle else {
             return
         }
-        containerView.backgroundColor = .listForeground
         storeNameLabel.text = ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.title
-        stackView.addArrangedSubview(storeNameLabel)
-        containerView.addSubview(stackView)
-        NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: containerView.topAnchor),
-            stackView.leadingAnchor.constraint(equalTo: containerView.layoutMarginsGuide.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: containerView.layoutMarginsGuide.trailingAnchor)
-        ])
+        innerStackView.addArrangedSubview(storeNameLabel)
+        headerStackView.addArrangedSubview(innerStackView)
     }
 
-    func addViewBellowSubtitle(contentView: UIView) {
-        guard shouldShowStoreNameAsSubtitle else {
-            return
-        }
+    func configureErrorBanner() {
+        headerStackView.addArrangedSubviews([topBannerView, spacerView])
+        // Don't show the error banner subviews until they are needed
+        topBannerView.isHidden = true
+        spacerView.isHidden = true
+    }
+
+    func addViewBelowHeaderStackView(contentView: UIView) {
         contentView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            contentView.topAnchor.constraint(equalTo: stackView.bottomAnchor),
+            contentView.topAnchor.constraint(equalTo: headerStackView.bottomAnchor),
             contentView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
@@ -178,6 +222,20 @@ private extension DashboardViewController {
             self?.onDashboardUIUpdate(forced: forced, updatedDashboardUI: dashboardUI)
         })
     }
+
+    /// Display the error banner at the top of the dashboard content (below the site title)
+    ///
+    func showTopBannerView() {
+        topBannerView.isHidden = false
+        spacerView.isHidden = false
+    }
+
+    /// Hide the error banner
+    ///
+    func hideTopBannerView() {
+        topBannerView.isHidden = true
+        spacerView.isHidden = true
+    }
 }
 
 extension DashboardViewController: DashboardUIScrollDelegate {
@@ -190,8 +248,8 @@ extension DashboardViewController: DashboardUIScrollDelegate {
         guard shouldShowStoreNameAsSubtitle else {
             return
         }
-        storeNameLabel.isHidden = offset > stackView.frame.height
-        if offset < -stackView.frame.height {
+        storeNameLabel.isHidden = offset > headerStackView.frame.height
+        if offset < -headerStackView.frame.height {
             UIView.transition(with: storeNameLabel, duration: Constants.animationDuration,
                               options: .showHideTransitionViews,
                               animations: { [weak self] in
@@ -211,6 +269,9 @@ private extension DashboardViewController {
             reloadData(forced: forced)
         }
 
+        // Optimistically hide the error banner any time the dashboard UI updates (not just pull to refresh)
+        hideTopBannerView()
+
         // No need to continue replacing the dashboard UI child view controller if the updated dashboard UI is the same as the currently displayed one.
         guard dashboardUI !== updatedDashboardUI else {
             return
@@ -227,13 +288,13 @@ private extension DashboardViewController {
         addChild(updatedDashboardUI)
         containerView.addSubview(contentView)
         updatedDashboardUI.didMove(toParent: self)
-        addViewBellowSubtitle(contentView: contentView)
+        addViewBelowHeaderStackView(contentView: contentView)
 
         updatedDashboardUI.onPullToRefresh = { [weak self] in
             self?.pullToRefresh()
         }
-        updatedDashboardUI.displaySyncingErrorNotice = { [weak self] in
-            self?.displaySyncingErrorNotice()
+        updatedDashboardUI.displaySyncingError = { [weak self] in
+            self?.showTopBannerView()
         }
     }
 }
@@ -261,17 +322,6 @@ private extension DashboardViewController {
         ServiceLocator.analytics.track(.dashboardPulledToRefresh)
         reloadDashboardUIStatsVersion(forced: true)
     }
-
-    func displaySyncingErrorNotice() {
-        let title = NSLocalizedString("My store", comment: "My Store Notice Title for loading error")
-        let message = NSLocalizedString("Unable to load content", comment: "Load Action Failed")
-        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: title, message: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
-            self?.reloadData(forced: true)
-        }
-
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
-    }
 }
 
 // MARK: - Private Helpers
@@ -296,5 +346,7 @@ private extension DashboardViewController {
 
     enum Constants {
         static let animationDuration = 0.2
+        static let bannerBottomMargin = CGFloat(8)
+        static let horizontalMargin = CGFloat(16)
     }
 }

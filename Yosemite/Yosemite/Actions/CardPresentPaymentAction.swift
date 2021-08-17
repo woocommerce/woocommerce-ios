@@ -4,10 +4,6 @@
 import Combine
 
 public enum CardPresentPaymentAction: Action {
-    /// Checks the onboarding state for a site.
-    ///
-    case checkOnboardingState(siteID: Int64, onCompletion: (CardPresentPaymentOnboardingState) -> Void)
-
     /// Start the Card Reader discovery process.
     ///
     case startCardReaderDiscovery(siteID: Int64, onReaderDiscovered: ([CardReader]) -> Void, onError: (Error) -> Void)
@@ -29,6 +25,10 @@ public enum CardPresentPaymentAction: Action {
     /// with an array of connected readers.
     ///
     case observeConnectedReaders(onCompletion: ([CardReader]) -> Void)
+
+    /// Get a Stripe Customer for an order.
+    ///
+    case fetchOrderCustomer(siteID: Int64, orderID: Int64, onCompletion: (Result<WCPayCustomer, Error>) -> Void)
 
     /// Collected payment for an order.
     ///

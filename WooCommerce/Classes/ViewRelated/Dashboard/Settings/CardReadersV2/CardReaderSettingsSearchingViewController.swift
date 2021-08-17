@@ -1,11 +1,10 @@
 import Foundation
 import UIKit
 
-/// This view controller is used when at least one reader is known but no reader is connected.
-/// It assists the merchant in connecting to a reader and will initiate connection to a known reader automatically.
-/// If the user cancels and then resumes the search, it will still auto connect to a known reader
+/// This view controller is used when no reader is connected. It assists
+/// the merchant in connecting to a reader.
 ///
-final class CardReaderSettingsKnownViewController: UIViewController, CardReaderSettingsViewModelPresenter {
+final class CardReaderSettingsSearchingViewController: UIViewController, CardReaderSettingsViewModelPresenter {
 
     /// Main TableView
     ///
@@ -13,25 +12,23 @@ final class CardReaderSettingsKnownViewController: UIViewController, CardReaderS
 
     /// ViewModel
     ///
-    private var viewModel: CardReaderSettingsKnownViewModel?
+    private var viewModel: CardReaderSettingsSearchingViewModel?
 
     /// Table Sections to be rendered
     ///
     private var sections = [Section]()
 
-    /// Alert modal support
+    /// If we know reader(s), begin search automatically once each time this VC becomes visible
     ///
-    private lazy var modalAlerts: CardReaderSettingsAlerts = {
-        CardReaderSettingsAlerts()
-    }()
+    private var didBeginSearchAutomatically = false
 
     /// Accept our viewmodel and listen for changes on it
     ///
     func configure(viewModel: CardReaderSettingsPresentedViewModel) {
-        self.viewModel = viewModel as? CardReaderSettingsKnownViewModel
+        self.viewModel = viewModel as? CardReaderSettingsSearchingViewModel
 
         guard self.viewModel != nil else {
-            DDLogError("Unexpectedly unable to downcast to CardReaderSettingsKnownViewModel")
+            DDLogError("Unexpectedly unable to downcast to CardReaderSettingsSearchingViewModel")
             return
         }
 
@@ -39,7 +36,6 @@ final class CardReaderSettingsKnownViewController: UIViewController, CardReaderS
     }
 
     // MARK: - Overridden Methods
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -51,102 +47,57 @@ final class CardReaderSettingsKnownViewController: UIViewController, CardReaderS
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
-        /// Unlike CardReaderSettingsUnknownViewController, we know we've connected to a reader
-        /// in the past already, so immediately trigger the search
-        startReaderDiscovery()
+        maybeBeginSearchAutomatically()
     }
 
-    /// We're disappearing... stop listening to viewmodel changes to avoid a reference loop
-    /// and close any modal
-    ///
     override func viewWillDisappear(_ animated: Bool) {
         viewModel?.didUpdate = nil
-        dismissAnyModal()
+        didBeginSearchAutomatically = false
         super.viewWillDisappear(animated)
     }
 }
 
 // MARK: - View Updates
 //
-private extension CardReaderSettingsKnownViewController {
+private extension CardReaderSettingsSearchingViewController {
     func onViewModelDidUpdate() {
-        updateModal()
         updateTable()
-    }
-
-    func updateModal() {
-        guard let viewModel = viewModel else {
-            return
-        }
-
-        /// Show the new modal, if any
-        switch viewModel.viewModelState {
-        case .searching:
-            showSearchingModal()
-        case .connectingToReader:
-            showConnectingModal()
-        case .foundUnknownReader:
-            showFoundUnknownReaderModal()
-        case .searchFailure(let error):
-            showDiscoveryErrorModal(error: error)
-        case .connectionFailure(let error):
-            showConnectionErrorModal(error: error)
-        default:
-            dismissAnyModal()
-        }
+        maybeBeginSearchAutomatically()
     }
 
     func updateTable() {
         tableView.reloadData()
     }
 
-    func dismissAnyModal() {
-        modalAlerts.dismiss()
-    }
-
-    func showSearchingModal() {
-        guard let viewModel = viewModel else {
+    func maybeBeginSearchAutomatically() {
+        /// If we've already begun search automattically since this view appeared, don't do it again
+        ///
+        guard !didBeginSearchAutomatically else {
             return
         }
 
-        modalAlerts.scanningForReader(from: self, cancel: viewModel.cancelReaderDiscovery)
-    }
-
-    func showDiscoveryErrorModal(error: Error) {
-        modalAlerts.scanningFailed(from: self, error: error) { [weak self] in
-            self?.dismissAnyModal()
-        }
-    }
-
-    func showConnectionErrorModal(error: Error) {
-        // TODO add a dedicated modal for connection errors, distinct from search errors
-        modalAlerts.scanningFailed(from: self, error: error) { [weak self] in
-            self?.dismissAnyModal()
-        }
-    }
-
-    func showConnectingModal() {
-        modalAlerts.connectingToReader(from: self)
-    }
-
-    func showFoundUnknownReaderModal() {
-        guard let viewModel = viewModel else {
+        /// Make sure there is no reader connected
+        ///
+        let noReaderConnected = viewModel?.noConnectedReader == .isTrue
+        guard noReaderConnected else {
             return
         }
 
-        guard let name = viewModel.foundReaderID else {
+        /// Make sure we have a known reader
+        ///
+        let hasKnownReader = viewModel?.noKnownReader == .isFalse
+        guard hasKnownReader else {
             return
         }
 
-        modalAlerts.foundReader(from: self, name: name, connect: viewModel.connectToReader, continueSearch: viewModel.continueSearch)
+        searchAndConnect()
+        didBeginSearchAutomatically = true
     }
 }
 
 // MARK: - View Configuration
 //
-private extension CardReaderSettingsKnownViewController {
-
+private extension CardReaderSettingsSearchingViewController {
     /// Set the title.
     ///
     func configureNavigation() {
@@ -173,10 +124,6 @@ private extension CardReaderSettingsKnownViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.reloadData()
-    }
-
-    func startReaderDiscovery() {
-        viewModel?.startReaderDiscovery()
     }
 
     /// Register table cells.
@@ -211,34 +158,43 @@ private extension CardReaderSettingsKnownViewController {
     }
 
     private func configureHeader(cell: HeadlineTableViewCell) {
-        cell.headlineLabel?.text = Localization.connectYourCardReaderTitle
+        cell.configure(headline: Localization.connectYourCardReaderTitle)
         cell.backgroundColor = .systemBackground
         cell.selectionStyle = .none
     }
 
     private func configureImage(cell: ImageTableViewCell) {
-        cell.detailImageView?.image = UIImage(named: "card-reader-connect")
+        cell.configure(image: .cardReaderConnect)
         cell.backgroundColor = .systemBackground
         cell.selectionStyle = .none
     }
 
     private func configureHelpHintChargeReader(cell: NumberedListItemTableViewCell) {
-        cell.numberLabel?.text = Localization.hintOneTitle
-        cell.itemTextLabel?.text = Localization.hintOne
+        let cellViewModel = NumberedListItemTableViewCell.ViewModel(
+            itemNumber: Localization.hintOneTitle,
+            itemText: Localization.hintOne
+        )
+        cell.configure(viewModel: cellViewModel)
         cell.backgroundColor = .systemBackground
         cell.selectionStyle = .none
     }
 
     private func configureHelpHintTurnOnReader(cell: NumberedListItemTableViewCell) {
-        cell.numberLabel?.text = Localization.hintTwoTitle
-        cell.itemTextLabel?.text = Localization.hintTwo
+        let cellViewModel = NumberedListItemTableViewCell.ViewModel(
+            itemNumber: Localization.hintTwoTitle,
+            itemText: Localization.hintTwo
+        )
+        cell.configure(viewModel: cellViewModel)
         cell.backgroundColor = .systemBackground
         cell.selectionStyle = .none
     }
 
     private func configureHelpHintEnableBluetooth(cell: NumberedListItemTableViewCell) {
-        cell.numberLabel?.text = Localization.hintThreeTitle
-        cell.itemTextLabel?.text = Localization.hintThree
+        let cellViewModel = NumberedListItemTableViewCell.ViewModel(
+            itemNumber: Localization.hintThreeTitle,
+            itemText: Localization.hintThree
+        )
+        cell.configure(viewModel: cellViewModel)
         cell.backgroundColor = .systemBackground
         cell.selectionStyle = .none
    }
@@ -246,20 +202,16 @@ private extension CardReaderSettingsKnownViewController {
     private func configureButton(cell: ButtonTableViewCell) {
         let buttonTitle = Localization.connectButton
         cell.configure(title: buttonTitle) { [weak self] in
-            self?.startReaderDiscovery()
+            self?.searchAndConnect()
         }
         cell.backgroundColor = .systemBackground
         cell.selectionStyle = .none
     }
 
     private func configureLearnMore(cell: LearnMoreTableViewCell) {
-        cell.learnMoreTextView.attributedText = Localization.learnMore
-        cell.learnMoreTextView.tintColor = .textLink
-        cell.learnMoreTextView.delegate = self
-        cell.learnMoreTextView.linkTextAttributes = [
-            .foregroundColor: UIColor.textLink,
-            .underlineColor: UIColor.clear
-        ]
+        cell.configure(text: Localization.learnMore) { [weak self] url in
+            self?.urlWasPressed(url: url)
+        }
         cell.backgroundColor = .systemBackground
         cell.selectionStyle = .none
     }
@@ -271,8 +223,31 @@ private extension CardReaderSettingsKnownViewController {
 
 // MARK: - Convenience Methods
 //
-private extension CardReaderSettingsKnownViewController {
+private extension CardReaderSettingsSearchingViewController {
+    func searchAndConnect() {
+        guard let siteID = viewModel?.siteID else {
+            return
+        }
 
+        guard let knownReadersProvider = viewModel?.knownReadersProvider else {
+            return
+        }
+
+        let connectionController = CardReaderConnectionController(
+            forSiteID: siteID,
+            knownReadersProvider: knownReadersProvider
+        )
+
+        connectionController.searchAndConnect(from: self) { _ in
+            /// No need for logic here. Once connected, the connected reader will publish
+            /// through the `cardReaderAvailableSubscription`
+        }
+    }
+}
+
+// MARK: - Convenience Methods
+//
+private extension CardReaderSettingsSearchingViewController {
     func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
     }
@@ -280,7 +255,7 @@ private extension CardReaderSettingsKnownViewController {
 
 // MARK: - UITableViewDataSource Conformance
 //
-extension CardReaderSettingsKnownViewController: UITableViewDataSource {
+extension CardReaderSettingsSearchingViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
         return sections.count
@@ -314,7 +289,7 @@ extension CardReaderSettingsKnownViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate Conformance
 //
-extension CardReaderSettingsKnownViewController: UITableViewDelegate {
+extension CardReaderSettingsSearchingViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         UITableView.automaticDimension
@@ -365,20 +340,9 @@ private enum Row: CaseIterable {
     }
 }
 
-// MARK: - UITextViewDelegate Conformance
-//
-extension CardReaderSettingsKnownViewController: UITextViewDelegate {
-
-    func textView(_ textView: UITextView, shouldInteractWith URL: URL,
-                  in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        urlWasPressed(url: URL)
-        return false
-    }
-}
-
 // MARK: - Localization
 //
-private extension CardReaderSettingsKnownViewController {
+private extension CardReaderSettingsSearchingViewController {
     enum Localization {
         static let title = NSLocalizedString(
             "Manage Card Reader",
@@ -387,7 +351,7 @@ private extension CardReaderSettingsKnownViewController {
 
         static let connectYourCardReaderTitle = NSLocalizedString(
             "Connect your card reader",
-            comment: "Settings > Manage Card Reader > Prompt user to connect their reader"
+            comment: "Settings > Manage Card Reader > Prompt user to connect their first reader"
         )
 
         static let hintOneTitle = NSLocalizedString(

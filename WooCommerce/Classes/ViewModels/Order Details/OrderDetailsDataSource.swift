@@ -51,6 +51,13 @@ final class OrderDetailsDataSource: NSObject {
             hasCardPresentEligiblePaymentGatewayAccount()
     }
 
+    /// Whether the button to create shipping labels should be visible.
+    ///
+    var shouldShowShippingLabelCreation: Bool {
+        return isEligibleForShippingLabelCreation && shippingLabels.nonRefunded.isEmpty &&
+            !isEligibleForCardPresentPayment
+    }
+
     func cardPresentPaymentGatewayAccounts() -> [PaymentGatewayAccount] {
         resultsControllers.paymentGatewayAccounts.filter { $0.isCardPresentEligible }
     }
@@ -868,19 +875,19 @@ extension OrderDetailsDataSource {
 
             var rows: [Row] = Array(repeating: .aggregateOrderItem, count: aggregateOrderItemCount)
 
-            if isEligibleForShippingLabelCreation && shippingLabels.nonRefunded.isEmpty {
+            if shouldShowShippingLabelCreation {
                 rows.append(.shippingLabelCreateButton)
             }
 
             if isProcessingPayment {
-                if isEligibleForShippingLabelCreation && shippingLabels.nonRefunded.isEmpty {
+                if shouldShowShippingLabelCreation {
                     rows.append(.markCompleteButton(style: .secondary, showsBottomSpacing: false))
                     rows.append(.shippingLabelCreationInfo(showsSeparator: false))
                 } else {
                     rows.append(.markCompleteButton(style: .primary, showsBottomSpacing: true))
                 }
             } else if isRefundedStatus == false {
-                if isEligibleForShippingLabelCreation && shippingLabels.nonRefunded.isEmpty {
+                if shouldShowShippingLabelCreation {
                     rows.append(.shippingLabelCreationInfo(showsSeparator: true))
                 }
             }
@@ -965,8 +972,9 @@ extension OrderDetailsDataSource {
             if shouldShowReceipts {
                 rows.append(.seeReceipt)
             }
-
-            if !isRefundedStatus && !isEligibleForCardPresentPayment {
+            let orderTotal = Double(order.total) ?? 0
+            let isEligibleForRefund = orderTotal > 0
+            if !isRefundedStatus && !isEligibleForCardPresentPayment && isEligibleForRefund {
                 rows.append(.issueRefundButton)
             }
 

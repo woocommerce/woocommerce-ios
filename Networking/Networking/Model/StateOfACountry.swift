@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a State Entity within a Country.
 ///
-public struct StateOfACountry: Decodable, Equatable, GeneratedFakeable {
+public struct StateOfACountry: Decodable, Equatable, Hashable, GeneratedFakeable {
 
     // E.g., ON for Ontario. Note: Not always two letters.
     public let code: String

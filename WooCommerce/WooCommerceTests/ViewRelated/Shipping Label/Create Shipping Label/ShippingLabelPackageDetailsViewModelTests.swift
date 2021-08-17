@@ -192,23 +192,23 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedPackageName, "Small")
     }
 
-    func test_isPackageDetailsDoneButtonEnabled_returns_the_expected_value() {
+    func test_isPackageDetailsDoneButtonEnabled_returns_true_initially() {
         // Given
-        let order = MockOrders().empty().copy(siteID: sampleSiteID)
+        let items = [MockOrderItem.sampleItem(name: "Easter Egg", productID: 1, quantity: 0.5)]
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120"))
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageID: nil,
+                                                             selectedPackageID: "Box",
                                                              totalWeight: nil,
                                                              formatter: currencyFormatter,
-                                                             stores: stores,
                                                              storageManager: storageManager,
                                                              weightUnit: "kg")
 
-        XCTAssertFalse(viewModel.isPackageDetailsDoneButtonEnabled())
-
         // When
-        viewModel.totalWeight = "10"
         viewModel.selectedPackageID = "sample-package"
 
         // Then
@@ -217,25 +217,26 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
 
     func test_isPackageDetailsDoneButtonEnabled_returns_the_expected_value_when_the_totalWeight_is_not_valid() {
         // Given
-        let order = MockOrders().empty().copy(siteID: sampleSiteID)
+        // Given
+        let items = [MockOrderItem.sampleItem(name: "Easter Egg", productID: 1, quantity: 0.5)]
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120"))
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageID: nil,
+                                                             selectedPackageID: "Box",
                                                              totalWeight: nil,
                                                              formatter: currencyFormatter,
-                                                             stores: stores,
                                                              storageManager: storageManager,
                                                              weightUnit: "kg")
 
-        XCTAssertFalse(viewModel.isPackageDetailsDoneButtonEnabled())
-
         // When
-        viewModel.totalWeight = "0"
         viewModel.selectedPackageID = "sample-package"
 
         // Then
-        XCTAssertFalse(viewModel.isPackageDetailsDoneButtonEnabled())
+        XCTAssertTrue(viewModel.isPackageDetailsDoneButtonEnabled())
 
         // When
         viewModel.totalWeight = "0.0"
@@ -415,7 +416,6 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
 
         // When new weight is input manually
         viewModel.totalWeight = "500"
-        viewModel.isPackageWeightEdited = true
 
         // Then
         XCTAssertEqual(viewModel.totalWeight, "500")
@@ -426,6 +426,52 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.totalWeight, "500")
+    }
+
+    func test_hasCustomOrPredefinedPackages_returns_the_expected_value() {
+        // Given
+        let order = MockOrders().empty().copy(siteID: sampleSiteID)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let viewModelWithoutPackages = ShippingLabelPackageDetailsViewModel(order: order,
+                                                                            packagesResponse: nil,
+                                                                            selectedPackageID: nil,
+                                                                            totalWeight: nil,
+                                                                            formatter: currencyFormatter,
+                                                                            stores: stores,
+                                                                            storageManager: storageManager,
+                                                                            weightUnit: "kg")
+        let viewModelWithPackages = ShippingLabelPackageDetailsViewModel(order: order,
+                                                                         packagesResponse: mockPackageResponse(),
+                                                                         selectedPackageID: nil,
+                                                                         totalWeight: nil,
+                                                                         formatter: currencyFormatter,
+                                                                         stores: stores,
+                                                                         storageManager: storageManager,
+                                                                         weightUnit: "kg")
+        let viewModelWithCustomPackages = ShippingLabelPackageDetailsViewModel(order: order,
+                                                                               packagesResponse: mockPackageResponse(withCustom: true, withPredefined: false),
+                                                                               selectedPackageID: nil,
+                                                                               totalWeight: nil,
+                                                                               formatter: currencyFormatter,
+                                                                               stores: stores,
+                                                                               storageManager: storageManager,
+                                                                               weightUnit: "kg")
+        let viewModelWithPredefinedPackages = ShippingLabelPackageDetailsViewModel(order: order,
+                                                                               packagesResponse: mockPackageResponse(withCustom: false, withPredefined: true),
+                                                                               selectedPackageID: nil,
+                                                                               totalWeight: nil,
+                                                                               formatter: currencyFormatter,
+                                                                               stores: stores,
+                                                                               storageManager: storageManager,
+                                                                               weightUnit: "kg")
+
+        // Then
+        XCTAssertFalse(viewModelWithoutPackages.hasCustomOrPredefinedPackages)
+        XCTAssertTrue(viewModelWithPackages.hasCustomOrPredefinedPackages)
+        XCTAssertTrue(viewModelWithCustomPackages.hasCustomOrPredefinedPackages)
+        XCTAssertTrue(viewModelWithPredefinedPackages.hasCustomOrPredefinedPackages)
     }
 }
 
@@ -449,7 +495,7 @@ private extension ShippingLabelPackageDetailsViewModelTests {
 
 // MARK: - Mocks
 private extension ShippingLabelPackageDetailsViewModelTests {
-    func mockPackageResponse() -> ShippingLabelPackagesResponse {
+    func mockPackageResponse(withCustom: Bool = true, withPredefined: Bool = true) -> ShippingLabelPackagesResponse {
         let storeOptions = ShippingLabelStoreOptions(currencySymbol: "$",
                                                      dimensionUnit: "in",
                                                      weightUnit: "oz",
@@ -484,7 +530,9 @@ private extension ShippingLabelPackageDetailsViewModelTests {
                                                                                                                                   isLetter: true,
                                                                                                                                   dimensions: "5 x 7 x 9")])]
 
-        let packagesResponse = ShippingLabelPackagesResponse(storeOptions: storeOptions, customPackages: customPackages, predefinedOptions: predefinedOptions)
+        let packagesResponse = ShippingLabelPackagesResponse(storeOptions: storeOptions,
+                                                             customPackages: withCustom ? customPackages : [],
+                                                             predefinedOptions: withPredefined ? predefinedOptions : [])
 
         return packagesResponse
     }

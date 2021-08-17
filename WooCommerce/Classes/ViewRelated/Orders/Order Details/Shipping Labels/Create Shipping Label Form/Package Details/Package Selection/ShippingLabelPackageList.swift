@@ -4,10 +4,11 @@ import Yosemite
 struct ShippingLabelPackageList: View {
     @ObservedObject var viewModel: ShippingLabelPackageDetailsViewModel
     @Environment(\.presentationMode) var presentation
+    @State private var isShowingNewPackageCreation = false
 
     var body: some View {
         GeometryReader { geometry in
-            NavigationView {
+            VStack(spacing: 0) {
                 ScrollView {
                     LazyVStack(spacing: 0) {
                         /// Custom Packages
@@ -40,7 +41,8 @@ struct ShippingLabelPackageList: View {
                                                   subtitle: package.dimensions + " \(viewModel.dimensionUnit)",
                                                   selected: selected).onTapGesture {
                                                     viewModel.didSelectPackage(package.id)
-                                                    ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "packages_selected"])
+                                                    ServiceLocator.analytics.track(.shippingLabelPurchaseFlow,
+                                                                                   withProperties: ["state": "packages_selected"])
                                                   }
                                     .padding(.horizontal, insets: geometry.safeAreaInsets)
                                     .background(Color(.systemBackground))
@@ -59,6 +61,18 @@ struct ShippingLabelPackageList: View {
                 }, label: {
                     Text(Localization.doneButton)
                 }))
+
+                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsAddCustomPackages) {
+                    NavigationLink(destination: ShippingLabelAddNewPackage(), isActive: $isShowingNewPackageCreation) {
+                        EmptyView()
+                    }
+                    BottomButtonView(style: LinkButtonStyle(),
+                                     title: Localization.createPackageButton,
+                                     image: .plusImage,
+                                     onButtonTapped: {
+                                        self.isShowingNewPackageCreation = true
+                                     })
+                }
             }
         }
     }
@@ -70,6 +84,7 @@ private extension ShippingLabelPackageList {
         static let doneButton = NSLocalizedString("Done", comment: "Done navigation button under the Package Selected screen in Shipping Label flow")
         static let customPackageHeader = NSLocalizedString("CUSTOM PACKAGES",
                                                            comment: "Header for the Custom Packages section in Shipping Label Package listing")
+        static let createPackageButton = NSLocalizedString("Create new package", comment: "Button to create a new package in Shipping Label Package screen")
     }
 
     enum Constants {

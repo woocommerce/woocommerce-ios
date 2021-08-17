@@ -103,6 +103,12 @@ extension UIImage {
         return UIImage.gridicon(.chevronRight)
     }
 
+    /// Chevron Pointing Left
+    ///
+    static var chevronLeftImage: UIImage {
+        return UIImage.gridicon(.chevronLeft)
+    }
+
     /// Chevron Pointing Down
     ///
     static var chevronDownImage: UIImage {
@@ -354,6 +360,12 @@ extension UIImage {
         return UIImage(named: "card-reader-found")!
     }
 
+    /// Person with mobile device standing next to card reader with radio waves
+    ///
+    static var cardReaderConnect: UIImage {
+        return UIImage(named: "card-reader-connect")!
+    }
+
     /// Connecting to Card Reader, Card Reader with radio waves
     ///
     static var cardReaderConnecting: UIImage {
@@ -447,6 +459,18 @@ extension UIImage {
     ///
     static var paymentErrorImage: UIImage {
         return UIImage(named: "woo-payments-error")!
+    }
+
+    /// Payments loading
+    ///
+    static var paymentsLoading: UIImage {
+        return UIImage(named: "woo-payments-loading")!
+    }
+
+    /// Payments plugin
+    ///
+    static var paymentsPlugin: UIImage {
+        return UIImage(named: "woo-payments-plugin")!
     }
 
     /// Price Icon
@@ -588,6 +612,12 @@ extension UIImage {
 
     static var shippingLabelCreationInfoImage: UIImage {
         UIImage(named: "woo-shipping-label-creation")!
+    }
+
+    /// Globe Image
+    ///
+    static var globeImage: UIImage {
+        UIImage.gridicon(.globe)
     }
 
     /// Returns a star icon with the given size

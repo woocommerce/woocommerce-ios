@@ -44,6 +44,10 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
     ///
     private let destinationCountry: Country
 
+    var validatedCustomsForms: [ShippingLabelCustomsForm] {
+        inputViewModels.compactMap { $0.validatedCustomsForm }
+    }
+
     /// Reusing Package Details results controllers since we're interested in the same models.
     ///
     private var resultsControllers: ShippingLabelPackageDetailsResultsControllers?

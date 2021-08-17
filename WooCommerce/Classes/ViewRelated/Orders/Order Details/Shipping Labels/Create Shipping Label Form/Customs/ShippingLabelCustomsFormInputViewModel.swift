@@ -45,7 +45,25 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
 
     /// Validated customs form
     ///
-    private(set) var validatedCustomsForm: ShippingLabelCustomsForm?
+    var validatedCustomsForm: ShippingLabelCustomsForm? {
+        guard !missingContentExplanation,
+              !missingRestrictionComments,
+              !missingITNForDestination,
+              !missingITNForClassesAbove2500usd,
+              !invalidITN,
+              itemViewModels.filter({ $0.validatedItem == nil }).isEmpty else {
+            return nil
+        }
+        return ShippingLabelCustomsForm(packageID: packageID,
+                                        packageName: packageName,
+                                        contentsType: contentsType,
+                                        contentExplanation: contentExplanation,
+                                        restrictionType: restrictionType,
+                                        restrictionComments: restrictionComments,
+                                        nonDeliveryOption: returnOnNonDelivery ? .return : .abandon,
+                                        itn: itn,
+                                        items: itemViewModels.compactMap { $0.validatedItem })
+    }
 
     /// Destination country for the shipment.
     ///

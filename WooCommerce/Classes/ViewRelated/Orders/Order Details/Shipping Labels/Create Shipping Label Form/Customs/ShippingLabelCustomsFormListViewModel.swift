@@ -114,7 +114,7 @@ private extension ShippingLabelCustomsFormListViewModel {
         var updatedForms: [ShippingLabelCustomsForm] = []
 
         for form in customsForms {
-            let updatedItems = form.items.map { item -> ShippingLabelCustomsForm.Item in
+            let updatedItems = form.items.map { item -> ShippingLabelCustomsForm.Item? in
                 // Only proceed for default items.
                 // If an item has been validated, its weight should be larger than 0.
                 guard item.weight == 0 else {
@@ -126,11 +126,21 @@ private extension ShippingLabelCustomsFormListViewModel {
                     return item
                 }
 
+                // Find matching product or variation
+                let productVariation = productVariations.first(where: { $0.productVariationID == orderItem.variationID })
+                let product = products.first(where: { $0.productID == orderItem.productID })
+
+                // Exclude the item if its associating product or variation is virtual or not found.
+                if productVariation?.virtual == true || product?.virtual == true || (productVariation == nil && product == nil) {
+                    return nil
+                }
+
+                // Find weight for the item
                 let weight: Double = {
                     if orderItem.variationID > 0,
-                       let productVariation = productVariations.first(where: { $0.productVariationID == orderItem.variationID }) {
+                       let productVariation = productVariation {
                         return Double(productVariation.weight ?? "") ?? 0
-                    } else if let product = products.first(where: { $0.productID == orderItem.productID }) {
+                    } else if let product = product {
                         return Double(product.weight ?? "0") ?? 0
                     }
                     return 0
@@ -144,6 +154,7 @@ private extension ShippingLabelCustomsFormListViewModel {
                              originCountry: SiteAddress().countryCode, // Default value
                              productID: item.productID)
             }
+            .compactMap { $0 }
 
             // Append new form with updated items
             updatedForms.append(.init(packageID: form.packageID,

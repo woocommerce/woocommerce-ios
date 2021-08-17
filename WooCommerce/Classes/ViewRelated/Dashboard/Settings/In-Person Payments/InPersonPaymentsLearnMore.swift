@@ -6,15 +6,22 @@ struct InPersonPaymentsLearnMore: View {
     var body: some View {
         HStack(alignment: .center, spacing: 20) {
             Image(uiImage: .infoOutlineImage)
-                .accentColor(Color(.lightGray))
-                .frame(width: 20, height: 20)
+                .resizable()
+                .foregroundColor(Color(.lightGray))
+                .frame(width: iconSize, height: iconSize)
             AttributedText(Localization.learnMore)
-                .accentColor(Color(.textLink))
+                .font(.subheadline)
+                .attributedTextForegroundColor(Color(.textSubtle))
+                .attributedTextLinkColor(Color(.textLink))
                 .customOpenURL { url in
                     ServiceLocator.analytics.track(.cardPresentOnboardingLearnMoreTapped)
                     customOpenURL?(url)
                 }
         }
+    }
+
+    var iconSize: CGFloat {
+        UIFontMetrics(forTextStyle: .subheadline).scaledValue(for: 20)
     }
 }
 

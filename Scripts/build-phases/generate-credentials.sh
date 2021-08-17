@@ -34,7 +34,7 @@ if [ ! -f $SECRETS_PATH ]; then
     ## then copy it into place for the build.
     ##
     if [ ! -f $CREDS_OUTPUT_PATH ]; then
-        echo ">> Creating Credentials File from Template: ${CREDS_FILE_PATH}"
+        echo ">> Creating Credentials File from Template: ${CREDS_TEMPLATE_PATH}"
         cp ${CREDS_TEMPLATE_PATH} ${CREDS_OUTPUT_PATH}
     fi
 
@@ -50,7 +50,7 @@ if [ ! -f $SECRETS_PATH ]; then
     ## then copy it into place for the build.
     ##
     if [ ! -f $BASH_OUTPUT_PATH ]; then
-        echo ">> Creating Bash Secrets File from Template: ${BASH_FILE_PATH}"
+        echo ">> Creating Bash Secrets File from Template: ${BASH_INPUT_PATH}"
         cp ${BASH_INPUT_PATH} ${BASH_OUTPUT_PATH}
     fi
 

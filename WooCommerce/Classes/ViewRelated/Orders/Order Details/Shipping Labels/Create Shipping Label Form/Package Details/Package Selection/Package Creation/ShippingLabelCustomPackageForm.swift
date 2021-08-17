@@ -4,7 +4,7 @@ import SwiftUI
 struct ShippingLabelCustomPackageForm: View {
     private let safeAreaInsets: EdgeInsets
 
-    @ObservedObject private var viewModel = ShippingLabelCustomPackageFormViewModel()
+    @StateObject private var viewModel = ShippingLabelCustomPackageFormViewModel()
     @State private var showingPackageTypes = false
 
     init(safeAreaInsets: EdgeInsets) {

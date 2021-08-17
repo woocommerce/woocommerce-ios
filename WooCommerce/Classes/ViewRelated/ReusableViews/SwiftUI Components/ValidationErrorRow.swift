@@ -9,7 +9,7 @@ struct ValidationErrorRow: View {
         Text(errorMessage)
             .errorStyle()
             .padding(.horizontal, Constants.horizontalSpacing)
-            .frame(minHeight: Constants.rowHeight)
+            .frame(maxWidth: .infinity, minHeight: Constants.rowHeight, alignment: .leading)
     }
 }
 

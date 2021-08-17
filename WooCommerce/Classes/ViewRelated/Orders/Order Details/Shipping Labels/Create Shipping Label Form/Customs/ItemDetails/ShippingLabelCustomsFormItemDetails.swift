@@ -38,7 +38,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                 }
                 .background(Color(.listForeground))
 
-                VStack(alignment: .leading, spacing: 0) {
+                VStack(spacing: 0) {
                     ValidationErrorRow(errorMessage: Localization.descriptionError)
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)
@@ -60,7 +60,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                 .padding(.horizontal, insets: safeAreaInsets)
                 .background(Color(.listForeground))
 
-                VStack(alignment: .leading, spacing: 0) {
+                VStack(spacing: 0) {
                     ValidationErrorRow(errorMessage: Localization.hsTariffNumberError)
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)
@@ -88,7 +88,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                 }
                 .background(Color(.listForeground))
 
-                VStack(alignment: .leading, spacing: 0) {
+                VStack(spacing: 0) {
                     ValidationErrorRow(errorMessage: Localization.weightError)
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)
@@ -109,7 +109,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                 }
                 .background(Color(.listForeground))
 
-                VStack(alignment: .leading, spacing: 0) {
+                VStack(spacing: 0) {
                     ValidationErrorRow(errorMessage: Localization.valueError)
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)
@@ -119,7 +119,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
             .padding(.horizontal, insets: safeAreaInsets)
 
             // Origin country
-            VStack(alignment: .leading, spacing: 0) {
+            VStack(spacing: 0) {
                 VStack(spacing: 0) {
                     TitleAndValueRow(title: Localization.originTitle, value: viewModel.originCountry.name, selectable: true) {
                         isShowingCountries.toggle()
@@ -135,7 +135,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                 }
                 .background(Color(.listForeground))
 
-                VStack(alignment: .leading, spacing: 0) {
+                VStack(spacing: 0) {
                     ValidationErrorRow(errorMessage: Localization.originError)
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)
@@ -144,6 +144,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
 
                 Text(Localization.originDescription)
                     .footnoteStyle()
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, Constants.horizontalSpacing)
                     .padding(.vertical, Constants.verticalSpacing)
                     .padding(.bottom, Constants.verticalSpacing)

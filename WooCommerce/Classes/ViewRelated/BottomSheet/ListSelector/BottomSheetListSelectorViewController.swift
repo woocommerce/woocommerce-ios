@@ -78,6 +78,7 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
             command.handleSelectedChange(selected: selected)
             tableView.reloadData()
         }
+        dismiss(animated: true, completion: nil)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

@@ -41,12 +41,6 @@ class BaseScreen {
         return expectedElement.exists
     }
 
-    class func waitForLoadingIndicatorToDisappear(within timeout: TimeInterval) {
-        let networkLoadingIndicator = XCUIApplication().otherElements.deviceStatusBars.networkLoadingIndicators.element
-        let networkLoadingIndicatorDisappeared = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: networkLoadingIndicator)
-        _ = XCTWaiter.wait(for: [networkLoadingIndicatorDisappeared], timeout: timeout)
-    }
-
     /// Scroll an element into view within another element.
     /// scrollView can be a UIScrollView, or anything that subclasses it like UITableView
     ///
@@ -128,18 +122,6 @@ private extension XCUIElementQuery {
         }
 
         return self.containing(isNetworkLoadingIndicator)
-    }
-
-    var deviceStatusBars: XCUIElementQuery {
-        let deviceWidth = XCUIApplication().frame.width
-
-        let isStatusBar = NSPredicate { (evaluatedObject, _) in
-            guard let element = evaluatedObject as? XCUIElementAttributes else { return false }
-
-            return element.isStatusBar(deviceWidth)
-        }
-
-        return self.containing(isStatusBar)
     }
 }
 

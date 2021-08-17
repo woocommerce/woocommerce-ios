@@ -43,6 +43,10 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
     ///
     private(set) var itemViewModels: [ShippingLabelCustomsFormItemDetailsViewModel]
 
+    /// Whether all fields and items are validated.
+    ///
+    @Published private(set) var isFormValidated: Bool = false
+
     /// Validated customs form
     ///
     var validatedCustomsForm: ShippingLabelCustomsForm? {
@@ -98,6 +102,7 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
         self.currency = currency
         self.itemViewModels = customsForm.items.map { .init(item: $0, countries: countries, currency: currency) }
 
+        configureValidationCheck()
         resetContentExplanationIfNeeded()
         resetRestrictionCommentsIfNeeded()
     }
@@ -107,39 +112,83 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
 //
 extension ShippingLabelCustomsFormInputViewModel {
     var missingContentExplanation: Bool {
+        checkMissingContentExplanation(contentExplanation, with: contentsType)
+    }
+
+    var missingRestrictionComments: Bool {
+        checkMissingRestrictionComment(restrictionComments, with: restrictionType)
+    }
+
+    var missingITNForDestination: Bool {
+        checkMissingITNForDestination(itn)
+    }
+
+    var missingITNForClassesAbove2500usd: Bool {
+        checkMissingITNForClassesAbove2500usd(itn)
+    }
+
+    var invalidITN: Bool {
+        checkInvalidITN(itn)
+    }
+}
+
+// MARK: - Private validation helpers
+//
+private extension ShippingLabelCustomsFormInputViewModel {
+    func checkMissingContentExplanation(_ contentExplanation: String, with contentsType: ShippingLabelCustomsForm.ContentsType) -> Bool {
         if contentsType == .other, contentExplanation.isEmpty {
             return true
         }
         return false
     }
 
-    var missingRestrictionComments: Bool {
+    func checkMissingRestrictionComment(_ restrictionComment: String, with restrictionType: ShippingLabelCustomsForm.RestrictionType) -> Bool {
         if restrictionType == .other, restrictionComments.isEmpty {
             return true
         }
         return false
     }
 
-    var missingITNForDestination: Bool {
+    func checkMissingITNForDestination(_ itn: String) -> Bool {
         if itnValidationRequired && itn.isEmpty {
             return true
         }
         return false
     }
 
-    var missingITNForClassesAbove2500usd: Bool {
+    func checkMissingITNForClassesAbove2500usd(_ itn: String) -> Bool {
         if !classesAbove2500usd.isEmpty && itn.isEmpty {
             return true
         }
         return false
     }
 
-    var invalidITN: Bool {
+    func checkInvalidITN(_ itn: String) -> Bool {
         if itn.isNotEmpty,
            itn.range(of: Constants.itnRegex, options: .regularExpression, range: nil, locale: nil) == nil {
             return true
         }
         return false
+    }
+
+    func configureValidationCheck() {
+        let groupOne = $contentExplanation.combineLatest($contentsType)
+        let groupTwo = $itn.combineLatest($restrictionType, $restrictionComments)
+        groupOne.combineLatest(groupTwo)
+            .map { [weak self] groupOne, groupTwo -> Bool in
+                guard let self = self else {
+                    return false
+                }
+                let (contentExplanation, contentsType) = groupOne
+                let (itn, restrictionType, restrictionComments) = groupTwo
+                return !self.checkMissingContentExplanation(contentExplanation, with: contentsType) &&
+                    !self.checkMissingRestrictionComment(restrictionComments, with: restrictionType) &&
+                    !self.checkMissingITNForDestination(itn) &&
+                    !self.checkMissingITNForClassesAbove2500usd(itn) &&
+                    !self.checkInvalidITN(itn)
+            }
+            .removeDuplicates()
+            .assign(to: &$isFormValidated)
     }
 }
 

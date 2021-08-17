@@ -141,10 +141,6 @@ private extension XCUIElementQuery {
 
         return self.containing(isStatusBar)
     }
-
-    func first(where predicate: (XCUIElement) throws -> Bool) rethrows -> XCUIElement? {
-        return try self.allElementsBoundByIndex.first(where: predicate)
-    }
 }
 
 private extension CGFloat {

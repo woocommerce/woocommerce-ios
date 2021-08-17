@@ -512,6 +512,26 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
 
+    func test_completeUpdating_new_sale_with_nil_sale_price() {
+        // Arrange
+        let dateOnSaleStart = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-09-02T21:30:00")
+        let dateOnSaleEnd = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-09-27T21:30:00")
+        let product = Product.fake().copy(dateOnSaleStart: dateOnSaleStart, dateOnSaleEnd: dateOnSaleEnd, salePrice: nil)
+        let model = EditableProductModel(product: product)
+        let viewModel = ProductPriceSettingsViewModel(product: model)
+
+        // Act
+        let expectation = self.expectation(description: "Wait for error")
+        viewModel.completeUpdating(onCompletion: { (_, _, _, _, _, _, _) in
+            XCTFail("Completion block should not be called")
+        }, onError: { error in
+            // Assert
+            XCTAssertEqual(error, .newSaleWithEmptySalePrice)
+            expectation.fulfill()
+        })
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+    }
+
     func testCompletingUpdatingWithZeroSalePrice() {
         // Arrange
         let product = Product.fake()

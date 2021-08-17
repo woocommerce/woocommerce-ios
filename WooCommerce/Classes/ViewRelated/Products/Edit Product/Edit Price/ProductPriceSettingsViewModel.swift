@@ -44,6 +44,7 @@ protocol ProductPriceSettingsActionHandler {
 enum ProductPriceSetingsError: Error {
     case salePriceWithoutRegularPrice
     case salePriceHigherThanRegularPrice
+    case newSaleWithEmptySalePrice
 }
 
 /// Provides view data for price settings, and handles init/UI/navigation actions needed in product price settings.
@@ -236,6 +237,11 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
     // MARK: - Navigation actions
 
     func completeUpdating(onCompletion: ProductPriceSettingsViewController.Completion, onError: (ProductPriceSetingsError) -> Void) {
+        // Check if sale price was set if there is a sale to be created
+        if dateOnSaleStart != nil && dateOnSaleEnd != nil && salePrice == nil {
+            onError(.newSaleWithEmptySalePrice)
+            return
+        }
 
         // Check if the sale price is populated, and the regular price is not.
         if getDecimalPrice(salePrice) != nil, getDecimalPrice(regularPrice) == nil {

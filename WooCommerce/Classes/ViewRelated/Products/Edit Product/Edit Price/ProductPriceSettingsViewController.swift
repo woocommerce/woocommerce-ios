@@ -147,6 +147,9 @@ extension ProductPriceSettingsViewController {
                     self?.displaySalePriceWithoutRegularPriceErrorNotice()
                 case .salePriceHigherThanRegularPrice:
                     self?.displaySalePriceErrorNotice()
+                case .newSaleWithEmptySalePrice:
+                    // TODO: Handle new error state
+                    break
                 }
         })
     }

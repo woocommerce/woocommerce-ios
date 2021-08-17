@@ -52,10 +52,10 @@ struct ShippingLabelCustomsFormItemDetails: View {
             .background(Color(.listForeground))
 
             VStack(spacing: 0) {
-                // TODO: get weight unit for item ⚖️
-                TitleAndTextFieldRow(title: String(format: Localization.weightTitle, "oz"),
-                                     placeholder: Localization.weightPlaceholder,
-                                     text: $viewModel.weight)
+                TitleAndTextFieldRow(title: String(format: Localization.weightTitle, viewModel.weightUnit),
+                                     placeholder: "0",
+                                     text: $viewModel.weight,
+                                     keyboardType: .decimalPad)
                 Divider()
                     .padding(.leading, Constants.horizontalSpacing)
             }
@@ -63,10 +63,10 @@ struct ShippingLabelCustomsFormItemDetails: View {
             .background(Color(.listForeground))
 
             VStack(spacing: 0) {
-                // TODO: get value unit for item 💵
-                TitleAndTextFieldRow(title: String(format: Localization.valueTitle, "$"),
-                                     placeholder: Localization.valuePlaceholder,
-                                     text: $viewModel.value)
+                TitleAndTextFieldRow(title: String(format: Localization.valueTitle, viewModel.currency),
+                                     placeholder: "0",
+                                     text: $viewModel.value,
+                                     keyboardType: .decimalPad)
                 Divider()
                     .padding(.leading, Constants.horizontalSpacing)
             }
@@ -124,12 +124,8 @@ private extension ShippingLabelCustomsFormItemDetails {
             comment: "A label prompting users to learn more about HS Tariff Number with an embedded hyperlink in Customs screen of Shipping Label flow")
         static let weightTitle = NSLocalizedString("Weight (%1$@ per unit)",
                                                    comment: "Title for the Weight row in item details in Customs screen of Shipping Label flow")
-        static let weightPlaceholder = NSLocalizedString("Enter weight",
-                                                         comment: "Placeholder for the Weight row in item details in Customs screen of Shipping Label flow")
         static let valueTitle = NSLocalizedString("Value (%1$@ per unit)",
                                                   comment: "Title for the Value row in item details in Customs screen of Shipping Label flow")
-        static let valuePlaceholder = NSLocalizedString("Enter value",
-                                                        comment: "Title for the Value row in item details in Customs screen of Shipping Label flow")
         static let originTitle = NSLocalizedString("Origin Country",
                                                    comment: "Title for the Origin Country row in Customs screen of Shipping Label flow")
         static let originDescription = NSLocalizedString("Country where the product was manufactured or assembled",
@@ -146,7 +142,7 @@ struct ShippingLabelCustomsFormItemDetails_Previews: PreviewProvider {
                                                              originCountry: "US",
                                                              productID: 123)
 
-    static let sampleViewModel = ShippingLabelCustomsFormItemDetailsViewModel(item: sampleDetails, countries: [])
+    static let sampleViewModel = ShippingLabelCustomsFormItemDetailsViewModel(item: sampleDetails, countries: [], currency: "$")
 
     static var previews: some View {
         ShippingLabelCustomsFormItemDetails(itemNumber: 1, viewModel: sampleViewModel, safeAreaInsets: .zero)

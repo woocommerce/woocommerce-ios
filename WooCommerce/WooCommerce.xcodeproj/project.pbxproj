@@ -1228,6 +1228,7 @@
 		DE19BB1226C3811100AB70D9 /* LearnMoreRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE19BB1126C3811100AB70D9 /* LearnMoreRow.swift */; };
 		DE19BB1826C3B5C300AB70D9 /* ShippingLabelCustomsFormItemDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE19BB1726C3B5C300AB70D9 /* ShippingLabelCustomsFormItemDetails.swift */; };
 		DE19BB1A26C3B5DC00AB70D9 /* ShippingLabelCustomsFormItemDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE19BB1926C3B5DC00AB70D9 /* ShippingLabelCustomsFormItemDetailsViewModel.swift */; };
+		DE19BB1D26C6911900AB70D9 /* ShippingLabelCustomsFormListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE19BB1C26C6911900AB70D9 /* ShippingLabelCustomsFormListViewModelTests.swift */; };
 		DE1B030D268DD01A00804330 /* ReviewOrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1B030B268DD01A00804330 /* ReviewOrderViewController.swift */; };
 		DE1B030E268DD01A00804330 /* ReviewOrderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DE1B030C268DD01A00804330 /* ReviewOrderViewController.xib */; };
 		DE1B0310268EB2FB00804330 /* ReviewOrderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1B030F268EB2FB00804330 /* ReviewOrderViewModel.swift */; };
@@ -2598,6 +2599,7 @@
 		DE19BB1126C3811100AB70D9 /* LearnMoreRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnMoreRow.swift; sourceTree = "<group>"; };
 		DE19BB1726C3B5C300AB70D9 /* ShippingLabelCustomsFormItemDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormItemDetails.swift; sourceTree = "<group>"; };
 		DE19BB1926C3B5DC00AB70D9 /* ShippingLabelCustomsFormItemDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormItemDetailsViewModel.swift; sourceTree = "<group>"; };
+		DE19BB1C26C6911900AB70D9 /* ShippingLabelCustomsFormListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormListViewModelTests.swift; sourceTree = "<group>"; };
 		DE1B030B268DD01A00804330 /* ReviewOrderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewController.swift; sourceTree = "<group>"; };
 		DE1B030C268DD01A00804330 /* ReviewOrderViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReviewOrderViewController.xib; sourceTree = "<group>"; };
 		DE1B030F268EB2FB00804330 /* ReviewOrderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewModel.swift; sourceTree = "<group>"; };
@@ -4031,6 +4033,7 @@
 		4569D3F225DC1BEC00CDC3E2 /* Create Shipping Label */ = {
 			isa = PBXGroup;
 			children = (
+				DE19BB1B26C6910500AB70D9 /* Customs */,
 				4569D3F325DC1BFF00CDC3E2 /* ShippingLabelFormViewModelTests.swift */,
 				45B98E1E25DECC1C00A1232B /* ShippingLabelAddressFormViewModelTests.swift */,
 				45DB7075261623410064A6CF /* ShippingLabelPackageDetailsViewModelTests.swift */,
@@ -6054,6 +6057,14 @@
 			path = ItemDetails;
 			sourceTree = "<group>";
 		};
+		DE19BB1B26C6910500AB70D9 /* Customs */ = {
+			isa = PBXGroup;
+			children = (
+				DE19BB1C26C6911900AB70D9 /* ShippingLabelCustomsFormListViewModelTests.swift */,
+			);
+			path = Customs;
+			sourceTree = "<group>";
+		};
 		DE1B030A268DCFF200804330 /* Review Order */ = {
 			isa = PBXGroup;
 			children = (
@@ -7526,6 +7537,7 @@
 				B53B898920D450AF00EDB467 /* SessionManagerTests.swift in Sources */,
 				0279F0E2252DC4BF0098D7DE /* ProductLoaderViewControllerModelTests.swift in Sources */,
 				4552085B25829091001CF873 /* AddAttributeViewModelTests.swift in Sources */,
+				DE19BB1D26C6911900AB70D9 /* ShippingLabelCustomsFormListViewModelTests.swift in Sources */,
 				5761298B24589B84007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlusTests.swift in Sources */,
 				2667BFD7252E5DBF008099D4 /* RefundItemViewModelTests.swift in Sources */,
 				7435E59021C0162C00216F0F /* OrderNoteWooTests.swift in Sources */,

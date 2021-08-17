@@ -793,6 +793,11 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertEqual(defaultForms.first?.packageID, expectedPackageID)
         XCTAssertEqual(defaultForms.first?.items.count, 1)
         XCTAssertEqual(defaultForms.first?.items.first?.productID, expectedProductID)
+        XCTAssertEqual(defaultForms.first?.items.first?.weight, 0)
+        XCTAssertEqual(defaultForms.first?.items.first?.description, "")
+        XCTAssertEqual(defaultForms.first?.items.first?.hsTariffNumber, "")
+        XCTAssertEqual(defaultForms.first?.items.first?.value, 0)
+        XCTAssertEqual(defaultForms.first?.items.first?.originCountry, "")
     }
 }
 

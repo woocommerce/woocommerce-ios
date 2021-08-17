@@ -83,7 +83,7 @@ struct ShippingLabelCustomsFormInput: View {
 
                 VStack(spacing: 0) {
                     ValidationErrorRow(errorMessage: Localization.contentExplanationMissing)
-                        .padding(.horizontal, Constants.horizontalPadding)
+                        .background(Color(.listBackground))
                     Divider()
                         .padding(.leading, Constants.horizontalPadding)
                 }
@@ -116,7 +116,7 @@ struct ShippingLabelCustomsFormInput: View {
 
                 VStack(spacing: 0) {
                     ValidationErrorRow(errorMessage: Localization.restrictionCommentMissing)
-                        .padding(.horizontal, Constants.horizontalPadding)
+                        .background(Color(.listBackground))
                     Divider()
                         .padding(.leading, Constants.horizontalPadding)
                 }
@@ -136,7 +136,7 @@ struct ShippingLabelCustomsFormInput: View {
 
             VStack(spacing: 0) {
                 ValidationErrorRow(errorMessage: validationErrorMessageForITNRow)
-                    .padding(.horizontal, Constants.horizontalPadding)
+                    .background(Color(.listBackground))
                 Divider()
                     .padding(.leading, Constants.horizontalPadding)
             }
@@ -174,7 +174,7 @@ private extension ShippingLabelCustomsFormInput {
         static let contentExplanationPlaceholder = NSLocalizedString("Type of contents",
                                                                      comment: "Placeholder for the Content Details row " +
                                                                         "in Customs screen of Shipping Label flow")
-        static let contentExplanationMissing = NSLocalizedString("Please describe what kind of goods this package contain",
+        static let contentExplanationMissing = NSLocalizedString("Please describe what kind of goods this package contains",
                                                                  comment: "Error message for missing explanation when Content Type" +
                                                                     "is Other in Customs screen of Shipping Label flow")
         static let restrictionTypeTitle = NSLocalizedString("Restriction Type",

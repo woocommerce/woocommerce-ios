@@ -148,7 +148,7 @@ extension ProductPriceSettingsViewController {
                 case .salePriceHigherThanRegularPrice:
                     self?.displaySalePriceErrorNotice()
                 case .newSaleWithEmptySalePrice:
-                    // TODO: Handle new error state
+                    self?.displayMissingSalePriceErrorNotice()
                     break
                 }
         })
@@ -184,6 +184,19 @@ private extension ProductPriceSettingsViewController {
                                         comment: "Product price error notice message, when the sale price is higher than the regular price")
 
         let notice = Notice(title: message, feedbackType: .error)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Displays a Notice onscreen, indicating that the sale price must be set in order to create a new sale
+    ///
+    func displayMissingSalePriceErrorNotice() {
+        UIApplication.shared.currentKeyWindow?.endEditing(true)
+        let title = NSLocalizedString("Cannot Save Changes",
+                                      comment: "Product price error notice title, when the sale price was not set during a sale setup")
+        let message = NSLocalizedString("Please enter a sale price for the scheduled sale",
+                                        comment: "Product price error notice message, when the sale price was not set during a sale setup")
+
+        let notice = Notice(title: title, message: message, feedbackType: .error)
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }

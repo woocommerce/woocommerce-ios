@@ -1209,7 +1209,7 @@ extension OrderDetailsDataSource {
         static let payment = NSLocalizedString("Payment", comment: "Payment section title")
         static let notes = NSLocalizedString("Order Notes", comment: "Order notes section title")
         static let shippingLabelCreationInfoAction =
-            NSLocalizedString("Learn more about creating labels with your phone",
+            NSLocalizedString("Learn more about creating labels with your mobile device",
                               comment: "Title of button in order details > info link for creating a shipping label on the mobile device.")
         static let shippingLabelPackageFormat =
             NSLocalizedString("Package %d",
@@ -1223,7 +1223,7 @@ extension OrderDetailsDataSource {
             NSLocalizedString("%@ label refund requested",
                               comment: "Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS).")
         static let shippingLabelPrintingInfoAction =
-            NSLocalizedString("Don’t know how to print from your phone?",
+            NSLocalizedString("Don’t know how to print from your mobile device?",
                               comment: "Title of button in order details > shipping label that shows the instructions on how to print " +
                                 "a shipping label on the mobile device.")
     }

@@ -41,4 +41,8 @@ enum FeatureFlag: Int {
     /// Card-Present Payments Onboarding
     ///
     case cardPresentOnboarding
+
+    /// Editing of notes, shipping, and billing addresses.
+    ///
+    case orderEditing
 }

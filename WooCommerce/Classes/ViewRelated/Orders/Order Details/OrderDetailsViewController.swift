@@ -517,6 +517,9 @@ private extension OrderDetailsViewController {
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
         case let .viewAddOns(addOns):
             itemAddOnsButtonTapped(addOns: addOns)
+        case .editCustomerNote:
+            // TODO: Navigate to edit customer note
+            print("Edit Note Tapped")
         }
     }
 

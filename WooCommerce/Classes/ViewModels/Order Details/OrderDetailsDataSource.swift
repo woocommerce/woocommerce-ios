@@ -377,10 +377,9 @@ private extension OrderDetailsDataSource {
         cell.body = customerNote.isNotEmpty ? localizedBody : " "
         cell.selectionStyle = .none
 
-        cell.onEditTapped = orderEditingEnabled ? nil : {
-            // TODO: Fire edit note action
-            print("Edit Note Tapped")
-        }
+        cell.onEditTapped = orderEditingEnabled ? { [weak self] in
+            self?.onCellAction?(.editCustomerNote, nil)
+        } : nil
     }
 
     private func configureBillingDetail(cell: WooBasicTableViewCell) {
@@ -1432,6 +1431,7 @@ extension OrderDetailsDataSource {
         case createShippingLabel
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)
         case viewAddOns(addOns: [OrderItemAttribute])
+        case editCustomerNote
     }
 
     struct Constants {

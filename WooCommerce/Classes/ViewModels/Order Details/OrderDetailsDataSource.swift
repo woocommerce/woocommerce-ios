@@ -376,6 +376,11 @@ private extension OrderDetailsDataSource {
             customerNote)
         cell.body = customerNote.isNotEmpty ? localizedBody : " "
         cell.selectionStyle = .none
+
+        cell.onEditTapped = {
+            // TODO: Fire edit note action
+            print("Edit Note Tapped")
+        }
     }
 
     private func configureBillingDetail(cell: WooBasicTableViewCell) {

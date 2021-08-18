@@ -64,12 +64,16 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
     ///
     private let currencySymbol: String
 
+    /// Validation states of all customs forms.
+    ///
     private var customsFormValidation: [String: Bool] = [:] {
         didSet {
-            doneButtonEnabled = customsFormValidation.values.first(where: { !$0 }) == nil
+            configureDoneButton()
         }
     }
 
+    /// References to keep the Combine subscriptions alive with the class.
+    ///
     private var cancellables: Set<AnyCancellable> = []
 
     init(order: Order,

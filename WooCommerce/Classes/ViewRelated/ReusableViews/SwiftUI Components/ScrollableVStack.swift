@@ -24,7 +24,7 @@ struct ScrollableVStack<Content: View>: View {
                     content
                 }
                 .padding(24)
-                .frame(width: geometry.size.width, height: geometry.size.height)
+                .frame(minHeight: geometry.size.height)
             }
         }
     }

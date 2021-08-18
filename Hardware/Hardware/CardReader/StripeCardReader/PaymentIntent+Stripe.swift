@@ -28,7 +28,7 @@ protocol StripePaymentIntent {
     var amount: UInt { get }
     var currency: String { get }
     var metadata: [AnyHashable: Any]? { get }
-    var charges: [SCPCharge] { get }
+    var charges: [StripeTerminal.Charge] { get }
 }
 
 

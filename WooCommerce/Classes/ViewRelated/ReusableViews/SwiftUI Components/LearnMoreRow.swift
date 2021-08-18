@@ -9,7 +9,7 @@ struct LearnMoreRow: View {
             .accentColor(Color(.textLink))
             .customOpenURL(binding: $learnMoreURL)
             .padding(.horizontal, Constants.horizontalPadding)
-            .frame(minHeight: Constants.rowHeight)
+            .frame(maxWidth: .infinity, minHeight: Constants.rowHeight, alignment: .leading)
             .safariSheet(url: $learnMoreURL)
     }
 

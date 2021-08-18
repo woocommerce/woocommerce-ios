@@ -54,6 +54,14 @@ struct FootnoteStyle: ViewModifier {
     }
 }
 
+struct ErrorStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.body)
+            .foregroundColor(Color(.error))
+    }
+}
+
 // MARK: View extensions
 extension View {
     /// - Parameters:
@@ -78,5 +86,9 @@ extension View {
     ///     - isEnabled: Whether the view is enabled (to apply specific styles for disabled view)
     func footnoteStyle(_ isEnabled: Bool = true) -> some View {
         self.modifier(FootnoteStyle(isEnabled: isEnabled))
+    }
+
+    func errorStyle() -> some View {
+        self.modifier(ErrorStyle())
     }
 }

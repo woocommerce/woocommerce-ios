@@ -28,7 +28,11 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
 
     /// HS tariff number, empty if N/A.
     ///
-    @Published var hsTariffNumber: String
+    @Published var hsTariffNumber: String {
+        didSet {
+            limitHSTariffNumberLength()
+        }
+    }
 
     /// Origin country code of item.
     ///
@@ -102,10 +106,30 @@ extension ShippingLabelCustomsFormItemDetailsViewModel {
 
     var hasValidHSTariffNumber: Bool {
         if hsTariffNumber.isNotEmpty,
-           (hsTariffNumber.count != 6 ||
+           (hsTariffNumber.count != Constants.hsTariffNumberCharacterLimit ||
                 hsTariffNumber.filter({ "0"..."9" ~= $0 }).count != 6) {
             return false
         }
         return true
+    }
+}
+
+// MARK: - Helpers
+//
+private extension ShippingLabelCustomsFormItemDetailsViewModel {
+    /// Limit length HS Tariff Number to only 6 characters max.
+    ///
+    func limitHSTariffNumberLength() {
+        if hsTariffNumber.count > Constants.hsTariffNumberCharacterLimit {
+            hsTariffNumber = String(hsTariffNumber.prefix(Constants.hsTariffNumberCharacterLimit))
+        }
+    }
+}
+
+// MARK: - Subtypes
+//
+private extension ShippingLabelCustomsFormItemDetailsViewModel {
+    enum Constants {
+        static let hsTariffNumberCharacterLimit = 6
     }
 }

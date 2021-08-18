@@ -168,32 +168,31 @@ private extension ProductPriceSettingsViewController {
     /// Displays a Notice onscreen, indicating that you can't add a sale price without adding before the regular price
     ///
     func displaySalePriceWithoutRegularPriceErrorNotice() {
-        UIApplication.shared.currentKeyWindow?.endEditing(true)
         let message = NSLocalizedString("The sale price can't be added without the regular price.",
                                         comment: "Product price error notice message, when the sale price is added but the regular price is not")
-
-        let notice = Notice(title: message, feedbackType: .error)
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
+        self.displayNotice(for: message)
     }
 
     /// Displays a Notice onscreen, indicating that the sale price need to be higher than the regular price
     ///
     func displaySalePriceErrorNotice() {
-        UIApplication.shared.currentKeyWindow?.endEditing(true)
         let message = NSLocalizedString("The sale price should be lower than the regular price.",
                                         comment: "Product price error notice message, when the sale price is higher than the regular price")
-
-        let notice = Notice(title: message, feedbackType: .error)
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
+        self.displayNotice(for: message)
     }
 
     /// Displays a Notice onscreen, indicating that the sale price must be set in order to create a new sale
     ///
     func displayMissingSalePriceErrorNotice() {
-        UIApplication.shared.currentKeyWindow?.endEditing(true)
         let message = NSLocalizedString("Please enter a sale price for the scheduled sale",
                                         comment: "Product price error notice message, when the sale price was not set during a sale setup")
+        self.displayNotice(for: message)
+    }
 
+    /// Displays a Notice onscreen for a given message
+    ///
+    func displayNotice(for message: String) {
+        UIApplication.shared.currentKeyWindow?.endEditing(true)
         let notice = Notice(title: message, feedbackType: .error)
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }

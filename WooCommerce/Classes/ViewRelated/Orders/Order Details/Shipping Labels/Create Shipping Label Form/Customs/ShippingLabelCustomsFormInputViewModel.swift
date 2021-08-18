@@ -89,14 +89,14 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
 //
 extension ShippingLabelCustomsFormInputViewModel {
     var missingContentExplanation: Bool {
-        if contentsType == .other, contentExplanation.isEmpty {
+        if contentsType == .other, contentExplanation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             return true
         }
         return false
     }
 
     var missingRestrictionComments: Bool {
-        if restrictionType == .other, restrictionComments.isEmpty {
+        if restrictionType == .other, restrictionComments.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             return true
         }
         return false

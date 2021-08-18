@@ -48,7 +48,7 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
 
     /// Whether all fields are validated.
     ///
-    @Published private(set) var isItemValidated: Bool = false
+    @Published private(set) var validItem: Bool = false
 
     /// The validated tariff number to be observed by `ShippingLabelCustomsFormInputViewModel`
     /// to calculate total value for each tariff number.
@@ -161,6 +161,8 @@ private extension ShippingLabelCustomsFormItemDetailsViewModel {
         return hsTariffNumber
     }
 
+    /// Observe changes in all fields to check if everything is validated.
+    ///
     func configureValidationCheck() {
         let groupOne = $description.combineLatest($value, $weight)
         let groupTwo = $hsTariffNumber.combineLatest($originCountry)
@@ -178,13 +180,9 @@ private extension ShippingLabelCustomsFormItemDetailsViewModel {
                     self.getValidatedWeight(from: weight) != nil
             }
             .removeDuplicates()
-            .assign(to: &$isItemValidated)
+            .assign(to: &$validItem)
     }
-}
 
-// MARK: - Helpers
-//
-private extension ShippingLabelCustomsFormItemDetailsViewModel {
     /// Limit length HS Tariff Number to only 6 characters max.
     ///
     func limitHSTariffNumberLength() {

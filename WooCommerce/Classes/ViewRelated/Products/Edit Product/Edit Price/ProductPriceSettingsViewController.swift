@@ -7,6 +7,14 @@ final class ProductPriceSettingsViewController: UIViewController {
 
     @IBOutlet weak private var tableView: UITableView!
 
+    /// Product Price Settings dedicated NoticePresenter (use this here instead of ServiceLocator.noticePresenter due to modal page sheet situations)
+    ///
+    private lazy var noticePresenter: DefaultNoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
+
     private let siteID: Int64
 
     private let viewModel: ProductPriceSettingsViewModelOutput & ProductPriceSettingsActionHandler
@@ -194,7 +202,7 @@ private extension ProductPriceSettingsViewController {
     func displayNotice(for message: String) {
         UIApplication.shared.currentKeyWindow?.endEditing(true)
         let notice = Notice(title: message, feedbackType: .error)
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
+        noticePresenter.enqueue(notice: notice)
     }
 }
 

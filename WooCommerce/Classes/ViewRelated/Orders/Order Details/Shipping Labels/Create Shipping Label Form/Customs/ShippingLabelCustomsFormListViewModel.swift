@@ -66,6 +66,7 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.allCountries = countries
+        self.destinationCountry = destinationCountry
         let currencySymbol: String = {
             guard let currencyCode = CurrencySettings.CurrencyCode(rawValue: order.currency) else {
                 return ""
@@ -98,7 +99,6 @@ private extension ShippingLabelCustomsFormListViewModel {
                                                             destinationCountry: self.destinationCountry,
                                                             countries: self.allCountries,
                                                             currency: self.currencySymbol) }
- (Send destination country to customs form list view model instead of itnValidationRequired)
         })
         .assign(to: &$customsForms)
     }

@@ -521,15 +521,16 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         let viewModel = ProductPriceSettingsViewModel(product: model)
 
         // Act
-        let expectation = self.expectation(description: "Wait for error")
-        viewModel.completeUpdating(onCompletion: { (_, _, _, _, _, _, _) in
-            XCTFail("Completion block should not be called")
-        }, onError: { error in
-            // Assert
-            XCTAssertEqual(error, .newSaleWithEmptySalePrice)
-            expectation.fulfill()
-        })
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+        let result = waitFor { promise in
+            viewModel.completeUpdating { _, _, _, _, _, _, _ in
+                XCTFail("Completion block should not be called")
+            } onError: { error in
+                promise(error)
+            }
+        }
+
+        // Assert
+        XCTAssertEqual(result, .newSaleWithEmptySalePrice)
     }
 
     func testCompletingUpdatingWithZeroSalePrice() {

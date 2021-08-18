@@ -48,28 +48,6 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
     ///
     @Published private(set) var validForm: Bool = false
 
-    /// Validated customs form
-    ///
-    var validatedCustomsForm: ShippingLabelCustomsForm? {
-        guard !missingContentExplanation,
-              !missingRestrictionComments,
-              !missingITNForDestination,
-              !missingITNForClassesAbove2500usd,
-              !invalidITN,
-              itemViewModels.filter({ $0.validatedItem == nil }).isEmpty else {
-            return nil
-        }
-        return ShippingLabelCustomsForm(packageID: packageID,
-                                        packageName: packageName,
-                                        contentsType: contentsType,
-                                        contentExplanation: contentExplanation,
-                                        restrictionType: restrictionType,
-                                        restrictionComments: restrictionComments,
-                                        nonDeliveryOption: returnOnNonDelivery ? .return : .abandon,
-                                        itn: itn,
-                                        items: itemViewModels.compactMap { $0.validatedItem })
-    }
-
     /// Destination country for the shipment.
     ///
     let destinationCountry: Country
@@ -87,6 +65,10 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
     private lazy var itnValidationRequired: Bool = {
         Constants.uspsITNRequiredDestinations.contains(destinationCountry.code)
     }()
+
+    /// Validation states of all items.
+    ///
+    @Published private var itemsValidation: [Int64: Bool] = [:]
 
     /// Tariff numbers with total values above $2500.
     ///
@@ -119,7 +101,8 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
         self.currency = currency
         self.itemViewModels = customsForm.items.map { .init(item: $0, countries: countries, currency: currency) }
 
-        configureValidationCheck()
+        configureItemsValidation()
+        configureFormValidation()
         configureItemTariffNumbersAndValues()
         resetContentExplanationIfNeeded()
         resetRestrictionCommentsIfNeeded()
@@ -129,6 +112,28 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
 // MARK: - Validation
 //
 extension ShippingLabelCustomsFormInputViewModel {
+    /// Validated customs form
+    ///
+    var validatedCustomsForm: ShippingLabelCustomsForm? {
+        guard !missingContentExplanation,
+              !missingRestrictionComments,
+              !missingITNForDestination,
+              !missingITNForClassesAbove2500usd,
+              !invalidITN,
+              itemViewModels.filter({ $0.validatedItem == nil }).isEmpty else {
+            return nil
+        }
+        return ShippingLabelCustomsForm(packageID: packageID,
+                                        packageName: packageName,
+                                        contentsType: contentsType,
+                                        contentExplanation: contentExplanation,
+                                        restrictionType: restrictionType,
+                                        restrictionComments: restrictionComments,
+                                        nonDeliveryOption: returnOnNonDelivery ? .return : .abandon,
+                                        itn: itn,
+                                        items: itemViewModels.compactMap { $0.validatedItem })
+    }
+
     var missingContentExplanation: Bool {
         checkMissingContentExplanation(contentExplanation, with: contentsType)
     }
@@ -189,21 +194,36 @@ private extension ShippingLabelCustomsFormInputViewModel {
         return false
     }
 
-    func configureValidationCheck() {
+    /// Observe validation state of each item and save them by product ID.
+    ///
+    func configureItemsValidation() {
+        itemViewModels.forEach { viewModel in
+            viewModel.$validItem
+                .sink { [weak self] isValid in
+                    self?.itemsValidation[viewModel.productID] = isValid
+                }
+                .store(in: &cancellables)
+        }
+    }
+
+    /// Observe all fields and item validation states to decide validity of the form.
+    ///
+    func configureFormValidation() {
         let groupOne = $classesAbove2500usd.combineLatest($contentsType, $contentExplanation)
-        let groupTwo = $itn.combineLatest($restrictionType, $restrictionComments)
+        let groupTwo = $itn.combineLatest($restrictionType, $restrictionComments, $itemsValidation)
         groupOne.combineLatest(groupTwo)
             .map { [weak self] groupOne, groupTwo -> Bool in
                 guard let self = self else {
                     return false
                 }
                 let (classesAbove2500usd, contentsType, contentExplanation) = groupOne
-                let (itn, restrictionType, restrictionComments) = groupTwo
+                let (itn, restrictionType, restrictionComments, itemsValidation) = groupTwo
                 return !self.checkMissingContentExplanation(contentExplanation, with: contentsType) &&
                     !self.checkMissingRestrictionComment(restrictionComments, with: restrictionType) &&
                     !self.checkMissingITNForDestination(itn) &&
                     !self.checkMissingITN(itn, for: classesAbove2500usd) &&
-                    !self.checkInvalidITN(itn)
+                    !self.checkInvalidITN(itn) &&
+                    itemsValidation.values.first(where: { !$0 }) == nil
             }
             .removeDuplicates()
             .assign(to: &$validForm)

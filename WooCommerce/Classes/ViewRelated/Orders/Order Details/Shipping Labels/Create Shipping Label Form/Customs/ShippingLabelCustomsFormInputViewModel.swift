@@ -142,7 +142,7 @@ extension ShippingLabelCustomsFormInputViewModel {
     }
 
     var missingITNForClassesAbove2500usd: Bool {
-        checkMissingITNForClassesAbove2500usd(itn)
+        checkMissingITN(itn, for: classesAbove2500usd)
     }
 
     var invalidITN: Bool {
@@ -174,7 +174,7 @@ private extension ShippingLabelCustomsFormInputViewModel {
         return false
     }
 
-    func checkMissingITNForClassesAbove2500usd(_ itn: String) -> Bool {
+    func checkMissingITN(_ itn: String, for classesAbove2500usd: [String]) -> Bool {
         if classesAbove2500usd.isNotEmpty && itn.isEmpty {
             return true
         }
@@ -190,19 +190,19 @@ private extension ShippingLabelCustomsFormInputViewModel {
     }
 
     func configureValidationCheck() {
-        let groupOne = $contentExplanation.combineLatest($contentsType)
+        let groupOne = $classesAbove2500usd.combineLatest($contentsType, $contentExplanation)
         let groupTwo = $itn.combineLatest($restrictionType, $restrictionComments)
         groupOne.combineLatest(groupTwo)
             .map { [weak self] groupOne, groupTwo -> Bool in
                 guard let self = self else {
                     return false
                 }
-                let (contentExplanation, contentsType) = groupOne
+                let (classesAbove2500usd, contentsType, contentExplanation) = groupOne
                 let (itn, restrictionType, restrictionComments) = groupTwo
                 return !self.checkMissingContentExplanation(contentExplanation, with: contentsType) &&
                     !self.checkMissingRestrictionComment(restrictionComments, with: restrictionType) &&
                     !self.checkMissingITNForDestination(itn) &&
-                    !self.checkMissingITNForClassesAbove2500usd(itn) &&
+                    !self.checkMissingITN(itn, for: classesAbove2500usd) &&
                     !self.checkInvalidITN(itn)
             }
             .removeDuplicates()

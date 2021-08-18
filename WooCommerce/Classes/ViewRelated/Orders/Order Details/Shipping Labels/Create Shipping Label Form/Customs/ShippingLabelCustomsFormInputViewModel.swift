@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Yosemite
 
@@ -41,7 +42,7 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
 
     /// References of item view models.
     ///
-    private(set) var itemViewModels: [ShippingLabelCustomsFormItemDetailsViewModel]
+    let itemViewModels: [ShippingLabelCustomsFormItemDetailsViewModel]
 
     /// Whether all fields and items are validated.
     ///
@@ -87,6 +88,22 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
         Constants.uspsITNRequiredDestinations.contains(destinationCountry.code)
     }()
 
+    /// Tariff numbers with total values above $2500.
+    ///
+    @Published private var classesAbove2500usd: [String] = []
+
+    /// Keeping track of all items tariff numbers and total values to calculate `classesAbove2500usd`.
+    ///
+    private var itemTariffNumbersAndValues: [Int64: (hsTariffNumber: String, totalValue: Decimal)] = [:] {
+        didSet {
+            configureClassesAbove2500usd()
+        }
+    }
+
+    /// References to keep the Combine subscriptions alive with the class.
+    ///
+    private var cancellables: Set<AnyCancellable> = []
+
     init(customsForm: ShippingLabelCustomsForm, destinationCountry: Country, countries: [Country], currency: String) {
         self.packageID = customsForm.packageID
         self.packageName = customsForm.packageName
@@ -103,6 +120,7 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
         self.itemViewModels = customsForm.items.map { .init(item: $0, countries: countries, currency: currency) }
 
         configureValidationCheck()
+        configureItemTariffNumbersAndValues()
         resetContentExplanationIfNeeded()
         resetRestrictionCommentsIfNeeded()
     }
@@ -195,23 +213,41 @@ private extension ShippingLabelCustomsFormInputViewModel {
 // MARK: - Private helpers
 //
 private extension ShippingLabelCustomsFormInputViewModel {
+    /// Observe changes of each item's tariff number and value,
+    /// and save them by product ID.
+    ///
+    func configureItemTariffNumbersAndValues() {
+        itemViewModels.forEach { viewModel in
+            viewModel.$validatedHSTariffNumber.combineLatest(viewModel.$validatedTotalValue)
+                .sink { [weak self] number, totalValue in
+                    if let number = number, number.isNotEmpty,
+                       let totalValue = totalValue {
+                        self?.itemTariffNumbersAndValues[viewModel.productID] = (hsTariffNumber: number, totalValue: totalValue)
+                    } else {
+                        self?.itemTariffNumbersAndValues.removeValue(forKey: viewModel.productID)
+                    }
+                }
+                .store(in: &cancellables)
+        }
+    }
+
     /// Check for items and list ones with same HS Tariff Number
     /// whose values accumulate to more than $2500.
     ///
-    var classesAbove2500usd: [String: Decimal] {
-        itemViewModels
-            .filter { $0.hsTariffNumber.isNotEmpty && $0.hasValidHSTariffNumber }
+    func configureClassesAbove2500usd() {
+        classesAbove2500usd = itemTariffNumbersAndValues.values
             .reduce([String: Decimal]()) { accumulator, item in
                 var result = accumulator
-                let itemTotalValue = Decimal(Double(item.value) ?? 0) * item.quantity
                 if let currentTotal = result[item.hsTariffNumber] {
-                    result[item.hsTariffNumber] = currentTotal + itemTotalValue
+                    result[item.hsTariffNumber] = currentTotal + item.totalValue
                 } else {
-                    result[item.hsTariffNumber] = itemTotalValue
+                    result[item.hsTariffNumber] = item.totalValue
                 }
                 return result
             }
             .filter { $0.value > Constants.minimumValueRequiredForITNValidation }
+            .keys
+            .map { String($0) }
     }
 
     /// Reset content explanation if content type is not Other.

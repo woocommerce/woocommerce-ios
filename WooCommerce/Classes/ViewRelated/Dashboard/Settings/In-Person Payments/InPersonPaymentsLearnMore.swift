@@ -7,7 +7,7 @@ struct InPersonPaymentsLearnMore: View {
         HStack(alignment: .center, spacing: 20) {
             Image(uiImage: .infoOutlineImage)
                 .resizable()
-                .foregroundColor(Color(.lightGray))
+                .foregroundColor(Color(.textSubtle))
                 .frame(width: iconSize, height: iconSize)
             AttributedText(Localization.learnMore)
                 .font(.subheadline)

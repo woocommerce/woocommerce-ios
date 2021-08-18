@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ShippingLabelAddNewPackage: View {
     @Environment(\.presentationMode) var presentation
-    @ObservedObject private var viewModel = ShippingLabelAddNewPackageViewModel()
+    @StateObject private var viewModel = ShippingLabelAddNewPackageViewModel()
 
     var body: some View {
         GeometryReader { geometry in

@@ -945,7 +945,8 @@ extension OrderDetailsDataSource {
         let customerInformation: Section = {
             var rows: [Row] = []
 
-            if customerNote.isEmpty == false {
+            /// After `.orderEditing` is completed, this row should always be visible to let merchants update the customer note as required.
+            if   orderEditingEnabled || customerNote.isEmpty == false {
                 rows.append(.customerNote)
             }
 

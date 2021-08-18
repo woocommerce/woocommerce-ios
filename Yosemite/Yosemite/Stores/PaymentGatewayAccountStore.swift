@@ -34,6 +34,8 @@ public final class PaymentGatewayAccountStore: Store {
         case .loadAccounts(let siteID, let onCompletion):
             loadAccounts(siteID: siteID,
                          onCompletion: onCompletion)
+        case .fetchOrderCustomer(let siteID, let orderID, let completion):
+            fetchOrderCustomer(siteID: siteID, orderID: orderID, completion: completion)
         case .captureOrderPayment(let siteID,
                                   let orderID,
                                   let paymentIntentID,
@@ -70,6 +72,10 @@ private extension PaymentGatewayAccountStore {
                 return
             }
         }
+    }
+
+    func fetchOrderCustomer(siteID: Int64, orderID: Int64, completion: @escaping (Result<WCPayCustomer, Error>) -> Void) {
+        remote.fetchOrderCustomer(for: siteID, orderID: orderID, completion: completion)
     }
 
     func captureOrderPayment(siteID: Int64,

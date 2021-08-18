@@ -51,6 +51,7 @@
             <viewLayoutGuide key="safeArea" id="U1C-V1-Or8"/>
             <connections>
                 <outlet property="bodyLabel" destination="z0H-LC-lIr" id="eha-ch-GUr"/>
+                <outlet property="bodyLabelTrailingConstraint" destination="AuN-8r-SjX" id="vyp-5o-HQO"/>
                 <outlet property="editButton" destination="AEi-vO-v71" id="kDj-Jd-NCM"/>
                 <outlet property="headlineLabel" destination="T3S-nL-Xv3" id="ogO-Et-oBd"/>
             </connections>

@@ -6,6 +6,8 @@ final class CustomerNoteTableViewCell: UITableViewCell {
 
     @IBOutlet private weak var bodyLabel: UILabel!
 
+    @IBOutlet private weak var bodyLabelTrailingConstraint: NSLayoutConstraint!
+
     @IBOutlet private weak var editButton: UIButton!
 
     /// Headline label text
@@ -31,10 +33,13 @@ final class CustomerNoteTableViewCell: UITableViewCell {
     }
 
     /// Closure to be invoked when the edit icon is tapped
+    /// Setting a value makes the button visible and insets the body trailing constraint.
     ///
     var onEditTapped: (() -> Void)? {
         didSet {
-            editButton.isHidden = onEditTapped == nil
+            let shouldHideEditButton = onEditTapped == nil
+            editButton.isHidden = shouldHideEditButton
+            bodyLabelTrailingConstraint.constant = shouldHideEditButton ? 0 : -editButton.frame.width
         }
     }
 

@@ -377,7 +377,7 @@ private extension OrderDetailsDataSource {
         cell.body = customerNote.isNotEmpty ? localizedBody : " "
         cell.selectionStyle = .none
 
-        cell.onEditTapped = {
+        cell.onEditTapped = orderEditingEnabled ? nil : {
             // TODO: Fire edit note action
             print("Edit Note Tapped")
         }

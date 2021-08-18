@@ -237,10 +237,9 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
     // MARK: - Navigation actions
 
     func completeUpdating(onCompletion: ProductPriceSettingsViewController.Completion, onError: (ProductPriceSetingsError) -> Void) {
-        // Check if sale price was set if there is a sale to be created
-        if dateOnSaleStart != nil && dateOnSaleEnd != nil && getDecimalPrice(salePrice) == nil {
-            onError(.newSaleWithEmptySalePrice)
-            return
+
+        guard doesScheduleDateHasPrice() else {
+            return onError(.newSaleWithEmptySalePrice)
         }
 
         // Check if the sale price is populated, and the regular price is not.
@@ -251,7 +250,7 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
 
         // Check if the sale price is less of the regular price, else show an error.
         if let decimalSalePrice = getDecimalPrice(salePrice), let decimalRegularPrice = getDecimalPrice(regularPrice),
-            decimalSalePrice.compare(decimalRegularPrice) != .orderedAscending {
+           decimalSalePrice.compare(decimalRegularPrice) != .orderedAscending {
             onError(.salePriceHigherThanRegularPrice)
             return
         }
@@ -276,6 +275,13 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
         }
 
         return false
+    }
+
+    func doesScheduleDateHasPrice() -> Bool {
+        if dateOnSaleStart != nil && dateOnSaleEnd != nil {
+            return getDecimalPrice(salePrice) != nil
+        }
+        return true
     }
 }
 

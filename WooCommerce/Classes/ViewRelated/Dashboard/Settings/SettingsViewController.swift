@@ -544,8 +544,9 @@ private extension SettingsViewController {
     }
 
     func inPersonPaymentsWasPressed() {
-        let viewModel = InPersonPaymentsViewModel()
-        let viewController = InPersonPaymentsViewController(viewModel: viewModel)
+//        let viewModel = InPersonPaymentsViewModel()
+//        let viewController = InPersonPaymentsViewController(viewModel: viewModel)
+        let viewController = InPersonPaymentsTesterViewController()
         show(viewController, sender: self)
     }
 

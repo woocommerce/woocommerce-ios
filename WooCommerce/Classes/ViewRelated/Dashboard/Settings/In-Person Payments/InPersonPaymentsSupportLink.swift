@@ -5,7 +5,8 @@ struct InPersonPaymentsSupportLink: View {
 
     var body: some View {
         AttributedText(supportAttributedString)
-            .accentColor(Color(.textLink))
+            .attributedTextForegroundColor(Color(.text))
+            .attributedTextLinkColor(Color(.textLink))
     }
 
     private var supportAttributedString: NSAttributedString {

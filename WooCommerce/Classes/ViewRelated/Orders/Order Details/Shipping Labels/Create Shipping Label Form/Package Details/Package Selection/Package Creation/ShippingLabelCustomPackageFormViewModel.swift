@@ -1,4 +1,5 @@
 import SwiftUI
+import Yosemite
 
 /// View model for `ShippingLabelCustomPackageForm`.
 ///
@@ -35,6 +36,26 @@ final class ShippingLabelCustomPackageFormViewModel: ObservableObject {
     ///
     @Published var emptyPackageWeight: String
 
+    /// Validated custom package
+    ///
+    private var validatedCustomPackage: ShippingLabelCustomPackage? {
+        guard hasValidName,
+              hasValidDimension(packageLength),
+              hasValidDimension(packageWidth),
+              hasValidDimension(packageHeight),
+              let boxWeight = validatedWeight else {
+            return nil
+        }
+        let isLetter = packageType == .letter
+        let dimensions = "\(packageLength) x \(packageWidth) x \(packageHeight)"
+        return ShippingLabelCustomPackage(isUserDefined: true,
+                                          title: packageName,
+                                          isLetter: isLetter,
+                                          dimensions: dimensions,
+                                          boxWeight: boxWeight,
+                                          maxWeight: 0)
+    }
+
     init(lengthUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit,
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
          packageName: String = "",
@@ -54,6 +75,29 @@ final class ShippingLabelCustomPackageFormViewModel: ObservableObject {
     }
 }
 
+// MARK: - Validation
+extension ShippingLabelCustomPackageFormViewModel {
+    var hasValidName: Bool {
+        packageName.trimmingCharacters(in: .whitespacesAndNewlines).isNotEmpty
+    }
+
+    /// Validates that a text field contains a string with Double value greater than 0
+    /// - Parameter dimension: Text field containing the string to validate
+    ///
+    func hasValidDimension(_ dimension: String) -> Bool {
+        let numericDimension = Double(dimension) ?? 0
+        return numericDimension > 0
+    }
+
+    var validatedWeight: Double? {
+        guard let numericWeight = Double(emptyPackageWeight), numericWeight >= 0 else {
+            return nil
+        }
+        return numericWeight
+    }
+}
+
+// MARK: - Subtypes
 extension ShippingLabelCustomPackageFormViewModel {
     enum PackageType: String, CaseIterable {
         case box

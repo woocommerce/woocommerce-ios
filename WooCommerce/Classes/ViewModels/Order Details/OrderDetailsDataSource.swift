@@ -374,7 +374,7 @@ private extension OrderDetailsDataSource {
             NSLocalizedString("“%@”",
                               comment: "Customer note, wrapped in quotes"),
             customerNote)
-        cell.body = customerNote.isNotEmpty ? localizedBody : ""
+        cell.body = customerNote.isNotEmpty ? localizedBody : " "
         cell.selectionStyle = .none
     }
 

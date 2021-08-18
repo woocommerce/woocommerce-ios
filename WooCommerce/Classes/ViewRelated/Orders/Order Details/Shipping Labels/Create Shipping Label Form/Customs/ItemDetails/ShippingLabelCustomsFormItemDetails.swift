@@ -36,6 +36,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)
                 }
+                .padding(.horizontal, insets: safeAreaInsets)
                 .background(Color(.listForeground))
 
                 VStack(spacing: 0) {
@@ -43,9 +44,9 @@ struct ShippingLabelCustomsFormItemDetails: View {
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)
                 }
+                .padding(.horizontal, insets: safeAreaInsets)
                 .renderedIf(!viewModel.hasValidDescription)
             }
-            .padding(.horizontal, insets: safeAreaInsets)
 
             // HS Tariff Number, validation & learn more
             VStack(spacing: 0) {
@@ -65,6 +66,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)
                 }
+                .padding(.horizontal, insets: safeAreaInsets)
                 .renderedIf(!viewModel.hasValidHSTariffNumber)
 
                 VStack(spacing: 0) {
@@ -72,9 +74,9 @@ struct ShippingLabelCustomsFormItemDetails: View {
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)
                 }
+                .padding(.horizontal, insets: safeAreaInsets)
                 .background(Color(.listForeground))
             }
-            .padding(.horizontal, insets: safeAreaInsets)
 
             // Weight row and validation
             VStack(spacing: 0) {
@@ -86,6 +88,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)
                 }
+                .padding(.horizontal, insets: safeAreaInsets)
                 .background(Color(.listForeground))
 
                 VStack(spacing: 0) {
@@ -93,9 +96,9 @@ struct ShippingLabelCustomsFormItemDetails: View {
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)
                 }
+                .padding(.horizontal, insets: safeAreaInsets)
                 .renderedIf(viewModel.validatedWeight == nil)
             }
-            .padding(.horizontal, insets: safeAreaInsets)
 
             // Value row & validation
             VStack(spacing: 0) {
@@ -107,6 +110,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)
                 }
+                .padding(.horizontal, insets: safeAreaInsets)
                 .background(Color(.listForeground))
 
                 VStack(spacing: 0) {
@@ -114,9 +118,9 @@ struct ShippingLabelCustomsFormItemDetails: View {
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)
                 }
+                .padding(.horizontal, insets: safeAreaInsets)
                 .renderedIf(viewModel.validatedValue == nil)
             }
-            .padding(.horizontal, insets: safeAreaInsets)
 
             // Origin country
             VStack(spacing: 0) {
@@ -133,6 +137,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)
                 }
+                .padding(.horizontal, insets: safeAreaInsets)
                 .background(Color(.listForeground))
 
                 VStack(spacing: 0) {
@@ -140,6 +145,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)
                 }
+                .padding(.horizontal, insets: safeAreaInsets)
                 .renderedIf(!viewModel.hasValidOriginCountry)
 
                 Text(Localization.originDescription)
@@ -148,8 +154,8 @@ struct ShippingLabelCustomsFormItemDetails: View {
                     .padding(.horizontal, Constants.horizontalSpacing)
                     .padding(.vertical, Constants.verticalSpacing)
                     .padding(.bottom, Constants.verticalSpacing)
+                    .padding(.horizontal, insets: safeAreaInsets)
             }
-            .padding(.horizontal, insets: safeAreaInsets)
         })
     }
 }

@@ -5,7 +5,7 @@ import WordPressUI
 /// A layer of indirection between our card reader settings view controllers and the modal alerts
 /// presented to provide user-facing feedback as we discover, connect and manage card readers
 ///
-final class CardReaderSettingsAlerts {
+final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
     private var modalController: CardPresentPaymentsModalViewController?
 
     func scanningForReader(from: UIViewController, cancel: @escaping () -> Void) {

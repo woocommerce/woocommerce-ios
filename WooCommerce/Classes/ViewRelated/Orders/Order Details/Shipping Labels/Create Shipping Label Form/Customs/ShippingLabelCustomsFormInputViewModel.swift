@@ -110,9 +110,7 @@ extension ShippingLabelCustomsFormInputViewModel {
     }
 
     var missingITNForClassesAbove2500usd: Bool {
-        if !classesAbove2500usd.isEmpty && itn.isEmpty {
-            return true
-        }
+        // TODO: check for accumulated value of each tariff number.
         return false
     }
 
@@ -128,24 +126,6 @@ extension ShippingLabelCustomsFormInputViewModel {
 // MARK: - Private helpers
 //
 private extension ShippingLabelCustomsFormInputViewModel {
-    /// Check for items and list ones with same HS Tariff Number
-    /// whose values accumulate to more than $2500.
-    ///
-    var classesAbove2500usd: [String: Decimal] {
-        itemViewModels
-            .filter { $0.hsTariffNumber.isNotEmpty && $0.hasValidHSTariffNumber }
-            .reduce([String: Decimal]()) { accumulator, item in
-                var result = accumulator
-                let itemTotalValue = Decimal(Double(item.value) ?? 0) * item.quantity
-                if let currentTotal = result[item.hsTariffNumber] {
-                    result[item.hsTariffNumber] = currentTotal + itemTotalValue
-                } else {
-                    result[item.hsTariffNumber] = itemTotalValue
-                }
-                return result
-            }
-            .filter { $0.value > Constants.minimumValueRequiredForITNValidation }
-    }
 
     /// Reset content explanation if content type is not Other.
     ///

@@ -122,23 +122,6 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.missingITNForDestination)
     }
 
-    func test_missingITNForClassesAbove2500usd_returns_true_when_there_is_total_of_more_than_$2500_value_for_a_tariff_number_and_itn_is_empty() {
-        // Given
-        let item = ShippingLabelCustomsForm.Item.fake().copy(quantity: 1)
-        let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake().copy(items: [item]),
-                                                               destinationCountry: Country.fake(),
-                                                               countries: [],
-                                                               currency: "$")
-
-        // When
-        viewModel.itn = ""
-        viewModel.itemViewModels.first?.hsTariffNumber = "123456"
-        viewModel.itemViewModels.first?.value = "2600"
-
-        // Then
-        XCTAssertTrue(viewModel.missingITNForClassesAbove2500usd)
-    }
-
     func test_invalidITN_returns_false_when_itn_format_is_correct() {
         // Given
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake(),

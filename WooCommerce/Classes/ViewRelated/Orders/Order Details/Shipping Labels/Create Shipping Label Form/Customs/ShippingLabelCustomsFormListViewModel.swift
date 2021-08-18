@@ -104,14 +104,22 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
 // MARK: - Validation
 //
 private extension ShippingLabelCustomsFormListViewModel {
+    /// Observe changes in all customs forms and save their validation states by package ID.
+    ///
     func configureFormsValidation() {
         inputViewModels.forEach { viewModel in
-            viewModel.$isFormValidated
-                .sink { [weak self] validated in
-                    self?.customsFormValidation[viewModel.packageID] = validated
+            viewModel.$validForm
+                .sink { [weak self] isValid in
+                    self?.customsFormValidation[viewModel.packageID] = isValid
                 }
                 .store(in: &cancellables)
         }
+    }
+
+    /// Check if all forms are validated to enable Done button.
+    ///
+    func configureDoneButton() {
+        doneButtonEnabled = customsFormValidation.values.first(where: { !$0 }) == nil
     }
 }
 

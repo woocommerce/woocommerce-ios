@@ -192,11 +192,18 @@ final class OrderDetailsDataSource: NSObject {
 
     private let imageService: ImageService = ServiceLocator.imageService
 
+    /// Indicates if the order editing feature is enabled or not
+    /// Allows editing notes, shipping & billing addresses.
+    ///
+    private let orderEditingEnabled: Bool
+
     init(order: Order,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         orderEditingEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderEditing)) {
         self.storageManager = storageManager
         self.order = order
         self.couponLines = order.coupons
+        self.orderEditingEnabled = orderEditingEnabled
 
         super.init()
     }

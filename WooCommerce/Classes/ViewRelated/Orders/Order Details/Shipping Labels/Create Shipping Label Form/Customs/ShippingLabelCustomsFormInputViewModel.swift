@@ -46,7 +46,7 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
 
     /// Whether all fields and items are validated.
     ///
-    @Published private(set) var isFormValidated: Bool = false
+    @Published private(set) var validForm: Bool = false
 
     /// Validated customs form
     ///
@@ -206,7 +206,7 @@ private extension ShippingLabelCustomsFormInputViewModel {
                     !self.checkInvalidITN(itn)
             }
             .removeDuplicates()
-            .assign(to: &$isFormValidated)
+            .assign(to: &$validForm)
     }
 }
 

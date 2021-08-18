@@ -174,8 +174,10 @@ private extension ShippingLabelCustomsFormInputViewModel {
         return false
     }
 
-    var missingITNForClassesAbove2500usd: Bool {
-        // TODO: check for accumulated value of each tariff number.
+    func checkMissingITNForClassesAbove2500usd(_ itn: String) -> Bool {
+        if classesAbove2500usd.isNotEmpty && itn.isEmpty {
+            return true
+        }
         return false
     }
 

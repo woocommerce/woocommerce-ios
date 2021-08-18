@@ -2,7 +2,7 @@ import SwiftUI
 
 struct InPersonPaymentsStripeAcountReview: View {
     var body: some View {
-        VStack {
+        ScrollableVStack {
             Spacer()
 
             VStack(alignment: .center, spacing: 42) {
@@ -22,7 +22,6 @@ struct InPersonPaymentsStripeAcountReview: View {
 
             InPersonPaymentsLearnMore()
         }
-        .padding(24.0)
     }
 }
 

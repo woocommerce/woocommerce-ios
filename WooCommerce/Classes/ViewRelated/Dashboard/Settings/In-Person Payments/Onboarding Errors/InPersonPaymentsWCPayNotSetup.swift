@@ -5,7 +5,7 @@ struct InPersonPaymentsWCPayNotSetup: View {
     @State var presentedSetupURL: URL? = nil
 
     var body: some View {
-        VStack {
+        ScrollableVStack {
             Spacer()
 
             VStack(alignment: .center, spacing: 42) {
@@ -32,7 +32,6 @@ struct InPersonPaymentsWCPayNotSetup: View {
 
             InPersonPaymentsLearnMore()
         }
-        .padding(24.0)
         .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)
     }
 

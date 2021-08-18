@@ -20,7 +20,14 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
 
     /// Price of item per unit.
     ///
-    @Published var value: String
+    @Published var value: String {
+        didSet {
+            guard let value = getValidatedValue(from: value) else {
+                return validatedTotalValue = nil
+            }
+            validatedTotalValue = Decimal(value) * quantity
+        }
+    }
 
     /// Weight of item per unit.
     ///
@@ -31,6 +38,7 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
     @Published var hsTariffNumber: String {
         didSet {
             limitHSTariffNumberLength()
+            validatedHSTariffNumber = getValidateHSTariffNumber(hsTariffNumber)
         }
     }
 
@@ -41,6 +49,16 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
     /// Whether all fields are validated.
     ///
     @Published private(set) var isItemValidated: Bool = false
+
+    /// The validated tariff number to be observed by `ShippingLabelCustomsFormInputViewModel`
+    /// to calculate total value for each tariff number.
+    ///
+    @Published private(set) var validatedHSTariffNumber: String?
+
+    /// The validated total value of the item. This will be observed by
+    /// `ShippingLabelCustomsFormInputViewModel` to calculate total value of each tariff number.
+    ///
+    @Published private(set) var validatedTotalValue: Decimal?
 
     /// Persisted countries to select from.
     ///
@@ -105,7 +123,7 @@ extension ShippingLabelCustomsFormItemDetailsViewModel {
     }
 
     var hasValidHSTariffNumber: Bool {
-        validateHSTariffNumber(hsTariffNumber)
+        getValidateHSTariffNumber(hsTariffNumber) != nil
     }
 }
 
@@ -134,13 +152,13 @@ private extension ShippingLabelCustomsFormItemDetailsViewModel {
         originCountry.code.isNotEmpty
     }
 
-    func validateHSTariffNumber(_ hsTariffNumber: String) -> Bool {
+    func getValidateHSTariffNumber(_ hsTariffNumber: String) -> String? {
         if hsTariffNumber.isNotEmpty,
            (hsTariffNumber.count != Constants.hsTariffNumberCharacterLimit ||
                 hsTariffNumber.filter({ "0"..."9" ~= $0 }).count != 6) {
-            return false
+            return nil
         }
-        return true
+        return hsTariffNumber
     }
 
     func configureValidationCheck() {
@@ -155,7 +173,7 @@ private extension ShippingLabelCustomsFormItemDetailsViewModel {
                 let (hsTariffNumber, originCountry) = groupTwo
                 return self.validateDescription(description) &&
                     self.validateCountry(originCountry) &&
-                    self.validateHSTariffNumber(hsTariffNumber) &&
+                    self.getValidateHSTariffNumber(hsTariffNumber) != nil &&
                     self.getValidatedValue(from: value) != nil &&
                     self.getValidatedWeight(from: weight) != nil
             }

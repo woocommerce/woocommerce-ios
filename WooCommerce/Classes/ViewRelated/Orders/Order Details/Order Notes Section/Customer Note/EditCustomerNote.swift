@@ -17,7 +17,28 @@ final class EditCustomerNoteHostingController: UIHostingController<EditCustomerN
 ///
 struct EditCustomerNote: View {
     var body: some View {
-        Text("Empty")
+        NavigationView {
+            Text("Empty")
+                .navigationTitle(Localization.title)
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarItems(
+                    leading: Button(Localization.cancel) {
+                        print("Cancel tapped")
+                    },
+                    trailing: Button(Localization.done) {
+                        print("Done tapped")
+                    }
+                )
+        }
+    }
+}
+
+// MARK: Constants
+private extension EditCustomerNote {
+    enum Localization {
+        static let title = NSLocalizedString("Edit Note", comment: "Title for the edit customer provided note screen")
+        static let done = NSLocalizedString("Done", comment: "Text for the done button in the edit customer provided note screen")
+        static let cancel = NSLocalizedString("Cancel", comment: "Text for the cancel button in the edit customer provided note screen")
     }
 }
 

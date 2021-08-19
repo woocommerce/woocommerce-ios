@@ -18,7 +18,7 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
 
     /// Input customs forms of the shipping label if added initially.
     ///
-    @Published var customsForms: [ShippingLabelCustomsForm]
+    @Published private(set) var customsForms: [ShippingLabelCustomsForm]
 
     /// Whether done button should be enabled.
     ///

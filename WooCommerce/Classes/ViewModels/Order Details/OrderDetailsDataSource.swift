@@ -950,7 +950,7 @@ extension OrderDetailsDataSource {
             var rows: [Row] = []
 
             /// After `.orderEditing` is completed, this row should always be visible to let merchants update the customer note as required.
-            if   orderEditingEnabled || customerNote.isEmpty == false {
+            if orderEditingEnabled || customerNote.isEmpty == false {
                 rows.append(.customerNote)
             }
 

@@ -146,7 +146,7 @@ struct ShippingLabelCarrierRow_Previews: PreviewProvider {
 
     private static func sampleRate(carrierID: String = "usps", rate: Double = 40.060000000000002) -> ShippingLabelCarrierRate {
         return ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
-                                        insurance: 0,
+                                        insurance: "0",
                                         retailRate: rate,
                                         rate: rate,
                                         rateID: "rate_a8a29d5f34984722942f466c30ea27ef",

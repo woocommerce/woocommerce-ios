@@ -73,10 +73,11 @@ struct ShippingLabelCarrierRowViewModel: Identifiable {
             extras.append(String(format: Localization.tracking, rate.carrierID.uppercased()))
         }
 
-        if let doubleInsurance = Double(rate.insurance),
-           doubleInsurance > 0 {
-            let insuranceFormatted = currencyFormatter.formatAmount(Decimal(doubleInsurance)) ?? ""
-            extras.append(String(format: Localization.insuranceAmount, insuranceFormatted))
+        if let doubleInsurance = Double(rate.insurance) {
+            if doubleInsurance > 0 {
+                let insuranceFormatted = currencyFormatter.formatAmount(Decimal(doubleInsurance)) ?? ""
+                extras.append(String(format: Localization.insuranceAmount, insuranceFormatted))
+            }
         } else if rate.insurance.isNotEmpty {
             extras.append(String(format: Localization.insuranceLiteral, rate.insurance))
         }

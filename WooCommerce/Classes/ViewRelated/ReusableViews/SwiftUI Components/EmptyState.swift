@@ -20,6 +20,7 @@ struct EmptyState: View {
             Text(description)
                 .multilineTextAlignment(.center)
                 .bodyStyle()
+                .fixedSize(horizontal: false, vertical: true)
         }
         .frame(width: Constants.width, alignment: .center)
     }

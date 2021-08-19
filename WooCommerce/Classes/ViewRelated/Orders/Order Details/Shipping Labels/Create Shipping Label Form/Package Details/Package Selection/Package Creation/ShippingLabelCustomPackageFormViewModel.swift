@@ -56,22 +56,17 @@ final class ShippingLabelCustomPackageFormViewModel: ObservableObject {
                                           maxWeight: 0)
     }
 
-    init(lengthUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit,
-         weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
-         packageName: String = "",
-         packageType: PackageType = .box,
-         packageLength: String = "",
-         packageWidth: String = "",
-         packageHeight: String = "",
-         emptyPackageWeight: String = "") {
+    init(package: ShippingLabelCustomPackage? = nil,
+         lengthUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit,
+         weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
         self.lengthUnit = lengthUnit ?? ""
         self.weightUnit = weightUnit ?? ""
-        self.packageName = packageName
-        self.packageType = packageType
-        self.packageLength = packageLength
-        self.packageWidth = packageWidth
-        self.packageHeight = packageHeight
-        self.emptyPackageWeight = emptyPackageWeight
+        self.packageName = package?.title ?? ""
+        self.packageType = (package?.isLetter ?? false) ? .letter : .box
+        self.packageLength = package?.getLength().description ?? ""
+        self.packageWidth = package?.getWidth().description ?? ""
+        self.packageHeight = package?.getHeight().description ?? ""
+        self.emptyPackageWeight = package?.boxWeight.description ?? ""
     }
 }
 

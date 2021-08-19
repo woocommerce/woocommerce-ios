@@ -17,6 +17,9 @@ final class EditCustomerNoteHostingController: UIHostingController<EditCustomerN
 ///
 struct EditCustomerNote: View {
 
+    // Needed to auto-dismiss the view
+    @Environment(\.presentationMode) var presentationMode
+
     // TODO: Replace with view model backed value
     @State private var textContent = "Tap and edit me"
 
@@ -33,8 +36,7 @@ struct EditCustomerNote: View {
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button(Localization.cancel) {
-                            // TODO: Dismiss
-                            print("Cancel tapped")
+                            presentationMode.wrappedValue.dismiss()
                         }
                     }
                 }

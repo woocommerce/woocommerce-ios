@@ -18,7 +18,8 @@ final class EditCustomerNoteHostingController: UIHostingController<EditCustomerN
 struct EditCustomerNote: View {
     var body: some View {
         NavigationView {
-            Text("Empty")
+            TextEditor(text: .constant("Placeholder"))
+                .padding()
                 .navigationTitle(Localization.title)
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarItems(

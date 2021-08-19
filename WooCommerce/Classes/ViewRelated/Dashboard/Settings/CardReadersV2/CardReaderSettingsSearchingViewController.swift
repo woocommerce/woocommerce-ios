@@ -235,7 +235,8 @@ private extension CardReaderSettingsSearchingViewController {
 
         let connectionController = CardReaderConnectionController(
             forSiteID: siteID,
-            knownReadersProvider: knownReadersProvider
+            knownReadersProvider: knownReadersProvider,
+            alertsProvider: CardReaderSettingsAlerts()
         )
 
         connectionController.searchAndConnect(from: self) { _ in

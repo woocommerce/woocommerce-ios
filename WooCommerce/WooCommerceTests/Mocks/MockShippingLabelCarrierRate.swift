@@ -6,9 +6,10 @@ import Foundation
 final class MockShippingLabelCarrierRate {
 
     static func makeRate(title: String = "USPS - Parcel Select Mail",
-                         rate: Double = 40.060000000000002) -> ShippingLabelCarrierRate {
+                         rate: Double = 40.060000000000002,
+                         insurance: String = "0") -> ShippingLabelCarrierRate {
         return ShippingLabelCarrierRate(title: title,
-                                        insurance: 0,
+                                        insurance: insurance,
                                         retailRate: rate,
                                         rate: rate,
                                         rateID: "rate_a8a29d5f34984722942f466c30ea27ef",

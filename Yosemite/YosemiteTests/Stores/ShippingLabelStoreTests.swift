@@ -997,7 +997,7 @@ private extension ShippingLabelStoreTests {
 
     func sampleShippingLabelCarrierRate() -> ShippingLabelCarrierRate {
         let rate = ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
-                                            insurance: 0,
+                                            insurance: "0",
                                             retailRate: 40.060000000000002,
                                             rate: 40.060000000000002,
                                             rateID: "rate_a8a29d5f34984722942f466c30ea27ef",

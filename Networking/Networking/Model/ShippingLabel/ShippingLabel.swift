@@ -130,7 +130,7 @@ extension ShippingLabel: Decodable {
 
         let productIDs = try container.decodeIfPresent([Int64].self, forKey: .productIDs) ?? []
         let productNames = try container.decode([String].self, forKey: .productNames)
-        let commercialInvoiceURL = try container.decodeIfPresent(String.self, forKey: .commercialInvoiceURL)
+        let commercialInvoiceURL = try container.decode(String?.self, forKey: .commercialInvoiceURL)
 
         self.init(siteID: siteID,
                   orderID: orderID,

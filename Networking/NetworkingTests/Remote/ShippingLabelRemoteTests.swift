@@ -36,6 +36,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
         let response = try XCTUnwrap(result.get())
         XCTAssertEqual(response.settings, .init(siteID: sampleSiteID, orderID: orderID, paperSize: .label))
         XCTAssertEqual(response.shippingLabels.count, 2)
+        XCTAssertNotNil(response.shippingLabels.first?.commercialInvoiceURL)
     }
 
     func test_printShippingLabel_returns_ShippingLabelPrintData() throws {

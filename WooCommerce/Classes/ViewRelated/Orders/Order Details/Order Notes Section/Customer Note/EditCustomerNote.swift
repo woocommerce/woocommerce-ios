@@ -6,6 +6,11 @@ import SwiftUI
 final class EditCustomerNoteHostingController: UIHostingController<EditCustomerNote> {
     init() {
         super.init(rootView: EditCustomerNote())
+
+        // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
+        rootView.dismiss = { [weak self] in
+            self?.dismiss(animated: true, completion: nil)
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -17,8 +22,9 @@ final class EditCustomerNoteHostingController: UIHostingController<EditCustomerN
 ///
 struct EditCustomerNote: View {
 
-    // Needed to auto-dismiss the view
-    @Environment(\.presentationMode) var presentationMode
+    /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
+    ///
+    var dismiss: (() -> Void) = {}
 
     // TODO: Replace with view model backed value
     @State private var textContent = "Tap and edit me"
@@ -35,9 +41,7 @@ struct EditCustomerNote: View {
                 })
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
-                        Button(Localization.cancel) {
-                            presentationMode.wrappedValue.dismiss()
-                        }
+                        Button(Localization.cancel, action: dismiss)
                     }
                 }
         }

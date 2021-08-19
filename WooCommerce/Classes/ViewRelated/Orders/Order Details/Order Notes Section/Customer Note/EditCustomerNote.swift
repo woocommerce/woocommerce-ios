@@ -16,18 +16,24 @@ final class EditCustomerNoteHostingController: UIHostingController<EditCustomerN
 /// Allows merchant to edit the customer provided note of an order.
 ///
 struct EditCustomerNote: View {
+
+    // TODO: Replace with view model backed value
+    @State private var textContent = "Tap and edit me"
+
     var body: some View {
         NavigationView {
-            TextEditor(text: .constant("Placeholder"))
+            TextEditor(text: $textContent)
                 .padding()
                 .navigationTitle(Localization.title)
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarItems(trailing: Button(Localization.done) { // I couldn't find a way to make the "Done" button bold using a toolbar :-(
+                    // TODO: submit done action
                     print("Done tapped")
                 })
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button(Localization.cancel) {
+                            // TODO: Dismiss
                             print("Cancel tapped")
                         }
                     }

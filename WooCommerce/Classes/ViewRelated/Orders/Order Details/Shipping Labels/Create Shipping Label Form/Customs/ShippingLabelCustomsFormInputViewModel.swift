@@ -47,6 +47,10 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
     ///
     private(set) var validatedCustomsForm: ShippingLabelCustomsForm?
 
+    /// Destination country for the shipment.
+    ///
+    let destinationCountry: Country
+
     /// Persisted countries to send to item detail forms.
     ///
     private let allCountries: [Country]
@@ -55,7 +59,13 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
     ///
     private let currency: String
 
-    init(customsForm: ShippingLabelCustomsForm, countries: [Country], currency: String) {
+    /// Whether ITN validation is required for the destination country.
+    ///
+    private lazy var itnRequiredForDestination: Bool = {
+        Constants.uspsITNRequiredDestinations.contains(destinationCountry.code)
+    }()
+
+    init(customsForm: ShippingLabelCustomsForm, destinationCountry: Country, countries: [Country], currency: String) {
         self.packageID = customsForm.packageID
         self.packageName = customsForm.packageName
         self.returnOnNonDelivery = customsForm.nonDeliveryOption == .return
@@ -65,12 +75,84 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
         self.restrictionComments = customsForm.restrictionComments
         self.itn = customsForm.itn
         self.items = customsForm.items
+        self.destinationCountry = destinationCountry
         self.allCountries = countries
         self.currency = currency
         self.itemViewModels = customsForm.items.map { .init(item: $0, countries: countries, currency: currency) }
+
+        resetContentExplanationIfNeeded()
+        resetRestrictionCommentsIfNeeded()
     }
 }
 
-// MARK: - Helper methods
+// MARK: - Validation
 //
-private extension ShippingLabelCustomsFormInputViewModel {}
+extension ShippingLabelCustomsFormInputViewModel {
+    var missingContentExplanation: Bool {
+        if contentsType == .other, contentExplanation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return true
+        }
+        return false
+    }
+
+    var missingRestrictionComments: Bool {
+        if restrictionType == .other, restrictionComments.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return true
+        }
+        return false
+    }
+
+    var missingITNForDestination: Bool {
+        if itnRequiredForDestination && itn.isEmpty {
+            return true
+        }
+        return false
+    }
+
+    var missingITNForClassesAbove2500usd: Bool {
+        // TODO: check for accumulated value of each tariff number.
+        return false
+    }
+
+    var invalidITN: Bool {
+        if itn.isNotEmpty,
+           itn.range(of: Constants.itnRegex, options: .regularExpression, range: nil, locale: nil) == nil {
+            return true
+        }
+        return false
+    }
+}
+
+// MARK: - Private helpers
+//
+private extension ShippingLabelCustomsFormInputViewModel {
+
+    /// Reset content explanation if content type is not Other.
+    ///
+    func resetContentExplanationIfNeeded() {
+        $contentsType
+            .filter { $0 != .other }
+            .map { _ -> String in "" }
+            .assign(to: &$contentExplanation)
+    }
+
+    /// Reset restriction comments if restriction type is not Other.
+    ///
+    func resetRestrictionCommentsIfNeeded() {
+        $restrictionType
+            .filter { $0 != .other }
+            .map { _ -> String in "" }
+            .assign(to: &$restrictionComments)
+    }
+}
+
+private extension ShippingLabelCustomsFormInputViewModel {
+    enum Constants {
+        // Reference: https://git.io/J0K0r
+        static let itnRegex = "^(?:(?:AES X\\d{14})|(?:NOEEI 30\\.\\d{1,2}(?:\\([a-z]\\)(?:\\(\\d\\))?)?))$"
+        static let minimumValueRequiredForITNValidation: Decimal = 2_500
+
+        // These destination countries require an ITN regardless of shipment value
+        static let uspsITNRequiredDestinations = ["IR", "SY", "KP", "CU", "SD"]
+    }
+}

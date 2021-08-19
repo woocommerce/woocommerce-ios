@@ -49,7 +49,10 @@ struct ShippingLabelCustomsFormList_Previews: PreviewProvider {
     static let sampleViewModel: ShippingLabelCustomsFormListViewModel = {
         let sampleOrder = ShippingLabelPackageDetailsViewModel.sampleOrder()
         let sampleForm = ShippingLabelCustomsForm(packageID: "Food Package", packageName: "Food Package", productIDs: sampleOrder.items.map { $0.productID })
-        return ShippingLabelCustomsFormListViewModel(order: sampleOrder, customsForms: [sampleForm], countries: [])
+        return ShippingLabelCustomsFormListViewModel(order: sampleOrder,
+                                                     customsForms: [sampleForm],
+                                                     destinationCountry: Country(code: "VN", name: "Vietnam", states: []),
+                                                     countries: [])
     }()
 
     static var previews: some View {

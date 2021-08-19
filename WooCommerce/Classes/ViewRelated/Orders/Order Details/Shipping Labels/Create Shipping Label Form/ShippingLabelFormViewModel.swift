@@ -804,8 +804,5 @@ private extension ShippingLabelFormViewModel {
         /// These US states are a special case because they represent military bases. They're considered "domestic",
         /// but they require a Customs form to ship from/to them.
         static let usMilitaryStates = ["AA", "AE", "AP"]
-
-        // These destination countries require an ITN regardless of shipment value
-        static let uspsITNRequiredDestination = ["IR", "SY", "KP", "CU", "SD"]
     }
 }

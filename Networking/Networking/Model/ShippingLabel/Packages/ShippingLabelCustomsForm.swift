@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents customs info for a shipping label package
 ///
-public struct ShippingLabelCustomsForm: Hashable, Equatable, GeneratedFakeable {
+public struct ShippingLabelCustomsForm: Hashable, Equatable, GeneratedFakeable, GeneratedCopiable {
     /// ID of the associated package.
     ///
     /// This is for identifying the package when inputing customs form only,
@@ -126,7 +126,7 @@ public extension ShippingLabelCustomsForm {
 
     /// Information about a item to declare with customs.
     ///
-    struct Item: Codable, Hashable, Equatable, GeneratedFakeable {
+    struct Item: Codable, Hashable, Equatable, GeneratedFakeable, GeneratedCopiable {
         /// Description of item.
         public let description: String
 

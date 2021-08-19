@@ -166,7 +166,7 @@ class ShippingLabelCustomsFormItemDetailsViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.validatedTotalValue)
     }
 
-    func test_validItem_returns_true_when_all_fields_are_valid() {
+    func test_validItem_and_validatedItem_return_correctly_when_all_fields_are_valid() {
         // Given
         let viewModel = ShippingLabelCustomsFormItemDetailsViewModel(item: ShippingLabelCustomsForm.Item.fake().copy(quantity: 2), countries: [], currency: "")
 
@@ -179,9 +179,10 @@ class ShippingLabelCustomsFormItemDetailsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.validItem)
+        XCTAssertNotNil(viewModel.validatedItem)
     }
 
-    func test_validItem_returns_false_when_not_all_fields_are_valid() {
+    func test_validItem_and_validatedItem_return_correctly_when_not_all_fields_are_valid() {
         // Given
         let viewModel = ShippingLabelCustomsFormItemDetailsViewModel(item: ShippingLabelCustomsForm.Item.fake().copy(quantity: 2), countries: [], currency: "")
 
@@ -194,35 +195,6 @@ class ShippingLabelCustomsFormItemDetailsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.validItem)
-    }
-
-    func test_validatedItem_is_not_nil_when_all_fields_are_valid() {
-        // Given
-        let viewModel = ShippingLabelCustomsFormItemDetailsViewModel(item: ShippingLabelCustomsForm.Item.fake().copy(quantity: 2), countries: [], currency: "")
-
-        // When
-        viewModel.description = "Test description"
-        viewModel.value = "10"
-        viewModel.weight = "1.5"
-        viewModel.hsTariffNumber = ""
-        viewModel.originCountry = Country(code: "VN", name: "Vietnam", states: [])
-
-        // Then
-        XCTAssertNotNil(viewModel.validatedItem)
-    }
-
-    func test_validatedItem_is_nil_when_not_all_fields_are_valid() {
-        // Given
-        let viewModel = ShippingLabelCustomsFormItemDetailsViewModel(item: ShippingLabelCustomsForm.Item.fake().copy(quantity: 2), countries: [], currency: "")
-
-        // When
-        viewModel.description = ""
-        viewModel.value = "10"
-        viewModel.weight = "1.5"
-        viewModel.hsTariffNumber = ""
-        viewModel.originCountry = Country(code: "VN", name: "Vietnam", states: [])
-
-        // Then
         XCTAssertNil(viewModel.validatedItem)
     }
 }

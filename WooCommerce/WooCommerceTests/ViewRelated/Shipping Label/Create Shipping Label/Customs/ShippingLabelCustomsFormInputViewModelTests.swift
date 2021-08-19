@@ -199,7 +199,7 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.restrictionComments.isEmpty)
     }
 
-    func test_validForm_returns_true_when_all_fields_are_valid() {
+    func test_validForm_and_validatedCustomsForm_return_correctly_when_all_fields_are_valid() {
         // Given
         let item = ShippingLabelCustomsForm.Item.fake()
         let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake().copy(items: [item]),
@@ -221,9 +221,10 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.validForm)
+        XCTAssertNotNil(viewModel.validatedCustomsForm)
     }
 
-    func test_validForm_returns_false_when_not_all_fields_are_valid() {
+    func test_validForm_and_validatedCustomsForm_return_correctly_when_not_all_fields_are_valid() {
         // Given
         let item = ShippingLabelCustomsForm.Item.fake().copy(description: "Test",
                                                              quantity: 1,
@@ -247,5 +248,6 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.validForm)
+        XCTAssertNil(viewModel.validatedCustomsForm)
     }
 }

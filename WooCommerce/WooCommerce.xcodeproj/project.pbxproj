@@ -1256,6 +1256,7 @@
 		DEFD6E86264ABFB700E51E0D /* PluginListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DEFD6E85264ABFB700E51E0D /* PluginListViewController.xib */; };
 		E107FCE126C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift in Sources */ = {isa = PBXBuildFile; fileRef = E107FCE026C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift */; };
 		E107FCE326C13A0D00BAF51B /* InPersonPaymentsSupportLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = E107FCE226C13A0D00BAF51B /* InPersonPaymentsSupportLink.swift */; };
+		E10BC15E26CC06970064F5E2 /* ScrollableVStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10BC15D26CC06970064F5E2 /* ScrollableVStack.swift */; };
 		E10DFC78267331590083AFF2 /* ApplicationLogViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10DFC77267331590083AFF2 /* ApplicationLogViewModelTests.swift */; };
 		E10DFC7A2673595A0083AFF2 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10DFC792673595A0083AFF2 /* ShareSheet.swift */; };
 		E120F63826C26B550005A029 /* InPersonPaymentsLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E120F63726C26B550005A029 /* InPersonPaymentsLoadingView.swift */; };
@@ -2631,6 +2632,7 @@
 		DEFD6E85264ABFB700E51E0D /* PluginListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PluginListViewController.xib; sourceTree = "<group>"; };
 		E107FCE026C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCountryNotSupported.swift; sourceTree = "<group>"; };
 		E107FCE226C13A0D00BAF51B /* InPersonPaymentsSupportLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsSupportLink.swift; sourceTree = "<group>"; };
+		E10BC15D26CC06970064F5E2 /* ScrollableVStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollableVStack.swift; sourceTree = "<group>"; };
 		E10DFC77267331590083AFF2 /* ApplicationLogViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLogViewModelTests.swift; sourceTree = "<group>"; };
 		E10DFC792673595A0083AFF2 /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 		E120F63726C26B550005A029 /* InPersonPaymentsLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsLoadingView.swift; sourceTree = "<group>"; };
@@ -4232,6 +4234,7 @@
 				DE19BB0B26C2688B00AB70D9 /* SelectionList.swift */,
 				CC254F2C26C17AB5005F3C82 /* BottomButtonView.swift */,
 				DE19BB1126C3811100AB70D9 /* LearnMoreRow.swift */,
+				E10BC15D26CC06970064F5E2 /* ScrollableVStack.swift */,
 				DE126D0A26CA2331007F901D /* ValidationErrorRow.swift */,
 			);
 			path = "SwiftUI Components";
@@ -7430,6 +7433,7 @@
 				F997174523DC068500592D8E /* XLPagerStrip+AccessibilityIdentifier.swift in Sources */,
 				D8C2A28B231931D100F503E9 /* ReviewViewModel.swift in Sources */,
 				B541B223218A29A6008FE7C1 /* NSParagraphStyle+Woo.swift in Sources */,
+				E10BC15E26CC06970064F5E2 /* ScrollableVStack.swift in Sources */,
 				B50BB4162141828F00AF0F3C /* FooterSpinnerView.swift in Sources */,
 				02FE89C9231FB31400E85EF8 /* FeatureFlagService.swift in Sources */,
 				D8610CE2257099E100A5DF27 /* FancyAlertViewController+UnifiedLogin.swift in Sources */,

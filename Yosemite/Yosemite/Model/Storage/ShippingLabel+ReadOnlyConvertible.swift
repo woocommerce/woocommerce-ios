@@ -42,7 +42,8 @@ extension Storage.ShippingLabel: ReadOnlyConvertible {
               originAddress: originAddress?.toReadOnly() ?? .empty,
               destinationAddress: destinationAddress?.toReadOnly() ?? .empty,
               productIDs: productIDs,
-              productNames: productNames)
+              productNames: productNames,
+              commercialInvoiceURL: commercialInvoiceURL)
     }
 }
 

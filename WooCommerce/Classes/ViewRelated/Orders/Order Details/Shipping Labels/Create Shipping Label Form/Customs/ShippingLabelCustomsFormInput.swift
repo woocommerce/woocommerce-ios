@@ -193,7 +193,7 @@ private extension ShippingLabelCustomsFormInput {
                                                       comment: "Placeholder for the ITN row in Customs screen of Shippling Label flow")
         static let itnMissingForDestination = NSLocalizedString("ITN is required for shipments to %1$@",
                                                                 comment: "Error message for missing ITN for destination country in" +
-                                                                    "Customs screen of Shipping Label flow")
+                                                                    "Customs screen of Shipping Label flow. The placeholder is the destination country.")
         static let itnMissingForClassAbove2500usd = NSLocalizedString("ITN is required for shipping items valued over $2,500 per tariff number",
                                                                       comment: "Error message for missing ITN for tariff number valued over $2,500 in" +
                                                                         "Customs screen of Shipping Label flow")

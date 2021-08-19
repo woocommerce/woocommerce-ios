@@ -123,7 +123,10 @@ private extension CardReaderSettingsConnectedViewController {
     private func configureUpdatePrompt(cell: LeftImageTableViewCell) {
         cell.configure(image: .infoOutlineImage, text: Localization.updatePromptText)
         cell.selectionStyle = .none
-        cell.backgroundColor = .warning
+        cell.backgroundColor = .warningBackground
+        cell.imageView?.tintColor = .warning
+        cell.textLabel?.numberOfLines = 0
+        cell.textLabel?.textColor = .text
     }
 
     private func configureConnectedReader(cell: ConnectedReaderTableViewCell) {
@@ -140,6 +143,7 @@ private extension CardReaderSettingsConnectedViewController {
             // TODO in a following PR
         }
         cell.selectionStyle = .none
+        cell.backgroundColor = .clear
     }
 
     private func configureDisconnectButton(cell: ButtonTableViewCell) {
@@ -148,6 +152,7 @@ private extension CardReaderSettingsConnectedViewController {
             self?.viewModel?.disconnectReader()
         }
         cell.selectionStyle = .none
+        cell.backgroundColor = .clear
     }
 }
 

@@ -38,9 +38,9 @@ enum FeatureFlag: Int {
     ///
     case shippingLabelsMultiPackage
 
-    /// Card-Present Payments Onboarding
+    /// Card-Present Payments Reader Software Updates
     ///
-    case cardPresentOnboarding
+    case cardPresentSoftwareUpdates
 
     /// Editing of notes, shipping, and billing addresses.
     ///

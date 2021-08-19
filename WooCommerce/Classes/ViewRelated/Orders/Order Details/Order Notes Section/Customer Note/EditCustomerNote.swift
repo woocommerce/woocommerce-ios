@@ -22,14 +22,18 @@ struct EditCustomerNote: View {
                 .padding()
                 .navigationTitle(Localization.title)
                 .navigationBarTitleDisplayMode(.inline)
-                .navigationBarItems(
-                    leading: Button(Localization.cancel) {
-                        print("Cancel tapped")
-                    },
-                    trailing: Button(Localization.done) {
-                        print("Done tapped")
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button(Localization.cancel) {
+                            print("Cancel tapped")
+                        }
                     }
-                )
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(Localization.done) {
+                            print("Done tapped")
+                        }
+                    }
+                }
         }
     }
 }

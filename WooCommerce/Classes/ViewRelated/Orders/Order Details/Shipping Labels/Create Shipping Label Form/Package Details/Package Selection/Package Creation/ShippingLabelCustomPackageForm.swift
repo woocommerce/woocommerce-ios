@@ -16,10 +16,11 @@ struct ShippingLabelCustomPackageForm: View {
                 ListHeaderView(text: Localization.customPackageHeader, alignment: .left)
                     .padding(.horizontal, insets: safeAreaInsets)
 
+                // Package Type & Name
                 VStack(spacing: 0) {
                     Divider()
-
                     VStack(spacing: 0) {
+                        // Package type
                         TitleAndValueRow(title: Localization.packageTypeLabel,
                                          value: viewModel.packageType.localizedName,
                                          selectable: true) {
@@ -35,6 +36,7 @@ struct ShippingLabelCustomPackageForm: View {
                         Divider()
                             .padding(.leading, Constants.horizontalPadding)
 
+                        // Package name
                         TitleAndTextFieldRow(title: Localization.packageNameLabel,
                                              placeholder: Localization.packageNamePlaceholder,
                                              text: $viewModel.packageName,
@@ -42,14 +44,17 @@ struct ShippingLabelCustomPackageForm: View {
                                              keyboardType: .default)
                     }
                     .padding(.horizontal, insets: safeAreaInsets)
-
                     Divider()
+                    validationErrorRow
+                        .renderedIf(!viewModel.hasValidName)
                 }
                 .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .horizontal))
 
+                // Package Dimensions
                 VStack(spacing: 0) {
                     Divider()
 
+                    // Package length
                     VStack(spacing: 0) {
                         TitleAndTextFieldRow(title: Localization.lengthLabel,
                                              placeholder: "0",
@@ -59,7 +64,13 @@ struct ShippingLabelCustomPackageForm: View {
 
                         Divider()
                             .padding(.leading, Constants.horizontalPadding)
+                    }
+                    .padding(.horizontal, insets: safeAreaInsets)
+                    validationErrorRow
+                        .renderedIf(!viewModel.hasValidDimension(viewModel.packageLength))
 
+                    // Package width
+                    VStack(spacing: 0) {
                         TitleAndTextFieldRow(title: Localization.widthLabel,
                                              placeholder: "0",
                                              text: $viewModel.packageWidth,
@@ -68,7 +79,13 @@ struct ShippingLabelCustomPackageForm: View {
 
                         Divider()
                             .padding(.leading, Constants.horizontalPadding)
+                    }
+                    .padding(.horizontal, insets: safeAreaInsets)
+                    validationErrorRow
+                        .renderedIf(!viewModel.hasValidDimension(viewModel.packageWidth))
 
+                    // Package height
+                    VStack(spacing: 0) {
                         TitleAndTextFieldRow(title: Localization.heightLabel,
                                              placeholder: "0",
                                              text: $viewModel.packageHeight,
@@ -76,14 +93,15 @@ struct ShippingLabelCustomPackageForm: View {
                                              keyboardType: .decimalPad)
                     }
                     .padding(.horizontal, insets: safeAreaInsets)
-
                     Divider()
+                    validationErrorRow
+                        .renderedIf(!viewModel.hasValidDimension(viewModel.packageHeight))
                 }
                 .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .horizontal))
 
+                // Package Weight
                 VStack(spacing: 0) {
                     Divider()
-
                     TitleAndTextFieldRow(title: Localization.emptyPackageWeightLabel,
                                          placeholder: "0",
                                          text: $viewModel.emptyPackageWeight,
@@ -91,15 +109,21 @@ struct ShippingLabelCustomPackageForm: View {
                                          keyboardType: .decimalPad)
                         .padding(.horizontal, insets: safeAreaInsets)
                         .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .horizontal))
-
                     Divider()
-
+                    validationErrorRow
+                        .renderedIf(viewModel.validatedWeight == nil)
                     ListHeaderView(text: Localization.weightFooter, alignment: .left)
                         .padding(.horizontal, insets: safeAreaInsets)
                 }
         }
         .background(Color(.listBackground))
         .ignoresSafeArea(.container, edges: .horizontal)
+    }
+
+    private var validationErrorRow: some View {
+        ValidationErrorRow(errorMessage: Localization.validationError)
+            .background(Color(.listBackground).ignoresSafeArea(.container, edges: .horizontal))
+            .padding(.horizontal, insets: safeAreaInsets)
     }
 }
 
@@ -135,6 +159,9 @@ private extension ShippingLabelCustomPackageForm {
         static let weightFooter = NSLocalizedString(
             "Weight of empty package",
             comment: "Footer text for the empty package weight on the Add New Custom Package screen in Shipping Label flow")
+        static let validationError = NSLocalizedString(
+            "This field is required",
+            comment: "Error for missing package details on the Add New Custom Package screen in Shipping Label flow")
     }
 
     enum Constants {

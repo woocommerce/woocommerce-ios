@@ -162,7 +162,7 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
         viewModel.itn = ""
         viewModel.itemViewModels.first?.hsTariffNumber = "123456"
         viewModel.itemViewModels.first?.value = "2600"
- 
+
         // Then
         XCTAssertTrue(viewModel.missingITNForClassesAbove2500usd)
     }
@@ -197,5 +197,55 @@ final class ShippingLabelCustomsFormInputViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.restrictionComments.isEmpty)
+    }
+
+    func test_validForm_returns_true_when_all_fields_are_valid() {
+        // Given
+        let item = ShippingLabelCustomsForm.Item.fake()
+        let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake().copy(items: [item]),
+                                                               destinationCountry: Country.fake(),
+                                                               countries: [],
+                                                               currency: "$")
+
+        // When
+        viewModel.contentsType = .other
+        viewModel.contentExplanation = "Test"
+        viewModel.restrictionType = .none
+        viewModel.restrictionComments = ""
+        viewModel.itn = ""
+        viewModel.itemViewModels.first?.description = "Lorem ipsum"
+        viewModel.itemViewModels.first?.value = "1.5"
+        viewModel.itemViewModels.first?.weight = "10"
+        viewModel.itemViewModels.first?.originCountry = Country(code: "VN", name: "Vietnam", states: [])
+        viewModel.itemViewModels.first?.hsTariffNumber = ""
+
+        // Then
+        XCTAssertTrue(viewModel.validForm)
+    }
+
+    func test_validForm_returns_false_when_not_all_fields_are_valid() {
+        // Given
+        let item = ShippingLabelCustomsForm.Item.fake().copy(description: "Test",
+                                                             quantity: 1,
+                                                             value: 10,
+                                                             weight: 1.5,
+                                                             hsTariffNumber: "",
+                                                             originCountry: "US",
+                                                             productID: 123)
+        let viewModel = ShippingLabelCustomsFormInputViewModel(customsForm: ShippingLabelCustomsForm.fake().copy(items: [item]),
+                                                               destinationCountry: Country.fake(),
+                                                               countries: [],
+                                                               currency: "$")
+
+        // When
+        viewModel.contentsType = .other
+        viewModel.contentExplanation = "Test"
+        viewModel.restrictionType = .none
+        viewModel.restrictionComments = ""
+        viewModel.itn = ""
+        viewModel.itemViewModels.first?.description = ""
+
+        // Then
+        XCTAssertFalse(viewModel.validForm)
     }
 }

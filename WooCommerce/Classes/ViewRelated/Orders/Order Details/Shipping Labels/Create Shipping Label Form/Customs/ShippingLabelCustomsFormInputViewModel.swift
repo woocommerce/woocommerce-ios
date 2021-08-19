@@ -38,7 +38,7 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
 
     /// Items contained in the package.
     ///
-    @Published var items: [ShippingLabelCustomsForm.Item]
+    let items: [ShippingLabelCustomsForm.Item]
 
     /// References of item view models.
     ///

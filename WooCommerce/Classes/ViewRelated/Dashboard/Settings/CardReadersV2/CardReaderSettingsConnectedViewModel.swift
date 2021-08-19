@@ -64,7 +64,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
             switch result {
             case .success(let update):
                 self?.readerUpdateAvailable = update != nil ? .isTrue : .isFalse
-            case .failure(_):
+            case .failure:
                 DDLogError("Unexpected error when checking for reader update")
                 self?.readerUpdateAvailable = .isFalse
             }

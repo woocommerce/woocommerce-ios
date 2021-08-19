@@ -14,6 +14,9 @@ final class CardReaderSettingsConnectedViewController: UIViewController, CardRea
     ///
     private var viewModel: CardReaderSettingsConnectedViewModel?
 
+    // TEMPORARY UNTIL PREVIOUS PR LANDS
+    private var showUpdateControls: Bool = true // viewModel.readerUpdateAvailable == .isTrue
+
     /// Table Sections to be rendered
     ///
     private var sections = [Section]()
@@ -54,11 +57,35 @@ private extension CardReaderSettingsConnectedViewController {
     /// Setup the sections in this table view
     ///
     func configureSections() {
-        sections = [Section(title: Localization.sectionHeaderTitle.uppercased(),
-                            rows: [
-                                .connectedReader,
-                                .disconnectButton
-                            ])]
+        sections = []
+
+        /// This section, if present, displays a prompt to update a reader running old software
+        ///
+        if showUpdateControls {
+            sections.append(
+                Section(title: nil,
+                        rows: [
+                            .updatePrompt
+                        ]
+                )
+            )
+        }
+
+        /// This section displays details about the connected reader
+        ///
+        var rows: [Row] = [.connectedReader]
+
+        if showUpdateControls {
+            rows.append(.updateButton)
+        }
+
+        rows.append(.disconnectButton)
+
+        sections.append(
+            Section(title: Localization.sectionHeaderTitle.uppercased(),
+                    rows: rows
+            )
+        )
     }
 
     func configureTable() {
@@ -80,13 +107,23 @@ private extension CardReaderSettingsConnectedViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
+        case let cell as LeftImageTableViewCell where row == .updatePrompt:
+            configureUpdatePrompt(cell: cell)
         case let cell as ConnectedReaderTableViewCell where row == .connectedReader:
             configureConnectedReader(cell: cell)
+        case let cell as ButtonTableViewCell where row == .updateButton:
+            configureUpdateButton(cell: cell)
         case let cell as ButtonTableViewCell where row == .disconnectButton:
-            configureButton(cell: cell)
+            configureDisconnectButton(cell: cell)
         default:
             fatalError()
         }
+    }
+
+    private func configureUpdatePrompt(cell: LeftImageTableViewCell) {
+        cell.configure(image: .infoOutlineImage, text: Localization.updatePromptText)
+        cell.selectionStyle = .none
+        cell.backgroundColor = .warning
     }
 
     private func configureConnectedReader(cell: ConnectedReaderTableViewCell) {
@@ -98,8 +135,16 @@ private extension CardReaderSettingsConnectedViewController {
         cell.selectionStyle = .none
     }
 
-    private func configureButton(cell: ButtonTableViewCell) {
-        cell.configure(title: Localization.buttonTitle) { [weak self] in
+    private func configureUpdateButton(cell: ButtonTableViewCell) {
+        cell.configure(style: .primary, title: Localization.updateButtonTitle, bottomSpacing: 0) {
+            // TODO in a following PR
+        }
+        cell.selectionStyle = .none
+    }
+
+    private func configureDisconnectButton(cell: ButtonTableViewCell) {
+        let style: ButtonTableViewCell.Style = showUpdateControls ? .secondary : .primary
+        cell.configure(style: style, title: Localization.disconnectButtonTitle) { [weak self] in
             self?.viewModel?.disconnectReader()
         }
         cell.selectionStyle = .none
@@ -128,11 +173,14 @@ extension CardReaderSettingsConnectedViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if showUpdateControls {
+            return section == 0 ? CGFloat.leastNonzeroMagnitude : UITableView.automaticDimension
+        }
         return UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return UITableView.automaticDimension
+        return CGFloat.leastNonzeroMagnitude
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -173,13 +221,19 @@ private struct Section {
 }
 
 private enum Row: CaseIterable {
+    case updatePrompt
     case connectedReader
+    case updateButton
     case disconnectButton
 
     var type: UITableViewCell.Type {
         switch self {
+        case .updatePrompt:
+            return LeftImageTableViewCell.self
         case .connectedReader:
             return ConnectedReaderTableViewCell.self
+        case .updateButton:
+            return ButtonTableViewCell.self
         case .disconnectButton:
             return ButtonTableViewCell.self
         }
@@ -189,7 +243,7 @@ private enum Row: CaseIterable {
         switch self {
         case .connectedReader:
             return 60
-        case .disconnectButton:
+        default:
             return UITableView.automaticDimension
         }
     }
@@ -208,13 +262,23 @@ private extension CardReaderSettingsConnectedViewController {
             comment: "Settings > Manage Card Reader > Title for the reader connected screen in settings."
         )
 
+        static let updatePromptText = NSLocalizedString(
+            "Please update your reader software to keep accepting payments",
+            comment: "Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software"
+        )
+
         static let sectionHeaderTitle = NSLocalizedString(
             "Connected Reader",
             comment: "Settings > Manage Card Reader > Connected Reader Table Section Heading"
         )
 
-        static let buttonTitle = NSLocalizedString(
-            "Disconnect",
+        static let updateButtonTitle = NSLocalizedString(
+            "Update Reader Software",
+            comment: "Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader"
+        )
+
+        static let disconnectButtonTitle = NSLocalizedString(
+            "Disconnect Reader",
             comment: "Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader"
         )
     }

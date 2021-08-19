@@ -14,9 +14,6 @@ final class CardReaderSettingsConnectedViewController: UIViewController, CardRea
     ///
     private var viewModel: CardReaderSettingsConnectedViewModel?
 
-    // TEMPORARY UNTIL PREVIOUS PR LANDS
-    private var showUpdateControls: Bool = true // viewModel.readerUpdateAvailable == .isTrue
-
     /// Table Sections to be rendered
     ///
     private var sections = [Section]()
@@ -30,23 +27,58 @@ final class CardReaderSettingsConnectedViewController: UIViewController, CardRea
             DDLogError("Unexpectedly unable to downcast to CardReaderSettingsConnectedViewModel")
             return
         }
+
+        self.viewModel?.didUpdate = onViewModelDidUpdate
     }
 
     // MARK: - Overridden Methods
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         registerTableViewCells()
         configureNavigation()
         configureSections()
         configureTable()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        checkForCardReaderUpdate()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        viewModel?.didUpdate = nil
+        super.viewWillDisappear(animated)
     }
 }
 
 // MARK: - View Configuration
 //
 private extension CardReaderSettingsConnectedViewController {
+    func checkForCardReaderUpdate() {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentSoftwareUpdates) else {
+            return
+        }
+        guard let viewModel = viewModel else {
+            return
+        }
+        viewModel.checkForCardReaderUpdate()
+    }
+
+    func onViewModelDidUpdate() {
+        configureSections()
+        configureTable()
+    }
+
+    func shouldShowUpdateControls() -> Bool {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentSoftwareUpdates) else {
+            return false
+        }
+        guard let viewModel = viewModel else {
+            return false
+        }
+        return viewModel.readerUpdateAvailable == .isTrue
+    }
 
     /// Set the title and back button.
     ///
@@ -61,7 +93,7 @@ private extension CardReaderSettingsConnectedViewController {
 
         /// This section, if present, displays a prompt to update a reader running old software
         ///
-        if showUpdateControls {
+        if shouldShowUpdateControls() {
             sections.append(
                 Section(title: nil,
                         rows: [
@@ -75,7 +107,7 @@ private extension CardReaderSettingsConnectedViewController {
         ///
         var rows: [Row] = [.connectedReader]
 
-        if showUpdateControls {
+        if shouldShowUpdateControls() {
             rows.append(.updateButton)
         }
 
@@ -147,7 +179,7 @@ private extension CardReaderSettingsConnectedViewController {
     }
 
     private func configureDisconnectButton(cell: ButtonTableViewCell) {
-        let style: ButtonTableViewCell.Style = showUpdateControls ? .secondary : .primary
+        let style: ButtonTableViewCell.Style = shouldShowUpdateControls() ? .secondary : .primary
         cell.configure(style: style, title: Localization.disconnectButtonTitle) { [weak self] in
             self?.viewModel?.disconnectReader()
         }
@@ -178,7 +210,7 @@ extension CardReaderSettingsConnectedViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if showUpdateControls {
+        if shouldShowUpdateControls() {
             return section == 0 ? CGFloat.leastNonzeroMagnitude : UITableView.automaticDimension
         }
         return UITableView.automaticDimension
@@ -213,8 +245,6 @@ extension CardReaderSettingsConnectedViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-
-        // TODO: Connect the disconnect button to the view model
     }
 }
 
@@ -279,7 +309,7 @@ private extension CardReaderSettingsConnectedViewController {
 
         static let updateButtonTitle = NSLocalizedString(
             "Update Reader Software",
-            comment: "Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader"
+            comment: "Settings > Manage Card Reader > Connected Reader > A button to update the reader software"
         )
 
         static let disconnectButtonTitle = NSLocalizedString(

@@ -196,11 +196,8 @@ private extension CardPresentPaymentStore {
     func checkForCardReaderUpdate(onCompletion: @escaping (Result<CardReaderSoftwareUpdate?, Error>) -> Void) {
         cardReaderService.checkForUpdate()
             .subscribe(Subscribers.Sink { value in
-                switch value {
-                case .failure(let error):
+                if case .failure(let error) = value {
                     onCompletion(.failure(error))
-                case .finished:
-                    onCompletion(.success(nil))
                 }
             } receiveValue: {softwareUpdate in
                 onCompletion(.success(softwareUpdate))

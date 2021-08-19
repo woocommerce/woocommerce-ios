@@ -59,9 +59,9 @@ final class ShippingLabelCustomsFormInputViewModel: ObservableObject {
     ///
     private let currency: String
 
-    /// Whether ITN validation is required.
+    /// Whether ITN validation is required for the destination country.
     ///
-    private lazy var itnValidationRequired: Bool = {
+    private lazy var itnRequiredForDestination: Bool = {
         Constants.uspsITNRequiredDestinations.contains(destinationCountry.code)
     }()
 
@@ -103,7 +103,7 @@ extension ShippingLabelCustomsFormInputViewModel {
     }
 
     var missingITNForDestination: Bool {
-        if itnValidationRequired && itn.isEmpty {
+        if itnRequiredForDestination && itn.isEmpty {
             return true
         }
         return false
@@ -148,6 +148,7 @@ private extension ShippingLabelCustomsFormInputViewModel {
 
 private extension ShippingLabelCustomsFormInputViewModel {
     enum Constants {
+        // Reference: https://git.io/J0K0r
         static let itnRegex = "^(?:(?:AES X\\d{14})|(?:NOEEI 30\\.\\d{1,2}(?:\\([a-z]\\)(?:\\(\\d\\))?)?))$"
         static let minimumValueRequiredForITNValidation: Decimal = 2_500
 

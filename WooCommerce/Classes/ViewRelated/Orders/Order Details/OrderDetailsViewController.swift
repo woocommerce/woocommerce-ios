@@ -518,8 +518,7 @@ private extension OrderDetailsViewController {
         case let .viewAddOns(addOns):
             itemAddOnsButtonTapped(addOns: addOns)
         case .editCustomerNote:
-            // TODO: Navigate to edit customer note
-            print("Edit Note Tapped")
+            editCustomerNoteTapped()
         }
     }
 
@@ -638,6 +637,11 @@ private extension OrderDetailsViewController {
         popoverController?.sourceView = sourceView
 
         present(actionSheet, animated: true)
+    }
+
+    func editCustomerNoteTapped() {
+        let editNoteViewController = EditCustomerNoteHostingController()
+        present(editNoteViewController, animated: true, completion: nil)
     }
 
     @objc private func collectPayment(at: IndexPath) {

@@ -17,8 +17,6 @@ struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsMultiPackage:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .cardPresentOnboarding:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .cardPresentSoftwareUpdates:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .orderEditing:

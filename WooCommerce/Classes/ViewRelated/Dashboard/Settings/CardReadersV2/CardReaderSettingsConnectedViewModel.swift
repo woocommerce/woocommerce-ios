@@ -61,14 +61,17 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     ///
     func checkForCardReaderUpdate() {
         let action = CardPresentPaymentAction.checkForCardReaderUpdate() { [weak self] result in
+            guard let self = self else {
+                return
+            }
             switch result {
             case .success(let update):
-                self?.readerUpdateAvailable = update != nil ? .isTrue : .isFalse
+                self.readerUpdateAvailable = update != nil ? .isTrue : .isFalse
             case .failure:
                 DDLogError("Unexpected error when checking for reader update")
-                self?.readerUpdateAvailable = .isFalse
+                self.readerUpdateAvailable = .isFalse
             }
-            self?.didUpdate?()
+            self.didUpdate?()
         }
         ServiceLocator.stores.dispatch(action)
     }

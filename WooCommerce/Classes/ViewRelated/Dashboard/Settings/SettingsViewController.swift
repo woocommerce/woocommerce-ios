@@ -209,9 +209,6 @@ private extension SettingsViewController {
     private var storeSettingsRows: [Row] {
         var result = [Row]()
         if canCollectPayments {
-            result.append(.cardReadersV2)
-        }
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentOnboarding) {
             result.append(.inPersonPayments)
         }
         return result

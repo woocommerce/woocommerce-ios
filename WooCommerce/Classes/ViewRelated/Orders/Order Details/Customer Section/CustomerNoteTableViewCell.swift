@@ -6,6 +6,10 @@ final class CustomerNoteTableViewCell: UITableViewCell {
 
     @IBOutlet private weak var bodyLabel: UILabel!
 
+    @IBOutlet private weak var bodyLabelTrailingConstraint: NSLayoutConstraint!
+
+    @IBOutlet private weak var editButton: UIButton!
+
     /// Headline label text
     ///
     var headline: String? {
@@ -28,12 +32,30 @@ final class CustomerNoteTableViewCell: UITableViewCell {
         }
     }
 
+    /// Closure to be invoked when the edit icon is tapped
+    /// Setting a value makes the button visible and insets the body trailing constraint.
+    ///
+    var onEditTapped: (() -> Void)? {
+        didSet {
+            let shouldHideEditButton = onEditTapped == nil
+            editButton.isHidden = shouldHideEditButton
+            bodyLabelTrailingConstraint.constant = shouldHideEditButton ? 0 : -editButton.frame.width
+        }
+    }
+
     override func awakeFromNib() {
         super.awakeFromNib()
         configureBackground()
         configureLabels()
+        configureEditButton()
     }
 
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        headlineLabel.text = nil
+        bodyLabel.text = nil
+        onEditTapped = nil
+    }
 }
 
 
@@ -47,6 +69,15 @@ private extension CustomerNoteTableViewCell {
     func configureLabels() {
         headlineLabel.applyHeadlineStyle()
         bodyLabel.applyBodyStyle()
+    }
+
+    func configureEditButton() {
+        editButton.applyIconButtonStyle(icon: .pencilImage)
+        editButton.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
+    }
+
+    @objc func editButtonTapped() {
+        onEditTapped?()
     }
 }
 

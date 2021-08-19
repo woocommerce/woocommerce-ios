@@ -22,15 +22,13 @@ struct EditCustomerNote: View {
                 .padding()
                 .navigationTitle(Localization.title)
                 .navigationBarTitleDisplayMode(.inline)
+                .navigationBarItems(trailing: Button(Localization.done) { // I couldn't find a way to make the "Done" button bold using a toolbar :-(
+                    print("Done tapped")
+                })
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button(Localization.cancel) {
                             print("Cancel tapped")
-                        }
-                    }
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(Localization.done) {
-                            print("Done tapped")
                         }
                     }
                 }

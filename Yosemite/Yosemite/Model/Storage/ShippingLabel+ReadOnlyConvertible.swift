@@ -21,6 +21,7 @@ extension Storage.ShippingLabel: ReadOnlyConvertible {
         status = shippingLabel.status.rawValue
         productIDs = shippingLabel.productIDs
         productNames = shippingLabel.productNames
+        commercialInvoiceURL = shippingLabel.commercialInvoiceURL
     }
 
     /// Returns a ReadOnly version of the receiver.

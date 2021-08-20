@@ -1,5 +1,6 @@
 import SwiftUI
 import Yosemite
+import Combine
 
 /// View model for `ShippingLabelCustomPackageForm`.
 ///
@@ -39,11 +40,7 @@ final class ShippingLabelCustomPackageFormViewModel: ObservableObject {
     /// Validated custom package
     ///
     private var validatedCustomPackage: ShippingLabelCustomPackage? {
-        guard hasValidName,
-              hasValidDimension(packageLength),
-              hasValidDimension(packageWidth),
-              hasValidDimension(packageHeight),
-              let boxWeight = validatedWeight else {
+        guard isPackageValidated, let boxWeight = Double(emptyPackageWeight) else {
             return nil
         }
         let isLetter = packageType == .letter
@@ -56,6 +53,61 @@ final class ShippingLabelCustomPackageFormViewModel: ObservableObject {
                                           maxWeight: 0)
     }
 
+    // MARK: Validation Properties & Publishers
+
+    var isNameValidated = true
+    var isLengthValidated = true
+    var isWidthValidated = true
+    var isHeightValidated = true
+    var isWeightValidated = true
+    var isPackageValidated = false
+
+    lazy var packageNameValidation: ValidationPublisher = {
+        $packageName.hasContent()
+    }()
+
+    lazy var packageLengthValidation: ValidationPublisher = {
+        $packageLength.greaterThan(0)
+    }()
+
+    lazy var packageWidthValidation: ValidationPublisher = {
+        $packageWidth.greaterThan(0)
+    }()
+
+    lazy var packageHeightValidation: ValidationPublisher = {
+        $packageHeight.greaterThan(0)
+    }()
+
+    lazy var packageWeightValidation: ValidationPublisher = {
+        $emptyPackageWeight.greaterThanOrEqualTo(0)
+    }()
+
+    /// Combines validation for all package dimensions; used to validate the entire package
+    ///
+    lazy var packageDimensionsValidation: ValidationPublisher = {
+        Publishers.CombineLatest3(
+            packageLengthValidation,
+            packageWeightValidation,
+            packageHeightValidation
+        ).map { validatedLength, validatedWeight, validatedHeight in
+            return validatedLength && validatedWeight && validatedHeight
+        }.eraseToAnyPublisher()
+    }()
+
+    /// Validates all fields for a custom package
+    ///
+    lazy var packageValidation: ValidationPublisher = {
+        Publishers.CombineLatest3(packageNameValidation,
+                                  packageDimensionsValidation,
+                                  packageWeightValidation)
+            .map { validatedName, validatedDimensions, validatedWeight in
+                return validatedName && validatedDimensions && validatedWeight
+            }
+            .eraseToAnyPublisher()
+    }()
+
+    // MARK: Initialization
+
     init(package: ShippingLabelCustomPackage? = nil,
          lengthUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit,
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
@@ -67,28 +119,6 @@ final class ShippingLabelCustomPackageFormViewModel: ObservableObject {
         self.packageWidth = package?.getWidth().description ?? ""
         self.packageHeight = package?.getHeight().description ?? ""
         self.emptyPackageWeight = package?.boxWeight.description ?? ""
-    }
-}
-
-// MARK: - Validation
-extension ShippingLabelCustomPackageFormViewModel {
-    var hasValidName: Bool {
-        packageName.trimmingCharacters(in: .whitespacesAndNewlines).isNotEmpty
-    }
-
-    /// Validates that a text field contains a string with Double value greater than 0
-    /// - Parameter dimension: Text field containing the string to validate
-    ///
-    func hasValidDimension(_ dimension: String) -> Bool {
-        let numericDimension = Double(dimension) ?? 0
-        return numericDimension > 0
-    }
-
-    var validatedWeight: Double? {
-        guard let numericWeight = Double(emptyPackageWeight), numericWeight >= 0 else {
-            return nil
-        }
-        return numericWeight
     }
 }
 

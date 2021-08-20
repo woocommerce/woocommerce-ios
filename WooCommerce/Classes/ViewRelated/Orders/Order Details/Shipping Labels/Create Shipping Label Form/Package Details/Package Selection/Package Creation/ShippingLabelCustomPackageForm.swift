@@ -1,9 +1,11 @@
 import SwiftUI
+import Combine
 
 /// Form to create a new custom package to use with shipping labels.
 struct ShippingLabelCustomPackageForm: View {
     private let safeAreaInsets: EdgeInsets
 
+    @Environment(\.presentationMode) var presentation
     @StateObject private var viewModel = ShippingLabelCustomPackageFormViewModel()
     @State private var showingPackageTypes = false
 
@@ -42,11 +44,14 @@ struct ShippingLabelCustomPackageForm: View {
                                              text: $viewModel.packageName,
                                              symbol: nil,
                                              keyboardType: .default)
+                            .onReceive(viewModel.packageNameValidation, perform: { validated in
+                                viewModel.isNameValidated = validated
+                            })
                     }
                     .padding(.horizontal, insets: safeAreaInsets)
                     Divider()
                     validationErrorRow
-                        .renderedIf(!viewModel.hasValidName)
+                        .renderedIf(!viewModel.isNameValidated)
                 }
                 .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .horizontal))
 
@@ -61,13 +66,15 @@ struct ShippingLabelCustomPackageForm: View {
                                              text: $viewModel.packageLength,
                                              symbol: viewModel.lengthUnit,
                                              keyboardType: .decimalPad)
-
+                            .onReceive(viewModel.packageLengthValidation, perform: { validated in
+                                viewModel.isLengthValidated = validated
+                            })
                         Divider()
                             .padding(.leading, Constants.horizontalPadding)
                     }
                     .padding(.horizontal, insets: safeAreaInsets)
                     validationErrorRow
-                        .renderedIf(!viewModel.hasValidDimension(viewModel.packageLength))
+                        .renderedIf(!viewModel.isLengthValidated)
 
                     // Package width
                     VStack(spacing: 0) {
@@ -76,13 +83,16 @@ struct ShippingLabelCustomPackageForm: View {
                                              text: $viewModel.packageWidth,
                                              symbol: viewModel.lengthUnit,
                                              keyboardType: .decimalPad)
+                            .onReceive(viewModel.packageWidthValidation, perform: { validated in
+                                viewModel.isWidthValidated = validated
+                            })
 
                         Divider()
                             .padding(.leading, Constants.horizontalPadding)
                     }
                     .padding(.horizontal, insets: safeAreaInsets)
                     validationErrorRow
-                        .renderedIf(!viewModel.hasValidDimension(viewModel.packageWidth))
+                        .renderedIf(!viewModel.isWidthValidated)
 
                     // Package height
                     VStack(spacing: 0) {
@@ -91,11 +101,14 @@ struct ShippingLabelCustomPackageForm: View {
                                              text: $viewModel.packageHeight,
                                              symbol: viewModel.lengthUnit,
                                              keyboardType: .decimalPad)
+                            .onReceive(viewModel.packageHeightValidation, perform: { validated in
+                                viewModel.isHeightValidated = validated
+                            })
                     }
                     .padding(.horizontal, insets: safeAreaInsets)
                     Divider()
                     validationErrorRow
-                        .renderedIf(!viewModel.hasValidDimension(viewModel.packageHeight))
+                        .renderedIf(!viewModel.isHeightValidated)
                 }
                 .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .horizontal))
 
@@ -109,15 +122,30 @@ struct ShippingLabelCustomPackageForm: View {
                                          keyboardType: .decimalPad)
                         .padding(.horizontal, insets: safeAreaInsets)
                         .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .horizontal))
+                        .onReceive(viewModel.packageWeightValidation, perform: { validated in
+                            viewModel.isWeightValidated = validated
+                        })
                     Divider()
                     validationErrorRow
-                        .renderedIf(viewModel.validatedWeight == nil)
+                        .renderedIf(!viewModel.isWeightValidated)
                     ListHeaderView(text: Localization.weightFooter, alignment: .left)
                         .padding(.horizontal, insets: safeAreaInsets)
                 }
         }
         .background(Color(.listBackground))
         .ignoresSafeArea(.container, edges: .horizontal)
+        .minimalNavigationBarBackButton()
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing, content: {
+                Button("Done", action: {
+                    // TODO-4743: Save custom package and add it to package list
+                    presentation.wrappedValue.dismiss()
+                }).disabled(!viewModel.isPackageValidated)
+            })
+        }
+        .onReceive(viewModel.packageValidation, perform: { validated in
+            viewModel.isPackageValidated = validated
+        })
     }
 
     private var validationErrorRow: some View {
@@ -162,6 +190,7 @@ private extension ShippingLabelCustomPackageForm {
         static let validationError = NSLocalizedString(
             "This field is required",
             comment: "Error for missing package details on the Add New Custom Package screen in Shipping Label flow")
+        static let doneButton = NSLocalizedString("Done", comment: "Done navigation button in the Custom Package screen in Shipping Label flow")
     }
 
     enum Constants {

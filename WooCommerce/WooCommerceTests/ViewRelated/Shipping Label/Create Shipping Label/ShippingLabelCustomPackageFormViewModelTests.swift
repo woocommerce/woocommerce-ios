@@ -1,4 +1,5 @@
 import XCTest
+import Combine
 @testable import WooCommerce
 
 class ShippingLabelCustomPackageFormViewModelTests: XCTestCase {
@@ -26,7 +27,9 @@ class ShippingLabelCustomPackageFormViewModelTests: XCTestCase {
         viewModel.packageName = "Test"
 
         // Then
-        XCTAssertTrue(viewModel.hasValidName)
+        let _ = viewModel.packageNameValidation.sink { validated in
+            XCTAssertTrue(validated)
+        }
     }
 
     func test_package_name_validation_fails_if_name_is_empty() {
@@ -37,7 +40,9 @@ class ShippingLabelCustomPackageFormViewModelTests: XCTestCase {
         viewModel.packageName = ""
 
         // Then
-        XCTAssertFalse(viewModel.hasValidName)
+        let _ = viewModel.packageNameValidation.sink { validated in
+            XCTAssertFalse(validated)
+        }
     }
 
     func test_package_name_validation_fails_if_name_has_only_spaces() {
@@ -48,37 +53,135 @@ class ShippingLabelCustomPackageFormViewModelTests: XCTestCase {
         viewModel.packageName = " "
 
         // Then
-        XCTAssertFalse(viewModel.hasValidName)
+        let _ = viewModel.packageNameValidation.sink { validated in
+            XCTAssertFalse(validated)
+        }
     }
 
-    func test_package_dimension_validation_succeeds_if_dimension_is_valid_nonzero_double() {
+    func test_package_length_validation_succeeds_if_length_is_valid_nonzero_double() {
         // Given
         let viewModel = ShippingLabelCustomPackageFormViewModel()
 
-        // When
+        // When & Then
         viewModel.packageLength = "1.5"
-        viewModel.packageWidth = "0.1"
-        viewModel.packageHeight = "1"
+        let _ = viewModel.packageLengthValidation.sink { validated in
+            XCTAssertTrue(validated)
+        }
 
-        // Then
-        XCTAssertTrue(viewModel.hasValidDimension(viewModel.packageLength))
-        XCTAssertTrue(viewModel.hasValidDimension(viewModel.packageWidth))
-        XCTAssertTrue(viewModel.hasValidDimension(viewModel.packageHeight))
+        viewModel.packageLength = "0.1"
+        let _ = viewModel.packageLengthValidation.sink { validated in
+            XCTAssertTrue(validated)
+        }
+
+        viewModel.packageLength = "1"
+        let _ = viewModel.packageLengthValidation.sink { validated in
+            XCTAssertTrue(validated)
+        }
     }
 
-    func test_package_dimension_validation_fails_if_dimension_is_invalid_double() {
+    func test_package_length_validation_fails_if_length_is_invalid_double() {
         // Given
         let viewModel = ShippingLabelCustomPackageFormViewModel()
 
-        // When
+        // When & Then
         viewModel.packageLength = "0"
-        viewModel.packageWidth = "1..0"
-        viewModel.packageHeight = "abc"
+        let _ = viewModel.packageLengthValidation.sink { validated in
+            XCTAssertFalse(validated)
+        }
 
-        // Then
-        XCTAssertFalse(viewModel.hasValidDimension(viewModel.packageLength))
-        XCTAssertFalse(viewModel.hasValidDimension(viewModel.packageWidth))
-        XCTAssertFalse(viewModel.hasValidDimension(viewModel.packageHeight))
+        viewModel.packageLength = "1..0"
+        let _ = viewModel.packageLengthValidation.sink { validated in
+            XCTAssertFalse(validated)
+        }
+
+        viewModel.packageLength = "abc"
+        let _ = viewModel.packageLengthValidation.sink { validated in
+            XCTAssertFalse(validated)
+        }
+    }
+
+    func test_package_width_validation_succeeds_if_width_is_valid_nonzero_double() {
+        // Given
+        let viewModel = ShippingLabelCustomPackageFormViewModel()
+
+        // When & Then
+        viewModel.packageWidth = "1.5"
+        let _ = viewModel.packageWidthValidation.sink { validated in
+            XCTAssertTrue(validated)
+        }
+
+        viewModel.packageWidth = "0.1"
+        let _ = viewModel.packageWidthValidation.sink { validated in
+            XCTAssertTrue(validated)
+        }
+
+        viewModel.packageWidth = "1"
+        let _ = viewModel.packageWidthValidation.sink { validated in
+            XCTAssertTrue(validated)
+        }
+    }
+
+    func test_package_width_validation_fails_if_width_is_invalid_double() {
+        // Given
+        let viewModel = ShippingLabelCustomPackageFormViewModel()
+
+        // When & Then
+        viewModel.packageWidth = "0"
+        let _ = viewModel.packageWidthValidation.sink { validated in
+            XCTAssertFalse(validated)
+        }
+
+        viewModel.packageWidth = "1..0"
+        let _ = viewModel.packageWidthValidation.sink { validated in
+            XCTAssertFalse(validated)
+        }
+
+        viewModel.packageWidth = "abc"
+        let _ = viewModel.packageWidthValidation.sink { validated in
+            XCTAssertFalse(validated)
+        }
+    }
+
+    func test_package_height_validation_succeeds_if_height_is_valid_nonzero_double() {
+        // Given
+        let viewModel = ShippingLabelCustomPackageFormViewModel()
+
+        // When & Then
+        viewModel.packageHeight = "1.5"
+        let _ = viewModel.packageHeightValidation.sink { validated in
+            XCTAssertTrue(validated)
+        }
+
+        viewModel.packageHeight = "0.1"
+        let _ = viewModel.packageHeightValidation.sink { validated in
+            XCTAssertTrue(validated)
+        }
+
+        viewModel.packageHeight = "1"
+        let _ = viewModel.packageHeightValidation.sink { validated in
+            XCTAssertTrue(validated)
+        }
+    }
+
+    func test_package_height_validation_fails_if_height_is_invalid_double() {
+        // Given
+        let viewModel = ShippingLabelCustomPackageFormViewModel()
+
+        // When & Then
+        viewModel.packageHeight = "0"
+        let _ = viewModel.packageHeightValidation.sink { validated in
+            XCTAssertFalse(validated)
+        }
+
+        viewModel.packageHeight = "1..0"
+        let _ = viewModel.packageHeightValidation.sink { validated in
+            XCTAssertFalse(validated)
+        }
+
+        viewModel.packageHeight = "abc"
+        let _ = viewModel.packageHeightValidation.sink { validated in
+            XCTAssertFalse(validated)
+        }
     }
 
     func test_package_weight_validation_succeeds_if_weight_is_valid_double() {
@@ -87,10 +190,14 @@ class ShippingLabelCustomPackageFormViewModelTests: XCTestCase {
 
         // When & Then
         viewModel.emptyPackageWeight = "0"
-        XCTAssertNotNil(viewModel.validatedWeight)
+        let _ = viewModel.packageWeightValidation.sink { validated in
+            XCTAssertTrue(validated)
+        }
 
         viewModel.emptyPackageWeight = "1.5"
-        XCTAssertNotNil(viewModel.validatedWeight)
+        let _ = viewModel.packageWeightValidation.sink { validated in
+            XCTAssertTrue(validated)
+        }
     }
 
     func test_package_weight_validation_fails_if_weight_is_invalid_double() {
@@ -99,12 +206,52 @@ class ShippingLabelCustomPackageFormViewModelTests: XCTestCase {
 
         // When & Then
         viewModel.emptyPackageWeight = "-1"
-        XCTAssertNil(viewModel.validatedWeight)
+        let _ = viewModel.packageWeightValidation.sink { validated in
+            XCTAssertFalse(validated)
+        }
 
         viewModel.emptyPackageWeight = "1..0"
-        XCTAssertNil(viewModel.validatedWeight)
+        let _ = viewModel.packageWeightValidation.sink { validated in
+            XCTAssertFalse(validated)
+        }
 
         viewModel.emptyPackageWeight = "abc"
-        XCTAssertNil(viewModel.validatedWeight)
+        let _ = viewModel.packageWeightValidation.sink { validated in
+            XCTAssertFalse(validated)
+        }
+    }
+
+    func test_package_validation_succeeds_if_all_fields_are_valid() {
+        // Given
+        let viewModel = ShippingLabelCustomPackageFormViewModel()
+
+        // When
+        viewModel.packageName = "Test"
+        viewModel.packageLength = "1"
+        viewModel.packageWidth = "1"
+        viewModel.packageHeight = "1"
+        viewModel.emptyPackageWeight = "1"
+
+        // Then
+        let _ = viewModel.packageValidation.sink { validated in
+            XCTAssertTrue(validated)
+        }
+    }
+
+    func test_package_validation_fails_if_any_fields_are_invalid() {
+        // Given
+        let viewModel = ShippingLabelCustomPackageFormViewModel()
+
+        // When
+        viewModel.packageName = ""
+        viewModel.packageLength = "1"
+        viewModel.packageWidth = "1"
+        viewModel.packageHeight = "1"
+        viewModel.emptyPackageWeight = "1"
+
+        // Then
+        let _ = viewModel.packageValidation.sink { validated in
+            XCTAssertFalse(validated)
+        }
     }
 }

@@ -361,13 +361,15 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertEqual(updatedRows?[2].displayMode, .editable)
     }
 
-    func test_validateAddress_returns_validation_error_when_missing_name() {
+    func test_validateAddress_returns_validation_error_when_missing_name_without_triggering_action() {
         // Given
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
         let expectedValidationError = ShippingLabelAddressValidationError(addressError: nil, generalError: "Name is required")
         let originAddress = Address.fake()
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
                                                                     originAddress: originAddress,
-                                                                    destinationAddress: nil)
+                                                                    destinationAddress: nil,
+                                                                    stores: storesManager)
 
         // When
         shippingLabelFormViewModel.validateAddress(type: .origin) { validationState, validationSuccess in
@@ -377,6 +379,55 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
             }
             XCTAssertEqual(error, expectedValidationError)
         }
+
+        // Then
+        let triggeredValidateAddressAction: Bool = {
+            var triggered = false
+            for action in storesManager.receivedActions {
+                if case ShippingLabelAction.validateAddress = action {
+                    triggered = true
+                    break
+                }
+            }
+            return triggered
+        }()
+        XCTAssertFalse(triggeredValidateAddressAction)
+    }
+
+    func test_validateAddress_triggers_validate_action_when_name_is_not_missing() {
+        // Given
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        let originAddress = Address(firstName: "Lorem",
+                                    lastName: "Ipsum",
+                                    company: nil,
+                                    address1: "",
+                                    address2: nil,
+                                    city: "",
+                                    state: "",
+                                    postcode: "",
+                                    country: "",
+                                    phone: nil,
+                                    email: nil)
+        let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                                    originAddress: originAddress,
+                                                                    destinationAddress: nil,
+                                                                    stores: storesManager)
+
+        // When
+        shippingLabelFormViewModel.validateAddress(type: .origin) { _, _ in }
+
+        // Then
+        let triggeredValidateAddressAction: Bool = {
+            var triggered = false
+            for action in storesManager.receivedActions {
+                if case ShippingLabelAction.validateAddress = action {
+                    triggered = true
+                    break
+                }
+            }
+            return triggered
+        }()
+        XCTAssertTrue(triggeredValidateAddressAction)
     }
 
     func test_handlePaymentMethodValueChanges_returns_updated_data_and_state_with_no_selected_payment_method() {

@@ -20,14 +20,7 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
 
     /// Price of item per unit.
     ///
-    @Published var value: String {
-        didSet {
-            guard let value = getValidatedValue(from: value) else {
-                return validatedTotalValue = nil
-            }
-            validatedTotalValue = Decimal(value) * quantity
-        }
-    }
+    @Published var value: String
 
     /// Weight of item per unit.
     ///
@@ -38,7 +31,6 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
     @Published var hsTariffNumber: String {
         didSet {
             limitHSTariffNumberLength()
-            validatedHSTariffNumber = getValidateHSTariffNumber(hsTariffNumber)
         }
     }
 
@@ -99,6 +91,8 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
         self.weightUnit = weightUnit ?? ""
         self.originCountry = countries.first(where: { $0.code == item.originCountry }) ?? Country(code: "", name: "", states: [])
 
+        configureValidatedTotalValue()
+        configureValidatedHSTariffNumber()
         configureValidationCheck()
     }
 }
@@ -181,6 +175,30 @@ private extension ShippingLabelCustomsFormItemDetailsViewModel {
             }
             .removeDuplicates()
             .assign(to: &$validItem)
+    }
+
+    /// Update validated total value on change of total value.
+    ///
+    func configureValidatedTotalValue() {
+        $value
+            .map { [weak self] value -> Decimal? in
+                guard let self = self,
+                      let validatedValue = self.getValidatedValue(from: value) else {
+                    return nil
+                }
+                return Decimal(validatedValue) * self.quantity
+            }
+            .assign(to: &$validatedTotalValue)
+    }
+
+    /// Update validated tariff number on change of tariff number.
+    ///
+    func configureValidatedHSTariffNumber() {
+        $hsTariffNumber
+            .map { [weak self] number -> String? in
+                self?.getValidateHSTariffNumber(number)
+            }
+            .assign(to: &$validatedHSTariffNumber)
     }
 
     /// Limit length HS Tariff Number to only 6 characters max.

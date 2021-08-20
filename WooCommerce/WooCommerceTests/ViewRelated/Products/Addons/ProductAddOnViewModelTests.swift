@@ -89,4 +89,22 @@ class ProductAddOnViewModelTests: XCTestCase {
         ])
         assertEqual(viewModel, expected)
     }
+
+    func test_percentage_options_are_properly_formatted_from_entity() {
+        // Given
+        let productAddOn = Yosemite.ProductAddOn.fake().copy(name: "Name", description: "Description", price: "20.0", options: [
+            ProductAddOnOption.fake().copy(label: "Option 1", price: "9", priceType: .percentageBased),
+            ProductAddOnOption.fake().copy(label: "Option 2", price: "5.3", priceType: .percentageBased),
+        ])
+
+        // When
+        let viewModel = ProductAddOnViewModel(addOn: productAddOn, currencyFormatter: currencyFormatter)
+
+        // Then
+        let expected = ProductAddOnViewModel(name: "Name", description: "Description", price: "$20.00", options: [
+            .init(name: "Option 1", price: "9%", offSetDivider: true),
+            .init(name: "Option 2", price: "5.3%", offSetDivider: false),
+        ])
+        assertEqual(viewModel, expected)
+    }
 }

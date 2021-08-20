@@ -520,6 +520,9 @@ private extension OrderDetailsViewController {
         case .editCustomerNote:
             // TODO: Navigate to edit customer note
             print("Edit Note Tapped")
+        case .editShippingAddress:
+            // TODO: Navigate to edit customer note
+            print("Edit Shipping Address Tapped")
         }
     }
 

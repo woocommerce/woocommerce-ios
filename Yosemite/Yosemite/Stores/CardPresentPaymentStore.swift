@@ -201,11 +201,15 @@ private extension CardPresentPaymentStore {
                     if case .failure(let error) = value {
                         onCompletion(.failure(error))
                     }
+
                 },
                 // If the future is a success, it will fire receiveValue and receiveCompletion
                 receiveValue: { softwareUpdate in
                     onCompletion(.success(softwareUpdate))
                 })
+            // Note: We don't need to explicitly call cancel on this subscription since
+            // when the publisher completes, cancel will be called for us, and a Future
+            // completes after fulfilling its promise.
             .store(in: &cancellables)
     }
 

@@ -45,6 +45,7 @@ struct EditCustomerNote: View {
                     }
                 }
         }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 

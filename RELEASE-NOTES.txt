@@ -6,6 +6,7 @@
 - [*] Fix: The refund button within Order Details will be hidden if the refund is zero. [https://github.com/woocommerce/woocommerce-ios/pull/4789]
 - [*] Fix: Incorrect arrow direction for right-to-left languages on Shipping Label flow. [https://github.com/woocommerce/woocommerce-ios/pull/4796]
 - [*] Fix: Shouldn't be able to schedule a sale without sale price. [https://github.com/woocommerce/woocommerce-ios/pull/4825]
+- [*] Fix: Edit address screen is pushed twice in Shipping Label flow when missing name in origin or destination address. [https://github.com/woocommerce/woocommerce-ios/pull/4845]
 
 7.3
 -----

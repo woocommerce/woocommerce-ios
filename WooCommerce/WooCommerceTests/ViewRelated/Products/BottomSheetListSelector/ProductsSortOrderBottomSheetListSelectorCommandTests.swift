@@ -4,16 +4,25 @@ import XCTest
 
 final class ProductsSortOrderBottomSheetListSelectorCommandTests: XCTestCase {
     func testInitialSelectedValue() {
+        // Arrange
         let selected = ProductsSortOrder.nameAscending
-        let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: selected)
+        var selectedActions = [ProductsSortOrder]()
+        let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: selected) { (selected) in
+            selectedActions.append(selected)
+        }
+        // Action
+        command.handleSelectedChange(selected: .nameAscending)
+        // Assert
         XCTAssertEqual(command.selected, selected)
     }
 
     func testSelectedValueAfterChange() {
         // Arrange
         let selected = ProductsSortOrder.nameAscending
-        let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: selected)
-
+        var selectedActions = [ProductsSortOrder]()
+        let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: selected) { (selected) in
+            selectedActions.append(selected)
+        }
         // Action
         let newSelected = ProductsSortOrder.dateDescending
         command.handleSelectedChange(selected: newSelected)
@@ -25,8 +34,12 @@ final class ProductsSortOrderBottomSheetListSelectorCommandTests: XCTestCase {
     func testIsSelectedValueAfterChange() {
         // Arrange
         let selected = ProductsSortOrder.nameAscending
+        var selectedActions = [ProductsSortOrder]()
         let notSelected: [ProductsSortOrder] = [.nameDescending, .dateAscending, .dateDescending]
-        let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: selected)
+        //
+        let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: selected) { (selected) in
+            selectedActions.append(selected)
+        }
         XCTAssertTrue(command.isSelected(model: selected))
         notSelected.forEach { notSelectedSortOrder in
             XCTAssertFalse(command.isSelected(model: notSelectedSortOrder))

@@ -137,7 +137,7 @@ struct ShippingLabelCustomPackageForm: View {
         .minimalNavigationBarBackButton()
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing, content: {
-                Button("Done", action: {
+                Button(Localization.doneButton, action: {
                     // TODO-4743: Save custom package and add it to package list
                     presentation.wrappedValue.dismiss()
                 }).disabled(!viewModel.isPackageValidated)

@@ -302,7 +302,7 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
-    public func checkForUpdate() -> Future<CardReaderSoftwareUpdate, Error> {
+    public func checkForUpdate() -> Future<CardReaderSoftwareUpdate?, Error> {
         return Future() { promise in
             Terminal.shared.checkForUpdate { [weak self] (softwareUpdate, error) in
                 guard let self = self else {
@@ -319,6 +319,10 @@ extension StripeCardReaderService: CardReaderService {
                     self.pendingSoftwareUpdate = softwareUpdate
                     let update = CardReaderSoftwareUpdate(update: softwareUpdate)
                     promise(.success(update))
+                } else {
+                    // There is no software update available
+                    self.pendingSoftwareUpdate = nil
+                    promise(.success(nil))
                 }
             }
         }

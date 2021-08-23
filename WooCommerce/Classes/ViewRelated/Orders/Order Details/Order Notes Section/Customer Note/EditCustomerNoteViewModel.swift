@@ -23,4 +23,11 @@ final class EditCustomerNoteViewModel {
         self.originalNote = order.customerNote ?? ""
         self.newNote = self.originalNote
     }
+
+    /// Member wise initializer
+    ///
+    internal init(originalNote: String, newNote: String) {
+        self.originalNote = originalNote
+        self.newNote = newNote
+    }
 }

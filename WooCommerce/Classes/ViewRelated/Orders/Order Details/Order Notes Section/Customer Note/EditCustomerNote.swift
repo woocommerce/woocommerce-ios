@@ -4,8 +4,8 @@ import SwiftUI
 /// Hosting controller that wraps an `EditCustomerNote` view.
 ///
 final class EditCustomerNoteHostingController: UIHostingController<EditCustomerNote> {
-    init() {
-        super.init(rootView: EditCustomerNote())
+    init(viewModel: EditCustomerNoteViewModel) {
+        super.init(rootView: EditCustomerNote(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismiss = { [weak self] in
@@ -26,12 +26,13 @@ struct EditCustomerNote: View {
     ///
     var dismiss: (() -> Void) = {}
 
-    // TODO: Replace with view model backed value
-    @State private var textContent = "Tap and edit me"
+    /// View Model for the view
+    ///
+    @ObservedObject private(set) var viewModel: EditCustomerNoteViewModel
 
     var body: some View {
         NavigationView {
-            TextEditor(text: $textContent)
+            TextEditor(text: $viewModel.newNote)
                 .padding()
                 .navigationTitle(Localization.title)
                 .navigationBarTitleDisplayMode(.inline)
@@ -61,7 +62,7 @@ private extension EditCustomerNote {
 // MARK: Previews
 struct EditCustomerNote_Previews: PreviewProvider {
     static var previews: some View {
-        EditCustomerNote()
+        EditCustomerNote(viewModel: .init(originalNote: "Note", newNote: "Note with an edit"))
             .environment(\.colorScheme, .light)
     }
 }

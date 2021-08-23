@@ -9,9 +9,10 @@ final class EditCustomerNoteViewModel: ObservableObject {
     ///
     private let originalNote: String
 
-    /// New content to submit
+    /// New content to submit.
+    /// Binding property modified at the view level.
     ///
-    @Published private(set) var newNote: String
+    @Published var newNote: String
 
     /// True when there are changes to the `initialNote`. False otherwise.
     ///
@@ -21,13 +22,15 @@ final class EditCustomerNoteViewModel: ObservableObject {
 
     init(order: Order) {
         self.originalNote = order.customerNote ?? ""
-        self.newNote = self.originalNote
+        self.newNote = originalNote
+        //self._newNote = Binding<String>.constant(originalNote)
     }
 
     /// Member wise initializer
     ///
     internal init(originalNote: String, newNote: String) {
         self.originalNote = originalNote
-        self.newNote = newNote
+        self.newNote = originalNote
+        //self._newNote = Binding<String>.constant(originalNote)
     }
 }

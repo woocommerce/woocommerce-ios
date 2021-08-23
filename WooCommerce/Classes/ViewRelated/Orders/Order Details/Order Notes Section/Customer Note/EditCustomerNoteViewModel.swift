@@ -12,7 +12,7 @@ final class EditCustomerNoteViewModel: ObservableObject {
     /// New content to submit.
     /// Binding property modified at the view level.
     ///
-    @Published var newNote: String
+    var newNote: String
 
     /// True when there are changes to the `initialNote`. False otherwise.
     ///

@@ -36,10 +36,12 @@ struct EditCustomerNote: View {
                 .padding()
                 .navigationTitle(Localization.title)
                 .navigationBarTitleDisplayMode(.inline)
-                .navigationBarItems(trailing: Button(Localization.done) { // I couldn't find a way to make the "Done" button bold using a toolbar :-(
-                    // TODO: submit done action
-                    print("Done tapped")
-                })
+                .navigationBarItems(
+                    trailing: Button(Localization.done) { // I couldn't find a way to make the "Done" button bold using a toolbar :-(
+                        // TODO: submit done action
+                        print("Done tapped")
+                    }
+                    .disabled(!viewModel.doneEnabled))
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button(Localization.cancel, action: dismiss)

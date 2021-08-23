@@ -26,4 +26,20 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(doneButtonEnabled)
     }
+
+    func test_loading_indicator_gets_disabled_after_the_network_operation_completes() {
+        // Given
+        let viewModel = EditCustomerNoteViewModel(originalNote: "Original", newNote: "New")
+        XCTAssertFalse(viewModel.showLoadingIndicator)
+
+        // When
+        viewModel.updateNote()
+
+        // Then
+        XCTAssertTrue(viewModel.showLoadingIndicator)
+        waitUntil {
+            !viewModel.showLoadingIndicator
+        }
+
+    }
 }

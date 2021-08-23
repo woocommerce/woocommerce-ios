@@ -20,6 +20,11 @@ final class EditCustomerNoteViewModel: ObservableObject {
         originalNote != newNote
     }
 
+    /// True when the loading spinner should be shown.
+    /// Like when performing a network operation
+    ///
+    private(set) var showLoadingIndicator: Bool = false
+
     init(order: Order) {
         self.originalNote = order.customerNote ?? ""
         self.newNote = originalNote
@@ -32,5 +37,16 @@ final class EditCustomerNoteViewModel: ObservableObject {
         self.originalNote = originalNote
         self.newNote = originalNote
         //self._newNote = Binding<String>.constant(originalNote)
+    }
+
+    /// Update the note remotely and fire and try to dismiss the view.
+    ///
+    func updateNote() {
+        // TODO: Fire network request & dismiss the view
+        // Dummy code
+        showLoadingIndicator = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+            self?.showLoadingIndicator = false
+        }
     }
 }

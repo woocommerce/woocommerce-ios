@@ -1,5 +1,6 @@
-E-mailing a note to a customer for an order with no e-mail address doesn’t make much sense – so we’re hiding that option now in that case.
+- [*] Fix an issue where some extension was not shown in order item details. [https://github.com/woocommerce/woocommerce-ios/pull/4753]
+- [*] Fix: The refund button within Order Details will be hidden if the refund is zero. [https://github.com/woocommerce/woocommerce-ios/pull/4789]
+- [*] Fix: Incorrect arrow direction for right-to-left languages on Shipping Label flow. [https://github.com/woocommerce/woocommerce-ios/pull/4796]
+- [*] Fix: Shouldn't be able to schedule a sale without sale price. [https://github.com/woocommerce/woocommerce-ios/pull/4825]
+- [*] Fix: Edit address screen is pushed twice in Shipping Label flow when missing name in origin or destination address. [https://github.com/woocommerce/woocommerce-ios/pull/4845]
 
-Some merchants mentioned to us that orders with negative prices weren’t showing up correctly. We’ve fixed that issue, and now you should feel more positive!
-
-This release also contains a bunch of tiny improvements to make your experience smoother overall. We hope you notice the love we put into our software.

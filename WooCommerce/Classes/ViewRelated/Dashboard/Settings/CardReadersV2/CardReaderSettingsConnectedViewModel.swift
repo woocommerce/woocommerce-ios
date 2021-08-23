@@ -3,6 +3,13 @@ import Yosemite
 
 final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedViewModel {
 
+    enum ReaderUpdateActiveView {
+        case none
+        case updateInProgress
+        case updateSucceeded
+        case updateFailed
+    }
+
     private(set) var shouldShow: CardReaderSettingsTriState = .isUnknown
     var didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?
     var didUpdate: (() -> Void)?
@@ -11,6 +18,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     private var connectedReaders = [CardReader]()
     private let knownReadersProvider: CardReaderSettingsKnownReadersProvider?
     private(set) var readerUpdateAvailable: CardReaderSettingsTriState = .isUnknown
+    private(set) var readerUpdateActiveView: ReaderUpdateActiveView = .none
 
     var connectedReaderID: String?
     var connectedReaderBatteryLevel: String?
@@ -73,6 +81,34 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
             }
             self.didUpdate?()
         }
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    /// Allows the view controller to kick off a card reader update
+    ///
+    func startCardReaderUpdate() {
+        let action = CardPresentPaymentAction.startCardReaderUpdate(
+            onProgress: { [weak self] progress in
+                guard let self = self else {
+                    return
+                }
+                self.readerUpdateActiveView = .updateInProgress
+                self.didUpdate?()
+            },
+            onCompletion: { [weak self] result in
+                guard let self = self else {
+                    return
+                }
+                switch result {
+                case .success():
+                    self.readerUpdateAvailable = .isFalse
+                    self.readerUpdateActiveView = .updateSucceeded
+                case .failure:
+                    self.readerUpdateActiveView = .updateFailed
+                }
+                self.didUpdate?()
+            }
+        )
         ServiceLocator.stores.dispatch(action)
     }
 

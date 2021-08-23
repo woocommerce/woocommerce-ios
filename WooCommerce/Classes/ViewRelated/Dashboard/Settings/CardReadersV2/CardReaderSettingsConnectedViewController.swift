@@ -18,6 +18,12 @@ final class CardReaderSettingsConnectedViewController: UIViewController, CardRea
     ///
     private var sections = [Section]()
 
+    /// Last known update view
+    private var lastknownUpdateView: CardReaderSettingsConnectedViewModel.ReaderUpdateActiveView = .none
+
+    /// Update view controller
+    private var updateProgressViewController: CardPresentPaymentsUpdateViewController?
+
     /// Accept our viewmodel
     ///
     func configure(viewModel: CardReaderSettingsPresentedViewModel) {
@@ -68,6 +74,7 @@ private extension CardReaderSettingsConnectedViewController {
     func onViewModelDidUpdate() {
         configureSections()
         configureTable()
+        configureUpdateView()
     }
 
     func shouldShowUpdateControls() -> Bool {
@@ -127,6 +134,37 @@ private extension CardReaderSettingsConnectedViewController {
         tableView.reloadData()
     }
 
+    func configureUpdateView() {
+        guard viewModel != nil else {
+            return
+        }
+        guard let activeUpdateView = viewModel?.readerUpdateActiveView else {
+            return
+        }
+
+        if lastknownUpdateView == activeUpdateView {
+            return
+        }
+
+        // Close anything that needs closing
+        if lastknownUpdateView == .updateInProgress {
+            updateProgressViewController?.dismiss(animated: true, completion: nil)
+        }
+
+        // Open anything that needs opening
+        if activeUpdateView == .updateInProgress {
+            updateProgressViewController = CardPresentPaymentsUpdateViewController()
+            self.present(updateProgressViewController!, animated: true, completion: nil)
+        }
+
+        // TODO - success snackbar
+
+        // TODO - failure modal
+
+        lastknownUpdateView = activeUpdateView
+
+    }
+
     /// Register table cells.
     ///
     func registerTableViewCells() {
@@ -172,7 +210,7 @@ private extension CardReaderSettingsConnectedViewController {
 
     private func configureUpdateButton(cell: ButtonTableViewCell) {
         cell.configure(style: .primary, title: Localization.updateButtonTitle, bottomSpacing: 0) {
-            // TODO in a following PR
+            self.viewModel?.startCardReaderUpdate()
         }
         cell.selectionStyle = .none
         cell.backgroundColor = .clear

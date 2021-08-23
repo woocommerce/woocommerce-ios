@@ -3,7 +3,7 @@ import Yosemite
 
 /// View Model for the Edit Customer Note screen
 ///
-final class EditCustomerNoteViewModel {
+final class EditCustomerNoteViewModel: ObservableObject {
 
     /// Original content of the order customer provided note
     ///
@@ -11,7 +11,7 @@ final class EditCustomerNoteViewModel {
 
     /// New content to submit
     ///
-    private var newNote: String
+    @Published private(set) var newNote: String
 
     /// True when there are changes to the `initialNote`. False otherwise.
     ///

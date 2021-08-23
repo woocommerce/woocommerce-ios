@@ -74,7 +74,7 @@ private extension AnnouncementsStore {
             return
         }
 
-        remote.getAnnouncements(appId: Constants.WooCoomerceAppId,
+        remote.getAnnouncements(appId: Constants.WooCommerceAppId,
                                 appVersion: appVersion,
                                 locale: languageCode) { [weak self] result in
             switch result {
@@ -110,5 +110,5 @@ private enum Constants {
     static let featureAnnouncementsFileName = "feature-announcements.plist"
 
     // MARK: - App IDs
-    static let WooCoomerceAppId = "4"
+    static let WooCommerceAppId = "4"
 }

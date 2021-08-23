@@ -1,5 +1,5 @@
-Für Händler in den USA, die Versandetiketten für ihre US-Kunden erstellen möchten, wurden mehrere kleinere Verbesserungen eingeführt. Wenn du noch keine Etiketten über die App druckst, installiere auf deiner Website zunächst die Erweiterung „WooCommerce Shipping & Tax“.
+Es ergibt nicht allzu viel Sinn, Kunden für Bestellungen ohne E-Mail-Adresse eine Notiz per E-Mail zu senden – daher blenden wir diese Option in diesen Fällen aus.
 
-Wir haben uns auch angeschaut, wie die App auf verschiedenen Displaygrößen und Handymodellen aussieht. Wir haben eine Reihe kleinerer, aber wichtiger visueller Probleme korrigiert, die besonders auf iPads auftraten.
+Einige Verkäufer haben uns mitgeteilt, dass Bestellungen mit Negativbeträgen nicht korrekt angezeigt werden. Wir haben dieses Problem behoben!
 
-Wie immer freuen wir uns über dein Feedback zu unserer App. Kontaktiere uns über die App im Tab „Mein Store“ unter Einstellungen.
+Diese Version enthält zudem ein paar kleinere Verbesserungen am Gesamterlebnis. Wir hoffen, dass dir unsere Bemühungen auffallen und sie dir weiterhelfen.

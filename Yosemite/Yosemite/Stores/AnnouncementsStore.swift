@@ -64,10 +64,6 @@ public class AnnouncementsStore: Store {
 private extension AnnouncementsStore {
 
     func synchronizeFeatures(onCompletion: @escaping ([Feature], IsCached) -> Void) {
-        guard let languageCode = Locale.current.languageCode else {
-            onCompletion([], false)
-            return
-        }
 
         if let savedFeatures = loadSavedAnnouncements().first?.features {
             onCompletion(savedFeatures, true)
@@ -76,7 +72,7 @@ private extension AnnouncementsStore {
 
         remote.getAnnouncements(appId: Constants.WooCommerceAppId,
                                 appVersion: appVersion,
-                                locale: languageCode) { [weak self] result in
+                                locale: Locale.current.identifier) { [weak self] result in
             switch result {
             case .success(let announcements):
                 try? self?.saveAnnouncements(announcements)

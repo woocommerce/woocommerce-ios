@@ -17,6 +17,10 @@ final class MockAnnouncementsRemote {
     /// The amount of times that the `getAnnouncements` was invoked
     var numberOfTimesGetAnnouncementsWasCalled = 0
 
+    /// The requested appId. WooCommerce appID can be found here:
+    /// https://fieldguide.automattic.com/mobile-feature-announcements/mobile-feature-announcement-endpoint/
+    var requestedAppId = ""
+
     func whenLoadingAnnouncements(for appVersion: String, thenReturn result: Result<[Announcement], Error>) {
         loadAnnouncementsResults[appVersion] = result
     }
@@ -31,6 +35,7 @@ extension MockAnnouncementsRemote: AnnouncementsRemoteProtocol {
                           locale: String,
                           completion: @escaping (Result<[Announcement], Error>) -> Void) {
         numberOfTimesGetAnnouncementsWasCalled += 1
+        requestedAppId = appId
         if let result = self.loadAnnouncementsResults[appVersion] {
             completion(result)
         } else {

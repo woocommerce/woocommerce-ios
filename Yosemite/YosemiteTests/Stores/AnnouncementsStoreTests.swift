@@ -69,6 +69,7 @@ final class AnnouncementsStoreTests: XCTestCase {
         XCTAssertEqual(features.first?.title, "foo")
         XCTAssertEqual(features.first?.subtitle, "bar")
         XCTAssertEqual(features.first?.iconUrl, "https://s0.wordpress.com/i/store/mobile/plans-premium.png")
+        XCTAssertEqual(remote.requestedAppId, "4")
     }
 
     func test_synchronize_features_doesnt_fetch_announcements_twice_for_the_same_version() throws {

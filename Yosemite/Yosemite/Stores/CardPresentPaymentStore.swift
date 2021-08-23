@@ -194,39 +194,39 @@ private extension CardPresentPaymentStore {
     }
 
     func checkForCardReaderUpdate(onCompletion: @escaping (Result<CardReaderSoftwareUpdate?, Error>) -> Void) {
-        cardReaderService.checkForUpdate()
-            .sink(
-                // If the future is a failure, it will only fire receiveCompletion
-                receiveCompletion: { value in
-                    if case .failure(let error) = value {
-                        onCompletion(.failure(error))
-                    }
-
-                },
-                // If the future is a success, it will fire receiveValue and receiveCompletion
-                receiveValue: { softwareUpdate in
-                    onCompletion(.success(softwareUpdate))
-                })
-            // Note: We don't need to explicitly call cancel on this subscription since
-            // when the publisher completes, cancel will be called for us, and a Future
-            // completes after fulfilling its promise.
-            .store(in: &cancellables)
+//        cardReaderService.checkForUpdate()
+//            .sink(
+//                // If the future is a failure, it will only fire receiveCompletion
+//                receiveCompletion: { value in
+//                    if case .failure(let error) = value {
+//                        onCompletion(.failure(error))
+//                    }
+//
+//                },
+//                // If the future is a success, it will fire receiveValue and receiveCompletion
+//                receiveValue: { softwareUpdate in
+//                    onCompletion(.success(softwareUpdate))
+//                })
+//            // Note: We don't need to explicitly call cancel on this subscription since
+//            // when the publisher completes, cancel will be called for us, and a Future
+//            // completes after fulfilling its promise.
+//            .store(in: &cancellables)
     }
 
     func startCardReaderUpdate(onProgress: @escaping (Float) -> Void,
                         onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        cardReaderService.installUpdate()
-            .subscribe(Subscribers.Sink(
-                receiveCompletion: { value in
-                    switch value {
-                    case .failure(let error):
-                        onCompletion(.failure(error))
-                    case .finished:
-                        onCompletion(.success(()))
-                    }
-                },
-                receiveValue: onProgress
-            ))
+//        cardReaderService.installUpdate()
+//            .subscribe(Subscribers.Sink(
+//                receiveCompletion: { value in
+//                    switch value {
+//                    case .failure(let error):
+//                        onCompletion(.failure(error))
+//                    case .finished:
+//                        onCompletion(.success(()))
+//                    }
+//                },
+//                receiveValue: onProgress
+//            ))
     }
 
     func reset() {

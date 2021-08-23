@@ -215,18 +215,18 @@ private extension CardPresentPaymentStore {
 
     func startCardReaderUpdate(onProgress: @escaping (Float) -> Void,
                         onCompletion: @escaping (Result<Void, Error>) -> Void) {
-//        cardReaderService.installUpdate()
-//            .subscribe(Subscribers.Sink(
-//                receiveCompletion: { value in
-//                    switch value {
-//                    case .failure(let error):
-//                        onCompletion(.failure(error))
-//                    case .finished:
-//                        onCompletion(.success(()))
-//                    }
-//                },
-//                receiveValue: onProgress
-//            ))
+        cardReaderService.installUpdate()
+            .subscribe(Subscribers.Sink(
+                receiveCompletion: { value in
+                    switch value {
+                    case .failure(let error):
+                        onCompletion(.failure(error))
+                    case .finished:
+                        onCompletion(.success(()))
+                    }
+                },
+                receiveValue: onProgress
+            ))
     }
 
     func reset() {

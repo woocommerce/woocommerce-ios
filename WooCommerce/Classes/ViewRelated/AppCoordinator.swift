@@ -66,6 +66,7 @@ private extension AppCoordinator {
             if isCached {
                 DDLogInfo("💬 Loaded features saved in disk! Won't present the What's New Screen this time")
             } else {
+                // TODO: https://github.com/woocommerce/woocommerce-ios/issues/4863
                 DDLogInfo("💬 Fetched new features to present on What's New Screen")
             }
         }))

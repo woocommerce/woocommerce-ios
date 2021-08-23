@@ -279,7 +279,11 @@ extension StripeCardReaderService: CardReaderService {
                 return
             }
 
-            Terminal.shared.connectReader(stripeReader) { [weak self] (reader, error) in
+            let connectionConfiguration = BluetoothConnectionConfiguration(locationId: stripeReader.locationId ?? "null")
+
+            Terminal.shared.connectBluetoothReader(stripeReader,
+                                                   delegate: self,
+                                                   connectionConfig: connectionConfiguration) { [weak self] (reader, error) in
                 guard let self = self else {
                     promise(.failure(CardReaderServiceError.connection()))
                     return

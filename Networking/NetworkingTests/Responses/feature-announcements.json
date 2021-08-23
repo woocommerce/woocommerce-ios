@@ -1,0 +1,20 @@
+[
+    {
+        "appVersionName": "14.5",
+        "minimumAppVersion": "15.2",
+        "maximumAppVersion": "15.2",
+        "appVersionTargets": [],
+        "detailsUrl": "http://wordpress.org",
+        "features": [
+            {
+                "title": "foo",
+                "subtitle": "bar",
+                "iconBase64": "",
+                "iconUrl": "https://s0.wordpress.com/i/store/mobile/plans-premium.png"
+            }
+        ],
+        "announcementVersion": "87",
+        "isLocalized": true,
+        "responseLocale": "en_US"
+    }
+]

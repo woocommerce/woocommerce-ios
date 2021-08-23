@@ -14,6 +14,8 @@ final class MockAnnouncementsRemote {
     /// The results to pass to the `completion` block if `loadNotes()` is called.
     private var loadAnnouncementsResults = [AppVersion: Result<[Announcement], Error>]()
 
+    /// The amount of times that the `getAnnouncements` was invoked
+    var numberOfTimesGetAnnouncementsWasCalled = 0
 
     func whenLoadingAnnouncements(for appVersion: String, thenReturn result: Result<[Announcement], Error>) {
         loadAnnouncementsResults[appVersion] = result
@@ -28,7 +30,7 @@ extension MockAnnouncementsRemote: AnnouncementsRemoteProtocol {
                           appVersion: String,
                           locale: String,
                           completion: @escaping (Result<[Announcement], Error>) -> Void) {
-
+        numberOfTimesGetAnnouncementsWasCalled += 1
         if let result = self.loadAnnouncementsResults[appVersion] {
             completion(result)
         } else {

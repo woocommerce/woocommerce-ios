@@ -17,11 +17,24 @@ protocol AnnouncementsRemoteProtocol {
 class AnnouncementsStore: Store {
 
     private let remote: AnnouncementsRemoteProtocol
+    private let fileStorage: FileStorage
 
-    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: AnnouncementsRemoteProtocol) {
+    public init(dispatcher: Dispatcher,
+                storageManager: StorageManagerType,
+                network: Network,
+                remote: AnnouncementsRemoteProtocol,
+                fileStorage: FileStorage) {
         self.remote = remote
+        self.fileStorage = fileStorage
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
+
+    private var appVersion: String { UserAgent.bundleShortVersion }
+
+    private lazy var featureAnnouncementsFileURL: URL! = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.featureAnnouncementsFileName)
+    }()
 
     /// Registers for supported Actions.
     ///
@@ -42,25 +55,53 @@ class AnnouncementsStore: Store {
             synchronizeFeatures(onCompletion: onCompletion)
         }
     }
+}
+
+private extension AnnouncementsStore {
 
     func synchronizeFeatures(onCompletion: @escaping ([Feature]) -> Void) {
-
         guard let languageCode = Locale.current.languageCode else {
             onCompletion([])
             return
         }
 
+        if let savedFeatures = loadSavedAnnouncements().first?.features {
+            onCompletion(savedFeatures)
+            return
+        }
+
         remote.getAnnouncements(appId: "4",
-                                 appVersion: UserAgent.bundleShortVersion,
-                                 locale: languageCode) { result in
+                                appVersion: appVersion,
+                                locale: languageCode) { [weak self] result in
             switch result {
             case .success(let announcements):
+                try? self?.saveAnnouncements(announcements)
                 onCompletion(announcements.first?.features ?? [])
-                // TODO: - Persist Features
-            case .failure(let error):
-                // Do nothing
-                print(error)
+            case .failure:
+                onCompletion([])
             }
         }
     }
+
+    /// Load `Announcements` for the current app version
+    func loadSavedAnnouncements() -> [Announcement] {
+        guard let savedAnnouncements: [String: [Announcement]] = try? fileStorage.data(for: featureAnnouncementsFileURL) else {
+            return []
+        }
+
+        return savedAnnouncements[appVersion] ?? []
+    }
+
+    /// Save the `Announcements` to the appropriate file.
+    func saveAnnouncements(_ announcements: [Announcement]) throws {
+        try fileStorage.write([appVersion: announcements], to: featureAnnouncementsFileURL)
+    }
+}
+
+// MARK: - Constants
+//
+private enum Constants {
+
+    // MARK: File Names
+    static let featureAnnouncementsFileName = "feature-announcements.plist"
 }

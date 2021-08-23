@@ -27,6 +27,10 @@ final class AnnouncementsStoreTests: XCTestCase {
     ///
     private var remote: MockAnnouncementsRemote!
 
+    /// Mock File Storage: Load a plist in the test bundle
+    ///
+    private var fileStorage: MockInMemoryStorage!
+
     /// Test subject
     ///
     private var subject: AnnouncementsStore?
@@ -37,11 +41,13 @@ final class AnnouncementsStoreTests: XCTestCase {
         storageManager = MockStorageManager()
         network = MockNetwork()
         remote = MockAnnouncementsRemote()
+        fileStorage = MockInMemoryStorage()
 
         subject = AnnouncementsStore(dispatcher: dispatcher,
                                      storageManager: storageManager,
                                      network: network,
-                                     remote: remote)
+                                     remote: remote,
+                                     fileStorage: fileStorage)
     }
 
     /// Verifies that `AnnouncementsAction.synchronizeFeatures` effectively  retrieves new Features
@@ -63,6 +69,24 @@ final class AnnouncementsStoreTests: XCTestCase {
         XCTAssertEqual(features.first?.title, "foo")
         XCTAssertEqual(features.first?.subtitle, "bar")
         XCTAssertEqual(features.first?.iconUrl, "https://s0.wordpress.com/i/store/mobile/plans-premium.png")
+    }
+
+    func test_synchronize_features_doesnt_fetch_announcements_from_the_same_version() throws {
+        // Arrange
+        remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .success(try self.makeAnnouncements()))
+
+        // Act
+        _ = waitFor { [self] promise in
+            self.subject?.onAction(AnnouncementsAction.synchronizeFeatures { [weak self] features in
+                // Second action trigger (this one must not reach out to Remote)
+                self?.subject?.onAction(AnnouncementsAction.synchronizeFeatures { features in
+                    promise(features)
+                })
+            })
+        }
+
+        // Assert
+        XCTAssertEqual(remote.numberOfTimesGetAnnouncementsWasCalled, 1)
     }
 }
 

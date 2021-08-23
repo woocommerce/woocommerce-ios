@@ -2,8 +2,7 @@ import Foundation
 import Yosemite
 import Networking
 import Storage
-
-
+import WordPressKit
 
 // MARK: - AuthenticatedState
 //
@@ -70,6 +69,11 @@ class AuthenticatedState: StoresManagerState {
                          network: network,
                          receiptPrinterService: ServiceLocator.receiptPrinterService,
                          fileStorage: PListFileStorage()),
+            AnnouncementsStore(dispatcher: dispatcher,
+                               storageManager: storageManager,
+                               network: network,
+                               remote: AnnouncementServiceRemote(wordPressComRestApi: WordPressComRestApi(baseUrlString: Settings.wordpressApiBaseURL)),
+                               fileStorage: PListFileStorage())
         ]
 
         startListeningToNotifications()

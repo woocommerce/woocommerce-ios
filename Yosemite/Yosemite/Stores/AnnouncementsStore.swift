@@ -4,7 +4,7 @@ import WordPressKit
 
 /// Protocol for `AnnouncementsRemote` mainly used for mocking.
 ///
-protocol AnnouncementsRemoteProtocol {
+public protocol AnnouncementsRemoteProtocol {
 
     func getAnnouncements(appId: String,
                           appVersion: String,
@@ -12,10 +12,14 @@ protocol AnnouncementsRemoteProtocol {
                           completion: @escaping (Result<[Announcement], Error>) -> Void)
 }
 
+/// Makes AnnouncementService from WordPressKit conform with AnnouncementsRemoteProtocol so we can inject other remotes. (For testing purposes)
+extension AnnouncementServiceRemote: AnnouncementsRemoteProtocol { }
+
 // MARK: - AnnouncementsStore
 //
-class AnnouncementsStore: Store {
+public class AnnouncementsStore: Store {
 
+    typealias IsCached = Bool
     private let remote: AnnouncementsRemoteProtocol
     private let fileStorage: FileStorage
 
@@ -59,14 +63,14 @@ class AnnouncementsStore: Store {
 
 private extension AnnouncementsStore {
 
-    func synchronizeFeatures(onCompletion: @escaping ([Feature]) -> Void) {
+    func synchronizeFeatures(onCompletion: @escaping ([Feature], IsCached) -> Void) {
         guard let languageCode = Locale.current.languageCode else {
-            onCompletion([])
+            onCompletion([], false)
             return
         }
 
         if let savedFeatures = loadSavedAnnouncements().first?.features {
-            onCompletion(savedFeatures)
+            onCompletion(savedFeatures, true)
             return
         }
 
@@ -76,9 +80,9 @@ private extension AnnouncementsStore {
             switch result {
             case .success(let announcements):
                 try? self?.saveAnnouncements(announcements)
-                onCompletion(announcements.first?.features ?? [])
+                onCompletion(announcements.first?.features ?? [], false)
             case .failure:
-                onCompletion([])
+                onCompletion([], false)
             }
         }
     }

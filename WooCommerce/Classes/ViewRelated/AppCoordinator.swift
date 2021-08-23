@@ -52,11 +52,25 @@ final class AppCoordinator {
                     }
                 }
                 self.isLoggedIn = isLoggedIn
+                self.showWhatsNewIfNeeded()
             }
     }
 }
 
 private extension AppCoordinator {
+
+    /// Displays the What's New Screen.
+    ///
+    func showWhatsNewIfNeeded() {
+        stores.dispatch(AnnouncementsAction.synchronizeFeatures(onCompletion: { features, isCached  in
+            if isCached {
+                DDLogInfo("💬 Loaded features saved in disk! Won't present the What's New Screen this time")
+            } else {
+                DDLogInfo("💬 Fetched new features to present on What's New Screen")
+            }
+        }))
+    }
+
     /// Displays the WordPress.com Authentication UI.
     ///
     func displayAuthenticator() {

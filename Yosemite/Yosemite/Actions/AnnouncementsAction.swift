@@ -4,7 +4,10 @@ import WordPressKit
 ///
 public enum AnnouncementsAction: Action {
 
-    /// Synchronizes the latest Announcements
+    public typealias IsCached = Bool
+
+    /// Synchronizes the latest Announcements.
+    /// If information was already fetched, the list of features will be retrieved along with the boolean indicating that the data was already fetched
     ///
-    case synchronizeFeatures(onCompletion: ([Feature]) -> Void)
+    case synchronizeFeatures(onCompletion: ([Feature], IsCached) -> Void)
 }

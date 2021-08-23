@@ -52,13 +52,13 @@ public protocol CardReaderService {
     /// Cancels a PaymentIntent
     func cancelPaymentIntent() -> Future<Void, Error>
 
-    /// Checks for firmware updates.
-    func checkForUpdate() -> Future<CardReaderSoftwareUpdate?, Error>
-
-    /// Triggers a software update. This method requires that checkForUpdates
-    /// has been completed successfully
-    ///
-    /// The returned publisher will periodically publish the fraction of progress during the software update
-    /// and it will complete when it's finished, unless there is any error.
-    func installUpdate() -> AnyPublisher<Float, Error>
+//    /// Checks for firmware updates.
+//    func checkForUpdate() -> Future<CardReaderSoftwareUpdate?, Error>
+//
+//    /// Triggers a software update. This method requires that checkForUpdates
+//    /// has been completed successfully
+//    ///
+//    /// The returned publisher will periodically publish the fraction of progress during the software update
+//    /// and it will complete when it's finished, unless there is any error.
+//    func installUpdate() -> AnyPublisher<Float, Error>
 }

@@ -10,7 +10,7 @@ struct MockStripeCharge {
     let status: StripeTerminal.ChargeStatus
     let stripeDescription: String?
     let metadata: [AnyHashable: Any]
-    let paymentMethodDetails: SCPPaymentMethodDetails?
+    let paymentMethodDetails: StripeTerminal.PaymentMethodDetails?
 }
 
 extension MockStripeCharge: StripeCharge {}

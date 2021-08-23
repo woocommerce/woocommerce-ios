@@ -36,12 +36,7 @@ struct EditCustomerNote: View {
                 .padding()
                 .navigationTitle(Localization.title)
                 .navigationBarTitleDisplayMode(.inline)
-                .navigationBarItems(
-                    trailing: Button(Localization.done) { // I couldn't find a way to make the "Done" button bold using a toolbar :-(
-                        // TODO: submit done action
-                        print("Done tapped")
-                    }
-                    .disabled(!viewModel.doneEnabled))
+                .navigationBarItems(trailing: navigationBarTrailingItem()) // The only way I've found to make buttons bold is to set them here.
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button(Localization.cancel, action: dismiss)
@@ -49,6 +44,19 @@ struct EditCustomerNote: View {
                 }
         }
         .navigationViewStyle(StackNavigationViewStyle())
+    }
+
+    /// Decides if the navigation trailing item should be a done button or a loading indicator.
+    ///
+    @ViewBuilder private func navigationBarTrailingItem() -> some View {
+        if viewModel.showLoadingIndicator {
+            ProgressView()
+        } else {
+            Button(Localization.done) {
+                viewModel.updateNote()
+            }
+            .disabled(!viewModel.doneEnabled)
+        }
     }
 }
 

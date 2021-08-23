@@ -12,7 +12,12 @@ final class EditCustomerNoteViewModel: ObservableObject {
     /// New content to submit.
     /// Binding property modified at the view level.
     ///
-    var newNote: String
+    @Published var newNote: String
+
+    /// True when the loading spinner should be shown.
+    /// Like when performing a network operation
+    ///
+    @Published private(set) var showLoadingIndicator: Bool = false
 
     /// True when there are changes to the `initialNote`. False otherwise.
     ///
@@ -20,15 +25,9 @@ final class EditCustomerNoteViewModel: ObservableObject {
         originalNote != newNote
     }
 
-    /// True when the loading spinner should be shown.
-    /// Like when performing a network operation
-    ///
-    private(set) var showLoadingIndicator: Bool = false
-
     init(order: Order) {
         self.originalNote = order.customerNote ?? ""
         self.newNote = originalNote
-        //self._newNote = Binding<String>.constant(originalNote)
     }
 
     /// Member wise initializer
@@ -36,7 +35,6 @@ final class EditCustomerNoteViewModel: ObservableObject {
     internal init(originalNote: String, newNote: String) {
         self.originalNote = originalNote
         self.newNote = originalNote
-        //self._newNote = Binding<String>.constant(originalNote)
     }
 
     /// Update the note remotely and fire and try to dismiss the view.

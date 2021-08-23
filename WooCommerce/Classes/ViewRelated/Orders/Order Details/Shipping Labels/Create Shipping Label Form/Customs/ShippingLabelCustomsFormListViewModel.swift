@@ -35,6 +35,10 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
     ///
     private let allCountries: [Country]
 
+    /// Destination country for the shipment.
+    ///
+    private let destinationCountry: Country
+
     /// Reusing Package Details results controllers since we're interested in the same models.
     ///
     private var resultsControllers: ShippingLabelPackageDetailsResultsControllers?
@@ -53,6 +57,7 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
 
     init(order: Order,
          customsForms: [ShippingLabelCustomsForm],
+         destinationCountry: Country,
          countries: [Country],
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
@@ -61,6 +66,7 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.allCountries = countries
+        self.destinationCountry = destinationCountry
         let currencySymbol: String = {
             guard let currencyCode = CurrencySettings.CurrencyCode(rawValue: order.currency) else {
                 return ""
@@ -68,8 +74,10 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
             return ServiceLocator.currencySettings.symbol(from: currencyCode)
         }()
         self.currencySymbol = currencySymbol
-        self.inputViewModels = customsForms.map { .init(customsForm: $0, countries: countries, currency: currencySymbol) }
-
+        self.inputViewModels = customsForms.map { .init(customsForm: $0,
+                                                        destinationCountry: destinationCountry,
+                                                        countries: countries,
+                                                        currency: currencySymbol) }
         configureResultsControllers()
         updateItemDetails()
     }
@@ -87,7 +95,10 @@ private extension ShippingLabelCustomsFormListViewModel {
         }
         .handleEvents(receiveOutput: { [weak self] customsForms in
             guard let self = self else { return }
-            self.inputViewModels = customsForms.map { .init(customsForm: $0, countries: self.allCountries, currency: self.currencySymbol) }
+            self.inputViewModels = customsForms.map { .init(customsForm: $0,
+                                                            destinationCountry: self.destinationCountry,
+                                                            countries: self.allCountries,
+                                                            currency: self.currencySymbol) }
         })
         .assign(to: &$customsForms)
     }

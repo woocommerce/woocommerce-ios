@@ -10,6 +10,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     private var didGetConnectedReaders: Bool = false
     private var connectedReaders = [CardReader]()
     private let knownReadersProvider: CardReaderSettingsKnownReadersProvider?
+    private(set) var readerUpdateAvailable: CardReaderSettingsTriState = .isUnknown
 
     var connectedReaderID: String?
     var connectedReaderBatteryLevel: String?
@@ -54,6 +55,25 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
         let batteryLevelPercent = Int(100 * batteryLevel)
         let batteryLevelString = NumberFormatter.localizedString(from: batteryLevelPercent as NSNumber, number: .decimal)
         connectedReaderBatteryLevel = String.localizedStringWithFormat(Localization.batteryLabelFormat, batteryLevelString)
+    }
+
+    /// Dispatch a request to check for reader updates
+    ///
+    func checkForCardReaderUpdate() {
+        let action = CardPresentPaymentAction.checkForCardReaderUpdate() { [weak self] result in
+            guard let self = self else {
+                return
+            }
+            switch result {
+            case .success(let update):
+                self.readerUpdateAvailable = update != nil ? .isTrue : .isFalse
+            case .failure:
+                DDLogError("Unexpected error when checking for reader update")
+                self.readerUpdateAvailable = .isFalse
+            }
+            self.didUpdate?()
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 
     /// Dispatch a request to disconnect from a reader

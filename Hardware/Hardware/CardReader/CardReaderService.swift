@@ -53,7 +53,7 @@ public protocol CardReaderService {
     func cancelPaymentIntent() -> Future<Void, Error>
 
     /// Checks for firmware updates.
-    func checkForUpdate() -> Future<CardReaderSoftwareUpdate, Error>
+    func checkForUpdate() -> Future<CardReaderSoftwareUpdate?, Error>
 
     /// Triggers a software update. This method requires that checkForUpdates
     /// has been completed successfully

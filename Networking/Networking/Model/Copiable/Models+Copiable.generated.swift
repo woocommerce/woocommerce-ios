@@ -937,6 +937,72 @@ extension ShippingLabelAddress {
     }
 }
 
+extension ShippingLabelCustomsForm {
+    public func copy(
+        packageID: CopiableProp<String> = .copy,
+        packageName: CopiableProp<String> = .copy,
+        contentsType: CopiableProp<ShippingLabelCustomsForm.ContentsType> = .copy,
+        contentExplanation: CopiableProp<String> = .copy,
+        restrictionType: CopiableProp<ShippingLabelCustomsForm.RestrictionType> = .copy,
+        restrictionComments: CopiableProp<String> = .copy,
+        nonDeliveryOption: CopiableProp<ShippingLabelCustomsForm.NonDeliveryOption> = .copy,
+        itn: CopiableProp<String> = .copy,
+        items: CopiableProp<[ShippingLabelCustomsForm.Item]> = .copy
+    ) -> ShippingLabelCustomsForm {
+        let packageID = packageID ?? self.packageID
+        let packageName = packageName ?? self.packageName
+        let contentsType = contentsType ?? self.contentsType
+        let contentExplanation = contentExplanation ?? self.contentExplanation
+        let restrictionType = restrictionType ?? self.restrictionType
+        let restrictionComments = restrictionComments ?? self.restrictionComments
+        let nonDeliveryOption = nonDeliveryOption ?? self.nonDeliveryOption
+        let itn = itn ?? self.itn
+        let items = items ?? self.items
+
+        return ShippingLabelCustomsForm(
+            packageID: packageID,
+            packageName: packageName,
+            contentsType: contentsType,
+            contentExplanation: contentExplanation,
+            restrictionType: restrictionType,
+            restrictionComments: restrictionComments,
+            nonDeliveryOption: nonDeliveryOption,
+            itn: itn,
+            items: items
+        )
+    }
+}
+
+extension ShippingLabelCustomsForm.Item {
+    public func copy(
+        description: CopiableProp<String> = .copy,
+        quantity: CopiableProp<Decimal> = .copy,
+        value: CopiableProp<Double> = .copy,
+        weight: CopiableProp<Double> = .copy,
+        hsTariffNumber: CopiableProp<String> = .copy,
+        originCountry: CopiableProp<String> = .copy,
+        productID: CopiableProp<Int64> = .copy
+    ) -> ShippingLabelCustomsForm.Item {
+        let description = description ?? self.description
+        let quantity = quantity ?? self.quantity
+        let value = value ?? self.value
+        let weight = weight ?? self.weight
+        let hsTariffNumber = hsTariffNumber ?? self.hsTariffNumber
+        let originCountry = originCountry ?? self.originCountry
+        let productID = productID ?? self.productID
+
+        return ShippingLabelCustomsForm.Item(
+            description: description,
+            quantity: quantity,
+            value: value,
+            weight: weight,
+            hsTariffNumber: hsTariffNumber,
+            originCountry: originCountry,
+            productID: productID
+        )
+    }
+}
+
 extension ShippingLabelPaymentMethod {
     public func copy(
         paymentMethodID: CopiableProp<Int64> = .copy,

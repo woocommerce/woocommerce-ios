@@ -54,6 +54,7 @@ final class CardReaderConnectionController {
     private var fromController: UIViewController?
     private var siteID: Int64
     private var knownCardReadersProvider: CardReaderSettingsKnownReadersProvider
+    private var alerts: CardReaderSettingsAlertsProvider
 
     private var foundReader: CardReader?
     private var knownReaderIDs: [String]
@@ -61,17 +62,16 @@ final class CardReaderConnectionController {
 
     private var onCompletion: ((Result<Bool, Error>) -> Void)?
 
-    private lazy var alerts: CardReaderSettingsAlerts = {
-        CardReaderSettingsAlerts()
-    }()
 
     init(
         forSiteID: Int64,
-        knownReadersProvider: CardReaderSettingsKnownReadersProvider
+        knownReadersProvider: CardReaderSettingsKnownReadersProvider,
+        alertsProvider: CardReaderSettingsAlertsProvider
     ) {
         state = .idle
         siteID = forSiteID
         knownCardReadersProvider = knownReadersProvider
+        alerts = alertsProvider
         knownReaderIDs = []
     }
 
@@ -123,8 +123,16 @@ private extension CardReaderConnectionController {
     ///
     func onInitialization() {
         knownCardReadersProvider.knownReaders.sink(receiveValue: { [weak self] readerIDs in
-            self?.knownReaderIDs = readerIDs
-            self?.state = .beginSearch
+            guard let self = self else {
+                return
+            }
+
+            self.knownReaderIDs = readerIDs
+
+            /// Only kick off search if we received a known reader update during intializaton
+            if case .initializing = self.state {
+                self.state = .beginSearch
+            }
         }).store(in: &subscriptions)
     }
 

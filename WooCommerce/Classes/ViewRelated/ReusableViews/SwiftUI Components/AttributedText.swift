@@ -50,13 +50,34 @@ struct AttributedText: View {
     }
 }
 
+
+extension View {
+    func customOpenURL(action: @escaping (URL) -> Void) -> some View {
+        environment(\.customOpenURL, action)
+    }
+
+    func customOpenURL(binding: Binding<URL?>) -> some View {
+        customOpenURL { url in
+            binding.wrappedValue = url
+        }
+    }
+
+    func attributedTextForegroundColor(_ color: Color?) -> some View {
+        environment(\.foregroundColor, color)
+    }
+
+    func attributedTextLinkColor(_ color: Color?) -> some View {
+        environment(\.linkColor, color)
+    }
+}
+
 private extension GeometryProxy {
     var maxWidth: CGFloat {
         size.width - safeAreaInsets.leading - safeAreaInsets.trailing
     }
 }
 
-final class TextViewStore: ObservableObject {
+private final class TextViewStore: ObservableObject {
     @Published var intrinsicContentSize: CGSize?
 
     func didUpdateTextView(_ textView: TextViewWrapper.View) {
@@ -64,7 +85,7 @@ final class TextViewStore: ObservableObject {
     }
 }
 
-struct TextViewWrapper: UIViewRepresentable {
+private struct TextViewWrapper: UIViewRepresentable {
     final class View: UITextView {
         var maxLayoutWidth: CGFloat = 0 {
             didSet {
@@ -113,6 +134,15 @@ struct TextViewWrapper: UIViewRepresentable {
     func updateUIView(_ uiView: View, context: Context) {
         uiView.attributedText = attributedText
         uiView.maxLayoutWidth = maxLayoutWidth
+        uiView.font = context.environment.font?.uiFont ?? UIFont.preferredFont(forTextStyle: .body)
+        uiView.textColor = context.environment.foregroundColor.map(UIColor.init)
+
+        var linkTextAttributes = uiView.linkTextAttributes ?? [:]
+        linkTextAttributes[.underlineColor] = UIColor.clear
+        if let linkColor = context.environment.linkColor.map(UIColor.init) {
+            linkTextAttributes[.foregroundColor] = linkColor
+        }
+        uiView.linkTextAttributes = linkTextAttributes
 
         uiView.textContainer.maximumNumberOfLines = context.environment.lineLimit ?? 0
 
@@ -126,25 +156,68 @@ struct TextViewWrapper: UIViewRepresentable {
     }
 }
 
-struct CustomOpenURL: EnvironmentKey {
+private extension Font {
+    var uiFont: UIFont? {
+        switch self {
+        case .largeTitle:   return .preferredFont(forTextStyle: .largeTitle)
+        case .title:        return .preferredFont(forTextStyle: .title1)
+        case .title2:       return .preferredFont(forTextStyle: .title2)
+        case .title3:       return .preferredFont(forTextStyle: .title3)
+        case .headline:     return .preferredFont(forTextStyle: .headline)
+        case .subheadline:  return .preferredFont(forTextStyle: .subheadline)
+        case .body:         return .preferredFont(forTextStyle: .body)
+        case .callout:      return .preferredFont(forTextStyle: .callout)
+        case .footnote:     return .preferredFont(forTextStyle: .footnote)
+        case .caption:      return .preferredFont(forTextStyle: .caption1)
+        case .caption2:     return .preferredFont(forTextStyle: .caption2)
+
+        default:            return nil
+        }
+    }
+}
+
+private struct CustomOpenURL: EnvironmentKey {
     static let defaultValue: ((URL) -> Void)? = nil
 }
 
-public extension EnvironmentValues {
+private struct ForegroundColorKey: EnvironmentKey {
+    static var defaultValue: Color? = nil
+}
+
+private struct LinkColorKey: EnvironmentKey {
+    static var defaultValue: Color? = nil
+}
+
+extension EnvironmentValues {
     var customOpenURL: ((URL) -> Void)? {
         get { self[CustomOpenURL.self] }
         set { self[CustomOpenURL.self] = newValue }
     }
 }
 
-extension View {
-    func customOpenURL(action: @escaping (URL) -> Void) -> some View {
-        environment(\.customOpenURL, action)
+private extension EnvironmentValues {
+    var foregroundColor: Color? {
+        get { self[ForegroundColorKey] }
+        set { self[ForegroundColorKey] = newValue }
     }
 
-    func customOpenURL(binding: Binding<URL?>) -> some View {
-        customOpenURL { url in
-            binding.wrappedValue = url
+    var linkColor: Color? {
+        get { self[LinkColorKey] }
+        set { self[LinkColorKey] = newValue }
+    }
+}
+
+
+struct AttributedText_Previews: PreviewProvider {
+    static var previews: some View {
+        VStack {
+            Link("Default Link", destination: URL(string: "https://woocommerce.com/")!)
+            Text("Default Text")
+            AttributedText("AttributedText <a href=\"https://woocommerce.com/\">with a link</a>".htmlToAttributedString)
+            AttributedText("Custom AttributedText <a href=\"https://woocommerce.com/\">with a link</a>".htmlToAttributedString)
+                .font(.footnote)
+                .attributedTextForegroundColor(.gray)
+                .attributedTextLinkColor(.pink)
         }
     }
 }

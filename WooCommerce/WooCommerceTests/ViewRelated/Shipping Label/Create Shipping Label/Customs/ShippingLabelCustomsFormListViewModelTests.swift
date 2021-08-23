@@ -43,7 +43,11 @@ class ShippingLabelCustomsFormListViewModelTests: XCTestCase {
                                             productVariationID: 49,
                                             attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")],
                                             weight: "10.0"))
-        let viewModel = ShippingLabelCustomsFormListViewModel(order: order, customsForms: [customsForm], countries: [], storageManager: storageManager)
+        let viewModel = ShippingLabelCustomsFormListViewModel(order: order,
+                                                              customsForms: [customsForm],
+                                                              destinationCountry: Country.fake(),
+                                                              countries: [],
+                                                              storageManager: storageManager)
 
         // Then
         let form = viewModel.customsForms.first
@@ -71,7 +75,11 @@ class ShippingLabelCustomsFormListViewModelTests: XCTestCase {
         // When
         insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120.0"))
         insert(Product.fake().copy(siteID: sampleSiteID, productID: 49, virtual: true, weight: "0"))
-        let viewModel = ShippingLabelCustomsFormListViewModel(order: order, customsForms: [customsForm], countries: [], storageManager: storageManager)
+        let viewModel = ShippingLabelCustomsFormListViewModel(order: order,
+                                                              customsForms: [customsForm],
+                                                              destinationCountry: Country.fake(),
+                                                              countries: [],
+                                                              storageManager: storageManager)
 
         // Then
         let form = viewModel.customsForms.first
@@ -92,7 +100,11 @@ class ShippingLabelCustomsFormListViewModelTests: XCTestCase {
 
         // When
         insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120.0"))
-        let viewModel = ShippingLabelCustomsFormListViewModel(order: order, customsForms: [customsForm], countries: [], storageManager: storageManager)
+        let viewModel = ShippingLabelCustomsFormListViewModel(order: order,
+                                                              customsForms: [customsForm],
+                                                              destinationCountry: Country.fake(),
+                                                              countries: [],
+                                                              storageManager: storageManager)
 
         // Then
         let form = viewModel.customsForms.first

@@ -485,32 +485,38 @@ extension StripeCardReaderService: DiscoveryDelegate {
 
 
 // MARK: - ReaderDisplayDelegate.
-extension StripeCardReaderService: ReaderDisplayDelegate {
+extension StripeCardReaderService: BluetoothReaderDelegate {
+    public func reader(_ reader: Reader, didReportAvailableUpdate update: ReaderSoftwareUpdate) {
+        // TODO
+    }
+
+    public func reader(_ reader: Reader, didStartInstallingUpdate update: ReaderSoftwareUpdate, cancelable: Cancelable?) {
+        // TODO
+    }
+
+    public func reader(_ reader: Reader, didReportReaderSoftwareUpdateProgress progress: Float) {
+        softwareUpdateSubject.send(progress)
+    }
+
+    public func reader(_ reader: Reader, didFinishInstallingUpdate update: ReaderSoftwareUpdate?, error: Error?) {
+        // TODO
+    }
+
     /// This method is called by the Stripe Terminal SDK when it wants client apps
     /// to request users to tap / insert / swipe a card.
-    public func terminal(_ terminal: Terminal, didRequestReaderInput inputOptions: ReaderInputOptions = []) {
+    public func reader(_ reader: Reader, didRequestReaderInput inputOptions: ReaderInputOptions = []) {
         sendReaderEvent(CardReaderEvent.make(readerInputOptions: inputOptions))
     }
 
     /// In this case the Stripe Terminal SDK wants us to present a string on screen
-    public func terminal(_ terminal: Terminal, didRequestReaderDisplayMessage displayMessage: ReaderDisplayMessage) {
+    public func reader(_ reader: Reader, didRequestReaderDisplayMessage displayMessage: ReaderDisplayMessage) {
         sendReaderEvent(CardReaderEvent.make(displayMessage: displayMessage))
     }
 }
 
-
-// MARK: - Software update delegate.
-extension StripeCardReaderService: ReaderSoftwareUpdateDelegate {
-    public func terminal(_ terminal: Terminal, didReportReaderSoftwareUpdateProgress progress: Float) {
-        softwareUpdateSubject.send(progress)
-    }
-}
-
-
 // MARK: - Terminal delegate
 extension StripeCardReaderService: TerminalDelegate {
     public func terminal(_ terminal: Terminal, didReportUnexpectedReaderDisconnect reader: Reader) {
-        print("==== didReportUnexpectedReaderDisconnect ===")
         connectedReadersSubject.send([])
     }
 }

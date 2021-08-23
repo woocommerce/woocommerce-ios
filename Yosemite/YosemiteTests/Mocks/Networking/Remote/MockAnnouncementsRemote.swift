@@ -11,7 +11,7 @@ final class MockAnnouncementsRemote {
 
     private typealias AppVersion = String
 
-    /// The results to pass to the `completion` block if `loadNotes()` is called.
+    /// The results to pass to the `completion` block if `getAnnouncements()` is called.
     private var loadAnnouncementsResults = [AppVersion: Result<[Announcement], Error>]()
 
     /// The amount of times that the `getAnnouncements` was invoked

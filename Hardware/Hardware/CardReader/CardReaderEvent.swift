@@ -22,7 +22,7 @@ public enum CardReaderEvent {
     case lowBatteryResolved
 
     /// A software update is available.
-    case softwareUpdateNeeded
+    case softwareUpdateNeeded(CardReaderSoftwareUpdate)
 
     /// Software is up to date.
     case softwareUpToDate

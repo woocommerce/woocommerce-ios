@@ -71,7 +71,7 @@ final class AnnouncementsStoreTests: XCTestCase {
         XCTAssertEqual(features.first?.iconUrl, "https://s0.wordpress.com/i/store/mobile/plans-premium.png")
     }
 
-    func test_synchronize_features_doesnt_fetch_announcements_from_the_same_version() throws {
+    func test_synchronize_features_doesnt_fetch_announcements_twice_for_the_same_version() throws {
         // Arrange
         remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .success(try self.makeAnnouncements()))
 
@@ -87,6 +87,22 @@ final class AnnouncementsStoreTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(remote.numberOfTimesGetAnnouncementsWasCalled, 1)
+    }
+
+    func test_synchronize_features_with_error_gets_an_empty_list_of_features() {
+        // Arrange
+        remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .failure(NSError(domain: "", code: 0, userInfo: nil)))
+
+        // Act
+        let features: [Feature] = waitFor { [weak self] promise in
+            let action = AnnouncementsAction.synchronizeFeatures { features in
+                promise(features)
+            }
+            self?.subject?.onAction(action)
+        }
+
+        // Assert
+        XCTAssertTrue(features.isEmpty)
     }
 }
 

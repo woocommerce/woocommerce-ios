@@ -27,9 +27,7 @@ class ShippingLabelCustomPackageFormViewModelTests: XCTestCase {
         viewModel.packageName = "Test"
 
         // Then
-        let _ = viewModel.packageNameValidation.sink { validated in
-            XCTAssertTrue(validated)
-        }
+        XCTAssertTrue(viewModel.isNameValidated)
     }
 
     func test_package_name_validation_fails_if_name_is_empty() {
@@ -40,9 +38,7 @@ class ShippingLabelCustomPackageFormViewModelTests: XCTestCase {
         viewModel.packageName = ""
 
         // Then
-        let _ = viewModel.packageNameValidation.sink { validated in
-            XCTAssertFalse(validated)
-        }
+        XCTAssertFalse(viewModel.isNameValidated)
     }
 
     func test_package_name_validation_fails_if_name_has_only_spaces() {
@@ -53,9 +49,7 @@ class ShippingLabelCustomPackageFormViewModelTests: XCTestCase {
         viewModel.packageName = " "
 
         // Then
-        let _ = viewModel.packageNameValidation.sink { validated in
-            XCTAssertFalse(validated)
-        }
+        XCTAssertFalse(viewModel.isNameValidated)
     }
 
     func test_package_length_validation_succeeds_if_length_is_valid_nonzero_double() {
@@ -64,19 +58,13 @@ class ShippingLabelCustomPackageFormViewModelTests: XCTestCase {
 
         // When & Then
         viewModel.packageLength = "1.5"
-        let _ = viewModel.packageLengthValidation.sink { validated in
-            XCTAssertTrue(validated)
-        }
+        XCTAssertTrue(viewModel.isLengthValidated)
 
         viewModel.packageLength = "0.1"
-        let _ = viewModel.packageLengthValidation.sink { validated in
-            XCTAssertTrue(validated)
-        }
+        XCTAssertTrue(viewModel.isLengthValidated)
 
         viewModel.packageLength = "1"
-        let _ = viewModel.packageLengthValidation.sink { validated in
-            XCTAssertTrue(validated)
-        }
+        XCTAssertTrue(viewModel.isLengthValidated)
     }
 
     func test_package_length_validation_fails_if_length_is_invalid_double() {
@@ -85,19 +73,13 @@ class ShippingLabelCustomPackageFormViewModelTests: XCTestCase {
 
         // When & Then
         viewModel.packageLength = "0"
-        let _ = viewModel.packageLengthValidation.sink { validated in
-            XCTAssertFalse(validated)
-        }
+        XCTAssertFalse(viewModel.isLengthValidated)
 
         viewModel.packageLength = "1..0"
-        let _ = viewModel.packageLengthValidation.sink { validated in
-            XCTAssertFalse(validated)
-        }
+        XCTAssertFalse(viewModel.isLengthValidated)
 
         viewModel.packageLength = "abc"
-        let _ = viewModel.packageLengthValidation.sink { validated in
-            XCTAssertFalse(validated)
-        }
+        XCTAssertFalse(viewModel.isLengthValidated)
     }
 
     func test_package_width_validation_succeeds_if_width_is_valid_nonzero_double() {
@@ -106,19 +88,13 @@ class ShippingLabelCustomPackageFormViewModelTests: XCTestCase {
 
         // When & Then
         viewModel.packageWidth = "1.5"
-        let _ = viewModel.packageWidthValidation.sink { validated in
-            XCTAssertTrue(validated)
-        }
+        XCTAssertTrue(viewModel.isWidthValidated)
 
         viewModel.packageWidth = "0.1"
-        let _ = viewModel.packageWidthValidation.sink { validated in
-            XCTAssertTrue(validated)
-        }
+        XCTAssertTrue(viewModel.isWidthValidated)
 
         viewModel.packageWidth = "1"
-        let _ = viewModel.packageWidthValidation.sink { validated in
-            XCTAssertTrue(validated)
-        }
+        XCTAssertTrue(viewModel.isWidthValidated)
     }
 
     func test_package_width_validation_fails_if_width_is_invalid_double() {
@@ -127,19 +103,13 @@ class ShippingLabelCustomPackageFormViewModelTests: XCTestCase {
 
         // When & Then
         viewModel.packageWidth = "0"
-        let _ = viewModel.packageWidthValidation.sink { validated in
-            XCTAssertFalse(validated)
-        }
+        XCTAssertFalse(viewModel.isWidthValidated)
 
         viewModel.packageWidth = "1..0"
-        let _ = viewModel.packageWidthValidation.sink { validated in
-            XCTAssertFalse(validated)
-        }
+        XCTAssertFalse(viewModel.isWidthValidated)
 
         viewModel.packageWidth = "abc"
-        let _ = viewModel.packageWidthValidation.sink { validated in
-            XCTAssertFalse(validated)
-        }
+        XCTAssertFalse(viewModel.isWidthValidated)
     }
 
     func test_package_height_validation_succeeds_if_height_is_valid_nonzero_double() {
@@ -148,19 +118,13 @@ class ShippingLabelCustomPackageFormViewModelTests: XCTestCase {
 
         // When & Then
         viewModel.packageHeight = "1.5"
-        let _ = viewModel.packageHeightValidation.sink { validated in
-            XCTAssertTrue(validated)
-        }
+        XCTAssertTrue(viewModel.isHeightValidated)
 
         viewModel.packageHeight = "0.1"
-        let _ = viewModel.packageHeightValidation.sink { validated in
-            XCTAssertTrue(validated)
-        }
+        XCTAssertTrue(viewModel.isHeightValidated)
 
         viewModel.packageHeight = "1"
-        let _ = viewModel.packageHeightValidation.sink { validated in
-            XCTAssertTrue(validated)
-        }
+        XCTAssertTrue(viewModel.isHeightValidated)
     }
 
     func test_package_height_validation_fails_if_height_is_invalid_double() {
@@ -169,19 +133,13 @@ class ShippingLabelCustomPackageFormViewModelTests: XCTestCase {
 
         // When & Then
         viewModel.packageHeight = "0"
-        let _ = viewModel.packageHeightValidation.sink { validated in
-            XCTAssertFalse(validated)
-        }
+        XCTAssertFalse(viewModel.isHeightValidated)
 
         viewModel.packageHeight = "1..0"
-        let _ = viewModel.packageHeightValidation.sink { validated in
-            XCTAssertFalse(validated)
-        }
+        XCTAssertFalse(viewModel.isHeightValidated)
 
         viewModel.packageHeight = "abc"
-        let _ = viewModel.packageHeightValidation.sink { validated in
-            XCTAssertFalse(validated)
-        }
+        XCTAssertFalse(viewModel.isHeightValidated)
     }
 
     func test_package_weight_validation_succeeds_if_weight_is_valid_double() {
@@ -190,14 +148,10 @@ class ShippingLabelCustomPackageFormViewModelTests: XCTestCase {
 
         // When & Then
         viewModel.emptyPackageWeight = "0"
-        let _ = viewModel.packageWeightValidation.sink { validated in
-            XCTAssertTrue(validated)
-        }
+        XCTAssertTrue(viewModel.isWeightValidated)
 
         viewModel.emptyPackageWeight = "1.5"
-        let _ = viewModel.packageWeightValidation.sink { validated in
-            XCTAssertTrue(validated)
-        }
+        XCTAssertTrue(viewModel.isWeightValidated)
     }
 
     func test_package_weight_validation_fails_if_weight_is_invalid_double() {
@@ -206,19 +160,13 @@ class ShippingLabelCustomPackageFormViewModelTests: XCTestCase {
 
         // When & Then
         viewModel.emptyPackageWeight = "-1"
-        let _ = viewModel.packageWeightValidation.sink { validated in
-            XCTAssertFalse(validated)
-        }
+        XCTAssertFalse(viewModel.isWeightValidated)
 
         viewModel.emptyPackageWeight = "1..0"
-        let _ = viewModel.packageWeightValidation.sink { validated in
-            XCTAssertFalse(validated)
-        }
+        XCTAssertFalse(viewModel.isWeightValidated)
 
         viewModel.emptyPackageWeight = "abc"
-        let _ = viewModel.packageWeightValidation.sink { validated in
-            XCTAssertFalse(validated)
-        }
+        XCTAssertFalse(viewModel.isWeightValidated)
     }
 
     func test_package_validation_succeeds_if_all_fields_are_valid() {
@@ -233,9 +181,7 @@ class ShippingLabelCustomPackageFormViewModelTests: XCTestCase {
         viewModel.emptyPackageWeight = "1"
 
         // Then
-        let _ = viewModel.packageValidation.sink { validated in
-            XCTAssertTrue(validated)
-        }
+        XCTAssertNotNil(viewModel.validatedCustomPackage)
     }
 
     func test_package_validation_fails_if_any_fields_are_invalid() {
@@ -250,8 +196,6 @@ class ShippingLabelCustomPackageFormViewModelTests: XCTestCase {
         viewModel.emptyPackageWeight = "1"
 
         // Then
-        let _ = viewModel.packageValidation.sink { validated in
-            XCTAssertFalse(validated)
-        }
+        XCTAssertNil(viewModel.validatedCustomPackage)
     }
 }

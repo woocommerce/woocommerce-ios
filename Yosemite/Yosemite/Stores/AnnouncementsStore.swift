@@ -1,25 +1,22 @@
 import Networking
 import Storage
-import WordPressKit
 
 /// Protocol for `AnnouncementsRemote` mainly used for mocking.
 ///
 public protocol AnnouncementsRemoteProtocol {
 
-    func getAnnouncements(appId: String,
-                          appVersion: String,
-                          locale: String,
-                          completion: @escaping (Result<[Announcement], Error>) -> Void)
+    func getFeatures(appId: String,
+                     appVersion: String,
+                     locale: String,
+                     completion: @escaping (Result<[WooCommerceFeature], Error>) -> Void)
 }
-
-/// Makes AnnouncementService from WordPressKit conform with AnnouncementsRemoteProtocol so we can inject other remotes. (For testing purposes)
-extension AnnouncementServiceRemote: AnnouncementsRemoteProtocol { }
 
 // MARK: - AnnouncementsStore
 //
 public class AnnouncementsStore: Store {
 
     typealias IsCached = Bool
+    typealias AppVersion = String
     private let remote: AnnouncementsRemoteProtocol
     private let fileStorage: FileStorage
 
@@ -33,7 +30,7 @@ public class AnnouncementsStore: Store {
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
-    private var appVersion: String { UserAgent.bundleShortVersion }
+    private var appVersion: AppVersion { UserAgent.bundleShortVersion }
 
     private lazy var featureAnnouncementsFileURL: URL! = {
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
@@ -63,20 +60,21 @@ public class AnnouncementsStore: Store {
 
 private extension AnnouncementsStore {
 
-    func synchronizeFeatures(onCompletion: @escaping ([Feature], IsCached) -> Void) {
+    func synchronizeFeatures(onCompletion: @escaping ([WooCommerceFeature], IsCached) -> Void) {
 
-        if let savedFeatures = loadSavedAnnouncements().first?.features {
+        let savedFeatures = loadSavedFeatures()
+        if !savedFeatures.isEmpty {
             onCompletion(savedFeatures, true)
             return
         }
 
-        remote.getAnnouncements(appId: Constants.WooCommerceAppId,
-                                appVersion: appVersion,
-                                locale: Locale.current.identifier) { [weak self] result in
+        remote.getFeatures(appId: Constants.WooCommerceAppId,
+                           appVersion: appVersion,
+                           locale: Locale.current.identifier) { [weak self] result in
             switch result {
-            case .success(let announcements):
-                try? self?.saveAnnouncements(announcements)
-                onCompletion(announcements.first?.features ?? [], false)
+            case .success(let features):
+                try? self?.saveFeatures(features)
+                onCompletion(features, false)
             case .failure:
                 onCompletion([], false)
             }
@@ -84,17 +82,17 @@ private extension AnnouncementsStore {
     }
 
     /// Load `Announcements` for the current app version
-    func loadSavedAnnouncements() -> [Announcement] {
-        guard let savedAnnouncements: [String: [Announcement]] = try? fileStorage.data(for: featureAnnouncementsFileURL) else {
+    func loadSavedFeatures() -> [WooCommerceFeature] {
+        guard let savedFeatures: [AppVersion: [WooCommerceFeature]] = try? fileStorage.data(for: featureAnnouncementsFileURL) else {
             return []
         }
 
-        return savedAnnouncements[appVersion] ?? []
+        return savedFeatures[appVersion] ?? []
     }
 
     /// Save the `Announcements` to the appropriate file.
-    func saveAnnouncements(_ announcements: [Announcement]) throws {
-        try fileStorage.write([appVersion: announcements], to: featureAnnouncementsFileURL)
+    func saveFeatures(_ features: [WooCommerceFeature]) throws {
+        try fileStorage.write([appVersion: features], to: featureAnnouncementsFileURL)
     }
 }
 

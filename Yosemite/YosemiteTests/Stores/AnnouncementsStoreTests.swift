@@ -1,5 +1,4 @@
 import XCTest
-import WordPressKit
 @testable import Yosemite
 @testable import Networking
 @testable import Storage
@@ -54,10 +53,13 @@ final class AnnouncementsStoreTests: XCTestCase {
     ///
     func test_synchronize_features_effectively_retrieves_features() throws {
         // Arrange
-        remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .success(try self.makeAnnouncements()))
+        let feature = WooCommerceFeature(title: "foo",
+                                         subtitle: "bar",
+                                         iconUrl: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")
+        remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .success([feature]))
 
         // Act
-        let features: [Feature] = waitFor { [weak self] promise in
+        let features: [WooCommerceFeature] = waitFor { [weak self] promise in
             let action = AnnouncementsAction.synchronizeFeatures { features, _ in
                 promise(features)
             }
@@ -66,15 +68,16 @@ final class AnnouncementsStoreTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(features.count, 1)
-        XCTAssertEqual(features.first?.title, "foo")
-        XCTAssertEqual(features.first?.subtitle, "bar")
-        XCTAssertEqual(features.first?.iconUrl, "https://s0.wordpress.com/i/store/mobile/plans-premium.png")
+        XCTAssertEqual(features.first?.title, feature.title)
+        XCTAssertEqual(features.first?.subtitle, feature.subtitle)
+        XCTAssertEqual(features.first?.iconUrl, feature.iconUrl)
         XCTAssertEqual(remote.requestedAppId, "4")
     }
 
     func test_synchronize_features_with_result_doesnt_fetch_announcements_twice_for_the_same_version() throws {
         // Arrange
-        remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .success(try self.makeAnnouncements()))
+        let feature = WooCommerceFeature(title: "", subtitle: "", iconUrl: "")
+        remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .success([feature]))
 
         // Act
         let isCached: Bool = waitFor { [self] promise in
@@ -112,10 +115,11 @@ final class AnnouncementsStoreTests: XCTestCase {
 
     func test_synchronize_features_with_error_gets_an_empty_list_of_features() {
         // Arrange
-        remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .failure(NSError(domain: "", code: 0, userInfo: nil)))
+        let error = NSError(domain: "", code: 0, userInfo: nil)
+        remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .failure(error))
 
         // Act
-        let features: [Feature] = waitFor { [weak self] promise in
+        let features: [WooCommerceFeature] = waitFor { [weak self] promise in
             let action = AnnouncementsAction.synchronizeFeatures { features, _ in
                 promise(features)
             }
@@ -124,13 +128,5 @@ final class AnnouncementsStoreTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(features.isEmpty)
-    }
-}
-
-// MARK: - Response Mocks
-private extension AnnouncementsStoreTests {
-    func makeAnnouncements(from filename: String = TestConstants.announcementsJSONResponseFileName) throws -> [Announcement] {
-        let announcementsData = try XCTUnwrap(Loader.contentsOf(filename))
-        return try JSONDecoder().decode([Announcement].self, from: announcementsData)
     }
 }

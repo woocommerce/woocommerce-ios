@@ -1,7 +1,7 @@
 
 import Foundation
 import Networking
-import WordPressKit
+import Storage
 import XCTest
 @testable import Yosemite
 
@@ -12,7 +12,7 @@ final class MockAnnouncementsRemote {
     private typealias AppVersion = String
 
     /// The results to pass to the `completion` block if `getAnnouncements()` is called.
-    private var loadAnnouncementsResults = [AppVersion: Result<[Announcement], Error>]()
+    private var loadAnnouncementsResults = [AppVersion: Result<[WooCommerceFeature], Error>]()
 
     /// The amount of times that the `getAnnouncements` was invoked
     var numberOfTimesGetAnnouncementsWasCalled = 0
@@ -21,7 +21,7 @@ final class MockAnnouncementsRemote {
     /// https://fieldguide.automattic.com/mobile-feature-announcements/mobile-feature-announcement-endpoint/
     var requestedAppId = ""
 
-    func whenLoadingAnnouncements(for appVersion: String, thenReturn result: Result<[Announcement], Error>) {
+    func whenLoadingAnnouncements(for appVersion: String, thenReturn result: Result<[WooCommerceFeature], Error>) {
         loadAnnouncementsResults[appVersion] = result
     }
 }
@@ -30,10 +30,10 @@ final class MockAnnouncementsRemote {
 
 extension MockAnnouncementsRemote: AnnouncementsRemoteProtocol {
 
-    func getAnnouncements(appId: String,
-                          appVersion: String,
-                          locale: String,
-                          completion: @escaping (Result<[Announcement], Error>) -> Void) {
+    func getFeatures(appId: String,
+                     appVersion: String,
+                     locale: String,
+                     completion: @escaping (Result<[WooCommerceFeature], Error>) -> Void) {
         numberOfTimesGetAnnouncementsWasCalled += 1
         requestedAppId = appId
         if let result = self.loadAnnouncementsResults[appVersion] {

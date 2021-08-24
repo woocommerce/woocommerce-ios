@@ -37,13 +37,14 @@ final class EditCustomerNoteViewModel: ObservableObject {
         bindNavigationTrailingItemPublisher()
     }
 
-    /// Update the note remotely and fire and try to dismiss the view.
+    /// Update the note remotely and invoke a completion block when finished
     ///
-    func updateNote() {
-        // TODO: Fire network request & dismiss the view
+    func updateNote(onFinish: @escaping () -> Void) {
+        // TODO: Fire network request
         performingNetworkRequest.send(true)
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
             self?.performingNetworkRequest.send(false)
+            onFinish()
         }
     }
 }

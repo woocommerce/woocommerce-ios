@@ -52,7 +52,7 @@ struct EditCustomerNote: View {
         switch viewModel.navigationTrailingItem {
         case .done(let enabled):
             Button(Localization.done) {
-                viewModel.updateNote()
+                viewModel.updateNote(onFinish: dismiss)
             }
             .disabled(!enabled)
         case .loading:

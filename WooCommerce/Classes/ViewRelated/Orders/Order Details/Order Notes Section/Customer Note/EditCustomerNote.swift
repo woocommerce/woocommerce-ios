@@ -73,7 +73,7 @@ private extension EditCustomerNote {
 // MARK: Previews
 struct EditCustomerNote_Previews: PreviewProvider {
     static var previews: some View {
-        EditCustomerNote(viewModel: .init(originalNote: "Note", newNote: "Note with an edit"))
+        EditCustomerNote(viewModel: .init(originalNote: "Note"))
             .environment(\.colorScheme, .light)
     }
 }

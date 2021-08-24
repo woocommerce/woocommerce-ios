@@ -7,39 +7,49 @@ class EditCustomerNoteViewModelTests: XCTestCase {
 
     func test_done_button_is_disabled_when_note_content_is_the_same() {
         // Given
-        let viewModel = EditCustomerNoteViewModel(originalNote: "Original", newNote: "Original")
+        let viewModel = EditCustomerNoteViewModel(originalNote: "Original")
 
         // When
-        let doneButtonEnabled = viewModel.doneEnabled
+        let navigationItem = viewModel.navigationTrailingItem
 
         // Then
-        XCTAssertFalse(doneButtonEnabled)
+        assertEqual(navigationItem, .done(enabled: false))
     }
 
     func test_done_button_is_enabled_when_note_content_is_the_different() {
         // Given
-        let viewModel = EditCustomerNoteViewModel(originalNote: "Original", newNote: "New")
+        let viewModel = EditCustomerNoteViewModel(originalNote: "Original")
 
         // When
-        let doneButtonEnabled = viewModel.doneEnabled
+        viewModel.newNote = "Edited"
 
         // Then
-        XCTAssertTrue(doneButtonEnabled)
+        assertEqual(viewModel.navigationTrailingItem, .done(enabled: true))
+    }
+
+    func test_loading_indicator_gets_enabled_during_network_request() {
+        // Given
+        let viewModel = EditCustomerNoteViewModel(originalNote: "Original")
+
+        // When
+        viewModel.updateNote {}
+
+        // Then
+        assertEqual(viewModel.navigationTrailingItem, .loading)
     }
 
     func test_loading_indicator_gets_disabled_after_the_network_operation_completes() {
         // Given
-        let viewModel = EditCustomerNoteViewModel(originalNote: "Original", newNote: "New")
-        XCTAssertFalse(viewModel.showLoadingIndicator)
+        let viewModel = EditCustomerNoteViewModel(originalNote: "Original")
 
         // When
-        viewModel.updateNote()
-
-        // Then
-        XCTAssertTrue(viewModel.showLoadingIndicator)
-        waitUntil {
-            !viewModel.showLoadingIndicator
+        let navigationItem = waitFor { promise in
+            viewModel.updateNote(onFinish: {
+                promise(viewModel.navigationTrailingItem)
+            })
         }
 
+        // Then
+        assertEqual(navigationItem, .done(enabled: false))
     }
 }

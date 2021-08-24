@@ -26,12 +26,12 @@ final class EditCustomerNoteViewModel: ObservableObject {
 
     convenience init(order: Order) {
         let note = order.customerNote ?? ""
-        self.init(originalNote: note, newNote: note)
+        self.init(originalNote: note)
     }
 
     /// Member wise initializer
     ///
-    init(originalNote: String, newNote: String) {
+    init(originalNote: String) {
         self.originalNote = originalNote
         self.newNote = originalNote
         bindNavigationTrailingItemPublisher()
@@ -53,7 +53,7 @@ final class EditCustomerNoteViewModel: ObservableObject {
 extension EditCustomerNoteViewModel {
     /// Representation of possible navigation bar trailing buttons
     ///
-    enum NavigationItem {
+    enum NavigationItem: Equatable {
         case done(enabled: Bool)
         case loading
     }

@@ -198,4 +198,28 @@ class ShippingLabelCustomPackageFormViewModelTests: XCTestCase {
         // Then
         XCTAssertNil(viewModel.validatedCustomPackage)
     }
+
+    func test_sanitizeNumericInput_returns_expected_sanitized_values() {
+        // Given
+        let viewModel = ShippingLabelCustomPackageFormViewModel()
+
+        // When & Then
+        var input = "1"
+        XCTAssertEqual(viewModel.sanitizeNumericInput(input), input)
+
+        input = "1."
+        XCTAssertEqual(viewModel.sanitizeNumericInput(input), input)
+
+        input = "1.5"
+        XCTAssertEqual(viewModel.sanitizeNumericInput(input), input)
+
+        input = "a"
+        XCTAssertEqual(viewModel.sanitizeNumericInput(input), "")
+
+        input = "1a"
+        XCTAssertEqual(viewModel.sanitizeNumericInput(input), "1")
+
+        input = "1.5."
+        XCTAssertEqual(viewModel.sanitizeNumericInput(input), "1.5")
+    }
 }

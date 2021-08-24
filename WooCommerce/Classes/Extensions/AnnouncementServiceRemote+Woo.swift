@@ -1,9 +1,14 @@
 import WordPressKit
 import Storage
+import Networking
 import Yosemite
 
 /// Makes AnnouncementServiceRemote from WordPressKit conform with AnnouncementsRemoteProtocol so we can inject other remotes. (For testing purposes)
 extension AnnouncementServiceRemote: AnnouncementsRemoteProtocol {
+
+    override convenience init() {
+        self.init(wordPressComRestApi: WordPressComRestApi(baseUrlString: Settings.wordpressApiBaseURL))
+    }
 
     public func getFeatures(appId: String,
                             appVersion: String,

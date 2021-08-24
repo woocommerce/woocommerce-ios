@@ -72,7 +72,7 @@ class AuthenticatedState: StoresManagerState {
             AnnouncementsStore(dispatcher: dispatcher,
                                storageManager: storageManager,
                                network: network,
-                               remote: AnnouncementServiceRemote(wordPressComRestApi: WordPressComRestApi(baseUrlString: Settings.wordpressApiBaseURL)),
+                               remote: AnnouncementServiceRemote(),
                                fileStorage: PListFileStorage())
         ]
 

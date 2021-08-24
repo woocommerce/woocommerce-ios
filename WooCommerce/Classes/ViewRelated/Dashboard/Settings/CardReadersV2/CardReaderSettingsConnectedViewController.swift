@@ -22,7 +22,7 @@ final class CardReaderSettingsConnectedViewController: UIViewController, CardRea
     private var lastknownUpdateView: CardReaderSettingsConnectedViewModel.ReaderUpdateActiveView = .none
 
     /// Update view controller
-    private var updateProgressViewController: CardPresentPaymentsUpdateViewController?
+    private var updateViewController: UpdateViewController?
 
     /// Accept our viewmodel
     ///
@@ -148,13 +148,18 @@ private extension CardReaderSettingsConnectedViewController {
 
         // Close anything that needs closing
         if lastknownUpdateView == .updateInProgress {
-            updateProgressViewController?.dismiss(animated: true, completion: nil)
+            updateViewController?.dismiss(animated: true, completion: nil)
         }
 
         // Open anything that needs opening
         if activeUpdateView == .updateInProgress {
-            updateProgressViewController = CardPresentPaymentsUpdateViewController()
-            self.present(updateProgressViewController!, animated: true, completion: nil)
+            updateViewController = UpdateViewController()
+            updateViewController?.loadViewIfNeeded()
+            updateViewController?.configure(
+                headline: Localization.updateHeadline,
+                footnote: Localization.updateFootnote
+            )
+            self.present(updateViewController!, animated: true, completion: nil)
         }
 
         // TODO - success snackbar
@@ -353,6 +358,16 @@ private extension CardReaderSettingsConnectedViewController {
         static let disconnectButtonTitle = NSLocalizedString(
             "Disconnect Reader",
             comment: "Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader"
+        )
+
+        static let updateHeadline = NSLocalizedString(
+            "Updating software",
+            comment: "Headline on the full screen software update modal"
+        )
+
+        static let updateFootnote = NSLocalizedString(
+            "Your reader will automatically restart and reconnect after the update is complete",
+            comment: "Footnote on the full screen software update modal"
         )
     }
 }

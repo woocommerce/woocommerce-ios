@@ -60,8 +60,8 @@ public class AnnouncementsStore: Store {
 
 private extension AnnouncementsStore {
 
+    /// Get features from Announcements API and persist this information. If there are saved features for a given app version, load it from disk.
     func synchronizeFeatures(onCompletion: @escaping ([WooCommerceFeature], IsCached) -> Void) {
-
         let savedFeatures = loadSavedFeatures()
         if !savedFeatures.isEmpty {
             onCompletion(savedFeatures, true)
@@ -81,7 +81,7 @@ private extension AnnouncementsStore {
         }
     }
 
-    /// Load `Announcements` for the current app version
+    /// Load a saved list of`WooCommerceFeature` for the current app version
     func loadSavedFeatures() -> [WooCommerceFeature] {
         guard let savedFeatures: [AppVersion: [WooCommerceFeature]] = try? fileStorage.data(for: featureAnnouncementsFileURL) else {
             return []

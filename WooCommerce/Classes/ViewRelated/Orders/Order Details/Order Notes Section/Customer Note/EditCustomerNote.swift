@@ -49,13 +49,14 @@ struct EditCustomerNote: View {
     /// Decides if the navigation trailing item should be a done button or a loading indicator.
     ///
     @ViewBuilder private func navigationBarTrailingItem() -> some View {
-        if viewModel.showLoadingIndicator {
-            ProgressView()
-        } else {
+        switch viewModel.navigationTrailingItem {
+        case .done(let enabled):
             Button(Localization.done) {
                 viewModel.updateNote()
             }
-            .disabled(!viewModel.doneEnabled)
+            .disabled(!enabled)
+        case .loading:
+            ProgressView()
         }
     }
 }

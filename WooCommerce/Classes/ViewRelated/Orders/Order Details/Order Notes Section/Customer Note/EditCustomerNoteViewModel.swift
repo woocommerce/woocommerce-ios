@@ -1,50 +1,75 @@
 import Foundation
 import Yosemite
+import Combine
 
 /// View Model for the Edit Customer Note screen
 ///
 final class EditCustomerNoteViewModel: ObservableObject {
-
-    /// Original content of the order customer provided note
-    ///
-    private let originalNote: String
 
     /// New content to submit.
     /// Binding property modified at the view level.
     ///
     @Published var newNote: String
 
-    /// True when the loading spinner should be shown.
-    /// Like when performing a network operation
+    /// Active navigation bar trailing item.
+    /// Defaults to a disabled done button.
     ///
-    @Published private(set) var showLoadingIndicator: Bool = false
+    @Published private(set) var navigationTrailingItem: NavigationItem = .done(enabled: false)
 
-    /// True when there are changes to the `initialNote`. False otherwise.
+    /// Original content of the order customer provided note.
     ///
-    var doneEnabled: Bool {
-        originalNote != newNote
-    }
+    private let originalNote: String
 
-    init(order: Order) {
-        self.originalNote = order.customerNote ?? ""
-        self.newNote = originalNote
+    /// Tracks if a network request is being performed.
+    ///
+    private let performingNetworkRequest: CurrentValueSubject<Bool, Never> = .init(false)
+
+    convenience init(order: Order) {
+        let note = order.customerNote ?? ""
+        self.init(originalNote: note, newNote: note)
     }
 
     /// Member wise initializer
     ///
-    internal init(originalNote: String, newNote: String) {
+    init(originalNote: String, newNote: String) {
         self.originalNote = originalNote
         self.newNote = originalNote
+        bindNavigationTrailingItemPublisher()
     }
 
     /// Update the note remotely and fire and try to dismiss the view.
     ///
     func updateNote() {
         // TODO: Fire network request & dismiss the view
-        // Dummy code
-        showLoadingIndicator = true
+        performingNetworkRequest.send(true)
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
-            self?.showLoadingIndicator = false
+            self?.performingNetworkRequest.send(false)
         }
+    }
+}
+
+// MARK: Definitions
+extension EditCustomerNoteViewModel {
+    /// Representation of possible navigation bar trailing buttons
+    ///
+    enum NavigationItem {
+        case done(enabled: Bool)
+        case loading
+    }
+}
+
+// MARK: Helper Methods
+private extension EditCustomerNoteViewModel {
+    /// Calculates what navigation trailing item should be shown depending on our internal state.
+    ///
+    private func bindNavigationTrailingItemPublisher() {
+        Publishers.CombineLatest($newNote, performingNetworkRequest)
+            .map { [originalNote] newNote, performingNetworkRequest -> NavigationItem in
+                guard !performingNetworkRequest else {
+                    return .loading
+                }
+                return .done(enabled: originalNote != newNote)
+            }
+            .assign(to: &$navigationTrailingItem)
     }
 }

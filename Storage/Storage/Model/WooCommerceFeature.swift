@@ -1,5 +1,5 @@
-public struct WooCommerceFeature: Codable {
-    var id = UUID()
+public struct WooCommerceFeature: Codable, Identifiable {
+    public var id = UUID()
     let title: String
     let subtitle: String
     let iconUrl: String

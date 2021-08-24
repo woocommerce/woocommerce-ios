@@ -11,6 +11,7 @@ final class UpdateViewController: UIViewController {
 
     override func viewDidLoad() {
         view.backgroundColor = .gray(.shade90)
+        modalPresentationStyle = .overFullScreen
     }
 
     func configure(headline: String, footnote: String) {

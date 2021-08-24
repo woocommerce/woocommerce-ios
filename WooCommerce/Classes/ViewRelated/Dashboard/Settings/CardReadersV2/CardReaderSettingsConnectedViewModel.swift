@@ -2,14 +2,6 @@ import Foundation
 import Yosemite
 
 final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedViewModel {
-
-    enum ReaderUpdateActiveView {
-        case none
-        case updateInProgress
-        case updateSucceeded
-        case updateFailed
-    }
-
     private(set) var shouldShow: CardReaderSettingsTriState = .isUnknown
     var didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?
     var didUpdate: (() -> Void)?
@@ -17,8 +9,10 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     private var didGetConnectedReaders: Bool = false
     private var connectedReaders = [CardReader]()
     private let knownReadersProvider: CardReaderSettingsKnownReadersProvider?
+
     private(set) var readerUpdateAvailable: CardReaderSettingsTriState = .isUnknown
-    private(set) var readerUpdateActiveView: ReaderUpdateActiveView = .none
+    private(set) var readerUpdateInProgress: Bool = false
+    private(set) var readerUpdateCompletedSuccessfully: Bool = false
 
     var connectedReaderID: String?
     var connectedReaderBatteryLevel: String?
@@ -87,25 +81,26 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     /// Allows the view controller to kick off a card reader update
     ///
     func startCardReaderUpdate() {
+        self.readerUpdateCompletedSuccessfully = false
+
         let action = CardPresentPaymentAction.startCardReaderUpdate(
             onProgress: { [weak self] progress in
                 guard let self = self else {
                     return
                 }
-                self.readerUpdateActiveView = .updateInProgress
+                self.readerUpdateInProgress = true
                 self.didUpdate?()
             },
             onCompletion: { [weak self] result in
                 guard let self = self else {
                     return
                 }
-                switch result {
-                case .success():
+                if case .success() = result {
+                    self.readerUpdateCompletedSuccessfully = true
                     self.readerUpdateAvailable = .isFalse
-                    self.readerUpdateActiveView = .updateSucceeded
-                case .failure:
-                    self.readerUpdateActiveView = .updateFailed
+
                 }
+                self.readerUpdateInProgress = false
                 self.didUpdate?()
             }
         )

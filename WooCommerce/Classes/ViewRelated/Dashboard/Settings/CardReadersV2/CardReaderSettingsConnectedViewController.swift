@@ -19,7 +19,7 @@ final class CardReaderSettingsConnectedViewController: UIViewController, CardRea
     private var sections = [Section]()
 
     /// Last known update view
-    private var lastknownUpdateView: CardReaderSettingsConnectedViewModel.ReaderUpdateActiveView = .none
+    private var updateInProgress: Bool = false
 
     /// Update view controller
     private var updateViewController: UpdateViewController?
@@ -135,39 +135,40 @@ private extension CardReaderSettingsConnectedViewController {
     }
 
     func configureUpdateView() {
-        guard viewModel != nil else {
+        guard viewModel != nil, let viewModelUpdateInProgress = viewModel?.readerUpdateInProgress else {
             return
         }
-        guard let activeUpdateView = viewModel?.readerUpdateActiveView else {
+        guard updateInProgress != viewModelUpdateInProgress else {
+            return
+        }
+        updateInProgress = viewModelUpdateInProgress
+
+        // If we are not updating a reader, dismiss any updateViewController
+        if !updateInProgress {
+            updateViewController?.dismiss(animated: true, completion: { [weak self] in
+                guard let self = self else {
+                    return
+                }
+                guard let readerUpdateCompletedSuccessfully = self.viewModel?.readerUpdateCompletedSuccessfully else {
+                    return
+                }
+                if readerUpdateCompletedSuccessfully {
+                    self.displayReaderUpdateSuccessNotice()
+                }
+
+                self.updateViewController = nil
+            })
             return
         }
 
-        if lastknownUpdateView == activeUpdateView {
+        // Otherwise, instantiate and present an updateViewController
+        updateViewController = UpdateViewController()
+        guard updateViewController != nil else {
             return
         }
-
-        // Close anything that needs closing
-        if lastknownUpdateView == .updateInProgress {
-            updateViewController?.dismiss(animated: true, completion: nil)
-        }
-
-        // Open anything that needs opening
-        if activeUpdateView == .updateInProgress {
-            updateViewController = UpdateViewController()
-            updateViewController?.loadViewIfNeeded()
-            updateViewController?.configure(
-                headline: Localization.updateHeadline,
-                footnote: Localization.updateFootnote
-            )
-            self.present(updateViewController!, animated: true, completion: nil)
-        }
-
-        // TODO - success snackbar
-
-        // TODO - failure modal
-
-        lastknownUpdateView = activeUpdateView
-
+        updateViewController!.loadViewIfNeeded()
+        updateViewController!.configure(headline: Localization.updateHeadline, footnote: Localization.updateFootnote)
+        self.present(updateViewController!, animated: true, completion: nil)
     }
 
     /// Register table cells.
@@ -291,6 +292,15 @@ extension CardReaderSettingsConnectedViewController: UITableViewDelegate {
     }
 }
 
+// MARK: - Notices
+//
+private extension CardReaderSettingsConnectedViewController {
+    func displayReaderUpdateSuccessNotice() {
+        let notice = Notice(title: Localization.updateSuccess, feedbackType: .success)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+}
+
 // MARK: - Private Types
 //
 private struct Section {
@@ -369,5 +379,9 @@ private extension CardReaderSettingsConnectedViewController {
             "Your reader will automatically restart and reconnect after the update is complete",
             comment: "Footnote on the full screen software update modal"
         )
+
+        static let updateSuccess = NSLocalizedString(
+            "Reader software updated",
+            comment: "A notice presented after a successful update of the card reader software")
     }
 }

@@ -63,6 +63,12 @@ struct ShippingLabelCustomPackageForm: View {
                                              text: $viewModel.packageLength,
                                              symbol: viewModel.lengthUnit,
                                              keyboardType: .decimalPad)
+                            .onReceive(Just(viewModel.packageLength), perform: { newValue in
+                                let sanitized = viewModel.sanitizeNumericInput(newValue)
+                                if sanitized != newValue {
+                                    viewModel.packageLength = sanitized
+                                }
+                            })
                         Divider()
                             .padding(.leading, Constants.horizontalPadding)
                     }
@@ -83,6 +89,12 @@ struct ShippingLabelCustomPackageForm: View {
                                              text: $viewModel.packageWidth,
                                              symbol: viewModel.lengthUnit,
                                              keyboardType: .decimalPad)
+                            .onReceive(Just(viewModel.packageWidth), perform: { newValue in
+                                let sanitized = viewModel.sanitizeNumericInput(newValue)
+                                if sanitized != newValue {
+                                    viewModel.packageWidth = sanitized
+                                }
+                            })
 
                         Divider()
                             .padding(.leading, Constants.horizontalPadding)
@@ -104,6 +116,12 @@ struct ShippingLabelCustomPackageForm: View {
                                              text: $viewModel.packageHeight,
                                              symbol: viewModel.lengthUnit,
                                              keyboardType: .decimalPad)
+                            .onReceive(Just(viewModel.packageHeight), perform: { newValue in
+                                let sanitized = viewModel.sanitizeNumericInput(newValue)
+                                if sanitized != newValue {
+                                    viewModel.packageHeight = sanitized
+                                }
+                            })
                     }
                     .padding(.horizontal, insets: safeAreaInsets)
                     .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .horizontal))
@@ -120,6 +138,12 @@ struct ShippingLabelCustomPackageForm: View {
                                          text: $viewModel.emptyPackageWeight,
                                          symbol: viewModel.weightUnit,
                                          keyboardType: .decimalPad)
+                        .onReceive(Just(viewModel.emptyPackageWeight), perform: { newValue in
+                            let sanitized = viewModel.sanitizeNumericInput(newValue)
+                            if sanitized != newValue {
+                                viewModel.emptyPackageWeight = sanitized
+                            }
+                        })
                         .padding(.horizontal, insets: safeAreaInsets)
                         .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .horizontal))
                     Divider()

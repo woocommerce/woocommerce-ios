@@ -53,7 +53,7 @@ final class ShippingLabelCustomPackageFormViewModel: ObservableObject {
                                           maxWeight: 0)
     }
 
-    // MARK: Validation Properties & Publishers
+    // MARK: Validation Properties
 
     @Published private(set) var isNameValidated = true
     @Published private(set) var isLengthValidated = true
@@ -82,7 +82,7 @@ final class ShippingLabelCustomPackageFormViewModel: ObservableObject {
     }
 }
 
-// MARK: - Validation
+// MARK: - Validation & Sanitization
 extension ShippingLabelCustomPackageFormViewModel {
 
     /// Validate each field on demand.
@@ -123,6 +123,15 @@ extension ShippingLabelCustomPackageFormViewModel {
             .dropFirst()
             .map { self.validatePackageWeight($0) }
             .assign(to: &$isWeightValidated)
+    }
+
+    /// Configure form sanitization for numeric input
+    ///
+    func sanitizeNumericInput(_ value: String) -> String {
+        guard Double(value) != nil else {
+            return String(value.dropLast())
+        }
+        return value
     }
 
     private func validatePackageName(_ name: String) -> Bool {

@@ -10,6 +10,13 @@ extension AnnouncementServiceRemote: AnnouncementsRemoteProtocol {
         self.init(wordPressComRestApi: WordPressComRestApi(baseUrlString: Settings.wordpressApiBaseURL))
     }
 
+    /// Fetch features from WordPressKit announcements public API
+    ///
+    /// - Parameter appId: the application identifier. 4 stands for WooCommerce
+    /// - Parameter appVersion: the application version that we are looking for
+    /// - Parameter locale: the locale that will be used for the translations
+    /// - Parameter completion: A result that may contain a list of WooCommerceFeature or an Error
+    ///
     public func getFeatures(appId: String,
                             appVersion: String,
                             locale: String,

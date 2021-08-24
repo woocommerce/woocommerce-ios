@@ -1,5 +1,5 @@
-Handlare i USA som vill skapa fraktetiketter för sina amerikanska kunder kommer att hitta flera mindre förbättringar. Om du inte redan skriver ut etiketter från appen, kom igång genom att installera utökningen WooCommerce Shipping & Tax på din webbplats.
+Att skicka en anteckning till en kund för en beställning utan e-postadress är inte särskilt meningsfullt – så det alternativet döljs nu i sådana fall.
 
-Vi har även tittat på hur appen såg ut med olika skärmstorlekar och telefontyper. Vi har åtgärdat en del mindre men viktiga visuella problem, särskilt noterbara på iPads.
+Vissa handlare har nämnt att beställningar med negativa priser inte visades korrekt. Vi har åtgärdat det felet, så nu kan du känna dig mer positiv!
 
-Som alltid välkomnar vi din feedback om appen. Kontakta oss via appen under Inställningar på fliken Min butik.
+Den här versionen innehåller även en mängd mindre förbättringar som ska göra din upplevelse smidigare. Vi hoppas att du kommer att märka hur mycket arbete vi lägger ned på vår programvara.

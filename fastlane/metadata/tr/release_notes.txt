@@ -1,5 +1,5 @@
-ABD'deki müşterileri için gönderim etiketleri oluşturmak isteyen ABD'deki satıcılar bazı küçük iyileştirmeler bulacaklar. Henüz uygulamadan etiket yazdırmıyorsanız, sitenize WooCommerce Gönderim ve Vergi uzantısını yükleyerek başlayın.
+E-posta adresi içermeyen bir sipariş için müşteriye e-postayla not göndermek anlamsız olduğundan, bu durumda artık bu seçeneği gizliyoruz.
 
-Ayrıca uygulamanın farklı ekran boyutlarında ve telefon tiplerindeki görünme biçimini de ele aldık. Özellikle iPad'lerde fark edilen bir dizi küçük ama anlamlı görsel sorunu düzelttik.
+Bazı satıcılar, negatif fiyatlı siparişlerin doğru şekilde görünmediğinden yakınıyordu. Bu sorunu çözdük, artık daha iyi hissedeceksiniz.
 
-Her zaman olduğu gibi, uygulama hakkındaki görüşlerinizi bekliyoruz. Uygulamada Mağazam sekmesindeki Ayarlar altından bize ulaşın.
+Bu sürüm ayrıca deneyiminizi genel olarak daha sorunsuz hale getirmek için bir dizi küçük iyileştirme içeriyor. Yazılımımıza gönlümüzden kattığımız sevgiyi fark edeceğinizi umuyoruz.

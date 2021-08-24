@@ -50,7 +50,7 @@ final class AnnouncementsStoreTests: XCTestCase {
         let feature = WooCommerceFeature(title: "foo",
                                          subtitle: "bar",
                                          iconUrl: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")
-        remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .success([feature]))
+        remote.whenLoadingFeatures(for: UserAgent.bundleShortVersion, thenReturn: .success([feature]))
 
         // Act
         let features: [WooCommerceFeature] = waitFor { [weak self] promise in
@@ -71,7 +71,7 @@ final class AnnouncementsStoreTests: XCTestCase {
     func test_synchronize_features_with_result_doesnt_fetch_announcements_twice_for_the_same_version() throws {
         // Arrange
         let feature = WooCommerceFeature(title: "", subtitle: "", iconUrl: "")
-        remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .success([feature]))
+        remote.whenLoadingFeatures(for: UserAgent.bundleShortVersion, thenReturn: .success([feature]))
 
         // Act
         let isCached: Bool = waitFor { [self] promise in
@@ -84,13 +84,13 @@ final class AnnouncementsStoreTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertEqual(remote.numberOfTimesGetAnnouncementsWasCalled, 1)
+        XCTAssertEqual(remote.numberOfTimesGetFeaturesWasCalled, 1)
         XCTAssertTrue(isCached)
     }
 
     func test_synchronize_features_with_empty_result_can_fetch_announcements_twice_for_the_same_version() throws {
         // Arrange
-        remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .success([]))
+        remote.whenLoadingFeatures(for: UserAgent.bundleShortVersion, thenReturn: .success([]))
 
         // Act
         let isCached: Bool = waitFor { [self] promise in
@@ -103,14 +103,14 @@ final class AnnouncementsStoreTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertEqual(remote.numberOfTimesGetAnnouncementsWasCalled, 2)
+        XCTAssertEqual(remote.numberOfTimesGetFeaturesWasCalled, 2)
         XCTAssertFalse(isCached)
     }
 
     func test_synchronize_features_with_error_gets_an_empty_list_of_features() {
         // Arrange
         let error = NSError(domain: "", code: 0, userInfo: nil)
-        remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .failure(error))
+        remote.whenLoadingFeatures(for: UserAgent.bundleShortVersion, thenReturn: .failure(error))
 
         // Act
         let features: [WooCommerceFeature] = waitFor { [weak self] promise in

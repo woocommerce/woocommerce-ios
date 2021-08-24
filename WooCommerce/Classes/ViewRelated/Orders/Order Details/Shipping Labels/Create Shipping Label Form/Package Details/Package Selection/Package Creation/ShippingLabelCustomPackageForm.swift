@@ -48,7 +48,9 @@ struct ShippingLabelCustomPackageForm: View {
                     .padding(.horizontal, insets: safeAreaInsets)
                     .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .horizontal))
                     Divider()
-                    validationErrorRow
+                    ValidationErrorRow(errorMessage: Localization.getErrorMessage(for: viewModel.packageName))
+                        .background(Color(.listBackground).ignoresSafeArea(.container, edges: .horizontal))
+                        .padding(.horizontal, insets: safeAreaInsets)
                         .renderedIf(!viewModel.isNameValidated)
                 }
 
@@ -75,11 +77,12 @@ struct ShippingLabelCustomPackageForm: View {
                     .padding(.horizontal, insets: safeAreaInsets)
                     .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .horizontal))
                     VStack(spacing: 0) {
-                        validationErrorRow
+                        ValidationErrorRow(errorMessage: Localization.getErrorMessage(for: viewModel.packageLength))
+                            .background(Color(.listBackground).ignoresSafeArea(.container, edges: .horizontal))
                         Divider()
-                            .padding(.horizontal, insets: safeAreaInsets)
                             .padding(.leading, Constants.horizontalPadding)
                     }
+                    .padding(.horizontal, insets: safeAreaInsets)
                     .renderedIf(!viewModel.isLengthValidated)
 
                     // Package width
@@ -102,11 +105,12 @@ struct ShippingLabelCustomPackageForm: View {
                     .padding(.horizontal, insets: safeAreaInsets)
                     .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .horizontal))
                     VStack(spacing: 0) {
-                        validationErrorRow
+                        ValidationErrorRow(errorMessage: Localization.getErrorMessage(for: viewModel.packageWidth))
+                            .background(Color(.listBackground).ignoresSafeArea(.container, edges: .horizontal))
                         Divider()
-                            .padding(.horizontal, insets: safeAreaInsets)
                             .padding(.leading, Constants.horizontalPadding)
                     }
+                    .padding(.horizontal, insets: safeAreaInsets)
                     .renderedIf(!viewModel.isWidthValidated)
 
                     // Package height
@@ -126,7 +130,9 @@ struct ShippingLabelCustomPackageForm: View {
                     .padding(.horizontal, insets: safeAreaInsets)
                     .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .horizontal))
                     Divider()
-                    validationErrorRow
+                    ValidationErrorRow(errorMessage: Localization.getErrorMessage(for: viewModel.packageHeight))
+                        .background(Color(.listBackground).ignoresSafeArea(.container, edges: .horizontal))
+                        .padding(.horizontal, insets: safeAreaInsets)
                         .renderedIf(!viewModel.isHeightValidated)
                 }
 
@@ -147,7 +153,9 @@ struct ShippingLabelCustomPackageForm: View {
                         .padding(.horizontal, insets: safeAreaInsets)
                         .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .horizontal))
                     Divider()
-                    validationErrorRow
+                    ValidationErrorRow(errorMessage: Localization.getErrorMessage(for: viewModel.emptyPackageWeight))
+                        .background(Color(.listBackground).ignoresSafeArea(.container, edges: .horizontal))
+                        .padding(.horizontal, insets: safeAreaInsets)
                         .renderedIf(!viewModel.isWeightValidated)
                     ListHeaderView(text: Localization.weightFooter, alignment: .left)
                         .padding(.horizontal, insets: safeAreaInsets)
@@ -167,12 +175,6 @@ struct ShippingLabelCustomPackageForm: View {
                 })
             })
         }
-    }
-
-    private var validationErrorRow: some View {
-        ValidationErrorRow(errorMessage: Localization.validationError)
-            .background(Color(.listBackground).ignoresSafeArea(.container, edges: .horizontal))
-            .padding(.horizontal, insets: safeAreaInsets)
     }
 }
 
@@ -208,9 +210,19 @@ private extension ShippingLabelCustomPackageForm {
         static let weightFooter = NSLocalizedString(
             "Weight of empty package",
             comment: "Footer text for the empty package weight on the Add New Custom Package screen in Shipping Label flow")
-        static let validationError = NSLocalizedString(
+        static func getErrorMessage(for input: String) -> String {
+            if input.isEmpty {
+                return inputMissingError
+            } else {
+                return inputInvalidError
+            }
+        }
+        static let inputMissingError = NSLocalizedString(
             "This field is required",
             comment: "Error for missing package details on the Add New Custom Package screen in Shipping Label flow")
+        static let inputInvalidError = NSLocalizedString(
+            "Invalid value",
+            comment: "Error for invalid package details on the Add New Custom Package screen in Shipping Label flow")
         static let doneButton = NSLocalizedString("Done", comment: "Done navigation button in the Custom Package screen in Shipping Label flow")
     }
 

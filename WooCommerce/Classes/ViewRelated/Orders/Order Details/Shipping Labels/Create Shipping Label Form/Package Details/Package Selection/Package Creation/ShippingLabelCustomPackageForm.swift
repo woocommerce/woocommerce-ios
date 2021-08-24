@@ -46,11 +46,11 @@ struct ShippingLabelCustomPackageForm: View {
                                              keyboardType: .default)
                     }
                     .padding(.horizontal, insets: safeAreaInsets)
+                    .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .horizontal))
                     Divider()
                     validationErrorRow
                         .renderedIf(!viewModel.isNameValidated)
                 }
-                .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .horizontal))
 
                 // Package Dimensions
                 VStack(spacing: 0) {
@@ -67,8 +67,14 @@ struct ShippingLabelCustomPackageForm: View {
                             .padding(.leading, Constants.horizontalPadding)
                     }
                     .padding(.horizontal, insets: safeAreaInsets)
-                    validationErrorRow
-                        .renderedIf(!viewModel.isLengthValidated)
+                    .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .horizontal))
+                    VStack(spacing: 0) {
+                        validationErrorRow
+                        Divider()
+                            .padding(.horizontal, insets: safeAreaInsets)
+                            .padding(.leading, Constants.horizontalPadding)
+                    }
+                    .renderedIf(!viewModel.isLengthValidated)
 
                     // Package width
                     VStack(spacing: 0) {
@@ -82,8 +88,14 @@ struct ShippingLabelCustomPackageForm: View {
                             .padding(.leading, Constants.horizontalPadding)
                     }
                     .padding(.horizontal, insets: safeAreaInsets)
-                    validationErrorRow
-                        .renderedIf(!viewModel.isWidthValidated)
+                    .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .horizontal))
+                    VStack(spacing: 0) {
+                        validationErrorRow
+                        Divider()
+                            .padding(.horizontal, insets: safeAreaInsets)
+                            .padding(.leading, Constants.horizontalPadding)
+                    }
+                    .renderedIf(!viewModel.isWidthValidated)
 
                     // Package height
                     VStack(spacing: 0) {
@@ -94,11 +106,11 @@ struct ShippingLabelCustomPackageForm: View {
                                              keyboardType: .decimalPad)
                     }
                     .padding(.horizontal, insets: safeAreaInsets)
+                    .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .horizontal))
                     Divider()
                     validationErrorRow
                         .renderedIf(!viewModel.isHeightValidated)
                 }
-                .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .horizontal))
 
                 // Package Weight
                 VStack(spacing: 0) {

@@ -11,7 +11,7 @@ final class MockAnnouncementsRemote {
 
     private typealias AppVersion = String
 
-    /// The results to pass to the `completion` block if `getAnnouncements()` is called.
+    /// The results to pass to the `completion` block if `getFeatures()` is called.
     private var loadAnnouncementsResults = [AppVersion: Result<[WooCommerceFeature], Error>]()
 
     /// The amount of times that the `getAnnouncements` was invoked
@@ -26,7 +26,7 @@ final class MockAnnouncementsRemote {
     }
 }
 
-// MARK: NotificationsEndpointsProviding
+// MARK: AnnouncementsRemoteProtocol
 
 extension MockAnnouncementsRemote: AnnouncementsRemoteProtocol {
 

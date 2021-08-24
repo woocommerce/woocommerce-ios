@@ -44,9 +44,6 @@ struct ShippingLabelCustomPackageForm: View {
                                              text: $viewModel.packageName,
                                              symbol: nil,
                                              keyboardType: .default)
-                            .onReceive(viewModel.packageNameValidation, perform: { validated in
-                                viewModel.isNameValidated = validated
-                            })
                     }
                     .padding(.horizontal, insets: safeAreaInsets)
                     Divider()
@@ -66,9 +63,6 @@ struct ShippingLabelCustomPackageForm: View {
                                              text: $viewModel.packageLength,
                                              symbol: viewModel.lengthUnit,
                                              keyboardType: .decimalPad)
-                            .onReceive(viewModel.packageLengthValidation, perform: { validated in
-                                viewModel.isLengthValidated = validated
-                            })
                         Divider()
                             .padding(.leading, Constants.horizontalPadding)
                     }
@@ -83,9 +77,6 @@ struct ShippingLabelCustomPackageForm: View {
                                              text: $viewModel.packageWidth,
                                              symbol: viewModel.lengthUnit,
                                              keyboardType: .decimalPad)
-                            .onReceive(viewModel.packageWidthValidation, perform: { validated in
-                                viewModel.isWidthValidated = validated
-                            })
 
                         Divider()
                             .padding(.leading, Constants.horizontalPadding)
@@ -101,9 +92,6 @@ struct ShippingLabelCustomPackageForm: View {
                                              text: $viewModel.packageHeight,
                                              symbol: viewModel.lengthUnit,
                                              keyboardType: .decimalPad)
-                            .onReceive(viewModel.packageHeightValidation, perform: { validated in
-                                viewModel.isHeightValidated = validated
-                            })
                     }
                     .padding(.horizontal, insets: safeAreaInsets)
                     Divider()
@@ -122,9 +110,6 @@ struct ShippingLabelCustomPackageForm: View {
                                          keyboardType: .decimalPad)
                         .padding(.horizontal, insets: safeAreaInsets)
                         .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .horizontal))
-                        .onReceive(viewModel.packageWeightValidation, perform: { validated in
-                            viewModel.isWeightValidated = validated
-                        })
                     Divider()
                     validationErrorRow
                         .renderedIf(!viewModel.isWeightValidated)
@@ -138,14 +123,14 @@ struct ShippingLabelCustomPackageForm: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing, content: {
                 Button(Localization.doneButton, action: {
-                    // TODO-4743: Save custom package and add it to package list
-                    presentation.wrappedValue.dismiss()
-                }).disabled(!viewModel.isPackageValidated)
+                    viewModel.validatePackage()
+                    if viewModel.validatedCustomPackage != nil {
+                        // TODO-4743: Save custom package and add it to package list
+                        presentation.wrappedValue.dismiss()
+                    }
+                })
             })
         }
-        .onReceive(viewModel.packageValidation, perform: { validated in
-            viewModel.isPackageValidated = validated
-        })
     }
 
     private var validationErrorRow: some View {

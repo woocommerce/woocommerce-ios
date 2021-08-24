@@ -39,7 +39,7 @@ final class ShippingLabelCustomPackageFormViewModel: ObservableObject {
 
     /// Validated custom package
     ///
-    private var validatedCustomPackage: ShippingLabelCustomPackage? {
+    var validatedCustomPackage: ShippingLabelCustomPackage? {
         guard isPackageValidated, let boxWeight = Double(emptyPackageWeight) else {
             return nil
         }
@@ -55,56 +55,14 @@ final class ShippingLabelCustomPackageFormViewModel: ObservableObject {
 
     // MARK: Validation Properties & Publishers
 
-    var isNameValidated = true
-    var isLengthValidated = true
-    var isWidthValidated = true
-    var isHeightValidated = true
-    var isWeightValidated = true
-    var isPackageValidated = false
-
-    lazy var packageNameValidation: ValidationPublisher = {
-        $packageName.hasContent()
-    }()
-
-    lazy var packageLengthValidation: ValidationPublisher = {
-        $packageLength.greaterThan(0)
-    }()
-
-    lazy var packageWidthValidation: ValidationPublisher = {
-        $packageWidth.greaterThan(0)
-    }()
-
-    lazy var packageHeightValidation: ValidationPublisher = {
-        $packageHeight.greaterThan(0)
-    }()
-
-    lazy var packageWeightValidation: ValidationPublisher = {
-        $emptyPackageWeight.greaterThanOrEqualTo(0)
-    }()
-
-    /// Combines validation for all package dimensions; used to validate the entire package
-    ///
-    lazy var packageDimensionsValidation: ValidationPublisher = {
-        Publishers.CombineLatest3(
-            packageLengthValidation,
-            packageWeightValidation,
-            packageHeightValidation
-        ).map { validatedLength, validatedWeight, validatedHeight in
-            return validatedLength && validatedWeight && validatedHeight
-        }.eraseToAnyPublisher()
-    }()
-
-    /// Validates all fields for a custom package
-    ///
-    lazy var packageValidation: ValidationPublisher = {
-        Publishers.CombineLatest3(packageNameValidation,
-                                  packageDimensionsValidation,
-                                  packageWeightValidation)
-            .map { validatedName, validatedDimensions, validatedWeight in
-                return validatedName && validatedDimensions && validatedWeight
-            }
-            .eraseToAnyPublisher()
-    }()
+    @Published private(set) var isNameValidated = true
+    @Published private(set) var isLengthValidated = true
+    @Published private(set) var isWidthValidated = true
+    @Published private(set) var isHeightValidated = true
+    @Published private(set) var isWeightValidated = true
+    private var isPackageValidated: Bool {
+        isNameValidated && isLengthValidated && isWidthValidated && isHeightValidated && isWeightValidated
+    }
 
     // MARK: Initialization
 
@@ -119,6 +77,70 @@ final class ShippingLabelCustomPackageFormViewModel: ObservableObject {
         self.packageWidth = package?.getWidth().description ?? ""
         self.packageHeight = package?.getHeight().description ?? ""
         self.emptyPackageWeight = package?.boxWeight.description ?? ""
+
+        configureFormValidation()
+    }
+}
+
+// MARK: - Validation
+extension ShippingLabelCustomPackageFormViewModel {
+
+    /// Validate each field on demand.
+    /// This ensures the package can be validated accurately even if one of the fields hasn't changed from its initial value.
+    ///
+    func validatePackage() {
+        isNameValidated = validatePackageName(packageName)
+        isLengthValidated = validatePackageDimension(packageLength)
+        isWidthValidated = validatePackageDimension(packageWidth)
+        isHeightValidated = validatePackageDimension(packageHeight)
+        isWeightValidated = validatePackageWeight(emptyPackageWeight)
+    }
+
+    /// Configure form validation, ignoring the initial value of each form field
+    ///
+    private func configureFormValidation() {
+        $packageName
+            .dropFirst()
+            .map { self.validatePackageName($0) }
+            .assign(to: &$isNameValidated)
+
+        $packageLength
+            .dropFirst()
+            .map { self.validatePackageDimension($0) }
+            .assign(to: &$isLengthValidated)
+
+        $packageWidth
+            .dropFirst()
+            .map { self.validatePackageDimension($0) }
+            .assign(to: &$isWidthValidated)
+
+        $packageHeight
+            .dropFirst()
+            .map { self.validatePackageDimension($0) }
+            .assign(to: &$isHeightValidated)
+
+        $emptyPackageWeight
+            .dropFirst()
+            .map { self.validatePackageWeight($0) }
+            .assign(to: &$isWeightValidated)
+    }
+
+    private func validatePackageName(_ name: String) -> Bool {
+        name.trimmingCharacters(in: .whitespacesAndNewlines).isNotEmpty
+    }
+
+    private func validatePackageDimension(_ dimension: String) -> Bool {
+        guard let numericValue = Double(dimension) else {
+            return false
+        }
+        return numericValue > 0
+    }
+
+    private func validatePackageWeight(_ weight: String) -> Bool {
+        guard let numericValue = Double(weight) else {
+            return false
+        }
+        return numericValue >= 0
     }
 }
 

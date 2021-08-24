@@ -81,7 +81,7 @@ private extension AnnouncementsStore {
         }
     }
 
-    /// Load a saved list of`WooCommerceFeature` for the current app version
+    /// Load a saved list of`WooCommerceFeature` for the current app version. Return an empty array if there are no saved features.
     func loadSavedFeatures() -> [WooCommerceFeature] {
         guard let savedFeatures: [AppVersion: [WooCommerceFeature]] = try? fileStorage.data(for: featureAnnouncementsFileURL) else {
             return []
@@ -90,7 +90,7 @@ private extension AnnouncementsStore {
         return savedFeatures[appVersion] ?? []
     }
 
-    /// Save the `Announcements` to the appropriate file.
+    /// Save the `WooCommerceFeature`(s) to the appropriate file.
     func saveFeatures(_ features: [WooCommerceFeature]) throws {
         try fileStorage.write([appVersion: features], to: featureAnnouncementsFileURL)
     }

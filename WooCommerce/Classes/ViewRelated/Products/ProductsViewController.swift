@@ -645,19 +645,16 @@ private extension ProductsViewController {
         let title = NSLocalizedString("Sort by",
                                       comment: "Message title for sort products action bottom sheet")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
-        let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: sortOrder)
-        let sortOrderListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties,
-                                                                      command: command) { [weak self] selectedSortOrder in
-                                                                        defer {
-                                                                            self?.dismiss(animated: true, completion: nil)
-                                                                        }
-
-                                                                        guard let selectedSortOrder = selectedSortOrder else {
-                                                                            return
-                                                                        }
-                                                                        self?.sortOrder = selectedSortOrder
-         ServiceLocator.analytics.track(.productSortingListOptionSelected, withProperties: ["order": selectedSortOrder.analyticsDescription])
+        let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: sortOrder) { [weak self] selectedSortOrder in
+            self?.dismiss(animated: true, completion: nil)
+            guard let selectedSortOrder = selectedSortOrder as ProductsSortOrder? else {
+                    return
+                }
+            self?.sortOrder = selectedSortOrder
         }
+        let sortOrderListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties,
+                                                                      command: command)
+
         sortOrderListPresenter.show(from: self, sourceView: sender, arrowDirections: .up)
     }
 

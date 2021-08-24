@@ -2,7 +2,7 @@ import WordPressKit
 import Storage
 import Yosemite
 
-/// Makes AnnouncementService from WordPressKit conform with AnnouncementsRemoteProtocol so we can inject other remotes. (For testing purposes)
+/// Makes AnnouncementServiceRemote from WordPressKit conform with AnnouncementsRemoteProtocol so we can inject other remotes. (For testing purposes)
 extension AnnouncementServiceRemote: AnnouncementsRemoteProtocol {
 
     public func getFeatures(appId: String,

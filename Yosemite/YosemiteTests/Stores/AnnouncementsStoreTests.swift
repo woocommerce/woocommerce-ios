@@ -3,12 +3,6 @@ import XCTest
 @testable import Networking
 @testable import Storage
 
-/// Mock constants
-///
-private struct TestConstants {
-    static let announcementsJSONResponseFileName = "feature-announcements"
-}
-
 final class AnnouncementsStoreTests: XCTestCase {
     /// Mock Dispatcher
     ///

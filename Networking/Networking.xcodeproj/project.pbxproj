@@ -480,7 +480,6 @@
 		CEF88DAB233E911A00BED485 /* order-fully-refunded.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF88DAA233E911A00BED485 /* order-fully-refunded.json */; };
 		CEF88DAD233E95B000BED485 /* OrderRefundCondensed.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF88DAC233E95B000BED485 /* OrderRefundCondensed.swift */; };
 		CEF88DAF233E9F7E00BED485 /* order-details-partially-refunded.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF88DAE233E9F7D00BED485 /* order-details-partially-refunded.json */; };
-		D4CBAE5E26D405FE00BBE6D1 /* feature-announcements.json in Resources */ = {isa = PBXBuildFile; fileRef = D4CBAE5D26D405FE00BBE6D1 /* feature-announcements.json */; };
 		D800DA0A25EFEB9C001E13CE /* WCPayRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D800DA0925EFEB9C001E13CE /* WCPayRemoteTests.swift */; };
 		D800DA0E25EFEC21001E13CE /* wcpay-connection-token.json in Resources */ = {isa = PBXBuildFile; fileRef = D800DA0D25EFEC21001E13CE /* wcpay-connection-token.json */; };
 		D823D9032237450A00C90817 /* shipment_tracking_new.json in Resources */ = {isa = PBXBuildFile; fileRef = D823D9022237450A00C90817 /* shipment_tracking_new.json */; };
@@ -1046,7 +1045,6 @@
 		CEF88DAA233E911A00BED485 /* order-fully-refunded.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-fully-refunded.json"; sourceTree = "<group>"; };
 		CEF88DAC233E95B000BED485 /* OrderRefundCondensed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundCondensed.swift; sourceTree = "<group>"; };
 		CEF88DAE233E9F7D00BED485 /* order-details-partially-refunded.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-details-partially-refunded.json"; sourceTree = "<group>"; };
-		D4CBAE5D26D405FE00BBE6D1 /* feature-announcements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "feature-announcements.json"; sourceTree = "<group>"; };
 		D7865552BE07C116627FE528 /* Pods-NetworkingTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		D800DA0925EFEB9C001E13CE /* WCPayRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayRemoteTests.swift; sourceTree = "<group>"; };
 		D800DA0D25EFEC21001E13CE /* wcpay-connection-token.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-connection-token.json"; sourceTree = "<group>"; };
@@ -1719,7 +1717,6 @@
 				31054733262E36AB00C5C02B /* wcpay-payment-intent-error.json */,
 				31B8D6B526583970008E3DB2 /* wcpay-account-implicitly-not-eligible.json */,
 				077F39D726A58EB600ABEADC /* systemPlugins.json */,
-				D4CBAE5D26D405FE00BBE6D1 /* feature-announcements.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -2148,7 +2145,6 @@
 				FE28F6E826842D57004465C7 /* user-complete.json in Resources */,
 				261CF2CB255C50010090D8D3 /* payment-gateway-list-half.json in Resources */,
 				02C254D72563999300A04423 /* order-shipping-labels.json in Resources */,
-				D4CBAE5E26D405FE00BBE6D1 /* feature-announcements.json in Resources */,
 				45B204BC24890B1200FE6526 /* category.json in Resources */,
 				022902D422E2436400059692 /* stats_module_disabled_error.json in Resources */,
 				025CA2C8238F4FF400B05C81 /* product-shipping-classes-load-all.json in Resources */,

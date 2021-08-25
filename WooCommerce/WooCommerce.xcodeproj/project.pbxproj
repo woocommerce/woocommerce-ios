@@ -487,6 +487,7 @@
 		318853362639FC9C00F66A9C /* CardReaderSettingsPresentingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318853352639FC9C00F66A9C /* CardReaderSettingsPresentingViewController.swift */; };
 		3188533C2639FE5800F66A9C /* CardReaderSettingsPresentedViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3188533B2639FE5800F66A9C /* CardReaderSettingsPresentedViewViewModel.swift */; };
 		3190D61B26D6D82900EF364D /* CardPresentRetryableError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3190D61A26D6D82900EF364D /* CardPresentRetryableError.swift */; };
+		3190D61D26D6E97B00EF364D /* CardPresentModalRetryableErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3190D61C26D6E97B00EF364D /* CardPresentModalRetryableErrorTests.swift */; };
 		3198A1E82694DC7200597213 /* MockKnownReadersProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3198A1E72694DC7200597213 /* MockKnownReadersProvider.swift */; };
 		31B0551E264B3C7A00134D87 /* CardPresentModalFoundReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B0551D264B3C7A00134D87 /* CardPresentModalFoundReader.swift */; };
 		31B05523264B3C8900134D87 /* CardPresentModalConnectingToReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B05522264B3C8900134D87 /* CardPresentModalConnectingToReader.swift */; };
@@ -1862,6 +1863,7 @@
 		318853352639FC9C00F66A9C /* CardReaderSettingsPresentingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsPresentingViewController.swift; sourceTree = "<group>"; };
 		3188533B2639FE5800F66A9C /* CardReaderSettingsPresentedViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsPresentedViewViewModel.swift; sourceTree = "<group>"; };
 		3190D61A26D6D82900EF364D /* CardPresentRetryableError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentRetryableError.swift; sourceTree = "<group>"; };
+		3190D61C26D6E97B00EF364D /* CardPresentModalRetryableErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalRetryableErrorTests.swift; sourceTree = "<group>"; };
 		3198A1E72694DC7200597213 /* MockKnownReadersProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockKnownReadersProvider.swift; sourceTree = "<group>"; };
 		31B0551D264B3C7A00134D87 /* CardPresentModalFoundReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalFoundReader.swift; sourceTree = "<group>"; };
 		31B05522264B3C8900134D87 /* CardPresentModalConnectingToReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalConnectingToReader.swift; sourceTree = "<group>"; };
@@ -5959,6 +5961,7 @@
 				D802549A265531D4001B2CC1 /* CardPresentModalConnectingToReaderTests.swift */,
 				E17E3BFA266917E20009D977 /* CardPresentModalBluetoothRequiredTests.swift */,
 				E17E3BF8266917C10009D977 /* CardPresentModalScanningFailedTests.swift */,
+				3190D61C26D6E97B00EF364D /* CardPresentModalRetryableErrorTests.swift */,
 			);
 			path = CardPresentPayments;
 			sourceTree = "<group>";
@@ -7659,6 +7662,7 @@
 				020BE77323B4A567007FE54C /* AztecInsertMoreFormatBarCommandTests.swift in Sources */,
 				B57C5C9E21B80E8300FF82B2 /* SessionManager+Internal.swift in Sources */,
 				2667BFDB252E659A008099D4 /* MockOrderItem.swift in Sources */,
+				3190D61D26D6E97B00EF364D /* CardPresentModalRetryableErrorTests.swift in Sources */,
 				456417F6247D5643001203F6 /* UITableView+HelpersTests.swift in Sources */,
 				DE4B3B2C2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift in Sources */,
 				D89C009425B4E9E2000E4683 /* ULAccountMismatchViewControllerTests.swift in Sources */,

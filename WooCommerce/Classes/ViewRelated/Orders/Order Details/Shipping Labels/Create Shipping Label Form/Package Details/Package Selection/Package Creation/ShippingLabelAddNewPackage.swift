@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct ShippingLabelAddNewPackage: View {
-    @Environment(\.presentationMode) var presentation
     @StateObject private var viewModel = ShippingLabelAddNewPackageViewModel()
 
     var body: some View {
@@ -27,7 +26,6 @@ struct ShippingLabelAddNewPackage: View {
             .ignoresSafeArea(.container, edges: .horizontal)
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
-            .minimalNavigationBarBackButton()
         }
     }
 }
@@ -37,7 +35,6 @@ private extension ShippingLabelAddNewPackage {
         static let title = NSLocalizedString("Add New Package", comment: "Add New Package screen title in Shipping Label flow")
         static let customPackage = NSLocalizedString("Custom Package", comment: "Custom Package menu in Shipping Label Add New Package flow")
         static let servicePackage = NSLocalizedString("Service Package", comment: "Service Package menu in Shipping Label Add New Package flow")
-        static let doneButton = NSLocalizedString("Done", comment: "Done navigation button in the Add New Package screen in Shipping Label flow")
     }
 }
 

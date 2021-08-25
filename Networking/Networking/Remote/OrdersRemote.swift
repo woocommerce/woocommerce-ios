@@ -125,6 +125,23 @@ public class OrdersRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+    /// Updates the specified fields of a given order.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site which hosts the Order.
+    ///     - order: Order to be updated.
+    ///     - fields: Fields from the order to be updated.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func updateOrder(from siteID: Int64, order: Order, fields: [String], completion: @escaping (Result<Order, Error>) -> Void) {
+        let path = "\(Constants.ordersPath)/\(order.orderID)"
+        let parameters: [String: AnyHashable] = [:]
+        let mapper = OrderMapper(siteID: siteID)
+
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .put, siteID: siteID, path: path, parameters: parameters)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
     /// Adds an order note to a specific Order.
     ///
     /// - Parameters:

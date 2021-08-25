@@ -9,8 +9,6 @@ import XCTest
 ///
 final class MockAnnouncementsRemote {
 
-    private typealias AppVersion = String
-
     /// The results to pass to the `completion` block if `getAnnouncement()` is called.
     private var loadAnnouncementResults = [AppVersion: Result<Announcement?, Error>]()
 

@@ -79,7 +79,7 @@ private extension AnnouncementsStore {
         }
     }
 
-    /// Load the latest saved `Announcement` for the current app version. Returns nil if there is no saved announcement.
+    /// Load the latest saved `Announcement`. Returns nil if there is no saved announcement.
     func loadSavedAnnouncement() -> Announcement? {
         guard let fileURL = featureAnnouncementsFileURL,
               let savedAnnouncement: Announcement = try? fileStorage.data(for: fileURL) else {

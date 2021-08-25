@@ -135,13 +135,13 @@ private extension CardReaderSettingsConnectedViewController {
     }
 
     func configureUpdateView() {
-        guard viewModel != nil, let viewModelUpdateInProgress = viewModel?.readerUpdateInProgress else {
+        // Only proceed if the view model reader update flag has changed since we last looked at it
+        guard let viewModel = viewModel, updateInProgress != viewModel.readerUpdateInProgress else {
             return
         }
-        guard updateInProgress != viewModelUpdateInProgress else {
-            return
-        }
-        updateInProgress = viewModelUpdateInProgress
+
+        // Update our flag to match the view model's
+        updateInProgress = viewModel.readerUpdateInProgress
 
         // If we are not updating a reader, dismiss any updateViewController
         if !updateInProgress {

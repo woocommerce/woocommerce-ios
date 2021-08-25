@@ -58,7 +58,7 @@ public class OrderStore: Store {
             updateOrder(siteID: siteID, orderID: orderID, status: statusKey, onCompletion: onCompletion)
 
         case let .updateOrder(siteID, order, fields, onCompletion):
-            break
+            updateOrder(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
         }
     }
 }
@@ -254,6 +254,21 @@ private extension OrderStore {
             /// Revert Optimistic Update
             self?.updateOrderStatus(siteID: siteID, orderID: orderID, statusKey: oldStatus)
             onCompletion(error)
+        }
+    }
+
+    /// Updates the specified fields from an order.
+    ///
+    func updateOrder(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        remote.updateOrder(from: siteID, order: order, fields: fields) { [weak self] result in
+            switch result {
+            case .success(let order):
+                self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
+                    onCompletion(result)
+                })
+            case .failure:
+                onCompletion(result)
+            }
         }
     }
 }

@@ -12,7 +12,7 @@ final class MockAnnouncementsRemote {
     private typealias AppVersion = String
 
     /// The results to pass to the `completion` block if `getFeatures()` is called.
-    private var loadFeaturesResults = [AppVersion: Result<[WooCommerceFeature], Error>]()
+    private var loadFeaturesResults = [AppVersion: Result<[Feature], Error>]()
 
     /// The amount of times that the `getFeatures` was invoked
     var numberOfTimesGetFeaturesWasCalled = 0
@@ -21,7 +21,7 @@ final class MockAnnouncementsRemote {
     /// https://fieldguide.automattic.com/mobile-feature-announcements/mobile-feature-announcement-endpoint/
     var requestedAppId = ""
 
-    func whenLoadingFeatures(for appVersion: String, thenReturn result: Result<[WooCommerceFeature], Error>) {
+    func whenLoadingFeatures(for appVersion: String, thenReturn result: Result<[Feature], Error>) {
         loadFeaturesResults[appVersion] = result
     }
 }
@@ -33,7 +33,7 @@ extension MockAnnouncementsRemote: AnnouncementsRemoteProtocol {
     func getFeatures(appId: String,
                      appVersion: String,
                      locale: String,
-                     completion: @escaping (Result<[WooCommerceFeature], Error>) -> Void) {
+                     completion: @escaping (Result<[Feature], Error>) -> Void) {
         numberOfTimesGetFeaturesWasCalled += 1
         requestedAppId = appId
         if let result = self.loadFeaturesResults[appVersion] {

@@ -8,7 +8,7 @@ public protocol AnnouncementsRemoteProtocol {
     func getFeatures(appId: String,
                      appVersion: String,
                      locale: String,
-                     completion: @escaping (Result<[WooCommerceFeature], Error>) -> Void)
+                     completion: @escaping (Result<[Feature], Error>) -> Void)
 }
 
 // MARK: - AnnouncementsStore
@@ -61,7 +61,7 @@ public class AnnouncementsStore: Store {
 private extension AnnouncementsStore {
 
     /// Get features from Announcements API and persist this information. If there are saved features for a given app version, load it from disk.
-    func synchronizeFeatures(onCompletion: @escaping ([WooCommerceFeature], IsCached) -> Void) {
+    func synchronizeFeatures(onCompletion: @escaping ([Feature], IsCached) -> Void) {
         let savedFeatures = loadSavedFeatures()
         if !savedFeatures.isEmpty {
             onCompletion(savedFeatures, true)
@@ -82,8 +82,8 @@ private extension AnnouncementsStore {
     }
 
     /// Load a saved list of`WooCommerceFeature` for the current app version. Return an empty array if there are no saved features.
-    func loadSavedFeatures() -> [WooCommerceFeature] {
-        guard let savedFeatures: [AppVersion: [WooCommerceFeature]] = try? fileStorage.data(for: featureAnnouncementsFileURL) else {
+    func loadSavedFeatures() -> [Feature] {
+        guard let savedFeatures: [AppVersion: [Feature]] = try? fileStorage.data(for: featureAnnouncementsFileURL) else {
             return []
         }
 
@@ -91,7 +91,7 @@ private extension AnnouncementsStore {
     }
 
     /// Save the `WooCommerceFeature`(s) to the appropriate file.
-    func saveFeatures(_ features: [WooCommerceFeature]) throws {
+    func saveFeatures(_ features: [Feature]) throws {
         try fileStorage.write([appVersion: features], to: featureAnnouncementsFileURL)
     }
 }

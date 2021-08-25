@@ -47,13 +47,13 @@ final class AnnouncementsStoreTests: XCTestCase {
     ///
     func test_synchronize_features_effectively_retrieves_features() throws {
         // Arrange
-        let feature = WooCommerceFeature(title: "foo",
+        let feature = Feature(title: "foo",
                                          subtitle: "bar",
                                          iconUrl: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")
         remote.whenLoadingFeatures(for: UserAgent.bundleShortVersion, thenReturn: .success([feature]))
 
         // Act
-        let features: [WooCommerceFeature] = waitFor { [weak self] promise in
+        let features: [Feature] = waitFor { [weak self] promise in
             let action = AnnouncementsAction.synchronizeFeatures { features, _ in
                 promise(features)
             }
@@ -70,7 +70,7 @@ final class AnnouncementsStoreTests: XCTestCase {
 
     func test_synchronize_features_with_result_doesnt_fetch_announcements_twice_for_the_same_version() throws {
         // Arrange
-        let feature = WooCommerceFeature(title: "", subtitle: "", iconUrl: "")
+        let feature = Feature(title: "", subtitle: "", iconUrl: "")
         remote.whenLoadingFeatures(for: UserAgent.bundleShortVersion, thenReturn: .success([feature]))
 
         // Act
@@ -113,7 +113,7 @@ final class AnnouncementsStoreTests: XCTestCase {
         remote.whenLoadingFeatures(for: UserAgent.bundleShortVersion, thenReturn: .failure(error))
 
         // Act
-        let features: [WooCommerceFeature] = waitFor { [weak self] promise in
+        let features: [Feature] = waitFor { [weak self] promise in
             let action = AnnouncementsAction.synchronizeFeatures { features, _ in
                 promise(features)
             }

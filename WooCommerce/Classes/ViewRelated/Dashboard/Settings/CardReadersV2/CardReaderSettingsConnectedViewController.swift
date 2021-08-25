@@ -146,17 +146,13 @@ private extension CardReaderSettingsConnectedViewController {
         // If we are not updating a reader, dismiss any updateViewController
         if !updateInProgress {
             updateViewController?.dismiss(animated: true, completion: { [weak self] in
-                guard let self = self else {
+                guard let self = self,
+                      let readerUpdateCompletedSuccessfully = self.viewModel?.readerUpdateCompletedSuccessfully,
+                      readerUpdateCompletedSuccessfully else {
                     return
-                }
-                guard let readerUpdateCompletedSuccessfully = self.viewModel?.readerUpdateCompletedSuccessfully else {
-                    return
-                }
-                if readerUpdateCompletedSuccessfully {
-                    self.displayReaderUpdateSuccessNotice()
                 }
 
-                self.updateViewController = nil
+                self.displayReaderUpdateSuccessNotice()
             })
             return
         }
@@ -166,6 +162,7 @@ private extension CardReaderSettingsConnectedViewController {
         guard updateViewController != nil else {
             return
         }
+
         updateViewController!.loadViewIfNeeded()
         updateViewController!.configure(headline: Localization.updateHeadline, footnote: Localization.updateFootnote)
         self.present(updateViewController!, animated: true, completion: nil)

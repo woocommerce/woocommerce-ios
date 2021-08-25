@@ -30,11 +30,12 @@ struct ShippingLabelCustomsFormList: View {
         }
         .navigationTitle(Localization.navigationTitle)
         .navigationBarItems(trailing: Button(action: {
-            onCompletion(viewModel.customsForms)
+            onCompletion(viewModel.validatedCustomsForms)
             presentation.wrappedValue.dismiss()
         }, label: {
             Text(Localization.doneButton)
-        }))
+        }).disabled(!viewModel.doneButtonEnabled)
+        )
     }
 }
 

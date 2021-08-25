@@ -31,8 +31,9 @@ public class AnnouncementsStore: Store {
     private let appVersion = UserAgent.bundleShortVersion
 
     private lazy var featureAnnouncementsFileURL: URL? = {
-        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        return documents?.appendingPathComponent(Constants.featureAnnouncementsFileName)
+        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+            .first?
+            .appendingPathComponent(Constants.featureAnnouncementsFileName)
     }()
 
     /// Registers for supported Actions.

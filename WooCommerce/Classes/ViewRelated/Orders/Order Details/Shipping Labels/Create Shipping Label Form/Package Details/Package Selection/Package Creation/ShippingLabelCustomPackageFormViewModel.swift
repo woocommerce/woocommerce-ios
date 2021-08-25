@@ -101,27 +101,37 @@ extension ShippingLabelCustomPackageFormViewModel {
     private func configureFormValidation() {
         $packageName
             .dropFirst()
-            .map { self.validatePackageName($0) }
+            .map { [weak self] in
+                self?.validatePackageName($0) ?? false
+            }
             .assign(to: &$isNameValidated)
 
         $packageLength
             .dropFirst()
-            .map { self.validatePackageDimension($0) }
+            .map { [weak self] in
+                self?.validatePackageDimension($0) ?? false
+            }
             .assign(to: &$isLengthValidated)
 
         $packageWidth
             .dropFirst()
-            .map { self.validatePackageDimension($0) }
+            .map { [weak self] in
+                self?.validatePackageDimension($0) ?? false
+            }
             .assign(to: &$isWidthValidated)
 
         $packageHeight
             .dropFirst()
-            .map { self.validatePackageDimension($0) }
+            .map { [weak self] in
+                self?.validatePackageDimension($0) ?? false
+            }
             .assign(to: &$isHeightValidated)
 
         $emptyPackageWeight
             .dropFirst()
-            .map { self.validatePackageWeight($0) }
+            .map { [weak self] in
+                self?.validatePackageWeight($0) ?? false
+            }
             .assign(to: &$isWeightValidated)
     }
 

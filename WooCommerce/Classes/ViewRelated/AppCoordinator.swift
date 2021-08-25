@@ -63,12 +63,8 @@ private extension AppCoordinator {
     /// Displays the What's New Screen.
     ///
     func showWhatsNewIfNeeded() {
-        stores.dispatch(AnnouncementsAction.synchronizeAnnouncements(onCompletion: { announcement  in
-            if announcement?.appVersion != UserAgent.bundleShortVersion,
-               announcement?.features.isEmpty == false {
-                // TODO: Display What's New Screen
-            }
-        }))
+        // TODO: Check the saved Announcement App Version in order to display or not the what's new component
+        stores.dispatch(AnnouncementsAction.synchronizeAnnouncements(onCompletion: { _  in }))
     }
 
     /// Displays the WordPress.com Authentication UI.

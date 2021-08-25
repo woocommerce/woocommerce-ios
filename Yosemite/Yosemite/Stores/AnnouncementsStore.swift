@@ -30,7 +30,7 @@ public class AnnouncementsStore: Store {
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
-    private var appVersion: AppVersion { UserAgent.bundleShortVersion }
+    private let appVersion = UserAgent.bundleShortVersion
 
     private lazy var featureAnnouncementsFileURL: URL! = {
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first

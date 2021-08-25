@@ -24,6 +24,11 @@ final class CardReaderSettingsConnectedViewController: UIViewController, CardRea
     /// Update view controller
     private var updateViewController: UpdateViewController?
 
+    /// Card Present Payments alerts
+    private lazy var paymentAlerts: OrderDetailsPaymentAlerts = {
+        OrderDetailsPaymentAlerts(presentingController: self)
+    }()
+
     /// Accept our viewmodel
     ///
     func configure(viewModel: CardReaderSettingsPresentedViewModel) {
@@ -146,26 +151,28 @@ private extension CardReaderSettingsConnectedViewController {
         // If we are not updating a reader, dismiss any updateViewController
         if !updateInProgress {
             updateViewController?.dismiss(animated: true, completion: { [weak self] in
-                guard let self = self,
-                      let readerUpdateCompletedSuccessfully = self.viewModel?.readerUpdateCompletedSuccessfully,
-                      readerUpdateCompletedSuccessfully else {
+                guard let self = self else {
                     return
                 }
 
-                self.displayReaderUpdateSuccessNotice()
+                if viewModel.readerUpdateCompletedSuccessfully {
+                    self.displayReaderUpdateSuccessNotice()
+                } else {
+                    self.displayReaderUpdateFailed()
+                }
             })
             return
         }
 
         // Otherwise, instantiate and present an updateViewController
         updateViewController = UpdateViewController()
-        guard updateViewController != nil else {
+        guard let updateViewController = updateViewController else {
             return
         }
 
-        updateViewController!.loadViewIfNeeded()
-        updateViewController!.configure(headline: Localization.updateHeadline, footnote: Localization.updateFootnote)
-        self.present(updateViewController!, animated: true, completion: nil)
+        updateViewController.loadViewIfNeeded()
+        updateViewController.configure(headline: Localization.updateHeadline, footnote: Localization.updateFootnote)
+        self.present(updateViewController, animated: true, completion: nil)
     }
 
     /// Register table cells.
@@ -295,6 +302,12 @@ private extension CardReaderSettingsConnectedViewController {
     func displayReaderUpdateSuccessNotice() {
         let notice = Notice(title: Localization.updateSuccess, feedbackType: .success)
         ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+
+    func displayReaderUpdateFailed() {
+        paymentAlerts.retryableError(from: self, tryAgain: {
+            self.viewModel?.startCardReaderUpdate()
+        })
     }
 }
 

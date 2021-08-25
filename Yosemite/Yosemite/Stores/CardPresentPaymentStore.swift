@@ -272,4 +272,15 @@ private final class WCPayTokenProvider: CardReaderConfigProvider {
             completion(token?.token, error)
         }
     }
+
+    func fetchDefaultLocationID(completion: @escaping(String?, Error?) -> Void) {
+        remote.loadDefaultReaderLocation(for: siteID) { result in
+            switch result {
+            case .success(let location):
+                completion(location.id, nil)
+            case .failure(let error):
+                completion(nil, error)
+            }
+        }
+    }
 }

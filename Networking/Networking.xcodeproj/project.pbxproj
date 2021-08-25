@@ -501,6 +501,7 @@
 		D88D5A4F230BD276007B6E01 /* ProductReviewListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88D5A4E230BD276007B6E01 /* ProductReviewListMapperTests.swift */; };
 		D88E229025AC990A0023F3B1 /* OrderFeeLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88E228F25AC990A0023F3B1 /* OrderFeeLine.swift */; };
 		D88E229425AC9B420023F3B1 /* OrderFeeTaxStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88E229325AC9B420023F3B1 /* OrderFeeTaxStatus.swift */; };
+		D89A01D426D3F8D9008195BE /* ReaderLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89A01D326D3F8D8008195BE /* ReaderLocation.swift */; };
 		D8A2849A25FBB2E70019A84B /* ProductAttributeTermListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A2849925FBB2E70019A84B /* ProductAttributeTermListMapperTests.swift */; };
 		D8A284F425FBB48D0019A84B /* product-attribute-terms.json in Resources */ = {isa = PBXBuildFile; fileRef = 26B6454D259BF81400EF3FB3 /* product-attribute-terms.json */; };
 		D8C11A5C22DFCF8100D4A88D /* order-stats-v4-year-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = D8C11A5B22DFCF8100D4A88D /* order-stats-v4-year-alt.json */; };
@@ -1067,6 +1068,7 @@
 		D88D5A4E230BD276007B6E01 /* ProductReviewListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReviewListMapperTests.swift; sourceTree = "<group>"; };
 		D88E228F25AC990A0023F3B1 /* OrderFeeLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderFeeLine.swift; sourceTree = "<group>"; };
 		D88E229325AC9B420023F3B1 /* OrderFeeTaxStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderFeeTaxStatus.swift; sourceTree = "<group>"; };
+		D89A01D326D3F8D8008195BE /* ReaderLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderLocation.swift; sourceTree = "<group>"; };
 		D8A2849925FBB2E70019A84B /* ProductAttributeTermListMapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductAttributeTermListMapperTests.swift; sourceTree = "<group>"; };
 		D8C11A5B22DFCF8100D4A88D /* order-stats-v4-year-alt.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-stats-v4-year-alt.json"; sourceTree = "<group>"; };
 		D8C251CF230BD72700F49782 /* ProductReviewMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReviewMapper.swift; sourceTree = "<group>"; };
@@ -1538,6 +1540,7 @@
 				CE50345F21B5799F007573C6 /* SitePlan.swift */,
 				450106842399A7CB00E24722 /* TaxClass.swift */,
 				3192F21F260D33BB0067FEF9 /* WCPayAccount.swift */,
+				D89A01D326D3F8D8008195BE /* ReaderLocation.swift */,
 				3192F223260D34C40067FEF9 /* WCPayAccountStatusEnum.swift */,
 				D8EDFE2125EE88C9003D2213 /* WCPayConnectionToken.swift */,
 				318E8FD426C31F9500F519D7 /* WCPayCustomer.swift */,
@@ -2328,6 +2331,7 @@
 				020D07BA23D8542000FD9580 /* UploadableMedia.swift in Sources */,
 				DEC2961C26BBE764005A056B /* ShippingLabelCustomsForm.swift in Sources */,
 				31D27C8B26028D96002EDB1D /* SitePlugin.swift in Sources */,
+				D89A01D426D3F8D9008195BE /* ReaderLocation.swift in Sources */,
 				74C8F06420EEB44800B6EDC9 /* OrderNote.swift in Sources */,
 				02C254AC2563781800A04423 /* ShippingLabelStatus.swift in Sources */,
 				74ABA1D3213F25AE00FFAD30 /* TopEarnerStatsMapper.swift in Sources */,

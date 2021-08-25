@@ -74,6 +74,12 @@ public class WCPayRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    public func loadDefaultReaderLocation(for siteID: Int64,
+                                          onCompletion: @escaping (Result<ReaderLocation, Error>) -> Void) {
+        let mockLocation = ReaderLocation(siteID: siteID, id: "st_simulated", displayName: "st_simulated_display_name")
+        onCompletion(.success(mockLocation))
+    }
 }
 
 // MARK: - Constants!
@@ -85,6 +91,7 @@ private extension WCPayRemote {
         static let orders = "payments/orders"
         static let captureTerminalPayment = "capture_terminal_payment"
         static let createCustomer = "create_customer"
+        static let locations = "terminals/locations/store"
     }
 
     enum AccountParameterKeys {

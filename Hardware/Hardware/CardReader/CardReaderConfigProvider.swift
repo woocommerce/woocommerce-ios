@@ -3,4 +3,5 @@
 /// It is meant to abstract an implementation of the [adapter pattern](https://en.wikipedia.org/wiki/Adapter_pattern)
 public protocol CardReaderConfigProvider {
     func fetchToken(completion: @escaping(String?, Error?) -> Void)
+    func fetchDefaultLocationID(completion: @escaping(String?, Error?) -> Void)
 }

@@ -277,7 +277,9 @@ extension StripeCardReaderService: CardReaderService {
                 return
             }
 
-            let connectionConfiguration = BluetoothConnectionConfiguration(locationId: stripeReader.locationId ?? "null")
+            print("===== location id assigned to reader" , stripeReader.locationId)
+
+            let connectionConfiguration = BluetoothConnectionConfiguration(locationId: stripeReader.locationId ?? "tml_ESCNWwpwlfv5JB")
 
             Terminal.shared.connectBluetoothReader(stripeReader,
                                                    delegate: self,
@@ -291,6 +293,9 @@ extension StripeCardReaderService: CardReaderService {
                 self.discoveredStripeReadersCache.clear()
 
                 if let error = error {
+                    print("======= error connecting ")
+                    print(error)
+                    print("/////// error connecting ")
                     let underlyingError = UnderlyingError(with: error)
                     promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
                 }

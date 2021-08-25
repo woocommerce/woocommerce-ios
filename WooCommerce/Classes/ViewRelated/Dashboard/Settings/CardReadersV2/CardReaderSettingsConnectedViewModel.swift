@@ -2,7 +2,6 @@ import Foundation
 import Yosemite
 
 final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedViewModel {
-
     private(set) var shouldShow: CardReaderSettingsTriState = .isUnknown
     var didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?
     var didUpdate: (() -> Void)?
@@ -10,7 +9,10 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     private var didGetConnectedReaders: Bool = false
     private var connectedReaders = [CardReader]()
     private let knownReadersProvider: CardReaderSettingsKnownReadersProvider?
+
     private(set) var readerUpdateAvailable: CardReaderSettingsTriState = .isUnknown
+    private(set) var readerUpdateInProgress: Bool = false
+    private(set) var readerUpdateCompletedSuccessfully: Bool = false
 
     var connectedReaderID: String?
     var connectedReaderBatteryLevel: String?
@@ -73,6 +75,35 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
             }
             self.didUpdate?()
         }
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    /// Allows the view controller to kick off a card reader update
+    ///
+    func startCardReaderUpdate() {
+        self.readerUpdateCompletedSuccessfully = false
+
+        let action = CardPresentPaymentAction.startCardReaderUpdate(
+            onProgress: { [weak self] progress in
+                guard let self = self else {
+                    return
+                }
+                self.readerUpdateInProgress = true
+                self.didUpdate?()
+            },
+            onCompletion: { [weak self] result in
+                guard let self = self else {
+                    return
+                }
+                if case .success() = result {
+                    self.readerUpdateCompletedSuccessfully = true
+                    self.readerUpdateAvailable = .isFalse
+
+                }
+                self.readerUpdateInProgress = false
+                self.didUpdate?()
+            }
+        )
         ServiceLocator.stores.dispatch(action)
     }
 

@@ -460,6 +460,8 @@
 		26FE09E124DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09E024DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift */; };
 		26FE09E424DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09E324DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift */; };
 		26FF455F24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FF455E24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift */; };
+		3104A99F26D456EF00EC0DEE /* UpdateViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3104A99E26D456EF00EC0DEE /* UpdateViewController.xib */; };
+		3104A9A126D4578B00EC0DEE /* UpdateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3104A9A026D4578B00EC0DEE /* UpdateViewController.swift */; };
 		311D21E8264AEDB900102316 /* CardPresentModalScanningForReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311D21E7264AEDB900102316 /* CardPresentModalScanningForReader.swift */; };
 		311D21ED264AF0E700102316 /* CardReaderSettingsAlerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311D21EC264AF0E700102316 /* CardReaderSettingsAlerts.swift */; };
 		311F827426CD897900DF5BAD /* CardReaderSettingsAlertsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311F827326CD897900DF5BAD /* CardReaderSettingsAlertsProvider.swift */; };
@@ -1832,6 +1834,8 @@
 		26FE09E324DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppFeedbackCardViewControllerTests.swift; sourceTree = "<group>"; };
 		26FF455E24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecatedStatsDashboardViewController.swift; sourceTree = "<group>"; };
 		2719B6FD1E6FE78A76B6AC74 /* Pods-WooCommerceTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		3104A99E26D456EF00EC0DEE /* UpdateViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UpdateViewController.xib; sourceTree = "<group>"; };
+		3104A9A026D4578B00EC0DEE /* UpdateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateViewController.swift; sourceTree = "<group>"; };
 		311D21E7264AEDB900102316 /* CardPresentModalScanningForReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalScanningForReader.swift; sourceTree = "<group>"; };
 		311D21EC264AF0E700102316 /* CardReaderSettingsAlerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsAlerts.swift; sourceTree = "<group>"; };
 		311F827326CD897900DF5BAD /* CardReaderSettingsAlertsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsAlertsProvider.swift; sourceTree = "<group>"; };
@@ -3876,6 +3880,15 @@
 			path = inAppFeedback;
 			sourceTree = "<group>";
 		};
+		3110575C26D57CF300F74D23 /* UpdateViewController */ = {
+			isa = PBXGroup;
+			children = (
+				3104A99E26D456EF00EC0DEE /* UpdateViewController.xib */,
+				3104A9A026D4578B00EC0DEE /* UpdateViewController.swift */,
+			);
+			path = UpdateViewController;
+			sourceTree = "<group>";
+		};
 		318853452639FE7F00F66A9C /* CardReadersV2 */ = {
 			isa = PBXGroup;
 			children = (
@@ -5829,6 +5842,7 @@
 				57CFCD26248844A0003F51EC /* Section Headers */,
 				57448D26242E772300A56A74 /* EmptyStateViewController */,
 				57896D6425362AC2000E8C4D /* TitleAndEditableValueTableViewCell */,
+				3110575C26D57CF300F74D23 /* UpdateViewController */,
 				D8736B7422F1FE1600A14A29 /* BadgeLabel.swift */,
 				CE21B3D520FE669A00A259D5 /* BasicTableViewCell.swift */,
 				CE21B3D620FE669A00A259D5 /* BasicTableViewCell.xib */,
@@ -6590,6 +6604,7 @@
 				0262DA5423A238460029AF30 /* UnitInputTableViewCell.xib in Resources */,
 				B5BE75DD213F1D3D00909A14 /* OverlayMessageView.xib in Resources */,
 				57C503DE23E8CE0D00EC0790 /* OrdersTabbedViewController.xib in Resources */,
+				3104A99F26D456EF00EC0DEE /* UpdateViewController.xib in Resources */,
 				31FE28C825E6D384003519F2 /* LearnMoreTableViewCell.xib in Resources */,
 				02F4F510237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.xib in Resources */,
 				45AE150324A23F03005AA948 /* ProductParentCategoriesViewController.xib in Resources */,
@@ -7036,6 +7051,7 @@
 				B57B678A2107546E00AF8905 /* Address+Woo.swift in Sources */,
 				457509E4267B9E91005FA2EA /* AggregatedProductListViewController.swift in Sources */,
 				D8815B0D263861A400EDAD62 /* CardPresentModalSuccess.swift in Sources */,
+				3104A9A126D4578B00EC0DEE /* UpdateViewController.swift in Sources */,
 				0235595524496B6D004BE2B8 /* BottomSheetListSelectorCommand.swift in Sources */,
 				747AA0892107CEC60047A89B /* AnalyticsProvider.swift in Sources */,
 				D89CFF3A25B43BBB000E4683 /* WrongAccountErrorViewModel.swift in Sources */,

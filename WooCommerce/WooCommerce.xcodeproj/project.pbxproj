@@ -960,6 +960,7 @@
 		CCCC5B1326CC2B9F0034FB63 /* ShippingLabelCustomPackageFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC5B1226CC2B9F0034FB63 /* ShippingLabelCustomPackageFormViewModelTests.swift */; };
 		CCD2E67E25DD4DC900BD975D /* ProductVariationsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD2E67D25DD4DC900BD975D /* ProductVariationsViewModel.swift */; };
 		CCD2E68925DD52C100BD975D /* ProductVariationsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD2E68825DD52C100BD975D /* ProductVariationsViewModelTests.swift */; };
+		CCD2F51A26D67BB50010E679 /* ShippingLabelServicePackageList.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD2F51926D67BB50010E679 /* ShippingLabelServicePackageList.swift */; };
 		CCDC49CD23FFFFF4003166BA /* LoginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDC49CC23FFFFF4003166BA /* LoginTests.swift */; };
 		CCDC49D724000095003166BA /* XCTest+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997173223DBCF2800592D8E /* XCTest+Extensions.swift */; };
 		CCDC49DA2400011F003166BA /* MyStoreScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997172D23DBCDE900592D8E /* MyStoreScreen.swift */; };
@@ -2356,6 +2357,7 @@
 		CCCC5B1226CC2B9F0034FB63 /* ShippingLabelCustomPackageFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomPackageFormViewModelTests.swift; sourceTree = "<group>"; };
 		CCD2E67D25DD4DC900BD975D /* ProductVariationsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationsViewModel.swift; sourceTree = "<group>"; };
 		CCD2E68825DD52C100BD975D /* ProductVariationsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationsViewModelTests.swift; sourceTree = "<group>"; };
+		CCD2F51926D67BB50010E679 /* ShippingLabelServicePackageList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelServicePackageList.swift; sourceTree = "<group>"; };
 		CCDC49CA23FFFFF4003166BA /* WooCommerceUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WooCommerceUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCDC49CC23FFFFF4003166BA /* LoginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginTests.swift; sourceTree = "<group>"; };
 		CCDC49CE23FFFFF4003166BA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -5256,6 +5258,7 @@
 				CC254F3126C2BCCF005F3C82 /* ShippingLabelAddNewPackageViewModel.swift */,
 				CC254F3526C437AB005F3C82 /* ShippingLabelCustomPackageForm.swift */,
 				CC254F3726C43B52005F3C82 /* ShippingLabelCustomPackageFormViewModel.swift */,
+				CCD2F51926D67BB50010E679 /* ShippingLabelServicePackageList.swift */,
 			);
 			path = "Package Creation";
 			sourceTree = "<group>";
@@ -7189,6 +7192,7 @@
 				0245465B24EE7637004F531C /* ProductFormEventLoggerProtocol.swift in Sources */,
 				024DF31B23742E1C006658FE /* FormatBarItemViewProperties.swift in Sources */,
 				26B119BB24D0B62E00FED5C7 /* SurveyViewController.swift in Sources */,
+				CCD2F51A26D67BB50010E679 /* ShippingLabelServicePackageList.swift in Sources */,
 				45FDDD65267784AD00ADACE8 /* ShippingLabelSummaryTableViewCell.swift in Sources */,
 				45DB70662614CE3F0064A6CF /* Decimal+Helpers.swift in Sources */,
 				02E8B17C23E2C78A00A43403 /* ProductImageStatus.swift in Sources */,

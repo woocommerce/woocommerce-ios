@@ -18,7 +18,7 @@ struct ShippingLabelAddNewPackage: View {
                     case .customPackage:
                         ShippingLabelCustomPackageForm(safeAreaInsets: geometry.safeAreaInsets)
                     case .servicePackage:
-                        EmptyView() // TODO-4743: Show service package view
+                        ShippingLabelServicePackageList()
                     }
                 }
                  .background(Color(.listBackground).ignoresSafeArea(.container, edges: .bottom))

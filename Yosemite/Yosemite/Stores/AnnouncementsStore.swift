@@ -15,8 +15,6 @@ public protocol AnnouncementsRemoteProtocol {
 //
 public class AnnouncementsStore: Store {
 
-    typealias IsCached = Bool
-    typealias AppVersion = String
     private let remote: AnnouncementsRemoteProtocol
     private let fileStorage: FileStorage
 

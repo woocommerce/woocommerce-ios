@@ -71,14 +71,10 @@ class ShippingLabelCustomPackageFormViewModelTests: XCTestCase {
         // Given
         let viewModel = ShippingLabelCustomPackageFormViewModel()
 
-        // When & Then
+        // When
         viewModel.packageLength = "0"
-        XCTAssertFalse(viewModel.isLengthValidated)
 
-        viewModel.packageLength = "1..0"
-        XCTAssertFalse(viewModel.isLengthValidated)
-
-        viewModel.packageLength = "abc"
+        // Then
         XCTAssertFalse(viewModel.isLengthValidated)
     }
 
@@ -101,14 +97,10 @@ class ShippingLabelCustomPackageFormViewModelTests: XCTestCase {
         // Given
         let viewModel = ShippingLabelCustomPackageFormViewModel()
 
-        // When & Then
+        // When
         viewModel.packageWidth = "0"
-        XCTAssertFalse(viewModel.isWidthValidated)
 
-        viewModel.packageWidth = "1..0"
-        XCTAssertFalse(viewModel.isWidthValidated)
-
-        viewModel.packageWidth = "abc"
+        // Then
         XCTAssertFalse(viewModel.isWidthValidated)
     }
 
@@ -131,14 +123,10 @@ class ShippingLabelCustomPackageFormViewModelTests: XCTestCase {
         // Given
         let viewModel = ShippingLabelCustomPackageFormViewModel()
 
-        // When & Then
+        // When
         viewModel.packageHeight = "0"
-        XCTAssertFalse(viewModel.isHeightValidated)
 
-        viewModel.packageHeight = "1..0"
-        XCTAssertFalse(viewModel.isHeightValidated)
-
-        viewModel.packageHeight = "abc"
+        // Then
         XCTAssertFalse(viewModel.isHeightValidated)
     }
 
@@ -158,14 +146,10 @@ class ShippingLabelCustomPackageFormViewModelTests: XCTestCase {
         // Given
         let viewModel = ShippingLabelCustomPackageFormViewModel()
 
-        // When & Then
+        // When
         viewModel.emptyPackageWeight = "-1"
-        XCTAssertFalse(viewModel.isWeightValidated)
 
-        viewModel.emptyPackageWeight = "1..0"
-        XCTAssertFalse(viewModel.isWeightValidated)
-
-        viewModel.emptyPackageWeight = "abc"
+        // Then
         XCTAssertFalse(viewModel.isWeightValidated)
     }
 
@@ -221,5 +205,49 @@ class ShippingLabelCustomPackageFormViewModelTests: XCTestCase {
 
         input = "1.5."
         XCTAssertEqual(viewModel.sanitizeNumericInput(input), "1.5")
+    }
+
+    func test_packageLength_is_sanitized() {
+        // Given
+        let viewModel = ShippingLabelCustomPackageFormViewModel()
+
+        // When
+        viewModel.packageLength = "1.."
+
+        // Then
+        XCTAssertEqual(viewModel.packageLength, "1.")
+    }
+
+    func test_packageWidth_is_sanitized() {
+        // Given
+        let viewModel = ShippingLabelCustomPackageFormViewModel()
+
+        // When
+        viewModel.packageWidth = "1.."
+
+        // Then
+        XCTAssertEqual(viewModel.packageWidth, "1.")
+    }
+
+    func test_packageHeight_is_sanitized() {
+        // Given
+        let viewModel = ShippingLabelCustomPackageFormViewModel()
+
+        // When
+        viewModel.packageHeight = "1.."
+
+        // Then
+        XCTAssertEqual(viewModel.packageHeight, "1.")
+    }
+
+    func test_emptyPackageWeight_is_sanitized() {
+        // Given
+        let viewModel = ShippingLabelCustomPackageFormViewModel()
+
+        // When
+        viewModel.emptyPackageWeight = "1.."
+
+        // Then
+        XCTAssertEqual(viewModel.emptyPackageWeight, "1.")
     }
 }

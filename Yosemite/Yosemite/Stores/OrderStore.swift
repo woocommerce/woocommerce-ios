@@ -54,8 +54,11 @@ public class OrderStore: Store {
                               pageNumber: pageNumber,
                               pageSize: pageSize,
                               onCompletion: onCompletion)
-        case .updateOrder(let siteID, let orderID, let statusKey, let onCompletion):
+        case .updateOrderStatus(let siteID, let orderID, let statusKey, let onCompletion):
             updateOrder(siteID: siteID, orderID: orderID, status: statusKey, onCompletion: onCompletion)
+
+        case let .updateOrder(siteID, order, fields, onCompletion):
+            break
         }
     }
 }

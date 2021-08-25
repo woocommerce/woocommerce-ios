@@ -66,7 +66,7 @@ final class OrderFulfillmentUseCase {
                                                              "to": targetStatus.rawValue])
 
         let result: Future<Void, FulfillmentError> = Future { promise in
-            let action = OrderAction.updateOrder(siteID: order.siteID, orderID: order.orderID, status: targetStatus) { error in
+            let action = OrderAction.updateOrderStatus(siteID: order.siteID, orderID: order.orderID, status: targetStatus) { error in
                 guard let error = error else {
                     NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
                     self.analytics.track(.orderStatusChangeSuccess)

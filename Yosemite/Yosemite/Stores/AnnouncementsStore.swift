@@ -32,9 +32,9 @@ public class AnnouncementsStore: Store {
 
     private let appVersion = UserAgent.bundleShortVersion
 
-    private lazy var featureAnnouncementsFileURL: URL! = {
+    private lazy var featureAnnouncementsFileURL: URL? = {
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        return documents!.appendingPathComponent(Constants.featureAnnouncementsFileName)
+        return documents?.appendingPathComponent(Constants.featureAnnouncementsFileName)
     }()
 
     /// Registers for supported Actions.
@@ -83,7 +83,8 @@ private extension AnnouncementsStore {
 
     /// Load a saved list of`WooCommerceFeature` for the current app version. Return an empty array if there are no saved features.
     func loadSavedFeatures() -> [Feature] {
-        guard let savedFeatures: [AppVersion: [Feature]] = try? fileStorage.data(for: featureAnnouncementsFileURL) else {
+        guard let fileURL = featureAnnouncementsFileURL,
+              let savedFeatures: [AppVersion: [Feature]] = try? fileStorage.data(for: fileURL) else {
             return []
         }
 
@@ -92,7 +93,10 @@ private extension AnnouncementsStore {
 
     /// Save the `WooCommerceFeature`(s) to the appropriate file.
     func saveFeatures(_ features: [Feature]) throws {
-        try fileStorage.write([appVersion: features], to: featureAnnouncementsFileURL)
+        guard let fileURL = featureAnnouncementsFileURL else {
+            throw StorageError.unableToFindFileURL
+        }
+        try fileStorage.write([appVersion: features], to: fileURL)
     }
 }
 
@@ -105,4 +109,9 @@ private enum Constants {
 
     // MARK: - App IDs
     static let WooCommerceAppId = "4"
+}
+
+// MARK: - I/O Errors
+private enum StorageError: Error {
+    case unableToFindFileURL
 }

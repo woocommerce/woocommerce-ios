@@ -133,10 +133,17 @@ public class OrdersRemote: Remote {
     ///     - fields: Fields from the order to be updated.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func updateOrder(from siteID: Int64, order: Order, fields: [UpdateOrderFields], completion: @escaping (Result<Order, Error>) -> Void) {
+    public func updateOrder(from siteID: Int64, order: Order, fields: [UpdateOrderField], completion: @escaping (Result<Order, Error>) -> Void) {
         let path = "\(Constants.ordersPath)/\(order.orderID)"
-        let parameters: [String: AnyHashable] = [:]
         let mapper = OrderMapper(siteID: siteID)
+        let parameters: [String: AnyHashable] = {
+            fields.reduce(into: [:]) { params, field in
+                switch field {
+                case.customerNote:
+                    params[Order.CodingKeys.customerNote.rawValue] = order.customerNote
+                }
+            }
+        }()
 
         let request = JetpackRequest(wooApiVersion: .mark3, method: .put, siteID: siteID, path: path, parameters: parameters)
         enqueue(request, mapper: mapper, completion: completion)
@@ -201,7 +208,7 @@ public extension OrdersRemote {
 
     /// Order fields supported for update
     ///
-    enum UpdateOrderFields {
-        static let customerNote = Order.CodingKeys.customerNote
+    enum UpdateOrderField {
+        case customerNote
     }
 }

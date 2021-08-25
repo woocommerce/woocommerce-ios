@@ -6,7 +6,7 @@ import Codegen
 public struct ShippingLabelCarrierRate: Equatable, GeneratedFakeable {
 
     public let title: String
-    public let insurance: Double
+    public let insurance: String
     public let retailRate: Double
     public let rate: Double
     public let rateID: String
@@ -20,7 +20,7 @@ public struct ShippingLabelCarrierRate: Equatable, GeneratedFakeable {
     public let deliveryDateGuaranteed: Bool
 
     public init(title: String,
-                insurance: Double,
+                insurance: String,
                 retailRate: Double,
                 rate: Double,
                 rateID: String,
@@ -55,7 +55,14 @@ extension ShippingLabelCarrierRate: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let title = try container.decode(String.self, forKey: .title)
-        let insurance = try container.decode(Double.self, forKey: .insurance)
+
+        let insurance: String
+        if let insuranceAmount = try? container.decode(Double.self, forKey: .insurance) {
+            insurance = String(insuranceAmount)
+        } else {
+            insurance = try container.decode(String.self, forKey: .insurance)
+        }
+
         let retailRate = try container.decode(Double.self, forKey: .retailRate)
         let rate = try container.decode(Double.self, forKey: .rate)
         let rateID = try container.decode(String.self, forKey: .rateID)

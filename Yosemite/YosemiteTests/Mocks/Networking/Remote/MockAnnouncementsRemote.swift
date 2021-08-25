@@ -11,18 +11,18 @@ final class MockAnnouncementsRemote {
 
     private typealias AppVersion = String
 
-    /// The results to pass to the `completion` block if `getFeatures()` is called.
-    private var loadFeaturesResults = [AppVersion: Result<[Feature], Error>]()
+    /// The results to pass to the `completion` block if `getAnnouncement()` is called.
+    private var loadAnnouncementResults = [AppVersion: Result<Announcement?, Error>]()
 
-    /// The amount of times that the `getFeatures` was invoked
-    var numberOfTimesGetFeaturesWasCalled = 0
+    /// The amount of times that the `getAnnouncement` was invoked
+    var numberOfTimesGetAnnouncementWasCalled = 0
 
     /// The requested appId. WooCommerce appID can be found here:
     /// https://fieldguide.automattic.com/mobile-feature-announcements/mobile-feature-announcement-endpoint/
     var requestedAppId = ""
 
-    func whenLoadingFeatures(for appVersion: String, thenReturn result: Result<[Feature], Error>) {
-        loadFeaturesResults[appVersion] = result
+    func whenLoadingAnnouncements(for appVersion: String, thenReturn result: Result<Announcement?, Error>) {
+        loadAnnouncementResults[appVersion] = result
     }
 }
 
@@ -30,16 +30,16 @@ final class MockAnnouncementsRemote {
 
 extension MockAnnouncementsRemote: AnnouncementsRemoteProtocol {
 
-    func getFeatures(appId: String,
-                     appVersion: String,
-                     locale: String,
-                     completion: @escaping (Result<[Feature], Error>) -> Void) {
-        numberOfTimesGetFeaturesWasCalled += 1
+    func getAnnouncement(appId: String,
+                         appVersion: String,
+                         locale: String,
+                         completion: @escaping (Result<Announcement?, Error>) -> Void) {
+        numberOfTimesGetAnnouncementWasCalled += 1
         requestedAppId = appId
-        if let result = self.loadFeaturesResults[appVersion] {
+        if let result = self.loadAnnouncementResults[appVersion] {
             completion(result)
         } else {
-            XCTFail("\(String(describing: self)) Could not find Features for \(appVersion)")
+            XCTFail("\(String(describing: self)) Could not find Announcement for \(appVersion)")
         }
     }
 }

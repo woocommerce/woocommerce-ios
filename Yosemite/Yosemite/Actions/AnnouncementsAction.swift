@@ -4,10 +4,7 @@ import Storage
 ///
 public enum AnnouncementsAction: Action {
 
-    public typealias IsCached = Bool
-
-    /// Synchronizes the latest Announcements.
-    /// If information was already fetched, the list of features will be retrieved along with the boolean indicating that the data was already fetched
+    /// Synchronizes the latest Announcements and save it on disk
     ///
-    case synchronizeFeatures(onCompletion: ([Feature], IsCached) -> Void)
+    case synchronizeAnnouncements(onCompletion: (Announcement?) -> Void)
 }

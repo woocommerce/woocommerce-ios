@@ -1,6 +1,7 @@
 import Combine
 import UIKit
 import Yosemite
+import Networking
 import class AutomatticTracks.CrashLogging
 
 /// Coordinates app navigation based on authentication state: tab bar UI is shown when the app is logged in, and authentication UI is shown
@@ -62,12 +63,10 @@ private extension AppCoordinator {
     /// Displays the What's New Screen.
     ///
     func showWhatsNewIfNeeded() {
-        stores.dispatch(AnnouncementsAction.synchronizeFeatures(onCompletion: { features, isCached  in
-            if isCached {
-                DDLogInfo("💬 Loaded features saved in disk! Won't present the What's New Screen this time")
-            } else {
-                // TODO: https://github.com/woocommerce/woocommerce-ios/issues/4863
-                DDLogInfo("💬 Fetched new features to present on What's New Screen")
+        stores.dispatch(AnnouncementsAction.synchronizeAnnouncements(onCompletion: { announcement  in
+            if announcement?.appVersion != UserAgent.bundleShortVersion,
+               announcement?.features.isEmpty == false {
+                // TODO: Display What's New Screen
             }
         }))
     }

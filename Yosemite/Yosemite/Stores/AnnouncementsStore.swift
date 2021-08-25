@@ -5,10 +5,10 @@ import Storage
 ///
 public protocol AnnouncementsRemoteProtocol {
 
-    func getFeatures(appId: String,
-                     appVersion: String,
-                     locale: String,
-                     completion: @escaping (Result<[Feature], Error>) -> Void)
+    func getAnnouncement(appId: String,
+                         appVersion: String,
+                         locale: String,
+                         completion: @escaping (Result<Announcement?, Error>) -> Void)
 }
 
 // MARK: - AnnouncementsStore
@@ -52,51 +52,50 @@ public class AnnouncementsStore: Store {
         }
 
         switch action {
-        case .synchronizeFeatures(let onCompletion):
-            synchronizeFeatures(onCompletion: onCompletion)
+        case .synchronizeAnnouncements(let onCompletion):
+            synchronizeAnnouncements(onCompletion: onCompletion)
         }
     }
 }
 
 private extension AnnouncementsStore {
 
-    /// Get features from Announcements API and persist this information. If there are saved features for a given app version, load it from disk.
-    func synchronizeFeatures(onCompletion: @escaping ([Feature], IsCached) -> Void) {
-        let savedFeatures = loadSavedFeatures()
-        if !savedFeatures.isEmpty {
-            onCompletion(savedFeatures, true)
-            return
-        }
+    /// Get Announcements from Announcements API and persist this information on disk.
+    func synchronizeAnnouncements(onCompletion: @escaping (Announcement?) -> Void) {
 
-        remote.getFeatures(appId: Constants.WooCommerceAppId,
-                           appVersion: appVersion,
-                           locale: Locale.current.identifier) { [weak self] result in
+        remote.getAnnouncement(appId: Constants.WooCommerceAppId,
+                               appVersion: appVersion,
+                               locale: Locale.current.identifier) { [weak self] result in
             switch result {
-            case .success(let features):
-                try? self?.saveFeatures(features)
-                onCompletion(features, false)
+            case .success(let announcement):
+                guard let announcement = announcement else {
+                    onCompletion(nil)
+                    return
+                }
+                try? self?.saveAnnouncement(announcement)
+                onCompletion(announcement)
             case .failure:
-                onCompletion([], false)
+                onCompletion(nil)
             }
         }
     }
 
-    /// Load a saved list of`WooCommerceFeature` for the current app version. Return an empty array if there are no saved features.
-    func loadSavedFeatures() -> [Feature] {
+    /// Load the latest saved `Announcement` for the current app version. Returns nil if there is no saved announcement.
+    func loadSavedAnnouncement() -> Announcement? {
         guard let fileURL = featureAnnouncementsFileURL,
-              let savedFeatures: [AppVersion: [Feature]] = try? fileStorage.data(for: fileURL) else {
-            return []
+              let savedAnnouncement: Announcement = try? fileStorage.data(for: fileURL) else {
+            return nil
         }
 
-        return savedFeatures[appVersion] ?? []
+        return savedAnnouncement
     }
 
-    /// Save the `WooCommerceFeature`(s) to the appropriate file.
-    func saveFeatures(_ features: [Feature]) throws {
+    /// Save the `Announcement` to the appropriate file.
+    func saveAnnouncement(_ announcement: Announcement) throws {
         guard let fileURL = featureAnnouncementsFileURL else {
             throw StorageError.unableToFindFileURL
         }
-        try fileStorage.write([appVersion: features], to: fileURL)
+        try fileStorage.write(announcement, to: fileURL)
     }
 }
 

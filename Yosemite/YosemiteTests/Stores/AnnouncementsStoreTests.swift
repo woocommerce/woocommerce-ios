@@ -43,84 +43,46 @@ final class AnnouncementsStoreTests: XCTestCase {
                                      fileStorage: fileStorage)
     }
 
-    /// Verifies that `AnnouncementsAction.synchronizeFeatures` effectively  retrieves new Features
+    /// Verifies that `AnnouncementsAction.synchronizeAnnouncements` effectively  retrieves latest Announcement
     ///
-    func test_synchronize_features_effectively_retrieves_features() throws {
+    func test_synchronize_announcements_effectively_retrieves_latest_announcement() throws {
         // Arrange
         let feature = Feature(title: "foo",
-                                         subtitle: "bar",
-                                         iconUrl: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")
-        remote.whenLoadingFeatures(for: UserAgent.bundleShortVersion, thenReturn: .success([feature]))
+                              subtitle: "bar",
+                              iconUrl: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")
+        let announcement = Announcement(appVersion: "1", features: [feature])
+        remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .success(announcement))
 
         // Act
-        let features: [Feature] = waitFor { [weak self] promise in
-            let action = AnnouncementsAction.synchronizeFeatures { features, _ in
-                promise(features)
+        let fetchedAnnouncement: Announcement? = waitFor { [weak self] promise in
+            let action = AnnouncementsAction.synchronizeAnnouncements { announcement in
+                promise(announcement)
             }
             self?.subject?.onAction(action)
         }
 
         // Assert
-        XCTAssertEqual(features.count, 1)
-        XCTAssertEqual(features.first?.title, feature.title)
-        XCTAssertEqual(features.first?.subtitle, feature.subtitle)
-        XCTAssertEqual(features.first?.iconUrl, feature.iconUrl)
+        XCTAssertEqual(fetchedAnnouncement?.appVersion, "1")
+        XCTAssertEqual(fetchedAnnouncement?.features.first?.title, feature.title)
+        XCTAssertEqual(fetchedAnnouncement?.features.first?.subtitle, feature.subtitle)
+        XCTAssertEqual(fetchedAnnouncement?.features.first?.iconUrl, feature.iconUrl)
         XCTAssertEqual(remote.requestedAppId, "4")
     }
 
-    func test_synchronize_features_with_result_doesnt_fetch_announcements_twice_for_the_same_version() throws {
-        // Arrange
-        let feature = Feature(title: "", subtitle: "", iconUrl: "")
-        remote.whenLoadingFeatures(for: UserAgent.bundleShortVersion, thenReturn: .success([feature]))
-
-        // Act
-        let isCached: Bool = waitFor { [self] promise in
-            self.subject?.onAction(AnnouncementsAction.synchronizeFeatures { [weak self] _, _ in
-                // Second action trigger (this one must not reach out to Remote)
-                self?.subject?.onAction(AnnouncementsAction.synchronizeFeatures { _, isCached in
-                    promise(isCached)
-                })
-            })
-        }
-
-        // Assert
-        XCTAssertEqual(remote.numberOfTimesGetFeaturesWasCalled, 1)
-        XCTAssertTrue(isCached)
-    }
-
-    func test_synchronize_features_with_empty_result_can_fetch_announcements_twice_for_the_same_version() throws {
-        // Arrange
-        remote.whenLoadingFeatures(for: UserAgent.bundleShortVersion, thenReturn: .success([]))
-
-        // Act
-        let isCached: Bool = waitFor { [self] promise in
-            self.subject?.onAction(AnnouncementsAction.synchronizeFeatures { [weak self] _, _ in
-                // Second action trigger (this one must not reach out to Remote)
-                self?.subject?.onAction(AnnouncementsAction.synchronizeFeatures { _, isCached in
-                    promise(isCached)
-                })
-            })
-        }
-
-        // Assert
-        XCTAssertEqual(remote.numberOfTimesGetFeaturesWasCalled, 2)
-        XCTAssertFalse(isCached)
-    }
-
-    func test_synchronize_features_with_error_gets_an_empty_list_of_features() {
+    func test_synchronize_announcements_with_error_gets_no_announcement() {
         // Arrange
         let error = NSError(domain: "", code: 0, userInfo: nil)
-        remote.whenLoadingFeatures(for: UserAgent.bundleShortVersion, thenReturn: .failure(error))
+        remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .failure(error))
 
         // Act
-        let features: [Feature] = waitFor { [weak self] promise in
-            let action = AnnouncementsAction.synchronizeFeatures { features, _ in
-                promise(features)
+        let announcement: Announcement? = waitFor { [weak self] promise in
+            let action = AnnouncementsAction.synchronizeAnnouncements { announcement in
+                promise(announcement)
             }
             self?.subject?.onAction(action)
         }
 
         // Assert
-        XCTAssertTrue(features.isEmpty)
+        XCTAssertNil(announcement)
     }
 }

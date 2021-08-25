@@ -177,6 +177,7 @@
 		CEF88DB2233EAAF100BED485 /* OrderRefundCondensed+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF88DB0233EAAF000BED485 /* OrderRefundCondensed+CoreDataClass.swift */; };
 		CEF88DB3233EAAF100BED485 /* OrderRefundCondensed+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF88DB1233EAAF000BED485 /* OrderRefundCondensed+CoreDataProperties.swift */; };
 		D4466F5626D524FC003E931B /* Feature.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4466F5526D524FC003E931B /* Feature.swift */; };
+		D4ABCACF26D6E7E400CD18F4 /* Announcement.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4ABCACE26D6E7E400CD18F4 /* Announcement.swift */; };
 		D821645B2239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82164572239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataClass.swift */; };
 		D821645C2239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82164582239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataProperties.swift */; };
 		D821645D2239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82164592239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataClass.swift */; };
@@ -449,6 +450,7 @@
 		CEF88DB1233EAAF000BED485 /* OrderRefundCondensed+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderRefundCondensed+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D0FEE3A91785B0F2C3641C27 /* Pods-Storage.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Storage.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-Storage/Pods-Storage.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		D4466F5526D524FC003E931B /* Feature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Feature.swift; sourceTree = "<group>"; };
+		D4ABCACE26D6E7E400CD18F4 /* Announcement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Announcement.swift; sourceTree = "<group>"; };
 		D82164572239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTrackingProvider+CoreDataClass.swift"; sourceTree = "<group>"; };
 		D82164582239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTrackingProvider+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D82164592239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTrackingProviderGroup+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -899,6 +901,7 @@
 			isa = PBXGroup;
 			children = (
 				D4466F5526D524FC003E931B /* Feature.swift */,
+				D4ABCACE26D6E7E400CD18F4 /* Announcement.swift */,
 			);
 			name = WhatsNew;
 			sourceTree = "<group>";
@@ -1120,6 +1123,7 @@
 				021EAA4725493A1600AA8CCD /* OrderItemAttribute+CoreDataClass.swift in Sources */,
 				D4466F5626D524FC003E931B /* Feature.swift in Sources */,
 				268BF6DB2642CBA6003948D8 /* Models+Copiable.generated.swift in Sources */,
+				D4ABCACF26D6E7E400CD18F4 /* Announcement.swift in Sources */,
 				D87F61552265AA900031A13B /* PListFileStorage.swift in Sources */,
 				B5B914C620EFF03500F2F832 /* Site+CoreDataProperties.swift in Sources */,
 				45E462072684BCEE00011BF2 /* StateOfACountry+CoreDataClass.swift in Sources */,

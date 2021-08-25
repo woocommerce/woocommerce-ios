@@ -43,8 +43,6 @@ final class AnnouncementsStoreTests: XCTestCase {
                                      fileStorage: fileStorage)
     }
 
-    /// Verifies that `AnnouncementsAction.synchronizeAnnouncements` effectively  retrieves latest Announcement
-    ///
     func test_synchronize_announcements_effectively_retrieves_latest_announcement() throws {
         // Arrange
         let feature = Feature(title: "foo",

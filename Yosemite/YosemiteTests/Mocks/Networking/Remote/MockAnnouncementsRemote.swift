@@ -10,7 +10,7 @@ import XCTest
 final class MockAnnouncementsRemote {
 
     /// The results to pass to the `completion` block if `getAnnouncement()` is called.
-    private var loadAnnouncementResults = [AppVersion: Result<Announcement?, Error>]()
+    private var loadAnnouncementResults = [String: Result<Announcement?, Error>]()
 
     /// The amount of times that the `getAnnouncement` was invoked
     var numberOfTimesGetAnnouncementWasCalled = 0

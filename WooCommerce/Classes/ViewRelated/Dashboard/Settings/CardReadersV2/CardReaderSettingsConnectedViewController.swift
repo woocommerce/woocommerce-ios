@@ -165,13 +165,10 @@ private extension CardReaderSettingsConnectedViewController {
         }
 
         // Otherwise, instantiate and present an updateViewController
-        updateViewController = UpdateViewController()
+        updateViewController = UpdateViewController(headline: Localization.updateHeadline, footnote: Localization.updateFootnote)
         guard let updateViewController = updateViewController else {
             return
         }
-
-        updateViewController.loadViewIfNeeded()
-        updateViewController.configure(headline: Localization.updateHeadline, footnote: Localization.updateFootnote)
         self.present(updateViewController, animated: true, completion: nil)
     }
 

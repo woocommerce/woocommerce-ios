@@ -9,13 +9,23 @@ final class UpdateViewController: UIViewController {
     @IBOutlet private weak var headlineLabel: UILabel!
     @IBOutlet private weak var footnoteLabel: UILabel!
 
-    override func viewDidLoad() {
-        view.backgroundColor = .gray(.shade90)
+    private var headline: String
+    private var footnote: String
+
+    init(headline: String, footnote: String) {
+        self.headline = headline
+        self.footnote = footnote
+        super.init(nibName: Self.nibName, bundle: nil)
         modalPresentationStyle = .overFullScreen
     }
 
-    func configure(headline: String, footnote: String) {
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
         headlineLabel?.text = headline
         footnoteLabel?.text = footnote
+        view.backgroundColor = .gray(.shade90)
     }
 }

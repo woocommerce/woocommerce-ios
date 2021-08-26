@@ -14,7 +14,7 @@ final class ShippingLabelServicePackageListViewModel: ObservableObject {
         packagesResponse?.predefinedOptions ?? []
     }
 
-    @Published private(set) var selectedPackage: ShippingLabelPredefinedPackage?
+    @Published var selectedPackage: ShippingLabelPredefinedPackage?
 
     var dimensionUnit: String {
         packagesResponse?.storeOptions.dimensionUnit ?? ""
@@ -22,19 +22,5 @@ final class ShippingLabelServicePackageListViewModel: ObservableObject {
 
     init(packagesResponse: ShippingLabelPackagesResponse?) {
         self.packagesResponse = packagesResponse
-    }
-}
-
-// MARK: - Helper Methods
-extension ShippingLabelServicePackageListViewModel {
-    func didSelectPackage(_ id: String) {
-        for option in predefinedOptions {
-            for predefinedPackage in option.predefinedPackages {
-                if predefinedPackage.id == id {
-                    selectedPackage = predefinedPackage
-                    return
-                }
-            }
-        }
     }
 }

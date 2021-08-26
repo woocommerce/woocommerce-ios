@@ -29,7 +29,7 @@ struct ShippingLabelServicePackageList: View {
                                       subtitle: package.dimensions + " \(viewModel.dimensionUnit)",
                                       selected: selected)
                         .onTapGesture {
-                            viewModel.didSelectPackage(package.id)
+                            viewModel.selectedPackage = package
                         }
                         .padding(.horizontal, insets: safeAreaInsets)
                         .background(Color(.systemBackground))

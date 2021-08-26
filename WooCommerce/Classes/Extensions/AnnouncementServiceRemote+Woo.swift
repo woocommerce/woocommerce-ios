@@ -13,7 +13,8 @@ extension AnnouncementServiceRemote: AnnouncementsRemoteProtocol {
     /// Fetch announcements from WordPressKit announcements public API
     ///
     /// - Parameter appId: the application identifier. 4 stands for WooCommerce
-    /// - Parameter appVersion: the application version that we are looking forbthe translations
+    /// - Parameter appVersion: the application version that we are looking for the translations
+    /// - Parameter locale: the desired locale to get the translated texts
     /// - Parameter completion: A result that may contain an Announcement or an Error
     ///
     public func getAnnouncement(appId: String,

@@ -1,14 +1,20 @@
 import Networking
+import WordPressKit
 import Storage
 
 /// Protocol for `AnnouncementsRemote` mainly used for mocking.
 ///
 public protocol AnnouncementsRemoteProtocol {
+    func getAnnouncements(appId: String,
+                          appVersion: String,
+                          locale: String,
+                          completion: @escaping (Result<[WordPressKit.Announcement], Error>) -> Void)
+}
 
-    func getAnnouncement(appId: String,
-                         appVersion: String,
-                         locale: String,
-                         completion: @escaping (Result<Announcement?, Error>) -> Void)
+extension AnnouncementServiceRemote: AnnouncementsRemoteProtocol {
+    override convenience init() {
+        self.init(wordPressComRestApi: WordPressComRestApi(baseUrlString: Settings.wordpressApiBaseURL))
+    }
 }
 
 // MARK: - AnnouncementsStore
@@ -60,33 +66,48 @@ public class AnnouncementsStore: Store {
 private extension AnnouncementsStore {
 
     /// Get Announcements from Announcements API and persist this information on disk.
-    func synchronizeAnnouncements(onCompletion: @escaping (Result<StorageAnnouncement?, Error>) -> Void) {
+    func synchronizeAnnouncements(onCompletion: @escaping (Result<StorageAnnouncement, Error>) -> Void) {
 
-        remote.getAnnouncement(appId: Constants.WooCommerceAppId,
-                               appVersion: appVersion,
-                               locale: Locale.current.identifier) { [weak self] result in
+        remote.getAnnouncements(appId: Constants.WooCommerceAppId,
+                                appVersion: appVersion,
+                                locale: Locale.current.identifier) { [weak self] result in
             switch result {
-            case .success(let announcement):
-                guard let announcement = announcement else {
-                    onCompletion(.success(nil))
-                    return
+            case .success(let announcements):
+                guard let self = self, let announcement = announcements.first else {
+                    return onCompletion(.failure(AnnouncementsError.unableToGetAnnouncement))
                 }
                 do {
-                    try self?.saveAnnouncement(announcement)
+                    let mappedAnnouncement = self.mapAnnouncementToStorageModel(announcement)
+                    try self.saveAnnouncement(mappedAnnouncement)
+                    onCompletion(.success(mappedAnnouncement))
                 } catch {
-                    onCompletion(.failure(error))
+                    return onCompletion(.failure(error))
                 }
-                onCompletion(.success(announcement))
             case .failure(let error):
                 onCompletion(.failure(error))
             }
         }
     }
 
+    func mapAnnouncementToStorageModel(_ announcement: WordPressKit.Announcement) -> StorageAnnouncement {
+        let mappedFeatures = announcement.features.map {
+            Feature(title: $0.title,
+                    subtitle: $0.subtitle,
+                    iconUrl: $0.iconUrl,
+                    iconBase64: $0.iconBase64)
+        }
+
+        return StorageAnnouncement(appVersion: announcement.appVersionName,
+                                   features: mappedFeatures,
+                                   announcementVersion: announcement.announcementVersion,
+                                   displayed: false)
+    }
+
+
     /// Save the `Announcement` to the appropriate file.
-    func saveAnnouncement(_ announcement: Announcement) throws {
+    func saveAnnouncement(_ announcement: StorageAnnouncement) throws {
         guard let fileURL = featureAnnouncementsFileURL else {
-            throw StorageError.unableToFindFileURL
+            throw AnnouncementsStorageError.unableToFindFileURL
         }
         try fileStorage.write(announcement, to: fileURL)
     }
@@ -103,11 +124,12 @@ private enum Constants {
     static let WooCommerceAppId = "4"
 }
 
-// MARK: - I/O Errors
-private enum StorageError: Error {
+// MARK: - Errors
+//
+enum AnnouncementsStorageError: Error {
     case unableToFindFileURL
 }
 
-private enum AnnouncementsError: Error {
-    case unableToGetAnnouncements
+enum AnnouncementsError: Error {
+    case unableToGetAnnouncement
 }

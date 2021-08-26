@@ -1,4 +1,5 @@
 import XCTest
+import WordPressKit
 @testable import Yosemite
 @testable import Networking
 @testable import Storage
@@ -45,18 +46,11 @@ final class AnnouncementsStoreTests: XCTestCase {
 
     func test_synchronize_announcements_effectively_retrieves_latest_announcement() throws {
         // Arrange
-        let feature = Feature(title: "foo",
-                              subtitle: "bar",
-                              iconUrl: "https://s0.wordpress.com/i/store/mobile/plans-premium.png",
-                              iconBase64: nil)
-        let announcement = Announcement(appVersion: "1",
-                                        features: [feature],
-                                        announcementVersion: "2",
-                                        displayed: false)
-        remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .success(announcement))
+        let announcement = try XCTUnwrap(self.makeWordPressAnnouncement())
+        remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .success([announcement]))
 
         // Act
-        let fetchedAnnouncement: Announcement? = waitFor { [weak self] promise in
+        let fetchedAnnouncement: StorageAnnouncement? = waitFor { [weak self] promise in
             let action = AnnouncementsAction.synchronizeAnnouncements { result in
                 promise(try? result.get())
             }
@@ -66,10 +60,26 @@ final class AnnouncementsStoreTests: XCTestCase {
         // Assert
         XCTAssertEqual(fetchedAnnouncement?.appVersion, "1")
         XCTAssertEqual(fetchedAnnouncement?.announcementVersion, "2")
-        XCTAssertEqual(fetchedAnnouncement?.features.first?.title, feature.title)
-        XCTAssertEqual(fetchedAnnouncement?.features.first?.subtitle, feature.subtitle)
-        XCTAssertEqual(fetchedAnnouncement?.features.first?.iconUrl, feature.iconUrl)
+        XCTAssertEqual(fetchedAnnouncement?.features.first?.title, "foo")
+        XCTAssertEqual(fetchedAnnouncement?.features.first?.subtitle, "bar")
+        XCTAssertEqual(fetchedAnnouncement?.features.first?.iconUrl, "https://s0.wordpress.com/i/store/mobile/plans-premium.png")
         XCTAssertEqual(remote.requestedAppId, "4")
+    }
+
+    func test_synchronize_announcements_with_empty_response_error_gets_an_error() {
+        // Arrange
+        remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .success([]))
+
+        // Act
+        let resultError: AnnouncementsError? = waitFor { [weak self] promise in
+            let action = AnnouncementsAction.synchronizeAnnouncements { result in
+                promise(result.failure as? AnnouncementsError)
+            }
+            self?.subject?.onAction(action)
+        }
+
+        // Assert
+        XCTAssertEqual(resultError, .unableToGetAnnouncement)
     }
 
     func test_synchronize_announcements_with_error_gets_an_error() {
@@ -78,14 +88,40 @@ final class AnnouncementsStoreTests: XCTestCase {
         remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .failure(error))
 
         // Act
-        let resultError: Error? = waitFor { [weak self] promise in
+        let resultError: AnnouncementsError? = waitFor { [weak self] promise in
             let action = AnnouncementsAction.synchronizeAnnouncements { result in
-                promise(result.failure)
+                promise(result.failure as? AnnouncementsError)
             }
             self?.subject?.onAction(action)
         }
 
         // Assert
-        XCTAssertEqual(resultError as NSError?, error)
+        XCTAssertEqual(resultError, .unableToGetAnnouncement)
+    }
+}
+
+// MARK: - Mocks
+//
+private extension AnnouncementsStoreTests {
+    func makeWordPressAnnouncement() throws -> WordPressKit.Announcement {
+        let announcementJson: [String: Any] = [
+            "appVersionName": "1",
+            "minimumAppVersion": "",
+            "maximumAppVersion": "",
+            "appVersionTargets": [],
+            "detailsUrl": "http://wordpress.org",
+            "features": [[
+                "title": "foo",
+                "subtitle": "bar",
+                "iconBase64": "",
+                "iconUrl": "https://s0.wordpress.com/i/store/mobile/plans-premium.png"
+            ]],
+            "announcementVersion": "2",
+            "isLocalized": true,
+            "responseLocale": "en_US"
+        ]
+
+        let jsonData = try JSONSerialization.data(withJSONObject: announcementJson)
+        return try JSONDecoder().decode(WordPressKit.Announcement.self, from: jsonData)
     }
 }

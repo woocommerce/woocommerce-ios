@@ -1,6 +1,7 @@
 
 import Foundation
 import Networking
+import WordPressKit
 import Storage
 import XCTest
 @testable import Yosemite
@@ -10,7 +11,7 @@ import XCTest
 final class MockAnnouncementsRemote {
 
     /// The results to pass to the `completion` block if `getAnnouncement()` is called.
-    private var loadAnnouncementResults = [String: Result<Announcement?, Error>]()
+    private var loadAnnouncementResults = [String: Result<[WordPressKit.Announcement], Error>]()
 
     /// The amount of times that the `getAnnouncement` was invoked
     var numberOfTimesGetAnnouncementWasCalled = 0
@@ -19,7 +20,7 @@ final class MockAnnouncementsRemote {
     /// https://fieldguide.automattic.com/mobile-feature-announcements/mobile-feature-announcement-endpoint/
     var requestedAppId = ""
 
-    func whenLoadingAnnouncements(for appVersion: String, thenReturn result: Result<Announcement?, Error>) {
+    func whenLoadingAnnouncements(for appVersion: String, thenReturn result: Result<[WordPressKit.Announcement], Error>) {
         loadAnnouncementResults[appVersion] = result
     }
 }
@@ -28,14 +29,14 @@ final class MockAnnouncementsRemote {
 
 extension MockAnnouncementsRemote: AnnouncementsRemoteProtocol {
 
-    func getAnnouncement(appId: String,
-                         appVersion: String,
-                         locale: String,
-                         completion: @escaping (Result<Announcement?, Error>) -> Void) {
+    func getAnnouncements(appId: String,
+                          appVersion: String,
+                          locale: String,
+                          completion: @escaping (Result<[WordPressKit.Announcement], Error>) -> Void) {
         numberOfTimesGetAnnouncementWasCalled += 1
         requestedAppId = appId
         if let result = self.loadAnnouncementResults[appVersion] {
-            completion(result)
+            completion(.success((try? result.get()) ?? []))
         } else {
             XCTFail("\(String(describing: self)) Could not find Announcement for \(appVersion)")
         }

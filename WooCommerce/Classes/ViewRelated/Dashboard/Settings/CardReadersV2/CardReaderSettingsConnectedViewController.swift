@@ -67,9 +67,6 @@ final class CardReaderSettingsConnectedViewController: UIViewController, CardRea
 //
 private extension CardReaderSettingsConnectedViewController {
     func checkForCardReaderUpdate() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentSoftwareUpdates) else {
-            return
-        }
         guard let viewModel = viewModel else {
             return
         }
@@ -83,9 +80,6 @@ private extension CardReaderSettingsConnectedViewController {
     }
 
     func shouldShowUpdateControls() -> Bool {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentSoftwareUpdates) else {
-            return false
-        }
         guard let viewModel = viewModel else {
             return false
         }

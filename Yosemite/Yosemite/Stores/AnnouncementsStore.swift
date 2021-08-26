@@ -60,7 +60,7 @@ public class AnnouncementsStore: Store {
 private extension AnnouncementsStore {
 
     /// Get Announcements from Announcements API and persist this information on disk.
-    func synchronizeAnnouncements(onCompletion: @escaping (Announcement?) -> Void) {
+    func synchronizeAnnouncements(onCompletion: @escaping (Result<StorageAnnouncement?, Error>) -> Void) {
 
         remote.getAnnouncement(appId: Constants.WooCommerceAppId,
                                appVersion: appVersion,
@@ -68,13 +68,13 @@ private extension AnnouncementsStore {
             switch result {
             case .success(let announcement):
                 guard let announcement = announcement else {
-                    onCompletion(nil)
+                    onCompletion(.success(nil))
                     return
                 }
                 try? self?.saveAnnouncement(announcement)
-                onCompletion(announcement)
-            case .failure:
-                onCompletion(nil)
+                onCompletion(.success(announcement))
+            case .failure(let error):
+                onCompletion(.failure(error))
             }
         }
     }
@@ -112,4 +112,8 @@ private enum Constants {
 // MARK: - I/O Errors
 private enum StorageError: Error {
     case unableToFindFileURL
+}
+
+private enum AnnouncementsError: Error {
+    case unableToGetAnnouncements
 }

@@ -54,8 +54,8 @@ final class AnnouncementsStoreTests: XCTestCase {
 
         // Act
         let fetchedAnnouncement: Announcement? = waitFor { [weak self] promise in
-            let action = AnnouncementsAction.synchronizeAnnouncements { announcement in
-                promise(announcement)
+            let action = AnnouncementsAction.synchronizeAnnouncements { result in
+                promise(try? result.get())
             }
             self?.subject?.onAction(action)
         }
@@ -69,20 +69,20 @@ final class AnnouncementsStoreTests: XCTestCase {
         XCTAssertEqual(remote.requestedAppId, "4")
     }
 
-    func test_synchronize_announcements_with_error_gets_no_announcement() {
+    func test_synchronize_announcements_with_error_gets_an_error() {
         // Arrange
         let error = NSError(domain: "", code: 0, userInfo: nil)
         remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .failure(error))
 
         // Act
-        let announcement: Announcement? = waitFor { [weak self] promise in
-            let action = AnnouncementsAction.synchronizeAnnouncements { announcement in
-                promise(announcement)
+        let resultError: Error? = waitFor { [weak self] promise in
+            let action = AnnouncementsAction.synchronizeAnnouncements { result in
+                promise(result.failure)
             }
             self?.subject?.onAction(action)
         }
 
         // Assert
-        XCTAssertNil(announcement)
+        XCTAssertEqual(resultError as NSError?, error)
     }
 }

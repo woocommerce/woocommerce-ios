@@ -64,7 +64,7 @@ private extension AppCoordinator {
     ///
     func showWhatsNewIfNeeded() {
         // TODO: Check the saved Announcement App Version in order to display or not the what's new component
-        stores.dispatch(AnnouncementsAction.synchronizeAnnouncements(onCompletion: { _  in }))
+        stores.dispatch(AnnouncementsAction.synchronizeAnnouncements(onCompletion: { _ in }))
     }
 
     /// Displays the WordPress.com Authentication UI.

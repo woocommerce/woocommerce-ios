@@ -77,6 +77,11 @@ final class OrderDetailsPaymentAlerts {
         let viewModel = nonRetryableErrorViewModel(amount: amount, error: error)
         presentViewModel(viewModel: viewModel)
     }
+
+    func retryableError(from: UIViewController?, tryAgain: @escaping () -> Void) {
+        let viewModel = retryableErrorViewModel(tryAgain: tryAgain)
+        presentViewModel(viewModel: viewModel)
+    }
 }
 
 private extension OrderDetailsPaymentAlerts {
@@ -106,6 +111,10 @@ private extension OrderDetailsPaymentAlerts {
 
     func errorViewModel(amount: String, error: Error, tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalError(amount: amount, error: error, primaryAction: tryAgain)
+    }
+
+    func retryableErrorViewModel(tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalRetryableError(primaryAction: tryAgain)
     }
 
     func nonRetryableErrorViewModel(amount: String, error: Error) -> CardPresentPaymentsModalViewModel {

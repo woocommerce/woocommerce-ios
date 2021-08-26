@@ -517,6 +517,11 @@ private extension OrderDetailsViewController {
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
         case let .viewAddOns(addOns):
             itemAddOnsButtonTapped(addOns: addOns)
+        case .editCustomerNote:
+			editCustomerNoteTapped()
+        case .editShippingAddress:
+            // TODO: Navigate to edit shipping address
+            print("Edit Shipping Address Tapped")
         }
     }
 
@@ -637,6 +642,12 @@ private extension OrderDetailsViewController {
         present(actionSheet, animated: true)
     }
 
+    func editCustomerNoteTapped() {
+        let viewModel = EditCustomerNoteViewModel(order: viewModel.order)
+        let editNoteViewController = EditCustomerNoteHostingController(viewModel: viewModel)
+        present(editNoteViewController, animated: true, completion: nil)
+    }
+
     @objc private func collectPayment(at: IndexPath) {
         cardReaderAvailableSubscription = viewModel.cardReaderAvailable()
             .sink(
@@ -708,10 +719,10 @@ private extension OrderDetailsViewController {
     }
 
     private func connectToCardReader() {
-        let knownReadersProvider = CardReaderSettingsKnownReadersStoredList()
         let connectionController = CardReaderConnectionController(
             forSiteID: viewModel.order.siteID,
-            knownReadersProvider: knownReadersProvider
+            knownReadersProvider: CardReaderSettingsKnownReadersStoredList(),
+            alertsProvider: CardReaderSettingsAlerts()
         )
         connectionController.searchAndConnect(from: self) { _ in
             /// No need for logic here. Once connected, the connected reader will publish

@@ -209,9 +209,6 @@ private extension SettingsViewController {
     private var storeSettingsRows: [Row] {
         var result = [Row]()
         if canCollectPayments {
-            result.append(.cardReadersV2)
-        }
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentOnboarding) {
             result.append(.inPersonPayments)
         }
         return result
@@ -336,8 +333,6 @@ private extension SettingsViewController {
             configurePlugins(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
             configureSupport(cell: cell)
-        case let cell as BasicTableViewCell where row == .cardReadersV2:
-            configureCardReadersV2(cell: cell)
         case let cell as BasicTableViewCell where row == .inPersonPayments:
             configureInPersonPayments(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
@@ -384,12 +379,6 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Help & Support", comment: "Contact Support Action")
-    }
-
-    func configureCardReadersV2(cell: BasicTableViewCell) {
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Manage Card Reader", comment: "Navigates to Card Reader management screen")
     }
 
     func configureInPersonPayments(cell: BasicTableViewCell) {
@@ -529,17 +518,6 @@ private extension SettingsViewController {
         guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: HelpAndSupportViewController.self) else {
             fatalError("Cannot instantiate `HelpAndSupportViewController` from Dashboard storyboard")
         }
-        show(viewController, sender: self)
-    }
-
-    func cardReadersV2WasPressed() {
-        ServiceLocator.analytics.track(.settingsCardReadersTapped)
-        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsPresentingViewController.self) else {
-            fatalError("Cannot instantiate `CardReaderSettingsPresentingViewController` from Dashboard storyboard")
-        }
-
-        let viewModelsAndViews = CardReaderSettingsViewModelsOrderedList()
-        viewController.configure(viewModelsAndViews: viewModelsAndViews)
         show(viewController, sender: self)
     }
 
@@ -683,8 +661,6 @@ extension SettingsViewController: UITableViewDelegate {
             sitePluginsWasPressed()
         case .support:
             supportWasPressed()
-        case .cardReadersV2:
-            cardReadersV2WasPressed()
         case .inPersonPayments:
             inPersonPaymentsWasPressed()
         case .privacy:
@@ -728,7 +704,6 @@ private enum Row: CaseIterable {
     case switchStore
     case plugins
     case support
-    case cardReadersV2
     case inPersonPayments
     case logout
     case privacy
@@ -748,8 +723,6 @@ private enum Row: CaseIterable {
         case .plugins:
             return BasicTableViewCell.self
         case .support:
-            return BasicTableViewCell.self
-        case .cardReadersV2:
             return BasicTableViewCell.self
         case .inPersonPayments:
             return BasicTableViewCell.self

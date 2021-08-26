@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-08-04 12:54:04+0000 */
+/* Translation-Revision-Date: 2021-08-19 20:51:02+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -182,6 +182,9 @@
 /* Description of the Action sheet option when the user wants to change the Product type to grouped product */
 "A collection of related products" = "Une collection de produits apparentés";
 
+/* Error shown in Shipping Label Origin Address validation for phone number field for international shipment */
+"A phone number is required because this shipment requires a customs form" = "Un numéro de téléphone est requis, car cet envoi nécessite un formulaire de douane";
+
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "A product with variations like color or size" = "Un produit avec des variantes comme la couleur ou la taille";
 
@@ -214,6 +217,9 @@
 
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "À propos de l’application";
+
+/* Title for the error screen when WooCommerce Payments is installed but not activated */
+"Activate WooCommerce Payments" = "Activer WooCommerce Payments";
 
 /* Application's Active State */
 "Active" = "Actif";
@@ -473,8 +479,7 @@
    Awaiting payment via (payment method title) */
 "Awaiting payment via %@" = "En attente du paiement via %@";
 
-/* Alert button title - dismisses alert, which cancels the log out attempt
-   Back button title. */
+/* Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "Retour";
 
 /* Title of a button to dismiss the survey complete screen */
@@ -595,6 +600,9 @@
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "Choisir le format papier";
 
+/* Navigation title on the shipping label country selector screen */
+"Choose a Country" = "Choisir un pays";
+
 /* Navigation title on the shipping label states of a country selector screen */
 "Choose a State" = "Choisir un État";
 
@@ -668,6 +676,12 @@
 /* Contact Support title
    The title of the button to contact support in the Error Loading Data banner */
 "Contact Support" = "Contacter le support";
+
+/* Contact WooComerce Payments Support title */
+"Contact WooCommerce Payments Support" = "Contacter l’assistance de WooCommerce Payments";
+
+/* Title of a button to contact support in the error screen for In-Person payments */
+"Contact us" = "Nous contacter";
 
 /* Title of a button to contact support in the survey complete screen */
 "Contact us here" = "Nous contacter ici";
@@ -781,6 +795,9 @@
    Placeholder name of a custom shipment tracking carrier - Title of button to add a custom tracking carrier if filtering the list yields no results. */
 "Custom Carrier" = "Transporteur personnalisé";
 
+/* Error shown in Shipping Label Origin Address validation for phone number when the it doesn't have expected length for international shipment. */
+"Custom forms require a 10-digit phone number" = "Les formulaires de douane nécessitent un numéro de téléphone à 10 chiffres";
+
 /* Customer info section title
    Customer info section title in Review Order screen */
 "Customer" = "Client";
@@ -791,6 +808,9 @@
 
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
 "Customer paid a %1$@ of %2$@ for shipping" = "Le client a payé un %1$@ de %2$@ pour la livraison";
+
+/* Title of the cell Customs inside Create Shipping Label form */
+"Customs" = "Douanes";
 
 /* Details text in the shipping label creation info screen */
 "Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Évitez un déplacement à la Poste en imprimant les étiquettes d’expédition de chez vous avec votre téléphone à prix réduit !";
@@ -1106,6 +1126,9 @@
    Title of the cell in Product Downloadable File URL > File URL */
 "File URL" = "URL du fichier";
 
+/* Subtitle of the cell Customs inside Create Shipping Label form */
+"Fill out customs form" = "Remplir le formulaire de douane";
+
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "Remplir à l'aide du gestionnaire de mots de passe";
 
@@ -1348,6 +1371,9 @@
 
 /* Accessibility label for insert link button on formatting toolbar. */
 "Insert Link" = "Insérer un lien";
+
+/* Title for the error screen when WooCommerce Payments is not installed */
+"Install WooCommerce Payments" = "Installer WooCommerce Payments";
 
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates */
 "Insurance (up to %1$@)" = "Assurance (jusqu’à %1$@)";
@@ -1627,8 +1653,7 @@
 /* My Tickets title */
 "My Tickets" = "Mes tickets";
 
-/* My Store Notice Title for loading error
-   Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
+/* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
 "My store" = "Ma boutique";
 
 /* Name text field placeholder
@@ -1654,7 +1679,8 @@
    Title of the more help button on alert helping users understand their site address */
 "Need more help?" = "Besoin de plus d’aide ?";
 
-/* Text preceding the Contact Us button in the survey completed screen */
+/* Text preceding the Contact Us button in the error screen for In-Person payments
+   Text preceding the Contact Us button in the survey completed screen */
 "Need some help?" = "Besoin d’aide ?";
 
 /* The title for the net amount paid cell */
@@ -1806,7 +1832,7 @@
 "Option name" = "Nom de l’option";
 
 /* Add Product Category. Placeholder of cell presenting the parent category.
-   Placeholder of the cell text field in Product Inventory Settings > SKU - Text field placeholder in Shipping Label Address Validation */
+   Placeholder of the cell text field in Product Inventory Settings > SKU - Text field placeholder in Shipping Label Address Validation - Text field placeholder in Shipping Label Address Validation when specified country has no state */
 "Optional" = "Facultatif";
 
 /* No comment provided by engineer. */
@@ -2111,6 +2137,9 @@
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "Lien vers le produit";
 
+/* Title of the alert when a user is saving a product */
+"Product saved" = "Produit sauvegardé";
+
 /* Title of the Product Type row on Product main screen */
 "Product type" = "Type de produit";
 
@@ -2181,6 +2210,9 @@
 /* Format of the stock quantity on the Inventory Settings row */
 "Quantity: %@" = "Quantité : %@";
 
+/* Subtitle for Contact WooCommerce Payments Support */
+"Reach our happiness engineers who can help answer payments related questions" = "Contacter nos Happiness Engineers pour toutes les questions relatives aux paiements";
+
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Contactez nos Happiness Engineers pour toute question complexe";
 
@@ -2201,6 +2233,15 @@
 
 /* The title of the view containing a receipt preview */
 "Receipt" = "Reçu";
+
+/* Button to reload plugin data after activating the WooCommerce Payments plugin */
+"Refresh After Activating" = "Rafraîchir après l’activation";
+
+/* Button to reload plugin data after installing the WooCommerce Payments plugin */
+"Refresh After Installing" = "Rafraîchir après l’installation";
+
+/* Button to reload plugin data after updating the WooCommerce Payments plugin */
+"Refresh After Updating" = "Rafraîchir après la mise à jour";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "Rembourser";
@@ -2287,7 +2328,8 @@
    Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "Demander un remboursement";
 
-/* Text field placeholder in Shipping Label Address Validation */
+/* Text field placeholder in Shipping Label Address Validation
+   Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "Obligatoire";
 
 /* Deletes all activity logs except for the marked 'Current'. */
@@ -2919,6 +2961,12 @@
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "L’URL ne contient pas d’hôte valide.";
 
+/* Error message when WooCommerce Payments is not activated */
+"The WooCommerce Payments extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "L’extension WooCommerce Payments est installée sur votre boutique, mais elle n’est pas activée. Veuillez l’activer afin d’accepter les paiements en personne";
+
+/* Error message when WooCommerce Payments is installed but the version is not supported */
+"The WooCommerce Payments extension is installed on your store, but the installed version does not support In-Person Payments. Please update WooCommerce Payments to the most recent version." = "L’extension WooCommerce Payments est installée sur votre boutique, mais la version installée ne prend pas en charge les paiements en personne. Veuillez mettre à jour WooCommerce Payments vers la version la plus récente.";
+
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "Impossible de supprimer l’attribut.";
 
@@ -3200,9 +3248,6 @@
 /* Load Product Categories Action Failed */
 "Unable to load categories" = "Impossible de charger les catégories";
 
-/* Load Action Failed */
-"Unable to load content" = "Impossible de charger le contenu";
-
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "Impossible de charger les attributs du produit";
 
@@ -3263,6 +3308,9 @@
 
 /* Display label for the review's unspam status */
 "Unspam" = "Sain";
+
+/* Title for the error screen when the installed version of WooCommerce Payments is unsupported */
+"Unsupported WooCommerce Payments version" = "Version de WooCommerce Payments non prise en charge";
 
 /* Display label for the review's untrash status */
 "Untrash" = "Récupérer";
@@ -3442,6 +3490,12 @@
 /* The title of the Error Loading Data banner */
 "We couldn't load your data" = "Nous n’avons pas pu charger vos données";
 
+/* Title for the error screen when WooCommerce Payments is not supported in a specific country */
+"We don’t support In-Person Payments in %@" = "Nous ne prenons pas en charge les paiements en personne en %@";
+
+/* Title for the error screen when WooCommerce Payments is not supported because we don't know the name of the country */
+"We don’t support In-Person Payments in your country" = "Nous ne prenons pas en charge les paiements en personne dans votre pays";
+
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "Nous avons légèrement modifié l’adresse saisie. Si l’adresse suggérée est correcte, utilisez-la pour garantir la précision de la livraison.";
 
@@ -3574,7 +3628,8 @@
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "Vous pouvez demander le remboursement d’une étiquette d’expédition qui n’a pas été utilisée pour expédier un colis.\nCela prendra au moins 14 jours.";
 
-/* Generic error message when In-Person Payments is unavailable */
+/* Error message when WooCommerce Payments is not supported in a specific country
+   Generic error message when In-Person Payments is unavailable */
 "You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "Vous pouvez toujours accepter des paiements en espèces en activant le moyen de paiement « Paiement à la livraison » dans votre boutique.";
 
 /* No comment provided by engineer. */
@@ -3597,6 +3652,9 @@
 
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "L’adresse de votre site apparait dans la barre en haut de l’écran quand vous visitez votre site dans Safari.";
+
+/* Error message when WooCommerce Payments is not installed */
+"You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "Vous devrez installer l’extension gratuite WooCommerce Payments sur votre boutique afin d’accepter les paiements en personne.";
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[COMMENTAIRE]";

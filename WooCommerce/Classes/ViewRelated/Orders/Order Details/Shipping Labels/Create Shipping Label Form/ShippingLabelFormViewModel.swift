@@ -652,9 +652,10 @@ extension ShippingLabelFormViewModel {
         // Validate name field locally before validating the address remotely.
         // The name field cannot be empty when creating a shipping label, but this is not part of the remote validation.
         // See: https://github.com/Automattic/woocommerce-services/issues/2457
-        if address.name.isEmpty {
+        guard address.name.isNotEmpty else {
             let missingNameError = ShippingLabelAddressValidationError(addressError: nil, generalError: "Name is required")
             onCompletion?(.validationError(missingNameError), nil)
+            return
         }
 
         updateValidatingAddressState(true, type: type)

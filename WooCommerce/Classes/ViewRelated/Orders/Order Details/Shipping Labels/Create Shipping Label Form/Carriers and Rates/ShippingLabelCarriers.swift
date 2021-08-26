@@ -56,6 +56,7 @@ struct ShippingLabelCarriers: View {
                                     .frame(width: geometry.size.width)
                             }
                         }
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
                         .frame(minHeight: geometry.size.height)
                     default:
                         EmptyView()

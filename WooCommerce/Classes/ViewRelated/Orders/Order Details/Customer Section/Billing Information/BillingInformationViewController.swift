@@ -18,11 +18,15 @@ final class BillingInformationViewController: UIViewController {
     ///
     private let order: Order
 
+    /// Allows editing of billing address
+    ///
+    let editingEnabled: Bool
 
     /// Designated Initializer
     ///
-    init(order: Order) {
+    init(order: Order, editingEnabled: Bool = false) {
         self.order = order
+        self.editingEnabled = editingEnabled
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -313,6 +317,10 @@ private extension BillingInformationViewController {
         cell.address = billingAddress?.formattedPostalAddress ??
             NSLocalizedString("No address specified.",
                               comment: "Order details > customer info > billing information. This is where the address would normally display.")
+
+        cell.onEditTapped = editingEnabled ? {
+            print("Edit Billing Address Tapped")
+        } : nil
     }
 
     func setupBillingPhone(cell: WooBasicTableViewCell) {

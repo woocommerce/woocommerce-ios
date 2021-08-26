@@ -1,5 +1,5 @@
-Los vendedores de EE. UU. que deseen crear etiquetas de envío para los clientes de ese país encontrarán varias mejoras menores. Si aún no imprimes etiquetas desde la aplicación, lo primero que tienes que hacer es instalar la extensión WooCommerce Shipping & Tax en tu sitio.
+No tiene mucho sentido mandar una nota de un pedido por correo electrónico a un cliente que no tiene correo electrónico. Por eso, vamos a ocultar esa opción si es el caso.
 
-También hemos comprobado cómo se ve la aplicación en pantallas de diferentes tamaños y tipos de teléfono. Hemos corregido un montón de problemas de visualización menores pero significativos, especialmente notables en el iPad.
+Algunos vendedores nos han dicho que los pedidos con precios negativos no se mostraban correctamente. Ya lo hemos arreglado, ¡ahora deberías estar más positivo!
 
-Como siempre, agradecemos tus comentarios sobre la aplicación. Puedes contactar con nosotros a través de la aplicación, en la pestaña "Mi tienda".
+Esta versión también incluye unas cuantas minimejoras para que la experiencia sea más fluida en general. Esperamos que seas consciente del cariño que le ponemos a nuestro software.

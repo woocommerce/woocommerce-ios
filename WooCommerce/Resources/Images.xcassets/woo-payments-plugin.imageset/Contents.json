@@ -3,6 +3,16 @@
     {
       "filename" : "woo-payments-plugin.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "woo-payments-plugin-dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

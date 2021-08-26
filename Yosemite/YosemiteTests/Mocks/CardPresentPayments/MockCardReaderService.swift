@@ -47,6 +47,12 @@ final class MockCardReaderService: CardReaderService {
     /// Boolean flag Indicates that clients have called the cancel payment method
     var didTapCancelPayment = false
 
+    /// Boolean flag indicates that checking for a reader software update should return an update
+    var hasReaderUpdate = false
+
+    /// Boolean flag indicates that checking for a reader software update should fail
+    var shouldFailReaderUpdateCheck = false
+
     private let connectedReadersSubject = CurrentValueSubject<[CardReader], Never>([])
     private let discoveryStatusSubject = CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle)
 
@@ -113,13 +119,39 @@ final class MockCardReaderService: CardReaderService {
         }
     }
 
-    func checkForUpdate() -> Future<CardReaderSoftwareUpdate, Error> {
-        Future() { promise in
-            // To be implemented
+    func checkForUpdate() -> Future<CardReaderSoftwareUpdate?, Error> {
+        Future() { [weak self] promise in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                guard let self = self else {
+                    return
+                }
+                if self.shouldFailReaderUpdateCheck {
+                    promise(Result.failure(MockErrors.readerUpdateCheckFailure))
+                } else if self.hasReaderUpdate {
+                    promise(Result.success(self.mockUpdate()))
+                } else {
+                    promise(Result.success(nil))
+                }
+            }
         }
     }
 
     func installUpdate() -> AnyPublisher<Float, Error> {
         Empty<Float, Error>().eraseToAnyPublisher()
+    }
+}
+
+private extension MockCardReaderService {
+    enum MockErrors: Error {
+        case readerUpdateCheckFailure
+    }
+}
+
+private extension MockCardReaderService {
+    func mockUpdate() -> CardReaderSoftwareUpdate {
+        CardReaderSoftwareUpdate(
+            estimatedUpdateTime: .betweenFiveAndFifteenMinutes,
+            deviceSoftwareVersion: "MOCKVERSION"
+        )
     }
 }

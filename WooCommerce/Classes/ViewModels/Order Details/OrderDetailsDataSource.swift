@@ -192,11 +192,18 @@ final class OrderDetailsDataSource: NSObject {
 
     private let imageService: ImageService = ServiceLocator.imageService
 
+    /// Indicates if the order editing feature is enabled or not
+    /// Allows editing notes, shipping & billing addresses.
+    ///
+    let orderEditingEnabled: Bool
+
     init(order: Order,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         orderEditingEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderEditing)) {
         self.storageManager = storageManager
         self.order = order
         self.couponLines = order.coupons
+        self.orderEditingEnabled = orderEditingEnabled
 
         super.init()
     }
@@ -367,8 +374,12 @@ private extension OrderDetailsDataSource {
             NSLocalizedString("“%@”",
                               comment: "Customer note, wrapped in quotes"),
             customerNote)
-        cell.body = localizedBody
+        cell.body = customerNote.isNotEmpty ? localizedBody : " "
         cell.selectionStyle = .none
+
+        cell.onEditTapped = orderEditingEnabled ? { [weak self] in
+            self?.onCellAction?(.editCustomerNote, nil)
+        } : nil
     }
 
     private func configureBillingDetail(cell: WooBasicTableViewCell) {
@@ -777,6 +788,10 @@ private extension OrderDetailsDataSource {
                 comment: "Order details > customer info > shipping details. " +
                 "This is where the address would normally display."
         )
+
+        cell.onEditTapped = orderEditingEnabled ? { [weak self] in
+            self?.onCellAction?(.editShippingAddress, nil)
+        } : nil
     }
 
     private func configureShippingMethod(cell: CustomerNoteTableViewCell) {
@@ -938,7 +953,8 @@ extension OrderDetailsDataSource {
         let customerInformation: Section = {
             var rows: [Row] = []
 
-            if customerNote.isEmpty == false {
+            /// After `.orderEditing` is completed, this row should always be visible to let merchants update the customer note as required.
+            if orderEditingEnabled || customerNote.isEmpty == false {
                 rows.append(.customerNote)
             }
 
@@ -1419,6 +1435,8 @@ extension OrderDetailsDataSource {
         case createShippingLabel
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)
         case viewAddOns(addOns: [OrderItemAttribute])
+        case editCustomerNote
+        case editShippingAddress
     }
 
     struct Constants {

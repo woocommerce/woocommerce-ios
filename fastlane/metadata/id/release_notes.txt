@@ -1,5 +1,5 @@
-Penjual di AS yang ingin membuat label pengiriman untuk pelanggan di AS akan menemukan beberapa perbaikan kecil. Jika belum mencetak label dari aplikasi, mulai dengan menginstal ekstensi WooCommerce Shipping & Tax di situs Anda.
+Mengirimkan catatan melalui email kepada pelanggan untuk pesanan tanpa alamat email merupakan tindakan mustahil – karenanya, kini kami menyembunyikan opsi tersebut.
 
-Kami juga meningkatkan tampilan aplikasi di berbagai ukuran layar dan jenis ponsel. Kami memperbaiki beberapa masalah visual kecil tetapi penting, yang utamanya tampak di iPad.
+Beberapa penjual menyebutkan bahwa pesanan dengan harga negatif tidak ditampilkan dengan benar. Kami sudah memperbaiki masalah tersebut, jadi Anda tak perlu khawatir!
 
-Seperti biasa, kami mengharapkan umpan balik Anda terkait aplikasi. Anda dapat memberikannya melalui aplikasi di bawah Pengaturan pada tab Toko saya.
+Peluncuran ini juga mengandung banyak perbaikan kecil agar pengalaman Anda makin mulus. Kami harap Anda menyukai upaya yang kami berikan pada perangkat lunak kami.

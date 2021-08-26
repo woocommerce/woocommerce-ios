@@ -243,6 +243,14 @@ private extension ShippingLabelFormViewController {
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
             guard let self = self else { return }
 
+            // Skip remote validation and navigate to edit address
+            // if customs form is required and phone number is not found.
+            if self.viewModel.customsFormRequired,
+               let destinationAddress = self.viewModel.destinationAddress,
+               destinationAddress.phone.isEmpty {
+                return self.displayEditAddressFormVC(address: destinationAddress, validationError: nil, type: .origin)
+            }
+
             self.viewModel.validateAddress(type: .destination) { [weak self] (validationState, response) in
                 guard let self = self else { return }
                 let shippingLabelAddress = self.viewModel.destinationAddress

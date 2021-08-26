@@ -7,7 +7,10 @@ public struct Feature: Codable {
     public let iconUrl: String
     public let iconBase64: String?
 
-    public init(title: String, subtitle: String, iconUrl: String, iconBase64: String?) {
+    public init(title: String,
+                subtitle: String,
+                iconUrl: String,
+                iconBase64: String?) {
         self.title = title
         self.subtitle = subtitle
         self.iconUrl = iconUrl

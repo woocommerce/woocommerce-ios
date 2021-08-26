@@ -26,16 +26,8 @@ final class ShippingLabelFormViewModel {
 
     /// Address
     ///
-    private(set) var originAddress: ShippingLabelAddress? {
-        didSet {
-            updateRowsForCustomsIfNeeded()
-        }
-    }
-    private(set) var destinationAddress: ShippingLabelAddress? {
-        didSet {
-            updateRowsForCustomsIfNeeded()
-        }
-    }
+    private(set) var originAddress: ShippingLabelAddress?
+    private(set) var destinationAddress: ShippingLabelAddress?
 
     /// Packages
     ///
@@ -181,6 +173,8 @@ final class ShippingLabelFormViewModel {
         // the carrier and rate change accordingly
         handleCarrierAndRatesValueChanges(selectedRate: nil, selectedSignatureRate: nil, selectedAdultSignatureRate: nil, editable: false)
 
+        updateRowsForCustomsIfNeeded()
+
         if dateState == .validated {
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "origin_address_complete"])
         }
@@ -194,6 +188,8 @@ final class ShippingLabelFormViewModel {
         // We reset the carrier and rates selected because if the address change
         // the carrier and rate change accordingly
         handleCarrierAndRatesValueChanges(selectedRate: nil, selectedSignatureRate: nil, selectedAdultSignatureRate: nil, editable: false)
+
+        updateRowsForCustomsIfNeeded()
 
         if dateState == .validated {
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "destination_address_complete"])
@@ -465,11 +461,11 @@ private extension ShippingLabelFormViewModel {
     func updateRowsForCustomsIfNeeded() {
         insertOrRemoveCustomsRowIfNeeded()
 
-        guard let originAddress = originAddress else {
-            return
-        }
         // Require user to update phone address if customs form is required
-        if customsFormRequired && originAddress.phone.isEmpty {
+        if customsFormRequired && destinationAddress?.phone.isEmpty == true {
+            updateRowState(type: .shipTo, dataState: .pending, displayMode: .editable)
+        }
+        if customsFormRequired && originAddress?.phone.isEmpty == true {
             updateRowState(type: .shipFrom, dataState: .pending, displayMode: .editable)
         }
     }

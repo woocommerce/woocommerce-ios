@@ -67,6 +67,26 @@ struct ShippingLabelPaymentMethods: View {
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
                         .background(Color(.systemBackground))
                         .disabled(!viewModel.canEditNonpaymentSettings)
+
+                    Spacer()
+
+                    // Add credit card button
+                    if viewModel.canEditPaymentMethod && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsInternational) {
+                        Button(action: {
+                            //TODO: handle action
+                        }) {
+                            HStack {
+                                Spacer()
+                                Text(Localization.addCreditCardButton)
+                                Image(uiImage: .externalImage)
+                                Spacer()
+                            }
+                        }
+                        .buttonStyle(SecondaryButtonStyle())
+                        .padding(Constants.controlPadding)
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
+                        .background(Color(.listBackground))
+                    }
                 }
             }
             .background(Color(.listBackground))
@@ -87,6 +107,8 @@ struct ShippingLabelPaymentMethods: View {
             })
             .disabled(!viewModel.isDoneButtonEnabled()))
         }
+
+
     }
 }
 
@@ -106,6 +128,8 @@ private extension ShippingLabelPaymentMethods {
                                 + " %1$@ is a placeholder for the account display name."
                                 + " %2$@ is a placeholder for the username."
                                 + " %3$@ is a placeholder for the WordPress.com email address.")
+        static let addCreditCardButton = NSLocalizedString("Add another credit card",
+                                                           comment: "Button title in the Shipping Label Payment Method screen")
     }
 
     enum Constants {
@@ -125,26 +149,26 @@ struct ShippingLabelPaymentMethods_Previews: PreviewProvider {
 
         ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (newAccountSettings) in
         })
-            .colorScheme(.light)
-            .previewDisplayName("Light mode")
+        .colorScheme(.light)
+        .previewDisplayName("Light mode")
 
         ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (newAccountSettings) in
         })
-            .colorScheme(.dark)
-            .previewDisplayName("Dark Mode")
+        .colorScheme(.dark)
+        .previewDisplayName("Dark Mode")
 
         ShippingLabelPaymentMethods(viewModel: disabledViewModel, completion: { (newAccountSettings) in
         })
-            .previewDisplayName("Disabled state")
+        .previewDisplayName("Disabled state")
 
         ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (newAccountSettings) in
         })
-            .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
-            .previewDisplayName("Accessibility: Large Font Size")
+        .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+        .previewDisplayName("Accessibility: Large Font Size")
 
         ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (newAccountSettings) in
         })
-            .environment(\.layoutDirection, .rightToLeft)
-            .previewDisplayName("Localization: Right-to-Left Layout")
+        .environment(\.layoutDirection, .rightToLeft)
+        .previewDisplayName("Localization: Right-to-Left Layout")
     }
 }

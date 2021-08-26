@@ -2,7 +2,6 @@ import Foundation
 import Yosemite
 import Networking
 import Storage
-import WordPressKit
 
 // MARK: - AuthenticatedState
 //
@@ -72,7 +71,6 @@ class AuthenticatedState: StoresManagerState {
             AnnouncementsStore(dispatcher: dispatcher,
                                storageManager: storageManager,
                                network: network,
-                               remote: AnnouncementServiceRemote(),
                                fileStorage: PListFileStorage())
         ]
 

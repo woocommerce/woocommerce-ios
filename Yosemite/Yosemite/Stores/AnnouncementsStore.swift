@@ -12,7 +12,7 @@ public protocol AnnouncementsRemoteProtocol {
 }
 
 extension AnnouncementServiceRemote: AnnouncementsRemoteProtocol {
-    override convenience init() {
+    public override convenience init() {
         self.init(wordPressComRestApi: WordPressComRestApi(baseUrlString: Settings.wordpressApiBaseURL))
     }
 }
@@ -27,7 +27,7 @@ public class AnnouncementsStore: Store {
     public init(dispatcher: Dispatcher,
                 storageManager: StorageManagerType,
                 network: Network,
-                remote: AnnouncementsRemoteProtocol,
+                remote: AnnouncementsRemoteProtocol = AnnouncementServiceRemote(),
                 fileStorage: FileStorage) {
         self.remote = remote
         self.fileStorage = fileStorage

@@ -49,7 +49,10 @@ final class AnnouncementsStoreTests: XCTestCase {
                               subtitle: "bar",
                               iconUrl: "https://s0.wordpress.com/i/store/mobile/plans-premium.png",
                               iconBase64: nil)
-        let announcement = Announcement(appVersion: "1", features: [feature], announcementVersion: "2")
+        let announcement = Announcement(appVersion: "1",
+                                        features: [feature],
+                                        announcementVersion: "2",
+                                        displayed: false)
         remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .success(announcement))
 
         // Act

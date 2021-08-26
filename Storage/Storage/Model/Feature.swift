@@ -1,6 +1,5 @@
 /// Models a Feature that belongs to an Announcement
 /// These entities will be serialised to a plist file
-///
 
 public struct Feature: Codable {
     public let title: String

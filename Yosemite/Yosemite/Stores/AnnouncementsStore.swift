@@ -71,7 +71,11 @@ private extension AnnouncementsStore {
                     onCompletion(.success(nil))
                     return
                 }
-                try? self?.saveAnnouncement(announcement)
+                do {
+                    try self?.saveAnnouncement(announcement)
+                } catch {
+                    onCompletion(.failure(error))
+                }
                 onCompletion(.success(announcement))
             case .failure(let error):
                 onCompletion(.failure(error))

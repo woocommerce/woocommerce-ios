@@ -43,9 +43,10 @@ extension AnnouncementServiceRemote: AnnouncementsRemoteProtocol {
                     iconUrl: $0.iconUrl,
                     iconBase64: $0.iconBase64)
         }
-        
+
         return StorageAnnouncement(appVersion: announcement.appVersionName,
                                    features: mappedFeatures,
-                                   announcementVersion: announcement.announcementVersion)
+                                   announcementVersion: announcement.announcementVersion,
+                                   displayed: false)
     }
 }

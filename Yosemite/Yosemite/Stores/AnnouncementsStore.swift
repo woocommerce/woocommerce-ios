@@ -88,6 +88,7 @@ private extension AnnouncementsStore {
         }
     }
 
+    /// Map `WordPressKit.Announcement` to `StorageAnnouncement` model
     func mapAnnouncementToStorageModel(_ announcement: WordPressKit.Announcement) -> StorageAnnouncement {
         let mappedFeatures = announcement.features.map {
             Feature(title: $0.title,

@@ -72,12 +72,15 @@ struct ShippingLabelPaymentMethods: View {
 
                     // Add credit card button
                     if viewModel.canEditPaymentMethod && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsInternational) {
+
+                        let buttonText = viewModel.paymentMethods.isEmpty ? Localization.addCreditCardButton : Localization.addAnotherCreditCardButton
+
                         Button(action: {
                             //TODO: handle action
                         }) {
                             HStack {
                                 Spacer()
-                                Text(Localization.addCreditCardButton)
+                                Text(buttonText)
                                 Image(uiImage: .externalImage)
                                 Spacer()
                             }
@@ -128,8 +131,11 @@ private extension ShippingLabelPaymentMethods {
                                 + " %1$@ is a placeholder for the account display name."
                                 + " %2$@ is a placeholder for the username."
                                 + " %3$@ is a placeholder for the WordPress.com email address.")
-        static let addCreditCardButton = NSLocalizedString("Add another credit card",
+        static let addCreditCardButton = NSLocalizedString("Add credit card",
                                                            comment: "Button title in the Shipping Label Payment Method screen")
+        static let addAnotherCreditCardButton = NSLocalizedString("Add another credit card",
+                                                                  comment: "Button title in the Shipping Label Payment Method screen if there is an existing payment method")
+
     }
 
     enum Constants {

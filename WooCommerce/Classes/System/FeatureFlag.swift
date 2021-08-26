@@ -45,4 +45,8 @@ enum FeatureFlag: Int {
     /// Editing of notes, shipping, and billing addresses.
     ///
     case orderEditing
+
+    /// Card-Present Payments Several Readers Found
+    ///
+    case cardPresentSeveralReadersFound
 }

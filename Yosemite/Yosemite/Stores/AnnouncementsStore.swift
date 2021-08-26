@@ -23,6 +23,7 @@ public class AnnouncementsStore: Store {
 
     private let remote: AnnouncementsRemoteProtocol
     private let fileStorage: FileStorage
+    private let appVersion = UserAgent.bundleShortVersion
 
     public init(dispatcher: Dispatcher,
                 storageManager: StorageManagerType,
@@ -33,8 +34,6 @@ public class AnnouncementsStore: Store {
         self.fileStorage = fileStorage
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
-
-    private let appVersion = UserAgent.bundleShortVersion
 
     private lazy var featureAnnouncementsFileURL: URL? = {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)

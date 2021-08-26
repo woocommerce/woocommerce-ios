@@ -248,7 +248,7 @@ private extension ShippingLabelFormViewController {
             if self.viewModel.customsFormRequired,
                let destinationAddress = self.viewModel.destinationAddress,
                destinationAddress.phone.isEmpty {
-                return self.displayEditAddressFormVC(address: destinationAddress, validationError: nil, type: .origin)
+                return self.displayEditAddressFormVC(address: destinationAddress, validationError: nil, type: .destination)
             }
 
             self.viewModel.validateAddress(type: .destination) { [weak self] (validationState, response) in

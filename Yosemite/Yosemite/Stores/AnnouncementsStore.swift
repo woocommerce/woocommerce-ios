@@ -102,7 +102,6 @@ private extension AnnouncementsStore {
                                    displayed: false)
     }
 
-
     /// Save the `Announcement` to the appropriate file.
     func saveAnnouncement(_ announcement: StorageAnnouncement) throws {
         guard let fileURL = featureAnnouncementsFileURL else {

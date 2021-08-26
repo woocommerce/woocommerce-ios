@@ -57,13 +57,11 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v7.3-whats-new"
+msgctxt "v7.4-whats-new"
 msgid ""
-"E-mailing a note to a customer for an order with no e-mail address doesn’t make much sense – so we’re hiding that option now in that case.\n"
+"This release contains a handful of minor improvements to make your experience smoother. In order details, some third-party extensions were not logically showing product metadata. We’ve made some changes to improve the display of those product details. We now are hiding the refund order button when the total amount is zero.\n"
 "\n"
-"Some merchants mentioned to us that orders with negative prices weren’t showing up correctly. We’ve fixed that issue, and now you should feel more positive!\n"
-"\n"
-"This release also contains a bunch of tiny improvements to make your experience smoother overall. We hope you notice the love we put into our software.\n"
+"This update also includes several enhancements to the shipping label feature using the WooCommerce Shipping & Tax Extension. We value all of your feedback on this newer feature!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

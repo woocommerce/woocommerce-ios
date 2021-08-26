@@ -47,8 +47,9 @@ final class AnnouncementsStoreTests: XCTestCase {
         // Arrange
         let feature = Feature(title: "foo",
                               subtitle: "bar",
-                              iconUrl: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")
-        let announcement = Announcement(appVersion: "1", features: [feature])
+                              iconUrl: "https://s0.wordpress.com/i/store/mobile/plans-premium.png",
+                              iconBase64: nil)
+        let announcement = Announcement(appVersion: "1", features: [feature], announcementVersion: "2")
         remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .success(announcement))
 
         // Act
@@ -61,6 +62,7 @@ final class AnnouncementsStoreTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(fetchedAnnouncement?.appVersion, "1")
+        XCTAssertEqual(fetchedAnnouncement?.announcementVersion, "2")
         XCTAssertEqual(fetchedAnnouncement?.features.first?.title, feature.title)
         XCTAssertEqual(fetchedAnnouncement?.features.first?.subtitle, feature.subtitle)
         XCTAssertEqual(fetchedAnnouncement?.features.first?.iconUrl, feature.iconUrl)

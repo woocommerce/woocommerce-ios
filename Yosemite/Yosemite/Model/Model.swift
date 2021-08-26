@@ -132,9 +132,11 @@ public typealias WCPayCustomer = Networking.WCPayCustomer
 
 public typealias StorageAccount = Storage.Account
 public typealias StorageAccountSettings = Storage.AccountSettings
+public typealias StorageAnnouncement = Storage.Announcement
 public typealias StorageAttribute = Storage.GenericAttribute
 public typealias StorageAddOnGroup = Storage.AddOnGroup
 public typealias StorageEligibilityErrorInfo = Storage.EligibilityErrorInfo
+public typealias StorageFeature = Storage.Feature
 public typealias StorageNote = Storage.Note
 public typealias StorageOrder = Storage.Order
 public typealias StorageOrderItemAttribute = Storage.OrderItemAttribute

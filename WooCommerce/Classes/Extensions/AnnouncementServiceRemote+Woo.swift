@@ -21,12 +21,12 @@ extension AnnouncementServiceRemote: AnnouncementsRemoteProtocol {
                                 locale: String,
                                 completion: @escaping (Result<Storage.Announcement?, Error>) -> Void) {
 
-        getAnnouncements(appId: appId, appVersion: appVersion, locale: locale) { result in
+        getAnnouncements(appId: appId, appVersion: appVersion, locale: locale) { [weak self] result in
             switch result {
             case .success(let announcements):
-                guard let firstAnnouncement = announcements.first else {
-                    completion(.success(nil))
-                    return
+                guard let self = self,
+                      let firstAnnouncement = announcements.first else {
+                    return completion(.success(nil))
                 }
                 let announcement = self.mapAnnouncementToStorageModel(firstAnnouncement)
                 completion(.success(announcement))
@@ -37,10 +37,15 @@ extension AnnouncementServiceRemote: AnnouncementsRemoteProtocol {
     }
 
     private func mapAnnouncementToStorageModel(_ announcement: WordPressKit.Announcement) -> Storage.Announcement {
-        let mappedFeatures = announcement.features.compactMap {
-            Feature(title: $0.title, subtitle: $0.subtitle, iconUrl: $0.iconUrl)
+        let mappedFeatures = announcement.features.map {
+            Feature(title: $0.title,
+                    subtitle: $0.subtitle,
+                    iconUrl: $0.iconUrl,
+                    iconBase64: $0.iconBase64)
         }
 
-        return Storage.Announcement(appVersion: announcement.appVersionName, features: mappedFeatures)
+        return Storage.Announcement(appVersion: announcement.appVersionName,
+                                    features: mappedFeatures,
+                                    announcementVersion: announcement.announcementVersion)
     }
 }

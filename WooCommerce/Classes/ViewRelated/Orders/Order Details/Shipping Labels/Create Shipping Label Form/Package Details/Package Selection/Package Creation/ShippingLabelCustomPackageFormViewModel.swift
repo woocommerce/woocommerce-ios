@@ -23,19 +23,47 @@ final class ShippingLabelCustomPackageFormViewModel: ObservableObject {
 
     /// The length of the custom package
     ///
-    @Published var packageLength: String
+    @Published var packageLength: String {
+        didSet {
+            let sanitized = sanitizeNumericInput(packageLength)
+            if packageLength != sanitized {
+                packageLength = sanitized
+            }
+        }
+    }
 
     /// The width of the custom package
     ///
-    @Published var packageWidth: String
+    @Published var packageWidth: String {
+        didSet {
+            let sanitized = sanitizeNumericInput(packageWidth)
+            if packageWidth != sanitized {
+                packageWidth = sanitized
+            }
+        }
+    }
 
     /// The height of the custom package
     ///
-    @Published var packageHeight: String
+    @Published var packageHeight: String {
+        didSet {
+            let sanitized = sanitizeNumericInput(packageHeight)
+            if packageHeight != sanitized {
+                packageHeight = sanitized
+            }
+        }
+    }
 
     /// The weight of the custom package when empty
     ///
-    @Published var emptyPackageWeight: String
+    @Published var emptyPackageWeight: String {
+        didSet {
+            let sanitized = sanitizeNumericInput(emptyPackageWeight)
+            if emptyPackageWeight != sanitized {
+                emptyPackageWeight = sanitized
+            }
+        }
+    }
 
     /// Validated custom package
     ///
@@ -53,7 +81,7 @@ final class ShippingLabelCustomPackageFormViewModel: ObservableObject {
                                           maxWeight: 0)
     }
 
-    // MARK: Validation Properties & Publishers
+    // MARK: Validation Properties
 
     @Published private(set) var isNameValidated = true
     @Published private(set) var isLengthValidated = true
@@ -82,7 +110,7 @@ final class ShippingLabelCustomPackageFormViewModel: ObservableObject {
     }
 }
 
-// MARK: - Validation
+// MARK: - Validation & Sanitization
 extension ShippingLabelCustomPackageFormViewModel {
 
     /// Validate each field on demand.
@@ -133,6 +161,15 @@ extension ShippingLabelCustomPackageFormViewModel {
                 self?.validatePackageWeight($0) ?? false
             }
             .assign(to: &$isWeightValidated)
+    }
+
+    /// Sanitize string input to return only valid Double values
+    ///
+    func sanitizeNumericInput(_ value: String) -> String {
+        guard Double(value) != nil else {
+            return String(value.dropLast())
+        }
+        return value
     }
 
     private func validatePackageName(_ name: String) -> Bool {

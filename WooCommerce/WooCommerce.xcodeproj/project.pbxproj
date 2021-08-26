@@ -961,6 +961,7 @@
 		CCD2E67E25DD4DC900BD975D /* ProductVariationsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD2E67D25DD4DC900BD975D /* ProductVariationsViewModel.swift */; };
 		CCD2E68925DD52C100BD975D /* ProductVariationsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD2E68825DD52C100BD975D /* ProductVariationsViewModelTests.swift */; };
 		CCD2F51A26D67BB50010E679 /* ShippingLabelServicePackageList.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD2F51926D67BB50010E679 /* ShippingLabelServicePackageList.swift */; };
+		CCD2F51C26D697860010E679 /* ShippingLabelServicePackageListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD2F51B26D697860010E679 /* ShippingLabelServicePackageListViewModel.swift */; };
 		CCDC49CD23FFFFF4003166BA /* LoginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDC49CC23FFFFF4003166BA /* LoginTests.swift */; };
 		CCDC49D724000095003166BA /* XCTest+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997173223DBCF2800592D8E /* XCTest+Extensions.swift */; };
 		CCDC49DA2400011F003166BA /* MyStoreScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997172D23DBCDE900592D8E /* MyStoreScreen.swift */; };
@@ -2358,6 +2359,7 @@
 		CCD2E67D25DD4DC900BD975D /* ProductVariationsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationsViewModel.swift; sourceTree = "<group>"; };
 		CCD2E68825DD52C100BD975D /* ProductVariationsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationsViewModelTests.swift; sourceTree = "<group>"; };
 		CCD2F51926D67BB50010E679 /* ShippingLabelServicePackageList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelServicePackageList.swift; sourceTree = "<group>"; };
+		CCD2F51B26D697860010E679 /* ShippingLabelServicePackageListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelServicePackageListViewModel.swift; sourceTree = "<group>"; };
 		CCDC49CA23FFFFF4003166BA /* WooCommerceUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WooCommerceUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCDC49CC23FFFFF4003166BA /* LoginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginTests.swift; sourceTree = "<group>"; };
 		CCDC49CE23FFFFF4003166BA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -5259,6 +5261,7 @@
 				CC254F3526C437AB005F3C82 /* ShippingLabelCustomPackageForm.swift */,
 				CC254F3726C43B52005F3C82 /* ShippingLabelCustomPackageFormViewModel.swift */,
 				CCD2F51926D67BB50010E679 /* ShippingLabelServicePackageList.swift */,
+				CCD2F51B26D697860010E679 /* ShippingLabelServicePackageListViewModel.swift */,
 			);
 			path = "Package Creation";
 			sourceTree = "<group>";
@@ -6962,6 +6965,7 @@
 				B5D1AFC620BC7B7300DB0E8C /* StorePickerViewController.swift in Sources */,
 				02DD81FB242CAA400060E50B /* WordPressMediaLibraryPickerDataSource.swift in Sources */,
 				0240B3AC230A910C000A866C /* StoreStatsV4ChartAxisHelper.swift in Sources */,
+				CCD2F51C26D697860010E679 /* ShippingLabelServicePackageListViewModel.swift in Sources */,
 				E107FCE326C13A0D00BAF51B /* InPersonPaymentsSupportLink.swift in Sources */,
 				74D0A5302139CF1300E2919F /* String+Helpers.swift in Sources */,
 				0286B27F23C70557003D784B /* ColumnFlowLayout.swift in Sources */,

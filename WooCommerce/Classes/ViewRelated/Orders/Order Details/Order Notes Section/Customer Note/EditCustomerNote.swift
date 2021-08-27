@@ -1,9 +1,15 @@
 import Foundation
+import Combine
 import SwiftUI
 
 /// Hosting controller that wraps an `EditCustomerNote` view.
 ///
 final class EditCustomerNoteHostingController: UIHostingController<EditCustomerNote> {
+
+    /// References to keep the Combine subscriptions alive within the lifecycle of the object.
+    ///
+    private var subscriptions: Set<AnyCancellable> = []
+
     init(viewModel: EditCustomerNoteViewModel) {
         super.init(rootView: EditCustomerNote(viewModel: viewModel))
 
@@ -11,6 +17,20 @@ final class EditCustomerNoteHostingController: UIHostingController<EditCustomerN
         rootView.dismiss = { [weak self] in
             self?.dismiss(animated: true, completion: nil)
         }
+
+        // Observe the present notice request and set it back after presented
+        viewModel.$presentNotice
+            .compactMap { $0 }
+            .removeDuplicates()
+            .sink { notice in
+                switch notice {
+                case .success:
+                    print("Show success")
+                case .error:
+                    print("Show Error")
+                }
+            }
+            .store(in: &subscriptions)
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {

@@ -79,7 +79,7 @@ final class AnnouncementsStoreTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertEqual(resultError, .unableToGetAnnouncement)
+        XCTAssertEqual(resultError, .announcementNotFound)
     }
 
     func test_synchronize_announcements_with_error_gets_an_error() {
@@ -96,7 +96,7 @@ final class AnnouncementsStoreTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertEqual(resultError, .unableToGetAnnouncement)
+        XCTAssertEqual(resultError, .announcementNotFound)
     }
 }
 

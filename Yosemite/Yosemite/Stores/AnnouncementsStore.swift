@@ -73,7 +73,7 @@ private extension AnnouncementsStore {
             switch result {
             case .success(let announcements):
                 guard let self = self, let announcement = announcements.first else {
-                    return onCompletion(.failure(AnnouncementsError.unableToGetAnnouncement))
+                    return onCompletion(.failure(AnnouncementsError.announcementNotFound))
                 }
                 do {
                     try self.saveAnnouncement(announcement)
@@ -130,5 +130,5 @@ enum AnnouncementsStorageError: Error {
 }
 
 enum AnnouncementsError: Error {
-    case unableToGetAnnouncement
+    case announcementNotFound
 }

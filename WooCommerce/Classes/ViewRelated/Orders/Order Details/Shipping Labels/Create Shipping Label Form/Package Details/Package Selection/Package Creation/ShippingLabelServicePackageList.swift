@@ -1,16 +1,11 @@
 import SwiftUI
+import Yosemite
 
 struct ShippingLabelServicePackageList: View {
-    private let safeAreaInsets: EdgeInsets
-
     @Environment(\.presentationMode) var presentation
-    @ObservedObject var viewModel: ShippingLabelServicePackageListViewModel
-
-    init(viewModel: ShippingLabelServicePackageListViewModel,
-         safeAreaInsets: EdgeInsets) {
-        self.viewModel = viewModel
-        self.safeAreaInsets = safeAreaInsets
-    }
+    @StateObject var viewModel = ShippingLabelServicePackageListViewModel()
+    let packagesResponse: ShippingLabelPackagesResponse?
+    let safeAreaInsets: EdgeInsets
 
     var body: some View {
         LazyVStack(spacing: 0) {
@@ -37,6 +32,9 @@ struct ShippingLabelServicePackageList: View {
                 }
             }
         }
+        .onAppear(perform: {
+            viewModel.packagesResponse = packagesResponse
+        })
         .background(Color(.listBackground))
         .ignoresSafeArea(.container, edges: .horizontal)
         .minimalNavigationBarBackButton()
@@ -67,9 +65,9 @@ private extension ShippingLabelServicePackageList {
 
 struct ShippingLabelServicePackageList_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = ShippingLabelServicePackageListViewModel(packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails())
+        let packagesResponse = ShippingLabelPackageDetailsViewModel.samplePackageDetails()
 
-        ShippingLabelServicePackageList(viewModel: viewModel, safeAreaInsets: .zero)
+        ShippingLabelServicePackageList(packagesResponse: packagesResponse, safeAreaInsets: .zero)
             .previewLayout(.sizeThatFits)
     }
 }

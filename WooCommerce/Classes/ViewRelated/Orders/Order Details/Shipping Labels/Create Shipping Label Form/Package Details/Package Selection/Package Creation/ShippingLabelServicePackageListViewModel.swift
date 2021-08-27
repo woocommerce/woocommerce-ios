@@ -6,7 +6,7 @@ final class ShippingLabelServicePackageListViewModel: ObservableObject {
 
     /// The packages response fetched from API
     ///
-    private let packagesResponse: ShippingLabelPackagesResponse?
+    @Published var packagesResponse: ShippingLabelPackagesResponse?
 
     // TODO-4744: Get the options not yet enabled on the store
     // These are the already enabled options, used temporarily for creating the initial UI
@@ -18,9 +18,5 @@ final class ShippingLabelServicePackageListViewModel: ObservableObject {
 
     var dimensionUnit: String {
         packagesResponse?.storeOptions.dimensionUnit ?? ""
-    }
-
-    init(packagesResponse: ShippingLabelPackagesResponse?) {
-        self.packagesResponse = packagesResponse
     }
 }

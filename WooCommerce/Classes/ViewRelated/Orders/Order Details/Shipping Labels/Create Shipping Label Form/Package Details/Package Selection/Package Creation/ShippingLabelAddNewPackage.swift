@@ -3,12 +3,7 @@ import Yosemite
 
 struct ShippingLabelAddNewPackage: View {
     @StateObject private var viewModel = ShippingLabelAddNewPackageViewModel()
-
-    private var packagesResponse: ShippingLabelPackagesResponse?
-
-    init(packagesResponse: ShippingLabelPackagesResponse?) {
-        self.packagesResponse = packagesResponse
-    }
+    let packagesResponse: ShippingLabelPackagesResponse?
 
     var body: some View {
         GeometryReader { geometry in
@@ -25,8 +20,7 @@ struct ShippingLabelAddNewPackage: View {
                     case .customPackage:
                         ShippingLabelCustomPackageForm(safeAreaInsets: geometry.safeAreaInsets)
                     case .servicePackage:
-                        let viewModel = ShippingLabelServicePackageListViewModel(packagesResponse: packagesResponse)
-                        ShippingLabelServicePackageList(viewModel: viewModel, safeAreaInsets: geometry.safeAreaInsets)
+                        ShippingLabelServicePackageList(packagesResponse: packagesResponse, safeAreaInsets: geometry.safeAreaInsets)
                     }
                 }
                  .background(Color(.listBackground).ignoresSafeArea(.container, edges: .bottom))

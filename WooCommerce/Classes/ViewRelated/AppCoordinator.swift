@@ -1,6 +1,7 @@
 import Combine
 import UIKit
 import Yosemite
+import SwiftUI
 import class AutomatticTracks.CrashLogging
 
 /// Coordinates app navigation based on authentication state: tab bar UI is shown when the app is logged in, and authentication UI is shown
@@ -49,10 +50,10 @@ final class AppCoordinator {
                 case (true, false):
                     self.validateRoleEligibility {
                         self.displayLoggedInUI()
+                        self.synchronizeWhatsNew()
                     }
                 }
                 self.isLoggedIn = isLoggedIn
-                self.showWhatsNewIfNeeded()
             }
     }
 }
@@ -61,9 +62,25 @@ private extension AppCoordinator {
 
     /// Displays the What's New Screen.
     ///
-    func showWhatsNewIfNeeded() {
-        // TODO: Check the saved Announcement App Version in order to display or not the what's new component
-        stores.dispatch(AnnouncementsAction.synchronizeAnnouncements(onCompletion: { _ in }))
+    func synchronizeWhatsNew() {
+        stores.dispatch(AnnouncementsAction.synchronizeAnnouncements(onCompletion: { [weak self] result in
+            guard let announcement = try? result.get() else { return }
+            self?.presentWhatsNew(for: announcement)
+        }))
+    }
+
+    func presentWhatsNew(for announcement: Announcement) {
+        let viewModel = WhatsNewViewModel(items: announcement.features) { [weak self] in
+            self?.tabBarController.dismiss(animated: true)
+        }
+        let rootView = ReportListView(viewModel: viewModel)
+        let hostingViewController = UIHostingController(rootView: rootView)
+        if UIDevice.isPad() {
+            hostingViewController.preferredContentSize = CGSize(width: window.frame.width * 0.3,
+                                                                height: window.frame.height * 0.68)
+        }
+        hostingViewController.modalPresentationStyle = .formSheet
+        tabBarController.present(hostingViewController, animated: true, completion: nil)
     }
 
     /// Displays the WordPress.com Authentication UI.

@@ -16,36 +16,37 @@ final class EditCustomerNoteViewModel: ObservableObject {
     ///
     @Published private(set) var navigationTrailingItem: NavigationItem = .done(enabled: false)
 
-    /// Original content of the order customer provided note.
+    /// Order to be edited.
     ///
-    private let originalNote: String
+    private let order: Order
 
     /// Tracks if a network request is being performed.
     ///
     private let performingNetworkRequest: CurrentValueSubject<Bool, Never> = .init(false)
 
-    convenience init(order: Order) {
-        let note = order.customerNote ?? ""
-        self.init(originalNote: note)
-    }
-
-    /// Member wise initializer
+    /// Action dispatcher
     ///
-    init(originalNote: String) {
-        self.originalNote = originalNote
-        self.newNote = originalNote
+    private let stores: StoresManager
+
+    init(order: Order, stores: StoresManager = ServiceLocator.stores) {
+        self.order = order
+        self.newNote = order.customerNote ?? ""
+        self.stores = stores
         bindNavigationTrailingItemPublisher()
     }
 
     /// Update the note remotely and invoke a completion block when finished
     ///
     func updateNote(onFinish: @escaping () -> Void) {
-        // TODO: Fire network request
-        performingNetworkRequest.send(true)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+        let modifiedOrder = order.copy(customerNote: newNote)
+        let action = OrderAction.updateOrder(siteID: order.siteID, order: modifiedOrder, fields: [.customerNote]) { [weak self] result in
             self?.performingNetworkRequest.send(false)
             onFinish()
+            // TODO: Show success or error notice
         }
+
+        performingNetworkRequest.send(true)
+        stores.dispatch(action)
     }
 }
 
@@ -65,11 +66,11 @@ private extension EditCustomerNoteViewModel {
     ///
     private func bindNavigationTrailingItemPublisher() {
         Publishers.CombineLatest($newNote, performingNetworkRequest)
-            .map { [originalNote] newNote, performingNetworkRequest -> NavigationItem in
+            .map { [order] newNote, performingNetworkRequest -> NavigationItem in
                 guard !performingNetworkRequest else {
                     return .loading
                 }
-                return .done(enabled: originalNote != newNote)
+                return .done(enabled: order.customerNote != newNote)
             }
             .assign(to: &$navigationTrailingItem)
     }

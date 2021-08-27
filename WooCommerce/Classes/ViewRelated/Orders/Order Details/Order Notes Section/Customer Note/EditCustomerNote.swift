@@ -69,11 +69,3 @@ private extension EditCustomerNote {
         static let cancel = NSLocalizedString("Cancel", comment: "Text for the cancel button in the edit customer provided note screen")
     }
 }
-
-// MARK: Previews
-struct EditCustomerNote_Previews: PreviewProvider {
-    static var previews: some View {
-        EditCustomerNote(viewModel: .init(originalNote: "Note"))
-            .environment(\.colorScheme, .light)
-    }
-}

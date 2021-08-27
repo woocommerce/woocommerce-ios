@@ -181,7 +181,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
 
 /// Defines all of the Order CodingKeys
 ///
-private extension Order {
+internal extension Order {
 
     enum CodingKeys: String, CodingKey {
         case orderID            = "id"

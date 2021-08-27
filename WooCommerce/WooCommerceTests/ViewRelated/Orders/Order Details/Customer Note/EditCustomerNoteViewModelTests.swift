@@ -35,7 +35,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         let viewModel = EditCustomerNoteViewModel(order: order)
 
         // When
-        viewModel.updateNote {}
+        viewModel.updateNote { _ in }
 
         // Then
         assertEqual(viewModel.navigationTrailingItem, .loading)
@@ -56,7 +56,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
 
         // When
         let navigationItem = waitFor { promise in
-            viewModel.updateNote(onFinish: {
+            viewModel.updateNote(onFinish: { _ in
                 promise(viewModel.navigationTrailingItem)
             })
         }
@@ -81,11 +81,59 @@ class EditCustomerNoteViewModelTests: XCTestCase {
                     XCTFail("Unsupported Action")
                 }
             }
-            viewModel.updateNote {}
+            viewModel.updateNote { _ in }
         }
 
         // Then
         assertEqual(update.order.customerNote, "Edited")
         assertEqual(update.fields, [.customerNote])
+    }
+
+    func test_view_model_fires_success_notice_after_updating_order_successfully() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrder(_, order, _, onCompletion):
+                onCompletion(.success(order))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        let noticeRequest = waitFor { promise in
+            viewModel.updateNote(onFinish: { _ in
+                promise(viewModel.presentNotice)
+            })
+        }
+
+        // Then
+        assertEqual(noticeRequest, .success)
+    }
+
+    func test_view_model_fires_error_notice_after_order_update_fails() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrder(_, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "Error", code: 0, userInfo: nil)))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        let noticeRequest = waitFor { promise in
+            viewModel.updateNote(onFinish: { _ in
+                promise(viewModel.presentNotice)
+            })
+        }
+
+        // Then
+        assertEqual(noticeRequest, .error)
     }
 }

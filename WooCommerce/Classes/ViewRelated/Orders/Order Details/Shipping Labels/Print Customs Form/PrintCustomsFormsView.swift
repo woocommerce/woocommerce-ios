@@ -4,53 +4,58 @@ struct PrintCustomsFormsView: View {
     let invoiceURLs: [String]
 
     var body: some View {
-        VStack(spacing: Constants.verticalSpacing) {
-            Text(Localization.customsFormTitle)
-                .bodyStyle()
-            VStack(spacing: Constants.verticalSpacing) {
-                Image("woo-shipping-label-printing-instructions")
-                Text(Localization.printingMessage)
+        ScrollView {
+            VStack(spacing: 0) {
+                Text(Localization.customsFormTitle)
                     .bodyStyle()
-                    .multilineTextAlignment(.center)
-            }
-            .frame(width: Constants.imageWidth)
-
-            if invoiceURLs.count == 1 {
-                VStack(spacing: Constants.buttonSpacing) {
-                    Button(action: {}, label: {
-                        Text(Localization.singlePrintButton)
-                    })
-                    .buttonStyle(PrimaryButtonStyle())
-
-                    saveForLaterButton
+                    .padding(.top, Constants.verticalSpacing)
+                VStack(spacing: Constants.verticalSpacing) {
+                    Image("woo-shipping-label-printing-instructions")
+                    Text(Localization.printingMessage)
+                        .bodyStyle()
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                .padding(.horizontal, Constants.horizontalPadding)
-                .frame(maxWidth: .infinity)
-            } else {
-                VStack(spacing: 0) {
-                    ForEach(Array(invoiceURLs.enumerated()), id: \.element) { index, url in
-                        HStack {
-                            Text(String(format: Localization.packageNumber, index + 1))
-                            Spacer()
-                            Button(action: {}, label: {
-                                Text(Localization.printButton)
-                            })
-                            .buttonStyle(LinkButtonStyle())
-                        }
-                        .padding(.horizontal, Constants.horizontalPadding)
-                        .frame(height: Constants.printRowHeight)
-                        Divider()
+                .frame(width: Constants.imageWidth)
+                .padding(.bottom, Constants.verticalSpacing)
+
+                if invoiceURLs.count == 1 {
+                    VStack(spacing: Constants.buttonSpacing) {
+                        Button(action: {}, label: {
+                            Text(Localization.singlePrintButton)
+                        })
+                        .buttonStyle(PrimaryButtonStyle())
+
+                        saveForLaterButton
                     }
+                    .padding(.horizontal, Constants.horizontalPadding)
+                    .frame(maxWidth: .infinity)
+                } else {
+                    VStack(spacing: 0) {
+                        ForEach(Array(invoiceURLs.enumerated()), id: \.element) { index, url in
+                            HStack {
+                                Text(String(format: Localization.packageNumber, index + 1))
+                                Spacer()
+                                Button(action: {}, label: {
+                                    Text(Localization.printButton)
+                                })
+                                .buttonStyle(LinkButtonStyle())
+                            }
+                            .padding(.horizontal, Constants.horizontalPadding)
+                            .frame(height: Constants.printRowHeight)
+                            Divider()
+                        }
 
-                    Spacer()
+                        Spacer()
 
-                    saveForLaterButton
-                        .padding(.horizontal, Constants.horizontalPadding)
-                        .frame(maxWidth: .infinity)
+                        saveForLaterButton
+                            .padding(.horizontal, Constants.horizontalPadding)
+                            .frame(maxWidth: .infinity)
+                    }
                 }
-            }
 
-            Spacer()
+                Spacer()
+            }
         }
         .navigationTitle(Localization.navigationTitle)
     }

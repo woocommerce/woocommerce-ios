@@ -68,6 +68,10 @@ final class CardReaderConnectionController {
     ///
     private var skippedReaderIDs: [String]
 
+    /// The reader we want the user to consider connecting to
+    ///
+    private var candidateReader: CardReader?
+
     private var subscriptions = Set<AnyCancellable>()
 
     private var onCompletion: ((Result<Bool, Error>) -> Void)?
@@ -149,6 +153,7 @@ private extension CardReaderConnectionController {
         /// Always start fresh - i.e. we haven't skipped connecting to any reader yet
         ///
         skippedReaderIDs = []
+        candidateReader = nil
 
         /// Fetch the list of known readers - i.e. readers we should automatically connect to when we see them
         ///
@@ -199,6 +204,7 @@ private extension CardReaderConnectionController {
                 /// If we have a known reader, advance immediately to connect
                 ///
                 if self.getFoundKnownReaders().isNotEmpty {
+                    self.candidateReader = self.getFoundKnownReaders().first
                     self.state = .connectToReader
                     return
                 }
@@ -206,6 +212,7 @@ private extension CardReaderConnectionController {
                 /// If we have a found (but unknown) reader, advance to foundReader
                 ///
                 if self.foundReaders.isNotEmpty {
+                    self.candidateReader = self.foundReaders.first
                     self.state = .foundReader
                 }
             },
@@ -233,6 +240,7 @@ private extension CardReaderConnectionController {
         /// to the user at this point, so don't open the searching modal, but go to
         /// onFoundReader
         if foundReaders.isNotEmpty {
+            self.candidateReader = foundReaders.first
             self.state = .foundReader
             return
         }
@@ -243,14 +251,10 @@ private extension CardReaderConnectionController {
     }
 
     /// A (unknown) reader has been found
-    /// Opens a confirmation modal for the user to accept the found reader (or keep searching)
+    /// Opens a confirmation modal for the user to accept the candidate reader (or keep searching)
     ///
     func onFoundReader() {
-        /// We always work with the zeroth reader in the foundReaders array
-        /// The array will have already had skipped (aka "keep searching") readers removed
-        /// by time we get here
-        ///
-        guard let readerID = foundReaders.first?.id else {
+        guard let candidateReader = candidateReader else {
             return
         }
 
@@ -260,12 +264,13 @@ private extension CardReaderConnectionController {
 
         alerts.foundReader(
             from: from,
-            name: readerID,
+            name: candidateReader.id,
             connect: {
                 self.state = .connectToReader
             },
             continueSearch: {
-                self.skippedReaderIDs.append(readerID)
+                self.skippedReaderIDs.append(candidateReader.id)
+                self.candidateReader = nil
                 self.pruneSkippedReaders()
                 self.state = .searching
             })
@@ -281,14 +286,14 @@ private extension CardReaderConnectionController {
         ServiceLocator.stores.dispatch(action)
     }
 
-    /// Connect to the card reader
+    /// Connect to the candidate card reader
     ///
     func onConnectToReader() {
         /// We always work with the first reader in the foundReaders array
         /// The array will have already had skipped (aka "keep searching") readers removed
         /// by time we get here
         ///
-        guard let reader = foundReaders.first else {
+        guard let candidateReader = candidateReader else {
             return
         }
 
@@ -296,7 +301,7 @@ private extension CardReaderConnectionController {
             return
         }
 
-        let action = CardPresentPaymentAction.connect(reader: reader) { result in
+        let action = CardPresentPaymentAction.connect(reader: candidateReader) { result in
             switch result {
             case .success(let reader):
                 self.knownCardReadersProvider.rememberCardReader(cardReaderID: reader.id)

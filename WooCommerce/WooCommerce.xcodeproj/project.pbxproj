@@ -1262,6 +1262,7 @@
 		DEC2962526C122DF005A056B /* ShippingLabelCustomsFormInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2962426C122DF005A056B /* ShippingLabelCustomsFormInputViewModel.swift */; };
 		DEC2962726C17AD8005A056B /* ShippingLabelCustomsForm+Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2962626C17AD8005A056B /* ShippingLabelCustomsForm+Localization.swift */; };
 		DEC2962926C20ECB005A056B /* CollapsibleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2962826C20ECB005A056B /* CollapsibleView.swift */; };
+		DEE6437626D87C4100888A75 /* PrintCustomsFormsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE6437526D87C4100888A75 /* PrintCustomsFormsView.swift */; };
 		DEFD6E61264990FB00E51E0D /* SitePluginListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6E60264990FB00E51E0D /* SitePluginListViewModelTests.swift */; };
 		DEFD6E86264ABFB700E51E0D /* PluginListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DEFD6E85264ABFB700E51E0D /* PluginListViewController.xib */; };
 		E107FCE126C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift in Sources */ = {isa = PBXBuildFile; fileRef = E107FCE026C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift */; };
@@ -2648,6 +2649,7 @@
 		DEC2962426C122DF005A056B /* ShippingLabelCustomsFormInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsFormInputViewModel.swift; sourceTree = "<group>"; };
 		DEC2962626C17AD8005A056B /* ShippingLabelCustomsForm+Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelCustomsForm+Localization.swift"; sourceTree = "<group>"; };
 		DEC2962826C20ECB005A056B /* CollapsibleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleView.swift; sourceTree = "<group>"; };
+		DEE6437526D87C4100888A75 /* PrintCustomsFormsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintCustomsFormsView.swift; sourceTree = "<group>"; };
 		DEFD6E60264990FB00E51E0D /* SitePluginListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginListViewModelTests.swift; sourceTree = "<group>"; };
 		DEFD6E85264ABFB700E51E0D /* PluginListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PluginListViewController.xib; sourceTree = "<group>"; };
 		E107FCE026C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCountryNotSupported.swift; sourceTree = "<group>"; };
@@ -2928,6 +2930,7 @@
 		021A84DD257DFBDA00BC71D1 /* Shipping Labels */ = {
 			isa = PBXGroup;
 			children = (
+				DEE6437426D87C2D00888A75 /* Print Customs Form */,
 				02DFECE525EE33430070F212 /* Create Shipping Label Info */,
 				023D69BA2589BF2500F7DA72 /* Refund Shipping Label */,
 				023D69C52589BF5F00F7DA72 /* Print Shipping Label */,
@@ -6174,6 +6177,14 @@
 			path = Customs;
 			sourceTree = "<group>";
 		};
+		DEE6437426D87C2D00888A75 /* Print Customs Form */ = {
+			isa = PBXGroup;
+			children = (
+				DEE6437526D87C4100888A75 /* PrintCustomsFormsView.swift */,
+			);
+			path = "Print Customs Form";
+			sourceTree = "<group>";
+		};
 		DEFD6E5F264990DD00E51E0D /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
@@ -6968,6 +6979,7 @@
 				E107FCE326C13A0D00BAF51B /* InPersonPaymentsSupportLink.swift in Sources */,
 				74D0A5302139CF1300E2919F /* String+Helpers.swift in Sources */,
 				0286B27F23C70557003D784B /* ColumnFlowLayout.swift in Sources */,
+				DEE6437626D87C4100888A75 /* PrintCustomsFormsView.swift in Sources */,
 				451A997D260E393B0059D135 /* ShippingLabelPackageDetails.swift in Sources */,
 				450C2CB624D1ABB200D570DD /* ProductImagesGalleryViewController.swift in Sources */,
 				7435E58E21C0151B00216F0F /* OrderNote+Woo.swift in Sources */,

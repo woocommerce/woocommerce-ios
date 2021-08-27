@@ -3,6 +3,13 @@ import SwiftUI
 struct PrintCustomsFormsView: View {
     let invoiceURLs: [String]
 
+    private let inProgressViewProperties = InProgressViewProperties(title: Localization.inProgressTitle, message: Localization.inProgressMessage)
+    @State private var showingInProgress = false
+
+    init(invoiceURLs: [String]) {
+        self.invoiceURLs = invoiceURLs
+    }
+
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 
     var body: some View {
@@ -69,6 +76,9 @@ struct PrintCustomsFormsView: View {
             }
         }
         .navigationTitle(Localization.navigationTitle)
+        .fullScreenCover(isPresented: $showingInProgress) {
+            InProgressView(viewProperties: inProgressViewProperties)
+        }
     }
 
     private var saveForLaterButton: some View {
@@ -84,9 +94,23 @@ struct PrintCustomsFormsView: View {
         guard let url = URL(string: path) else {
             return
         }
-        let printController = UIPrintInteractionController()
-        printController.printingItem = url
-        printController.present(animated: true, completionHandler: nil)
+        showingInProgress = true
+        DispatchQueue.global(qos: .userInitiated).async {
+            do {
+                let data = try Data(contentsOf: url)
+
+                DispatchQueue.main.async {
+                    showingInProgress = false
+                    let printController = UIPrintInteractionController()
+                    printController.printingItem = data
+                    printController.present(animated: true, completionHandler: nil)
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    showingInProgress = false
+                }
+            }
+        }
     }
 }
 
@@ -117,6 +141,10 @@ private extension PrintCustomsFormsView {
                                                     " screen of Shipping Label flow when there are more than one invoice")
         static let saveForLaterButton = NSLocalizedString("Save for later",
                                                           comment: "Save for later button on Print Customs Invoice screen of Shipping Label flow")
+        static let inProgressTitle = NSLocalizedString("Preparing document",
+                                                       comment: "Title of in-progress modal when preparing for printing customs invoice")
+        static let inProgressMessage = NSLocalizedString("Please wait",
+                                                         comment: "Message of in-progress modal when preparing for printing customs invoice")
     }
 }
 

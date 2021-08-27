@@ -68,7 +68,7 @@
                 "carrier_id": "usps",
                 "service_name": "USPS - Priority Mail International",
                 "status": "PURCHASED",
-                "commercial_invoice_url": null,
+                "commercial_invoice_url": "https://woocommerce.com",
                 "package_name": "box",
                 "product_names": [
                     "Password protected!"
@@ -82,7 +82,7 @@
                 "rate": 58.81,
                 "currency": "USD",
                 "expiry_date": 1619268278000,
-                "label_cached": 1603716284000
+                "label_cached": 1603716284000,
             },
             {
                 "label_id": 2511668,

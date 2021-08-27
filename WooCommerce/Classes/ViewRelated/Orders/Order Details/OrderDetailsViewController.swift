@@ -615,8 +615,6 @@ private extension OrderDetailsViewController {
                     let printController = UIPrintInteractionController()
                     printController.printingItem = url
                     printController.present(animated: true, completionHandler: nil)
-                }, dismissHandler: { [weak self] in
-                    self?.navigationController?.popViewController(animated: true)
                 })
                 let hostingController = UIHostingController(rootView: printCustomsFormsView)
                 hostingController.hidesBottomBarWhenPushed = true

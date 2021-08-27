@@ -3,7 +3,8 @@ import SwiftUI
 struct PrintCustomsFormsView: View {
     let invoiceURLs: [String]
     let printHandler: (URL?) -> Void
-    let dismissHandler: () -> Void
+
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 
     var body: some View {
         ScrollView {
@@ -71,7 +72,7 @@ struct PrintCustomsFormsView: View {
 
     private var saveForLaterButton: some View {
         Button(action: {
-            dismissHandler()
+            presentationMode.wrappedValue.dismiss()
         }, label: {
             Text(Localization.saveForLaterButton)
         })
@@ -111,11 +112,11 @@ private extension PrintCustomsFormsView {
 
 struct PrintCustomsFormsView_Previews: PreviewProvider {
     static var previews: some View {
-        PrintCustomsFormsView(invoiceURLs: ["https://woocommerce.com"], printHandler: { _ in }, dismissHandler: {})
+        PrintCustomsFormsView(invoiceURLs: ["https://woocommerce.com"], printHandler: { _ in })
             .previewDevice(PreviewDevice(rawValue: "iPhone 12"))
             .previewDisplayName("iPhone 12")
 
-        PrintCustomsFormsView(invoiceURLs: ["https://woocommerce.com", "https://wordpress.com"], printHandler: { _ in }, dismissHandler: {})
+        PrintCustomsFormsView(invoiceURLs: ["https://woocommerce.com", "https://wordpress.com"], printHandler: { _ in })
             .previewDevice(PreviewDevice(rawValue: "iPhone 12 Pro Max"))
             .previewDisplayName("iPhone 12 Pro Max")
     }

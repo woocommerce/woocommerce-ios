@@ -611,7 +611,9 @@ private extension OrderDetailsViewController {
 
         if let url = shippingLabel.commercialInvoiceURL {
             actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelMoreMenu.printCustomsFormAction) { [weak self] _ in
-                let printCustomsFormsView = PrintCustomsFormsView(invoiceURLs: [url])
+                let printCustomsFormsView = PrintCustomsFormsView(invoiceURLs: [url]) {
+                    self?.navigationController?.popViewController(animated: true)
+                }
                 let hostingController = UIHostingController(rootView: printCustomsFormsView)
                 hostingController.hidesBottomBarWhenPushed = true
                 self?.show(hostingController, sender: self)
@@ -1019,7 +1021,8 @@ private extension OrderDetailsViewController {
             static let requestRefundAction = NSLocalizedString("Request a Refund",
                                                                comment: "Request a refund on a shipping label from the shipping label more menu action sheet")
             static let printCustomsFormAction = NSLocalizedString("Print Customs Form",
-                                                                  comment: "Print the customs form for the shipping label from the shipping label more menu action sheet")
+                                                                  comment: "Print the customs form for the shipping label" +
+                                                                    " from the shipping label more menu action sheet")
         }
 
         enum ShippingLabelTrackingMoreMenu {

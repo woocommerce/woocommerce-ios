@@ -2,7 +2,7 @@
 
 7.5
 -----
-
+- [*] Fix empty states sometimes not centered vertically
 
 7.4
 -----

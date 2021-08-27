@@ -37,7 +37,6 @@ struct PrintCustomsFormsView: View {
                         saveForLaterButton
                     }
                     .padding(.horizontal, Constants.horizontalPadding)
-                    .frame(maxWidth: .infinity)
                 } else {
                     VStack(spacing: 0) {
                         ForEach(Array(invoiceURLs.enumerated()), id: \.element) { index, url in
@@ -47,11 +46,14 @@ struct PrintCustomsFormsView: View {
                                 Button(action: {
                                     printHandler(URL(string: url))
                                 }, label: {
-                                    Text(Localization.printButton)
+                                    HStack {
+                                        Spacer()
+                                        Text(Localization.printButton)
+                                    }
                                 })
                                 .buttonStyle(LinkButtonStyle())
                             }
-                            .padding(.horizontal, Constants.horizontalPadding)
+                            .padding(.leading, Constants.horizontalPadding)
                             .frame(height: Constants.printRowHeight)
                             Divider()
                         }

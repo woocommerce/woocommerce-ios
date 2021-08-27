@@ -72,10 +72,16 @@ struct ShippingLabelCarrierRowViewModel: Identifiable {
         if rate.hasTracking {
             extras.append(String(format: Localization.tracking, rate.carrierID.uppercased()))
         }
-        if rate.insurance > 0 {
-            let insuranceFormatted = currencyFormatter.formatAmount(Decimal(rate.insurance)) ?? ""
-            extras.append(String(format: Localization.insurance, insuranceFormatted))
+
+        if let doubleInsurance = Double(rate.insurance) {
+            if doubleInsurance > 0 {
+                let insuranceFormatted = currencyFormatter.formatAmount(Decimal(doubleInsurance)) ?? ""
+                extras.append(String(format: Localization.insuranceAmount, insuranceFormatted))
+            }
+        } else if rate.insurance.isNotEmpty {
+            extras.append(String(format: Localization.insuranceLiteral, rate.insurance))
         }
+
         if rate.isPickupFree {
             extras.append(Localization.freePickup)
         }
@@ -130,8 +136,12 @@ private extension ShippingLabelCarrierRowViewModel {
             NSLocalizedString("%1$d business days", comment: "Plural format of number of business days in Shipping Labels > Carrier and Rates")
         static let tracking = NSLocalizedString("Includes %1$@ tracking",
                                                 comment: "Includes tracking of a specific carrier in Shipping Labels > Carrier and Rates")
-        static let insurance = NSLocalizedString("Insurance (up to %1$@)",
-                                                 comment: "Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates")
+        static let insuranceLiteral = NSLocalizedString("Insurance (%1$@)",
+                                                        comment: "Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. " +
+                                                            "Placeholder is a literal, e.g \"limited\"")
+        static let insuranceAmount = NSLocalizedString("Insurance (up to %1$@)",
+                                                       comment: "Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. " +
+                                                            "Place holder is an amount.")
         static let freePickup = NSLocalizedString("Eligible for free pickup",
                                                   comment: "Carrier eligible for free pickup in Shipping Labels > Carrier and Rates")
         static let signatureRequired = NSLocalizedString("Signature required (+%1$@)",

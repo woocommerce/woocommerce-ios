@@ -1,5 +1,5 @@
-Merchants in the US wanting to create shipping labels for their US customers will find several minor improvements. If you’re not already printing labels from the app, start by installing the WooCommerce Shipping & Tax extension on your site.
+E-mailing a note to a customer for an order with no e-mail address doesn’t make much sense – so we’re hiding that option now in that case.
 
-We also took a look at how the app looked on different screen sizes and phone types. We corrected a bunch of minor but meaningful visual issues, especially noticeable on iPads.
+Some merchants mentioned to us that orders with negative prices weren’t showing up correctly. We’ve fixed that issue, and now you should feel more positive!
 
-As always, we welcome your feedback about the app. Reach out to us through the app under Settings in the My store tab.
+This release also contains a bunch of tiny improvements to make your experience smoother overall. We hope you notice the love we put into our software.

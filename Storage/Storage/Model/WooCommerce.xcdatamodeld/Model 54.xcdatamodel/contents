@@ -713,7 +713,7 @@
         <element name="ShipmentTracking" positionX="-201.47265625" positionY="-109.14453125" width="128" height="148"/>
         <element name="ShipmentTrackingProvider" positionX="248.25" positionY="-117.6640625" width="180.32421875" height="103"/>
         <element name="ShipmentTrackingProviderGroup" positionX="-8.2734375" positionY="-117.890625" width="187.5" height="88"/>
-        <element name="ShippingLabel" positionX="-675" positionY="54" width="128" height="313"/>
+        <element name="ShippingLabel" positionX="-675" positionY="54" width="128" height="299"/>
         <element name="ShippingLabelAccountSettings" positionX="-702" positionY="36" width="128" height="209"/>
         <element name="ShippingLabelAddress" positionX="-684" positionY="45" width="128" height="208"/>
         <element name="ShippingLabelPaymentMethod" positionX="-693" positionY="45" width="128" height="119"/>

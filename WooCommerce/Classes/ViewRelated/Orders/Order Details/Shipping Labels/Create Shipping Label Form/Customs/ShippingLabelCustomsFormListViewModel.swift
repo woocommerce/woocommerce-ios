@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
@@ -17,7 +18,11 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
 
     /// Input customs forms of the shipping label if added initially.
     ///
-    @Published var customsForms: [ShippingLabelCustomsForm]
+    @Published private(set) var customsForms: [ShippingLabelCustomsForm]
+
+    /// Whether done button should be enabled.
+    ///
+    @Published private(set) var doneButtonEnabled: Bool = false
 
     /// Associated order of the shipping label.
     ///
@@ -39,6 +44,10 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
     ///
     private let destinationCountry: Country
 
+    var validatedCustomsForms: [ShippingLabelCustomsForm] {
+        inputViewModels.compactMap { $0.validatedCustomsForm }
+    }
+
     /// Reusing Package Details results controllers since we're interested in the same models.
     ///
     private var resultsControllers: ShippingLabelPackageDetailsResultsControllers?
@@ -54,6 +63,18 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
     /// Symbol of currency in the order.
     ///
     private let currencySymbol: String
+
+    /// Validation states of all customs forms.
+    ///
+    private var customsFormValidation: [String: Bool] = [:] {
+        didSet {
+            configureDoneButton()
+        }
+    }
+
+    /// References to keep the Combine subscriptions alive with the class.
+    ///
+    private var cancellables: Set<AnyCancellable> = []
 
     init(order: Order,
          customsForms: [ShippingLabelCustomsForm],
@@ -78,8 +99,31 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
                                                         destinationCountry: destinationCountry,
                                                         countries: countries,
                                                         currency: currencySymbol) }
+        configureFormsValidation()
         configureResultsControllers()
         updateItemDetails()
+    }
+}
+
+// MARK: - Validation
+//
+private extension ShippingLabelCustomsFormListViewModel {
+    /// Observe changes in all customs forms and save their validation states by package ID.
+    ///
+    func configureFormsValidation() {
+        inputViewModels.forEach { viewModel in
+            viewModel.$validForm
+                .sink { [weak self] isValid in
+                    self?.customsFormValidation[viewModel.packageID] = isValid
+                }
+                .store(in: &cancellables)
+        }
+    }
+
+    /// Check if all forms are validated to enable Done button.
+    ///
+    func configureDoneButton() {
+        doneButtonEnabled = customsFormValidation.values.first(where: { !$0 }) == nil
     }
 }
 
@@ -99,6 +143,7 @@ private extension ShippingLabelCustomsFormListViewModel {
                                                             destinationCountry: self.destinationCountry,
                                                             countries: self.allCountries,
                                                             currency: self.currencySymbol) }
+            self.configureFormsValidation()
         })
         .assign(to: &$customsForms)
     }

@@ -4,8 +4,8 @@ import SwiftUI
 /// Hosting controller that wraps an `EditCustomerNote` view.
 ///
 final class EditCustomerNoteHostingController: UIHostingController<EditCustomerNote> {
-    init() {
-        super.init(rootView: EditCustomerNote())
+    init(viewModel: EditCustomerNoteViewModel) {
+        super.init(rootView: EditCustomerNote(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismiss = { [weak self] in
@@ -26,19 +26,17 @@ struct EditCustomerNote: View {
     ///
     var dismiss: (() -> Void) = {}
 
-    // TODO: Replace with view model backed value
-    @State private var textContent = "Tap and edit me"
+    /// View Model for the view
+    ///
+    @ObservedObject private(set) var viewModel: EditCustomerNoteViewModel
 
     var body: some View {
         NavigationView {
-            TextEditor(text: $textContent)
+            TextEditor(text: $viewModel.newNote)
                 .padding()
                 .navigationTitle(Localization.title)
                 .navigationBarTitleDisplayMode(.inline)
-                .navigationBarItems(trailing: Button(Localization.done) { // I couldn't find a way to make the "Done" button bold using a toolbar :-(
-                    // TODO: submit done action
-                    print("Done tapped")
-                })
+                .navigationBarItems(trailing: navigationBarTrailingItem()) // The only way I've found to make buttons bold is to set them here.
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button(Localization.cancel, action: dismiss)
@@ -46,6 +44,20 @@ struct EditCustomerNote: View {
                 }
         }
         .navigationViewStyle(StackNavigationViewStyle())
+    }
+
+    /// Decides if the navigation trailing item should be a done button or a loading indicator.
+    ///
+    @ViewBuilder private func navigationBarTrailingItem() -> some View {
+        switch viewModel.navigationTrailingItem {
+        case .done(let enabled):
+            Button(Localization.done) {
+                viewModel.updateNote(onFinish: dismiss)
+            }
+            .disabled(!enabled)
+        case .loading:
+            ProgressView()
+        }
     }
 }
 
@@ -61,7 +73,7 @@ private extension EditCustomerNote {
 // MARK: Previews
 struct EditCustomerNote_Previews: PreviewProvider {
     static var previews: some View {
-        EditCustomerNote()
+        EditCustomerNote(viewModel: .init(originalNote: "Note"))
             .environment(\.colorScheme, .light)
     }
 }

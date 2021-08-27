@@ -114,4 +114,84 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         // Then
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    func test_startCardReaderUpdate_properly_handles_successful_update() {
+        // Given
+        let expectation = self.expectation(description: #function)
+
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [MockCardReader.bbposChipper2XBT()],
+            sessionManager: SessionManager.testingInstance,
+            readerUpdateAvailable: true
+        )
+        ServiceLocator.setStores(mockStoresManager)
+
+        let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+
+        var updateDidBegin = false
+
+        viewModel.didUpdate = {
+            if viewModel.readerUpdateInProgress {
+                updateDidBegin = true
+            }
+
+            // Update began
+            if updateDidBegin {
+                // But now it has stopped
+                if !viewModel.readerUpdateInProgress {
+                    // But did it succeed?
+                    if viewModel.readerUpdateCompletedSuccessfully {
+                        expectation.fulfill()
+                    }
+                }
+            }
+        }
+
+
+        // When
+        viewModel.startCardReaderUpdate()
+
+        // Then
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func test_startCardReaderUpdate_properly_handles_update_failure() {
+        // Given
+        let expectation = self.expectation(description: #function)
+
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [MockCardReader.bbposChipper2XBT()],
+            sessionManager: SessionManager.testingInstance,
+            readerUpdateAvailable: true,
+            failUpdate: true
+        )
+        ServiceLocator.setStores(mockStoresManager)
+
+        let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+
+        var updateDidBegin = false
+
+        viewModel.didUpdate = {
+            if viewModel.readerUpdateInProgress {
+                updateDidBegin = true
+            }
+
+            // Update began
+            if updateDidBegin {
+                // But now it has stopped
+                if !viewModel.readerUpdateInProgress {
+                    // But did it fail?
+                    if !viewModel.readerUpdateCompletedSuccessfully {
+                        expectation.fulfill()
+                    }
+                }
+            }
+        }
+
+        // When
+        viewModel.startCardReaderUpdate()
+
+        // Then
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }

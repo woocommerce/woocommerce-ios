@@ -20,14 +20,17 @@ struct EmptyState: View {
             Text(description)
                 .multilineTextAlignment(.center)
                 .bodyStyle()
+                .fixedSize(horizontal: false, vertical: true)
         }
-        .frame(width: Constants.width, alignment: .center)
+        .frame(maxWidth: .infinity, alignment: .center)
+        .padding(.horizontal, Constants.horizontalSpacing)
     }
 }
 
 private extension EmptyState {
     enum Constants {
         static let verticalSpacing: CGFloat = 16
+        static let horizontalSpacing: CGFloat = 24
         static let width: CGFloat = 168
     }
 }

@@ -18,6 +18,17 @@ final class CardReaderSettingsConnectedViewController: UIViewController, CardRea
     ///
     private var sections = [Section]()
 
+    /// Last known update view
+    private var updateInProgress: Bool = false
+
+    /// Update view controller
+    private var updateViewController: UpdateViewController?
+
+    /// Card Present Payments alerts
+    private lazy var paymentAlerts: OrderDetailsPaymentAlerts = {
+        OrderDetailsPaymentAlerts(presentingController: self)
+    }()
+
     /// Accept our viewmodel
     ///
     func configure(viewModel: CardReaderSettingsPresentedViewModel) {
@@ -68,6 +79,7 @@ private extension CardReaderSettingsConnectedViewController {
     func onViewModelDidUpdate() {
         configureSections()
         configureTable()
+        configureUpdateView()
     }
 
     func shouldShowUpdateControls() -> Bool {
@@ -127,6 +139,39 @@ private extension CardReaderSettingsConnectedViewController {
         tableView.reloadData()
     }
 
+    func configureUpdateView() {
+        // Only proceed if the view model reader update flag has changed since we last looked at it
+        guard let viewModel = viewModel, updateInProgress != viewModel.readerUpdateInProgress else {
+            return
+        }
+
+        // Update our flag to match the view model's
+        updateInProgress = viewModel.readerUpdateInProgress
+
+        // If we are not updating a reader, dismiss any updateViewController
+        if !updateInProgress {
+            updateViewController?.dismiss(animated: true, completion: { [weak self] in
+                guard let self = self else {
+                    return
+                }
+
+                if viewModel.readerUpdateCompletedSuccessfully {
+                    self.displayReaderUpdateSuccessNotice()
+                } else {
+                    self.displayReaderUpdateFailed()
+                }
+            })
+            return
+        }
+
+        // Otherwise, instantiate and present an updateViewController
+        updateViewController = UpdateViewController(headline: Localization.updateHeadline, footnote: Localization.updateFootnote)
+        guard let updateViewController = updateViewController else {
+            return
+        }
+        self.present(updateViewController, animated: true, completion: nil)
+    }
+
     /// Register table cells.
     ///
     func registerTableViewCells() {
@@ -172,7 +217,7 @@ private extension CardReaderSettingsConnectedViewController {
 
     private func configureUpdateButton(cell: ButtonTableViewCell) {
         cell.configure(style: .primary, title: Localization.updateButtonTitle, bottomSpacing: 0) {
-            // TODO in a following PR
+            self.viewModel?.startCardReaderUpdate()
         }
         cell.selectionStyle = .none
         cell.backgroundColor = .clear
@@ -248,6 +293,21 @@ extension CardReaderSettingsConnectedViewController: UITableViewDelegate {
     }
 }
 
+// MARK: - Notices
+//
+private extension CardReaderSettingsConnectedViewController {
+    func displayReaderUpdateSuccessNotice() {
+        let notice = Notice(title: Localization.updateSuccess, feedbackType: .success)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+
+    func displayReaderUpdateFailed() {
+        paymentAlerts.retryableError(from: self, tryAgain: {
+            self.viewModel?.startCardReaderUpdate()
+        })
+    }
+}
+
 // MARK: - Private Types
 //
 private struct Section {
@@ -316,5 +376,19 @@ private extension CardReaderSettingsConnectedViewController {
             "Disconnect Reader",
             comment: "Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader"
         )
+
+        static let updateHeadline = NSLocalizedString(
+            "Updating software",
+            comment: "Headline on the full screen software update modal"
+        )
+
+        static let updateFootnote = NSLocalizedString(
+            "Your reader will automatically restart and reconnect after the update is complete",
+            comment: "Footnote on the full screen software update modal"
+        )
+
+        static let updateSuccess = NSLocalizedString(
+            "Reader software updated",
+            comment: "A notice presented after a successful update of the card reader software")
     }
 }

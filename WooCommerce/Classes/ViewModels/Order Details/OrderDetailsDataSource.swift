@@ -195,7 +195,7 @@ final class OrderDetailsDataSource: NSObject {
     /// Indicates if the order editing feature is enabled or not
     /// Allows editing notes, shipping & billing addresses.
     ///
-    private let orderEditingEnabled: Bool
+    let orderEditingEnabled: Bool
 
     init(order: Order,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -788,6 +788,10 @@ private extension OrderDetailsDataSource {
                 comment: "Order details > customer info > shipping details. " +
                 "This is where the address would normally display."
         )
+
+        cell.onEditTapped = orderEditingEnabled ? { [weak self] in
+            self?.onCellAction?(.editShippingAddress, nil)
+        } : nil
     }
 
     private func configureShippingMethod(cell: CustomerNoteTableViewCell) {
@@ -1432,6 +1436,7 @@ extension OrderDetailsDataSource {
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)
         case viewAddOns(addOns: [OrderItemAttribute])
         case editCustomerNote
+        case editShippingAddress
     }
 
     struct Constants {

@@ -518,7 +518,10 @@ private extension OrderDetailsViewController {
         case let .viewAddOns(addOns):
             itemAddOnsButtonTapped(addOns: addOns)
         case .editCustomerNote:
-            editCustomerNoteTapped()
+			editCustomerNoteTapped()
+        case .editShippingAddress:
+            // TODO: Navigate to edit shipping address
+            print("Edit Shipping Address Tapped")
         }
     }
 
@@ -640,7 +643,8 @@ private extension OrderDetailsViewController {
     }
 
     func editCustomerNoteTapped() {
-        let editNoteViewController = EditCustomerNoteHostingController()
+        let viewModel = EditCustomerNoteViewModel(order: viewModel.order)
+        let editNoteViewController = EditCustomerNoteHostingController(viewModel: viewModel)
         present(editNoteViewController, animated: true, completion: nil)
     }
 

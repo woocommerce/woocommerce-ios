@@ -16,7 +16,7 @@ struct KeyboardState: Equatable {
     /// 1. View-A is shown and the keyboard is shown.
     /// 2. User taps on something which presents View-B **while** the keyboard is present.
     ///    View-B does not have a user responder (text field) so the keyboard is not visible.
-    /// 3. NSNotificationCenter emits a `keyboardDidHideNotification` but with a
+    /// 3. NSNotificationCenter emits a `keyboardWillHideNotification` but with a
     ///    `keyboardFrameEndUserInfoKey` value set to the **previously shown keyboard's frame**.
     ///
     let frameEnd: CGRect

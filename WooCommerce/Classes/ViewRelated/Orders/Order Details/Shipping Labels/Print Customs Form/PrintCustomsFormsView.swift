@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PrintCustomsFormsView: View {
     let invoiceURLs: [String]
+    let printHandler: (URL?) -> Void
     let dismissHandler: () -> Void
 
     var body: some View {
@@ -22,7 +23,12 @@ struct PrintCustomsFormsView: View {
 
                 if invoiceURLs.count == 1 {
                     VStack(spacing: Constants.buttonSpacing) {
-                        Button(action: {}, label: {
+                        Button(action: {
+                            guard let url = invoiceURLs.first else {
+                                return
+                            }
+                            printHandler(URL(string: url))
+                        }, label: {
                             Text(Localization.singlePrintButton)
                         })
                         .buttonStyle(PrimaryButtonStyle())
@@ -37,7 +43,9 @@ struct PrintCustomsFormsView: View {
                             HStack {
                                 Text(String(format: Localization.packageNumber, index + 1))
                                 Spacer()
-                                Button(action: {}, label: {
+                                Button(action: {
+                                    printHandler(URL(string: url))
+                                }, label: {
                                     Text(Localization.printButton)
                                 })
                                 .buttonStyle(LinkButtonStyle())
@@ -103,11 +111,11 @@ private extension PrintCustomsFormsView {
 
 struct PrintCustomsFormsView_Previews: PreviewProvider {
     static var previews: some View {
-        PrintCustomsFormsView(invoiceURLs: ["https://woocommerce.com"]) {}
+        PrintCustomsFormsView(invoiceURLs: ["https://woocommerce.com"], printHandler: { _ in }, dismissHandler: {})
             .previewDevice(PreviewDevice(rawValue: "iPhone 12"))
             .previewDisplayName("iPhone 12")
 
-        PrintCustomsFormsView(invoiceURLs: ["https://woocommerce.com", "https://wordpress.com"]) {}
+        PrintCustomsFormsView(invoiceURLs: ["https://woocommerce.com", "https://wordpress.com"], printHandler: { _ in }, dismissHandler: {})
             .previewDevice(PreviewDevice(rawValue: "iPhone 12 Pro Max"))
             .previewDisplayName("iPhone 12 Pro Max")
     }

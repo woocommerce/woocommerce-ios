@@ -6,7 +6,7 @@ final class KeyboardFrameObserverTests: XCTestCase {
 
     // If the keyboard frame is the same from multiple notification posts, it should only
     // notify the subscriber once.
-    func testObservingKeyboardFrameChangesWithTheSameFrame() {
+    func test_observing_keyboard_frame_changes_with_the_same_frame() {
         let notificationCenter = NotificationCenter()
 
         let expectationForKeyboardFrame = expectation(description: "Wait for keyboard frame updates")
@@ -36,7 +36,7 @@ final class KeyboardFrameObserverTests: XCTestCase {
         waitForExpectations(timeout: 0.1)
     }
 
-    func testObservingKeyboardFrameChangesWithDifferentFrames() {
+    func test_observing_keyboard_frame_changes_with_different_frames() {
         let notificationCenter = NotificationCenter()
 
         let expectationForKeyboardFrame = expectation(description: "Wait for keyboard frame updates")
@@ -65,7 +65,7 @@ final class KeyboardFrameObserverTests: XCTestCase {
         waitForExpectations(timeout: 0.1)
     }
 
-    func testObservingKeyboardFrameChangesWithNonKeyboardNotification() {
+    func test_observing_keyboard_frame_changes_with_non_keyboard_notification() {
         let notificationCenter = NotificationCenter()
 
         let expectationForKeyboardFrame = expectation(description: "Wait for keyboard frame updates")
@@ -83,7 +83,7 @@ final class KeyboardFrameObserverTests: XCTestCase {
         waitForExpectations(timeout: 0.1)
     }
 
-    func testObservingKeyboardFrameChangesWithoutKeyboardUserInfo() {
+    func test_observing_keyboard_frame_changes_without_keyboard_user_info() {
         let notificationCenter = NotificationCenter()
 
         let expectationForKeyboardFrame = expectation(description: "Wait for keyboard frame updates")
@@ -101,7 +101,7 @@ final class KeyboardFrameObserverTests: XCTestCase {
         waitForExpectations(timeout: 0.1)
     }
 
-    func testItWillNotEmitNewEventsWhenItIsDeallocated() {
+    func test_it_will_not_emit_new_events_when_it_is_deallocated() {
         // Arrange
         let notificationCenter = NotificationCenter()
 
@@ -126,7 +126,7 @@ final class KeyboardFrameObserverTests: XCTestCase {
         XCTAssertEqual(eventsLogged, 2)
     }
 
-    func testItCanSendInitialEvents() {
+    func test_it_can_send_initial_events() {
         // Arrange
         let expectedKeyboardState = KeyboardState(
             isVisible: true,
@@ -151,7 +151,7 @@ final class KeyboardFrameObserverTests: XCTestCase {
     ///
     /// See the `KeyboardState.frameEnd` for more info about this behavior.
     ///
-    func testItWillSendAZeroFrameIfTheCurrentKeyboardIsNotVisible() {
+    func test_it_will_send_a_zero_frame_if_the_current_keyboard_is_not_visible() {
         // Arrange
         // Emit a non-zero frame
         let emittedKeyboardState = KeyboardState(

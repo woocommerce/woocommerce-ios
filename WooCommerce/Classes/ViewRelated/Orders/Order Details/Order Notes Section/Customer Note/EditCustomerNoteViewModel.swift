@@ -42,21 +42,21 @@ final class EditCustomerNoteViewModel: ObservableObject {
 
     /// Update the note remotely and invoke a completion block when finished
     ///
-    func updateNote(onFinish: @escaping () -> Void) {
+    func updateNote(onFinish: @escaping (Bool) -> Void) {
         let modifiedOrder = order.copy(customerNote: newNote)
         let action = OrderAction.updateOrder(siteID: order.siteID, order: modifiedOrder, fields: [.customerNote]) { [weak self] result in
             guard let self = self else { return }
-            self.performingNetworkRequest.send(false)
 
+            self.performingNetworkRequest.send(false)
             switch result {
             case .success:
                 self.presentNotice = .success
             case .failure(let error):
                 self.presentNotice = .error
-                // Log error
+                DDLogError("⛔️ Unable to update the order: \(error)")
             }
 
-            onFinish()
+            onFinish(result.isSuccess)
         }
 
         performingNetworkRequest.send(true)

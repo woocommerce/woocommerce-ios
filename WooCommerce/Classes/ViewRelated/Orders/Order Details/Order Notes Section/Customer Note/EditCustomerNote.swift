@@ -10,7 +10,20 @@ final class EditCustomerNoteHostingController: UIHostingController<EditCustomerN
     ///
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(viewModel: EditCustomerNoteViewModel) {
+    /// Presents an error notice in the current modal presentation context
+    ///
+    private lazy var modalNoticePresenter: NoticePresenter = {
+        let presenter = DefaultNoticePresenter()
+        presenter.presentingViewController = self
+        return presenter
+    }()
+
+    /// Presents a success notice in the tab bar context after this `self` is dismissed.
+    ///
+    private let systemNoticePresenter: NoticePresenter
+
+    init(viewModel: EditCustomerNoteViewModel, systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
+        self.systemNoticePresenter = systemNoticePresenter
         super.init(rootView: EditCustomerNote(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
@@ -18,17 +31,23 @@ final class EditCustomerNoteHostingController: UIHostingController<EditCustomerN
             self?.dismiss(animated: true, completion: nil)
         }
 
-        // Observe the present notice request and set it back after presented
+        // Observe the present notice intent and set it back after presented.
         viewModel.$presentNotice
             .compactMap { $0 }
-            .removeDuplicates()
-            .sink { notice in
+            .sink { [weak self] notice in
+
+                // To prevent keyboard to hide the notice
+                self?.view.endEditing(true)
+
                 switch notice {
                 case .success:
-                    print("Show success")
+                    self?.systemNoticePresenter.enqueue(notice: .init(title: EditCustomerNote.Localization.success, feedbackType: .success))
                 case .error:
-                    print("Show Error")
+                    self?.modalNoticePresenter.enqueue(notice: .init(title: EditCustomerNote.Localization.error, feedbackType: .error))
                 }
+
+                // Nullify the presentation intent.
+                viewModel.presentNotice = nil
             }
             .store(in: &subscriptions)
     }
@@ -72,7 +91,11 @@ struct EditCustomerNote: View {
         switch viewModel.navigationTrailingItem {
         case .done(let enabled):
             Button(Localization.done) {
-                viewModel.updateNote(onFinish: dismiss)
+                viewModel.updateNote(onFinish: { success in
+                    if success {
+                        dismiss()
+                    }
+                })
             }
             .disabled(!enabled)
         case .loading:
@@ -87,5 +110,7 @@ private extension EditCustomerNote {
         static let title = NSLocalizedString("Edit Note", comment: "Title for the edit customer provided note screen")
         static let done = NSLocalizedString("Done", comment: "Text for the done button in the edit customer provided note screen")
         static let cancel = NSLocalizedString("Cancel", comment: "Text for the cancel button in the edit customer provided note screen")
+        static let success = NSLocalizedString("Successfully updated", comment: "Notice text after updating the order successfully")
+        static let error = NSLocalizedString("There was an error updating the order", comment: "Notice text after failing to update the order successfully")
     }
 }

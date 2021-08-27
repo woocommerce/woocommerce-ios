@@ -1,4 +1,5 @@
 import UIKit
+import SwiftUI
 import Yosemite
 
 /// Coordinates navigation actions for printing a shipping label.
@@ -105,7 +106,9 @@ private extension PrintShippingLabelCoordinator {
     func presentAirPrint(printData: ShippingLabelPrintData) {
         let printController = UIPrintInteractionController()
         printController.printingItem = printData.data
-        printController.present(animated: true, completionHandler: nil)
+        printController.present(animated: true) { [weak self] (_, _, _) in
+            self?.showCustomsFormPrintingIfNeeded()
+        }
     }
 
     func presentPaperSizeOptions() {
@@ -148,6 +151,18 @@ private extension PrintShippingLabelCoordinator {
         alertController.addCancelActionWithTitle(Localization.printErrorAlertDismissAction)
 
         sourceViewController.present(alertController, animated: true)
+    }
+
+    /// Show customs form printing if separate customs form is available
+    ///
+    func showCustomsFormPrintingIfNeeded() {
+        guard let url = shippingLabel.commercialInvoiceURL,
+              printType == .print else {
+            return
+        }
+        let printCustomsFormsView = PrintCustomsFormsView(invoiceURLs: [url])
+        let hostingController = UIHostingController(rootView: printCustomsFormsView)
+        sourceViewController.show(hostingController, sender: self)
     }
 }
 

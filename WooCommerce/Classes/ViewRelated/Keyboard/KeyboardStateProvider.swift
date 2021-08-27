@@ -53,7 +53,7 @@ final class KeyboardStateProvider: KeyboardStateProviding {
     init(notificationCenter: NotificationCenter = NotificationCenter.default) {
         self.notificationCenter = notificationCenter
 
-        let notificationNames = [UIResponder.keyboardDidShowNotification, UIResponder.keyboardDidHideNotification]
+        let notificationNames = [UIResponder.keyboardWillShowNotification, UIResponder.keyboardWillHideNotification]
 
         observations.append(contentsOf: notificationNames.map { notificationName in
             notificationCenter.addObserver(forName: notificationName, object: nil, queue: nil) { [weak self] notification in
@@ -64,7 +64,7 @@ final class KeyboardStateProvider: KeyboardStateProviding {
 
     private func updateState(from notification: Notification) {
         state = KeyboardState(
-            isVisible: notification.name == UIResponder.keyboardDidShowNotification,
+            isVisible: notification.name == UIResponder.keyboardWillShowNotification,
             frameEnd: notification.keyboardFrameEnd ?? .zero
         )
     }

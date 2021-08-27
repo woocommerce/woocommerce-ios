@@ -2,7 +2,6 @@ import SwiftUI
 
 struct PrintCustomsFormsView: View {
     let invoiceURLs: [String]
-    let printHandler: (URL?) -> Void
 
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 
@@ -28,7 +27,7 @@ struct PrintCustomsFormsView: View {
                             guard let url = invoiceURLs.first else {
                                 return
                             }
-                            printHandler(URL(string: url))
+                            showPrintingView(for: URL(string: url))
                         }, label: {
                             Text(Localization.singlePrintButton)
                         })
@@ -44,7 +43,7 @@ struct PrintCustomsFormsView: View {
                                 Text(String(format: Localization.packageNumber, index + 1))
                                 Spacer()
                                 Button(action: {
-                                    printHandler(URL(string: url))
+                                    showPrintingView(for: URL(string: url))
                                 }, label: {
                                     HStack {
                                         Spacer()
@@ -80,6 +79,12 @@ struct PrintCustomsFormsView: View {
         })
         .buttonStyle(SecondaryButtonStyle())
     }
+
+    private func showPrintingView(for url: URL?) {
+        let printController = UIPrintInteractionController()
+        printController.printingItem = url
+        printController.present(animated: true, completionHandler: nil)
+    }
 }
 
 private extension PrintCustomsFormsView {
@@ -114,11 +119,11 @@ private extension PrintCustomsFormsView {
 
 struct PrintCustomsFormsView_Previews: PreviewProvider {
     static var previews: some View {
-        PrintCustomsFormsView(invoiceURLs: ["https://woocommerce.com"], printHandler: { _ in })
+        PrintCustomsFormsView(invoiceURLs: ["https://woocommerce.com"])
             .previewDevice(PreviewDevice(rawValue: "iPhone 12"))
             .previewDisplayName("iPhone 12")
 
-        PrintCustomsFormsView(invoiceURLs: ["https://woocommerce.com", "https://wordpress.com"], printHandler: { _ in })
+        PrintCustomsFormsView(invoiceURLs: ["https://woocommerce.com", "https://wordpress.com"])
             .previewDevice(PreviewDevice(rawValue: "iPhone 12 Pro Max"))
             .previewDisplayName("iPhone 12 Pro Max")
     }

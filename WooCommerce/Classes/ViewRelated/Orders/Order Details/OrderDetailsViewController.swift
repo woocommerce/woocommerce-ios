@@ -611,11 +611,7 @@ private extension OrderDetailsViewController {
 
         if let url = shippingLabel.commercialInvoiceURL {
             actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelMoreMenu.printCustomsFormAction) { [weak self] _ in
-                let printCustomsFormsView = PrintCustomsFormsView(invoiceURLs: [url], printHandler: { url in
-                    let printController = UIPrintInteractionController()
-                    printController.printingItem = url
-                    printController.present(animated: true, completionHandler: nil)
-                })
+                let printCustomsFormsView = PrintCustomsFormsView(invoiceURLs: [url])
                 let hostingController = UIHostingController(rootView: printCustomsFormsView)
                 hostingController.hidesBottomBarWhenPushed = true
                 self?.show(hostingController, sender: self)

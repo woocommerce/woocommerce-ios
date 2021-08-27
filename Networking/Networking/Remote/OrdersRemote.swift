@@ -139,7 +139,7 @@ public class OrdersRemote: Remote {
         let parameters: [String: AnyHashable] = {
             fields.reduce(into: [:]) { params, field in
                 switch field {
-                case.customerNote:
+                case .customerNote:
                     params[Order.CodingKeys.customerNote.rawValue] = order.customerNote
                 }
             }

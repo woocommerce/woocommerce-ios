@@ -12,7 +12,7 @@ final class KeyboardStateProviderTests: XCTestCase {
         XCTAssertEqual(provider.state, KeyboardState(isVisible: false, frameEnd: .zero))
     }
 
-    func test_it_updates_the_state_when_the_keyboard_is_shown() {
+    func test_it_updates_the_state_when_the_keyboard_is_about_to_be_shown() {
         // Arrange
         let notificationCenter = NotificationCenter()
         let provider = KeyboardStateProvider(notificationCenter: notificationCenter)
@@ -26,7 +26,7 @@ final class KeyboardStateProviderTests: XCTestCase {
         XCTAssertEqual(provider.state, KeyboardState(isVisible: true, frameEnd: expectedFrameEnd))
     }
 
-    func test_it_updates_the_state_when_the_keyboard_is_hidden() {
+    func test_it_updates_the_state_when_the_keyboard_is_about_to_be_hidden() {
         // Arrange
         let notificationCenter = NotificationCenter()
         let provider = KeyboardStateProvider(notificationCenter: notificationCenter)
@@ -91,4 +91,3 @@ private extension NotificationCenter {
         post(name: UIResponder.keyboardWillHideNotification, object: nil, userInfo: userInfo)
     }
 }
-

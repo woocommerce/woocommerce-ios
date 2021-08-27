@@ -161,7 +161,7 @@ final class KeyboardFrameObserverTests: XCTestCase {
         let keyboardStateProvider = MockKeyboardStateProvider(state: emittedKeyboardState)
 
         var actualKeyboardFrame: CGRect? = nil
-        var keyboardFrameObserver = KeyboardFrameObserver(keyboardStateProvider: keyboardStateProvider) { frame in
+        let keyboardFrameObserver = KeyboardFrameObserver(keyboardStateProvider: keyboardStateProvider) { frame in
             actualKeyboardFrame = frame
         }
 

@@ -36,7 +36,7 @@ final class KeyboardStateProviderTests: XCTestCase {
         let expectedFrameEnd = CGRect(x: 981, y: 5_135, width: 146, height: 561)
 
         // Act
-        notificationCenter.postKeyboardDidHideNotification(frameEnd: expectedFrameEnd)
+        notificationCenter.postKeyboardWillHideNotification(frameEnd: expectedFrameEnd)
 
         // Assert
         XCTAssertEqual(provider.state, KeyboardState(isVisible: false, frameEnd: expectedFrameEnd))
@@ -51,9 +51,9 @@ final class KeyboardStateProviderTests: XCTestCase {
         let expectedLastFrameEnd = CGRect(x: 888, y: 555, width: 121_411, height: 971_471)
 
         // Act
-        notificationCenter.postKeyboardDidHideNotification(frameEnd: .zero)
+        notificationCenter.postKeyboardWillHideNotification(frameEnd: .zero)
         notificationCenter.postKeyboardWillShowNotification(frameEnd: CGRect(x: 1, y: 2, width: 3, height: 4))
-        notificationCenter.postKeyboardDidHideNotification(frameEnd: .zero)
+        notificationCenter.postKeyboardWillHideNotification(frameEnd: .zero)
         notificationCenter.postKeyboardWillShowNotification(frameEnd: expectedLastFrameEnd)
 
         // Assert
@@ -86,9 +86,9 @@ private extension NotificationCenter {
         post(name: UIResponder.keyboardWillShowNotification, object: nil, userInfo: userInfo)
     }
 
-    func postKeyboardDidHideNotification(frameEnd: CGRect) {
+    func postKeyboardWillHideNotification(frameEnd: CGRect) {
         let userInfo = [UIResponder.keyboardFrameEndUserInfoKey: frameEnd]
-        post(name: UIResponder.keyboardDidHideNotification, object: nil, userInfo: userInfo)
+        post(name: UIResponder.keyboardWillHideNotification, object: nil, userInfo: userInfo)
     }
 }
 

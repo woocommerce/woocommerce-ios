@@ -93,7 +93,10 @@ private extension CardPresentPaymentStore {
                         onError(error)
                     }
                 },
-                receiveValue: onReaderDiscovered
+                receiveValue: { readers in
+                    let supportedReaders = readers.filter({$0.readerType != .notSupported})
+                    onReaderDiscovered(supportedReaders)
+                }
             ))
     }
 

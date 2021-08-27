@@ -80,7 +80,7 @@ extension StripeCardReaderService: CardReaderService {
         Terminal.shared.logLevel = terminalLogLevel
 
         let config = DiscoveryConfiguration(
-            discoveryMethod: .bluetoothProximity,
+            discoveryMethod: .bluetoothScan,
             simulated: shouldUseSimulatedCardReader
         )
 

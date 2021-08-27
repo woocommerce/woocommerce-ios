@@ -6,13 +6,13 @@ import UIKit
 /// Tests for the concrete `KeyboardStateProvider`
 ///
 final class KeyboardStateProviderTests: XCTestCase {
-    func testItDefaultsToNotVisibleAndNoFrame() {
+    func test_it_defaults_to_not_visible_and_no_frame() {
         let provider = KeyboardStateProvider()
 
         XCTAssertEqual(provider.state, KeyboardState(isVisible: false, frameEnd: .zero))
     }
 
-    func testItUpdatesTheStateWhenTheKeyboardIsShown() {
+    func test_it_updates_the_state_when_the_keyboard_is_shown() {
         // Arrange
         let notificationCenter = NotificationCenter()
         let provider = KeyboardStateProvider(notificationCenter: notificationCenter)
@@ -26,7 +26,7 @@ final class KeyboardStateProviderTests: XCTestCase {
         XCTAssertEqual(provider.state, KeyboardState(isVisible: true, frameEnd: expectedFrameEnd))
     }
 
-    func testItUpdatesTheStateWhenTheKeyboardIsHidden() {
+    func test_it_updates_the_state_when_the_keyboard_is_hidden() {
         // Arrange
         let notificationCenter = NotificationCenter()
         let provider = KeyboardStateProvider(notificationCenter: notificationCenter)
@@ -43,7 +43,7 @@ final class KeyboardStateProviderTests: XCTestCase {
     }
 
     /// Test receiving multiple Notifications
-    func testItContinuouslyUpdatesTheStateWhenMultipleEventsHappen() {
+    func test_it_continuously_updates_the_state_when_multiple_events_happen() {
         // Arrange
         let notificationCenter = NotificationCenter()
         let provider = KeyboardStateProvider(notificationCenter: notificationCenter)
@@ -60,7 +60,7 @@ final class KeyboardStateProviderTests: XCTestCase {
         XCTAssertEqual(provider.state, KeyboardState(isVisible: true, frameEnd: expectedLastFrameEnd))
     }
 
-    func testItUpdatesTheStateToZeroFrameEndWhenTheNotificationHasNoFrameEnd() {
+    func test_it_updates_the_state_to_zero_frame_end_when_the_notification_has_no_frame_end() {
         // Arrange
         let notificationCenter = NotificationCenter()
         let provider = KeyboardStateProvider(notificationCenter: notificationCenter)
@@ -91,3 +91,4 @@ private extension NotificationCenter {
         post(name: UIResponder.keyboardDidHideNotification, object: nil, userInfo: userInfo)
     }
 }
+

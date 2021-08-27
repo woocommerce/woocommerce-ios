@@ -20,7 +20,7 @@ final class KeyboardStateProviderTests: XCTestCase {
         let expectedFrameEnd = CGRect(x: 1_981, y: 9_312, width: 311, height: 981)
 
         // Act
-        notificationCenter.postKeyboardDidShowNotification(frameEnd: expectedFrameEnd)
+        notificationCenter.postKeyboardWillShowNotification(frameEnd: expectedFrameEnd)
 
         // Assert
         XCTAssertEqual(provider.state, KeyboardState(isVisible: true, frameEnd: expectedFrameEnd))
@@ -52,9 +52,9 @@ final class KeyboardStateProviderTests: XCTestCase {
 
         // Act
         notificationCenter.postKeyboardDidHideNotification(frameEnd: .zero)
-        notificationCenter.postKeyboardDidShowNotification(frameEnd: CGRect(x: 1, y: 2, width: 3, height: 4))
+        notificationCenter.postKeyboardWillShowNotification(frameEnd: CGRect(x: 1, y: 2, width: 3, height: 4))
         notificationCenter.postKeyboardDidHideNotification(frameEnd: .zero)
-        notificationCenter.postKeyboardDidShowNotification(frameEnd: expectedLastFrameEnd)
+        notificationCenter.postKeyboardWillShowNotification(frameEnd: expectedLastFrameEnd)
 
         // Assert
         XCTAssertEqual(provider.state, KeyboardState(isVisible: true, frameEnd: expectedLastFrameEnd))
@@ -66,7 +66,7 @@ final class KeyboardStateProviderTests: XCTestCase {
         let provider = KeyboardStateProvider(notificationCenter: notificationCenter)
 
         // Act
-        notificationCenter.postKeyboardDidShowNotification(frameEnd: nil)
+        notificationCenter.postKeyboardWillShowNotification(frameEnd: nil)
 
         // Assert
         XCTAssertEqual(provider.state, KeyboardState(isVisible: true, frameEnd: .zero))
@@ -74,7 +74,7 @@ final class KeyboardStateProviderTests: XCTestCase {
 }
 
 private extension NotificationCenter {
-    func postKeyboardDidShowNotification(frameEnd: CGRect? = nil) {
+    func postKeyboardWillShowNotification(frameEnd: CGRect? = nil) {
         let userInfo: [AnyHashable: Any]? = {
             if let frameEnd = frameEnd {
                 return [UIResponder.keyboardFrameEndUserInfoKey: frameEnd]
@@ -83,7 +83,7 @@ private extension NotificationCenter {
             }
         }()
 
-        post(name: UIResponder.keyboardDidShowNotification, object: nil, userInfo: userInfo)
+        post(name: UIResponder.keyboardWillShowNotification, object: nil, userInfo: userInfo)
     }
 
     func postKeyboardDidHideNotification(frameEnd: CGRect) {

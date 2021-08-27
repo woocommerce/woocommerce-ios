@@ -5,4 +5,5 @@ public enum AnnouncementsAction: Action {
     /// Synchronizes the latest Announcements and save it on disk
     ///
     case synchronizeAnnouncements(onCompletion: (Result<Announcement, Error>) -> Void)
+    case loadSavedAnnouncement(onCompletion: (Result<Announcement, Error>) -> Void)
 }

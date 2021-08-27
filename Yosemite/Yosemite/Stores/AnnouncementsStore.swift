@@ -58,6 +58,9 @@ public class AnnouncementsStore: Store {
         switch action {
         case .synchronizeAnnouncements(let onCompletion):
             synchronizeAnnouncements(onCompletion: onCompletion)
+
+        case .loadSavedAnnouncement(let onCompletion):
+            loadSavedAnnouncement(onCompletion: onCompletion)
         }
     }
 }
@@ -110,6 +113,18 @@ private extension AnnouncementsStore {
         }
         try fileStorage.write(mappedAnnouncement, to: fileURL)
     }
+
+    /// Load the latest saved `Announcement`. Returns an Error if there is no saved announcement.
+    func loadSavedAnnouncement(onCompletion: (Result<Announcement, Error>) -> Void) {
+        guard let fileURL = featureAnnouncementsFileURL else {
+            return onCompletion(.failure(AnnouncementsStorageError.unableToFindFileURL))
+        }
+        do {
+            onCompletion(.success(try fileStorage.data(for: fileURL)))
+        } catch {
+            onCompletion(.failure(AnnouncementsStorageError.noAnnouncementSaved))
+        }
+    }
 }
 
 // MARK: - Constants
@@ -127,6 +142,7 @@ private enum Constants {
 //
 enum AnnouncementsStorageError: Error {
     case unableToFindFileURL
+    case noAnnouncementSaved
 }
 
 enum AnnouncementsError: Error {

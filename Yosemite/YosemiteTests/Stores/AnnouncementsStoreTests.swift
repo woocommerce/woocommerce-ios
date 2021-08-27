@@ -98,6 +98,19 @@ final class AnnouncementsStoreTests: XCTestCase {
         // Assert
         XCTAssertEqual(resultError, .announcementNotFound)
     }
+
+    func test_load_saved_announcement_without_saved_data_returns_error() {
+        // Arrange, Act
+        let resultError: AnnouncementsStorageError? = waitFor { [weak self] promise in
+            let action = AnnouncementsAction.loadSavedAnnouncement { result in
+                promise(result.failure as? AnnouncementsStorageError)
+            }
+            self?.subject?.onAction(action)
+        }
+
+        // Assert
+        XCTAssertEqual(resultError, .noAnnouncementSaved)
+    }
 }
 
 // MARK: - Mocks

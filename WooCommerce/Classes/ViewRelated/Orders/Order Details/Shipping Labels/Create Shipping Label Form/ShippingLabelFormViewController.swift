@@ -369,12 +369,12 @@ private extension ShippingLabelFormViewController {
             ServiceLocator.noticePresenter.enqueue(notice: notice)
             return
         }
-        let phoneNumberRequired = viewModel.customsFormRequired
+        let isPhoneNumberRequired = viewModel.customsFormRequired
         let shippingAddressVC = ShippingLabelAddressFormViewController(
             siteID: viewModel.siteID,
             type: type,
             address: address,
-            phoneNumberRequired: phoneNumberRequired,
+            phoneNumberRequired: isPhoneNumberRequired,
             validationError: validationError,
             countries: viewModel.filteredCountries(for: type),
             completion: { [weak self] (newShippingLabelAddress) in

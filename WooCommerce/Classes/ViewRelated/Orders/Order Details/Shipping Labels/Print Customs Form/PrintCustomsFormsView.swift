@@ -27,7 +27,7 @@ struct PrintCustomsFormsView: View {
                             guard let url = invoiceURLs.first else {
                                 return
                             }
-                            showPrintingView(for: URL(string: url))
+                            showPrintingView(for: url)
                         }, label: {
                             Text(Localization.singlePrintButton)
                         })
@@ -43,7 +43,7 @@ struct PrintCustomsFormsView: View {
                                 Text(String(format: Localization.packageNumber, index + 1))
                                 Spacer()
                                 Button(action: {
-                                    showPrintingView(for: URL(string: url))
+                                    showPrintingView(for: url)
                                 }, label: {
                                     HStack {
                                         Spacer()
@@ -80,7 +80,10 @@ struct PrintCustomsFormsView: View {
         .buttonStyle(SecondaryButtonStyle())
     }
 
-    private func showPrintingView(for url: URL?) {
+    private func showPrintingView(for path: String) {
+        guard let url = URL(string: path) else {
+            return
+        }
         let printController = UIPrintInteractionController()
         printController.printingItem = url
         printController.present(animated: true, completionHandler: nil)

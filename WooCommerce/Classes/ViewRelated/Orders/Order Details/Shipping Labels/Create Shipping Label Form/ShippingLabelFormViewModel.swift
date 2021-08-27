@@ -462,11 +462,11 @@ private extension ShippingLabelFormViewModel {
         insertOrRemoveCustomsRowIfNeeded()
 
         // Require user to update phone address if customs form is required
-        if customsFormRequired && destinationAddress?.phone.isEmpty == true {
-            updateRowState(type: .shipTo, dataState: .pending, displayMode: .editable)
-        }
         if customsFormRequired && originAddress?.phone.isEmpty == true {
             updateRowState(type: .shipFrom, dataState: .pending, displayMode: .editable)
+        }
+        if customsFormRequired && destinationAddress?.phone.isEmpty == true {
+            updateRowState(type: .shipTo, dataState: .pending, displayMode: .editable)
         }
     }
 

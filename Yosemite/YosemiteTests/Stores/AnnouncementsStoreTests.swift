@@ -50,7 +50,7 @@ final class AnnouncementsStoreTests: XCTestCase {
         remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .success([announcement]))
 
         // Act
-        let fetchedAnnouncement: StorageAnnouncement? = waitFor { [weak self] promise in
+        let fetchedAnnouncement: WordPressKit.Announcement? = waitFor { [weak self] promise in
             let action = AnnouncementsAction.synchronizeAnnouncements { result in
                 promise(try? result.get())
             }
@@ -58,7 +58,7 @@ final class AnnouncementsStoreTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertEqual(fetchedAnnouncement?.appVersion, "1")
+        XCTAssertEqual(fetchedAnnouncement?.appVersionName, "1")
         XCTAssertEqual(fetchedAnnouncement?.announcementVersion, "2")
         XCTAssertEqual(fetchedAnnouncement?.features.first?.title, "foo")
         XCTAssertEqual(fetchedAnnouncement?.features.first?.subtitle, "bar")
@@ -122,6 +122,6 @@ private extension AnnouncementsStoreTests {
         ]
 
         let jsonData = try JSONSerialization.data(withJSONObject: announcementJson)
-        return try JSONDecoder().decode(WordPressKit.Announcement.self, from: jsonData)
+        return try JSONDecoder().decode(Announcement.self, from: jsonData)
     }
 }

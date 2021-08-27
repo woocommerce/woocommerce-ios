@@ -2,6 +2,7 @@ import Foundation
 import Networking
 import Storage
 import Hardware
+import WordPressKit
 
 
 
@@ -11,12 +12,14 @@ public typealias Account = Networking.Account
 public typealias AccountSettings = Networking.AccountSettings
 public typealias AddOnGroup = Networking.AddOnGroup
 public typealias Address = Networking.Address
+public typealias Announcement = WordPressKit.Announcement
 public typealias APNSDevice = Networking.APNSDevice
 public typealias CommentStatus = Networking.CommentStatus
 public typealias Country = Networking.Country
 public typealias Credentials = Networking.Credentials
 public typealias CreateProductVariation = Networking.CreateProductVariation
 public typealias DotcomDevice = Networking.DotcomDevice
+public typealias Feature = WordPressKit.Feature
 public typealias Leaderboard = Networking.Leaderboard
 public typealias LeaderboardRow = Networking.LeaderboardRow
 public typealias LeaderboardRowContent = Networking.LeaderboardRowContent
@@ -132,9 +135,9 @@ public typealias WCPayCustomer = Networking.WCPayCustomer
 
 public typealias StorageAccount = Storage.Account
 public typealias StorageAccountSettings = Storage.AccountSettings
-public typealias StorageAnnouncement = Storage.Announcement
 public typealias StorageAttribute = Storage.GenericAttribute
 public typealias StorageAddOnGroup = Storage.AddOnGroup
+public typealias StorageAnnouncement = Storage.Announcement
 public typealias StorageEligibilityErrorInfo = Storage.EligibilityErrorInfo
 public typealias StorageFeature = Storage.Feature
 public typealias StorageNote = Storage.Note

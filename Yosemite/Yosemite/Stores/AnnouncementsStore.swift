@@ -8,7 +8,7 @@ public protocol AnnouncementsRemoteProtocol {
     func getAnnouncements(appId: String,
                           appVersion: String,
                           locale: String,
-                          completion: @escaping (Result<[WordPressKit.Announcement], Error>) -> Void)
+                          completion: @escaping (Result<[Announcement], Error>) -> Void)
 }
 
 extension AnnouncementServiceRemote: AnnouncementsRemoteProtocol {
@@ -65,7 +65,7 @@ public class AnnouncementsStore: Store {
 private extension AnnouncementsStore {
 
     /// Get Announcements from Announcements API and persist this information on disk.
-    func synchronizeAnnouncements(onCompletion: @escaping (Result<StorageAnnouncement, Error>) -> Void) {
+    func synchronizeAnnouncements(onCompletion: @escaping (Result<Announcement, Error>) -> Void) {
 
         remote.getAnnouncements(appId: Constants.WooCommerceAppId,
                                 appVersion: appVersion,
@@ -76,9 +76,8 @@ private extension AnnouncementsStore {
                     return onCompletion(.failure(AnnouncementsError.unableToGetAnnouncement))
                 }
                 do {
-                    let mappedAnnouncement = self.mapAnnouncementToStorageModel(announcement)
-                    try self.saveAnnouncement(mappedAnnouncement)
-                    onCompletion(.success(mappedAnnouncement))
+                    try self.saveAnnouncement(announcement)
+                    onCompletion(.success(announcement))
                 } catch {
                     return onCompletion(.failure(error))
                 }
@@ -89,12 +88,12 @@ private extension AnnouncementsStore {
     }
 
     /// Map `WordPressKit.Announcement` to `StorageAnnouncement` model
-    func mapAnnouncementToStorageModel(_ announcement: WordPressKit.Announcement) -> StorageAnnouncement {
+    func mapAnnouncementToStorageModel(_ announcement: Announcement) -> StorageAnnouncement {
         let mappedFeatures = announcement.features.map {
-            Feature(title: $0.title,
-                    subtitle: $0.subtitle,
-                    iconUrl: $0.iconUrl,
-                    iconBase64: $0.iconBase64)
+            StorageFeature(title: $0.title,
+                           subtitle: $0.subtitle,
+                           iconUrl: $0.iconUrl,
+                           iconBase64: $0.iconBase64)
         }
 
         return StorageAnnouncement(appVersion: announcement.appVersionName,
@@ -104,11 +103,12 @@ private extension AnnouncementsStore {
     }
 
     /// Save the `Announcement` to the appropriate file.
-    func saveAnnouncement(_ announcement: StorageAnnouncement) throws {
+    func saveAnnouncement(_ announcement: Announcement) throws {
+        let mappedAnnouncement = self.mapAnnouncementToStorageModel(announcement)
         guard let fileURL = featureAnnouncementsFileURL else {
             throw AnnouncementsStorageError.unableToFindFileURL
         }
-        try fileStorage.write(announcement, to: fileURL)
+        try fileStorage.write(mappedAnnouncement, to: fileURL)
     }
 }
 

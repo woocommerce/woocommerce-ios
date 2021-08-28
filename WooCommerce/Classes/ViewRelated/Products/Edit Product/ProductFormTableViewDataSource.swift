@@ -81,17 +81,17 @@ private extension ProductFormTableViewDataSource {
 private extension ProductFormTableViewDataSource {
     func configureCellInPrimaryFieldsSection(_ cell: UITableViewCell, row: ProductFormSection.PrimaryFieldRow) {
         switch row {
-        case .images(let editable, let allowsMultipleImages, let productLabel):
-            configureImages(cell: cell, isEditable: editable, allowsMultipleImages: allowsMultipleImages, productLabel: productLabel)
-        case .name(let name, let editable):
-            configureName(cell: cell, name: name, isEditable: editable)
+        case .images(let editable, let allowsMultipleImages):
+            configureImages(cell: cell, isEditable: editable, allowsMultipleImages: allowsMultipleImages)
+        case .name(let name, let editable, let productLabel):
+            configureName(cell: cell, name: name, isEditable: editable, productLabel: productLabel)
         case .variationName(let name):
             configureReadonlyName(cell: cell, name: name)
         case .description(let description, let editable):
             configureDescription(cell: cell, description: description, isEditable: editable)
         }
     }
-    func configureImages(cell: UITableViewCell, isEditable: Bool, allowsMultipleImages: Bool, productLabel: ProductStatus) {
+    func configureImages(cell: UITableViewCell, isEditable: Bool, allowsMultipleImages: Bool) {
         guard let cell = cell as? ProductImagesHeaderTableViewCell else {
             fatalError()
         }
@@ -106,22 +106,20 @@ private extension ProductFormTableViewDataSource {
         guard isEditable else {
             cell.configure(with: productImageStatuses,
                            config: .images,
-                           productUIImageLoader: productUIImageLoader,
-                           productStatusLabel: productLabel)
+                           productUIImageLoader: productUIImageLoader)
             return
         }
         if productImageStatuses.count > 0 {
             if allowsMultipleImages {
                 cell.configure(with: productImageStatuses,
                                config: .addImages,
-                               productUIImageLoader: productUIImageLoader,
-                               productStatusLabel: productLabel)
+                               productUIImageLoader: productUIImageLoader)
             } else {
-                cell.configure(with: productImageStatuses, config: .images, productUIImageLoader: productUIImageLoader, productStatusLabel: productLabel)
+                cell.configure(with: productImageStatuses, config: .images, productUIImageLoader: productUIImageLoader)
             }
         }
         else {
-            cell.configure(with: productImageStatuses, config: .extendedAddImages, productUIImageLoader: productUIImageLoader, productStatusLabel: productLabel)
+            cell.configure(with: productImageStatuses, config: .extendedAddImages, productUIImageLoader: productUIImageLoader)
         }
         cell.onImageSelected = { [weak self] (productImage, indexPath) in
             self?.onAddImage?()
@@ -130,16 +128,16 @@ private extension ProductFormTableViewDataSource {
             self?.onAddImage?()
         }
     }
-    func configureName(cell: UITableViewCell, name: String?, isEditable: Bool) {
+    func configureName(cell: UITableViewCell, name: String?, isEditable: Bool, productLabel: ProductStatus) {
         if isEditable {
-            configureEditableName(cell: cell, name: name)
+            configureEditableName(cell: cell, name: name, productLabel: productLabel)
         } else {
             configureReadonlyName(cell: cell, name: name ?? "")
         }
     }
 
-    func configureEditableName(cell: UITableViewCell, name: String?) {
-        guard let cell = cell as? TextViewTableViewCell else {
+    func configureEditableName(cell: UITableViewCell, name: String?, productLabel: ProductStatus) {
+        guard let cell = cell as? LabeledTextViewTableViewCell else {
             fatalError()
         }
 
@@ -147,16 +145,14 @@ private extension ProductFormTableViewDataSource {
 
         let placeholder = NSLocalizedString("Title", comment: "Placeholder in the Product Title row on Product form screen.")
 
-        let cellViewModel = TextViewTableViewCell.ViewModel(text: name,
-                                                            placeholder: placeholder,
-                                                            textViewMinimumHeight: 10.0,
-                                                            isScrollEnabled: false,
-                                                            onTextChange: { [weak self] (newName) in
-            self?.onNameChange?(newName)
-            },
-                                                            style: .headline,
-                                                            edgeInsets: UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0))
-
+        let cellViewModel = LabeledTextViewTableViewCell.ViewModel(text: name,
+                                                                   productStatus: productLabel,
+                                                                   placeholder: placeholder,
+                                                                   textViewMinimumHeight: 10.0,
+                                                                   keyboardType: .alphabet,
+                                                                   onTextChange: { [weak self] (newName) in self?.onNameChange?(newName) })//,
+                                                                    //style: .headline,
+                                                                    //edgeInsets: UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0))
         cell.configure(with: cellViewModel)
         cell.accessibilityLabel = NSLocalizedString(
             "Title of the product",

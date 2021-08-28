@@ -4,8 +4,6 @@ import Yosemite
 final class ProductImagesHeaderTableViewCell: UITableViewCell {
 
     @IBOutlet weak var collectionView: UICollectionView!
-    @IBOutlet weak var productStatusLabelHolder: UIView!
-    @IBOutlet weak var productStatusLabel: UILabel!
 
     /// View Model
     ///
@@ -32,15 +30,13 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
 
         configureBackground()
         configureSeparator()
-        configureLabelDetails()
     }
 
     /// Configure cell
     ///
     func configure(with productImageStatuses: [ProductImageStatus],
                    config: ProductImagesCellConfig,
-                   productUIImageLoader: ProductUIImageLoader,
-                   productStatusLabel: ProductStatus
+                   productUIImageLoader: ProductUIImageLoader
                     ) {
         let viewModel = ProductImagesHeaderViewModel(productImageStatuses: productImageStatuses, config: config)
         self.viewModel = viewModel
@@ -52,7 +48,6 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
         if viewModel.shouldScrollToStart {
             collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .centeredHorizontally, animated: false)
         }
-        configureProductStatusLabel(productStatus: productStatusLabel)
     }
 
     /// Rotation management
@@ -125,12 +120,6 @@ private extension ProductImagesHeaderTableViewCell {
     func configureSeparator() {
         separatorInset.left = 0
     }
-    func configureLabelDetails() {
-        productStatusLabelHolder.layer.cornerRadius = CGFloat(4.0)
-        productStatusLabelHolder.backgroundColor = .gray(.shade5)
-        productStatusLabel.font = UIFont.preferredFont(forTextStyle: .body)
-        productStatusLabel.textAlignment = .center
-    }
 
     func configureCollectionView(config: ProductImagesCellConfig) {
         collectionView.delegate = self
@@ -150,18 +139,5 @@ private extension ProductImagesHeaderTableViewCell {
         default:
             collectionView.collectionViewLayout = ProductImagesFlowLayout(itemSize: ProductImagesHeaderViewModel.defaultCollectionViewCellSize, config: config)
         }
-    }
-    func configureProductStatusLabel(productStatus: ProductStatus) {
-        if productStatus == ProductStatus.draft {
-            let statusLabel = NSLocalizedString(productStatus.description, comment: "Display label for the product's draft status")
-            productStatusLabelHolder.isHidden = false
-            productStatusLabel.isHidden = false
-            productStatusLabel.text? = statusLabel
-        } else {
-            productStatusLabel.text? = ""
-            productStatusLabelHolder.isHidden = true
-            productStatusLabel.isHidden = true
-        }
-
     }
 }

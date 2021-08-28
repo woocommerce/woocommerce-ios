@@ -31,31 +31,10 @@
                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         </collectionViewFlowLayout>
                     </collectionView>
-                    <view clipsSubviews="YES" contentMode="center" translatesAutoresizingMaskIntoConstraints="NO" id="szQ-FE-l5e">
-                        <rect key="frame" x="10" y="129.66666666666666" width="76" height="30.333333333333343"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Status" textAlignment="center" lineBreakMode="tailTruncation" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="61K-e8-7z4">
-                                <rect key="frame" x="5" y="5" width="66" height="20.333333333333332"/>
-                                <accessibility key="accessibilityConfiguration" label="Product status"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
-                        <constraints>
-                            <constraint firstItem="61K-e8-7z4" firstAttribute="leading" secondItem="szQ-FE-l5e" secondAttribute="leading" constant="5" id="9WM-0J-hbO"/>
-                            <constraint firstAttribute="width" secondItem="szQ-FE-l5e" secondAttribute="height" multiplier="5:2" id="Eov-WV-bDu"/>
-                            <constraint firstAttribute="bottom" secondItem="61K-e8-7z4" secondAttribute="bottom" constant="5" id="ej2-8k-KuG"/>
-                            <constraint firstItem="61K-e8-7z4" firstAttribute="centerX" secondItem="szQ-FE-l5e" secondAttribute="centerX" id="mEf-At-e8I"/>
-                            <constraint firstItem="61K-e8-7z4" firstAttribute="centerY" secondItem="szQ-FE-l5e" secondAttribute="centerY" id="vO8-5w-DzR"/>
-                        </constraints>
-                    </view>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="szQ-FE-l5e" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="10" id="H3f-Ko-CNv"/>
                     <constraint firstItem="WFL-te-HOK" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="PDR-n7-9mK"/>
                     <constraint firstAttribute="bottom" secondItem="WFL-te-HOK" secondAttribute="bottom" id="b2N-Ek-wUv"/>
-                    <constraint firstAttribute="bottom" secondItem="szQ-FE-l5e" secondAttribute="bottom" id="mzM-hp-3ev"/>
                     <constraint firstAttribute="trailing" secondItem="WFL-te-HOK" secondAttribute="trailing" id="qbp-mF-mga"/>
                     <constraint firstItem="WFL-te-HOK" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="vH3-dk-bIR"/>
                 </constraints>
@@ -63,8 +42,6 @@
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="collectionView" destination="WFL-te-HOK" id="6lI-qf-ou5"/>
-                <outlet property="productStatusLabel" destination="61K-e8-7z4" id="Fud-OE-Bwr"/>
-                <outlet property="productStatusLabelHolder" destination="szQ-FE-l5e" id="fyV-Fu-5o1"/>
             </connections>
             <point key="canvasLocation" x="131.15942028985509" y="122.54464285714285"/>
         </tableViewCell>

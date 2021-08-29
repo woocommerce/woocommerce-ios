@@ -18,34 +18,45 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" spacing="42" translatesAutoresizingMaskIntoConstraints="NO" id="UC5-pp-RCE">
-                        <rect key="frame" x="5" y="10" width="310" height="24"/>
+                        <rect key="frame" x="10" y="10" width="300" height="24"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Ls-Wz-Lz4">
-                                <rect key="frame" x="0.0" y="0.0" width="41.5" height="24"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="gvh-NZ-8It">
-                                <rect key="frame" x="83.5" y="0.0" width="226.5" height="24"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="A6r-Hf-px7" userLabel="Product Status Label Holder">
+                                <rect key="frame" x="0.0" y="0.0" width="65" height="24"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Ls-Wz-Lz4">
+                                        <rect key="frame" x="4.5" y="2" width="41.5" height="20.5"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </view>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="gvh-NZ-8It" customClass="EnhancedTextView" customModule="WooCommerce" customModuleProvider="target">
+                                <rect key="frame" x="107" y="0.0" width="193" height="24"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <color key="textColor" systemColor="labelColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                         </subviews>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="A6r-Hf-px7" secondAttribute="trailing" constant="235" id="atm-AF-pOt"/>
+                        </constraints>
                     </stackView>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="UC5-pp-RCE" secondAttribute="bottom" constant="10" id="MOT-Ed-uh0"/>
-                    <constraint firstAttribute="trailing" secondItem="UC5-pp-RCE" secondAttribute="trailing" constant="5" id="Mxb-f7-0mU"/>
+                    <constraint firstAttribute="trailing" secondItem="UC5-pp-RCE" secondAttribute="trailing" constant="10" id="Mxb-f7-0mU"/>
                     <constraint firstItem="UC5-pp-RCE" firstAttribute="top" secondItem="0sv-hP-tpf" secondAttribute="top" constant="10" id="a6R-rV-JWD"/>
-                    <constraint firstItem="UC5-pp-RCE" firstAttribute="leading" secondItem="0sv-hP-tpf" secondAttribute="leading" constant="5" id="fGo-2g-EYa"/>
+                    <constraint firstItem="UC5-pp-RCE" firstAttribute="leading" secondItem="0sv-hP-tpf" secondAttribute="leading" constant="10" id="fGo-2g-EYa"/>
                     <constraint firstItem="UC5-pp-RCE" firstAttribute="centerY" secondItem="0sv-hP-tpf" secondAttribute="centerY" id="nkr-EK-rcc"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="SEn-yL-fY3"/>
             <connections>
+                <outlet property="productLabelHolder" destination="A6r-Hf-px7" id="qn3-Hp-bGK"/>
                 <outlet property="productStatusLabel" destination="9Ls-Wz-Lz4" id="CgG-SY-xHN"/>
                 <outlet property="productTextField" destination="gvh-NZ-8It" id="nRN-le-nFL"/>
             </connections>

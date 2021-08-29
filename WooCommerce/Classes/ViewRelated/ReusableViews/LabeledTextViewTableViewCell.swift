@@ -10,70 +10,45 @@ final class LabeledTextViewTableViewCell: UITableViewCell {
         var textViewMinimumHeight: CGFloat? = nil
         var isScrollEnabled: Bool = true
         var keyboardType: UIKeyboardType = .default
-        var onTextChange: ((_ text: String) -> Void)? = nil
+        var onNameChange: ((_ text: String) -> Void)? = nil
         var onTextDidBeginEditing: (() -> Void)? = nil
+        var style: Style = .headline
 
-        init(text: String?,
-             productStatus: ProductStatus?,
-             placeholder: String?,
-             textViewMinimumHeight: CGFloat?,
-             keyboardType: UIKeyboardType = .default,
-             onTextChange: ((_ text: String?) -> Void)?) {
-            self.text = text
-            self.productStatus = productStatus ?? ProductStatus.draft
-            self.placeholder = placeholder
-            self.keyboardType = keyboardType
-            self.onTextChange = onTextChange
-        }
     }
-    @IBOutlet weak var productStatusLabel: UILabel!
-    @IBOutlet weak var productTextField: EnhancedTextView!
+    @IBOutlet weak var productLabelHolder: UIView! // Label holder
+    @IBOutlet weak var productStatusLabel: UILabel! // Product label
+    @IBOutlet var productTextField: EnhancedTextView! // Product name
 
-    // Constraints
-    @IBOutlet private weak var textViewHeightConstraint: NSLayoutConstraint!
     override func awakeFromNib() {
         super.awakeFromNib()
-        //configureBackground()
-        //configureSeparator()
-        configureLabelDetails()
+        configureLabelStyle()
+        configureBackground()
     }
 
     func configure(with viewModel: ViewModel) {
         productTextField.text = viewModel.text
         productTextField.placeholder = viewModel.placeholder
-        // TODO: Set constraint in IB.
-        if let minimumHeight = viewModel.textViewMinimumHeight {
-            textViewHeightConstraint.constant = minimumHeight
-        }
-        productStatusLabel.text = viewModel.productStatus.description // <--
+        productStatusLabel.text = viewModel.productStatus.description
         productTextField.isScrollEnabled = viewModel.isScrollEnabled
-        productTextField.onTextChange = viewModel.onTextChange
+        productTextField.onTextChange = viewModel.onNameChange
         productTextField.onTextDidBeginEditing = viewModel.onTextDidBeginEditing
         productTextField.keyboardType = viewModel.keyboardType
-        // TODO: Fix, this is breaking the text display if product status != Draft
         configureProductStatusLabel(productStatus: viewModel.productStatus)
-
-    }
-
-    override func becomeFirstResponder() -> Bool {
-        productTextField.becomeFirstResponder()
     }
 }
+
 private extension LabeledTextViewTableViewCell {
-    /// When the cell is tapped, the text field become the first responder
-    ///
-    @objc func cellTapped(sender: UIView) {
-        productTextField.becomeFirstResponder()
-    }
 
     func configureBackground() {
         backgroundColor = .systemColor(.secondarySystemGroupedBackground)
     }
 
 
-    func configureLabelDetails() {
+    func configureLabelStyle() {
         productStatusLabel.font = UIFont.preferredFont(forTextStyle: .body)
         productStatusLabel.textAlignment = .center
+        productStatusLabel.backgroundColor = UIColor.systemGray3
+        productStatusLabel.layer.cornerRadius = CGFloat(4.0)
     }
 
     func configureProductStatusLabel(productStatus: ProductStatus) {
@@ -83,8 +58,8 @@ private extension LabeledTextViewTableViewCell {
                 productStatusLabel.isHidden = false
                 productStatusLabel.text? = statusLabel
             } else {
-                productStatusLabel.isHidden = false
-                productStatusLabel.text? = "|" // <-- If this is empty, the cell doesn't display the text either
+                productLabelHolder.isHidden = true // Holder when status != draft
+                productStatusLabel.text? = "" // Assure to empty the label string
             }
         }
 }

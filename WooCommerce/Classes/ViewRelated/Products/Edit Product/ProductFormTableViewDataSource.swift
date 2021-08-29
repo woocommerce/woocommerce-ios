@@ -150,9 +150,8 @@ private extension ProductFormTableViewDataSource {
                                                                    placeholder: placeholder,
                                                                    textViewMinimumHeight: 10.0,
                                                                    keyboardType: .alphabet,
-                                                                   onTextChange: { [weak self] (newName) in self?.onNameChange?(newName) })//,
-                                                                    //style: .headline,
-                                                                    //edgeInsets: UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0))
+                                                                   onNameChange: { [weak self] (newName) in self?.onNameChange?(newName) },
+                                                                   style: .headline)
         cell.configure(with: cellViewModel)
         cell.accessibilityLabel = NSLocalizedString(
             "Title of the product",

@@ -15,9 +15,9 @@ final class LabeledTextViewTableViewCell: UITableViewCell {
         var style: Style = .headline
 
     }
-    @IBOutlet weak var productLabelHolder: UIView! // Label holder
-    @IBOutlet weak var productStatusLabel: UILabel! // Product label
-    @IBOutlet var productTextField: EnhancedTextView! // Product name
+    @IBOutlet weak var productLabelHolder: UIView!
+    @IBOutlet weak var productStatusLabel: UILabel!
+    @IBOutlet var productTextField: EnhancedTextView!
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -40,15 +40,16 @@ final class LabeledTextViewTableViewCell: UITableViewCell {
 private extension LabeledTextViewTableViewCell {
 
     func configureBackground() {
-        backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+        productTextField.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
     }
 
 
     func configureLabelStyle() {
         productStatusLabel.font = UIFont.preferredFont(forTextStyle: .body)
         productStatusLabel.textAlignment = .center
-        productStatusLabel.backgroundColor = UIColor.systemGray3
-        productStatusLabel.layer.cornerRadius = CGFloat(4.0)
+        productStatusLabel.textColor = UIColor.black
+        productLabelHolder.backgroundColor = .gray(.shade5)
+        productLabelHolder.layer.cornerRadius = CGFloat(4.0)
     }
 
     func configureProductStatusLabel(productStatus: ProductStatus) {
@@ -58,8 +59,8 @@ private extension LabeledTextViewTableViewCell {
                 productStatusLabel.isHidden = false
                 productStatusLabel.text? = statusLabel
             } else {
-                productLabelHolder.isHidden = true // Holder when status != draft
-                productStatusLabel.text? = "" // Assure to empty the label string
+                productLabelHolder.isHidden = true
+                productStatusLabel.text? = ""
             }
         }
 }

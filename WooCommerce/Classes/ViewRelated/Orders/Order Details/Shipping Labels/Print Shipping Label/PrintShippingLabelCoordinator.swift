@@ -156,13 +156,20 @@ private extension PrintShippingLabelCoordinator {
     /// Show customs form printing if separate customs form is available
     ///
     func showCustomsFormPrintingIfNeeded() {
-        guard let url = shippingLabel.commercialInvoiceURL,
-              printType == .print else {
+        guard let url = shippingLabel.commercialInvoiceURL else {
             return
         }
+
         let printCustomsFormsView = PrintCustomsFormsView(invoiceURLs: [url], showsSaveForLater: true)
         let hostingController = UIHostingController(rootView: printCustomsFormsView)
-        sourceNavigationController.show(hostingController, sender: self)
+        hostingController.hidesBottomBarWhenPushed = true
+
+        // Remove Shipping Label print UI from navigation stack
+        let stackCount = sourceNavigationController.viewControllers.count
+        let viewControllersExcludingLast = Array(sourceNavigationController.viewControllers[0..<stackCount - 1])
+        // Then append the customs form view at the end of the stack
+        let viewControllersToDisplay = viewControllersExcludingLast + [hostingController]
+        sourceNavigationController.setViewControllers(viewControllersToDisplay, animated: true)
     }
 }
 

@@ -33,10 +33,15 @@ final class EditCustomerNoteViewModel: ObservableObject {
     ///
     private let stores: StoresManager
 
-    init(order: Order, stores: StoresManager = ServiceLocator.stores) {
+    /// Analytics center.
+    ///
+    private let analytics: Analytics
+
+    init(order: Order, stores: StoresManager = ServiceLocator.stores, analytics: Analytics = ServiceLocator.analytics) {
         self.order = order
         self.newNote = order.customerNote ?? ""
         self.stores = stores
+        self.analytics = analytics
         bindNavigationTrailingItemPublisher()
     }
 

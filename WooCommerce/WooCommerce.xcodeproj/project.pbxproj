@@ -1108,6 +1108,7 @@
 		D41C9F2926D99E9700993558 /* LargeTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41C9F2826D99E9700993558 /* LargeTitleView.swift */; };
 		D41C9F2E26D9A0E900993558 /* WhatsNewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41C9F2D26D9A0E900993558 /* WhatsNewViewModel.swift */; };
 		D41C9F3126D9A43200993558 /* WhatsNewViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41C9F3026D9A43200993558 /* WhatsNewViewModelTests.swift */; };
+		D41C9F3426DD439200993558 /* WhatsNewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41C9F3326DD439200993558 /* WhatsNewFactory.swift */; };
 		D802541F2655137A001B2CC1 /* CardPresentModalNonRetryableError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D802541E2655137A001B2CC1 /* CardPresentModalNonRetryableError.swift */; };
 		D802546B2655180A001B2CC1 /* CardPresentModalReaderIsReadyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D802546A2655180A001B2CC1 /* CardPresentModalReaderIsReadyTests.swift */; };
 		D802547326551D0F001B2CC1 /* CardPresentModalTapCardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D802547226551D0F001B2CC1 /* CardPresentModalTapCardTests.swift */; };
@@ -2500,6 +2501,7 @@
 		D41C9F2826D99E9700993558 /* LargeTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeTitleView.swift; sourceTree = "<group>"; };
 		D41C9F2D26D9A0E900993558 /* WhatsNewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewViewModel.swift; sourceTree = "<group>"; };
 		D41C9F3026D9A43200993558 /* WhatsNewViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewViewModelTests.swift; sourceTree = "<group>"; };
+		D41C9F3326DD439200993558 /* WhatsNewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewFactory.swift; sourceTree = "<group>"; };
 		D802541E2655137A001B2CC1 /* CardPresentModalNonRetryableError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalNonRetryableError.swift; sourceTree = "<group>"; };
 		D802546A2655180A001B2CC1 /* CardPresentModalReaderIsReadyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalReaderIsReadyTests.swift; sourceTree = "<group>"; };
 		D802547226551D0F001B2CC1 /* CardPresentModalTapCardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalTapCardTests.swift; sourceTree = "<group>"; };
@@ -4969,6 +4971,7 @@
 		B56DB3EF2049C06D00D4AA8E /* ViewRelated */ = {
 			isa = PBXGroup;
 			children = (
+				D41C9F3226DD436D00993558 /* WhatsNew */,
 				571B850024CF7E1600CF58A7 /* InAppFeedback */,
 				0235594024496414004BE2B8 /* BottomSheet */,
 				D8815ADC26383E3E00EDAD62 /* CardPresentPayments */,
@@ -5972,6 +5975,14 @@
 			isa = PBXGroup;
 			children = (
 				D41C9F3026D9A43200993558 /* WhatsNewViewModelTests.swift */,
+			);
+			path = WhatsNew;
+			sourceTree = "<group>";
+		};
+		D41C9F3226DD436D00993558 /* WhatsNew */ = {
+			isa = PBXGroup;
+			children = (
+				D41C9F3326DD439200993558 /* WhatsNewFactory.swift */,
 			);
 			path = WhatsNew;
 			sourceTree = "<group>";
@@ -7501,6 +7512,7 @@
 				318109E825E5B8D600EE0BE7 /* NumberedListItemTableViewCell.swift in Sources */,
 				0282DD96233C960C006A5FDB /* SearchResultCell.swift in Sources */,
 				260C32BE2527A2DE00157BC2 /* IssueRefundViewModel.swift in Sources */,
+				D41C9F3426DD439200993558 /* WhatsNewFactory.swift in Sources */,
 				450C2CBA24D3127500D570DD /* ProductReviewsTableViewCell.swift in Sources */,
 				029D444922F13F8A00DEFA8A /* DashboardUIFactory.swift in Sources */,
 				D8C2A28F231BD00500F503E9 /* ReviewsViewModel.swift in Sources */,

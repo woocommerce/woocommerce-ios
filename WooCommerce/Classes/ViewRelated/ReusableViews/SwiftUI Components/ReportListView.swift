@@ -25,12 +25,13 @@ struct ReportItem: Identifiable {
 
 struct ReportListView: View {
     let viewModel: ReportListConvertible & ReportListPresentable
+    private var isPad: Bool { UIDevice.isPad() }
 
     var body: some View {
         VStack {
-            Spacer(minLength: 75)
+            Spacer(minLength: isPad ? 40 : 75)
             LargeTitleView(text: viewModel.title)
-            Spacer(minLength: 40)
+            Spacer(minLength: isPad ? 32 : 40)
             ScrollView {
                 ForEach(viewModel.items, id: \.title) {
                     IconListItem(title: $0.title,
@@ -41,10 +42,9 @@ struct ReportListView: View {
             }
             Spacer()
             Button(viewModel.ctaTitle, action: viewModel.onDismiss)
-                .frame(height: 50)
                 .buttonStyle(PrimaryButtonStyle())
-                .padding()
-            Spacer(minLength: 60)
+                .padding(.horizontal, isPad ? 40 : 24)
+                .padding(.bottom, isPad ? 40 : 60)
         }
     }
 }

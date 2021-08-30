@@ -63,24 +63,21 @@ private extension AppCoordinator {
     /// Displays the What's New Screen.
     ///
     func synchronizeWhatsNew() {
-        stores.dispatch(AnnouncementsAction.synchronizeAnnouncements(onCompletion: { [weak self] result in
-            guard let announcement = try? result.get() else { return }
-            self?.presentWhatsNew(for: announcement)
+        stores.dispatch(AnnouncementsAction.synchronizeAnnouncements(onCompletion: { [weak self] _ in
+            self?.showtWhatsNewIfNeeded()
         }))
     }
 
-    func presentWhatsNew(for announcement: Announcement) {
-        let viewModel = WhatsNewViewModel(items: announcement.features) { [weak self] in
-            self?.tabBarController.dismiss(animated: true)
-        }
-        let rootView = ReportListView(viewModel: viewModel)
-        let hostingViewController = UIHostingController(rootView: rootView)
-        if UIDevice.isPad() {
-            hostingViewController.preferredContentSize = CGSize(width: window.frame.width * 0.3,
-                                                                height: window.frame.height * 0.68)
-        }
-        hostingViewController.modalPresentationStyle = .formSheet
-        tabBarController.present(hostingViewController, animated: true, completion: nil)
+    func showtWhatsNewIfNeeded() {
+        stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
+            guard let self = self,
+                  let savedAnnouncement = try? result.get() else { return }
+
+            let whatsNewViewController = WhatsNewFactory.whatsNew(announcement: savedAnnouncement) { [weak self] in
+                self?.tabBarController.dismiss(animated: true)
+            }
+            self.tabBarController.present(whatsNewViewController, animated: true, completion: nil)
+        }))
     }
 
     /// Displays the WordPress.com Authentication UI.

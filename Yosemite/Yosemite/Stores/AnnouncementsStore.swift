@@ -23,7 +23,7 @@ public class AnnouncementsStore: Store {
 
     private let remote: AnnouncementsRemoteProtocol
     private let fileStorage: FileStorage
-    private let appVersion = UserAgent.bundleShortVersion
+    private let appVersion =  "107.4" //UserAgent.bundleShortVersion
 
     public init(dispatcher: Dispatcher,
                 storageManager: StorageManagerType,
@@ -99,10 +99,16 @@ private extension AnnouncementsStore {
                            iconBase64: $0.iconBase64)
         }
 
-        return StorageAnnouncement(appVersion: announcement.appVersionName,
-                                   features: mappedFeatures,
+        return StorageAnnouncement(appVersionName: announcement.appVersionName,
+                                   minimumAppVersion: announcement.minimumAppVersion,
+                                   maximumAppVersion: announcement.maximumAppVersion,
+                                   appVersionTargets: announcement.appVersionTargets,
+                                   detailsUrl: announcement.detailsUrl,
                                    announcementVersion: announcement.announcementVersion,
-                                   displayed: false)
+                                   isLocalized: announcement.isLocalized,
+                                   responseLocale: announcement.responseLocale,
+                                   features: mappedFeatures,
+                                   displayed: true)
     }
 
     /// Save the `Announcement` to the appropriate file.
@@ -120,7 +126,10 @@ private extension AnnouncementsStore {
             return onCompletion(.failure(AnnouncementsStorageError.unableToFindFileURL))
         }
         do {
-            onCompletion(.success(try fileStorage.data(for: fileURL)))
+            let savedModel: StorageAnnouncement = try fileStorage.data(for: fileURL)
+            let encodedObject = try JSONEncoder().encode(savedModel)
+            let convertedModel = try JSONDecoder().decode(Announcement.self, from: encodedObject)
+            onCompletion(.success(convertedModel))
         } catch {
             onCompletion(.failure(AnnouncementsStorageError.noAnnouncementSaved))
         }

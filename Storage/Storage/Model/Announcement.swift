@@ -4,18 +4,34 @@
 /// These entities will be serialised to a plist file
 
 public struct Announcement: Codable {
-    public let appVersion: String
-    public let features: [Feature]
+    public let appVersionName: String
+    public let minimumAppVersion: String
+    public let maximumAppVersion: String
+    public let appVersionTargets: [String]
+    public let detailsUrl: String
     public let announcementVersion: String
-    public let displayed: Bool
+    public let isLocalized: Bool
+    public let responseLocale: String
+    public let features: [Feature]
 
-    public init(appVersion: String,
-                features: [Feature],
+    public init(appVersionName: String,
+                minimumAppVersion: String,
+                maximumAppVersion: String,
+                appVersionTargets: [String],
+                detailsUrl: String,
                 announcementVersion: String,
+                isLocalized: Bool,
+                responseLocale: String,
+                features: [Feature],
                 displayed: Bool) {
-        self.appVersion = appVersion
-        self.features = features
+        self.appVersionName = appVersionName
+        self.minimumAppVersion = minimumAppVersion
+        self.maximumAppVersion = maximumAppVersion
+        self.appVersionTargets = appVersionTargets
+        self.detailsUrl = detailsUrl
         self.announcementVersion = announcementVersion
-        self.displayed = displayed
+        self.isLocalized = isLocalized
+        self.responseLocale = responseLocale
+        self.features = features
     }
 }

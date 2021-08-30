@@ -56,8 +56,10 @@ final class EditCustomerNoteViewModel: ObservableObject {
             switch result {
             case .success:
                 self.presentNotice = .success
+                self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCompleted(subject: .customerNote))
             case .failure(let error):
                 self.presentNotice = .error
+                self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowFailed(subject: .customerNote))
                 DDLogError("⛔️ Unable to update the order: \(error)")
             }
 
@@ -68,7 +70,7 @@ final class EditCustomerNoteViewModel: ObservableObject {
         stores.dispatch(action)
     }
 
-    /// Track the cancel scenario
+    /// Track the flow cancel scenario.
     ///
     func userDidCancelFlow() {
         analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCanceled(subject: .customerNote))

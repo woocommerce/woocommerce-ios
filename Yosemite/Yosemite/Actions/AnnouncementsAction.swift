@@ -9,4 +9,8 @@ public enum AnnouncementsAction: Action {
     /// Load latest saved announcement along with a boolean indicating if it was already presented to the user on app launch
     ///
     case loadSavedAnnouncement(onCompletion: (Result<(Announcement, IsDisplayed), Error>) -> Void)
+
+    /// Marks the saved announcement as displayed
+    ///
+    case markSavedAnnouncementAsDisplayed(onCompletion: (Error?) -> Void)
 }

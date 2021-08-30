@@ -145,6 +145,31 @@ final class AnnouncementsStoreTests: XCTestCase {
         XCTAssertNotNil(announcement)
         XCTAssertTrue(isDisplayed)
     }
+
+    func test_on_mark_announcement_as_displayed_it_updates_storage_model() throws {
+        //Arrange
+        try fileStorage?.write(makeStorageAnnouncement(displayed: false), to: expectedFeatureAnnouncementsFileURL)
+
+        // Act
+        let error: Error? = waitFor { [weak self] promise in
+            let action = AnnouncementsAction.markSavedAnnouncementAsDisplayed { error in
+                promise(error)
+            }
+            self?.subject?.onAction(action)
+        }
+
+        let (announcement, isDisplayed): (WordPressKit.Announcement, Bool) = waitFor { [weak self] promise in
+            let action = AnnouncementsAction.loadSavedAnnouncement { result in
+                promise(try! result.get())
+            }
+            self?.subject?.onAction(action)
+        }
+
+        // Assert
+        XCTAssertNil(error)
+        XCTAssertNotNil(announcement)
+        XCTAssertTrue(isDisplayed)
+    }
 }
 
 // MARK: - Utils

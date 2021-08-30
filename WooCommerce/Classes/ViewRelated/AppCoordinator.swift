@@ -84,6 +84,9 @@ private extension AppCoordinator {
                 self?.tabBarController.dismiss(animated: true)
             }
             self.tabBarController.present(whatsNewViewController, animated: true, completion: nil)
+            self.stores.dispatch(AnnouncementsAction.markSavedAnnouncementAsDisplayed(onCompletion: { error in
+                error.flatMap { return DDLogInfo("💬 \($0.localizedDescription)") }
+            }))
         }))
     }
 

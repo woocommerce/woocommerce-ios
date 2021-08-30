@@ -68,6 +68,9 @@ public class AnnouncementsStore: Store {
 
         case .loadSavedAnnouncement(let onCompletion):
             loadSavedAnnouncement(onCompletion: onCompletion)
+
+        case .markSavedAnnouncementAsDisplayed(let onCompletion):
+            markSavedAnnouncementAsDisplayed(onCompletion: onCompletion)
         }
     }
 }
@@ -134,12 +137,33 @@ private extension AnnouncementsStore {
             return onCompletion(.failure(AnnouncementsStorageError.unableToFindFileURL))
         }
         do {
-            let savedModel: StorageAnnouncement = try fileStorage.data(for: fileURL)
-            let encodedObject = try JSONEncoder().encode(savedModel)
-            let convertedModel = try JSONDecoder().decode(Announcement.self, from: encodedObject)
-            onCompletion(.success((convertedModel, savedModel.displayed)))
+            let savedStorageModel: StorageAnnouncement = try fileStorage.data(for: fileURL)
+            onCompletion(.success((try savedAnnouncement(), savedStorageModel.displayed)))
         } catch {
             onCompletion(.failure(AnnouncementsStorageError.noAnnouncementSaved))
+        }
+    }
+
+    func markSavedAnnouncementAsDisplayed(onCompletion: (Error?) -> Void) {
+        do {
+            try self.saveAnnouncement(savedAnnouncement())
+            onCompletion(nil)
+        }
+        catch {
+            onCompletion(AnnouncementsStorageError.noAnnouncementSaved)
+        }
+    }
+
+    func savedAnnouncement() throws -> Announcement {
+        guard let fileURL = featureAnnouncementsFileURL else {
+            throw AnnouncementsStorageError.unableToFindFileURL
+        }
+        do {
+            let savedModel: StorageAnnouncement = try fileStorage.data(for: fileURL)
+            let encodedObject = try JSONEncoder().encode(savedModel)
+            return try JSONDecoder().decode(Announcement.self, from: encodedObject)
+        } catch {
+            throw AnnouncementsStorageError.noAnnouncementSaved
         }
     }
 }

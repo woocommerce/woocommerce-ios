@@ -2,12 +2,14 @@ import SwiftUI
 
 struct PrintCustomsFormsView: View {
     let invoiceURLs: [String]
+    let showsSaveForLater: Bool
 
     private let inProgressViewProperties = InProgressViewProperties(title: Localization.inProgressTitle, message: Localization.inProgressMessage)
     @State private var showingInProgress = false
 
-    init(invoiceURLs: [String]) {
+    init(invoiceURLs: [String], showsSaveForLater: Bool = false) {
         self.invoiceURLs = invoiceURLs
+        self.showsSaveForLater = showsSaveForLater
     }
 
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
@@ -89,6 +91,7 @@ struct PrintCustomsFormsView: View {
             Text(Localization.saveForLaterButton)
         })
         .buttonStyle(SecondaryButtonStyle())
+        .renderedIf(showsSaveForLater)
     }
 
     private func showPrintingView(for path: String) {

@@ -14,11 +14,11 @@ struct IconListItem: View {
             if let icon = icon {
                 Image(uiImage: icon)
                     .resizable()
-                    .frame(width: 40, height: 40)
+                    .frame(width: Constants.iconSize.width, height: Constants.iconSize.height)
             } else if let url = URL(string: iconUrl) {
                 KFImage(url)
                     .resizable()
-                    .frame(width: 40, height: 40)
+                    .frame(width: Constants.iconSize.width, height: Constants.iconSize.height)
             }
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
@@ -38,6 +38,12 @@ struct IconListItem: View {
             ? UIColor(red: 1, green: 1, blue: 1, alpha: 0.6)
             : UIColor(red: 0, green: 0, blue: 0, alpha: 0.6)
         })
+    }
+}
+
+private extension IconListItem {
+    enum Constants {
+        static let iconSize = CGSize(width: 40, height: 40)
     }
 }
 

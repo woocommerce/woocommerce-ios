@@ -50,7 +50,7 @@ final class AppCoordinator {
                 case (true, false):
                     self.validateRoleEligibility {
                         self.displayLoggedInUI()
-                        self.synchronizeWhatsNew()
+                        self.synchronizeAndShowWhatsNew()
                     }
                 }
                 self.isLoggedIn = isLoggedIn
@@ -60,20 +60,27 @@ final class AppCoordinator {
 
 private extension AppCoordinator {
 
-    /// Displays the What's New Screen.
+    /// Synchronize announcements and present What's New Screen if needed
     ///
-    func synchronizeWhatsNew() {
-        stores.dispatch(AnnouncementsAction.synchronizeAnnouncements(onCompletion: { [weak self] _ in
-            self?.showtWhatsNewIfNeeded()
+    func synchronizeAndShowWhatsNew() {
+        stores.dispatch(AnnouncementsAction.synchronizeAnnouncements(onCompletion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let announcement):
+                DDLogInfo("📣 Announcements Synced! AppVersion: \(announcement.appVersionName) | AnnouncementVersion: \(announcement.announcementVersion)")
+            case.failure(let error):
+                DDLogInfo("📣 Failed to synchronize announcements: \(error.localizedDescription)")
+            }
+            self.showWhatsNewIfNeeded()
         }))
     }
 
-    func showtWhatsNewIfNeeded() {
+    func showWhatsNewIfNeeded() {
         stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
-            guard let self = self,
-                  let savedAnnouncement = try? result.get() else { return }
-
-            let whatsNewViewController = WhatsNewFactory.whatsNew(announcement: savedAnnouncement) { [weak self] in
+            guard let self = self, let (announcement, displayed) = try? result.get(), !displayed else {
+                return DDLogInfo("📣 There are no announcements to show!")
+            }
+            let whatsNewViewController = WhatsNewFactory.whatsNew(announcement) { [weak self] in
                 self?.tabBarController.dismiss(animated: true)
             }
             self.tabBarController.present(whatsNewViewController, animated: true, completion: nil)

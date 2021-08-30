@@ -13,6 +13,7 @@ public struct Announcement: Codable {
     public let isLocalized: Bool
     public let responseLocale: String
     public let features: [Feature]
+    public let displayed: Bool
 
     public init(appVersionName: String,
                 minimumAppVersion: String,
@@ -33,5 +34,6 @@ public struct Announcement: Codable {
         self.isLocalized = isLocalized
         self.responseLocale = responseLocale
         self.features = features
+        self.displayed = displayed
     }
 }

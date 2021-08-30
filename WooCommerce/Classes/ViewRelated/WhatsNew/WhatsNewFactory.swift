@@ -7,7 +7,7 @@ struct WhatsNewFactory {
     /// - Parameters:
     ///   - announcement: Announcement model
     ///   - onDismiss: called when the CTA button is pressed, mainly for dismissing the screen
-    static func whatsNew(announcement: Announcement,
+    static func whatsNew(_ announcement: Announcement,
                          onDismiss: @escaping () -> Void) -> UIViewController {
 
         let viewModel = WhatsNewViewModel(items: announcement.features, onDismiss: onDismiss)

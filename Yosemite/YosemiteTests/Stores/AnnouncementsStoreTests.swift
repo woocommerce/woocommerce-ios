@@ -111,11 +111,51 @@ final class AnnouncementsStoreTests: XCTestCase {
         // Assert
         XCTAssertEqual(resultError, .noAnnouncementSaved)
     }
+
+    func test_load_newly_saved_announcement_returns_an_announcement_not_yet_displayed() throws {
+        //Arrange
+        try fileStorage?.write(makeStorageAnnouncement(), to: expectedFeatureAnnouncementsFileURL)
+
+        // Act
+        let (announcement, isDisplayed): (WordPressKit.Announcement, Bool) = waitFor { [weak self] promise in
+            let action = AnnouncementsAction.loadSavedAnnouncement { result in
+                promise(try! result.get())
+            }
+            self?.subject?.onAction(action)
+        }
+
+        // Assert
+        XCTAssertNotNil(announcement)
+        XCTAssertFalse(isDisplayed)
+    }
+
+    func test_load_saved_announcement_already_displayed_returns_a_displayed_announcement() throws {
+        //Arrange
+        try fileStorage?.write(makeStorageAnnouncement(displayed: true), to: expectedFeatureAnnouncementsFileURL)
+
+        // Act
+        let (announcement, isDisplayed): (WordPressKit.Announcement, Bool) = waitFor { [weak self] promise in
+            let action = AnnouncementsAction.loadSavedAnnouncement { result in
+                promise(try! result.get())
+            }
+            self?.subject?.onAction(action)
+        }
+
+        // Assert
+        XCTAssertNotNil(announcement)
+        XCTAssertTrue(isDisplayed)
+    }
 }
 
-// MARK: - Mocks
+// MARK: - Utils
 //
 private extension AnnouncementsStoreTests {
+
+    var expectedFeatureAnnouncementsFileURL: URL {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent("feature-announcements.plist")
+    }
+
     func makeWordPressAnnouncement() throws -> WordPressKit.Announcement {
         let announcementJson: [String: Any] = [
             "appVersionName": "1",
@@ -136,5 +176,18 @@ private extension AnnouncementsStoreTests {
 
         let jsonData = try JSONSerialization.data(withJSONObject: announcementJson)
         return try JSONDecoder().decode(Announcement.self, from: jsonData)
+    }
+
+    func makeStorageAnnouncement(displayed: Bool = false) -> StorageAnnouncement {
+        StorageAnnouncement(appVersionName: "1",
+                            minimumAppVersion: "1",
+                            maximumAppVersion: "2",
+                            appVersionTargets: [],
+                            detailsUrl: "",
+                            announcementVersion: "",
+                            isLocalized: true,
+                            responseLocale: "",
+                            features: [],
+                            displayed: displayed)
     }
 }

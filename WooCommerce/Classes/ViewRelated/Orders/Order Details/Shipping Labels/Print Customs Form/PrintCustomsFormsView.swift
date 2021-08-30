@@ -78,6 +78,7 @@ struct PrintCustomsFormsView: View {
         .navigationTitle(Localization.navigationTitle)
         .fullScreenCover(isPresented: $showingInProgress) {
             InProgressView(viewProperties: inProgressViewProperties)
+                .edgesIgnoringSafeArea(.all)
         }
     }
 

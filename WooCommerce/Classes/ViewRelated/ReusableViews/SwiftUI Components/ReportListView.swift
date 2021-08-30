@@ -33,7 +33,7 @@ struct ReportListView: View {
             LargeTitleView(text: viewModel.title)
             Spacer(minLength: isPad ? 32 : 40)
             ScrollView {
-                ForEach(viewModel.items, id: \.title) {
+                ForEach(viewModel.items, id: \.id) {
                     IconListItem(title: $0.title,
                                  subtitle: $0.subtitle,
                                  iconUrl: $0.iconUrl,

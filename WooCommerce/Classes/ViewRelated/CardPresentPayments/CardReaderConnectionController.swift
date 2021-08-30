@@ -262,18 +262,23 @@ private extension CardReaderConnectionController {
             return
         }
 
-        alerts.foundReader(
-            from: from,
-            name: candidateReader.id,
-            connect: {
-                self.state = .connectToReader
-            },
-            continueSearch: {
-                self.skippedReaderIDs.append(candidateReader.id)
-                self.candidateReader = nil
-                self.pruneSkippedReaders()
-                self.state = .searching
-            })
+        alerts.dismiss()
+
+        let controller = SeveralReadersFoundViewController()
+        from.present(controller, animated: true)
+
+//        alerts.foundReader(
+//            from: from,
+//            name: candidateReader.id,
+//            connect: {
+//                self.state = .connectToReader
+//            },
+//            continueSearch: {
+//                self.skippedReaderIDs.append(candidateReader.id)
+//                self.candidateReader = nil
+//                self.pruneSkippedReaders()
+//                self.state = .searching
+//            })
     }
 
     /// End the search for a card reader

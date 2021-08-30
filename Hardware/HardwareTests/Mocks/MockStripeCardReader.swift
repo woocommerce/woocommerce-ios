@@ -42,4 +42,15 @@ extension MockStripeCardReader {
                              batteryLevel: NSNumber(floatLiteral: 0.5),
                              locationId: "st_simulated")
     }
+
+    static func stripeM2() -> Self {
+        MockStripeCardReader(serialNumber: "WPE-SIMULATOR-1",
+                             stripeId: "SIMULATOR",
+                             label: "Simulated Stripe M2",
+                             status: .online,
+                             deviceSoftwareVersion: "0.0.0.1",
+                             deviceType: .stripeM2,
+                             batteryLevel: NSNumber(floatLiteral: 0.5),
+                             locationId: "st_simulated")
+    }
 }

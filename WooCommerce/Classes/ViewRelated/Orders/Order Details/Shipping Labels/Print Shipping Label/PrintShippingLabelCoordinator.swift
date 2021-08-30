@@ -4,7 +4,7 @@ import Yosemite
 
 /// Coordinates navigation actions for printing a shipping label.
 final class PrintShippingLabelCoordinator {
-    private let sourceViewController: UIViewController
+    private let sourceNavigationController: UINavigationController
     private let shippingLabel: ShippingLabel
     private let stores: StoresManager
     private let analytics: Analytics
@@ -13,18 +13,18 @@ final class PrintShippingLabelCoordinator {
 
     /// - Parameter shippingLabel: The shipping label to print.
     /// - Parameter printType: Whether the label is being printed for the first time or reprinted.
-    /// - Parameter sourceViewController: The view controller that shows the print UI in the first place.
+    /// - Parameter sourceNavigationController: The navigation controller that shows the print UI in the first place.
     /// - Parameter stores: Handles Yosemite store actions.
     /// - Parameter analytics: Tracks analytics events.
     init(shippingLabel: ShippingLabel,
          printType: PrintType,
-         sourceViewController: UIViewController,
+         sourceNavigationController: UINavigationController,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          onCompletion: (() -> Void)? = nil) {
         self.shippingLabel = shippingLabel
         self.printType = printType
-        self.sourceViewController = sourceViewController
+        self.sourceNavigationController = sourceNavigationController
         self.stores = stores
         self.analytics = analytics
         self.onCompletion = onCompletion
@@ -55,7 +55,7 @@ final class PrintShippingLabelCoordinator {
 
         // Since the print UI could make an API request for printing data, disables the bottom bar (tab bar) to simplify app states.
         printViewController.hidesBottomBarWhenPushed = true
-        sourceViewController.show(printViewController, sender: sourceViewController)
+        sourceNavigationController.show(printViewController, sender: sourceNavigationController)
     }
 }
 
@@ -75,7 +75,7 @@ private extension PrintShippingLabelCoordinator {
         let listSelector = ListSelectorViewController(command: command) { paperSize in
             onPaperSizeSelected(paperSize)
         }
-        sourceViewController.show(listSelector, sender: sourceViewController)
+        sourceNavigationController.show(listSelector, sender: sourceNavigationController)
     }
 
     func printShippingLabel(paperSize: ShippingLabelPaperSize) {
@@ -96,11 +96,11 @@ private extension PrintShippingLabelCoordinator {
         let viewProperties = InProgressViewProperties(title: Localization.inProgressTitle, message: Localization.inProgressMessage)
         let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
         inProgressViewController.modalPresentationStyle = .overCurrentContext
-        sourceViewController.present(inProgressViewController, animated: true, completion: nil)
+        sourceNavigationController.present(inProgressViewController, animated: true, completion: nil)
     }
 
     func dismissPrintInProgressUI() {
-        sourceViewController.dismiss(animated: true)
+        sourceNavigationController.dismiss(animated: true)
     }
 
     func presentAirPrint(printData: ShippingLabelPrintData) {
@@ -114,13 +114,13 @@ private extension PrintShippingLabelCoordinator {
     func presentPaperSizeOptions() {
         let paperSizeOptionsViewController = ShippingLabelPaperSizeOptionsViewController()
         let navigationController = WooNavigationController(rootViewController: paperSizeOptionsViewController)
-        sourceViewController.present(navigationController, animated: true, completion: nil)
+        sourceNavigationController.present(navigationController, animated: true, completion: nil)
     }
 
     func presentPrintingInstructions() {
         let printingInstructionsViewController = ShippingLabelPrintingInstructionsViewController()
         let navigationController = WooNavigationController(rootViewController: printingInstructionsViewController)
-        sourceViewController.present(navigationController, animated: true, completion: nil)
+        sourceNavigationController.present(navigationController, animated: true, completion: nil)
     }
 
     func saveLabelForLater() {
@@ -150,7 +150,7 @@ private extension PrintShippingLabelCoordinator {
 
         alertController.addCancelActionWithTitle(Localization.printErrorAlertDismissAction)
 
-        sourceViewController.present(alertController, animated: true)
+        sourceNavigationController.present(alertController, animated: true)
     }
 
     /// Show customs form printing if separate customs form is available
@@ -160,9 +160,9 @@ private extension PrintShippingLabelCoordinator {
               printType == .print else {
             return
         }
-        let printCustomsFormsView = PrintCustomsFormsView(invoiceURLs: [url])
+        let printCustomsFormsView = PrintCustomsFormsView(invoiceURLs: [url], showsSaveForLater: true)
         let hostingController = UIHostingController(rootView: printCustomsFormsView)
-        sourceViewController.show(hostingController, sender: self)
+        sourceNavigationController.show(hostingController, sender: self)
     }
 }
 

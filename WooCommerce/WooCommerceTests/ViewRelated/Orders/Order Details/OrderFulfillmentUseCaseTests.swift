@@ -63,7 +63,7 @@ final class OrderFulfillmentUseCaseTests: XCTestCase {
         let useCase = OrderFulfillmentUseCase(order: order, stores: stores)
 
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
-            guard case let .updateOrder(siteID: _, orderID: _, status: status, onCompletion: onCompletion) = action else {
+            guard case let .updateOrderStatus(siteID: _, orderID: _, status: status, onCompletion: onCompletion) = action else {
                 XCTFail("Unexpected action \(action).")
                 return
             }
@@ -159,7 +159,7 @@ private extension OrderFulfillmentUseCaseTests {
                     file: StaticString = #file,
                     line: UInt = #line) {
 
-        guard case let .updateOrder(siteID: siteID, orderID: orderID, status: actualStatus, onCompletion: _) = statusUpdateAction else {
+        guard case let .updateOrderStatus(siteID: siteID, orderID: orderID, status: actualStatus, onCompletion: _) = statusUpdateAction else {
             XCTFail("Expected \(statusUpdateAction) to be \(OrderAction.self).updateOrder.", file: file, line: line)
             return
         }
@@ -174,7 +174,7 @@ private extension OrderFulfillmentUseCaseTests {
                                file: StaticString = #file,
                                line: UInt = #line) {
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
-            guard case let .updateOrder(siteID: _, orderID: _, status: _, onCompletion: onCompletion) = action else {
+            guard case let .updateOrderStatus(siteID: _, orderID: _, status: _, onCompletion: onCompletion) = action else {
                 XCTFail("Unexpected action \(action).", file: file, line: line)
                 return
             }

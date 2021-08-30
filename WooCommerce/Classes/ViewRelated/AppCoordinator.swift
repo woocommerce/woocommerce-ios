@@ -52,11 +52,20 @@ final class AppCoordinator {
                     }
                 }
                 self.isLoggedIn = isLoggedIn
+                self.showWhatsNewIfNeeded()
             }
     }
 }
 
 private extension AppCoordinator {
+
+    /// Displays the What's New Screen.
+    ///
+    func showWhatsNewIfNeeded() {
+        // TODO: Check the saved Announcement App Version in order to display or not the what's new component
+        stores.dispatch(AnnouncementsAction.synchronizeAnnouncements(onCompletion: { _ in }))
+    }
+
     /// Displays the WordPress.com Authentication UI.
     ///
     func displayAuthenticator() {

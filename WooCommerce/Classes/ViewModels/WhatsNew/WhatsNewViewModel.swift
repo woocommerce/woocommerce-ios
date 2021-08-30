@@ -1,7 +1,7 @@
 import Foundation
 import Yosemite
 
-final class WhatsNewViewModel: ReportListConvertible, ReportListPresentable {
+final class WhatsNewViewModel: ReportListPresentable {
     let items: [ReportItem]
     let onDismiss: () -> Void
     let title = Localization.title

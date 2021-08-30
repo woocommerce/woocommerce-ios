@@ -12,6 +12,8 @@ struct LargeTitleView: View {
     }
 }
 
+// MARK: - Preview
+//
 struct LargeTitleView_Previews: PreviewProvider {
     static var previews: some View {
         LargeTitleView(text: "What's New in WooCommerce")

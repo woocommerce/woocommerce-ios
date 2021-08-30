@@ -1,6 +1,8 @@
 import Kingfisher
 import SwiftUI
 
+/// Represent a row with a title, subtitle and icon. Used to fill up reports such as What's New in WooCommerce
+///
 struct IconListItem: View {
     let title: String
     let subtitle: String
@@ -39,19 +41,21 @@ struct IconListItem: View {
     }
 }
 
+// MARK: - Preview
+//
 struct IconListItem_Previews: PreviewProvider {
     static var previews: some View {
         IconListItem(title: "Title",
-                          subtitle: "Subtitle",
-                          iconUrl: "https://s0.wordpress.com/i/store/mobile/plans-premium.png",
-                          icon: nil)
+                     subtitle: "Subtitle",
+                     iconUrl: "https://s0.wordpress.com/i/store/mobile/plans-premium.png",
+                     icon: nil)
             .previewLayout(.fixed(width: 375, height: 100))
             .previewDisplayName("Regular Icon List Item")
 
         IconListItem(title: "Title",
-                          subtitle: "Subtitle",
-                          iconUrl: "https://s0.wordpress.com/i/store/mobile/plans-premium.png",
-                          icon: nil)
+                     subtitle: "Subtitle",
+                     iconUrl: "https://s0.wordpress.com/i/store/mobile/plans-premium.png",
+                     icon: nil)
             .previewLayout(.fixed(width: 375, height: 100))
             .environment(\.layoutDirection, .rightToLeft)
             .previewDisplayName("RightToLeft Regular Icon List Item")

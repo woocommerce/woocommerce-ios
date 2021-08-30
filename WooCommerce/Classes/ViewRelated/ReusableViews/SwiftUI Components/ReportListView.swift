@@ -1,10 +1,8 @@
 import SwiftUI
-
-protocol ReportListConvertible {
-    var items: [ReportItem] { get }
-}
+import Yosemite
 
 protocol ReportListPresentable {
+    var items: [ReportItem] { get }
     var title: String { get }
     var ctaTitle: String { get }
     var onDismiss: () -> Void { get }
@@ -23,8 +21,10 @@ struct ReportItem: Identifiable {
     }
 }
 
+/// Represent a screen with a list of IconListItems. Mainly used to present reports such as What's New in WooCommerce.
+///
 struct ReportListView: View {
-    let viewModel: ReportListConvertible & ReportListPresentable
+    let viewModel: ReportListPresentable
     private var isPad: Bool { UIDevice.isPad() }
 
     var body: some View {
@@ -49,8 +49,20 @@ struct ReportListView: View {
     }
 }
 
+// MARK: - Preview
+//
 struct ReportListView_Previews: PreviewProvider {
+    static var features: [Feature] {
+        let featureJson = ["title": "foo",
+                           "subtitle": "bar",
+                           "iconBase64": "",
+                           "iconUrl": "https://s0.wordpress.com/i/store/mobile/plans-premium.png"]
+        let jsonData = try? JSONSerialization.data(withJSONObject: featureJson, options: .fragmentsAllowed)
+        let feature = try? JSONDecoder().decode(Feature.self, from: jsonData ?? Data())
+        return [feature, feature, feature].compactMap { $0 }
+    }
+
     static var previews: some View {
-        ReportListView(viewModel: WhatsNewViewModel(items: [], onDismiss: {}))
+        ReportListView(viewModel: WhatsNewViewModel(items: features, onDismiss: {}))
     }
 }

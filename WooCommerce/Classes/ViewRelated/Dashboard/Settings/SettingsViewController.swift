@@ -303,7 +303,7 @@ private extension SettingsViewController {
         sections.append(Section(title: appSettingsTitle, rows: [.privacy], footerHeight: UITableView.automaticDimension))
 
         // About the App
-        sections.append(Section(title: aboutTheAppTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension))
+        sections.append(Section(title: aboutTheAppTitle, rows: [.about, .whatsNew, .licenses], footerHeight: UITableView.automaticDimension))
 
         // Other
         #if DEBUG
@@ -351,6 +351,8 @@ private extension SettingsViewController {
             configureWormholy(cell: cell)
         case let cell as BasicTableViewCell where row == .logout:
             configureLogout(cell: cell)
+        case let cell as BasicTableViewCell where row == .whatsNew:
+            configureWhatsNew(cell: cell)
         default:
             fatalError()
         }
@@ -429,6 +431,12 @@ private extension SettingsViewController {
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Launch Wormholy Debug",
                                                  comment: "Opens an internal library called Wormholy. Not visible to users.")
+    }
+
+    func configureWhatsNew(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("What's New in WooCommerce", comment: "Navigates to screen containing the latest WooCommerce Features")
     }
 
     func configureLogout(cell: BasicTableViewCell) {
@@ -574,6 +582,16 @@ private extension SettingsViewController {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "wormholy_fire"), object: nil)
     }
 
+    func whatsNewWasPressed() {
+        ServiceLocator.stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
+            guard let self = self, let (announcement, _) = try? result.get() else { return }
+            let viewController = WhatsNewFactory.whatsNew(announcement) { [weak self] in
+                self?.dismiss(animated: true)
+            }
+            self.present(viewController, animated: true, completion: nil)
+        }))
+    }
+
     func logOutUser() {
         ServiceLocator.stores.deauthenticate()
         navigationController?.popToRootViewController(animated: true)
@@ -677,6 +695,8 @@ extension SettingsViewController: UITableViewDelegate {
             deviceSettingsWasPressed()
         case .wormholy:
             wormholyWasPressed()
+        case .whatsNew:
+            whatsNewWasPressed()
         case .logout:
             logoutWasPressed()
         default:
@@ -713,6 +733,7 @@ private enum Row: CaseIterable {
     case licenses
     case deviceSettings
     case wormholy
+    case whatsNew
 
     var type: UITableViewCell.Type {
         switch self {
@@ -741,6 +762,8 @@ private enum Row: CaseIterable {
         case .deviceSettings:
             return BasicTableViewCell.self
         case .wormholy:
+            return BasicTableViewCell.self
+        case .whatsNew:
             return BasicTableViewCell.self
         }
     }

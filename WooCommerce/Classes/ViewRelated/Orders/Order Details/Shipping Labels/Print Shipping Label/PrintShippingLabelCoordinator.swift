@@ -156,7 +156,8 @@ private extension PrintShippingLabelCoordinator {
     /// Show customs form printing if separate customs form is available
     ///
     func showCustomsFormPrintingIfNeeded() {
-        guard let url = shippingLabel.commercialInvoiceURL else {
+        guard let url = shippingLabel.commercialInvoiceURL,
+              printType == .print else {
             return
         }
 

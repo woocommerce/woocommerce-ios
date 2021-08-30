@@ -53,5 +53,9 @@ public enum OrderAction: Action {
 
     /// Updates a given Order's Status.
     ///
-    case updateOrder(siteID: Int64, orderID: Int64, status: OrderStatusEnum, onCompletion: (Error?) -> Void)
+    case updateOrderStatus(siteID: Int64, orderID: Int64, status: OrderStatusEnum, onCompletion: (Error?) -> Void)
+
+    /// Updates the specified fields from an order.
+    ///
+    case updateOrder(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: (Result<Order, Error>) -> Void)
 }

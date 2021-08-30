@@ -2,6 +2,7 @@ import Foundation
 import Networking
 import Storage
 import Hardware
+import WordPressKit
 
 
 
@@ -11,12 +12,14 @@ public typealias Account = Networking.Account
 public typealias AccountSettings = Networking.AccountSettings
 public typealias AddOnGroup = Networking.AddOnGroup
 public typealias Address = Networking.Address
+public typealias Announcement = WordPressKit.Announcement
 public typealias APNSDevice = Networking.APNSDevice
 public typealias CommentStatus = Networking.CommentStatus
 public typealias Country = Networking.Country
 public typealias Credentials = Networking.Credentials
 public typealias CreateProductVariation = Networking.CreateProductVariation
 public typealias DotcomDevice = Networking.DotcomDevice
+public typealias Feature = WordPressKit.Feature
 public typealias Leaderboard = Networking.Leaderboard
 public typealias LeaderboardRow = Networking.LeaderboardRow
 public typealias LeaderboardRowContent = Networking.LeaderboardRowContent
@@ -42,6 +45,7 @@ public typealias OrderStatsV4 = Networking.OrderStatsV4
 public typealias OrderStatsV4Interval = Networking.OrderStatsV4Interval
 public typealias OrderStatsV4Totals = Networking.OrderStatsV4Totals
 public typealias OrderStatus = Networking.OrderStatus
+public typealias OrderUpdateField = Networking.OrdersRemote.UpdateOrderField
 public typealias PaymentGateway = Networking.PaymentGateway
 public typealias PaymentGatewayAccount = Networking.PaymentGatewayAccount
 public typealias Product = Networking.Product
@@ -135,7 +139,9 @@ public typealias StorageAccount = Storage.Account
 public typealias StorageAccountSettings = Storage.AccountSettings
 public typealias StorageAttribute = Storage.GenericAttribute
 public typealias StorageAddOnGroup = Storage.AddOnGroup
+public typealias StorageAnnouncement = Storage.Announcement
 public typealias StorageEligibilityErrorInfo = Storage.EligibilityErrorInfo
+public typealias StorageFeature = Storage.Feature
 public typealias StorageNote = Storage.Note
 public typealias StorageOrder = Storage.Order
 public typealias StorageOrderItemAttribute = Storage.OrderItemAttribute

@@ -56,7 +56,7 @@ final class CardReaderTests: XCTestCase {
         let mockReader = MockStripeCardReader.stripeM2()
         let cardReader = CardReader(reader: mockReader)
 
-        XCTAssertEqual(cardReader.readerType, .chipper)
+        XCTAssertEqual(cardReader.readerType, .stripeM2)
     }
 
     func test_card_reader_maps_reader_type_for_verifone() {

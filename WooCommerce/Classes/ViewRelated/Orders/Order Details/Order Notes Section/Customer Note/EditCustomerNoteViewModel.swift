@@ -67,6 +67,12 @@ final class EditCustomerNoteViewModel: ObservableObject {
         performingNetworkRequest.send(true)
         stores.dispatch(action)
     }
+
+    /// Track the cancel scenario
+    ///
+    func userDidCancelFlow() {
+        analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCanceled(subject: .customerNote))
+    }
 }
 
 // MARK: Definitions

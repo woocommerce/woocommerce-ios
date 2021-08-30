@@ -78,7 +78,10 @@ struct EditCustomerNote: View {
                 .navigationBarItems(trailing: navigationBarTrailingItem()) // The only way I've found to make buttons bold is to set them here.
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
-                        Button(Localization.cancel, action: dismiss)
+                        Button(Localization.cancel, action: {
+                            viewModel.userDidCancelFlow()
+                            dismiss()
+                        })
                     }
                 }
         }

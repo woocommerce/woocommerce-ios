@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 
+/// View model used to fill up the What's New Component, map from Features to ReportItems and dispatch analytics events
 final class WhatsNewViewModel: ReportListPresentable {
     let items: [ReportItem]
     let onDismiss: () -> Void

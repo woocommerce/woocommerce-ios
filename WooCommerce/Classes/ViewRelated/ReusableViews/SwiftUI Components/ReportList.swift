@@ -31,14 +31,13 @@ struct ReportItem: Identifiable {
 ///
 struct ReportList: View {
     let viewModel: ReportListPresentable
-    @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
-    @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
+    @Environment(\.horizontalSizeClass) var sizeClass: UserInterfaceSizeClass?
 
     var body: some View {
         VStack {
-            Spacer(minLength: Layout.topSpaceLength(verticalSizeClass, horizontalSizeClass))
+            Spacer(minLength: Layout.topSpaceLength(sizeClass))
             LargeTitleView(text: viewModel.title)
-            Spacer(minLength: Layout.listTopSpacerLength(verticalSizeClass, horizontalSizeClass))
+            Spacer(minLength: Layout.listTopSpacerLength(sizeClass))
             ScrollView {
                 ForEach(viewModel.items, id: \.id) {
                     IconListItem(title: $0.title,
@@ -49,8 +48,8 @@ struct ReportList: View {
             Spacer()
             Button(viewModel.ctaTitle, action: viewModel.onDismiss)
                 .buttonStyle(PrimaryButtonStyle())
-                .padding(.horizontal, Layout.buttonHorizontalPadding(verticalSizeClass, horizontalSizeClass))
-                .padding(.bottom, Layout.buttonVerticalPadding(verticalSizeClass, horizontalSizeClass))
+                .padding(.horizontal, Layout.buttonHorizontalPadding(sizeClass))
+                .padding(.bottom, Layout.buttonVerticalPadding(sizeClass))
         }
     }
 }
@@ -58,24 +57,20 @@ struct ReportList: View {
 private extension ReportList {
     enum Layout {
 
-        static func topSpaceLength(_ verticalSizeClass: UserInterfaceSizeClass?,
-                                   _ horizontalSizeClass: UserInterfaceSizeClass?) -> CGFloat {
-            verticalSizeClass == .regular && horizontalSizeClass == .compact ? 40 : 75
+        static func topSpaceLength(_ sizeClass: UserInterfaceSizeClass?) -> CGFloat {
+            sizeClass == .regular ? 40 : 75
         }
 
-        static func listTopSpacerLength(_ verticalSizeClass: UserInterfaceSizeClass?,
-                                        _ horizontalSizeClass: UserInterfaceSizeClass?) -> CGFloat {
-            verticalSizeClass == .regular && horizontalSizeClass == .compact ? 32 : 40
+        static func listTopSpacerLength(_ sizeClass: UserInterfaceSizeClass?) -> CGFloat {
+            sizeClass == .regular ? 32 : 40
         }
 
-        static func buttonHorizontalPadding(_ verticalSizeClass: UserInterfaceSizeClass?,
-                                            _ horizontalSizeClass: UserInterfaceSizeClass?) -> CGFloat {
-            verticalSizeClass == .regular && horizontalSizeClass == .compact ? 40 : 24
+        static func buttonHorizontalPadding(_ sizeClass: UserInterfaceSizeClass?) -> CGFloat {
+            sizeClass == .regular ? 40 : 24
         }
 
-        static func buttonVerticalPadding(_ verticalSizeClass: UserInterfaceSizeClass?,
-                                          _ horizontalSizeClass: UserInterfaceSizeClass?) -> CGFloat {
-            verticalSizeClass == .regular && horizontalSizeClass == .compact ? 40 : 60
+        static func buttonVerticalPadding(_ sizeClass: UserInterfaceSizeClass?) -> CGFloat {
+            sizeClass == .regular ? 40 : 60
         }
     }
 }

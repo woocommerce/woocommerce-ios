@@ -159,8 +159,7 @@ private extension AnnouncementsStore {
 // MARK: - Announcement Extension
 private extension Announcement {
     func isSameVersion(_ announcement: StorageAnnouncement) -> Bool {
-        return self.appVersionName == announcement.appVersionName &&
-            self.announcementVersion == announcement.announcementVersion
+        self.appVersionName == announcement.appVersionName && self.announcementVersion == announcement.announcementVersion
     }
 }
 

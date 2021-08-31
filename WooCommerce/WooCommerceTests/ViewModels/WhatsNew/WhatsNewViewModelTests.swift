@@ -2,7 +2,6 @@ import XCTest
 import Yosemite
 @testable import WooCommerce
 
-/// Test cases for `WhatsNewViewModel`.
 class WhatsNewViewModelTests: XCTestCase {
 
     func test_on_init_with_no_items_it_has_no_items() {

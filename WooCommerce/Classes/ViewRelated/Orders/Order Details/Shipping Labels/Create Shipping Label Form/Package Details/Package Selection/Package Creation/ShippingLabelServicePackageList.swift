@@ -53,7 +53,7 @@ private extension ShippingLabelServicePackageList {
     enum Localization {
         static let servicePackageHeader = NSLocalizedString(
             "Set up the package you'll be using to ship your products. We'll save it for future orders.",
-            comment: "Header text on Add New Custom Package screen in Shipping Label flow")
+            comment: "Header text on Add New Service Package screen in Shipping Label flow")
         static let doneButton = NSLocalizedString("Done", comment: "Done navigation button in the Custom Package screen in Shipping Label flow")
     }
 

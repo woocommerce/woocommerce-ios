@@ -6,7 +6,7 @@ import Yosemite
 class WhatsNewViewModelTests: XCTestCase {
 
     func test_on_init_with_no_items_it_has_no_items() {
-        // Arrange
+        // Arrange, Act
         let viewModel = WhatsNewViewModel(items: [], onDismiss: {})
 
         // Assert
@@ -14,18 +14,19 @@ class WhatsNewViewModelTests: XCTestCase {
     }
 
     func test_on_init_with_features_it_has_items() throws {
-        // Arrange
-        let viewModel = WhatsNewViewModel(items: [try makeFeature()], onDismiss: {})
+        // Arrange, Act
+        let feature = try makeFeature()
+        let viewModel = WhatsNewViewModel(items: [feature], onDismiss: {})
 
         // Assert
-        XCTAssertEqual(viewModel.items.first?.title, Expectations.Feature.title)
-        XCTAssertEqual(viewModel.items.first?.subtitle, Expectations.Feature.subtitle)
-        XCTAssertEqual(viewModel.items.first?.iconUrl, Expectations.Feature.iconUrl)
-        XCTAssertEqual(viewModel.items.first?.iconBase64, Expectations.Feature.iconBase64)
+        XCTAssertEqual(viewModel.items.first?.title, feature.title)
+        XCTAssertEqual(viewModel.items.first?.subtitle, feature.subtitle)
+        XCTAssertEqual(viewModel.items.first?.iconUrl, feature.iconUrl)
+        XCTAssertEqual(viewModel.items.first?.iconBase64, feature.iconBase64)
     }
 
     func test_it_has_expected_localized_texts() {
-        // Arrange
+        // Arrange, Act
         let viewModel = WhatsNewViewModel(items: [], onDismiss: {})
 
         // Assert
@@ -35,26 +36,18 @@ class WhatsNewViewModelTests: XCTestCase {
 }
 
 private extension WhatsNewViewModelTests {
-
     enum Expectations {
-        enum Feature {
-            static let title = "foo"
-            static let subtitle = "bar"
-            static let iconUrl = "https://s0.wordpress.com/i/store/mobile/plans-premium.png"
-            static let iconBase64 = "test"
-        }
         static let title = "What’s New in WooCommerce"
         static let ctaTitle = "Continue"
     }
 
     func makeFeature() throws -> Feature {
-        let featureDictionary: [String: Any] = [
+        let jsonData = try JSONSerialization.data(withJSONObject: [
             "title": "foo",
             "subtitle": "bar",
             "iconBase64": "test",
             "iconUrl": "https://s0.wordpress.com/i/store/mobile/plans-premium.png"
-        ]
-        let jsonData = try JSONSerialization.data(withJSONObject: featureDictionary)
+        ])
         return try JSONDecoder().decode(Feature.self, from: jsonData)
     }
 }

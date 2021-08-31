@@ -48,22 +48,11 @@ private extension IconListItem {
 }
 
 // MARK: - Preview
-//
 struct IconListItem_Previews: PreviewProvider {
     static var previews: some View {
-        IconListItem(title: "Title",
-                     subtitle: "Subtitle",
-                     iconUrl: "https://s0.wordpress.com/i/store/mobile/plans-premium.png",
-                     icon: nil)
+        IconListItem(title: "Title", subtitle: "Subtitle", iconUrl: "https://s0.wordpress.com/i/store/mobile/plans-premium.png", icon: nil)
             .previewLayout(.fixed(width: 375, height: 100))
             .previewDisplayName("Regular Icon List Item")
-
-        IconListItem(title: "Title",
-                     subtitle: "Subtitle",
-                     iconUrl: "https://s0.wordpress.com/i/store/mobile/plans-premium.png",
-                     icon: nil)
-            .previewLayout(.fixed(width: 375, height: 100))
-            .environment(\.layoutDirection, .rightToLeft)
-            .previewDisplayName("RightToLeft Regular Icon List Item")
+            .environment(\.layoutDirection, .leftToRight)
     }
 }

@@ -50,14 +50,13 @@ struct ReportListView: View {
 }
 
 // MARK: - Preview
-//
 struct ReportListView_Previews: PreviewProvider {
     static var features: [Feature] {
-        let featureJson = ["title": "foo",
-                           "subtitle": "bar",
-                           "iconBase64": "",
-                           "iconUrl": "https://s0.wordpress.com/i/store/mobile/plans-premium.png"]
-        let jsonData = try? JSONSerialization.data(withJSONObject: featureJson, options: .fragmentsAllowed)
+        let jsonData = try? JSONSerialization.data(withJSONObject: ["title": "foo",
+                                                                    "subtitle": "bar",
+                                                                    "iconBase64": "",
+                                                                    "iconUrl": "https://s0.wordpress.com/i/store/mobile/plans-premium.png"],
+                                                   options: .fragmentsAllowed)
         let feature = try? JSONDecoder().decode(Feature.self, from: jsonData ?? Data())
         return [feature, feature, feature].compactMap { $0 }
     }

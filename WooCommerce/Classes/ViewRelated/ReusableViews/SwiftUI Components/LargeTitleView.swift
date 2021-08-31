@@ -6,8 +6,9 @@ struct LargeTitleView: View {
 
     var body: some View {
         Text(text)
+            .font(.largeTitle)
+            .bold()
             .multilineTextAlignment(.center)
-            .font(.system(size: 34, weight: .bold, design: .default))
     }
 }
 

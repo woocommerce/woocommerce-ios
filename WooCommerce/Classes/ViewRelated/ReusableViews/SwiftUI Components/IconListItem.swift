@@ -33,7 +33,7 @@ struct IconListItem: View {
         .padding(.vertical, 16)
     }
 
-    var subtitleColor: Color {
+    private var subtitleColor: Color {
         Color(UIColor { $0.userInterfaceStyle == .dark
             ? UIColor(red: 1, green: 1, blue: 1, alpha: 0.6)
             : UIColor(red: 0, green: 0, blue: 0, alpha: 0.6)

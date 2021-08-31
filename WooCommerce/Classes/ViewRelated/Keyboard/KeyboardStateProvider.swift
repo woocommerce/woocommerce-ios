@@ -6,6 +6,7 @@ import UIKit
 struct KeyboardState: Equatable {
     /// True if the keyboard is visible.
     let isVisible: Bool
+
     /// The frame of the keyboard when it is fully shown or hidden.
     ///
     /// The value is from `UIResponder.keyboardFrameEndUserInfoKey`.

@@ -36,9 +36,9 @@ struct IconListItem: View {
                 .frame(width: Constants.iconSize.width, height: Constants.iconSize.height)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
-                    .font(.system(size: 17, weight: .semibold, design: .default))
+                    .headlineStyle()
                 Text(subtitle)
-                    .font(.system(size: 17, weight: .regular, design: .default))
+                    .bodyStyle()
                     .foregroundColor(subtitleColor)
             }
             Spacer()

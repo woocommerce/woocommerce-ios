@@ -15,8 +15,8 @@ final class WhatsNewViewModel: ReportListPresentable {
     /// Title of the Call to action button
     let ctaTitle = Localization.ctaTitle
 
-    init(items: [Feature], onDismiss: @escaping () -> Void) {
-        self.items = items.map { ReportItem(title: $0.title, subtitle: $0.subtitle, iconUrl: $0.iconUrl, iconBase64: $0.iconBase64)}
+    init(items: [ReportItem], onDismiss: @escaping () -> Void) {
+        self.items = items
         self.onDismiss = onDismiss
     }
 }

@@ -1,31 +1,32 @@
 import Kingfisher
 import SwiftUI
 
-/// Represents an icon to be displayed. Base64 or Remote (from web)
-enum Icon {
-    /// Base64 icon
-    case base64(UIImage)
-
-    /// Icon that comes from an URL
-    case remote(URL)
-
-    /// Return an Image for base64 or a FKImage in case of a remote one
-    @ViewBuilder
-    func getImage() -> some View {
-        switch self {
-        case .base64(let image):
-            Image(uiImage: image)
-                .resizable()
-        case .remote(let url):
-            KFImage(url)
-                .resizable()
-        }
-    }
-}
-
 /// Represent a row with a title, subtitle and icon. Used to fill up reports such as What's New in WooCommerce
 ///
 struct IconListItem: View {
+
+    /// Represents an icon to be displayed. Base64 or Remote (from web)
+    enum Icon {
+        /// Base64 icon
+        case base64(UIImage)
+
+        /// Icon that comes from an URL
+        case remote(URL)
+
+        /// Return an Image for base64 or a FKImage in case of a remote one
+        @ViewBuilder
+        func getImage() -> some View {
+            switch self {
+            case .base64(let image):
+                Image(uiImage: image)
+                    .resizable()
+            case .remote(let url):
+                KFImage(url)
+                    .resizable()
+            }
+        }
+    }
+
     let title: String
     let subtitle: String
     let icon: Icon?

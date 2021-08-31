@@ -28,7 +28,9 @@ struct ShippingLabelServicePackageList: View {
                         }
                         .padding(.horizontal, insets: safeAreaInsets)
                         .background(Color(.systemBackground))
-                    Divider().padding(.leading, Constants.horizontalPadding)
+                    Divider()
+                        .padding(.horizontal, insets: safeAreaInsets)
+                        .padding(.leading, Constants.dividerPadding)
                 }
             }
         }
@@ -58,7 +60,7 @@ private extension ShippingLabelServicePackageList {
     }
 
     enum Constants {
-        static let horizontalPadding: CGFloat = 16
+        static let dividerPadding: CGFloat = 48
         static let verticalSpacing: CGFloat = 16
     }
 }

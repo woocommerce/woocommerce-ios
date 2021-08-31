@@ -1108,7 +1108,9 @@
 		D41C9F2926D99E9700993558 /* LargeTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41C9F2826D99E9700993558 /* LargeTitleView.swift */; };
 		D41C9F2E26D9A0E900993558 /* WhatsNewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41C9F2D26D9A0E900993558 /* WhatsNewViewModel.swift */; };
 		D41C9F3126D9A43200993558 /* WhatsNewViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41C9F3026D9A43200993558 /* WhatsNewViewModelTests.swift */; };
-		D41C9F3426DD439200993558 /* WhatsNewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41C9F3326DD439200993558 /* WhatsNewFactory.swift */; };
+		D449C51B26DE6B5000D75B02 /* ReportListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D449C51826DE6B5000D75B02 /* ReportListView.swift */; };
+		D449C51C26DE6B5000D75B02 /* IconListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D449C51926DE6B5000D75B02 /* IconListItem.swift */; };
+		D449C51D26DE6B5000D75B02 /* LargeTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D449C51A26DE6B5000D75B02 /* LargeTitleView.swift */; };
 		D802541F2655137A001B2CC1 /* CardPresentModalNonRetryableError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D802541E2655137A001B2CC1 /* CardPresentModalNonRetryableError.swift */; };
 		D802546B2655180A001B2CC1 /* CardPresentModalReaderIsReadyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D802546A2655180A001B2CC1 /* CardPresentModalReaderIsReadyTests.swift */; };
 		D802547326551D0F001B2CC1 /* CardPresentModalTapCardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D802547226551D0F001B2CC1 /* CardPresentModalTapCardTests.swift */; };
@@ -2503,6 +2505,9 @@
 		D41C9F2826D99E9700993558 /* LargeTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeTitleView.swift; sourceTree = "<group>"; };
 		D41C9F2D26D9A0E900993558 /* WhatsNewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewViewModel.swift; sourceTree = "<group>"; };
 		D41C9F3026D9A43200993558 /* WhatsNewViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewViewModelTests.swift; sourceTree = "<group>"; };
+		D449C51826DE6B5000D75B02 /* ReportListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportListView.swift; sourceTree = "<group>"; };
+		D449C51926DE6B5000D75B02 /* IconListItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconListItem.swift; sourceTree = "<group>"; };
+		D449C51A26DE6B5000D75B02 /* LargeTitleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LargeTitleView.swift; sourceTree = "<group>"; };
 		D802541E2655137A001B2CC1 /* CardPresentModalNonRetryableError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalNonRetryableError.swift; sourceTree = "<group>"; };
 		D802546A2655180A001B2CC1 /* CardPresentModalReaderIsReadyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalReaderIsReadyTests.swift; sourceTree = "<group>"; };
 		D802547226551D0F001B2CC1 /* CardPresentModalTapCardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalTapCardTests.swift; sourceTree = "<group>"; };
@@ -4280,6 +4285,9 @@
 		45D875D72611EA3D00226C3F /* SwiftUI Components */ = {
 			isa = PBXGroup;
 			children = (
+				D449C51926DE6B5000D75B02 /* IconListItem.swift */,
+				D449C51A26DE6B5000D75B02 /* LargeTitleView.swift */,
+				D449C51826DE6B5000D75B02 /* ReportListView.swift */,
 				DEC2962826C20ECB005A056B /* CollapsibleView.swift */,
 				45D875D12611EA2100226C3F /* ListHeaderView.swift */,
 				45DB703F261209B10064A6CF /* ItemToFulfillRow.swift */,
@@ -4929,6 +4937,7 @@
 				B559EBAD20A0BF8E00836CD4 /* README.md */,
 				B559EBAE20A0BF8F00836CD4 /* LICENSE */,
 				F4B77A83B2A3D94EA331691B /* Pods */,
+				D449C51726DE6AD200D75B02 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -4973,7 +4982,6 @@
 		B56DB3EF2049C06D00D4AA8E /* ViewRelated */ = {
 			isa = PBXGroup;
 			children = (
-				D41C9F3226DD436D00993558 /* WhatsNew */,
 				571B850024CF7E1600CF58A7 /* InAppFeedback */,
 				0235594024496414004BE2B8 /* BottomSheet */,
 				D8815ADC26383E3E00EDAD62 /* CardPresentPayments */,
@@ -5979,6 +5987,16 @@
 				D41C9F3026D9A43200993558 /* WhatsNewViewModelTests.swift */,
 			);
 			path = WhatsNew;
+			sourceTree = "<group>";
+		};
+		D449C51726DE6AD200D75B02 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				D41C9F2826D99E9700993558 /* LargeTitleView.swift */,
+				D41C9F2626D994CD00993558 /* ReportListView.swift */,
+				D41C9F2426D97D5400993558 /* IconListItem.swift */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 		D8025469265517F9001B2CC1 /* CardPresentPayments */ = {
@@ -7426,6 +7444,7 @@
 				020DD48D2322A617005822B1 /* ProductsTabProductViewModel.swift in Sources */,
 				B5A56BF5219F5AB20065A902 /* NSNotificationName+Woo.swift in Sources */,
 				D41C9F2726D994CD00993558 /* ReportListView.swift in Sources */,
+				D449C51B26DE6B5000D75B02 /* ReportListView.swift in Sources */,
 				CC4A4FF126557D0E00B75DCD /* TitleAndToggleRow.swift in Sources */,
 				029B0F57234197B80010C1F3 /* ProductSearchUICommand.swift in Sources */,
 				DE19BB0C26C2688B00AB70D9 /* SelectionList.swift in Sources */,
@@ -7457,6 +7476,7 @@
 				45E9A6E924DAE3B800A600E8 /* ProductReviewsDataSource.swift in Sources */,
 				02ADC7D02398C8EB008D4BED /* UIColor+SystemColors.swift in Sources */,
 				021125992578D9C20075AD2A /* ShippingLabelPrintingInstructionsView.swift in Sources */,
+				D449C51C26DE6B5000D75B02 /* IconListItem.swift in Sources */,
 				CE16177A21B7192A00B82A47 /* AuthenticationConstants.swift in Sources */,
 				26A630ED253F3B5C00CBC3B1 /* RefundCreationUseCase.swift in Sources */,
 				4574745D24EA84D800CF49BC /* ProductTypeBottomSheetListSelectorCommand.swift in Sources */,
@@ -7633,6 +7653,7 @@
 				02C88775245036D400E4470F /* FilterProductListViewModel.swift in Sources */,
 				4590B6A8261F0F8300A6FCE0 /* SegmentedView.swift in Sources */,
 				02A65301246AA63600755A01 /* ProductDetailsFactory.swift in Sources */,
+				D449C51D26DE6B5000D75B02 /* LargeTitleView.swift in Sources */,
 				456396B625C82691001F1A26 /* ShippingLabelFormStepTableViewCell.swift in Sources */,
 				02C8876D24501FAC00E4470F /* FilterListViewController.swift in Sources */,
 				021FB44C24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift in Sources */,

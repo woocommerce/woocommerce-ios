@@ -1,25 +1,39 @@
 import Kingfisher
 import SwiftUI
 
+/// Represents an icon to be displayed. Base64 or Remote (from web)
+enum Icon {
+    /// Base64 icon
+    case base64(UIImage)
+
+    /// Icon that comes from an URL
+    case remote(URL)
+
+    /// Return an Image for base64 or a FKImage in case of a remote one
+    @ViewBuilder
+    func getImage() -> some View {
+        switch self {
+        case .base64(let image):
+            Image(uiImage: image)
+                .resizable()
+        case .remote(let url):
+            KFImage(url)
+                .resizable()
+        }
+    }
+}
+
 /// Represent a row with a title, subtitle and icon. Used to fill up reports such as What's New in WooCommerce
 ///
 struct IconListItem: View {
     let title: String
     let subtitle: String
-    let iconUrl: String
-    let icon: UIImage?
+    let icon: Icon?
 
     var body: some View {
         HStack(alignment: .center, spacing: 16) {
-            if let icon = icon {
-                Image(uiImage: icon)
-                    .resizable()
-                    .frame(width: Constants.iconSize.width, height: Constants.iconSize.height)
-            } else if let url = URL(string: iconUrl) {
-                KFImage(url)
-                    .resizable()
-                    .frame(width: Constants.iconSize.width, height: Constants.iconSize.height)
-            }
+            icon?.getImage()
+                .frame(width: Constants.iconSize.width, height: Constants.iconSize.height)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .font(.system(size: 17, weight: .semibold, design: .default))
@@ -50,7 +64,9 @@ private extension IconListItem {
 // MARK: - Preview
 struct IconListItem_Previews: PreviewProvider {
     static var previews: some View {
-        IconListItem(title: "Title", subtitle: "Subtitle", iconUrl: "https://s0.wordpress.com/i/store/mobile/plans-premium.png", icon: nil)
+        IconListItem(title: "Title",
+                     subtitle: "Subtitle",
+                     icon: .remote(URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")!))
             .previewLayout(.fixed(width: 375, height: 100))
             .previewDisplayName("Regular Icon List Item")
             .environment(\.layoutDirection, .leftToRight)

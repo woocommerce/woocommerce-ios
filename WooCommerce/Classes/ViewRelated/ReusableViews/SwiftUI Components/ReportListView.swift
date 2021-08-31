@@ -15,9 +15,15 @@ struct ReportItem: Identifiable {
     let iconUrl: String
     let iconBase64: String?
 
-    var icon: UIImage? {
-        guard let base64String = iconBase64 else { return nil }
-        return Data(base64Encoded: base64String).flatMap { UIImage(data: $0) }
+    var icon: Icon? {
+        if let base64String = iconBase64,
+           let imageData = Data(base64Encoded: base64String),
+           let image = UIImage(data: imageData) {
+            return .base64(image)
+        } else if let url = URL(string: iconUrl) {
+            return .remote(url)
+        }
+        return nil
     }
 }
 
@@ -36,7 +42,6 @@ struct ReportListView: View {
                 ForEach(viewModel.items, id: \.id) {
                     IconListItem(title: $0.title,
                                  subtitle: $0.subtitle,
-                                 iconUrl: $0.iconUrl,
                                  icon: $0.icon)
                 }
             }

@@ -1107,7 +1107,7 @@
 		D41C9F3126D9A43200993558 /* WhatsNewViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41C9F3026D9A43200993558 /* WhatsNewViewModelTests.swift */; };
 		D449C51B26DE6B5000D75B02 /* ReportList.swift in Sources */ = {isa = PBXBuildFile; fileRef = D449C51826DE6B5000D75B02 /* ReportList.swift */; };
 		D449C51C26DE6B5000D75B02 /* IconListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D449C51926DE6B5000D75B02 /* IconListItem.swift */; };
-		D449C51D26DE6B5000D75B02 /* LargeTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D449C51A26DE6B5000D75B02 /* LargeTitleView.swift */; };
+		D449C51D26DE6B5000D75B02 /* LargeTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D449C51A26DE6B5000D75B02 /* LargeTitle.swift */; };
 		D802541F2655137A001B2CC1 /* CardPresentModalNonRetryableError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D802541E2655137A001B2CC1 /* CardPresentModalNonRetryableError.swift */; };
 		D802546B2655180A001B2CC1 /* CardPresentModalReaderIsReadyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D802546A2655180A001B2CC1 /* CardPresentModalReaderIsReadyTests.swift */; };
 		D802547326551D0F001B2CC1 /* CardPresentModalTapCardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D802547226551D0F001B2CC1 /* CardPresentModalTapCardTests.swift */; };
@@ -2504,7 +2504,7 @@
 		D41C9F3026D9A43200993558 /* WhatsNewViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewViewModelTests.swift; sourceTree = "<group>"; };
 		D449C51826DE6B5000D75B02 /* ReportList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportList.swift; sourceTree = "<group>"; };
 		D449C51926DE6B5000D75B02 /* IconListItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconListItem.swift; sourceTree = "<group>"; };
-		D449C51A26DE6B5000D75B02 /* LargeTitleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LargeTitleView.swift; sourceTree = "<group>"; };
+		D449C51A26DE6B5000D75B02 /* LargeTitle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LargeTitle.swift; sourceTree = "<group>"; };
 		D802541E2655137A001B2CC1 /* CardPresentModalNonRetryableError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalNonRetryableError.swift; sourceTree = "<group>"; };
 		D802546A2655180A001B2CC1 /* CardPresentModalReaderIsReadyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalReaderIsReadyTests.swift; sourceTree = "<group>"; };
 		D802547226551D0F001B2CC1 /* CardPresentModalTapCardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalTapCardTests.swift; sourceTree = "<group>"; };
@@ -4283,7 +4283,7 @@
 			isa = PBXGroup;
 			children = (
 				D449C51926DE6B5000D75B02 /* IconListItem.swift */,
-				D449C51A26DE6B5000D75B02 /* LargeTitleView.swift */,
+				D449C51A26DE6B5000D75B02 /* LargeTitle.swift */,
 				D449C51826DE6B5000D75B02 /* ReportList.swift */,
 				DEC2962826C20ECB005A056B /* CollapsibleView.swift */,
 				45D875D12611EA2100226C3F /* ListHeaderView.swift */,
@@ -7647,7 +7647,7 @@
 				02C88775245036D400E4470F /* FilterProductListViewModel.swift in Sources */,
 				4590B6A8261F0F8300A6FCE0 /* SegmentedView.swift in Sources */,
 				02A65301246AA63600755A01 /* ProductDetailsFactory.swift in Sources */,
-				D449C51D26DE6B5000D75B02 /* LargeTitleView.swift in Sources */,
+				D449C51D26DE6B5000D75B02 /* LargeTitle.swift in Sources */,
 				456396B625C82691001F1A26 /* ShippingLabelFormStepTableViewCell.swift in Sources */,
 				02C8876D24501FAC00E4470F /* FilterListViewController.swift in Sources */,
 				021FB44C24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift in Sources */,

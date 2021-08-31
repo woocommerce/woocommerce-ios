@@ -24,7 +24,7 @@ struct ReportList: View {
     var body: some View {
         VStack {
             Spacer(minLength: Layout.topSpaceLength(sizeClass))
-            LargeTitleView(text: viewModel.title)
+            LargeTitle(text: viewModel.title)
             Spacer(minLength: Layout.listTopSpacerLength(sizeClass))
             ScrollView {
                 ForEach(viewModel.items, id: \.id) {

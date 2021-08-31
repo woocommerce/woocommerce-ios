@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Represents a large title, mostly to be used at the top of view controllers like What's New Component
-struct LargeTitleView: View {
+struct LargeTitle: View {
     let text: String
 
     var body: some View {
@@ -13,8 +13,8 @@ struct LargeTitleView: View {
 }
 
 // MARK: - Preview
-struct LargeTitleView_Previews: PreviewProvider {
+struct LargeTitle_Previews: PreviewProvider {
     static var previews: some View {
-        LargeTitleView(text: "What's New in WooCommerce")
+        LargeTitle(text: "What's New in WooCommerce")
     }
 }

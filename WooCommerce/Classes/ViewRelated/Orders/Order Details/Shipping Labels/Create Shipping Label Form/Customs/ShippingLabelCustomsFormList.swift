@@ -10,6 +10,7 @@ struct ShippingLabelCustomsFormList: View {
          onCompletion: @escaping ([ShippingLabelCustomsForm]) -> Void) {
         self.viewModel = viewModel
         self.onCompletion = onCompletion
+        ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "customs_started"])
     }
 
     var body: some View {
@@ -32,6 +33,7 @@ struct ShippingLabelCustomsFormList: View {
         .navigationBarItems(trailing: Button(action: {
             onCompletion(viewModel.validatedCustomsForms)
             presentation.wrappedValue.dismiss()
+            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "customs_complete"])
         }, label: {
             Text(Localization.doneButton)
         }).disabled(!viewModel.doneButtonEnabled)

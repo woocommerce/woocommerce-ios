@@ -16,6 +16,11 @@ final class EditCustomerNoteViewModel: ObservableObject {
     ///
     @Published private(set) var navigationTrailingItem: NavigationItem = .done(enabled: false)
 
+    /// Defines the current notice that should be shown.
+    /// Defaults to `nil`.
+    ///
+    @Published var presentNotice: Notice?
+
     /// Order to be edited.
     ///
     private let order: Order
@@ -37,12 +42,21 @@ final class EditCustomerNoteViewModel: ObservableObject {
 
     /// Update the note remotely and invoke a completion block when finished
     ///
-    func updateNote(onFinish: @escaping () -> Void) {
+    func updateNote(onFinish: @escaping (Bool) -> Void) {
         let modifiedOrder = order.copy(customerNote: newNote)
         let action = OrderAction.updateOrder(siteID: order.siteID, order: modifiedOrder, fields: [.customerNote]) { [weak self] result in
-            self?.performingNetworkRequest.send(false)
-            onFinish()
-            // TODO: Show success or error notice
+            guard let self = self else { return }
+
+            self.performingNetworkRequest.send(false)
+            switch result {
+            case .success:
+                self.presentNotice = .success
+            case .failure(let error):
+                self.presentNotice = .error
+                DDLogError("⛔️ Unable to update the order: \(error)")
+            }
+
+            onFinish(result.isSuccess)
         }
 
         performingNetworkRequest.send(true)
@@ -57,6 +71,12 @@ extension EditCustomerNoteViewModel {
     enum NavigationItem: Equatable {
         case done(enabled: Bool)
         case loading
+    }
+
+    /// Representation of possible notices that can be displayed
+    enum Notice: Equatable {
+        case success
+        case error
     }
 }
 

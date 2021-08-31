@@ -76,7 +76,6 @@ public class AnnouncementsStore: Store {
 }
 
 private extension AnnouncementsStore {
-
     /// Get Announcements from Announcements API and persist this information on disk.
     func synchronizeAnnouncements(onCompletion: @escaping (Result<Announcement, Error>) -> Void) {
 
@@ -103,10 +102,7 @@ private extension AnnouncementsStore {
     /// Map `WordPressKit.Announcement` to `StorageAnnouncement` model
     func mapAnnouncementToStorageModel(_ announcement: Announcement, displayed: Bool) -> StorageAnnouncement {
         let mappedFeatures = announcement.features.map {
-            StorageFeature(title: $0.title,
-                           subtitle: $0.subtitle,
-                           iconUrl: $0.iconUrl,
-                           iconBase64: $0.iconBase64)
+            StorageFeature(title: $0.title, subtitle: $0.subtitle, iconUrl: $0.iconUrl, iconBase64: $0.iconBase64)
         }
 
         return StorageAnnouncement(appVersionName: announcement.appVersionName,
@@ -125,20 +121,14 @@ private extension AnnouncementsStore {
     func saveAnnouncement(_ announcement: Announcement) throws {
         let displayed = lastSavedAnnouncement.flatMap { announcement.isSameVersion($0) } ?? false
         let mappedAnnouncement = self.mapAnnouncementToStorageModel(announcement, displayed: displayed)
-        guard let fileURL = featureAnnouncementsFileURL else {
-            throw AnnouncementsStorageError.unableToFindFileURL
-        }
+        guard let fileURL = featureAnnouncementsFileURL else { throw AnnouncementsStorageError.unableToFindFileURL }
         try fileStorage.write(mappedAnnouncement, to: fileURL)
     }
 
     /// Load the latest saved `Announcement`. Returns an Error if there is no saved announcement.
     func loadSavedAnnouncement(onCompletion: (Result<(Announcement, IsDisplayed), Error>) -> Void) {
-        guard let fileURL = featureAnnouncementsFileURL else {
-            return onCompletion(.failure(AnnouncementsStorageError.unableToFindFileURL))
-        }
         do {
-            let savedStorageModel: StorageAnnouncement = try fileStorage.data(for: fileURL)
-            onCompletion(.success((try savedAnnouncement(), savedStorageModel.displayed)))
+            onCompletion(.success((try savedAnnouncement(), lastSavedAnnouncement?.displayed == true)))
         } catch {
             onCompletion(.failure(AnnouncementsStorageError.noAnnouncementSaved))
         }
@@ -155,9 +145,7 @@ private extension AnnouncementsStore {
     }
 
     func savedAnnouncement() throws -> Announcement {
-        guard let fileURL = featureAnnouncementsFileURL else {
-            throw AnnouncementsStorageError.unableToFindFileURL
-        }
+        guard let fileURL = featureAnnouncementsFileURL else { throw AnnouncementsStorageError.unableToFindFileURL }
         do {
             let savedModel: StorageAnnouncement = try fileStorage.data(for: fileURL)
             let encodedObject = try JSONEncoder().encode(savedModel)
@@ -169,7 +157,6 @@ private extension AnnouncementsStore {
 }
 
 // MARK: - Announcement Extension
-//
 private extension Announcement {
     func isSameVersion(_ announcement: StorageAnnouncement) -> Bool {
         return self.appVersionName == announcement.appVersionName &&
@@ -178,9 +165,7 @@ private extension Announcement {
 }
 
 // MARK: - Constants
-//
 private enum Constants {
-
     // MARK: File Names
     static let featureAnnouncementsFileName = "feature-announcements.plist"
 
@@ -189,7 +174,6 @@ private enum Constants {
 }
 
 // MARK: - Errors
-//
 enum AnnouncementsStorageError: Error {
     case unableToFindFileURL
     case noAnnouncementSaved

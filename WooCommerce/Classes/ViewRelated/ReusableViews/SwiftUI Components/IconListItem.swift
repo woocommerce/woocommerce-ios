@@ -38,20 +38,13 @@ struct IconListItem: View {
                 Text(title)
                     .headlineStyle()
                 Text(subtitle)
+                    .foregroundColor(Color(UIColor.gray(.shade30)))
                     .bodyStyle()
-                    .foregroundColor(subtitleColor)
             }
             Spacer()
         }
         .padding(.horizontal, 40)
         .padding(.vertical, 16)
-    }
-
-    private var subtitleColor: Color {
-        Color(UIColor { $0.userInterfaceStyle == .dark
-            ? UIColor(red: 1, green: 1, blue: 1, alpha: 0.6)
-            : UIColor(red: 0, green: 0, blue: 0, alpha: 0.6)
-        })
     }
 }
 

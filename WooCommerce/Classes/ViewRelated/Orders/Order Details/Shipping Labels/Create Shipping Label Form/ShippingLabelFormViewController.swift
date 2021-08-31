@@ -513,7 +513,7 @@ private extension ShippingLabelFormViewController {
         }
         let printCoordinator = PrintShippingLabelCoordinator(shippingLabel: purchasedShippingLabel,
                                                              printType: .print,
-                                                             sourceViewController: navigationController,
+                                                             sourceNavigationController: navigationController,
                                                              onCompletion: onLabelSave)
         printCoordinator.showPrintUI()
     }

@@ -26,7 +26,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
 
     /// The packages  response fetched from API
     ///
-    @Published private var packagesResponse: ShippingLabelPackagesResponse?
+    @Published private(set) var packagesResponse: ShippingLabelPackagesResponse?
 
     var dimensionUnit: String {
         return packagesResponse?.storeOptions.dimensionUnit ?? ""

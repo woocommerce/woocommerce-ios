@@ -5,6 +5,7 @@ import Yosemite
 import SafariServices
 import MessageUI
 import Combine
+import SwiftUI
 
 // MARK: - OrderDetailsViewController: Displays the details for a given Order.
 //
@@ -499,7 +500,7 @@ private extension OrderDetailsViewController {
                 assertionFailure("Cannot reprint a shipping label because `navigationController` is nil")
                 return
             }
-            let coordinator = PrintShippingLabelCoordinator(shippingLabel: shippingLabel, printType: .reprint, sourceViewController: navigationController)
+            let coordinator = PrintShippingLabelCoordinator(shippingLabel: shippingLabel, printType: .reprint, sourceNavigationController: navigationController)
             coordinator.showPrintUI()
         case .createShippingLabel:
             let shippingLabelFormVC = ShippingLabelFormViewController(order: viewModel.order)
@@ -606,6 +607,15 @@ private extension OrderDetailsViewController {
             // Disables the bottom bar (tab bar) when requesting a refund.
             refundViewController.hidesBottomBarWhenPushed = true
             self?.show(refundViewController, sender: self)
+        }
+
+        if let url = shippingLabel.commercialInvoiceURL {
+            actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelMoreMenu.printCustomsFormAction) { [weak self] _ in
+                let printCustomsFormsView = PrintCustomsFormsView(invoiceURLs: [url])
+                let hostingController = UIHostingController(rootView: printCustomsFormsView)
+                hostingController.hidesBottomBarWhenPushed = true
+                self?.show(hostingController, sender: self)
+            }
         }
 
         let popoverController = actionSheet.popoverPresentationController
@@ -1010,6 +1020,9 @@ private extension OrderDetailsViewController {
             static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the shipping label more menu action sheet")
             static let requestRefundAction = NSLocalizedString("Request a Refund",
                                                                comment: "Request a refund on a shipping label from the shipping label more menu action sheet")
+            static let printCustomsFormAction = NSLocalizedString("Print Customs Form",
+                                                                  comment: "Print the customs form for the shipping label" +
+                                                                    " from the shipping label more menu action sheet")
         }
 
         enum ShippingLabelTrackingMoreMenu {

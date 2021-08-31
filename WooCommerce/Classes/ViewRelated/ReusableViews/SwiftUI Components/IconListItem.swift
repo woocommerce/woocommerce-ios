@@ -32,10 +32,10 @@ struct IconListItem: View {
     let icon: Icon?
 
     var body: some View {
-        HStack(alignment: .center, spacing: 16) {
+        HStack(alignment: .center, spacing: Layout.contentSpacing) {
             icon?.getImage()
-                .frame(width: Constants.iconSize.width, height: Constants.iconSize.height)
-            VStack(alignment: .leading, spacing: 2) {
+                .frame(width: Layout.iconSize.width, height: Layout.iconSize.height)
+            VStack(alignment: .leading, spacing: Layout.innerSpacing) {
                 Text(title)
                     .headlineStyle()
                 Text(subtitle)
@@ -43,14 +43,18 @@ struct IconListItem: View {
             }
             Spacer()
         }
-        .padding(.horizontal, 40)
-        .padding(.vertical, 16)
+        .padding(.horizontal, Layout.horizontalPadding)
+        .padding(.vertical, Layout.verticalPadding)
     }
 }
 
 private extension IconListItem {
-    enum Constants {
+    enum Layout {
         static let iconSize = CGSize(width: 40, height: 40)
+        static let contentSpacing: CGFloat = 16
+        static let innerSpacing: CGFloat = 2
+        static let horizontalPadding: CGFloat = 40
+        static let verticalPadding: CGFloat = 16
     }
 }
 

@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct PrintCustomsFormsView: View {
-    let invoiceURLs: [String]
-    let showsSaveForLater: Bool
+    private let invoiceURLs: [String]
+    private let showsSaveForLater: Bool
 
     private let inProgressViewProperties = InProgressViewProperties(title: Localization.inProgressTitle, message: Localization.inProgressMessage)
     @State private var showingInProgress = false

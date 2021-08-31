@@ -38,8 +38,7 @@ struct IconListItem: View {
                 Text(title)
                     .headlineStyle()
                 Text(subtitle)
-                    .foregroundColor(Color(UIColor.gray(.shade30)))
-                    .bodyStyle()
+                    .secondaryBodyStyle()
             }
             Spacer()
         }

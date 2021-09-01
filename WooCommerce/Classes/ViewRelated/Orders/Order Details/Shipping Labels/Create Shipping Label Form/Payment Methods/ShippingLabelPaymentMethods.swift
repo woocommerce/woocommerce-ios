@@ -4,6 +4,7 @@ import Yosemite
 struct ShippingLabelPaymentMethods: View {
     @ObservedObject private var viewModel: ShippingLabelPaymentMethodsViewModel
     @Environment(\.presentationMode) var presentation
+    @State private var showAddPaymentWebView: Bool = false
 
     /// Completion callback
     ///
@@ -76,7 +77,7 @@ struct ShippingLabelPaymentMethods: View {
                         let buttonText = viewModel.paymentMethods.isEmpty ? Localization.addCreditCardButton : Localization.addAnotherCreditCardButton
 
                         Button(action: {
-                            //TODO: handle action
+                            showAddPaymentWebView = true
                         }) {
                             HStack {
                                 Spacer()
@@ -91,6 +92,10 @@ struct ShippingLabelPaymentMethods: View {
                         .background(Color(.listBackground))
                     }
                 }
+                .sheet(isPresented: $showAddPaymentWebView, content: {
+                    AuthenticatedWebView(url: WooConstants.URLs.addPaymentMethodWCShip.asURL())
+                        .navigationTitle("WebView")
+                })
             }
             .background(Color(.listBackground))
             .edgesIgnoringSafeArea(.horizontal)
@@ -110,8 +115,6 @@ struct ShippingLabelPaymentMethods: View {
             })
             .disabled(!viewModel.isDoneButtonEnabled()))
         }
-
-
     }
 }
 
@@ -134,7 +137,8 @@ private extension ShippingLabelPaymentMethods {
         static let addCreditCardButton = NSLocalizedString("Add credit card",
                                                            comment: "Button title in the Shipping Label Payment Method screen")
         static let addAnotherCreditCardButton = NSLocalizedString("Add another credit card",
-                                                                  comment: "Button title in the Shipping Label Payment Method screen if there is an existing payment method")
+                                                                  comment: "Button title in the Shipping Label Payment Method" +
+                                                                    " screen if there is an existing payment method")
 
     }
 

@@ -6,7 +6,6 @@ final class SeveralReadersFoundViewController: UIViewController, UITableViewDele
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var cancelButton: UIButton!
 
-
     @IBOutlet weak var viewTrailingConstraint: NSLayoutConstraint!
     @IBOutlet weak var viewBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var viewTopConstraint: NSLayoutConstraint!
@@ -16,14 +15,12 @@ final class SeveralReadersFoundViewController: UIViewController, UITableViewDele
 
     private var readerIDs = [String]()
 
-    // TODO - handle orientation changes
-
     init() {
         super.init(nibName: Self.nibName, bundle: nil)
 
         modalPresentationStyle = .overFullScreen
 
-        // Dummy data for now
+        // TODO: Dummy data for now
         self.readerIDs = [
             "CHB204909005931",
             "CHB204909005942",
@@ -104,7 +101,7 @@ private extension SeveralReadersFoundViewController {
     /// Update the overall view's margins depending on the size classes of the device
     /// for its present orientation
     ///
-    private func updateViewMargins() {
+    func updateViewMargins() {
         /// Vertically constrained? Reduce top and bottom constraints
         ///
         if traitCollection.verticalSizeClass == .compact {
@@ -127,7 +124,7 @@ private extension SeveralReadersFoundViewController {
 
     /// Update views that change appearance for light vs. dark mode
     ///
-    private func updateViewAppearances() {
+    func updateViewAppearances() {
         cancelButton.applySecondaryButtonStyle()
     }
 
@@ -179,11 +176,8 @@ private extension SeveralReadersFoundViewController {
 // MARK: - UITableViewDataSource Conformance
 //
 extension SeveralReadersFoundViewController: UITableViewDataSource {
-    /// Always two sections. The first contains a cell for each found reader. The second
-    /// contains a single cell showing scanning in progress.
-    ///
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

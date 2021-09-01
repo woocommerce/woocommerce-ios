@@ -3,6 +3,7 @@
 7.5
 -----
 - [***] Merchants can now purchase shipping labels and declare customs forms for international orders. [https://github.com/woocommerce/woocommerce-ios/pull/4896]
+- [*] Fix empty states sometimes not centered vertically [https://github.com/woocommerce/woocommerce-ios/pull/4890]
 
 7.4
 -----

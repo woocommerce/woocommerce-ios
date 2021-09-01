@@ -8,7 +8,7 @@ struct ShippingLabelPackageSelection: View {
             if viewModel.hasCustomOrPredefinedPackages {
                 ShippingLabelPackageList(viewModel: viewModel)
             } else {
-                ShippingLabelAddNewPackage()
+                ShippingLabelAddNewPackage(packagesResponse: viewModel.packagesResponse)
             }
         }
     }

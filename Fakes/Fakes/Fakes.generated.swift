@@ -930,7 +930,8 @@ extension ShippingLabel {
             originAddress: .fake(),
             destinationAddress: .fake(),
             productIDs: .fake(),
-            productNames: .fake()
+            productNames: .fake(),
+            commercialInvoiceURL: .fake()
         )
     }
 }

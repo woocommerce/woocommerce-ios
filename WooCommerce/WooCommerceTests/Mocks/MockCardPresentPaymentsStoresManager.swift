@@ -9,19 +9,22 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
     private var failDiscovery: Bool
     private var readerUpdateAvailable: Bool
     private var failReaderUpdateCheck: Bool
+    private var failUpdate: Bool
 
     init(connectedReaders: [CardReader],
          discoveredReader: CardReader? = nil,
          sessionManager: SessionManager,
          failDiscovery: Bool = false,
          readerUpdateAvailable: Bool = false,
-         failReaderUpdateCheck: Bool = false
+         failReaderUpdateCheck: Bool = false,
+         failUpdate: Bool = false
     ) {
         self.connectedReaders = connectedReaders
         self.discoveredReader = discoveredReader
         self.failDiscovery = failDiscovery
         self.readerUpdateAvailable = readerUpdateAvailable
         self.failReaderUpdateCheck = failReaderUpdateCheck
+        self.failUpdate = failUpdate
         super.init(sessionManager: sessionManager)
     }
 
@@ -60,6 +63,13 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
                 return
             }
             onCompletion(Result.success(mockUpdate()))
+        case .startCardReaderUpdate(let onProgress, let onCompletion):
+            onProgress(0.5)
+            guard !failUpdate else {
+                onCompletion(Result.failure(MockErrors.readerUpdateFailure))
+                return
+            }
+            onCompletion(Result.success(()))
         default:
             fatalError("Not available")
         }
@@ -70,6 +80,7 @@ extension MockCardPresentPaymentsStoresManager {
     enum MockErrors: Error {
         case discoveryFailure
         case readerUpdateCheckFailure
+        case readerUpdateFailure
     }
 }
 

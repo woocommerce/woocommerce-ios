@@ -125,6 +125,30 @@ public class OrdersRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+    /// Updates the specified fields of a given order.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site which hosts the Order.
+    ///     - order: Order to be updated.
+    ///     - fields: Fields from the order to be updated.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func updateOrder(from siteID: Int64, order: Order, fields: [UpdateOrderField], completion: @escaping (Result<Order, Error>) -> Void) {
+        let path = "\(Constants.ordersPath)/\(order.orderID)"
+        let mapper = OrderMapper(siteID: siteID)
+        let parameters: [String: AnyHashable] = {
+            fields.reduce(into: [:]) { params, field in
+                switch field {
+                case .customerNote:
+                    params[Order.CodingKeys.customerNote.rawValue] = order.customerNote
+                }
+            }
+        }()
+
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
     /// Adds an order note to a specific Order.
     ///
     /// - Parameters:
@@ -180,5 +204,11 @@ public extension OrdersRemote {
             discount_total,discount_tax,shipping_total,shipping_tax,total,total_tax,payment_method,payment_method_title,line_items,shipping,\
             billing,coupon_lines,shipping_lines,refunds,fee_lines
             """
+    }
+
+    /// Order fields supported for update
+    ///
+    enum UpdateOrderField {
+        case customerNote
     }
 }

@@ -59,7 +59,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.receivedActions.count, 1)
 
         let action = try XCTUnwrap(storesManager.receivedActions.first as? OrderAction)
-        guard case let .updateOrder(siteID: siteID, orderID: orderID, status: status, onCompletion: _) = action else {
+        guard case let .updateOrderStatus(siteID: siteID, orderID: orderID, status: status, onCompletion: _) = action else {
             XCTFail("Expected \(action) to be \(OrderAction.self)")
             return
         }

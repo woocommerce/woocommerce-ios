@@ -3,8 +3,6 @@ import Yosemite
 import Networking
 import Storage
 
-
-
 // MARK: - AuthenticatedState
 //
 class AuthenticatedState: StoresManagerState {
@@ -70,6 +68,10 @@ class AuthenticatedState: StoresManagerState {
                          network: network,
                          receiptPrinterService: ServiceLocator.receiptPrinterService,
                          fileStorage: PListFileStorage()),
+            AnnouncementsStore(dispatcher: dispatcher,
+                               storageManager: storageManager,
+                               network: network,
+                               fileStorage: PListFileStorage())
         ]
 
         startListeningToNotifications()

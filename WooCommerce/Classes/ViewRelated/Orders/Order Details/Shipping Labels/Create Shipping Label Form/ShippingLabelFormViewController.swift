@@ -243,6 +243,14 @@ private extension ShippingLabelFormViewController {
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
             guard let self = self else { return }
 
+            // Skip remote validation and navigate to edit address
+            // if customs form is required and phone number is not found.
+            if self.viewModel.customsFormRequired,
+               let destinationAddress = self.viewModel.destinationAddress,
+               destinationAddress.phone.isEmpty {
+                return self.displayEditAddressFormVC(address: destinationAddress, validationError: nil, type: .destination)
+            }
+
             self.viewModel.validateAddress(type: .destination) { [weak self] (validationState, response) in
                 guard let self = self else { return }
                 let shippingLabelAddress = self.viewModel.destinationAddress
@@ -361,12 +369,12 @@ private extension ShippingLabelFormViewController {
             ServiceLocator.noticePresenter.enqueue(notice: notice)
             return
         }
-        let phoneNumberRequired = type == .origin && viewModel.customsFormRequired
+        let isPhoneNumberRequired = viewModel.customsFormRequired
         let shippingAddressVC = ShippingLabelAddressFormViewController(
             siteID: viewModel.siteID,
             type: type,
             address: address,
-            phoneNumberRequired: phoneNumberRequired,
+            phoneNumberRequired: isPhoneNumberRequired,
             validationError: validationError,
             countries: viewModel.filteredCountries(for: type),
             completion: { [weak self] (newShippingLabelAddress) in
@@ -505,7 +513,7 @@ private extension ShippingLabelFormViewController {
         }
         let printCoordinator = PrintShippingLabelCoordinator(shippingLabel: purchasedShippingLabel,
                                                              printType: .print,
-                                                             sourceViewController: navigationController,
+                                                             sourceNavigationController: navigationController,
                                                              onCompletion: onLabelSave)
         printCoordinator.showPrintUI()
     }

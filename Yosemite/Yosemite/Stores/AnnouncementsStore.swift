@@ -78,9 +78,6 @@ public class AnnouncementsStore: Store {
 private extension AnnouncementsStore {
     /// Get Announcements from Announcements API and persist this information on disk.
     func synchronizeAnnouncements(onCompletion: @escaping (Result<Announcement, Error>) -> Void) {
-
-//        try! fileStorage.deleteFile(at: featureAnnouncementsFileURL!)
-//        return
         remote.getAnnouncements(appId: Constants.WooCommerceAppId,
                                 appVersion: appVersion,
                                 locale: Locale.current.identifier) { [weak self] result in

@@ -25,9 +25,10 @@ struct ShippingLabelCustomsFormList: View {
                                                           viewModel: inputModel)
                         }
                 }
+                .padding(.bottom, insets: geometry.safeAreaInsets)
             }
             .background(Color(.listBackground))
-            .ignoresSafeArea(.container, edges: .horizontal)
+            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         }
         .navigationTitle(Localization.navigationTitle)
         .navigationBarItems(trailing: Button(action: {

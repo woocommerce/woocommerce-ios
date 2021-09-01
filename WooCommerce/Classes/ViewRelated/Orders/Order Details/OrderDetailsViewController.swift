@@ -513,6 +513,7 @@ private extension OrderDetailsViewController {
                 guard let self = self else { return }
                 self.navigationController?.popToViewController(self, animated: true)
             }
+            shippingLabelFormVC.hidesBottomBarWhenPushed = true
             navigationController?.show(shippingLabelFormVC, sender: self)
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)

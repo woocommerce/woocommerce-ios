@@ -62,8 +62,9 @@ struct ShippingLabelCarriers: View {
                         EmptyView()
                     }
                 }
+                .padding(.bottom, insets: geometry.safeAreaInsets)
             }
-            .edgesIgnoringSafeArea(.horizontal)
+            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
             .navigationTitle(Localization.titleView)
             .navigationBarItems(trailing: Button(action: {
                 onCompletion(viewModel.getSelectedRates().selectedRate,

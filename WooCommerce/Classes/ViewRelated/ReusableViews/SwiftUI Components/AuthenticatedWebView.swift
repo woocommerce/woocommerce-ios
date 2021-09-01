@@ -34,11 +34,6 @@ struct AuthenticatedWebView: UIViewRepresentable, AuthenticatedWebViewDelegate {
     }
 
     func updateUIView(_ uiView: WKWebView, context: Context) {
-        print("USERNAME: ", credentials!.username)
-        print("URL: ", url.absoluteString)
-        print("TOKEN: ", credentials!.authToken)
-        //        request?.httpMethod = "POST"
-        //        request.httpBody = authenticatedPostData().data(using: .utf8)
         do {
             try uiView.load(authenticatedPostData())
         } catch {

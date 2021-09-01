@@ -33,10 +33,15 @@ final class EditCustomerNoteViewModel: ObservableObject {
     ///
     private let stores: StoresManager
 
-    init(order: Order, stores: StoresManager = ServiceLocator.stores) {
+    /// Analytics center.
+    ///
+    private let analytics: Analytics
+
+    init(order: Order, stores: StoresManager = ServiceLocator.stores, analytics: Analytics = ServiceLocator.analytics) {
         self.order = order
         self.newNote = order.customerNote ?? ""
         self.stores = stores
+        self.analytics = analytics
         bindNavigationTrailingItemPublisher()
     }
 
@@ -51,8 +56,10 @@ final class EditCustomerNoteViewModel: ObservableObject {
             switch result {
             case .success:
                 self.presentNotice = .success
+                self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCompleted(subject: .customerNote))
             case .failure(let error):
                 self.presentNotice = .error
+                self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowFailed(subject: .customerNote))
                 DDLogError("⛔️ Unable to update the order: \(error)")
             }
 
@@ -61,6 +68,12 @@ final class EditCustomerNoteViewModel: ObservableObject {
 
         performingNetworkRequest.send(true)
         stores.dispatch(action)
+    }
+
+    /// Track the flow cancel scenario.
+    ///
+    func userDidCancelFlow() {
+        analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCanceled(subject: .customerNote))
     }
 }
 

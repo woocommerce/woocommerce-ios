@@ -152,8 +152,8 @@ final class AnnouncementsStoreTests: XCTestCase {
 
         // Act
         let error: Error? = waitFor { [weak self] promise in
-            let action = AnnouncementsAction.markSavedAnnouncementAsDisplayed { error in
-                promise(error)
+            let action = AnnouncementsAction.markSavedAnnouncementAsDisplayed { result in
+                promise(result.failure)
             }
             self?.subject?.onAction(action)
         }
@@ -201,7 +201,15 @@ private extension AnnouncementsStoreTests {
     }
 
     func makeStorageAnnouncement(displayed: Bool = false) -> StorageAnnouncement {
-        StorageAnnouncement(appVersionName: "1", minimumAppVersion: "1", maximumAppVersion: "2", appVersionTargets: [], detailsUrl: "",
-                            announcementVersion: "", isLocalized: true, responseLocale: "", features: [], displayed: displayed)
+        StorageAnnouncement(appVersionName: "1",
+                            minimumAppVersion: "1",
+                            maximumAppVersion: "2",
+                            appVersionTargets: [],
+                            detailsUrl: "",
+                            announcementVersion: "",
+                            isLocalized: true,
+                            responseLocale: "",
+                            features: [],
+                            displayed: displayed)
     }
 }

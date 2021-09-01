@@ -74,6 +74,8 @@ private extension AppCoordinator {
         }))
     }
 
+    /// Load saved announcement and display it on What's New component if it was not displayed yet
+    ///
     func showWhatsNewIfNeeded() {
         stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
             guard let self = self, let (announcement, displayed) = try? result.get(), !displayed else {
@@ -83,8 +85,14 @@ private extension AppCoordinator {
                 self?.tabBarController.dismiss(animated: true)
             }
             self.tabBarController.present(whatsNewViewController, animated: true, completion: nil)
-            self.stores.dispatch(AnnouncementsAction.markSavedAnnouncementAsDisplayed(onCompletion: { error in
-                error.flatMap { return DDLogInfo("💬 \($0.localizedDescription)") }
+
+            self.stores.dispatch(AnnouncementsAction.markSavedAnnouncementAsDisplayed(onCompletion: { result in
+                switch result {
+                case .success:
+                    return DDLogInfo("📣 Announcement of version \(announcement.appVersionName) was marked as read! ✅")
+                case .failure(let error):
+                    return DDLogInfo("📣 Failed to mark announcement as displayed: \(error.localizedDescription)")
+                }
             }))
         }))
     }

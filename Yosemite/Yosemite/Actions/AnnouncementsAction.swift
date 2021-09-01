@@ -12,5 +12,5 @@ public enum AnnouncementsAction: Action {
 
     /// Marks the saved announcement as displayed
     ///
-    case markSavedAnnouncementAsDisplayed(onCompletion: (Error?) -> Void)
+    case markSavedAnnouncementAsDisplayed(onCompletion: (Result<Void, Error>) -> Void)
 }

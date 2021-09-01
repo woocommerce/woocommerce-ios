@@ -15,6 +15,8 @@ final class SeveralReadersFoundViewController: UIViewController, UITableViewDele
     init() {
         super.init(nibName: Self.nibName, bundle: nil)
 
+        modalPresentationStyle = .overFullScreen
+
         // Dummy data for now
         self.readerIDs = [
             "CHB204909005931",

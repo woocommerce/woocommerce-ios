@@ -53,6 +53,10 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
         accountSettings.canEditSettings
     }
 
+    /// The URL path that will trigger the exit from the webview for adding a new payment method
+    ///
+    let fetchPaymentMethodURLPath = "me/payment-methods"
+
     init(accountSettings: ShippingLabelAccountSettings) {
         self.accountSettings = accountSettings
         self.selectedPaymentMethodID = accountSettings.selectedPaymentMethodID

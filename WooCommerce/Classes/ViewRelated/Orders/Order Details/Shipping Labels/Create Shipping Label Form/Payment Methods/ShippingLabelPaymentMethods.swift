@@ -94,8 +94,7 @@ struct ShippingLabelPaymentMethods: View {
                 }
                 .padding(.bottom, insets: geometry.safeAreaInsets)
                 .sheet(isPresented: $showAddPaymentWebView, content: {
-                    AuthenticatedWebView(url: WooConstants.URLs.addPaymentMethodWCShip.asURL())
-                        .navigationTitle("WebView")
+                    webview
                 })
             }
             .background(Color(.listBackground))
@@ -115,6 +114,12 @@ struct ShippingLabelPaymentMethods: View {
                 }
             })
             .disabled(!viewModel.isDoneButtonEnabled()))
+        }
+    }
+
+    private var webview: some View {
+        NavigationView {
+            AuthenticatedWebView(url: WooConstants.URLs.addPaymentMethodWCShip.asURL(), urlToTriggerExit: viewModel.fetchPaymentMethodURLPath)
         }
     }
 }

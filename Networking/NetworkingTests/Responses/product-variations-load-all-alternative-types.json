@@ -10,7 +10,7 @@
             "permalink": "https://chocolate.com/marble",
             "sku": "99%-nuts-marble",
             "price": 16,
-            "regular_price": "12",
+            "regular_price": 12,
             "sale_price": 12.5,
             "date_on_sale_from": "2019-10-16T00:00:00",
             "date_on_sale_from_gmt": "2019-10-15T21:30:00",

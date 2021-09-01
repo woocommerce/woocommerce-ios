@@ -101,10 +101,10 @@ struct EditAddressView: View {
                     }
 
                     Group {
-                        TitleAndValueRow(title: Localization.countryField, value: "Select an option", selectable: true) { }
+                        TitleAndValueRow(title: Localization.countryField, value: Localization.placeholderSelectOption, selectable: true) { }
                         Divider()
                             .padding(.leading, Constants.dividerPadding)
-                        TitleAndValueRow(title: Localization.stateField, value: "Select an option", selectable: true) { }
+                        TitleAndValueRow(title: Localization.stateField, value: Localization.placeholderSelectOption, selectable: true) { }
                     }
                 }
                 .padding(.horizontal, insets: geometry.safeAreaInsets)
@@ -151,6 +151,7 @@ private extension EditAddressView {
 
         static let placeholderRequired = NSLocalizedString("Required", comment: "Text field placeholder in Edit Address screen")
         static let placeholderOptional = NSLocalizedString("Optional", comment: "Text field placeholder in Edit Address screen")
+        static let placeholderSelectOption = NSLocalizedString("Select an option", comment: "Text field placeholder in Edit Address screen")
     }
 }
 

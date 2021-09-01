@@ -23,7 +23,7 @@ public class AnnouncementsStore: Store {
 
     private let remote: AnnouncementsRemoteProtocol
     private let fileStorage: FileStorage
-    private let appVersion = "107.4"//UserAgent.bundleShortVersion
+    private let appVersion = UserAgent.bundleShortVersion
 
     public init(dispatcher: Dispatcher,
                 storageManager: StorageManagerType,

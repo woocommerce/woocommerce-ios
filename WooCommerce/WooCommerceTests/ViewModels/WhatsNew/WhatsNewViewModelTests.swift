@@ -1,5 +1,4 @@
 import XCTest
-import Yosemite
 @testable import WooCommerce
 
 class WhatsNewViewModelTests: XCTestCase {

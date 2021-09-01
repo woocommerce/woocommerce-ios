@@ -92,13 +92,14 @@ struct ShippingLabelPaymentMethods: View {
                         .background(Color(.listBackground))
                     }
                 }
+                .padding(.bottom, insets: geometry.safeAreaInsets)
                 .sheet(isPresented: $showAddPaymentWebView, content: {
                     AuthenticatedWebView(url: WooConstants.URLs.addPaymentMethodWCShip.asURL())
                         .navigationTitle("WebView")
                 })
             }
             .background(Color(.listBackground))
-            .edgesIgnoringSafeArea(.horizontal)
+            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
             .navigationBarTitle(Localization.navigationBarTitle)
             .navigationBarItems(trailing: Button(action: {
                 viewModel.updateShippingLabelAccountSettings { newSettings in

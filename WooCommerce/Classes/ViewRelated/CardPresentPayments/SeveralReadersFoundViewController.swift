@@ -6,6 +6,12 @@ final class SeveralReadersFoundViewController: UIViewController, UITableViewDele
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var cancelButton: UIButton!
 
+
+    @IBOutlet weak var viewTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var viewBottomConstraint: NSLayoutConstraint!
+    @IBOutlet weak var viewTopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var viewLeadingConstraint: NSLayoutConstraint!
+
     private var sections = [Section]()
 
     private var readerIDs = [String]()
@@ -36,6 +42,24 @@ final class SeveralReadersFoundViewController: UIViewController, UITableViewDele
         configureNavigation()
         configureSections()
         configureTable()
+        updateViewMargins()
+        updateViewAppearances()
+    }
+
+    /// Update constraints that vary by size class
+    ///
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        /// Handle size class and orientation
+        ///
+        updateViewMargins()
+
+        /// Handle changes to Light / Dark Appearance
+        ///
+        if let previousTraits = previousTraitCollection, previousTraits.hasDifferentColorAppearance(comparedTo: traitCollection) {
+            updateViewAppearances()
+        }
     }
 
     // TODO - accept updates to the list of CardReaderIDs to present and reloadData
@@ -75,6 +99,36 @@ private extension SeveralReadersFoundViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.reloadData()
+    }
+
+    /// Update the overall view's margins depending on the size classes of the device
+    /// for its present orientation
+    ///
+    private func updateViewMargins() {
+        /// Vertically constrained? Reduce top and bottom constraints
+        ///
+        if traitCollection.verticalSizeClass == .compact {
+            viewTopConstraint.constant = 47
+            viewBottomConstraint.constant = -47
+        } else {
+            viewTopConstraint.constant = 125
+            viewBottomConstraint.constant = -197
+        }
+
+        /// Horizontally unconstrained? Increase leading and trailing constraints
+        if traitCollection.horizontalSizeClass == .compact {
+            viewLeadingConstraint.constant = 47
+            viewTrailingConstraint.constant = -47
+        } else {
+            viewLeadingConstraint.constant = 160
+            viewTrailingConstraint.constant = -160
+        }
+    }
+
+    /// Update views that change appearance for light vs. dark mode
+    ///
+    private func updateViewAppearances() {
+        cancelButton.applySecondaryButtonStyle()
     }
 
     /// Register table cells.

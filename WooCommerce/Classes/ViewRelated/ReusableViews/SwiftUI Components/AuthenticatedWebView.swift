@@ -3,10 +3,23 @@ import WebKit
 import Foundation
 import Alamofire
 
+// MARK: - AuthenticatedWebViewDelegate
+// For handling values received from webview
+protocol AuthenticatedWebViewDelegate {
+    func exitTriggered()
+}
+
 // Bridge UIKit `WKWebView` component to SwiftUI for URLs that need authentication on WPCom
-struct AuthenticatedWebView: UIViewRepresentable {
+struct AuthenticatedWebView: UIViewRepresentable, AuthenticatedWebViewDelegate {
+
+    func exitTriggered() {
+
+    }
 
     let url: URL
+
+    /// Optional URL or part of URL to trigger exit
+    var urlToTriggerExit: String?
 
     let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
 
@@ -45,23 +58,25 @@ struct AuthenticatedWebView: UIViewRepresentable {
                           "redirect_to": url.absoluteString,
                           "authorization": "Bearer " + token]
 
-
-        //
-        //        var postData = String(format: "log=%@&redirect_to=%@", username, String(data: url, encoding: .utf8)!)
-        //        postData += "&authorization=Bearer " + String(data: token, encoding: .utf8)!
-
         return try URLEncoding.default.encode(request, with: parameters)
     }
 
 
     class AuthenticatedWebViewCoordinator: NSObject, WKNavigationDelegate {
         private var parent: AuthenticatedWebView
+        private var delegate: AuthenticatedWebViewDelegate?
 
         init(_ uiWebView: AuthenticatedWebView) {
             parent = uiWebView
+            delegate = parent
         }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+
+            if let url = webView.url?.absoluteString, let urlTrigger = parent.urlToTriggerExit, url.contains(urlTrigger) {
+                print("TRIGGERED")
+                delegate?.exitTriggered()
+            }
             print("current URL", webView.url)
         }
     }

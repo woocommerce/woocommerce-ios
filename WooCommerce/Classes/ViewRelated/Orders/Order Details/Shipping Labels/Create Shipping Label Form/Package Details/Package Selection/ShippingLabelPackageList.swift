@@ -22,7 +22,6 @@ struct ShippingLabelPackageList: View {
                             SelectableItemRow(title: package.title, subtitle: package.dimensions + " \(viewModel.dimensionUnit)", selected: selected)
                                 .onTapGesture {
                                     viewModel.didSelectPackage(package.title)
-                                    ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "packages_selected"])
                                 }
                                 .padding(.horizontal, insets: geometry.safeAreaInsets)
                                 .background(Color(.systemBackground))
@@ -41,8 +40,6 @@ struct ShippingLabelPackageList: View {
                                                   subtitle: package.dimensions + " \(viewModel.dimensionUnit)",
                                                   selected: selected).onTapGesture {
                                                     viewModel.didSelectPackage(package.id)
-                                                    ServiceLocator.analytics.track(.shippingLabelPurchaseFlow,
-                                                                                   withProperties: ["state": "packages_selected"])
                                                   }
                                     .padding(.horizontal, insets: geometry.safeAreaInsets)
                                     .background(Color(.systemBackground))

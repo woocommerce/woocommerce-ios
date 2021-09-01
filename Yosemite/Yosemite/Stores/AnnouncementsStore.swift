@@ -141,6 +141,7 @@ private extension AnnouncementsStore {
         }
     }
 
+    /// Mark saved announcement as displayed. Returng an error in case of failure to save announcement
     func markSavedAnnouncementAsDisplayed(onCompletion: (Result<Void, Error>) -> Void) {
         guard let fileURL = featureAnnouncementsFileURL else {
             return onCompletion(.failure(AnnouncementsStorageError.unableToFindFileURL))
@@ -153,10 +154,11 @@ private extension AnnouncementsStore {
             onCompletion(.success(()))
         }
         catch {
-            onCompletion(.failure(AnnouncementsStorageError.noAnnouncementSaved))
+            onCompletion(.failure(AnnouncementsStorageError.unableToSaveAnnouncement))
         }
     }
 
+    /// Loads saved annpouncement from disk (Maps from StorageAnnouncement to Announcement)
     func savedAnnouncement() throws -> Announcement {
         guard let fileURL = featureAnnouncementsFileURL else { throw AnnouncementsStorageError.unableToFindFileURL }
         do {
@@ -189,6 +191,7 @@ private enum Constants {
 enum AnnouncementsStorageError: Error {
     case unableToFindFileURL
     case noAnnouncementSaved
+    case unableToSaveAnnouncement
     case announcementAlreadyExists
 }
 

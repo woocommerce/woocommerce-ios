@@ -513,6 +513,7 @@ private extension OrderDetailsViewController {
                 guard let self = self else { return }
                 self.navigationController?.popToViewController(self, animated: true)
             }
+            shippingLabelFormVC.hidesBottomBarWhenPushed = true
             navigationController?.show(shippingLabelFormVC, sender: self)
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
@@ -656,6 +657,8 @@ private extension OrderDetailsViewController {
         let viewModel = EditCustomerNoteViewModel(order: viewModel.order)
         let editNoteViewController = EditCustomerNoteHostingController(viewModel: viewModel)
         present(editNoteViewController, animated: true, completion: nil)
+
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowStarted(subject: .customerNote))
     }
 
     @objc private func collectPayment(at: IndexPath) {

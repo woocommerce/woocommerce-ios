@@ -68,9 +68,10 @@ struct ShippingLabelPaymentMethods: View {
                         .background(Color(.systemBackground))
                         .disabled(!viewModel.canEditNonpaymentSettings)
                 }
+                .padding(.bottom, insets: geometry.safeAreaInsets)
             }
             .background(Color(.listBackground))
-            .edgesIgnoringSafeArea(.horizontal)
+            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
             .navigationBarTitle(Localization.navigationBarTitle)
             .navigationBarItems(trailing: Button(action: {
                 viewModel.updateShippingLabelAccountSettings { newSettings in

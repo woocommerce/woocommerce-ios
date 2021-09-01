@@ -8,10 +8,10 @@ final class ShippingLabelServicePackageListViewModel: ObservableObject {
     ///
     @Published var packagesResponse: ShippingLabelPackagesResponse?
 
-    // TODO-4744: Get the options not yet enabled on the store
-    // These are the already enabled options, used temporarily for creating the initial UI
+    /// Service packages not yet activated on the store, organized by shipping provider
+    ///
     var predefinedOptions: [ShippingLabelPredefinedOption] {
-        packagesResponse?.predefinedOptions ?? []
+        packagesResponse?.unactivatedPredefinedOptions ?? []
     }
 
     @Published var selectedPackage: ShippingLabelPredefinedPackage?

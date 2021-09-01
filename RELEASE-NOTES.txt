@@ -3,6 +3,7 @@
 7.5
 -----
 - [*] Fix empty states sometimes not centered vertically [https://github.com/woocommerce/woocommerce-ios/pull/4890]
+- [*] Fix error syncing products due to decoding failure of regular_price in product variations. [https://github.com/woocommerce/woocommerce-ios/pull/4901]
 
 7.4
 -----

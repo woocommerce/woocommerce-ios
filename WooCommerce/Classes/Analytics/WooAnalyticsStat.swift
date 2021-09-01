@@ -183,6 +183,10 @@ public enum WooAnalyticsStat: String {
     case orderShipmentTrackingAddButtonTapped   = "order_shipment_tracking_add_button_tapped"
     case orderShipmentTrackingCarrierSelected   = "order_shipment_tracking_carrier_selected"
     case orderShipmentTrackingCustomProviderSelected = "order_shipment_tracking_custom_provider_selected"
+    case orderDetailEditFlowStarted             = "order_detail_edit_flow_started"
+    case orderDetailEditFlowCompleted           = "order_detail_edit_flow_completed"
+    case orderDetailEditFlowCanceled            = "order_detail_edit_flow_canceled"
+    case orderDetailEditFlowFailed              = "order_detail_edit_flow_failed"
 
     // MARK: Order Data/Action Events
     //

@@ -71,12 +71,15 @@ struct ShippingLabelPackageDetails: View {
                     ListHeaderView(text: Localization.footer, alignment: .left)
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
                 }
+                .padding(.bottom, insets: geometry.safeAreaInsets)
             }
             .background(Color(.listBackground))
-            .ignoresSafeArea(.container, edges: .horizontal)
+            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         }
         .navigationTitle(Localization.title)
         .navigationBarItems(trailing: Button(action: {
+            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow,
+                                           withProperties: ["state": "packages_selected"])
             onCompletion(viewModel.selectedPackageID, viewModel.totalWeight)
             presentation.wrappedValue.dismiss()
         }, label: {

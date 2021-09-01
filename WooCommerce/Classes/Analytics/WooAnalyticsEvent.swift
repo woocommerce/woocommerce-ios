@@ -318,3 +318,36 @@ extension WooAnalyticsEvent {
         }
     }
 }
+
+// MARK: - Order Details Edit
+//
+extension WooAnalyticsEvent {
+    // Namespace
+    enum OrderDetailsEdit {
+        /// Possible types of edit
+        ///
+        enum Subject: String {
+            fileprivate static let key = "subject"
+
+            case customerNote = "customer_note"
+            case shippingAddress = "shipping_address"
+            case billingAddress = "billing_address"
+        }
+
+        static func orderDetailEditFlowStarted(subject: Subject) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderDetailEditFlowStarted, properties: [Subject.key: subject.rawValue])
+        }
+
+        static func orderDetailEditFlowCompleted(subject: Subject) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderDetailEditFlowCompleted, properties: [Subject.key: subject.rawValue])
+        }
+
+        static func orderDetailEditFlowFailed(subject: Subject) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderDetailEditFlowFailed, properties: [Subject.key: subject.rawValue])
+        }
+
+        static func orderDetailEditFlowCanceled(subject: Subject) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderDetailEditFlowCanceled, properties: [Subject.key: subject.rawValue])
+        }
+    }
+}

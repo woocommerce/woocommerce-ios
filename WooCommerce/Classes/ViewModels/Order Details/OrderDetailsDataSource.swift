@@ -377,9 +377,9 @@ private extension OrderDetailsDataSource {
         cell.body = customerNote.isNotEmpty ? localizedBody : " "
         cell.selectionStyle = .none
 
-        cell.onEditTapped = orderEditingEnabled ? { [weak self] in
+        cell.onEditTapped = { [weak self] in
             self?.onCellAction?(.editCustomerNote, nil)
-        } : nil
+        }
     }
 
     private func configureBillingDetail(cell: WooBasicTableViewCell) {
@@ -953,10 +953,8 @@ extension OrderDetailsDataSource {
         let customerInformation: Section = {
             var rows: [Row] = []
 
-            /// After `.orderEditing` is completed, this row should always be visible to let merchants update the customer note as required.
-            if orderEditingEnabled || customerNote.isEmpty == false {
-                rows.append(.customerNote)
-            }
+            /// Always visible to allow editing.
+            rows.append(.customerNote)
 
             let orderContainsOnlyVirtualProducts = self.products.filter { (product) -> Bool in
                 return items.first(where: { $0.productID == product.productID}) != nil

@@ -5,7 +5,7 @@ struct ShippingLabelServicePackageList: View {
     @Environment(\.presentationMode) var presentation
     @StateObject var viewModel = ShippingLabelServicePackageListViewModel()
     let packagesResponse: ShippingLabelPackagesResponse?
-    let safeAreaInsets: EdgeInsets
+    let geometry: GeometryProxy
 
     var body: some View {
         servicePackageListView
@@ -28,21 +28,21 @@ struct ShippingLabelServicePackageList: View {
     private var emptyList: some View {
         VStack(alignment: .center) {
             EmptyState(title: Localization.emptyStateMessage, image: .waitingForCustomersImage)
-                .frame(maxHeight: .infinity)
+                .frame(idealHeight: geometry.size.height)
         }
     }
 
     private var populatedList: some View {
         LazyVStack(spacing: 0) {
             ListHeaderView(text: Localization.servicePackageHeader, alignment: .left)
-                .padding(.horizontal, insets: safeAreaInsets)
+                .padding(.horizontal, insets: geometry.safeAreaInsets)
 
             /// Packages
             ///
             ForEach(viewModel.predefinedOptions, id: \.title) { option in
 
                 ListHeaderView(text: option.title.uppercased(), alignment: .left)
-                    .padding(.horizontal, insets: safeAreaInsets)
+                    .padding(.horizontal, insets: geometry.safeAreaInsets)
                 ForEach(option.predefinedPackages) { package in
                     let selected = package == viewModel.selectedPackage
                     SelectableItemRow(title: package.title,
@@ -51,10 +51,10 @@ struct ShippingLabelServicePackageList: View {
                         .onTapGesture {
                             viewModel.selectedPackage = package
                         }
-                        .padding(.horizontal, insets: safeAreaInsets)
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
                         .background(Color(.systemBackground))
                     Divider()
-                        .padding(.horizontal, insets: safeAreaInsets)
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
                         .padding(.leading, Constants.dividerPadding)
                 }
             }
@@ -92,9 +92,13 @@ struct ShippingLabelServicePackageList_Previews: PreviewProvider {
     static var previews: some View {
         let packagesResponse = ShippingLabelPackageDetailsViewModel.samplePackageDetails()
 
-        ShippingLabelServicePackageList(packagesResponse: packagesResponse, safeAreaInsets: .zero)
+        GeometryReader { geometry in
+            ShippingLabelServicePackageList(packagesResponse: packagesResponse, geometry: geometry)
+        }
 
-        ShippingLabelServicePackageList(packagesResponse: nil, safeAreaInsets: .zero)
-            .previewDisplayName("Empty State")
+        GeometryReader { geometry in
+            ShippingLabelServicePackageList(packagesResponse: nil, geometry: geometry)
+                .previewDisplayName("Empty State")
+        }
     }
 }

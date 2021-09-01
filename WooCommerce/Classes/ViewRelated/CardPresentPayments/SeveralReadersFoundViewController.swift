@@ -67,8 +67,6 @@ final class SeveralReadersFoundViewController: UIViewController, UITableViewDele
 // MARK: - View Configuration
 //
 private extension SeveralReadersFoundViewController {
-    /// Set the title and back button.
-    ///
     func configureNavigation() {
         headlineLabel.text = Localization.headline
         cancelButton.setTitle(Localization.cancel, for: .normal)
@@ -86,6 +84,7 @@ private extension SeveralReadersFoundViewController {
             Section(rows: readerRows)
         )
 
+        // Prepare a row for our scanning indicator
         sections.append(
             Section(rows: [.scanning])
         )

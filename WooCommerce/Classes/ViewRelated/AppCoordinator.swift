@@ -49,21 +49,44 @@ final class AppCoordinator {
                 case (true, false):
                     self.validateRoleEligibility {
                         self.displayLoggedInUI()
+                        self.synchronizeAndShowWhatsNew()
                     }
                 }
                 self.isLoggedIn = isLoggedIn
-                self.showWhatsNewIfNeeded()
             }
     }
 }
 
 private extension AppCoordinator {
 
-    /// Displays the What's New Screen.
+    /// Synchronize announcements and present What's New Screen if needed
     ///
+    func synchronizeAndShowWhatsNew() {
+        stores.dispatch(AnnouncementsAction.synchronizeAnnouncements(onCompletion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let announcement):
+                DDLogInfo("📣 Announcements Synced! AppVersion: \(announcement.appVersionName) | AnnouncementVersion: \(announcement.announcementVersion)")
+            case.failure(let error):
+                DDLogInfo("📣 Failed to synchronize announcements: \(error.localizedDescription)")
+            }
+            self.showWhatsNewIfNeeded()
+        }))
+    }
+
     func showWhatsNewIfNeeded() {
-        // TODO: Check the saved Announcement App Version in order to display or not the what's new component
-        stores.dispatch(AnnouncementsAction.synchronizeAnnouncements(onCompletion: { _ in }))
+        stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
+            guard let self = self, let (announcement, displayed) = try? result.get(), !displayed else {
+                return DDLogInfo("📣 There are no announcements to show!")
+            }
+            let whatsNewViewController = WhatsNewFactory.whatsNew(announcement) { [weak self] in
+                self?.tabBarController.dismiss(animated: true)
+            }
+            self.tabBarController.present(whatsNewViewController, animated: true, completion: nil)
+            self.stores.dispatch(AnnouncementsAction.markSavedAnnouncementAsDisplayed(onCompletion: { error in
+                error.flatMap { return DDLogInfo("💬 \($0.localizedDescription)") }
+            }))
+        }))
     }
 
     /// Displays the WordPress.com Authentication UI.

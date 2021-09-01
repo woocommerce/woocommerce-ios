@@ -32,6 +32,8 @@ struct ShippingLabelPackageDetails: View {
                     ListHeaderView(text: Localization.itemsToFulfillHeader, alignment: .left)
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
 
+                    Divider()
+
                     ForEach(viewModel.itemsRows) { productItemRow in
                         productItemRow
                             .padding(.horizontal, insets: geometry.safeAreaInsets)

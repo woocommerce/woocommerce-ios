@@ -68,7 +68,7 @@ private extension AppCoordinator {
             case .success(let announcement):
                 DDLogInfo("📣 Announcements Synced! AppVersion: \(announcement.appVersionName) | AnnouncementVersion: \(announcement.announcementVersion)")
             case.failure(let error):
-                DDLogInfo("📣 Failed to synchronize announcements: \(error.localizedDescription)")
+                DDLogInfo("⛔️ Failed to synchronize announcements: \(error.localizedDescription)")
             }
             self.showWhatsNewIfNeeded()
         }))

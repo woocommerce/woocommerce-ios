@@ -3,6 +3,7 @@ import Yosemite
 
 struct ShippingLabelAddNewPackage: View {
     @StateObject private var viewModel = ShippingLabelAddNewPackageViewModel()
+    @StateObject private var customPackageVM = ShippingLabelCustomPackageFormViewModel()
     let packagesResponse: ShippingLabelPackagesResponse?
 
     var body: some View {
@@ -18,7 +19,7 @@ struct ShippingLabelAddNewPackage: View {
                 ScrollView {
                     switch viewModel.selectedView {
                     case .customPackage:
-                        ShippingLabelCustomPackageForm(safeAreaInsets: geometry.safeAreaInsets)
+                        ShippingLabelCustomPackageForm(viewModel: customPackageVM, safeAreaInsets: geometry.safeAreaInsets)
                     case .servicePackage:
                         ShippingLabelServicePackageList(packagesResponse: packagesResponse, geometry: geometry)
                     }

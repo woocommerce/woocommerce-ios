@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import SwiftUI
+import UIKit
 
 /// Hosting controller that wraps an `EditAddressForm`.
 ///
@@ -18,6 +19,9 @@ final class EditAddressHostingController: UIHostingController<EditAddressForm> {
 /// Allows merchant to edit the customer provided address of an order.
 ///
 struct EditAddressForm: View {
+
+    @State var showEditCountry = false
+
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
@@ -96,7 +100,9 @@ struct EditAddressForm: View {
                     }
 
                     Group {
-                        TitleAndValueRow(title: Localization.countryField, value: Localization.placeholderSelectOption, selectable: true) { }
+                        TitleAndValueRow(title: Localization.countryField, value: Localization.placeholderSelectOption, selectable: true) {
+                            showEditCountry = true
+                        }
                         Divider()
                             .padding(.leading, Constants.dividerPadding)
                         TitleAndValueRow(title: Localization.stateField, value: Localization.placeholderSelectOption, selectable: true) { }
@@ -115,6 +121,11 @@ struct EditAddressForm: View {
         }
         .disabled(true) // TODO: enable if there are pending changes
         )
+
+        // Go to edit country
+        NavigationLink(destination: ListSelector(command: CountrySelectorCommand(), tableStyle: .plain), isActive: $showEditCountry) {
+            EmptyView()
+        }
     }
 }
 

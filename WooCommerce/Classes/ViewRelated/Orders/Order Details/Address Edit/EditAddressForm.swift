@@ -20,7 +20,9 @@ final class EditAddressHostingController: UIHostingController<EditAddressForm> {
 ///
 struct EditAddressForm: View {
 
-    @State var showEditCountry = false
+    /// Set it to `true` to present the country selector.
+    ///
+    @State var showCountrySelector = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -101,7 +103,7 @@ struct EditAddressForm: View {
 
                     Group {
                         TitleAndValueRow(title: Localization.countryField, value: Localization.placeholderSelectOption, selectable: true) {
-                            showEditCountry = true
+                            showCountrySelector = true
                         }
                         Divider()
                             .padding(.leading, Constants.dividerPadding)
@@ -123,7 +125,7 @@ struct EditAddressForm: View {
         )
 
         // Go to edit country
-        NavigationLink(destination: ListSelector(command: CountrySelectorCommand(), tableStyle: .plain), isActive: $showEditCountry) {
+        NavigationLink(destination: CountrySelector(), isActive: $showCountrySelector) {
             EmptyView()
         }
     }

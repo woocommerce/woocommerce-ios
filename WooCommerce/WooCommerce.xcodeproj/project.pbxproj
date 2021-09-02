@@ -406,6 +406,7 @@
 		265D909D2446688C00D66F0F /* ProductCategoryViewModelBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267CFE1824435A5500AF3A13 /* ProductCategoryViewModelBuilderTests.swift */; };
 		2662D90626E1571900E25611 /* ListSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2662D90526E1571900E25611 /* ListSelector.swift */; };
 		2662D90826E15D6E00E25611 /* CountrySelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2662D90726E15D6E00E25611 /* CountrySelectorCommand.swift */; };
+		2662D90A26E16B3600E25611 /* CountrySelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2662D90926E16B3600E25611 /* CountrySelector.swift */; };
 		2667BFD7252E5DBF008099D4 /* RefundItemViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFD6252E5DBF008099D4 /* RefundItemViewModelTests.swift */; };
 		2667BFDB252E659A008099D4 /* MockOrderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFDA252E659A008099D4 /* MockOrderItem.swift */; };
 		2667BFDD252F61C5008099D4 /* RefundShippingDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFDC252F61C5008099D4 /* RefundShippingDetailsViewModelTests.swift */; };
@@ -1792,6 +1793,7 @@
 		265D909A2446657A00D66F0F /* ProductCategoryViewModelBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryViewModelBuilder.swift; sourceTree = "<group>"; };
 		2662D90526E1571900E25611 /* ListSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListSelector.swift; sourceTree = "<group>"; };
 		2662D90726E15D6E00E25611 /* CountrySelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountrySelectorCommand.swift; sourceTree = "<group>"; };
+		2662D90926E16B3600E25611 /* CountrySelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountrySelector.swift; sourceTree = "<group>"; };
 		2667BFD6252E5DBF008099D4 /* RefundItemViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundItemViewModelTests.swift; sourceTree = "<group>"; };
 		2667BFDA252E659A008099D4 /* MockOrderItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockOrderItem.swift; sourceTree = "<group>"; };
 		2667BFDC252F61C5008099D4 /* RefundShippingDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundShippingDetailsViewModelTests.swift; sourceTree = "<group>"; };
@@ -4771,6 +4773,7 @@
 			isa = PBXGroup;
 			children = (
 				AECD57D126DFDF7500A3B580 /* EditAddressForm.swift */,
+				2662D90926E16B3600E25611 /* CountrySelector.swift */,
 				2662D90726E15D6E00E25611 /* CountrySelectorCommand.swift */,
 			);
 			path = "Address Edit";
@@ -7532,6 +7535,7 @@
 				B5290ED9219B3FA900A6AF7F /* Date+Woo.swift in Sources */,
 				CECC758C23D2227000486676 /* ProductDetailsCellViewModel.swift in Sources */,
 				453227B723C4D6EC00D816B3 /* TimeZone+Woo.swift in Sources */,
+				2662D90A26E16B3600E25611 /* CountrySelector.swift in Sources */,
 				314265B12645A07800500598 /* CardReaderSettingsConnectedViewController.swift in Sources */,
 				B57C744520F55BA600EEFC87 /* NSObject+Helpers.swift in Sources */,
 				0269576A23726304001BA0BF /* KeyboardFrameObserver.swift in Sources */,

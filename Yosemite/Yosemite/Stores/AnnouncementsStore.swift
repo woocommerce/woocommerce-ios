@@ -198,7 +198,7 @@ private extension AnnouncementsStore {
 // MARK: - Announcement Extension
 private extension Announcement {
     func isNewCompared(to announcement: StorageAnnouncement) -> Bool {
-        appVersionName != announcement.appVersionName || announcementVersion > announcement.announcementVersion
+        appVersionName > announcement.appVersionName || announcementVersion > announcement.announcementVersion
     }
 }
 

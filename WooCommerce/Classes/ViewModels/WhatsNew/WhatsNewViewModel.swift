@@ -15,9 +15,24 @@ final class WhatsNewViewModel: ReportListPresentable {
     /// Title of the Call to action button
     let ctaTitle = Localization.ctaTitle
 
-    init(items: [ReportItem], onDismiss: @escaping () -> Void) {
+    /// StoresManager that will be handling actions
+    private let stores: StoresManager
+
+    init(items: [ReportItem], stores: StoresManager = ServiceLocator.stores, onDismiss: @escaping () -> Void) {
         self.items = items
+        self.stores = stores
         self.onDismiss = onDismiss
+    }
+
+    func onAppear() {
+        stores.dispatch(AnnouncementsAction.markSavedAnnouncementAsDisplayed(onCompletion: { result in
+            switch result {
+            case .success:
+                return DDLogInfo("📣 Announcement was marked as displayed! ✅")
+            case .failure(let error):
+                return DDLogInfo("📣 Failed to mark announcement as displayed: \(error.localizedDescription)")
+            }
+        }))
     }
 }
 

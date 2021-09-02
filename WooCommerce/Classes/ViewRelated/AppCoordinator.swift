@@ -86,15 +86,6 @@ private extension AppCoordinator {
                 self?.tabBarController.dismiss(animated: true)
             }
             self.tabBarController.present(whatsNewViewController, animated: true, completion: nil)
-
-            self.stores.dispatch(AnnouncementsAction.markSavedAnnouncementAsDisplayed(onCompletion: { result in
-                switch result {
-                case .success:
-                    return DDLogInfo("📣 Announcement of version \(announcement.appVersionName) was marked as read! ✅")
-                case .failure(let error):
-                    return DDLogInfo("📣 Failed to mark announcement as displayed: \(error.localizedDescription)")
-                }
-            }))
         }))
     }
 

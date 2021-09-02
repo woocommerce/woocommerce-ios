@@ -3,15 +3,11 @@ import Yosemite
 
 struct ShippingLabelServicePackageList: View {
     @Environment(\.presentationMode) var presentation
-    @StateObject var viewModel = ShippingLabelServicePackageListViewModel()
-    let packagesResponse: ShippingLabelPackagesResponse?
+    @ObservedObject var viewModel: ShippingLabelServicePackageListViewModel
     let geometry: GeometryProxy
 
     var body: some View {
         servicePackageListView
-            .onAppear(perform: {
-                viewModel.packagesResponse = packagesResponse
-            })
             .background(Color(.listBackground))
             .minimalNavigationBarBackButton()
     }
@@ -91,14 +87,17 @@ private extension ShippingLabelServicePackageList {
 
 struct ShippingLabelServicePackageList_Previews: PreviewProvider {
     static var previews: some View {
-        let packagesResponse = ShippingLabelPackageDetailsViewModel.samplePackageDetails()
+        let viewModel = ShippingLabelServicePackageListViewModel()
 
         GeometryReader { geometry in
-            ShippingLabelServicePackageList(packagesResponse: packagesResponse, geometry: geometry)
+            ShippingLabelServicePackageList(viewModel: viewModel, geometry: geometry)
+                .onAppear() {
+                    viewModel.packagesResponse = ShippingLabelPackageDetailsViewModel.samplePackageDetails()
+                }
         }
 
         GeometryReader { geometry in
-            ShippingLabelServicePackageList(packagesResponse: nil, geometry: geometry)
+            ShippingLabelServicePackageList(viewModel: viewModel, geometry: geometry)
                 .previewDisplayName("Empty State")
         }
     }

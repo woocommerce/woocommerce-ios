@@ -4,6 +4,7 @@ import Yosemite
 struct ShippingLabelAddNewPackage: View {
     @StateObject private var viewModel = ShippingLabelAddNewPackageViewModel()
     @StateObject private var customPackageVM = ShippingLabelCustomPackageFormViewModel()
+    @StateObject private var servicePackageVM = ShippingLabelServicePackageListViewModel()
     let packagesResponse: ShippingLabelPackagesResponse?
 
     var body: some View {
@@ -21,7 +22,10 @@ struct ShippingLabelAddNewPackage: View {
                     case .customPackage:
                         ShippingLabelCustomPackageForm(viewModel: customPackageVM, safeAreaInsets: geometry.safeAreaInsets)
                     case .servicePackage:
-                        ShippingLabelServicePackageList(packagesResponse: packagesResponse, geometry: geometry)
+                        ShippingLabelServicePackageList(viewModel: servicePackageVM, geometry: geometry)
+                            .onAppear() {
+                                servicePackageVM.packagesResponse = packagesResponse
+                            }
                     }
                 }
                  .background(Color(.listBackground).ignoresSafeArea(.container, edges: .bottom))

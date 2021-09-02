@@ -122,7 +122,7 @@ private extension AnnouncementsStore {
 // MARK: - Helper functions
 private extension AnnouncementsStore {
     /// Map `WordPressKit.Announcement` to `StorageAnnouncement` model
-    func mapAnnouncementToStorageModel(_ announcement: Announcement, displayed: Bool = false) -> StorageAnnouncement {
+    func mapAnnouncementToStorageModel(_ announcement: Announcement) -> StorageAnnouncement {
         let mappedFeatures = announcement.features.map {
             StorageFeature(title: $0.title,
                            subtitle: $0.subtitle,
@@ -139,7 +139,7 @@ private extension AnnouncementsStore {
                                    isLocalized: announcement.isLocalized,
                                    responseLocale: announcement.responseLocale,
                                    features: mappedFeatures,
-                                   displayed: displayed)
+                                   displayed: false)
     }
 
     /// Map `StorageAnnouncement` to `WordPressKit.Announcement` model

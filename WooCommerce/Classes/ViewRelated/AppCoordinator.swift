@@ -78,7 +78,8 @@ private extension AppCoordinator {
     ///
     func showWhatsNewIfNeeded() {
         stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
-            guard let self = self, let (announcement, displayed) = try? result.get(), !displayed else {
+            guard let self = self else { return }
+            guard let (announcement, displayed) = try? result.get(), !displayed else {
                 return DDLogInfo("📣 There are no announcements to show!")
             }
             let whatsNewViewController = WhatsNewFactory.whatsNew(announcement) { [weak self] in

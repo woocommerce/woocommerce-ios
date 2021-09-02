@@ -16,6 +16,7 @@ struct ShippingLabelPackageList: View {
                         if viewModel.showCustomPackagesHeader {
                             ListHeaderView(text: Localization.customPackageHeader.uppercased(), alignment: .left)
                                 .padding(.horizontal, insets: geometry.safeAreaInsets)
+                            Divider()
                         }
                         ForEach(viewModel.customPackages, id: \.title) { package in
                             let selected = package == viewModel.selectedCustomPackage
@@ -34,6 +35,7 @@ struct ShippingLabelPackageList: View {
 
                             ListHeaderView(text: option.title.uppercased(), alignment: .left)
                                 .padding(.horizontal, insets: geometry.safeAreaInsets)
+                            Divider()
                             ForEach(option.predefinedPackages) { package in
                                 let selected = package == viewModel.selectedPredefinedPackage
                                 SelectableItemRow(title: package.title,

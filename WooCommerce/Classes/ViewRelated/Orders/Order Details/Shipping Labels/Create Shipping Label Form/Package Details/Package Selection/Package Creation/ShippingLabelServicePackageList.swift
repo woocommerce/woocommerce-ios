@@ -18,6 +18,7 @@ struct ShippingLabelServicePackageList: View {
 
                 ListHeaderView(text: option.title.uppercased(), alignment: .left)
                     .padding(.horizontal, insets: safeAreaInsets)
+                Divider()
                 ForEach(option.predefinedPackages) { package in
                     let selected = package == viewModel.selectedPackage
                     SelectableItemRow(title: package.title,

@@ -1,27 +1,29 @@
 import SwiftUI
 import WebKit
-import Foundation
 import Alamofire
 
-// MARK: - AuthenticatedWebViewDelegate
-// For handling values received from webview
-protocol AuthenticatedWebViewDelegate {
-    func exitTriggered()
-}
-
 // Bridge UIKit `WKWebView` component to SwiftUI for URLs that need authentication on WPCom
-struct AuthenticatedWebView: UIViewRepresentable, AuthenticatedWebViewDelegate {
-
-    func exitTriggered() {
-
+struct AuthenticatedWebView: UIViewRepresentable {
+    @Environment(\.presentationMode) var presentation
+    @Binding var isPresented: Bool {
+        didSet {
+            if !isPresented {
+                presentation.wrappedValue.dismiss()
+            }
+        }
     }
 
     let url: URL
 
     /// Optional URL or part of URL to trigger exit
+    ///
     var urlToTriggerExit: String?
 
-    let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
+    /// Callback that will be triggered if the destination url containts the `urlToTriggerExit`
+    ///
+    var exitTrigger: (() -> Void)?
+
+    private let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
 
     func makeCoordinator() -> AuthenticatedWebViewCoordinator {
         AuthenticatedWebViewCoordinator(self)
@@ -30,15 +32,16 @@ struct AuthenticatedWebView: UIViewRepresentable, AuthenticatedWebViewDelegate {
     func makeUIView(context: Context) -> WKWebView {
         let webview = WKWebView()
         webview.navigationDelegate = context.coordinator
+        do {
+            try webview.load(authenticatedPostData())
+        } catch {
+            DDLogError("# error: Cannot be able to load the authenticated web view on WPCom")
+        }
         return webview
     }
 
     func updateUIView(_ uiView: WKWebView, context: Context) {
-        do {
-            try uiView.load(authenticatedPostData())
-        } catch {
-            DDLogError("# error: Cannot be able to load the authenticated web view on WPCom")
-        }
+
     }
 
     private func authenticatedPostData() throws -> URLRequest {
@@ -59,18 +62,15 @@ struct AuthenticatedWebView: UIViewRepresentable, AuthenticatedWebViewDelegate {
 
     class AuthenticatedWebViewCoordinator: NSObject, WKNavigationDelegate {
         private var parent: AuthenticatedWebView
-        private var delegate: AuthenticatedWebViewDelegate?
 
         init(_ uiWebView: AuthenticatedWebView) {
             parent = uiWebView
-            delegate = parent
         }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-
             if let url = webView.url?.absoluteString, let urlTrigger = parent.urlToTriggerExit, url.contains(urlTrigger) {
                 print("TRIGGERED")
-                delegate?.exitTriggered()
+                parent.exitTrigger?()
             }
             print("current URL", webView.url)
         }
@@ -82,7 +82,8 @@ struct AuthenticatedWebView: UIViewRepresentable, AuthenticatedWebViewDelegate {
 #if DEBUG
 struct AuthenticatedWebView_Previews: PreviewProvider {
     static var previews: some View {
-        AuthenticatedWebView(url: URL(string: "https://www.woocommerce.com")!)
+        AuthenticatedWebView(isPresented: .constant(true),
+                             url: URL(string: "https://www.woocommerce.com")!)
     }
 }
 #endif

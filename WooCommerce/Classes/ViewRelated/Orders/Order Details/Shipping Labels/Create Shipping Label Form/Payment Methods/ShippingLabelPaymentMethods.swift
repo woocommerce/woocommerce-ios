@@ -119,7 +119,19 @@ struct ShippingLabelPaymentMethods: View {
 
     private var webview: some View {
         NavigationView {
-            AuthenticatedWebView(url: WooConstants.URLs.addPaymentMethodWCShip.asURL(), urlToTriggerExit: viewModel.fetchPaymentMethodURLPath)
+            AuthenticatedWebView(isPresented: $showAddPaymentWebView,
+                                 url: WooConstants.URLs.addPaymentMethodWCShip.asURL(),
+                                 urlToTriggerExit: viewModel.fetchPaymentMethodURLPath) {
+                showAddPaymentWebView = false
+                viewModel.updateShippingLabelAccountSettings { _ in }
+            }
+            .navigationTitle(Localization.paymentMethodWebviewTitle)
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarItems(trailing: Button(action: {
+                showAddPaymentWebView = false
+            }, label: {
+                Text(Localization.doneButtonAddPayment)
+            }))
         }
     }
 }
@@ -145,7 +157,10 @@ private extension ShippingLabelPaymentMethods {
         static let addAnotherCreditCardButton = NSLocalizedString("Add another credit card",
                                                                   comment: "Button title in the Shipping Label Payment Method" +
                                                                     " screen if there is an existing payment method")
-
+        static let paymentMethodWebviewTitle = NSLocalizedString("Payment method",
+                                                            comment: "Title of the webview of adding a payment method in Shipping Labels")
+        static let doneButtonAddPayment = NSLocalizedString("Done",
+                                                            comment: "Done navigation button in Shipping Label add payment webview")
     }
 
     enum Constants {

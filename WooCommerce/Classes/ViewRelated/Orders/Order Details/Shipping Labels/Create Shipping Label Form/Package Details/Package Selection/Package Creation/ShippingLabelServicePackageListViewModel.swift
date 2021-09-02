@@ -23,4 +23,8 @@ final class ShippingLabelServicePackageListViewModel: ObservableObject {
     var shouldShowEmptyState: Bool {
         predefinedOptions.isEmpty
     }
+
+    init(packagesResponse: ShippingLabelPackagesResponse?) {
+        self.packagesResponse = packagesResponse
+    }
 }

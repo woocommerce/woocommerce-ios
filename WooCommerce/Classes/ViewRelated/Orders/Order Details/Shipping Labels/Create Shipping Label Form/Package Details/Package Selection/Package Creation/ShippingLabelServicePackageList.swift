@@ -1,5 +1,4 @@
 import SwiftUI
-import Yosemite
 
 struct ShippingLabelServicePackageList: View {
     @Environment(\.presentationMode) var presentation
@@ -87,17 +86,16 @@ private extension ShippingLabelServicePackageList {
 
 struct ShippingLabelServicePackageList_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = ShippingLabelServicePackageListViewModel()
+        let packagesResponse = ShippingLabelPackageDetailsViewModel.samplePackageDetails()
+        let populatedViewModel = ShippingLabelServicePackageListViewModel(packagesResponse: packagesResponse)
+        let emptyViewModel = ShippingLabelServicePackageListViewModel(packagesResponse: nil)
 
         GeometryReader { geometry in
-            ShippingLabelServicePackageList(viewModel: viewModel, geometry: geometry)
-                .onAppear() {
-                    viewModel.packagesResponse = ShippingLabelPackageDetailsViewModel.samplePackageDetails()
-                }
+            ShippingLabelServicePackageList(viewModel: populatedViewModel, geometry: geometry)
         }
 
         GeometryReader { geometry in
-            ShippingLabelServicePackageList(viewModel: viewModel, geometry: geometry)
+            ShippingLabelServicePackageList(viewModel: emptyViewModel, geometry: geometry)
                 .previewDisplayName("Empty State")
         }
     }

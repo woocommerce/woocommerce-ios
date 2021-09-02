@@ -15,13 +15,17 @@ struct CountrySelector: View {
 /// Search Header View
 ///
 private struct SearchHeader: View {
+
+    // Tracks the scale of the view due to accessibility changes
+    @ScaledMetric var scale: CGFloat = 1
+
     var body: some View {
         HStack(spacing: 0) {
             // Search Icon
             Image(uiImage: .searchBarButtonItemImage)
                 .renderingMode(.template)
                 .resizable()
-                .frame(width: Layout.iconSize.width, height: Layout.iconSize.height)
+                .frame(width: Layout.iconSize.width * scale, height: Layout.iconSize.height * scale)
                 .foregroundColor(Color(.listSmallIcon))
                 .padding([.leading, .trailing], Layout.internalPadding)
 

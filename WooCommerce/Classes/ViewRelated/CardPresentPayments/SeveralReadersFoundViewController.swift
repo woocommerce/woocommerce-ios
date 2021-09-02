@@ -104,20 +104,20 @@ private extension SeveralReadersFoundViewController {
         /// Vertically constrained? Reduce top and bottom constraints
         ///
         if traitCollection.verticalSizeClass == .compact {
-            viewTopConstraint.constant = 47
-            viewBottomConstraint.constant = -47
+            viewTopConstraint.constant = CompactConstraintConstants.top
+            viewBottomConstraint.constant = CompactConstraintConstants.bottom
         } else {
-            viewTopConstraint.constant = 125
-            viewBottomConstraint.constant = -197
+            viewTopConstraint.constant = RegularConstraintConstants.top
+            viewBottomConstraint.constant = RegularConstraintConstants.bottom
         }
 
         /// Horizontally unconstrained? Increase leading and trailing constraints
         if traitCollection.horizontalSizeClass == .compact {
-            viewLeadingConstraint.constant = 47
-            viewTrailingConstraint.constant = -47
+            viewLeadingConstraint.constant = CompactConstraintConstants.leading
+            viewTrailingConstraint.constant = CompactConstraintConstants.trailing
         } else {
-            viewLeadingConstraint.constant = 160
-            viewTrailingConstraint.constant = -160
+            viewLeadingConstraint.constant = RegularConstraintConstants.leading
+            viewTrailingConstraint.constant = RegularConstraintConstants.trailing
         }
     }
 
@@ -145,7 +145,7 @@ private extension SeveralReadersFoundViewController {
         }
     }
 
-    private func configureReaderRow(cell: UITableViewCell, readerID: String) {
+    func configureReaderRow(cell: UITableViewCell, readerID: String) {
         guard let cell = cell as? LabelAndButtonTableViewCell else {
             return
         }
@@ -154,12 +154,26 @@ private extension SeveralReadersFoundViewController {
         cell.selectionStyle = .none
     }
 
-    private func configureScanningRow(cell: UITableViewCell) {
+    func configureScanningRow(cell: UITableViewCell) {
         guard let cell = cell as? ActivitySpinnerAndLabelTableViewCell else {
             return
         }
         cell.label.text = Localization.scanningLabel
         cell.selectionStyle = .none
+    }
+
+    enum CompactConstraintConstants {
+        static let top: CGFloat = 47
+        static let leading: CGFloat = 47
+        static let trailing: CGFloat = -47
+        static let bottom: CGFloat = -47
+    }
+
+    enum RegularConstraintConstants {
+        static let top: CGFloat = 125
+        static let leading: CGFloat = 160
+        static let trailing: CGFloat = -160
+        static let bottom: CGFloat = -197
     }
 }
 

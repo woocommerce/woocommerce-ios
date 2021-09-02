@@ -1,6 +1,6 @@
 import UIKit
 
-class LabelAndButtonTableViewCell: UITableViewCell {
+final class LabelAndButtonTableViewCell: UITableViewCell {
     @IBOutlet weak var label: UILabel!
     @IBOutlet weak var button: UIButton!
 

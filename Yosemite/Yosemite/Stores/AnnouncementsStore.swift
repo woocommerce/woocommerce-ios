@@ -43,11 +43,6 @@ public class AnnouncementsStore: Store {
             .appendingPathComponent(Constants.featureAnnouncementsFileName)
     }()
 
-    private lazy var storageAnnouncement: StorageAnnouncement? = {
-        guard let fileUrl = featureAnnouncementsFileURL else { return nil }
-        return try? fileStorage.data(for: fileUrl)
-    }()
-
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
@@ -75,6 +70,7 @@ public class AnnouncementsStore: Store {
     }
 }
 
+// MARK: - Action Handlers
 private extension AnnouncementsStore {
     /// Get Announcements from Announcements API and persist this information on disk.
     func synchronizeAnnouncements(onCompletion: @escaping (Result<Announcement, Error>) -> Void) {
@@ -98,6 +94,33 @@ private extension AnnouncementsStore {
         }
     }
 
+    /// Load the latest saved Announcement and returns if it is displayed or not. Returns an Error if there is no saved announcement.
+    func loadSavedAnnouncement(onCompletion: (Result<(Announcement, IsDisplayed), Error>) -> Void) {
+        do {
+            let storedAnnouncement = try loadStoredAnnouncement()
+            let readOnly = try mapStoredAnnouncement(storedAnnouncement)
+            onCompletion(.success((readOnly, storedAnnouncement.displayed)))
+        } catch {
+            onCompletion(.failure(error))
+        }
+    }
+
+    /// Mark saved announcement as displayed. Returns an error in case of failure to save announcement
+    func markSavedAnnouncementAsDisplayed(onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            let storedAnnouncement = try loadStoredAnnouncement()
+            let displayedAnnouncement = makeADisplayedCopy(of: storedAnnouncement)
+            try saveOnDisk(displayedAnnouncement)
+            onCompletion(.success(()))
+        }
+        catch {
+            onCompletion(.failure(AnnouncementsStorageError.unableToSaveAnnouncement))
+        }
+    }
+}
+
+// MARK: - Helper functions
+private extension AnnouncementsStore {
     /// Map `WordPressKit.Announcement` to `StorageAnnouncement` model
     func mapAnnouncementToStorageModel(_ announcement: Announcement, displayed: Bool = false) -> StorageAnnouncement {
         let mappedFeatures = announcement.features.map {
@@ -119,62 +142,63 @@ private extension AnnouncementsStore {
                                    displayed: displayed)
     }
 
-    /// Save the `Announcement` on disk if it's a new or a different announcement comparing to the existing one
-    func saveAnnouncementIfNeeded(_ announcement: Announcement) throws {
-        if let storageAnnouncement = storageAnnouncement {
-            guard !announcement.isSameVersion(storageAnnouncement) else {
-                throw AnnouncementsStorageError.announcementAlreadyExists
-            }
-        }
-
-        guard let fileURL = featureAnnouncementsFileURL else { throw AnnouncementsStorageError.unableToFindFileURL }
-        let mappedAnnouncement = self.mapAnnouncementToStorageModel(announcement)
-        try fileStorage.write(mappedAnnouncement, to: fileURL)
-    }
-
-    /// Load the latest saved `Announcement`. Returns an Error if there is no saved announcement.
-    func loadSavedAnnouncement(onCompletion: (Result<(Announcement, IsDisplayed), Error>) -> Void) {
+    /// Map `StorageAnnouncement` to `WordPressKit.Announcement` model
+    func mapStoredAnnouncement(_ storedAnnouncement: StorageAnnouncement) throws -> Announcement {
         do {
-            onCompletion(.success((try savedAnnouncement(), storageAnnouncement?.displayed == true)))
-        } catch {
-            onCompletion(.failure(AnnouncementsStorageError.noAnnouncementSaved))
-        }
-    }
-
-    /// Mark saved announcement as displayed. Returng an error in case of failure to save announcement
-    func markSavedAnnouncementAsDisplayed(onCompletion: (Result<Void, Error>) -> Void) {
-        guard let fileURL = featureAnnouncementsFileURL else {
-            return onCompletion(.failure(AnnouncementsStorageError.unableToFindFileURL))
-        }
-
-        do {
-            let savedAnnouncement = try savedAnnouncement()
-            let mappedAnnouncement = self.mapAnnouncementToStorageModel(savedAnnouncement, displayed: true)
-            try fileStorage.write(mappedAnnouncement, to: fileURL)
-            onCompletion(.success(()))
-        }
-        catch {
-            onCompletion(.failure(AnnouncementsStorageError.unableToSaveAnnouncement))
-        }
-    }
-
-    /// Loads saved annpouncement from disk (Maps from StorageAnnouncement to Announcement)
-    func savedAnnouncement() throws -> Announcement {
-        guard let fileURL = featureAnnouncementsFileURL else { throw AnnouncementsStorageError.unableToFindFileURL }
-        do {
-            let savedModel: StorageAnnouncement = try fileStorage.data(for: fileURL)
-            let encodedObject = try JSONEncoder().encode(savedModel)
+            let encodedObject = try JSONEncoder().encode(storedAnnouncement)
             return try JSONDecoder().decode(Announcement.self, from: encodedObject)
         } catch {
             throw AnnouncementsStorageError.noAnnouncementSaved
         }
     }
+
+    /// Save the `Announcement` on disk if it's a new or a different announcement comparing to the existing one
+    func saveAnnouncementIfNeeded(_ announcement: Announcement) throws {
+        if let storageAnnouncement = try? loadStoredAnnouncement() {
+            guard announcement.isNewCompared(to: storageAnnouncement) else {
+                throw AnnouncementsStorageError.announcementAlreadyExists
+            }
+        }
+
+        let mappedAnnouncement = self.mapAnnouncementToStorageModel(announcement)
+        try saveOnDisk(mappedAnnouncement)
+    }
+
+    /// Saves a `StorageAnnouncement` to disk
+    func saveOnDisk(_ storageAnnouncement: StorageAnnouncement) throws {
+        guard let fileURL = featureAnnouncementsFileURL else { throw AnnouncementsStorageError.unableToFindFileURL }
+        try fileStorage.write(storageAnnouncement, to: fileURL)
+    }
+
+    /// Loads saved announcement from disk
+    func loadStoredAnnouncement() throws -> StorageAnnouncement {
+        guard let fileURL = featureAnnouncementsFileURL else { throw AnnouncementsStorageError.unableToFindFileURL }
+        do {
+            return try fileStorage.data(for: fileURL)
+        } catch {
+            throw AnnouncementsStorageError.noAnnouncementSaved
+        }
+    }
+
+    /// Creates a copy of StorageAnnouncement but marks it as displayed
+    func makeADisplayedCopy(of storageAnnouncement: StorageAnnouncement) -> StorageAnnouncement {
+        StorageAnnouncement(appVersionName: storageAnnouncement.appVersionName,
+                            minimumAppVersion: storageAnnouncement.minimumAppVersion,
+                            maximumAppVersion: storageAnnouncement.maximumAppVersion,
+                            appVersionTargets: storageAnnouncement.appVersionTargets,
+                            detailsUrl: storageAnnouncement.detailsUrl,
+                            announcementVersion: storageAnnouncement.announcementVersion,
+                            isLocalized: storageAnnouncement.isLocalized,
+                            responseLocale: storageAnnouncement.responseLocale,
+                            features: storageAnnouncement.features,
+                            displayed: true)
+    }
 }
 
 // MARK: - Announcement Extension
 private extension Announcement {
-    func isSameVersion(_ announcement: StorageAnnouncement) -> Bool {
-        appVersionName == announcement.appVersionName && announcementVersion == announcement.announcementVersion
+    func isNewCompared(to announcement: StorageAnnouncement) -> Bool {
+        appVersionName != announcement.appVersionName || announcementVersion > announcement.announcementVersion
     }
 }
 

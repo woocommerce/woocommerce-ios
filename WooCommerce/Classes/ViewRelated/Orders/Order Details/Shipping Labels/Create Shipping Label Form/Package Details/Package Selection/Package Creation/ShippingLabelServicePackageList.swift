@@ -5,19 +5,44 @@ struct ShippingLabelServicePackageList: View {
     @Environment(\.presentationMode) var presentation
     @StateObject var viewModel = ShippingLabelServicePackageListViewModel()
     let packagesResponse: ShippingLabelPackagesResponse?
-    let safeAreaInsets: EdgeInsets
+    let geometry: GeometryProxy
 
     var body: some View {
+        servicePackageListView
+            .onAppear(perform: {
+                viewModel.packagesResponse = packagesResponse
+            })
+            .background(Color(.listBackground))
+            .minimalNavigationBarBackButton()
+    }
+
+    @ViewBuilder
+    private var servicePackageListView: some View {
+        if viewModel.shouldShowEmptyState {
+            emptyList
+        } else {
+            populatedList
+        }
+    }
+
+    private var emptyList: some View {
+        VStack(alignment: .center) {
+            EmptyState(title: Localization.emptyStateMessage, image: .waitingForCustomersImage)
+                .frame(idealHeight: geometry.size.height)
+        }
+    }
+
+    private var populatedList: some View {
         LazyVStack(spacing: 0) {
             ListHeaderView(text: Localization.servicePackageHeader, alignment: .left)
-                .padding(.horizontal, insets: safeAreaInsets)
+                .padding(.horizontal, insets: geometry.safeAreaInsets)
 
             /// Packages
             ///
             ForEach(viewModel.predefinedOptions, id: \.title) { option in
 
                 ListHeaderView(text: option.title.uppercased(), alignment: .left)
-                    .padding(.horizontal, insets: safeAreaInsets)
+                    .padding(.horizontal, insets: geometry.safeAreaInsets)
                 Divider()
                 ForEach(option.predefinedPackages) { package in
                     let selected = package == viewModel.selectedPackage
@@ -27,20 +52,15 @@ struct ShippingLabelServicePackageList: View {
                         .onTapGesture {
                             viewModel.selectedPackage = package
                         }
-                        .padding(.horizontal, insets: safeAreaInsets)
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
                         .background(Color(.systemBackground))
                     Divider()
-                        .padding(.horizontal, insets: safeAreaInsets)
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
                         .padding(.leading, Constants.dividerPadding)
                 }
             }
         }
-        .onAppear(perform: {
-            viewModel.packagesResponse = packagesResponse
-        })
-        .background(Color(.listBackground))
         .ignoresSafeArea(.container, edges: .horizontal)
-        .minimalNavigationBarBackButton()
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing, content: {
                 Button(Localization.doneButton, action: {
@@ -57,7 +77,10 @@ private extension ShippingLabelServicePackageList {
         static let servicePackageHeader = NSLocalizedString(
             "Set up the package you'll be using to ship your products. We'll save it for future orders.",
             comment: "Header text on Add New Service Package screen in Shipping Label flow")
-        static let doneButton = NSLocalizedString("Done", comment: "Done navigation button in the Custom Package screen in Shipping Label flow")
+        static let doneButton = NSLocalizedString("Done", comment: "Done navigation button in the Service Package screen in Shipping Label flow")
+        static let emptyStateMessage = NSLocalizedString(
+            "All available packages have been activated",
+            comment: "Message displayed when there are no packages to display in the Add New Service Package screen in Shipping Label flow")
     }
 
     enum Constants {
@@ -70,7 +93,13 @@ struct ShippingLabelServicePackageList_Previews: PreviewProvider {
     static var previews: some View {
         let packagesResponse = ShippingLabelPackageDetailsViewModel.samplePackageDetails()
 
-        ShippingLabelServicePackageList(packagesResponse: packagesResponse, safeAreaInsets: .zero)
-            .previewLayout(.sizeThatFits)
+        GeometryReader { geometry in
+            ShippingLabelServicePackageList(packagesResponse: packagesResponse, geometry: geometry)
+        }
+
+        GeometryReader { geometry in
+            ShippingLabelServicePackageList(packagesResponse: nil, geometry: geometry)
+                .previewDisplayName("Empty State")
+        }
     }
 }

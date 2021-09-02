@@ -19,4 +19,8 @@ final class ShippingLabelServicePackageListViewModel: ObservableObject {
     var dimensionUnit: String {
         packagesResponse?.storeOptions.dimensionUnit ?? ""
     }
+
+    var shouldShowEmptyState: Bool {
+        predefinedOptions.isEmpty
+    }
 }

@@ -3,7 +3,7 @@ import SwiftUI
 struct EmptyState: View {
 
     @State var title: String
-    @State var description: String
+    @State var description: String?
     @State var image: UIImage?
 
     var body: some View {
@@ -17,10 +17,12 @@ struct EmptyState: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: Constants.width)
             }
-            Text(description)
-                .multilineTextAlignment(.center)
-                .bodyStyle()
-                .fixedSize(horizontal: false, vertical: true)
+            if let description = description {
+                Text(description)
+                    .multilineTextAlignment(.center)
+                    .bodyStyle()
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .center)
         .padding(.horizontal, Constants.horizontalSpacing)

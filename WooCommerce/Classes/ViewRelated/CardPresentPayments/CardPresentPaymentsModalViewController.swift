@@ -107,7 +107,7 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func styleTopTitle() {
-        topTitleLabel.applyHeadlineStyle()
+        topTitleLabel.applyBodyStyle()
     }
 
     func styleTopSubtitle() {

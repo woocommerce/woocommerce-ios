@@ -10,6 +10,7 @@ final class WhatsNewHostingController: UIHostingController<ReportList> {
         modalPresentationStyle = .formSheet
     }
 
+    /// Since preferredContentSize may be custom (in case of iPad) we must override traitCollection in order to obtain the "real" trait collection
     override var traitCollection: UITraitCollection {
         self.presentingViewController?.traitCollection ?? .current
     }

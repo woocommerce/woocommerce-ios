@@ -2,12 +2,12 @@ import Foundation
 import Combine
 import SwiftUI
 
-/// Hosting controller that wraps an `EditAddressView`.
+/// Hosting controller that wraps an `EditAddressForm`.
 ///
-final class EditAddressHostingController: UIHostingController<EditAddressView> {
+final class EditAddressHostingController: UIHostingController<EditAddressForm> {
 
     init() {
-        super.init(rootView: EditAddressView())
+        super.init(rootView: EditAddressForm())
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -17,7 +17,7 @@ final class EditAddressHostingController: UIHostingController<EditAddressView> {
 
 /// Allows merchant to edit the customer provided address of an order.
 ///
-struct EditAddressView: View {
+struct EditAddressForm: View {
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
@@ -119,42 +119,44 @@ struct EditAddressView: View {
 }
 
 // MARK: Constants
-private extension EditAddressView {
+private extension EditAddressForm {
     enum Constants {
         static let dividerPadding: CGFloat = 16
     }
 
     enum Localization {
-        static let shippingTitle = NSLocalizedString("Shipping Address", comment: "Title for the Edit Shipping Address screen")
-        static let done = NSLocalizedString("Done", comment: "Text for the done button in the Edit Address screen")
+        static let shippingTitle = NSLocalizedString("Shipping Address", comment: "Title for the Edit Shipping Address Form")
+        static let done = NSLocalizedString("Done", comment: "Text for the done button in the Edit Address Form")
 
-        static let detailsSection = NSLocalizedString("DETAILS", comment: "Details section title in the Edit Address screen")
-        static let shippingAddressSection = NSLocalizedString("SHIPPING ADDRESS", comment: "Details section title in the Edit Address screen")
+        static let detailsSection = NSLocalizedString("DETAILS", comment: "Details section title in the Edit Address Form")
+        static let shippingAddressSection = NSLocalizedString("SHIPPING ADDRESS", comment: "Details section title in the Edit Address Form")
 
-        static let firstNameField = NSLocalizedString("First name", comment: "Text field name in Edit Address screen")
-        static let lastNameField = NSLocalizedString("Last name", comment: "Text field name in Edit Address screen")
-        static let emailField = NSLocalizedString("Email", comment: "Text field email in Edit Address screen")
-        static let phoneField = NSLocalizedString("Phone", comment: "Text field phone in Edit Address screen")
+        static let firstNameField = NSLocalizedString("First name", comment: "Text field name in Edit Address Form")
+        static let lastNameField = NSLocalizedString("Last name", comment: "Text field name in Edit Address Form")
+        static let emailField = NSLocalizedString("Email", comment: "Text field email in Edit Address Form")
+        static let phoneField = NSLocalizedString("Phone", comment: "Text field phone in Edit Address Form")
 
-        static let companyField = NSLocalizedString("Company", comment: "Text field company in Edit Address screen")
-        static let address1Field = NSLocalizedString("Address 1", comment: "Text field address 1 in Edit Address screen")
-        static let address2Field = NSLocalizedString("Address 2", comment: "Text field address 2 in Edit Address screen")
-        static let cityField = NSLocalizedString("City", comment: "Text field city in Edit Address screen")
-        static let postcodeField = NSLocalizedString("Postcode", comment: "Text field postcode in Edit Address screen")
-        static let countryField = NSLocalizedString("Country", comment: "Text field country in Edit Address screen")
-        static let stateField = NSLocalizedString("State", comment: "Text field state in Edit Address screen")
+        static let companyField = NSLocalizedString("Company", comment: "Text field company in Edit Address Form")
+        static let address1Field = NSLocalizedString("Address 1", comment: "Text field address 1 in Edit Address Form")
+        static let address2Field = NSLocalizedString("Address 2", comment: "Text field address 2 in Edit Address Form")
+        static let cityField = NSLocalizedString("City", comment: "Text field city in Edit Address Form")
+        static let postcodeField = NSLocalizedString("Postcode", comment: "Text field postcode in Edit Address Form")
+        static let countryField = NSLocalizedString("Country", comment: "Text field country in Edit Address Form")
+        static let stateField = NSLocalizedString("State", comment: "Text field state in Edit Address Form")
 
-        static let placeholderRequired = NSLocalizedString("Required", comment: "Text field placeholder in Edit Address screen")
-        static let placeholderOptional = NSLocalizedString("Optional", comment: "Text field placeholder in Edit Address screen")
-        static let placeholderSelectOption = NSLocalizedString("Select an option", comment: "Text field placeholder in Edit Address screen")
+        static let placeholderRequired = NSLocalizedString("Required", comment: "Text field placeholder in Edit Address Form")
+        static let placeholderOptional = NSLocalizedString("Optional", comment: "Text field placeholder in Edit Address Form")
+        static let placeholderSelectOption = NSLocalizedString("Select an option", comment: "Text field placeholder in Edit Address Form")
     }
 }
 
 #if DEBUG
 
-struct EditAddressView_Previews: PreviewProvider {
+struct EditAddressForm_Previews: PreviewProvider {
     static var previews: some View {
-        EditAddressView()
+        NavigationView {
+            EditAddressForm()
+        }
     }
 }
 

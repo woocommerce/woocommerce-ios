@@ -20,7 +20,7 @@ struct WhatsNewFactory {
     /// Transform Features into ReportItem models
     private static func mapFeaturesToItems(_ features: [Feature]) -> [ReportItem] {
         features.map {
-            return ReportItem(title: $0.title, subtitle: $0.subtitle, icon: icon(for: $0))
+            ReportItem(title: $0.title, subtitle: $0.subtitle, icon: icon(for: $0))
         }
     }
 

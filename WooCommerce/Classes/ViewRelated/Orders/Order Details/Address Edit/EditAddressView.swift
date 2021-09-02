@@ -64,7 +64,6 @@ struct EditAddressView: View {
                                              symbol: nil,
                                              keyboardType: .default)
                         Divider()
-                            .padding(.leading, insets: geometry.safeAreaInsets)
                             .padding(.leading, Constants.dividerPadding)
                         TitleAndTextFieldRow(title: Localization.address1Field,
                                              placeholder: "",
@@ -72,7 +71,6 @@ struct EditAddressView: View {
                                              symbol: nil,
                                              keyboardType: .default)
                         Divider()
-                            .padding(.leading, insets: geometry.safeAreaInsets)
                             .padding(.leading, Constants.dividerPadding)
                         TitleAndTextFieldRow(title: Localization.address2Field,
                                              placeholder: "Optional",
@@ -80,7 +78,6 @@ struct EditAddressView: View {
                                              symbol: nil,
                                              keyboardType: .default)
                         Divider()
-                            .padding(.leading, insets: geometry.safeAreaInsets)
                             .padding(.leading, Constants.dividerPadding)
                         TitleAndTextFieldRow(title: Localization.cityField,
                                              placeholder: "",
@@ -88,7 +85,6 @@ struct EditAddressView: View {
                                              symbol: nil,
                                              keyboardType: .default)
                         Divider()
-                            .padding(.leading, insets: geometry.safeAreaInsets)
                             .padding(.leading, Constants.dividerPadding)
                         TitleAndTextFieldRow(title: Localization.postcodeField,
                                              placeholder: "",
@@ -96,7 +92,6 @@ struct EditAddressView: View {
                                              symbol: nil,
                                              keyboardType: .default)
                         Divider()
-                            .padding(.leading, insets: geometry.safeAreaInsets)
                             .padding(.leading, Constants.dividerPadding)
                     }
 

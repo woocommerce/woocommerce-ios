@@ -532,7 +532,8 @@ private extension ShippingLabelPackageDetailsViewModelTests {
 
         let packagesResponse = ShippingLabelPackagesResponse(storeOptions: storeOptions,
                                                              customPackages: withCustom ? customPackages : [],
-                                                             predefinedOptions: withPredefined ? predefinedOptions : [])
+                                                             predefinedOptions: withPredefined ? predefinedOptions : [],
+                                                             unactivatedPredefinedOptions: [])
 
         return packagesResponse
     }

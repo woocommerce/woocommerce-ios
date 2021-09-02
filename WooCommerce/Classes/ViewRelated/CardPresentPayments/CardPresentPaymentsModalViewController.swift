@@ -79,8 +79,8 @@ final class CardPresentPaymentsModalViewController: UIViewController {
             widthConstraint.constant = Constants.modalWidth
         }
 
-        heightConstraint.priority = .defaultHigh
-        widthConstraint.priority = .defaultHigh
+        heightConstraint.priority = .required
+        widthConstraint.priority = .required
     }
 }
 

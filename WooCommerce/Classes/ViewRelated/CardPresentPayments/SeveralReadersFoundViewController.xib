@@ -11,6 +11,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SeveralReadersFoundViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
                 <outlet property="cancelButton" destination="YlI-CS-RMv" id="43J-te-Tei"/>
+                <outlet property="containerView" destination="4pu-PC-ZQF" id="y8x-v6-1mz"/>
                 <outlet property="headlineLabel" destination="c99-Sl-tef" id="R9T-2v-jMJ"/>
                 <outlet property="tableView" destination="Ts1-Vi-hRJ" id="mGl-h5-A1T"/>
                 <outlet property="view" destination="iN0-l3-epB" id="rcX-G9-TIi"/>
@@ -39,7 +40,7 @@
                         </label>
                         <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Ts1-Vi-hRJ">
                             <rect key="frame" x="0.0" y="62" width="319" height="352"/>
-                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         </tableView>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YlI-CS-RMv">
                             <rect key="frame" x="16" y="430" width="287" height="50"/>

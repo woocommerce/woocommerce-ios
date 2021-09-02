@@ -2,6 +2,8 @@ import UIKit
 
 final class SeveralReadersFoundViewController: UIViewController, UITableViewDelegate {
 
+    @IBOutlet private weak var containerView: UIView!
+
     @IBOutlet private weak var headlineLabel: UILabel!
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var cancelButton: UIButton!
@@ -35,6 +37,7 @@ final class SeveralReadersFoundViewController: UIViewController, UITableViewDele
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setBackgroundColor()
         registerTableViewCells()
         configureNavigation()
         configureSections()
@@ -67,6 +70,10 @@ final class SeveralReadersFoundViewController: UIViewController, UITableViewDele
 // MARK: - View Configuration
 //
 private extension SeveralReadersFoundViewController {
+    func setBackgroundColor() {
+        containerView.backgroundColor = .tertiarySystemBackground
+    }
+
     func configureNavigation() {
         headlineLabel.text = Localization.headline
         cancelButton.setTitle(Localization.cancel, for: .normal)

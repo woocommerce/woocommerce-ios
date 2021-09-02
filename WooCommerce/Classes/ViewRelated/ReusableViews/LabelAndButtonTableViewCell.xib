@@ -29,6 +29,7 @@
                         <state key="normal" title="Button"/>
                     </button>
                 </subviews>
+                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 <constraints>
                     <constraint firstItem="OhL-hX-qBu" firstAttribute="leading" secondItem="nm8-P2-HxZ" secondAttribute="leading" constant="16" id="32z-8n-hEN"/>
                     <constraint firstAttribute="trailing" secondItem="NUH-Od-3Cg" secondAttribute="trailing" constant="16" id="Iby-g6-rYk"/>
@@ -36,6 +37,7 @@
                     <constraint firstItem="OhL-hX-qBu" firstAttribute="centerY" secondItem="nm8-P2-HxZ" secondAttribute="centerY" id="xxB-it-osD"/>
                 </constraints>
             </tableViewCellContentView>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <connections>
                 <outlet property="button" destination="NUH-Od-3Cg" id="5Vp-CU-Vc4"/>
                 <outlet property="label" destination="OhL-hX-qBu" id="bZh-zw-CYY"/>

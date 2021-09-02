@@ -289,6 +289,12 @@ extension UIColor {
             return .white
         }
     }
+
+    /// SearchBar background color.
+    ///
+    static var searchBarBackground: UIColor {
+        .secondarySystemFill
+    }
 }
 
 // MARK: - UI elements.

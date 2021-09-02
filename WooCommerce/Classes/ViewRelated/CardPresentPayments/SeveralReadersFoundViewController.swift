@@ -2,14 +2,14 @@ import UIKit
 
 final class SeveralReadersFoundViewController: UIViewController, UITableViewDelegate {
 
-    @IBOutlet weak var headlineLabel: UILabel!
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var cancelButton: UIButton!
+    @IBOutlet private weak var headlineLabel: UILabel!
+    @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var cancelButton: UIButton!
 
-    @IBOutlet weak var viewTrailingConstraint: NSLayoutConstraint!
-    @IBOutlet weak var viewBottomConstraint: NSLayoutConstraint!
-    @IBOutlet weak var viewTopConstraint: NSLayoutConstraint!
-    @IBOutlet weak var viewLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var viewTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var viewBottomConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var viewTopConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var viewLeadingConstraint: NSLayoutConstraint!
 
     private var sections = [Section]()
 

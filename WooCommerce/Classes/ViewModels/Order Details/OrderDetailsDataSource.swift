@@ -48,7 +48,8 @@ final class OrderDetailsDataSource: NSObject {
         return isOrderAmountEligibleForCardPayment() &&
             isOrderStatusEligibleForCardPayment() &&
             isOrderPaymentMethodEligibleForCardPayment() &&
-            hasCardPresentEligiblePaymentGatewayAccount()
+            hasCardPresentEligiblePaymentGatewayAccount() &&
+            !orderContainsAnySubscription()
     }
 
     /// Whether the button to create shipping labels should be visible.
@@ -1477,6 +1478,12 @@ private extension OrderDetailsDataSource {
 
     func hasCardPresentEligiblePaymentGatewayAccount() -> Bool {
         resultsControllers.paymentGatewayAccounts.contains(where: \.isCardPresentEligible)
+    }
+
+    func orderContainsAnySubscription() -> Bool {
+        order.items.contains { item in
+            lookUpProduct(by: item.productID)?.productType == .subscription
+        }
     }
 }
 

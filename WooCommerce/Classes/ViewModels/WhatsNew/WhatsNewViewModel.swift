@@ -28,9 +28,9 @@ final class WhatsNewViewModel: ReportListPresentable {
         stores.dispatch(AnnouncementsAction.markSavedAnnouncementAsDisplayed(onCompletion: { result in
             switch result {
             case .success:
-                return DDLogInfo("📣 Announcement was marked as displayed! ✅")
+                DDLogInfo("📣 Announcement was marked as displayed! ✅")
             case .failure(let error):
-                return DDLogInfo("📣 Failed to mark announcement as displayed: \(error.localizedDescription)")
+                DDLogInfo("⛔️ Failed to mark announcement as displayed: \(error.localizedDescription)")
             }
         }))
     }

@@ -77,6 +77,8 @@ private extension AppCoordinator {
     /// Load saved announcement and display it on What's New component if it was not displayed yet
     ///
     func showWhatsNewIfNeeded() {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.whatsNewOnWooCommerce) else { return }
+
         stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
             guard let self = self else { return }
             guard let (announcement, displayed) = try? result.get(), !displayed else {

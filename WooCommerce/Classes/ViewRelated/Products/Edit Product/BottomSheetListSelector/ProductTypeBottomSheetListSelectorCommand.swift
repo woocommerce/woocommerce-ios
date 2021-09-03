@@ -121,6 +121,10 @@ public enum BottomSheetProductType: Hashable {
             self = .affiliate
         case .grouped:
             self = .grouped
+        case .subscription:
+            // We need to be aware of subscriptions for Payments
+            // but we don't handle them in the UI yet
+            self = .custom("subscription")
         case .custom(let string):
             self = .custom(string)
         }

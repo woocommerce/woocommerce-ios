@@ -32,6 +32,8 @@ struct ShippingLabelPackageDetails: View {
                     ListHeaderView(text: Localization.itemsToFulfillHeader, alignment: .left)
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
 
+                    Divider()
+
                     ForEach(viewModel.itemsRows) { productItemRow in
                         productItemRow
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
@@ -78,6 +80,8 @@ struct ShippingLabelPackageDetails: View {
         }
         .navigationTitle(Localization.title)
         .navigationBarItems(trailing: Button(action: {
+            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow,
+                                           withProperties: ["state": "packages_selected"])
             onCompletion(viewModel.selectedPackageID, viewModel.totalWeight)
             presentation.wrappedValue.dismiss()
         }, label: {

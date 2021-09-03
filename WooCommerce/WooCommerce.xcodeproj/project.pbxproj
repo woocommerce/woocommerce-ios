@@ -404,6 +404,9 @@
 		265BCA0E2430E771004E53EE /* ProductCategoryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 265BCA0D2430E771004E53EE /* ProductCategoryTableViewCell.xib */; };
 		265D909B2446657B00D66F0F /* ProductCategoryViewModelBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265D909A2446657A00D66F0F /* ProductCategoryViewModelBuilder.swift */; };
 		265D909D2446688C00D66F0F /* ProductCategoryViewModelBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267CFE1824435A5500AF3A13 /* ProductCategoryViewModelBuilderTests.swift */; };
+		2662D90626E1571900E25611 /* ListSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2662D90526E1571900E25611 /* ListSelector.swift */; };
+		2662D90826E15D6E00E25611 /* CountrySelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2662D90726E15D6E00E25611 /* CountrySelectorCommand.swift */; };
+		2662D90A26E16B3600E25611 /* CountrySelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2662D90926E16B3600E25611 /* CountrySelector.swift */; };
 		2667BFD7252E5DBF008099D4 /* RefundItemViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFD6252E5DBF008099D4 /* RefundItemViewModelTests.swift */; };
 		2667BFDB252E659A008099D4 /* MockOrderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFDA252E659A008099D4 /* MockOrderItem.swift */; };
 		2667BFDD252F61C5008099D4 /* RefundShippingDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFDC252F61C5008099D4 /* RefundShippingDetailsViewModelTests.swift */; };
@@ -466,6 +469,10 @@
 		311D21ED264AF0E700102316 /* CardReaderSettingsAlerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311D21EC264AF0E700102316 /* CardReaderSettingsAlerts.swift */; };
 		311F827426CD897900DF5BAD /* CardReaderSettingsAlertsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311F827326CD897900DF5BAD /* CardReaderSettingsAlertsProvider.swift */; };
 		311F827626CD8AB100DF5BAD /* MockCardReaderSettingsAlerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311F827526CD8AB100DF5BAD /* MockCardReaderSettingsAlerts.swift */; };
+		3120491726DD807900A4EC4F /* LabelAndButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120491626DD807900A4EC4F /* LabelAndButtonTableViewCell.swift */; };
+		3120491926DD808B00A4EC4F /* LabelAndButtonTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3120491826DD808B00A4EC4F /* LabelAndButtonTableViewCell.xib */; };
+		3120491B26DD80E000A4EC4F /* ActivitySpinnerAndLabelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3120491A26DD80E000A4EC4F /* ActivitySpinnerAndLabelTableViewCell.swift */; };
+		3120491D26DD80F700A4EC4F /* ActivitySpinnerAndLabelTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3120491C26DD80F700A4EC4F /* ActivitySpinnerAndLabelTableViewCell.xib */; };
 		31316F9C25CB20FD00D9F129 /* OrderStatusListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31316F9B25CB20FD00D9F129 /* OrderStatusListViewModel.swift */; };
 		314265AC26459F7300500598 /* CardReaderSettingsSearchingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314265AB26459F7300500598 /* CardReaderSettingsSearchingViewController.swift */; };
 		314265B12645A07800500598 /* CardReaderSettingsConnectedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314265B02645A07800500598 /* CardReaderSettingsConnectedViewController.swift */; };
@@ -492,6 +499,8 @@
 		31B0551E264B3C7A00134D87 /* CardPresentModalFoundReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B0551D264B3C7A00134D87 /* CardPresentModalFoundReader.swift */; };
 		31B05523264B3C8900134D87 /* CardPresentModalConnectingToReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B05522264B3C8900134D87 /* CardPresentModalConnectingToReader.swift */; };
 		31B19B67263B5E580099DAA6 /* CardReaderSettingsSearchingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B19B66263B5E580099DAA6 /* CardReaderSettingsSearchingViewModel.swift */; };
+		31C21FA426D9949000916E2E /* SeveralReadersFoundViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31C21FA326D9949000916E2E /* SeveralReadersFoundViewController.swift */; };
+		31C21FA626D994B700916E2E /* SeveralReadersFoundViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31C21FA526D994B700916E2E /* SeveralReadersFoundViewController.xib */; };
 		31E6F21F26B3577800227E6F /* CardReaderConnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E6F21E26B3577800227E6F /* CardReaderConnectionController.swift */; };
 		31E906A326CC91A70099A985 /* CardReaderConnectionControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E906A226CC91A70099A985 /* CardReaderConnectionControllerTests.swift */; };
 		31EF399C26430C6D0093C6F6 /* CardReaderSettingsPrioritizedViewModelsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31EF399B26430C6D0093C6F6 /* CardReaderSettingsPrioritizedViewModelsProvider.swift */; };
@@ -801,6 +810,7 @@
 		A655725D258B91AE008AE7CA /* OrderListCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A655725C258B91AE008AE7CA /* OrderListCellViewModelTests.swift */; };
 		AEB73C0C25CD734200A8454A /* AttributePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */; };
 		AEB73C1725CD8E5800A8454A /* AttributePickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C1625CD8E5800A8454A /* AttributePickerViewModelTests.swift */; };
+		AECD57D226DFDF7500A3B580 /* EditAddressForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECD57D126DFDF7500A3B580 /* EditAddressForm.swift */; };
 		AEDDDA0A25CA9C980077F9B2 /* AttributePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDDA0925CA9C980077F9B2 /* AttributePickerViewController.swift */; };
 		AEDDDA1A25CAB2170077F9B2 /* AttributePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AEDDDA1925CAB2170077F9B2 /* AttributePickerViewController.xib */; };
 		AEE1D4F525D14F88006A490B /* AttributeOptionListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE1D4F425D14F88006A490B /* AttributeOptionListSelectorCommand.swift */; };
@@ -1790,6 +1800,9 @@
 		265BCA0B2430E741004E53EE /* ProductCategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryTableViewCell.swift; sourceTree = "<group>"; };
 		265BCA0D2430E771004E53EE /* ProductCategoryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductCategoryTableViewCell.xib; sourceTree = "<group>"; };
 		265D909A2446657A00D66F0F /* ProductCategoryViewModelBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryViewModelBuilder.swift; sourceTree = "<group>"; };
+		2662D90526E1571900E25611 /* ListSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListSelector.swift; sourceTree = "<group>"; };
+		2662D90726E15D6E00E25611 /* CountrySelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountrySelectorCommand.swift; sourceTree = "<group>"; };
+		2662D90926E16B3600E25611 /* CountrySelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountrySelector.swift; sourceTree = "<group>"; };
 		2667BFD6252E5DBF008099D4 /* RefundItemViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundItemViewModelTests.swift; sourceTree = "<group>"; };
 		2667BFDA252E659A008099D4 /* MockOrderItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockOrderItem.swift; sourceTree = "<group>"; };
 		2667BFDC252F61C5008099D4 /* RefundShippingDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundShippingDetailsViewModelTests.swift; sourceTree = "<group>"; };
@@ -1854,6 +1867,10 @@
 		311D21EC264AF0E700102316 /* CardReaderSettingsAlerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsAlerts.swift; sourceTree = "<group>"; };
 		311F827326CD897900DF5BAD /* CardReaderSettingsAlertsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsAlertsProvider.swift; sourceTree = "<group>"; };
 		311F827526CD8AB100DF5BAD /* MockCardReaderSettingsAlerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCardReaderSettingsAlerts.swift; sourceTree = "<group>"; };
+		3120491626DD807900A4EC4F /* LabelAndButtonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelAndButtonTableViewCell.swift; sourceTree = "<group>"; };
+		3120491826DD808B00A4EC4F /* LabelAndButtonTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LabelAndButtonTableViewCell.xib; sourceTree = "<group>"; };
+		3120491A26DD80E000A4EC4F /* ActivitySpinnerAndLabelTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivitySpinnerAndLabelTableViewCell.swift; sourceTree = "<group>"; };
+		3120491C26DD80F700A4EC4F /* ActivitySpinnerAndLabelTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ActivitySpinnerAndLabelTableViewCell.xib; sourceTree = "<group>"; };
 		31316F9B25CB20FD00D9F129 /* OrderStatusListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusListViewModel.swift; sourceTree = "<group>"; };
 		314265AB26459F7300500598 /* CardReaderSettingsSearchingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsSearchingViewController.swift; sourceTree = "<group>"; };
 		314265B02645A07800500598 /* CardReaderSettingsConnectedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsConnectedViewController.swift; sourceTree = "<group>"; };
@@ -1880,6 +1897,8 @@
 		31B0551D264B3C7A00134D87 /* CardPresentModalFoundReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalFoundReader.swift; sourceTree = "<group>"; };
 		31B05522264B3C8900134D87 /* CardPresentModalConnectingToReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalConnectingToReader.swift; sourceTree = "<group>"; };
 		31B19B66263B5E580099DAA6 /* CardReaderSettingsSearchingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsSearchingViewModel.swift; sourceTree = "<group>"; };
+		31C21FA326D9949000916E2E /* SeveralReadersFoundViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeveralReadersFoundViewController.swift; sourceTree = "<group>"; };
+		31C21FA526D994B700916E2E /* SeveralReadersFoundViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SeveralReadersFoundViewController.xib; sourceTree = "<group>"; };
 		31E6F21E26B3577800227E6F /* CardReaderConnectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderConnectionController.swift; sourceTree = "<group>"; };
 		31E906A226CC91A70099A985 /* CardReaderConnectionControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderConnectionControllerTests.swift; sourceTree = "<group>"; };
 		31EF399B26430C6D0093C6F6 /* CardReaderSettingsPrioritizedViewModelsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsPrioritizedViewModelsProvider.swift; sourceTree = "<group>"; };
@@ -2191,6 +2210,7 @@
 		A655725C258B91AE008AE7CA /* OrderListCellViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListCellViewModelTests.swift; sourceTree = "<group>"; };
 		AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewModel.swift; sourceTree = "<group>"; };
 		AEB73C1625CD8E5800A8454A /* AttributePickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewModelTests.swift; sourceTree = "<group>"; };
+		AECD57D126DFDF7500A3B580 /* EditAddressForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditAddressForm.swift; sourceTree = "<group>"; };
 		AEDDDA0925CA9C980077F9B2 /* AttributePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewController.swift; sourceTree = "<group>"; };
 		AEDDDA1925CAB2170077F9B2 /* AttributePickerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AttributePickerViewController.xib; sourceTree = "<group>"; };
 		AEE1D4F425D14F88006A490B /* AttributeOptionListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeOptionListSelectorCommand.swift; sourceTree = "<group>"; };
@@ -3621,6 +3641,7 @@
 			isa = PBXGroup;
 			children = (
 				0290E26D238E3CE400B5C466 /* ListSelectorViewController.swift */,
+				2662D90526E1571900E25611 /* ListSelector.swift */,
 				02ADC7CB239762E0008D4BED /* PaginatedListSelectorViewProperties.swift */,
 				0290E273238E4F8100B5C466 /* PaginatedListSelectorViewController.swift */,
 			);
@@ -4766,6 +4787,16 @@
 			path = "Edit Product Variation";
 			sourceTree = "<group>";
 		};
+		AECD57D026DFDF3E00A3B580 /* Address Edit */ = {
+			isa = PBXGroup;
+			children = (
+				AECD57D126DFDF7500A3B580 /* EditAddressForm.swift */,
+				2662D90926E16B3600E25611 /* CountrySelector.swift */,
+				2662D90726E15D6E00E25611 /* CountrySelectorCommand.swift */,
+			);
+			path = "Address Edit";
+			sourceTree = "<group>";
+		};
 		AEDDDA0825CA9C0A0077F9B2 /* Edit Attributes */ = {
 			isa = PBXGroup;
 			children = (
@@ -5667,6 +5698,7 @@
 			children = (
 				CEE006072077D14C0079161F /* OrderDetailsViewController.swift */,
 				B53B3F36219C75AC00DF1EB6 /* OrderLoaderViewController.swift */,
+				AECD57D026DFDF3E00A3B580 /* Address Edit */,
 				DE1B030A268DCFF200804330 /* Review Order */,
 				26578C3F26277AA700A15097 /* AddOns */,
 				CE35F10F2343E694007B2A6B /* Order Summary Section */,
@@ -5885,6 +5917,8 @@
 				57448D26242E772300A56A74 /* EmptyStateViewController */,
 				57896D6425362AC2000E8C4D /* TitleAndEditableValueTableViewCell */,
 				3110575C26D57CF300F74D23 /* UpdateViewController */,
+				3120491A26DD80E000A4EC4F /* ActivitySpinnerAndLabelTableViewCell.swift */,
+				3120491C26DD80F700A4EC4F /* ActivitySpinnerAndLabelTableViewCell.xib */,
 				D8736B7422F1FE1600A14A29 /* BadgeLabel.swift */,
 				CE21B3D520FE669A00A259D5 /* BasicTableViewCell.swift */,
 				CE21B3D620FE669A00A259D5 /* BasicTableViewCell.xib */,
@@ -5911,6 +5945,8 @@
 				318109DB25E5B51900EE0BE7 /* ImageTableViewCell.swift */,
 				318109E125E5B55C00EE0BE7 /* ImageTableViewCell.xib */,
 				7441E1D121503F77004E6ECE /* IntrinsicTableView.swift */,
+				3120491626DD807900A4EC4F /* LabelAndButtonTableViewCell.swift */,
+				3120491826DD808B00A4EC4F /* LabelAndButtonTableViewCell.xib */,
 				740382D92267D94100A627F4 /* LargeImageTableViewCell.swift */,
 				740382DA2267D94100A627F4 /* LargeImageTableViewCell.xib */,
 				31FE28C125E6D338003519F2 /* LearnMoreTableViewCell.swift */,
@@ -6119,9 +6155,11 @@
 			children = (
 				D8815ADD26383EE600EDAD62 /* CardPresentPaymentsModalViewController.swift */,
 				D8815ADE26383EE700EDAD62 /* CardPresentPaymentsModalViewController.xib */,
+				31E6F21E26B3577800227E6F /* CardReaderConnectionController.swift */,
 				D8EE9690264D328A0033B2F9 /* ReceiptViewController.swift */,
 				D8EE9691264D328A0033B2F9 /* ReceiptViewController.xib */,
-				31E6F21E26B3577800227E6F /* CardReaderConnectionController.swift */,
+				31C21FA326D9949000916E2E /* SeveralReadersFoundViewController.swift */,
+				31C21FA526D994B700916E2E /* SeveralReadersFoundViewController.xib */,
 			);
 			path = CardPresentPayments;
 			sourceTree = "<group>";
@@ -6654,6 +6692,7 @@
 				B573B1A0219DC2690081C78C /* Localizable.strings in Resources */,
 				B559EBAF20A0BF8F00836CD4 /* README.md in Resources */,
 				CE583A082107849F00D73C1C /* SwitchTableViewCell.xib in Resources */,
+				3120491926DD808B00A4EC4F /* LabelAndButtonTableViewCell.xib in Resources */,
 				0235595124496853004BE2B8 /* BottomSheetListSelectorViewController.xib in Resources */,
 				CE22571B20E16FBC0037F478 /* LeftImageTableViewCell.xib in Resources */,
 				8CD41D4A21F8A7E300CF3C2B /* RELEASE-NOTES.txt in Resources */,
@@ -6684,6 +6723,7 @@
 				2687165624D21BC80042F6AE /* SurveySubmittedViewController.xib in Resources */,
 				02E6B97923853D81000A36F0 /* TitleAndValueTableViewCell.xib in Resources */,
 				CE37C04522984E81008DCB39 /* PickListTableViewCell.xib in Resources */,
+				31C21FA626D994B700916E2E /* SeveralReadersFoundViewController.xib in Resources */,
 				D85B8334222FABD1002168F3 /* StatusListTableViewCell.xib in Resources */,
 				5795F22C23E26A8D00F6707C /* OrderSearchStarterViewController.xib in Resources */,
 				45B9C63F23A8E50D007FC4C5 /* ProductPriceSettingsViewController.xib in Resources */,
@@ -6755,6 +6795,7 @@
 				CE32B11620BF8779006FBCF4 /* ButtonTableViewCell.xib in Resources */,
 				45C8B2672316AB460002FA77 /* BillingAddressTableViewCell.xib in Resources */,
 				B557652D20F6827900185843 /* StoreTableViewCell.xib in Resources */,
+				3120491D26DD80F700A4EC4F /* ActivitySpinnerAndLabelTableViewCell.xib in Resources */,
 				02E8B17823E2C49000A43403 /* InProgressProductImageCollectionViewCell.xib in Resources */,
 				260C31622524EEB200157BC2 /* IssueRefundViewController.xib in Resources */,
 				7493BB8F2149852A003071A9 /* TopPerformersHeaderView.xib in Resources */,
@@ -7047,6 +7088,7 @@
 				02DD81FA242CAA400060E50B /* Media+WPMediaAsset.swift in Sources */,
 				311D21E8264AEDB900102316 /* CardPresentModalScanningForReader.swift in Sources */,
 				2688643D25D470C000821BA5 /* EditAttributesViewModel.swift in Sources */,
+				31C21FA426D9949000916E2E /* SeveralReadersFoundViewController.swift in Sources */,
 				CC078531266E706300BA9AC1 /* ErrorTopBannerFactory.swift in Sources */,
 				DE8C94662646990000C94823 /* PluginListViewController.swift in Sources */,
 				024DF31F23743045006658FE /* Header+AztecFormatting.swift in Sources */,
@@ -7057,6 +7099,7 @@
 				0240B3AC230A910C000A866C /* StoreStatsV4ChartAxisHelper.swift in Sources */,
 				CCD2F51C26D697860010E679 /* ShippingLabelServicePackageListViewModel.swift in Sources */,
 				E107FCE326C13A0D00BAF51B /* InPersonPaymentsSupportLink.swift in Sources */,
+				2662D90626E1571900E25611 /* ListSelector.swift in Sources */,
 				74D0A5302139CF1300E2919F /* String+Helpers.swift in Sources */,
 				0286B27F23C70557003D784B /* ColumnFlowLayout.swift in Sources */,
 				DEE6437626D87C4100888A75 /* PrintCustomsFormsView.swift in Sources */,
@@ -7109,6 +7152,7 @@
 				4569317F2653E82B009ED69D /* ShippingLabelCarriers.swift in Sources */,
 				024DF30B23742297006658FE /* AztecFormatBarCommand.swift in Sources */,
 				CC254F3426C4113B005F3C82 /* ShippingLabelPackageSelection.swift in Sources */,
+				AECD57D226DFDF7500A3B580 /* EditAddressForm.swift in Sources */,
 				45E9A6E724DAE23300A600E8 /* ProductReviewsViewModel.swift in Sources */,
 				028BAC4222F30B05008BB4AF /* StoreStatsV4PeriodViewController.swift in Sources */,
 				740987B321B87760000E4C80 /* FancyAnimatedButton+Woo.swift in Sources */,
@@ -7200,6 +7244,7 @@
 				B5A56BF0219F2CE90065A902 /* VerticalButton.swift in Sources */,
 				D831E2DC230E0558000037D0 /* Authentication.swift in Sources */,
 				314DC4BF268D183600444C9E /* CardReaderSettingsKnownReadersStoredList.swift in Sources */,
+				2662D90826E15D6E00E25611 /* CountrySelectorCommand.swift in Sources */,
 				024A543422BA6F8F00F4F38E /* DeveloperEmailChecker.swift in Sources */,
 				027B8BB823FE0CB30040944E /* DefaultProductUIImageLoader.swift in Sources */,
 				314265AC26459F7300500598 /* CardReaderSettingsSearchingViewController.swift in Sources */,
@@ -7402,6 +7447,7 @@
 				0212276124498A270042161F /* ProductFormBottomSheetListSelectorCommand.swift in Sources */,
 				D831E2E0230E0BA7000037D0 /* Logs.swift in Sources */,
 				02CEBB8224C98861002EDF35 /* ProductFormDataModel.swift in Sources */,
+				3120491B26DD80E000A4EC4F /* ActivitySpinnerAndLabelTableViewCell.swift in Sources */,
 				CECC759C23D61C1400486676 /* AggregateDataHelper.swift in Sources */,
 				02B296A722FA6DB500FD7A4C /* Date+StartAndEnd.swift in Sources */,
 				D81D9228222E7F0800FFA585 /* OrderStatusListViewController.swift in Sources */,
@@ -7538,6 +7584,7 @@
 				B5290ED9219B3FA900A6AF7F /* Date+Woo.swift in Sources */,
 				CECC758C23D2227000486676 /* ProductDetailsCellViewModel.swift in Sources */,
 				453227B723C4D6EC00D816B3 /* TimeZone+Woo.swift in Sources */,
+				2662D90A26E16B3600E25611 /* CountrySelector.swift in Sources */,
 				314265B12645A07800500598 /* CardReaderSettingsConnectedViewController.swift in Sources */,
 				B57C744520F55BA600EEFC87 /* NSObject+Helpers.swift in Sources */,
 				0269576A23726304001BA0BF /* KeyboardFrameObserver.swift in Sources */,
@@ -7615,6 +7662,7 @@
 				0211254125778BDF0075AD2A /* ShippingLabelDetailsViewController.swift in Sources */,
 				020DD49123239DD6005822B1 /* PaginatedListViewControllerStateCoordinator.swift in Sources */,
 				0202B6952387AD1B00F3EBE0 /* UITabBar+Order.swift in Sources */,
+				3120491726DD807900A4EC4F /* LabelAndButtonTableViewCell.swift in Sources */,
 				024DF31423742B7A006658FE /* AztecUnderlineFormatBarCommand.swift in Sources */,
 				CE32B10D20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift in Sources */,
 				D8D15F85230A18AB00D48B3F /* Analytics.swift in Sources */,

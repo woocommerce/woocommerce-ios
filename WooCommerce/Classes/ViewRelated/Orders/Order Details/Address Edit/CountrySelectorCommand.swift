@@ -48,7 +48,7 @@ final class CountrySelectorCommand: ListSelectorCommand {
             return data = countries
         }
 
-        data = countries.filter { $0.name.contains(term) }
+        data = countries.filter { $0.name.localizedCaseInsensitiveContains(term) }
     }
 }
 

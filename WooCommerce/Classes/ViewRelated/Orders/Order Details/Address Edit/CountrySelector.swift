@@ -4,8 +4,9 @@ import SwiftUI
 ///
 struct CountrySelector: View {
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             SearchHeader()
+                .background(Color(.listForeground))
             ListSelector(command: CountrySelectorCommand(), tableStyle: .plain)
         }
         .navigationTitle(Localization.title)

@@ -1141,7 +1141,8 @@ extension ShippingLabelPackagesResponse {
         .init(
             storeOptions: .fake(),
             customPackages: .fake(),
-            predefinedOptions: .fake()
+            predefinedOptions: .fake(),
+            unactivatedPredefinedOptions: .fake()
         )
     }
 }

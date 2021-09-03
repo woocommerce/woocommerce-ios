@@ -1,7 +1,9 @@
 import SwiftUI
+import Yosemite
 
 struct ShippingLabelAddNewPackage: View {
     @StateObject private var viewModel = ShippingLabelAddNewPackageViewModel()
+    let packagesResponse: ShippingLabelPackagesResponse?
 
     var body: some View {
         GeometryReader { geometry in
@@ -18,7 +20,7 @@ struct ShippingLabelAddNewPackage: View {
                     case .customPackage:
                         ShippingLabelCustomPackageForm(safeAreaInsets: geometry.safeAreaInsets)
                     case .servicePackage:
-                        EmptyView() // TODO-4743: Show service package view
+                        ShippingLabelServicePackageList(packagesResponse: packagesResponse, geometry: geometry)
                     }
                 }
                  .background(Color(.listBackground).ignoresSafeArea(.container, edges: .bottom))
@@ -40,6 +42,6 @@ private extension ShippingLabelAddNewPackage {
 
 struct ShippingLabelAddNewPackage_Previews: PreviewProvider {
     static var previews: some View {
-        ShippingLabelAddNewPackage()
+        ShippingLabelAddNewPackage(packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails())
     }
 }

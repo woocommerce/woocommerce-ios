@@ -62,8 +62,8 @@ target 'WooCommerce' do
   pod 'XLPagerTabStrip', '~> 9.0'
   pod 'Charts', '~> 3.6.0'
   pod 'ZendeskSupportSDK', '~> 5.0'
-  pod 'Kingfisher', '~> 5.11.0'
   pod 'StripeTerminal', '~> 2.0'
+  pod 'Kingfisher', '~> 6.0.0'
   pod 'Wormholy', '~> 1.6.4', configurations: ['Debug']
 
   # Unit Tests

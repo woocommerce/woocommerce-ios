@@ -913,7 +913,8 @@ private extension ShippingLabelStoreTests {
     func sampleShippingLabelPackagesResponse() -> Yosemite.ShippingLabelPackagesResponse {
         return ShippingLabelPackagesResponse(storeOptions: sampleShippingLabelStoreOptions(),
                                              customPackages: sampleShippingLabelCustomPackages(),
-                                             predefinedOptions: sampleShippingLabelPredefinedOptions())
+                                             predefinedOptions: sampleShippingLabelPredefinedOptions(),
+                                             unactivatedPredefinedOptions: [])
 
     }
 

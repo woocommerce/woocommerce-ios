@@ -50,10 +50,21 @@ final class EditCustomerNoteHostingController: UIHostingController<EditCustomerN
                 viewModel.presentNotice = nil
             }
             .store(in: &subscriptions)
+
+        // Set presentation delegate to track the user dismiss flow event
+        presentationController?.delegate = self
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+/// Intercepts to the dismiss drag gesture.
+///
+extension EditCustomerNoteHostingController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        rootView.viewModel.userDidCancelFlow()
     }
 }
 
@@ -78,7 +89,10 @@ struct EditCustomerNote: View {
                 .navigationBarItems(trailing: navigationBarTrailingItem()) // The only way I've found to make buttons bold is to set them here.
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
-                        Button(Localization.cancel, action: dismiss)
+                        Button(Localization.cancel, action: {
+                            viewModel.userDidCancelFlow()
+                            dismiss()
+                        })
                     }
                 }
         }

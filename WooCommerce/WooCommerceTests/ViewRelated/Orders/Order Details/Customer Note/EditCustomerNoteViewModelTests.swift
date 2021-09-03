@@ -136,4 +136,70 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         // Then
         assertEqual(noticeRequest, .error)
     }
+
+    func test_view_model_tracks_success_after_updating_note() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrder(_, order, _, onCompletion):
+                onCompletion(.success(order))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        _ = waitFor { promise in
+            viewModel.updateNote(onFinish: { _ in
+                promise(true)
+            })
+        }
+
+        // Then
+        assertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.orderDetailEditFlowCompleted.rawValue])
+        assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "customer_note")
+    }
+
+    func test_view_model_tracks_failure_after_failing_to_update_note() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrder(_, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "Error", code: 0, userInfo: nil)))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        _ = waitFor { promise in
+            viewModel.updateNote(onFinish: { _ in
+                promise(true)
+            })
+        }
+
+        // Then
+        assertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.orderDetailEditFlowFailed.rawValue])
+        assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "customer_note")
+    }
+
+    func test_view_model_tracks_cancel_flow() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = EditCustomerNoteViewModel(order: order, stores: stores, analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        viewModel.userDidCancelFlow()
+
+        // Then
+        assertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.orderDetailEditFlowCanceled.rawValue])
+        assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "customer_note")
+    }
 }

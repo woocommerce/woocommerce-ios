@@ -59,7 +59,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     @IBOutlet private var contentView: UIView!
     /// The child of the contentView containing all the content (labels, image, etc).
     ///
-    @IBOutlet weak var stackView: UIStackView!
+    @IBOutlet private weak var stackView: UIStackView!
 
 
     /// The height adjustment constraint for the content view.

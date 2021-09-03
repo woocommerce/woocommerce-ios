@@ -12,6 +12,7 @@ final class CardPresentPaymentsModalViewController: UIViewController {
     @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var mainStackView: UIStackView!
     @IBOutlet weak var primaryActionButtonsStackView: UIStackView!
+    @IBOutlet weak var buttonsSpacer: UIView!
     @IBOutlet private weak var topTitleLabel: UILabel!
     @IBOutlet private weak var topSubtitleLabel: UILabel!
     @IBOutlet private weak var bottomTitleLabel: UILabel!
@@ -116,6 +117,7 @@ private extension CardPresentPaymentsModalViewController {
 
     func styleBottomLabels() {
         actionButtonsView.isHidden = true
+        buttonsSpacer.isHidden = false
         bottomLabels.isHidden = false
 
         styleBottomTitle()
@@ -132,6 +134,7 @@ private extension CardPresentPaymentsModalViewController {
 
     func styleActionButtons() {
         actionButtonsView.isHidden = false
+        buttonsSpacer.isHidden = true
         bottomLabels.isHidden = true
 
         stylePrimaryButton()
@@ -236,6 +239,7 @@ private extension CardPresentPaymentsModalViewController {
 
     func hideActionButtonsView() {
         actionButtonsView.isHidden = true
+        buttonsSpacer.isHidden = false
     }
 
     func configurePrimaryButton() {

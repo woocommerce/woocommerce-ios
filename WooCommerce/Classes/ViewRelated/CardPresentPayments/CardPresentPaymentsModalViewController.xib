@@ -15,6 +15,7 @@
                 <outlet property="bottomLabels" destination="k73-qi-GuD" id="LvQ-UE-SBc"/>
                 <outlet property="bottomSubtitleLabel" destination="2Sx-5s-f7J" id="Mco-Vu-Li6"/>
                 <outlet property="bottomTitleLabel" destination="oAj-lv-0k9" id="Clc-oi-Ywf"/>
+                <outlet property="buttonsSpacer" destination="OFI-6w-cag" id="Uva-gQ-T7X"/>
                 <outlet property="containerView" destination="8Tg-Q2-wkH" id="0n7-5Q-edX"/>
                 <outlet property="heightConstraint" destination="n7H-7U-izh" id="cbE-Eb-VuR"/>
                 <outlet property="imageView" destination="Osv-Wo-lxW" id="yIN-vL-DOA"/>
@@ -34,10 +35,10 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Tg-Q2-wkH" userLabel="WrapperView">
-                    <rect key="frame" x="67" y="211.5" width="280" height="483"/>
+                    <rect key="frame" x="67" y="195.5" width="280" height="515"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" axis="vertical" alignment="center" spacing="32" translatesAutoresizingMaskIntoConstraints="NO" id="jIt-xb-rrN">
-                            <rect key="frame" x="16" y="32" width="248" height="435"/>
+                            <rect key="frame" x="16" y="32" width="248" height="467"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Q0r-qo-iZS">
                                     <rect key="frame" x="103.5" y="0.0" width="41.5" height="49"/>
@@ -76,8 +77,12 @@
                                         </label>
                                     </subviews>
                                 </stackView>
+                                <view contentMode="scaleToFill" verticalHuggingPriority="1" verticalCompressionResistancePriority="1" translatesAutoresizingMaskIntoConstraints="NO" id="OFI-6w-cag" userLabel="Buttons Spacer">
+                                    <rect key="frame" x="4" y="305" width="240" height="0.0"/>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                </view>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="10Z-y1-ZQ6" userLabel="Action Background View">
-                                    <rect key="frame" x="0.0" y="305" width="248" height="130"/>
+                                    <rect key="frame" x="0.0" y="337" width="248" height="130"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="o73-de-cj4">
                                             <rect key="frame" x="0.0" y="0.0" width="248" height="130"/>

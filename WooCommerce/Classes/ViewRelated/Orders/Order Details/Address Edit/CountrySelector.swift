@@ -18,7 +18,7 @@ struct CountrySelector: View {
 private struct SearchHeader: View {
 
     // Tracks the scale of the view due to accessibility changes
-    @ScaledMetric var scale: CGFloat = 1
+    @ScaledMetric private var scale: CGFloat = 1
 
     var body: some View {
         HStack(spacing: 0) {

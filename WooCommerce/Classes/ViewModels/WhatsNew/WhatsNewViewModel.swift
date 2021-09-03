@@ -30,7 +30,7 @@ final class WhatsNewViewModel: ReportListPresentable {
             case .success:
                 DDLogInfo("📣 Announcement was marked as displayed! ✅")
             case .failure(let error):
-                DDLogInfo("⛔️ Failed to mark announcement as displayed: \(error.localizedDescription)")
+                DDLogError("⛔️ Failed to mark announcement as displayed: \(error.localizedDescription)")
             }
         }))
     }

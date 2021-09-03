@@ -123,7 +123,7 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func styleBottomTitle() {
-        bottomTitleLabel.applyBodyStyle()
+        bottomTitleLabel.applySubheadlineStyle()
     }
 
     func styleBottomSubtitle() {

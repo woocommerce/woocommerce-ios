@@ -392,7 +392,7 @@ private extension CardReaderSettingsSearchingViewController {
 
         static let learnMore: NSAttributedString = {
             let learnMoreText = NSLocalizedString(
-                "<a href=\"https://woocommerce.com/payments\">Learn more</a> about accepting payments with your mobile device and ordering card readers",
+                "[Learn more](https://woocommerce.com/payments) about accepting payments with your mobile device and ordering card readers",
                 comment: "A label prompting users to learn more about card readers with an embedded hyperlink"
             )
 
@@ -401,8 +401,7 @@ private extension CardReaderSettingsSearchingViewController {
                 .foregroundColor: UIColor.textSubtle
             ]
 
-            let learnMoreAttrText = NSMutableAttributedString()
-            learnMoreAttrText.append(learnMoreText.htmlToAttributedString)
+            let learnMoreAttrText = try! NSMutableAttributedString(markdown: learnMoreText)
             let range = NSRange(location: 0, length: learnMoreAttrText.length)
             learnMoreAttrText.addAttributes(learnMoreAttributes, range: range)
 

@@ -70,7 +70,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                 .renderedIf(!viewModel.hasValidHSTariffNumber)
 
                 VStack(spacing: 0) {
-                    LearnMoreRow(localizedStringWithHyperlink: Localization.learnMoreHSTariffText)
+                    LearnMoreRow(localizedMarkdownString: Localization.learnMoreHSTariffText)
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)
                 }
@@ -184,7 +184,7 @@ private extension ShippingLabelCustomsFormItemDetails {
         static let hsTariffNumberError = NSLocalizedString("HS Tariff Number must be 6 digits long",
                                                            comment: "Validation error for HS Tariff Number row in Customs screen of Shipping Label flow")
         static let learnMoreHSTariffText = NSLocalizedString(
-            "<a href=\"https://docs.woocommerce.com/document/woocommerce-shipping-and-tax/woocommerce-shipping/#section-29\">Learn more</a> " +
+            "[Learn more](https://docs.woocommerce.com/document/woocommerce-shipping-and-tax/woocommerce-shipping/#section-29) " +
                 "about HS Tariff Number",
             comment: "A label prompting users to learn more about HS Tariff Number with an embedded hyperlink in Customs screen of Shipping Label flow")
         static let weightTitle = NSLocalizedString("Weight (%1$@ per unit)",

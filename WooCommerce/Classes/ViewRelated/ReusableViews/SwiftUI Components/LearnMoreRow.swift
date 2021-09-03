@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct LearnMoreRow: View {
-    let localizedStringWithHyperlink: String
+    let localizedMarkdownString: String
     @State private var learnMoreURL: URL? = nil
 
     var body: some View {
@@ -20,8 +20,7 @@ struct LearnMoreRow: View {
             .underlineStyle: 0
         ]
 
-        let learnMoreAttrText = NSMutableAttributedString()
-        learnMoreAttrText.append(localizedStringWithHyperlink.htmlToAttributedString)
+        let learnMoreAttrText = try! NSMutableAttributedString(markdown: localizedMarkdownString)
         let range = NSRange(location: 0, length: learnMoreAttrText.length)
         learnMoreAttrText.addAttributes(learnMoreAttributes, range: range)
 
@@ -38,6 +37,6 @@ private extension LearnMoreRow {
 
 struct LearnMoreRow_Previews: PreviewProvider {
     static var previews: some View {
-        LearnMoreRow(localizedStringWithHyperlink: "<a href=\"https://pe.usps.com/text/imm/immc5_010.htm\">Learn more</a> about Internal Transaction Number")
+        LearnMoreRow(localizedMarkdownString: "[Learn more](https://pe.usps.com/text/imm/immc5_010.htm about Internal Transaction Number")
     }
 }

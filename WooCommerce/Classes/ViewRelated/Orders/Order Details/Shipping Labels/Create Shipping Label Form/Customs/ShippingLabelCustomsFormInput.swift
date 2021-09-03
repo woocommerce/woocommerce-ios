@@ -142,7 +142,7 @@ struct ShippingLabelCustomsFormInput: View {
             }
             .renderedIf(validationErrorMessageForITNRow.isNotEmpty)
 
-            LearnMoreRow(localizedStringWithHyperlink: Localization.learnMoreITNText)
+            LearnMoreRow(localizedMarkdownString: Localization.learnMoreITNText)
         }
     }
 
@@ -199,8 +199,7 @@ private extension ShippingLabelCustomsFormInput {
                                                                         "Customs screen of Shipping Label flow")
         static let itnInvalidFormat = NSLocalizedString("Invalid ITN format",
                                                         comment: "Error message for invalid format of ITN in Customs screen of Shipping Label flow")
-        static let learnMoreITNText = NSLocalizedString("<a href=\"https://pe.usps.com/text/imm/immc5_010.htm\">" +
-                                                            "Learn more</a> about Internal Transaction Number",
+        static let learnMoreITNText = NSLocalizedString("[Learn more](https://pe.usps.com/text/imm/immc5_010.htm) about Internal Transaction Number",
                                                         comment: "A label prompting users to learn more about internal " +
                                                             "transaction number with an embedded hyperlink")
         static let packageContentSection = NSLocalizedString("Package Content",

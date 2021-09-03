@@ -213,8 +213,8 @@ struct AttributedText_Previews: PreviewProvider {
         VStack {
             Link("Default Link", destination: URL(string: "https://woocommerce.com/")!)
             Text("Default Text")
-            AttributedText("AttributedText <a href=\"https://woocommerce.com/\">with a link</a>".htmlToAttributedString)
-            AttributedText("Custom AttributedText <a href=\"https://woocommerce.com/\">with a link</a>".htmlToAttributedString)
+            AttributedText(try! NSAttributedString(markdown: "AttributedText [with a link](https://woocommerce.com/)"))
+            AttributedText(try! NSAttributedString(markdown: "Custom AttributedText [with a link](https://woocommerce.com/)"))
                 .font(.footnote)
                 .attributedTextForegroundColor(.gray)
                 .attributedTextLinkColor(.pink)

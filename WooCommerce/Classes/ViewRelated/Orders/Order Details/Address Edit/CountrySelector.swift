@@ -3,9 +3,13 @@ import SwiftUI
 /// Country Selector View
 ///
 struct CountrySelector: View {
+
+    // Temporary store for the filter search term, to be moved to VM later.
+    @State var filterText = ""
+
     var body: some View {
         VStack(spacing: 0) {
-            SearchHeader()
+            SearchHeader(filterText: $filterText)
                 .background(Color(.listForeground))
             ListSelector(command: CountrySelectorCommand(), tableStyle: .plain)
         }
@@ -20,6 +24,10 @@ private struct SearchHeader: View {
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1
 
+    /// Filter search term
+    ///
+    @Binding var filterText: String
+
     var body: some View {
         HStack(spacing: 0) {
             // Search Icon
@@ -31,7 +39,7 @@ private struct SearchHeader: View {
                 .padding([.leading, .trailing], Layout.internalPadding)
 
             // TextField
-            TextField(Localization.placeholder, text: .constant(""))
+            TextField(Localization.placeholder, text: $filterText)
                 .padding([.bottom, .top], Layout.internalPadding)
         }
         .background(Color(.searchBarBackground))

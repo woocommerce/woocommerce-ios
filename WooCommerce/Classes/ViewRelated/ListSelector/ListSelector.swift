@@ -25,6 +25,6 @@ struct ListSelector<Command: ListSelectorCommand>: UIViewControllerRepresentable
     /// Update the `ViewController` from parent `SwiftUI` view
     ///
     func updateUIViewController(_ uiViewController: ListSelectorViewController<Command, Command.Model, Command.Cell>, context: Context) {
-        // No op
+        uiViewController.reloadData()
     }
 }

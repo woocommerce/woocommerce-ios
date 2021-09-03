@@ -161,11 +161,13 @@ private extension SeveralReadersFoundViewController {
         guard let cell = cell as? LabelAndButtonTableViewCell else {
             return
         }
-        cell.label.text = readerID
-        cell.button.setTitle(Localization.connect, for: .normal)
-        cell.button.on(.touchUpInside) { [weak self] _ in
-            self?.didTapConnect(readerID: readerID)
-        }
+        cell.configure(
+            labelText: readerID,
+            buttonTitle: Localization.connect,
+            didTapButton: {
+                self.didTapConnect(readerID: readerID)
+            }
+        )
         cell.selectionStyle = .none
     }
 
@@ -173,7 +175,7 @@ private extension SeveralReadersFoundViewController {
         guard let cell = cell as? ActivitySpinnerAndLabelTableViewCell else {
             return
         }
-        cell.label.text = Localization.scanningLabel
+        cell.configure(labelText: Localization.scanningLabel)
         cell.selectionStyle = .none
     }
 

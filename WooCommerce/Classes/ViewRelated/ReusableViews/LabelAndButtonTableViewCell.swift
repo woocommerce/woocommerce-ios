@@ -1,9 +1,19 @@
 import UIKit
 
 final class LabelAndButtonTableViewCell: UITableViewCell {
-    @IBOutlet weak var label: UILabel!
-    @IBOutlet weak var button: UIButton!
+    @IBOutlet private weak var label: UILabel!
+    @IBOutlet private weak var button: UIButton!
 
-    // TODO: Private outlets, configure method
-    // TODO: Button completion
+    private var didTapButton: (() -> Void)?
+
+    func configure(labelText: String, buttonTitle: String, didTapButton: @escaping (() -> Void)) {
+        label.text = labelText
+        button.setTitle(buttonTitle, for: .normal)
+        self.didTapButton = didTapButton
+        button.on(.touchUpInside, call: onButtonTap)
+    }
+
+    @objc private func onButtonTap(_ button: UIButton) {
+        self.didTapButton?()
+    }
 }

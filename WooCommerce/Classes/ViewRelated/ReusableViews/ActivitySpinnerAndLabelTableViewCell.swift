@@ -1,7 +1,9 @@
 import UIKit
 
 final class ActivitySpinnerAndLabelTableViewCell: UITableViewCell {
-    @IBOutlet weak var label: UILabel!
+    @IBOutlet private weak var label: UILabel!
 
-    // TODO: Private outlet, configure method
+    func configure(labelText: String) {
+        label.text = labelText
+    }
 }

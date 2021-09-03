@@ -4,14 +4,16 @@ import SwiftUI
 ///
 struct CountrySelector: View {
 
-    // Temporary store for the filter search term, to be moved to VM later.
-    @State var filterText = ""
+    /// View model to drive the view content
+    ///
+    @ObservedObject private(set) var viewModel: CountrySelectorViewModel
 
     var body: some View {
         VStack(spacing: 0) {
-            SearchHeader(filterText: $filterText)
+            SearchHeader(filterText: $viewModel.searchTerm)
                 .background(Color(.listForeground))
-            ListSelector(command: CountrySelectorCommand(), tableStyle: .plain)
+
+            ListSelector(command: viewModel.command, tableStyle: .plain)
         }
         .navigationTitle(Localization.title)
     }
@@ -72,7 +74,7 @@ private extension SearchHeader {
 struct CountrySelector_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            CountrySelector()
+            CountrySelector(viewModel: CountrySelectorViewModel())
         }
     }
 }

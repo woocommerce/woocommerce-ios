@@ -5,7 +5,6 @@
 - [**] Merchants can now edit customer provided notes from orders. [https://github.com/woocommerce/woocommerce-ios/pull/4893]
 - [*] Fix empty states sometimes not centered vertically [https://github.com/woocommerce/woocommerce-ios/pull/4890]
 - [*] Hide bottom bar on shipping label purchase form. [https://github.com/woocommerce/woocommerce-ios/pull/4902]
-- [*] Show "What's New on WooCommerce" on app launch [https://github.com/woocommerce/woocommerce-ios/pull/4908]
 
 7.4
 -----

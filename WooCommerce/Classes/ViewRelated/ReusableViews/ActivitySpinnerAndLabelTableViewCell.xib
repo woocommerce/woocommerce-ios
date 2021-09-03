@@ -39,6 +39,7 @@
             </tableViewCellContentView>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <connections>
+                <outlet property="activityIndicator" destination="zyy-o9-EPH" id="fG9-ff-Lyi"/>
                 <outlet property="label" destination="RCi-ON-QWU" id="1fE-U6-dLe"/>
             </connections>
             <point key="canvasLocation" x="900" y="27"/>

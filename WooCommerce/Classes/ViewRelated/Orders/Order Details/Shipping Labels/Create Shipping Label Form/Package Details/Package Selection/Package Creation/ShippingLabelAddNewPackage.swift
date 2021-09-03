@@ -20,7 +20,7 @@ struct ShippingLabelAddNewPackage: View {
                     case .customPackage:
                         ShippingLabelCustomPackageForm(safeAreaInsets: geometry.safeAreaInsets)
                     case .servicePackage:
-                        ShippingLabelServicePackageList(packagesResponse: packagesResponse, safeAreaInsets: geometry.safeAreaInsets)
+                        ShippingLabelServicePackageList(packagesResponse: packagesResponse, geometry: geometry)
                     }
                 }
                  .background(Color(.listBackground).ignoresSafeArea(.container, edges: .bottom))

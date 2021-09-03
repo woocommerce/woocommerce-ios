@@ -34,6 +34,7 @@ struct ShippingLabelPaymentMethods: View {
                     ListHeaderView(text: Localization.paymentMethodsHeader, alignment: .left)
                         .textCase(.uppercase)
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
+                    Divider()
 
                     ForEach(viewModel.paymentMethods, id: \.paymentMethodID) { method in
                         let selected = method.paymentMethodID == viewModel.selectedPaymentMethodID

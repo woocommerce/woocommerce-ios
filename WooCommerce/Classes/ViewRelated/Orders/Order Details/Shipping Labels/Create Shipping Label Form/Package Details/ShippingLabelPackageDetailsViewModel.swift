@@ -492,7 +492,8 @@ extension ShippingLabelPackageDetailsViewModel {
     static func samplePackageDetails() -> ShippingLabelPackagesResponse {
         return ShippingLabelPackagesResponse(storeOptions: sampleShippingLabelStoreOptions(),
                                              customPackages: sampleShippingLabelCustomPackages(),
-                                             predefinedOptions: sampleShippingLabelPredefinedOptions())
+                                             predefinedOptions: sampleShippingLabelPredefinedOptions(),
+                                             unactivatedPredefinedOptions: sampleShippingLabelPredefinedOptions())
     }
 
     static func sampleShippingLabelStoreOptions() -> ShippingLabelStoreOptions {

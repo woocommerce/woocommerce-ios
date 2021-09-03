@@ -16,13 +16,13 @@ struct ShippingLabelPackageList: View {
                         if viewModel.showCustomPackagesHeader {
                             ListHeaderView(text: Localization.customPackageHeader.uppercased(), alignment: .left)
                                 .padding(.horizontal, insets: geometry.safeAreaInsets)
+                            Divider()
                         }
                         ForEach(viewModel.customPackages, id: \.title) { package in
                             let selected = package == viewModel.selectedCustomPackage
                             SelectableItemRow(title: package.title, subtitle: package.dimensions + " \(viewModel.dimensionUnit)", selected: selected)
                                 .onTapGesture {
                                     viewModel.didSelectPackage(package.title)
-                                    ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "packages_selected"])
                                 }
                                 .padding(.horizontal, insets: geometry.safeAreaInsets)
                                 .background(Color(.systemBackground))
@@ -35,14 +35,13 @@ struct ShippingLabelPackageList: View {
 
                             ListHeaderView(text: option.title.uppercased(), alignment: .left)
                                 .padding(.horizontal, insets: geometry.safeAreaInsets)
+                            Divider()
                             ForEach(option.predefinedPackages) { package in
                                 let selected = package == viewModel.selectedPredefinedPackage
                                 SelectableItemRow(title: package.title,
                                                   subtitle: package.dimensions + " \(viewModel.dimensionUnit)",
                                                   selected: selected).onTapGesture {
                                                     viewModel.didSelectPackage(package.id)
-                                                    ServiceLocator.analytics.track(.shippingLabelPurchaseFlow,
-                                                                                   withProperties: ["state": "packages_selected"])
                                                   }
                                     .padding(.horizontal, insets: geometry.safeAreaInsets)
                                     .background(Color(.systemBackground))

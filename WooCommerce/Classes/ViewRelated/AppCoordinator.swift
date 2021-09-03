@@ -62,6 +62,7 @@ private extension AppCoordinator {
     /// Displays the What's New Screen.
     ///
     func showWhatsNewIfNeeded() {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.whatsNewOnWooCommerce) else { return }
         // TODO: Check the saved Announcement App Version in order to display or not the what's new component
         stores.dispatch(AnnouncementsAction.synchronizeAnnouncements(onCompletion: { _ in }))
     }

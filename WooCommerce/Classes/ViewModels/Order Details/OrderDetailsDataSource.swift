@@ -46,6 +46,7 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var isEligibleForCardPresentPayment: Bool {
         return isOrderAmountEligibleForCardPayment() &&
+            isOrderCurrencyEligibleForCardPayment() &&
             isOrderStatusEligibleForCardPayment() &&
             isOrderPaymentMethodEligibleForCardPayment() &&
             hasCardPresentEligiblePaymentGatewayAccount() &&
@@ -1465,6 +1466,10 @@ private extension OrderDetailsDataSource {
         // * in general, all orders where we might want to capture a payment for less than the total order amount
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
         return !paymentViewModel.hasBeenPartiallyCharged
+    }
+
+    func isOrderCurrencyEligibleForCardPayment() -> Bool {
+        CurrencySettings.CurrencyCode(rawValue: order.currency) == .USD
     }
 
     func isOrderStatusEligibleForCardPayment() -> Bool {

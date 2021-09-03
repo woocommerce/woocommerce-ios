@@ -148,7 +148,7 @@ private extension AnnouncementsStore {
             let encodedObject = try JSONEncoder().encode(storedAnnouncement)
             return try JSONDecoder().decode(Announcement.self, from: encodedObject)
         } catch {
-            throw AnnouncementsStorageError.noAnnouncementSaved
+            throw AnnouncementsStorageError.invalidAnnouncement
         }
     }
 
@@ -176,7 +176,7 @@ private extension AnnouncementsStore {
         do {
             return try fileStorage.data(for: fileURL)
         } catch {
-            throw AnnouncementsStorageError.noAnnouncementSaved
+            throw AnnouncementsStorageError.invalidAnnouncement
         }
     }
 
@@ -214,7 +214,7 @@ private enum Constants {
 // MARK: - Errors
 enum AnnouncementsStorageError: Error {
     case unableToFindFileURL
-    case noAnnouncementSaved
+    case invalidAnnouncement
     case unableToSaveAnnouncement
     case announcementAlreadyExists
 }

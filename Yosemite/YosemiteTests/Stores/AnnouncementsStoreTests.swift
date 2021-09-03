@@ -109,7 +109,7 @@ final class AnnouncementsStoreTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertEqual(resultError, .noAnnouncementSaved)
+        XCTAssertEqual(resultError, .invalidAnnouncement)
     }
 
     func test_load_newly_saved_announcement_returns_an_announcement_not_yet_displayed() throws {

@@ -32,6 +32,9 @@ struct AuthenticatedWebView: UIViewRepresentable {
     func makeUIView(context: Context) -> WKWebView {
         let webview = WKWebView()
         webview.navigationDelegate = context.coordinator
+
+        configureForSandboxEnvironment(webview)
+
         do {
             try webview.load(authenticatedPostData())
         } catch {
@@ -50,21 +53,9 @@ struct AuthenticatedWebView: UIViewRepresentable {
             return URLRequest(url: url)
         }
 
-        #if DEBUG
-        let httpCookie = HTTPCookie(properties: [HTTPCookiePropertyKey.name: "store_sandbox",
-                                                 HTTPCookiePropertyKey.value: "[secret",
-                                                 HTTPCookiePropertyKey.domain: ".wordpress.com",
-                                                 HTTPCookiePropertyKey.path: "/"])
-        if let cookie = httpCookie {
-            HTTPCookieStorage.shared.setCookies([cookie], for: WooConstants.URLs.loginWPCom.asURL(), mainDocumentURL: nil)
-        }
-        #endif
         var request = URLRequest(url: WooConstants.URLs.loginWPCom.asURL())
         request.httpMethod = "POST"
         request.httpShouldHandleCookies = true
-//        let cookie = String(format: "store_sandbox=@;domain=.wordpress.com;path=/", "[secret]")
-//        request.setValue(cookie, forHTTPHeaderField: "Cookie")
-
 
         let parameters = ["log": username,
                           "redirect_to": url.absoluteString,
@@ -73,6 +64,23 @@ struct AuthenticatedWebView: UIViewRepresentable {
         return try URLEncoding.default.encode(request, with: parameters)
     }
 
+    /// For all test cases, to test against the staging server
+    /// please apply the following patch after replacing [secret] with a sandbox secret from the secret store.
+    ///
+    private func configureForSandboxEnvironment(_ webview: WKWebView) {
+//        #if DEBUG
+//        if let cookie = HTTPCookie(properties: [
+//            .domain: ".wordpress.com",
+//            .path: "/",
+//            .name: "store_sandbox",
+//            .value: "[secret]",
+//            .secure: "TRUE"
+//        ]) {
+//            webview.configuration.websiteDataStore.httpCookieStore.setCookie(cookie) {
+//            }
+//        }
+//        #endif
+    }
 
     class AuthenticatedWebViewCoordinator: NSObject, WKNavigationDelegate {
         private var parent: AuthenticatedWebView

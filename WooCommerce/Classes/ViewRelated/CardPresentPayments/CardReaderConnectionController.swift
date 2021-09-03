@@ -59,7 +59,9 @@ final class CardReaderConnectionController {
     private var siteID: Int64
     private var knownCardReadersProvider: CardReaderSettingsKnownReadersProvider
     private var alerts: CardReaderSettingsAlertsProvider
-    private var severalFoundReadersViewController: SeveralReadersFoundViewController?
+    private lazy var severalFoundReadersViewController: SeveralReadersFoundViewController = {
+        SeveralReadersFoundViewController()
+    }()
 
     /// Reader(s) discovered by the card reader service
     ///
@@ -79,9 +81,9 @@ final class CardReaderConnectionController {
 
     /// Since the number of readers can go greater than 1 and then back to 1, and we don't
     /// want to keep changing the UI from the several-readers-found list to a single prompt
-    /// and back, this flag will tell us that we've already displayed in list format for this
-    /// discovery flow, so that we keep doing so even if the number of found readers
-    /// (usually temporarily) drops to less than 2
+    /// and back (as this would be visually quite annoying), this flag will tell us that we've
+    /// already switched to list format for this discovery flow, so that stay in list mode
+    /// even if the number of found readers drops to less than 2
     private var showSeveralFoundReaders: Bool = false
 
     private var subscriptions = Set<AnyCancellable>()
@@ -154,13 +156,13 @@ private extension CardReaderConnectionController {
         foundReaders.filter({knownReaderIDs.contains($0.id)})
     }
 
-    ///
+    /// A helper to return an array of found reader IDs
     ///
     func getFoundReaderIDs() -> [String] {
         foundReaders.compactMap({$0.id})
     }
 
-    ///
+    /// A helper to return a specific CardReader instance based on the reader ID
     ///
     func getFoundReaderByID(readerID: String) -> CardReader? {
         foundReaders.first(where: {$0.id == readerID})
@@ -194,11 +196,6 @@ private extension CardReaderConnectionController {
         ///
         skippedReaderIDs = []
         candidateReader = nil
-
-        /// Simple UI for starters. Only bust out the several-readers-found UI if that happens
-        /// and then use `showSeveralFoundReaders` to stay in it even if the number of
-        /// found readers drops back to 1 to avoid a busy UI
-        ///
         showSeveralFoundReaders = false
 
         /// Fetch the list of known readers - i.e. readers we should automatically connect to when we see them
@@ -241,13 +238,15 @@ private extension CardReaderConnectionController {
                 self.pruneSkippedReaders()
                 self.updateShowSeveralFoundReaders()
 
-                /// If the found-several-readers view is presenting, update its list of found readers
+                /// Note: This completion will be called repeatedly as the list of readers
+                /// discovered changes, so some care around state must be taken here.
                 ///
-                self.severalFoundReadersViewController?.updateReaderIDs(readerIDs: self.getFoundReaderIDs())
 
-                /// Note: This completion can be called repeatedly as more readers
-                /// become discovered, so some care around state must be taken here.
+                /// If the found-several-readers view is already presenting, update its list of found readers
                 ///
+                if case .foundSeveralReaders = self.state {
+                    self.severalFoundReadersViewController.updateReaderIDs(readerIDs: self.getFoundReaderIDs())
+                }
 
                 /// If we should switch from a single found reader prompt to several, do so now
                 ///
@@ -259,7 +258,7 @@ private extension CardReaderConnectionController {
                 }
 
                 /// To avoid interrupting connecting to a known reader, ensure we are
-                /// in the searching state before proceeding
+                /// in the searching state before proceeding further
                 ///
                 guard case .searching = self.state else {
                     return
@@ -285,6 +284,7 @@ private extension CardReaderConnectionController {
                 if self.foundReaders.isNotEmpty {
                     self.candidateReader = self.foundReaders.first
                     self.state = .foundReader
+                    return
                 }
             },
             onError: { [weak self] error in
@@ -357,27 +357,21 @@ private extension CardReaderConnectionController {
 
         alerts.dismiss()
 
-        if severalFoundReadersViewController == nil { // TODO - lazy var?
-            severalFoundReadersViewController = SeveralReadersFoundViewController()
-        }
-
-        guard let controller = severalFoundReadersViewController else {
-            return
-        }
-
-        controller.configureController(
+        severalFoundReadersViewController.configureController(
             readerIDs: getFoundReaderIDs(),
             connect: { [weak self] readerID in
-                self?.candidateReader = self?.getFoundReaderByID(readerID: readerID)
-                // guard nil candidate
-                self?.state = .connectToReader
+                guard let self = self else {
+                    return
+                }
+                self.candidateReader = self.getFoundReaderByID(readerID: readerID)
+                self.state = .connectToReader
             },
             cancel: { [weak self] in
                 self?.state = .cancel
             }
         )
 
-        from.present(controller, animated: true)
+        from.present(severalFoundReadersViewController, animated: true)
     }
 
     /// End the search for a card reader

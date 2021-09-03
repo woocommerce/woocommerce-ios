@@ -1,5 +1,3 @@
-Es ergibt nicht allzu viel Sinn, Kunden für Bestellungen ohne E-Mail-Adresse eine Notiz per E-Mail zu senden – daher blenden wir diese Option in diesen Fällen aus.
+Diese Version enthält ein paar kleinere Verbesserungen am Gesamterlebnis. In den Bestelldetails haben einige Erweiterungen von Drittanbietern die Produkt-Metadaten nicht logisch angezeigt. Wir haben ein paar Änderungen vorgenommen, um die Anzeige dieser Produktdetails zu verbessern. Wir blenden jetzt den Button für die Rückerstattung einer Bestellung aus, wenn der Gesamtpreis Null beträgt.
 
-Einige Verkäufer haben uns mitgeteilt, dass Bestellungen mit Negativbeträgen nicht korrekt angezeigt werden. Wir haben dieses Problem behoben!
-
-Diese Version enthält zudem ein paar kleinere Verbesserungen am Gesamterlebnis. Wir hoffen, dass dir unsere Bemühungen auffallen und sie dir weiterhelfen.
+Dieses Update umfasst auch mehrere Verbesserungen an der Funktion für Versandetiketten mit der Erweiterung „WooCommerce Shipping & Tax“. Wir wissen dein Feedback zu dieser neuen Funktion sehr zu schätzen!

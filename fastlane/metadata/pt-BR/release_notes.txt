@@ -1,5 +1,3 @@
-Não faz muito sentido enviar uma anotação ao cliente por e-mail para um pedido sem endereço de e-mail, então ocultamos essa opção.
+Esta versão contém algumas pequenas melhorias para tornar sua experiência mais agradável. Em "Detalhes do pedido", algumas extensões de terceiros não mostravam os metadados do produto como deveriam. Fizemos algumas melhorias em como os detalhes dos produtos são exibidos. Agora o botão de solicitar reembolso não é exibido quando o total da compra é igual a 0.
 
-Alguns comerciantes nos disseram que os pedidos com preços negativos não estavam aparecendo corretamente. Então agora você pode comemorar, pois resolvemos esse problema!
-
-Essa versão também contém várias outras pequenas melhorias para tornar sua experiência mais agradável. Esperamos que você perceba todo o amor que colocamos no nosso software.
+Esta atualização também inclui diversas melhorias na funcionalidade de etiqueta de envio feitas com a extensão WooCommerce Shipping & Tax. Valorizamos muito o seu feedback! Diga-nos o que achou da nossa atualização.

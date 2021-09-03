@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-08-31 15:54:05+0000 */
+/* Translation-Revision-Date: 2021-09-03 21:59:12+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -1378,7 +1378,7 @@
 "ITN" = "ITN";
 
 /* Error message for missing ITN for destination country inCustoms screen of Shipping Label flow. The placeholder is the destination country. */
-"ITN is required for shipments to %1$@" = "ITN is vereist voor zendingen naar %$1@";
+"ITN is required for shipments to %1$@" = "ITN is vereist voor zendingen naar %1$@";
 
 /* Error message for missing ITN for tariff number valued over $2,500 inCustoms screen of Shipping Label flow */
 "ITN is required for shipping items valued over $2,500 per tariff number" = "ITN is vereist voor verzending van artikelen die meer dan $ 2500 waard zijn per tariefcode.";
@@ -3581,7 +3581,7 @@
 "Username must be at least 4 characters." = "Gebruikersnaam moet minimaal 4 karakters bevatten.";
 
 /* Title for the Value row in item details in Customs screen of Shipping Label flow */
-"Value (%1$@ per unit)" = "Waarde (%$1@ per eenheid)";
+"Value (%1$@ per unit)" = "Waarde (%1$@ per eenheid)";
 
 /* Display label for variable product type. */
 "Variable" = "Variabele";
@@ -3752,7 +3752,7 @@
 "Weight" = "Gewicht";
 
 /* Title for the Weight row in item details in Customs screen of Shipping Label flow */
-"Weight (%1$@ per unit)" = "Gewicht (%$1@ per eenheid)";
+"Weight (%1$@ per unit)" = "Gewicht (%1$@ per eenheid)";
 
 /* Footer text for the empty package weight on the Add New Custom Package screen in Shipping Label flow */
 "Weight of empty package" = "Gewicht van leeg pakket";

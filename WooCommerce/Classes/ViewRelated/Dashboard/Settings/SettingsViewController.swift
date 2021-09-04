@@ -99,7 +99,7 @@ final class SettingsViewController: UIViewController {
         })
 
         loadPaymentGatewayAccounts()
-
+        loadWhatsNewOnWooCommerce()
         configureNavigation()
         configureMainView()
         configureTableView()
@@ -240,7 +240,6 @@ private extension SettingsViewController {
     func refreshViewContent() {
         updateSites()
         checkAvailabilityForPayments()
-        loadWhatsNewOnWooCommerce()
         configureSections()
         tableView.reloadData()
     }

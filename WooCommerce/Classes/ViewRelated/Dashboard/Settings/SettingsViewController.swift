@@ -4,6 +4,7 @@ import MessageUI
 import Gridicons
 import SafariServices
 import WordPressAuthenticator
+import class Networking.UserAgent
 
 
 // MARK: - SettingsViewController
@@ -83,6 +84,10 @@ final class SettingsViewController: UIViewController {
     /// Flag indicating whether the currently selected store is eligible
     /// for card present payments
     private var canCollectPayments: Bool = false
+
+    /// Announcement for the current app version
+    ///
+    private var announcement: Announcement?
 
     // MARK: - Overridden Methods
 
@@ -235,8 +240,20 @@ private extension SettingsViewController {
     func refreshViewContent() {
         updateSites()
         checkAvailabilityForPayments()
+        loadWhatsNewOnWooCommerce()
         configureSections()
         tableView.reloadData()
+    }
+
+    func loadWhatsNewOnWooCommerce() {
+        ServiceLocator.stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
+            guard let self = self else { return }
+            guard let (announcement, _) = try? result.get(), announcement.appVersionName == UserAgent.bundleShortVersion else {
+                return DDLogInfo("📣 There are no announcements to show!")
+            }
+
+            self.announcement = announcement
+        }))
     }
 
     func configureSections() {
@@ -473,7 +490,7 @@ private extension SettingsViewController {
     }
 
     func shouldShowWhatsNew() -> Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.whatsNewOnWooCommerce)
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.whatsNewOnWooCommerce) && announcement != nil
     }
 }
 
@@ -591,17 +608,11 @@ private extension SettingsViewController {
     }
 
     func whatsNewWasPressed() {
-        ServiceLocator.stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
-            guard let self = self else { return }
-            guard let (announcement, _) = try? result.get() else {
-                return DDLogInfo("📣 There are no announcements to show!")
-            }
-
-            let viewController = WhatsNewFactory.whatsNew(announcement) { [weak self] in
-                self?.dismiss(animated: true)
-            }
-            self.present(viewController, animated: true, completion: nil)
-        }))
+        guard let announcement = announcement else { return }
+        let viewController = WhatsNewFactory.whatsNew(announcement) { [weak self] in
+            self?.dismiss(animated: true)
+        }
+        present(viewController, animated: true, completion: nil)
     }
 
     func logOutUser() {

@@ -119,6 +119,7 @@ private extension ProductImagesHeaderTableViewCell {
 
     func configureSeparator() {
         separatorInset.left = 0
+        hideSeparator()
     }
 
     func configureCollectionView(config: ProductImagesCellConfig) {

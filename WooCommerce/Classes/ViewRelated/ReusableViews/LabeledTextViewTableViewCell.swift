@@ -40,12 +40,13 @@ final class LabeledTextViewTableViewCell: UITableViewCell {
 private extension LabeledTextViewTableViewCell {
 
     func configureBackground() {
+        backgroundColor = .systemColor(.secondarySystemGroupedBackground)
         productTextField.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
     }
 
 
     func configureLabelStyle() {
-        productStatusLabel.font = UIFont.preferredFont(forTextStyle: .body)
+        productStatusLabel.font = UIFont.preferredFont(forTextStyle: .caption1)
         productStatusLabel.textAlignment = .center
         productStatusLabel.textColor = UIColor.black
         productLabelHolder.backgroundColor = .gray(.shade5)
@@ -53,14 +54,14 @@ private extension LabeledTextViewTableViewCell {
     }
 
     func configureProductStatusLabel(productStatus: ProductStatus) {
-            if productStatus == ProductStatus.draft {
-                let statusLabel = NSLocalizedString(productStatus.description, comment: "Display label for the product's draft status")
-
+        if productStatus == ProductStatus.draft {
+                let statusLabel = NSLocalizedString("Draft", comment: "Display label for the product's draft status")
+                productLabelHolder.isHidden = false
                 productStatusLabel.isHidden = false
                 productStatusLabel.text? = statusLabel
             } else {
                 productLabelHolder.isHidden = true
-                productStatusLabel.text? = ""
+                productStatusLabel.isHidden = true
             }
         }
 }

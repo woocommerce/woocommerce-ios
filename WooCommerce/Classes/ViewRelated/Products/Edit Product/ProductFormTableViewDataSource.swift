@@ -83,8 +83,8 @@ private extension ProductFormTableViewDataSource {
         switch row {
         case .images(let editable, let allowsMultipleImages):
             configureImages(cell: cell, isEditable: editable, allowsMultipleImages: allowsMultipleImages)
-        case .name(let name, let editable, let productLabel):
-            configureName(cell: cell, name: name, isEditable: editable, productLabel: productLabel)
+        case .name(let name, let editable, let productStatus):
+            configureName(cell: cell, name: name, isEditable: editable, productStatus: productStatus)
         case .variationName(let name):
             configureReadonlyName(cell: cell, name: name)
         case .description(let description, let editable):
@@ -128,15 +128,15 @@ private extension ProductFormTableViewDataSource {
             self?.onAddImage?()
         }
     }
-    func configureName(cell: UITableViewCell, name: String?, isEditable: Bool, productLabel: ProductStatus) {
+    func configureName(cell: UITableViewCell, name: String?, isEditable: Bool, productStatus: ProductStatus) {
         if isEditable {
-            configureEditableName(cell: cell, name: name, productLabel: productLabel)
+            configureEditableName(cell: cell, name: name, productStatus: productStatus)
         } else {
             configureReadonlyName(cell: cell, name: name ?? "")
         }
     }
 
-    func configureEditableName(cell: UITableViewCell, name: String?, productLabel: ProductStatus) {
+    func configureEditableName(cell: UITableViewCell, name: String?, productStatus: ProductStatus) {
         guard let cell = cell as? LabeledTextViewTableViewCell else {
             fatalError()
         }
@@ -146,7 +146,7 @@ private extension ProductFormTableViewDataSource {
         let placeholder = NSLocalizedString("Title", comment: "Placeholder in the Product Title row on Product form screen.")
 
         let cellViewModel = LabeledTextViewTableViewCell.ViewModel(text: name,
-                                                                   productStatus: productLabel,
+                                                                   productStatus: productStatus,
                                                                    placeholder: placeholder,
                                                                    textViewMinimumHeight: 10.0,
                                                                    keyboardType: .alphabet,

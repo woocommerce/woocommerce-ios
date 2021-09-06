@@ -3,9 +3,6 @@ import UIKit
 /// Modal presented on error
 final class CardPresentModalError: CardPresentPaymentsModalViewModel {
 
-    /// Amount charged
-    private let amount: String
-
     /// The error returned by the stack
     private let error: Error
 
@@ -17,9 +14,7 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
 
     let topTitle: String = Localization.paymentFailed
 
-    var topSubtitle: String? {
-        amount
-    }
+    var topSubtitle: String? = nil
 
     let image: UIImage = .paymentErrorImage
 
@@ -35,8 +30,7 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
 
     let bottomSubtitle: String? = nil
 
-    init(amount: String, error: Error, primaryAction: @escaping () -> Void) {
-        self.amount = amount
+    init(error: Error, primaryAction: @escaping () -> Void) {
         self.error = error
         self.primaryAction = primaryAction
     }

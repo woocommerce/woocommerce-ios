@@ -131,17 +131,6 @@ struct ShippingLabelCustomPackageForm: View {
         }
         .background(Color(.listBackground))
         .ignoresSafeArea(.container, edges: .horizontal)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing, content: {
-                Button(Localization.doneButton, action: {
-                    viewModel.validatePackage()
-                    if viewModel.validatedCustomPackage != nil {
-                        // TODO-4743: Save custom package and add it to package list
-                        presentation.wrappedValue.dismiss()
-                    }
-                })
-            })
-        }
     }
 }
 
@@ -190,7 +179,6 @@ private extension ShippingLabelCustomPackageForm {
         static let inputInvalidError = NSLocalizedString(
             "Invalid value",
             comment: "Error for invalid package details on the Add New Custom Package screen in Shipping Label flow")
-        static let doneButton = NSLocalizedString("Done", comment: "Done navigation button in the Custom Package screen in Shipping Label flow")
     }
 
     enum Constants {

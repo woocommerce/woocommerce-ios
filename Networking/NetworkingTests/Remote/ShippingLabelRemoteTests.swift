@@ -189,7 +189,9 @@ final class ShippingLabelRemoteTests: XCTestCase {
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            remote.createPackage(siteID: self.sampleSiteID, customPackage: self.sampleShippingLabelCustomPackage()) { result in
+            remote.createPackage(siteID: self.sampleSiteID,
+                                 customPackage: ShippingLabelCustomPackage.fake(),
+                                 predefinedOption: ShippingLabelPredefinedOption.fake()) { result in
                 promise(result)
             }
         }
@@ -206,7 +208,9 @@ final class ShippingLabelRemoteTests: XCTestCase {
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            remote.createPackage(siteID: self.sampleSiteID, customPackage: self.sampleShippingLabelCustomPackage()) { result in
+            remote.createPackage(siteID: self.sampleSiteID,
+                                 customPackage: ShippingLabelCustomPackage.fake(),
+                                 predefinedOption: ShippingLabelPredefinedOption.fake()) { result in
                 promise(result)
             }
         }
@@ -216,6 +220,24 @@ final class ShippingLabelRemoteTests: XCTestCase {
             .unknown(code: "duplicate_custom_package_names_of_existing_packages",
                      message: "At least one of the new custom packages has the same name as existing packages.")
         XCTAssertEqual(result.failure as? DotcomError, expectedError)
+    }
+
+    func test_createPackage_returns_missingPackage_error() throws {
+        // Given
+        let remote = ShippingLabelRemote(network: network)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            remote.createPackage(siteID: self.sampleSiteID,
+                                 customPackage: nil,
+                                 predefinedOption: nil) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let expectedError = ShippingLabelRemote.ShippingLabelError.missingPackage
+        XCTAssertEqual(result.failure as? ShippingLabelRemote.ShippingLabelError, expectedError)
     }
 
     func test_loadCarriersAndRates_parses_success_response() throws {
@@ -469,15 +491,6 @@ private extension ShippingLabelRemoteTests {
                                     address2: "",
                                     city: "SAN FRANCISCO",
                                     postcode: "94110-4929")
-    }
-
-    func sampleShippingLabelCustomPackage() -> ShippingLabelCustomPackage {
-        return ShippingLabelCustomPackage(isUserDefined: true,
-                                          title: "Test Package",
-                                          isLetter: false,
-                                          dimensions: "10 x 10 x 10",
-                                          boxWeight: 5,
-                                          maxWeight: 1)
     }
 
     func sampleShippingLabelCarrierRate() -> ShippingLabelCarrierRate {

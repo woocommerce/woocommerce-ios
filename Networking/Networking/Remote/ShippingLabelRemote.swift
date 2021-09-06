@@ -335,7 +335,10 @@ private extension ShippingLabelRemote {
         static let emailReceipt = "email_receipt"
         static let async = "async"
     }
+}
 
+// MARK: Errors {
+extension ShippingLabelRemote {
     enum ShippingLabelError: Error {
         case missingPackage
     }

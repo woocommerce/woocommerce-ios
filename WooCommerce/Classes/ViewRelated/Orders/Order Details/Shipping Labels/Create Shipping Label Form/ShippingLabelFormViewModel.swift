@@ -32,7 +32,10 @@ final class ShippingLabelFormViewModel {
     /// Packages
     ///
     private(set) var packagesResponse: ShippingLabelPackagesResponse?
-    private(set) var selectedPackageID: String?
+
+    /// Selected packages by ID and their weights in string values.
+    ///
+    private(set) var selectedPackageDetails: [String: String] = [:]
 
     /// Customs forms
     ///
@@ -43,42 +46,43 @@ final class ShippingLabelFormViewModel {
     private(set) var selectedRate: ShippingLabelCarrierRate?
     private(set) var selectedSignatureRate: ShippingLabelCarrierRate?
     private(set) var selectedAdultSignatureRate: ShippingLabelCarrierRate?
-    var selectedPackage: ShippingLabelPackageSelected? {
+    var selectedPackages: [ShippingLabelPackageSelected] {
         guard let packagesResponse = packagesResponse else {
-            return nil
+            return []
         }
 
-        let weight = Double(totalPackageWeight ?? "0") ?? .zero
+        return selectedPackageDetails.compactMap { selectedPackageID, weightString -> ShippingLabelPackageSelected? in
+            let weight = Double(weightString) ?? .zero
 
-        if let customPackage = packagesResponse.customPackages.first(where: { $0.title == selectedPackageID }) {
-            let boxID = customPackage.title
-            let customsForm = customsForms.first(where: { $0.packageID == boxID })
-            return ShippingLabelPackageSelected(boxID: boxID,
-                                                length: customPackage.getLength(),
-                                                width: customPackage.getWidth(),
-                                                height: customPackage.getHeight(),
-                                                weight: weight,
-                                                isLetter: customPackage.isLetter,
-                                                customsForm: customsForm)
-        }
-
-        for option in packagesResponse.predefinedOptions {
-            if let predefinedPackage = option.predefinedPackages.first(where: { $0.id == selectedPackageID }) {
-                let boxID = predefinedPackage.id
+            if let customPackage = packagesResponse.customPackages.first(where: { $0.title == selectedPackageID }) {
+                let boxID = customPackage.title
                 let customsForm = customsForms.first(where: { $0.packageID == boxID })
                 return ShippingLabelPackageSelected(boxID: boxID,
-                                                    length: predefinedPackage.getLength(),
-                                                    width: predefinedPackage.getWidth(),
-                                                    height: predefinedPackage.getHeight(),
+                                                    length: customPackage.getLength(),
+                                                    width: customPackage.getWidth(),
+                                                    height: customPackage.getHeight(),
                                                     weight: weight,
-                                                    isLetter: predefinedPackage.isLetter,
+                                                    isLetter: customPackage.isLetter,
                                                     customsForm: customsForm)
             }
-        }
 
-        return nil
+            for option in packagesResponse.predefinedOptions {
+                if let predefinedPackage = option.predefinedPackages.first(where: { $0.id == selectedPackageID }) {
+                    let boxID = predefinedPackage.id
+                    let customsForm = customsForms.first(where: { $0.packageID == boxID })
+                    return ShippingLabelPackageSelected(boxID: boxID,
+                                                        length: predefinedPackage.getLength(),
+                                                        width: predefinedPackage.getWidth(),
+                                                        height: predefinedPackage.getHeight(),
+                                                        weight: weight,
+                                                        isLetter: predefinedPackage.isLetter,
+                                                        customsForm: customsForm)
+                }
+            }
+
+            return nil
+        }
     }
-    private(set) var totalPackageWeight: String?
 
     /// Payment Methods
     ///
@@ -196,11 +200,10 @@ final class ShippingLabelFormViewModel {
         }
     }
 
-    func handlePackageDetailsValueChanges(selectedPackageID: String?, totalPackageWeight: String?) {
-        self.selectedPackageID = selectedPackageID
-        self.totalPackageWeight = totalPackageWeight
+    func handlePackageDetailsValueChanges(details: [String: String]) {
+        self.selectedPackageDetails = details
 
-        guard !selectedPackageID.isNilOrEmpty && !totalPackageWeight.isNilOrEmpty else {
+        guard !details.isEmpty else {
             updateRowState(type: .packageDetails, dataState: .pending, displayMode: .editable)
             return
         }
@@ -268,18 +271,18 @@ final class ShippingLabelFormViewModel {
     }
 
     /// Returns the body of the Package Details cell
+    /// TODO-4599: Update this for multi-package case.
     ///
     func getPackageDetailsBody() -> String {
         guard let packagesResponse = packagesResponse,
-              let selectedPackageID = selectedPackageID,
-              let totalPackageWeight = totalPackageWeight else {
+              let selectedPackage = selectedPackageDetails.first else {
             return Localization.packageDetailsPlaceholder
         }
 
-        let packageTitle = searchCustomPackage(id: selectedPackageID)?.title ?? searchPredefinedPackage(id: selectedPackageID)?.title ?? ""
+        let packageTitle = searchCustomPackage(id: selectedPackage.key)?.title ?? searchPredefinedPackage(id: selectedPackage.key)?.title ?? ""
 
         let formatter = WeightFormatter(weightUnit: packagesResponse.storeOptions.weightUnit)
-        let packageWeight = formatter.formatWeight(weight: totalPackageWeight)
+        let packageWeight = formatter.formatWeight(weight: selectedPackage.value)
 
         return packageTitle + "\n" + String.localizedStringWithFormat(Localization.totalPackageWeight, packageWeight)
     }
@@ -597,28 +600,31 @@ private extension ShippingLabelFormViewModel {
     /// When multi-package support is available, we should create separate form for each package ID.
     ///
     private func createDefaultCustomsFormsIfNeeded() -> [ShippingLabelCustomsForm] {
-        guard customsFormRequired, let packageID = selectedPackageID else {
+        guard customsFormRequired, !selectedPackageDetails.isEmpty else {
             return []
         }
-        let packageName: String = {
-            guard let response = packagesResponse else {
-                return ""
-            }
-
-            if let customPackage = response.customPackages.first(where: { $0.title == packageID }) {
-                return customPackage.title
-            }
-
-            for option in response.predefinedOptions {
-                if let package = option.predefinedPackages.first(where: { $0.id == packageID }) {
-                    return package.title
+        
+        return selectedPackageDetails.keys.map { packageID -> ShippingLabelCustomsForm in
+            let packageName: String = {
+                guard let response = packagesResponse else {
+                    return ""
                 }
-            }
 
-            return ""
-        }()
-        let productIDs = order.items.map { $0.productOrVariationID }
-        return [ShippingLabelCustomsForm(packageID: packageID, packageName: packageName, productIDs: productIDs)]
+                if let customPackage = response.customPackages.first(where: { $0.title == packageID }) {
+                    return customPackage.title
+                }
+
+                for option in response.predefinedOptions {
+                    if let package = option.predefinedPackages.first(where: { $0.id == packageID }) {
+                        return package.title
+                    }
+                }
+
+                return ""
+            }()
+            let productIDs = order.items.map { $0.productOrVariationID }
+            return ShippingLabelCustomsForm(packageID: packageID, packageName: packageName, productIDs: productIDs)
+        }
     }
 }
 
@@ -722,7 +728,7 @@ extension ShippingLabelFormViewModel {
     func purchaseLabel(onCompletion: @escaping ((Result<TimeInterval, Error>) -> Void)) {
         guard let originAddress = originAddress,
               let destinationAddress = destinationAddress,
-              let selectedPackage = selectedPackage,
+              selectedPackages.isNotEmpty,
               let selectedRate = selectedRate,
               let accountSettings = shippingLabelAccountSettings else {
             onCompletion(.failure(PurchaseError.labelDetailsMissing))
@@ -730,16 +736,18 @@ extension ShippingLabelFormViewModel {
         }
 
         let productIDs = order.items.map { $0.productOrVariationID }
-        let package = ShippingLabelPackagePurchase(package: selectedPackage,
-                                                   rate: selectedRate,
-                                                   productIDs: productIDs,
-                                                   customsForm: selectedPackage.customsForm)
+        let packages = selectedPackages.map { package in
+            ShippingLabelPackagePurchase(package: package,
+                                         rate: selectedRate,
+                                         productIDs: productIDs,
+                                         customsForm: package.customsForm)
+        }
         let startTime = Date()
         let action = ShippingLabelAction.purchaseShippingLabel(siteID: siteID,
                                                                orderID: order.orderID,
                                                                originAddress: originAddress,
                                                                destinationAddress: destinationAddress,
-                                                               packages: [package],
+                                                               packages: packages,
                                                                emailCustomerReceipt: accountSettings.isEmailReceiptsEnabled) { result in
             switch result {
             case .success(let labels):

@@ -142,26 +142,22 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
                               predefinedOption: ShippingLabelPredefinedOption?,
                               completion: @escaping (Result<Bool, Error>) -> Void) {
         do {
-            guard customPackage != nil || predefinedOption != nil else {
+            var customPackageDictionary: [String: Any] = [:]
+            var predefinedOptionDictionary: [String: [String]] = [:]
+
+            if let customPackage = customPackage {
+                customPackageDictionary = try customPackage.toDictionary()
+            } else if let predefinedOption = predefinedOption {
+                let packageIDs = predefinedOption.predefinedPackages.map({ $0.id })
+                predefinedOptionDictionary = [predefinedOption.providerID: packageIDs]
+            } else {
                 throw ShippingLabelError.missingPackage
             }
 
-            var parameters: [String: Any] = [:]
-
-            if let customPackage = customPackage {
-                let customPackageDictionary = try customPackage.toDictionary()
-                parameters = [
-                    ParameterKey.custom: [customPackageDictionary],
-                    ParameterKey.predefined: [:]
-                ]
-            } else if let predefinedOption = predefinedOption {
-                let packageIDs = predefinedOption.predefinedPackages.map({ $0.id })
-                let predefinedOptionDictionary = [predefinedOption.providerID: packageIDs]
-                parameters = [
-                    ParameterKey.custom: [],
-                    ParameterKey.predefined: predefinedOptionDictionary
-                ]
-            }
+            let parameters: [String: Any] = [
+                ParameterKey.custom: [customPackageDictionary],
+                ParameterKey.predefined: predefinedOptionDictionary
+            ]
             let path = Path.packages
             let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .post, siteID: siteID, path: path, parameters: parameters)
             let mapper = SuccessDataResultMapper()

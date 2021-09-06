@@ -21,9 +21,9 @@ protocol FilterListSelectorViewModelable: ObservableObject {
     var filterPlaceholder: String { get }
 }
 
-/// Filterable List Selector View/
+/// Filterable List Selector View
 ///
-struct FilterListCountrySelector<ViewModel: FilterListSelectorViewModelable>: View {
+struct FilterListSelector<ViewModel: FilterListSelectorViewModelable>: View {
 
     /// View model to drive the view content
     ///
@@ -86,10 +86,10 @@ private extension SearchHeader {
     }
 }
 
-struct CountrySelector_Previews: PreviewProvider {
+struct FilterListSelector_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            FilterListCountrySelector(viewModel: CountrySelectorViewModel())
+            FilterListSelector(viewModel: CountrySelectorViewModel())
         }
     }
 }

@@ -2,13 +2,7 @@ import SwiftUI
 import Yosemite
 
 struct ShippingLabelAddNewPackage: View {
-    @StateObject private var viewModel = ShippingLabelAddNewPackageViewModel()
-    @StateObject private var customPackageVM = ShippingLabelCustomPackageFormViewModel()
-    @StateObject private var servicePackageVM: ShippingLabelServicePackageListViewModel
-
-    init(packagesResponse: ShippingLabelPackagesResponse?) {
-        _servicePackageVM = StateObject(wrappedValue: ShippingLabelServicePackageListViewModel(packagesResponse: packagesResponse))
-    }
+    @StateObject var viewModel: ShippingLabelAddNewPackageViewModel
 
     var body: some View {
         GeometryReader { geometry in
@@ -23,9 +17,9 @@ struct ShippingLabelAddNewPackage: View {
                 ScrollView {
                     switch viewModel.selectedView {
                     case .customPackage:
-                        ShippingLabelCustomPackageForm(viewModel: customPackageVM, safeAreaInsets: geometry.safeAreaInsets)
+                        ShippingLabelCustomPackageForm(viewModel: viewModel.customPackageVM, safeAreaInsets: geometry.safeAreaInsets)
                     case .servicePackage:
-                        ShippingLabelServicePackageList(viewModel: servicePackageVM, geometry: geometry)
+                        ShippingLabelServicePackageList(viewModel: viewModel.servicePackageVM, geometry: geometry)
                     }
                 }
                  .background(Color(.listBackground).ignoresSafeArea(.container, edges: .bottom))
@@ -47,6 +41,8 @@ private extension ShippingLabelAddNewPackage {
 
 struct ShippingLabelAddNewPackage_Previews: PreviewProvider {
     static var previews: some View {
-        ShippingLabelAddNewPackage(packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails())
+        let viewModel = ShippingLabelAddNewPackageViewModel(packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails())
+
+        ShippingLabelAddNewPackage(viewModel: viewModel)
     }
 }

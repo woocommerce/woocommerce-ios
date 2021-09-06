@@ -6,7 +6,7 @@ protocol FilterListSelectorViewModelable: ObservableObject {
 
     /// Binding variable for the filter search term
     ///
-    var searchTerm: Binding<String> { get set }
+    var searchTerm: String { get set }
 
     /// Command to provide data and cell configuration
     ///
@@ -31,7 +31,7 @@ struct FilterListCountrySelector<ViewModel: FilterListSelectorViewModelable>: Vi
 
     var body: some View {
         VStack(spacing: 0) {
-            SearchHeader(filterText: viewModel.searchTerm, filterPlaceholder: viewModel.filterPlaceholder)
+            SearchHeader(filterText: $viewModel.searchTerm, filterPlaceholder: viewModel.filterPlaceholder)
                 .background(Color(.listForeground))
 
             ListSelector(command: viewModel.command, tableStyle: .plain)

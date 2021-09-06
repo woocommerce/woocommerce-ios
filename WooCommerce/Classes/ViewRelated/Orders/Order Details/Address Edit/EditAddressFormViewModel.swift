@@ -35,7 +35,22 @@ final class EditAddressFormViewModel: ObservableObject {
     /// Return `true` if the done button should be enabled.
     ///
     var isDoneButtonEnabled: Bool {
-        return false
+        guard let originalAddress = originalAddress else {
+            return true
+        }
+
+        return !(firstName == originalAddress.firstName &&
+                    lastName == originalAddress.lastName &&
+                    email == originalAddress.email ?? "" &&
+                    phone == originalAddress.phone ?? "" &&
+
+                    company == originalAddress.company ?? "" &&
+                    address1 == originalAddress.address1 &&
+                    address2 == originalAddress.address2 ?? "" &&
+                    city == originalAddress.city &&
+                    postcode == originalAddress.postcode)
+
+        // TODO: Add country and state check
     }
 }
 
@@ -53,5 +68,7 @@ private extension EditAddressFormViewModel {
         address2 = originalAddress.address2 ?? ""
         city = originalAddress.city
         postcode = originalAddress.postcode
+
+        // TODO: Add country and state init
     }
 }

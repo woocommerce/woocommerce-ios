@@ -17,7 +17,8 @@ public protocol ShippingLabelRemoteProtocol {
     func packagesDetails(siteID: Int64,
                          completion: @escaping (Result<ShippingLabelPackagesResponse, Error>) -> Void)
     func createPackage(siteID: Int64,
-                       customPackage: ShippingLabelCustomPackage,
+                       customPackage: ShippingLabelCustomPackage?,
+                       predefinedOption: ShippingLabelPredefinedOption?,
                        completion: @escaping (Result<Bool, Error>) -> Void)
     func loadCarriersAndRates(siteID: Int64,
                               orderID: Int64,
@@ -130,19 +131,37 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// Creates a new custom package.
+    /// Creates a new custom package or activates a service package.
     /// - Parameters:
     ///   - siteID: Remote ID of the site that owns the shipping label.
     ///   - customPackage: The custom package that should be created.
+    ///   - predefinedOption: The predefined option (shipping provider and service packages) to activate.
     ///   - completion: Closure to be executed upon completion.
     public func createPackage(siteID: Int64,
-                              customPackage: ShippingLabelCustomPackage,
+                              customPackage: ShippingLabelCustomPackage?,
+                              predefinedOption: ShippingLabelPredefinedOption?,
                               completion: @escaping (Result<Bool, Error>) -> Void) {
         do {
-            let customPackageDictionary = try customPackage.toDictionary()
-            let parameters = [
-                ParameterKey.custom: [customPackageDictionary]
-            ]
+            guard customPackage != nil || predefinedOption != nil else {
+                throw ShippingLabelError.missingPackage
+            }
+
+            var parameters: [String: Any] = [:]
+
+            if let customPackage = customPackage {
+                let customPackageDictionary = try customPackage.toDictionary()
+                parameters = [
+                    ParameterKey.custom: [customPackageDictionary],
+                    ParameterKey.predefined: [:]
+                ]
+            } else if let predefinedOption = predefinedOption {
+                let packageIDs = predefinedOption.predefinedPackages.map({ $0.id })
+                let predefinedOptionDictionary = [predefinedOption.providerID: packageIDs]
+                parameters = [
+                    ParameterKey.custom: [],
+                    ParameterKey.predefined: predefinedOptionDictionary
+                ]
+            }
             let path = Path.packages
             let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .post, siteID: siteID, path: path, parameters: parameters)
             let mapper = SuccessDataResultMapper()
@@ -308,6 +327,7 @@ private extension ShippingLabelRemote {
         static let captionCSV = "caption_csv"
         static let json = "json"
         static let custom = "custom"
+        static let predefined = "predefined"
         static let canCreatePaymentMethod = "can_create_payment_method"
         static let canCreateCustomsForm = "can_create_customs_form"
         static let canCreatePackage = "can_create_package"
@@ -318,5 +338,9 @@ private extension ShippingLabelRemote {
         static let emailReceipts = "email_receipts"
         static let emailReceipt = "email_receipt"
         static let async = "async"
+    }
+
+    enum ShippingLabelError: Error {
+        case missingPackage
     }
 }

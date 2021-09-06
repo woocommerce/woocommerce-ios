@@ -275,7 +275,10 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
         }
     }
 
-    func createPackage(siteID: Int64, customPackage: ShippingLabelCustomPackage, completion: @escaping (Result<Bool, Error>) -> Void) {
+    func createPackage(siteID: Int64,
+                       customPackage: ShippingLabelCustomPackage?,
+                       servicePackages: [String: [String]]?,
+                       completion: @escaping (Result<Bool, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
 

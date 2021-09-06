@@ -56,8 +56,8 @@ public final class ShippingLabelStore: Store {
                                      canCreateCustomsForm: canCreateCustomsForm,
                                      canCreatePackage: canCreatePackage,
                                      onCompletion: onCompletion)
-        case .createPackage(let siteID, let customPackage, let completion):
-            createPackage(siteID: siteID, customPackage: customPackage, completion: completion)
+        case .createPackage(let siteID, let customPackage, let predefinedOption, let completion):
+            createPackage(siteID: siteID, customPackage: customPackage, predefinedOption: predefinedOption, completion: completion)
         case .loadCarriersAndRates(let siteID, let orderID, let originAddress, let destinationAddress, let packages, let completion):
             loadCarriersAndRates(siteID: siteID,
                                  orderID: orderID,
@@ -169,9 +169,10 @@ private extension ShippingLabelStore {
     }
 
     func createPackage(siteID: Int64,
-                       customPackage: ShippingLabelCustomPackage,
+                       customPackage: ShippingLabelCustomPackage?,
+                       predefinedOption: ShippingLabelPredefinedOption?,
                        completion: @escaping (Result<Bool, Error>) -> Void) {
-        remote.createPackage(siteID: siteID, customPackage: customPackage, completion: completion)
+        remote.createPackage(siteID: siteID, customPackage: customPackage, predefinedOption: predefinedOption, completion: completion)
     }
 
     func loadCarriersAndRates(siteID: Int64,

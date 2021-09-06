@@ -1,21 +1,42 @@
 import SwiftUI
 
+protocol FilterListSelectorViewModelable: ObservableObject {
+
+    associatedtype Command: ListSelectorCommand
+
+    /// Binding variable for the filter search term
+    ///
+    var searchTerm: Binding<String> { get set }
+
+    /// Command to provide data and cell configuration
+    ///
+    var command: Command { get }
+
+    /// View title in a navigation context
+    ///
+    var navigationTitle: String { get }
+
+    /// Placeholder for the filter text field
+    ///
+    var filterPlaceholder: String { get }
+}
+
 /// Filterable List Selector View/
 ///
-struct FilterListCountrySelector: View {
+struct FilterListCountrySelector<ViewModel: FilterListSelectorViewModelable>: View {
 
     /// View model to drive the view content
     ///
-    @ObservedObject private(set) var viewModel: CountrySelectorViewModel
+    @ObservedObject private(set) var viewModel: ViewModel
 
     var body: some View {
         VStack(spacing: 0) {
-            SearchHeader(filterText: $viewModel.searchTerm)
+            SearchHeader(filterText: viewModel.searchTerm, filterPlaceholder: viewModel.filterPlaceholder)
                 .background(Color(.listForeground))
 
             ListSelector(command: viewModel.command, tableStyle: .plain)
         }
-        .navigationTitle(Localization.title)
+        .navigationTitle(viewModel.navigationTitle)
     }
 }
 
@@ -30,6 +51,10 @@ private struct SearchHeader: View {
     ///
     @Binding var filterText: String
 
+    /// Placeholder for the filter text field
+    ///
+    let filterPlaceholder: String
+
     var body: some View {
         HStack(spacing: 0) {
             // Search Icon
@@ -41,7 +66,7 @@ private struct SearchHeader: View {
                 .padding([.leading, .trailing], Layout.internalPadding)
 
             // TextField
-            TextField(Localization.placeholder, text: $filterText)
+            TextField(filterPlaceholder, text: $filterText)
                 .padding([.bottom, .top], Layout.internalPadding)
         }
         .background(Color(.searchBarBackground))
@@ -52,22 +77,12 @@ private struct SearchHeader: View {
 
 // MARK: Constants
 
-private extension FilterListCountrySelector {
-    enum Localization {
-        static let title = NSLocalizedString("Country", comment: "Title to select country from the edit address screen")
-    }
-}
-
 private extension SearchHeader {
     enum Layout {
         static let iconSize = CGSize(width: 16, height: 16)
         static let internalPadding: CGFloat = 8
         static let cornerRadius: CGFloat = 10
         static let externalPadding = EdgeInsets(top: 10, leading: 16, bottom: 10, trailing: 16)
-    }
-
-    enum Localization {
-        static let placeholder = NSLocalizedString("Filter Countries", comment: "Placeholder on the search field to search for a specific country")
     }
 }
 

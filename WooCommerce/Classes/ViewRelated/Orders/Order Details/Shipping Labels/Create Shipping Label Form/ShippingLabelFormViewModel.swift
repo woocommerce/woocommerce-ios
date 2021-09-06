@@ -35,7 +35,7 @@ final class ShippingLabelFormViewModel {
 
     /// Selected packages by ID and their weights in string values.
     ///
-    private(set) var selectedPackageDetails: [String: String] = [:]
+    private(set) var selectedPackageListDetails: [String: String] = [:]
 
     /// Customs forms
     ///
@@ -51,7 +51,7 @@ final class ShippingLabelFormViewModel {
             return []
         }
 
-        return selectedPackageDetails.compactMap { selectedPackageID, weightString -> ShippingLabelPackageSelected? in
+        return selectedPackageListDetails.compactMap { selectedPackageID, weightString -> ShippingLabelPackageSelected? in
             let weight = Double(weightString) ?? .zero
 
             if let customPackage = packagesResponse.customPackages.first(where: { $0.title == selectedPackageID }) {
@@ -201,7 +201,7 @@ final class ShippingLabelFormViewModel {
     }
 
     func handlePackageDetailsValueChanges(details: [String: String]) {
-        self.selectedPackageDetails = details
+        self.selectedPackageListDetails = details
 
         guard !details.isEmpty else {
             updateRowState(type: .packageDetails, dataState: .pending, displayMode: .editable)
@@ -275,7 +275,7 @@ final class ShippingLabelFormViewModel {
     ///
     func getPackageDetailsBody() -> String {
         guard let packagesResponse = packagesResponse,
-              let selectedPackage = selectedPackageDetails.first else {
+              let selectedPackage = selectedPackageListDetails.first else {
             return Localization.packageDetailsPlaceholder
         }
 
@@ -600,11 +600,11 @@ private extension ShippingLabelFormViewModel {
     /// When multi-package support is available, we should create separate form for each package ID.
     ///
     private func createDefaultCustomsFormsIfNeeded() -> [ShippingLabelCustomsForm] {
-        guard customsFormRequired, !selectedPackageDetails.isEmpty else {
+        guard customsFormRequired, !selectedPackageListDetails.isEmpty else {
             return []
         }
         
-        return selectedPackageDetails.keys.map { packageID -> ShippingLabelCustomsForm in
+        return selectedPackageListDetails.keys.map { packageID -> ShippingLabelCustomsForm in
             let packageName: String = {
                 guard let response = packagesResponse else {
                     return ""

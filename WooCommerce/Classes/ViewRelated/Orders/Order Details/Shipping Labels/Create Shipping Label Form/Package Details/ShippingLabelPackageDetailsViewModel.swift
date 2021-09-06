@@ -59,7 +59,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     /// List of selected package IDs and their weights.
     /// TODO-4599: update this to properly support multi-package.
     ///
-    var selectedPackageDetails: [String: String] {
+    var selectedPackageListDetails: [String: String] {
         guard let id = selectedPackageID, totalWeight.isNotEmpty else {
             return [:]
         }
@@ -95,7 +95,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
 
     init(order: Order,
          packagesResponse: ShippingLabelPackagesResponse?,
-         selectedPackageDetails: [String: String],
+         selectedPackageListDetails: [String: String],
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -108,14 +108,14 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         self.storageManager = storageManager
         self.weightUnit = weightUnit
         self.packagesResponse = packagesResponse
-        self.selectedPackageID = selectedPackageDetails.first?.key // TODO-4599: fix this
+        self.selectedPackageID = selectedPackageListDetails.first?.key // TODO-4599: fix this
 
         configureResultsControllers()
         setDefaultPackage()
         syncProducts()
         syncProductVariations()
         configureItemRows()
-        configureTotalWeights(initialTotalWeight: selectedPackageDetails.first?.value) // TODO-4599: fix this
+        configureTotalWeights(initialTotalWeight: selectedPackageListDetails.first?.value) // TODO-4599: fix this
     }
 
     /// Observe changes in products and variations to update item rows.

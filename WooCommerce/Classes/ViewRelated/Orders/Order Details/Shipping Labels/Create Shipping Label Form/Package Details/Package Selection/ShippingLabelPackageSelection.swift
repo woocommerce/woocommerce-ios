@@ -18,10 +18,10 @@ struct ShippingLabelPackageSelection_Previews: PreviewProvider {
     static var previews: some View {
         let viewModelWithPackages = ShippingLabelPackageDetailsViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder(),
                                                              packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails(),
-                                                             selectedPackageDetails: [:])
+                                                             selectedPackageListDetails: [:])
         let viewModelWithoutPackages = ShippingLabelPackageDetailsViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder(),
                                                              packagesResponse: nil,
-                                                             selectedPackageDetails: [:])
+                                                             selectedPackageListDetails: [:])
 
         ShippingLabelPackageSelection(viewModel: viewModelWithPackages)
 

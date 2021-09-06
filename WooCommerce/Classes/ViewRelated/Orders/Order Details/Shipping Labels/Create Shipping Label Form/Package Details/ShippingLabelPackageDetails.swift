@@ -8,7 +8,7 @@ struct ShippingLabelPackageDetails: View {
 
     /// Completion callback
     ///
-    typealias Completion = (_ selectedPackageDetails: [String: String]) -> Void
+    typealias Completion = (_ selectedPackageListDetails: [String: String]) -> Void
     private let onCompletion: Completion
 
     init(viewModel: ShippingLabelPackageDetailsViewModel, completion: @escaping Completion) {
@@ -82,7 +82,7 @@ struct ShippingLabelPackageDetails: View {
         .navigationBarItems(trailing: Button(action: {
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow,
                                            withProperties: ["state": "packages_selected"])
-            onCompletion(viewModel.selectedPackageDetails)
+            onCompletion(viewModel.selectedPackageListDetails)
             presentation.wrappedValue.dismiss()
         }, label: {
             Text(Localization.doneButton)
@@ -117,7 +117,7 @@ struct ShippingLabelPackageDetails_Previews: PreviewProvider {
 
         let viewModel = ShippingLabelPackageDetailsViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder(),
                                                              packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails(),
-                                                             selectedPackageDetails: [:])
+                                                             selectedPackageListDetails: [:])
 
         ShippingLabelPackageDetails(viewModel: viewModel, completion: { _ in
         })

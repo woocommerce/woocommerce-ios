@@ -176,7 +176,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         shippingLabelFormViewModel.handlePackageDetailsValueChanges(details: [expectedPackageID: expectedPackageWeight])
 
         // Then
-        XCTAssertEqual(shippingLabelFormViewModel.selectedPackageDetails, [expectedPackageID: expectedPackageWeight])
+        XCTAssertEqual(shippingLabelFormViewModel.selectedPackageListDetails, [expectedPackageID: expectedPackageWeight])
     }
 
     func test_handlePackageDetailsValueChanges_reset_carrier_and_rates_selection() {

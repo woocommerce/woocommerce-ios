@@ -306,7 +306,7 @@ updating the application or using a different reader
             return NSLocalizedString("The card reader session has expired - please disconnect and reconnect the card reader and then try again",
                                      comment: "Error message when the card reader session has timed out.")
         case .internalServiceError:
-            return NSLocalizedString("The system experienced an unexpected internal error - please try again",
+            return NSLocalizedString("Sorry, this payment couldn’t be processed",
                                      comment: "Error message when the card reader service experiences an unexpected internal service error.")
         }
     }

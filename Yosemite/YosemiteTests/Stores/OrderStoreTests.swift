@@ -522,7 +522,7 @@ final class OrderStoreTests: XCTestCase {
         // Update: Expected Status is actually coming from `order.json` (Status == .processing actually!)
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
 
-        let action = OrderAction.updateOrder(siteID: sampleSiteID, orderID: sampleOrderID, status: OrderStatusEnum.processing) { error in
+        let action = OrderAction.updateOrderStatus(siteID: sampleSiteID, orderID: sampleOrderID, status: OrderStatusEnum.processing) { error in
             XCTAssertNil(error)
 
             let storageOrder = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)
@@ -546,7 +546,7 @@ final class OrderStoreTests: XCTestCase {
 
         network.removeAllSimulatedResponses()
 
-        let action = OrderAction.updateOrder(siteID: sampleSiteID, orderID: sampleOrderID, status: OrderStatusEnum.processing) { error in
+        let action = OrderAction.updateOrderStatus(siteID: sampleSiteID, orderID: sampleOrderID, status: OrderStatusEnum.processing) { error in
             XCTAssertNotNil(error)
 
             let storageOrder = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)

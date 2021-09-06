@@ -5,6 +5,7 @@ import Yosemite
 import SafariServices
 import MessageUI
 import Combine
+import SwiftUI
 
 // MARK: - OrderDetailsViewController: Displays the details for a given Order.
 //
@@ -499,7 +500,7 @@ private extension OrderDetailsViewController {
                 assertionFailure("Cannot reprint a shipping label because `navigationController` is nil")
                 return
             }
-            let coordinator = PrintShippingLabelCoordinator(shippingLabel: shippingLabel, printType: .reprint, sourceViewController: navigationController)
+            let coordinator = PrintShippingLabelCoordinator(shippingLabel: shippingLabel, printType: .reprint, sourceNavigationController: navigationController)
             coordinator.showPrintUI()
         case .createShippingLabel:
             let shippingLabelFormVC = ShippingLabelFormViewController(order: viewModel.order)
@@ -512,14 +513,16 @@ private extension OrderDetailsViewController {
                 guard let self = self else { return }
                 self.navigationController?.popToViewController(self, animated: true)
             }
+            shippingLabelFormVC.hidesBottomBarWhenPushed = true
             navigationController?.show(shippingLabelFormVC, sender: self)
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
         case let .viewAddOns(addOns):
             itemAddOnsButtonTapped(addOns: addOns)
         case .editCustomerNote:
-            // TODO: Navigate to edit customer note
-            print("Edit Note Tapped")
+			editCustomerNoteTapped()
+        case .editShippingAddress:
+            editShippingAddressTapped()
         }
     }
 
@@ -606,6 +609,15 @@ private extension OrderDetailsViewController {
             self?.show(refundViewController, sender: self)
         }
 
+        if let url = shippingLabel.commercialInvoiceURL {
+            actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelMoreMenu.printCustomsFormAction) { [weak self] _ in
+                let printCustomsFormsView = PrintCustomsFormsView(invoiceURLs: [url])
+                let hostingController = UIHostingController(rootView: printCustomsFormsView)
+                hostingController.hidesBottomBarWhenPushed = true
+                self?.show(hostingController, sender: self)
+            }
+        }
+
         let popoverController = actionSheet.popoverPresentationController
         popoverController?.sourceView = sourceView
 
@@ -638,6 +650,19 @@ private extension OrderDetailsViewController {
         popoverController?.sourceView = sourceView
 
         present(actionSheet, animated: true)
+    }
+
+    func editCustomerNoteTapped() {
+        let viewModel = EditCustomerNoteViewModel(order: viewModel.order)
+        let editNoteViewController = EditCustomerNoteHostingController(viewModel: viewModel)
+        present(editNoteViewController, animated: true, completion: nil)
+
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowStarted(subject: .customerNote))
+    }
+
+    func editShippingAddressTapped() {
+        let editAddressViewController = EditAddressHostingController()
+        show(editAddressViewController, sender: self)
     }
 
     @objc private func collectPayment(at: IndexPath) {
@@ -934,7 +959,7 @@ private extension OrderDetailsViewController {
     /// Returns an Order Update Action that will result in the specified Order Status updated accordingly.
     ///
     private func updateOrderStatusAction(siteID: Int64, orderID: Int64, status: OrderStatusEnum) -> Action {
-        return OrderAction.updateOrder(siteID: siteID, orderID: orderID, status: status, onCompletion: { [weak self] error in
+        return OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: status, onCompletion: { [weak self] error in
             guard let error = error else {
                 NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
                 self?.syncNotes()
@@ -1000,6 +1025,9 @@ private extension OrderDetailsViewController {
             static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the shipping label more menu action sheet")
             static let requestRefundAction = NSLocalizedString("Request a Refund",
                                                                comment: "Request a refund on a shipping label from the shipping label more menu action sheet")
+            static let printCustomsFormAction = NSLocalizedString("Print Customs Form",
+                                                                  comment: "Print the customs form for the shipping label" +
+                                                                    " from the shipping label more menu action sheet")
         }
 
         enum ShippingLabelTrackingMoreMenu {

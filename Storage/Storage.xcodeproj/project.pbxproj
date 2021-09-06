@@ -176,6 +176,8 @@
 		CE4FD44E2350EB7600A16B31 /* Refund+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4FD4462350EB7600A16B31 /* Refund+CoreDataProperties.swift */; };
 		CEF88DB2233EAAF100BED485 /* OrderRefundCondensed+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF88DB0233EAAF000BED485 /* OrderRefundCondensed+CoreDataClass.swift */; };
 		CEF88DB3233EAAF100BED485 /* OrderRefundCondensed+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF88DB1233EAAF000BED485 /* OrderRefundCondensed+CoreDataProperties.swift */; };
+		D4466F5626D524FC003E931B /* Feature.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4466F5526D524FC003E931B /* Feature.swift */; };
+		D4ABCACF26D6E7E400CD18F4 /* Announcement.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4ABCACE26D6E7E400CD18F4 /* Announcement.swift */; };
 		D821645B2239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82164572239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataClass.swift */; };
 		D821645C2239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82164582239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataProperties.swift */; };
 		D821645D2239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82164592239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataClass.swift */; };
@@ -447,6 +449,8 @@
 		CEF88DB0233EAAF000BED485 /* OrderRefundCondensed+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderRefundCondensed+CoreDataClass.swift"; sourceTree = "<group>"; };
 		CEF88DB1233EAAF000BED485 /* OrderRefundCondensed+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderRefundCondensed+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D0FEE3A91785B0F2C3641C27 /* Pods-Storage.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Storage.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-Storage/Pods-Storage.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		D4466F5526D524FC003E931B /* Feature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Feature.swift; sourceTree = "<group>"; };
+		D4ABCACE26D6E7E400CD18F4 /* Announcement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Announcement.swift; sourceTree = "<group>"; };
 		D82164572239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTrackingProvider+CoreDataClass.swift"; sourceTree = "<group>"; };
 		D82164582239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTrackingProvider+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D82164592239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTrackingProviderGroup+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -470,6 +474,7 @@
 		D8FBFF5222D66A06006E3336 /* OrderStatsV4Totals+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Totals+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D8FBFF5322D66A06006E3336 /* OrderStatsV4+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4+CoreDataClass.swift"; sourceTree = "<group>"; };
 		D8FBFF5422D66A06006E3336 /* OrderStatsV4+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		DE126D1026CE5A28007F901D /* Model 55.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 55.xcdatamodel"; sourceTree = "<group>"; };
 		DEFD6D3B2641B3C200E51E0D /* Model 50.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 50.xcdatamodel"; sourceTree = "<group>"; };
 		DEFD6D402641B70400E51E0D /* SitePlugin+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SitePlugin+CoreDataClass.swift"; sourceTree = "<group>"; };
 		DEFD6D412641B70400E51E0D /* SitePlugin+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SitePlugin+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -751,6 +756,7 @@
 		B59E11D720A9CFF3004121A4 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				D4466F5426D524D1003E931B /* WhatsNew */,
 				268BF6D92642CBA5003948D8 /* Copiable */,
 				572B40E225A540BA00DB20E0 /* Migration Policies */,
 				02C254E32563B12E00A04423 /* ShippingLabelSettings+CoreDataClass.swift */,
@@ -889,6 +895,15 @@
 				933A272F2222344D00C2143A /* Logging.swift */,
 			);
 			name = Internal;
+			sourceTree = "<group>";
+		};
+		D4466F5426D524D1003E931B /* WhatsNew */ = {
+			isa = PBXGroup;
+			children = (
+				D4466F5526D524FC003E931B /* Feature.swift */,
+				D4ABCACE26D6E7E400CD18F4 /* Announcement.swift */,
+			);
+			name = WhatsNew;
 			sourceTree = "<group>";
 		};
 		D87F61582265AED70031A13B /* Mock data */ = {
@@ -1106,7 +1121,9 @@
 				747453A12242C85E00E0B5EE /* ProductCategory+CoreDataClass.swift in Sources */,
 				02C254ED2563B12E00A04423 /* ShippingLabel+CoreDataClass.swift in Sources */,
 				021EAA4725493A1600AA8CCD /* OrderItemAttribute+CoreDataClass.swift in Sources */,
+				D4466F5626D524FC003E931B /* Feature.swift in Sources */,
 				268BF6DB2642CBA6003948D8 /* Models+Copiable.generated.swift in Sources */,
+				D4ABCACF26D6E7E400CD18F4 /* Announcement.swift in Sources */,
 				D87F61552265AA900031A13B /* PListFileStorage.swift in Sources */,
 				B5B914C620EFF03500F2F832 /* Site+CoreDataProperties.swift in Sources */,
 				45E462072684BCEE00011BF2 /* StateOfACountry+CoreDataClass.swift in Sources */,
@@ -1669,6 +1686,7 @@
 		B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				DE126D1026CE5A28007F901D /* Model 55.xcdatamodel */,
 				077F39C2269F1E2F00ABEADC /* Model 54.xcdatamodel */,
 				45E462022684B86F00011BF2 /* Model 53.xcdatamodel */,
 				31D9C881266844B8000AC134 /* Model 52.xcdatamodel */,
@@ -1724,7 +1742,7 @@
 				746A9D14214071F90013F6FF /* Model 2.xcdatamodel */,
 				B59E11D920A9D00C004121A4 /* Model.xcdatamodel */,
 			);
-			currentVersion = 077F39C2269F1E2F00ABEADC /* Model 54.xcdatamodel */;
+			currentVersion = DE126D1026CE5A28007F901D /* Model 55.xcdatamodel */;
 			path = WooCommerce.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

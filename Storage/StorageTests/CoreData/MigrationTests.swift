@@ -697,6 +697,27 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "SystemPlugin"), 1)
         XCTAssertEqual(insertedSystemPlugin, systemPlugin)
     }
+
+    func test_migrating_from_54_to_55_adds_new_attribute_commercialInvoiceURL_with_nil_value() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 54")
+        let sourceContext = sourceContainer.viewContext
+
+        let shippingLabel = insertShippingLabel(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(shippingLabel.entity.attributesByName["commercialInvoiceURL"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 55")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedShippingLabel = try XCTUnwrap(targetContext.first(entityName: "ShippingLabel"))
+
+        XCTAssertNotNil(migratedShippingLabel.entity.attributesByName["commercialInvoiceURL"])
+        XCTAssertNil(migratedShippingLabel.value(forKey: "commercialInvoiceURL"))
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

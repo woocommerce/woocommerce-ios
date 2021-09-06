@@ -26,16 +26,8 @@ final class ShippingLabelFormViewModel {
 
     /// Address
     ///
-    private(set) var originAddress: ShippingLabelAddress? {
-        didSet {
-            updateRowsForCustomsIfNeeded()
-        }
-    }
-    private(set) var destinationAddress: ShippingLabelAddress? {
-        didSet {
-            updateRowsForCustomsIfNeeded()
-        }
-    }
+    private(set) var originAddress: ShippingLabelAddress?
+    private(set) var destinationAddress: ShippingLabelAddress?
 
     /// Packages
     ///
@@ -181,6 +173,8 @@ final class ShippingLabelFormViewModel {
         // the carrier and rate change accordingly
         handleCarrierAndRatesValueChanges(selectedRate: nil, selectedSignatureRate: nil, selectedAdultSignatureRate: nil, editable: false)
 
+        updateRowsForCustomsIfNeeded()
+
         if dateState == .validated {
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "origin_address_complete"])
         }
@@ -194,6 +188,8 @@ final class ShippingLabelFormViewModel {
         // We reset the carrier and rates selected because if the address change
         // the carrier and rate change accordingly
         handleCarrierAndRatesValueChanges(selectedRate: nil, selectedSignatureRate: nil, selectedAdultSignatureRate: nil, editable: false)
+
+        updateRowsForCustomsIfNeeded()
 
         if dateState == .validated {
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "destination_address_complete"])
@@ -465,12 +461,12 @@ private extension ShippingLabelFormViewModel {
     func updateRowsForCustomsIfNeeded() {
         insertOrRemoveCustomsRowIfNeeded()
 
-        guard let originAddress = originAddress else {
-            return
-        }
         // Require user to update phone address if customs form is required
-        if customsFormRequired && originAddress.phone.isEmpty {
+        if customsFormRequired && originAddress?.phone.isEmpty == true {
             updateRowState(type: .shipFrom, dataState: .pending, displayMode: .editable)
+        }
+        if customsFormRequired && destinationAddress?.phone.isEmpty == true {
+            updateRowState(type: .shipTo, dataState: .pending, displayMode: .editable)
         }
     }
 
@@ -652,9 +648,10 @@ extension ShippingLabelFormViewModel {
         // Validate name field locally before validating the address remotely.
         // The name field cannot be empty when creating a shipping label, but this is not part of the remote validation.
         // See: https://github.com/Automattic/woocommerce-services/issues/2457
-        if address.name.isEmpty {
+        guard address.name.isNotEmpty else {
             let missingNameError = ShippingLabelAddressValidationError(addressError: nil, generalError: "Name is required")
             onCompletion?(.validationError(missingNameError), nil)
+            return
         }
 
         updateValidatingAddressState(true, type: type)

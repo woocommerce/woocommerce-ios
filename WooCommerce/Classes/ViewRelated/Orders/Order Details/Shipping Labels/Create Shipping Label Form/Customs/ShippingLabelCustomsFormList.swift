@@ -10,6 +10,7 @@ struct ShippingLabelCustomsFormList: View {
          onCompletion: @escaping ([ShippingLabelCustomsForm]) -> Void) {
         self.viewModel = viewModel
         self.onCompletion = onCompletion
+        ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "customs_started"])
     }
 
     var body: some View {
@@ -24,17 +25,20 @@ struct ShippingLabelCustomsFormList: View {
                                                           viewModel: inputModel)
                         }
                 }
+                .padding(.bottom, insets: geometry.safeAreaInsets)
             }
             .background(Color(.listBackground))
-            .ignoresSafeArea(.container, edges: .horizontal)
+            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         }
         .navigationTitle(Localization.navigationTitle)
         .navigationBarItems(trailing: Button(action: {
-            onCompletion(viewModel.customsForms)
+            onCompletion(viewModel.validatedCustomsForms)
             presentation.wrappedValue.dismiss()
+            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "customs_complete"])
         }, label: {
             Text(Localization.doneButton)
-        }))
+        }).disabled(!viewModel.doneButtonEnabled)
+        )
     }
 }
 

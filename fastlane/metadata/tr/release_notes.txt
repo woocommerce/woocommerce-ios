@@ -1,5 +1,3 @@
-ABD'deki müşterileri için gönderim etiketleri oluşturmak isteyen ABD'deki satıcılar bazı küçük iyileştirmeler bulacaklar. Henüz uygulamadan etiket yazdırmıyorsanız, sitenize WooCommerce Gönderim ve Vergi uzantısını yükleyerek başlayın.
+Bu sürüm, deneyiminizi daha sorunsuz hale getirmek için birkaç küçük iyileştirme içerir. Sipariş ayrıntılarında, bazı üçüncü taraf uzantıları mantıksal olarak ürün meta verilerini göstermiyordu. Bu ürün ayrıntılarının görüntülenmesini iyileştirmek için bazı değişiklikler yaptık. Artık toplam tutar sıfır olduğunda sipariş iadesi düğmesini gizliyoruz.
 
-Ayrıca uygulamanın farklı ekran boyutlarında ve telefon tiplerindeki görünme biçimini de ele aldık. Özellikle iPad'lerde fark edilen bir dizi küçük ama anlamlı görsel sorunu düzelttik.
-
-Her zaman olduğu gibi, uygulama hakkındaki görüşlerinizi bekliyoruz. Uygulamada Mağazam sekmesindeki Ayarlar altından bize ulaşın.
+Bu güncelleme ile ayrıca WooCommerce Shipping & Tax Uzantısını kullanan gönderi etiketi özelliğinde çeşitli geliştirmeler de yapılmıştır. Bu yeni özellikle ilgili tüm geri bildirimleriniz bizim için çok değerlidir!

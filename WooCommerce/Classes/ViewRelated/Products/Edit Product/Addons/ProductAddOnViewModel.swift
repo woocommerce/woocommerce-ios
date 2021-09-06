@@ -92,8 +92,19 @@ extension ProductAddOnViewModel {
                 return nil
             }
             return Option(name: option.label ?? "",
-                          price: currencyFormatter.formatAmount(option.price ?? "") ?? "",
+                          price: ProductAddOnViewModel.formatPrice(option: option, currencyFormatter: currencyFormatter),
                           offSetDivider: index < (addOn.options.count - 1))
+        }
+    }
+
+    /// Returns the option price with specific format depending on its price type.
+    ///
+    private static func formatPrice(option: ProductAddOnOption, currencyFormatter: CurrencyFormatter) -> String {
+        switch option.priceType {
+        case .percentageBased:
+            return "\(option.price ?? "")%"
+        default:
+            return currencyFormatter.formatAmount(option.price ?? "") ?? ""
         }
     }
 }

@@ -26,7 +26,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
 
     /// The packages  response fetched from API
     ///
-    @Published private var packagesResponse: ShippingLabelPackagesResponse?
+    @Published private(set) var packagesResponse: ShippingLabelPackagesResponse?
 
     var dimensionUnit: String {
         return packagesResponse?.storeOptions.dimensionUnit ?? ""
@@ -492,7 +492,8 @@ extension ShippingLabelPackageDetailsViewModel {
     static func samplePackageDetails() -> ShippingLabelPackagesResponse {
         return ShippingLabelPackagesResponse(storeOptions: sampleShippingLabelStoreOptions(),
                                              customPackages: sampleShippingLabelCustomPackages(),
-                                             predefinedOptions: sampleShippingLabelPredefinedOptions())
+                                             predefinedOptions: sampleShippingLabelPredefinedOptions(),
+                                             unactivatedPredefinedOptions: sampleShippingLabelPredefinedOptions())
     }
 
     static func sampleShippingLabelStoreOptions() -> ShippingLabelStoreOptions {

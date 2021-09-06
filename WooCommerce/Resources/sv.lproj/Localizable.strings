@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-08-04 14:54:04+0000 */
+/* Translation-Revision-Date: 2021-08-31 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -170,6 +170,12 @@
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
 
+/* A label prompting users to learn more about HS Tariff Number with an embedded hyperlink in Customs screen of Shipping Label flow */
+"<a href=\"https:\/\/docs.woocommerce.com\/document\/woocommerce-shipping-and-tax\/woocommerce-shipping\/#section-29\">Learn more<\/a> about HS Tariff Number" = "<a href=\"https:\/\/docs.woocommerce.com\/document\/woocommerce-shipping-and-tax\/woocommerce-shipping\/#section-29\">Läs mer<\/a> om HS-tariffnummer";
+
+/* A label prompting users to learn more about internal transaction number with an embedded hyperlink */
+"<a href=\"https:\/\/pe.usps.com\/text\/imm\/immc5_010.htm\">Learn more<\/a> about Internal Transaction Number" = "<a href=\"https:\/\/pe.usps.com\/text\/imm\/immc5_010.htm\">Läs mer<\/a> om internt transaktionsnummer";
+
 /* A label prompting users to learn more about card readers with an embedded hyperlink */
 "<a href=\"https:\/\/woocommerce.com\/payments\">Learn more<\/a> about accepting payments with your mobile device and ordering card readers" = "<a href=\"https:\/\/woocommerce.com\/payments\">Läs mer<\/a> om att ta emot betalningar med din mobila enhet och att beställa kortläsare";
 
@@ -181,6 +187,12 @@
 
 /* Description of the Action sheet option when the user wants to change the Product type to grouped product */
 "A collection of related products" = "En samling av relaterade produkter";
+
+/* Error message when there was a network error checking In-Person Payments requirements */
+"A network error occurred. Please check your connection and try again." = "En nätverksfel uppstod. Kontrollera din anslutning och försök igen.";
+
+/* Error shown in Shipping Label Origin Address validation for phone number field for international shipment */
+"A phone number is required because this shipment requires a customs form" = "Ett telefonnummer krävs eftersom denna försändelse kräver ett tullformulär";
 
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "A product with variations like color or size" = "En produkt med variationer som färg eller storlek";
@@ -215,6 +227,9 @@
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "Om appen";
 
+/* Title for the error screen when WooCommerce Payments is installed but not activated */
+"Activate WooCommerce Payments" = "Aktivera WooCommerce Payments";
+
 /* Application's Active State */
 "Active" = "Aktiv";
 
@@ -246,6 +261,9 @@
 
 /* Action to add new attribute on the Product Attributes screen */
 "Add New Attribute" = "Lägg till nytt attribut";
+
+/* Add New Package screen title in Shipping Label flow */
+"Add New Package" = "Lägg till nytt paket";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "Lägg till foto";
@@ -473,8 +491,7 @@
    Awaiting payment via (payment method title) */
 "Awaiting payment via %@" = "Väntar på betalning via %@";
 
-/* Alert button title - dismisses alert, which cancels the log out attempt
-   Back button title. */
+/* Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "Tillbaka";
 
 /* Title of a button to dismiss the survey complete screen */
@@ -505,6 +522,9 @@
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "Fet";
 
+/* Box package type, used to create a custom package in the Shipping Label flow */
+"Box" = "Låda";
+
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "Knapptext";
 
@@ -530,7 +550,7 @@
 "Can Not Request Link" = "Kan inte begära länk";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to cancel a payment - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to cancel a payment - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. */
 "Cancel" = "Avbryt";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -595,6 +615,9 @@
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "Välj pappersstorlek";
 
+/* Navigation title on the shipping label country selector screen */
+"Choose a Country" = "Välj ett land";
+
 /* Navigation title on the shipping label states of a country selector screen */
 "Choose a State" = "Välj en delstat";
 
@@ -631,8 +654,7 @@
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "Anslut till läsare";
 
-/* Settings > Manage Card Reader > Prompt user to connect their first reader
-   Settings > Manage Card Reader > Prompt user to connect their reader */
+/* Settings > Manage Card Reader > Prompt user to connect their first reader */
 "Connect your card reader" = "Anslut din kortläsare";
 
 /* Link on the store picker when there are no stores available. Opens a webview about Jetpack setup. */
@@ -656,6 +678,9 @@
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "Ansluter till WordPress.com";
 
+/* Title when checking if WooCommerce Payments is supported */
+"Connecting to your account" = "Ansluter till ditt konto";
+
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "Kontakta kund";
 
@@ -669,8 +694,20 @@
    The title of the button to contact support in the Error Loading Data banner */
 "Contact Support" = "Kontakta support";
 
+/* Contact WooComerce Payments Support title */
+"Contact WooCommerce Payments Support" = "Kontakta WooCommerce Payments-supporten";
+
+/* Title of a button to contact support in the error screen for In-Person payments */
+"Contact us" = "Kontakta oss";
+
 /* Title of a button to contact support in the survey complete screen */
 "Contact us here" = "Kontakta oss här";
+
+/* Title for the Content Details row in Customs screen of Shipping Label flow */
+"Content Details" = "Innehållsdetaljer";
+
+/* Title for the Content Type row in Customs screen of Shipping Label flow */
+"Content Type" = "Innehållstyp";
 
 /* Continue button inside every cell inside Create Shipping Label form
    The button title text when there is a next step for logging in or signing up. - Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
@@ -736,6 +773,9 @@
 /* Error showed in Shipping Label Address Validation for the country field */
 "Country missing" = "Land saknas";
 
+/* Description for the Origin Country row in Customs screen of Shipping Label flow */
+"Country where the product was manufactured or assembled" = "Land där produkten tillverkades eller monterades";
+
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "Kraschfelsökningsmeny";
 
@@ -748,6 +788,9 @@
 /* Create Shipping Label form navigation title
    Text on the button that starts shipping label creation */
 "Create Shipping Label" = "Skapa fraktetikett";
+
+/* Button to create a new package in Shipping Label Package screen */
+"Create new package" = "Skapa nytt paket";
 
 /* The title of the shipping labels top banner in order details */
 "Create shipping labels from your device!" = "Skapa fraktetiketter från din enhet!";
@@ -781,6 +824,15 @@
    Placeholder name of a custom shipment tracking carrier - Title of button to add a custom tracking carrier if filtering the list yields no results. */
 "Custom Carrier" = "Anpassat transportföretag";
 
+/* Custom line index in Customs Form of Shipping Label flow */
+"Custom Line %1$d" = "Anpassad rad %1$d";
+
+/* Custom Package menu in Shipping Label Add New Package flow */
+"Custom Package" = "Anpassat paket";
+
+/* Error shown in Shipping Label Origin Address validation for phone number when the it doesn't have expected length for international shipment. */
+"Custom forms require a 10-digit phone number" = "Tullformulär kräver ett tiosiffrigt telefonnummer";
+
 /* Customer info section title
    Customer info section title in Review Order screen */
 "Customer" = "Kund";
@@ -792,8 +844,12 @@
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
 "Customer paid a %1$@ of %2$@ for shipping" = "Kunden betalade en %1$@ på %2$@ för frakt";
 
+/* Navigation title for Customs screen in Shipping Label flow
+   Title of the cell Customs inside Create Shipping Label form */
+"Customs" = "Anpassade";
+
 /* Details text in the shipping label creation info screen */
-"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Skippa kön på postkontoret genom att skriva ut fraktetiketter till rabatterade priser hemma med din telefon!";
+"Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "Skippa kön på postkontoret genom att skriva ut fraktetiketter till rabatterade priser hemma med din mobila enhet!";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "Datum skickat";
@@ -821,7 +877,7 @@
 "Describe your product to your future customers..." = "Beskriv din produkt till dina blivande kunder …";
 
 /* The navigation bar title of the Aztec editor screen.
-   Title in the Product description row on Product form screen when the description is non-empty. */
+   Title in the Product description row on Product form screen when the description is non-empty. - Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "Beskrivning";
 
 /* Screen title: Details Order number. Parameters: %1$@ - order number */
@@ -852,7 +908,7 @@
 "Discard changes" = "Förkasta ändringarna";
 
 /* Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader */
-"Disconnect" = "Koppla från";
+"Disconnect Reader" = "Koppla från läsare";
 
 /* Discount label for payment view */
 "Discount" = "Rabatt";
@@ -870,18 +926,21 @@
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "Vill du flytta denna produkt till papperskorgen?";
 
+/* Type Documents of content to be declared for the customs form in Shipping Label flow */
+"Documents" = "Dokument";
+
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Har du inget konto? _Registrera dig_";
 
 /* Action title to select products to add to a grouped product from search results
-   Done navigation button in shipping label carrier and rates screen - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files */
+   Done navigation button in selection list screens - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the edit customer provided note screen */
 "Done" = "Klar";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
 "Don’t know how to print from your device?" = "Vet du inte hur man skriver ut från din enhet?";
 
 /* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
-"Don’t know how to print from your phone?" = "Vet du inte hur man skriver ut från din telefon?";
+"Don’t know how to print from your mobile device?" = "Vet du inte hur man skriver ut från din mobila enhet?";
 
 /* WordPress.com (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
 "Dotcom Error: [%1$@] %2$@" = "Dotcom-fel: [%1$@] %2$@";
@@ -948,6 +1007,9 @@
    Navigation title for the Product Attributes screen */
 "Edit Attributes" = "Redigera attribut";
 
+/* Title for the edit customer provided note screen */
+"Edit Note" = "Redigera anteckning";
+
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "Redigera produkter";
 
@@ -982,6 +1044,9 @@
 /* Accessibility text for Unit Input cell */
 "Empty" = "Töm";
 
+/* Title for the row to enter the empty package weight on the Add New Custom Package screen in Shipping Label flow */
+"Empty Package Weight" = "Tom paketvikt";
+
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Tom URL";
 
@@ -1001,6 +1066,12 @@
    Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
 "Enter Another Store" = "Ange en annan butik";
 
+/* Placeholder for the ITN row in Customs screen of Shippling Label flow */
+"Enter ITN (Optional)" = "Ange ITN (valfritt)";
+
+/* Placeholder for the row to enter the package name on the Add New Custom Package screen in Shipping Label flow */
+"Enter Name" = "Ange Namn";
+
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "Ange URL";
 
@@ -1011,8 +1082,14 @@
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "Ange transportföretagsnamn";
 
+/* Placeholder of Description row of item details in Customs screen of Shipping Label flow */
+"Enter description" = "Ange beskrivning";
+
 /* Title of the downloadable file bottom sheet action for adding file from an URL. */
 "Enter file URL" = "Ange fil-URL";
+
+/* Placeholder of HS Tariff Number row in Package Content section in Customs screen of Shipping Label flow */
+"Enter number (Optional)" = "Ange nummer (valfritt)";
 
 /* Enter password placeholder in Product Visibility */
 "Enter password" = "Ange lösenord";
@@ -1054,6 +1131,9 @@
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "Skriv in ditt lösenord istället.";
+
+/* Envelope package type, used to create a custom package in the Shipping Label flow */
+"Envelope" = "Kuvert";
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Det gick inte att hitta adressen i Apple Maps";
@@ -1106,6 +1186,9 @@
    Title of the cell in Product Downloadable File URL > File URL */
 "File URL" = "Filens webbadress";
 
+/* Subtitle of the cell Customs inside Create Shipping Label form */
+"Fill out customs form" = "Fyll i tullformulär";
+
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "Fyll i med lösenordshanteraren";
 
@@ -1130,6 +1213,12 @@
 
 /* The hint button's title text to help users find their store address. */
 "Find your store address" = "Hitta din butiksadress";
+
+/* Button to set up the WooCommerce Payments plugin after installing it */
+"Finish Setup in Store Admin" = "Slutför konfigurationen i adminpanelen för din butik";
+
+/* Title for the error screen when WooCommerce Payments is installed but not set up */
+"Finish setup WooCommerce Payments in your store admin" = "Slutför konfigurationen av WooCommerce Payments i adminpanelen för din butik";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Follow your favorite sites and discover new blogs." = "Följ dina favoritwebbplatser och upptäck nya bloggar.";
@@ -1174,6 +1263,9 @@
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "Hämtar kontoinformation";
 
+/* Type Gift of content to be declared for the customs form in Shipping Label flow */
+"Gift" = "Gåva";
+
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    The title of the button to give feedback about shipping labels features on the banner in order details - Title of the button to give feedback about the add-ons feature - Title on the navigation bar for the products feedback survey */
 "Give feedback" = "Ge feedback";
@@ -1202,6 +1294,12 @@
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "HUR KAN VI HJÄLPA TILL?";
+
+/* Title of HS Tariff Number row in Package Content section in Customs screen of Shipping Label flow */
+"HS Tariff Number" = "HS-tariffnummer";
+
+/* Validation error for HS Tariff Number row in Customs screen of Shipping Label flow */
+"HS Tariff Number must be 6 digits long" = "HS-tariffnumret måste vara 6 siffror långt";
 
 /* Accessibility label for HTML button on formatting toolbar.
    HTML Attachment Label */
@@ -1246,7 +1344,8 @@
 /* H6 Aztec Style */
 "Heading 6" = "Rubrik 6";
 
-/* Title of the cell in Product Shipping Settings > Height */
+/* Title for the row to enter the package height on the Add New Custom Package screen in Shipping Label flow
+   Title of the cell in Product Shipping Settings > Height */
 "Height" = "Höjd";
 
 /* Help and Support navigation title
@@ -1274,6 +1373,15 @@
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "POSTER ATT SLUTFÖRA";
+
+/* Title for the ITN row in Customs screen of Shipping Label flow */
+"ITN" = "ITN";
+
+/* Error message for missing ITN for destination country inCustoms screen of Shipping Label flow. The placeholder is the destination country. */
+"ITN is required for shipments to %1$@" = "ITN krävs för försändelser till %1$@";
+
+/* Error message for missing ITN for tariff number valued over $2,500 inCustoms screen of Shipping Label flow */
+"ITN is required for shipping items valued over $2,500 per tariff number" = "ITN krävs för frakt av artiklar till ett värde som överstiger 2 500 USD per tariffnummer";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Om detta inaktiveras kommer noteringen att vara privat";
@@ -1313,8 +1421,12 @@
    Title for the In-Person Payments settings screen */
 "In-Person Payments" = "Personliga betalningar";
 
-/* Title for the error screen when In-Person Payments is unavailable */
+/* Title for the error screen when In-Person Payments is unavailable
+   Title for the error screen when the Stripe account is restricted because it's under reviw - Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
 "In-Person Payments is currently unavailable" = "Personliga betalningar är för närvarande inte tillgängliga";
+
+/* Title for the error screen when the Stripe account rejected. */
+"In-Person Payments isn't available for this store" = "Personliga betalningar är inte tillgängliga för den här butiken";
 
 /* Application's Inactive State */
 "Inactive" = "Inaktiv";
@@ -1349,8 +1461,14 @@
 /* Accessibility label for insert link button on formatting toolbar. */
 "Insert Link" = "Infoga länk";
 
+/* Title for the error screen when WooCommerce Payments is not installed */
+"Install WooCommerce Payments" = "Installera WooCommerce Payments";
+
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates */
 "Insurance (up to %1$@)" = "Försäkring (upp till %1$@)";
+
+/* Error message for invalid format of ITN in Customs screen of Shipping Label flow */
+"Invalid ITN format" = "Ogiltigt ITN-format";
 
 /* The title of the alert when there is an error updating the product SKU */
 "Invalid Product SKU" = "Ogiltigt artikelnummer";
@@ -1398,6 +1516,15 @@
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "Kursiv";
 
+/* Error message for missing value in Description row in Customs screen of Shipping Label flow */
+"Item description is required" = "Artikelbeskrivning krävs";
+
+/* Error message for missing value in Value row in Customs screen of Shipping Label flow */
+"Item value must be larger than 0" = "Artikelvärdet måste överstiga 0";
+
+/* Error message for missing value in Weight row in Customs screen of Shipping Label flow */
+"Item weight must be larger than 0" = "Artikelvikten måste överstiga 0";
+
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack är ett gratis WordPress-tillägg som ansluter din butik till de verktyg som behövs för att ge dig den bästa möjliga mobilupplevelsen, inklusive pushmeddelanden och statistik";
 
@@ -1433,7 +1560,7 @@
 "Learn more about Jetpack" = "Läs mer om Jetpack";
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
-"Learn more about creating labels with your phone" = "Lär dig mer om att skapa etiketter med din telefon";
+"Learn more about creating labels with your mobile device" = "Läs mer om att skapa etiketter med din mobila enhet";
 
 /* Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
 "Learn more about roles and permissions" = "Lär dig mer om roller och behörigheter";
@@ -1441,7 +1568,8 @@
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal (8,5 x 14 tum)";
 
-/* Title of the cell in Product Shipping Settings > Length */
+/* Title for the row to enter the package length on the Add New Custom Package screen in Shipping Label flow
+   Title of the cell in Product Shipping Settings > Length */
 "Length" = "Längd";
 
 /* Title of letter paper size option for printing a shipping label */
@@ -1545,8 +1673,11 @@
 "Make your products easier to find with tags" = "Gör dina produkter lättare att hitta med etiketter";
 
 /* Card reader settings screen title
-   Navigates to Card Reader management screen - Settings > Manage Card Reader > Title for the no-reader-connected screen in settings. - Settings > Manage Card Reader > Title for the reader connected screen in settings. */
+   Settings > Manage Card Reader > Title for the no-reader-connected screen in settings. - Settings > Manage Card Reader > Title for the reader connected screen in settings. */
 "Manage Card Reader" = "Hantera kortläsare";
+
+/* Navigates to Card Reader management screen */
+"Manage card reader" = "Hantera kortläsare";
 
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "Hantera lager";
@@ -1592,6 +1723,9 @@
 /* Placeholder in the Product Menu Order row on Edit Product Menu Order screen. */
 "Menu order" = "Menysortering";
 
+/* Type Merchandise of content to be declared for the customs form in Shipping Label flow */
+"Merchandise" = "Handelsvaror";
+
 /* Message phone number button title */
 "Message" = "Meddelande";
 
@@ -1627,8 +1761,7 @@
 /* My Tickets title */
 "My Tickets" = "Mina ärenden";
 
-/* My Store Notice Title for loading error
-   Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
+/* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
 "My store" = "Min butik";
 
 /* Name text field placeholder
@@ -1654,7 +1787,8 @@
    Title of the more help button on alert helping users understand their site address */
 "Need more help?" = "Behöver du mer hjälp?";
 
-/* Text preceding the Contact Us button in the survey completed screen */
+/* Text preceding the Contact Us button in the error screen for In-Person payments
+   Text preceding the Contact Us button in the survey completed screen */
 "Need some help?" = "Behöver du hjälp?";
 
 /* The title for the net amount paid cell */
@@ -1679,6 +1813,9 @@
 /* Order details > customer info > billing information. This is where the address would normally display.
    Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "Ingen adress angiven.";
+
+/* Title for the error screen when there was a network error checking In-Person Payments requirements. */
+"No connection" = "Ingen anslutning";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Inga data tillgängliga";
@@ -1728,7 +1865,7 @@
 "No thanks" = "Nej tack";
 
 /* Display label for the order fee's tax status setting option
-   Display label for the product's tax status setting option */
+   Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow */
 "None" = "Ingen";
 
 /* Instructions after a Magic Link was sent, but the email can't be found in their inbox. */
@@ -1806,7 +1943,7 @@
 "Option name" = "Namn på alternativ";
 
 /* Add Product Category. Placeholder of cell presenting the parent category.
-   Placeholder of the cell text field in Product Inventory Settings > SKU - Text field placeholder in Shipping Label Address Validation */
+   Placeholder of the cell text field in Product Inventory Settings > SKU - Text field placeholder in Shipping Label Address Validation - Text field placeholder in Shipping Label Address Validation when specified country has no state */
 "Optional" = "Valfritt";
 
 /* No comment provided by engineer. */
@@ -1839,6 +1976,9 @@
    Order Total label for payment view */
 "Order Total" = "Totalsumma";
 
+/* Navigates to Card Reader ordering screen */
+"Order card reader" = "Beställ kortläsare";
+
 /* Order status update success notice */
 "Order status updated" = "Orderstatus uppdaterad";
 
@@ -1852,7 +1992,14 @@
 /* Subtitle of the product form bottom sheet action for editing categories. */
 "Organise your products into related groups" = "Organisera dina produkter i relaterade grupper";
 
-/* My Store > Settings > Other app section */
+/* Title for the Origin Country row in Customs screen of Shipping Label flow */
+"Origin Country" = "Ursprungsland";
+
+/* Error message for missing value in Origin Country row in Customs screen of Shipping Label flow */
+"Origin Country is required" = "Ursprungsland är obligatoriskt";
+
+/* My Store > Settings > Other app section
+   Restriction type Other for contents declared in the customs form for Shipping Label flow - Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "Andra";
 
 /* Display label for the product's inventory stock status */
@@ -1864,19 +2011,29 @@
 /* Product section title */
 "PRODUCT" = "PRODUKT";
 
-/* Package term in Shipping Labels. Reads like Package 1 */
+/* Package index in Customs screen of Shipping Label flow
+   Package term in Shipping Labels. Reads like Package 1 */
 "Package %1$d" = "Packet %1$d";
 
 /* Order shipping label package section title format. The number indicates the index of the shipping label package. */
 "Package %d" = "Förpackning %d";
 
+/* Title of Package Content section in Customs screen of Shipping Label flow */
+"Package Content" = "Paketinnehåll";
+
 /* Navigation bar title of shipping label package details screen
    Title of package details in shipping label details - Title of the cell Package Details inside Create Shipping Label form */
 "Package Details" = "Förpackningsinformation";
 
+/* Title for the row to enter the package name on the Add New Custom Package screen in Shipping Label flow */
+"Package Name" = "Pakettyp";
+
 /* Package Selected screen title in Shipping Label flow
    Title of the row for selecting a package in Shipping Label Package Detail screen */
 "Package Selected" = "Vald förpackning";
+
+/* Title for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
+"Package Type" = "Pakettyp";
 
 /* The title for the customer payment cell */
 "Paid" = "Betald";
@@ -1942,6 +2099,12 @@
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "Placerar din produkt i papperskorgen …";
 
+/* Error message for missing explanation when Content Typeis Other in Customs screen of Shipping Label flow */
+"Please describe what kind of goods this package contains" = "Beskriv vilken typ av gods detta paket innehåller";
+
+/* Error message for missing comments when Restriction Typeis Other in Customs screen of Shipping Label flow */
+"Please describe what kind of restrictions this package must have" = "Beskriv vilken typ av begränsningar detta paket måste ha";
+
 /* Error state description in shipping label carrier and rates screen */
 "Please double check your package dimensions and weight or try using a different package in Package Details." = "Dubbelkolla måtten eller vikten på ditt paket eller prova att använda ett annat paket i Paketinformation.";
 
@@ -1950,6 +2113,9 @@
 
 /* Error message shown when a URL is invalid. */
 "Please enter a complete website address, like example.com." = "Ange en fullständig webbplatsadress som example.com.";
+
+/* Product price error notice message, when the sale price was not set during a sale setup */
+"Please enter a sale price for the scheduled sale" = "Ange ett reapris för den schemalagda rean";
 
 /* No comment provided by engineer. */
 "Please enter a site address." = "Ange en webbplatsadress.";
@@ -1996,8 +2162,11 @@
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "Försök igen.";
 
+/* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
+"Please update your reader software to keep accepting payments" = "Uppdatera din läsares programvara för att fortsätta ta emot betalningar";
+
 /* Message of in-progress modal when requesting shipping label document for printing
-   Message of the in-progress UI while purchasing a shipping label - Text on the loading view of the survey screen indicating the user to wait */
+   Message of the in-progress UI while purchasing a shipping label - Message when checking if WooCommerce Payments is supported - Text on the loading view of the survey screen indicating the user to wait */
 "Please wait" = "Vänta";
 
 /* Instructions for the progress screen while generating a variation */
@@ -2045,7 +2214,7 @@
 "Print Shipping Label" = "Skriv ut fraktetikett";
 
 /* Navigation bar title of shipping label printing instructions screen */
-"Print from your Phone" = "Skriv ut från din telefon";
+"Print from your mobile device" = "Skriv ut från din mobila enhet";
 
 /* Button to print receipts. Presented to users after a payment has been successfully collected */
 "Print receipt" = "Skriv ut kvitto";
@@ -2110,6 +2279,9 @@
 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "Produktlänk";
+
+/* Title of the alert when a user is saving a product */
+"Product saved" = "Produkt sparad";
 
 /* Title of the Product Type row on Product main screen */
 "Product type" = "Produkttyp";
@@ -2181,6 +2353,12 @@
 /* Format of the stock quantity on the Inventory Settings row */
 "Quantity: %@" = "Antal: %@";
 
+/* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
+"Quarantine" = "Karantän";
+
+/* Subtitle for Contact WooCommerce Payments Support */
+"Reach our happiness engineers who can help answer payments related questions" = "Kontakta våra supporttekniker för att få svar på frågor rörande betalningar";
+
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Kontakta våra supporttekniker för att få svar på svåra frågor";
 
@@ -2201,6 +2379,15 @@
 
 /* The title of the view containing a receipt preview */
 "Receipt" = "Kvitto";
+
+/* Button to reload plugin data after activating the WooCommerce Payments plugin */
+"Refresh After Activating" = "Uppdatera efter aktivering";
+
+/* Button to reload plugin data after installing the WooCommerce Payments plugin */
+"Refresh After Installing" = "Uppdatera efter installation";
+
+/* Button to reload plugin data after updating the WooCommerce Payments plugin */
+"Refresh After Updating" = "Uppdatera efter uppdatering";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "Återbetalning";
@@ -2287,7 +2474,8 @@
    Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "Begär en återbetalning";
 
-/* Text field placeholder in Shipping Label Address Validation */
+/* Text field placeholder in Shipping Label Address Validation
+   Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "Obligatoriskt";
 
 /* Deletes all activity logs except for the marked 'Current'. */
@@ -2296,6 +2484,12 @@
 /* The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "Återställ ditt lösenord";
 
+/* Title for the Restriction Details row in Customs screen of Shipping Label flow */
+"Restriction Details" = "Begränsningsdetaljer";
+
+/* Title for the Restriction Type row in Customs screen of Shipping Label flow */
+"Restriction Type" = "Begränsningstyp";
+
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "Hämtar en lista på ordrar som innehåller ett visst nyckelord.";
 
@@ -2303,8 +2497,11 @@
 "Retrieves a list of products that contain a given keyword." = "Hämtar en lista på produkter som innehåller ett visst nyckelord.";
 
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
-   Retry Action - Retry the last action */
+   Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry the last action */
 "Retry" = "Försök igen";
+
+/* Title for the return policy in Customs screen of Shipping Label flow */
+"Return to sender if package is unable to be delivered" = "Returnera till avsändare om paketet inte kan levereras";
 
 /* Revenue stat label on dashboard. */
 "Revenue" = "Inkomster";
@@ -2352,6 +2549,12 @@
 
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "Reapris: %@";
+
+/* Type Sample of content to be declared for the customs form in Shipping Label flow */
+"Sample" = "Prov";
+
+/* Restriction type Sanitary / Phytosanitary Inspection for contents declared in the customs form for Shipping Label flow */
+"Sanitary \/ Phytosanitary Inspection" = "Sanitär\/fytosanitär inspektion";
 
 /* Action for saving a Product remotely
    Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. */
@@ -2429,6 +2632,12 @@
 /* Page title for the select a different store screen */
 "Select Store" = "Välj butik";
 
+/* Placeholder for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
+"Select Type" = "Välj typ";
+
+/* Placeholder for the selected package in the Shipping Labels Package Details screen */
+"Select a package" = "Välj ett paket";
+
 /* Message title of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "Välj en produkttyp";
 
@@ -2465,8 +2674,14 @@
 /* The button title text for sending a magic link. */
 "Send Link by Email" = "Skicka länk via e-post";
 
+/* Service Package menu in Shipping Label Add New Package flow */
+"Service Package" = "Tjänstepaket";
+
 /* Tells user to set an email that support can use for replies */
 "Set email" = "Ställ in e-post";
+
+/* Header text on Add New Custom Package screen in Shipping Label flow */
+"Set up the package you'll be using to ship your products. We'll save it for future orders." = "Konfigurera paketet som du kommer att använda för att skicka dina produkter. Vi kommer att spara den för framtida beställningar.";
 
 /* Accessibility label for the Settings button.
    Settings navigation title */
@@ -2919,6 +3134,12 @@
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "Det finns ingen gilitg värd för webbadressen.";
 
+/* Error message when WooCommerce Payments is not activated */
+"The WooCommerce Payments extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "Utökningen WooCommerce Payments är installerad för din butik, men den har inte aktiverats. Aktivera den för att ta emot personliga betalningar";
+
+/* Error message when WooCommerce Payments is installed but the version is not supported */
+"The WooCommerce Payments extension is installed on your store, but the installed version does not support In-Person Payments. Please update WooCommerce Payments to the most recent version." = "Utökningen WooCommerce Payments är installerad för din butik, men den installerade versionen stöder inte personliga betalningar. Uppdatera WooCommerce Payments till den senaste versionen.";
+
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "Attributet kunde inte tas bort.";
 
@@ -2978,6 +3199,15 @@
 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "Variationen kunde inte genereras.";
+
+/* Error message when the Stripe account is restricted because there are pending requirements */
+"There are pending requirements in your account. Please complete those requirements by" = "Det finns krav som inväntar granskning i ditt konto. Slutför dessa krav senast den";
+
+/* Error message when WooCommerce Payments is not supported because there are pending requirements in the Stripe account.%1$d will contain the localized deadline (e.g. August 11, 2021) */
+"There are pending requirements in your account. Please complete those requirements by %1$@ to keep accepting in-Person Payments." = "Det finns krav som inväntar granskning i ditt konto. Slutför dessa krav senast den %1$@ för att fortsätta ta emot personliga betalningar.";
+
+/* Error message when WooCommerce Payments is not supportedThere are pending requirements in the Stripe account (without a known deadline) */
+"There are pending requirements in your account. Please complete those requirements to keep accepting in-Person Payments." = "Det finns krav som inväntar granskning i ditt konto. Slutför dessa krav för att fortsätta ta emot personliga betalningar.";
 
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "Det gick inte att blockera inlägg från angiven webbplats.";
@@ -3166,6 +3396,12 @@
 /* Settings > Manage Card Reader > Connect > Hint to enable Bluetooth */
 "Turn mobile device Bluetooth on" = "Aktivera Bluetooth på den mobila enheten";
 
+/* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
+"Type of contents" = "Typ av innehåll";
+
+/* Placeholder for the Restriction Details row in Customs screen of Shipping Label flow */
+"Type of restriction" = "Typ av begränsning";
+
 /* Navigation bar title for editing the URL of a text link
    URL text field placeholder */
 "URL" = "URL";
@@ -3200,9 +3436,6 @@
 /* Load Product Categories Action Failed */
 "Unable to load categories" = "Kan inte ladda kategorier";
 
-/* Load Action Failed */
-"Unable to load content" = "Det gick inte att ladda innehållet";
-
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "Det gick inte att läsa in produktattributen";
 
@@ -3223,6 +3456,9 @@
 
 /* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
 "Unable to successfully connect to %@" = "Det går inte att ansluta till %@";
+
+/* Title for the error screen when In-Person Payments is unavailable */
+"Unable to verify In-Person Payments for this store" = "Det gick inte att verifiera personliga betalningar för den här butiken.";
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "Kunde inte verifiera e-postadressen. Försök igen senare.";
@@ -3264,6 +3500,9 @@
 /* Display label for the review's unspam status */
 "Unspam" = "Avmarkera skräppost";
 
+/* Title for the error screen when the installed version of WooCommerce Payments is unsupported */
+"Unsupported WooCommerce Payments version" = "WooCommerce Payments-versionen stöds inte";
+
 /* Display label for the review's untrash status */
 "Untrash" = "Återställ";
 
@@ -3285,6 +3524,9 @@
 
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "Uppdatera orderstatus";
+
+/* Settings > Manage Card Reader > Connected Reader > A button to update the reader software */
+"Update Reader Software" = "Uppdatera läsarens programvara";
 
 /* Subtitle of the product form bottom sheet action for editing inventory settings. */
 "Update product inventory and SKU" = "Uppdatera produktinventering och SKU";
@@ -3337,6 +3579,9 @@
 
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "Användarnamnet måste vara minst 4 tecken långt.";
+
+/* Title for the Value row in item details in Customs screen of Shipping Label flow */
+"Value (%1$@ per unit)" = "Värde (%1$@ per enhet)";
 
 /* Display label for variable product type. */
 "Variable" = "Variabel";
@@ -3433,6 +3678,9 @@
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Watch your audience grow with in-depth analytics." = "Se din publik växa med hjälp av djupgående analys.";
 
+/* Error message when WooCommerce Payments is not supported because the Stripe account has been rejected */
+"We are sorry but we can't support In-Person Payments for this store." = "Tyvärr kan vi inte erbjuda personliga betalningar för den här butiken.";
+
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "Vi arbetar på att göra det enklare för dig att se produkttillägg från din enhet! För tillfället kan du endast se tilläggen för dina beställningar. Du kan skapa och redigera dessa tillägg i din webbadminpanel.";
 
@@ -3441,6 +3689,12 @@
 
 /* The title of the Error Loading Data banner */
 "We couldn't load your data" = "Vi kunde inte ladda dina data";
+
+/* Title for the error screen when WooCommerce Payments is not supported in a specific country */
+"We don’t support In-Person Payments in %@" = "Vi stöder inte personliga betalningar i %@";
+
+/* Title for the error screen when WooCommerce Payments is not supported because we don't know the name of the country */
+"We don’t support In-Person Payments in your country" = "Vi stöder inte personliga betalningar i ditt land";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "Vi har ändrat den adress du angav något. Använd den föreslagna adressen om den stämmer för att försäkra korrekt leverans.";
@@ -3488,11 +3742,20 @@
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "Vi kunde inte hitta resultat för ”%@”";
 
+/* Generic error message when In-Person Payments is unavailable */
+"We're sorry, we were unable to verify In-Person Payments for this store." = "Vi kunde inte verifiera personliga betalningar för den här butiken.";
+
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Vi har skickat en registreringslänk till dig via e-post, så att du kan skapa ditt nya WordPress.com-konto. Kontrollera din e-post på den här enheten och tryck på länken i e-postmeddelandet som du får från WordPress.com.";
 
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "Vikt";
+
+/* Title for the Weight row in item details in Customs screen of Shipping Label flow */
+"Weight (%1$@ per unit)" = "Vikt (%1$@ per enhet)";
+
+/* Footer text for the empty package weight on the Add New Custom Package screen in Shipping Label flow */
+"Weight of empty package" = "Vikt för tomt paket";
 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "Vikt: %1$@%2$@";
@@ -3522,7 +3785,8 @@
 /* Error message shown when an incorrect two factor code is provided. */
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "Ojdå. Den där var ingen giltig bekräftelsekod för tvåfaktorautentisering. Dubbelkolla koden och försök en gång till!";
 
-/* Title of the cell in Product Shipping Settings > Width */
+/* Title for the row to enter the package width on the Add New Custom Package screen in Shipping Label flow
+   Title of the cell in Product Shipping Settings > Width */
 "Width" = "Bredd";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
@@ -3574,17 +3838,27 @@
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "Du kan begära en återbetalning för en fraktetikett som inte har använts för att skicka ett paket.\nDen kommer att ta minst 14 dagar att behandla.";
 
-/* Generic error message when In-Person Payments is unavailable */
+/* Error message when WooCommerce Payments is not supported in a specific country
+   Generic error message when In-Person Payments is unavailable */
 "You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "Du kan fortfarande ta emot personliga kontanta betalningar genom att aktivera betalningsmetoden \"Postförskott\" i din butik.";
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "Du kan inte använda den e-postadressen för att skapa ett konto. Vi har problem med att den e-posttjänsten ibland blockerar vår e-post. Vänligen använd en annan e-posttjänst.";
+
+/* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
+"You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "Du har minst ett försenat krav i ditt konto. Ta hand om det för att återuppta personliga betalningar.";
 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "Du måste lägga till ett lösenord för att göra produkten lösenordsskyddad";
 
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Det verkar som att du har installerat ett mobiltillägg från DudaMobile som förhindrar att appen ansluter till din blogg";
+
+/* Error message when WooCommerce Payments is not supported because the Stripe account is under review */
+"You'll be able to accept In-Person Payments as soon as we finish reviewing your account." = "Du kommer att kunna ta emot personliga betalningar så snart vi har slutfört granskningen av ditt konto.";
+
+/* Title for the error screen when the Stripe account is restricted because there are pending requirements */
+"Your WooCommerce Payments account has pending requirements" = "Ditt WooCommerce Payments-konto har krav som inväntar granskning";
 
 /* shown in promotional screens during first launch */
 "Your notifications travel with you — see comments and likes as they happen." = "Dina notifikationer följer med dig – du får veta direkt om någon kommenterar eller gillar.";
@@ -3597,6 +3871,12 @@
 
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "Adressen till din webbplats visas i fältet överst på skärmen när du besöker din webbplats i Safari.";
+
+/* Error message when WooCommerce Payments is not installed */
+"You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "Du måste installera den kostnadsfria utökningen WooCommerce Payments för din butik för att ta emot personliga betalningar.";
+
+/* Error message when WooCommerce Payments is installed but not set up */
+"You’re almost there! Please finish setting up WooCommerce Payments to start accepting Card-Present Payments." = "Du är nästan framme! Slutför konfigurationen av WooCommerce Payments för att börja ta emot kortbetalningar.";
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[COMMENT]";

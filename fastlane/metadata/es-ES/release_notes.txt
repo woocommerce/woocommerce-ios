@@ -1,5 +1,3 @@
-Los vendedores de EE. UU. que deseen crear etiquetas de envío para los clientes de ese país encontrarán varias mejoras menores. Si aún no imprimes etiquetas desde la aplicación, lo primero que tienes que hacer es instalar la extensión WooCommerce Shipping & Tax en tu sitio.
+Esta versión incluye unas cuantas minimejoras para que la experiencia sea más fluida. En los detalles del pedido, algunas extensiones de terceros no mostraban lógicamente los metadatos del producto. Hemos hecho cambios para mejorar la visualización de esos detalles del producto. Ahora el botón de reembolso del pedido se oculta cuando el importe total es cero.
 
-También hemos comprobado cómo se ve la aplicación en pantallas de diferentes tamaños y tipos de teléfono. Hemos corregido un montón de problemas de visualización menores pero significativos, especialmente notables en el iPad.
-
-Como siempre, agradecemos tus comentarios sobre la aplicación. Puedes contactar con nosotros a través de la aplicación, en la pestaña "Mi tienda".
+Esta actualización también incluye varias mejoras en la función de etiquetas de envío mediante la extensión WooCommerce Shipping & Tax. Apreciamos todos vuestros comentarios sobre esta nueva función.

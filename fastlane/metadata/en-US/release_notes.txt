@@ -1,5 +1,3 @@
-Merchants in the US wanting to create shipping labels for their US customers will find several minor improvements. If you’re not already printing labels from the app, start by installing the WooCommerce Shipping & Tax extension on your site.
+This release contains a handful of minor improvements to make your experience smoother. In order details, some third-party extensions were not logically showing product metadata. We’ve made some changes to improve the display of those product details. We now are hiding the refund order button when the total amount is zero.
 
-We also took a look at how the app looked on different screen sizes and phone types. We corrected a bunch of minor but meaningful visual issues, especially noticeable on iPads.
-
-As always, we welcome your feedback about the app. Reach out to us through the app under Settings in the My store tab.
+This update also includes several enhancements to the shipping label feature using the WooCommerce Shipping & Tax Extension. We value all of your feedback on this newer feature!

@@ -46,9 +46,11 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var isEligibleForCardPresentPayment: Bool {
         return isOrderAmountEligibleForCardPayment() &&
+            isOrderCurrencyEligibleForCardPayment() &&
             isOrderStatusEligibleForCardPayment() &&
             isOrderPaymentMethodEligibleForCardPayment() &&
-            hasCardPresentEligiblePaymentGatewayAccount()
+            hasCardPresentEligiblePaymentGatewayAccount() &&
+            !orderContainsAnySubscription()
     }
 
     /// Whether the button to create shipping labels should be visible.
@@ -195,7 +197,7 @@ final class OrderDetailsDataSource: NSObject {
     /// Indicates if the order editing feature is enabled or not
     /// Allows editing notes, shipping & billing addresses.
     ///
-    private let orderEditingEnabled: Bool
+    let orderEditingEnabled: Bool
 
     init(order: Order,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -377,9 +379,9 @@ private extension OrderDetailsDataSource {
         cell.body = customerNote.isNotEmpty ? localizedBody : " "
         cell.selectionStyle = .none
 
-        cell.onEditTapped = orderEditingEnabled ? { [weak self] in
+        cell.onEditTapped = { [weak self] in
             self?.onCellAction?(.editCustomerNote, nil)
-        } : nil
+        }
     }
 
     private func configureBillingDetail(cell: WooBasicTableViewCell) {
@@ -788,6 +790,10 @@ private extension OrderDetailsDataSource {
                 comment: "Order details > customer info > shipping details. " +
                 "This is where the address would normally display."
         )
+
+        cell.onEditTapped = orderEditingEnabled ? { [weak self] in
+            self?.onCellAction?(.editShippingAddress, nil)
+        } : nil
     }
 
     private func configureShippingMethod(cell: CustomerNoteTableViewCell) {
@@ -949,10 +955,8 @@ extension OrderDetailsDataSource {
         let customerInformation: Section = {
             var rows: [Row] = []
 
-            /// After `.orderEditing` is completed, this row should always be visible to let merchants update the customer note as required.
-            if orderEditingEnabled || customerNote.isEmpty == false {
-                rows.append(.customerNote)
-            }
+            /// Always visible to allow editing.
+            rows.append(.customerNote)
 
             let orderContainsOnlyVirtualProducts = self.products.filter { (product) -> Bool in
                 return items.first(where: { $0.productID == product.productID}) != nil
@@ -1432,6 +1436,7 @@ extension OrderDetailsDataSource {
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)
         case viewAddOns(addOns: [OrderItemAttribute])
         case editCustomerNote
+        case editShippingAddress
     }
 
     struct Constants {
@@ -1463,6 +1468,10 @@ private extension OrderDetailsDataSource {
         return !paymentViewModel.hasBeenPartiallyCharged
     }
 
+    func isOrderCurrencyEligibleForCardPayment() -> Bool {
+        CurrencySettings.CurrencyCode(rawValue: order.currency) == .USD
+    }
+
     func isOrderStatusEligibleForCardPayment() -> Bool {
         (order.status == .pending || order.status == .onHold || order.status == .processing)
     }
@@ -1474,6 +1483,12 @@ private extension OrderDetailsDataSource {
 
     func hasCardPresentEligiblePaymentGatewayAccount() -> Bool {
         resultsControllers.paymentGatewayAccounts.contains(where: \.isCardPresentEligible)
+    }
+
+    func orderContainsAnySubscription() -> Bool {
+        order.items.contains { item in
+            lookUpProduct(by: item.productID)?.productType == .subscription
+        }
     }
 }
 

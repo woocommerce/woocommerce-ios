@@ -930,7 +930,8 @@ extension ShippingLabel {
             originAddress: .fake(),
             destinationAddress: .fake(),
             productIDs: .fake(),
-            productNames: .fake()
+            productNames: .fake(),
+            commercialInvoiceURL: .fake()
         )
     }
 }
@@ -1140,7 +1141,8 @@ extension ShippingLabelPackagesResponse {
         .init(
             storeOptions: .fake(),
             customPackages: .fake(),
-            predefinedOptions: .fake()
+            predefinedOptions: .fake(),
+            unactivatedPredefinedOptions: .fake()
         )
     }
 }

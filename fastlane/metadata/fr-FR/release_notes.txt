@@ -1,5 +1,3 @@
-Les commerçants basés aux États-Unis qui souhaitent créer des étiquettes d’expédition pour leurs clients résidant aux États-Unis trouveront quelques petites améliorations. Si vous n’imprimez pas déjà vos étiquettes à partir de l’application, installez tout d’abord l’extension WooCommerce Shipping & Tax sur votre site.
+Cette version contient quelques améliorations mineures qui rendent votre expérience plus fluide. Dans les détails de la commande, certaines extensions tierces n’affichaient pas logiquement les métadonnées de produits. Nous avons apporté quelques modifications pour améliorer l’affichage des détails de ces produits. Nous masquons désormais le bouton de remboursement de commande lorsque le montant total est égal à zéro.
 
-Nous avons également contrôlé l’apparence de l’application sur différentes tailles d’écran et différents types de téléphones. Nous avons corrigé certains problèmes visuels mineurs, mais ennuyeux, particulièrement visibles sur iPad.
-
-Comme toujours, n’hésitez pas à nous faire part de vos remarques sur l’application. Contactez-nous par le biais de cette dernière, à la section Réglages de l’onglet Ma boutique.
+Cette mise à jour inclut également plusieurs améliorations à la fonctionnalité d’étiquette d’expédition utilisant l’extension WooCommerce Shipping & Tax. Nous apprécions tous vos commentaires sur cette nouvelle fonctionnalité !

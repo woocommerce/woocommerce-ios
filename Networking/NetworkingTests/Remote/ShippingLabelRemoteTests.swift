@@ -36,6 +36,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
         let response = try XCTUnwrap(result.get())
         XCTAssertEqual(response.settings, .init(siteID: sampleSiteID, orderID: orderID, paperSize: .label))
         XCTAssertEqual(response.shippingLabels.count, 2)
+        XCTAssertNotNil(response.shippingLabels.first?.commercialInvoiceURL)
     }
 
     func test_printShippingLabel_returns_ShippingLabelPrintData() throws {
@@ -481,7 +482,7 @@ private extension ShippingLabelRemoteTests {
 
     func sampleShippingLabelCarrierRate() -> ShippingLabelCarrierRate {
         let rate = ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
-                                            insurance: 0,
+                                            insurance: "0",
                                             retailRate: 40.060000000000002,
                                             rate: 40.060000000000002,
                                             rateID: "rate_a8a29d5f34984722942f466c30ea27ef",

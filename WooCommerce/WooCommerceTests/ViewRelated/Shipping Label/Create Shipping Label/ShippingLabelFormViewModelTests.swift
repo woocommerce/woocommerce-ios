@@ -218,7 +218,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
 
         shippingLabelFormViewModel.handleOriginAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(phone: "0123456789", country: "US"),
                                                                    validated: true)
-        shippingLabelFormViewModel.handleDestinationAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(country: "VN"), validated: true)
+        shippingLabelFormViewModel.handleDestinationAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(phone: "0987654321", country: "VN"),
+                                                                        validated: true)
         shippingLabelFormViewModel.handleCustomsFormsValueChanges(customsForms: [ShippingLabelCustomsForm.fake()], isValidated: true)
         shippingLabelFormViewModel.handleCarrierAndRatesValueChanges(selectedRate: MockShippingLabelCarrierRate.makeRate(),
                                                                      selectedSignatureRate: nil,
@@ -361,13 +362,15 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertEqual(updatedRows?[2].displayMode, .editable)
     }
 
-    func test_validateAddress_returns_validation_error_when_missing_name() {
+    func test_validateAddress_returns_validation_error_when_missing_name_without_triggering_action() {
         // Given
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
         let expectedValidationError = ShippingLabelAddressValidationError(addressError: nil, generalError: "Name is required")
         let originAddress = Address.fake()
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
                                                                     originAddress: originAddress,
-                                                                    destinationAddress: nil)
+                                                                    destinationAddress: nil,
+                                                                    stores: storesManager)
 
         // When
         shippingLabelFormViewModel.validateAddress(type: .origin) { validationState, validationSuccess in
@@ -377,6 +380,55 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
             }
             XCTAssertEqual(error, expectedValidationError)
         }
+
+        // Then
+        let triggeredValidateAddressAction: Bool = {
+            var triggered = false
+            for action in storesManager.receivedActions {
+                if case ShippingLabelAction.validateAddress = action {
+                    triggered = true
+                    break
+                }
+            }
+            return triggered
+        }()
+        XCTAssertFalse(triggeredValidateAddressAction)
+    }
+
+    func test_validateAddress_triggers_validate_action_when_name_is_not_missing() {
+        // Given
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        let originAddress = Address(firstName: "Lorem",
+                                    lastName: "Ipsum",
+                                    company: nil,
+                                    address1: "",
+                                    address2: nil,
+                                    city: "",
+                                    state: "",
+                                    postcode: "",
+                                    country: "",
+                                    phone: nil,
+                                    email: nil)
+        let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                                    originAddress: originAddress,
+                                                                    destinationAddress: nil,
+                                                                    stores: storesManager)
+
+        // When
+        shippingLabelFormViewModel.validateAddress(type: .origin) { _, _ in }
+
+        // Then
+        let triggeredValidateAddressAction: Bool = {
+            var triggered = false
+            for action in storesManager.receivedActions {
+                if case ShippingLabelAction.validateAddress = action {
+                    triggered = true
+                    break
+                }
+            }
+            return triggered
+        }()
+        XCTAssertTrue(triggeredValidateAddressAction)
     }
 
     func test_handlePaymentMethodValueChanges_returns_updated_data_and_state_with_no_selected_payment_method() {
@@ -747,7 +799,35 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.state.sections.first?.rows.first(where: { $0.type == .customs }))
     }
 
-    func test_updateRowsForCustomsIfNeeded_updates_row_states_correctly() {
+    func test_updateRowsForCustomsIfNeeded_updates_row_states_correctly_when_phone_number_is_missing_in_both_origin_address_only() {
+        // Given
+        let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: nil, destinationAddress: nil)
+        viewModel.handleOriginAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(country: "US", state: "CA"), validated: true)
+        viewModel.handleDestinationAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(country: "US", state: "NY"), validated: true)
+
+        let rows = viewModel.state.sections.first?.rows
+        XCTAssertEqual(rows?[0].dataState, .validated)
+        XCTAssertEqual(rows?[0].displayMode, .editable)
+        XCTAssertEqual(rows?[1].dataState, .validated)
+        XCTAssertEqual(rows?[1].displayMode, .editable)
+        XCTAssertEqual(rows?[2].dataState, .pending)
+        XCTAssertEqual(rows?[2].displayMode, .editable)
+
+        // When
+        viewModel.handleDestinationAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(phone: "0987654321", country: "VN", state: ""),
+                                                       validated: true)
+
+        // Then
+        let updatedRows = viewModel.state.sections.first?.rows
+        XCTAssertEqual(updatedRows?[0].dataState, .pending)
+        XCTAssertEqual(updatedRows?[0].displayMode, .editable)
+        XCTAssertEqual(updatedRows?[1].dataState, .validated)
+        XCTAssertEqual(updatedRows?[1].displayMode, .editable)
+        XCTAssertEqual(updatedRows?[2].dataState, .pending)
+        XCTAssertEqual(updatedRows?[2].displayMode, .disabled)
+    }
+
+    func test_updateRowsForCustomsIfNeeded_updates_row_states_correctly_when_phone_number_is_missing_in_both_origin_and_destination_addresses() {
         // Given
         let viewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(), originAddress: nil, destinationAddress: nil)
         viewModel.handleOriginAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(country: "US", state: "CA"), validated: true)
@@ -768,8 +848,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         let updatedRows = viewModel.state.sections.first?.rows
         XCTAssertEqual(updatedRows?[0].dataState, .pending)
         XCTAssertEqual(updatedRows?[0].displayMode, .editable)
-        XCTAssertEqual(updatedRows?[1].dataState, .validated)
-        XCTAssertEqual(updatedRows?[1].displayMode, .editable)
+        XCTAssertEqual(updatedRows?[1].dataState, .pending)
+        XCTAssertEqual(updatedRows?[1].displayMode, .disabled)
         XCTAssertEqual(updatedRows?[2].dataState, .pending)
         XCTAssertEqual(updatedRows?[2].displayMode, .disabled)
     }

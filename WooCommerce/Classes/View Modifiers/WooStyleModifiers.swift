@@ -18,6 +18,15 @@ struct BodyStyle: ViewModifier {
     }
 }
 
+
+struct LargeTitleStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.largeTitle)
+            .foregroundColor(Color(.text))
+    }
+}
+
 struct SecondaryBodyStyle: ViewModifier {
     func body(content: Content) -> some View {
         content
@@ -80,6 +89,10 @@ extension View {
 
     func subheadlineStyle() -> some View {
         self.modifier(SubheadlineStyle())
+    }
+
+    func largeTitleStyle() -> some View {
+        self.modifier(LargeTitleStyle())
     }
 
     /// - Parameters:

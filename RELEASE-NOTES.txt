@@ -1,11 +1,20 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+7.5
+-----
+- [***] Merchants can now purchase shipping labels and declare customs forms for international orders. [https://github.com/woocommerce/woocommerce-ios/pull/4896]
+- [**] Merchants can now edit customer provided notes from orders. [https://github.com/woocommerce/woocommerce-ios/pull/4893]
+- [*] Fix empty states sometimes not centered vertically [https://github.com/woocommerce/woocommerce-ios/pull/4890]
+- [*] Fix error syncing products due to decoding failure of regular_price in product variations. [https://github.com/woocommerce/woocommerce-ios/pull/4901]
+- [*] Hide bottom bar on shipping label purchase form. [https://github.com/woocommerce/woocommerce-ios/pull/4902]
+
 7.4
 -----
 - [*] Fix an issue where some extension was not shown in order item details. [https://github.com/woocommerce/woocommerce-ios/pull/4753]
 - [*] Fix: The refund button within Order Details will be hidden if the refund is zero. [https://github.com/woocommerce/woocommerce-ios/pull/4789]
 - [*] Fix: Incorrect arrow direction for right-to-left languages on Shipping Label flow. [https://github.com/woocommerce/woocommerce-ios/pull/4796]
 - [*] Fix: Shouldn't be able to schedule a sale without sale price. [https://github.com/woocommerce/woocommerce-ios/pull/4825]
+- [*] Fix: Edit address screen is pushed twice in Shipping Label flow when missing name in origin or destination address. [https://github.com/woocommerce/woocommerce-ios/pull/4845]
 
 7.3
 -----

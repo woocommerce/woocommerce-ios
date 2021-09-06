@@ -115,6 +115,71 @@ class ShippingLabelCustomsFormListViewModelTests: XCTestCase {
         XCTAssertEqual(form?.items.first?.weight, Double(120))
         XCTAssertEqual(form?.items.first?.value, items.first?.price.doubleValue)
     }
+
+    func test_done_button_is_enabled_when_all_fields_are_valid() {
+        // Given
+        let items = [MockOrderItem.sampleItem(name: "Easter Egg", productID: 1, quantity: 0.5, price: 15)]
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
+        let customsForm = ShippingLabelCustomsForm(packageID: "Custom package", packageName: "Custom package", productIDs: [1])
+
+        // When
+        insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120.0"))
+        let viewModel = ShippingLabelCustomsFormListViewModel(order: order,
+                                                              customsForms: [customsForm],
+                                                              destinationCountry: Country.fake(),
+                                                              countries: [],
+                                                              storageManager: storageManager)
+
+        let firstInputModel = viewModel.inputViewModels.first
+        firstInputModel?.returnOnNonDelivery = true
+        firstInputModel?.contentsType = .documents
+        firstInputModel?.contentExplanation = ""
+        firstInputModel?.restrictionType = .quarantine
+        firstInputModel?.restrictionComments = ""
+        firstInputModel?.itn = ""
+        let firstItem = firstInputModel?.itemViewModels.first
+        firstItem?.description = "Lorem Ipsum"
+        firstItem?.value = "15"
+        firstItem?.weight = "2.0"
+        firstItem?.originCountry = Yosemite.Country(code: "VN", name: "Vietnam", states: [])
+        firstItem?.hsTariffNumber = ""
+
+        // Then
+        XCTAssertTrue(viewModel.doneButtonEnabled)
+    }
+
+    func test_done_button_is_disable_when_not_all_fields_are_valid() {
+        // Given
+        let items = [MockOrderItem.sampleItem(name: "Easter Egg", productID: 1, quantity: 1, price: 15)]
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
+        let customsForm = ShippingLabelCustomsForm(packageID: "Custom package", packageName: "Custom package", productIDs: [1])
+
+        // When
+        insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120.0"))
+        let viewModel = ShippingLabelCustomsFormListViewModel(order: order,
+                                                              customsForms: [customsForm],
+                                                              destinationCountry: Country.fake(),
+                                                              countries: [],
+                                                              storageManager: storageManager)
+
+        let firstInputModel = viewModel.inputViewModels.first
+        firstInputModel?.returnOnNonDelivery = true
+        firstInputModel?.contentsType = .documents
+        firstInputModel?.contentExplanation = ""
+        firstInputModel?.restrictionType = .quarantine
+        firstInputModel?.restrictionComments = ""
+        // missing ITN when total value of tariff number 111111 is 2600
+        firstInputModel?.itn = ""
+        let firstItem = firstInputModel?.itemViewModels.first
+        firstItem?.description = "Lorem Ipsum"
+        firstItem?.value = "2600"
+        firstItem?.weight = "2.0"
+        firstItem?.originCountry = Yosemite.Country(code: "VN", name: "Vietnam", states: [])
+        firstItem?.hsTariffNumber = "111111"
+
+        // Then
+        XCTAssertFalse(viewModel.doneButtonEnabled)
+    }
 }
 
 // MARK: - Utils

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-08-04 10:54:03+0000 */
+/* Translation-Revision-Date: 2021-09-02 23:44:46+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -170,6 +170,12 @@
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
 
+/* A label prompting users to learn more about HS Tariff Number with an embedded hyperlink in Customs screen of Shipping Label flow */
+"<a href=\"https:\/\/docs.woocommerce.com\/document\/woocommerce-shipping-and-tax\/woocommerce-shipping\/#section-29\">Learn more<\/a> about HS Tariff Number" = "<a href=\"https:\/\/docs.woocommerce.com\/document\/woocommerce-shipping-and-tax\/woocommerce-shipping\/#section-29\">Baca selengkapnya<\/a> mengenai Nomor Tarif HS";
+
+/* A label prompting users to learn more about internal transaction number with an embedded hyperlink */
+"<a href=\"https:\/\/pe.usps.com\/text\/imm\/immc5_010.htm\">Learn more<\/a> about Internal Transaction Number" = "<a href=\"https:\/\/pe.usps.com\/text\/imm\/immc5_010.htm\">Baca selengkapnya<\/a> mengenai Nomor Transaksi Internal";
+
 /* A label prompting users to learn more about card readers with an embedded hyperlink */
 "<a href=\"https:\/\/woocommerce.com\/payments\">Learn more<\/a> about accepting payments with your mobile device and ordering card readers" = "<a href=\"https:\/\/woocommerce.com\/payments\">Pelajari lebih lanjut<\/a> tentang penerimaan pembayaran dengan perangkat seluler Anda dan pemesanan pembaca kartu";
 
@@ -181,6 +187,12 @@
 
 /* Description of the Action sheet option when the user wants to change the Product type to grouped product */
 "A collection of related products" = "Kumpulan produk terkait";
+
+/* Error message when there was a network error checking In-Person Payments requirements */
+"A network error occurred. Please check your connection and try again." = "Terjadi error jaringan. Periksa koneksi Anda dan coba lagi.";
+
+/* Error shown in Shipping Label Origin Address validation for phone number field for international shipment */
+"A phone number is required because this shipment requires a customs form" = "Nomor telepon diwajibkan karena pengiriman ini memerlukan formulir bea-cukai";
 
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "A product with variations like color or size" = "Produk dengan variasi seperti warna atau ukuran";
@@ -215,6 +227,9 @@
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "Tentang aplikasi";
 
+/* Title for the error screen when WooCommerce Payments is installed but not activated */
+"Activate WooCommerce Payments" = "Aktifkan WooCommerce Payments";
+
 /* Application's Active State */
 "Active" = "Aktif";
 
@@ -246,6 +261,9 @@
 
 /* Action to add new attribute on the Product Attributes screen */
 "Add New Attribute" = "Tambahkan Atribut Baru";
+
+/* Add New Package screen title in Shipping Label flow */
+"Add New Package" = "Tambah Paket Baru";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "Tambahkan foto";
@@ -473,8 +491,7 @@
    Awaiting payment via (payment method title) */
 "Awaiting payment via %@" = "Menunggu pembayaran melalui %@";
 
-/* Alert button title - dismisses alert, which cancels the log out attempt
-   Back button title. */
+/* Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "Kembali";
 
 /* Title of a button to dismiss the survey complete screen */
@@ -505,6 +522,9 @@
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "Tebal";
 
+/* Box package type, used to create a custom package in the Shipping Label flow */
+"Box" = "Kotak";
+
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "Teks Tombol";
 
@@ -530,7 +550,7 @@
 "Can Not Request Link" = "Tidak Dapat Meminta Tautan";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to cancel a payment - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to cancel a payment - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. */
 "Cancel" = "Batalkan";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -595,6 +615,9 @@
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "Pilih Ukuran Kertas";
 
+/* Navigation title on the shipping label country selector screen */
+"Choose a Country" = "Pilih Negara";
+
 /* Navigation title on the shipping label states of a country selector screen */
 "Choose a State" = "Pilih Negara Bagian";
 
@@ -631,8 +654,7 @@
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "Hubungkan ke Pembaca";
 
-/* Settings > Manage Card Reader > Prompt user to connect their first reader
-   Settings > Manage Card Reader > Prompt user to connect their reader */
+/* Settings > Manage Card Reader > Prompt user to connect their first reader */
 "Connect your card reader" = "Hubungkan pembaca kartu Anda";
 
 /* Link on the store picker when there are no stores available. Opens a webview about Jetpack setup. */
@@ -656,6 +678,9 @@
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "Menghubungkan ke WordPress.com";
 
+/* Title when checking if WooCommerce Payments is supported */
+"Connecting to your account" = "Menghubungkan ke akun Anda";
+
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "Hubungi Pelanggan";
 
@@ -669,8 +694,20 @@
    The title of the button to contact support in the Error Loading Data banner */
 "Contact Support" = "Hubungi Dukungan";
 
+/* Contact WooComerce Payments Support title */
+"Contact WooCommerce Payments Support" = "Hubungi Dukungan Pembayaran WooCommerce";
+
+/* Title of a button to contact support in the error screen for In-Person payments */
+"Contact us" = "Hubungi kami";
+
 /* Title of a button to contact support in the survey complete screen */
 "Contact us here" = "Hubungi kami di sini";
+
+/* Title for the Content Details row in Customs screen of Shipping Label flow */
+"Content Details" = "Detail Isi";
+
+/* Title for the Content Type row in Customs screen of Shipping Label flow */
+"Content Type" = "Tipe Konten";
 
 /* Continue button inside every cell inside Create Shipping Label form
    The button title text when there is a next step for logging in or signing up. - Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
@@ -736,6 +773,9 @@
 /* Error showed in Shipping Label Address Validation for the country field */
 "Country missing" = "Negara belum diisi";
 
+/* Description for the Origin Country row in Customs screen of Shipping Label flow */
+"Country where the product was manufactured or assembled" = "Negara tempat pembuatan atau perakitan produk";
+
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "Crash Menu Debug";
 
@@ -748,6 +788,9 @@
 /* Create Shipping Label form navigation title
    Text on the button that starts shipping label creation */
 "Create Shipping Label" = "Buat Label Pengiriman";
+
+/* Button to create a new package in Shipping Label Package screen */
+"Create new package" = "Buat paket baru";
 
 /* The title of the shipping labels top banner in order details */
 "Create shipping labels from your device!" = "Buat label pengiriman dari perangkat Anda!";
@@ -781,6 +824,15 @@
    Placeholder name of a custom shipment tracking carrier - Title of button to add a custom tracking carrier if filtering the list yields no results. */
 "Custom Carrier" = "Operator Kustom";
 
+/* Custom line index in Customs Form of Shipping Label flow */
+"Custom Line %1$d" = "Baris Kustom %1$d";
+
+/* Custom Package menu in Shipping Label Add New Package flow */
+"Custom Package" = "Paket Khusus";
+
+/* Error shown in Shipping Label Origin Address validation for phone number when the it doesn't have expected length for international shipment. */
+"Custom forms require a 10-digit phone number" = "Formulir bea cukai wajib menyertakan nomor telepon 10 digit";
+
 /* Customer info section title
    Customer info section title in Review Order screen */
 "Customer" = "Pelanggan";
@@ -792,8 +844,12 @@
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
 "Customer paid a %1$@ of %2$@ for shipping" = "Pelanggan membayar %1$@ of %2$@ untuk pengiriman";
 
+/* Navigation title for Customs screen in Shipping Label flow
+   Title of the cell Customs inside Create Shipping Label form */
+"Customs" = "Bea cukai";
+
 /* Details text in the shipping label creation info screen */
-"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Tak perlu antre saat di kantor pos dengan mencetak label pengiriman di rumah dari ponsel dengan harga diskon!";
+"Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "Tak perlu antre saat di kantor pos dengan mencetak label pengiriman di rumah dari perangkat seluler dengan harga diskon!";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "Tanggal pengiriman";
@@ -821,7 +877,7 @@
 "Describe your product to your future customers..." = "Jelaskan produk Anda ke calon pelanggan...";
 
 /* The navigation bar title of the Aztec editor screen.
-   Title in the Product description row on Product form screen when the description is non-empty. */
+   Title in the Product description row on Product form screen when the description is non-empty. - Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "Deskripsi";
 
 /* Screen title: Details Order number. Parameters: %1$@ - order number */
@@ -852,7 +908,7 @@
 "Discard changes" = "Abaikan perubahan";
 
 /* Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader */
-"Disconnect" = "Putuskan";
+"Disconnect Reader" = "Putus Sambungan Pembaca";
 
 /* Discount label for payment view */
 "Discount" = "Diskon";
@@ -870,18 +926,21 @@
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "Ingin memindahkan produk ini ke Tempat Sampah?";
 
+/* Type Documents of content to be declared for the customs form in Shipping Label flow */
+"Documents" = "Dokumen";
+
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Belum memiliki akun? _Daftar_";
 
 /* Action title to select products to add to a grouped product from search results
-   Done navigation button in shipping label carrier and rates screen - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files */
+   Done navigation button in selection list screens - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the edit customer provided note screen */
 "Done" = "Selesai";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
 "Don’t know how to print from your device?" = "Tidak tahu cara mencetak dari perangkat Anda?";
 
 /* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
-"Don’t know how to print from your phone?" = "Tidak tahu cara mencetak dari ponsel Anda?";
+"Don’t know how to print from your mobile device?" = "Tidak tahu cara mencetak dari perangkat seluler Anda?";
 
 /* WordPress.com (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
 "Dotcom Error: [%1$@] %2$@" = "Kesalahan Dotcom: [%1$@] %2$@";
@@ -948,6 +1007,9 @@
    Navigation title for the Product Attributes screen */
 "Edit Attributes" = "Sunting Atribut";
 
+/* Title for the edit customer provided note screen */
+"Edit Note" = "Sunting Catatan";
+
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "Sunting Produk";
 
@@ -982,6 +1044,9 @@
 /* Accessibility text for Unit Input cell */
 "Empty" = "Kosong";
 
+/* Title for the row to enter the empty package weight on the Add New Custom Package screen in Shipping Label flow */
+"Empty Package Weight" = "Berat Paket Kosong";
+
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "URL Kosong";
 
@@ -1001,6 +1066,12 @@
    Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
 "Enter Another Store" = "Masukkan Toko Lainnya";
 
+/* Placeholder for the ITN row in Customs screen of Shippling Label flow */
+"Enter ITN (Optional)" = "Masukkan ITN (Opsional)";
+
+/* Placeholder for the row to enter the package name on the Add New Custom Package screen in Shipping Label flow */
+"Enter Name" = "Masukkan Nama";
+
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "Masukkan URL";
 
@@ -1011,8 +1082,14 @@
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "Masukkan nama operator";
 
+/* Placeholder of Description row of item details in Customs screen of Shipping Label flow */
+"Enter description" = "Masukkan keterangan";
+
 /* Title of the downloadable file bottom sheet action for adding file from an URL. */
 "Enter file URL" = "Masukkan URL file";
+
+/* Placeholder of HS Tariff Number row in Package Content section in Customs screen of Shipping Label flow */
+"Enter number (Optional)" = "Masukkan angka (Opsional)";
 
 /* Enter password placeholder in Product Visibility */
 "Enter password" = "Masukkan kata sandi";
@@ -1054,6 +1131,9 @@
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "Masukkan kata sandi saja.";
+
+/* Envelope package type, used to create a custom package in the Shipping Label flow */
+"Envelope" = "Amplop";
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Terjadi error saat mencari alamat di Apple Maps";
@@ -1106,6 +1186,9 @@
    Title of the cell in Product Downloadable File URL > File URL */
 "File URL" = "URL berkas";
 
+/* Subtitle of the cell Customs inside Create Shipping Label form */
+"Fill out customs form" = "Isi formulir bea cukai";
+
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "Isi dengan pengelola kata sandi";
 
@@ -1130,6 +1213,12 @@
 
 /* The hint button's title text to help users find their store address. */
 "Find your store address" = "Cari alamat toko Anda";
+
+/* Button to set up the WooCommerce Payments plugin after installing it */
+"Finish Setup in Store Admin" = "Selesaikan Penyiapan di Admin Toko";
+
+/* Title for the error screen when WooCommerce Payments is installed but not set up */
+"Finish setup WooCommerce Payments in your store admin" = "Selesaikan pengaturan WooCommerce Payments di admin toko Anda";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Follow your favorite sites and discover new blogs." = "Ikuti situs favorit Anda dan temukan blog-blog baru.";
@@ -1174,6 +1263,9 @@
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "Mencari informasi akun";
 
+/* Type Gift of content to be declared for the customs form in Shipping Label flow */
+"Gift" = "Hadiah";
+
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    The title of the button to give feedback about shipping labels features on the banner in order details - Title of the button to give feedback about the add-ons feature - Title on the navigation bar for the products feedback survey */
 "Give feedback" = "Berikan masukan";
@@ -1202,6 +1294,12 @@
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "APA YANG DAPAT KAMI BANTU?";
+
+/* Title of HS Tariff Number row in Package Content section in Customs screen of Shipping Label flow */
+"HS Tariff Number" = "Nomor Tarif HS";
+
+/* Validation error for HS Tariff Number row in Customs screen of Shipping Label flow */
+"HS Tariff Number must be 6 digits long" = "Nomor Tarif HS harus terdiri atas 6 digit";
 
 /* Accessibility label for HTML button on formatting toolbar.
    HTML Attachment Label */
@@ -1246,7 +1344,8 @@
 /* H6 Aztec Style */
 "Heading 6" = "Penajukan 6";
 
-/* Title of the cell in Product Shipping Settings > Height */
+/* Title for the row to enter the package height on the Add New Custom Package screen in Shipping Label flow
+   Title of the cell in Product Shipping Settings > Height */
 "Height" = "Tinggi";
 
 /* Help and Support navigation title
@@ -1274,6 +1373,15 @@
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "ITEM YANG PERLU DIISI";
+
+/* Title for the ITN row in Customs screen of Shipping Label flow */
+"ITN" = "ITN";
+
+/* Error message for missing ITN for destination country inCustoms screen of Shipping Label flow. The placeholder is the destination country. */
+"ITN is required for shipments to %1$@" = "ITN diperlukan untuk pengiriman ke %1$@";
+
+/* Error message for missing ITN for tariff number valued over $2,500 inCustoms screen of Shipping Label flow */
+"ITN is required for shipping items valued over $2,500 per tariff number" = "ITN diperlukan untuk pengiriman item dengan nilai lebih dari $2.500 per nomor tarif";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Jika dinonaktifkan, catatan akan diatur sebagai pribadi";
@@ -1313,8 +1421,12 @@
    Title for the In-Person Payments settings screen */
 "In-Person Payments" = "Pembayaran Langsung";
 
-/* Title for the error screen when In-Person Payments is unavailable */
+/* Title for the error screen when In-Person Payments is unavailable
+   Title for the error screen when the Stripe account is restricted because it's under reviw - Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
 "In-Person Payments is currently unavailable" = "Pembayaran Langsung saat ini tidak tersedia";
+
+/* Title for the error screen when the Stripe account rejected. */
+"In-Person Payments isn't available for this store" = "Pembayaran Langsung tidak tersedia untuk toko ini";
 
 /* Application's Inactive State */
 "Inactive" = "Nonaktif";
@@ -1349,8 +1461,14 @@
 /* Accessibility label for insert link button on formatting toolbar. */
 "Insert Link" = "Sisipkan Tautan";
 
+/* Title for the error screen when WooCommerce Payments is not installed */
+"Install WooCommerce Payments" = "Instal WooCommerce Payments";
+
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates */
 "Insurance (up to %1$@)" = "Asuransi (hingga %1$@)";
+
+/* Error message for invalid format of ITN in Customs screen of Shipping Label flow */
+"Invalid ITN format" = "Format ITN tidak valid";
 
 /* The title of the alert when there is an error updating the product SKU */
 "Invalid Product SKU" = "SKU Produk Tidak Valid";
@@ -1398,6 +1516,15 @@
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "Miring";
 
+/* Error message for missing value in Description row in Customs screen of Shipping Label flow */
+"Item description is required" = "Keterangan item wajib diisi";
+
+/* Error message for missing value in Value row in Customs screen of Shipping Label flow */
+"Item value must be larger than 0" = "Nilai item harus lebih besar dari 0";
+
+/* Error message for missing value in Weight row in Customs screen of Shipping Label flow */
+"Item weight must be larger than 0" = "Berat item harus lebih besar dari 0";
+
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack adalah plugin WordPress gratis yang menghubungkan toko Anda dengan peralatan yang diperlukan agar dapat memberikan pengalaman seluler terbaik, termasuk pemberitahuan push dan statistik";
 
@@ -1433,7 +1560,7 @@
 "Learn more about Jetpack" = "Pelajari selengkapnya tentang Jetpack";
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
-"Learn more about creating labels with your phone" = "Pelajari selengkapnya tentang membuat label menggunakan ponsel";
+"Learn more about creating labels with your mobile device" = "Pelajari selengkapnya tentang membuat label menggunakan perangkat seluler";
 
 /* Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
 "Learn more about roles and permissions" = "Pelajari lebih lanjut tentang peran dan izin";
@@ -1441,7 +1568,8 @@
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal (8,5 x 14 inci)";
 
-/* Title of the cell in Product Shipping Settings > Length */
+/* Title for the row to enter the package length on the Add New Custom Package screen in Shipping Label flow
+   Title of the cell in Product Shipping Settings > Length */
 "Length" = "Panjang";
 
 /* Title of letter paper size option for printing a shipping label */
@@ -1545,8 +1673,11 @@
 "Make your products easier to find with tags" = "Buat produk Anda lebih mudah ditemukan dengan tag";
 
 /* Card reader settings screen title
-   Navigates to Card Reader management screen - Settings > Manage Card Reader > Title for the no-reader-connected screen in settings. - Settings > Manage Card Reader > Title for the reader connected screen in settings. */
+   Settings > Manage Card Reader > Title for the no-reader-connected screen in settings. - Settings > Manage Card Reader > Title for the reader connected screen in settings. */
 "Manage Card Reader" = "Kelola Pembaca Kartu";
+
+/* Navigates to Card Reader management screen */
+"Manage card reader" = "Kelola Pembaca Kartu";
 
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "Kelola stok";
@@ -1592,6 +1723,9 @@
 /* Placeholder in the Product Menu Order row on Edit Product Menu Order screen. */
 "Menu order" = "Urutan menu";
 
+/* Type Merchandise of content to be declared for the customs form in Shipping Label flow */
+"Merchandise" = "Barang dagangan";
+
 /* Message phone number button title */
 "Message" = "Pesan";
 
@@ -1627,8 +1761,7 @@
 /* My Tickets title */
 "My Tickets" = "Tiket Saya";
 
-/* My Store Notice Title for loading error
-   Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
+/* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
 "My store" = "Toko saya";
 
 /* Name text field placeholder
@@ -1654,7 +1787,8 @@
    Title of the more help button on alert helping users understand their site address */
 "Need more help?" = "Butuh bantuan lebih lanjut?";
 
-/* Text preceding the Contact Us button in the survey completed screen */
+/* Text preceding the Contact Us button in the error screen for In-Person payments
+   Text preceding the Contact Us button in the survey completed screen */
 "Need some help?" = "Butuh bantuan?";
 
 /* The title for the net amount paid cell */
@@ -1679,6 +1813,9 @@
 /* Order details > customer info > billing information. This is where the address would normally display.
    Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "Tidak ada alamat yang dicantumkan.";
+
+/* Title for the error screen when there was a network error checking In-Person Payments requirements. */
+"No connection" = "Tak ada koneksi";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Tidak ada data yang tersedia";
@@ -1728,7 +1865,7 @@
 "No thanks" = "Tidak, Terima Kasih";
 
 /* Display label for the order fee's tax status setting option
-   Display label for the product's tax status setting option */
+   Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow */
 "None" = "Tidak Ada";
 
 /* Instructions after a Magic Link was sent, but the email can't be found in their inbox. */
@@ -1806,7 +1943,7 @@
 "Option name" = "Nama pilihan";
 
 /* Add Product Category. Placeholder of cell presenting the parent category.
-   Placeholder of the cell text field in Product Inventory Settings > SKU - Text field placeholder in Shipping Label Address Validation */
+   Placeholder of the cell text field in Product Inventory Settings > SKU - Text field placeholder in Shipping Label Address Validation - Text field placeholder in Shipping Label Address Validation when specified country has no state */
 "Optional" = "Opsional";
 
 /* No comment provided by engineer. */
@@ -1839,6 +1976,9 @@
    Order Total label for payment view */
 "Order Total" = "Total Pesanan";
 
+/* Navigates to Card Reader ordering screen */
+"Order card reader" = "Pesan pembaca kartu";
+
 /* Order status update success notice */
 "Order status updated" = "Status pesanan diperbarui";
 
@@ -1852,7 +1992,14 @@
 /* Subtitle of the product form bottom sheet action for editing categories. */
 "Organise your products into related groups" = "Tata produk Anda ke dalam kelompok yang berkaitan";
 
-/* My Store > Settings > Other app section */
+/* Title for the Origin Country row in Customs screen of Shipping Label flow */
+"Origin Country" = "Negara Asal";
+
+/* Error message for missing value in Origin Country row in Customs screen of Shipping Label flow */
+"Origin Country is required" = "Negara Asal wajib diisi";
+
+/* My Store > Settings > Other app section
+   Restriction type Other for contents declared in the customs form for Shipping Label flow - Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "Lainnya";
 
 /* Display label for the product's inventory stock status */
@@ -1864,19 +2011,29 @@
 /* Product section title */
 "PRODUCT" = "PRODUK";
 
-/* Package term in Shipping Labels. Reads like Package 1 */
+/* Package index in Customs screen of Shipping Label flow
+   Package term in Shipping Labels. Reads like Package 1 */
 "Package %1$d" = "Paket %1$d";
 
 /* Order shipping label package section title format. The number indicates the index of the shipping label package. */
 "Package %d" = "Paket %d";
 
+/* Title of Package Content section in Customs screen of Shipping Label flow */
+"Package Content" = "Isi Paket";
+
 /* Navigation bar title of shipping label package details screen
    Title of package details in shipping label details - Title of the cell Package Details inside Create Shipping Label form */
 "Package Details" = "Informasi Paket";
 
+/* Title for the row to enter the package name on the Add New Custom Package screen in Shipping Label flow */
+"Package Name" = "Nama Paket";
+
 /* Package Selected screen title in Shipping Label flow
    Title of the row for selecting a package in Shipping Label Package Detail screen */
 "Package Selected" = "Kemasan yang Dipilih";
+
+/* Title for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
+"Package Type" = "Tipe Paket";
 
 /* The title for the customer payment cell */
 "Paid" = "Berbayar";
@@ -1942,6 +2099,12 @@
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "Memindahkan produk Anda ke tempat sampah...";
 
+/* Error message for missing explanation when Content Typeis Other in Customs screen of Shipping Label flow */
+"Please describe what kind of goods this package contains" = "Mohon jelaskan jenis barang yang dimuat paket ini";
+
+/* Error message for missing comments when Restriction Typeis Other in Customs screen of Shipping Label flow */
+"Please describe what kind of restrictions this package must have" = "Mohon jelaskan jenis batasan untuk paket ini";
+
 /* Error state description in shipping label carrier and rates screen */
 "Please double check your package dimensions and weight or try using a different package in Package Details." = "Pastikan kembali dimensi dan berat paket atau coba gunakan paket lain di Detail Paket.";
 
@@ -1950,6 +2113,9 @@
 
 /* Error message shown when a URL is invalid. */
 "Please enter a complete website address, like example.com." = "Masukkan alamat situs web lengkap, seperti contoh.com.";
+
+/* Product price error notice message, when the sale price was not set during a sale setup */
+"Please enter a sale price for the scheduled sale" = "Harap masukkan harga jual untuk penjualan terjadwal";
 
 /* No comment provided by engineer. */
 "Please enter a site address." = "Silahkan masukkan alamat situs.";
@@ -1996,8 +2162,11 @@
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "Harap coba lagi.";
 
+/* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
+"Please update your reader software to keep accepting payments" = "Harap perbarui perangkat lunak pembaca Anda untuk dapat terus menerima pembayaran";
+
 /* Message of in-progress modal when requesting shipping label document for printing
-   Message of the in-progress UI while purchasing a shipping label - Text on the loading view of the survey screen indicating the user to wait */
+   Message of the in-progress UI while purchasing a shipping label - Message when checking if WooCommerce Payments is supported - Text on the loading view of the survey screen indicating the user to wait */
 "Please wait" = "Harap tunggu…";
 
 /* Instructions for the progress screen while generating a variation */
@@ -2045,7 +2214,7 @@
 "Print Shipping Label" = "Cetak Label Pengiriman";
 
 /* Navigation bar title of shipping label printing instructions screen */
-"Print from your Phone" = "Cetak dari Telepon Anda";
+"Print from your mobile device" = "Cetak dari perangkat seluler Anda";
 
 /* Button to print receipts. Presented to users after a payment has been successfully collected */
 "Print receipt" = "Cetak tanda terima";
@@ -2110,6 +2279,9 @@
 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "Tautan produk";
+
+/* Title of the alert when a user is saving a product */
+"Product saved" = "Produk disimpan";
 
 /* Title of the Product Type row on Product main screen */
 "Product type" = "Tipe produk";
@@ -2181,6 +2353,12 @@
 /* Format of the stock quantity on the Inventory Settings row */
 "Quantity: %@" = "Jumlah: %@";
 
+/* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
+"Quarantine" = "Karantina";
+
+/* Subtitle for Contact WooCommerce Payments Support */
+"Reach our happiness engineers who can help answer payments related questions" = "Hubungi happiness engineers kami yang dapat membantu menjawab pertanyaan terkait pembayaran";
+
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Hubungi Happiness Engineer kami yang dapat membantu menjawab pertanyaan sulit";
 
@@ -2201,6 +2379,15 @@
 
 /* The title of the view containing a receipt preview */
 "Receipt" = "Resi";
+
+/* Button to reload plugin data after activating the WooCommerce Payments plugin */
+"Refresh After Activating" = "Segarkan Setelah Mengaktifkan";
+
+/* Button to reload plugin data after installing the WooCommerce Payments plugin */
+"Refresh After Installing" = "Segarkan Setelah Menginstal";
+
+/* Button to reload plugin data after updating the WooCommerce Payments plugin */
+"Refresh After Updating" = "Segarkan Setelah Memperbarui";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "Pengembalian dana";
@@ -2287,7 +2474,8 @@
    Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "Minta Pengembalian Dana";
 
-/* Text field placeholder in Shipping Label Address Validation */
+/* Text field placeholder in Shipping Label Address Validation
+   Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "Wajib";
 
 /* Deletes all activity logs except for the marked 'Current'. */
@@ -2296,6 +2484,12 @@
 /* The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "Reset kata sandi";
 
+/* Title for the Restriction Details row in Customs screen of Shipping Label flow */
+"Restriction Details" = "Detail Datasan";
+
+/* Title for the Restriction Type row in Customs screen of Shipping Label flow */
+"Restriction Type" = "Tipe Batasan";
+
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "Menerima daftar pesanan yang mengandung kata kunci tertentu.";
 
@@ -2303,8 +2497,11 @@
 "Retrieves a list of products that contain a given keyword." = "Menerima daftar produk yang mengandung kata kunci tertentu.";
 
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
-   Retry Action - Retry the last action */
+   Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry the last action */
 "Retry" = "Coba Lagi";
+
+/* Title for the return policy in Customs screen of Shipping Label flow */
+"Return to sender if package is unable to be delivered" = "Kembalikan ke pengirim jika paket tidak dapat dikirimkan";
 
 /* Revenue stat label on dashboard. */
 "Revenue" = "Pendapatan";
@@ -2352,6 +2549,12 @@
 
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "Harga obral: %@";
+
+/* Type Sample of content to be declared for the customs form in Shipping Label flow */
+"Sample" = "Contoh";
+
+/* Restriction type Sanitary / Phytosanitary Inspection for contents declared in the customs form for Shipping Label flow */
+"Sanitary \/ Phytosanitary Inspection" = "Pemeriksaan Sanitasi\/Fitosanitasi";
 
 /* Action for saving a Product remotely
    Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. */
@@ -2429,6 +2632,12 @@
 /* Page title for the select a different store screen */
 "Select Store" = "Pilih Toko";
 
+/* Placeholder for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
+"Select Type" = "Pilih Tipe";
+
+/* Placeholder for the selected package in the Shipping Labels Package Details screen */
+"Select a package" = "Pilih Paket";
+
 /* Message title of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "Pilih jenis produk";
 
@@ -2465,8 +2674,14 @@
 /* The button title text for sending a magic link. */
 "Send Link by Email" = "Kirim Tautan Lewat Email";
 
+/* Service Package menu in Shipping Label Add New Package flow */
+"Service Package" = "Paket Layanan";
+
 /* Tells user to set an email that support can use for replies */
 "Set email" = "Atur email";
+
+/* Header text on Add New Custom Package screen in Shipping Label flow */
+"Set up the package you'll be using to ship your products. We'll save it for future orders." = "Siapkan paket yang akan digunakan untuk mengirim produk Anda. Kami akan menyimpannya untuk pesanan selanjutnya.";
 
 /* Accessibility label for the Settings button.
    Settings navigation title */
@@ -2919,6 +3134,12 @@
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "URL tidak menemukan host yang valid.";
 
+/* Error message when WooCommerce Payments is not activated */
+"The WooCommerce Payments extension is installed on your store but not activated. Please activate it to accept In-Person Payments" = "Ekstensi WooCommerce Payments sudah terpasang di toko Anda tetapi belum diaktifkan. Harap aktifkan terlebih dahulu untuk menerima Pembayaran Langsung.";
+
+/* Error message when WooCommerce Payments is installed but the version is not supported */
+"The WooCommerce Payments extension is installed on your store, but the installed version does not support In-Person Payments. Please update WooCommerce Payments to the most recent version." = "Ekstensi Pembayaran WooCommerce diinstal di toko Anda, tetapi versi yang diinstal tidak mendukung Pembayaran Langsung. Harap perbarui Pembayaran WooCommerce ke versi terbaru.";
+
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "Atribut tidak dapat dihapus.";
 
@@ -2978,6 +3199,15 @@
 
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "Variasi tidak dapat dibuat.";
+
+/* Error message when the Stripe account is restricted because there are pending requirements */
+"There are pending requirements in your account. Please complete those requirements by" = "Ada persyaratan yang tertunda di akun Anda. Penuhi persyaratan tersebut dengan";
+
+/* Error message when WooCommerce Payments is not supported because there are pending requirements in the Stripe account.%1$d will contain the localized deadline (e.g. August 11, 2021) */
+"There are pending requirements in your account. Please complete those requirements by %1$@ to keep accepting in-Person Payments." = "Ada persyaratan yang tertunda di akun Anda. Penuhi persyaratan tersebut dengan %1$@ agar tetap dapat menerima Pembayaran Langsung.";
+
+/* Error message when WooCommerce Payments is not supportedThere are pending requirements in the Stripe account (without a known deadline) */
+"There are pending requirements in your account. Please complete those requirements to keep accepting in-Person Payments." = "Ada persyaratan yang tertunda di akun Anda. Penuhi persyaratan tersebut agar tetap dapat menerima Pembayaran Langsung.";
 
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "Terjadi kesalahan saat memblokir pos dari situs yang telah ditentukan.";
@@ -3166,6 +3396,12 @@
 /* Settings > Manage Card Reader > Connect > Hint to enable Bluetooth */
 "Turn mobile device Bluetooth on" = "Aktifkan Bluetooth perangkat seluler";
 
+/* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
+"Type of contents" = "Tipe konten";
+
+/* Placeholder for the Restriction Details row in Customs screen of Shipping Label flow */
+"Type of restriction" = "Tipe pembatasan";
+
 /* Navigation bar title for editing the URL of a text link
    URL text field placeholder */
 "URL" = "URL";
@@ -3200,9 +3436,6 @@
 /* Load Product Categories Action Failed */
 "Unable to load categories" = "Tidak dapat memuat kategori";
 
-/* Load Action Failed */
-"Unable to load content" = "Tidak dapat memuat konten";
-
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "Gagal memuat atribut produk";
 
@@ -3223,6 +3456,9 @@
 
 /* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
 "Unable to successfully connect to %@" = "Tidak berhasil terhubung ke %@";
+
+/* Title for the error screen when In-Person Payments is unavailable */
+"Unable to verify In-Person Payments for this store" = "Tidak dapat memverifikasi Pembayaran Langsung untuk toko ini";
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "Tidak dapat memverifikasi alamat email. Silakan coba lagi nanti.";
@@ -3264,6 +3500,9 @@
 /* Display label for the review's unspam status */
 "Unspam" = "Bukan spam";
 
+/* Title for the error screen when the installed version of WooCommerce Payments is unsupported */
+"Unsupported WooCommerce Payments version" = "Versi Pembayaran WooCommerce Tidak Didukung";
+
 /* Display label for the review's untrash status */
 "Untrash" = "Batal buang";
 
@@ -3285,6 +3524,9 @@
 
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "Perbarui Status Pesanan";
+
+/* Settings > Manage Card Reader > Connected Reader > A button to update the reader software */
+"Update Reader Software" = "Perbarui Perangkat Lunak Pembaca";
 
 /* Subtitle of the product form bottom sheet action for editing inventory settings. */
 "Update product inventory and SKU" = "Perbarui inventaris produk dan SKU";
@@ -3337,6 +3579,9 @@
 
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "Nama pengguna harus sekurangnya 4 karakter.";
+
+/* Title for the Value row in item details in Customs screen of Shipping Label flow */
+"Value (%1$@ per unit)" = "Nilai (%1$@ per unit)";
 
 /* Display label for variable product type. */
 "Variable" = "Variabel";
@@ -3433,6 +3678,9 @@
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Watch your audience grow with in-depth analytics." = "Perhatikan audiens Anda tumbuh dengan analisis mendalam.";
 
+/* Error message when WooCommerce Payments is not supported because the Stripe account has been rejected */
+"We are sorry but we can't support In-Person Payments for this store." = "Maaf, kami tidak dapat mendukung Pembayaran Langsung untuk toko ini.";
+
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "Kami berusaha agar Anda bisa lebih mudah melihat add-on produk dari perangkat Anda! Untuk sekarang, Anda akan dapat melihat add-on untuk pesanan Anda. Anda dapat membuat dan menyunting add-on ini pada dasbor web Anda.";
 
@@ -3441,6 +3689,12 @@
 
 /* The title of the Error Loading Data banner */
 "We couldn't load your data" = "Data Anda tidak dapat dimuat";
+
+/* Title for the error screen when WooCommerce Payments is not supported in a specific country */
+"We don’t support In-Person Payments in %@" = "Kami tidak mendukung Pembayaran Langsung di %@";
+
+/* Title for the error screen when WooCommerce Payments is not supported because we don't know the name of the country */
+"We don’t support In-Person Payments in your country" = "Kami tidak mendukung Pembayaran Langsung di negara Anda.";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "Kami sedikit mengubah alamat yang dimasukkan. Jika sudah benar, gunakan alamat yang disarankan untuk memastikan pengiriman yang akurat.";
@@ -3488,11 +3742,20 @@
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "Maaf, kami tidak menemukan apa pun untuk pencarian “%@”";
 
+/* Generic error message when In-Person Payments is unavailable */
+"We're sorry, we were unable to verify In-Person Payments for this store." = "Maaf, kami tidak dapat memverifikasi Pembayaran Langsung untuk toko ini.";
+
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Kami telah mengirimi Anda email berisi tautan pendaftaran untuk membuat akun WordPress.com baru. Periksa email Anda di perangkat ini, dan ketuk tautan dalam email yang Anda terima dari WordPress.com";
 
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "Berat";
+
+/* Title for the Weight row in item details in Customs screen of Shipping Label flow */
+"Weight (%1$@ per unit)" = "Berat (%1$@ per unit)";
+
+/* Footer text for the empty package weight on the Add New Custom Package screen in Shipping Label flow */
+"Weight of empty package" = "Berat paket kosong";
 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "Berat: %1$@%2$@";
@@ -3522,7 +3785,8 @@
 /* Error message shown when an incorrect two factor code is provided. */
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "Ups, kode verifikasi dua faktor tersebut tidak valid. Periksa kembali kode Anda kemudian coba lagi!";
 
-/* Title of the cell in Product Shipping Settings > Width */
+/* Title for the row to enter the package width on the Add New Custom Package screen in Shipping Label flow
+   Title of the cell in Product Shipping Settings > Width */
 "Width" = "Lebar";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
@@ -3574,17 +3838,27 @@
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "Anda dapat meminta pengembalian dana untuk label pengiriman yang belum digunakan untuk mengirim paket.\nPengembalian dana akan diproses paling cepat dalam 14 hari.";
 
-/* Generic error message when In-Person Payments is unavailable */
+/* Error message when WooCommerce Payments is not supported in a specific country
+   Generic error message when In-Person Payments is unavailable */
 "You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "Anda masih dapat menerima pembayaran tunai secara langsung dengan mengaktifkan metode pembayaran \"Bayar di Tempat\" di toko Anda.";
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "Anda tidak dapat menggunakan alamat surel tersebut untuk pendaftaran. Kami mengalami masalah dengan mereka memblokir beberapa surel dari kami. Silahkan gunakan penyedia layanan surel lainnya.";
+
+/* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
+"You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "Anda memiliki setidaknya satu persyaratan yang terlambat di akun Anda. Harap penuhi persyaratan tersebut untuk dapat terus menggunakan Pembayaran Langsung.";
 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "Anda perlu menambahkan kata sandi agar produk Anda terlindungi oleh kata sandi";
 
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Tampaknya Anda telah menginstal plugin seluler dari DudaMobile yang membuat aplikasi tidak dapat tersambung ke blog Anda";
+
+/* Error message when WooCommerce Payments is not supported because the Stripe account is under review */
+"You'll be able to accept In-Person Payments as soon as we finish reviewing your account." = "Anda akan dapat menerima Pembayaran Langsung segera setelah kami selesai meninjau akun Anda.";
+
+/* Title for the error screen when the Stripe account is restricted because there are pending requirements */
+"Your WooCommerce Payments account has pending requirements" = "Akun WooCommerce Payments Anda memiliki persyaratan tertunda";
 
 /* shown in promotional screens during first launch */
 "Your notifications travel with you — see comments and likes as they happen." = "Bawa pemberitahuan ke mana pun Anda pergi — lihat komentar dan suka seketika.";
@@ -3597,6 +3871,12 @@
 
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "Alamat situs Anda ditampilkan di bilah bagian atas layar ketika Anda mengunjungi situs di Safari.";
+
+/* Error message when WooCommerce Payments is not installed */
+"You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "Anda perlu menginstal ekstensi WooCommerce Payments gratis di toko Anda untuk menerima Pembayaran Langsung.";
+
+/* Error message when WooCommerce Payments is installed but not set up */
+"You’re almost there! Please finish setting up WooCommerce Payments to start accepting Card-Present Payments." = "Hampir jadi! Harap selesaikan pengaturan WooCommerce Payments untuk mulai menerima Pembayaran dengan Kartu.";
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[KOMENTAR]";

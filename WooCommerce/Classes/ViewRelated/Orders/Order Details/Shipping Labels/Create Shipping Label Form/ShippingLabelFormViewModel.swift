@@ -603,7 +603,7 @@ private extension ShippingLabelFormViewModel {
         guard customsFormRequired, !selectedPackageListDetails.isEmpty else {
             return []
         }
-        
+
         return selectedPackageListDetails.keys.map { packageID -> ShippingLabelCustomsForm in
             let packageName: String = {
                 guard let response = packagesResponse else {

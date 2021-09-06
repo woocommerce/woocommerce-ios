@@ -173,11 +173,10 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         let expectedPackageWeight = "55"
 
         // When
-        shippingLabelFormViewModel.handlePackageDetailsValueChanges(selectedPackageID: expectedPackageID, totalPackageWeight: expectedPackageWeight)
+        shippingLabelFormViewModel.handlePackageDetailsValueChanges(details: [expectedPackageID: expectedPackageWeight])
 
         // Then
-        XCTAssertEqual(shippingLabelFormViewModel.selectedPackageID, expectedPackageID)
-        XCTAssertEqual(shippingLabelFormViewModel.totalPackageWeight, expectedPackageWeight)
+        XCTAssertEqual(shippingLabelFormViewModel.selectedPackageDetails, [expectedPackageID: expectedPackageWeight])
     }
 
     func test_handlePackageDetailsValueChanges_reset_carrier_and_rates_selection() {
@@ -197,7 +196,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertNotNil(shippingLabelFormViewModel.selectedRate)
 
         // When
-        shippingLabelFormViewModel.handlePackageDetailsValueChanges(selectedPackageID: expectedPackageID, totalPackageWeight: expectedPackageWeight)
+        shippingLabelFormViewModel.handlePackageDetailsValueChanges(details: [expectedPackageID: expectedPackageWeight])
 
         // Then
         XCTAssertNil(shippingLabelFormViewModel.selectedRate)
@@ -229,7 +228,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertNotNil(shippingLabelFormViewModel.selectedRate)
 
         // When
-        shippingLabelFormViewModel.handlePackageDetailsValueChanges(selectedPackageID: expectedPackageID, totalPackageWeight: expectedPackageWeight)
+        shippingLabelFormViewModel.handlePackageDetailsValueChanges(details: [expectedPackageID: expectedPackageWeight])
 
         // Then
         XCTAssertEqual(shippingLabelFormViewModel.customsForms.first?.packageID, expectedPackageID)
@@ -865,7 +864,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         // When
         viewModel.handleOriginAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(phone: "0123456789", country: "US"), validated: true)
         viewModel.handleDestinationAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(country: "VN"), validated: true)
-        viewModel.handlePackageDetailsValueChanges(selectedPackageID: expectedPackageID, totalPackageWeight: "55")
+        viewModel.handlePackageDetailsValueChanges(details: [expectedPackageID: "55"])
 
         // Then
         let defaultForms = viewModel.customsForms

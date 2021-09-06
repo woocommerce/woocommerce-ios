@@ -65,7 +65,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         }
         return [id: totalWeight]
     }
-    
+
     /// The title of the selected package, if any.
     ///
     var selectedPackageName: String {

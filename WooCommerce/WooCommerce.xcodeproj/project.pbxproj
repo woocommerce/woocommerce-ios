@@ -6979,6 +6979,7 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "$SRCROOT/../Scripts/build-phases/generate-credentials.sh\n";
+			showEnvVarsInLog = 0;
 		};
 		B7A94351C1ADC31EA528B895 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;

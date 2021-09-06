@@ -3,11 +3,17 @@ import SwiftUI
 /// Country Selector View
 ///
 struct CountrySelector: View {
+
+    /// View model to drive the view content
+    ///
+    @ObservedObject private(set) var viewModel: CountrySelectorViewModel
+
     var body: some View {
         VStack(spacing: 0) {
-            SearchHeader()
+            SearchHeader(filterText: $viewModel.searchTerm)
                 .background(Color(.listForeground))
-            ListSelector(command: CountrySelectorCommand(), tableStyle: .plain)
+
+            ListSelector(command: viewModel.command, tableStyle: .plain)
         }
         .navigationTitle(Localization.title)
     }
@@ -20,6 +26,10 @@ private struct SearchHeader: View {
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1
 
+    /// Filter search term
+    ///
+    @Binding var filterText: String
+
     var body: some View {
         HStack(spacing: 0) {
             // Search Icon
@@ -31,7 +41,7 @@ private struct SearchHeader: View {
                 .padding([.leading, .trailing], Layout.internalPadding)
 
             // TextField
-            TextField(Localization.placeholder, text: .constant(""))
+            TextField(Localization.placeholder, text: $filterText)
                 .padding([.bottom, .top], Layout.internalPadding)
         }
         .background(Color(.searchBarBackground))
@@ -64,7 +74,7 @@ private extension SearchHeader {
 struct CountrySelector_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            CountrySelector()
+            CountrySelector(viewModel: CountrySelectorViewModel())
         }
     }
 }

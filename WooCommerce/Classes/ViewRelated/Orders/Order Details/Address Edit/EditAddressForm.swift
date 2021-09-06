@@ -125,7 +125,8 @@ struct EditAddressForm: View {
         )
 
         // Go to edit country
-        NavigationLink(destination: CountrySelector(), isActive: $showCountrySelector) {
+        // TODO: Move `CountrySelectorViewModel` to the VM when it exists.
+        NavigationLink(destination: CountrySelector(viewModel: CountrySelectorViewModel()), isActive: $showCountrySelector) {
             EmptyView()
         }
     }

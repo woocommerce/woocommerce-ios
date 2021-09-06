@@ -1,8 +1,8 @@
 import SwiftUI
 
-/// Country Selector View
+/// Filterable List Selector View/
 ///
-struct CountrySelector: View {
+struct FilterListCountrySelector: View {
 
     /// View model to drive the view content
     ///
@@ -52,7 +52,7 @@ private struct SearchHeader: View {
 
 // MARK: Constants
 
-private extension CountrySelector {
+private extension FilterListCountrySelector {
     enum Localization {
         static let title = NSLocalizedString("Country", comment: "Title to select country from the edit address screen")
     }
@@ -74,7 +74,7 @@ private extension SearchHeader {
 struct CountrySelector_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            CountrySelector(viewModel: CountrySelectorViewModel())
+            FilterListCountrySelector(viewModel: CountrySelectorViewModel())
         }
     }
 }

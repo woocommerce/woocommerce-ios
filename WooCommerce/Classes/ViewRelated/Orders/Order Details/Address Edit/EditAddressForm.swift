@@ -7,8 +7,8 @@ import UIKit
 ///
 final class EditAddressHostingController: UIHostingController<EditAddressForm> {
 
-    init() {
-        super.init(rootView: EditAddressForm())
+    init(viewModel: EditAddressFormViewModel) {
+        super.init(rootView: EditAddressForm(viewModel: viewModel))
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -20,9 +20,11 @@ final class EditAddressHostingController: UIHostingController<EditAddressForm> {
 ///
 struct EditAddressForm: View {
 
-    /// Set it to `true` to present the country selector.
-    ///
-    @State var showCountrySelector = false
+    @ObservedObject private var viewModel: EditAddressFormViewModel
+
+    init(viewModel: EditAddressFormViewModel) {
+        self.viewModel = viewModel
+    }
 
     var body: some View {
         GeometryReader { geometry in
@@ -32,28 +34,28 @@ struct EditAddressForm: View {
                 VStack(spacing: 0) {
                     TitleAndTextFieldRow(title: Localization.firstNameField,
                                          placeholder: "",
-                                         text: .constant(""),
+                                         text: $viewModel.firstName,
                                          symbol: nil,
                                          keyboardType: .default)
                     Divider()
                         .padding(.leading, Constants.dividerPadding)
                     TitleAndTextFieldRow(title: Localization.lastNameField,
                                          placeholder: "",
-                                         text: .constant(""),
+                                         text: $viewModel.lastName,
                                          symbol: nil,
                                          keyboardType: .default)
                     Divider()
                         .padding(.leading, Constants.dividerPadding)
                     TitleAndTextFieldRow(title: Localization.emailField,
                                          placeholder: "",
-                                         text: .constant(""),
+                                         text: $viewModel.email,
                                          symbol: nil,
                                          keyboardType: .emailAddress)
                     Divider()
                         .padding(.leading, Constants.dividerPadding)
                     TitleAndTextFieldRow(title: Localization.phoneField,
                                          placeholder: "",
-                                         text: .constant(""),
+                                         text: $viewModel.phone,
                                          symbol: nil,
                                          keyboardType: .phonePad)
                 }
@@ -66,35 +68,35 @@ struct EditAddressForm: View {
                     Group {
                         TitleAndTextFieldRow(title: Localization.companyField,
                                              placeholder: Localization.placeholderOptional,
-                                             text: .constant(""),
+                                             text: $viewModel.company,
                                              symbol: nil,
                                              keyboardType: .default)
                         Divider()
                             .padding(.leading, Constants.dividerPadding)
                         TitleAndTextFieldRow(title: Localization.address1Field,
                                              placeholder: "",
-                                             text: .constant(""),
+                                             text: $viewModel.address1,
                                              symbol: nil,
                                              keyboardType: .default)
                         Divider()
                             .padding(.leading, Constants.dividerPadding)
                         TitleAndTextFieldRow(title: Localization.address2Field,
                                              placeholder: "Optional",
-                                             text: .constant(""),
+                                             text: $viewModel.address2,
                                              symbol: nil,
                                              keyboardType: .default)
                         Divider()
                             .padding(.leading, Constants.dividerPadding)
                         TitleAndTextFieldRow(title: Localization.cityField,
                                              placeholder: "",
-                                             text: .constant(""),
+                                             text: $viewModel.city,
                                              symbol: nil,
                                              keyboardType: .default)
                         Divider()
                             .padding(.leading, Constants.dividerPadding)
                         TitleAndTextFieldRow(title: Localization.postcodeField,
                                              placeholder: "",
-                                             text: .constant(""),
+                                             text: $viewModel.postcode,
                                              symbol: nil,
                                              keyboardType: .default)
                         Divider()
@@ -103,7 +105,7 @@ struct EditAddressForm: View {
 
                     Group {
                         TitleAndValueRow(title: Localization.countryField, value: Localization.placeholderSelectOption, selectable: true) {
-                            showCountrySelector = true
+                            viewModel.showCountrySelector = true
                         }
                         Divider()
                             .padding(.leading, Constants.dividerPadding)
@@ -121,12 +123,11 @@ struct EditAddressForm: View {
         .navigationBarItems(trailing: Button(Localization.done) {
             // TODO: save changes
         }
-        .disabled(true) // TODO: enable if there are pending changes
-        )
+        .disabled(!viewModel.isDoneButtonEnabled))
 
         // Go to edit country
         // TODO: Move `CountrySelectorViewModel` to the VM when it exists.
-        NavigationLink(destination: CountrySelector(viewModel: CountrySelectorViewModel()), isActive: $showCountrySelector) {
+        NavigationLink(destination: CountrySelector(viewModel: CountrySelectorViewModel()), isActive: $viewModel.showCountrySelector) {
             EmptyView()
         }
     }
@@ -166,10 +167,28 @@ private extension EditAddressForm {
 
 #if DEBUG
 
+import struct Yosemite.Address
+
 struct EditAddressForm_Previews: PreviewProvider {
+    static let sampleAddress = Address(firstName: "Johnny",
+                                       lastName: "Appleseed",
+                                       company: nil,
+                                       address1: "234 70th Street",
+                                       address2: nil,
+                                       city: "Niagara Falls",
+                                       state: "NY",
+                                       postcode: "14304",
+                                       country: "US",
+                                       phone: "333-333-3333",
+                                       email: "scrambled@scrambled.com")
+
+    static let sampleViewModel: EditAddressFormViewModel = {
+        return EditAddressFormViewModel(address: sampleAddress)
+    }()
+
     static var previews: some View {
         NavigationView {
-            EditAddressForm()
+            EditAddressForm(viewModel: sampleViewModel)
         }
     }
 }

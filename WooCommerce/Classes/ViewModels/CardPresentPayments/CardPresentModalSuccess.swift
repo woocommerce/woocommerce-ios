@@ -75,7 +75,7 @@ private extension CardPresentModalSuccess {
         )
 
         static let noThanks = NSLocalizedString(
-            "No thanks",
+            "Back to Order",
             comment: "Button to dismiss modal overlay. Presented to users after a payment has been successfully collected"
         )
     }

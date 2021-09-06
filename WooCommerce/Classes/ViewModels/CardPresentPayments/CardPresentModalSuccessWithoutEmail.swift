@@ -3,9 +3,6 @@ import UIKit
 /// Modal presented when the payment has been collected successfully
 final class CardPresentModalSuccessWithoutEmail: CardPresentPaymentsModalViewModel {
 
-    /// Amount charged
-    private let amount: String
-
     /// Closure to execute when primary button is tapped
     private let printReceiptAction: () -> Void
 
@@ -14,9 +11,7 @@ final class CardPresentModalSuccessWithoutEmail: CardPresentPaymentsModalViewMod
 
     let topTitle: String = Localization.paymentSuccessful
 
-    var topSubtitle: String? {
-        amount
-    }
+    var topSubtitle: String? = nil
 
     let image: UIImage = .celebrationImage
 
@@ -30,8 +25,7 @@ final class CardPresentModalSuccessWithoutEmail: CardPresentPaymentsModalViewMod
 
     let bottomSubtitle: String? = nil
 
-    init(amount: String, printReceipt: @escaping () -> Void) {
-        self.amount = amount
+    init(printReceipt: @escaping () -> Void) {
         self.printReceiptAction = printReceipt
     }
 

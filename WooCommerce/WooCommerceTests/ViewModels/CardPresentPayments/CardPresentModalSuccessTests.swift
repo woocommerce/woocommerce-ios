@@ -8,7 +8,7 @@ final class CardPresentModalSuccessTests: XCTestCase {
     override func setUp() {
         super.setUp()
         closures = Closures()
-        viewModel = CardPresentModalSuccess(amount: Expectations.amount, printReceipt: closures.printReceipt(), emailReceipt: closures.emailReceipt())
+        viewModel = CardPresentModalSuccess(printReceipt: closures.printReceipt(), emailReceipt: closures.emailReceipt())
     }
 
     override func tearDown() {
@@ -25,8 +25,8 @@ final class CardPresentModalSuccessTests: XCTestCase {
         XCTAssertNotNil(viewModel.topTitle)
     }
 
-    func test_topSubtitle_provides_expected_title() {
-        XCTAssertEqual(viewModel.topSubtitle, Expectations.amount)
+    func test_topSubtitle_is_nil() {
+        XCTAssertNil(viewModel.topSubtitle)
     }
 
     func test_primary_button_title_is_not_nil() {
@@ -65,7 +65,6 @@ final class CardPresentModalSuccessTests: XCTestCase {
 
 private extension CardPresentModalSuccessTests {
     enum Expectations {
-        static var amount = "amount"
         static var image = UIImage.celebrationImage
     }
 }

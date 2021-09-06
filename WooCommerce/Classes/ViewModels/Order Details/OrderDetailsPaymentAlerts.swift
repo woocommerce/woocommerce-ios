@@ -103,9 +103,9 @@ private extension OrderDetailsPaymentAlerts {
 
     func successViewModel(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         if MFMailComposeViewController.canSendMail() {
-            return CardPresentModalSuccess(amount: amount, printReceipt: printReceipt, emailReceipt: emailReceipt)
+            return CardPresentModalSuccess(printReceipt: printReceipt, emailReceipt: emailReceipt)
         } else {
-            return CardPresentModalSuccessWithoutEmail(amount: amount, printReceipt: printReceipt)
+            return CardPresentModalSuccessWithoutEmail(printReceipt: printReceipt)
         }
     }
 

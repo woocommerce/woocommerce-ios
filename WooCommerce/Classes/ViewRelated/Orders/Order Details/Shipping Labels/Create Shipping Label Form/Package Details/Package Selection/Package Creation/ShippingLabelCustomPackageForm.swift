@@ -131,7 +131,6 @@ struct ShippingLabelCustomPackageForm: View {
         }
         .background(Color(.listBackground))
         .ignoresSafeArea(.container, edges: .horizontal)
-        .minimalNavigationBarBackButton()
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing, content: {
                 Button(Localization.doneButton, action: {

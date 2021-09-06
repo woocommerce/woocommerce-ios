@@ -3,6 +3,7 @@ import Yosemite
 
 struct ShippingLabelAddNewPackage: View {
     @StateObject var viewModel: ShippingLabelAddNewPackageViewModel
+    @Environment(\.presentationMode) var presentation
 
     var body: some View {
         GeometryReader { geometry in
@@ -27,6 +28,16 @@ struct ShippingLabelAddNewPackage: View {
             .ignoresSafeArea(.container, edges: .horizontal)
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        presentation.wrappedValue.dismiss()
+                    } label: {
+                        Image(uiImage: .chevronLeftImage.imageFlippedForRightToLeftLayoutDirection())
+                    }
+                }
+            }
         }
     }
 }

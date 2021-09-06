@@ -8,7 +8,6 @@ struct ShippingLabelServicePackageList: View {
     var body: some View {
         servicePackageListView
             .background(Color(.listBackground))
-            .minimalNavigationBarBackButton()
     }
 
     @ViewBuilder

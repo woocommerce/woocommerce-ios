@@ -181,10 +181,7 @@ struct EditAddressForm_Previews: PreviewProvider {
                                        country: "US",
                                        phone: "333-333-3333",
                                        email: "scrambled@scrambled.com")
-
-    static let sampleViewModel: EditAddressFormViewModel = {
-        return EditAddressFormViewModel(address: sampleAddress)
-    }()
+    static let sampleViewModel = EditAddressFormViewModel(address: sampleAddress)
 
     static var previews: some View {
         NavigationView {

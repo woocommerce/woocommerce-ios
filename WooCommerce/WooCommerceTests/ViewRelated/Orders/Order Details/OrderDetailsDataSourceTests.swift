@@ -259,6 +259,50 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         storageManager.viewStorage.saveIfNeeded()
     }
 
+    func test_collect_payment_button_is_visible_if_order_is_eligible_and_currency_is_usd() throws {
+        // Setup
+        let account = storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+
+        // Given
+        let order = makeOrder().copy(status: .processing, currency: "usd", datePaid: .some(nil), total: "100", paymentMethodID: "cod")
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        dataSource.configureResultsControllers { }
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
+
+        // Clean up
+        storageManager.viewStorage.deleteObject(account)
+        storageManager.viewStorage.saveIfNeeded()
+    }
+
+    func test_collect_payment_button_is_not_visible_if_order_currency_is_not_usd() throws {
+        // Setup
+        let account = storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+
+        // Given
+        let order = makeOrder().copy(status: .processing, currency: "cad", datePaid: .some(nil), total: "100", paymentMethodID: "cod")
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        dataSource.configureResultsControllers { }
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        XCTAssertNil(row(row: .collectCardPaymentButton, in: paymentSection))
+
+        // Clean up
+        storageManager.viewStorage.deleteObject(account)
+        storageManager.viewStorage.saveIfNeeded()
+    }
+
     func test_create_shipping_label_button_is_visible_for_eligible_order_with_no_labels() throws {
         // Given
         let order = makeOrder()

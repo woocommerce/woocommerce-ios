@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-08-19 20:49:51+0000 */
+/* Translation-Revision-Date: 2021-09-03 21:59:12+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -170,6 +170,12 @@
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
 
+/* A label prompting users to learn more about HS Tariff Number with an embedded hyperlink in Customs screen of Shipping Label flow */
+"<a href=\"https:\/\/docs.woocommerce.com\/document\/woocommerce-shipping-and-tax\/woocommerce-shipping\/#section-29\">Learn more<\/a> about HS Tariff Number" = "<a href=\"https:\/\/docs.woocommerce.com\/document\/woocommerce-shipping-and-tax\/woocommerce-shipping\/#section-29\">Meer informatie<\/a> over het HS Tariff-nummer";
+
+/* A label prompting users to learn more about internal transaction number with an embedded hyperlink */
+"<a href=\"https:\/\/pe.usps.com\/text\/imm\/immc5_010.htm\">Learn more<\/a> about Internal Transaction Number" = "<a href=\"https:\/\/pe.usps.com\/text\/imm\/immc5_010.htm\">Meer informatie<\/a> over het interne transactienummer";
+
 /* A label prompting users to learn more about card readers with an embedded hyperlink */
 "<a href=\"https:\/\/woocommerce.com\/payments\">Learn more<\/a> about accepting payments with your mobile device and ordering card readers" = "<a href=\"https:\/\/woocommerce.com\/payments\">Meer informatie<\/a> over het aannemen van betalingen met je mobiele apparaat en het bestellen van kaartlezers";
 
@@ -181,6 +187,9 @@
 
 /* Description of the Action sheet option when the user wants to change the Product type to grouped product */
 "A collection of related products" = "Een verzameling gerelateerde producten";
+
+/* Error message when there was a network error checking In-Person Payments requirements */
+"A network error occurred. Please check your connection and try again." = "Er is een netwerkfout opgetreden. Controleer je verbinding en probeer het nogmaals.";
 
 /* Error shown in Shipping Label Origin Address validation for phone number field for international shipment */
 "A phone number is required because this shipment requires a customs form" = "Een telefoonnummer is verplicht omdat deze verzending een douaneformulier vereist";
@@ -252,6 +261,9 @@
 
 /* Action to add new attribute on the Product Attributes screen */
 "Add New Attribute" = "Nieuwe eigenschap toevoegen";
+
+/* Add New Package screen title in Shipping Label flow */
+"Add New Package" = "Nieuw pakket toevoegen";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "Foto toevoegen";
@@ -510,6 +522,9 @@
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "Vetgedrukt";
 
+/* Box package type, used to create a custom package in the Shipping Label flow */
+"Box" = "Doos";
+
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "Knoptekst";
 
@@ -535,7 +550,7 @@
 "Can Not Request Link" = "Kan link niet aanvragen";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to cancel a payment - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to cancel a payment - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. */
 "Cancel" = "Annuleren";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -639,8 +654,7 @@
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "Verbinding maken met lezer";
 
-/* Settings > Manage Card Reader > Prompt user to connect their first reader
-   Settings > Manage Card Reader > Prompt user to connect their reader */
+/* Settings > Manage Card Reader > Prompt user to connect their first reader */
 "Connect your card reader" = "Je kaartlezer koppelen";
 
 /* Link on the store picker when there are no stores available. Opens a webview about Jetpack setup. */
@@ -664,6 +678,9 @@
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "Verbinden met WordPress.com";
 
+/* Title when checking if WooCommerce Payments is supported */
+"Connecting to your account" = "Je account koppelen";
+
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "Contact opnemen met klant";
 
@@ -685,6 +702,12 @@
 
 /* Title of a button to contact support in the survey complete screen */
 "Contact us here" = "Neem hier contact met ons op";
+
+/* Title for the Content Details row in Customs screen of Shipping Label flow */
+"Content Details" = "Gegevens inhoud";
+
+/* Title for the Content Type row in Customs screen of Shipping Label flow */
+"Content Type" = "Type inhoud";
 
 /* Continue button inside every cell inside Create Shipping Label form
    The button title text when there is a next step for logging in or signing up. - Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
@@ -750,6 +773,9 @@
 /* Error showed in Shipping Label Address Validation for the country field */
 "Country missing" = "Land ontbreekt";
 
+/* Description for the Origin Country row in Customs screen of Shipping Label flow */
+"Country where the product was manufactured or assembled" = "Land waarin het product is geproduceerd of samengesteld";
+
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "Debug-menu voor crashes";
 
@@ -762,6 +788,9 @@
 /* Create Shipping Label form navigation title
    Text on the button that starts shipping label creation */
 "Create Shipping Label" = "Verzendlabel aanmaken";
+
+/* Button to create a new package in Shipping Label Package screen */
+"Create new package" = "Nieuw pakket aanmaken";
 
 /* The title of the shipping labels top banner in order details */
 "Create shipping labels from your device!" = "Maak verzendlabels vanaf je apparaat!";
@@ -795,6 +824,12 @@
    Placeholder name of a custom shipment tracking carrier - Title of button to add a custom tracking carrier if filtering the list yields no results. */
 "Custom Carrier" = "Aangepaste bezorger";
 
+/* Custom line index in Customs Form of Shipping Label flow */
+"Custom Line %1$d" = "Aangepaste regel %1$d";
+
+/* Custom Package menu in Shipping Label Add New Package flow */
+"Custom Package" = "Aangepast pakket";
+
 /* Error shown in Shipping Label Origin Address validation for phone number when the it doesn't have expected length for international shipment. */
 "Custom forms require a 10-digit phone number" = "Voor douaneformulieren is een tiencijferig telefoonnummer verplicht";
 
@@ -809,11 +844,12 @@
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
 "Customer paid a %1$@ of %2$@ for shipping" = "Klant heeft %1$@ van %2$@ betaald aan verzendkosten";
 
-/* Title of the cell Customs inside Create Shipping Label form */
+/* Navigation title for Customs screen in Shipping Label flow
+   Title of the cell Customs inside Create Shipping Label form */
 "Customs" = "Douane";
 
 /* Details text in the shipping label creation info screen */
-"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Vermijd wachttijden bij het postkantoor door verzendlabels thuis af te drukken, tegen afgeprijsde tarieven!";
+"Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "Vermijd wachttijden bij het postkantoor door verzendlabels thuis te printen vanaf je mobiele apparaat, tegen lagere tarieven!";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "Datum van verzending";
@@ -841,7 +877,7 @@
 "Describe your product to your future customers..." = "Beschrijf je product voor je toekomstige klanten...";
 
 /* The navigation bar title of the Aztec editor screen.
-   Title in the Product description row on Product form screen when the description is non-empty. */
+   Title in the Product description row on Product form screen when the description is non-empty. - Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "Beschrijving";
 
 /* Screen title: Details Order number. Parameters: %1$@ - order number */
@@ -872,7 +908,7 @@
 "Discard changes" = "Wijzigingen annuleren";
 
 /* Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader */
-"Disconnect" = "Verbinding verbreken";
+"Disconnect Reader" = "Lezer loskoppelen";
 
 /* Discount label for payment view */
 "Discount" = "Korting";
@@ -890,18 +926,21 @@
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "Wil je dit product naar de prullenbak verplaatsen?";
 
+/* Type Documents of content to be declared for the customs form in Shipping Label flow */
+"Documents" = "Documenten";
+
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Heb je geen account? _Aanmelden_";
 
 /* Action title to select products to add to a grouped product from search results
-   Done navigation button in shipping label carrier and rates screen - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files */
+   Done navigation button in selection list screens - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the edit customer provided note screen */
 "Done" = "Klaar";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
 "Don’t know how to print from your device?" = "Weet je niet hoe je kan afdrukken vanaf je apparaat?";
 
 /* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
-"Don’t know how to print from your phone?" = "Weet je niet hoe je kan afdrukken vanaf je telefoon?";
+"Don’t know how to print from your mobile device?" = "Weet je niet hoe je moet printen vanaf je mobiele apparaat?";
 
 /* WordPress.com (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
 "Dotcom Error: [%1$@] %2$@" = "Dotcom-fout: [%1$@] %2$@";
@@ -968,6 +1007,9 @@
    Navigation title for the Product Attributes screen */
 "Edit Attributes" = "Wijzig eigenschappen";
 
+/* Title for the edit customer provided note screen */
+"Edit Note" = "Notitie bewerken";
+
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "Producten bewerken";
 
@@ -1002,6 +1044,9 @@
 /* Accessibility text for Unit Input cell */
 "Empty" = "Leegmaken";
 
+/* Title for the row to enter the empty package weight on the Add New Custom Package screen in Shipping Label flow */
+"Empty Package Weight" = "Leeg pakketgewicht";
+
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Lege URL";
 
@@ -1021,6 +1066,12 @@
    Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
 "Enter Another Store" = "Een andere winkel invoeren";
 
+/* Placeholder for the ITN row in Customs screen of Shippling Label flow */
+"Enter ITN (Optional)" = "Voer ITN in (optioneel)";
+
+/* Placeholder for the row to enter the package name on the Add New Custom Package screen in Shipping Label flow */
+"Enter Name" = "Voer naam in";
+
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "Voer URL in";
 
@@ -1031,8 +1082,14 @@
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "Voer naam van bezorgservice in";
 
+/* Placeholder of Description row of item details in Customs screen of Shipping Label flow */
+"Enter description" = "Voer beschrijving in";
+
 /* Title of the downloadable file bottom sheet action for adding file from an URL. */
 "Enter file URL" = "Voer bestand-URL in";
+
+/* Placeholder of HS Tariff Number row in Package Content section in Customs screen of Shipping Label flow */
+"Enter number (Optional)" = "Voer nummer in (optioneel)";
 
 /* Enter password placeholder in Product Visibility */
 "Enter password" = "Voer wachtwoord in";
@@ -1074,6 +1131,9 @@
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "Voer je wachtwoord in.";
+
+/* Envelope package type, used to create a custom package in the Shipping Label flow */
+"Envelope" = "Envelop";
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Er is een fout opgetreden bij het vinden van het adres op Apple Maps";
@@ -1154,6 +1214,12 @@
 /* The hint button's title text to help users find their store address. */
 "Find your store address" = "Zoek het adres van je winkel";
 
+/* Button to set up the WooCommerce Payments plugin after installing it */
+"Finish Setup in Store Admin" = "Configuratie voltooien in winkelbeheer";
+
+/* Title for the error screen when WooCommerce Payments is installed but not set up */
+"Finish setup WooCommerce Payments in your store admin" = "Rond het instellen van WooCommerce Payments af bij je winkelbeheer";
+
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Follow your favorite sites and discover new blogs." = "Volg je favoriete sites en ontdek nieuwe blogs.";
 
@@ -1197,6 +1263,9 @@
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "Account informatie ophalen";
 
+/* Type Gift of content to be declared for the customs form in Shipping Label flow */
+"Gift" = "Cadeau";
+
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    The title of the button to give feedback about shipping labels features on the banner in order details - Title of the button to give feedback about the add-ons feature - Title on the navigation bar for the products feedback survey */
 "Give feedback" = "Geef feedback";
@@ -1225,6 +1294,12 @@
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "HOE KUNNEN WE HELPEN?";
+
+/* Title of HS Tariff Number row in Package Content section in Customs screen of Shipping Label flow */
+"HS Tariff Number" = "HS Tariff-nummer";
+
+/* Validation error for HS Tariff Number row in Customs screen of Shipping Label flow */
+"HS Tariff Number must be 6 digits long" = "HS Tariff-nummer moet uit 6 tekens bestaan";
 
 /* Accessibility label for HTML button on formatting toolbar.
    HTML Attachment Label */
@@ -1269,7 +1344,8 @@
 /* H6 Aztec Style */
 "Heading 6" = "Kop 6";
 
-/* Title of the cell in Product Shipping Settings > Height */
+/* Title for the row to enter the package height on the Add New Custom Package screen in Shipping Label flow
+   Title of the cell in Product Shipping Settings > Height */
 "Height" = "Hoogte";
 
 /* Help and Support navigation title
@@ -1297,6 +1373,15 @@
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "ARTIKELEN OM TE VOLTOOIEN";
+
+/* Title for the ITN row in Customs screen of Shipping Label flow */
+"ITN" = "ITN";
+
+/* Error message for missing ITN for destination country inCustoms screen of Shipping Label flow. The placeholder is the destination country. */
+"ITN is required for shipments to %1$@" = "ITN is vereist voor zendingen naar %1$@";
+
+/* Error message for missing ITN for tariff number valued over $2,500 inCustoms screen of Shipping Label flow */
+"ITN is required for shipping items valued over $2,500 per tariff number" = "ITN is vereist voor verzending van artikelen die meer dan $ 2500 waard zijn per tariefcode.";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Als deze functie is uitgeschakeld, is de opmerking privé";
@@ -1336,8 +1421,12 @@
    Title for the In-Person Payments settings screen */
 "In-Person Payments" = "Fysieke betalingen";
 
-/* Title for the error screen when In-Person Payments is unavailable */
+/* Title for the error screen when In-Person Payments is unavailable
+   Title for the error screen when the Stripe account is restricted because it's under reviw - Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
 "In-Person Payments is currently unavailable" = "Fysieke betalingen zijn momenteel niet beschikbaar.";
+
+/* Title for the error screen when the Stripe account rejected. */
+"In-Person Payments isn't available for this store" = "Fysieke betalingen zijn niet beschikbaar voor deze winkel";
 
 /* Application's Inactive State */
 "Inactive" = "Inactief";
@@ -1377,6 +1466,9 @@
 
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates */
 "Insurance (up to %1$@)" = "Verzekering (tot %1$@)";
+
+/* Error message for invalid format of ITN in Customs screen of Shipping Label flow */
+"Invalid ITN format" = "Ongeldige ITN-indeling";
 
 /* The title of the alert when there is an error updating the product SKU */
 "Invalid Product SKU" = "Ongeldige product-SKU";
@@ -1424,6 +1516,15 @@
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "Cursief";
 
+/* Error message for missing value in Description row in Customs screen of Shipping Label flow */
+"Item description is required" = "Beschrijving artikel is vereist";
+
+/* Error message for missing value in Value row in Customs screen of Shipping Label flow */
+"Item value must be larger than 0" = "Waarde artikel moet meer zijn dan 0";
+
+/* Error message for missing value in Weight row in Customs screen of Shipping Label flow */
+"Item weight must be larger than 0" = "Gewicht artikel moet meer zijn dan 0";
+
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack is een gratis WordPress-plugin die aan je winkel wordt gekoppeld en tools voor de beste mobiele ervaring biedt, waaronder pushmeldingen en statistieken";
 
@@ -1459,7 +1560,7 @@
 "Learn more about Jetpack" = "Meer informatie over Jetpack";
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
-"Learn more about creating labels with your phone" = "Meer informatie over labels met je telefoon aanmaken";
+"Learn more about creating labels with your mobile device" = "Meer informatie over labels met je mobiele apparaat aanmaken";
 
 /* Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
 "Learn more about roles and permissions" = "Meer informatie over rollen en machtigingen";
@@ -1467,7 +1568,8 @@
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal (8,5 x 14 inch)";
 
-/* Title of the cell in Product Shipping Settings > Length */
+/* Title for the row to enter the package length on the Add New Custom Package screen in Shipping Label flow
+   Title of the cell in Product Shipping Settings > Length */
 "Length" = "Lengte";
 
 /* Title of letter paper size option for printing a shipping label */
@@ -1571,8 +1673,11 @@
 "Make your products easier to find with tags" = "Maak je producten eenvoudiger te vinden met tags";
 
 /* Card reader settings screen title
-   Navigates to Card Reader management screen - Settings > Manage Card Reader > Title for the no-reader-connected screen in settings. - Settings > Manage Card Reader > Title for the reader connected screen in settings. */
+   Settings > Manage Card Reader > Title for the no-reader-connected screen in settings. - Settings > Manage Card Reader > Title for the reader connected screen in settings. */
 "Manage Card Reader" = "Kaartlezer beheren";
+
+/* Navigates to Card Reader management screen */
+"Manage card reader" = "Kaartlezer beheren";
 
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "Voorraad beheren";
@@ -1617,6 +1722,9 @@
 
 /* Placeholder in the Product Menu Order row on Edit Product Menu Order screen. */
 "Menu order" = "Menuvolgorde";
+
+/* Type Merchandise of content to be declared for the customs form in Shipping Label flow */
+"Merchandise" = "Merchandise";
 
 /* Message phone number button title */
 "Message" = "Bericht";
@@ -1706,6 +1814,9 @@
    Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "Geen adres opgegeven.";
 
+/* Title for the error screen when there was a network error checking In-Person Payments requirements. */
+"No connection" = "Geen verbinding";
+
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Geen gegevens beschikbaar";
 
@@ -1754,7 +1865,7 @@
 "No thanks" = "Nee, liever niet";
 
 /* Display label for the order fee's tax status setting option
-   Display label for the product's tax status setting option */
+   Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow */
 "None" = "Geen";
 
 /* Instructions after a Magic Link was sent, but the email can't be found in their inbox. */
@@ -1865,6 +1976,9 @@
    Order Total label for payment view */
 "Order Total" = "Totaalaantal bestellingen";
 
+/* Navigates to Card Reader ordering screen */
+"Order card reader" = "Kaartlezer bestellen";
+
 /* Order status update success notice */
 "Order status updated" = "Bestelstatus bijgewerkt";
 
@@ -1878,7 +1992,14 @@
 /* Subtitle of the product form bottom sheet action for editing categories. */
 "Organise your products into related groups" = "Organiseer je producten in gerelateerde groepen";
 
-/* My Store > Settings > Other app section */
+/* Title for the Origin Country row in Customs screen of Shipping Label flow */
+"Origin Country" = "Land van herkomst";
+
+/* Error message for missing value in Origin Country row in Customs screen of Shipping Label flow */
+"Origin Country is required" = "Land van herkomst is vereist";
+
+/* My Store > Settings > Other app section
+   Restriction type Other for contents declared in the customs form for Shipping Label flow - Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "Overige";
 
 /* Display label for the product's inventory stock status */
@@ -1890,19 +2011,29 @@
 /* Product section title */
 "PRODUCT" = "PRODUCT";
 
-/* Package term in Shipping Labels. Reads like Package 1 */
+/* Package index in Customs screen of Shipping Label flow
+   Package term in Shipping Labels. Reads like Package 1 */
 "Package %1$d" = "Pakket %1$d";
 
 /* Order shipping label package section title format. The number indicates the index of the shipping label package. */
 "Package %d" = "Pakket %d";
 
+/* Title of Package Content section in Customs screen of Shipping Label flow */
+"Package Content" = "Inhoud van het pakket";
+
 /* Navigation bar title of shipping label package details screen
    Title of package details in shipping label details - Title of the cell Package Details inside Create Shipping Label form */
 "Package Details" = "Pakketgegevens";
 
+/* Title for the row to enter the package name on the Add New Custom Package screen in Shipping Label flow */
+"Package Name" = "Naam pakket";
+
 /* Package Selected screen title in Shipping Label flow
    Title of the row for selecting a package in Shipping Label Package Detail screen */
 "Package Selected" = "Geselecteerd pakket";
+
+/* Title for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
+"Package Type" = "Pakkettype";
 
 /* The title for the customer payment cell */
 "Paid" = "Betaald";
@@ -1968,6 +2099,12 @@
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "Je product wordt naar de prullenbak verplaatst ...";
 
+/* Error message for missing explanation when Content Typeis Other in Customs screen of Shipping Label flow */
+"Please describe what kind of goods this package contains" = "Omschrijf welk soort goederen dit pakket bevat";
+
+/* Error message for missing comments when Restriction Typeis Other in Customs screen of Shipping Label flow */
+"Please describe what kind of restrictions this package must have" = "Omschrijf welk soort beperkingen dit pakket moet hebben";
+
 /* Error state description in shipping label carrier and rates screen */
 "Please double check your package dimensions and weight or try using a different package in Package Details." = "Controleer uitvoerig de afmetingen en het gewicht van je pakket of probeer een ander pakket bij Pakketgegevens.";
 
@@ -1976,6 +2113,9 @@
 
 /* Error message shown when a URL is invalid. */
 "Please enter a complete website address, like example.com." = "Voer een compleet websiteadres in, zoals example.com.";
+
+/* Product price error notice message, when the sale price was not set during a sale setup */
+"Please enter a sale price for the scheduled sale" = "Voer een verkoopprijs in voor de geplande verkoop";
 
 /* No comment provided by engineer. */
 "Please enter a site address." = "Een site-adres invoeren.";
@@ -2022,8 +2162,11 @@
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "Probeer het nog eens.";
 
+/* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
+"Please update your reader software to keep accepting payments" = "Werk de software van je lezer bij zodat je betalingen kunt blijven aannemen";
+
 /* Message of in-progress modal when requesting shipping label document for printing
-   Message of the in-progress UI while purchasing a shipping label - Text on the loading view of the survey screen indicating the user to wait */
+   Message of the in-progress UI while purchasing a shipping label - Message when checking if WooCommerce Payments is supported - Text on the loading view of the survey screen indicating the user to wait */
 "Please wait" = "Een moment geduld";
 
 /* Instructions for the progress screen while generating a variation */
@@ -2071,7 +2214,7 @@
 "Print Shipping Label" = "Verzendlabel afdrukken";
 
 /* Navigation bar title of shipping label printing instructions screen */
-"Print from your Phone" = "Afdrukken vanaf je telefoon";
+"Print from your mobile device" = "Printen vanaf uw mobiele apparaat";
 
 /* Button to print receipts. Presented to users after a payment has been successfully collected */
 "Print receipt" = "Kwitantie afdrukken";
@@ -2210,6 +2353,9 @@
 /* Format of the stock quantity on the Inventory Settings row */
 "Quantity: %@" = "Aantal: %@";
 
+/* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
+"Quarantine" = "Quarantaine";
+
 /* Subtitle for Contact WooCommerce Payments Support */
 "Reach our happiness engineers who can help answer payments related questions" = "Neem contact op met onze Happiness Engineers, die alle lastige vragen met betrekking tot betalingen kunnen beantwoorden";
 
@@ -2338,6 +2484,12 @@
 /* The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "Je wachtwoord opnieuw instellen.";
 
+/* Title for the Restriction Details row in Customs screen of Shipping Label flow */
+"Restriction Details" = "Gegevens beperking";
+
+/* Title for the Restriction Type row in Customs screen of Shipping Label flow */
+"Restriction Type" = "Soort beperking";
+
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "Haalt een lijst op met bestellingen die een bepaald trefwoord bevatten.";
 
@@ -2345,8 +2497,11 @@
 "Retrieves a list of products that contain a given keyword." = "Haalt een lijst op met producten die een bepaald trefwoord bevatten.";
 
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
-   Retry Action - Retry the last action */
+   Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry the last action */
 "Retry" = "Opnieuw";
+
+/* Title for the return policy in Customs screen of Shipping Label flow */
+"Return to sender if package is unable to be delivered" = "Terugsturen naar afzender als het pakket niet kan worden geleverd";
 
 /* Revenue stat label on dashboard. */
 "Revenue" = "Inkomsten";
@@ -2394,6 +2549,12 @@
 
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "Prijs tijdens de sale: %@";
+
+/* Type Sample of content to be declared for the customs form in Shipping Label flow */
+"Sample" = "Monster";
+
+/* Restriction type Sanitary / Phytosanitary Inspection for contents declared in the customs form for Shipping Label flow */
+"Sanitary \/ Phytosanitary Inspection" = "Sanitaire\/fytosanitaire inspectie";
 
 /* Action for saving a Product remotely
    Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. */
@@ -2471,6 +2632,12 @@
 /* Page title for the select a different store screen */
 "Select Store" = "Winkel selecteren";
 
+/* Placeholder for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
+"Select Type" = "Selecteer type";
+
+/* Placeholder for the selected package in the Shipping Labels Package Details screen */
+"Select a package" = "Selecteer een pakket";
+
 /* Message title of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "Selecteer een producttype";
 
@@ -2507,8 +2674,14 @@
 /* The button title text for sending a magic link. */
 "Send Link by Email" = "Link per e-mail verzenden";
 
+/* Service Package menu in Shipping Label Add New Package flow */
+"Service Package" = "Servicepakket";
+
 /* Tells user to set an email that support can use for replies */
 "Set email" = "E-mail instellen";
+
+/* Header text on Add New Custom Package screen in Shipping Label flow */
+"Set up the package you'll be using to ship your products. We'll save it for future orders." = "Configureer het pakket dat je gaat gebruiken voor de verzending van je producten. We slaan het dan op voor toekomstige bestellingen.";
 
 /* Accessibility label for the Settings button.
    Settings navigation title */
@@ -3027,6 +3200,15 @@
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "De variatie kon niet worden gegenereerd .";
 
+/* Error message when the Stripe account is restricted because there are pending requirements */
+"There are pending requirements in your account. Please complete those requirements by" = "Er zijn openstaande verplichtingen op je account. Voldoe aan deze verplichtingen vóór";
+
+/* Error message when WooCommerce Payments is not supported because there are pending requirements in the Stripe account.%1$d will contain the localized deadline (e.g. August 11, 2021) */
+"There are pending requirements in your account. Please complete those requirements by %1$@ to keep accepting in-Person Payments." = "Er zijn openstaande verplichtingen op je account. Voltooi deze verplichtingen vóór %1$@ om fysieke betalingen te kunnen blijven aannemen.";
+
+/* Error message when WooCommerce Payments is not supportedThere are pending requirements in the Stripe account (without a known deadline) */
+"There are pending requirements in your account. Please complete those requirements to keep accepting in-Person Payments." = "Er zijn openstaande verplichtingen op je account. Voltooi deze verplichtingen om fysieke betalingen te kunnen blijven aannemen.";
+
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "Er is een probleem opgetreden bij het blokkeren van berichten van de opgegeven site.";
 
@@ -3214,6 +3396,12 @@
 /* Settings > Manage Card Reader > Connect > Hint to enable Bluetooth */
 "Turn mobile device Bluetooth on" = "Zet de Bluetooth aan op je mobiele apparaat";
 
+/* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
+"Type of contents" = "Type inhoud";
+
+/* Placeholder for the Restriction Details row in Customs screen of Shipping Label flow */
+"Type of restriction" = "Type beperking";
+
 /* Navigation bar title for editing the URL of a text link
    URL text field placeholder */
 "URL" = "URL";
@@ -3268,6 +3456,9 @@
 
 /* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
 "Unable to successfully connect to %@" = "Kan geen goede verbinding tot stand brengen met %@";
+
+/* Title for the error screen when In-Person Payments is unavailable */
+"Unable to verify In-Person Payments for this store" = "Fysieke betalingen kunnen niet worden geverifieerd voor deze winkel";
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "Niet mogelijk om e-mailadres te verifiëren. Probeer het later opnieuw.";
@@ -3334,6 +3525,9 @@
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "Bestelstatus bijwerken";
 
+/* Settings > Manage Card Reader > Connected Reader > A button to update the reader software */
+"Update Reader Software" = "Lezersoftware bijwerken";
+
 /* Subtitle of the product form bottom sheet action for editing inventory settings. */
 "Update product inventory and SKU" = "Productvoorraad en SKU bijwerken";
 
@@ -3385,6 +3579,9 @@
 
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "Gebruikersnaam moet minimaal 4 karakters bevatten.";
+
+/* Title for the Value row in item details in Customs screen of Shipping Label flow */
+"Value (%1$@ per unit)" = "Waarde (%1$@ per eenheid)";
 
 /* Display label for variable product type. */
 "Variable" = "Variabele";
@@ -3481,6 +3678,9 @@
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Watch your audience grow with in-depth analytics." = "Zie hoe je publiek groeit met uitgebreide statistieken.";
 
+/* Error message when WooCommerce Payments is not supported because the Stripe account has been rejected */
+"We are sorry but we can't support In-Person Payments for this store." = "We kunnen helaas fysieke betalingen niet voor deze winkel ondersteunen.";
+
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "We zijn bezig om het eenvoudiger voor je te maken om extra opties voor je product vanaf je apparaat te bekijken! Voor nu kun je de extra opties voor je bestellingen weergeven. Je kunt deze extra opties maken en bewerken vanaf je webdashboard.";
 
@@ -3542,11 +3742,20 @@
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "Sorry, we kunnen geen resultaten vinden voor '%@'";
 
+/* Generic error message when In-Person Payments is unavailable */
+"We're sorry, we were unable to verify In-Person Payments for this store." = "We kunnen fysieke betalingen helaas niet verifiëren voor deze winkel.";
+
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "We hebben je een aanmeldlink toegestuurd om je nieuwe WordPress.com-account aan te maken. Controleer je e-mail op dit apparaat en tik op de link in de e-mail die je van WordPress.com ontvangt.";
 
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "Gewicht";
+
+/* Title for the Weight row in item details in Customs screen of Shipping Label flow */
+"Weight (%1$@ per unit)" = "Gewicht (%1$@ per eenheid)";
+
+/* Footer text for the empty package weight on the Add New Custom Package screen in Shipping Label flow */
+"Weight of empty package" = "Gewicht van leeg pakket";
 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "Gewicht: %1$@%2$@";
@@ -3576,7 +3785,8 @@
 /* Error message shown when an incorrect two factor code is provided. */
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "Oeps, dat is geen geldige twee-factor verificatiecode. Controleer de code en probeer nogmaals.";
 
-/* Title of the cell in Product Shipping Settings > Width */
+/* Title for the row to enter the package width on the Add New Custom Package screen in Shipping Label flow
+   Title of the cell in Product Shipping Settings > Width */
 "Width" = "Breedte";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
@@ -3635,11 +3845,20 @@
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "Je kan dat e-mailadres niet gebruiken om je aan te melden. We hebben problemen met het blokkeren van sommige e-mailadressen. Probeer een andere e-mail provider.";
 
+/* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
+"You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "Je hebt ten minste openstaande verplichting op je account. Rond de verplichting af om fysieke betalingen te blijven ontvangen";
+
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "Je moet een wachtwoord toevoegen om je product met een wachtwoord te beschermen";
 
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Het lijkt erop dat je een mobiele plugin van DudaMobile hebt geïnstalleerd die voorkomt dat de app zich kan verbinden met je blog";
+
+/* Error message when WooCommerce Payments is not supported because the Stripe account is under review */
+"You'll be able to accept In-Person Payments as soon as we finish reviewing your account." = "Je kunt fysieke betalingen aannemen zodra we je account hebben gecontroleerd.";
+
+/* Title for the error screen when the Stripe account is restricted because there are pending requirements */
+"Your WooCommerce Payments account has pending requirements" = "Je WooCommerce Payments-account heeft verplichtingen open staan";
 
 /* shown in promotional screens during first launch */
 "Your notifications travel with you — see comments and likes as they happen." = "Je meldingen reizen met je mee. Bekijk reacties en likes wanneer ze binnenkomen.";
@@ -3655,6 +3874,9 @@
 
 /* Error message when WooCommerce Payments is not installed */
 "You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "Je moet de gratis WooCommerce Payments-extensie installeren in je winkel om fysieke betalingen aan te nemen.";
+
+/* Error message when WooCommerce Payments is installed but not set up */
+"You’re almost there! Please finish setting up WooCommerce Payments to start accepting Card-Present Payments." = "Je bent bijna klaar! Rond het instellen van WooCommerce Payments af om betalingen met fysieke betaalkaart (Card-Present) aan te nemen.";
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[REACTIE]";

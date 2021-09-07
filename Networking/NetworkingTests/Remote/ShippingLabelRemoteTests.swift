@@ -201,6 +201,44 @@ final class ShippingLabelRemoteTests: XCTestCase {
         XCTAssertTrue(successResponse)
     }
 
+    func test_createPackage_returns_success_response_with_only_custom_package() throws {
+        // Given
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "packages", filename: "generic_success_data")
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            remote.createPackage(siteID: self.sampleSiteID,
+                                 customPackage: ShippingLabelCustomPackage.fake(),
+                                 predefinedOption: nil) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let successResponse = try XCTUnwrap(result.get())
+        XCTAssertTrue(successResponse)
+    }
+
+    func test_createPackage_returns_success_response_with_only_service_package() throws {
+        // Given
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "packages", filename: "generic_success_data")
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            remote.createPackage(siteID: self.sampleSiteID,
+                                 customPackage: nil,
+                                 predefinedOption: ShippingLabelPredefinedOption.fake()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let successResponse = try XCTUnwrap(result.get())
+        XCTAssertTrue(successResponse)
+    }
+
     func test_createPackage_returns_error_on_failure() throws {
         // Given
         let remote = ShippingLabelRemote(network: network)
@@ -222,7 +260,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
         XCTAssertEqual(result.failure as? DotcomError, expectedError)
     }
 
-    func test_createPackage_returns_missingPackage_error() throws {
+    func test_createPackage_returns_missingPackage_error_with_no_packages() throws {
         // Given
         let remote = ShippingLabelRemote(network: network)
 

@@ -26,7 +26,6 @@ final class ShippingLabelAddNewPackageViewModel: ObservableObject {
     private var packagesResponse: ShippingLabelPackagesResponse?
 
     @Published var dismissView = false
-    @Published var showLoadingIndicator = false
 
     /// Completion callback
     ///
@@ -66,7 +65,6 @@ extension ShippingLabelAddNewPackageViewModel {
         let group = DispatchGroup()
 
         group.enter()
-        showLoadingIndicator = true
         createPackage(customPackage: newCustomPackage) { [weak self] in
             group.enter()
             self?.syncPackageDetails() {
@@ -76,7 +74,6 @@ extension ShippingLabelAddNewPackageViewModel {
         }
 
         group.notify(queue: .main) { [weak self] in
-            self?.showLoadingIndicator = false
             self?.dismissView = true
             self?.customPackageVM = ShippingLabelCustomPackageFormViewModel()
             self?.onCompletion(newCustomPackage, nil, self?.packagesResponse)
@@ -107,7 +104,6 @@ extension ShippingLabelAddNewPackageViewModel {
         }
 
         group.notify(queue: .main) { [weak self] in
-            self?.showLoadingIndicator = false
             self?.dismissView = true
             self?.servicePackageVM.packagesResponse = self?.packagesResponse
             self?.onCompletion(nil, selectedServicePackage, self?.packagesResponse)

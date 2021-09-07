@@ -53,6 +53,23 @@ final class EditAddressFormViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.isDoneButtonEnabled)
     }
+
+    func test_creating_without_address_disables_done_button() {
+        // Given
+        let viewModel = EditAddressFormViewModel(address: nil)
+
+        // Then
+        XCTAssertFalse(viewModel.isDoneButtonEnabled)
+    }
+
+    func test_creating_with_address_with_empty_nullable_fields_disables_done_button() {
+        // Given
+        let address = sampleAddressWithEmptyNullableFields()
+        let viewModel = EditAddressFormViewModel(address: address)
+
+        // Then
+        XCTAssertFalse(viewModel.isDoneButtonEnabled)
+    }
 }
 
 private extension EditAddressFormViewModelTests {
@@ -68,5 +85,19 @@ private extension EditAddressFormViewModelTests {
                        country: "US",
                        phone: "333-333-3333",
                        email: "scrambled@scrambled.com")
+    }
+
+    func sampleAddressWithEmptyNullableFields() -> Address {
+        return Address(firstName: "Johnny",
+                       lastName: "Appleseed",
+                       company: "",
+                       address1: "234 70th Street",
+                       address2: "",
+                       city: "Niagara Falls",
+                       state: "NY",
+                       postcode: "14304",
+                       country: "US",
+                       phone: "",
+                       email: "")
     }
 }

@@ -4,6 +4,7 @@ import Yosemite
 struct ShippingLabelAddNewPackage: View {
     @ObservedObject var viewModel: ShippingLabelAddNewPackageViewModel
     @Environment(\.presentationMode) var presentation
+    @State var isSyncing = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -40,16 +41,30 @@ struct ShippingLabelAddNewPackage: View {
                 }
                 // Done button
                 ToolbarItem(placement: .navigationBarTrailing, content: {
-                    Button(Localization.doneButton, action: {
+                    Button(action: {
+                        isSyncing = true
                         switch viewModel.selectedView {
                         case .customPackage:
                             viewModel.customPackageVM.validatePackage()
                             if viewModel.customPackageVM.validatedCustomPackage != nil {
-                                // TODO-3909: Save custom package and add it to package list
-                                presentation.wrappedValue.dismiss()
+                                viewModel.createCustomPackage()
                             }
                         case .servicePackage:
-                            // TODO-3909: Add selected service package and go back to package list
+                            viewModel.activateServicePackage()
+                        }
+                    }, label: {
+                        if isSyncing {
+                            ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                                .accentColor(Color(.navigationBarLoadingIndicator))
+                        } else {
+                            Text(Localization.doneButton)
+                        }
+                    })
+                    .disabled(isSyncing)
+                    .onReceive(viewModel.$dismissView, perform: { dismiss in
+                        if dismiss {
+                            viewModel.dismissView = false
+                            isSyncing = false
                             presentation.wrappedValue.dismiss()
                         }
                     })
@@ -70,7 +85,9 @@ private extension ShippingLabelAddNewPackage {
 
 struct ShippingLabelAddNewPackage_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = ShippingLabelAddNewPackageViewModel(packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails())
+        let viewModel = ShippingLabelAddNewPackageViewModel(siteID: 12345,
+                                                            packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails(),
+                                                            onCompletion: { _, _, _ in })
 
         ShippingLabelAddNewPackage(viewModel: viewModel)
     }

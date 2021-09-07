@@ -83,7 +83,11 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         return customPackages.count > 0
     }
 
-    lazy var addNewPackageViewModel: ShippingLabelAddNewPackageViewModel = ShippingLabelAddNewPackageViewModel(packagesResponse: packagesResponse)
+    lazy var addNewPackageViewModel = ShippingLabelAddNewPackageViewModel(siteID: order.siteID,
+                                                                          packagesResponse: packagesResponse,
+                                                                          onCompletion: { (customPackage, predefinedOption, packagesResponse) in
+                                                                            self.handleNewPackage(customPackage, predefinedOption, packagesResponse)
+                                                                          })
 
     init(order: Order,
          packagesResponse: ShippingLabelPackagesResponse?,
@@ -323,6 +327,25 @@ extension ShippingLabelPackageDetailsViewModel {
         }
         didSelectPackage(selectedPackageID)
         confirmPackageSelection()
+    }
+
+    /// Selects a newly created custom package or newly activated service package and adds it to the package list
+    ///
+    func handleNewPackage(_ customPackage: ShippingLabelCustomPackage?,
+                          _ servicePackage: ShippingLabelPredefinedPackage?,
+                          _ packagesResponse: ShippingLabelPackagesResponse?) {
+        guard let packagesResponse = packagesResponse else {
+            return
+        }
+
+        self.packagesResponse = packagesResponse
+
+        if let customPackage = customPackage {
+            selectCustomPackage(customPackage.title)
+        }
+        else if let servicePackage = servicePackage {
+            selectPredefinedPackage(servicePackage.id)
+        }
     }
 }
 

@@ -62,7 +62,7 @@ struct ShippingLabelPackageList: View {
                 }))
 
                 if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsAddCustomPackages) {
-                    NavigationLink(destination: ShippingLabelAddNewPackage(packagesResponse: viewModel.packagesResponse),
+                    NavigationLink(destination: ShippingLabelAddNewPackage(viewModel: viewModel.addNewPackageViewModel),
                                    isActive: $isShowingNewPackageCreation) {
                         EmptyView()
                     }

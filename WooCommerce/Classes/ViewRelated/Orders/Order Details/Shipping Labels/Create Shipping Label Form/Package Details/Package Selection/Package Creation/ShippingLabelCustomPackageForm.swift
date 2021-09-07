@@ -3,15 +3,10 @@ import Combine
 
 /// Form to create a new custom package to use with shipping labels.
 struct ShippingLabelCustomPackageForm: View {
-    private let safeAreaInsets: EdgeInsets
-
     @Environment(\.presentationMode) var presentation
-    @StateObject private var viewModel = ShippingLabelCustomPackageFormViewModel()
+    @ObservedObject var viewModel: ShippingLabelCustomPackageFormViewModel
     @State private var showingPackageTypes = false
-
-    init(safeAreaInsets: EdgeInsets) {
-        self.safeAreaInsets = safeAreaInsets
-    }
+    let safeAreaInsets: EdgeInsets
 
     var body: some View {
         VStack(spacing: Constants.verticalSpacing) {
@@ -207,7 +202,9 @@ private extension ShippingLabelCustomPackageForm {
 
 struct ShippingLabelAddCustomPackage_Previews: PreviewProvider {
     static var previews: some View {
-        ShippingLabelCustomPackageForm(safeAreaInsets: .zero)
+        let viewModel = ShippingLabelCustomPackageFormViewModel()
+
+        ShippingLabelCustomPackageForm(viewModel: viewModel, safeAreaInsets: .zero)
             .previewLayout(.sizeThatFits)
     }
 }

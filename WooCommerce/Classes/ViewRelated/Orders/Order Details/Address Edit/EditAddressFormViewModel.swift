@@ -3,13 +3,13 @@ import Yosemite
 final class EditAddressFormViewModel: ObservableObject {
 
     init(address: Address?) {
-        self.originalAddress = address
+        self.originalAddress = address ?? .empty
         updateFieldsWithOriginalAddress()
     }
 
     /// Original `Address` model.
     ///
-    private let originalAddress: Address?
+    private let originalAddress: Address
 
     // MARK: User Fields
 
@@ -31,29 +31,12 @@ final class EditAddressFormViewModel: ObservableObject {
     /// Return `true` if the done button should be enabled.
     ///
     var isDoneButtonEnabled: Bool {
-        guard let originalAddress = originalAddress else {
-            return true
-        }
-
-        return !(firstName == originalAddress.firstName &&
-                    lastName == originalAddress.lastName &&
-                    email == originalAddress.email ?? "" &&
-                    phone == originalAddress.phone ?? "" &&
-
-                    company == originalAddress.company ?? "" &&
-                    address1 == originalAddress.address1 &&
-                    address2 == originalAddress.address2 ?? "" &&
-                    city == originalAddress.city &&
-                    postcode == originalAddress.postcode)
-
-        // TODO: Add country and state check
+        return originalAddress != addressFromFields
     }
 }
 
 private extension EditAddressFormViewModel {
     func updateFieldsWithOriginalAddress() {
-        guard let originalAddress = originalAddress else { return }
-
         firstName = originalAddress.firstName
         lastName = originalAddress.lastName
         email = originalAddress.email ?? ""
@@ -66,5 +49,19 @@ private extension EditAddressFormViewModel {
         postcode = originalAddress.postcode
 
         // TODO: Add country and state init
+    }
+
+    var addressFromFields: Address {
+        Address(firstName: firstName,
+                lastName: lastName,
+                company: company.isEmpty ? nil : company,
+                address1: address1,
+                address2: company.isEmpty ? nil : company,
+                city: city,
+                state: originalAddress.state, // TODO: replace with local value
+                postcode: postcode,
+                country: originalAddress.country, // TODO: replace with local value
+                phone: phone.isEmpty ? nil : phone,
+                email: email.isEmpty ? nil : email)
     }
 }

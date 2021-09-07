@@ -280,12 +280,18 @@ extension StripeCardReaderService: CardReaderService {
             }
 
             if let locationId = stripeReader.locationId {
+                print("==== location ID ", locationId)
                 let connectionConfiguration = BluetoothConnectionConfiguration(locationId: locationId)
 
                 Terminal.shared.connectBluetoothReader(stripeReader,
                                                        delegate: self,
                                                        connectionConfig: connectionConfiguration) { [weak self] (reader, error) in
+                    print("===== connecton completed ")
+                    print(" reader ", reader)
+                    print(" error ", error)
+                    print("///// connecton completed ")
                     guard let self = self else {
+                        print("=== there is no self")
                         promise(.failure(CardReaderServiceError.connection()))
                         return
                     }
@@ -294,17 +300,22 @@ extension StripeCardReaderService: CardReaderService {
                     self.discoveredStripeReadersCache.clear()
 
                     if let error = error {
+                        print("===== conecction error ")
+                        print(error)
+                        print("///// conecction error ")
                         let underlyingError = UnderlyingError(with: error)
                         promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
                     }
 
                     if let reader = reader {
+                        print("==== reader found ", reader)
                         self.connectedReadersSubject.send([CardReader(reader: reader)])
                         self.switchStatusToIdle()
                         promise(.success(CardReader(reader: reader)))
                     }
                 }
             } else {
+                print("==== we need to fetch location ID ")
                 self.readerLocationProvider?.fetchDefaultLocationID { [weak self] (location, error) in
                     guard let self = self else {
                         promise(.failure(CardReaderServiceError.connection()))
@@ -312,6 +323,9 @@ extension StripeCardReaderService: CardReaderService {
                     }
                     
                     if let error = error {
+                        print("===== conecction error ")
+                        print(error)
+                        print("///// conecction error ")
                         let underlyingError = UnderlyingError(with: error)
                         promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
                     }
@@ -331,6 +345,9 @@ extension StripeCardReaderService: CardReaderService {
                             self.discoveredStripeReadersCache.clear()
 
                             if let error = error {
+                                print("===== conecction error ")
+                                print(error)
+                                print("///// conecction error ")
                                 let underlyingError = UnderlyingError(with: error)
                                 promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
                             }

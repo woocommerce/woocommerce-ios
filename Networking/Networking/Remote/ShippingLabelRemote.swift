@@ -142,11 +142,12 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
                               predefinedOption: ShippingLabelPredefinedOption?,
                               completion: @escaping (Result<Bool, Error>) -> Void) {
         do {
-            var customPackageDictionary: [String: Any] = [:]
+            var customPackageList: [[String: Any]] = []
             var predefinedOptionDictionary: [String: [String]] = [:]
 
             if let customPackage = customPackage {
-                customPackageDictionary = try customPackage.toDictionary()
+                let customPackageDictionary = try customPackage.toDictionary()
+                customPackageList = [customPackageDictionary]
             } else if let predefinedOption = predefinedOption {
                 let packageIDs = predefinedOption.predefinedPackages.map({ $0.id })
                 predefinedOptionDictionary = [predefinedOption.providerID: packageIDs]
@@ -155,7 +156,7 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
             }
 
             let parameters: [String: Any] = [
-                ParameterKey.custom: [customPackageDictionary],
+                ParameterKey.custom: customPackageList,
                 ParameterKey.predefined: predefinedOptionDictionary
             ]
             let path = Path.packages

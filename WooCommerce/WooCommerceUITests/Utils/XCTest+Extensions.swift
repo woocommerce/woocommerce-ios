@@ -1,17 +1,5 @@
 import XCTest
 
-var isIPhone: Bool {
-    return UIDevice.current.userInterfaceIdiom == .phone
-}
-
-var isIpad: Bool {
-    return UIDevice.current.userInterfaceIdiom == .pad
-}
-
-var isDarkMode: Bool {
-    return UIViewController().traitCollection.userInterfaceStyle == .dark
-}
-
 let navBackButton = XCUIApplication().navigationBars.element(boundBy: 0).buttons.element(boundBy: 0)
 
 extension XCUIElement {
@@ -33,10 +21,6 @@ extension XCUIElement {
         clearTextIfNeeded()
         self.tap()
         self.typeText(text)
-    }
-
-    var stringValue: String? {
-        return self.value as? String
     }
 }
 
@@ -131,11 +115,6 @@ extension XCTestCase {
         guard element.exists && !element.frame.isEmpty && element.isHittable else { return false }
         return XCUIApplication().windows.element(boundBy: 0).frame.contains(element.frame)
     }
-
-    // A shortcut to scroll TableViews or CollectionViews to top
-    func tapStatusBarToScrollToTop() {
-        XCUIApplication().statusBars.firstMatch.tap()
-    }
 }
 
 extension XCUIElement {
@@ -146,28 +125,5 @@ extension XCUIElement {
         let destination = startCoordinate.withOffset(CGVector(dx: deltaX, dy: deltaY * -1))
 
         startCoordinate.press(forDuration: 0.01, thenDragTo: destination)
-    }
-
-    @discardableResult
-    func waitForHittability(timeout: TimeInterval) -> Bool {
-
-        let predicate = NSPredicate(format: "isHittable == true")
-        let elementPredicate = XCTNSPredicateExpectation(predicate: predicate, object: self)
-        let result = XCTWaiter.wait(for: [elementPredicate], timeout: timeout)
-
-        return result == .completed
-    }
-}
-
-extension XCUIElementQuery {
-    var lastMatch: XCUIElement? {
-        return self.allElementsBoundByIndex.last
-    }
-
-    var allElementsShareCommonXAxis: Bool {
-        let elementXPositions = allElementsBoundByIndex.map { $0.frame.minX }
-
-        // Use a set to remove duplicates – if all elements are the same, only one should remain
-        return Set(elementXPositions).count == 1
     }
 }

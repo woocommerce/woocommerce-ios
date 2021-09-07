@@ -1,5 +1,3 @@
-Envoyer une note par e-mail à un client pour une commande sans adresse e-mail n’a pas de sens, c’est pourquoi nous masquons désormais cette option dans cette situation.
+Cette version contient quelques améliorations mineures qui rendent votre expérience plus fluide. Dans les détails de la commande, certaines extensions tierces n’affichaient pas logiquement les métadonnées de produits. Nous avons apporté quelques modifications pour améliorer l’affichage des détails de ces produits. Nous masquons désormais le bouton de remboursement de commande lorsque le montant total est égal à zéro.
 
-Certains marchands nous ont signalé que les commandes avec des prix négatifs ne s’affichaient pas correctement. Nous avons résolu ce problème, vous devriez donc vous sentir plus positif !
-
-Cette version contient également plusieurs petites amélioration pour rendre votre expérience globale plus fluide. Nous espérons que vous remarquerez tout l’amour que nous mettons dans notre logiciel.
+Cette mise à jour inclut également plusieurs améliorations à la fonctionnalité d’étiquette d’expédition utilisant l’extension WooCommerce Shipping & Tax. Nous apprécions tous vos commentaires sur cette nouvelle fonctionnalité !

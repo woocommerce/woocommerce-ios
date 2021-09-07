@@ -1,5 +1,3 @@
-Het e-mailen van een opmerking naar een klant voor een bestelling zonder e-mailadres klinkt niet logisch. Zodoende hebben we die optie in zo'n geval verborgen.
+Deze release bevat tal van kleine verbeteringen om je ervaring soepeler te laten verlopen. Sommige extensies van derden gaven product-metagegevens niet op logische wijze weer in de bestellingsgegevens. We hebben ervoor gezorgd dat de weergave van dergelijke productgegevens verbeterd is. De knop bestelling terugbetalen is nu verborgen wanneer het totale bedrag nul is.
 
-Sommige verkopers hebben ons gemeld dat bestellingen met negatieve prijzen niet correct werden weergegeven. Dit probleem hebben we verholpen. Hopelijk voel je je iets positiever!
-
-Deze release bevat ook tal van kleine verbeteringen om je ervaring in het algemeen soepeler te laten verlopen. We hopen dat je merkt dat we dit met liefde doen.
+Deze update omvat tevens enkele verbeteringen van de verzendlabel-functie bij het gebruik van WooCommerce Shipping & Tax-extensie. Feedback op deze nieuwe functie is welkom!

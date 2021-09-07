@@ -1,5 +1,3 @@
-No tiene mucho sentido mandar una nota de un pedido por correo electrónico a un cliente que no tiene correo electrónico. Por eso, vamos a ocultar esa opción si es el caso.
+Esta versión incluye unas cuantas minimejoras para que la experiencia sea más fluida. En los detalles del pedido, algunas extensiones de terceros no mostraban lógicamente los metadatos del producto. Hemos hecho cambios para mejorar la visualización de esos detalles del producto. Ahora el botón de reembolso del pedido se oculta cuando el importe total es cero.
 
-Algunos vendedores nos han dicho que los pedidos con precios negativos no se mostraban correctamente. Ya lo hemos arreglado, ¡ahora deberías estar más positivo!
-
-Esta versión también incluye unas cuantas minimejoras para que la experiencia sea más fluida en general. Esperamos que seas consciente del cariño que le ponemos a nuestro software.
+Esta actualización también incluye varias mejoras en la función de etiquetas de envío mediante la extensión WooCommerce Shipping & Tax. Apreciamos todos vuestros comentarios sobre esta nueva función.

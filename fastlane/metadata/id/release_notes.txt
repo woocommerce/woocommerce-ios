@@ -1,5 +1,3 @@
-Mengirimkan catatan melalui email kepada pelanggan untuk pesanan tanpa alamat email merupakan tindakan mustahil – karenanya, kini kami menyembunyikan opsi tersebut.
+Peluncuran ini menyertakan beberapa perbaikan kecil untuk menghadirkan pengalaman yang lebih lancar. Pada detail pesanan, beberapa ekstensi pihak ketiga tidak secara logis menampilkan metadata produk. Kami melakukan beberapa perubahan untuk meningkatkan tampilan detail produk tersebut. Kami kini menyembunyikan tombol pengembalian dana pesanan jika jumlah totalnya nol.
 
-Beberapa penjual menyebutkan bahwa pesanan dengan harga negatif tidak ditampilkan dengan benar. Kami sudah memperbaiki masalah tersebut, jadi Anda tak perlu khawatir!
-
-Peluncuran ini juga mengandung banyak perbaikan kecil agar pengalaman Anda makin mulus. Kami harap Anda menyukai upaya yang kami berikan pada perangkat lunak kami.
+Pembaruan ini juga mencakup beberapa peningkatan pada fitur label pengiriman menggunakan Ekstensi Pengiriman & Pajak WooCommerce. Kami menghargai semua saran Anda pada fitur-fitur baru ini!

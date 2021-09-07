@@ -83,6 +83,8 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         return customPackages.count > 0
     }
 
+    lazy var addNewPackageViewModel: ShippingLabelAddNewPackageViewModel = ShippingLabelAddNewPackageViewModel(packagesResponse: packagesResponse)
+
     init(order: Order,
          packagesResponse: ShippingLabelPackagesResponse?,
          selectedPackageID: String?,

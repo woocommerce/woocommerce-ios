@@ -1,5 +1,3 @@
-Att skicka en anteckning till en kund för en beställning utan e-postadress är inte särskilt meningsfullt – så det alternativet döljs nu i sådana fall.
+Den här versionen innehåller en handfull mindre förbättringar som ska göra din upplevelse smidigare. Vissa tredjepartsutökningar visade inte produktmetadata logiskt i beställningsinformationen. Vi har gjort vissa ändringar för att förbättra visningen av denna produktinformation. Vi döljer nu knappen för beställningsåterbetalning när det totala beloppet är noll.
 
-Vissa handlare har nämnt att beställningar med negativa priser inte visades korrekt. Vi har åtgärdat det felet, så nu kan du känna dig mer positiv!
-
-Den här versionen innehåller även en mängd mindre förbättringar som ska göra din upplevelse smidigare. Vi hoppas att du kommer att märka hur mycket arbete vi lägger ned på vår programvara.
+Denna uppdatering inkluderar även flera förbättringar av fraktetikettfunktionen i utökningen WooCommerce Shipping & Tax. Vi värdesätter din feedback rörande denna nya funktion!

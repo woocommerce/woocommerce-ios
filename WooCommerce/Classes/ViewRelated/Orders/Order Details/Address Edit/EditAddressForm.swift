@@ -24,6 +24,10 @@ struct EditAddressForm: View {
     ///
     @State var showCountrySelector = false
 
+    /// Set it to `true` to present the state selector.
+    ///
+    @State var showStateSelector = false
+
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
@@ -107,7 +111,9 @@ struct EditAddressForm: View {
                         }
                         Divider()
                             .padding(.leading, Constants.dividerPadding)
-                        TitleAndValueRow(title: Localization.stateField, value: Localization.placeholderSelectOption, selectable: true) { }
+                        TitleAndValueRow(title: Localization.stateField, value: Localization.placeholderSelectOption, selectable: true) {
+                            showStateSelector = true
+                        }
                     }
                 }
                 .padding(.horizontal, insets: geometry.safeAreaInsets)
@@ -125,8 +131,14 @@ struct EditAddressForm: View {
         )
 
         // Go to edit country
-        // TODO: Move `CountrySelectorViewModel` to the VM when it exists.
-        NavigationLink(destination: CountrySelector(viewModel: CountrySelectorViewModel()), isActive: $showCountrySelector) {
+        // TODO: Move `CountrySelectorViewModel` creation to the VM when it exists.
+        NavigationLink(destination: FilterListSelector(viewModel: CountrySelectorViewModel()), isActive: $showCountrySelector) {
+            EmptyView()
+        }
+
+        // Go to edit state
+        // TODO: Move `StateSelectorViewModel` creation to the VM when it exists.
+        NavigationLink(destination: FilterListSelector(viewModel: StateSelectorViewModel()), isActive: $showStateSelector) {
             EmptyView()
         }
     }

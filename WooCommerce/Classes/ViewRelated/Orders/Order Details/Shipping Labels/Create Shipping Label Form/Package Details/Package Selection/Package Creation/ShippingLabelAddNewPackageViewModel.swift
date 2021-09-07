@@ -1,5 +1,6 @@
 import UIKit
 import SwiftUI
+import Yosemite
 
 /// View model for `ShippingLabelAddNewPackage`.
 ///
@@ -9,8 +10,14 @@ final class ShippingLabelAddNewPackageViewModel: ObservableObject {
         PackageViewType(rawValue: selectedIndex) ?? .customPackage
     }
 
-    init(_ selectedIndex: Int = PackageViewType.customPackage.rawValue) {
+    // View models for child views (tabs)
+    let customPackageVM = ShippingLabelCustomPackageFormViewModel()
+    let servicePackageVM: ShippingLabelServicePackageListViewModel
+
+    init(_ selectedIndex: Int = PackageViewType.customPackage.rawValue,
+         packagesResponse: ShippingLabelPackagesResponse?) {
         self.selectedIndex = selectedIndex
+        self.servicePackageVM = ShippingLabelServicePackageListViewModel(packagesResponse: packagesResponse)
     }
 
     enum PackageViewType: Int {

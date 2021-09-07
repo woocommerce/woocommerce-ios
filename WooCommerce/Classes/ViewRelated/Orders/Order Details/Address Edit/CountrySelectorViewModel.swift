@@ -16,18 +16,6 @@ final class CountrySelectorViewModel: FilterListSelectorViewModelable, Observabl
         }
     }
 
-    /// ResultsController for stored countries, replaces `command` with new content.
-    ///
-    private lazy var countriesResultsController: ResultsController<StorageCountry> = {
-        let countriesDescriptor = NSSortDescriptor(key: "name", ascending: true)
-        let resultsController = ResultsController<StorageCountry>(storageManager: storageManager, sortedBy: [countriesDescriptor])
-
-        resultsController.onDidChangeContent = { [weak self] in
-            self?.command = CountrySelectorCommand(countries: resultsController.fetchedObjects)
-        }
-        return resultsController
-    }()
-
     /// Command that powers the `ListSelector` view.
     ///
     private(set) var command = CountrySelectorCommand(countries: []) {
@@ -35,6 +23,13 @@ final class CountrySelectorViewModel: FilterListSelectorViewModelable, Observabl
             objectWillChange.send()
         }
     }
+
+    /// ResultsController for stored countries.
+    ///
+    private lazy var countriesResultsController: ResultsController<StorageCountry> = {
+        let countriesDescriptor = NSSortDescriptor(key: "name", ascending: true)
+        return ResultsController<StorageCountry>(storageManager: storageManager, sortedBy: [countriesDescriptor])
+    }()
 
     /// Navigation title
     ///
@@ -44,15 +39,45 @@ final class CountrySelectorViewModel: FilterListSelectorViewModelable, Observabl
     ///
     let filterPlaceholder = Localization.placeholder
 
-    /// Storage to fetch Countries
+    /// Storage to fetch countries
     ///
     private let storageManager: StorageManagerType
 
-    init(storageManager: StorageManagerType = ServiceLocator.storageManager) {
-        self.storageManager = storageManager
+    /// Stores to sync countries
+    ///
+    private let stores: StoresManager
 
-        // Perform initial fetch
+    /// Current `SiteID`, needed to sync countries from a remote source.
+    ///
+    private let siteID: Int64
+
+    init(siteID: Int64, storageManager: StorageManagerType = ServiceLocator.storageManager, stores: StoresManager = ServiceLocator.stores) {
+        self.siteID = siteID
+        self.storageManager = storageManager
+        self.stores = stores
+        fetchAndBindCountries()
+    }
+}
+
+// MARK: Helpers
+private extension CountrySelectorViewModel {
+    /// Fetches & Binds countries from storage, If there are no stored countries, sync them from a remote source.
+    ///
+    func fetchAndBindCountries() {
+        // Bind stored countries & command
+        countriesResultsController.onDidChangeContent = { [weak self] in
+            guard let self = self else { return }
+            self.command = CountrySelectorCommand(countries: self.countriesResultsController.fetchedObjects)
+        }
+
+        // Initial fetch
         try? countriesResultsController.performFetch()
+
+        // Sync countries if needed
+        if countriesResultsController.isEmpty {
+            let action = DataAction.synchronizeCountries(siteID: siteID, onCompletion: { _ in })
+            stores.dispatch(action)
+        }
     }
 }
 

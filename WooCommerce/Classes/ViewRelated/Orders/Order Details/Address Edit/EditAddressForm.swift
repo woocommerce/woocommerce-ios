@@ -190,13 +190,13 @@ struct EditAddressForm_Previews: PreviewProvider {
                                        company: nil,
                                        address1: "234 70th Street",
                                        address2: nil,
-                                       city: "Niagara Falls",
+                                       city: "Niagara Fallsgs",
                                        state: "NY",
                                        postcode: "14304",
                                        country: "US",
                                        phone: "333-333-3333",
                                        email: "scrambled@scrambled.com")
-    static let sampleViewModel = EditAddressFormViewModel(address: sampleAddress)
+    static let sampleViewModel = EditAddressFormViewModel(siteID: 123, address: sampleAddress)
 
     static var previews: some View {
         NavigationView {

@@ -85,11 +85,3 @@ private extension SearchHeader {
         static let externalPadding = EdgeInsets(top: 10, leading: 16, bottom: 10, trailing: 16)
     }
 }
-
-struct FilterListSelector_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationView {
-            FilterListSelector(viewModel: CountrySelectorViewModel())
-        }
-    }
-}

@@ -25,6 +25,8 @@ public final class StripeCardReaderService: NSObject {
 
     /// A lock to ensure that the service only initiates or cancels a discovery process at the same time
     private let discoveryLock = NSLock()
+
+    private var readerLocationProvider: ReaderLocationProvider?
 }
 
 
@@ -277,37 +279,162 @@ extension StripeCardReaderService: CardReaderService {
                 return
             }
 
-            print("===== location id assigned to reader" , stripeReader.locationId)
+            if let locationId = stripeReader.locationId {
+                let connectionConfiguration = BluetoothConnectionConfiguration(locationId: locationId)
 
-            let connectionConfiguration = BluetoothConnectionConfiguration(locationId: stripeReader.locationId ?? "tml_ESCNWwpwlfv5JB")
+                Terminal.shared.connectBluetoothReader(stripeReader,
+                                                       delegate: self,
+                                                       connectionConfig: connectionConfiguration) { [weak self] (reader, error) in
+                    guard let self = self else {
+                        promise(.failure(CardReaderServiceError.connection()))
+                        return
+                    }
 
-            Terminal.shared.connectBluetoothReader(stripeReader,
-                                                   delegate: self,
-                                                   connectionConfig: connectionConfiguration) { [weak self] (reader, error) in
-                guard let self = self else {
-                    promise(.failure(CardReaderServiceError.connection()))
-                    return
+                    // Clear cached readers, as per Stripe's documentation.
+                    self.discoveredStripeReadersCache.clear()
+
+                    if let error = error {
+                        let underlyingError = UnderlyingError(with: error)
+                        promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
+                    }
+
+                    if let reader = reader {
+                        self.connectedReadersSubject.send([CardReader(reader: reader)])
+                        self.switchStatusToIdle()
+                        promise(.success(CardReader(reader: reader)))
+                    }
                 }
+            } else {
+                self.readerLocationProvider?.fetchDefaultLocationID { [weak self] (location, error) in
+                    guard let self = self else {
+                        promise(.failure(CardReaderServiceError.connection()))
+                        return
+                    }
+                    
+                    if let error = error {
+                        let underlyingError = UnderlyingError(with: error)
+                        promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
+                    }
 
-                // Clear cached readers, as per Stripe's documentation.
-                self.discoveredStripeReadersCache.clear()
+                    if let location = location {
+                        let connectionConfiguration = BluetoothConnectionConfiguration(locationId: location)
 
-                if let error = error {
-                    print("======= error connecting ")
-                    print(error)
-                    print("/////// error connecting ")
-                    let underlyingError = UnderlyingError(with: error)
-                    promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
-                }
+                        Terminal.shared.connectBluetoothReader(stripeReader,
+                                                               delegate: self,
+                                                               connectionConfig: connectionConfiguration) { [weak self] (reader, error) in
+                            guard let self = self else {
+                                promise(.failure(CardReaderServiceError.connection()))
+                                return
+                            }
 
-                if let reader = reader {
-                    self.connectedReadersSubject.send([CardReader(reader: reader)])
-                    self.switchStatusToIdle()
-                    promise(.success(CardReader(reader: reader)))
+                            // Clear cached readers, as per Stripe's documentation.
+                            self.discoveredStripeReadersCache.clear()
+
+                            if let error = error {
+                                let underlyingError = UnderlyingError(with: error)
+                                promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
+                            }
+
+                            if let reader = reader {
+                                self.connectedReadersSubject.send([CardReader(reader: reader)])
+                                self.switchStatusToIdle()
+                                promise(.success(CardReader(reader: reader)))
+                            }
+                        }
+                    }
                 }
             }
+
+//            connectionConfiguration(reader: stripeReader).flatMap { [weak self] configuration in
+//                guard let self = self else {
+//                    promise(.failure(CardReaderServiceError.connection()))
+//                    return
+//                }
+//
+//                Terminal.shared.connectBluetoothReader(stripeReader,
+//                                                       delegate: self,
+//                                                       connectionConfig: configuration) { [weak self] (reader, erconnectionConfigurationror) in
+//                    guard let self = self else {
+//                        promise(.failure(CardReaderServiceError.connection()))
+//                        return
+//                    }
+//
+//                    // Clear cached readers, as per Stripe's documentation.
+//                    self.discoveredStripeReadersCache.clear()
+//
+//                    if let error = error {
+//                        let underlyingError = UnderlyingError(with: error)
+//                        promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
+//                    }
+//
+//                    if let reader = reader {
+//                        self.connectedReadersSubject.send([CardReader(reader: reader)])
+//                        self.switchStatusToIdle()
+//                        promise(.success(CardReader(reader: reader)))
+//                    }
+//                }
+//            }
+
+//            return self.connect(stripeReader, configuration: BluetoothConnectionConfiguration(locationId: locationId))
+
+//            let connectionConfiguration = BluetoothConnectionConfiguration(locationId: stripeReader.locationId ?? "tml_ESCNWwpwlfv5JB")
+//
+//            Terminal.shared.connectBluetoothReader(stripeReader,
+//                                                   delegate: self,
+//                                                   connectionConfig: connectionConfiguration) { [weak self] (reader, error) in
+//                guard let self = self else {
+//                    promise(.failure(CardReaderServiceError.connection()))
+//                    return
+//                }
+//
+//                // Clear cached readers, as per Stripe's documentation.
+//                self.discoveredStripeReadersCache.clear()
+//
+//                if let error = error {
+//                    let underlyingError = UnderlyingError(with: error)
+//                    promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
+//                }
+//
+//                if let reader = reader {
+//                    self.connectedReadersSubject.send([CardReader(reader: reader)])
+//                    self.switchStatusToIdle()
+//                    promise(.success(CardReader(reader: reader)))
+//                }
+//            }
         }
     }
+
+//    private func connect(_ reader: StripeTerminal.Reader, configuration: BluetoothConnectionConfiguration) -> Future <CardReader, Error> {
+//        return Future() { [weak self] promise in
+//            guard let self = self else {
+//                promise(.failure(CardReaderServiceError.connection()))
+//                return
+//            }
+//
+//            Terminal.shared.connectBluetoothReader(reader,
+//                                                   delegate: self,
+//                                                   connectionConfig: configuration) { [weak self] (reader, error) in
+//                guard let self = self else {
+//                    promise(.failure(CardReaderServiceError.connection()))
+//                    return
+//                }
+//
+//                // Clear cached readers, as per Stripe's documentation.
+//                self.discoveredStripeReadersCache.clear()
+//
+//                if let error = error {
+//                    let underlyingError = UnderlyingError(with: error)
+//                    promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
+//                }
+//
+//                if let reader = reader {
+//                    self.connectedReadersSubject.send([CardReader(reader: reader)])
+//                    self.switchStatusToIdle()
+//                    promise(.success(CardReader(reader: reader)))
+//                }
+//            }
+//        }
+//    }
 
 //    public func checkForUpdate() -> Future<CardReaderSoftwareUpdate?, Error> {
 //        return Future() { promise in
@@ -334,6 +461,30 @@ extension StripeCardReaderService: CardReaderService {
 //            }
 //        }
 //    }
+
+    private func connectionConfiguration(reader: StripeTerminal.Reader) -> Future<BluetoothConnectionConfiguration, Error> {
+        return Future() { [weak self] promise in
+            guard let self = self else {
+                promise(.failure(CardReaderServiceError.connection()))
+                return
+            }
+
+            if let locationId = reader.locationId {
+                promise(.success(BluetoothConnectionConfiguration(locationId: locationId)))
+            }
+
+            self.readerLocationProvider?.fetchDefaultLocationID { (location, error) in
+                if let error = error {
+                    let underlyingError = UnderlyingError(with: error)
+                    promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
+                }
+
+                if let location = location {
+                    promise(.success(BluetoothConnectionConfiguration(locationId: location)))
+                }
+            }
+        }
+    }
 
     public func installUpdate() -> AnyPublisher<Float, Error> {
         // We create a future for the asynchronous call to installUpdate.
@@ -522,6 +673,8 @@ private extension StripeCardReaderService {
 
 private extension StripeCardReaderService {
     private func setConfigProvider(_ configProvider: CardReaderConfigProvider) {
+        readerLocationProvider = configProvider
+
         let tokenProvider = DefaultConnectionTokenProvider(provider: configProvider)
 
         if !Terminal.hasTokenProvider() {

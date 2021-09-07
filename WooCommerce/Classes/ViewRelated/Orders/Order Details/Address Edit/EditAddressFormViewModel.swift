@@ -28,10 +28,6 @@ final class EditAddressFormViewModel: ObservableObject {
 
     // MARK: Navigation and utility
 
-    /// Set it to `true` to present the country selector.
-    ///
-    @Published var showCountrySelector: Bool = false
-
     /// Return `true` if the done button should be enabled.
     ///
     var isDoneButtonEnabled: Bool {

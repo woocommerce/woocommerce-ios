@@ -22,6 +22,10 @@ struct EditAddressForm: View {
 
     @ObservedObject private var viewModel: EditAddressFormViewModel
 
+    /// Set it to `true` to present the country selector.
+    ///
+    @State var showCountrySelector: Bool = false
+
     init(viewModel: EditAddressFormViewModel) {
         self.viewModel = viewModel
     }
@@ -105,7 +109,7 @@ struct EditAddressForm: View {
 
                     Group {
                         TitleAndValueRow(title: Localization.countryField, value: Localization.placeholderSelectOption, selectable: true) {
-                            viewModel.showCountrySelector = true
+                            showCountrySelector = true
                         }
                         Divider()
                             .padding(.leading, Constants.dividerPadding)
@@ -127,7 +131,7 @@ struct EditAddressForm: View {
 
         // Go to edit country
         // TODO: Move `CountrySelectorViewModel` to the VM when it exists.
-        NavigationLink(destination: CountrySelector(viewModel: CountrySelectorViewModel()), isActive: $viewModel.showCountrySelector) {
+        NavigationLink(destination: CountrySelector(viewModel: CountrySelectorViewModel()), isActive: $showCountrySelector) {
             EmptyView()
         }
     }

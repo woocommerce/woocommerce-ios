@@ -2,7 +2,7 @@ import SwiftUI
 import Yosemite
 
 struct ShippingLabelAddNewPackage: View {
-    @StateObject var viewModel: ShippingLabelAddNewPackageViewModel
+    @ObservedObject var viewModel: ShippingLabelAddNewPackageViewModel
 
     var body: some View {
         GeometryReader { geometry in

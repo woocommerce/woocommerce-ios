@@ -12,17 +12,12 @@ final class CountrySelectorViewModel: FilterListSelectorViewModelable, Observabl
     var searchTerm: String = "" {
         didSet {
             command.filterCountries(term: searchTerm)
-            objectWillChange.send()
         }
     }
 
     /// Command that powers the `ListSelector` view.
     ///
-    private(set) var command = CountrySelectorCommand(countries: []) {
-        didSet {
-            objectWillChange.send()
-        }
-    }
+    @Published private(set) var command = CountrySelectorCommand(countries: [])
 
     /// ResultsController for stored countries.
     ///
@@ -67,7 +62,7 @@ private extension CountrySelectorViewModel {
         // Bind stored countries & command
         countriesResultsController.onDidChangeContent = { [weak self] in
             guard let self = self else { return }
-            self.command = CountrySelectorCommand(countries: self.countriesResultsController.fetchedObjects)
+            self.command.resetCountries(self.countriesResultsController.fetchedObjects)
         }
 
         // Initial fetch

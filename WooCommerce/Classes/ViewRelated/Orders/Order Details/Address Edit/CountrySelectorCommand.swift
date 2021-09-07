@@ -3,17 +3,17 @@ import Yosemite
 
 /// Command to be used to select a country when editing addresses.
 ///
-final class CountrySelectorCommand: ListSelectorCommand {
+final class CountrySelectorCommand: ListSelectorCommand, ObservableObject {
     typealias Model = Country
     typealias Cell = BasicTableViewCell
 
     /// Original array of countries.
     ///
-    private let countries: [Country]
+    private var countries: [Country]
 
     /// Data to display
     ///
-    private(set) var data: [Country]
+    @Published private(set) var data: [Country]
 
     /// Current selected country
     ///
@@ -39,6 +39,13 @@ final class CountrySelectorCommand: ListSelectorCommand {
 
     func configureCell(cell: BasicTableViewCell, model: Country) {
         cell.textLabel?.text = model.name
+    }
+
+    /// Resets countries data.
+    ///
+    func resetCountries(_ countries: [Country]) {
+        self.countries = countries
+        self.data = countries
     }
 
     /// Filter available countries that contains a given search term.

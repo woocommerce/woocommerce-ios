@@ -77,7 +77,7 @@ public class WCPayRemote: Remote {
 
     public func loadDefaultReaderLocation(for siteID: Int64,
                                           onCompletion: @escaping (Result<ReaderLocation, Error>) -> Void) {
-        let mockLocation = ReaderLocation(siteID: siteID, id: "tml_ESCNWwpwlfv5JB", displayName: "st_simulated_display_name")
+        let mockLocation = ReaderLocation(siteID: siteID, id: "tml_ESzXnASTnYZK5y", displayName: "st_simulated_display_name")
         onCompletion(.success(mockLocation))
     }
 }

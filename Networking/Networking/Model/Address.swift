@@ -69,6 +69,20 @@ public struct Address: Decodable, GeneratedFakeable {
                   phone: phone,
                   email: email)
     }
+
+    public static var empty: Address {
+        self.init(firstName: "",
+                  lastName: "",
+                  company: nil,
+                  address1: "",
+                  address2: nil,
+                  city: "",
+                  state: "",
+                  postcode: "",
+                  country: "",
+                  phone: nil,
+                  email: nil)
+    }
 }
 
 extension Address: Equatable {

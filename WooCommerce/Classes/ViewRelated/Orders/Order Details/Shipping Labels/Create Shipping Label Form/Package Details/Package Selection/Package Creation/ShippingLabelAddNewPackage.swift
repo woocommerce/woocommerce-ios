@@ -45,13 +45,20 @@ struct ShippingLabelAddNewPackage: View {
                         switch viewModel.selectedView {
                         case .customPackage:
                             viewModel.customPackageVM.validatePackage()
-                            if viewModel.customPackageVM.validatedCustomPackage != nil {
-                                isSyncing = true
-                                viewModel.createCustomPackage()
+                            guard viewModel.customPackageVM.validatedCustomPackage != nil else { return }
+                            isSyncing = true
+                            viewModel.createCustomPackage() { success in
+                                isSyncing = false
+                                guard success else { return }
+                                presentation.wrappedValue.dismiss()
                             }
                         case .servicePackage:
                             isSyncing = true
-                            viewModel.activateServicePackage()
+                            viewModel.activateServicePackage() { success in
+                                isSyncing = false
+                                guard success else { return }
+                                presentation.wrappedValue.dismiss()
+                            }
                         }
                     }, label: {
                         if isSyncing {
@@ -62,15 +69,6 @@ struct ShippingLabelAddNewPackage: View {
                         }
                     })
                     .disabled(isSyncing)
-                    .onAppear() {
-                        // Dismiss the view after API calls are finished
-                        viewModel.$dismissView.sink { dismiss in
-                            guard dismiss else { return }
-                            viewModel.dismissView = false
-                            isSyncing = false
-                            presentation.wrappedValue.dismiss()
-                        }.cancel()
-                    }
                 })
             }
         }

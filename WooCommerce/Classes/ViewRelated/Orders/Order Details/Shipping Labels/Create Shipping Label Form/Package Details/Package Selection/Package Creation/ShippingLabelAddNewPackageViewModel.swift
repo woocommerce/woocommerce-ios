@@ -25,8 +25,6 @@ final class ShippingLabelAddNewPackageViewModel: ObservableObject {
     }
     private var packagesResponse: ShippingLabelPackagesResponse?
 
-    @Published var dismissView = false
-
     /// Completion callback
     ///
     typealias Completion = (_ customPackage: ShippingLabelCustomPackage? ,
@@ -57,24 +55,15 @@ extension ShippingLabelAddNewPackageViewModel {
 
     /// Creates the custom package remotely and updates the package details to select the new package
     ///
-    func createCustomPackage() {
+    func createCustomPackage(onCompletion: @escaping (Bool) -> Void) {
         guard let newCustomPackage = validatedCustomPackage else {
+            onCompletion(false)
             return
         }
 
-        let group = DispatchGroup()
-
-        group.enter()
-        createPackage(customPackage: newCustomPackage) { [weak self] in
-            group.enter()
-            self?.syncPackageDetails() {
-                group.leave()
-            }
-            group.leave()
-        }
-
-        group.notify(queue: .main) { [weak self] in
-            self?.dismissView = true
+        createPackage(customPackage: newCustomPackage) { [weak self] success in
+            onCompletion(success)
+            guard success else { return }
             self?.customPackageVM = ShippingLabelCustomPackageFormViewModel()
             self?.onCompletion(newCustomPackage, nil, self?.packagesResponse)
         }
@@ -82,9 +71,10 @@ extension ShippingLabelAddNewPackageViewModel {
 
     /// Activates the selected service package remotely and updates the package details to select the new package
     ///
-    func activateServicePackage() {
+    func activateServicePackage(onCompletion: @escaping (Bool) -> Void) {
         guard let selectedServicePackage = selectedServicePackage,
               let shippingProvider = servicePackageVM.predefinedOptions.first(where: { $0.predefinedPackages.contains(selectedServicePackage) } ) else {
+            onCompletion(false)
             return
         }
 
@@ -92,19 +82,10 @@ extension ShippingLabelAddNewPackageViewModel {
                                                            providerID: shippingProvider.providerID,
                                                            predefinedPackages: [selectedServicePackage])
 
-        let group = DispatchGroup()
-
-        group.enter()
-        createPackage(predefinedOption: selectedOption) { [weak self] in
-            group.enter()
-            self?.syncPackageDetails() {
-                group.leave()
-            }
-            group.leave()
-        }
-
-        group.notify(queue: .main) { [weak self] in
-            self?.dismissView = true
+        createPackage(predefinedOption: selectedOption) { [weak self] success in
+            onCompletion(success)
+            guard success else { return }
+            self?.customPackageVM = ShippingLabelCustomPackageFormViewModel()
             self?.servicePackageVM.packagesResponse = self?.packagesResponse
             self?.onCompletion(nil, selectedServicePackage, self?.packagesResponse)
         }
@@ -114,12 +95,14 @@ extension ShippingLabelAddNewPackageViewModel {
 // MARK: - API Requests
 private extension ShippingLabelAddNewPackageViewModel {
 
-    /// Creates a custom package or activates a predefined option remotely
+    /// Creates a custom package or activates a predefined option remotely and (if successful) syncs the package details.
+    /// On completion, indicates if the API calls were successful.
     ///
     func createPackage(customPackage: ShippingLabelCustomPackage? = nil,
                        predefinedOption: ShippingLabelPredefinedOption? = nil,
-                       onCompletion: (() -> Void)? = nil) {
+                       onCompletion: ((Bool) -> Void)? = nil) {
         guard customPackage != nil || predefinedOption != nil else {
+            onCompletion?(false)
             return
         }
 
@@ -128,25 +111,29 @@ private extension ShippingLabelAddNewPackageViewModel {
                                                        predefinedOption: predefinedOption) { result in
             switch result {
             case .success(_):
-                break
+                self.syncPackageDetails() { success in
+                    onCompletion?(success)
+                }
             case .failure(let error):
                 DDLogError("⛔️ Error creating package: \(error.localizedDescription)")
+                onCompletion?(false)
             }
-            onCompletion?()
         }
         stores.dispatch(action)
     }
 
-    func syncPackageDetails(onCompletion: (() -> Void)? = nil) {
+    /// Gets updated package list with new package. On completion, indicates if sync was successful.
+    ///
+    func syncPackageDetails(onCompletion: ((Bool) -> Void)? = nil) {
         let action = ShippingLabelAction.packagesDetails(siteID: siteID) { result in
             switch result {
             case .success(let value):
                 self.packagesResponse = value
+                onCompletion?(true)
             case .failure:
                 DDLogError("⛔️ Error synchronizing package details")
-                return
+                onCompletion?(false)
             }
-            onCompletion?()
         }
         stores.dispatch(action)
     }

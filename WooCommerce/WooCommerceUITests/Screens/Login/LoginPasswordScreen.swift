@@ -26,12 +26,12 @@ final class LoginPasswordScreen: BaseScreen {
     }
 
     func tryProceed(password: String) -> LoginPasswordScreen {
-        XCTAssert(passwordTextField.waitForHittability(timeout: 3))
+        XCTAssert(passwordTextField.waitForIsHittable(timeout: 3))
 
         passwordTextField.paste(text: password)
 
         XCTAssert(loginButton.waitForExistence(timeout: 3))
-        XCTAssert(loginButton.waitForHittability(timeout: 3))
+        XCTAssert(loginButton.waitForIsHittable(timeout: 3))
 
         loginButton.tap()
 

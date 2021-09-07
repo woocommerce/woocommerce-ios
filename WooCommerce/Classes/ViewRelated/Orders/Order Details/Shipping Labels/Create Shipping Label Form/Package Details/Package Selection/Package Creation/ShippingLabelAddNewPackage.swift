@@ -61,13 +61,15 @@ struct ShippingLabelAddNewPackage: View {
                         }
                     })
                     .disabled(isSyncing)
-                    .onReceive(viewModel.$dismissView, perform: { dismiss in
-                        if dismiss {
+                    .onAppear() {
+                        // Dismiss the view after API calls are finished
+                        viewModel.$dismissView.sink { dismiss in
+                            guard dismiss else { return }
                             viewModel.dismissView = false
                             isSyncing = false
                             presentation.wrappedValue.dismiss()
-                        }
-                    })
+                        }.cancel()
+                    }
                 })
             }
         }

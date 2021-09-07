@@ -14,7 +14,7 @@ final class ShippingLabelAddNewPackageViewModel: ObservableObject {
     }
 
     // View models for child views (tabs)
-    let customPackageVM = ShippingLabelCustomPackageFormViewModel()
+    var customPackageVM = ShippingLabelCustomPackageFormViewModel()
     lazy var servicePackageVM = ShippingLabelServicePackageListViewModel(packagesResponse: packagesResponse)
 
     private var validatedCustomPackage: ShippingLabelCustomPackage? {
@@ -78,6 +78,7 @@ extension ShippingLabelAddNewPackageViewModel {
         group.notify(queue: .main) { [weak self] in
             self?.showLoadingIndicator = false
             self?.dismissView = true
+            self?.customPackageVM = ShippingLabelCustomPackageFormViewModel()
             self?.onCompletion(newCustomPackage, nil, self?.packagesResponse)
         }
     }
@@ -106,7 +107,9 @@ extension ShippingLabelAddNewPackageViewModel {
         }
 
         group.notify(queue: .main) { [weak self] in
+            self?.showLoadingIndicator = false
             self?.dismissView = true
+            self?.servicePackageVM.packagesResponse = self?.packagesResponse
             self?.onCompletion(nil, selectedServicePackage, self?.packagesResponse)
         }
     }

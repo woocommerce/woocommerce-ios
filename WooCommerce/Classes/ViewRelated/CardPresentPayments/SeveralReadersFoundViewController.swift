@@ -56,16 +56,16 @@ final class SeveralReadersFoundViewController: UIViewController, UITableViewDele
         }
     }
 
-    func configureController(readerIDs: [String], connect: @escaping ((String) -> Void), cancel: @escaping (() -> Void)) {
+    func configureController(readerIDs: [String], connect: @escaping ((String) -> Void), cancelSearch: @escaping (() -> Void)) {
         self.readerIDs = readerIDs
         onConnect = connect
-        onCancel = cancel
+        onCancel = cancelSearch
     }
 
     func updateReaderIDs(readerIDs: [String]) {
         self.readerIDs = readerIDs
         configureSections()
-        tableView.reloadData()
+        tableView?.reloadData()
     }
 }
 

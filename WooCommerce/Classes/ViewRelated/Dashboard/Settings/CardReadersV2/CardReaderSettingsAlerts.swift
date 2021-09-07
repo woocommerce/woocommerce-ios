@@ -7,6 +7,7 @@ import WordPressUI
 ///
 final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
     private var modalController: CardPresentPaymentsModalViewController?
+    private var severalFoundController: SeveralReadersFoundViewController?
 
     func scanningForReader(from: UIViewController, cancel: @escaping () -> Void) {
         setViewModelAndPresent(from: from, viewModel: scanningForReader(cancel: cancel))
@@ -32,14 +33,62 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         )
     }
 
+    /// Note: `foundSeveralReaders` uses a view controller distinct from the common
+    /// `CardPresentPaymentsModalViewController` to avoid further
+    /// overloading `CardPresentPaymentsModalViewModel`
+    ///
+    /// This will dismiss any view controllers using the common view model first before
+    /// presenting the several readers found modal
+    ///
+    func foundSeveralReaders(from: UIViewController,
+                             readerIDs: [String],
+                             connect: @escaping (String) -> Void,
+                             cancelSearch: @escaping () -> Void) {
+        dismissCommon(animated: false)
+
+        severalFoundController = SeveralReadersFoundViewController()
+        severalFoundController?.configureController(
+            readerIDs: readerIDs,
+            connect: connect,
+            cancelSearch: cancelSearch
+        )
+
+        guard let severalFoundController = severalFoundController else {
+            return
+        }
+
+        from.present(severalFoundController, animated: false)
+    }
+
+    /// Used to update the readers list in the several readers found view
+    ///
+    func updateSeveralReadersList(readerIDs: [String]) {
+        severalFoundController?.updateReaderIDs(readerIDs: readerIDs)
+    }
+
     func dismiss() {
-        modalController?.dismiss(animated: true, completion: { [weak self] in
-            self?.modalController = nil
-        })
+        dismissCommon(animated: true)
+        dismissSeveralFound(animated: true)
     }
 }
 
 private extension CardReaderSettingsAlerts {
+    /// Dismisses any view controller based on `CardPresentPaymentsModalViewController`
+    ///
+    func dismissCommon(animated: Bool = true) {
+        modalController?.dismiss(animated: animated, completion: { [weak self] in
+            self?.modalController = nil
+        })
+    }
+
+    /// Dismisses the `SeveralReadersFoundViewController`
+    ///
+    func dismissSeveralFound(animated: Bool = true) {
+        severalFoundController?.dismiss(animated: animated, completion: { [weak self] in
+            self?.severalFoundController = nil
+        })
+    }
+
     func scanningForReader(cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalScanningForReader(cancel: cancel)
     }
@@ -62,6 +111,8 @@ private extension CardReaderSettingsAlerts {
     }
 
     func setViewModelAndPresent(from: UIViewController, viewModel: CardPresentPaymentsModalViewModel) {
+        dismissSeveralFound(animated: false)
+
         guard modalController == nil else {
             modalController?.setViewModel(viewModel)
             return

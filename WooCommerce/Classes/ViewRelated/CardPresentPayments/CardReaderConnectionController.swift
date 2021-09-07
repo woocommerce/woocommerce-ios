@@ -59,9 +59,6 @@ final class CardReaderConnectionController {
     private var siteID: Int64
     private var knownCardReadersProvider: CardReaderSettingsKnownReadersProvider
     private var alerts: CardReaderSettingsAlertsProvider
-    private lazy var severalFoundReadersViewController: SeveralReadersFoundViewController = {
-        SeveralReadersFoundViewController()
-    }()
 
     /// Reader(s) discovered by the card reader service
     ///
@@ -245,7 +242,7 @@ private extension CardReaderConnectionController {
                 /// If the found-several-readers view is already presenting, update its list of found readers
                 ///
                 if case .foundSeveralReaders = self.state {
-                    self.severalFoundReadersViewController.updateReaderIDs(readerIDs: self.getFoundReaderIDs())
+                    self.alerts.updateSeveralReadersList(readerIDs: self.getFoundReaderIDs())
                 }
 
                 /// If we should switch from a single found reader prompt to several, do so now
@@ -355,9 +352,8 @@ private extension CardReaderConnectionController {
             return
         }
 
-        alerts.dismiss()
-
-        severalFoundReadersViewController.configureController(
+        alerts.foundSeveralReaders(
+            from: from,
             readerIDs: getFoundReaderIDs(),
             connect: { [weak self] readerID in
                 guard let self = self else {
@@ -366,12 +362,10 @@ private extension CardReaderConnectionController {
                 self.candidateReader = self.getFoundReaderByID(readerID: readerID)
                 self.state = .connectToReader
             },
-            cancel: { [weak self] in
+            cancelSearch: { [weak self] in
                 self?.state = .cancel
             }
         )
-
-        from.present(severalFoundReadersViewController, animated: true)
     }
 
     /// End the search for a card reader

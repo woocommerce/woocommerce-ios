@@ -14,6 +14,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
 
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [],
+            discoveredReaders: [],
             sessionManager: SessionManager.testingInstance
         )
         ServiceLocator.setStores(mockStoresManager)
@@ -45,7 +46,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
 
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [],
-            discoveredReader: MockCardReader.bbposChipper2XBT(),
+            discoveredReaders: [MockCardReader.bbposChipper2XBT()],
             sessionManager: SessionManager.testingInstance
         )
         ServiceLocator.setStores(mockStoresManager)
@@ -79,7 +80,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
 
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [],
-            discoveredReader: knownReader,
+            discoveredReaders: [knownReader],
             sessionManager: SessionManager.testingInstance
         )
         ServiceLocator.setStores(mockStoresManager)
@@ -111,6 +112,7 @@ class CardReaderConnectionControllerTests: XCTestCase {
 
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [],
+            discoveredReaders: [],
             sessionManager: SessionManager.testingInstance,
             failDiscovery: true
         )
@@ -134,4 +136,69 @@ class CardReaderConnectionControllerTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    func test_finding_multiple_readers_presents_list_to_user_and_cancelling_list_calls_completion_with_success_false() {
+        // Given
+        let expectation = self.expectation(description: #function)
+
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [],
+            discoveredReaders: [MockCardReader.bbposChipper2XBT(), MockCardReader.bbposChipper2XBT()],
+            sessionManager: SessionManager.testingInstance
+        )
+        ServiceLocator.setStores(mockStoresManager)
+        let mockPresentingViewController = UIViewController()
+        let mockKnownReadersProvider = MockKnownReadersProvider(knownReaders: [])
+        let mockAlerts = MockCardReaderSettingsAlerts(mode: .cancelFoundSeveral)
+
+        let controller = CardReaderConnectionController(
+            forSiteID: sampleSiteID,
+            knownReadersProvider: mockKnownReadersProvider,
+            alertsProvider: mockAlerts
+        )
+
+        // When
+        controller.searchAndConnect(from: mockPresentingViewController) { result in
+            XCTAssertTrue(result.isSuccess)
+            if case .success(let connected) = result {
+                XCTAssertFalse(connected)
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func test_finding_multiple_readers_presents_list_to_user_and_choosing_one_calls_completion_with_success_true() {
+        // Given
+        let expectation = self.expectation(description: #function)
+
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [],
+            discoveredReaders: [MockCardReader.bbposChipper2XBT(), MockCardReader.bbposChipper2XBT()],
+            sessionManager: SessionManager.testingInstance
+        )
+        ServiceLocator.setStores(mockStoresManager)
+        let mockPresentingViewController = UIViewController()
+        let mockKnownReadersProvider = MockKnownReadersProvider(knownReaders: [])
+        let mockAlerts = MockCardReaderSettingsAlerts(mode: .connectFirstFound)
+
+        let controller = CardReaderConnectionController(
+            forSiteID: sampleSiteID,
+            knownReadersProvider: mockKnownReadersProvider,
+            alertsProvider: mockAlerts
+        )
+
+        // When
+        controller.searchAndConnect(from: mockPresentingViewController) { result in
+            XCTAssertTrue(result.isSuccess)
+            if case .success(let connected) = result {
+                XCTAssertTrue(connected)
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }

@@ -42,14 +42,15 @@ struct ShippingLabelAddNewPackage: View {
                 // Done button
                 ToolbarItem(placement: .navigationBarTrailing, content: {
                     Button(action: {
-                        isSyncing = true
                         switch viewModel.selectedView {
                         case .customPackage:
                             viewModel.customPackageVM.validatePackage()
                             if viewModel.customPackageVM.validatedCustomPackage != nil {
+                                isSyncing = true
                                 viewModel.createCustomPackage()
                             }
                         case .servicePackage:
+                            isSyncing = true
                             viewModel.activateServicePackage()
                         }
                     }, label: {

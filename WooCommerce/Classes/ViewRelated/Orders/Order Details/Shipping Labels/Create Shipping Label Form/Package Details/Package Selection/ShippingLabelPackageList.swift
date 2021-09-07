@@ -62,8 +62,7 @@ struct ShippingLabelPackageList: View {
                 }))
 
                 if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsAddCustomPackages) {
-                    let viewModel = ShippingLabelAddNewPackageViewModel(packagesResponse: viewModel.packagesResponse)
-                    NavigationLink(destination: ShippingLabelAddNewPackage(viewModel: viewModel),
+                    NavigationLink(destination: ShippingLabelAddNewPackage(viewModel: viewModel.addNewPackageViewModel),
                                    isActive: $isShowingNewPackageCreation) {
                         EmptyView()
                     }

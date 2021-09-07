@@ -20,6 +20,20 @@
                ReferencedContainer = "container:WooCommerce.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "F997170123DBB97500592D8E"
+               BuildableName = "WooCommerceScreenshots.xctest"
+               BlueprintName = "WooCommerceScreenshots"
+               ReferencedContainer = "container:WooCommerce.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction

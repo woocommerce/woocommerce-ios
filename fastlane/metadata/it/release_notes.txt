@@ -1,5 +1,3 @@
-Inviare una nota a un cliente tramite e-mail per un ordine senza indirizzo e-mail non ha molto senso, quindi in tal caso abbiamo nascosto questa opzione.
+Questa versione contiene alcuni miglioramenti minori per rendere la tua esperienza più fluida. Nei dettagli dell'ordine, alcune estensioni di terze parti non mostravano logicamente i metadati del prodotto. Abbiamo apportato alcune modifiche per migliorare la visualizzazione di questi dettagli del prodotto. Ora stiamo nascondendo il pulsante dell'ordine per il rimborso quando l'importo totale è zero.
 
-Alcuni venditori ci hanno segnalato che gli ordini con prezzi negativi non venivano visualizzati correttamente. Abbiamo risolto il problema e ora ci sentiamo tutti più positivi che mai! 
-
-Questa versione contiene alcuni piccoli miglioramenti per rendere la tua esperienza ancora più fluida. Speriamo si noti l'amore che mettiamo nel nostro software.
+Questo aggiornamento include anche vari miglioramenti alla funzionalità dell'etichetta di spedizione usando l'estensione WooCommerce Shipping & Tax. Valutiamo tutti i tuoi feedback su questa nuovissima funzionalità.

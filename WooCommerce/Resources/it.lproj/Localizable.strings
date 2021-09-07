@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-08-19 20:47:59+0000 */
+/* Translation-Revision-Date: 2021-09-03 00:51:12+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -170,6 +170,12 @@
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
 
+/* A label prompting users to learn more about HS Tariff Number with an embedded hyperlink in Customs screen of Shipping Label flow */
+"<a href=\"https:\/\/docs.woocommerce.com\/document\/woocommerce-shipping-and-tax\/woocommerce-shipping\/#section-29\">Learn more<\/a> about HS Tariff Number" = "<a href=\"https:\/\/docs.woocommerce.com\/document\/woocommerce-shipping-and-tax\/woocommerce-shipping\/#section-29\">Scopri di più<\/a> sul numero di tariffa doganale";
+
+/* A label prompting users to learn more about internal transaction number with an embedded hyperlink */
+"<a href=\"https:\/\/pe.usps.com\/text\/imm\/immc5_010.htm\">Learn more<\/a> about Internal Transaction Number" = "<a href=\"https:\/\/pe.usps.com\/text\/imm\/immc5_010.htm\">Scopri di più<\/a> sul numero di transizione interno";
+
 /* A label prompting users to learn more about card readers with an embedded hyperlink */
 "<a href=\"https:\/\/woocommerce.com\/payments\">Learn more<\/a> about accepting payments with your mobile device and ordering card readers" = "<a href=\"https:\/\/woocommerce.com\/payments\">Scopri di più<\/a> sull'accettazione di pagamenti con il tuo dispositivo mobile e sull'ordinamento dei lettori di carte";
 
@@ -181,6 +187,9 @@
 
 /* Description of the Action sheet option when the user wants to change the Product type to grouped product */
 "A collection of related products" = "Una raccolta di prodotti correlati";
+
+/* Error message when there was a network error checking In-Person Payments requirements */
+"A network error occurred. Please check your connection and try again." = "Si è verificato un errore di rete. Controlla la connessione e riprova.";
 
 /* Error shown in Shipping Label Origin Address validation for phone number field for international shipment */
 "A phone number is required because this shipment requires a customs form" = "È obbligatorio un numero di telefono perché questa spedizione richiede un modulo personalizzato";
@@ -252,6 +261,9 @@
 
 /* Action to add new attribute on the Product Attributes screen */
 "Add New Attribute" = "Aggiungi nuovo attributo";
+
+/* Add New Package screen title in Shipping Label flow */
+"Add New Package" = "Aggiungi un nuovo pacchetto";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "Aggiungi foto";
@@ -510,6 +522,9 @@
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "Grassetto";
 
+/* Box package type, used to create a custom package in the Shipping Label flow */
+"Box" = "Confezione";
+
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "Testo del pulsante";
 
@@ -535,7 +550,7 @@
 "Can Not Request Link" = "Può non essere necessario il collegamento";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to cancel a payment - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to cancel a payment - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. */
 "Cancel" = "Annulla";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -639,8 +654,7 @@
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "Connect to Reader" = "Connetti al lettore";
 
-/* Settings > Manage Card Reader > Prompt user to connect their first reader
-   Settings > Manage Card Reader > Prompt user to connect their reader */
+/* Settings > Manage Card Reader > Prompt user to connect their first reader */
 "Connect your card reader" = "Connetti il tuo lettore di carte";
 
 /* Link on the store picker when there are no stores available. Opens a webview about Jetpack setup. */
@@ -664,6 +678,9 @@
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "Connessione con WordPress.com in corso";
 
+/* Title when checking if WooCommerce Payments is supported */
+"Connecting to your account" = "Connessione all'account in corso";
+
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "Contatta cliente";
 
@@ -685,6 +702,12 @@
 
 /* Title of a button to contact support in the survey complete screen */
 "Contact us here" = "Contattaci qui";
+
+/* Title for the Content Details row in Customs screen of Shipping Label flow */
+"Content Details" = "Dettagli dei contenuti";
+
+/* Title for the Content Type row in Customs screen of Shipping Label flow */
+"Content Type" = "Tipo di contenuto";
 
 /* Continue button inside every cell inside Create Shipping Label form
    The button title text when there is a next step for logging in or signing up. - Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
@@ -750,6 +773,9 @@
 /* Error showed in Shipping Label Address Validation for the country field */
 "Country missing" = "Paese mancante";
 
+/* Description for the Origin Country row in Customs screen of Shipping Label flow */
+"Country where the product was manufactured or assembled" = "Il Paese in cui il prodotto è stato creato o montato";
+
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "Menu di debug dell'arresto anomalo";
 
@@ -763,8 +789,11 @@
    Text on the button that starts shipping label creation */
 "Create Shipping Label" = "Crea etichetta di spedizione";
 
+/* Button to create a new package in Shipping Label Package screen */
+"Create new package" = "Crea un nuovo pacchetto";
+
 /* The title of the shipping labels top banner in order details */
-"Create shipping labels from your device!" = "Create shipping labels from your device!";
+"Create shipping labels from your device!" = "Stampa etichette di spedizione dal dispositivo.";
 
 /* Title on the variations list screen when there are no variations */
 "Create your first variation" = "Crea la prima variante";
@@ -795,6 +824,12 @@
    Placeholder name of a custom shipment tracking carrier - Title of button to add a custom tracking carrier if filtering the list yields no results. */
 "Custom Carrier" = "Corriere personalizzato";
 
+/* Custom line index in Customs Form of Shipping Label flow */
+"Custom Line %1$d" = "%1$d riga personalizzata";
+
+/* Custom Package menu in Shipping Label Add New Package flow */
+"Custom Package" = "Pacchetto personalizzato";
+
 /* Error shown in Shipping Label Origin Address validation for phone number when the it doesn't have expected length for international shipment. */
 "Custom forms require a 10-digit phone number" = "I moduli personalizzati richiedono un numero di telefono composto da 10 cifre";
 
@@ -809,11 +844,12 @@
 /* Title of the banner notice in Shipping Labels -> Carrier and Rates */
 "Customer paid a %1$@ of %2$@ for shipping" = "Il cliente ha pagato un #%1$@ di %2$@ per la spedizione";
 
-/* Title of the cell Customs inside Create Shipping Label form */
+/* Navigation title for Customs screen in Shipping Label flow
+   Title of the cell Customs inside Create Shipping Label form */
 "Customs" = "Dogana";
 
 /* Details text in the shipping label creation info screen */
-"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Evita la fila all'ufficio postale stampando le etichette di spedizione a casa dal tuo telefono a prezzi scontati.";
+"Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "Evita la fila all'ufficio postale stampando le etichette di spedizione a casa dal tuo dispositivo mobile a prezzi scontati.";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "Data di spedizione";
@@ -841,7 +877,7 @@
 "Describe your product to your future customers..." = "Descrivi il prodotto ai futuri clienti...";
 
 /* The navigation bar title of the Aztec editor screen.
-   Title in the Product description row on Product form screen when the description is non-empty. */
+   Title in the Product description row on Product form screen when the description is non-empty. - Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "Descrizione";
 
 /* Screen title: Details Order number. Parameters: %1$@ - order number */
@@ -872,7 +908,7 @@
 "Discard changes" = "Annulla le modifiche";
 
 /* Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader */
-"Disconnect" = "Disconnetti";
+"Disconnect Reader" = "Disconnetti il lettore";
 
 /* Discount label for payment view */
 "Discount" = "Sconto";
@@ -890,18 +926,21 @@
 /* Body of the alert when a user is moving a product to the trash */
 "Do you want to move this product to the Trash?" = "Vuoi spostare questo prodotto nel cestino?";
 
+/* Type Documents of content to be declared for the customs form in Shipping Label flow */
+"Documents" = "Documenti";
+
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Non hai un account? _Registrati_";
 
 /* Action title to select products to add to a grouped product from search results
-   Done navigation button in shipping label carrier and rates screen - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files */
+   Done navigation button in selection list screens - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the edit customer provided note screen */
 "Done" = "Fatto";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
 "Don’t know how to print from your device?" = "Non sai come stampare dal dispositivo?";
 
 /* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
-"Don’t know how to print from your phone?" = "Non sai come stampare dal telefono?";
+"Don’t know how to print from your mobile device?" = "Non sai come stampare dal dispositivo mobile?";
 
 /* WordPress.com (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
 "Dotcom Error: [%1$@] %2$@" = "Errore Dotcom: [%1$@] %2$@";
@@ -968,6 +1007,9 @@
    Navigation title for the Product Attributes screen */
 "Edit Attributes" = "Modifica attributi";
 
+/* Title for the edit customer provided note screen */
+"Edit Note" = "Modifica la nota";
+
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "Modifica prodotti";
 
@@ -1002,6 +1044,9 @@
 /* Accessibility text for Unit Input cell */
 "Empty" = "Svuota";
 
+/* Title for the row to enter the empty package weight on the Add New Custom Package screen in Shipping Label flow */
+"Empty Package Weight" = "Peso del pacchetto vuoto";
+
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "URL vuota";
 
@@ -1021,6 +1066,12 @@
    Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
 "Enter Another Store" = "Inserisci un altro negozio";
 
+/* Placeholder for the ITN row in Customs screen of Shippling Label flow */
+"Enter ITN (Optional)" = "Inserisci il numero di transizione interno (facoltativo)";
+
+/* Placeholder for the row to enter the package name on the Add New Custom Package screen in Shipping Label flow */
+"Enter Name" = "Inserisci il nome";
+
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "Inserisci l'URL";
 
@@ -1031,8 +1082,14 @@
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "Inserisci il nome del corriere";
 
+/* Placeholder of Description row of item details in Customs screen of Shipping Label flow */
+"Enter description" = "Inserisci la descrizione";
+
 /* Title of the downloadable file bottom sheet action for adding file from an URL. */
 "Enter file URL" = "Inserisci URL file";
+
+/* Placeholder of HS Tariff Number row in Package Content section in Customs screen of Shipping Label flow */
+"Enter number (Optional)" = "Numero errore (facoltativo)";
 
 /* Enter password placeholder in Product Visibility */
 "Enter password" = "Inserisci una password";
@@ -1074,6 +1131,9 @@
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "Immetti la password.";
+
+/* Envelope package type, used to create a custom package in the Shipping Label flow */
+"Envelope" = "Busta";
 
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Errore nella ricerca dell'indirizzo su Apple Maps";
@@ -1154,6 +1214,12 @@
 /* The hint button's title text to help users find their store address. */
 "Find your store address" = "Trova l'indirizzo del tuo negozio";
 
+/* Button to set up the WooCommerce Payments plugin after installing it */
+"Finish Setup in Store Admin" = "Completa la configurazione nella pagina di amministrazione del negozio";
+
+/* Title for the error screen when WooCommerce Payments is installed but not set up */
+"Finish setup WooCommerce Payments in your store admin" = "Completa la configurazione di WooCommerce Payments nella pagina di amministrazione del negozio";
+
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Follow your favorite sites and discover new blogs." = "Segui i tuoi siti preferiti e scopri nuovi blog.";
 
@@ -1197,6 +1263,9 @@
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "Recupero informazioni account";
 
+/* Type Gift of content to be declared for the customs form in Shipping Label flow */
+"Gift" = "Regalo";
+
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    The title of the button to give feedback about shipping labels features on the banner in order details - Title of the button to give feedback about the add-ons feature - Title on the navigation bar for the products feedback survey */
 "Give feedback" = "Lascia un feedback";
@@ -1225,6 +1294,12 @@
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "COME POSSIAMO AIUTARTI?";
+
+/* Title of HS Tariff Number row in Package Content section in Customs screen of Shipping Label flow */
+"HS Tariff Number" = "Numero di tariffa doganale";
+
+/* Validation error for HS Tariff Number row in Customs screen of Shipping Label flow */
+"HS Tariff Number must be 6 digits long" = "Il numero di tariffa doganale deve contenere 6 cifre";
 
 /* Accessibility label for HTML button on formatting toolbar.
    HTML Attachment Label */
@@ -1269,7 +1344,8 @@
 /* H6 Aztec Style */
 "Heading 6" = "Titolo 6";
 
-/* Title of the cell in Product Shipping Settings > Height */
+/* Title for the row to enter the package height on the Add New Custom Package screen in Shipping Label flow
+   Title of the cell in Product Shipping Settings > Height */
 "Height" = "Altezza";
 
 /* Help and Support navigation title
@@ -1297,6 +1373,15 @@
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "ARTICOLI DA EVADERE";
+
+/* Title for the ITN row in Customs screen of Shipping Label flow */
+"ITN" = "Numero di transizione interno";
+
+/* Error message for missing ITN for destination country inCustoms screen of Shipping Label flow. The placeholder is the destination country. */
+"ITN is required for shipments to %1$@" = "Il numero di transizione interno è richiesto spedizioni a %1$@";
+
+/* Error message for missing ITN for tariff number valued over $2,500 inCustoms screen of Shipping Label flow */
+"ITN is required for shipping items valued over $2,500 per tariff number" = "Il numero di transizione interno è richiesto per gli articoli della spedizione valutati più di $ 2.500 per numero di tariffa";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Se disabilitata, la nota diventerà privata";
@@ -1334,10 +1419,14 @@
 
 /* Navigates to In-Person Payments screen
    Title for the In-Person Payments settings screen */
-"In-Person Payments" = "In-Person Payments";
+"In-Person Payments" = "Pagamenti di persona";
 
-/* Title for the error screen when In-Person Payments is unavailable */
-"In-Person Payments is currently unavailable" = "In-Person Payments is currently unavailable";
+/* Title for the error screen when In-Person Payments is unavailable
+   Title for the error screen when the Stripe account is restricted because it's under reviw - Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
+"In-Person Payments is currently unavailable" = "Pagamenti di persona attualmente non disponibile";
+
+/* Title for the error screen when the Stripe account rejected. */
+"In-Person Payments isn't available for this store" = "Pagamenti di persona non è disponibile per questo negozio";
 
 /* Application's Inactive State */
 "Inactive" = "Inattivo";
@@ -1377,6 +1466,9 @@
 
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates */
 "Insurance (up to %1$@)" = "Assicurazione (fino a %1$@)";
+
+/* Error message for invalid format of ITN in Customs screen of Shipping Label flow */
+"Invalid ITN format" = "Formato numero di transizione interno non valido";
 
 /* The title of the alert when there is an error updating the product SKU */
 "Invalid Product SKU" = "SKU prodotto non valido";
@@ -1424,6 +1516,15 @@
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "Corsivo";
 
+/* Error message for missing value in Description row in Customs screen of Shipping Label flow */
+"Item description is required" = "Descrizione dell'articolo richiesta";
+
+/* Error message for missing value in Value row in Customs screen of Shipping Label flow */
+"Item value must be larger than 0" = "Il valore dell'articolo deve essere superiore a 0";
+
+/* Error message for missing value in Weight row in Customs screen of Shipping Label flow */
+"Item weight must be larger than 0" = "Il peso dell'articolo deve essere superiore a 0";
+
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack è un plugin WordPress gratuito che collega il tuo negozio con gli strumenti necessari per assicurarti la migliore esperienza mobile, incluse le notifiche push e le statistiche";
 
@@ -1459,15 +1560,16 @@
 "Learn more about Jetpack" = "Scopri di più su Jetpack";
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
-"Learn more about creating labels with your phone" = "Scopri di più su come creare etichette dal telefono";
+"Learn more about creating labels with your mobile device" = "Scopri di più su come creare etichette dal dispositivo mobile";
 
 /* Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
-"Learn more about roles and permissions" = "Learn more about roles and permissions";
+"Learn more about roles and permissions" = "Scopri di più sui ruoli e sulle autorizzazioni";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legale (8,5 x 14 mm)";
 
-/* Title of the cell in Product Shipping Settings > Length */
+/* Title for the row to enter the package length on the Add New Custom Package screen in Shipping Label flow
+   Title of the cell in Product Shipping Settings > Length */
 "Length" = "Lunghezza";
 
 /* Title of letter paper size option for printing a shipping label */
@@ -1571,8 +1673,11 @@
 "Make your products easier to find with tags" = "Rendi i tuoi prodotti più semplici da trovare con i tag";
 
 /* Card reader settings screen title
-   Navigates to Card Reader management screen - Settings > Manage Card Reader > Title for the no-reader-connected screen in settings. - Settings > Manage Card Reader > Title for the reader connected screen in settings. */
+   Settings > Manage Card Reader > Title for the no-reader-connected screen in settings. - Settings > Manage Card Reader > Title for the reader connected screen in settings. */
 "Manage Card Reader" = "Gestisci lettore di carte";
+
+/* Navigates to Card Reader management screen */
+"Manage card reader" = "Gestisci lettore di carte";
 
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "Gestisci magazzino";
@@ -1617,6 +1722,9 @@
 
 /* Placeholder in the Product Menu Order row on Edit Product Menu Order screen. */
 "Menu order" = "Ordinamento menu";
+
+/* Type Merchandise of content to be declared for the customs form in Shipping Label flow */
+"Merchandise" = "Merchandise";
 
 /* Message phone number button title */
 "Message" = "Messaggio";
@@ -1706,6 +1814,9 @@
    Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "Nessun indirizzo specificato";
 
+/* Title for the error screen when there was a network error checking In-Person Payments requirements. */
+"No connection" = "Nessuna connessione";
+
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Nessun dato disponibile";
 
@@ -1754,7 +1865,7 @@
 "No thanks" = "No, grazie";
 
 /* Display label for the order fee's tax status setting option
-   Display label for the product's tax status setting option */
+   Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow */
 "None" = "Nessuna";
 
 /* Instructions after a Magic Link was sent, but the email can't be found in their inbox. */
@@ -1865,6 +1976,9 @@
    Order Total label for payment view */
 "Order Total" = "Totale ordine";
 
+/* Navigates to Card Reader ordering screen */
+"Order card reader" = "Ordina lettore di carte";
+
 /* Order status update success notice */
 "Order status updated" = "Stato dell'ordine aggiornato";
 
@@ -1878,7 +1992,14 @@
 /* Subtitle of the product form bottom sheet action for editing categories. */
 "Organise your products into related groups" = "Organizza i tuoi prodotti in gruppi correlati";
 
-/* My Store > Settings > Other app section */
+/* Title for the Origin Country row in Customs screen of Shipping Label flow */
+"Origin Country" = "Paese di origine";
+
+/* Error message for missing value in Origin Country row in Customs screen of Shipping Label flow */
+"Origin Country is required" = "Il Paese di origine è richiesto";
+
+/* My Store > Settings > Other app section
+   Restriction type Other for contents declared in the customs form for Shipping Label flow - Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "Altro";
 
 /* Display label for the product's inventory stock status */
@@ -1890,19 +2011,29 @@
 /* Product section title */
 "PRODUCT" = "PRODOTTO";
 
-/* Package term in Shipping Labels. Reads like Package 1 */
+/* Package index in Customs screen of Shipping Label flow
+   Package term in Shipping Labels. Reads like Package 1 */
 "Package %1$d" = "Pacchetto %1$d";
 
 /* Order shipping label package section title format. The number indicates the index of the shipping label package. */
 "Package %d" = "Pacco %d";
 
+/* Title of Package Content section in Customs screen of Shipping Label flow */
+"Package Content" = "Contenuto del pacchetto";
+
 /* Navigation bar title of shipping label package details screen
    Title of package details in shipping label details - Title of the cell Package Details inside Create Shipping Label form */
 "Package Details" = "Dettagli pacco";
 
+/* Title for the row to enter the package name on the Add New Custom Package screen in Shipping Label flow */
+"Package Name" = "Nome del pacchetto";
+
 /* Package Selected screen title in Shipping Label flow
    Title of the row for selecting a package in Shipping Label Package Detail screen */
 "Package Selected" = "Pacchetto selezionato";
+
+/* Title for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
+"Package Type" = "Tipo di pacchetto";
 
 /* The title for the customer payment cell */
 "Paid" = "A pagamento";
@@ -1968,6 +2099,12 @@
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "Posizionamento del prodotto nel cestino...";
 
+/* Error message for missing explanation when Content Typeis Other in Customs screen of Shipping Label flow */
+"Please describe what kind of goods this package contains" = "Descrivi che tipo di beni contiene questo pacchetto.";
+
+/* Error message for missing comments when Restriction Typeis Other in Customs screen of Shipping Label flow */
+"Please describe what kind of restrictions this package must have" = "Descrivi che tipo di restrizioni deve avere questo pacchetto";
+
 /* Error state description in shipping label carrier and rates screen */
 "Please double check your package dimensions and weight or try using a different package in Package Details." = "Verifica le dimensioni del pacco e il peso oppure prova a utilizzare un pacco diverso in Dettagli pacco.";
 
@@ -1976,6 +2113,9 @@
 
 /* Error message shown when a URL is invalid. */
 "Please enter a complete website address, like example.com." = "Inserisci un indirizzo di sito web completo, come esempio.com.";
+
+/* Product price error notice message, when the sale price was not set during a sale setup */
+"Please enter a sale price for the scheduled sale" = "Inserisci un prezzo di vendita per la vendita pianificata";
 
 /* No comment provided by engineer. */
 "Please enter a site address." = "Per favore, inserire un indirizzo per il sito.";
@@ -2022,8 +2162,11 @@
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "Riprova.";
 
+/* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
+"Please update your reader software to keep accepting payments" = "Aggiorna il software del lettore per continuare ad accettare pagamenti";
+
 /* Message of in-progress modal when requesting shipping label document for printing
-   Message of the in-progress UI while purchasing a shipping label - Text on the loading view of the survey screen indicating the user to wait */
+   Message of the in-progress UI while purchasing a shipping label - Message when checking if WooCommerce Payments is supported - Text on the loading view of the survey screen indicating the user to wait */
 "Please wait" = "Attendi";
 
 /* Instructions for the progress screen while generating a variation */
@@ -2071,7 +2214,7 @@
 "Print Shipping Label" = "Stampa etichetta di spedizione";
 
 /* Navigation bar title of shipping label printing instructions screen */
-"Print from your Phone" = "Stampa dal telefono";
+"Print from your mobile device" = "Stampa dal tuo dispositivo mobile";
 
 /* Button to print receipts. Presented to users after a payment has been successfully collected */
 "Print receipt" = "Stampa ricevuta";
@@ -2210,6 +2353,9 @@
 /* Format of the stock quantity on the Inventory Settings row */
 "Quantity: %@" = "Quantità: %@";
 
+/* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
+"Quarantine" = "Quarantena";
+
 /* Subtitle for Contact WooCommerce Payments Support */
 "Reach our happiness engineers who can help answer payments related questions" = "Contatta i nostri Happiness Engineer per ricevere assistenza sulle questioni correlate ai pagamenti";
 
@@ -2338,6 +2484,12 @@
 /* The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "Reimposta la password";
 
+/* Title for the Restriction Details row in Customs screen of Shipping Label flow */
+"Restriction Details" = "Dettagli sulla restrizione";
+
+/* Title for the Restriction Type row in Customs screen of Shipping Label flow */
+"Restriction Type" = "Tipo di restrizione";
+
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "Recupera un elenco di ordini che contiene una data parola chiave.";
 
@@ -2345,8 +2497,11 @@
 "Retrieves a list of products that contain a given keyword." = "Recupera un elenco di prodotti che contiene una data parola chiave.";
 
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
-   Retry Action - Retry the last action */
+   Button to retry when there was a network error checking In-Person Payments requirements - Retry Action - Retry the last action */
 "Retry" = "Riprova";
+
+/* Title for the return policy in Customs screen of Shipping Label flow */
+"Return to sender if package is unable to be delivered" = "Restituisci al mittente se non è possibile consegnare il pacchetto";
 
 /* Revenue stat label on dashboard. */
 "Revenue" = "Fatturato";
@@ -2394,6 +2549,12 @@
 
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "Prezzo di vendita: %@";
+
+/* Type Sample of content to be declared for the customs form in Shipping Label flow */
+"Sample" = "Esempio";
+
+/* Restriction type Sanitary / Phytosanitary Inspection for contents declared in the customs form for Shipping Label flow */
+"Sanitary \/ Phytosanitary Inspection" = "Ispezione sanitaria\/fitosanitaria";
 
 /* Action for saving a Product remotely
    Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. */
@@ -2471,6 +2632,12 @@
 /* Page title for the select a different store screen */
 "Select Store" = "Seleziona negozio";
 
+/* Placeholder for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
+"Select Type" = "Seleziona il tipo";
+
+/* Placeholder for the selected package in the Shipping Labels Package Details screen */
+"Select a package" = "Seleziona un pacchetto";
+
 /* Message title of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "Seleziona un tipo di prodotto";
 
@@ -2507,8 +2674,14 @@
 /* The button title text for sending a magic link. */
 "Send Link by Email" = "Invia link tramite e-mail";
 
+/* Service Package menu in Shipping Label Add New Package flow */
+"Service Package" = "Pacchetto del servizio";
+
 /* Tells user to set an email that support can use for replies */
 "Set email" = "Imposta e-mail";
+
+/* Header text on Add New Custom Package screen in Shipping Label flow */
+"Set up the package you'll be using to ship your products. We'll save it for future orders." = "Configura il pacchetto che utilizzerai per spedire i tuoi prodotti. Lo salveremo per ordini futuri.";
 
 /* Accessibility label for the Settings button.
    Settings navigation title */
@@ -3027,6 +3200,15 @@
 /* Error title when failing to generate a variation. */
 "The variation couldn't be generated." = "Impossibile generare la variante.";
 
+/* Error message when the Stripe account is restricted because there are pending requirements */
+"There are pending requirements in your account. Please complete those requirements by" = "Ci sono requisiti in sospeso sull'account. Completa questi requisiti entro il giorno";
+
+/* Error message when WooCommerce Payments is not supported because there are pending requirements in the Stripe account.%1$d will contain the localized deadline (e.g. August 11, 2021) */
+"There are pending requirements in your account. Please complete those requirements by %1$@ to keep accepting in-Person Payments." = "Ci sono requisiti in sospeso sull'account. Completa i requisiti entro il giorno %1$@ per continuare ad accettare Pagamenti di persona.";
+
+/* Error message when WooCommerce Payments is not supportedThere are pending requirements in the Stripe account (without a known deadline) */
+"There are pending requirements in your account. Please complete those requirements to keep accepting in-Person Payments." = "Ci sono requisiti in sospeso sull'account. Completa i requisiti tramite per continuare ad accettare Pagamenti di persona.";
+
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "Si è verificato un problema bloccando gli articoli dal sito specificato";
 
@@ -3058,7 +3240,7 @@
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "Questa app richiede l'installazione di WooCommerce 3.5 sul tuo server, senza la quale non funziona correttamente. Aggiorna appena possibile per continuare utilizzare questa app.";
 
 /* Message explaining more detail on why the user's role is incorrect. */
-"This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role.";
+"This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "Quest'app supporta solo i ruoli utente di Amministratore e Gestore negozio. Contatta il proprietario del negozio per aggiornare il tuo ruolo.";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "Questo indirizzo e-mail non è registrato su Wordpress.com.";
@@ -3214,6 +3396,12 @@
 /* Settings > Manage Card Reader > Connect > Hint to enable Bluetooth */
 "Turn mobile device Bluetooth on" = "Attiva il Bluetooth del dispositivo mobile";
 
+/* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
+"Type of contents" = "Tipo di contenuti";
+
+/* Placeholder for the Restriction Details row in Customs screen of Shipping Label flow */
+"Type of restriction" = "Tipo di restrizione";
+
 /* Navigation bar title for editing the URL of a text link
    URL text field placeholder */
 "URL" = "URL";
@@ -3261,13 +3449,16 @@
 "Unable to refresh list" = "Impossibile aggiornare l'elenco";
 
 /* An error message shown when failing to retrieve information about user roles, before letting the user in to manage the store. */
-"Unable to retrieve user roles." = "Unable to retrieve user roles.";
+"Unable to retrieve user roles." = "Impossibile recuperare i Ruoli Utente.";
 
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
 "Unable to save changes to the payment method" = "Impossibile salvare le modifiche al metodo di pagamento";
 
 /* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
 "Unable to successfully connect to %@" = "Impossibile eseguire correttamente la connessione a %@";
+
+/* Title for the error screen when In-Person Payments is unavailable */
+"Unable to verify In-Person Payments for this store" = "Impossibile verificare i Pagamenti di persona per questo negozio";
 
 /* Error message displayed when an error occurred checking for email availability. */
 "Unable to verify the email address. Please try again later." = "Impossibile verificare l'indirizzo e-mail. Riprova più tardi.";
@@ -3334,6 +3525,9 @@
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "Aggiorna stato dell'ordine";
 
+/* Settings > Manage Card Reader > Connected Reader > A button to update the reader software */
+"Update Reader Software" = "Aggiorna il software del lettore";
+
 /* Subtitle of the product form bottom sheet action for editing inventory settings. */
 "Update product inventory and SKU" = "Aggiorna inventario dei prodotti e SKU";
 
@@ -3385,6 +3579,9 @@
 
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "Il nome utente deve contenere almeno 4 caratteri.";
+
+/* Title for the Value row in item details in Customs screen of Shipping Label flow */
+"Value (%1$@ per unit)" = "Valore (%1$@ per unità)";
 
 /* Display label for variable product type. */
 "Variable" = "Variabile";
@@ -3481,6 +3678,9 @@
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Watch your audience grow with in-depth analytics." = "Guarda il tuo pubblico crescere con analisi approfondite.";
 
+/* Error message when WooCommerce Payments is not supported because the Stripe account has been rejected */
+"We are sorry but we can't support In-Person Payments for this store." = "Siamo spiacenti, ma non possiamo supportare Pagamenti di persona per questo negozio.";
+
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "Stiamo lavorando per rendere più semplice per te visualizzare i componenti aggiuntivi del prodotto dal dispositivo. Per ora, sarai in grado di visualizzare i componenti aggiuntivi per gli ordini. Puoi creare e modificare questi componenti aggiuntivi nella bacheca web.";
 
@@ -3515,7 +3715,7 @@
 "We were unable to automatically verify the shipping address. View on Apple Maps or try contacting the customer to make sure the address is correct." = "Impossibile verificare automaticamente l'indirizzo di spedizione. Visualizzalo su Mappe di Apple o prova a contattare il cliente per assicurarti che l'indirizzo sia corretto.";
 
 /* Banner caption in Shipping Label Address Validation when the destination address can't be verified and no customer phone number is found. */
-"We were unable to automatically verify the shipping address. View on Apple Maps to make sure the address is correct." = "We were unable to automatically verify the shipping address. View on Apple Maps to make sure the address is correct.";
+"We were unable to automatically verify the shipping address. View on Apple Maps to make sure the address is correct." = "Impossibile verificare automaticamente l'indirizzo di spedizione. Visualizzalo su Mappe di Apple o prova a contattare il cliente per assicurarti che l'indirizzo sia corretto.";
 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "Al momento non siamo stati in grado di inviarti un'e-mail. Riprova più tardi.";
@@ -3542,11 +3742,20 @@
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "Siamo spiacenti, non è stato possibile trovare risultati per \"%@\"";
 
+/* Generic error message when In-Person Payments is unavailable */
+"We're sorry, we were unable to verify In-Person Payments for this store." = "Siamo spiacenti, non è stato possibile verificare i Pagamenti di persona per questo negozio.";
+
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Ti abbiamo inviato via e-mail un link di iscrizione per creare il tuo nuovo account WordPress.com. Controlla la tua e-mail su questo dispositivo e tocca il link nell'e-mail ricevuta da WordPress.com.";
 
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "Peso";
+
+/* Title for the Weight row in item details in Customs screen of Shipping Label flow */
+"Weight (%1$@ per unit)" = "Peso (%1$@ per unità)";
+
+/* Footer text for the empty package weight on the Add New Custom Package screen in Shipping Label flow */
+"Weight of empty package" = "Peso del pacchetto vuoto";
 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "Peso: %1$@%2$@";
@@ -3576,7 +3785,8 @@
 /* Error message shown when an incorrect two factor code is provided. */
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "Questo non è un codice di autenticazione a due fattori valido. Controlla il tuo codice e riprova!";
 
-/* Title of the cell in Product Shipping Settings > Width */
+/* Title for the row to enter the package width on the Add New Custom Package screen in Shipping Label flow
+   Title of the cell in Product Shipping Settings > Width */
 "Width" = "Larghezza";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
@@ -3614,7 +3824,7 @@
 "Yesterday" = "Ieri";
 
 /* An error message shown after the user retried checking their roles,but they still don't have enough permission to access the store through the app. */
-"You are not authorized to access this store." = "You are not authorized to access this store.";
+"You are not authorized to access this store." = "Non sei autorizzato ad accedere a questo negozio.";
 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "Puoi modificare i componenti aggiuntivi dei prodotti nella bacheca web.";
@@ -3623,23 +3833,32 @@
 "You can now create and manage product variations!" = "Ora puoi creare e gestire le varianti del prodotto.";
 
 /* The info of the shipping labels top banner in order details */
-"You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!";
+"You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "Ora puoi creare etichette di spedizione per tutti gli ordini fisici direttamente dal tuo dispositivo con il plugin WooCommerce Shipping gratuito. Tocca \"Crea etichetta di spedizione\" per provare la funzionalità beta.";
 
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "Puoi richiedere un rimborso per un'etichetta di spedizione non utilizzata per spedire un pacchetto.\nL'elaborazione richiederà almeno 14 giorni.";
 
 /* Error message when WooCommerce Payments is not supported in a specific country
    Generic error message when In-Person Payments is unavailable */
-"You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store.";
+"You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "Puoi comunque accettare pagamenti di persona in contanti attivando il metodo \"Pagamento alla consegna\" sul tuo negozio.";
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "L'indirizzo email che hai inserito non può essere usato per creare l'account. Stiamo avendo problemi con il tuo provider di posta elettronica che blocca le nostre email di attivazione. Si prega di riprovare con un altro indirizzo email.";
+
+/* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements */
+"You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments." = "C'è almeno un requisito scaduto sul tuo account. Completalo per riprendere a utilizzare Pagamenti di persona.";
 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "Devi aggiungere una password per fare in modo che il tuo prodotto sia protetto da password";
 
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Sembra che tu abbia installato un plugin per mobile di DudaMobile che impedisce all'applicazione di stabilire una connessione con il tuo blog";
+
+/* Error message when WooCommerce Payments is not supported because the Stripe account is under review */
+"You'll be able to accept In-Person Payments as soon as we finish reviewing your account." = "Potrai accettare Pagamenti di persona non appena avremo terminato la revisione del tuo account.";
+
+/* Title for the error screen when the Stripe account is restricted because there are pending requirements */
+"Your WooCommerce Payments account has pending requirements" = "Il tuo account WooCommerce Payments presenta requisiti in sospeso";
 
 /* shown in promotional screens during first launch */
 "Your notifications travel with you — see comments and likes as they happen." = "Le tue notifiche viaggiano con te: vedi i commenti e i mi piace in tempo reale.";
@@ -3655,6 +3874,9 @@
 
 /* Error message when WooCommerce Payments is not installed */
 "You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments." = "Dovrai installare l'estensione gratuita WooCommerce Payments sul tuo negozio per accettare Pagamenti di persona.";
+
+/* Error message when WooCommerce Payments is installed but not set up */
+"You’re almost there! Please finish setting up WooCommerce Payments to start accepting Card-Present Payments." = "Ci sei quasi! Completa la configurazione di WooCommerce Payments per iniziare ad accettare Pagamenti con carta.";
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[COMMENTO]";
@@ -3698,7 +3920,7 @@
 "“%@”" = "\"%@\"";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
-"🎉 Order Completed" = "";
+"🎉 Order Completed" = "🎉 Ordine completato";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 prodotti rimborsati correttamente";

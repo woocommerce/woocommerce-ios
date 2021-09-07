@@ -98,13 +98,89 @@ final class AnnouncementsStoreTests: XCTestCase {
         // Assert
         XCTAssertEqual(resultError, .announcementNotFound)
     }
+
+    func test_load_saved_announcement_without_saved_data_returns_error() {
+        // Arrange, Act
+        let resultError: AnnouncementsStorageError? = waitFor { [weak self] promise in
+            let action = AnnouncementsAction.loadSavedAnnouncement { result in
+                promise(result.failure as? AnnouncementsStorageError)
+            }
+            self?.subject?.onAction(action)
+        }
+
+        // Assert
+        XCTAssertEqual(resultError, .invalidAnnouncement)
+    }
+
+    func test_load_newly_saved_announcement_returns_an_announcement_not_yet_displayed() throws {
+        //Arrange
+        try fileStorage?.write(makeStorageAnnouncement(), to: try XCTUnwrap(expectedFeatureAnnouncementsFileURL))
+
+        // Act
+        let (announcement, isDisplayed): (WordPressKit.Announcement, Bool) = waitFor { [weak self] promise in
+            let action = AnnouncementsAction.loadSavedAnnouncement { result in
+                promise(try! result.get())
+            }
+            self?.subject?.onAction(action)
+        }
+
+        // Assert
+        XCTAssertNotNil(announcement)
+        XCTAssertFalse(isDisplayed)
+    }
+
+    func test_load_saved_announcement_already_displayed_returns_a_displayed_announcement() throws {
+        //Arrange
+        try fileStorage?.write(makeStorageAnnouncement(displayed: true), to: try XCTUnwrap(expectedFeatureAnnouncementsFileURL))
+
+        // Act
+        let (announcement, isDisplayed): (WordPressKit.Announcement, Bool) = waitFor { [weak self] promise in
+            let action = AnnouncementsAction.loadSavedAnnouncement { result in
+                promise(try! result.get())
+            }
+            self?.subject?.onAction(action)
+        }
+
+        // Assert
+        XCTAssertNotNil(announcement)
+        XCTAssertTrue(isDisplayed)
+    }
+
+    func test_on_mark_announcement_as_displayed_it_updates_storage_model() throws {
+        //Arrange
+        try fileStorage?.write(makeStorageAnnouncement(displayed: false), to: try XCTUnwrap(expectedFeatureAnnouncementsFileURL))
+
+        // Act
+        let error: Error? = waitFor { [weak self] promise in
+            let action = AnnouncementsAction.markSavedAnnouncementAsDisplayed { result in
+                promise(result.failure)
+            }
+            self?.subject?.onAction(action)
+        }
+
+        let (announcement, isDisplayed): (WordPressKit.Announcement, Bool) = waitFor { [weak self] promise in
+            let action = AnnouncementsAction.loadSavedAnnouncement { result in
+                promise(try! result.get())
+            }
+            self?.subject?.onAction(action)
+        }
+
+        // Assert
+        XCTAssertNil(error)
+        XCTAssertNotNil(announcement)
+        XCTAssertTrue(isDisplayed)
+    }
 }
 
-// MARK: - Mocks
+// MARK: - Utils
 //
 private extension AnnouncementsStoreTests {
+    var expectedFeatureAnnouncementsFileURL: URL? {
+        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("feature-announcements.plist")
+    }
+
     func makeWordPressAnnouncement() throws -> WordPressKit.Announcement {
-        let announcementJson: [String: Any] = [
+        let jsonData = try JSONSerialization.data(withJSONObject: [
             "appVersionName": "1",
             "minimumAppVersion": "",
             "maximumAppVersion": "",
@@ -119,9 +195,21 @@ private extension AnnouncementsStoreTests {
             "announcementVersion": "2",
             "isLocalized": true,
             "responseLocale": "en_US"
-        ]
+        ])
 
-        let jsonData = try JSONSerialization.data(withJSONObject: announcementJson)
         return try JSONDecoder().decode(Announcement.self, from: jsonData)
+    }
+
+    func makeStorageAnnouncement(displayed: Bool = false) -> StorageAnnouncement {
+        StorageAnnouncement(appVersionName: "1",
+                            minimumAppVersion: "1",
+                            maximumAppVersion: "2",
+                            appVersionTargets: [],
+                            detailsUrl: "",
+                            announcementVersion: "",
+                            isLocalized: true,
+                            responseLocale: "",
+                            features: [],
+                            displayed: displayed)
     }
 }

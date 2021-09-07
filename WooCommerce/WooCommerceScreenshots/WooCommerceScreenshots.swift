@@ -135,7 +135,7 @@ extension BaseScreen {
     func thenTakeScreenshot(named title: String) -> Self {
         screenshotCount += 1
 
-        let mode = isDarkMode ? "dark" : "light"
+        let mode = XCUIDevice.inDarkMode ? "dark" : "light"
         let filename = "\(screenshotCount)-\(mode)-\(title)"
 
         snapshot(filename)
@@ -150,7 +150,7 @@ extension ScreenObject {
     func thenTakeScreenshot(named title: String) -> Self {
         screenshotCount += 1
 
-        let mode = isDarkMode ? "dark" : "light"
+        let mode = XCUIDevice.inDarkMode ? "dark" : "light"
         let filename = "\(screenshotCount)-\(mode)-\(title)"
 
         snapshot(filename)

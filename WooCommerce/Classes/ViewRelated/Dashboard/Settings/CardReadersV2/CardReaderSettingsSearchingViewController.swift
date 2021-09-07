@@ -14,6 +14,24 @@ final class CardReaderSettingsSearchingViewController: UIViewController, CardRea
     ///
     private var viewModel: CardReaderSettingsSearchingViewModel?
 
+    /// Connection Controller (helps connect readers)
+    ///
+    private lazy var connectionController: CardReaderConnectionController? = {
+        guard let siteID = viewModel?.siteID else {
+            return nil
+        }
+
+        guard let knownReadersProvider = viewModel?.knownReadersProvider else {
+            return nil
+        }
+
+        return CardReaderConnectionController(
+            forSiteID: siteID,
+            knownReadersProvider: knownReadersProvider,
+            alertsProvider: CardReaderSettingsAlerts()
+        )
+    }()
+
     /// Table Sections to be rendered
     ///
     private var sections = [Section]()
@@ -225,21 +243,7 @@ private extension CardReaderSettingsSearchingViewController {
 //
 private extension CardReaderSettingsSearchingViewController {
     func searchAndConnect() {
-        guard let siteID = viewModel?.siteID else {
-            return
-        }
-
-        guard let knownReadersProvider = viewModel?.knownReadersProvider else {
-            return
-        }
-
-        let connectionController = CardReaderConnectionController(
-            forSiteID: siteID,
-            knownReadersProvider: knownReadersProvider,
-            alertsProvider: CardReaderSettingsAlerts()
-        )
-
-        connectionController.searchAndConnect(from: self) { _ in
+        connectionController?.searchAndConnect(from: self) { _ in
             /// No need for logic here. Once connected, the connected reader will publish
             /// through the `cardReaderAvailableSubscription`
         }

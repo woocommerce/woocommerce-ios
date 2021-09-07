@@ -1,7 +1,15 @@
 import XCTest
+import Yosemite
 @testable import WooCommerce
 
 class WhatsNewViewModelTests: XCTestCase {
+
+    private var storesManager: MockStoresManager!
+
+    override func setUp() {
+        super.setUp()
+        storesManager = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+    }
 
     func test_on_init_with_no_items_it_has_no_items() {
         // Arrange, Act
@@ -27,6 +35,18 @@ class WhatsNewViewModelTests: XCTestCase {
         // Assert
         XCTAssertEqual(viewModel.title, Expectations.title)
         XCTAssertEqual(viewModel.ctaTitle, Expectations.ctaTitle)
+    }
+
+    func test_on_appear_it_triggers_a_mark_as_displayed_action() throws {
+        // Arrange
+        let viewModel = WhatsNewViewModel(items: [], stores: storesManager, onDismiss: {})
+
+        // Act
+        viewModel.onAppear()
+
+        // Assert
+        XCTAssertEqual(storesManager.receivedActions.count, 1)
+        XCTAssertTrue(storesManager.receivedActions.first is AnnouncementsAction)
     }
 }
 

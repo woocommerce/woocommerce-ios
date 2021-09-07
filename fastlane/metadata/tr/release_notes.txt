@@ -1,5 +1,3 @@
-E-posta adresi içermeyen bir sipariş için müşteriye e-postayla not göndermek anlamsız olduğundan, bu durumda artık bu seçeneği gizliyoruz.
+Bu sürüm, deneyiminizi daha sorunsuz hale getirmek için birkaç küçük iyileştirme içerir. Sipariş ayrıntılarında, bazı üçüncü taraf uzantıları mantıksal olarak ürün meta verilerini göstermiyordu. Bu ürün ayrıntılarının görüntülenmesini iyileştirmek için bazı değişiklikler yaptık. Artık toplam tutar sıfır olduğunda sipariş iadesi düğmesini gizliyoruz.
 
-Bazı satıcılar, negatif fiyatlı siparişlerin doğru şekilde görünmediğinden yakınıyordu. Bu sorunu çözdük, artık daha iyi hissedeceksiniz.
-
-Bu sürüm ayrıca deneyiminizi genel olarak daha sorunsuz hale getirmek için bir dizi küçük iyileştirme içeriyor. Yazılımımıza gönlümüzden kattığımız sevgiyi fark edeceğinizi umuyoruz.
+Bu güncelleme ile ayrıca WooCommerce Shipping & Tax Uzantısını kullanan gönderi etiketi özelliğinde çeşitli geliştirmeler de yapılmıştır. Bu yeni özellikle ilgili tüm geri bildirimleriniz bizim için çok değerlidir!

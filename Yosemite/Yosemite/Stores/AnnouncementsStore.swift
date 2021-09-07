@@ -17,6 +17,8 @@ extension AnnouncementServiceRemote: AnnouncementsRemoteProtocol {
     }
 }
 
+public typealias IsDisplayed = Bool
+
 // MARK: - AnnouncementsStore
 //
 public class AnnouncementsStore: Store {
@@ -58,15 +60,20 @@ public class AnnouncementsStore: Store {
         switch action {
         case .synchronizeAnnouncements(let onCompletion):
             synchronizeAnnouncements(onCompletion: onCompletion)
+
+        case .loadSavedAnnouncement(let onCompletion):
+            loadSavedAnnouncement(onCompletion: onCompletion)
+
+        case .markSavedAnnouncementAsDisplayed(let onCompletion):
+            markSavedAnnouncementAsDisplayed(onCompletion: onCompletion)
         }
     }
 }
 
+// MARK: - Action Handlers
 private extension AnnouncementsStore {
-
     /// Get Announcements from Announcements API and persist this information on disk.
     func synchronizeAnnouncements(onCompletion: @escaping (Result<Announcement, Error>) -> Void) {
-
         remote.getAnnouncements(appId: Constants.WooCommerceAppId,
                                 appVersion: appVersion,
                                 locale: Locale.current.identifier) { [weak self] result in
@@ -76,7 +83,7 @@ private extension AnnouncementsStore {
                     return onCompletion(.failure(AnnouncementsError.announcementNotFound))
                 }
                 do {
-                    try self.saveAnnouncement(announcement)
+                    try self.saveAnnouncementIfNeeded(announcement)
                     onCompletion(.success(announcement))
                 } catch {
                     return onCompletion(.failure(error))
@@ -87,6 +94,33 @@ private extension AnnouncementsStore {
         }
     }
 
+    /// Load the latest saved Announcement and returns if it is displayed or not. Returns an Error if there is no saved announcement.
+    func loadSavedAnnouncement(onCompletion: (Result<(Announcement, IsDisplayed), Error>) -> Void) {
+        do {
+            let storedAnnouncement = try loadStoredAnnouncement()
+            let readOnly = try mapStoredAnnouncement(storedAnnouncement)
+            onCompletion(.success((readOnly, storedAnnouncement.displayed)))
+        } catch {
+            onCompletion(.failure(error))
+        }
+    }
+
+    /// Mark saved announcement as displayed. Returns an error in case of failure to save announcement
+    func markSavedAnnouncementAsDisplayed(onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            let storedAnnouncement = try loadStoredAnnouncement()
+            let displayedAnnouncement = makeADisplayedCopy(of: storedAnnouncement)
+            try saveOnDisk(displayedAnnouncement)
+            onCompletion(.success(()))
+        }
+        catch {
+            onCompletion(.failure(AnnouncementsStorageError.unableToSaveAnnouncement))
+        }
+    }
+}
+
+// MARK: - Helper functions
+private extension AnnouncementsStore {
     /// Map `WordPressKit.Announcement` to `StorageAnnouncement` model
     func mapAnnouncementToStorageModel(_ announcement: Announcement) -> StorageAnnouncement {
         let mappedFeatures = announcement.features.map {
@@ -96,26 +130,80 @@ private extension AnnouncementsStore {
                            iconBase64: $0.iconBase64)
         }
 
-        return StorageAnnouncement(appVersion: announcement.appVersionName,
-                                   features: mappedFeatures,
+        return StorageAnnouncement(appVersionName: announcement.appVersionName,
+                                   minimumAppVersion: announcement.minimumAppVersion,
+                                   maximumAppVersion: announcement.maximumAppVersion,
+                                   appVersionTargets: announcement.appVersionTargets,
+                                   detailsUrl: announcement.detailsUrl,
                                    announcementVersion: announcement.announcementVersion,
+                                   isLocalized: announcement.isLocalized,
+                                   responseLocale: announcement.responseLocale,
+                                   features: mappedFeatures,
                                    displayed: false)
     }
 
-    /// Save the `Announcement` to the appropriate file.
-    func saveAnnouncement(_ announcement: Announcement) throws {
-        let mappedAnnouncement = self.mapAnnouncementToStorageModel(announcement)
-        guard let fileURL = featureAnnouncementsFileURL else {
-            throw AnnouncementsStorageError.unableToFindFileURL
+    /// Map `StorageAnnouncement` to `WordPressKit.Announcement` model
+    func mapStoredAnnouncement(_ storedAnnouncement: StorageAnnouncement) throws -> Announcement {
+        do {
+            let encodedObject = try JSONEncoder().encode(storedAnnouncement)
+            return try JSONDecoder().decode(Announcement.self, from: encodedObject)
+        } catch {
+            throw AnnouncementsStorageError.invalidAnnouncement
         }
-        try fileStorage.write(mappedAnnouncement, to: fileURL)
+    }
+
+    /// Save the `Announcement` on disk if it's a new or a different announcement comparing to the existing one
+    func saveAnnouncementIfNeeded(_ announcement: Announcement) throws {
+        if let storageAnnouncement = try? loadStoredAnnouncement() {
+            guard announcement.isNewCompared(to: storageAnnouncement) else {
+                throw AnnouncementsStorageError.announcementAlreadyExists
+            }
+        }
+
+        let mappedAnnouncement = self.mapAnnouncementToStorageModel(announcement)
+        try saveOnDisk(mappedAnnouncement)
+    }
+
+    /// Saves a `StorageAnnouncement` to disk
+    func saveOnDisk(_ storageAnnouncement: StorageAnnouncement) throws {
+        guard let fileURL = featureAnnouncementsFileURL else { throw AnnouncementsStorageError.unableToFindFileURL }
+        try fileStorage.write(storageAnnouncement, to: fileURL)
+    }
+
+    /// Loads saved announcement from disk
+    func loadStoredAnnouncement() throws -> StorageAnnouncement {
+        guard let fileURL = featureAnnouncementsFileURL else { throw AnnouncementsStorageError.unableToFindFileURL }
+        do {
+            return try fileStorage.data(for: fileURL)
+        } catch {
+            throw AnnouncementsStorageError.invalidAnnouncement
+        }
+    }
+
+    /// Creates a copy of StorageAnnouncement but marks it as displayed
+    func makeADisplayedCopy(of storageAnnouncement: StorageAnnouncement) -> StorageAnnouncement {
+        StorageAnnouncement(appVersionName: storageAnnouncement.appVersionName,
+                            minimumAppVersion: storageAnnouncement.minimumAppVersion,
+                            maximumAppVersion: storageAnnouncement.maximumAppVersion,
+                            appVersionTargets: storageAnnouncement.appVersionTargets,
+                            detailsUrl: storageAnnouncement.detailsUrl,
+                            announcementVersion: storageAnnouncement.announcementVersion,
+                            isLocalized: storageAnnouncement.isLocalized,
+                            responseLocale: storageAnnouncement.responseLocale,
+                            features: storageAnnouncement.features,
+                            displayed: true)
+    }
+}
+
+// MARK: - Announcement Extension
+private extension Announcement {
+    func isNewCompared(to announcement: StorageAnnouncement) -> Bool {
+        appVersionName > announcement.appVersionName || announcementVersion > announcement.announcementVersion
     }
 }
 
 // MARK: - Constants
-//
 private enum Constants {
-
     // MARK: File Names
     static let featureAnnouncementsFileName = "feature-announcements.plist"
 
@@ -124,9 +212,11 @@ private enum Constants {
 }
 
 // MARK: - Errors
-//
 enum AnnouncementsStorageError: Error {
     case unableToFindFileURL
+    case invalidAnnouncement
+    case unableToSaveAnnouncement
+    case announcementAlreadyExists
 }
 
 enum AnnouncementsError: Error {

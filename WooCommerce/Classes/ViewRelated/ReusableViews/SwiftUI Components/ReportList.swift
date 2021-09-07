@@ -6,6 +6,7 @@ protocol ReportListPresentable {
     var title: String { get }
     var ctaTitle: String { get }
     var onDismiss: () -> Void { get }
+    func onAppear()
 }
 
 struct ReportItem: Identifiable {
@@ -39,6 +40,7 @@ struct ReportList: View {
                 .padding(.horizontal, Layout.buttonHorizontalPadding(sizeClass))
                 .padding(.bottom, Layout.buttonVerticalPadding(sizeClass))
         }
+        .onAppear(perform: viewModel.onAppear)
     }
 }
 

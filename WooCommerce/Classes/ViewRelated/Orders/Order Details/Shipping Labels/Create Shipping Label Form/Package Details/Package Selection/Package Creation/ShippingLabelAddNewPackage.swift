@@ -2,7 +2,7 @@ import SwiftUI
 import Yosemite
 
 struct ShippingLabelAddNewPackage: View {
-    @StateObject var viewModel: ShippingLabelAddNewPackageViewModel
+    @ObservedObject var viewModel: ShippingLabelAddNewPackageViewModel
     @Environment(\.presentationMode) var presentation
 
     var body: some View {

@@ -23,7 +23,7 @@ final class CountrySelectorCommand: ListSelectorCommand {
     ///
     let navigationBarTitle: String? = ""
 
-    init(countries: [Country] = temporaryCountries, selected: Country? = nil) {
+    init(countries: [Country], selected: Country? = nil) {
         self.countries = countries
         self.data = countries
         self.selected = selected
@@ -50,17 +50,4 @@ final class CountrySelectorCommand: ListSelectorCommand {
 
         data = countries.filter { $0.name.localizedCaseInsensitiveContains(term) }
     }
-}
-
-// MARK: Temporary Methods
-extension CountrySelectorCommand {
-
-    // Supported countries will come from the view model later.
-    //
-    private static let temporaryCountries: [Country] = {
-        return Locale.isoRegionCodes.map { regionCode in
-            let name = Locale.current.localizedString(forRegionCode: regionCode) ?? ""
-            return Country(code: regionCode, name: name, states: [])
-        }
-    }()
 }

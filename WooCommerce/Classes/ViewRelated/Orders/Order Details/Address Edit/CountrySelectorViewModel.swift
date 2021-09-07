@@ -16,21 +16,25 @@ final class CountrySelectorViewModel: FilterListSelectorViewModelable, Observabl
         }
     }
 
-    /// ResultsController for stored countries, updates command with new content.
+    /// ResultsController for stored countries, replaces `command` with new content.
     ///
     private lazy var countriesResultsController: ResultsController<StorageCountry> = {
         let countriesDescriptor = NSSortDescriptor(key: "name", ascending: true)
         let resultsController = ResultsController<StorageCountry>(storageManager: storageManager, sortedBy: [countriesDescriptor])
 
-        resultsController.onDidChangeContent = {
-            // TODO: Update command
+        resultsController.onDidChangeContent = { [weak self] in
+            self?.command = CountrySelectorCommand(countries: resultsController.fetchedObjects)
         }
         return resultsController
     }()
 
     /// Command that powers the `ListSelector` view.
     ///
-    let command = CountrySelectorCommand()
+    private(set) var command = CountrySelectorCommand(countries: []) {
+        didSet {
+            objectWillChange.send()
+        }
+    }
 
     /// Navigation title
     ///
@@ -46,6 +50,9 @@ final class CountrySelectorViewModel: FilterListSelectorViewModelable, Observabl
 
     init(storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.storageManager = storageManager
+
+        // Perform initial fetch
+        try? countriesResultsController.performFetch()
     }
 }
 

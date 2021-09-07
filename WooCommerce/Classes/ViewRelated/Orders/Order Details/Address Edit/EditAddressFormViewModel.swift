@@ -33,6 +33,12 @@ final class EditAddressFormViewModel: ObservableObject {
     var isDoneButtonEnabled: Bool {
         return originalAddress != addressFromFields
     }
+
+    /// Creates a view model to be used when selecting a country
+    ///
+    func createCountryViewModel() -> CountrySelectorViewModel {
+        CountrySelectorViewModel()
+    }
 }
 
 private extension EditAddressFormViewModel {

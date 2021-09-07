@@ -136,8 +136,7 @@ struct EditAddressForm: View {
         .disabled(!viewModel.isDoneButtonEnabled))
 
         // Go to edit country
-        // TODO: Move `CountrySelectorViewModel` creation to the VM when it exists.
-        NavigationLink(destination: FilterListSelector(viewModel: CountrySelectorViewModel()), isActive: $showCountrySelector) {
+        NavigationLink(destination: FilterListSelector(viewModel: viewModel.createCountryViewModel()), isActive: $showCountrySelector) {
             EmptyView()
         }
 

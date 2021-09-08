@@ -446,6 +446,7 @@
 		26C6E8E426E2D87C00C7BB0F /* CountrySelectorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C6E8E326E2D87C00C7BB0F /* CountrySelectorViewModelTests.swift */; };
 		26C6E8E626E6B5F500C7BB0F /* StateSelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C6E8E526E6B5F500C7BB0F /* StateSelectorViewModel.swift */; };
 		26C6E8E826E6B6AC00C7BB0F /* StateSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C6E8E726E6B6AC00C7BB0F /* StateSelectorCommand.swift */; };
+		26C6E8EA26E8FD3900C7BB0F /* LazyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C6E8E926E8FD3900C7BB0F /* LazyView.swift */; };
 		26CCBE0B2523B3650073F94D /* RefundProductsTotalTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CCBE0A2523B3650073F94D /* RefundProductsTotalTableViewCell.swift */; };
 		26CCBE0D2523C2560073F94D /* RefundProductsTotalTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26CCBE0C2523C2560073F94D /* RefundProductsTotalTableViewCell.xib */; };
 		26E0ADF12631D94D00A5EB3B /* TopBannerWrapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E0ADF02631D94D00A5EB3B /* TopBannerWrapperView.swift */; };
@@ -1849,6 +1850,7 @@
 		26C6E8E326E2D87C00C7BB0F /* CountrySelectorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountrySelectorViewModelTests.swift; sourceTree = "<group>"; };
 		26C6E8E526E6B5F500C7BB0F /* StateSelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateSelectorViewModel.swift; sourceTree = "<group>"; };
 		26C6E8E726E6B6AC00C7BB0F /* StateSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateSelectorCommand.swift; sourceTree = "<group>"; };
+		26C6E8E926E8FD3900C7BB0F /* LazyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LazyView.swift; sourceTree = "<group>"; };
 		26CCBE0A2523B3650073F94D /* RefundProductsTotalTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundProductsTotalTableViewCell.swift; sourceTree = "<group>"; };
 		26CCBE0C2523C2560073F94D /* RefundProductsTotalTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RefundProductsTotalTableViewCell.xib; sourceTree = "<group>"; };
 		26E0ADF02631D94D00A5EB3B /* TopBannerWrapperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBannerWrapperView.swift; sourceTree = "<group>"; };
@@ -4365,6 +4367,7 @@
 				E10BC15D26CC06970064F5E2 /* ScrollableVStack.swift */,
 				DE126D0A26CA2331007F901D /* ValidationErrorRow.swift */,
 				DEE6437726D8DAD900888A75 /* InProgressView.swift */,
+				26C6E8E926E8FD3900C7BB0F /* LazyView.swift */,
 			);
 			path = "SwiftUI Components";
 			sourceTree = "<group>";
@@ -7409,6 +7412,7 @@
 				4506BD712461965300FE6377 /* ProductVisibilityViewController.swift in Sources */,
 				CE1F512B206985DF00C6C810 /* PaddedLabel.swift in Sources */,
 				26E0ADF12631D94D00A5EB3B /* TopBannerWrapperView.swift in Sources */,
+				26C6E8EA26E8FD3900C7BB0F /* LazyView.swift in Sources */,
 				7421344A210A323C00C13890 /* WooAnalyticsStat.swift in Sources */,
 				02A275BA23FE50AA005C560F /* ProductUIImageLoader.swift in Sources */,
 				02305353237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift in Sources */,

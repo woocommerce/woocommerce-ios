@@ -82,7 +82,7 @@ final class MockCardReaderService: CardReaderService {
         }
     }
 
-    func connect(_ reader: Hardware.CardReader) -> Future<Hardware.CardReader, Error> {
+    func connect(_ reader: Hardware.CardReader) -> AnyPublisher<CardReader, Error> {
         Future() { promise in
             /// Delaying the effect of this method so that unit tests are actually async
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {[weak self] in
@@ -90,7 +90,7 @@ final class MockCardReaderService: CardReaderService {
                 promise(Result.success(connectedReader))
                 self?.connectedReadersSubject.send([connectedReader])
             }
-        }
+        }.eraseToAnyPublisher()
     }
 
     func disconnect() -> Future<Void, Error> {

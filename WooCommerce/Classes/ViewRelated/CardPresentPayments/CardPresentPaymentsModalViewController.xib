@@ -13,6 +13,7 @@
                 <outlet property="actionButtonsView" destination="10Z-y1-ZQ6" id="L1z-Zs-L2J"/>
                 <outlet property="auxiliaryButton" destination="maO-19-PuQ" id="cQA-7p-jmo"/>
                 <outlet property="bottomLabels" destination="k73-qi-GuD" id="LvQ-UE-SBc"/>
+                <outlet property="bottomPaddingRegular" destination="lVZ-pu-Fmb" id="CJM-oy-oSx"/>
                 <outlet property="bottomSubtitleLabel" destination="2Sx-5s-f7J" id="Mco-Vu-Li6"/>
                 <outlet property="bottomTitleLabel" destination="oAj-lv-0k9" id="Clc-oi-Ywf"/>
                 <outlet property="buttonsSpacer" destination="OFI-6w-cag" id="Uva-gQ-T7X"/>

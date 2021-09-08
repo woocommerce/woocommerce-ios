@@ -35,7 +35,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageListDetails: [:],
+                                                             selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager)
 
@@ -64,7 +64,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageListDetails: [:],
+                                                             selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
                                                              weightUnit: "kg")
@@ -104,7 +104,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageListDetails: [:],
+                                                             selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              stores: stores,
                                                              storageManager: storageManager,
@@ -134,7 +134,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageListDetails: [:],
+                                                             selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              stores: stores,
                                                              storageManager: storageManager,
@@ -157,7 +157,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageListDetails: [:],
+                                                             selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              stores: stores,
                                                              storageManager: storageManager,
@@ -175,7 +175,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageListDetails: [:],
+                                                             selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              stores: stores,
                                                              storageManager: storageManager,
@@ -196,7 +196,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120"))
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageListDetails: [:],
+                                                             selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
                                                              weightUnit: "kg")
@@ -219,7 +219,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120"))
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageListDetails: [:],
+                                                             selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
                                                              weightUnit: "kg")
@@ -275,7 +275,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
 
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageListDetails: [:],
+                                                             selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
                                                              weightUnit: "kg")
@@ -311,10 +311,10 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                             productVariationID: 49,
                                             attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")]))
 
-
+        let selectedPackages = [ShippingLabelPackageInfo(packageID: "Box", totalWeight: "30", productIDs: [1, 33, 23, 49])]
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageListDetails: ["Box": "30"],
+                                                             selectedPackages: selectedPackages,
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
                                                              weightUnit: "kg")
@@ -340,7 +340,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
 
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageListDetails: [:],
+                                                             selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
                                                              weightUnit: "kg")
@@ -364,10 +364,10 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
 
         // When
         insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120"))
-
+        let selectedPackages = [ShippingLabelPackageInfo(packageID: "Package", totalWeight: "500", productIDs: [1])]
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageListDetails: ["Test": "500"],
+                                                             selectedPackages: selectedPackages,
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
                                                              weightUnit: "kg")
@@ -394,7 +394,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
 
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageListDetails: [:],
+                                                             selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
                                                              weightUnit: "kg")
@@ -424,28 +424,28 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         // When
         let viewModelWithoutPackages = ShippingLabelPackageDetailsViewModel(order: order,
                                                                             packagesResponse: nil,
-                                                                            selectedPackageListDetails: [:],
+                                                                            selectedPackages: [],
                                                                             formatter: currencyFormatter,
                                                                             stores: stores,
                                                                             storageManager: storageManager,
                                                                             weightUnit: "kg")
         let viewModelWithPackages = ShippingLabelPackageDetailsViewModel(order: order,
                                                                          packagesResponse: mockPackageResponse(),
-                                                                         selectedPackageListDetails: [:],
+                                                                         selectedPackages: [],
                                                                          formatter: currencyFormatter,
                                                                          stores: stores,
                                                                          storageManager: storageManager,
                                                                          weightUnit: "kg")
         let viewModelWithCustomPackages = ShippingLabelPackageDetailsViewModel(order: order,
                                                                                packagesResponse: mockPackageResponse(withCustom: true, withPredefined: false),
-                                                                               selectedPackageListDetails: [:],
+                                                                               selectedPackages: [],
                                                                                formatter: currencyFormatter,
                                                                                stores: stores,
                                                                                storageManager: storageManager,
                                                                                weightUnit: "kg")
         let viewModelWithPredefinedPackages = ShippingLabelPackageDetailsViewModel(order: order,
                                                                                packagesResponse: mockPackageResponse(withCustom: false, withPredefined: true),
-                                                                               selectedPackageListDetails: [:],
+                                                                               selectedPackages: [],
                                                                                formatter: currencyFormatter,
                                                                                stores: stores,
                                                                                storageManager: storageManager,

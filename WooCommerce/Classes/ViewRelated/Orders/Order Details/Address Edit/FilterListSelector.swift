@@ -1,4 +1,5 @@
 import SwiftUI
+import Shimmer
 
 protocol FilterListSelectorViewModelable: ObservableObject {
 
@@ -19,6 +20,10 @@ protocol FilterListSelectorViewModelable: ObservableObject {
     /// Placeholder for the filter text field
     ///
     var filterPlaceholder: String { get }
+
+    /// Value to indicate if the views should be redacted
+    ///
+    var showPlaceholders: Bool { get }
 }
 
 /// Filterable List Selector View
@@ -37,6 +42,8 @@ struct FilterListSelector<ViewModel: FilterListSelectorViewModelable>: View {
             ListSelector(command: viewModel.command, tableStyle: .plain)
         }
         .navigationTitle(viewModel.navigationTitle)
+        .redacted(reason: viewModel.showPlaceholders ? .placeholder : [])
+        .shimmering(active: viewModel.showPlaceholders)
     }
 }
 

@@ -5,10 +5,12 @@ import TestKit
 
 final class EditAddressFormViewModelTests: XCTestCase {
 
+    let sampleSiteID: Int64 = 123
+
     func test_creating_with_address_prefills_fields_with_correct_data() {
         // Given
         let address = sampleAddress()
-        let viewModel = EditAddressFormViewModel(address: address)
+        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address)
 
         // Then
         XCTAssertEqual(viewModel.firstName, address.firstName)
@@ -28,7 +30,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_updating_fields_enables_done_button() {
         // Given
         let address = sampleAddress()
-        let viewModel = EditAddressFormViewModel(address: address)
+        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address)
         XCTAssertFalse(viewModel.isDoneButtonEnabled)
 
         // When
@@ -41,7 +43,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_updating_fields_back_to_original_values_disables_done_button() {
         // Given
         let address = sampleAddress()
-        let viewModel = EditAddressFormViewModel(address: address)
+        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address)
         XCTAssertFalse(viewModel.isDoneButtonEnabled)
 
         // When
@@ -56,7 +58,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
 
     func test_creating_without_address_disables_done_button() {
         // Given
-        let viewModel = EditAddressFormViewModel(address: nil)
+        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: nil)
 
         // Then
         XCTAssertFalse(viewModel.isDoneButtonEnabled)
@@ -65,7 +67,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_creating_with_address_with_empty_nullable_fields_disables_done_button() {
         // Given
         let address = sampleAddressWithEmptyNullableFields()
-        let viewModel = EditAddressFormViewModel(address: address)
+        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address)
 
         // Then
         XCTAssertFalse(viewModel.isDoneButtonEnabled)

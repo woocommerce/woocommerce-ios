@@ -2,7 +2,12 @@ import Yosemite
 
 final class EditAddressFormViewModel: ObservableObject {
 
-    init(address: Address?) {
+    /// Current site ID
+    ///
+    private let siteID: Int64
+
+    init(siteID: Int64, address: Address?) {
+        self.siteID = siteID
         self.originalAddress = address ?? .empty
         updateFieldsWithOriginalAddress()
     }
@@ -32,6 +37,12 @@ final class EditAddressFormViewModel: ObservableObject {
     ///
     var isDoneButtonEnabled: Bool {
         return originalAddress != addressFromFields
+    }
+
+    /// Creates a view model to be used when selecting a country
+    ///
+    func createCountryViewModel() -> CountrySelectorViewModel {
+        CountrySelectorViewModel(siteID: siteID)
     }
 }
 

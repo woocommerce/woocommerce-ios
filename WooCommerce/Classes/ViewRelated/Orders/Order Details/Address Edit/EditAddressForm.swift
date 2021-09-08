@@ -136,8 +136,7 @@ struct EditAddressForm: View {
         .disabled(!viewModel.isDoneButtonEnabled))
 
         // Go to edit country
-        // TODO: Move `CountrySelectorViewModel` creation to the VM when it exists.
-        NavigationLink(destination: FilterListSelector(viewModel: CountrySelectorViewModel()), isActive: $showCountrySelector) {
+        NavigationLink(destination: FilterListSelector(viewModel: viewModel.createCountryViewModel()), isActive: $showCountrySelector) {
             EmptyView()
         }
 
@@ -197,7 +196,7 @@ struct EditAddressForm_Previews: PreviewProvider {
                                        country: "US",
                                        phone: "333-333-3333",
                                        email: "scrambled@scrambled.com")
-    static let sampleViewModel = EditAddressFormViewModel(address: sampleAddress)
+    static let sampleViewModel = EditAddressFormViewModel(siteID: 123, address: sampleAddress)
 
     static var previews: some View {
         NavigationView {

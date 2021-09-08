@@ -17,14 +17,7 @@ final class CountrySelectorViewModel: FilterListSelectorViewModelable, Observabl
 
     /// Command that powers the `ListSelector` view.
     ///
-    private(set) var command = CountrySelectorCommand(countries: [])
-
-    /// ResultsController for stored countries.
-    ///
-    private lazy var countriesResultsController: ResultsController<StorageCountry> = {
-        let countriesDescriptor = NSSortDescriptor(key: "name", ascending: true)
-        return ResultsController<StorageCountry>(storageManager: storageManager, sortedBy: [countriesDescriptor])
-    }()
+    let command = CountrySelectorCommand(countries: [])
 
     /// Navigation title
     ///
@@ -33,6 +26,13 @@ final class CountrySelectorViewModel: FilterListSelectorViewModelable, Observabl
     /// Filter text field placeholder
     ///
     let filterPlaceholder = Localization.placeholder
+
+    /// ResultsController for stored countries.
+    ///
+    private lazy var countriesResultsController: ResultsController<StorageCountry> = {
+        let countriesDescriptor = NSSortDescriptor(key: "name", ascending: true)
+        return ResultsController<StorageCountry>(storageManager: storageManager, sortedBy: [countriesDescriptor])
+    }()
 
     /// Storage to fetch countries
     ///

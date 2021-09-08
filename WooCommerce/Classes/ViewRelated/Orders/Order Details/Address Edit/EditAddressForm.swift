@@ -190,7 +190,7 @@ struct EditAddressForm_Previews: PreviewProvider {
                                        company: nil,
                                        address1: "234 70th Street",
                                        address2: nil,
-                                       city: "Niagara Fallsgs",
+                                       city: "Niagara Falls",
                                        state: "NY",
                                        postcode: "14304",
                                        country: "US",

@@ -136,13 +136,13 @@ struct EditAddressForm: View {
         .disabled(!viewModel.isDoneButtonEnabled))
 
         // Go to edit country
-        NavigationLink(destination: FilterListSelector(viewModel: viewModel.createCountryViewModel()), isActive: $showCountrySelector) {
+        LazyNavigationLink(destination: FilterListSelector(viewModel: viewModel.createCountryViewModel()), isActive: $showCountrySelector) {
             EmptyView()
         }
 
         // Go to edit state
         // TODO: Move `StateSelectorViewModel` creation to the VM when it exists.
-        NavigationLink(destination: FilterListSelector(viewModel: StateSelectorViewModel()), isActive: $showStateSelector) {
+        LazyNavigationLink(destination: FilterListSelector(viewModel: StateSelectorViewModel()), isActive: $showStateSelector) {
             EmptyView()
         }
     }

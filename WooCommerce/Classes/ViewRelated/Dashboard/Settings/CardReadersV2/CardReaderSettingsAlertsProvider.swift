@@ -26,6 +26,13 @@ protocol CardReaderSettingsAlertsProvider {
     ///
     func connectingToReader(from: UIViewController)
 
+    /// Defines an alert indicating connecting failed. The user may continue the search
+    /// or cancel
+    ///
+    func connectingFailed(from: UIViewController,
+                          continueSearch: @escaping () -> Void,
+                          cancelSearch: @escaping () -> Void)
+
     /// Dismisses any alert being presented
     ///
     func dismiss()

@@ -41,6 +41,10 @@ final class MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         // GNDN
     }
 
+    func connectingFailed(from: UIViewController, continueSearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
+        // GNDN
+    }
+
     func dismiss() {
         // GNDN
     }

@@ -9,14 +9,16 @@ struct LazyView<Wrapped: View>: View {
     ///
     private let wrapped: () -> Wrapped
 
-    /// Stores the function as a closure using the `@autoclosure` attribute.
-    ///
+    /// Creates a wrapper for a view to be instantiated lazily.
+    /// - Parameters:
+    ///   - wrapped: View builder function.
     init(_ wrapped: @autoclosure @escaping () -> Wrapped) {
         self.wrapped = wrapped
     }
 
-    /// Receives the builder closure.
-    ///
+    /// Creates a wrapper for a view to be instantiated lazily.
+    /// - Parameters:
+    ///   - wrapped: View builder closure.
     init(_ wrapped: @escaping () -> Wrapped) {
         self.wrapped = wrapped
     }

@@ -8,7 +8,7 @@ struct ShippingLabelPackageDetails: View {
 
     /// Completion callback
     ///
-    typealias Completion = (_ selectedPackageListDetails: [String: String]) -> Void
+    typealias Completion = (_ selectedPackages: [ShippingLabelPackageInfo]) -> Void
     private let onCompletion: Completion
 
     init(viewModel: ShippingLabelPackageDetailsViewModel, completion: @escaping Completion) {
@@ -117,7 +117,7 @@ struct ShippingLabelPackageDetails_Previews: PreviewProvider {
 
         let viewModel = ShippingLabelPackageDetailsViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder(),
                                                              packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails(),
-                                                             selectedPackageListDetails: [:])
+                                                             selectedPackages: [])
 
         ShippingLabelPackageDetails(viewModel: viewModel, completion: { _ in
         })

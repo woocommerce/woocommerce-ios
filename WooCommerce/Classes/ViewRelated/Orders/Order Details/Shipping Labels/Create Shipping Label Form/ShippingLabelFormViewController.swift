@@ -159,7 +159,7 @@ extension ShippingLabelFormViewController: UITableViewDelegate {
         case Row(type: .shipTo, dataState: .validated, displayMode: .editable):
             displayEditAddressFormVC(address: viewModel.destinationAddress, validationError: nil, type: .destination)
         case Row(type: .packageDetails, dataState: .validated, displayMode: .editable):
-            displayPackageDetailsVC(selectedPackageListDetails: viewModel.selectedPackageListDetails)
+            displayPackageDetailsVC(inputPackages: viewModel.selectedPackagesDetails)
         case Row(type: .customs, dataState: .validated, displayMode: .editable):
             displayCustomsFormListVC(customsForms: viewModel.customsForms)
         case Row(type: .shippingCarrierAndRates, dataState: .validated, displayMode: .editable):
@@ -277,7 +277,8 @@ private extension ShippingLabelFormViewController {
                        title: Localization.packageDetailsCellTitle,
                        body: viewModel.getPackageDetailsBody(),
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
-            self?.displayPackageDetailsVC(selectedPackageListDetails: self?.viewModel.selectedPackageListDetails ?? [:])
+            guard let self = self else { return }
+            self.displayPackageDetailsVC(inputPackages: self.viewModel.selectedPackagesDetails)
         }
     }
 
@@ -415,10 +416,10 @@ private extension ShippingLabelFormViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
 
-    func displayPackageDetailsVC(selectedPackageListDetails: [String: String]) {
+    func displayPackageDetailsVC(inputPackages: [ShippingLabelPackageInfo]) {
         let vm = ShippingLabelPackageDetailsViewModel(order: viewModel.order,
                                                       packagesResponse: viewModel.packagesResponse,
-                                                      selectedPackageListDetails: viewModel.selectedPackageListDetails)
+                                                      selectedPackages: inputPackages)
         let packageDetails = ShippingLabelPackageDetails(viewModel: vm) { [weak self] selectedPackages in
             self?.viewModel.handlePackageDetailsValueChanges(details: selectedPackages)
         }

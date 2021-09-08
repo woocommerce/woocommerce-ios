@@ -56,14 +56,14 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     ///
     @Published var selectedPackageID: String?
 
-    /// List of selected package IDs and their weights.
+    /// List of selected package with basic info.
     /// TODO-4599: update this to properly support multi-package.
     ///
-    var selectedPackageListDetails: [String: String] {
+    var selectedPackageListDetails: [ShippingLabelPackageInfo] {
         guard let id = selectedPackageID, totalWeight.isNotEmpty else {
-            return [:]
+            return []
         }
-        return [id: totalWeight]
+        return [ShippingLabelPackageInfo(packageID: id, totalWeight: totalWeight, productIDs: orderItems.map { $0.productOrVariationID })]
     }
 
     /// The title of the selected package, if any.
@@ -95,7 +95,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
 
     init(order: Order,
          packagesResponse: ShippingLabelPackagesResponse?,
-         selectedPackageListDetails: [String: String],
+         selectedPackages: [ShippingLabelPackageInfo],
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -108,14 +108,14 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         self.storageManager = storageManager
         self.weightUnit = weightUnit
         self.packagesResponse = packagesResponse
-        self.selectedPackageID = selectedPackageListDetails.first?.key // TODO-4599: fix this
+        self.selectedPackageID = selectedPackages.first?.packageID // TODO-4599: fix this
 
         configureResultsControllers()
         setDefaultPackage()
         syncProducts()
         syncProductVariations()
         configureItemRows()
-        configureTotalWeights(initialTotalWeight: selectedPackageListDetails.first?.value) // TODO-4599: fix this
+        configureTotalWeights(initialTotalWeight: selectedPackages.first?.totalWeight) // TODO-4599: fix this
     }
 
     /// Observe changes in products and variations to update item rows.

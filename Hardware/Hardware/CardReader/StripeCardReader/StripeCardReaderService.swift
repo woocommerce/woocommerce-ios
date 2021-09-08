@@ -279,17 +279,10 @@ extension StripeCardReaderService: CardReaderService {
                 return
             }
 
-            // Both branches of the is statement do pretty much the same.
-            // If there is a location id I connect directly, if there
-            // isn't we obtain it (async) and then connect using the same code
-            // The code that actually attempts the connection is what I would like to
-            // extract to a separate method
-            if let locationId = stripeReader.locationId {
-                let connectionConfiguration = BluetoothConnectionConfiguration(locationId: locationId)
-
+            let _ = self.getBluetoothConfiguration(stripeReader).map { configuration in
                 Terminal.shared.connectBluetoothReader(stripeReader,
                                                        delegate: self,
-                                                       connectionConfig: connectionConfiguration) { [weak self] (reader, error) in
+                                                       connectionConfig: configuration) { [weak self] (reader, error) in
                     guard let self = self else {
                         promise(.failure(CardReaderServiceError.connection()))
                         return
@@ -309,43 +302,28 @@ extension StripeCardReaderService: CardReaderService {
                         promise(.success(CardReader(reader: reader)))
                     }
                 }
-            } else {
-                self.readerLocationProvider?.fetchDefaultLocationID { [weak self] (location, error) in
-                    guard let self = self else {
-                        promise(.failure(CardReaderServiceError.connection()))
-                        return
-                    }
+            }
+        }
+    }
 
+    private func getBluetoothConfiguration(_ reader: StripeTerminal.Reader) -> Future<BluetoothConnectionConfiguration, Error> {
+        return Future() { [weak self] promise in
+            guard let self = self else {
+                promise(.failure(CardReaderServiceError.connection()))
+                return
+            }
+
+            if let locationId = reader.locationId {
+                promise(.success(BluetoothConnectionConfiguration(locationId: locationId)))
+            } else {
+                self.readerLocationProvider?.fetchDefaultLocationID { (locationId, error) in
                     if let error = error {
                         let underlyingError = UnderlyingError(with: error)
                         promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
                     }
 
-                    if let location = location {
-                        let connectionConfiguration = BluetoothConnectionConfiguration(locationId: location)
-
-                        Terminal.shared.connectBluetoothReader(stripeReader,
-                                                               delegate: self,
-                                                               connectionConfig: connectionConfiguration) { [weak self] (reader, error) in
-                            guard let self = self else {
-                                promise(.failure(CardReaderServiceError.connection()))
-                                return
-                            }
-
-                            // Clear cached readers, as per Stripe's documentation.
-                            self.discoveredStripeReadersCache.clear()
-
-                            if let error = error {
-                                let underlyingError = UnderlyingError(with: error)
-                                promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
-                            }
-
-                            if let reader = reader {
-                                self.connectedReadersSubject.send([CardReader(reader: reader)])
-                                self.switchStatusToIdle()
-                                promise(.success(CardReader(reader: reader)))
-                            }
-                        }
+                    if let locationId = locationId {
+                        promise(.success(BluetoothConnectionConfiguration(locationId: locationId)))
                     }
                 }
             }

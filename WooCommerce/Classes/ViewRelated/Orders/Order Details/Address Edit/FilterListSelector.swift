@@ -2,7 +2,7 @@ import SwiftUI
 
 protocol FilterListSelectorViewModelable: ObservableObject {
 
-    associatedtype Command: ObservableCommand
+    associatedtype Command: ObservableListSelectorCommand
 
     /// Binding variable for the filter search term
     ///

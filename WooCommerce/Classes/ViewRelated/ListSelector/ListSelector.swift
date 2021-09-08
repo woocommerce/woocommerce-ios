@@ -2,11 +2,11 @@ import SwiftUI
 
 /// Protocol required to re-render the view when the command updates any of it's content.
 ///
-protocol ObservableCommand: ListSelectorCommand, ObservableObject {}
+protocol ObservableListSelectorCommand: ListSelectorCommand, ObservableObject {}
 
 /// `SwiftUI` wrapper for `ListSelectorViewController`
 ///
-struct ListSelector<Command: ObservableCommand>: UIViewControllerRepresentable {
+struct ListSelector<Command: ObservableListSelectorCommand>: UIViewControllerRepresentable {
 
     /// Command that defines cell style and provide data.
     ///

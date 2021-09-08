@@ -78,9 +78,9 @@ extension ShippingLabelAddNewPackageViewModel {
             onCompletion(success)
 
             // On success, reset tab state and save new package details
-            guard success else { return }
-            self?.customPackageVM = ShippingLabelCustomPackageFormViewModel()
-            self?.onCompletion(newCustomPackage, nil, self?.packagesResponse)
+            guard let self = self, success else { return }
+            self.customPackageVM = ShippingLabelCustomPackageFormViewModel()
+            self.onCompletion(newCustomPackage, nil, self.packagesResponse)
         }
     }
 
@@ -101,10 +101,10 @@ extension ShippingLabelAddNewPackageViewModel {
             onCompletion(success)
 
             // On success, reset tab state and save new package details
-            guard success else { return }
-            self?.customPackageVM = ShippingLabelCustomPackageFormViewModel()
-            self?.servicePackageVM.packagesResponse = self?.packagesResponse
-            self?.onCompletion(nil, selectedServicePackage, self?.packagesResponse)
+            guard let self = self, success else { return }
+            self.customPackageVM = ShippingLabelCustomPackageFormViewModel()
+            self.servicePackageVM.packagesResponse = self.packagesResponse
+            self.onCompletion(nil, selectedServicePackage, self.packagesResponse)
         }
     }
 }
@@ -125,7 +125,9 @@ private extension ShippingLabelAddNewPackageViewModel {
 
         let action = ShippingLabelAction.createPackage(siteID: siteID,
                                                        customPackage: customPackage,
-                                                       predefinedOption: predefinedOption) { result in
+                                                       predefinedOption: predefinedOption) { [weak self] result in
+            guard let self = self else { return }
+
             switch result {
             case .success:
                 self.syncPackageDetails() { success in
@@ -142,7 +144,9 @@ private extension ShippingLabelAddNewPackageViewModel {
     /// Gets updated package list with new package. On completion, indicates if sync was successful.
     ///
     func syncPackageDetails(onCompletion: ((Bool) -> Void)? = nil) {
-        let action = ShippingLabelAction.packagesDetails(siteID: siteID) { result in
+        let action = ShippingLabelAction.packagesDetails(siteID: siteID) { [weak self] result in
+            guard let self = self else { return }
+
             switch result {
             case .success(let value):
                 self.packagesResponse = value

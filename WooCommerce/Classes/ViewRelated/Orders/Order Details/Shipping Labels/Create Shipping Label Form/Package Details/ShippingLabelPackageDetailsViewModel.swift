@@ -59,7 +59,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     /// List of selected package with basic info.
     /// TODO-4599: update this to properly support multi-package.
     ///
-    var selectedPackageListDetails: [ShippingLabelPackageInfo] {
+    var selectedPackagesDetails: [ShippingLabelPackageInfo] {
         guard let id = selectedPackageID, totalWeight.isNotEmpty else {
             return []
         }

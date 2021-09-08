@@ -127,7 +127,7 @@ private extension ShippingLabelAddNewPackageViewModel {
                                                        customPackage: customPackage,
                                                        predefinedOption: predefinedOption) { result in
             switch result {
-            case .success(_):
+            case .success:
                 self.syncPackageDetails() { success in
                     onCompletion?(success)
                 }

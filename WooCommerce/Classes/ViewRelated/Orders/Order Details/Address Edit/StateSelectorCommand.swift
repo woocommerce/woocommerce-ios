@@ -3,7 +3,7 @@ import Yosemite
 
 /// Command to be used to select a state when editing addresses.
 ///
-final class StateSelectorCommand: ListSelectorCommand {
+final class StateSelectorCommand: ObservableCommand {
     typealias Model = StateOfACountry
     typealias Cell = BasicTableViewCell
 

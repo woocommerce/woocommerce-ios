@@ -1,12 +1,16 @@
 import SwiftUI
 
+/// Protocol required to re-render the view when the command updates any of it's content.
+///
+protocol ObservableCommand: ListSelectorCommand, ObservableObject {}
+
 /// `SwiftUI` wrapper for `ListSelectorViewController`
 ///
-struct ListSelector<Command: ListSelectorCommand>: UIViewControllerRepresentable {
+struct ListSelector<Command: ObservableCommand>: UIViewControllerRepresentable {
 
     /// Command that defines cell style and provide data.
     ///
-    let command: Command
+    @ObservedObject var command: Command
 
     /// Table view style.
     ///

@@ -3,7 +3,7 @@ import Yosemite
 
 /// Command to be used to select a country when editing addresses.
 ///
-final class CountrySelectorCommand: ListSelectorCommand, ObservableObject {
+final class CountrySelectorCommand: ObservableCommand {
     typealias Model = Country
     typealias Cell = BasicTableViewCell
 

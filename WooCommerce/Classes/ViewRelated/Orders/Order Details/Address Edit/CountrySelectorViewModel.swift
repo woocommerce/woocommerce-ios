@@ -17,7 +17,7 @@ final class CountrySelectorViewModel: FilterListSelectorViewModelable, Observabl
 
     /// Command that powers the `ListSelector` view.
     ///
-    @Published private(set) var command = CountrySelectorCommand(countries: [])
+    private(set) var command = CountrySelectorCommand(countries: [])
 
     /// ResultsController for stored countries.
     ///
@@ -68,8 +68,10 @@ private extension CountrySelectorViewModel {
         // Initial fetch
         try? countriesResultsController.performFetch()
 
-        // Sync countries if needed
-        if countriesResultsController.isEmpty {
+        // Reset countries with fetched data or sync countries if needed.
+        if !countriesResultsController.isEmpty {
+            command.resetCountries(countriesResultsController.fetchedObjects)
+        } else {
             let action = DataAction.synchronizeCountries(siteID: siteID, onCompletion: { _ in })
             stores.dispatch(action)
         }

@@ -135,11 +135,25 @@ private extension ShippingLabelAddNewPackageViewModel {
 
             switch result {
             case .success:
+                if customPackage != nil {
+                    ServiceLocator.analytics.track(.shippingLabelPackageAddedSuccessfully, withProperties: ["type": "custom"])
+                }
+                if predefinedOption != nil {
+                    ServiceLocator.analytics.track(.shippingLabelPackageAddedSuccessfully, withProperties: ["type": "predefined"])
+                }
                 self.syncPackageDetails() { success in
                     onCompletion?(success)
                 }
             case .failure(let error):
                 self.error = error
+                if customPackage != nil {
+                    ServiceLocator.analytics.track(.shippingLabelAddPackageFailed, withProperties: ["type": "custom",
+                                                                                                    "error": error.localizedDescription])
+                }
+                if predefinedOption != nil {
+                    ServiceLocator.analytics.track(.shippingLabelAddPackageFailed, withProperties: ["type": "predefined",
+                                                                                                    "error": error.localizedDescription])
+                }
                 DDLogError("⛔️ Error creating package: \(error.localizedDescription)")
                 onCompletion?(false)
             }

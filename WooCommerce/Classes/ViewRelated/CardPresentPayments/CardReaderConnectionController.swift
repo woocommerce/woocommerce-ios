@@ -174,7 +174,7 @@ private extension CardReaderConnectionController {
             return
         }
 
-        if foundReaders.count > 1 {
+        if foundReaders.containsMoreThanOne {
             showSeveralFoundReaders = true
         }
     }
@@ -271,7 +271,7 @@ private extension CardReaderConnectionController {
 
                 /// If we have found multiple readers, advance to foundMultipleReaders
                 ///
-                if self.foundReaders.count > 1 {
+                if self.foundReaders.containsMoreThanOne {
                     self.state = .foundSeveralReaders
                     return
                 }

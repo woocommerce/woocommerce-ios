@@ -264,80 +264,16 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
-    public func connect(_ reader: CardReader) -> Future <CardReader, Error> {
+    public func connect(_ reader: CardReader) -> AnyPublisher<CardReader, Error> {
         guard let stripeReader = self.discoveredStripeReadersCache.reader(matching: reader) as? Reader else {
-            return Future { promise in
+            return Future() { promise in
                 promise(.failure(CardReaderServiceError.connection()))
-            }
+            }.eraseToAnyPublisher()
         }
 
-        return getBluetoothConfiguration(stripeReader)
-            .map { configuration in
-            Terminal.shared.connectBluetoothReader(stripeReader,
-                                                   delegate: self,
-                                                   connectionConfig: configuration) { [weak self] (reader, error) in
-                guard let self = self else {
-                    promise(.failure(CardReaderServiceError.connection()))
-                }
-
-                // Clear cached readers, as per Stripe's documentation.
-                self.discoveredStripeReadersCache.clear()
-
-                if let error = error {
-                    let underlyingError = UnderlyingError(with: error)
-                    promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
-                }
-
-                if let reader = reader {
-                    self.connectedReadersSubject.send([CardReader(reader: reader)])
-                    self.switchStatusToIdle()
-                    promise(.success(CardReader(reader: reader)))
-                }
-            }
-        }
-
-
-
-
-//        return Future() { [weak self] promise in
-//
-//            guard let self = self else {
-//                promise(.failure(CardReaderServiceError.connection()))
-//                return
-//            }
-//
-//            // Find a cached reader that matches.
-//            // If this fails, that means that we are in an internal state that we do not expect.
-//            guard let stripeReader = self.discoveredStripeReadersCache.reader(matching: reader) as? Reader else {
-//                promise(.failure(CardReaderServiceError.connection()))
-//                return
-//            }
-//
-//            let _ = self.getBluetoothConfiguration(stripeReader).map { configuration in
-//                Terminal.shared.connectBluetoothReader(stripeReader,
-//                                                       delegate: self,
-//                                                       connectionConfig: configuration) { [weak self] (reader, error) in
-//                    guard let self = self else {
-//                        promise(.failure(CardReaderServiceError.connection()))
-//                        return
-//                    }
-//
-//                    // Clear cached readers, as per Stripe's documentation.
-//                    self.discoveredStripeReadersCache.clear()
-//
-//                    if let error = error {
-//                        let underlyingError = UnderlyingError(with: error)
-//                        promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
-//                    }
-//
-//                    if let reader = reader {
-//                        self.connectedReadersSubject.send([CardReader(reader: reader)])
-//                        self.switchStatusToIdle()
-//                        promise(.success(CardReader(reader: reader)))
-//                    }
-//                }
-//            }
-//        }
+        return getBluetoothConfiguration(stripeReader).flatMap { configuration in
+            self.connect(stripeReader, configuration: configuration)
+        }.eraseToAnyPublisher()
     }
 
     private func getBluetoothConfiguration(_ reader: StripeTerminal.Reader) -> Future<BluetoothConnectionConfiguration, Error> {
@@ -364,25 +300,32 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
-    private func connectionConfiguration(reader: StripeTerminal.Reader) -> Future<BluetoothConnectionConfiguration, Error> {
-        return Future() { [weak self] promise in
+    public func connect(_ reader: StripeTerminal.Reader, configuration: BluetoothConnectionConfiguration) -> Future <CardReader, Error> {
+        return Future { [weak self] promise in
+
             guard let self = self else {
                 promise(.failure(CardReaderServiceError.connection()))
                 return
             }
 
-            if let locationId = reader.locationId {
-                promise(.success(BluetoothConnectionConfiguration(locationId: locationId)))
-            }
+            Terminal.shared.connectBluetoothReader(reader, delegate: self, connectionConfig: configuration) { [weak self] (reader, error) in
+                guard let self = self else {
+                    promise(.failure(CardReaderServiceError.connection()))
+                    return
+                }
 
-            self.readerLocationProvider?.fetchDefaultLocationID { (location, error) in
+                // Clear cached readers, as per Stripe's documentation.
+                self.discoveredStripeReadersCache.clear()
+
                 if let error = error {
                     let underlyingError = UnderlyingError(with: error)
                     promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
                 }
 
-                if let location = location {
-                    promise(.success(BluetoothConnectionConfiguration(locationId: location)))
+                if let reader = reader {
+                    self.connectedReadersSubject.send([CardReader(reader: reader)])
+                    self.switchStatusToIdle()
+                    promise(.success(CardReader(reader: reader)))
                 }
             }
         }

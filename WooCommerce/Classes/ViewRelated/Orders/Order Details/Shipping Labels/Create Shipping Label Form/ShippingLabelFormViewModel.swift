@@ -600,7 +600,7 @@ private extension ShippingLabelFormViewModel {
     /// When multi-package support is available, we should create separate form for each package ID.
     ///
     private func createDefaultCustomsFormsIfNeeded() -> [ShippingLabelCustomsForm] {
-        guard customsFormRequired, !selectedPackagesDetails.isEmpty else {
+        guard customsFormRequired, selectedPackagesDetails.isNotEmpty else {
             return []
         }
 

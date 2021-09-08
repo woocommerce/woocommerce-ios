@@ -90,7 +90,7 @@ final class ShippingLabelFormViewModel {
 
     /// Shipping Label Purchase
     ///
-    private(set) var purchasedShippingLabel: ShippingLabel?
+    private(set) var purchasedShippingLabels: [ShippingLabel] = []
 
     /// ResultsController: Loads Countries from the Storage Layer.
     ///
@@ -734,23 +734,33 @@ extension ShippingLabelFormViewModel {
             return
         }
 
-        let productIDs = order.items.map { $0.productOrVariationID }
-        let packages = selectedPackages.map { package in
-            ShippingLabelPackagePurchase(package: package,
-                                         rate: selectedRate,
-                                         productIDs: productIDs,
-                                         customsForm: package.customsForm)
+        let packages = selectedPackages.compactMap { package -> ShippingLabelPackagePurchase? in
+            guard let packageInfo = selectedPackagesDetails.first(where: { $0.packageID == package.boxID }) else {
+                return nil
+            }
+            return ShippingLabelPackagePurchase(package: package,
+                                                rate: selectedRate,
+                                                productIDs: packageInfo.productIDs,
+                                                customsForm: package.customsForm)
         }
+
+        guard packages.isNotEmpty else {
+            let error = PurchaseError.invalidPackageDetails
+            DDLogError("⛔️ Error finding matching package: \(error)")
+            return onCompletion(.failure(error))
+        }
+
         let startTime = Date()
         let action = ShippingLabelAction.purchaseShippingLabel(siteID: siteID,
                                                                orderID: order.orderID,
                                                                originAddress: originAddress,
                                                                destinationAddress: destinationAddress,
                                                                packages: packages,
-                                                               emailCustomerReceipt: accountSettings.isEmailReceiptsEnabled) { result in
+                                                               emailCustomerReceipt: accountSettings.isEmailReceiptsEnabled) { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let labels):
-                self.purchasedShippingLabel = labels.first(where: { $0.productIDs == productIDs })
+                self.purchasedShippingLabels = labels.filter { $0.orderID == self.order.orderID && $0.status == .purchased }
                 onCompletion(.success(Date().timeIntervalSince(startTime)))
             case .failure(let error):
                 onCompletion(.failure(error))
@@ -761,6 +771,7 @@ extension ShippingLabelFormViewModel {
 
     private enum PurchaseError: Error {
         case labelDetailsMissing
+        case invalidPackageDetails
     }
 }
 

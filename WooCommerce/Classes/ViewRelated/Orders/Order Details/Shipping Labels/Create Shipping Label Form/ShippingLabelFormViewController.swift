@@ -498,9 +498,10 @@ private extension ShippingLabelFormViewController {
 
     /// Removes the Shipping Label Form from the navigation stack and displays the Print Shipping Label screen.
     /// This prevents navigating back to the purchase form after successfully purchasing the label.
+    /// TODO-4599: Update for multi-package support
     ///
     func displayPrintShippingLabelVC() {
-        guard let purchasedShippingLabel = viewModel.purchasedShippingLabel,
+        guard let purchasedShippingLabel = viewModel.purchasedShippingLabels.first,
               let navigationController = navigationController else {
             return
         }

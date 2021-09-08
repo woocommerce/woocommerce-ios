@@ -8,7 +8,12 @@ final class ShippingLabelAddNewPackageViewModel: ObservableObject {
     private let stores: StoresManager
     private let siteID: Int64
 
+    /// Index of the selected tab
+    ///
     @Published var selectedIndex: Int
+
+    /// View for the selected tab
+    ///
     var selectedView: PackageViewType {
         PackageViewType(rawValue: selectedIndex) ?? .customPackage
     }
@@ -17,12 +22,20 @@ final class ShippingLabelAddNewPackageViewModel: ObservableObject {
     var customPackageVM = ShippingLabelCustomPackageFormViewModel()
     lazy var servicePackageVM = ShippingLabelServicePackageListViewModel(packagesResponse: packagesResponse)
 
+    /// Package selected on the Custom Package tab
+    ///
     private var validatedCustomPackage: ShippingLabelCustomPackage? {
         customPackageVM.validatedCustomPackage
     }
+
+    /// Package selected on the Service Package tab
+    ///
     private var selectedServicePackage: ShippingLabelPredefinedPackage? {
         servicePackageVM.selectedPackage
     }
+
+    /// Package details fetched from the API
+    ///
     private var packagesResponse: ShippingLabelPackagesResponse?
 
     /// Completion callback
@@ -63,6 +76,8 @@ extension ShippingLabelAddNewPackageViewModel {
 
         createPackage(customPackage: newCustomPackage) { [weak self] success in
             onCompletion(success)
+
+            // On success, reset tab state and save new package details
             guard success else { return }
             self?.customPackageVM = ShippingLabelCustomPackageFormViewModel()
             self?.onCompletion(newCustomPackage, nil, self?.packagesResponse)
@@ -84,6 +99,8 @@ extension ShippingLabelAddNewPackageViewModel {
 
         createPackage(predefinedOption: selectedOption) { [weak self] success in
             onCompletion(success)
+
+            // On success, reset tab state and save new package details
             guard success else { return }
             self?.customPackageVM = ShippingLabelCustomPackageFormViewModel()
             self?.servicePackageVM.packagesResponse = self?.packagesResponse

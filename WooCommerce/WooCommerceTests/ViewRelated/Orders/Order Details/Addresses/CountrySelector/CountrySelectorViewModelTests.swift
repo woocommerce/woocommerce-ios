@@ -47,7 +47,7 @@ final class CountrySelectorViewModelTests: XCTestCase {
         // When
         viewModel.searchTerm = "CO"
         let countries = viewModel.command.data.map { $0.name }
-        
+
         // Then
         assertEqual(countries, [
             "Cocos (Keeling) Islands",
@@ -77,6 +77,28 @@ final class CountrySelectorViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.command.data.count, totalNumberOfCountries)
+    }
+
+    func test_starting_view_model_without_stored_countries_fetches_them_remotely() {
+        // Given
+        testingStorage.reset()
+        let testingStores = MockStoresManager(sessionManager: .testingInstance)
+
+
+        // When
+        let countriesFetched: Bool = waitFor { promise in
+            testingStores.whenReceivingAction(ofType: DataAction.self) { action in
+                switch action {
+                case .synchronizeCountries:
+                    promise(true)
+                }
+            }
+
+            _ = CountrySelectorViewModel(siteID: self.sampleSiteID, storageManager: self.testingStorage, stores: testingStores)
+        }
+
+        // Then
+        XCTAssertTrue(countriesFetched)
     }
 }
 

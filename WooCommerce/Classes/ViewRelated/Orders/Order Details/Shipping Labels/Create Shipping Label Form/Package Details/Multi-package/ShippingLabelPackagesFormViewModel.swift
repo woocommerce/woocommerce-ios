@@ -9,15 +9,21 @@ import protocol Storage.StorageManagerType
 ///
 final class ShippingLabelPackagesFormViewModel: ObservableObject {
 
+    /// References of view models for child items.
+    ///
+    @Published private(set) var itemViewModels: [ShippingLabelPackageItemViewModel] = []
+
     private let order: Order
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private var resultsControllers: ShippingLabelPackageDetailsResultsControllers?
 
+    private var cancellables: Set<AnyCancellable> = []
+
     /// List of selected package with basic info.
     ///
     @Published private var selectedPackages: [ShippingLabelPackageAttributes] = []
-    
+
     /// Products contained inside the Order and fetched from Core Data
     ///
     @Published private var products: [Product] = []
@@ -42,6 +48,7 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
         syncProducts()
         syncProductVariations()
         configureDefaultPackage()
+        configureItemViewModels(order: order, packageResponse: packagesResponse)
     }
 
     /// If no initial packages was input, set up default package from last selected package ID and all order items.
@@ -54,6 +61,28 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
         selectedPackages = [ShippingLabelPackageAttributes(packageID: selectedPackageID,
                                                            totalWeight: "",
                                                            productIDs: order.items.map { $0.productOrVariationID })]
+    }
+
+    /// Set up item view models on change of products and product variations.
+    ///
+    private func configureItemViewModels(order: Order, packageResponse: ShippingLabelPackagesResponse?) {
+        $selectedPackages.combineLatest($products, $productVariations)
+            .map { selectedPackages, products, variations -> [ShippingLabelPackageItemViewModel] in
+                return selectedPackages.map { details in
+                    let orderItems = order.items.filter { details.productIDs.contains($0.productOrVariationID) }
+                    return ShippingLabelPackageItemViewModel(order: order,
+                                                             orderItems: orderItems,
+                                                             packagesResponse: packageResponse,
+                                                             selectedPackageID: details.packageID,
+                                                             totalWeight: details.totalWeight,
+                                                             products: products,
+                                                             productVariations: variations)
+                }
+            }
+            .sink { [weak self] viewModels in
+                self?.itemViewModels = viewModels
+            }
+            .store(in: &cancellables)
     }
 
     private func configureResultsControllers() {

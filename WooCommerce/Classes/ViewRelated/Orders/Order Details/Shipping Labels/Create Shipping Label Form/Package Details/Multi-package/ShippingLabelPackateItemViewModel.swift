@@ -42,9 +42,17 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
     @Published private(set) var selectedPredefinedPackage: ShippingLabelPredefinedPackage?
     @Published var totalWeight: String = ""
 
+    /// Whether totalWeight is valid
+    ///
+    @Published private(set) var isValidTotalWeight: Bool = false
+
     /// The items rows observed by the main view `ShippingLabelPackageDetails`
     ///
     @Published private(set) var itemsRows: [ItemToFulfillRow] = []
+
+    /// Whether the user has edited the total package weight. If true, we won't make any automatic changes to the total weight.
+    ///
+    @Published private var isPackageWeightEdited: Bool = false
 
     private let order: Order
     private let orderItems: [OrderItem]
@@ -81,6 +89,29 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
 
     private func configureItemRows(products: [Product], productVariations: [ProductVariation]) {
         itemsRows = generateItemsRows(products: products, productVariations: productVariations)
+    }
+
+    /// Set value for total weight and observe its changes.
+    ///
+    private func configureTotalWeight(initialTotalWeight: String, products: [Product], productVariations: [ProductVariation]) {
+        let calculatedWeight = calculateTotalWeight(products: products, productVariations: productVariations, customPackage: selectedCustomPackage)
+
+        // Set total weight to initialTotalWeight if it's different from the calculated weight.
+        // Otherwise use the calculated weight.
+        if initialTotalWeight.isNotEmpty, initialTotalWeight != String(calculatedWeight) {
+            isPackageWeightEdited = true
+            totalWeight = initialTotalWeight
+        } else {
+            totalWeight = String(calculatedWeight)
+        }
+
+        $totalWeight
+            .map { $0 != String(calculatedWeight) }
+            .assign(to: &$isPackageWeightEdited)
+
+        $totalWeight
+            .map { [weak self] in self?.validateTotalWeight($0) ?? false }
+            .assign(to: &$isValidTotalWeight)
     }
 }
 
@@ -122,6 +153,44 @@ private extension ShippingLabelPackageItemViewModel {
             }
         }
         return itemsToFulfill
+    }
+
+    /// Calculate total weight based on the weight of the selected package if it's a custom package;
+    /// And the products and products variation inside the order items, only if they are not virtual products.
+    ///
+    /// Note: Only custom package is needed for input because only custom packages have weight to be included in the total weight.
+    ///
+    func calculateTotalWeight(products: [Product], productVariations: [ProductVariation], customPackage: ShippingLabelCustomPackage?) -> Double {
+        var tempTotalWeight: Double = 0
+
+        // Add each order item's weight to the total weight.
+        for item in orderItems {
+            let isVariation = item.variationID > 0
+            var product: Product?
+            var productVariation: ProductVariation?
+
+            if isVariation {
+                productVariation = productVariations.first { $0.productVariationID == item.variationID }
+            }
+            else {
+                product = products.first { $0.productID == item.productID }
+            }
+            if product?.virtual == false || productVariation?.virtual == false {
+                let itemWeight = Double(productVariation?.weight ?? product?.weight ?? "0") ?? 0
+                tempTotalWeight += itemWeight * Double(truncating: item.quantity as NSDecimalNumber)
+            }
+        }
+
+        // Add selected package weight to the total weight.
+        // Only custom packages have a defined weight, so we only do this if a custom package is selected.
+        if let selectedPackage = customPackage {
+            tempTotalWeight += selectedPackage.boxWeight
+        }
+        return tempTotalWeight
+    }
+
+    private func validateTotalWeight(_ totalWeight: String) -> Bool {
+        totalWeight.isNotEmpty && Double(totalWeight) != 0 && Double(totalWeight) != nil
     }
 }
 

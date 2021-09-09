@@ -18,6 +18,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                           totalWeight: "",
                                                           products: [],
                                                           productVariations: [],
+                                                          onPackageSwitch: { _ in },
                                                           formatter: currencyFormatter)
 
         // Then
@@ -58,6 +59,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                           totalWeight: "",
                                                           products: [product1, product2, product3],
                                                           productVariations: [variation],
+                                                          onPackageSwitch: { _ in },
                                                           formatter: currencyFormatter,
                                                           weightUnit: "kg")
 
@@ -86,18 +88,52 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                           totalWeight: "",
                                                           products: [],
                                                           productVariations: [],
+                                                          onPackageSwitch: { _ in },
                                                           formatter: currencyFormatter,
                                                           weightUnit: "kg")
 
-        XCTAssertNil(viewModel.selectedCustomPackage)
-        XCTAssertNil(viewModel.selectedPredefinedPackage)
-
         // When
-        viewModel.didSelectPackage(customPackage.title)
+        viewModel.packageListViewModel.didSelectPackage(customPackage.title)
 
         // Then
-        XCTAssertEqual(viewModel.selectedCustomPackage, customPackage)
-        XCTAssertNil(viewModel.selectedPredefinedPackage)
+        XCTAssertEqual(viewModel.packageListViewModel.selectedCustomPackage, customPackage)
+        XCTAssertNil(viewModel.packageListViewModel.selectedPredefinedPackage)
+    }
+
+    func test_confirmPackageSelection_returns_the_expected_value() {
+        // Given
+        let customPackage = ShippingLabelCustomPackage(isUserDefined: true,
+                                                       title: "Box",
+                                                       isLetter: true,
+                                                       dimensions: "3 x 10 x 4",
+                                                       boxWeight: 10,
+                                                       maxWeight: 11)
+        let order = MockOrders().empty().copy(siteID: sampleSiteID)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        var packageToTest: ShippingLabelPackageAttributes?
+        let packageSwitchHandler: ShippingLabelPackageItemViewModel.PackageSwitchHandler = { package in
+            packageToTest = package
+        }
+        let viewModel = ShippingLabelPackageItemViewModel(order: order,
+                                                          orderItems: order.items,
+                                                          packagesResponse: mockPackageResponse(),
+                                                          selectedPackageID: "Test Box",
+                                                          totalWeight: "",
+                                                          products: [],
+                                                          productVariations: [],
+                                                          onPackageSwitch: packageSwitchHandler,
+                                                          formatter: currencyFormatter,
+                                                          weightUnit: "kg")
+
+        // When
+        viewModel.packageListViewModel.didSelectPackage(customPackage.title)
+        viewModel.packageListViewModel.confirmPackageSelection()
+
+        // Then
+        XCTAssertEqual(packageToTest, ShippingLabelPackageAttributes(packageID: customPackage.title,
+                                                                     totalWeight: "",
+                                                                     productIDs: order.items.map { $0.productOrVariationID }))
     }
 
     func test_showCustomPackagesHeader_returns_the_expected_value() {
@@ -111,12 +147,13 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                           totalWeight: "10",
                                                           products: [],
                                                           productVariations: [],
+                                                          onPackageSwitch: { _ in },
                                                           formatter: currencyFormatter,
                                                           weightUnit: "kg")
 
 
         // Then
-        XCTAssertTrue(viewModel.showCustomPackagesHeader)
+        XCTAssertTrue(viewModel.packageListViewModel.showCustomPackagesHeader)
     }
 }
 

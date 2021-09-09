@@ -311,7 +311,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                             productVariationID: 49,
                                             attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")]))
 
-        let selectedPackages = [ShippingLabelPackageInfo(packageID: "Box", totalWeight: "30", productIDs: [1, 33, 23, 49])]
+        let selectedPackages = [ShippingLabelPackageAttributes(packageID: "Box", totalWeight: "30", productIDs: [1, 33, 23, 49])]
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
                                                              selectedPackages: selectedPackages,
@@ -364,7 +364,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
 
         // When
         insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120"))
-        let selectedPackages = [ShippingLabelPackageInfo(packageID: "Package", totalWeight: "500", productIDs: [1])]
+        let selectedPackages = [ShippingLabelPackageAttributes(packageID: "Package", totalWeight: "500", productIDs: [1])]
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
                                                              selectedPackages: selectedPackages,

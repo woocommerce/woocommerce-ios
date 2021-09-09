@@ -35,7 +35,7 @@ final class ShippingLabelFormViewModel {
 
     /// Selected packages configured from Package Details form.
     ///
-    private(set) var selectedPackagesDetails: [ShippingLabelPackageInfo] = []
+    private(set) var selectedPackagesDetails: [ShippingLabelPackageAttributes] = []
 
     /// Customs forms
     ///
@@ -200,7 +200,7 @@ final class ShippingLabelFormViewModel {
         }
     }
 
-    func handlePackageDetailsValueChanges(details: [ShippingLabelPackageInfo]) {
+    func handlePackageDetailsValueChanges(details: [ShippingLabelPackageAttributes]) {
         self.selectedPackagesDetails = details
 
         guard details.isNotEmpty else {

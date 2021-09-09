@@ -59,11 +59,11 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     /// List of selected package with basic info.
     /// TODO-4599: update this to properly support multi-package.
     ///
-    var selectedPackagesDetails: [ShippingLabelPackageInfo] {
+    var selectedPackagesDetails: [ShippingLabelPackageAttributes] {
         guard let id = selectedPackageID, totalWeight.isNotEmpty else {
             return []
         }
-        return [ShippingLabelPackageInfo(packageID: id, totalWeight: totalWeight, productIDs: orderItems.map { $0.productOrVariationID })]
+        return [ShippingLabelPackageAttributes(packageID: id, totalWeight: totalWeight, productIDs: orderItems.map { $0.productOrVariationID })]
     }
 
     /// The title of the selected package, if any.
@@ -95,7 +95,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
 
     init(order: Order,
          packagesResponse: ShippingLabelPackagesResponse?,
-         selectedPackages: [ShippingLabelPackageInfo],
+         selectedPackages: [ShippingLabelPackageAttributes],
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,

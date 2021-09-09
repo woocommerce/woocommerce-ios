@@ -416,7 +416,7 @@ private extension ShippingLabelFormViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
 
-    func displayPackageDetailsVC(inputPackages: [ShippingLabelPackageInfo]) {
+    func displayPackageDetailsVC(inputPackages: [ShippingLabelPackageAttributes]) {
         let vm = ShippingLabelPackageDetailsViewModel(order: viewModel.order,
                                                       packagesResponse: viewModel.packagesResponse,
                                                       selectedPackages: inputPackages)

@@ -8,7 +8,7 @@ struct ShippingLabelPackageDetails: View {
 
     /// Completion callback
     ///
-    typealias Completion = (_ selectedPackageID: String?, _ totalPackageWeight: String?) -> Void
+    typealias Completion = (_ selectedPackages: [ShippingLabelPackageAttributes]) -> Void
     private let onCompletion: Completion
 
     init(viewModel: ShippingLabelPackageDetailsViewModel, completion: @escaping Completion) {
@@ -82,7 +82,7 @@ struct ShippingLabelPackageDetails: View {
         .navigationBarItems(trailing: Button(action: {
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow,
                                            withProperties: ["state": "packages_selected"])
-            onCompletion(viewModel.selectedPackageID, viewModel.totalWeight)
+            onCompletion(viewModel.selectedPackagesDetails)
             presentation.wrappedValue.dismiss()
         }, label: {
             Text(Localization.doneButton)
@@ -117,15 +117,14 @@ struct ShippingLabelPackageDetails_Previews: PreviewProvider {
 
         let viewModel = ShippingLabelPackageDetailsViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder(),
                                                              packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails(),
-                                                             selectedPackageID: nil,
-                                                             totalWeight: nil)
+                                                             selectedPackages: [])
 
-        ShippingLabelPackageDetails(viewModel: viewModel, completion: { (selectedPackageID, totalPackageWeight) in
+        ShippingLabelPackageDetails(viewModel: viewModel, completion: { _ in
         })
         .environment(\.colorScheme, .light)
         .previewDisplayName("Light")
 
-        ShippingLabelPackageDetails(viewModel: viewModel, completion: { (selectedPackageID, totalPackageWeight) in
+        ShippingLabelPackageDetails(viewModel: viewModel, completion: { _ in
         })
         .environment(\.colorScheme, .dark)
         .previewDisplayName("Dark")

@@ -27,19 +27,32 @@ final class EditAddressFormViewModel: ObservableObject {
     ///
     private let stores: StoresManager
 
+    /// Store for publishers subscriptions
+    ///
+    private var subscriptions = Set<AnyCancellable>()
+
+
     init(siteID: Int64, address: Address?, storageManager: StorageManagerType = ServiceLocator.storageManager, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.originalAddress = address ?? .empty
         self.storageManager = storageManager
         self.stores = stores
         updateFieldsWithOriginalAddress()
-        bindSyncTrigger()
-        fetchStoredCountriesAndTriggerSyncIfNeeded()
+
+        // Listen only to the first emitted event.
+        onLoadTrigger.first().sink {
+            self.bindSyncTrigger()
+            self.fetchStoredCountriesAndTriggerSyncIfNeeded()
+        }.store(in: &subscriptions)
     }
 
     /// Original `Address` model.
     ///
     private let originalAddress: Address
+
+    /// Trigger to perform any one time setups.
+    ///
+    let onLoadTrigger: PassthroughSubject<Void, Never> = PassthroughSubject()
 
     // MARK: User Fields
 

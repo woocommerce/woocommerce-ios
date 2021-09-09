@@ -136,6 +136,9 @@ struct EditAddressForm: View {
         .disabled(!viewModel.isDoneButtonEnabled))
         .redacted(reason: viewModel.showPlaceholders ? .placeholder : [])
         .shimmering(active: viewModel.showPlaceholders)
+        .onAppear {
+            viewModel.onLoadTrigger.send()
+        }
 
         // Go to edit country
         LazyNavigationLink(destination: FilterListSelector(viewModel: viewModel.createCountryViewModel()), isActive: $showCountrySelector) {

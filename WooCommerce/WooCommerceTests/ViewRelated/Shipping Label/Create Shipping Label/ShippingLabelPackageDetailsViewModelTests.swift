@@ -457,6 +457,45 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModelWithCustomPackages.hasCustomOrPredefinedPackages)
         XCTAssertTrue(viewModelWithPredefinedPackages.hasCustomOrPredefinedPackages)
     }
+
+    func test_handleNewPackage_returns_updated_data_with_custom_package() {
+        // Given
+        let viewModel = ShippingLabelPackageDetailsViewModel(order: Order.fake(), packagesResponse: ShippingLabelPackagesResponse.fake(), selectedPackages: [])
+        let expectedCustomPackage = ShippingLabelCustomPackage(isUserDefined: true,
+                                                               title: "Box",
+                                                               isLetter: true,
+                                                               dimensions: "3 x 10 x 4",
+                                                               boxWeight: 10,
+                                                               maxWeight: 11)
+        let expectedPackagesResponse = ShippingLabelPackagesResponse.fake().copy(customPackages: [expectedCustomPackage])
+
+        // When
+        viewModel.handleNewPackage(expectedCustomPackage, nil, expectedPackagesResponse)
+
+        // Then
+        XCTAssertEqual(viewModel.packagesResponse, expectedPackagesResponse)
+        XCTAssertEqual(viewModel.selectedCustomPackage, expectedCustomPackage)
+    }
+
+    func test_handleNewPackage_returns_updated_data_with_service_package() {
+        // Given
+        let viewModel = ShippingLabelPackageDetailsViewModel(order: Order.fake(), packagesResponse: ShippingLabelPackagesResponse.fake(), selectedPackages: [])
+        let expectedPredefinedPackage = ShippingLabelPredefinedPackage(id: "package-1",
+                                                                       title: "Small",
+                                                                       isLetter: true,
+                                                                       dimensions: "3 x 4 x 5")
+        let expectedPredefinedOption = ShippingLabelPredefinedOption(title: "USPS",
+                                                                     providerID: "usps",
+                                                                     predefinedPackages: [expectedPredefinedPackage])
+        let expectedPackagesResponse = ShippingLabelPackagesResponse.fake().copy(predefinedOptions: [expectedPredefinedOption])
+
+        // When
+        viewModel.handleNewPackage(nil, expectedPredefinedPackage, expectedPackagesResponse)
+
+        // Then
+        XCTAssertEqual(viewModel.packagesResponse, expectedPackagesResponse)
+        XCTAssertEqual(viewModel.selectedPredefinedPackage, expectedPredefinedPackage)
+    }
 }
 
 // MARK: - Utils

@@ -417,15 +417,24 @@ private extension ShippingLabelFormViewController {
     }
 
     func displayPackageDetailsVC(inputPackages: [ShippingLabelPackageAttributes]) {
-        let vm = ShippingLabelPackageDetailsViewModel(order: viewModel.order,
-                                                      packagesResponse: viewModel.packagesResponse,
-                                                      selectedPackages: inputPackages)
-        let packageDetails = ShippingLabelPackageDetails(viewModel: vm) { [weak self] selectedPackages in
-            self?.viewModel.handlePackageDetailsValueChanges(details: selectedPackages)
-        }
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsMultiPackage) {
+            let vm = ShippingLabelPackagesFormViewModel(order: viewModel.order,
+                                                        packagesResponse: viewModel.packagesResponse,
+                                                        selectedPackages: inputPackages)
+            let packagesForm = ShippingLabelPackagesForm(viewModel: vm)
+            let hostingVC = UIHostingController(rootView: packagesForm)
+            navigationController?.show(hostingVC, sender: nil)
+        } else {
+            let vm = ShippingLabelPackageDetailsViewModel(order: viewModel.order,
+                                                          packagesResponse: viewModel.packagesResponse,
+                                                          selectedPackages: inputPackages)
+            let packageDetails = ShippingLabelPackageDetails(viewModel: vm) { [weak self] selectedPackages in
+                self?.viewModel.handlePackageDetailsValueChanges(details: selectedPackages)
+            }
 
-        let hostingVC = UIHostingController(rootView: packageDetails)
-        navigationController?.show(hostingVC, sender: nil)
+            let hostingVC = UIHostingController(rootView: packageDetails)
+            navigationController?.show(hostingVC, sender: nil)
+        }
     }
 
     func displayCustomsFormListVC(customsForms: [ShippingLabelCustomsForm]) {

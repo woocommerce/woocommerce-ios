@@ -72,6 +72,34 @@ final class EditAddressFormViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
     }
+
+    func test_loading_indicator_gets_enabled_during_network_request() {
+        // Given
+        let address = sampleAddress()
+        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address)
+
+        // When
+        viewModel.updateRemoteAddress { _ in }
+
+        // Then
+        assertEqual(viewModel.navigationTrailingItem, .loading)
+    }
+
+    func test_loading_indicator_gets_disabled_after_the_network_operation_completes() {
+        // Given
+        let address = sampleAddress()
+        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address)
+
+        // When
+        let navigationItem = waitFor { promise in
+            viewModel.updateRemoteAddress { _ in
+                promise(viewModel.navigationTrailingItem)
+            }
+        }
+
+        // Then
+        assertEqual(navigationItem, .done(enabled: false))
+    }
 }
 
 private extension EditAddressFormViewModelTests {

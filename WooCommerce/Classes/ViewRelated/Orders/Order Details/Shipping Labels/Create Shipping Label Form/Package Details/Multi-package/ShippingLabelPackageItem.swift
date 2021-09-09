@@ -50,8 +50,7 @@ struct ShippingLabelPackageItem: View {
                 }
                 .padding(.horizontal, insets: safeAreaInsets)
                 .sheet(isPresented: $isShowingPackageSelection, content: {
-                    // TODO-4599: Update package selection with new view model
-//                    ShippingLabelPackageSelection(viewModel: viewModel)
+                    ShippingLabelPackageSelection(viewModel: viewModel.packageListViewModel)
                 })
 
                 Divider()

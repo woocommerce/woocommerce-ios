@@ -54,7 +54,7 @@ struct ShippingLabelPackageDetails: View {
                         }
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
                         .sheet(isPresented: $showingPackageSelection, content: {
-                            ShippingLabelPackageSelection(viewModel: viewModel)
+                            ShippingLabelPackageSelection(viewModel: viewModel.packageListViewModel)
                         })
 
                         Divider()

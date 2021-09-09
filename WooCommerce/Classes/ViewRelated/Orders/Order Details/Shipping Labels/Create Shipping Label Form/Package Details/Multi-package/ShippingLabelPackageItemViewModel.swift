@@ -9,57 +9,32 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
     ///
     let selectedPackageID: String
 
+    /// View model for the package list
+    ///
+    let packageListViewModel: ShippingLabelPackageListViewModel
+
     @Published var totalWeight: String = ""
 
     /// The items rows observed by the main view `ShippingLabelPackageDetails`
     ///
     @Published private(set) var itemsRows: [ItemToFulfillRow] = []
 
-    @Published private(set) var selectedCustomPackage: ShippingLabelCustomPackage?
-    @Published private(set) var selectedPredefinedPackage: ShippingLabelPredefinedPackage?
-
     /// The title of the selected package, if any.
     ///
     var selectedPackageName: String {
-        if let selectedCustomPackage = selectedCustomPackage {
+        if let selectedCustomPackage = packageListViewModel.selectedCustomPackage {
             return selectedCustomPackage.title
-        } else if let selectedPredefinedPackage = selectedPredefinedPackage {
+        } else if let selectedPredefinedPackage = packageListViewModel.selectedPredefinedPackage {
             return selectedPredefinedPackage.title
         } else {
             return Localization.selectPackagePlaceholder
         }
     }
 
-    var dimensionUnit: String {
-        return packagesResponse?.storeOptions.dimensionUnit ?? ""
-    }
-    var customPackages: [ShippingLabelCustomPackage] {
-        return packagesResponse?.customPackages ?? []
-    }
-    var predefinedOptions: [ShippingLabelPredefinedOption] {
-        return packagesResponse?.predefinedOptions ?? []
-    }
-
-    /// Returns if the custom packages header should be shown in Package List
-    ///
-    var showCustomPackagesHeader: Bool {
-        return customPackages.count > 0
-    }
-
-    /// Whether there are saved custom or predefined packages to select from.
-    ///
-    var hasCustomOrPredefinedPackages: Bool {
-        return customPackages.isNotEmpty || predefinedOptions.isNotEmpty
-    }
-
     private let order: Order
     private let orderItems: [OrderItem]
     private let currency: String
     private let currencyFormatter: CurrencyFormatter
-
-    /// The packages  response fetched from API
-    ///
-    private let packagesResponse: ShippingLabelPackagesResponse?
 
     /// The weight unit used in the Store
     ///
@@ -79,10 +54,10 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
         self.currency = order.currency
         self.currencyFormatter = formatter
         self.weightUnit = weightUnit
-        self.packagesResponse = packagesResponse
+        self.packageListViewModel = ShippingLabelPackageListViewModel(packagesResponse: packagesResponse)
         self.selectedPackageID = selectedPackageID
 
-        didSelectPackage(selectedPackageID)
+        packageListViewModel.didSelectPackage(selectedPackageID)
         configureItemRows(products: products, productVariations: productVariations)
     }
 
@@ -129,44 +104,6 @@ private extension ShippingLabelPackageItemViewModel {
             }
         }
         return itemsToFulfill
-    }
-}
-
-// MARK: - Package Selection
-extension ShippingLabelPackageItemViewModel {
-    func didSelectPackage(_ id: String) {
-        selectCustomPackage(id)
-        selectPredefinedPackage(id)
-    }
-
-    private func selectCustomPackage(_ id: String) {
-        guard let packagesResponse = packagesResponse else {
-            return
-        }
-
-        for customPackage in packagesResponse.customPackages {
-            if customPackage.title == id {
-                selectedCustomPackage = customPackage
-                selectedPredefinedPackage = nil
-                return
-            }
-        }
-    }
-
-    private func selectPredefinedPackage(_ id: String) {
-        guard let packagesResponse = packagesResponse else {
-            return
-        }
-
-        for option in packagesResponse.predefinedOptions {
-            for predefinedPackage in option.predefinedPackages {
-                if predefinedPackage.id == id {
-                    selectedCustomPackage = nil
-                    selectedPredefinedPackage = predefinedPackage
-                    return
-                }
-            }
-        }
     }
 }
 

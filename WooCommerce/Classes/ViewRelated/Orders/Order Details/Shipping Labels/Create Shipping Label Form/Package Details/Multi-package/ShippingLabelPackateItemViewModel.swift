@@ -15,11 +15,41 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
     ///
     @Published private(set) var itemsRows: [ItemToFulfillRow] = []
 
+    @Published private(set) var selectedCustomPackage: ShippingLabelCustomPackage?
+    @Published private(set) var selectedPredefinedPackage: ShippingLabelPredefinedPackage?
+
     /// The title of the selected package, if any.
     ///
     var selectedPackageName: String {
-        // TODO-4599: Update package name
-        return Localization.selectPackagePlaceholder
+        if let selectedCustomPackage = selectedCustomPackage {
+            return selectedCustomPackage.title
+        } else if let selectedPredefinedPackage = selectedPredefinedPackage {
+            return selectedPredefinedPackage.title
+        } else {
+            return Localization.selectPackagePlaceholder
+        }
+    }
+
+    var dimensionUnit: String {
+        return packagesResponse?.storeOptions.dimensionUnit ?? ""
+    }
+    var customPackages: [ShippingLabelCustomPackage] {
+        return packagesResponse?.customPackages ?? []
+    }
+    var predefinedOptions: [ShippingLabelPredefinedOption] {
+        return packagesResponse?.predefinedOptions ?? []
+    }
+
+    /// Returns if the custom packages header should be shown in Package List
+    ///
+    var showCustomPackagesHeader: Bool {
+        return customPackages.count > 0
+    }
+
+    /// Whether there are saved custom or predefined packages to select from.
+    ///
+    var hasCustomOrPredefinedPackages: Bool {
+        return customPackages.isNotEmpty || predefinedOptions.isNotEmpty
     }
 
     private let order: Order
@@ -52,6 +82,7 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
         self.packagesResponse = packagesResponse
         self.selectedPackageID = selectedPackageID
 
+        didSelectPackage(selectedPackageID)
         configureItemRows(products: products, productVariations: productVariations)
     }
 
@@ -98,6 +129,44 @@ private extension ShippingLabelPackageItemViewModel {
             }
         }
         return itemsToFulfill
+    }
+}
+
+// MARK: - Package Selection
+extension ShippingLabelPackageItemViewModel {
+    func didSelectPackage(_ id: String) {
+        selectCustomPackage(id)
+        selectPredefinedPackage(id)
+    }
+
+    private func selectCustomPackage(_ id: String) {
+        guard let packagesResponse = packagesResponse else {
+            return
+        }
+
+        for customPackage in packagesResponse.customPackages {
+            if customPackage.title == id {
+                selectedCustomPackage = customPackage
+                selectedPredefinedPackage = nil
+                return
+            }
+        }
+    }
+
+    private func selectPredefinedPackage(_ id: String) {
+        guard let packagesResponse = packagesResponse else {
+            return
+        }
+
+        for option in packagesResponse.predefinedOptions {
+            for predefinedPackage in option.predefinedPackages {
+                if predefinedPackage.id == id {
+                    selectedCustomPackage = nil
+                    selectedPredefinedPackage = predefinedPackage
+                    return
+                }
+            }
+        }
     }
 }
 

@@ -159,8 +159,7 @@ extension ShippingLabelFormViewController: UITableViewDelegate {
         case Row(type: .shipTo, dataState: .validated, displayMode: .editable):
             displayEditAddressFormVC(address: viewModel.destinationAddress, validationError: nil, type: .destination)
         case Row(type: .packageDetails, dataState: .validated, displayMode: .editable):
-            displayPackageDetailsVC(selectedPackageID: viewModel.selectedPackageID,
-                                    totalPackageWeight: viewModel.totalPackageWeight)
+            displayPackageDetailsVC(inputPackages: viewModel.selectedPackagesDetails)
         case Row(type: .customs, dataState: .validated, displayMode: .editable):
             displayCustomsFormListVC(customsForms: viewModel.customsForms)
         case Row(type: .shippingCarrierAndRates, dataState: .validated, displayMode: .editable):
@@ -278,8 +277,8 @@ private extension ShippingLabelFormViewController {
                        title: Localization.packageDetailsCellTitle,
                        body: viewModel.getPackageDetailsBody(),
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
-            self?.displayPackageDetailsVC(selectedPackageID: self?.viewModel.selectedPackageID,
-                                          totalPackageWeight: self?.viewModel.totalPackageWeight)
+            guard let self = self else { return }
+            self.displayPackageDetailsVC(inputPackages: self.viewModel.selectedPackagesDetails)
         }
     }
 
@@ -417,15 +416,12 @@ private extension ShippingLabelFormViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
 
-    func displayPackageDetailsVC(selectedPackageID: String?, totalPackageWeight: String?) {
+    func displayPackageDetailsVC(inputPackages: [ShippingLabelPackageAttributes]) {
         let vm = ShippingLabelPackageDetailsViewModel(order: viewModel.order,
                                                       packagesResponse: viewModel.packagesResponse,
-                                                      selectedPackageID: selectedPackageID,
-                                                      totalWeight: totalPackageWeight)
-        let packageDetails = ShippingLabelPackageDetails(viewModel: vm) { [weak self] (packagesResponse, selectedPackageID, totalPackageWeight) in
-            self?.viewModel.handlePackageDetailsValueChanges(packagesResponse: packagesResponse,
-                                                             selectedPackageID: selectedPackageID,
-                                                             totalPackageWeight: totalPackageWeight)
+                                                      selectedPackages: inputPackages)
+        let packageDetails = ShippingLabelPackageDetails(viewModel: vm) { [weak self] (packagesResponse, selectedPackages) in
+            self?.viewModel.handlePackageDetailsValueChanges(packagesResponse: packagesResponse, details: selectedPackages)
         }
 
         let hostingVC = UIHostingController(rootView: packageDetails)
@@ -453,14 +449,14 @@ private extension ShippingLabelFormViewController {
                                    selectedAdultSignatureRate: ShippingLabelCarrierRate?) {
         guard let originAddress = viewModel.originAddress,
               let destinationAddress = viewModel.destinationAddress,
-              let selectedPackage = viewModel.selectedPackage else {
+              viewModel.selectedPackages.isNotEmpty else {
             return
         }
 
         let vm = ShippingLabelCarriersViewModel(order: viewModel.order,
                                                 originAddress: originAddress,
                                                 destinationAddress: destinationAddress,
-                                                packages: [selectedPackage],
+                                                packages: viewModel.selectedPackages,
                                                 selectedRate: selectedRate,
                                                 selectedSignatureRate: selectedSignatureRate,
                                                 selectedAdultSignatureRate: selectedAdultSignatureRate)
@@ -502,9 +498,10 @@ private extension ShippingLabelFormViewController {
 
     /// Removes the Shipping Label Form from the navigation stack and displays the Print Shipping Label screen.
     /// This prevents navigating back to the purchase form after successfully purchasing the label.
+    /// TODO-4599: Update for multi-package support
     ///
     func displayPrintShippingLabelVC() {
-        guard let purchasedShippingLabel = viewModel.purchasedShippingLabel,
+        guard let purchasedShippingLabel = viewModel.purchasedShippingLabels.first,
               let navigationController = navigationController else {
             return
         }

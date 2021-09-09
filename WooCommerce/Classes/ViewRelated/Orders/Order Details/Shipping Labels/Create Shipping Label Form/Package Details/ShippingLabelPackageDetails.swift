@@ -8,7 +8,7 @@ struct ShippingLabelPackageDetails: View {
 
     /// Completion callback
     ///
-    typealias Completion = (_ packagesResponse: ShippingLabelPackagesResponse?, _ selectedPackageID: String?, _ totalPackageWeight: String?) -> Void
+    typealias Completion = (_ packagesResponse: ShippingLabelPackagesResponse?, _ selectedPackages: [ShippingLabelPackageAttributes]) -> Void
     private let onCompletion: Completion
 
     init(viewModel: ShippingLabelPackageDetailsViewModel, completion: @escaping Completion) {
@@ -82,7 +82,7 @@ struct ShippingLabelPackageDetails: View {
         .navigationBarItems(trailing: Button(action: {
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow,
                                            withProperties: ["state": "packages_selected"])
-            onCompletion(viewModel.packagesResponse, viewModel.selectedPackageID, viewModel.totalWeight)
+            onCompletion(viewModel.packagesResponse, viewModel.selectedPackagesDetails)
             presentation.wrappedValue.dismiss()
         }, label: {
             Text(Localization.doneButton)
@@ -117,15 +117,14 @@ struct ShippingLabelPackageDetails_Previews: PreviewProvider {
 
         let viewModel = ShippingLabelPackageDetailsViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder(),
                                                              packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails(),
-                                                             selectedPackageID: nil,
-                                                             totalWeight: nil)
+                                                             selectedPackages: [])
 
-        ShippingLabelPackageDetails(viewModel: viewModel, completion: { (_, _, _) in
+        ShippingLabelPackageDetails(viewModel: viewModel, completion: { _, _ in
         })
         .environment(\.colorScheme, .light)
         .previewDisplayName("Light")
 
-        ShippingLabelPackageDetails(viewModel: viewModel, completion: { (_, _, _) in
+        ShippingLabelPackageDetails(viewModel: viewModel, completion: { _, _ in
         })
         .environment(\.colorScheme, .dark)
         .previewDisplayName("Dark")

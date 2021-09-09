@@ -6,4 +6,15 @@ final class LabelAndButtonTableViewCell: UITableViewCell {
 
     // TODO: Private outlets, configure method
     // TODO: Button completion
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        configureButton()
+    }
+}
+
+private extension LabelAndButtonTableViewCell {
+    func configureButton() {
+        button.tintColor = .accent
+    }
 }

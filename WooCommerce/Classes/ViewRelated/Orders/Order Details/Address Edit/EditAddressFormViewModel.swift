@@ -84,7 +84,7 @@ final class EditAddressFormViewModel: ObservableObject {
     /// Creates a view model to be used when selecting a country
     ///
     func createCountryViewModel() -> CountrySelectorViewModel {
-        CountrySelectorViewModel(siteID: siteID)
+        CountrySelectorViewModel(siteID: siteID, countries: countriesResultsController.fetchedObjects)
     }
 }
 

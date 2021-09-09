@@ -17,7 +17,7 @@ final class CountrySelectorViewModel: FilterListSelectorViewModelable, Observabl
 
     /// Command that powers the `ListSelector` view.
     ///
-    let command = CountrySelectorCommand(countries: [])
+    let command: CountrySelectorCommand
 
     /// Navigation title
     ///
@@ -31,8 +31,9 @@ final class CountrySelectorViewModel: FilterListSelectorViewModelable, Observabl
     ///
     private let siteID: Int64
 
-    init(siteID: Int64) {
+    init(siteID: Int64, countries: [Country]) {
         self.siteID = siteID
+        self.command = CountrySelectorCommand(countries: countries)
     }
 }
 

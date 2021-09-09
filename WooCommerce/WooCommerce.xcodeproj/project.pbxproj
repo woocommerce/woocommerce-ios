@@ -1276,6 +1276,7 @@
 		DE279BA626E9C582002BA963 /* ShippingLabelPackagesFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE279BA526E9C582002BA963 /* ShippingLabelPackagesFormViewModel.swift */; };
 		DE279BA826E9C8E3002BA963 /* ShippingLabelPackageItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE279BA726E9C8E3002BA963 /* ShippingLabelPackageItem.swift */; };
 		DE279BAA26E9C91D002BA963 /* ShippingLabelPackateItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE279BA926E9C91D002BA963 /* ShippingLabelPackateItemViewModel.swift */; };
+		DE279BAD26E9CBEA002BA963 /* ShippingLabelPackagesFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE279BAC26E9CBEA002BA963 /* ShippingLabelPackagesFormViewModelTests.swift */; };
 		DE46133926B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE46133826B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift */; };
 		DE4B3B2C2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4B3B2B2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift */; };
 		DE4B3B2E269455D400EEF2D8 /* MockShipmentActionStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4B3B2D269455D400EEF2D8 /* MockShipmentActionStoresManager.swift */; };
@@ -2698,6 +2699,7 @@
 		DE279BA526E9C582002BA963 /* ShippingLabelPackagesFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackagesFormViewModel.swift; sourceTree = "<group>"; };
 		DE279BA726E9C8E3002BA963 /* ShippingLabelPackageItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackageItem.swift; sourceTree = "<group>"; };
 		DE279BA926E9C91D002BA963 /* ShippingLabelPackateItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackateItemViewModel.swift; sourceTree = "<group>"; };
+		DE279BAC26E9CBEA002BA963 /* ShippingLabelPackagesFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackagesFormViewModelTests.swift; sourceTree = "<group>"; };
 		DE46133826B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCountryListSelectorCommand.swift; sourceTree = "<group>"; };
 		DE4B3B2B2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewModelTests.swift; sourceTree = "<group>"; };
 		DE4B3B2D269455D400EEF2D8 /* MockShipmentActionStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockShipmentActionStoresManager.swift; sourceTree = "<group>"; };
@@ -4179,6 +4181,7 @@
 		4569D3F225DC1BEC00CDC3E2 /* Create Shipping Label */ = {
 			isa = PBXGroup;
 			children = (
+				DE279BAB26E9CBD3002BA963 /* Multi-package */,
 				DE19BB1B26C6910500AB70D9 /* Customs */,
 				4569D3F325DC1BFF00CDC3E2 /* ShippingLabelFormViewModelTests.swift */,
 				45B98E1E25DECC1C00A1232B /* ShippingLabelAddressFormViewModelTests.swift */,
@@ -6321,6 +6324,14 @@
 			path = "Multi-package";
 			sourceTree = "<group>";
 		};
+		DE279BAB26E9CBD3002BA963 /* Multi-package */ = {
+			isa = PBXGroup;
+			children = (
+				DE279BAC26E9CBEA002BA963 /* ShippingLabelPackagesFormViewModelTests.swift */,
+			);
+			path = "Multi-package";
+			sourceTree = "<group>";
+		};
 		DE4B3B2A2692DBF200EEF2D8 /* Review Order */ = {
 			isa = PBXGroup;
 			children = (
@@ -8027,6 +8038,7 @@
 				D85DD1D7257F359800861AA8 /* NotWPErrorViewModelTests.swift in Sources */,
 				025678C725773399009D7E6C /* Collection+ShippingLabelTests.swift in Sources */,
 				02BC5AA624D27F8900C43326 /* ProductVariationFormViewModel+ChangesTests.swift in Sources */,
+				DE279BAD26E9CBEA002BA963 /* ShippingLabelPackagesFormViewModelTests.swift in Sources */,
 				57C2F6E624C27B3100131012 /* SwitchStoreNoticePresenterTests.swift in Sources */,
 				020BE77123B4A4C6007FE54C /* AztecHorizontalRulerFormatBarCommandTests.swift in Sources */,
 				B5C6CE612190D28E00515926 /* NSAttributedStringHelperTests.swift in Sources */,

@@ -79,7 +79,9 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
     /// Set value for total weight and observe its changes.
     ///
     private func configureTotalWeight(initialTotalWeight: String, products: [Product], productVariations: [ProductVariation]) {
-        let calculatedWeight = calculateTotalWeight(products: products, productVariations: productVariations, customPackage: packageListViewModel.selectedCustomPackage)
+        let calculatedWeight = calculateTotalWeight(products: products,
+                                                    productVariations: productVariations,
+                                                    customPackage: packageListViewModel.selectedCustomPackage)
 
         // Set total weight to initialTotalWeight if it's different from the calculated weight.
         // Otherwise use the calculated weight.

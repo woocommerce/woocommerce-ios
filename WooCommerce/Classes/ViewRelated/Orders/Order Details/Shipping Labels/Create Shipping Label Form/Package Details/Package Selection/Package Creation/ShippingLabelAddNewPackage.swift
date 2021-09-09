@@ -4,7 +4,8 @@ import Yosemite
 struct ShippingLabelAddNewPackage: View {
     @ObservedObject var viewModel: ShippingLabelAddNewPackageViewModel
     @Environment(\.presentationMode) var presentation
-    @State var isSyncing = false
+    @State private var isSyncing = false
+    @State private var showingAddPackageError = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -49,14 +50,20 @@ struct ShippingLabelAddNewPackage: View {
                             isSyncing = true
                             viewModel.createCustomPackage() { success in
                                 isSyncing = false
-                                guard success else { return }
+                                guard success else {
+                                    showingAddPackageError = true
+                                    return
+                                }
                                 presentation.wrappedValue.dismiss()
                             }
                         case .servicePackage:
                             isSyncing = true
                             viewModel.activateServicePackage() { success in
                                 isSyncing = false
-                                guard success else { return }
+                                guard success else {
+                                    showingAddPackageError = true
+                                    return
+                                }
                                 presentation.wrappedValue.dismiss()
                             }
                         }
@@ -69,6 +76,10 @@ struct ShippingLabelAddNewPackage: View {
                         }
                     })
                     .disabled(isSyncing)
+                    .alert(isPresented: $showingAddPackageError, content: {
+                        Alert(title: Text(Localization.errorAlertTitle),
+                              message: Text(Localization.errorAlertMessage))
+                    })
                 })
             }
         }
@@ -81,6 +92,10 @@ private extension ShippingLabelAddNewPackage {
         static let customPackage = NSLocalizedString("Custom Package", comment: "Custom Package menu in Shipping Label Add New Package flow")
         static let servicePackage = NSLocalizedString("Service Package", comment: "Service Package menu in Shipping Label Add New Package flow")
         static let doneButton = NSLocalizedString("Done", comment: "Done navigation button in the Add New Package screen in Shipping Label flow")
+        static let errorAlertTitle = NSLocalizedString("Cannot add package",
+                                                       comment: "Title of the alert when there is a failure adding a package in the Shipping Label flow")
+        static let errorAlertMessage = NSLocalizedString("Unexpected error",
+                                                         comment: "Message of the alert when there is a failure adding a package in the Shipping Label flow")
     }
 }
 

@@ -85,7 +85,8 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
 
     lazy var addNewPackageViewModel = ShippingLabelAddNewPackageViewModel(siteID: order.siteID,
                                                                           packagesResponse: packagesResponse,
-                                                                          onCompletion: { (customPackage, predefinedOption, packagesResponse) in
+                                                                          onCompletion: { [weak self] (customPackage, predefinedOption, packagesResponse) in
+                                                                            guard let self = self else { return }
                                                                             self.handleNewPackage(customPackage, predefinedOption, packagesResponse)
                                                                           })
 

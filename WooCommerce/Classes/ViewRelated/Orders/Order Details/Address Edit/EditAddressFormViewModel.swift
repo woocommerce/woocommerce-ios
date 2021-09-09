@@ -33,6 +33,7 @@ final class EditAddressFormViewModel: ObservableObject {
         self.storageManager = storageManager
         self.stores = stores
         updateFieldsWithOriginalAddress()
+        fetchStoredCountriesAndTriggerSyncIfNeeded()
     }
 
     /// Original `Address` model.
@@ -97,5 +98,18 @@ private extension EditAddressFormViewModel {
                 country: originalAddress.country, // TODO: replace with local value
                 phone: phone.isEmpty ? nil : phone,
                 email: email.isEmpty ? nil : email)
+    }
+
+
+    /// Fetches countries from storage, If there are no stored countries, trigger a sync request.
+    ///
+    func fetchStoredCountriesAndTriggerSyncIfNeeded() {
+        // Initial fetch
+        try? countriesResultsController.performFetch()
+
+        // Trigger a sync request if there are no countries.
+        guard !countriesResultsController.isEmpty else {
+            return syncCountriesTrigger.send()
+        }
     }
 }

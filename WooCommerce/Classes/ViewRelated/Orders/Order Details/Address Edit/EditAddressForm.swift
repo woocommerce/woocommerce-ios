@@ -150,7 +150,9 @@ struct EditAddressForm: View {
         switch viewModel.navigationTrailingItem {
         case .done(let enabled):
             Button(Localization.done) {
-                // TODO: update remote address
+                viewModel.updateRemoteAddress(onFinish: { success in
+                    // TODO: dismiss on success
+                })
             }
             .disabled(!enabled)
         case .loading:

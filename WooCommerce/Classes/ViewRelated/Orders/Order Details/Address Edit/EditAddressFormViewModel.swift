@@ -55,6 +55,18 @@ final class EditAddressFormViewModel: ObservableObject {
     func createCountryViewModel() -> CountrySelectorViewModel {
         CountrySelectorViewModel(siteID: siteID)
     }
+
+    /// Update the address remotely and invoke a completion block when finished
+    ///
+    func updateRemoteAddress(onFinish: @escaping (Bool) -> Void) {
+        // TODO: perform network request
+        // TODO: add success/failure notice
+        performingNetworkRequest.send(true)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+            self?.performingNetworkRequest.send(false)
+            onFinish(true)
+        }
+    }
 }
 
 extension EditAddressFormViewModel {

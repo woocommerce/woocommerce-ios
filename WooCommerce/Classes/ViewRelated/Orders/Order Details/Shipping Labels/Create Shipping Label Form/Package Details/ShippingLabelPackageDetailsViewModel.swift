@@ -86,6 +86,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         self.weightUnit = weightUnit
         self.packageListViewModel = ShippingLabelPackageListViewModel(packagesResponse: packagesResponse)
         self.selectedPackageID = selectedPackages.first?.packageID // TODO-4599: fix this
+        self.packageListViewModel.delegate = self
 
         configureResultsControllers()
         setDefaultPackage()
@@ -111,7 +112,9 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     ///
     private func configureTotalWeights(initialTotalWeight: String?) {
         if let initialTotalWeight = initialTotalWeight {
-            let calculatedWeight = calculateTotalWeight(products: products, productVariations: productVariations, customPackage: packageListViewModel.selectedCustomPackage)
+            let calculatedWeight = calculateTotalWeight(products: products,
+                                                        productVariations: productVariations,
+                                                        customPackage: packageListViewModel.selectedCustomPackage)
             // Return early if manual input is detected
             if initialTotalWeight != String(calculatedWeight) {
                 isPackageWeightEdited = true
@@ -251,7 +254,11 @@ extension ShippingLabelPackageDetailsViewModel {
 }
 
 // MARK: - Package Selection
-extension ShippingLabelPackageDetailsViewModel {
+extension ShippingLabelPackageDetailsViewModel: ShippingLabelPackageSelectionDelegate {
+    func didSelectPackage(id: String) {
+        selectedPackageID = id
+    }
+
     /// Sets the package passed through the init method, or set the last selected package, if any, as the default selected package
     ///
     func setDefaultPackage() {
@@ -260,12 +267,6 @@ extension ShippingLabelPackageDetailsViewModel {
         }
         packageListViewModel.didSelectPackage(selectedPackageID)
         packageListViewModel.confirmPackageSelection()
-//        if let selectedCustomPackage = selectedCustomPackage {
-//            selectedPackageID = selectedCustomPackage.title
-//        }
-//        else if let selectedPredefinedPackage = selectedPredefinedPackage {
-//            selectedPackageID = selectedPredefinedPackage.id
-//        }
     }
 }
 

@@ -80,13 +80,27 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
                                                              selectedPackageID: details.packageID,
                                                              totalWeight: details.totalWeight,
                                                              products: products,
-                                                             productVariations: variations)
+                                                             productVariations: variations) { [weak self] newPackage in
+                        self?.switchPackage(currentID: details.packageID, newPackage: newPackage)
+                    }
                 }
             }
             .sink { [weak self] viewModels in
                 self?.itemViewModels = viewModels
             }
             .store(in: &cancellables)
+    }
+
+    /// Update selected packages when user switch any package.
+    ///
+    private func switchPackage(currentID: String, newPackage: ShippingLabelPackageAttributes) {
+        selectedPackages = selectedPackages.map { package in
+            if package.packageID == currentID {
+                return newPackage
+            } else {
+                return package
+            }
+        }
     }
 
     private func configureResultsControllers() {

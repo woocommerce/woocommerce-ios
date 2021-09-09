@@ -5,6 +5,8 @@ import Yosemite
 
 final class ShippingLabelPackageItemViewModel: ObservableObject {
 
+    typealias PackageSwitchHandler = (_ newPackage: ShippingLabelPackageAttributes) -> Void
+
     /// The id of the selected package. Defaults to last selected package, if any.
     ///
     let selectedPackageID: String
@@ -35,6 +37,7 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
     private let orderItems: [OrderItem]
     private let currency: String
     private let currencyFormatter: CurrencyFormatter
+    private let onPackageSwitch: PackageSwitchHandler
 
     /// The weight unit used in the Store
     ///
@@ -47,6 +50,7 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
          totalWeight: String,
          products: [Product],
          productVariations: [ProductVariation],
+         onPackageSwitch: @escaping PackageSwitchHandler,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
         self.order = order
@@ -54,8 +58,10 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
         self.currency = order.currency
         self.currencyFormatter = formatter
         self.weightUnit = weightUnit
-        self.packageListViewModel = ShippingLabelPackageListViewModel(packagesResponse: packagesResponse)
         self.selectedPackageID = selectedPackageID
+        self.onPackageSwitch = onPackageSwitch
+        self.packageListViewModel = ShippingLabelPackageListViewModel(packagesResponse: packagesResponse)
+        self.packageListViewModel.delegate = self
 
         packageListViewModel.didSelectPackage(selectedPackageID)
         configureItemRows(products: products, productVariations: productVariations)
@@ -63,6 +69,19 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
 
     private func configureItemRows(products: [Product], productVariations: [ProductVariation]) {
         itemsRows = generateItemsRows(products: products, productVariations: productVariations)
+    }
+}
+
+// MARK: ShippingLabelPackageSelectionDelegate conformance
+extension ShippingLabelPackageItemViewModel: ShippingLabelPackageSelectionDelegate {
+    func didSelectPackage(id: String) {
+        // TODO-4599: set to current total weight if manually edited
+        let newTotalWeight = ""
+        let newPackage = ShippingLabelPackageAttributes(packageID: id,
+                                                        totalWeight: newTotalWeight,
+                                                        productIDs: orderItems.map { $0.productOrVariationID })
+
+        onPackageSwitch(newPackage)
     }
 }
 

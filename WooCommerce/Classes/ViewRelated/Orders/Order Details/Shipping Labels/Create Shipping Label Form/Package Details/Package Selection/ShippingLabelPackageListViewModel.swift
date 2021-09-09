@@ -1,6 +1,10 @@
 import Foundation
 import Yosemite
 
+protocol ShippingLabelPackageSelectionDelegate: AnyObject {
+    func didSelectPackage(id: String)
+}
+
 /// View model for `ShippingLabelPackageList` and `ShippingLabelPackageSelection`.
 ///
 final class ShippingLabelPackageListViewModel: ObservableObject {
@@ -31,6 +35,8 @@ final class ShippingLabelPackageListViewModel: ObservableObject {
 
     lazy var addNewPackageViewModel: ShippingLabelAddNewPackageViewModel = ShippingLabelAddNewPackageViewModel(packagesResponse: packagesResponse)
 
+    weak var delegate: ShippingLabelPackageSelectionDelegate?
+
     /// The packages  response fetched from API
     ///
     private let packagesResponse: ShippingLabelPackagesResponse?
@@ -47,8 +53,20 @@ extension ShippingLabelPackageListViewModel {
         selectPredefinedPackage(id)
     }
 
-    // TODO-4599 - Update selection
-    func confirmPackageSelection() {}
+    func confirmPackageSelection() {
+        let newPackageID: String? = {
+            if let selectedCustomPackage = selectedCustomPackage {
+                return selectedCustomPackage.title
+            } else if let selectedPredefinedPackage = selectedPredefinedPackage {
+                return selectedPredefinedPackage.id
+            }
+            return nil
+        }()
+        guard let newPackageID = newPackageID else {
+            return
+        }
+        delegate?.didSelectPackage(id: newPackageID)
+    }
 
     private func selectCustomPackage(_ id: String) {
         guard let packagesResponse = packagesResponse else {

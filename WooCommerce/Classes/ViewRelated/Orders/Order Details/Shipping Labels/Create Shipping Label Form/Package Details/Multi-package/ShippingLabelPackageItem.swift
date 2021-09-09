@@ -99,7 +99,7 @@ struct ShippingLabelPackageItem_Previews: PreviewProvider {
                                                           selectedPackageID: "Box 1",
                                                           totalWeight: "",
                                                           products: [],
-                                                          productVariations: [])
+                                                          productVariations: []) { _ in }
         ShippingLabelPackageItem(packageNumber: 1, isCollapsible: true, safeAreaInsets: .zero, viewModel: viewModel)
     }
 }

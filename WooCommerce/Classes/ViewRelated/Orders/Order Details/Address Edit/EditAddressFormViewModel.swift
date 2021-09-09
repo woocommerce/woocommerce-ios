@@ -45,12 +45,6 @@ final class EditAddressFormViewModel: ObservableObject {
 
     // MARK: Navigation and utility
 
-    /// Return `true` if the done button should be enabled.
-    ///
-    var isDoneButtonEnabled: Bool {
-        return originalAddress != updatedAddress
-    }
-
     /// Active navigation bar trailing item.
     /// Defaults to a disabled done button.
     ///

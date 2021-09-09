@@ -43,6 +43,10 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
     ///
     let weightUnit: String?
 
+    /// Whether the user has edited the total package weight. If true, we won't make any automatic changes to the total weight.
+    ///
+    @Published private var isPackageWeightEdited: Bool = false
+
     init(order: Order,
          orderItems: [OrderItem],
          packagesResponse: ShippingLabelPackagesResponse?,
@@ -65,18 +69,37 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
 
         packageListViewModel.didSelectPackage(selectedPackageID)
         configureItemRows(products: products, productVariations: productVariations)
+        configureTotalWeight(initialTotalWeight: totalWeight, products: products, productVariations: productVariations)
     }
 
     private func configureItemRows(products: [Product], productVariations: [ProductVariation]) {
         itemsRows = generateItemsRows(products: products, productVariations: productVariations)
+    }
+
+    /// Set value for total weight and observe its changes.
+    ///
+    private func configureTotalWeight(initialTotalWeight: String, products: [Product], productVariations: [ProductVariation]) {
+        let calculatedWeight = calculateTotalWeight(products: products, productVariations: productVariations, customPackage: packageListViewModel.selectedCustomPackage)
+
+        // Set total weight to initialTotalWeight if it's different from the calculated weight.
+        // Otherwise use the calculated weight.
+        if initialTotalWeight.isNotEmpty, initialTotalWeight != String(calculatedWeight) {
+            isPackageWeightEdited = true
+            totalWeight = initialTotalWeight
+        } else {
+            totalWeight = String(calculatedWeight)
+        }
+
+        $totalWeight
+            .map { $0 != String(calculatedWeight) }
+            .assign(to: &$isPackageWeightEdited)
     }
 }
 
 // MARK: ShippingLabelPackageSelectionDelegate conformance
 extension ShippingLabelPackageItemViewModel: ShippingLabelPackageSelectionDelegate {
     func didSelectPackage(id: String) {
-        // TODO-4599: set to current total weight if manually edited
-        let newTotalWeight = ""
+        let newTotalWeight = isPackageWeightEdited ? totalWeight : ""
         let newPackage = ShippingLabelPackageAttributes(packageID: id,
                                                         totalWeight: newTotalWeight,
                                                         productIDs: orderItems.map { $0.productOrVariationID })
@@ -123,6 +146,40 @@ private extension ShippingLabelPackageItemViewModel {
             }
         }
         return itemsToFulfill
+    }
+
+    /// Calculate total weight based on the weight of the selected package if it's a custom package;
+    /// And the products and products variation inside the order items, only if they are not virtual products.
+    ///
+    /// Note: Only custom package is needed for input because only custom packages have weight to be included in the total weight.
+    ///
+    func calculateTotalWeight(products: [Product], productVariations: [ProductVariation], customPackage: ShippingLabelCustomPackage?) -> Double {
+        var tempTotalWeight: Double = 0
+
+        // Add each order item's weight to the total weight.
+        for item in orderItems {
+            let isVariation = item.variationID > 0
+            var product: Product?
+            var productVariation: ProductVariation?
+
+            if isVariation {
+                productVariation = productVariations.first { $0.productVariationID == item.variationID }
+            }
+            else {
+                product = products.first { $0.productID == item.productID }
+            }
+            if product?.virtual == false || productVariation?.virtual == false {
+                let itemWeight = Double(productVariation?.weight ?? product?.weight ?? "0") ?? 0
+                tempTotalWeight += itemWeight * Double(truncating: item.quantity as NSDecimalNumber)
+            }
+        }
+
+        // Add selected package weight to the total weight.
+        // Only custom packages have a defined weight, so we only do this if a custom package is selected.
+        if let selectedPackage = customPackage {
+            tempTotalWeight += selectedPackage.boxWeight
+        }
+        return tempTotalWeight
     }
 }
 

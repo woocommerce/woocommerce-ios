@@ -68,6 +68,56 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.itemsRows.last?.title, expectedLastItemRow.title)
         XCTAssertEqual(viewModel.itemsRows.last?.subtitle, expectedLastItemRow.subtitle)
     }
+
+    func test_didSelectPackage_returns_the_expected_value() {
+        // Given
+        let customPackage = ShippingLabelCustomPackage(isUserDefined: true,
+                                                       title: "Box",
+                                                       isLetter: true,
+                                                       dimensions: "3 x 10 x 4",
+                                                       boxWeight: 10,
+                                                       maxWeight: 11)
+        let order = MockOrders().empty().copy(siteID: sampleSiteID)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+        let viewModel = ShippingLabelPackageItemViewModel(order: order,
+                                                          orderItems: order.items,
+                                                          packagesResponse: mockPackageResponse(),
+                                                          selectedPackageID: "",
+                                                          totalWeight: "",
+                                                          products: [],
+                                                          productVariations: [],
+                                                          formatter: currencyFormatter,
+                                                          weightUnit: "kg")
+
+        XCTAssertNil(viewModel.selectedCustomPackage)
+        XCTAssertNil(viewModel.selectedPredefinedPackage)
+
+        // When
+        viewModel.didSelectPackage(customPackage.title)
+
+        // Then
+        XCTAssertEqual(viewModel.selectedCustomPackage, customPackage)
+        XCTAssertNil(viewModel.selectedPredefinedPackage)
+    }
+
+    func test_showCustomPackagesHeader_returns_the_expected_value() {
+        // Given
+        let order = MockOrders().empty().copy(siteID: sampleSiteID)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+        let viewModel = ShippingLabelPackageItemViewModel(order: order,
+                                                          orderItems: order.items,
+                                                          packagesResponse: mockPackageResponse(),
+                                                          selectedPackageID: "Test Box",
+                                                          totalWeight: "10",
+                                                          products: [],
+                                                          productVariations: [],
+                                                          formatter: currencyFormatter,
+                                                          weightUnit: "kg")
+
+
+        // Then
+        XCTAssertTrue(viewModel.showCustomPackagesHeader)
+    }
 }
 
 // MARK: - Mocks

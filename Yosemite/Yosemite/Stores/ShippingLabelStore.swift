@@ -171,8 +171,15 @@ private extension ShippingLabelStore {
     func createPackage(siteID: Int64,
                        customPackage: ShippingLabelCustomPackage?,
                        predefinedOption: ShippingLabelPredefinedOption?,
-                       completion: @escaping (Result<Bool, Error>) -> Void) {
-        remote.createPackage(siteID: siteID, customPackage: customPackage, predefinedOption: predefinedOption, completion: completion)
+                       completion: @escaping (Result<Bool, PackageCreationError>) -> Void) {
+        remote.createPackage(siteID: siteID, customPackage: customPackage, predefinedOption: predefinedOption) { result in
+            switch result {
+            case .success(let success):
+                completion(.success(success))
+            case .failure(let error):
+                completion(.failure(PackageCreationError(error: error)))
+            }
+        }
     }
 
     func loadCarriersAndRates(siteID: Int64,
@@ -476,4 +483,57 @@ public enum LabelPurchaseError: Error {
     case purchaseErrorStatus
     /// Label purchase not complete after polling the backend
     case purchaseIncomplete
+}
+
+/// An error that occurs while creating a package.
+///
+/// - duplicateCustomPackageNames: The new custom package names are not unique.
+/// - duplicatePackageNames: At least one of the new custom packages has the same name as existing packages.
+/// - duplicatePredefinedPackageNames: The new predefined package names are not unique.
+/// - duplicateNamesByCarrier: At least one of the new predefined packages has the same name as existing packages.
+/// - unknown: other error cases.
+///
+public enum PackageCreationError: Error, Equatable {
+    case duplicateCustomPackageNames
+    case duplicatePackageNames
+    case duplicatePredefinedPackageNames
+    case duplicateNamesByCarrier
+    case unknown(error: AnyError)
+
+    init(error: Error) {
+        guard let dotcomError = error as? DotcomError else {
+            self = .unknown(error: error.toAnyError)
+            return
+        }
+        switch dotcomError {
+        case .unknown(let code, _):
+            guard let errorCode = ErrorCode(rawValue: code) else {
+                self = .unknown(error: dotcomError.toAnyError)
+                return
+            }
+            self = errorCode.error
+        default:
+            self = .unknown(error: dotcomError.toAnyError)
+        }
+    }
+
+    private enum ErrorCode: String {
+        case duplicateCustomPackageNames = "duplicate_custom_package_names"
+        case duplicatePackageNames = "duplicate_custom_package_names_of_existing_packages"
+        case duplicatePredefinedPackageNames = "duplicate_predefined_package_names"
+        case duplicateNamesByCarrier = "duplicate_predefined_package_names_of_existing_packages"
+
+        var error: PackageCreationError {
+            switch self {
+            case .duplicateCustomPackageNames:
+                return .duplicateCustomPackageNames
+            case .duplicatePredefinedPackageNames:
+                return .duplicatePredefinedPackageNames
+            case .duplicatePackageNames:
+                return .duplicatePackageNames
+            case .duplicateNamesByCarrier:
+                return .duplicateNamesByCarrier
+            }
+        }
+    }
 }

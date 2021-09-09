@@ -19,8 +19,8 @@ final class ShippingLabelAddNewPackageViewModel: ObservableObject {
     }
 
     // View models for child views (tabs)
-    var customPackageVM = ShippingLabelCustomPackageFormViewModel()
-    lazy var servicePackageVM = ShippingLabelServicePackageListViewModel(packagesResponse: packagesResponse)
+    private(set) var customPackageVM = ShippingLabelCustomPackageFormViewModel()
+    private(set) var servicePackageVM: ShippingLabelServicePackageListViewModel
 
     /// Package selected on the Custom Package tab
     ///
@@ -53,6 +53,7 @@ final class ShippingLabelAddNewPackageViewModel: ObservableObject {
         self.selectedIndex = selectedIndex
         self.stores = stores
         self.siteID = siteID
+        self.servicePackageVM = ShippingLabelServicePackageListViewModel(packagesResponse: packagesResponse)
         self.packagesResponse = packagesResponse
         self.onCompletion = onCompletion
     }
@@ -103,7 +104,7 @@ extension ShippingLabelAddNewPackageViewModel {
             // On success, reset tab state and save new package details
             guard let self = self, success else { return }
             self.customPackageVM = ShippingLabelCustomPackageFormViewModel()
-            self.servicePackageVM.packagesResponse = self.packagesResponse
+            self.servicePackageVM = ShippingLabelServicePackageListViewModel(packagesResponse: self.packagesResponse)
             self.onCompletion(nil, selectedServicePackage, self.packagesResponse)
         }
     }

@@ -77,8 +77,9 @@ struct ShippingLabelAddNewPackage: View {
                     })
                     .disabled(isSyncing)
                     .alert(isPresented: $showingAddPackageError, content: {
-                        Alert(title: Text(Localization.errorAlertTitle),
-                              message: Text(Localization.errorAlertMessage))
+                        let title = viewModel.error?.alertTitle ?? Localization.errorAlertTitle
+                        let message = viewModel.error?.errorDescription ?? Localization.errorAlertMessage
+                        return Alert(title: Text(title), message: Text(message))
                     })
                 })
             }
@@ -92,10 +93,9 @@ private extension ShippingLabelAddNewPackage {
         static let customPackage = NSLocalizedString("Custom Package", comment: "Custom Package menu in Shipping Label Add New Package flow")
         static let servicePackage = NSLocalizedString("Service Package", comment: "Service Package menu in Shipping Label Add New Package flow")
         static let doneButton = NSLocalizedString("Done", comment: "Done navigation button in the Add New Package screen in Shipping Label flow")
-        static let errorAlertTitle = NSLocalizedString("Cannot add package",
-                                                       comment: "Title of the alert when there is a failure adding a package in the Shipping Label flow")
+        static let errorAlertTitle = NSLocalizedString("Cannot add package", comment: "The title of the alert when there is a generic error adding the package")
         static let errorAlertMessage = NSLocalizedString("Unexpected error",
-                                                         comment: "Message of the alert when there is a failure adding a package in the Shipping Label flow")
+                                                         comment: "The message of the alert when there is an unexpected error adding the package")
     }
 }
 

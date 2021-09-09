@@ -38,6 +38,10 @@ final class ShippingLabelAddNewPackageViewModel: ObservableObject {
     ///
     private var packagesResponse: ShippingLabelPackagesResponse?
 
+    /// Error if package creation fails
+    ///
+    private(set) var error: PackageCreationError?
+
     /// Completion callback
     ///
     typealias Completion = (_ customPackage: ShippingLabelCustomPackage? ,
@@ -135,6 +139,7 @@ private extension ShippingLabelAddNewPackageViewModel {
                     onCompletion?(success)
                 }
             case .failure(let error):
+                self.error = error
                 DDLogError("⛔️ Error creating package: \(error.localizedDescription)")
                 onCompletion?(false)
             }

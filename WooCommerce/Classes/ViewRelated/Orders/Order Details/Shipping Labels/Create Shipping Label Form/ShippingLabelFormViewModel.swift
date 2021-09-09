@@ -196,7 +196,8 @@ final class ShippingLabelFormViewModel {
         }
     }
 
-    func handlePackageDetailsValueChanges(selectedPackageID: String?, totalPackageWeight: String?) {
+    func handlePackageDetailsValueChanges(packagesResponse: ShippingLabelPackagesResponse?, selectedPackageID: String?, totalPackageWeight: String?) {
+        self.packagesResponse = packagesResponse
         self.selectedPackageID = selectedPackageID
         self.totalPackageWeight = totalPackageWeight
 

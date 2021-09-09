@@ -8,7 +8,7 @@ struct ShippingLabelPackageDetails: View {
 
     /// Completion callback
     ///
-    typealias Completion = (_ selectedPackageID: String?, _ totalPackageWeight: String?) -> Void
+    typealias Completion = (_ packagesResponse: ShippingLabelPackagesResponse?, _ selectedPackageID: String?, _ totalPackageWeight: String?) -> Void
     private let onCompletion: Completion
 
     init(viewModel: ShippingLabelPackageDetailsViewModel, completion: @escaping Completion) {
@@ -82,7 +82,7 @@ struct ShippingLabelPackageDetails: View {
         .navigationBarItems(trailing: Button(action: {
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow,
                                            withProperties: ["state": "packages_selected"])
-            onCompletion(viewModel.selectedPackageID, viewModel.totalWeight)
+            onCompletion(viewModel.packagesResponse, viewModel.selectedPackageID, viewModel.totalWeight)
             presentation.wrappedValue.dismiss()
         }, label: {
             Text(Localization.doneButton)
@@ -120,12 +120,12 @@ struct ShippingLabelPackageDetails_Previews: PreviewProvider {
                                                              selectedPackageID: nil,
                                                              totalWeight: nil)
 
-        ShippingLabelPackageDetails(viewModel: viewModel, completion: { (selectedPackageID, totalPackageWeight) in
+        ShippingLabelPackageDetails(viewModel: viewModel, completion: { (_, _, _) in
         })
         .environment(\.colorScheme, .light)
         .previewDisplayName("Light")
 
-        ShippingLabelPackageDetails(viewModel: viewModel, completion: { (selectedPackageID, totalPackageWeight) in
+        ShippingLabelPackageDetails(viewModel: viewModel, completion: { (_, _, _) in
         })
         .environment(\.colorScheme, .dark)
         .previewDisplayName("Dark")

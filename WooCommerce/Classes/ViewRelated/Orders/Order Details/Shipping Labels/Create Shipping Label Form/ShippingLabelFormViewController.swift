@@ -422,8 +422,10 @@ private extension ShippingLabelFormViewController {
                                                       packagesResponse: viewModel.packagesResponse,
                                                       selectedPackageID: selectedPackageID,
                                                       totalWeight: totalPackageWeight)
-        let packageDetails = ShippingLabelPackageDetails(viewModel: vm) { [weak self] (selectedPackageID, totalPackageWeight) in
-            self?.viewModel.handlePackageDetailsValueChanges(selectedPackageID: selectedPackageID, totalPackageWeight: totalPackageWeight)
+        let packageDetails = ShippingLabelPackageDetails(viewModel: vm) { [weak self] (packagesResponse, selectedPackageID, totalPackageWeight) in
+            self?.viewModel.handlePackageDetailsValueChanges(packagesResponse: packagesResponse,
+                                                             selectedPackageID: selectedPackageID,
+                                                             totalPackageWeight: totalPackageWeight)
         }
 
         let hostingVC = UIHostingController(rootView: packageDetails)

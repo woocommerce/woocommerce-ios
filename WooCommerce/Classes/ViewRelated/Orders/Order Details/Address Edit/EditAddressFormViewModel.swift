@@ -13,6 +13,7 @@ final class EditAddressFormViewModel: ObservableObject {
         self.updatedAddress = address ?? .empty
         updateFieldsWithOriginalAddress()
         bindAllFieldsToUpdatedAddressPublisher()
+        bindNavigationTrailingItemPublisher()
     }
 
     /// Original `Address` model.
@@ -22,6 +23,10 @@ final class EditAddressFormViewModel: ObservableObject {
     /// Updated `Address` model.
     ///
     @Published var updatedAddress: Address
+
+    /// Tracks if a network request is being performed.
+    ///
+    private let performingNetworkRequest: CurrentValueSubject<Bool, Never> = .init(false)
 
     // MARK: User Fields
 
@@ -46,10 +51,24 @@ final class EditAddressFormViewModel: ObservableObject {
         return originalAddress != updatedAddress
     }
 
+    /// Active navigation bar trailing item.
+    /// Defaults to a disabled done button.
+    ///
+    @Published private(set) var navigationTrailingItem: NavigationItem = .done(enabled: false)
+
     /// Creates a view model to be used when selecting a country
     ///
     func createCountryViewModel() -> CountrySelectorViewModel {
         CountrySelectorViewModel(siteID: siteID)
+    }
+}
+
+extension EditAddressFormViewModel {
+    /// Representation of possible navigation bar trailing buttons
+    ///
+    enum NavigationItem: Equatable {
+        case done(enabled: Bool)
+        case loading
     }
 }
 
@@ -95,5 +114,18 @@ private extension EditAddressFormViewModel {
                         email: firstSection.2)
             }
             .assign(to: &$updatedAddress)
+    }
+
+    /// Calculates what navigation trailing item should be shown depending on our internal state.
+    ///
+    func bindNavigationTrailingItemPublisher() {
+        Publishers.CombineLatest($updatedAddress, performingNetworkRequest)
+            .map { [originalAddress] updatedAddress, performingNetworkRequest -> NavigationItem in
+                guard !performingNetworkRequest else {
+                    return .loading
+                }
+                return .done(enabled: originalAddress != updatedAddress)
+            }
+            .assign(to: &$navigationTrailingItem)
     }
 }

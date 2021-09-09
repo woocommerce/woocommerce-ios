@@ -130,10 +130,7 @@ struct EditAddressForm: View {
         }
         .navigationTitle(Localization.shippingTitle)
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarItems(trailing: Button(Localization.done) {
-            // TODO: save changes
-        }
-        .disabled(!viewModel.isDoneButtonEnabled))
+        .navigationBarItems(trailing: navigationBarTrailingItem())
 
         // Go to edit country
         LazyNavigationLink(destination: FilterListSelector(viewModel: viewModel.createCountryViewModel()), isActive: $showCountrySelector) {
@@ -144,6 +141,20 @@ struct EditAddressForm: View {
         // TODO: Move `StateSelectorViewModel` creation to the VM when it exists.
         LazyNavigationLink(destination: FilterListSelector(viewModel: StateSelectorViewModel()), isActive: $showStateSelector) {
             EmptyView()
+        }
+    }
+
+    /// Decides if the navigation trailing item should be a done button or a loading indicator.
+    ///
+    @ViewBuilder private func navigationBarTrailingItem() -> some View {
+        switch viewModel.navigationTrailingItem {
+        case .done(let enabled):
+            Button(Localization.done) {
+                // TODO: update remote address
+            }
+            .disabled(!enabled)
+        case .loading:
+            ProgressView()
         }
     }
 }

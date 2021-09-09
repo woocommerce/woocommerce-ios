@@ -1,4 +1,6 @@
 import Yosemite
+import Storage
+import Combine
 
 final class EditAddressFormViewModel: ObservableObject {
 
@@ -6,9 +8,30 @@ final class EditAddressFormViewModel: ObservableObject {
     ///
     private let siteID: Int64
 
-    init(siteID: Int64, address: Address?) {
+    /// ResultsController for stored countries.
+    ///
+    private lazy var countriesResultsController: ResultsController<StorageCountry> = {
+        let countriesDescriptor = NSSortDescriptor(key: "name", ascending: true)
+        return ResultsController<StorageCountry>(storageManager: storageManager, sortedBy: [countriesDescriptor])
+    }()
+
+    /// Trigger to sync countries.
+    ///
+    private let syncCountriesTrigger = PassthroughSubject<Void, Never>()
+
+    /// Storage to fetch countries
+    ///
+    private let storageManager: StorageManagerType
+
+    /// Stores to sync countries
+    ///
+    private let stores: StoresManager
+
+    init(siteID: Int64, address: Address?, storageManager: StorageManagerType = ServiceLocator.storageManager, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.originalAddress = address ?? .empty
+        self.storageManager = storageManager
+        self.stores = stores
         updateFieldsWithOriginalAddress()
     }
 

@@ -155,6 +155,82 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.packageListViewModel.showCustomPackagesHeader)
     }
+
+    func test_totalWeight_returns_the_expected_value() {
+        // Given
+        let orderItemAttributes = [OrderItemAttribute(metaID: 170, name: "Packaging", value: "Box")]
+        let items = [MockOrderItem.sampleItem(name: "Easter Egg", productID: 1, quantity: 0.5),
+                     MockOrderItem.sampleItem(name: "Jacket", productID: 33, quantity: 1),
+                     MockOrderItem.sampleItem(name: "Italian Jacket", productID: 23, quantity: 2),
+                     MockOrderItem.sampleItem(name: "Jeans",
+                                              productID: 49,
+                                              variationID: 49,
+                                              quantity: 1,
+                                              attributes: orderItemAttributes)]
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120")
+        let product2 = Product.fake().copy(siteID: sampleSiteID, productID: 33, virtual: true, weight: "9")
+        let product3 = Product.fake().copy(siteID: sampleSiteID, productID: 23, virtual: false, weight: "1.44")
+        let variation = ProductVariation.fake().copy(siteID: sampleSiteID,
+                                                     productID: 49,
+                                                     productVariationID: 49,
+                                                     attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")])
+
+        let viewModel = ShippingLabelPackageItemViewModel(order: order,
+                                                          orderItems: order.items,
+                                                          packagesResponse: mockPackageResponse(),
+                                                          selectedPackageID: "Box",
+                                                          totalWeight: "",
+                                                          products: [product1, product2, product3],
+                                                          productVariations: [variation],
+                                                          onPackageSwitch: { _ in },
+                                                          formatter: currencyFormatter,
+                                                          weightUnit: "kg")
+
+        // Then
+        XCTAssertEqual(viewModel.totalWeight, "72.88")
+    }
+
+    func test_totalWeight_returns_the_expected_value_when_already_set() {
+        // Given
+        let orderItemAttributes = [OrderItemAttribute(metaID: 170, name: "Packaging", value: "Box")]
+        let items = [MockOrderItem.sampleItem(name: "Easter Egg", productID: 1, quantity: 1),
+                     MockOrderItem.sampleItem(name: "Jacket", productID: 33, quantity: 1),
+                     MockOrderItem.sampleItem(name: "Italian Jacket", productID: 23, quantity: 2),
+                     MockOrderItem.sampleItem(name: "Jeans",
+                                              productID: 49,
+                                              variationID: 49,
+                                              quantity: 1,
+                                              attributes: orderItemAttributes)]
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "123")
+        let product2 = Product.fake().copy(siteID: sampleSiteID, productID: 33, virtual: true, weight: "9")
+        let product3 = Product.fake().copy(siteID: sampleSiteID, productID: 23, virtual: false, weight: "1")
+        let variation = ProductVariation.fake().copy(siteID: sampleSiteID,
+                                                     productID: 49,
+                                                     productVariationID: 49,
+                                                     attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")])
+
+        let viewModel = ShippingLabelPackageItemViewModel(order: order,
+                                                          orderItems: order.items,
+                                                          packagesResponse: mockPackageResponse(),
+                                                          selectedPackageID: "Box",
+                                                          totalWeight: "30",
+                                                          products: [product1, product2, product3],
+                                                          productVariations: [variation],
+                                                          onPackageSwitch: { _ in },
+                                                          formatter: currencyFormatter,
+                                                          weightUnit: "kg")
+
+        // Then
+        XCTAssertEqual(viewModel.totalWeight, "30")
+    }
 }
 
 // MARK: - Mocks

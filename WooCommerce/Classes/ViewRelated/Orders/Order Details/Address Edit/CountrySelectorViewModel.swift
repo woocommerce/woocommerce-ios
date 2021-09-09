@@ -15,6 +15,10 @@ final class CountrySelectorViewModel: FilterListSelectorViewModelable, Observabl
         }
     }
 
+    /// Define if the view should show placeholders instead of the real elements.
+    ///
+    @Published private(set) var showPlaceholders: Bool = false
+
     /// Command that powers the `ListSelector` view.
     ///
     let command = CountrySelectorCommand(countries: [])
@@ -34,6 +38,10 @@ final class CountrySelectorViewModel: FilterListSelectorViewModelable, Observabl
         return ResultsController<StorageCountry>(storageManager: storageManager, sortedBy: [countriesDescriptor])
     }()
 
+    /// Trigger to sync countries.
+    ///
+    private let syncCountriesTrigger = PassthroughSubject<Void, Never>()
+
     /// Storage to fetch countries
     ///
     private let storageManager: StorageManagerType
@@ -50,15 +58,17 @@ final class CountrySelectorViewModel: FilterListSelectorViewModelable, Observabl
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
-        fetchAndBindCountries()
+        bindSyncTrigger()
+        bindStoredCountries()
     }
 }
 
 // MARK: Helpers
 private extension CountrySelectorViewModel {
-    /// Fetches & Binds countries from storage, If there are no stored countries, sync them from a remote source.
+    /// Fetches & Binds countries from storage, If there are no stored countries, trigger a sync request.
     ///
-    func fetchAndBindCountries() {
+    func bindStoredCountries() {
+
         // Bind stored countries & command
         countriesResultsController.onDidChangeContent = { [weak self] in
             guard let self = self else { return }
@@ -68,13 +78,46 @@ private extension CountrySelectorViewModel {
         // Initial fetch
         try? countriesResultsController.performFetch()
 
-        // Reset countries with fetched data or sync countries if needed.
-        if !countriesResultsController.isEmpty {
-            command.resetCountries(countriesResultsController.fetchedObjects)
-        } else {
-            let action = DataAction.synchronizeCountries(siteID: siteID, onCompletion: { _ in })
-            stores.dispatch(action)
+        // Trigger a sync request if there are no countries.
+        guard !countriesResultsController.isEmpty else {
+            return syncCountriesTrigger.send()
         }
+
+        // Reset countries with fetched
+        command.resetCountries(countriesResultsController.fetchedObjects)
+    }
+
+    /// Sync countries when requested. Defines the `showPlaceholderState` value depending if countries are being synced or not.
+    ///
+    func bindSyncTrigger() {
+        syncCountriesTrigger
+            .handleEvents(receiveOutput: { // Set `showPlaceholders` to `true` before initiating sync.
+                self.showPlaceholders = true // I could not find a way to assign this using combine operators. :-(
+            })
+            .map { // Sync countries
+                self.makeSyncCountriesFuture()
+                    .replaceError(with: ()) // TODO: Handle errors
+            }
+            .switchToLatest()
+            .map { _ in // Set `showPlaceholders` to `false` after sync is done.
+                false
+            }
+            .assign(to: &$showPlaceholders)
+    }
+
+    /// Creates a publisher that syncs countries into our storage layer.
+    ///
+    func makeSyncCountriesFuture() -> AnyPublisher<Void, Error> {
+        Future<Void, Error> { [weak self] promise in
+            guard let self = self else { return }
+
+            let action = DataAction.synchronizeCountries(siteID: self.siteID) { result in
+                let newResult = result.map { _ in } // Hides the result success type because we don't need it.
+                promise(newResult)
+            }
+            self.stores.dispatch(action)
+        }
+        .eraseToAnyPublisher()
     }
 }
 

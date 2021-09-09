@@ -25,6 +25,10 @@ final class StateSelectorViewModel: FilterListSelectorViewModelable, ObservableO
     /// Filter text field placeholder
     ///
     let filterPlaceholder = Localization.placeholder
+
+    /// States do not require data loading
+    ///
+    let showPlaceholders = false
 }
 
 // MARK: Constants

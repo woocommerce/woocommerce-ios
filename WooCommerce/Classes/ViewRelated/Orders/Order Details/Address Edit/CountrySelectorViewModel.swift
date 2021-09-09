@@ -27,13 +27,18 @@ final class CountrySelectorViewModel: FilterListSelectorViewModelable, Observabl
     ///
     let filterPlaceholder = Localization.placeholder
 
-    /// Current `SiteID`, needed to sync countries from a remote source.
+    /// Subscriptions store
     ///
-    private let siteID: Int64
+    private var subscriptions = Set<AnyCancellable>()
 
-    init(siteID: Int64, countries: [Country]) {
-        self.siteID = siteID
-        self.command = CountrySelectorCommand(countries: countries)
+    init(countries: [Country], selected: CurrentValueSubject<Country?, Never>) {
+        self.command = CountrySelectorCommand(countries: countries, selected: selected.value)
+
+        /// Bind selected country to the provided selected subject
+        ///
+        command.$selected.sink { country in
+            selected.send(country)
+        }.store(in: &subscriptions)
     }
 }
 

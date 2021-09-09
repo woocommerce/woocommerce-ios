@@ -1,6 +1,8 @@
 import Foundation
 import Yosemite
 
+import struct SwiftUI.Binding
+
 /// Command to be used to select a country when editing addresses.
 ///
 final class CountrySelectorCommand: ObservableListSelectorCommand {
@@ -17,16 +19,16 @@ final class CountrySelectorCommand: ObservableListSelectorCommand {
 
     /// Current selected country
     ///
-    private(set) var selected: Country?
+    @Binding private(set) var selected: Country?
 
     /// Navigation bar title
     ///
     let navigationBarTitle: String? = ""
 
-    init(countries: [Country], selected: Country? = nil) {
+    init(countries: [Country], selected: Binding<Country?>) {
         self.countries = countries
         self.data = countries
-        self.selected = selected
+        self._selected = selected
     }
 
     func handleSelectedChange(selected: Country, viewController: ViewController) {
@@ -34,7 +36,7 @@ final class CountrySelectorCommand: ObservableListSelectorCommand {
     }
 
     func isSelected(model: Country) -> Bool {
-        model == selected
+        model.code == selected?.code // I'm only comparing country codes because states can be unsorted
     }
 
     func configureCell(cell: BasicTableViewCell, model: Country) {

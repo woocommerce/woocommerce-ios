@@ -1,4 +1,5 @@
 import Yosemite
+import Combine
 
 final class EditAddressFormViewModel: ObservableObject {
 
@@ -9,12 +10,18 @@ final class EditAddressFormViewModel: ObservableObject {
     init(siteID: Int64, address: Address?) {
         self.siteID = siteID
         self.originalAddress = address ?? .empty
+        self.updatedAddress = address ?? .empty
         updateFieldsWithOriginalAddress()
+        bindAllFieldsToUpdatedAddressPublisher()
     }
 
     /// Original `Address` model.
     ///
     private let originalAddress: Address
+
+    /// Updated `Address` model.
+    ///
+    @Published var updatedAddress: Address
 
     // MARK: User Fields
 
@@ -36,7 +43,7 @@ final class EditAddressFormViewModel: ObservableObject {
     /// Return `true` if the done button should be enabled.
     ///
     var isDoneButtonEnabled: Bool {
-        return originalAddress != addressFromFields
+        return originalAddress != updatedAddress
     }
 
     /// Creates a view model to be used when selecting a country
@@ -62,17 +69,31 @@ private extension EditAddressFormViewModel {
         // TODO: Add country and state init
     }
 
-    var addressFromFields: Address {
-        Address(firstName: firstName,
-                lastName: lastName,
-                company: company.isEmpty ? nil : company,
-                address1: address1,
-                address2: company.isEmpty ? nil : company,
-                city: city,
-                state: originalAddress.state, // TODO: replace with local value
-                postcode: postcode,
-                country: originalAddress.country, // TODO: replace with local value
-                phone: phone.isEmpty ? nil : phone,
-                email: email.isEmpty ? nil : email)
+    /// Updates `updatedAddress` after any field change.
+    ///
+    func bindAllFieldsToUpdatedAddressPublisher() {
+        Publishers.CombineLatest3(Publishers.CombineLatest4($firstName,
+                                                            $lastName,
+                                                            $email,
+                                                            $phone),
+                                  Publishers.CombineLatest3($company,
+                                                            $address1,
+                                                            $address2),
+                                  Publishers.CombineLatest($city,
+                                                           $postcode))
+            .map { [originalAddress] firstSection, secondSection, thirdSection -> Address in
+                Address(firstName: firstSection.0,
+                        lastName: firstSection.1,
+                        company: secondSection.0,
+                        address1: secondSection.1,
+                        address2: secondSection.2,
+                        city: thirdSection.0,
+                        state: originalAddress.state, // TODO: bind to local value
+                        postcode: thirdSection.1,
+                        country: originalAddress.country, // TODO: bind to local value
+                        phone: firstSection.3,
+                        email: firstSection.2)
+            }
+            .assign(to: &$updatedAddress)
     }
 }

@@ -9,46 +9,18 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
     ///
     let selectedPackageID: String
 
-    var dimensionUnit: String {
-        return packagesResponse?.storeOptions.dimensionUnit ?? ""
-    }
-    var customPackages: [ShippingLabelCustomPackage] {
-        return packagesResponse?.customPackages ?? []
-    }
-    var predefinedOptions: [ShippingLabelPredefinedOption] {
-        return packagesResponse?.predefinedOptions ?? []
-    }
-
-    /// Whether there are saved custom or predefined packages to select from.
-    ///
-    var hasCustomOrPredefinedPackages: Bool {
-        return customPackages.isNotEmpty || predefinedOptions.isNotEmpty
-    }
-
-    /// The title of the selected package, if any.
-    ///
-    var selectedPackageName: String {
-        if let selectedCustomPackage = selectedCustomPackage {
-            return selectedCustomPackage.title
-        }
-        else if let selectedPredefinedPackage = selectedPredefinedPackage {
-            return selectedPredefinedPackage.title
-        }
-        else {
-            return Localization.selectPackagePlaceholder
-        }
-    }
-    @Published private(set) var selectedCustomPackage: ShippingLabelCustomPackage?
-    @Published private(set) var selectedPredefinedPackage: ShippingLabelPredefinedPackage?
     @Published var totalWeight: String = ""
 
     /// The items rows observed by the main view `ShippingLabelPackageDetails`
     ///
     @Published private(set) var itemsRows: [ItemToFulfillRow] = []
 
-    /// Whether the user has edited the total package weight. If true, we won't make any automatic changes to the total weight.
+    /// The title of the selected package, if any.
     ///
-    @Published private var isPackageWeightEdited: Bool = false
+    var selectedPackageName: String {
+        // TODO-4599: Update package name
+        return Localization.selectPackagePlaceholder
+    }
 
     private let order: Order
     private let orderItems: [OrderItem]
@@ -80,32 +52,11 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
         self.packagesResponse = packagesResponse
         self.selectedPackageID = selectedPackageID
 
-        didSelectPackage(selectedPackageID)
         configureItemRows(products: products, productVariations: productVariations)
-        configureTotalWeight(initialTotalWeight: totalWeight, products: products, productVariations: productVariations)
     }
 
     private func configureItemRows(products: [Product], productVariations: [ProductVariation]) {
         itemsRows = generateItemsRows(products: products, productVariations: productVariations)
-    }
-
-    /// Set value for total weight and observe its changes.
-    ///
-    private func configureTotalWeight(initialTotalWeight: String, products: [Product], productVariations: [ProductVariation]) {
-        let calculatedWeight = calculateTotalWeight(products: products, productVariations: productVariations, customPackage: selectedCustomPackage)
-
-        // Set total weight to initialTotalWeight if it's different from the calculated weight.
-        // Otherwise use the calculated weight.
-        if initialTotalWeight.isNotEmpty, initialTotalWeight != String(calculatedWeight) {
-            isPackageWeightEdited = true
-            totalWeight = initialTotalWeight
-        } else {
-            totalWeight = String(calculatedWeight)
-        }
-
-        $totalWeight
-            .map { $0 != String(calculatedWeight) }
-            .assign(to: &$isPackageWeightEdited)
     }
 }
 
@@ -147,78 +98,6 @@ private extension ShippingLabelPackageItemViewModel {
             }
         }
         return itemsToFulfill
-    }
-
-    /// Calculate total weight based on the weight of the selected package if it's a custom package;
-    /// And the products and products variation inside the order items, only if they are not virtual products.
-    ///
-    /// Note: Only custom package is needed for input because only custom packages have weight to be included in the total weight.
-    ///
-    func calculateTotalWeight(products: [Product], productVariations: [ProductVariation], customPackage: ShippingLabelCustomPackage?) -> Double {
-        var tempTotalWeight: Double = 0
-
-        // Add each order item's weight to the total weight.
-        for item in orderItems {
-            let isVariation = item.variationID > 0
-            var product: Product?
-            var productVariation: ProductVariation?
-
-            if isVariation {
-                productVariation = productVariations.first { $0.productVariationID == item.variationID }
-            }
-            else {
-                product = products.first { $0.productID == item.productID }
-            }
-            if product?.virtual == false || productVariation?.virtual == false {
-                let itemWeight = Double(productVariation?.weight ?? product?.weight ?? "0") ?? 0
-                tempTotalWeight += itemWeight * Double(truncating: item.quantity as NSDecimalNumber)
-            }
-        }
-
-        // Add selected package weight to the total weight.
-        // Only custom packages have a defined weight, so we only do this if a custom package is selected.
-        if let selectedPackage = customPackage {
-            tempTotalWeight += selectedPackage.boxWeight
-        }
-        return tempTotalWeight
-    }
-}
-
-// MARK: - Package Selection
-extension ShippingLabelPackageItemViewModel {
-    func didSelectPackage(_ id: String) {
-        selectCustomPackage(id)
-        selectPredefinedPackage(id)
-    }
-
-    private func selectCustomPackage(_ id: String) {
-        guard let packagesResponse = packagesResponse else {
-            return
-        }
-
-        for customPackage in packagesResponse.customPackages {
-            if customPackage.title == id {
-                selectedCustomPackage = customPackage
-                selectedPredefinedPackage = nil
-                return
-            }
-        }
-    }
-
-    private func selectPredefinedPackage(_ id: String) {
-        guard let packagesResponse = packagesResponse else {
-            return
-        }
-
-        for option in packagesResponse.predefinedOptions {
-            for predefinedPackage in option.predefinedPackages {
-                if predefinedPackage.id == id {
-                    selectedCustomPackage = nil
-                    selectedPredefinedPackage = predefinedPackage
-                    return
-                }
-            }
-        }
     }
 }
 

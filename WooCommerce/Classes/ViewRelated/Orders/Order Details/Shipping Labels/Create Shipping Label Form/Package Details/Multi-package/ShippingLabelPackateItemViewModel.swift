@@ -42,6 +42,10 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
     @Published private(set) var selectedPredefinedPackage: ShippingLabelPredefinedPackage?
     @Published var totalWeight: String = ""
 
+    /// The items rows observed by the main view `ShippingLabelPackageDetails`
+    ///
+    @Published private(set) var itemsRows: [ItemToFulfillRow] = []
+
     private let order: Order
     private let orderItems: [OrderItem]
     private let currency: String
@@ -73,6 +77,51 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
         self.selectedPackageID = selectedPackageID
 
         didSelectPackage(selectedPackageID)
+    }
+
+    private func configureItemRows(products: [Product], productVariations: [ProductVariation]) {
+        itemsRows = generateItemsRows(products: products, productVariations: productVariations)
+    }
+}
+
+// MARK: - Helper methods
+private extension ShippingLabelPackageItemViewModel {
+    /// Generate the items rows, creating an element in the array for every item (eg. if there is an item with quantity 3,
+    /// we will generate 3 different items), and we will remove virtual products.
+    ///
+    func generateItemsRows(products: [Product], productVariations: [ProductVariation]) -> [ItemToFulfillRow] {
+        var itemsToFulfill: [ItemToFulfillRow] = []
+        for item in orderItems {
+            let isVariation = item.variationID > 0
+            var product: Product?
+            var productVariation: ProductVariation?
+
+            if isVariation {
+                productVariation = productVariations.first { $0.productVariationID == item.variationID }
+            }
+            else {
+                product = products.first { $0.productID == item.productID }
+            }
+            if product?.virtual == false || productVariation?.virtual == false {
+                var tempItemQuantity = Double(truncating: item.quantity as NSDecimalNumber)
+
+                for _ in 0..<item.quantity.intValue {
+                    let attributes = item.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) }
+                    var weight = Double(productVariation?.weight ?? product?.weight ?? "0") ?? 0
+                    if tempItemQuantity < 1 {
+                        weight *= tempItemQuantity
+                    } else {
+                        tempItemQuantity -= 1
+                    }
+                    let unit: String = weightUnit ?? ""
+                    let subtitle = Localization.subtitle(weight: weight.description,
+                                                         weightUnit: unit,
+                                                         attributes: attributes)
+                    itemsToFulfill.append(ItemToFulfillRow(title: item.name, subtitle: subtitle))
+                }
+            }
+        }
+        return itemsToFulfill
     }
 }
 

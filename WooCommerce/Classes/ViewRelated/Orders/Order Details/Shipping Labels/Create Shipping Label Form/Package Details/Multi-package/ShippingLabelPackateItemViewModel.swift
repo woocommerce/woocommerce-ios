@@ -65,7 +65,7 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
 
     /// The weight unit used in the Store
     ///
-    private let weightUnit: String?
+    let weightUnit: String?
 
     init(order: Order,
          orderItems: [OrderItem],
@@ -85,6 +85,8 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
         self.selectedPackageID = selectedPackageID
 
         didSelectPackage(selectedPackageID)
+        configureItemRows(products: products, productVariations: productVariations)
+        configureTotalWeight(initialTotalWeight: totalWeight, products: products, productVariations: productVariations)
     }
 
     private func configureItemRows(products: [Product], productVariations: [ProductVariation]) {

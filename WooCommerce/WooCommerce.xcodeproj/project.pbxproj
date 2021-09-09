@@ -1272,6 +1272,7 @@
 		DE1B030D268DD01A00804330 /* ReviewOrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1B030B268DD01A00804330 /* ReviewOrderViewController.swift */; };
 		DE1B030E268DD01A00804330 /* ReviewOrderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DE1B030C268DD01A00804330 /* ReviewOrderViewController.xib */; };
 		DE1B0310268EB2FB00804330 /* ReviewOrderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1B030F268EB2FB00804330 /* ReviewOrderViewModel.swift */; };
+		DE279BA426E9C4DC002BA963 /* ShippingLabelPackagesForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE279BA326E9C4DC002BA963 /* ShippingLabelPackagesForm.swift */; };
 		DE46133926B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE46133826B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift */; };
 		DE4B3B2C2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4B3B2B2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift */; };
 		DE4B3B2E269455D400EEF2D8 /* MockShipmentActionStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4B3B2D269455D400EEF2D8 /* MockShipmentActionStoresManager.swift */; };
@@ -2690,6 +2691,7 @@
 		DE1B030B268DD01A00804330 /* ReviewOrderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewController.swift; sourceTree = "<group>"; };
 		DE1B030C268DD01A00804330 /* ReviewOrderViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReviewOrderViewController.xib; sourceTree = "<group>"; };
 		DE1B030F268EB2FB00804330 /* ReviewOrderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewModel.swift; sourceTree = "<group>"; };
+		DE279BA326E9C4DC002BA963 /* ShippingLabelPackagesForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackagesForm.swift; sourceTree = "<group>"; };
 		DE46133826B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCountryListSelectorCommand.swift; sourceTree = "<group>"; };
 		DE4B3B2B2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewModelTests.swift; sourceTree = "<group>"; };
 		DE4B3B2D269455D400EEF2D8 /* MockShipmentActionStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockShipmentActionStoresManager.swift; sourceTree = "<group>"; };
@@ -4080,6 +4082,7 @@
 		451A995B260E2E0A0059D135 /* Package Details */ = {
 			isa = PBXGroup;
 			children = (
+				DE279BA226E9C3BF002BA963 /* Multi-package */,
 				451A997C260E393B0059D135 /* ShippingLabelPackageDetails.swift */,
 				451A9962260E31480059D135 /* ShippingLabelPackageDetailsViewModel.swift */,
 				45DB705F2614C7E80064A6CF /* ShippingLabelPackageDetailsResultsControllers.swift */,
@@ -6301,6 +6304,14 @@
 			path = "Review Order";
 			sourceTree = "<group>";
 		};
+		DE279BA226E9C3BF002BA963 /* Multi-package */ = {
+			isa = PBXGroup;
+			children = (
+				DE279BA326E9C4DC002BA963 /* ShippingLabelPackagesForm.swift */,
+			);
+			path = "Multi-package";
+			sourceTree = "<group>";
+		};
 		DE4B3B2A2692DBF200EEF2D8 /* Review Order */ = {
 			isa = PBXGroup;
 			children = (
@@ -7266,6 +7277,7 @@
 				021E2A1E23AA24C600B1DE07 /* StringInputFormatter.swift in Sources */,
 				D8D15F83230A17A000D48B3F /* ServiceLocator.swift in Sources */,
 				317F679826420E9D00BA2A7A /* CardReaderSettingsViewModelsOrderedList.swift in Sources */,
+				DE279BA426E9C4DC002BA963 /* ShippingLabelPackagesForm.swift in Sources */,
 				CE583A0421076C0100D73C1C /* NewNoteViewController.swift in Sources */,
 				CECC759723D607C900486676 /* OrderItemRefund+Woo.swift in Sources */,
 				0212275C244972660042161F /* BottomSheetListSelectorSectionHeaderView.swift in Sources */,

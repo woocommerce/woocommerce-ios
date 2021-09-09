@@ -41,6 +41,19 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
         configureResultsControllers()
         syncProducts()
         syncProductVariations()
+        configureDefaultPackage()
+    }
+
+    /// If no initial packages was input, set up default package from last selected package ID and all order items.
+    ///
+    private func configureDefaultPackage() {
+        guard selectedPackages.isEmpty,
+              let selectedPackageID = resultsControllers?.accountSettings?.lastSelectedPackageID else {
+            return
+        }
+        selectedPackages = [ShippingLabelPackageAttributes(packageID: selectedPackageID,
+                                                           totalWeight: "",
+                                                           productIDs: order.items.map { $0.productOrVariationID })]
     }
 
     private func configureResultsControllers() {

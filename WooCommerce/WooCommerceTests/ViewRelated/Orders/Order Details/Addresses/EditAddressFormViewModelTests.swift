@@ -24,27 +24,27 @@ final class EditAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.city, address.city)
         XCTAssertEqual(viewModel.postcode, address.postcode)
 
-        XCTAssertFalse(viewModel.isDoneButtonEnabled)
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
     }
 
     func test_updating_fields_enables_done_button() {
         // Given
         let address = sampleAddress()
         let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address)
-        XCTAssertFalse(viewModel.isDoneButtonEnabled)
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
 
         // When
         viewModel.firstName = "John"
 
         // Then
-        XCTAssertTrue(viewModel.isDoneButtonEnabled)
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: true))
     }
 
     func test_updating_fields_back_to_original_values_disables_done_button() {
         // Given
         let address = sampleAddress()
         let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address)
-        XCTAssertFalse(viewModel.isDoneButtonEnabled)
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
 
         // When
         viewModel.firstName = "John"
@@ -53,7 +53,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
         viewModel.lastName = "Appleseed"
 
         // Then
-        XCTAssertFalse(viewModel.isDoneButtonEnabled)
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
     }
 
     func test_creating_without_address_disables_done_button() {
@@ -61,7 +61,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
         let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: nil)
 
         // Then
-        XCTAssertFalse(viewModel.isDoneButtonEnabled)
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
     }
 
     func test_creating_with_address_with_empty_nullable_fields_disables_done_button() {
@@ -70,7 +70,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
         let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address)
 
         // Then
-        XCTAssertFalse(viewModel.isDoneButtonEnabled)
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
     }
 }
 

@@ -9,6 +9,10 @@ import protocol Storage.StorageManagerType
 ///
 final class ShippingLabelPackagesFormViewModel: ObservableObject {
 
+    var foundMultiplePackages: Bool {
+        selectedPackages.count > 1
+    }
+
     /// References of view models for child items.
     ///
     @Published private(set) var itemViewModels: [ShippingLabelPackageItemViewModel] = []

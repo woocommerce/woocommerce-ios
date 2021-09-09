@@ -27,6 +27,23 @@ class ShippingLabelPackagesFormViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_foundMultiplePackages_returns_correctly() {
+        // Given
+        let order = MockOrders().empty().copy(siteID: sampleSiteID)
+        let package1 = ShippingLabelPackageAttributes(packageID: "Box 1", totalWeight: "12", productIDs: [1, 2, 3])
+        let package2 = ShippingLabelPackageAttributes(packageID: "Box 2", totalWeight: "5.5", productIDs: [1, 2, 3])
+
+        // When & Then
+        let viewModel1 = ShippingLabelPackagesFormViewModel(order: order, packagesResponse: nil, selectedPackages: [])
+        XCTAssertFalse(viewModel1.foundMultiplePackages)
+
+        let viewModel2 = ShippingLabelPackagesFormViewModel(order: order, packagesResponse: nil, selectedPackages: [package1])
+        XCTAssertFalse(viewModel2.foundMultiplePackages)
+
+        let viewModel3 = ShippingLabelPackagesFormViewModel(order: order, packagesResponse: nil, selectedPackages: [package1, package2])
+        XCTAssertTrue(viewModel3.foundMultiplePackages)
+    }
+
     func test_itemViewModels_returns_correctly_when_initial_selectedPackages_is_empty() {
         // Given
         let order = MockOrders().empty().copy(siteID: sampleSiteID)

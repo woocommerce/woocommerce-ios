@@ -33,6 +33,11 @@ final class CardReaderConnectionController {
         ///
         case connectToReader
 
+        /// A failure occurred while connecting. The search may continue or be canceled. At this time we
+        /// do not present the detailed error from the service.
+        ///
+        case connectingFailed(Error)
+
         /// User cancelled search/connecting to a card reader. The completion passed to `searchAndConnect`
         /// will be called with a `success` `Bool` `False` result. The view controller passed to `searchAndConnect` will be
         /// dereferenced and the state set to `idle`
@@ -43,7 +48,7 @@ final class CardReaderConnectionController {
         /// will be called with a `failure` result. The view controller passed to `searchAndConnect` will be
         /// dereferenced and the state set to `idle`
         ///
-        case failed(Error)
+        case discoveryFailed(Error)
     }
 
     private var state: ControllerState {
@@ -122,8 +127,10 @@ private extension CardReaderConnectionController {
             onCancel()
         case .connectToReader:
             onConnectToReader()
-        case .failed(let error):
-            onFailed(error: error)
+        case .connectingFailed(let error):
+            onConnectingFailed(error: error)
+        case .discoveryFailed(let error):
+            onDiscoveryFailed(error: error)
         }
     }
 
@@ -222,7 +229,7 @@ private extension CardReaderConnectionController {
                 }
 
                 ServiceLocator.analytics.track(.cardReaderDiscoveryFailed, withError: error)
-                self.state = .failed(error)
+                self.state = .discoveryFailed(error)
             })
 
         ServiceLocator.stores.dispatch(action)
@@ -312,7 +319,7 @@ private extension CardReaderConnectionController {
                 self.returnSuccess(connected: true)
             case .failure(let error):
                 ServiceLocator.analytics.track(.cardReaderConnectionFailed, withError: error)
-                self.returnFailure(error: error)
+                self.state = .connectingFailed(error)
             }
         }
         ServiceLocator.stores.dispatch(action)
@@ -320,10 +327,33 @@ private extension CardReaderConnectionController {
         alerts.connectingToReader(from: from)
     }
 
-    /// An error has occurred
+    /// An error occurred while connecting
+    ///
+    private func onConnectingFailed(error: Error) {
+        guard let from = fromController else {
+            return
+        }
+
+        /// Clear our copy of found readers to avoid connecting to a reader that isn't
+        /// there while we wait for `onReaderDiscovered` to receive an update.
+        /// See also https://github.com/stripe/stripe-terminal-ios/issues/104#issuecomment-916285167
+        ///
+        self.foundReaders = []
+
+        alerts.connectingFailed(
+            from: from,
+            continueSearch: {
+                self.state = .searching
+            }, cancelSearch: {
+                self.state = .cancel
+            }
+        )
+    }
+
+    /// An error occurred during discovery
     /// Presents the error in a modal
     ///
-    private func onFailed(error: Error) {
+    private func onDiscoveryFailed(error: Error) {
         guard let from = fromController else {
             return
         }

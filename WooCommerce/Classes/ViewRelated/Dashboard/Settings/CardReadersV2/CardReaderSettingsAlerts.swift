@@ -32,7 +32,7 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         )
     }
 
-    func updateProgress(from: UIViewController, progress: Float, cancel: @escaping () -> Void) {
+    func updateProgress(from: UIViewController, progress: Float, cancel: (() -> Void)?) {
         setViewModelAndPresent(
             from: from,
             viewModel: CardPresentModalUpdateProgress(

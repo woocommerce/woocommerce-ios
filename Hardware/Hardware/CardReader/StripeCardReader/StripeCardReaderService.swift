@@ -484,9 +484,9 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
         sendReaderEvent(.softwareUpdateNeeded(softwareUpdate))
     }
 
-    public func reader(_ reader: Reader, didStartInstallingUpdate update: ReaderSoftwareUpdate, cancelable: Cancelable?) {
-        print("==== started software upadte")
-        softwareUpdateSubject.send(.started)
+    public func reader(_ reader: Reader, didStartInstallingUpdate update: ReaderSoftwareUpdate, cancelable: StripeTerminal.Cancelable?) {
+        print("==== started software update")
+        softwareUpdateSubject.send(.started(cancelable: cancelable.map(StripeCancelable.init(cancelable:))))
     }
 
     public func reader(_ reader: Reader, didReportReaderSoftwareUpdateProgress progress: Float) {

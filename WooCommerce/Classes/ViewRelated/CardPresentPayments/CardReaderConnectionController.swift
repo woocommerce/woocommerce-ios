@@ -74,6 +74,8 @@ final class CardReaderConnectionController {
     ///
     private var candidateReader: CardReader?
 
+    private var softwareUpdateCancelable: Cancelable? = nil
+
     private var subscriptions = Set<AnyCancellable>()
 
     private var onCompletion: ((Result<Bool, Error>) -> Void)?
@@ -284,11 +286,21 @@ private extension CardReaderConnectionController {
         guard let from = fromController else {
             return
         }
-        alerts.updateProgress(from: from,
-                              progress: progress) {
-            // TODO: not sure if this is the right action when canceling
-            self.returnSuccess(connected: false)
+
+        let cancel = softwareUpdateCancelable.map { cancelable in
+            return { [weak self] in
+                self?.state = .cancel
+                cancelable.cancel { error in
+                    if let error = error {
+                        print("=== error canceling software update: \(error)")
+                    }
+                }
+            }
         }
+
+        alerts.updateProgress(from: from,
+                              progress: progress,
+                              cancel: cancel)
     }
 
     /// End the search for a card reader
@@ -319,11 +331,13 @@ private extension CardReaderConnectionController {
         ServiceLocator.cardReaderService
             .softwareUpdateEvents.sink { event in
                 switch event {
-                case .started:
+                case .started(cancelable: let cancelable):
+                    self.softwareUpdateCancelable = cancelable
                     self.state = .updating(progress: 0)
                 case .installing(progress: let progress):
                     self.state = .updating(progress: progress)
                 case .completed:
+                    self.softwareUpdateCancelable = nil
                     self.state = .updating(progress: 1)
                 default:
                     break

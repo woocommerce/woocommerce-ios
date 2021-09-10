@@ -26,7 +26,7 @@ protocol CardReaderSettingsAlertsProvider {
     ///
     func connectingToReader(from: UIViewController)
 
-    func updateProgress(from: UIViewController, progress: Float, cancel: @escaping () -> Void)
+    func updateProgress(from: UIViewController, progress: Float, cancel: (() -> Void)?)
 
     /// Dismisses any alert being presented
     ///

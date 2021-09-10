@@ -28,8 +28,8 @@ final class MockCardReaderService: CardReaderService {
         PassthroughSubject<CardReaderEvent, Never>().eraseToAnyPublisher()
     }
 
-    var softwareUpdateEvents: AnyPublisher<Float, Never> {
-        CurrentValueSubject<Float, Never>(0).eraseToAnyPublisher()
+    var softwareUpdateEvents: AnyPublisher<CardReaderSoftwareUpdateState, Never> {
+        CurrentValueSubject<CardReaderSoftwareUpdateState, Never>(.none).eraseToAnyPublisher()
     }
 
     /// Boolean flag Indicates that clients have called the start method

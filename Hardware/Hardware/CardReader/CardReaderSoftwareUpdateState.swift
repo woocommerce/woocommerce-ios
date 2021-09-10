@@ -3,7 +3,7 @@ public enum CardReaderSoftwareUpdateState {
     case available
 
     // A mandatory update has started
-    case started
+    case started(cancelable: Cancelable?)
 
     // The update is being installed
     case installing(progress: Float)

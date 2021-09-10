@@ -14,6 +14,7 @@ public typealias AddOnGroup = Networking.AddOnGroup
 public typealias Address = Networking.Address
 public typealias Announcement = WordPressKit.Announcement
 public typealias APNSDevice = Networking.APNSDevice
+public typealias Cancelable = Hardware.Cancelable
 public typealias CommentStatus = Networking.CommentStatus
 public typealias Country = Networking.Country
 public typealias Credentials = Networking.Credentials

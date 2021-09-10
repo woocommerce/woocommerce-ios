@@ -7,10 +7,10 @@ final class CardPresentModalUpdateProgress: CardPresentPaymentsModalViewModel {
     private let progress: Float
 
     /// Called when cancel button is tapped
-    private let cancelAction: () -> Void
+    private let cancelAction: (() -> Void)?
 
     let textMode: PaymentsModalTextMode = .fullInfo
-    let actionsMode: PaymentsModalActionsMode = .secondaryOnlyAction
+    let actionsMode: PaymentsModalActionsMode
 
     var topTitle: String
 
@@ -28,18 +28,24 @@ final class CardPresentModalUpdateProgress: CardPresentPaymentsModalViewModel {
 
     var bottomSubtitle: String? = Localization.message
 
-    init(progress: Float, cancel: @escaping () -> Void) {
+    init(progress: Float, cancel: (() -> Void)?) {
         self.progress = progress
         self.cancelAction = cancel
 
         topTitle = progress == 1 ? Localization.titleComplete : Localization.title
         bottomTitle = String(format: Localization.percentComplete, 100 * progress)
+
+        if cancel != nil {
+            actionsMode = .secondaryOnlyAction
+        } else {
+            actionsMode = .none
+        }
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {}
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
-        cancelAction()
+        cancelAction?()
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {}

@@ -18,17 +18,13 @@ final class EditAddressFormViewModel: ObservableObject {
     ///
     private let originalAddress: Address
 
-    /// Tracks if a network request is being performed.
-    ///
-    private let performingNetworkRequest: CurrentValueSubject<Bool, Never> = .init(false)
-
-    // MARK: Form Fields
-
     /// Address form fields
     ///
     @Published var fields = FormFields()
 
-    // MARK: Navigation and utility
+    /// Tracks if a network request is being performed.
+    ///
+    private let performingNetworkRequest: CurrentValueSubject<Bool, Never> = .init(false)
 
     /// Active navigation bar trailing item.
     /// Defaults to a disabled done button.
@@ -46,10 +42,6 @@ final class EditAddressFormViewModel: ObservableObject {
     func updateRemoteAddress(onFinish: @escaping (Bool) -> Void) {
         // TODO: perform network request
         // TODO: add success/failure notice
-
-        // To corroborate that the fields are getting updated
-        print("Address to update: \(fields)")
-
         performingNetworkRequest.send(true)
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
             self?.performingNetworkRequest.send(false)
@@ -85,7 +77,6 @@ private extension EditAddressFormViewModel {
             .assign(to: &$navigationTrailingItem)
     }
 }
-
 
 extension EditAddressFormViewModel {
     /// Type to hold values from all the form fields 
@@ -125,15 +116,15 @@ extension EditAddressFormViewModel {
         func toAddress() -> Address {
             Address(firstName: firstName,
                     lastName: lastName,
-                    company: company,
+                    company: company.isEmpty ? nil : company,
                     address1: address1,
-                    address2: address2,
+                    address2: address2.isEmpty ? nil : address2,
                     city: city,
                     state: state,
                     postcode: postcode,
                     country: country,
-                    phone: phone,
-                    email: email)
+                    phone: phone.isEmpty ? nil : phone,
+                    email: email.isEmpty ? nil : email)
         }
     }
 }

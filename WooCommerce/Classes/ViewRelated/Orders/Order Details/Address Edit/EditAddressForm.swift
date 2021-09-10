@@ -42,28 +42,28 @@ struct EditAddressForm: View {
                 VStack(spacing: 0) {
                     TitleAndTextFieldRow(title: Localization.firstNameField,
                                          placeholder: "",
-                                         text: $viewModel.firstName,
+                                         text: $viewModel.fields.firstName,
                                          symbol: nil,
                                          keyboardType: .default)
                     Divider()
                         .padding(.leading, Constants.dividerPadding)
                     TitleAndTextFieldRow(title: Localization.lastNameField,
                                          placeholder: "",
-                                         text: $viewModel.lastName,
+                                         text: $viewModel.fields.lastName,
                                          symbol: nil,
                                          keyboardType: .default)
                     Divider()
                         .padding(.leading, Constants.dividerPadding)
                     TitleAndTextFieldRow(title: Localization.emailField,
                                          placeholder: "",
-                                         text: $viewModel.email,
+                                         text: $viewModel.fields.email,
                                          symbol: nil,
                                          keyboardType: .emailAddress)
                     Divider()
                         .padding(.leading, Constants.dividerPadding)
                     TitleAndTextFieldRow(title: Localization.phoneField,
                                          placeholder: "",
-                                         text: $viewModel.phone,
+                                         text: $viewModel.fields.phone,
                                          symbol: nil,
                                          keyboardType: .phonePad)
                 }
@@ -76,35 +76,35 @@ struct EditAddressForm: View {
                     Group {
                         TitleAndTextFieldRow(title: Localization.companyField,
                                              placeholder: Localization.placeholderOptional,
-                                             text: $viewModel.company,
+                                             text: $viewModel.fields.company,
                                              symbol: nil,
                                              keyboardType: .default)
                         Divider()
                             .padding(.leading, Constants.dividerPadding)
                         TitleAndTextFieldRow(title: Localization.address1Field,
                                              placeholder: "",
-                                             text: $viewModel.address1,
+                                             text: $viewModel.fields.address1,
                                              symbol: nil,
                                              keyboardType: .default)
                         Divider()
                             .padding(.leading, Constants.dividerPadding)
                         TitleAndTextFieldRow(title: Localization.address2Field,
                                              placeholder: "Optional",
-                                             text: $viewModel.address2,
+                                             text: $viewModel.fields.address2,
                                              symbol: nil,
                                              keyboardType: .default)
                         Divider()
                             .padding(.leading, Constants.dividerPadding)
                         TitleAndTextFieldRow(title: Localization.cityField,
                                              placeholder: "",
-                                             text: $viewModel.city,
+                                             text: $viewModel.fields.city,
                                              symbol: nil,
                                              keyboardType: .default)
                         Divider()
                             .padding(.leading, Constants.dividerPadding)
                         TitleAndTextFieldRow(title: Localization.postcodeField,
                                              placeholder: "",
-                                             text: $viewModel.postcode,
+                                             text: $viewModel.fields.postcode,
                                              symbol: nil,
                                              keyboardType: .default)
                         Divider()

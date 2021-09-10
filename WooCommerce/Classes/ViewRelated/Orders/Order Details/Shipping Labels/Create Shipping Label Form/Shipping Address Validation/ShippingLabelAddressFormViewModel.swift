@@ -25,15 +25,16 @@ final class ShippingLabelAddressFormViewModel {
     private let stores: StoresManager
 
     /// Closure to notify the `ViewController` when the view model properties change.
+    /// Accepts optional index for row to be focused after reloading the table view.
     ///
-    var onChange: (() -> (Void))?
+    var onChange: ((_ focusedRowIndex: Int?) -> (Void))?
 
     /// Current `ViewModel` state.
     ///
     private var state: State = State() {
         didSet {
             updateSections()
-            onChange?()
+            onChange?(nil)
         }
     }
 
@@ -106,10 +107,14 @@ final class ShippingLabelAddressFormViewModel {
         case .state:
             address = address?.copy(state: newValue)
         case .country:
-            address = address?.copy(country: newValue)
+            address = address?.copy(country: newValue, state: "")
         default:
             return
         }
+
+        updateSections()
+        let index: Int? = sections.first?.rows.firstIndex(where: { $0 == row })
+        onChange?(index)
     }
 
     func updateSections() {

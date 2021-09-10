@@ -37,6 +37,17 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
         }
     }
 
+    /// Attributes of the package if validated.
+    ///
+    var validatedPackageAttributes: ShippingLabelPackageAttributes? {
+        guard validateTotalWeight(totalWeight) else {
+            return nil
+        }
+        return ShippingLabelPackageAttributes(packageID: selectedPackageID,
+                                              totalWeight: totalWeight,
+                                              productIDs: orderItems.map { $0.productOrVariationID })
+    }
+
     private let order: Order
     private let orderItems: [OrderItem]
     private let currency: String

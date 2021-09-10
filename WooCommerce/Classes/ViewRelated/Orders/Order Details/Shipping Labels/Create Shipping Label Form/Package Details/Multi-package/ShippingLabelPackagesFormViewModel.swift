@@ -9,6 +9,10 @@ import protocol Storage.StorageManagerType
 ///
 final class ShippingLabelPackagesFormViewModel: ObservableObject {
 
+    /// Completion callback
+    ///
+    typealias Completion = (_ selectedPackages: [ShippingLabelPackageAttributes]) -> Void
+
     var foundMultiplePackages: Bool {
         selectedPackages.count > 1
     }
@@ -17,12 +21,33 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
     ///
     @Published private(set) var itemViewModels: [ShippingLabelPackageItemViewModel] = []
 
+    /// Whether Done button on Package Details screen should be enabled.
+    ///
+    @Published private(set) var doneButtonEnabled: Bool = false
+
     private let order: Order
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private var resultsControllers: ShippingLabelPackageDetailsResultsControllers?
+    private let onCompletion: Completion
 
     private var cancellables: Set<AnyCancellable> = []
+
+    /// Validation states of all items.
+    ///
+    private var packagesValidation: [String: Bool] = [:] {
+        didSet {
+            configureDoneButton()
+        }
+    }
+
+    /// List of packages that are validated.
+    ///
+    private var validatedPackages: [ShippingLabelPackageAttributes] {
+        itemViewModels.compactMap {
+            $0.validatedPackageAttributes
+        }
+    }
 
     /// List of selected package with basic info.
     ///
@@ -39,6 +64,7 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
     init(order: Order,
          packagesResponse: ShippingLabelPackagesResponse?,
          selectedPackages: [ShippingLabelPackageAttributes],
+         onCompletion: @escaping Completion,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -47,6 +73,7 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.selectedPackages = selectedPackages
+        self.onCompletion = onCompletion
 
         configureResultsControllers()
         syncProducts()
@@ -55,9 +82,17 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
         configureItemViewModels(order: order, packageResponse: packagesResponse)
     }
 
+    func confirmPackageSelection() {
+        onCompletion(validatedPackages)
+    }
+}
+
+// MARK: - Helper methods
+//
+private extension ShippingLabelPackagesFormViewModel {
     /// If no initial packages was input, set up default package from last selected package ID and all order items.
     ///
-    private func configureDefaultPackage() {
+    func configureDefaultPackage() {
         guard selectedPackages.isEmpty,
               let selectedPackageID = resultsControllers?.accountSettings?.lastSelectedPackageID else {
             return
@@ -69,7 +104,7 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
 
     /// Set up item view models on change of products and product variations.
     ///
-    private func configureItemViewModels(order: Order, packageResponse: ShippingLabelPackagesResponse?) {
+    func configureItemViewModels(order: Order, packageResponse: ShippingLabelPackagesResponse?) {
         $selectedPackages.combineLatest($products, $productVariations)
             .map { selectedPackages, products, variations -> [ShippingLabelPackageItemViewModel] in
                 return selectedPackages.map { details in
@@ -87,13 +122,14 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
             }
             .sink { [weak self] viewModels in
                 self?.itemViewModels = viewModels
+                self?.observeItemViewModels()
             }
             .store(in: &cancellables)
     }
 
     /// Update selected packages when user switch any package.
     ///
-    private func switchPackage(currentID: String, newPackage: ShippingLabelPackageAttributes) {
+    func switchPackage(currentID: String, newPackage: ShippingLabelPackageAttributes) {
         selectedPackages = selectedPackages.map { package in
             if package.packageID == currentID {
                 return newPackage
@@ -103,7 +139,25 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
         }
     }
 
-    private func configureResultsControllers() {
+    /// Observe validation state of each package and save it by package ID.
+    ///
+    func observeItemViewModels() {
+        itemViewModels.forEach { item in
+            item.$isValidTotalWeight
+                .sink { [weak self] isValid in
+                    self?.packagesValidation[item.selectedPackageID] = isValid
+                }
+                .store(in: &cancellables)
+        }
+    }
+
+    /// Disable Done button if any of the package validation fails.
+    ///
+    func configureDoneButton() {
+        doneButtonEnabled = packagesValidation.first(where: { $0.value == false }) == nil
+    }
+
+    func configureResultsControllers() {
         resultsControllers = ShippingLabelPackageDetailsResultsControllers(siteID: order.siteID,
                                                                            orderItems: order.items,
                                                                            storageManager: storageManager,

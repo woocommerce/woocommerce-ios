@@ -6,7 +6,7 @@ final class ShippingLabelServicePackageListViewModel: ObservableObject {
 
     /// The packages response fetched from API
     ///
-    @Published var packagesResponse: ShippingLabelPackagesResponse?
+    @Published private var packagesResponse: ShippingLabelPackagesResponse?
 
     /// Service packages not yet activated on the store, organized by shipping provider
     ///

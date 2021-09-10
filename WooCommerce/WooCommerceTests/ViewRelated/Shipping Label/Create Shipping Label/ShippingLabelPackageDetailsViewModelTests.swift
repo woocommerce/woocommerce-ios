@@ -37,7 +37,9 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                                              packagesResponse: mockPackageResponse(),
                                                              selectedPackages: [],
                                                              formatter: currencyFormatter,
-                                                             storageManager: storageManager)
+                                                             storageManager: storageManager,
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.itemsRows.count, 0)
@@ -67,7 +69,9 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                                              selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
-                                                             weightUnit: "kg")
+                                                             weightUnit: "kg",
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
         XCTAssertEqual(viewModel.itemsRows.count, 0)
 
         // When
@@ -108,7 +112,9 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                                              formatter: currencyFormatter,
                                                              stores: stores,
                                                              storageManager: storageManager,
-                                                             weightUnit: "kg")
+                                                             weightUnit: "kg",
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
 
 
         XCTAssertNil(viewModel.selectedCustomPackage)
@@ -138,7 +144,9 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                                              formatter: currencyFormatter,
                                                              stores: stores,
                                                              storageManager: storageManager,
-                                                             weightUnit: "kg")
+                                                             weightUnit: "kg",
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
 
         XCTAssertNil(viewModel.selectedCustomPackage)
         XCTAssertNil(viewModel.selectedPredefinedPackage)
@@ -161,7 +169,9 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                                              formatter: currencyFormatter,
                                                              stores: stores,
                                                              storageManager: storageManager,
-                                                             weightUnit: "kg")
+                                                             weightUnit: "kg",
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
 
 
         // Then
@@ -179,7 +189,9 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                                              formatter: currencyFormatter,
                                                              stores: stores,
                                                              storageManager: storageManager,
-                                                             weightUnit: "kg")
+                                                             weightUnit: "kg",
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.selectedPackageID, "package-1")
@@ -199,7 +211,9 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                                              selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
-                                                             weightUnit: "kg")
+                                                             weightUnit: "kg",
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
 
         // When
         viewModel.selectedPackageID = "sample-package"
@@ -222,7 +236,9 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                                              selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
-                                                             weightUnit: "kg")
+                                                             weightUnit: "kg",
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
 
         // When
         viewModel.selectedPackageID = "sample-package"
@@ -278,7 +294,9 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                                              selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
-                                                             weightUnit: "kg")
+                                                             weightUnit: "kg",
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
         viewModel.didSelectPackage("Box")
         viewModel.confirmPackageSelection()
 
@@ -317,7 +335,9 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                                              selectedPackages: selectedPackages,
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
-                                                             weightUnit: "kg")
+                                                             weightUnit: "kg",
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
         XCTAssertEqual(viewModel.totalWeight, "30")
 
         // Then
@@ -343,7 +363,9 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                                              selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
-                                                             weightUnit: "kg")
+                                                             weightUnit: "kg",
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.totalWeight, "120.0")
@@ -370,7 +392,9 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                                              selectedPackages: selectedPackages,
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
-                                                             weightUnit: "kg")
+                                                             weightUnit: "kg",
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.totalWeight, "500")
@@ -397,7 +421,9 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                                              selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
-                                                             weightUnit: "kg")
+                                                             weightUnit: "kg",
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.totalWeight, "120.0")
@@ -428,34 +454,89 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                                                             formatter: currencyFormatter,
                                                                             stores: stores,
                                                                             storageManager: storageManager,
-                                                                            weightUnit: "kg")
+                                                                            weightUnit: "kg",
+                                                                            onPackageSyncCompletion: { _ in },
+                                                                            onPackageSaveCompletion: { _ in })
         let viewModelWithPackages = ShippingLabelPackageDetailsViewModel(order: order,
                                                                          packagesResponse: mockPackageResponse(),
                                                                          selectedPackages: [],
                                                                          formatter: currencyFormatter,
                                                                          stores: stores,
                                                                          storageManager: storageManager,
-                                                                         weightUnit: "kg")
+                                                                         weightUnit: "kg",
+                                                                         onPackageSyncCompletion: { _ in },
+                                                                         onPackageSaveCompletion: { _ in })
         let viewModelWithCustomPackages = ShippingLabelPackageDetailsViewModel(order: order,
                                                                                packagesResponse: mockPackageResponse(withCustom: true, withPredefined: false),
                                                                                selectedPackages: [],
                                                                                formatter: currencyFormatter,
                                                                                stores: stores,
                                                                                storageManager: storageManager,
-                                                                               weightUnit: "kg")
+                                                                               weightUnit: "kg",
+                                                                               onPackageSyncCompletion: { _ in },
+                                                                               onPackageSaveCompletion: { _ in })
         let viewModelWithPredefinedPackages = ShippingLabelPackageDetailsViewModel(order: order,
                                                                                packagesResponse: mockPackageResponse(withCustom: false, withPredefined: true),
                                                                                selectedPackages: [],
                                                                                formatter: currencyFormatter,
                                                                                stores: stores,
                                                                                storageManager: storageManager,
-                                                                               weightUnit: "kg")
+                                                                               weightUnit: "kg",
+                                                                               onPackageSyncCompletion: { _ in },
+                                                                               onPackageSaveCompletion: { _ in })
 
         // Then
         XCTAssertFalse(viewModelWithoutPackages.hasCustomOrPredefinedPackages)
         XCTAssertTrue(viewModelWithPackages.hasCustomOrPredefinedPackages)
         XCTAssertTrue(viewModelWithCustomPackages.hasCustomOrPredefinedPackages)
         XCTAssertTrue(viewModelWithPredefinedPackages.hasCustomOrPredefinedPackages)
+    }
+
+    func test_handleNewPackage_returns_updated_data_with_custom_package() {
+        // Given
+        let viewModel = ShippingLabelPackageDetailsViewModel(order: Order.fake(),
+                                                             packagesResponse: ShippingLabelPackagesResponse.fake(),
+                                                             selectedPackages: [],
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
+        let expectedCustomPackage = ShippingLabelCustomPackage(isUserDefined: true,
+                                                               title: "Box",
+                                                               isLetter: true,
+                                                               dimensions: "3 x 10 x 4",
+                                                               boxWeight: 10,
+                                                               maxWeight: 11)
+        let expectedPackagesResponse = ShippingLabelPackagesResponse.fake().copy(customPackages: [expectedCustomPackage])
+
+        // When
+        viewModel.handleNewPackage(expectedCustomPackage, nil, expectedPackagesResponse)
+
+        // Then
+        XCTAssertEqual(viewModel.packagesResponse, expectedPackagesResponse)
+        XCTAssertEqual(viewModel.selectedCustomPackage, expectedCustomPackage)
+    }
+
+    func test_handleNewPackage_returns_updated_data_with_service_package() {
+        // Given
+        let viewModel = ShippingLabelPackageDetailsViewModel(order: Order.fake(),
+                                                             packagesResponse: ShippingLabelPackagesResponse.fake(),
+                                                             selectedPackages: [],
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
+        let expectedPredefinedPackage = ShippingLabelPredefinedPackage(id: "package-1",
+                                                                       title: "Small",
+                                                                       isLetter: true,
+                                                                       dimensions: "3 x 4 x 5")
+        let expectedPredefinedOption = ShippingLabelPredefinedOption(title: "USPS",
+                                                                     providerID: "usps",
+                                                                     predefinedPackages: [expectedPredefinedPackage])
+        let expectedPackagesResponse = ShippingLabelPackagesResponse.fake().copy(predefinedOptions: [expectedPredefinedOption])
+
+        // When
+        viewModel.handleNewPackage(nil, expectedPredefinedPackage, expectedPackagesResponse)
+
+        // Then
+        XCTAssertEqual(viewModel.packagesResponse, expectedPackagesResponse)
+        XCTAssertEqual(viewModel.selectedPredefinedPackage, expectedPredefinedPackage)
     }
 }
 
@@ -505,14 +586,16 @@ private extension ShippingLabelPackageDetailsViewModelTests {
                                        boxWeight: 7,
                                        maxWeight: 10)]
 
-        let predefinedOptions = [ShippingLabelPredefinedOption(title: "USPS", predefinedPackages: [ShippingLabelPredefinedPackage(id: "package-1",
-                                                                                                                                  title: "Small",
-                                                                                                                                  isLetter: true,
-                                                                                                                                  dimensions: "3 x 4 x 5"),
-                                                                                                   ShippingLabelPredefinedPackage(id: "package-2",
-                                                                                                                                  title: "Big",
-                                                                                                                                  isLetter: true,
-                                                                                                                                  dimensions: "5 x 7 x 9")])]
+        let predefinedOptions = [ShippingLabelPredefinedOption(title: "USPS",
+                                                               providerID: "usps",
+                                                               predefinedPackages: [ShippingLabelPredefinedPackage(id: "package-1",
+                                                                                                                   title: "Small",
+                                                                                                                   isLetter: true,
+                                                                                                                   dimensions: "3 x 4 x 5"),
+                                                                                    ShippingLabelPredefinedPackage(id: "package-2",
+                                                                                                                   title: "Big",
+                                                                                                                   isLetter: true,
+                                                                                                                   dimensions: "5 x 7 x 9")])]
 
         let packagesResponse = ShippingLabelPackagesResponse(storeOptions: storeOptions,
                                                              customPackages: withCustom ? customPackages : [],

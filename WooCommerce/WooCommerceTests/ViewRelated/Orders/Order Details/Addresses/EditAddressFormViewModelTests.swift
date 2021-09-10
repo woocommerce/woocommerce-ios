@@ -1,11 +1,26 @@
 import XCTest
 import Yosemite
 import TestKit
+import Combine
 @testable import WooCommerce
 
 final class EditAddressFormViewModelTests: XCTestCase {
 
     let sampleSiteID: Int64 = 123
+
+    let testingStorage = MockStorageManager()
+
+    let testingStores = MockStoresManager(sessionManager: .testingInstance)
+
+    var subscriptions = Set<AnyCancellable>()
+
+    override func setUp() {
+        super.setUp()
+
+        testingStorage.reset()
+        testingStores.reset()
+        subscriptions.removeAll()
+    }
 
     func test_creating_with_address_prefills_fields_with_correct_data() {
         // Given
@@ -99,6 +114,53 @@ final class EditAddressFormViewModelTests: XCTestCase {
 
         // Then
         assertEqual(navigationItem, .done(enabled: false))
+    }
+
+    func test_starting_view_model_without_stored_countries_fetches_them_remotely() {
+        // Given
+        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: sampleAddress(), storageManager: testingStorage, stores: testingStores)
+
+        // When
+        let countriesFetched: Bool = waitFor { promise in
+            self.testingStores.whenReceivingAction(ofType: DataAction.self) { action in
+                switch action {
+                case .synchronizeCountries:
+                    promise(true)
+                }
+            }
+
+            viewModel.onLoadTrigger.send()
+        }
+
+        // Then
+        XCTAssertTrue(countriesFetched)
+    }
+
+    func test_syncing_countries_correctly_sets_showPlaceholders_properties() {
+        // Given
+        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: sampleAddress(), storageManager: testingStorage, stores: testingStores)
+        testingStores.whenReceivingAction(ofType: DataAction.self) { action in
+            switch action {
+            case .synchronizeCountries(_, let completion):
+                completion(.success([])) // Sending an empty because we don't really care about countries on this test.
+            }
+        }
+
+        // When
+        let showPlaceholdersStates: [Bool] = waitFor { promise in
+            viewModel.$showPlaceholders
+                .dropFirst() // Drop initial value
+                .collect(2)  // Expect two state changes
+                .sink { emittedValues in
+                    promise(emittedValues)
+                }
+                .store(in: &self.subscriptions)
+
+            viewModel.onLoadTrigger.send()
+        }
+
+        // Then
+        assertEqual(showPlaceholdersStates, [true, false]) // true: showPlaceholders, false: hide placeholders
     }
 }
 

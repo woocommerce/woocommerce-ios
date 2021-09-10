@@ -3,13 +3,17 @@ import Yosemite
 
 /// Command to be used to select a country when editing addresses.
 ///
-final class CountrySelectorCommand: ListSelectorCommand {
+final class CountrySelectorCommand: ObservableListSelectorCommand {
     typealias Model = Country
     typealias Cell = BasicTableViewCell
 
+    /// Original array of countries.
+    ///
+    private let countries: [Country]
+
     /// Data to display
     ///
-    let data: [Country]
+    @Published private(set) var data: [Country]
 
     /// Current selected country
     ///
@@ -19,7 +23,8 @@ final class CountrySelectorCommand: ListSelectorCommand {
     ///
     let navigationBarTitle: String? = ""
 
-    init(countries: [Country] = temporaryCountries(), selected: Country? = nil) {
+    init(countries: [Country], selected: Country? = nil) {
+        self.countries = countries
         self.data = countries
         self.selected = selected
     }
@@ -36,11 +41,13 @@ final class CountrySelectorCommand: ListSelectorCommand {
         cell.textLabel?.text = model.name
     }
 
-    // TESTING HELPER, WILL BE REMOVED LATER.
-    private static func temporaryCountries() -> [Country] {
-        return Locale.isoRegionCodes.map { regionCode in
-            let name = Locale.current.localizedString(forRegionCode: regionCode) ?? ""
-            return Country(code: regionCode, name: name, states: [])
+    /// Filter available countries that contains a given search term.
+    ///
+    func filterCountries(term: String) {
+        guard term.isNotEmpty else {
+            return data = countries
         }
+
+        data = countries.filter { $0.name.localizedCaseInsensitiveContains(term) }
     }
 }

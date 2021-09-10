@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents an Address Entity.
 ///
-public struct Address: Decodable, Equatable, GeneratedFakeable {
+public struct Address: Decodable, GeneratedFakeable {
     public let firstName: String
     public let lastName: String
     public let company: String?
@@ -69,8 +69,46 @@ public struct Address: Decodable, Equatable, GeneratedFakeable {
                   phone: phone,
                   email: email)
     }
+
+    public static var empty: Address {
+        self.init(firstName: "",
+                  lastName: "",
+                  company: nil,
+                  address1: "",
+                  address2: nil,
+                  city: "",
+                  state: "",
+                  postcode: "",
+                  country: "",
+                  phone: nil,
+                  email: nil)
+    }
 }
 
+extension Address: Equatable {
+    // custom implementation to handle empty strings and `nil` comparison
+    public static func ==(lhs: Address, rhs: Address) -> Bool {
+        return lhs.firstName == rhs.firstName &&
+            lhs.lastName == rhs.lastName &&
+            (lhs.company == rhs.company ||
+                lhs.company == nil && rhs.company?.isEmpty == true ||
+                lhs.company?.isEmpty == true && rhs.company == nil) &&
+            lhs.address1 == rhs.address1 &&
+            (lhs.address2 == rhs.address2 ||
+                lhs.address2 == nil && rhs.address2?.isEmpty == true ||
+                lhs.address2?.isEmpty == true && rhs.address2 == nil) &&
+            lhs.city == rhs.city &&
+            lhs.state == rhs.state &&
+            lhs.postcode == rhs.postcode &&
+            lhs.country == rhs.country &&
+            (lhs.phone == rhs.phone ||
+                lhs.phone == nil && rhs.phone?.isEmpty == true ||
+                lhs.phone?.isEmpty == true && rhs.phone == nil) &&
+            (lhs.email == rhs.email ||
+                lhs.email == nil && rhs.email?.isEmpty == true ||
+                lhs.email?.isEmpty == true && rhs.email == nil)
+    }
+}
 
 /// Defines all of the Address's CodingKeys.
 ///

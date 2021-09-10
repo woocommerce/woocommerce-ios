@@ -1,19 +1,13 @@
 import SwiftUI
-import Yosemite
 
 struct ShippingLabelServicePackageList: View {
     @Environment(\.presentationMode) var presentation
-    @StateObject var viewModel = ShippingLabelServicePackageListViewModel()
-    let packagesResponse: ShippingLabelPackagesResponse?
+    @ObservedObject var viewModel: ShippingLabelServicePackageListViewModel
     let geometry: GeometryProxy
 
     var body: some View {
         servicePackageListView
-            .onAppear(perform: {
-                viewModel.packagesResponse = packagesResponse
-            })
             .background(Color(.listBackground))
-            .minimalNavigationBarBackButton()
     }
 
     @ViewBuilder
@@ -61,14 +55,6 @@ struct ShippingLabelServicePackageList: View {
             }
         }
         .ignoresSafeArea(.container, edges: .horizontal)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing, content: {
-                Button(Localization.doneButton, action: {
-                    // TODO-4744: Add selected service package and go back to package list
-                    presentation.wrappedValue.dismiss()
-                })
-            })
-        }
     }
 }
 
@@ -77,7 +63,6 @@ private extension ShippingLabelServicePackageList {
         static let servicePackageHeader = NSLocalizedString(
             "Set up the package you'll be using to ship your products. We'll save it for future orders.",
             comment: "Header text on Add New Service Package screen in Shipping Label flow")
-        static let doneButton = NSLocalizedString("Done", comment: "Done navigation button in the Service Package screen in Shipping Label flow")
         static let emptyStateMessage = NSLocalizedString(
             "All available packages have been activated",
             comment: "Message displayed when there are no packages to display in the Add New Service Package screen in Shipping Label flow")
@@ -92,13 +77,15 @@ private extension ShippingLabelServicePackageList {
 struct ShippingLabelServicePackageList_Previews: PreviewProvider {
     static var previews: some View {
         let packagesResponse = ShippingLabelPackageDetailsViewModel.samplePackageDetails()
+        let populatedViewModel = ShippingLabelServicePackageListViewModel(packagesResponse: packagesResponse)
+        let emptyViewModel = ShippingLabelServicePackageListViewModel(packagesResponse: nil)
 
         GeometryReader { geometry in
-            ShippingLabelServicePackageList(packagesResponse: packagesResponse, geometry: geometry)
+            ShippingLabelServicePackageList(viewModel: populatedViewModel, geometry: geometry)
         }
 
         GeometryReader { geometry in
-            ShippingLabelServicePackageList(packagesResponse: nil, geometry: geometry)
+            ShippingLabelServicePackageList(viewModel: emptyViewModel, geometry: geometry)
                 .previewDisplayName("Empty State")
         }
     }

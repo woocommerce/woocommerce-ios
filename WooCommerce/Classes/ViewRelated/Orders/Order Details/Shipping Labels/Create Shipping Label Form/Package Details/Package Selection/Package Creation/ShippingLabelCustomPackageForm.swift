@@ -3,15 +3,10 @@ import Combine
 
 /// Form to create a new custom package to use with shipping labels.
 struct ShippingLabelCustomPackageForm: View {
-    private let safeAreaInsets: EdgeInsets
-
     @Environment(\.presentationMode) var presentation
-    @StateObject private var viewModel = ShippingLabelCustomPackageFormViewModel()
+    @ObservedObject var viewModel: ShippingLabelCustomPackageFormViewModel
     @State private var showingPackageTypes = false
-
-    init(safeAreaInsets: EdgeInsets) {
-        self.safeAreaInsets = safeAreaInsets
-    }
+    let safeAreaInsets: EdgeInsets
 
     var body: some View {
         VStack(spacing: Constants.verticalSpacing) {
@@ -136,18 +131,6 @@ struct ShippingLabelCustomPackageForm: View {
         }
         .background(Color(.listBackground))
         .ignoresSafeArea(.container, edges: .horizontal)
-        .minimalNavigationBarBackButton()
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing, content: {
-                Button(Localization.doneButton, action: {
-                    viewModel.validatePackage()
-                    if viewModel.validatedCustomPackage != nil {
-                        // TODO-4743: Save custom package and add it to package list
-                        presentation.wrappedValue.dismiss()
-                    }
-                })
-            })
-        }
     }
 }
 
@@ -196,7 +179,6 @@ private extension ShippingLabelCustomPackageForm {
         static let inputInvalidError = NSLocalizedString(
             "Invalid value",
             comment: "Error for invalid package details on the Add New Custom Package screen in Shipping Label flow")
-        static let doneButton = NSLocalizedString("Done", comment: "Done navigation button in the Custom Package screen in Shipping Label flow")
     }
 
     enum Constants {
@@ -207,7 +189,9 @@ private extension ShippingLabelCustomPackageForm {
 
 struct ShippingLabelAddCustomPackage_Previews: PreviewProvider {
     static var previews: some View {
-        ShippingLabelCustomPackageForm(safeAreaInsets: .zero)
+        let viewModel = ShippingLabelCustomPackageFormViewModel()
+
+        ShippingLabelCustomPackageForm(viewModel: viewModel, safeAreaInsets: .zero)
             .previewLayout(.sizeThatFits)
     }
 }

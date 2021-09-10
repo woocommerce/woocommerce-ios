@@ -10,6 +10,7 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
     private var readerUpdateAvailable: Bool
     private var failReaderUpdateCheck: Bool
     private var failUpdate: Bool
+    private var failConnection: Bool
 
     init(connectedReaders: [CardReader],
          discoveredReaders: [CardReader],
@@ -17,7 +18,8 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
          failDiscovery: Bool = false,
          readerUpdateAvailable: Bool = false,
          failReaderUpdateCheck: Bool = false,
-         failUpdate: Bool = false
+         failUpdate: Bool = false,
+         failConnection: Bool = false
     ) {
         self.connectedReaders = connectedReaders
         self.discoveredReaders = discoveredReaders
@@ -25,6 +27,7 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
         self.readerUpdateAvailable = readerUpdateAvailable
         self.failReaderUpdateCheck = failReaderUpdateCheck
         self.failUpdate = failUpdate
+        self.failConnection = failConnection
         super.init(sessionManager: sessionManager)
     }
 
@@ -50,6 +53,10 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
             }
             onReaderDiscovered(discoveredReaders)
         case .connect(let reader, let onCompletion):
+            guard !failConnection else {
+                onCompletion(Result.failure(MockErrors.connectionFailure))
+                return
+            }
             onCompletion(Result.success(reader))
         case .cancelCardReaderDiscovery(let onCompletion):
             onCompletion(Result.success(()))
@@ -81,6 +88,7 @@ extension MockCardPresentPaymentsStoresManager {
         case discoveryFailure
         case readerUpdateCheckFailure
         case readerUpdateFailure
+        case connectionFailure
     }
 }
 

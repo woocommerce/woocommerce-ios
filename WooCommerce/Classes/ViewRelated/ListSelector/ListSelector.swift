@@ -1,12 +1,16 @@
 import SwiftUI
 
+/// Protocol required to re-render the view when the command updates any of it's content.
+///
+protocol ObservableListSelectorCommand: ListSelectorCommand, ObservableObject {}
+
 /// `SwiftUI` wrapper for `ListSelectorViewController`
 ///
-struct ListSelector<Command: ListSelectorCommand>: UIViewControllerRepresentable {
+struct ListSelector<Command: ObservableListSelectorCommand>: UIViewControllerRepresentable {
 
     /// Command that defines cell style and provide data.
     ///
-    let command: Command
+    @ObservedObject var command: Command
 
     /// Table view style.
     ///
@@ -25,6 +29,6 @@ struct ListSelector<Command: ListSelectorCommand>: UIViewControllerRepresentable
     /// Update the `ViewController` from parent `SwiftUI` view
     ///
     func updateUIViewController(_ uiViewController: ListSelectorViewController<Command, Command.Model, Command.Cell>, context: Context) {
-        // No op
+        uiViewController.reloadData()
     }
 }

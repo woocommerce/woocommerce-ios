@@ -9,17 +9,29 @@ enum MockCardReaderSettingsAlertsMode {
     case connectFoundReader
     case connectFirstFound
     case cancelFoundSeveral
+    case continueSearchingAfterConnectionFailure
+    case cancelSearchingAfterConnectionFailure
 }
 
 final class MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
     private var mode: MockCardReaderSettingsAlertsMode
+    private var didPresentFoundReader: Bool
 
     init(mode: MockCardReaderSettingsAlertsMode) {
         self.mode = mode
+        self.didPresentFoundReader = false
     }
     func scanningForReader(from: UIViewController, cancel: @escaping () -> Void) {
         if mode == .cancelScanning {
             cancel()
+        }
+
+        if mode == .continueSearchingAfterConnectionFailure {
+            /// If we've already presented a found reader once before, cancel this second search
+            ///
+            if didPresentFoundReader {
+                cancel()
+            }
         }
     }
 
@@ -30,11 +42,13 @@ final class MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
     }
 
     func foundReader(from: UIViewController, name: String, connect: @escaping () -> Void, continueSearch: @escaping () -> Void) {
+        didPresentFoundReader = true
+
         if mode == .continueSearching {
             continueSearch()
         }
 
-        if mode == .connectFoundReader {
+        if mode == .connectFoundReader || mode == .cancelSearchingAfterConnectionFailure || mode == .continueSearchingAfterConnectionFailure {
             connect()
         }
     }
@@ -51,6 +65,16 @@ final class MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         }
 
         if mode == .cancelFoundSeveral {
+            cancelSearch()
+        }
+    }
+
+    func connectingFailed(from: UIViewController, continueSearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
+        if mode == .continueSearchingAfterConnectionFailure {
+            continueSearch()
+        }
+
+        if mode == .cancelSearchingAfterConnectionFailure {
             cancelSearch()
         }
     }

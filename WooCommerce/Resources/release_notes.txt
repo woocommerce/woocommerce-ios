@@ -1,3 +1,6 @@
-This release contains a handful of minor improvements to make your experience smoother. In order details, some third-party extensions were not logically showing product metadata. We’ve made some changes to improve the display of those product details. We now are hiding the refund order button when the total amount is zero.
+- [***] Merchants can now purchase shipping labels and declare customs forms for international orders. [https://github.com/woocommerce/woocommerce-ios/pull/4896]
+- [**] Merchants can now edit customer provided notes from orders. [https://github.com/woocommerce/woocommerce-ios/pull/4893]
+- [*] Fix empty states sometimes not centered vertically [https://github.com/woocommerce/woocommerce-ios/pull/4890]
+- [*] Fix error syncing products due to decoding failure of regular_price in product variations. [https://github.com/woocommerce/woocommerce-ios/pull/4901]
+- [*] Hide bottom bar on shipping label purchase form. [https://github.com/woocommerce/woocommerce-ios/pull/4902]
 
-This update also includes several enhancements to the shipping label feature using the WooCommerce Shipping & Tax Extension. We value all of your feedback on this newer feature!

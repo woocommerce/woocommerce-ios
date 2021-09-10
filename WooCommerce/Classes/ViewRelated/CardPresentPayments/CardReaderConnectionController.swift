@@ -308,7 +308,17 @@ private extension CardReaderConnectionController {
             return
         }
 
-        /// If we enter this state and we already have found readers
+        /// If we enter this state and another reader was discovered while the
+        /// "Do you want to connect to" modal was being displayed and if that reader
+        /// is known and the merchant tapped keep searching on the first
+        /// (unknown) reader, auto-connect to that known reader
+        if self.getFoundKnownReaders().isNotEmpty {
+            self.candidateReader = self.getFoundKnownReaders().first
+            self.state = .connectToReader
+            return
+        }
+
+        /// If we already have found readers
         /// display the list view if so enabled, or...
         ///
         if showSeveralFoundReaders {
@@ -325,7 +335,8 @@ private extension CardReaderConnectionController {
             return
         }
 
-        /// Otherwise, display the "scanning" modal
+        /// If all else fails, display the "scanning" modal and
+        /// stay in this state
         ///
         alerts.scanningForReader(from: from, cancel: {
             self.state = .cancel

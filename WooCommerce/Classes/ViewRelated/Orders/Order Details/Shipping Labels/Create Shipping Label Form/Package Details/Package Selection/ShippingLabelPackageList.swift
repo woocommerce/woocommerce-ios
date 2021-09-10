@@ -70,6 +70,7 @@ struct ShippingLabelPackageList: View {
                                      title: Localization.createPackageButton,
                                      image: .plusImage,
                                      onButtonTapped: {
+                                        ServiceLocator.analytics.track(.shippingLabelAddPackageTapped)
                                         self.isShowingNewPackageCreation = true
                                      })
                 }

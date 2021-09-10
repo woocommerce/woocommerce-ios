@@ -21,6 +21,10 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
     ///
     @Published private(set) var itemsRows: [ItemToFulfillRow] = []
 
+    /// Whether totalWeight is valid
+    ///
+    @Published private(set) var isValidTotalWeight: Bool = false
+
     /// The title of the selected package, if any.
     ///
     var selectedPackageName: String {
@@ -95,6 +99,10 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
         $totalWeight
             .map { $0 != String(calculatedWeight) }
             .assign(to: &$isPackageWeightEdited)
+        
+        $totalWeight
+            .map { [weak self] in self?.validateTotalWeight($0) ?? false }
+            .assign(to: &$isValidTotalWeight)
     }
 }
 
@@ -182,6 +190,12 @@ private extension ShippingLabelPackageItemViewModel {
             tempTotalWeight += selectedPackage.boxWeight
         }
         return tempTotalWeight
+    }
+
+    /// Validate that total weight is a valid floating point number.
+    ///
+    private func validateTotalWeight(_ totalWeight: String) -> Bool {
+        totalWeight.isNotEmpty && Double(totalWeight) != 0 && Double(totalWeight) != nil
     }
 }
 

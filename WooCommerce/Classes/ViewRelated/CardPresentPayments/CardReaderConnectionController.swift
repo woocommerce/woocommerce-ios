@@ -33,6 +33,8 @@ final class CardReaderConnectionController {
         ///
         case connectToReader
 
+        case updating(progress: Float)
+
         /// User cancelled search/connecting to a card reader. The completion passed to `searchAndConnect`
         /// will be called with a `success` `Bool` `False` result. The view controller passed to `searchAndConnect` will be
         /// dereferenced and the state set to `idle`
@@ -122,6 +124,8 @@ private extension CardReaderConnectionController {
             onCancel()
         case .connectToReader:
             onConnectToReader()
+        case .updating(progress: let progress):
+            onUpdateProgress(progress: progress)
         case .failed(let error):
             onFailed(error: error)
         }
@@ -276,6 +280,17 @@ private extension CardReaderConnectionController {
             })
     }
 
+    func onUpdateProgress(progress: Float) {
+        guard let from = fromController else {
+            return
+        }
+        alerts.updateProgress(from: from,
+                              progress: progress) {
+            // TODO: not sure if this is the right action when canceling
+            self.returnSuccess(connected: false)
+        }
+    }
+
     /// End the search for a card reader
     ///
     func onCancel() {
@@ -300,6 +315,21 @@ private extension CardReaderConnectionController {
         guard let from = fromController else {
             return
         }
+
+        ServiceLocator.cardReaderService
+            .softwareUpdateEvents.sink { event in
+                switch event {
+                case .started:
+                    self.state = .updating(progress: 0)
+                case .installing(progress: let progress):
+                    self.state = .updating(progress: progress)
+                case .completed:
+                    self.state = .updating(progress: 1)
+                default:
+                    break
+                }
+            }
+            .store(in: &subscriptions)
 
         let action = CardPresentPaymentAction.connect(reader: candidateReader) { result in
             switch result {

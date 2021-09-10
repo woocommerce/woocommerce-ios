@@ -32,6 +32,16 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         )
     }
 
+    func updateProgress(from: UIViewController, progress: Float, cancel: @escaping () -> Void) {
+        setViewModelAndPresent(
+            from: from,
+            viewModel: CardPresentModalUpdateProgress(
+                progress: progress,
+                cancel: cancel
+            )
+        )
+    }
+
     func dismiss() {
         modalController?.dismiss(animated: true, completion: { [weak self] in
             self?.modalController = nil

@@ -23,7 +23,7 @@ public protocol CardReaderService {
     var readerEvents: AnyPublisher<CardReaderEvent, Never> { get }
 
     /// The Publisher that emits software update progress. Values are in the range [0, 1]
-    var softwareUpdateEvents: AnyPublisher<Float, Never> { get }
+    var softwareUpdateEvents: AnyPublisher<CardReaderSoftwareUpdateState, Never> { get }
 
     // MARK: - Commands
 

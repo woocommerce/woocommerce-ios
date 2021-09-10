@@ -16,7 +16,7 @@ final class CardPresentModalUpdateProgress: CardPresentPaymentsModalViewModel {
 
     var topSubtitle: String? = nil
 
-    let image: UIImage = .cardReaderUpdateProgressBackground
+    let image: UIImage
 
     let primaryButtonTitle: String? = nil
 
@@ -33,6 +33,7 @@ final class CardPresentModalUpdateProgress: CardPresentPaymentsModalViewModel {
         self.cancelAction = cancel
 
         topTitle = progress == 1 ? Localization.titleComplete : Localization.title
+        image = .softwareUpdateProgress(progress: CGFloat(progress))
         bottomTitle = String(format: Localization.percentComplete, 100 * progress)
 
         if cancel != nil {

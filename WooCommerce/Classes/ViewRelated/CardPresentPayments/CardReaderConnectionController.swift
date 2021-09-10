@@ -353,7 +353,15 @@ private extension CardReaderConnectionController {
                 let properties = reader.batteryLevel
                     .map { ["battery_level": $0] }
                 ServiceLocator.analytics.track(.cardReaderConnectionSuccess, withProperties: properties)
-                self.returnSuccess(connected: true)
+                // If we were installing a software update, introduce a small delay so the user can
+                // actually see a success message showing the installation was complete
+                if case .updating(progress: 1) = self.state {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+                        self.returnSuccess(connected: true)
+                    }
+                } else {
+                    self.returnSuccess(connected: true)
+                }
             case .failure(let error):
                 ServiceLocator.analytics.track(.cardReaderConnectionFailed, withError: error)
                 self.returnFailure(error: error)

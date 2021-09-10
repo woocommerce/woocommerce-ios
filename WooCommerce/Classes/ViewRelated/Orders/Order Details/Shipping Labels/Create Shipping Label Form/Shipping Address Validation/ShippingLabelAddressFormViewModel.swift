@@ -181,21 +181,36 @@ extension ShippingLabelAddressFormViewModel {
         case invalidPhoneNumber
     }
 
-    /// Validates phone number for origin address.
+    /// Validates phone number for the address.
     /// This take into account whether phone is not empty,
     /// has length 10 with additional "1" area code for US.
-    ///
-    /// Note: This logic may need to be updated if there is a need for validating other cases.
     ///
     private var isPhoneNumberValid: Bool {
         guard let phone = address?.phone, phone.isNotEmpty else {
             return false
+        }
+        guard address?.country == "US" else {
+            return true
         }
         if phone.hasPrefix("1") {
             return phone.count == 11
         } else {
             return phone.count == 10
         }
+    }
+
+    private var phoneValidationError: ValidationError? {
+        guard let addressToBeValidated = address else {
+            return nil
+        }
+        if phoneNumberRequired {
+            if addressToBeValidated.phone.isEmpty {
+                return .missingPhoneNumber
+            } else if !isPhoneNumberValid {
+                return .invalidPhoneNumber
+            }
+        }
+        return nil
     }
 
     private func validateAddressLocally() -> [ValidationError] {
@@ -220,12 +235,8 @@ extension ShippingLabelAddressFormViewModel {
             if addressToBeValidated.country.isEmpty {
                 errors.append(.country)
             }
-            if phoneNumberRequired {
-                if addressToBeValidated.phone.isEmpty {
-                    errors.append(.missingPhoneNumber)
-                } else if !isPhoneNumberValid {
-                    errors.append(.invalidPhoneNumber)
-                }
+            if let error = phoneValidationError {
+                errors.append(error)
             }
         }
 

@@ -57,29 +57,8 @@ extension EditAddressFormViewModel {
         case done(enabled: Bool)
         case loading
     }
-}
 
-private extension EditAddressFormViewModel {
-    func updateFieldsWithOriginalAddress() {
-        fields.update(from: originalAddress)
-    }
-
-    /// Calculates what navigation trailing item should be shown depending on our internal state.
-    ///
-    func bindNavigationTrailingItemPublisher() {
-        Publishers.CombineLatest($fields, performingNetworkRequest)
-            .map { [originalAddress] fields, performingNetworkRequest -> NavigationItem in
-                guard !performingNetworkRequest else {
-                    return .loading
-                }
-                return .done(enabled: originalAddress != fields.toAddress())
-            }
-            .assign(to: &$navigationTrailingItem)
-    }
-}
-
-extension EditAddressFormViewModel {
-    /// Type to hold values from all the form fields 
+    /// Type to hold values from all the form fields
     ///
     struct FormFields {
         // MARK: User Fields
@@ -126,5 +105,24 @@ extension EditAddressFormViewModel {
                     phone: phone.isEmpty ? nil : phone,
                     email: email.isEmpty ? nil : email)
         }
+    }
+}
+
+private extension EditAddressFormViewModel {
+    func updateFieldsWithOriginalAddress() {
+        fields.update(from: originalAddress)
+    }
+
+    /// Calculates what navigation trailing item should be shown depending on our internal state.
+    ///
+    func bindNavigationTrailingItemPublisher() {
+        Publishers.CombineLatest($fields, performingNetworkRequest)
+            .map { [originalAddress] fields, performingNetworkRequest -> NavigationItem in
+                guard !performingNetworkRequest else {
+                    return .loading
+                }
+                return .done(enabled: originalAddress != fields.toAddress())
+            }
+            .assign(to: &$navigationTrailingItem)
     }
 }

@@ -15,6 +15,7 @@ class ShippingLabelAddNewPackageViewModelTests: XCTestCase {
                                                             onCompletion: {_, _, _ in })
 
         // Given a validated custom package
+        viewModel.customPackageVM.packageType = .letter
         viewModel.customPackageVM.packageName = "Test Package"
         viewModel.customPackageVM.packageHeight = "1"
         viewModel.customPackageVM.packageWidth = "1"
@@ -37,6 +38,12 @@ class ShippingLabelAddNewPackageViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNil(viewModel.customPackageVM.validatedCustomPackage)
+        XCTAssertEqual(viewModel.customPackageVM.packageType, .box)
+        XCTAssertEqual(viewModel.customPackageVM.packageName, "")
+        XCTAssertEqual(viewModel.customPackageVM.packageHeight, "")
+        XCTAssertEqual(viewModel.customPackageVM.packageWidth, "")
+        XCTAssertEqual(viewModel.customPackageVM.packageLength, "")
+        XCTAssertEqual(viewModel.customPackageVM.emptyPackageWeight, "")
     }
 
     func test_activateServicePackage_resets_child_view_models_on_success() {

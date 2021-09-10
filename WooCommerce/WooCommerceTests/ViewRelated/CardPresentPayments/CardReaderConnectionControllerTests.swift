@@ -172,11 +172,11 @@ class CardReaderConnectionControllerTests: XCTestCase {
         // Given
         let expectation = self.expectation(description: #function)
 
-        let discoveredReader = MockCardReader.bbposChipper2XBT()
+        let discoveredReaders = [MockCardReader.bbposChipper2XBT()]
 
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [],
-            discoveredReader: discoveredReader,
+            discoveredReaders: discoveredReaders,
             sessionManager: SessionManager.testingInstance,
             failConnection: true
         )
@@ -241,11 +241,11 @@ class CardReaderConnectionControllerTests: XCTestCase {
         // Given
         let expectation = self.expectation(description: #function)
 
-        let discoveredReader = MockCardReader.bbposChipper2XBT()
+        let discoveredReaders = [MockCardReader.bbposChipper2XBT()]
 
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [],
-            discoveredReader: discoveredReader,
+            discoveredReaders: discoveredReaders,
             sessionManager: SessionManager.testingInstance,
             failConnection: true
 	)

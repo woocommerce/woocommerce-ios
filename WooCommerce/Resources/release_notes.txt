@@ -1,6 +1,5 @@
-- [***] Merchants can now purchase shipping labels and declare customs forms for international orders. [https://github.com/woocommerce/woocommerce-ios/pull/4896]
-- [**] Merchants can now edit customer provided notes from orders. [https://github.com/woocommerce/woocommerce-ios/pull/4893]
-- [*] Fix empty states sometimes not centered vertically [https://github.com/woocommerce/woocommerce-ios/pull/4890]
-- [*] Fix error syncing products due to decoding failure of regular_price in product variations. [https://github.com/woocommerce/woocommerce-ios/pull/4901]
-- [*] Hide bottom bar on shipping label purchase form. [https://github.com/woocommerce/woocommerce-ios/pull/4902]
+Hurray! USA-based merchants using the WooCommerce Shipping & Tax Extension rejoice! You can now create and print shipping labels for your customers’ shipments to countries outside the USA.
 
+Did your customer leave some notes for you when they placed their order? You’ll find that you can now edit those notes in the app.
+
+Please continue to send us all of your feedback about the app – we welcome it!

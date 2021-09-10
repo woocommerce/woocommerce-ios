@@ -99,7 +99,7 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
         $totalWeight
             .map { $0 != String(calculatedWeight) }
             .assign(to: &$isPackageWeightEdited)
-        
+
         $totalWeight
             .map { [weak self] in self?.validateTotalWeight($0) ?? false }
             .assign(to: &$isValidTotalWeight)

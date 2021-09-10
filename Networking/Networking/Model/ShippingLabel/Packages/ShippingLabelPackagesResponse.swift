@@ -67,7 +67,7 @@ extension ShippingLabelPackagesResponse: Decodable {
 
                 if !activatedPredefinedPackages.isEmpty {
                     let titleOption: String = providerValueDict?["title"] as? String ?? ""
-                    let option = ShippingLabelPredefinedOption(title: titleOption, predefinedPackages: activatedPredefinedPackages)
+                    let option = ShippingLabelPredefinedOption(title: titleOption, providerID: key, predefinedPackages: activatedPredefinedPackages)
                     predefinedOptions.append(option)
                 }
 
@@ -75,7 +75,7 @@ extension ShippingLabelPackagesResponse: Decodable {
 
                 if !unactivatedPredefinedPackages.isEmpty {
                     let titleOption: String = providerValueDict?["title"] as? String ?? ""
-                    let option = ShippingLabelPredefinedOption(title: titleOption, predefinedPackages: unactivatedPredefinedPackages)
+                    let option = ShippingLabelPredefinedOption(title: titleOption, providerID: key, predefinedPackages: unactivatedPredefinedPackages)
                     unactivatedPredefinedOptions.append(option)
                 }
             })

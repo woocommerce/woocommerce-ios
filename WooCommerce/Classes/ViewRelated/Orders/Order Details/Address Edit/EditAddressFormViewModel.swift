@@ -1,4 +1,6 @@
 import Yosemite
+import Storage
+import Combine
 
 final class EditAddressFormViewModel: ObservableObject {
 
@@ -6,15 +8,51 @@ final class EditAddressFormViewModel: ObservableObject {
     ///
     private let siteID: Int64
 
-    init(siteID: Int64, address: Address?) {
+    /// ResultsController for stored countries.
+    ///
+    private lazy var countriesResultsController: ResultsController<StorageCountry> = {
+        let countriesDescriptor = NSSortDescriptor(key: "name", ascending: true)
+        return ResultsController<StorageCountry>(storageManager: storageManager, sortedBy: [countriesDescriptor])
+    }()
+
+    /// Trigger to sync countries.
+    ///
+    private let syncCountriesTrigger = PassthroughSubject<Void, Never>()
+
+    /// Storage to fetch countries
+    ///
+    private let storageManager: StorageManagerType
+
+    /// Stores to sync countries
+    ///
+    private let stores: StoresManager
+
+    /// Store for publishers subscriptions
+    ///
+    private var subscriptions = Set<AnyCancellable>()
+
+
+    init(siteID: Int64, address: Address?, storageManager: StorageManagerType = ServiceLocator.storageManager, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.originalAddress = address ?? .empty
+        self.storageManager = storageManager
+        self.stores = stores
         updateFieldsWithOriginalAddress()
+
+        // Listen only to the first emitted event.
+        onLoadTrigger.first().sink {
+            self.bindSyncTrigger()
+            self.fetchStoredCountriesAndTriggerSyncIfNeeded()
+        }.store(in: &subscriptions)
     }
 
     /// Original `Address` model.
     ///
     private let originalAddress: Address
+
+    /// Trigger to perform any one time setups.
+    ///
+    let onLoadTrigger: PassthroughSubject<Void, Never> = PassthroughSubject()
 
     // MARK: User Fields
 
@@ -33,6 +71,10 @@ final class EditAddressFormViewModel: ObservableObject {
 
     // MARK: Navigation and utility
 
+    /// Define if the view should show placeholders instead of the real elements.
+    ///
+    @Published private(set) var showPlaceholders: Bool = false
+
     /// Return `true` if the done button should be enabled.
     ///
     var isDoneButtonEnabled: Bool {
@@ -42,7 +84,7 @@ final class EditAddressFormViewModel: ObservableObject {
     /// Creates a view model to be used when selecting a country
     ///
     func createCountryViewModel() -> CountrySelectorViewModel {
-        CountrySelectorViewModel(siteID: siteID)
+        CountrySelectorViewModel(siteID: siteID, countries: countriesResultsController.fetchedObjects)
     }
 }
 
@@ -74,5 +116,51 @@ private extension EditAddressFormViewModel {
                 country: originalAddress.country, // TODO: replace with local value
                 phone: phone.isEmpty ? nil : phone,
                 email: email.isEmpty ? nil : email)
+    }
+
+
+    /// Fetches countries from storage, If there are no stored countries, trigger a sync request.
+    ///
+    func fetchStoredCountriesAndTriggerSyncIfNeeded() {
+        // Initial fetch
+        try? countriesResultsController.performFetch()
+
+        // Trigger a sync request if there are no countries.
+        guard !countriesResultsController.isEmpty else {
+            return syncCountriesTrigger.send()
+        }
+    }
+
+    /// Sync countries when requested. Defines the `showPlaceholderState` value depending if countries are being synced or not.
+    ///
+    func bindSyncTrigger() {
+        syncCountriesTrigger
+            .handleEvents(receiveOutput: { // Set `showPlaceholders` to `true` before initiating sync.
+                self.showPlaceholders = true // I could not find a way to assign this using combine operators. :-(
+            })
+            .map { // Sync countries
+                self.makeSyncCountriesFuture()
+                    .replaceError(with: ()) // TODO: Handle errors
+            }
+            .switchToLatest()
+            .map { _ in // Set `showPlaceholders` to `false` after sync is done.
+                false
+            }
+            .assign(to: &$showPlaceholders)
+    }
+
+    /// Creates a publisher that syncs countries into our storage layer.
+    ///
+    func makeSyncCountriesFuture() -> AnyPublisher<Void, Error> {
+        Future<Void, Error> { [weak self] promise in
+            guard let self = self else { return }
+
+            let action = DataAction.synchronizeCountries(siteID: self.siteID) { result in
+                let newResult = result.map { _ in } // Hides the result success type because we don't need it.
+                promise(newResult)
+            }
+            self.stores.dispatch(action)
+        }
+        .eraseToAnyPublisher()
     }
 }

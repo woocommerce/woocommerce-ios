@@ -147,10 +147,16 @@ private extension CardReaderConnectionController {
         }
     }
 
-    /// Updates the found readers list by removing any the user has asked
-    /// us to ignore (aka keep searching) during this discovery session
+    /// To avoid presenting the "Do you want to connect to reader XXXX" prompt
+    /// repeatedly for the same reader, keep track of readers the user has tapped
+    /// "Keep Searching" for.
+    ///
+    /// If we have switched to the list view, however, don't prune
     ///
     func pruneSkippedReaders() {
+        guard !showSeveralFoundReaders else {
+            return
+        }
         foundReaders = foundReaders.filter({!skippedReaderIDs.contains($0.id)})
     }
 
@@ -235,12 +241,12 @@ private extension CardReaderConnectionController {
                     return
                 }
 
-                /// First, update our copy of the foundReaders and prune
-                /// skipped ones
+                /// Update our copy of the foundReaders, evaluate if we should switch to the list view,
+                /// and prune skipped ones
                 ///
                 self.foundReaders = cardReaders
-                self.pruneSkippedReaders()
                 self.updateShowSeveralFoundReaders()
+                self.pruneSkippedReaders()
 
                 /// Note: This completion will be called repeatedly as the list of readers
                 /// discovered changes, so some care around state must be taken here.
@@ -250,15 +256,6 @@ private extension CardReaderConnectionController {
                 ///
                 if case .foundSeveralReaders = self.state {
                     self.alerts.updateSeveralReadersList(readerIDs: self.getFoundReaderIDs())
-                }
-
-                /// If we should switch from a single found reader prompt to several, do so now
-                ///
-                if case .foundReader = self.state {
-                    if self.showSeveralFoundReaders {
-                        self.state = .foundSeveralReaders
-                        return
-                    }
                 }
 
                 /// To avoid interrupting connecting to a known reader, ensure we are
@@ -278,7 +275,7 @@ private extension CardReaderConnectionController {
 
                 /// If we have found multiple readers, advance to foundMultipleReaders
                 ///
-                if self.foundReaders.containsMoreThanOne {
+                if self.showSeveralFoundReaders {
                     self.state = .foundSeveralReaders
                     return
                 }
@@ -311,15 +308,25 @@ private extension CardReaderConnectionController {
             return
         }
 
-        /// If another reader was found while the foundReader alert was showing
-        /// a reader, don't show the searching modal, but show the next reader in
-        /// onFoundReader right away
+        /// If we enter this state and we already have found readers
+        /// display the list view if so enabled, or...
+        ///
+        if showSeveralFoundReaders {
+            self.state = .foundSeveralReaders
+            return
+        }
+
+        /// Display the single view and ask the merchant if they'd
+        /// like to connect to it
+        ///
         if foundReaders.isNotEmpty {
             self.candidateReader = foundReaders.first
             self.state = .foundReader
             return
         }
 
+        /// Otherwise, display the "scanning" modal
+        ///
         alerts.scanningForReader(from: from, cancel: {
             self.state = .cancel
         })
@@ -388,10 +395,6 @@ private extension CardReaderConnectionController {
     /// Connect to the candidate card reader
     ///
     func onConnectToReader() {
-        /// We always work with the first reader in the foundReaders array
-        /// The array will have already had skipped (aka "keep searching") readers removed
-        /// by time we get here
-        ///
         guard let candidateReader = candidateReader else {
             return
         }

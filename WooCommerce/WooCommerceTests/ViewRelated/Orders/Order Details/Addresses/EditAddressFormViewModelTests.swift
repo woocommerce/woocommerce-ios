@@ -13,16 +13,16 @@ final class EditAddressFormViewModelTests: XCTestCase {
         let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address)
 
         // Then
-        XCTAssertEqual(viewModel.firstName, address.firstName)
-        XCTAssertEqual(viewModel.lastName, address.lastName)
-        XCTAssertEqual(viewModel.email, address.email ?? "")
-        XCTAssertEqual(viewModel.phone, address.phone ?? "")
+        XCTAssertEqual(viewModel.fields.firstName, address.firstName)
+        XCTAssertEqual(viewModel.fields.lastName, address.lastName)
+        XCTAssertEqual(viewModel.fields.email, address.email ?? "")
+        XCTAssertEqual(viewModel.fields.phone, address.phone ?? "")
 
-        XCTAssertEqual(viewModel.company, address.company ?? "")
-        XCTAssertEqual(viewModel.address1, address.address1)
-        XCTAssertEqual(viewModel.address2, address.address2 ?? "")
-        XCTAssertEqual(viewModel.city, address.city)
-        XCTAssertEqual(viewModel.postcode, address.postcode)
+        XCTAssertEqual(viewModel.fields.company, address.company ?? "")
+        XCTAssertEqual(viewModel.fields.address1, address.address1)
+        XCTAssertEqual(viewModel.fields.address2, address.address2 ?? "")
+        XCTAssertEqual(viewModel.fields.city, address.city)
+        XCTAssertEqual(viewModel.fields.postcode, address.postcode)
 
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
     }
@@ -34,7 +34,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
 
         // When
-        viewModel.firstName = "John"
+        viewModel.fields.firstName = "John"
 
         // Then
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: true))
@@ -47,10 +47,10 @@ final class EditAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
 
         // When
-        viewModel.firstName = "John"
-        viewModel.lastName = "Ipsum"
-        viewModel.firstName = "Johnny"
-        viewModel.lastName = "Appleseed"
+        viewModel.fields.firstName = "John"
+        viewModel.fields.lastName = "Ipsum"
+        viewModel.fields.firstName = "Johnny"
+        viewModel.fields.lastName = "Appleseed"
 
         // Then
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))

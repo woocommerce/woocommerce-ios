@@ -494,7 +494,11 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
 
     func test_handleNewPackage_returns_updated_data_with_custom_package() {
         // Given
-        let viewModel = ShippingLabelPackageDetailsViewModel(order: Order.fake(), packagesResponse: ShippingLabelPackagesResponse.fake(), selectedPackages: [])
+        let viewModel = ShippingLabelPackageDetailsViewModel(order: Order.fake(),
+                                                             packagesResponse: ShippingLabelPackagesResponse.fake(),
+                                                             selectedPackages: [],
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
         let expectedCustomPackage = ShippingLabelCustomPackage(isUserDefined: true,
                                                                title: "Box",
                                                                isLetter: true,
@@ -513,7 +517,11 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
 
     func test_handleNewPackage_returns_updated_data_with_service_package() {
         // Given
-        let viewModel = ShippingLabelPackageDetailsViewModel(order: Order.fake(), packagesResponse: ShippingLabelPackagesResponse.fake(), selectedPackages: [])
+        let viewModel = ShippingLabelPackageDetailsViewModel(order: Order.fake(),
+                                                             packagesResponse: ShippingLabelPackagesResponse.fake(),
+                                                             selectedPackages: [],
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
         let expectedPredefinedPackage = ShippingLabelPredefinedPackage(id: "package-1",
                                                                        title: "Small",
                                                                        isLetter: true,

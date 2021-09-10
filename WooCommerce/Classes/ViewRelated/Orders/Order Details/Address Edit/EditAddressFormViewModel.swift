@@ -10,9 +10,7 @@ final class EditAddressFormViewModel: ObservableObject {
     init(siteID: Int64, address: Address?) {
         self.siteID = siteID
         self.originalAddress = address ?? .empty
-        self.updatedAddress = address ?? .empty
         updateFieldsWithOriginalAddress()
-        bindAllFieldsToUpdatedAddressPublisher()
         bindNavigationTrailingItemPublisher()
     }
 
@@ -20,28 +18,15 @@ final class EditAddressFormViewModel: ObservableObject {
     ///
     private let originalAddress: Address
 
-    /// Updated `Address` model.
-    ///
-    @Published var updatedAddress: Address
-
     /// Tracks if a network request is being performed.
     ///
     private let performingNetworkRequest: CurrentValueSubject<Bool, Never> = .init(false)
 
-    // MARK: User Fields
+    // MARK: Form Fields
 
-    @Published var firstName: String = ""
-    @Published var lastName: String = ""
-    @Published var email: String = ""
-    @Published var phone: String = ""
-
-    // MARK: Address Fields
-
-    @Published var company: String = ""
-    @Published var address1: String = ""
-    @Published var address2: String = ""
-    @Published var city: String = ""
-    @Published var postcode: String = ""
+    /// Address form fields
+    ///
+    @Published var fields = FormFields()
 
     // MARK: Navigation and utility
 
@@ -61,6 +46,10 @@ final class EditAddressFormViewModel: ObservableObject {
     func updateRemoteAddress(onFinish: @escaping (Bool) -> Void) {
         // TODO: perform network request
         // TODO: add success/failure notice
+
+        // To corroborate that the fields are getting updated
+        print("Address to update: \(fields)")
+
         performingNetworkRequest.send(true)
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
             self?.performingNetworkRequest.send(false)
@@ -80,58 +69,71 @@ extension EditAddressFormViewModel {
 
 private extension EditAddressFormViewModel {
     func updateFieldsWithOriginalAddress() {
-        firstName = originalAddress.firstName
-        lastName = originalAddress.lastName
-        email = originalAddress.email ?? ""
-        phone = originalAddress.phone ?? ""
-
-        company = originalAddress.company ?? ""
-        address1 = originalAddress.address1
-        address2 = originalAddress.address2 ?? ""
-        city = originalAddress.city
-        postcode = originalAddress.postcode
-
-        // TODO: Add country and state init
-    }
-
-    /// Updates `updatedAddress` after any field change.
-    ///
-    func bindAllFieldsToUpdatedAddressPublisher() {
-        Publishers.CombineLatest3(Publishers.CombineLatest4($firstName,
-                                                            $lastName,
-                                                            $email,
-                                                            $phone),
-                                  Publishers.CombineLatest3($company,
-                                                            $address1,
-                                                            $address2),
-                                  Publishers.CombineLatest($city,
-                                                           $postcode))
-            .map { [originalAddress] firstSection, secondSection, thirdSection -> Address in
-                Address(firstName: firstSection.0,
-                        lastName: firstSection.1,
-                        company: secondSection.0,
-                        address1: secondSection.1,
-                        address2: secondSection.2,
-                        city: thirdSection.0,
-                        state: originalAddress.state, // TODO: bind to local value
-                        postcode: thirdSection.1,
-                        country: originalAddress.country, // TODO: bind to local value
-                        phone: firstSection.3,
-                        email: firstSection.2)
-            }
-            .assign(to: &$updatedAddress)
+        fields.update(from: originalAddress)
     }
 
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
     func bindNavigationTrailingItemPublisher() {
-        Publishers.CombineLatest($updatedAddress, performingNetworkRequest)
-            .map { [originalAddress] updatedAddress, performingNetworkRequest -> NavigationItem in
+        Publishers.CombineLatest($fields, performingNetworkRequest)
+            .map { [originalAddress] fields, performingNetworkRequest -> NavigationItem in
                 guard !performingNetworkRequest else {
                     return .loading
                 }
-                return .done(enabled: originalAddress != updatedAddress)
+                return .done(enabled: originalAddress != fields.toAddress())
             }
             .assign(to: &$navigationTrailingItem)
+    }
+}
+
+
+extension EditAddressFormViewModel {
+    /// Type to hold values from all the form fields 
+    ///
+    struct FormFields {
+        // MARK: User Fields
+        var firstName: String = ""
+        var lastName: String = ""
+        var email: String = ""
+        var phone: String = ""
+
+        // MARK: Address Fields
+
+        var company: String = ""
+        var address1: String = ""
+        var address2: String = ""
+        var city: String = ""
+        var postcode: String = ""
+        var country: String = ""
+        var state: String = ""
+
+        mutating func update(from address: Address) {
+            firstName = address.firstName
+            lastName = address.lastName
+            email = address.email ?? ""
+            phone = address.phone ?? ""
+
+            company = address.company ?? ""
+            address1 = address.address1
+            address2 = address.address2 ?? ""
+            city = address.city
+            postcode = address.postcode
+            country = address.country
+            state = address.state
+        }
+
+        func toAddress() -> Address {
+            Address(firstName: firstName,
+                    lastName: lastName,
+                    company: company,
+                    address1: address1,
+                    address2: address2,
+                    city: city,
+                    state: state,
+                    postcode: postcode,
+                    country: country,
+                    phone: phone,
+                    email: email)
+        }
     }
 }

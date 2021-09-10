@@ -6,14 +6,8 @@ struct ShippingLabelPackageDetails: View {
     @State private var showingPackageSelection = false
     @Environment(\.presentationMode) var presentation
 
-    /// Completion callback
-    ///
-    typealias Completion = (_ packagesResponse: ShippingLabelPackagesResponse?, _ selectedPackages: [ShippingLabelPackageAttributes]) -> Void
-    private let onCompletion: Completion
-
-    init(viewModel: ShippingLabelPackageDetailsViewModel, completion: @escaping Completion) {
+    init(viewModel: ShippingLabelPackageDetailsViewModel) {
         self.viewModel = viewModel
-        onCompletion = completion
         ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "packages_started"])
     }
 
@@ -82,7 +76,7 @@ struct ShippingLabelPackageDetails: View {
         .navigationBarItems(trailing: Button(action: {
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow,
                                            withProperties: ["state": "packages_selected"])
-            onCompletion(viewModel.packagesResponse, viewModel.selectedPackagesDetails)
+            viewModel.savePackageSelection()
             presentation.wrappedValue.dismiss()
         }, label: {
             Text(Localization.doneButton)
@@ -117,15 +111,15 @@ struct ShippingLabelPackageDetails_Previews: PreviewProvider {
 
         let viewModel = ShippingLabelPackageDetailsViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder(),
                                                              packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails(),
-                                                             selectedPackages: [])
+                                                             selectedPackages: [],
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
 
-        ShippingLabelPackageDetails(viewModel: viewModel, completion: { _, _ in
-        })
+        ShippingLabelPackageDetails(viewModel: viewModel)
         .environment(\.colorScheme, .light)
         .previewDisplayName("Light")
 
-        ShippingLabelPackageDetails(viewModel: viewModel, completion: { _, _ in
-        })
+        ShippingLabelPackageDetails(viewModel: viewModel)
         .environment(\.colorScheme, .dark)
         .previewDisplayName("Dark")
     }

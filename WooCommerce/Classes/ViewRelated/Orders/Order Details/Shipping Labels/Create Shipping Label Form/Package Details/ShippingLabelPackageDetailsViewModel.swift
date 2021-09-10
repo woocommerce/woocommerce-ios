@@ -100,13 +100,23 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
                                                                             self.handleNewPackage(customPackage, predefinedOption, packagesResponse)
                                                                           })
 
+    /// Completion callback after package details are synced from remote
+    ///
+    private let onPackageSyncCompletion: (_ packagesResponse: ShippingLabelPackagesResponse?) -> Void
+
+    /// Completion callback after selected package is saved
+    ///
+    private let onPackageSaveCompletion: (_ selectedPackages: [ShippingLabelPackageAttributes]) -> Void
+
     init(order: Order,
          packagesResponse: ShippingLabelPackagesResponse?,
          selectedPackages: [ShippingLabelPackageAttributes],
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
+         weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
+         onPackageSyncCompletion: @escaping (_ packagesResponse: ShippingLabelPackagesResponse?) -> Void,
+         onPackageSaveCompletion: @escaping (_ selectedPackages: [ShippingLabelPackageAttributes]) -> Void) {
         self.order = order
         self.orderItems = order.items
         self.currency = order.currency
@@ -116,6 +126,8 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         self.weightUnit = weightUnit
         self.packagesResponse = packagesResponse
         self.selectedPackageID = selectedPackages.first?.packageID // TODO-4599: fix this
+        self.onPackageSyncCompletion = onPackageSyncCompletion
+        self.onPackageSaveCompletion = onPackageSaveCompletion
 
         configureResultsControllers()
         setDefaultPackage()
@@ -278,6 +290,10 @@ extension ShippingLabelPackageDetailsViewModel {
     func isPackageDetailsDoneButtonEnabled() -> Bool {
         return !selectedPackageID.isNilOrEmpty && totalWeight.isNotEmpty && Double(totalWeight) != 0 && Double(totalWeight) != nil
     }
+
+    func savePackageSelection() {
+        onPackageSaveCompletion(selectedPackagesDetails)
+    }
 }
 
 // MARK: - Package Selection
@@ -356,6 +372,8 @@ extension ShippingLabelPackageDetailsViewModel {
         else if let servicePackage = servicePackage {
             selectPredefinedPackage(servicePackage.id)
         }
+
+        onPackageSyncCompletion(packagesResponse)
     }
 }
 

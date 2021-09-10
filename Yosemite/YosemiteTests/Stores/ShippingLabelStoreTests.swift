@@ -514,7 +514,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
+        let result: Result<Bool, PackageCreationError> = waitFor { promise in
             let action = ShippingLabelAction.createPackage(siteID: self.sampleSiteID, customPackage: self.sampleShippingLabelCustomPackage()) { result in
                 promise(result)
             }
@@ -534,7 +534,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
+        let result: Result<Bool, PackageCreationError> = waitFor { promise in
             let action = ShippingLabelAction.createPackage(siteID: self.sampleSiteID, customPackage: self.sampleShippingLabelCustomPackage()) { result in
                 promise(result)
             }
@@ -542,8 +542,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         }
 
         // Then
-        let error = try XCTUnwrap(result.failure)
-        XCTAssertEqual(error as? NetworkError, expectedError)
+        XCTAssertTrue(result.isFailure)
     }
 
     // MARK: `loadCarriersAndRates`

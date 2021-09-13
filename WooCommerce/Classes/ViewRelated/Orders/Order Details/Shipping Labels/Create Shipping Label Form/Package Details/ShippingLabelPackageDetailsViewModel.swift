@@ -93,7 +93,20 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         return customPackages.count > 0
     }
 
-    lazy var addNewPackageViewModel: ShippingLabelAddNewPackageViewModel = ShippingLabelAddNewPackageViewModel(packagesResponse: packagesResponse)
+    lazy var addNewPackageViewModel = ShippingLabelAddNewPackageViewModel(siteID: order.siteID,
+                                                                          packagesResponse: packagesResponse,
+                                                                          onCompletion: { [weak self] (customPackage, predefinedOption, packagesResponse) in
+                                                                            guard let self = self else { return }
+                                                                            self.handleNewPackage(customPackage, predefinedOption, packagesResponse)
+                                                                          })
+
+    /// Completion callback after package details are synced from remote
+    ///
+    private let onPackageSyncCompletion: (_ packagesResponse: ShippingLabelPackagesResponse?) -> Void
+
+    /// Completion callback after selected package is saved
+    ///
+    private let onPackageSaveCompletion: (_ selectedPackages: [ShippingLabelPackageAttributes]) -> Void
 
     init(order: Order,
          packagesResponse: ShippingLabelPackagesResponse?,
@@ -101,7 +114,9 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
+         weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
+         onPackageSyncCompletion: @escaping (_ packagesResponse: ShippingLabelPackagesResponse?) -> Void,
+         onPackageSaveCompletion: @escaping (_ selectedPackages: [ShippingLabelPackageAttributes]) -> Void) {
         self.order = order
         self.orderItems = order.items
         self.currency = order.currency
@@ -111,6 +126,8 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         self.weightUnit = weightUnit
         self.packagesResponse = packagesResponse
         self.selectedPackageID = selectedPackages.first?.packageID // TODO-4599: fix this
+        self.onPackageSyncCompletion = onPackageSyncCompletion
+        self.onPackageSaveCompletion = onPackageSaveCompletion
 
         configureResultsControllers()
         setDefaultPackage()
@@ -273,6 +290,10 @@ extension ShippingLabelPackageDetailsViewModel {
     func isPackageDetailsDoneButtonEnabled() -> Bool {
         return !selectedPackageID.isNilOrEmpty && totalWeight.isNotEmpty && Double(totalWeight) != 0 && Double(totalWeight) != nil
     }
+
+    func savePackageSelection() {
+        onPackageSaveCompletion(selectedPackagesDetails)
+    }
 }
 
 // MARK: - Package Selection
@@ -332,6 +353,27 @@ extension ShippingLabelPackageDetailsViewModel {
         }
         didSelectPackage(selectedPackageID)
         confirmPackageSelection()
+    }
+
+    /// Selects a newly created custom package or newly activated service package and adds it to the package list
+    ///
+    func handleNewPackage(_ customPackage: ShippingLabelCustomPackage?,
+                          _ servicePackage: ShippingLabelPredefinedPackage?,
+                          _ packagesResponse: ShippingLabelPackagesResponse?) {
+        guard let packagesResponse = packagesResponse else {
+            return
+        }
+
+        self.packagesResponse = packagesResponse
+
+        if let customPackage = customPackage {
+            selectCustomPackage(customPackage.title)
+        }
+        else if let servicePackage = servicePackage {
+            selectPredefinedPackage(servicePackage.id)
+        }
+
+        onPackageSyncCompletion(packagesResponse)
     }
 }
 
@@ -538,6 +580,7 @@ extension ShippingLabelPackageDetailsViewModel {
                                                                  isLetter: false,
                                                                  dimensions: "28.57 x 22.22 x 15.24")]
         let predefinedOption1 = ShippingLabelPredefinedOption(title: "USPS Priority Mail Flat Rate Boxes",
+                                                              providerID: "usps",
                                                               predefinedPackages: predefinedPackages1)
 
         let predefinedPackages2 = [ShippingLabelPredefinedPackage(id: "LargePaddedPouch",
@@ -545,6 +588,7 @@ extension ShippingLabelPackageDetailsViewModel {
                                                                   isLetter: true,
                                                                   dimensions: "30.22 x 35.56 x 2.54")]
         let predefinedOption2 = ShippingLabelPredefinedOption(title: "DHL Express",
+                                                              providerID: "dhlexpress",
                                                               predefinedPackages: predefinedPackages2)
 
         return [predefinedOption1, predefinedOption2]

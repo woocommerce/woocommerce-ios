@@ -20,6 +20,10 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         setViewModelAndPresent(from: from, viewModel: connectingToReader())
     }
 
+    func connectingFailed(from: UIViewController, continueSearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
+        setViewModelAndPresent(from: from, viewModel: connectingFailed(continueSearch: continueSearch, cancelSearch: cancelSearch))
+    }
+
     func foundReader(from: UIViewController,
                      name: String,
                      connect: @escaping () -> Void,
@@ -55,6 +59,10 @@ private extension CardReaderSettingsAlerts {
 
     func connectingToReader() -> CardPresentPaymentsModalViewModel {
         CardPresentModalConnectingToReader()
+    }
+
+    func connectingFailed(continueSearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalConnectingFailed(continueSearch: continueSearch, cancelSearch: cancelSearch)
     }
 
     func foundReader(name: String, connect: @escaping () -> Void, continueSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {

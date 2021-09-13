@@ -9,7 +9,7 @@ final class CountrySelectorCommand: ObservableListSelectorCommand {
 
     /// Original array of countries.
     ///
-    private var countries: [Country]
+    private let countries: [Country]
 
     /// Data to display
     ///
@@ -39,13 +39,6 @@ final class CountrySelectorCommand: ObservableListSelectorCommand {
 
     func configureCell(cell: BasicTableViewCell, model: Country) {
         cell.textLabel?.text = model.name
-    }
-
-    /// Resets countries data.
-    ///
-    func resetCountries(_ countries: [Country]) {
-        self.countries = countries
-        self.data = countries
     }
 
     /// Filter available countries that contains a given search term.

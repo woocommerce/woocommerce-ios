@@ -1,4 +1,5 @@
 import SwiftUI
+import Shimmer
 
 protocol FilterListSelectorViewModelable: ObservableObject {
 

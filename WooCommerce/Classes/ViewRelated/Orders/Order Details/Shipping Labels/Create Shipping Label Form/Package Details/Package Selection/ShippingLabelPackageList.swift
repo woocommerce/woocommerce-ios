@@ -70,6 +70,7 @@ struct ShippingLabelPackageList: View {
                                      title: Localization.createPackageButton,
                                      image: .plusImage,
                                      onButtonTapped: {
+                                        ServiceLocator.analytics.track(.shippingLabelAddPackageTapped)
                                         self.isShowingNewPackageCreation = true
                                      })
                 }
@@ -96,7 +97,9 @@ struct ShippingLabelPackageList_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ShippingLabelPackageDetailsViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder(),
                                                              packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails(),
-                                                             selectedPackages: [])
+                                                             selectedPackages: [],
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
 
         ShippingLabelPackageList(viewModel: viewModel)
     }

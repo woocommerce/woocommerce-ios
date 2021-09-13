@@ -200,6 +200,10 @@ final class ShippingLabelFormViewModel {
         }
     }
 
+    func handleNewPackagesResponse(packagesResponse: ShippingLabelPackagesResponse?) {
+        self.packagesResponse = packagesResponse
+    }
+
     func handlePackageDetailsValueChanges(details: [ShippingLabelPackageAttributes]) {
         self.selectedPackagesDetails = details
 

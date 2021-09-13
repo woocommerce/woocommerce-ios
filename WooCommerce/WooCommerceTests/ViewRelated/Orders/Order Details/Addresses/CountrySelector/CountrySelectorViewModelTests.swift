@@ -6,18 +6,14 @@ import TestKit
 final class CountrySelectorViewModelTests: XCTestCase {
 
     let sampleSiteID: Int64 = 123
-    let testingStorage = MockStorageManager()
 
     override func setUp () {
         super.setUp()
-
-        testingStorage.reset()
-        testingStorage.insertSampleCountries(readOnlyCountries: Self.sampleCountries)
     }
 
     func test_filter_countries_return_expected_results() {
         // Given
-        let viewModel = CountrySelectorViewModel(siteID: sampleSiteID, storageManager: testingStorage)
+        let viewModel = CountrySelectorViewModel(siteID: sampleSiteID, countries: Self.sampleCountries)
 
         // When
         viewModel.searchTerm = "Co"
@@ -42,7 +38,7 @@ final class CountrySelectorViewModelTests: XCTestCase {
 
     func test_filter_countries_with_uppercase_letters_return_expected_results() {
         // Given
-        let viewModel = CountrySelectorViewModel(siteID: sampleSiteID, storageManager: testingStorage)
+        let viewModel = CountrySelectorViewModel(siteID: sampleSiteID, countries: Self.sampleCountries)
 
         // When
         viewModel.searchTerm = "CO"
@@ -67,7 +63,7 @@ final class CountrySelectorViewModelTests: XCTestCase {
 
     func test_cleaning_search_terms_return_all_countries() {
         // Given
-        let viewModel = CountrySelectorViewModel(siteID: sampleSiteID, storageManager: testingStorage)
+        let viewModel = CountrySelectorViewModel(siteID: sampleSiteID, countries: Self.sampleCountries)
         let totalNumberOfCountries = viewModel.command.data.count
 
         // When
@@ -78,28 +74,6 @@ final class CountrySelectorViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.command.data.count, totalNumberOfCountries)
     }
-
-    func test_starting_view_model_without_stored_countries_fetches_them_remotely() {
-        // Given
-        testingStorage.reset()
-        let testingStores = MockStoresManager(sessionManager: .testingInstance)
-
-
-        // When
-        let countriesFetched: Bool = waitFor { promise in
-            testingStores.whenReceivingAction(ofType: DataAction.self) { action in
-                switch action {
-                case .synchronizeCountries:
-                    promise(true)
-                }
-            }
-
-            _ = CountrySelectorViewModel(siteID: self.sampleSiteID, storageManager: self.testingStorage, stores: testingStores)
-        }
-
-        // Then
-        XCTAssertTrue(countriesFetched)
-    }
 }
 
 // MARK: Helpers
@@ -108,6 +82,8 @@ private extension CountrySelectorViewModelTests {
         return Locale.isoRegionCodes.map { regionCode in
             let name = Locale.current.localizedString(forRegionCode: regionCode) ?? ""
             return Country(code: regionCode, name: name, states: [])
+        }.sorted { a, b in
+            a.name <= b.name
         }
     }()
 }

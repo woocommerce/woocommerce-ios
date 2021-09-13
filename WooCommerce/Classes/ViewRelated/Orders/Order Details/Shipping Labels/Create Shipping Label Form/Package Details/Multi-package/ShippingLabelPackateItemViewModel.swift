@@ -11,7 +11,7 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
 
     @Published var totalWeight: String = ""
 
-    /// The items rows observed by the main view `ShippingLabelPackageDetails`
+    /// The items rows observed by the main view `ShippingLabelPackageItem`
     ///
     @Published private(set) var itemsRows: [ItemToFulfillRow] = []
 

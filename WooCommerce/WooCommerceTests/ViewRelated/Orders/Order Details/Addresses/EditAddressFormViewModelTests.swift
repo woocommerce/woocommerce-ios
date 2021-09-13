@@ -24,8 +24,13 @@ final class EditAddressFormViewModelTests: XCTestCase {
 
     func test_creating_with_address_prefills_fields_with_correct_data() {
         // Given
+        testingStorage.insertSampleCountries(readOnlyCountries: Self.sampleCountries)
+
         let address = sampleAddress()
-        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address)
+        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address, storageManager: testingStorage)
+
+        // When
+        viewModel.onLoadTrigger.send()
 
         // Then
         XCTAssertEqual(viewModel.fields.firstName, address.firstName)
@@ -38,6 +43,10 @@ final class EditAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.fields.address2, address.address2 ?? "")
         XCTAssertEqual(viewModel.fields.city, address.city)
         XCTAssertEqual(viewModel.fields.postcode, address.postcode)
+        XCTAssertEqual(viewModel.fields.state, address.state)
+
+        let countryName = Self.sampleCountries.first { $0.code == address.country }?.name
+        XCTAssertEqual(viewModel.fields.country, countryName)
 
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
     }
@@ -49,6 +58,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
 
         // When
+        viewModel.onLoadTrigger.send()
         viewModel.fields.firstName = "John"
 
         // Then
@@ -62,6 +72,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
 
         // When
+        viewModel.onLoadTrigger.send()
         viewModel.fields.firstName = "John"
         viewModel.fields.lastName = "Ipsum"
         viewModel.fields.firstName = "Johnny"
@@ -75,6 +86,9 @@ final class EditAddressFormViewModelTests: XCTestCase {
         // Given
         let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: nil)
 
+        // When
+        viewModel.onLoadTrigger.send()
+
         // Then
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
     }
@@ -83,6 +97,9 @@ final class EditAddressFormViewModelTests: XCTestCase {
         // Given
         let address = sampleAddressWithEmptyNullableFields()
         let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address)
+
+        // When
+        viewModel.onLoadTrigger.send()
 
         // Then
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
@@ -94,6 +111,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
         let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address)
 
         // When
+        viewModel.onLoadTrigger.send()
         viewModel.updateRemoteAddress { _ in }
 
         // Then
@@ -106,6 +124,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
         let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address)
 
         // When
+        viewModel.onLoadTrigger.send()
         let navigationItem = waitFor { promise in
             viewModel.updateRemoteAddress { _ in
                 promise(viewModel.navigationTrailingItem)
@@ -162,6 +181,24 @@ final class EditAddressFormViewModelTests: XCTestCase {
         // Then
         assertEqual(showPlaceholdersStates, [true, false]) // true: showPlaceholders, false: hide placeholders
     }
+
+    func test_selecting_country_updates_country_field() {
+        // Given
+        testingStorage.insertSampleCountries(readOnlyCountries: Self.sampleCountries)
+        let newCountry = Self.sampleCountries[0]
+
+        let address = sampleAddress()
+        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address, storageManager: testingStorage)
+        viewModel.onLoadTrigger.send()
+
+        // When
+        let countryViewModel = viewModel.createCountryViewModel()
+        let viewController = ListSelectorViewController(command: countryViewModel.command, onDismiss: { _ in }) // Needed because of legacy UIKit ways
+        countryViewModel.command.handleSelectedChange(selected: newCountry, viewController: viewController)
+
+        // Then
+        XCTAssertEqual(viewModel.fields.country, newCountry.name)
+    }
 }
 
 private extension EditAddressFormViewModelTests {
@@ -192,4 +229,15 @@ private extension EditAddressFormViewModelTests {
                        phone: "",
                        email: "")
     }
+}
+
+private extension EditAddressFormViewModelTests {
+    static let sampleCountries: [Country] = {
+        return Locale.isoRegionCodes.map { regionCode in
+            let name = Locale.current.localizedString(forRegionCode: regionCode) ?? ""
+            return Country(code: regionCode, name: name, states: [])
+        }.sorted { a, b in
+            a.name <= b.name
+        }
+    }()
 }

@@ -2,23 +2,23 @@ import XCTest
 import Yosemite
 import TestKit
 import Combine
+import struct SwiftUI.Binding
 @testable import WooCommerce
 
 final class CountrySelectorViewModelTests: XCTestCase {
 
-    let selectedSubject = CurrentValueSubject<Country?, Never>(nil)
     var subscriptions = Set<AnyCancellable>()
 
     override func setUp () {
         super.setUp()
 
-        selectedSubject.value = nil
         subscriptions.removeAll()
     }
 
     func test_filter_countries_return_expected_results() {
         // Given
-        let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: selectedSubject)
+        let binding = Binding<Country?>(get: { nil }, set: { _ in })
+        let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
 
         // When
         viewModel.searchTerm = "Co"
@@ -43,7 +43,8 @@ final class CountrySelectorViewModelTests: XCTestCase {
 
     func test_filter_countries_with_uppercase_letters_return_expected_results() {
         // Given
-        let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: selectedSubject)
+        let binding = Binding<Country?>(get: { nil }, set: { _ in })
+        let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
 
         // When
         viewModel.searchTerm = "CO"
@@ -68,7 +69,8 @@ final class CountrySelectorViewModelTests: XCTestCase {
 
     func test_cleaning_search_terms_return_all_countries() {
         // Given
-        let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: selectedSubject)
+        let binding = Binding<Country?>(get: { nil }, set: { _ in })
+        let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
         let totalNumberOfCountries = viewModel.command.data.count
 
         // When
@@ -82,27 +84,28 @@ final class CountrySelectorViewModelTests: XCTestCase {
 
     func test_providing_a_selected_country_is_reflected_on_command() {
         // Given
-        let country = Self.sampleCountries[0]
-        selectedSubject.value = country
+        let binding = Binding<Country?>(get: { Self.sampleCountries[0] }, set: { _ in })
 
         // When
-        let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: selectedSubject)
+        let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
 
         // Then
-        XCTAssertEqual(viewModel.command.selected, country)
+        XCTAssertEqual(viewModel.command.selected, binding.wrappedValue)
     }
 
-    func test_selecting_country_via_command_updates_subject() {
+    func test_selecting_country_via_command_updates_binding() {
         // Given
-        let country = Self.sampleCountries[0]
-        let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: selectedSubject)
+        let expectedCountry = Self.sampleCountries[0]
+        var selectedCountry: Country? = nil
+        let binding = Binding<Country?>(get: { selectedCountry }, set: { selectedCountry = $0 })
+        let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
 
         // When
         let viewController = ListSelectorViewController(command: viewModel.command, onDismiss: { _ in }) // Needed because of legacy UIKit ways
-        viewModel.command.handleSelectedChange(selected: country, viewController: viewController)
+        viewModel.command.handleSelectedChange(selected: expectedCountry, viewController: viewController)
 
         // Then
-        XCTAssertEqual(selectedSubject.value, country)
+        XCTAssertEqual(selectedCountry, expectedCountry)
     }
 }
 

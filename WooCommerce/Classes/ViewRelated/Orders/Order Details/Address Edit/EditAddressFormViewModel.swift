@@ -1,9 +1,9 @@
 import Yosemite
 import Storage
 import Combine
+import struct SwiftUI.Binding
 
 final class EditAddressFormViewModel: ObservableObject {
-
     /// Current site ID
     ///
     private let siteID: Int64
@@ -41,10 +41,12 @@ final class EditAddressFormViewModel: ObservableObject {
         // Listen only to the first emitted event.
         onLoadTrigger.first().sink { [weak self] in
             guard let self = self else { return }
-            self.bindNavigationTrailingItemPublisher()
             self.bindSyncTrigger()
+            self.bindSelectedCountryIntoFields()
+            self.bindNavigationTrailingItemPublisher()
+
             self.fetchStoredCountriesAndTriggerSyncIfNeeded()
-            self.updateFieldsWithOriginalAddress()
+            self.setFieldsInitialValues()
         }.store(in: &subscriptions)
     }
 
@@ -52,13 +54,13 @@ final class EditAddressFormViewModel: ObservableObject {
     ///
     private let originalAddress: Address
 
+    /// Current selected country.
+    ///
+    @Published private var selectedCountry: Yosemite.Country?
+
     /// Address form fields
     ///
     @Published var fields = FormFields()
-
-    /// Tracks the current selected country
-    ///
-    private let selectedCountry = CurrentValueSubject<Yosemite.Country?, Never>(nil)
 
     /// Trigger to perform any one time setups.
     ///
@@ -80,7 +82,11 @@ final class EditAddressFormViewModel: ObservableObject {
     /// Creates a view model to be used when selecting a country
     ///
     func createCountryViewModel() -> CountrySelectorViewModel {
-        CountrySelectorViewModel(countries: countriesResultsController.fetchedObjects, selected: selectedCountry)
+        let selectedCountryBinding = Binding(
+            get: { self.selectedCountry },
+            set: { self.selectedCountry = $0 }
+        )
+        return CountrySelectorViewModel(countries: countriesResultsController.fetchedObjects, selected: selectedCountryBinding)
     }
 
     /// Update the address remotely and invoke a completion block when finished
@@ -123,7 +129,7 @@ extension EditAddressFormViewModel {
         var country: String = ""
         var state: String = ""
 
-        mutating func update(from address: Address, selectedCountry: Yosemite.Country?) {
+        mutating func update(with address: Address) {
             firstName = address.firstName
             lastName = address.lastName
             email = address.email ?? ""
@@ -134,11 +140,15 @@ extension EditAddressFormViewModel {
             address2 = address.address2 ?? ""
             city = address.city
             postcode = address.postcode
-            country = selectedCountry?.name ?? address.country
             state = address.state
         }
 
-        func toAddress(selectedCountry: Yosemite.Country?) -> Address {
+        mutating func update(with selectedCountry: Yosemite.Country?) {
+            country = selectedCountry?.name ?? country
+        }
+
+
+        func toAddress(selectedCountry: Yosemite.Country?) -> Yosemite.Address {
             Address(firstName: firstName,
                     lastName: lastName,
                     company: company.isEmpty ? nil : company,
@@ -155,28 +165,34 @@ extension EditAddressFormViewModel {
 }
 
 private extension EditAddressFormViewModel {
-    func updateFieldsWithOriginalAddress() {
-        updateSelectedCountryFromOriginalAddress()
-        fields.update(from: originalAddress, selectedCountry: selectedCountry.value)
-    }
-
-    /// Updates the `selectedCountry` subject by matching the address country code in our stored countries.
+    /// Set initial values from `originalAddress` using the stored countries to compute the current selected country.
     ///
-    func updateSelectedCountryFromOriginalAddress() {
-        selectedCountry.value = countriesResultsController.fetchedObjects.first { $0.code == originalAddress.country }
+    func setFieldsInitialValues() {
+        selectedCountry = countriesResultsController.fetchedObjects.first { $0.code == originalAddress.country }
+        fields.update(with: originalAddress)
     }
 
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
     func bindNavigationTrailingItemPublisher() {
-        Publishers.CombineLatest($fields, performingNetworkRequest)
-            .map { [originalAddress, selectedCountry] fields, performingNetworkRequest -> NavigationItem in
+        Publishers.CombineLatest3($fields, performingNetworkRequest, $selectedCountry)
+            .map { [originalAddress] fields, performingNetworkRequest, selectedCountry -> NavigationItem in
                 guard !performingNetworkRequest else {
                     return .loading
                 }
-                return .done(enabled: originalAddress != fields.toAddress(selectedCountry: selectedCountry.value))
+                return .done(enabled: originalAddress != fields.toAddress(selectedCountry: selectedCountry))
             }
             .assign(to: &$navigationTrailingItem)
+    }
+
+    /// Update published fields when the selected country is updated.
+    ///
+    func bindSelectedCountryIntoFields() {
+        $selectedCountry
+            .sink { [weak self] newCountry in
+                self?.fields.update(with: newCountry)
+            }
+            .store(in: &subscriptions)
     }
 
     /// Fetches countries from storage, If there are no stored countries, trigger a sync request.
@@ -185,9 +201,9 @@ private extension EditAddressFormViewModel {
         // Initial fetch
         try? countriesResultsController.performFetch()
 
-        // Updates the selected country when the data store changes.
+        // Updates the initial fields when/if the data store changes(after sync).
         countriesResultsController.onDidChangeContent = { [weak self] in
-            self?.updateSelectedCountryFromOriginalAddress()
+            self?.setFieldsInitialValues()
         }
 
         // Trigger a sync request if there are no countries.

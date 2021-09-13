@@ -213,6 +213,12 @@ private extension CardReaderSettingsConnectedViewController {
         cell.configure(style: .primary, title: Localization.updateButtonTitle, bottomSpacing: 0) {
             self.viewModel?.startCardReaderUpdate()
         }
+
+        let readerDisconnectInProgress = viewModel?.readerDisconnectInProgress ?? false
+        let readerUpdateInProgress = viewModel?.readerUpdateInProgress ?? false
+        cell.enableButton(!readerDisconnectInProgress && !readerUpdateInProgress)
+        cell.showActivityIndicator(readerUpdateInProgress)
+
         cell.selectionStyle = .none
         cell.backgroundColor = .clear
     }
@@ -222,6 +228,12 @@ private extension CardReaderSettingsConnectedViewController {
         cell.configure(style: style, title: Localization.disconnectButtonTitle) { [weak self] in
             self?.viewModel?.disconnectReader()
         }
+
+        let readerDisconnectInProgress = viewModel?.readerDisconnectInProgress ?? false
+        let readerUpdateInProgress = viewModel?.readerUpdateInProgress ?? false
+        cell.enableButton(!readerDisconnectInProgress && !readerUpdateInProgress)
+        cell.showActivityIndicator(readerDisconnectInProgress)
+
         cell.selectionStyle = .none
         cell.backgroundColor = .clear
     }

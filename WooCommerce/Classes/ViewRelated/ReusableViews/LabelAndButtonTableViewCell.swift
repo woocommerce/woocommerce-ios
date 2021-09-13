@@ -16,4 +16,15 @@ final class LabelAndButtonTableViewCell: UITableViewCell {
     @objc private func onButtonTap(_ button: UIButton) {
         self.didTapButton?()
     }
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        configureButton()
+    }
+}
+
+private extension LabelAndButtonTableViewCell {
+    func configureButton() {
+        button.tintColor = .accent
+    }
 }

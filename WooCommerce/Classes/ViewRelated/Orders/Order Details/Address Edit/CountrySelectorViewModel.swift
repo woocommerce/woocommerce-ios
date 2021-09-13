@@ -1,6 +1,7 @@
 import Combine
 import SwiftUI
 import Yosemite
+import struct SwiftUI.Binding
 import protocol Storage.StorageManagerType
 
 /// View Model for the `CountrySelector` view.
@@ -31,14 +32,8 @@ final class CountrySelectorViewModel: FilterListSelectorViewModelable, Observabl
     ///
     private var subscriptions = Set<AnyCancellable>()
 
-    init(countries: [Country], selected: CurrentValueSubject<Country?, Never>) {
-        self.command = CountrySelectorCommand(countries: countries, selected: selected.value)
-
-        /// Bind selected country to the provided selected subject
-        ///
-        command.$selected.sink { country in
-            selected.send(country)
-        }.store(in: &subscriptions)
+    init(countries: [Country], selected: Binding<Country?>) {
+        self.command = CountrySelectorCommand(countries: countries, selected: selected)
     }
 }
 

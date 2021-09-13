@@ -27,10 +27,6 @@ final class CountrySelectorViewModel: FilterListSelectorViewModelable, Observabl
     ///
     let filterPlaceholder = Localization.placeholder
 
-    /// Subscriptions store
-    ///
-    private var subscriptions = Set<AnyCancellable>()
-
     init(countries: [Country], selected: Binding<Country?>) {
         self.command = CountrySelectorCommand(countries: countries, selected: selected)
     }

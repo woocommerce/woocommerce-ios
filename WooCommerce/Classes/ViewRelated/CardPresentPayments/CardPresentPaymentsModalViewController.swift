@@ -11,7 +11,9 @@ final class CardPresentPaymentsModalViewController: UIViewController {
 
     @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var mainStackView: UIStackView!
+    @IBOutlet weak var bottomPaddingRegular: NSLayoutConstraint!
     @IBOutlet weak var primaryActionButtonsStackView: UIStackView!
+    @IBOutlet weak var buttonsSpacer: UIView!
     @IBOutlet private weak var topTitleLabel: UILabel!
     @IBOutlet private weak var topSubtitleLabel: UILabel!
     @IBOutlet private weak var bottomTitleLabel: UILabel!
@@ -79,8 +81,9 @@ final class CardPresentPaymentsModalViewController: UIViewController {
             widthConstraint.constant = Constants.modalWidth
         }
 
-        heightConstraint.priority = .defaultHigh
-        widthConstraint.priority = .defaultHigh
+        heightConstraint.priority = .required
+        widthConstraint.priority = .required
+        configureSpacer()
     }
 }
 
@@ -107,7 +110,7 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func styleTopTitle() {
-        topTitleLabel.applyHeadlineStyle()
+        topTitleLabel.applyBodyStyle()
     }
 
     func styleTopSubtitle() {
@@ -117,13 +120,14 @@ private extension CardPresentPaymentsModalViewController {
     func styleBottomLabels() {
         actionButtonsView.isHidden = true
         bottomLabels.isHidden = false
+        configureSpacer()
 
         styleBottomTitle()
         styleBottomSubtitle()
     }
 
     func styleBottomTitle() {
-        bottomTitleLabel.applyBodyStyle()
+        bottomTitleLabel.applySubheadlineStyle()
     }
 
     func styleBottomSubtitle() {
@@ -133,6 +137,7 @@ private extension CardPresentPaymentsModalViewController {
     func styleActionButtons() {
         actionButtonsView.isHidden = false
         bottomLabels.isHidden = true
+        configureSpacer()
 
         stylePrimaryButton()
         styleSecondaryButton()
@@ -236,6 +241,7 @@ private extension CardPresentPaymentsModalViewController {
 
     func hideActionButtonsView() {
         actionButtonsView.isHidden = true
+        configureSpacer()
     }
 
     func configurePrimaryButton() {
@@ -266,6 +272,30 @@ private extension CardPresentPaymentsModalViewController {
 
         auxiliaryButton.isHidden = false
         auxiliaryButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
+    }
+
+    func configureSpacer() {
+        let enabled = !shouldShowActionButtons()
+
+        if isRegularClassSize {
+            buttonsSpacer.isHidden = true
+            // For iPads, instead of a flexible spacer we expand the bottom margin with an extra 127px.
+            // This would be the space equivalents to the primary and secondary buttons being visible
+            // - 32px of spacing between buttons container and the rest of the content
+            // - 40px for the primary button
+            // - 15px of spacing between buttons
+            // - 40px for the secondary button
+            bottomPaddingRegular.constant = 42 + (enabled ? 127 : 0)
+        } else {
+            // For compact screens (iPhones, or iPad in split mode), we us a flexible spacer with a low
+            // content hugging priority to ensure it takes all the available space, leaving the rest of
+            // the visible items aligned to the top of the stack view
+            buttonsSpacer.isHidden = !enabled
+        }
+    }
+
+    var isRegularClassSize: Bool {
+        traitCollection.verticalSizeClass == .regular && traitCollection.horizontalSizeClass == .regular
     }
 }
 

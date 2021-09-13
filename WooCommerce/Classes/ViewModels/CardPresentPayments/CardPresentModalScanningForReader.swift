@@ -47,7 +47,7 @@ private extension CardPresentModalScanningForReader {
         )
 
         static let instruction = NSLocalizedString(
-            "Press the power button of your reader until you see a flashing blue light",
+            "To turn on your card reader, briefly press its power button. When powered on, the power LED will blink blue.",
             comment: "Label within the modal dialog that appears when searching for a card reader"
         )
 

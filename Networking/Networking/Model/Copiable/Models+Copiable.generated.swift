@@ -1006,6 +1006,27 @@ extension ShippingLabelCustomsForm.Item {
     }
 }
 
+extension ShippingLabelPackagesResponse {
+    public func copy(
+        storeOptions: CopiableProp<ShippingLabelStoreOptions> = .copy,
+        customPackages: CopiableProp<[ShippingLabelCustomPackage]> = .copy,
+        predefinedOptions: CopiableProp<[ShippingLabelPredefinedOption]> = .copy,
+        unactivatedPredefinedOptions: CopiableProp<[ShippingLabelPredefinedOption]> = .copy
+    ) -> ShippingLabelPackagesResponse {
+        let storeOptions = storeOptions ?? self.storeOptions
+        let customPackages = customPackages ?? self.customPackages
+        let predefinedOptions = predefinedOptions ?? self.predefinedOptions
+        let unactivatedPredefinedOptions = unactivatedPredefinedOptions ?? self.unactivatedPredefinedOptions
+
+        return ShippingLabelPackagesResponse(
+            storeOptions: storeOptions,
+            customPackages: customPackages,
+            predefinedOptions: predefinedOptions,
+            unactivatedPredefinedOptions: unactivatedPredefinedOptions
+        )
+    }
+}
+
 extension ShippingLabelPaymentMethod {
     public func copy(
         paymentMethodID: CopiableProp<Int64> = .copy,

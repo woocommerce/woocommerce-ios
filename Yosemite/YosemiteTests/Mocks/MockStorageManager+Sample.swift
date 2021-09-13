@@ -150,4 +150,16 @@ extension MockStorageManager {
 
         return newSetting
     }
+
+    /// Inserts new sample countries into the specified context.
+    ///
+    @discardableResult
+    func insertSampleCountries(readOnlyCountries: [Country]) -> [StorageCountry] {
+        let storedCountries: [StorageCountry] = readOnlyCountries.map { readOnlyCountry in
+            let newCountry = viewStorage.insertNewObject(ofType: StorageCountry.self)
+            newCountry.update(with: readOnlyCountry)
+            return newCountry
+        }
+        return storedCountries
+    }
 }

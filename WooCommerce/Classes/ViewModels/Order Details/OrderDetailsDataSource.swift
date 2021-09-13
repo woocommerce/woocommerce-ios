@@ -46,9 +46,11 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var isEligibleForCardPresentPayment: Bool {
         return isOrderAmountEligibleForCardPayment() &&
+            isOrderCurrencyEligibleForCardPayment() &&
             isOrderStatusEligibleForCardPayment() &&
             isOrderPaymentMethodEligibleForCardPayment() &&
-            hasCardPresentEligiblePaymentGatewayAccount()
+            hasCardPresentEligiblePaymentGatewayAccount() &&
+            !orderContainsAnySubscription()
     }
 
     /// Whether the button to create shipping labels should be visible.
@@ -1466,6 +1468,10 @@ private extension OrderDetailsDataSource {
         return !paymentViewModel.hasBeenPartiallyCharged
     }
 
+    func isOrderCurrencyEligibleForCardPayment() -> Bool {
+        CurrencySettings.CurrencyCode(rawValue: order.currency) == .USD
+    }
+
     func isOrderStatusEligibleForCardPayment() -> Bool {
         (order.status == .pending || order.status == .onHold || order.status == .processing)
     }
@@ -1477,6 +1483,12 @@ private extension OrderDetailsDataSource {
 
     func hasCardPresentEligiblePaymentGatewayAccount() -> Bool {
         resultsControllers.paymentGatewayAccounts.contains(where: \.isCardPresentEligible)
+    }
+
+    func orderContainsAnySubscription() -> Bool {
+        order.items.contains { item in
+            lookUpProduct(by: item.productID)?.productType == .subscription
+        }
     }
 }
 

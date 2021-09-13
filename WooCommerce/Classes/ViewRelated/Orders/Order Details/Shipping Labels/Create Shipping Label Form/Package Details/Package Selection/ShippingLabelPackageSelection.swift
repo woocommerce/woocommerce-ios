@@ -8,7 +8,7 @@ struct ShippingLabelPackageSelection: View {
             if viewModel.hasCustomOrPredefinedPackages {
                 ShippingLabelPackageList(viewModel: viewModel)
             } else {
-                ShippingLabelAddNewPackage(packagesResponse: viewModel.packagesResponse)
+                ShippingLabelAddNewPackage(viewModel: viewModel.addNewPackageViewModel)
             }
         }
     }
@@ -18,12 +18,14 @@ struct ShippingLabelPackageSelection_Previews: PreviewProvider {
     static var previews: some View {
         let viewModelWithPackages = ShippingLabelPackageDetailsViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder(),
                                                              packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails(),
-                                                             selectedPackageID: nil,
-                                                             totalWeight: nil)
+                                                             selectedPackages: [],
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
         let viewModelWithoutPackages = ShippingLabelPackageDetailsViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder(),
                                                              packagesResponse: nil,
-                                                             selectedPackageID: nil,
-                                                             totalWeight: nil)
+                                                             selectedPackages: [],
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
 
         ShippingLabelPackageSelection(viewModel: viewModelWithPackages)
 

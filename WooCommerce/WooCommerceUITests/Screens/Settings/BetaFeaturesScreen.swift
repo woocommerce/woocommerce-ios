@@ -21,7 +21,7 @@ class BetaFeaturesScreen: BaseScreen {
 
     @discardableResult
     func enableProducts() -> Self {
-        if enableProductsButton.switches.firstMatch.stringValue == "0" {
+        if enableProductsButton.switches.firstMatch.value as? String == "0" {
             enableProductsButton.tap()
         }
 

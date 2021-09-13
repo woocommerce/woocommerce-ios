@@ -69,7 +69,7 @@ final class OrderDetailsPaymentAlerts {
     }
 
     func error(error: Error, tryAgain: @escaping () -> Void) {
-        let viewModel = errorViewModel(amount: amount, error: error, tryAgain: tryAgain)
+        let viewModel = errorViewModel(error: error, tryAgain: tryAgain)
         presentViewModel(viewModel: viewModel)
     }
 
@@ -103,14 +103,14 @@ private extension OrderDetailsPaymentAlerts {
 
     func successViewModel(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         if MFMailComposeViewController.canSendMail() {
-            return CardPresentModalSuccess(amount: amount, printReceipt: printReceipt, emailReceipt: emailReceipt)
+            return CardPresentModalSuccess(printReceipt: printReceipt, emailReceipt: emailReceipt)
         } else {
-            return CardPresentModalSuccessWithoutEmail(amount: amount, printReceipt: printReceipt)
+            return CardPresentModalSuccessWithoutEmail(printReceipt: printReceipt)
         }
     }
 
-    func errorViewModel(amount: String, error: Error, tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalError(amount: amount, error: error, primaryAction: tryAgain)
+    func errorViewModel(error: Error, tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalError(error: error, primaryAction: tryAgain)
     }
 
     func retryableErrorViewModel(tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {

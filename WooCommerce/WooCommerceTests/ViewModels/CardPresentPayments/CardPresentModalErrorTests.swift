@@ -8,7 +8,7 @@ final class CardPresentModalErrorTests: XCTestCase {
     override func setUp() {
         super.setUp()
         closures = Closures()
-        viewModel = CardPresentModalError(amount: Expectations.amount, error: Expectations.error, primaryAction: closures.primaryAction())
+        viewModel = CardPresentModalError(error: Expectations.error, primaryAction: closures.primaryAction())
     }
 
     override func tearDown() {
@@ -25,8 +25,8 @@ final class CardPresentModalErrorTests: XCTestCase {
         XCTAssertNotNil(viewModel.topTitle)
     }
 
-    func test_topSubtitle_provides_expected_title() {
-        XCTAssertEqual(viewModel.topSubtitle, Expectations.amount)
+    func test_topSubtitle_is_nil() {
+        XCTAssertNil(viewModel.topSubtitle)
     }
 
     func test_primary_button_title_is_not_nil() {
@@ -49,7 +49,6 @@ final class CardPresentModalErrorTests: XCTestCase {
 
 private extension CardPresentModalErrorTests {
     enum Expectations {
-        static let amount = "amount"
         static let image = UIImage.paymentErrorImage
         static let error = MockError()
     }

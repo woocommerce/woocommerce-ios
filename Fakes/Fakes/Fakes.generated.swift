@@ -1179,6 +1179,7 @@ extension ShippingLabelPredefinedOption {
     public static func fake() -> ShippingLabelPredefinedOption {
         .init(
             title: .fake(),
+            providerID: .fake(),
             predefinedPackages: .fake()
         )
     }

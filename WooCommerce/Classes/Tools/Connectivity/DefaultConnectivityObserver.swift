@@ -19,7 +19,7 @@ final class DefaultConnectivityObserver: ConnectivityObserver {
     }
 }
 
-extension ConnectivityStatus {
+private extension ConnectivityStatus {
     init(reachabilityStatus: NetworkReachabilityManager.NetworkReachabilityStatus) {
         switch reachabilityStatus {
         case .unknown:
@@ -33,7 +33,7 @@ extension ConnectivityStatus {
     }
 }
 
-extension ConnectionType {
+private extension ConnectionType {
     init(connectionType: NetworkReachabilityManager.ConnectionType) {
         switch connectionType {
         case .ethernetOrWiFi:

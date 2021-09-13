@@ -13,6 +13,7 @@ final class CardReaderSettingsSearchingViewModelTests: XCTestCase {
 
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [],
+            discoveredReaders: [],
             sessionManager: SessionManager.testingInstance
         )
         ServiceLocator.setStores(mockStoresManager)
@@ -31,6 +32,7 @@ final class CardReaderSettingsSearchingViewModelTests: XCTestCase {
 
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [MockCardReader.bbposChipper2XBT()],
+            discoveredReaders: [],
             sessionManager: SessionManager.testingInstance
         )
         ServiceLocator.setStores(mockStoresManager)

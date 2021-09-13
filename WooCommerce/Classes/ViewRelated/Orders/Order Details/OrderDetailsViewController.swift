@@ -67,6 +67,20 @@ final class OrderDetailsViewController: UIViewController {
     ///
     private var cardReaderAvailableSubscription: Combine.Cancellable? = nil
 
+    /// Connection Controller (helps connect readers)
+    ///
+    private lazy var connectionController: CardReaderConnectionController? = {
+        guard let siteID = viewModel?.order.siteID else {
+            return nil
+        }
+
+        return CardReaderConnectionController(
+            forSiteID: siteID,
+            knownReadersProvider: CardReaderSettingsKnownReadersStoredList(),
+            alertsProvider: CardReaderSettingsAlerts()
+        )
+    }()
+
     // MARK: - View Lifecycle
 
     /// Create an instance of `Self` from its corresponding storyboard.
@@ -737,12 +751,7 @@ private extension OrderDetailsViewController {
     }
 
     private func connectToCardReader() {
-        let connectionController = CardReaderConnectionController(
-            forSiteID: viewModel.order.siteID,
-            knownReadersProvider: CardReaderSettingsKnownReadersStoredList(),
-            alertsProvider: CardReaderSettingsAlerts()
-        )
-        connectionController.searchAndConnect(from: self) { _ in
+        connectionController?.searchAndConnect(from: self) { _ in
             /// No need for logic here. Once connected, the connected reader will publish
             /// through the `cardReaderAvailableSubscription`
         }

@@ -7,11 +7,12 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
     func test_did_change_should_show_returns_false_if_no_connected_readers() {
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [],
+            discoveredReaders: [],
             sessionManager: SessionManager.testingInstance
         )
         ServiceLocator.setStores(mockStoresManager)
 
-        let expectation = self.expectation(description: "Check shouldShow returns isFalse")
+        let expectation = self.expectation(description: #function)
         let _ = CardReaderSettingsConnectedViewModel(didChangeShouldShow: { shouldShow in
             XCTAssertTrue(shouldShow == .isFalse)
             expectation.fulfill()
@@ -23,11 +24,12 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
     func test_did_change_should_show_returns_true_if_a_reader_is_connected() {
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [MockCardReader.bbposChipper2XBT()],
+            discoveredReaders: [],
             sessionManager: SessionManager.testingInstance
         )
         ServiceLocator.setStores(mockStoresManager)
 
-        let expectation = self.expectation(description: "Check shouldShow returns isTrue")
+        let expectation = self.expectation(description: #function)
 
         let _ = CardReaderSettingsConnectedViewModel(didChangeShouldShow: { shouldShow in
             XCTAssertTrue(shouldShow == .isTrue)
@@ -43,6 +45,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
 
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [MockCardReader.bbposChipper2XBT()],
+            discoveredReaders: [],
             sessionManager: SessionManager.testingInstance,
             readerUpdateAvailable: true
         )
@@ -69,6 +72,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
 
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [MockCardReader.bbposChipper2XBT()],
+            discoveredReaders: [],
             sessionManager: SessionManager.testingInstance,
             readerUpdateAvailable: false
         )
@@ -95,6 +99,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
 
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [MockCardReader.bbposChipper2XBT()],
+            discoveredReaders: [],
             sessionManager: SessionManager.testingInstance,
             failReaderUpdateCheck: true
         )
@@ -121,6 +126,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
 
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [MockCardReader.bbposChipper2XBT()],
+            discoveredReaders: [],
             sessionManager: SessionManager.testingInstance,
             readerUpdateAvailable: true
         )
@@ -161,6 +167,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
 
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [MockCardReader.bbposChipper2XBT()],
+            discoveredReaders: [],
             sessionManager: SessionManager.testingInstance,
             readerUpdateAvailable: true,
             failUpdate: true

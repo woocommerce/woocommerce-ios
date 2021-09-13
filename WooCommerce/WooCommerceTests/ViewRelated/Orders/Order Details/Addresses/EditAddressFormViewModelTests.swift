@@ -18,14 +18,14 @@ final class EditAddressFormViewModelTests: XCTestCase {
         super.setUp()
 
         testingStorage.reset()
+        testingStorage.insertSampleCountries(readOnlyCountries: Self.sampleCountries)
+
         testingStores.reset()
         subscriptions.removeAll()
     }
 
     func test_creating_with_address_prefills_fields_with_correct_data() {
         // Given
-        testingStorage.insertSampleCountries(readOnlyCountries: Self.sampleCountries)
-
         let address = sampleAddress()
         let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address, storageManager: testingStorage)
 
@@ -54,7 +54,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_updating_fields_enables_done_button() {
         // Given
         let address = sampleAddress()
-        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address)
+        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address, storageManager: testingStorage)
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
 
         // When
@@ -68,7 +68,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_updating_fields_back_to_original_values_disables_done_button() {
         // Given
         let address = sampleAddress()
-        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address)
+        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address, storageManager: testingStorage)
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
 
         // When
@@ -84,7 +84,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
 
     func test_creating_without_address_disables_done_button() {
         // Given
-        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: nil)
+        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: nil, storageManager: testingStorage)
 
         // When
         viewModel.onLoadTrigger.send()
@@ -96,7 +96,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_creating_with_address_with_empty_nullable_fields_disables_done_button() {
         // Given
         let address = sampleAddressWithEmptyNullableFields()
-        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address)
+        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address, storageManager: testingStorage)
 
         // When
         viewModel.onLoadTrigger.send()
@@ -108,7 +108,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_loading_indicator_gets_enabled_during_network_request() {
         // Given
         let address = sampleAddress()
-        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address)
+        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address, storageManager: testingStorage)
 
         // When
         viewModel.onLoadTrigger.send()
@@ -121,7 +121,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_loading_indicator_gets_disabled_after_the_network_operation_completes() {
         // Given
         let address = sampleAddress()
-        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address)
+        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address, storageManager: testingStorage)
 
         // When
         viewModel.onLoadTrigger.send()
@@ -137,6 +137,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
 
     func test_starting_view_model_without_stored_countries_fetches_them_remotely() {
         // Given
+        testingStorage.reset()
         let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: sampleAddress(), storageManager: testingStorage, stores: testingStores)
 
         // When
@@ -157,13 +158,15 @@ final class EditAddressFormViewModelTests: XCTestCase {
 
     func test_syncing_countries_correctly_sets_showPlaceholders_properties() {
         // Given
-        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: sampleAddress(), storageManager: testingStorage, stores: testingStores)
+        testingStorage.reset()
         testingStores.whenReceivingAction(ofType: DataAction.self) { action in
             switch action {
             case .synchronizeCountries(_, let completion):
                 completion(.success([])) // Sending an empty because we don't really care about countries on this test.
             }
         }
+
+        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: sampleAddress(), storageManager: testingStorage, stores: testingStores)
 
         // When
         let showPlaceholdersStates: [Bool] = waitFor { promise in
@@ -184,7 +187,6 @@ final class EditAddressFormViewModelTests: XCTestCase {
 
     func test_selecting_country_updates_country_field() {
         // Given
-        testingStorage.insertSampleCountries(readOnlyCountries: Self.sampleCountries)
         let newCountry = Self.sampleCountries[0]
 
         let address = sampleAddress()

@@ -1,7 +1,6 @@
 import Yosemite
 import Storage
 import Combine
-import struct SwiftUI.Binding
 
 final class EditAddressFormViewModel: ObservableObject {
     /// Current site ID

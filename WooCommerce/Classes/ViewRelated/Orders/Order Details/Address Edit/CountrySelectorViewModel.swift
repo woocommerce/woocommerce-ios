@@ -1,7 +1,6 @@
 import Combine
 import SwiftUI
 import Yosemite
-import struct SwiftUI.Binding
 import protocol Storage.StorageManagerType
 
 /// View Model for the `CountrySelector` view.

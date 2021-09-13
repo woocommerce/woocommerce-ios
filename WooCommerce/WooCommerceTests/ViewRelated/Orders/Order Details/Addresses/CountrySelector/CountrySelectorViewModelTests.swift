@@ -2,7 +2,6 @@ import XCTest
 import Yosemite
 import TestKit
 import Combine
-import struct SwiftUI.Binding
 @testable import WooCommerce
 
 final class CountrySelectorViewModelTests: XCTestCase {

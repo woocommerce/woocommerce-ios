@@ -1,8 +1,6 @@
 import Foundation
 import Yosemite
 
-import struct SwiftUI.Binding
-
 /// Command to be used to select a country when editing addresses.
 ///
 final class CountrySelectorCommand: ObservableListSelectorCommand {

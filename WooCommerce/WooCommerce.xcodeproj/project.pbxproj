@@ -389,6 +389,7 @@
 		262A0999262908A60033AD20 /* OrderAddOnListI1Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262A0998262908A60033AD20 /* OrderAddOnListI1Tests.swift */; };
 		262A09A5262F65690033AD20 /* OrderAddOnTopBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262A09A4262F65690033AD20 /* OrderAddOnTopBanner.swift */; };
 		262A2C2B2537A3330086C1BE /* MockRefunds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262A2C2A2537A3330086C1BE /* MockRefunds.swift */; };
+		262C921F26EEF8B100011F92 /* Binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262C921E26EEF8B100011F92 /* Binding.swift */; };
 		263E37E12641AD8300260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E37E02641AD8300260D3B /* Codegen */; };
 		263E37E22641AD8300260D3B /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 263E37E02641AD8300260D3B /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		263E38462641FF3400260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E38452641FF3400260D3B /* Codegen */; };
@@ -1803,6 +1804,7 @@
 		262A0998262908A60033AD20 /* OrderAddOnListI1Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderAddOnListI1Tests.swift; sourceTree = "<group>"; };
 		262A09A4262F65690033AD20 /* OrderAddOnTopBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderAddOnTopBanner.swift; sourceTree = "<group>"; };
 		262A2C2A2537A3330086C1BE /* MockRefunds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRefunds.swift; sourceTree = "<group>"; };
+		262C921E26EEF8B100011F92 /* Binding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Binding.swift; sourceTree = "<group>"; };
 		263EB408242C58EA00F3A15F /* ProductFormActionsFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormActionsFactoryTests.swift; sourceTree = "<group>"; };
 		265284012624937600F91BA1 /* AddOnCrossreferenceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOnCrossreferenceUseCase.swift; sourceTree = "<group>"; };
 		265284082624ACE900F91BA1 /* AddOnCrossreferenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOnCrossreferenceTests.swift; sourceTree = "<group>"; };
@@ -5003,6 +5005,7 @@
 				B5D6DC53214802740003E48A /* SyncCoordinator.swift */,
 				CE22709E2293052700C0626C /* WebviewHelper.swift */,
 				45D685FD23D0FB25005F87D0 /* Throttler.swift */,
+				262C921E26EEF8B100011F92 /* Binding.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -7500,6 +7503,7 @@
 				0290E26F238E3CE400B5C466 /* ListSelectorViewController.swift in Sources */,
 				B5D1AFB820BC510200DB0E8C /* UIImage+Woo.swift in Sources */,
 				B5980A6121AC878900EBF596 /* UIDevice+Woo.swift in Sources */,
+				262C921F26EEF8B100011F92 /* Binding.swift in Sources */,
 				02521E11243DC3C400DC7810 /* CancellableMedia.swift in Sources */,
 				CCCC29E325E576810046B96F /* RenameAttributesViewController.swift in Sources */,
 				B517EA18218B232700730EC4 /* StringFormatter+Notes.swift in Sources */,

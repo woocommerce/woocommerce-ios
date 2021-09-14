@@ -19,6 +19,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                           products: [],
                                                           productVariations: [],
                                                           onPackageSwitch: { _ in },
+                                                          onPackagesSync: { _ in },
                                                           formatter: currencyFormatter)
 
         // Then
@@ -60,6 +61,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                           products: [product1, product2, product3],
                                                           productVariations: [variation],
                                                           onPackageSwitch: { _ in },
+                                                          onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
                                                           weightUnit: "kg")
 
@@ -89,6 +91,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                           products: [],
                                                           productVariations: [],
                                                           onPackageSwitch: { _ in },
+                                                          onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
                                                           weightUnit: "kg")
 
@@ -123,6 +126,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                           products: [],
                                                           productVariations: [],
                                                           onPackageSwitch: packageSwitchHandler,
+                                                          onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
                                                           weightUnit: "kg")
 
@@ -148,6 +152,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                           products: [],
                                                           productVariations: [],
                                                           onPackageSwitch: { _ in },
+                                                          onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
                                                           weightUnit: "kg")
 
@@ -187,6 +192,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                           products: [product1, product2, product3],
                                                           productVariations: [variation],
                                                           onPackageSwitch: { _ in },
+                                                          onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
                                                           weightUnit: "kg")
 
@@ -225,6 +231,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                           products: [product1, product2, product3],
                                                           productVariations: [variation],
                                                           onPackageSwitch: { _ in },
+                                                          onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
                                                           weightUnit: "kg")
 

@@ -1,4 +1,6 @@
 import Yosemite
+import Storage
+import Combine
 
 final class EditAddressFormViewModel: ObservableObject {
 
@@ -6,73 +8,207 @@ final class EditAddressFormViewModel: ObservableObject {
     ///
     private let siteID: Int64
 
-    init(siteID: Int64, address: Address?) {
+    /// ResultsController for stored countries.
+    ///
+    private lazy var countriesResultsController: ResultsController<StorageCountry> = {
+        let countriesDescriptor = NSSortDescriptor(key: "name", ascending: true)
+        return ResultsController<StorageCountry>(storageManager: storageManager, sortedBy: [countriesDescriptor])
+    }()
+
+    /// Trigger to sync countries.
+    ///
+    private let syncCountriesTrigger = PassthroughSubject<Void, Never>()
+
+    /// Storage to fetch countries
+    ///
+    private let storageManager: StorageManagerType
+
+    /// Stores to sync countries
+    ///
+    private let stores: StoresManager
+
+    /// Store for publishers subscriptions
+    ///
+    private var subscriptions = Set<AnyCancellable>()
+
+
+    init(siteID: Int64, address: Address?, storageManager: StorageManagerType = ServiceLocator.storageManager, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.originalAddress = address ?? .empty
+        self.storageManager = storageManager
+        self.stores = stores
         updateFieldsWithOriginalAddress()
+        bindNavigationTrailingItemPublisher()
+
+        // Listen only to the first emitted event.
+        onLoadTrigger.first().sink {
+            self.bindSyncTrigger()
+            self.fetchStoredCountriesAndTriggerSyncIfNeeded()
+        }.store(in: &subscriptions)
     }
 
     /// Original `Address` model.
     ///
     private let originalAddress: Address
 
-    // MARK: User Fields
-
-    @Published var firstName: String = ""
-    @Published var lastName: String = ""
-    @Published var email: String = ""
-    @Published var phone: String = ""
-
-    // MARK: Address Fields
-
-    @Published var company: String = ""
-    @Published var address1: String = ""
-    @Published var address2: String = ""
-    @Published var city: String = ""
-    @Published var postcode: String = ""
-
-    // MARK: Navigation and utility
-
-    /// Return `true` if the done button should be enabled.
+    /// Address form fields
     ///
-    var isDoneButtonEnabled: Bool {
-        return originalAddress != addressFromFields
-    }
+    @Published var fields = FormFields()
+
+    /// Trigger to perform any one time setups.
+    ///
+    let onLoadTrigger: PassthroughSubject<Void, Never> = PassthroughSubject()
+
+    /// Tracks if a network request is being performed.
+    ///
+    private let performingNetworkRequest: CurrentValueSubject<Bool, Never> = .init(false)
+
+    /// Active navigation bar trailing item.
+    /// Defaults to a disabled done button.
+    ///
+    @Published private(set) var navigationTrailingItem: NavigationItem = .done(enabled: false)
+
+    /// Define if the view should show placeholders instead of the real elements.
+    ///
+    @Published private(set) var showPlaceholders: Bool = false
 
     /// Creates a view model to be used when selecting a country
     ///
     func createCountryViewModel() -> CountrySelectorViewModel {
-        CountrySelectorViewModel(siteID: siteID)
+        CountrySelectorViewModel(siteID: siteID, countries: countriesResultsController.fetchedObjects)
+    }
+
+    /// Update the address remotely and invoke a completion block when finished
+    ///
+    func updateRemoteAddress(onFinish: @escaping (Bool) -> Void) {
+        // TODO: perform network request
+        // TODO: add success/failure notice
+        performingNetworkRequest.send(true)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+            self?.performingNetworkRequest.send(false)
+            onFinish(true)
+        }
+    }
+}
+
+extension EditAddressFormViewModel {
+    /// Representation of possible navigation bar trailing buttons
+    ///
+    enum NavigationItem: Equatable {
+        case done(enabled: Bool)
+        case loading
+    }
+
+    /// Type to hold values from all the form fields
+    ///
+    struct FormFields {
+        // MARK: User Fields
+        var firstName: String = ""
+        var lastName: String = ""
+        var email: String = ""
+        var phone: String = ""
+
+        // MARK: Address Fields
+
+        var company: String = ""
+        var address1: String = ""
+        var address2: String = ""
+        var city: String = ""
+        var postcode: String = ""
+        var country: String = ""
+        var state: String = ""
+
+        mutating func update(from address: Address) {
+            firstName = address.firstName
+            lastName = address.lastName
+            email = address.email ?? ""
+            phone = address.phone ?? ""
+
+            company = address.company ?? ""
+            address1 = address.address1
+            address2 = address.address2 ?? ""
+            city = address.city
+            postcode = address.postcode
+            country = address.country
+            state = address.state
+        }
+
+        func toAddress() -> Address {
+            Address(firstName: firstName,
+                    lastName: lastName,
+                    company: company.isEmpty ? nil : company,
+                    address1: address1,
+                    address2: address2.isEmpty ? nil : address2,
+                    city: city,
+                    state: state,
+                    postcode: postcode,
+                    country: country,
+                    phone: phone.isEmpty ? nil : phone,
+                    email: email.isEmpty ? nil : email)
+        }
     }
 }
 
 private extension EditAddressFormViewModel {
     func updateFieldsWithOriginalAddress() {
-        firstName = originalAddress.firstName
-        lastName = originalAddress.lastName
-        email = originalAddress.email ?? ""
-        phone = originalAddress.phone ?? ""
-
-        company = originalAddress.company ?? ""
-        address1 = originalAddress.address1
-        address2 = originalAddress.address2 ?? ""
-        city = originalAddress.city
-        postcode = originalAddress.postcode
-
-        // TODO: Add country and state init
+        fields.update(from: originalAddress)
     }
 
-    var addressFromFields: Address {
-        Address(firstName: firstName,
-                lastName: lastName,
-                company: company.isEmpty ? nil : company,
-                address1: address1,
-                address2: company.isEmpty ? nil : company,
-                city: city,
-                state: originalAddress.state, // TODO: replace with local value
-                postcode: postcode,
-                country: originalAddress.country, // TODO: replace with local value
-                phone: phone.isEmpty ? nil : phone,
-                email: email.isEmpty ? nil : email)
+    /// Calculates what navigation trailing item should be shown depending on our internal state.
+    ///
+    func bindNavigationTrailingItemPublisher() {
+        Publishers.CombineLatest($fields, performingNetworkRequest)
+            .map { [originalAddress] fields, performingNetworkRequest -> NavigationItem in
+                guard !performingNetworkRequest else {
+                    return .loading
+                }
+                return .done(enabled: originalAddress != fields.toAddress())
+            }
+            .assign(to: &$navigationTrailingItem)
+    }
+
+    /// Fetches countries from storage, If there are no stored countries, trigger a sync request.
+    ///
+    func fetchStoredCountriesAndTriggerSyncIfNeeded() {
+        // Initial fetch
+        try? countriesResultsController.performFetch()
+
+        // Trigger a sync request if there are no countries.
+        guard !countriesResultsController.isEmpty else {
+            return syncCountriesTrigger.send()
+        }
+    }
+
+    /// Sync countries when requested. Defines the `showPlaceholderState` value depending if countries are being synced or not.
+    ///
+    func bindSyncTrigger() {
+        syncCountriesTrigger
+            .handleEvents(receiveOutput: { // Set `showPlaceholders` to `true` before initiating sync.
+                self.showPlaceholders = true // I could not find a way to assign this using combine operators. :-(
+            })
+            .map { // Sync countries
+                self.makeSyncCountriesFuture()
+                    .replaceError(with: ()) // TODO: Handle errors
+            }
+            .switchToLatest()
+            .map { _ in // Set `showPlaceholders` to `false` after sync is done.
+                false
+            }
+            .assign(to: &$showPlaceholders)
+    }
+
+    /// Creates a publisher that syncs countries into our storage layer.
+    ///
+    func makeSyncCountriesFuture() -> AnyPublisher<Void, Error> {
+        Future<Void, Error> { [weak self] promise in
+            guard let self = self else { return }
+
+            let action = DataAction.synchronizeCountries(siteID: self.siteID) { result in
+                let newResult = result.map { _ in } // Hides the result success type because we don't need it.
+                promise(newResult)
+            }
+            self.stores.dispatch(action)
+        }
+        .eraseToAnyPublisher()
     }
 }

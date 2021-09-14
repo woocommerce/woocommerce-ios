@@ -17,7 +17,7 @@ final class CountrySelectorViewModel: FilterListSelectorViewModelable, Observabl
 
     /// Command that powers the `ListSelector` view.
     ///
-    let command = CountrySelectorCommand(countries: [])
+    let command: CountrySelectorCommand
 
     /// Navigation title
     ///
@@ -27,54 +27,13 @@ final class CountrySelectorViewModel: FilterListSelectorViewModelable, Observabl
     ///
     let filterPlaceholder = Localization.placeholder
 
-    /// ResultsController for stored countries.
-    ///
-    private lazy var countriesResultsController: ResultsController<StorageCountry> = {
-        let countriesDescriptor = NSSortDescriptor(key: "name", ascending: true)
-        return ResultsController<StorageCountry>(storageManager: storageManager, sortedBy: [countriesDescriptor])
-    }()
-
-    /// Storage to fetch countries
-    ///
-    private let storageManager: StorageManagerType
-
-    /// Stores to sync countries
-    ///
-    private let stores: StoresManager
-
     /// Current `SiteID`, needed to sync countries from a remote source.
     ///
     private let siteID: Int64
 
-    init(siteID: Int64, storageManager: StorageManagerType = ServiceLocator.storageManager, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64, countries: [Country]) {
         self.siteID = siteID
-        self.storageManager = storageManager
-        self.stores = stores
-        fetchAndBindCountries()
-    }
-}
-
-// MARK: Helpers
-private extension CountrySelectorViewModel {
-    /// Fetches & Binds countries from storage, If there are no stored countries, sync them from a remote source.
-    ///
-    func fetchAndBindCountries() {
-        // Bind stored countries & command
-        countriesResultsController.onDidChangeContent = { [weak self] in
-            guard let self = self else { return }
-            self.command.resetCountries(self.countriesResultsController.fetchedObjects)
-        }
-
-        // Initial fetch
-        try? countriesResultsController.performFetch()
-
-        // Reset countries with fetched data or sync countries if needed.
-        if !countriesResultsController.isEmpty {
-            command.resetCountries(countriesResultsController.fetchedObjects)
-        } else {
-            let action = DataAction.synchronizeCountries(siteID: siteID, onCompletion: { _ in })
-            stores.dispatch(action)
-        }
+        self.command = CountrySelectorCommand(countries: countries)
     }
 }
 

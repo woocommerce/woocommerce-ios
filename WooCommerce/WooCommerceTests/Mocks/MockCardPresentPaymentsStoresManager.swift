@@ -5,26 +5,29 @@ import Yosemite
 ///
 final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
     private var connectedReaders: [CardReader]
-    private var discoveredReader: CardReader?
+    private var discoveredReaders: [CardReader]
     private var failDiscovery: Bool
     private var readerUpdateAvailable: Bool
     private var failReaderUpdateCheck: Bool
     private var failUpdate: Bool
+    private var failConnection: Bool
 
     init(connectedReaders: [CardReader],
-         discoveredReader: CardReader? = nil,
+         discoveredReaders: [CardReader],
          sessionManager: SessionManager,
          failDiscovery: Bool = false,
          readerUpdateAvailable: Bool = false,
          failReaderUpdateCheck: Bool = false,
-         failUpdate: Bool = false
+         failUpdate: Bool = false,
+         failConnection: Bool = false
     ) {
         self.connectedReaders = connectedReaders
-        self.discoveredReader = discoveredReader
+        self.discoveredReaders = discoveredReaders
         self.failDiscovery = failDiscovery
         self.readerUpdateAvailable = readerUpdateAvailable
         self.failReaderUpdateCheck = failReaderUpdateCheck
         self.failUpdate = failUpdate
+        self.failConnection = failConnection
         super.init(sessionManager: sessionManager)
     }
 
@@ -45,11 +48,15 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
                 onError(MockErrors.discoveryFailure)
                 return
             }
-            guard let discoveredReader = discoveredReader else {
+            guard discoveredReaders.isNotEmpty else {
                 return
             }
-            onReaderDiscovered([discoveredReader])
+            onReaderDiscovered(discoveredReaders)
         case .connect(let reader, let onCompletion):
+            guard !failConnection else {
+                onCompletion(Result.failure(MockErrors.connectionFailure))
+                return
+            }
             onCompletion(Result.success(reader))
         case .cancelCardReaderDiscovery(let onCompletion):
             onCompletion(Result.success(()))
@@ -81,6 +88,7 @@ extension MockCardPresentPaymentsStoresManager {
         case discoveryFailure
         case readerUpdateCheckFailure
         case readerUpdateFailure
+        case connectionFailure
     }
 }
 

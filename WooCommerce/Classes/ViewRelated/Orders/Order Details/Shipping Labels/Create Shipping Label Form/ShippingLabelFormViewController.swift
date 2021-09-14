@@ -426,12 +426,15 @@ private extension ShippingLabelFormViewController {
             navigationController?.show(hostingVC, sender: nil)
         } else {
             let vm = ShippingLabelPackageDetailsViewModel(order: viewModel.order,
-                                                          packagesResponse: viewModel.packagesResponse,
-                                                          selectedPackages: inputPackages)
-            let packageDetails = ShippingLabelPackageDetails(viewModel: vm) { [weak self] selectedPackages in
-                self?.viewModel.handlePackageDetailsValueChanges(details: selectedPackages)
-            }
-
+                                                      packagesResponse: viewModel.packagesResponse,
+                                                      selectedPackages: inputPackages,
+                                                      onPackageSyncCompletion: { [weak self] (packagesResponse) in
+                                                        self?.viewModel.handleNewPackagesResponse(packagesResponse: packagesResponse)
+                                                      },
+                                                      onPackageSaveCompletion: { [weak self] (selectedPackages) in
+                                                        self?.viewModel.handlePackageDetailsValueChanges(details: selectedPackages)
+                                                      })
+            let packageDetails = ShippingLabelPackageDetails(viewModel: vm)
             let hostingVC = UIHostingController(rootView: packageDetails)
             navigationController?.show(hostingVC, sender: nil)
         }

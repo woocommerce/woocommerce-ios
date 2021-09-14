@@ -22,9 +22,28 @@ protocol CardReaderSettingsAlertsProvider {
                      connect: @escaping () -> Void,
                      continueSearch: @escaping () -> Void)
 
+    /// Defines an interactive alert indicating more than one reader has been found. The user must
+    /// choose to connect to that reader or cancel searching
+    ///
+    func foundSeveralReaders(from: UIViewController,
+                             readerIDs: [String],
+                             connect: @escaping (String) -> Void,
+                             cancelSearch: @escaping () -> Void)
+
+    /// Allows updating the list of readers found in the several readers alert
+    ///
+    func updateSeveralReadersList(readerIDs: [String])
+
     /// Defines a non-interactive alert indicating a connection is in progress to a particular reader
     ///
     func connectingToReader(from: UIViewController)
+
+    /// Defines an alert indicating connecting failed. The user may continue the search
+    /// or cancel
+    ///
+    func connectingFailed(from: UIViewController,
+                          continueSearch: @escaping () -> Void,
+                          cancelSearch: @escaping () -> Void)
 
     /// Dismisses any alert being presented
     ///

@@ -20,7 +20,6 @@ struct ShippingLabelPackageSelection_Previews: PreviewProvider {
         let viewModelWithoutPackages = ShippingLabelPackageListViewModel(packagesResponse: nil)
 
         ShippingLabelPackageSelection(viewModel: viewModelWithPackages)
-
         ShippingLabelPackageSelection(viewModel: viewModelWithoutPackages)
     }
 }

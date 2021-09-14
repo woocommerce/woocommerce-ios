@@ -255,6 +255,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                           products: [product],
                                                           productVariations: [],
                                                           onPackageSwitch: { _ in },
+                                                          onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
                                                           weightUnit: "kg")
 
@@ -276,6 +277,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                           products: [],
                                                           productVariations: [],
                                                           onPackageSwitch: { _ in },
+                                                          onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
                                                           weightUnit: "kg")
 
@@ -314,6 +316,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                           products: [product],
                                                           productVariations: [],
                                                           onPackageSwitch: { _ in },
+                                                          onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
                                                           weightUnit: "kg")
 
@@ -345,6 +348,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                           products: [product],
                                                           productVariations: [],
                                                           onPackageSwitch: { _ in },
+                                                          onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
                                                           weightUnit: "kg")
 

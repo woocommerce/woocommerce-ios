@@ -52,7 +52,9 @@ struct ShippingLabelPackagesForm_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ShippingLabelPackagesFormViewModel(order: ShippingLabelPackagesFormViewModel.sampleOrder(),
                                                            packagesResponse: ShippingLabelPackagesFormViewModel.samplePackageDetails(),
-                                                           selectedPackages: []) { _ in }
+                                                           selectedPackages: [],
+                                                           onSelectionCompletion: { _ in },
+                                                           onPackageSyncCompletion: { _ in })
 
         ShippingLabelPackagesForm(viewModel: viewModel)
         .environment(\.colorScheme, .light)

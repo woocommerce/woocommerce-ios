@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ShippingLabelPackageSelection: View {
-    @ObservedObject var viewModel: ShippingLabelPackageDetailsViewModel
+    @ObservedObject var viewModel: ShippingLabelPackageListViewModel
 
     var body: some View {
         NavigationView {
@@ -16,19 +16,11 @@ struct ShippingLabelPackageSelection: View {
 
 struct ShippingLabelPackageSelection_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModelWithPackages = ShippingLabelPackageDetailsViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder(),
-                                                             packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails(),
-                                                             selectedPackages: [],
-                                                             onPackageSyncCompletion: { _ in },
-                                                             onPackageSaveCompletion: { _ in })
-        let viewModelWithoutPackages = ShippingLabelPackageDetailsViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder(),
-                                                             packagesResponse: nil,
-                                                             selectedPackages: [],
-                                                             onPackageSyncCompletion: { _ in },
-                                                             onPackageSaveCompletion: { _ in })
+        let viewModelWithPackages = ShippingLabelPackageListViewModel(siteID: 123,
+                                                                      packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails())
+        let viewModelWithoutPackages = ShippingLabelPackageListViewModel(siteID: 123, packagesResponse: nil)
 
         ShippingLabelPackageSelection(viewModel: viewModelWithPackages)
-
         ShippingLabelPackageSelection(viewModel: viewModelWithoutPackages)
     }
 }

@@ -34,13 +34,13 @@ class ShippingLabelPackagesFormViewModelTests: XCTestCase {
         let package2 = ShippingLabelPackageAttributes(packageID: "Box 2", totalWeight: "5.5", productIDs: [1, 2, 3])
 
         // When & Then
-        let viewModel1 = ShippingLabelPackagesFormViewModel(order: order, packagesResponse: nil, selectedPackages: [])
+        let viewModel1 = ShippingLabelPackagesFormViewModel(order: order, packagesResponse: nil, selectedPackages: []) { _ in }
         XCTAssertFalse(viewModel1.foundMultiplePackages)
 
-        let viewModel2 = ShippingLabelPackagesFormViewModel(order: order, packagesResponse: nil, selectedPackages: [package1])
+        let viewModel2 = ShippingLabelPackagesFormViewModel(order: order, packagesResponse: nil, selectedPackages: [package1]) { _ in }
         XCTAssertFalse(viewModel2.foundMultiplePackages)
 
-        let viewModel3 = ShippingLabelPackagesFormViewModel(order: order, packagesResponse: nil, selectedPackages: [package1, package2])
+        let viewModel3 = ShippingLabelPackagesFormViewModel(order: order, packagesResponse: nil, selectedPackages: [package1, package2]) { _ in }
         XCTAssertTrue(viewModel3.foundMultiplePackages)
     }
 
@@ -50,7 +50,11 @@ class ShippingLabelPackagesFormViewModelTests: XCTestCase {
         insert(MockShippingLabelAccountSettings.sampleAccountSettings(siteID: sampleSiteID, lastSelectedPackageID: "package-1"))
 
         // When
-        let viewModel = ShippingLabelPackagesFormViewModel(order: order, packagesResponse: nil, selectedPackages: [], storageManager: storageManager)
+        let viewModel = ShippingLabelPackagesFormViewModel(order: order,
+                                                           packagesResponse: nil,
+                                                           selectedPackages: [],
+                                                           onPackageSyncCompletion: { _ in },
+                                                           storageManager: storageManager)
 
         // Then
         XCTAssertEqual(viewModel.itemViewModels.count, 1)
@@ -66,7 +70,7 @@ class ShippingLabelPackagesFormViewModelTests: XCTestCase {
         // When
         let viewModel = ShippingLabelPackagesFormViewModel(order: order,
                                                            packagesResponse: nil,
-                                                           selectedPackages: [package1, package2])
+                                                           selectedPackages: [package1, package2]) { _ in }
 
         // Then
         XCTAssertEqual(viewModel.itemViewModels.count, 2)

@@ -50,8 +50,7 @@ struct ShippingLabelPackageItem: View {
                 }
                 .padding(.horizontal, insets: safeAreaInsets)
                 .sheet(isPresented: $isShowingPackageSelection, content: {
-                    // TODO-4599: Update package selection with new view model
-//                    ShippingLabelPackageSelection(viewModel: viewModel)
+                    ShippingLabelPackageSelection(viewModel: viewModel.packageListViewModel)
                 })
 
                 Divider()
@@ -100,7 +99,9 @@ struct ShippingLabelPackageItem_Previews: PreviewProvider {
                                                           selectedPackageID: "Box 1",
                                                           totalWeight: "",
                                                           products: [],
-                                                          productVariations: [])
+                                                          productVariations: [],
+                                                          onPackageSwitch: { _ in },
+                                                          onPackagesSync: { _ in })
         ShippingLabelPackageItem(packageNumber: 1, isCollapsible: true, safeAreaInsets: .zero, viewModel: viewModel)
     }
 }

@@ -19,6 +19,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                           products: [],
                                                           productVariations: [],
                                                           onPackageSwitch: { _ in },
+                                                          onPackagesSync: { _ in },
                                                           formatter: currencyFormatter)
 
         // Then
@@ -60,6 +61,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                           products: [product1, product2, product3],
                                                           productVariations: [variation],
                                                           onPackageSwitch: { _ in },
+                                                          onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
                                                           weightUnit: "kg")
 
@@ -89,6 +91,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                           products: [],
                                                           productVariations: [],
                                                           onPackageSwitch: { _ in },
+                                                          onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
                                                           weightUnit: "kg")
 
@@ -123,6 +126,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                           products: [],
                                                           productVariations: [],
                                                           onPackageSwitch: packageSwitchHandler,
+                                                          onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
                                                           weightUnit: "kg")
 
@@ -148,6 +152,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                           products: [],
                                                           productVariations: [],
                                                           onPackageSwitch: { _ in },
+                                                          onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
                                                           weightUnit: "kg")
 
@@ -187,6 +192,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                           products: [product1, product2, product3],
                                                           productVariations: [variation],
                                                           onPackageSwitch: { _ in },
+                                                          onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
                                                           weightUnit: "kg")
 
@@ -225,6 +231,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                           products: [product1, product2, product3],
                                                           productVariations: [variation],
                                                           onPackageSwitch: { _ in },
+                                                          onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
                                                           weightUnit: "kg")
 
@@ -389,14 +396,16 @@ private extension ShippingLabelPackageItemViewModelTests {
                                        boxWeight: 7,
                                        maxWeight: 10)]
 
-        let predefinedOptions = [ShippingLabelPredefinedOption(title: "USPS", predefinedPackages: [ShippingLabelPredefinedPackage(id: "package-1",
-                                                                                                                                  title: "Small",
-                                                                                                                                  isLetter: true,
-                                                                                                                                  dimensions: "3 x 4 x 5"),
-                                                                                                   ShippingLabelPredefinedPackage(id: "package-2",
-                                                                                                                                  title: "Big",
-                                                                                                                                  isLetter: true,
-                                                                                                                                  dimensions: "5 x 7 x 9")])]
+        let predefinedOptions = [ShippingLabelPredefinedOption(title: "USPS",
+                                                               providerID: "USPS",
+                                                               predefinedPackages: [ShippingLabelPredefinedPackage(id: "package-1",
+                                                                                                                   title: "Small",
+                                                                                                                   isLetter: true,
+                                                                                                                   dimensions: "3 x 4 x 5"),
+                                                                                    ShippingLabelPredefinedPackage(id: "package-2",
+                                                                                                                   title: "Big",
+                                                                                                                   isLetter: true,
+                                                                                                                   dimensions: "5 x 7 x 9")])]
 
         let packagesResponse = ShippingLabelPackagesResponse(storeOptions: storeOptions,
                                                              customPackages: withCustom ? customPackages : [],

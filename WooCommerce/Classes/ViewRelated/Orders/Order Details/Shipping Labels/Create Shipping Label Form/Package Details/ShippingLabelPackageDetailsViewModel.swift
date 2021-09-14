@@ -70,13 +70,23 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     ///
     @Published private var isPackageWeightEdited: Bool = false
 
+    /// Completion callback after package details are synced from remote
+    ///
+    private let onPackageSyncCompletion: (_ packagesResponse: ShippingLabelPackagesResponse?) -> Void
+
+    /// Completion callback after selected package is saved
+    ///
+    private let onPackageSaveCompletion: (_ selectedPackages: [ShippingLabelPackageAttributes]) -> Void
+
     init(order: Order,
          packagesResponse: ShippingLabelPackagesResponse?,
          selectedPackages: [ShippingLabelPackageAttributes],
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
+         weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
+         onPackageSyncCompletion: @escaping (_ packagesResponse: ShippingLabelPackagesResponse?) -> Void,
+         onPackageSaveCompletion: @escaping (_ selectedPackages: [ShippingLabelPackageAttributes]) -> Void) {
         self.order = order
         self.orderItems = order.items
         self.currency = order.currency
@@ -84,8 +94,11 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.weightUnit = weightUnit
-        self.packageListViewModel = ShippingLabelPackageListViewModel(packagesResponse: packagesResponse)
-        self.selectedPackageID = selectedPackages.first?.packageID // TODO-4599: fix this
+        self.packageListViewModel = ShippingLabelPackageListViewModel(siteID: order.siteID, packagesResponse: packagesResponse)
+        // This is temporary solution while supporting both single and multiple packages solution.
+        self.selectedPackageID = selectedPackages.first?.packageID
+        self.onPackageSyncCompletion = onPackageSyncCompletion
+        self.onPackageSaveCompletion = onPackageSaveCompletion
         self.packageListViewModel.delegate = self
 
         configureResultsControllers()
@@ -93,7 +106,9 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         syncProducts()
         syncProductVariations()
         configureItemRows()
-        configureTotalWeights(initialTotalWeight: selectedPackages.first?.totalWeight) // TODO-4599: fix this
+
+        // This is temporary solution while supporting both single and multiple packages solution.
+        configureTotalWeights(initialTotalWeight: selectedPackages.first?.totalWeight)
     }
 
     /// Observe changes in products and variations to update item rows.
@@ -251,12 +266,20 @@ extension ShippingLabelPackageDetailsViewModel {
     func isPackageDetailsDoneButtonEnabled() -> Bool {
         return !selectedPackageID.isNilOrEmpty && totalWeight.isNotEmpty && Double(totalWeight) != 0 && Double(totalWeight) != nil
     }
+
+    func savePackageSelection() {
+        onPackageSaveCompletion(selectedPackagesDetails)
+    }
 }
 
 // MARK: - Package Selection
 extension ShippingLabelPackageDetailsViewModel: ShippingLabelPackageSelectionDelegate {
     func didSelectPackage(id: String) {
         selectedPackageID = id
+    }
+
+    func didSyncPackages(packagesResponse: ShippingLabelPackagesResponse?) {
+        onPackageSyncCompletion(packagesResponse)
     }
 
     /// Sets the package passed through the init method, or set the last selected package, if any, as the default selected package
@@ -473,6 +496,7 @@ extension ShippingLabelPackageDetailsViewModel {
                                                                  isLetter: false,
                                                                  dimensions: "28.57 x 22.22 x 15.24")]
         let predefinedOption1 = ShippingLabelPredefinedOption(title: "USPS Priority Mail Flat Rate Boxes",
+                                                              providerID: "usps",
                                                               predefinedPackages: predefinedPackages1)
 
         let predefinedPackages2 = [ShippingLabelPredefinedPackage(id: "LargePaddedPouch",
@@ -480,6 +504,7 @@ extension ShippingLabelPackageDetailsViewModel {
                                                                   isLetter: true,
                                                                   dimensions: "30.22 x 35.56 x 2.54")]
         let predefinedOption2 = ShippingLabelPredefinedOption(title: "DHL Express",
+                                                              providerID: "dhlexpress",
                                                               predefinedPackages: predefinedPackages2)
 
         return [predefinedOption1, predefinedOption2]

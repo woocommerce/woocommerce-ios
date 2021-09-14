@@ -9,10 +9,6 @@ import protocol Storage.StorageManagerType
 ///
 final class ShippingLabelPackagesFormViewModel: ObservableObject {
 
-    /// Completion callback
-    ///
-    typealias Completion = (_ selectedPackages: [ShippingLabelPackageAttributes]) -> Void
-
     var foundMultiplePackages: Bool {
         selectedPackages.count > 1
     }
@@ -29,7 +25,8 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private var resultsControllers: ShippingLabelPackageDetailsResultsControllers?
-    private let onCompletion: Completion
+    private let onSelectionCompletion: (_ selectedPackages: [ShippingLabelPackageAttributes]) -> Void
+    private let onPackageSyncCompletion: (_ packagesResponse: ShippingLabelPackagesResponse?) -> Void
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -64,7 +61,8 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
     init(order: Order,
          packagesResponse: ShippingLabelPackagesResponse?,
          selectedPackages: [ShippingLabelPackageAttributes],
-         onCompletion: @escaping Completion,
+         onSelectionCompletion: @escaping (_ selectedPackages: [ShippingLabelPackageAttributes]) -> Void,
+         onPackageSyncCompletion: @escaping (_ packagesResponse: ShippingLabelPackagesResponse?) -> Void,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -73,7 +71,8 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.selectedPackages = selectedPackages
-        self.onCompletion = onCompletion
+        self.onSelectionCompletion = onSelectionCompletion
+        self.onPackageSyncCompletion = onPackageSyncCompletion
 
         configureResultsControllers()
         syncProducts()
@@ -83,7 +82,7 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
     }
 
     func confirmPackageSelection() {
-        onCompletion(validatedPackages)
+        onSelectionCompletion(validatedPackages)
     }
 }
 
@@ -115,9 +114,13 @@ private extension ShippingLabelPackagesFormViewModel {
                                                              selectedPackageID: details.packageID,
                                                              totalWeight: details.totalWeight,
                                                              products: products,
-                                                             productVariations: variations) { [weak self] newPackage in
-                        self?.switchPackage(currentID: details.packageID, newPackage: newPackage)
-                    }
+                                                             productVariations: variations,
+                                                             onPackageSwitch: { [weak self] newPackage in
+                                                                self?.switchPackage(currentID: details.packageID, newPackage: newPackage)
+                                                             },
+                                                             onPackagesSync: { [weak self] packagesResponse in
+                                                                self?.onPackageSyncCompletion(packagesResponse)
+                                                             })
                 }
             }
             .sink { [weak self] viewModels in
@@ -352,6 +355,7 @@ extension ShippingLabelPackagesFormViewModel {
                                                                  isLetter: false,
                                                                  dimensions: "28.57 x 22.22 x 15.24")]
         let predefinedOption1 = ShippingLabelPredefinedOption(title: "USPS Priority Mail Flat Rate Boxes",
+                                                              providerID: "USPS",
                                                               predefinedPackages: predefinedPackages1)
 
         let predefinedPackages2 = [ShippingLabelPredefinedPackage(id: "LargePaddedPouch",
@@ -359,6 +363,7 @@ extension ShippingLabelPackagesFormViewModel {
                                                                   isLetter: true,
                                                                   dimensions: "30.22 x 35.56 x 2.54")]
         let predefinedOption2 = ShippingLabelPredefinedOption(title: "DHL Express",
+                                                              providerID: "DHL",
                                                               predefinedPackages: predefinedPackages2)
 
         return [predefinedOption1, predefinedOption2]

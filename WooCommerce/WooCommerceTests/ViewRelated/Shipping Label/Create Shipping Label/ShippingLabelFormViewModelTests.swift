@@ -164,6 +164,20 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertEqual(row?.displayMode, .disabled)
     }
 
+    func test_handleNewPackagesResponse_returns_updated_data() {
+        // Given
+        let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                                    originAddress: nil,
+                                                                    destinationAddress: nil)
+        let expectedPackageResponse = ShippingLabelPackagesResponse.fake()
+
+        // When
+        shippingLabelFormViewModel.handleNewPackagesResponse(packagesResponse: expectedPackageResponse)
+
+        // Then
+        XCTAssertEqual(shippingLabelFormViewModel.packagesResponse, expectedPackageResponse)
+    }
+
     func test_handlePackageDetailsValueChanges_returns_updated_data() {
         // Given
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),

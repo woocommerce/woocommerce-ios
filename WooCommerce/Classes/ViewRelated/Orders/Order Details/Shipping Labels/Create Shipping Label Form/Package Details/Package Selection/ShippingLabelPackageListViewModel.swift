@@ -3,6 +3,7 @@ import Yosemite
 
 protocol ShippingLabelPackageSelectionDelegate: AnyObject {
     func didSelectPackage(id: String)
+    func didSyncPackages(packagesResponse: ShippingLabelPackagesResponse?)
 }
 
 /// View model for `ShippingLabelPackageList` and `ShippingLabelPackageSelection`.
@@ -33,15 +34,23 @@ final class ShippingLabelPackageListViewModel: ObservableObject {
         return customPackages.isNotEmpty || predefinedOptions.isNotEmpty
     }
 
-    lazy var addNewPackageViewModel: ShippingLabelAddNewPackageViewModel = ShippingLabelAddNewPackageViewModel(packagesResponse: packagesResponse)
+    lazy var addNewPackageViewModel = ShippingLabelAddNewPackageViewModel(siteID: siteID,
+                                                                          packagesResponse: packagesResponse,
+                                                                          onCompletion: { [weak self] (customPackage, predefinedOption, packagesResponse) in
+                                                                            guard let self = self else { return }
+                                                                            self.handleNewPackage(customPackage, predefinedOption, packagesResponse)
+                                                                          })
 
     weak var delegate: ShippingLabelPackageSelectionDelegate?
 
     /// The packages  response fetched from API
     ///
-    private let packagesResponse: ShippingLabelPackagesResponse?
+    private var packagesResponse: ShippingLabelPackagesResponse?
 
-    init(packagesResponse: ShippingLabelPackagesResponse?) {
+    private let siteID: Int64
+
+    init(siteID: Int64, packagesResponse: ShippingLabelPackagesResponse?) {
+        self.siteID = siteID
         self.packagesResponse = packagesResponse
     }
 }
@@ -96,5 +105,31 @@ extension ShippingLabelPackageListViewModel {
                 }
             }
         }
+    }
+
+    /// Selects a newly created custom package or newly activated service package and adds it to the package list
+    ///
+    private func handleNewPackage(_ customPackage: ShippingLabelCustomPackage?,
+                          _ servicePackage: ShippingLabelPredefinedPackage?,
+                          _ packagesResponse: ShippingLabelPackagesResponse?) {
+        guard let packagesResponse = packagesResponse else {
+            return
+        }
+
+        self.packagesResponse = packagesResponse
+        addNewPackageViewModel = .init(siteID: siteID,
+                                       packagesResponse: packagesResponse,
+                                       onCompletion: { [weak self] (customPackage, predefinedOption, packagesResponse) in
+                                         guard let self = self else { return }
+                                         self.handleNewPackage(customPackage, predefinedOption, packagesResponse)
+                                       })
+        if let customPackage = customPackage {
+            selectCustomPackage(customPackage.title)
+        }
+        else if let servicePackage = servicePackage {
+            selectPredefinedPackage(servicePackage.id)
+        }
+
+        delegate?.didSyncPackages(packagesResponse: packagesResponse)
     }
 }

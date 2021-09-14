@@ -6,6 +6,7 @@ import Yosemite
 final class ShippingLabelPackageItemViewModel: ObservableObject {
 
     typealias PackageSwitchHandler = (_ newPackage: ShippingLabelPackageAttributes) -> Void
+    typealias PackagesSyncHandler = (_ packagesResponse: ShippingLabelPackagesResponse?) -> Void
 
     /// The id of the selected package. Defaults to last selected package, if any.
     ///
@@ -13,11 +14,13 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
 
     /// View model for the package list
     ///
-    let packageListViewModel: ShippingLabelPackageListViewModel
+    lazy var packageListViewModel: ShippingLabelPackageListViewModel = {
+        .init(siteID: order.siteID, packagesResponse: packagesResponse)
+    }()
 
     @Published var totalWeight: String = ""
 
-    /// The items rows observed by the main view `ShippingLabelPackageDetails`
+    /// The items rows observed by the main view `ShippingLabelPackageItem`
     ///
     @Published private(set) var itemsRows: [ItemToFulfillRow] = []
 
@@ -53,6 +56,11 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
     private let currency: String
     private let currencyFormatter: CurrencyFormatter
     private let onPackageSwitch: PackageSwitchHandler
+    private let onPackagesSync: PackagesSyncHandler
+
+    /// The packages  response fetched from API
+    ///
+    private var packagesResponse: ShippingLabelPackagesResponse?
 
     /// The weight unit used in the Store
     ///
@@ -70,6 +78,7 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
          products: [Product],
          productVariations: [ProductVariation],
          onPackageSwitch: @escaping PackageSwitchHandler,
+         onPackagesSync: @escaping PackagesSyncHandler,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
         self.order = order
@@ -79,7 +88,8 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
         self.weightUnit = weightUnit
         self.selectedPackageID = selectedPackageID
         self.onPackageSwitch = onPackageSwitch
-        self.packageListViewModel = ShippingLabelPackageListViewModel(packagesResponse: packagesResponse)
+        self.onPackagesSync = onPackagesSync
+        self.packagesResponse = packagesResponse
         self.packageListViewModel.delegate = self
 
         packageListViewModel.didSelectPackage(selectedPackageID)
@@ -126,6 +136,12 @@ extension ShippingLabelPackageItemViewModel: ShippingLabelPackageSelectionDelega
                                                         productIDs: orderItems.map { $0.productOrVariationID })
 
         onPackageSwitch(newPackage)
+    }
+
+    func didSyncPackages(packagesResponse: ShippingLabelPackagesResponse?) {
+        self.packagesResponse = packagesResponse
+        packageListViewModel = .init(siteID: order.siteID, packagesResponse: packagesResponse)
+        onPackagesSync(packagesResponse)
     }
 }
 

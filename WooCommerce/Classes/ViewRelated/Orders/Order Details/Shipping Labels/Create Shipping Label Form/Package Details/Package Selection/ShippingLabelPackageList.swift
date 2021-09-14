@@ -70,6 +70,7 @@ struct ShippingLabelPackageList: View {
                                      title: Localization.createPackageButton,
                                      image: .plusImage,
                                      onButtonTapped: {
+                                        ServiceLocator.analytics.track(.shippingLabelAddPackageTapped)
                                         self.isShowingNewPackageCreation = true
                                      })
                 }
@@ -94,8 +95,8 @@ private extension ShippingLabelPackageList {
 
 struct ShippingLabelPackageList_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = ShippingLabelPackageListViewModel(packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails())
-
+        let viewModel = ShippingLabelPackageListViewModel(siteID: 123,
+                                                          packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails())
         ShippingLabelPackageList(viewModel: viewModel)
     }
 }

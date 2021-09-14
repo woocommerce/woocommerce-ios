@@ -53,7 +53,8 @@ class ShippingLabelPackagesFormViewModelTests: XCTestCase {
         let viewModel = ShippingLabelPackagesFormViewModel(order: order,
                                                            packagesResponse: nil,
                                                            selectedPackages: [],
-                                                           onCompletion: { _ in },
+                                                           onSelectionCompletion: { _ in },
+                                                           onPackageSyncCompletion: { _ in },
                                                            storageManager: storageManager)
 
         // Then

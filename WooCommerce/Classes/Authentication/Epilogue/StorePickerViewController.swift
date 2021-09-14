@@ -423,7 +423,8 @@ private extension StorePickerViewController {
         RequirementsChecker.checkMinimumWooVersion(for: siteID) { [weak self] result in
             switch result {
             case .success(.validWCVersion):
-                self?.updateUIForValidSite()
+                //self?.updateUIForValidSite()
+                self?.updateUIForEmptyOrErroredSite(named: siteName, with: siteID)
             case .success(.invalidWCVersion):
                 self?.updateUIForInvalidSite(named: siteName)
             case .failure:

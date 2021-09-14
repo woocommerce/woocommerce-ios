@@ -2,7 +2,7 @@
 
 7.6
 -----
-
+- [*] Fix: when product image upload fails, the image cell stop loading.
 
 7.5
 -----

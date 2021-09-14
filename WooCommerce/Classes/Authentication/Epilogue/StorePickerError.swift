@@ -1,5 +1,17 @@
 import SwiftUI
 
+/// Hosting controller wrapper for `StorePickerError`
+///
+final class StorePickerErrorHostingController: UIHostingController<StorePickerError> {
+    init() {
+        super.init(rootView: StorePickerError())
+    }
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+
 /// Generic Store Picker error view that allows the user to contact support.
 ///
 struct StorePickerError: View {

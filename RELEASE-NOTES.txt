@@ -2,7 +2,7 @@
 
 7.6
 -----
-- [*] Fix: when product image upload fails, the image cell stop loading.
+- [*] Fix: when product image upload fails, the image cell stop loading. [https://github.com/woocommerce/woocommerce-ios/pull/4989]
 
 7.5
 -----

@@ -7,6 +7,10 @@ final class DefaultConnectivityObserver: ConnectivityObserver {
     ///
     private let reachabilityManager = NetworkReachabilityManager(host: "public-api.wordpress.com")
 
+    var isNetworkReachable: Bool {
+        reachabilityManager?.isReachable ?? false
+    }
+
     func startObserving(listener: @escaping (ConnectivityStatus) -> Void) {
         reachabilityManager?.listener = { status in
             listener(ConnectivityStatus(reachabilityStatus: status))

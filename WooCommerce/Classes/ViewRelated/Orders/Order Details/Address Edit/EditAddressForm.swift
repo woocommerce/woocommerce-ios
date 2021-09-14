@@ -112,7 +112,7 @@ struct EditAddressForm: View {
                     }
 
                     Group {
-                        TitleAndValueRow(title: Localization.countryField, value: Localization.placeholderSelectOption, selectable: true) {
+                        TitleAndValueRow(title: Localization.countryField, value: viewModel.fields.country, selectable: true) {
                             showCountrySelector = true
                         }
                         Divider()

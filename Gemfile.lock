@@ -236,6 +236,7 @@ GEM
     memoist (0.16.2)
     mini_magick (4.11.0)
     mini_mime (1.1.1)
+    mini_portile2 (2.6.1)
     minitest (5.14.4)
     molinillo (0.6.6)
     multi_json (1.15.0)
@@ -244,6 +245,9 @@ GEM
     nap (1.1.0)
     naturally (2.2.1)
     netrc (0.11.0)
+    nokogiri (1.12.2)
+      mini_portile2 (~> 2.6.1)
+      racc (~> 1.4)
     nokogiri (1.12.2-x86_64-darwin)
       racc (~> 1.4)
     octokit (4.21.0)
@@ -328,6 +332,7 @@ GEM
     xctest_list (1.2.1)
 
 PLATFORMS
+  -darwin-20
   x86_64-darwin-19
   x86_64-darwin-20
 

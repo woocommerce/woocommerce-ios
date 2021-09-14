@@ -107,18 +107,18 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
         let calculatedWeight = calculateTotalWeight(products: products,
                                                     productVariations: productVariations,
                                                     customPackage: packageListViewModel.selectedCustomPackage)
-
+        let localizedCalculatedWeight = NumberFormatter.localizedString(from: NSNumber(value: calculatedWeight)) ?? String(calculatedWeight)
         // Set total weight to initialTotalWeight if it's different from the calculated weight.
         // Otherwise use the calculated weight.
         if initialTotalWeight.isNotEmpty, initialTotalWeight != String(calculatedWeight) {
             isPackageWeightEdited = true
             totalWeight = initialTotalWeight
         } else {
-            totalWeight = String(calculatedWeight)
+            totalWeight = localizedCalculatedWeight
         }
 
         $totalWeight
-            .map { $0 != String(calculatedWeight) }
+            .map { $0 != localizedCalculatedWeight }
             .assign(to: &$isPackageWeightEdited)
 
         $totalWeight
@@ -222,7 +222,11 @@ private extension ShippingLabelPackageItemViewModel {
     /// Validate that total weight is a valid floating point number.
     ///
     private func validateTotalWeight(_ totalWeight: String) -> Bool {
-        totalWeight.isNotEmpty && Double(totalWeight) != 0 && Double(totalWeight) != nil
+        guard totalWeight.isNotEmpty,
+              let value = NumberFormatter.double(from: totalWeight) else {
+            return false
+        }
+        return value > 0
     }
 }
 

@@ -117,15 +117,15 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                                              onPackageSaveCompletion: { _ in })
 
 
-        XCTAssertNil(viewModel.selectedCustomPackage)
-        XCTAssertNil(viewModel.selectedPredefinedPackage)
+        XCTAssertNil(viewModel.packageListViewModel.selectedCustomPackage)
+        XCTAssertNil(viewModel.packageListViewModel.selectedPredefinedPackage)
 
         // When
-        viewModel.didSelectPackage(customPackage.title)
+        viewModel.packageListViewModel.didSelectPackage(customPackage.title)
 
         // Then
-        XCTAssertEqual(viewModel.selectedCustomPackage, customPackage)
-        XCTAssertNil(viewModel.selectedPredefinedPackage)
+        XCTAssertEqual(viewModel.packageListViewModel.selectedCustomPackage, customPackage)
+        XCTAssertNil(viewModel.packageListViewModel.selectedPredefinedPackage)
     }
 
     func test_confirmPackageSelection_returns_the_expected_value() {
@@ -148,12 +148,12 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                                              onPackageSyncCompletion: { _ in },
                                                              onPackageSaveCompletion: { _ in })
 
-        XCTAssertNil(viewModel.selectedCustomPackage)
-        XCTAssertNil(viewModel.selectedPredefinedPackage)
+        XCTAssertNil(viewModel.packageListViewModel.selectedCustomPackage)
+        XCTAssertNil(viewModel.packageListViewModel.selectedPredefinedPackage)
 
         // When
-        viewModel.didSelectPackage(customPackage.title)
-        viewModel.confirmPackageSelection()
+        viewModel.packageListViewModel.didSelectPackage(customPackage.title)
+        viewModel.packageListViewModel.confirmPackageSelection()
 
         // Then
         XCTAssertEqual(viewModel.selectedPackageID, customPackage.title)
@@ -175,7 +175,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
 
 
         // Then
-        XCTAssertTrue(viewModel.showCustomPackagesHeader)
+        XCTAssertTrue(viewModel.packageListViewModel.showCustomPackagesHeader)
     }
 
     func test_selected_package_defaults_to_last_selected_package() {
@@ -297,8 +297,8 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                                              weightUnit: "kg",
                                                              onPackageSyncCompletion: { _ in },
                                                              onPackageSaveCompletion: { _ in })
-        viewModel.didSelectPackage("Box")
-        viewModel.confirmPackageSelection()
+        viewModel.packageListViewModel.didSelectPackage("Box")
+        viewModel.packageListViewModel.confirmPackageSelection()
 
         // Then
         XCTAssertEqual(viewModel.totalWeight, "72.88")
@@ -371,8 +371,8 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.totalWeight, "120.0")
 
         // When
-        viewModel.didSelectPackage("Box")
-        viewModel.confirmPackageSelection()
+        viewModel.packageListViewModel.didSelectPackage("Box")
+        viewModel.packageListViewModel.confirmPackageSelection()
 
         // Then
         XCTAssertEqual(viewModel.totalWeight, "130.0")
@@ -400,8 +400,8 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.totalWeight, "500")
 
         // When new package with additional weight is selected
-        viewModel.didSelectPackage("Box")
-        viewModel.confirmPackageSelection()
+        viewModel.packageListViewModel.didSelectPackage("Box")
+        viewModel.packageListViewModel.confirmPackageSelection()
 
         // Then
         XCTAssertEqual(viewModel.totalWeight, "500")
@@ -435,108 +435,11 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.totalWeight, "500")
 
         // When new package with additional weight is selected
-        viewModel.didSelectPackage("Box")
-        viewModel.confirmPackageSelection()
+        viewModel.packageListViewModel.didSelectPackage("Box")
+        viewModel.packageListViewModel.confirmPackageSelection()
 
         // Then
         XCTAssertEqual(viewModel.totalWeight, "500")
-    }
-
-    func test_hasCustomOrPredefinedPackages_returns_the_expected_value() {
-        // Given
-        let order = MockOrders().empty().copy(siteID: sampleSiteID)
-        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
-
-        // When
-        let viewModelWithoutPackages = ShippingLabelPackageDetailsViewModel(order: order,
-                                                                            packagesResponse: nil,
-                                                                            selectedPackages: [],
-                                                                            formatter: currencyFormatter,
-                                                                            stores: stores,
-                                                                            storageManager: storageManager,
-                                                                            weightUnit: "kg",
-                                                                            onPackageSyncCompletion: { _ in },
-                                                                            onPackageSaveCompletion: { _ in })
-        let viewModelWithPackages = ShippingLabelPackageDetailsViewModel(order: order,
-                                                                         packagesResponse: mockPackageResponse(),
-                                                                         selectedPackages: [],
-                                                                         formatter: currencyFormatter,
-                                                                         stores: stores,
-                                                                         storageManager: storageManager,
-                                                                         weightUnit: "kg",
-                                                                         onPackageSyncCompletion: { _ in },
-                                                                         onPackageSaveCompletion: { _ in })
-        let viewModelWithCustomPackages = ShippingLabelPackageDetailsViewModel(order: order,
-                                                                               packagesResponse: mockPackageResponse(withCustom: true, withPredefined: false),
-                                                                               selectedPackages: [],
-                                                                               formatter: currencyFormatter,
-                                                                               stores: stores,
-                                                                               storageManager: storageManager,
-                                                                               weightUnit: "kg",
-                                                                               onPackageSyncCompletion: { _ in },
-                                                                               onPackageSaveCompletion: { _ in })
-        let viewModelWithPredefinedPackages = ShippingLabelPackageDetailsViewModel(order: order,
-                                                                               packagesResponse: mockPackageResponse(withCustom: false, withPredefined: true),
-                                                                               selectedPackages: [],
-                                                                               formatter: currencyFormatter,
-                                                                               stores: stores,
-                                                                               storageManager: storageManager,
-                                                                               weightUnit: "kg",
-                                                                               onPackageSyncCompletion: { _ in },
-                                                                               onPackageSaveCompletion: { _ in })
-
-        // Then
-        XCTAssertFalse(viewModelWithoutPackages.hasCustomOrPredefinedPackages)
-        XCTAssertTrue(viewModelWithPackages.hasCustomOrPredefinedPackages)
-        XCTAssertTrue(viewModelWithCustomPackages.hasCustomOrPredefinedPackages)
-        XCTAssertTrue(viewModelWithPredefinedPackages.hasCustomOrPredefinedPackages)
-    }
-
-    func test_handleNewPackage_returns_updated_data_with_custom_package() {
-        // Given
-        let viewModel = ShippingLabelPackageDetailsViewModel(order: Order.fake(),
-                                                             packagesResponse: ShippingLabelPackagesResponse.fake(),
-                                                             selectedPackages: [],
-                                                             onPackageSyncCompletion: { _ in },
-                                                             onPackageSaveCompletion: { _ in })
-        let expectedCustomPackage = ShippingLabelCustomPackage(isUserDefined: true,
-                                                               title: "Box",
-                                                               isLetter: true,
-                                                               dimensions: "3 x 10 x 4",
-                                                               boxWeight: 10,
-                                                               maxWeight: 11)
-        let expectedPackagesResponse = ShippingLabelPackagesResponse.fake().copy(customPackages: [expectedCustomPackage])
-
-        // When
-        viewModel.handleNewPackage(expectedCustomPackage, nil, expectedPackagesResponse)
-
-        // Then
-        XCTAssertEqual(viewModel.packagesResponse, expectedPackagesResponse)
-        XCTAssertEqual(viewModel.selectedCustomPackage, expectedCustomPackage)
-    }
-
-    func test_handleNewPackage_returns_updated_data_with_service_package() {
-        // Given
-        let viewModel = ShippingLabelPackageDetailsViewModel(order: Order.fake(),
-                                                             packagesResponse: ShippingLabelPackagesResponse.fake(),
-                                                             selectedPackages: [],
-                                                             onPackageSyncCompletion: { _ in },
-                                                             onPackageSaveCompletion: { _ in })
-        let expectedPredefinedPackage = ShippingLabelPredefinedPackage(id: "package-1",
-                                                                       title: "Small",
-                                                                       isLetter: true,
-                                                                       dimensions: "3 x 4 x 5")
-        let expectedPredefinedOption = ShippingLabelPredefinedOption(title: "USPS",
-                                                                     providerID: "usps",
-                                                                     predefinedPackages: [expectedPredefinedPackage])
-        let expectedPackagesResponse = ShippingLabelPackagesResponse.fake().copy(predefinedOptions: [expectedPredefinedOption])
-
-        // When
-        viewModel.handleNewPackage(nil, expectedPredefinedPackage, expectedPackagesResponse)
-
-        // Then
-        XCTAssertEqual(viewModel.packagesResponse, expectedPackagesResponse)
-        XCTAssertEqual(viewModel.selectedPredefinedPackage, expectedPredefinedPackage)
     }
 }
 

@@ -17,7 +17,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OhL-hX-qBu">
-                        <rect key="frame" x="16" y="15" width="31" height="14.5"/>
+                        <rect key="frame" x="16" y="15" width="31" height="14"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -32,7 +32,9 @@
                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 <constraints>
                     <constraint firstItem="OhL-hX-qBu" firstAttribute="leading" secondItem="nm8-P2-HxZ" secondAttribute="leading" constant="16" id="32z-8n-hEN"/>
+                    <constraint firstItem="OhL-hX-qBu" firstAttribute="top" secondItem="nm8-P2-HxZ" secondAttribute="top" constant="15" id="DLB-5E-lIY"/>
                     <constraint firstAttribute="trailing" secondItem="NUH-Od-3Cg" secondAttribute="trailing" constant="16" id="Iby-g6-rYk"/>
+                    <constraint firstAttribute="bottom" secondItem="OhL-hX-qBu" secondAttribute="bottom" constant="15" id="NGj-xH-YOe"/>
                     <constraint firstItem="NUH-Od-3Cg" firstAttribute="centerY" secondItem="nm8-P2-HxZ" secondAttribute="centerY" id="pX6-Nb-5k7"/>
                     <constraint firstItem="OhL-hX-qBu" firstAttribute="centerY" secondItem="nm8-P2-HxZ" secondAttribute="centerY" id="xxB-it-osD"/>
                 </constraints>

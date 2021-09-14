@@ -7,6 +7,8 @@ enum MockCardReaderSettingsAlertsMode {
     case closeScanFailure
     case continueSearching
     case connectFoundReader
+    case connectFirstFound
+    case cancelFoundSeveral
     case continueSearchingAfterConnectionFailure
     case cancelSearchingAfterConnectionFailure
 }
@@ -55,6 +57,18 @@ final class MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         // GNDN
     }
 
+    func foundSeveralReaders(from: UIViewController, readerIDs: [String], connect: @escaping (String) -> Void, cancelSearch: @escaping () -> Void) {
+        let readerID = readerIDs.first ?? ""
+
+        if mode == .connectFirstFound {
+            connect(readerID)
+        }
+
+        if mode == .cancelFoundSeveral {
+            cancelSearch()
+        }
+    }
+
     func connectingFailed(from: UIViewController, continueSearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
         if mode == .continueSearchingAfterConnectionFailure {
             continueSearch()
@@ -63,6 +77,10 @@ final class MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         if mode == .cancelSearchingAfterConnectionFailure {
             cancelSearch()
         }
+    }
+
+    func updateSeveralReadersList(readerIDs: [String]) {
+        // GNDN
     }
 
     func dismiss() {

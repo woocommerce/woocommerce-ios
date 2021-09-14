@@ -28,47 +28,47 @@ final class EditAddressFormViewModelTests: XCTestCase {
         let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address)
 
         // Then
-        XCTAssertEqual(viewModel.firstName, address.firstName)
-        XCTAssertEqual(viewModel.lastName, address.lastName)
-        XCTAssertEqual(viewModel.email, address.email ?? "")
-        XCTAssertEqual(viewModel.phone, address.phone ?? "")
+        XCTAssertEqual(viewModel.fields.firstName, address.firstName)
+        XCTAssertEqual(viewModel.fields.lastName, address.lastName)
+        XCTAssertEqual(viewModel.fields.email, address.email ?? "")
+        XCTAssertEqual(viewModel.fields.phone, address.phone ?? "")
 
-        XCTAssertEqual(viewModel.company, address.company ?? "")
-        XCTAssertEqual(viewModel.address1, address.address1)
-        XCTAssertEqual(viewModel.address2, address.address2 ?? "")
-        XCTAssertEqual(viewModel.city, address.city)
-        XCTAssertEqual(viewModel.postcode, address.postcode)
+        XCTAssertEqual(viewModel.fields.company, address.company ?? "")
+        XCTAssertEqual(viewModel.fields.address1, address.address1)
+        XCTAssertEqual(viewModel.fields.address2, address.address2 ?? "")
+        XCTAssertEqual(viewModel.fields.city, address.city)
+        XCTAssertEqual(viewModel.fields.postcode, address.postcode)
 
-        XCTAssertFalse(viewModel.isDoneButtonEnabled)
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
     }
 
     func test_updating_fields_enables_done_button() {
         // Given
         let address = sampleAddress()
         let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address)
-        XCTAssertFalse(viewModel.isDoneButtonEnabled)
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
 
         // When
-        viewModel.firstName = "John"
+        viewModel.fields.firstName = "John"
 
         // Then
-        XCTAssertTrue(viewModel.isDoneButtonEnabled)
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: true))
     }
 
     func test_updating_fields_back_to_original_values_disables_done_button() {
         // Given
         let address = sampleAddress()
         let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address)
-        XCTAssertFalse(viewModel.isDoneButtonEnabled)
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
 
         // When
-        viewModel.firstName = "John"
-        viewModel.lastName = "Ipsum"
-        viewModel.firstName = "Johnny"
-        viewModel.lastName = "Appleseed"
+        viewModel.fields.firstName = "John"
+        viewModel.fields.lastName = "Ipsum"
+        viewModel.fields.firstName = "Johnny"
+        viewModel.fields.lastName = "Appleseed"
 
         // Then
-        XCTAssertFalse(viewModel.isDoneButtonEnabled)
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
     }
 
     func test_creating_without_address_disables_done_button() {
@@ -76,7 +76,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
         let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: nil)
 
         // Then
-        XCTAssertFalse(viewModel.isDoneButtonEnabled)
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
     }
 
     func test_creating_with_address_with_empty_nullable_fields_disables_done_button() {
@@ -85,7 +85,35 @@ final class EditAddressFormViewModelTests: XCTestCase {
         let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address)
 
         // Then
-        XCTAssertFalse(viewModel.isDoneButtonEnabled)
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
+    }
+
+    func test_loading_indicator_gets_enabled_during_network_request() {
+        // Given
+        let address = sampleAddress()
+        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address)
+
+        // When
+        viewModel.updateRemoteAddress { _ in }
+
+        // Then
+        assertEqual(viewModel.navigationTrailingItem, .loading)
+    }
+
+    func test_loading_indicator_gets_disabled_after_the_network_operation_completes() {
+        // Given
+        let address = sampleAddress()
+        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address)
+
+        // When
+        let navigationItem = waitFor { promise in
+            viewModel.updateRemoteAddress { _ in
+                promise(viewModel.navigationTrailingItem)
+            }
+        }
+
+        // Then
+        assertEqual(navigationItem, .done(enabled: false))
     }
 
     func test_starting_view_model_without_stored_countries_fetches_them_remotely() {

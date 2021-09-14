@@ -17,6 +17,8 @@ struct ShippingLabelPackageDetails: View {
                 LazyVStack(spacing: 0) {
                     VStack(spacing: 0) {
                         ShippingLabelPackageNumberRow(packageNumber: 1, numberOfItems: viewModel.itemsRows.count)
+                            .frame(height: Constants.packageNumberRowHeight)
+                            .padding([.leading, .trailing], Constants.horizontalPadding)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
 
                         Divider()
@@ -34,7 +36,7 @@ struct ShippingLabelPackageDetails: View {
                             .background(Color(.systemBackground))
                         Divider()
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
-                            .padding(.leading, Constants.dividerPadding)
+                            .padding(.leading, Constants.horizontalPadding)
                     }
 
                     ListHeaderView(text: Localization.packageDetailsHeader, alignment: .left)
@@ -48,7 +50,7 @@ struct ShippingLabelPackageDetails: View {
                         }
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
                         .sheet(isPresented: $showingPackageSelection, content: {
-                            ShippingLabelPackageSelection(viewModel: viewModel)
+                            ShippingLabelPackageSelection(viewModel: viewModel.packageListViewModel)
                         })
 
                         Divider()
@@ -101,7 +103,8 @@ private extension ShippingLabelPackageDetails {
     }
 
     enum Constants {
-        static let dividerPadding: CGFloat = 16
+        static let packageNumberRowHeight: CGFloat = 44
+        static let horizontalPadding: CGFloat = 16
     }
 }
 

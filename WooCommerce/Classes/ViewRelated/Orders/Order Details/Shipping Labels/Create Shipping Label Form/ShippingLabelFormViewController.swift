@@ -420,7 +420,10 @@ private extension ShippingLabelFormViewController {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsMultiPackage) {
             let vm = ShippingLabelPackagesFormViewModel(order: viewModel.order,
                                                         packagesResponse: viewModel.packagesResponse,
-                                                        selectedPackages: inputPackages)
+                                                        selectedPackages: inputPackages,
+                                                        onPackageSyncCompletion: { [weak self] (packagesResponse) in
+                                                          self?.viewModel.handleNewPackagesResponse(packagesResponse: packagesResponse)
+                                                        })
             let packagesForm = ShippingLabelPackagesForm(viewModel: vm)
             let hostingVC = UIHostingController(rootView: packagesForm)
             navigationController?.show(hostingVC, sender: nil)

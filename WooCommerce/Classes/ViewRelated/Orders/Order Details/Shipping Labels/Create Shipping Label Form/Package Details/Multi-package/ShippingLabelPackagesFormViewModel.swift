@@ -21,6 +21,7 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private var resultsControllers: ShippingLabelPackageDetailsResultsControllers?
+    private let onPackageSyncCompletion: (_ packagesResponse: ShippingLabelPackagesResponse?) -> Void
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -39,6 +40,7 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
     init(order: Order,
          packagesResponse: ShippingLabelPackagesResponse?,
          selectedPackages: [ShippingLabelPackageAttributes],
+         onPackageSyncCompletion: @escaping (_ packagesResponse: ShippingLabelPackagesResponse?) -> Void,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -47,6 +49,7 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.selectedPackages = selectedPackages
+        self.onPackageSyncCompletion = onPackageSyncCompletion
 
         configureResultsControllers()
         syncProducts()
@@ -80,9 +83,13 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
                                                              selectedPackageID: details.packageID,
                                                              totalWeight: details.totalWeight,
                                                              products: products,
-                                                             productVariations: variations) { [weak self] newPackage in
-                        self?.switchPackage(currentID: details.packageID, newPackage: newPackage)
-                    }
+                                                             productVariations: variations,
+                                                             onPackageSwitch: { [weak self] newPackage in
+                                                                self?.switchPackage(currentID: details.packageID, newPackage: newPackage)
+                                                             },
+                                                             onPackagesSync: { [weak self] packagesResponse in
+                                                                self?.onPackageSyncCompletion(packagesResponse)
+                                                             })
                 }
             }
             .sink { [weak self] viewModels in

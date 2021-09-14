@@ -70,14 +70,6 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     ///
     @Published private var isPackageWeightEdited: Bool = false
 
-    // TODO-4599: check this
-    lazy var addNewPackageViewModel = ShippingLabelAddNewPackageViewModel(siteID: order.siteID,
-                                                                          packagesResponse: packagesResponse,
-                                                                          onCompletion: { [weak self] (customPackage, predefinedOption, packagesResponse) in
-                                                                            guard let self = self else { return }
-                                                                            self.handleNewPackage(customPackage, predefinedOption, packagesResponse)
-                                                                          })
-
     /// Completion callback after package details are synced from remote
     ///
     private let onPackageSyncCompletion: (_ packagesResponse: ShippingLabelPackagesResponse?) -> Void
@@ -102,8 +94,9 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.weightUnit = weightUnit
-        self.packageListViewModel = ShippingLabelPackageListViewModel(packagesResponse: packagesResponse)
-        self.selectedPackageID = selectedPackages.first?.packageID // TODO-4599: fix this
+        self.packageListViewModel = ShippingLabelPackageListViewModel(siteID: order.siteID, packagesResponse: packagesResponse)
+        // This is temporary solution while supporting both single and multiple packages solution.
+        self.selectedPackageID = selectedPackages.first?.packageID
         self.onPackageSyncCompletion = onPackageSyncCompletion
         self.onPackageSaveCompletion = onPackageSaveCompletion
         self.packageListViewModel.delegate = self
@@ -113,7 +106,9 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         syncProducts()
         syncProductVariations()
         configureItemRows()
-        configureTotalWeights(initialTotalWeight: selectedPackages.first?.totalWeight) // TODO-4599: fix this
+
+        // This is temporary solution while supporting both single and multiple packages solution.
+        configureTotalWeights(initialTotalWeight: selectedPackages.first?.totalWeight)
     }
 
     /// Observe changes in products and variations to update item rows.
@@ -283,6 +278,10 @@ extension ShippingLabelPackageDetailsViewModel: ShippingLabelPackageSelectionDel
         selectedPackageID = id
     }
 
+    func didSyncPackages(packagesResponse: ShippingLabelPackagesResponse?) {
+        onPackageSyncCompletion(packagesResponse)
+    }
+
     /// Sets the package passed through the init method, or set the last selected package, if any, as the default selected package
     ///
     func setDefaultPackage() {
@@ -291,27 +290,6 @@ extension ShippingLabelPackageDetailsViewModel: ShippingLabelPackageSelectionDel
         }
         packageListViewModel.didSelectPackage(selectedPackageID)
         packageListViewModel.confirmPackageSelection()
-    }
-
-    /// Selects a newly created custom package or newly activated service package and adds it to the package list
-    ///
-    func handleNewPackage(_ customPackage: ShippingLabelCustomPackage?,
-                          _ servicePackage: ShippingLabelPredefinedPackage?,
-                          _ packagesResponse: ShippingLabelPackagesResponse?) {
-        guard let packagesResponse = packagesResponse else {
-            return
-        }
-
-        self.packagesResponse = packagesResponse
-
-        if let customPackage = customPackage {
-            selectCustomPackage(customPackage.title)
-        }
-        else if let servicePackage = servicePackage {
-            selectPredefinedPackage(servicePackage.id)
-        }
-
-        onPackageSyncCompletion(packagesResponse)
     }
 }
 

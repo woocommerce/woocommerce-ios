@@ -16,8 +16,9 @@ struct ShippingLabelPackageSelection: View {
 
 struct ShippingLabelPackageSelection_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModelWithPackages = ShippingLabelPackageListViewModel(packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails())
-        let viewModelWithoutPackages = ShippingLabelPackageListViewModel(packagesResponse: nil)
+        let viewModelWithPackages = ShippingLabelPackageListViewModel(siteID: 123,
+                                                                      packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails())
+        let viewModelWithoutPackages = ShippingLabelPackageListViewModel(siteID: 123, packagesResponse: nil)
 
         ShippingLabelPackageSelection(viewModel: viewModelWithPackages)
         ShippingLabelPackageSelection(viewModel: viewModelWithoutPackages)

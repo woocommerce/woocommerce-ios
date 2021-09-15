@@ -16,6 +16,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
 
     var connectedReaderID: String?
     var connectedReaderBatteryLevel: String?
+    var connectedReaderSoftwareVersion: String?
 
     init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?, knownReadersProvider: CardReaderSettingsKnownReadersProvider? = nil) {
         self.didChangeShouldShow = didChangeShouldShow
@@ -41,13 +42,25 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     }
 
     private func updateProperties() {
+        updateReaderID()
+        updateBatteryLevel()
+        updateSoftwareVersion()
+    }
+
+    private func updateReaderID() {
         guard connectedReaders.count > 0 else {
             connectedReaderID = nil
-            connectedReaderBatteryLevel = nil
             return
         }
 
         connectedReaderID = connectedReaders[0].id
+    }
+
+    private func updateBatteryLevel() {
+        guard connectedReaders.count > 0 else {
+            connectedReaderBatteryLevel = nil
+            return
+        }
 
         guard let batteryLevel = connectedReaders[0].batteryLevel else {
             connectedReaderBatteryLevel = Localization.unknownBatteryStatus
@@ -57,6 +70,20 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
         let batteryLevelPercent = Int(100 * batteryLevel)
         let batteryLevelString = NumberFormatter.localizedString(from: batteryLevelPercent as NSNumber, number: .decimal)
         connectedReaderBatteryLevel = String.localizedStringWithFormat(Localization.batteryLabelFormat, batteryLevelString)
+    }
+
+    private func updateSoftwareVersion() {
+        guard connectedReaders.count > 0 else {
+            connectedReaderSoftwareVersion = nil
+            return
+        }
+
+        guard let softwareVersion = connectedReaders[0].softwareVersion else {
+            connectedReaderSoftwareVersion = Localization.unknownSoftwareVersion
+            return
+        }
+
+        connectedReaderSoftwareVersion = String.localizedStringWithFormat(Localization.versionLabelFormat, softwareVersion)
     }
 
     /// Dispatch a request to check for reader updates
@@ -166,6 +193,16 @@ private extension CardReaderSettingsConnectedViewModel {
         static let batteryLabelFormat = NSLocalizedString(
             "%1$@%% Battery",
             comment: "Card reader battery level as an integer percentage"
+        )
+
+        static let unknownSoftwareVersion = NSLocalizedString(
+            "Unknown Software Version",
+            comment: "Displayed in the unlikely event a card reader has an indeterminate software version"
+        )
+
+        static let versionLabelFormat = NSLocalizedString(
+            "Version: %1$@%",
+            comment: "Displays the connected reader software version"
         )
     }
 }

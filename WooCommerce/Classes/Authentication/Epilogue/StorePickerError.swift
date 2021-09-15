@@ -47,9 +47,9 @@ struct StorePickerError: View {
             }
             .buttonStyle(LinkButtonStyle())
         }
+        .padding()
         .background(Color(.basicBackground))
         .cornerRadius(10)
-        .padding()
     }
 }
 
@@ -73,7 +73,11 @@ private extension StorePickerError {
 
 struct StorePickerError_Preview: PreviewProvider {
     static var previews: some View {
-        StorePickerError()
-            .previewLayout(.sizeThatFits)
+        VStack {
+            StorePickerError()
+        }
+        .padding()
+        .background(Color.gray)
+        .previewLayout(.sizeThatFits)
     }
 }

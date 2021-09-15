@@ -60,7 +60,7 @@ struct JetpackErrorViewModel: ULErrorViewModel {
         viewController?.present(fancyAlert, animated: true)
     }
 
-    func didLoadView(in viewController: UIViewController?) {
+    func viewDidLoad(in viewController: UIViewController?) {
 
     }
 }

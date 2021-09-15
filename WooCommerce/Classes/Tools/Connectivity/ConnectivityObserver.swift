@@ -1,5 +1,7 @@
 import Foundation
 
+/// Interface for the observing connectivity
+///
 protocol ConnectivityObserver {
     /// Starts the observer with a listener.
     func startObserving(listener: @escaping (ConnectivityStatus) -> Void)

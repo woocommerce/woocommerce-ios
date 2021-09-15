@@ -11,6 +11,8 @@ final class ULErrorViewControllerTests: XCTestCase {
     }
 
     override func tearDown() {
+        // There is no known tear down for the Authenticator. So this method intentionally does
+        // nothing.
         super.tearDown()
     }
 
@@ -135,6 +137,20 @@ final class ULErrorViewControllerTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.secondaryButtonTapped)
     }
+
+    func test_viewController_informs_viewModel_when_the_view_is_loaded() throws {
+        // Given
+        let viewModel = ErrorViewModel()
+        let viewController = ULErrorViewController(viewModel: viewModel)
+
+        XCTAssertFalse(viewModel.viewDidLoadTriggered)
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+
+        // Then
+        XCTAssertTrue(viewModel.viewDidLoadTriggered)
+    }
 }
 
 
@@ -154,6 +170,7 @@ private final class ErrorViewModel: ULErrorViewModel {
     var primaryButtonTapped: Bool = false
     var secondaryButtonTapped: Bool = false
     var auxiliaryButtonTapped: Bool = false
+    var viewDidLoadTriggered = false
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
         primaryButtonTapped = true
@@ -166,6 +183,12 @@ private final class ErrorViewModel: ULErrorViewModel {
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
         auxiliaryButtonTapped = true
     }
+
+    func viewDidLoad(in viewController: UIViewController?) {
+        viewDidLoadTriggered = true
+    }
+}
+
 // MARK: - WordPressAuthenticator Initialization
 
 private extension ULErrorViewControllerTests {

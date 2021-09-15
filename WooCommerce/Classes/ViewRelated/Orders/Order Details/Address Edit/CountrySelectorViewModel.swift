@@ -27,13 +27,8 @@ final class CountrySelectorViewModel: FilterListSelectorViewModelable, Observabl
     ///
     let filterPlaceholder = Localization.placeholder
 
-    /// Current `SiteID`, needed to sync countries from a remote source.
-    ///
-    private let siteID: Int64
-
-    init(siteID: Int64, countries: [Country]) {
-        self.siteID = siteID
-        self.command = CountrySelectorCommand(countries: countries)
+    init(countries: [Country], selected: Binding<Country?>) {
+        self.command = CountrySelectorCommand(countries: countries, selected: selected)
     }
 }
 

@@ -4,10 +4,12 @@ import Foundation
 struct ShippingLabelPackageNumberRow: View {
     let packageNumber: Int
     let numberOfItems: Int
+    let isValid: Bool
 
-    init(packageNumber: Int, numberOfItems: Int) {
+    init(packageNumber: Int, numberOfItems: Int, isValid: Bool = true) {
         self.packageNumber = packageNumber
         self.numberOfItems = numberOfItems
+        self.isValid = isValid
     }
 
     var body: some View {
@@ -23,6 +25,9 @@ struct ShippingLabelPackageNumberRow: View {
                     .font(.body)
             }
             Spacer()
+            Image(uiImage: .noticeImage)
+                .foregroundColor(Color(.error))
+                .renderedIf(!isValid)
         }
     }
 }
@@ -44,6 +49,9 @@ struct ShippingLabelPackageNumberRow_Previews: PreviewProvider {
             .previewLayout(.fixed(width: 375, height: 50))
 
         ShippingLabelPackageNumberRow(packageNumber: 7, numberOfItems: 1)
+            .previewLayout(.fixed(width: 375, height: 50))
+
+        ShippingLabelPackageNumberRow(packageNumber: 7, numberOfItems: 1, isValid: false)
             .previewLayout(.fixed(width: 375, height: 50))
     }
 }

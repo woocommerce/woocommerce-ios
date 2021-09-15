@@ -5,7 +5,7 @@ import Yosemite
 ///
 final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
     private var connectedReaders: [CardReader]
-    private var discoveredReader: CardReader?
+    private var discoveredReaders: [CardReader]
     private var failDiscovery: Bool
     private var readerUpdateAvailable: Bool
     private var failReaderUpdateCheck: Bool
@@ -13,7 +13,7 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
     private var failConnection: Bool
 
     init(connectedReaders: [CardReader],
-         discoveredReader: CardReader? = nil,
+         discoveredReaders: [CardReader],
          sessionManager: SessionManager,
          failDiscovery: Bool = false,
          readerUpdateAvailable: Bool = false,
@@ -22,7 +22,7 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
          failConnection: Bool = false
     ) {
         self.connectedReaders = connectedReaders
-        self.discoveredReader = discoveredReader
+        self.discoveredReaders = discoveredReaders
         self.failDiscovery = failDiscovery
         self.readerUpdateAvailable = readerUpdateAvailable
         self.failReaderUpdateCheck = failReaderUpdateCheck
@@ -48,10 +48,10 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
                 onError(MockErrors.discoveryFailure)
                 return
             }
-            guard let discoveredReader = discoveredReader else {
+            guard discoveredReaders.isNotEmpty else {
                 return
             }
-            onReaderDiscovered([discoveredReader])
+            onReaderDiscovered(discoveredReaders)
         case .connect(let reader, let onCompletion):
             guard !failConnection else {
                 onCompletion(Result.failure(MockErrors.connectionFailure))

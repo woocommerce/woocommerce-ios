@@ -22,7 +22,7 @@
                         </constraints>
                     </activityIndicatorView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RCi-ON-QWU">
-                        <rect key="frame" x="52" y="15" width="346" height="14.5"/>
+                        <rect key="frame" x="52" y="15" width="346" height="14"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -31,7 +31,9 @@
                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 <constraints>
                     <constraint firstItem="zyy-o9-EPH" firstAttribute="leading" secondItem="Qaq-rR-9Pm" secondAttribute="leading" constant="16" id="ALB-ix-29j"/>
+                    <constraint firstAttribute="bottom" secondItem="RCi-ON-QWU" secondAttribute="bottom" constant="15" id="G5b-pm-fUa"/>
                     <constraint firstItem="zyy-o9-EPH" firstAttribute="centerY" secondItem="Qaq-rR-9Pm" secondAttribute="centerY" id="YIm-45-WDs"/>
+                    <constraint firstItem="RCi-ON-QWU" firstAttribute="top" secondItem="Qaq-rR-9Pm" secondAttribute="top" constant="15" id="Zup-29-caz"/>
                     <constraint firstItem="RCi-ON-QWU" firstAttribute="leading" secondItem="zyy-o9-EPH" secondAttribute="trailing" constant="16" id="cce-a7-oH8"/>
                     <constraint firstItem="RCi-ON-QWU" firstAttribute="centerY" secondItem="Qaq-rR-9Pm" secondAttribute="centerY" id="hZI-6i-3kM"/>
                     <constraint firstAttribute="trailing" secondItem="RCi-ON-QWU" secondAttribute="trailing" constant="16" id="vXP-RA-5EA"/>
@@ -39,6 +41,7 @@
             </tableViewCellContentView>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <connections>
+                <outlet property="activityIndicator" destination="zyy-o9-EPH" id="fG9-ff-Lyi"/>
                 <outlet property="label" destination="RCi-ON-QWU" id="1fE-U6-dLe"/>
             </connections>
             <point key="canvasLocation" x="900" y="27"/>

@@ -34,13 +34,25 @@ class ShippingLabelPackagesFormViewModelTests: XCTestCase {
         let package2 = ShippingLabelPackageAttributes(packageID: "Box 2", totalWeight: "5.5", productIDs: [1, 2, 3])
 
         // When & Then
-        let viewModel1 = ShippingLabelPackagesFormViewModel(order: order, packagesResponse: nil, selectedPackages: [])
+        let viewModel1 = ShippingLabelPackagesFormViewModel(order: order,
+                                                            packagesResponse: nil,
+                                                            selectedPackages: [],
+                                                            onSelectionCompletion: { _ in },
+                                                            onPackageSyncCompletion: { _ in })
         XCTAssertFalse(viewModel1.foundMultiplePackages)
 
-        let viewModel2 = ShippingLabelPackagesFormViewModel(order: order, packagesResponse: nil, selectedPackages: [package1])
+        let viewModel2 = ShippingLabelPackagesFormViewModel(order: order,
+                                                            packagesResponse: nil,
+                                                            selectedPackages: [package1],
+                                                            onSelectionCompletion: { _ in },
+                                                            onPackageSyncCompletion: { _ in })
         XCTAssertFalse(viewModel2.foundMultiplePackages)
 
-        let viewModel3 = ShippingLabelPackagesFormViewModel(order: order, packagesResponse: nil, selectedPackages: [package1, package2])
+        let viewModel3 = ShippingLabelPackagesFormViewModel(order: order,
+                                                            packagesResponse: nil,
+                                                            selectedPackages: [package1, package2],
+                                                            onSelectionCompletion: { _ in },
+                                                            onPackageSyncCompletion: { _ in })
         XCTAssertTrue(viewModel3.foundMultiplePackages)
     }
 
@@ -50,7 +62,12 @@ class ShippingLabelPackagesFormViewModelTests: XCTestCase {
         insert(MockShippingLabelAccountSettings.sampleAccountSettings(siteID: sampleSiteID, lastSelectedPackageID: "package-1"))
 
         // When
-        let viewModel = ShippingLabelPackagesFormViewModel(order: order, packagesResponse: nil, selectedPackages: [], storageManager: storageManager)
+        let viewModel = ShippingLabelPackagesFormViewModel(order: order,
+                                                           packagesResponse: nil,
+                                                           selectedPackages: [],
+                                                           onSelectionCompletion: { _ in },
+                                                           onPackageSyncCompletion: { _ in },
+                                                           storageManager: storageManager)
 
         // Then
         XCTAssertEqual(viewModel.itemViewModels.count, 1)
@@ -66,7 +83,9 @@ class ShippingLabelPackagesFormViewModelTests: XCTestCase {
         // When
         let viewModel = ShippingLabelPackagesFormViewModel(order: order,
                                                            packagesResponse: nil,
-                                                           selectedPackages: [package1, package2])
+                                                           selectedPackages: [package1, package2],
+                                                           onSelectionCompletion: { _ in },
+                                                           onPackageSyncCompletion: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.itemViewModels.count, 2)
@@ -74,6 +93,64 @@ class ShippingLabelPackagesFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.itemViewModels.last?.selectedPackageID, package2.packageID)
     }
 
+    func test_doneButtonEnabled_returns_true_when_all_packages_are_valid() {
+        // Given
+        let order = MockOrders().empty().copy(siteID: sampleSiteID)
+        let package1 = ShippingLabelPackageAttributes(packageID: "Box 1", totalWeight: "12", productIDs: [1, 2, 3])
+        let package2 = ShippingLabelPackageAttributes(packageID: "Box 2", totalWeight: "5.5", productIDs: [1, 2, 3])
+
+        // When
+        let viewModel = ShippingLabelPackagesFormViewModel(order: order,
+                                                           packagesResponse: nil,
+                                                           selectedPackages: [package1, package2],
+                                                           onSelectionCompletion: { _ in },
+                                                           onPackageSyncCompletion: { _ in })
+
+        // Then
+        XCTAssertTrue(viewModel.doneButtonEnabled)
+    }
+
+    func test_doneButtonEnabled_returns_false_when_not_all_packages_are_valid() {
+        // Given
+        let order = MockOrders().empty().copy(siteID: sampleSiteID)
+        let package1 = ShippingLabelPackageAttributes(packageID: "Box 1", totalWeight: "12", productIDs: [1, 2, 3])
+        let package2 = ShippingLabelPackageAttributes(packageID: "Box 2", totalWeight: "5.5", productIDs: [1, 2, 3])
+
+        // When
+        let viewModel = ShippingLabelPackagesFormViewModel(order: order,
+                                                           packagesResponse: nil,
+                                                           selectedPackages: [package1, package2],
+                                                           onSelectionCompletion: { _ in },
+                                                           onPackageSyncCompletion: { _ in })
+        viewModel.itemViewModels.first?.totalWeight = "0"
+
+        // Then
+        XCTAssertFalse(viewModel.doneButtonEnabled)
+    }
+
+    func test_onCompletion_returns_correctly() {
+        // Given
+        let order = MockOrders().empty().copy(siteID: sampleSiteID)
+        let package1 = ShippingLabelPackageAttributes(packageID: "Box 1", totalWeight: "12", productIDs: [1, 2, 3])
+        let package2 = ShippingLabelPackageAttributes(packageID: "Box 2", totalWeight: "5.5", productIDs: [1, 2, 3])
+
+        var result: [ShippingLabelPackageAttributes] = []
+        let completionHandler = { packages in
+            result = packages
+        }
+        // When
+        let viewModel = ShippingLabelPackagesFormViewModel(order: order,
+                                                           packagesResponse: nil,
+                                                           selectedPackages: [package1, package2],
+                                                           onSelectionCompletion: completionHandler,
+                                                           onPackageSyncCompletion: { _ in })
+        viewModel.confirmPackageSelection()
+
+        // Then
+        XCTAssertEqual(result.count, 2)
+        XCTAssertEqual(result.first?.packageID, package1.packageID)
+        XCTAssertEqual(result.last?.packageID, package2.packageID)
+    }
 }
 
 // MARK: - Utils

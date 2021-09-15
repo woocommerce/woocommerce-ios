@@ -1,49 +1,51 @@
-import class Alamofire.NetworkReachabilityManager
 import Foundation
+import Network
 
 final class DefaultConnectivityObserver: ConnectivityObserver {
 
-    /// Reachability manager with WordPress API host to evaluate connection.
+    /// Network monitor to evaluate connection.
     ///
-    private let reachabilityManager = NetworkReachabilityManager(host: "public-api.wordpress.com")
+    private let networkMonitor: NWPathMonitor
+    private let observingQueue: DispatchQueue = .global(qos: .background)
 
-    var isNetworkReachable: Bool {
-        reachabilityManager?.isReachable ?? false
+    init(networkMonitor: NWPathMonitor = .init()) {
+        self.networkMonitor = networkMonitor
     }
 
     func startObserving(listener: @escaping (ConnectivityStatus) -> Void) {
-        reachabilityManager?.listener = { status in
-            listener(ConnectivityStatus(reachabilityStatus: status))
+        networkMonitor.pathUpdateHandler = { [weak self] path in
+            guard let self = self else { return }
+            let connectivityStatus = self.connectivityStatus(from: path)
+            DispatchQueue.main.async {
+                listener(connectivityStatus)
+            }
         }
-        reachabilityManager?.startListening()
+        networkMonitor.start(queue: observingQueue)
     }
 
     func stopObserving() {
-        reachabilityManager?.stopListening()
+        networkMonitor.cancel()
     }
-}
 
-private extension ConnectivityStatus {
-    init(reachabilityStatus: NetworkReachabilityManager.NetworkReachabilityStatus) {
-        switch reachabilityStatus {
-        case .unknown:
-            self = .unknown
-        case .notReachable:
-            self = .notReachable
-        case .reachable(let type):
-            let matchingType = ConnectionType(connectionType: type)
-            self = .reachable(type: matchingType)
+    private func connectivityStatus(from path: NWPath) -> ConnectivityStatus {
+        let connectivityStatus: ConnectivityStatus
+        switch path.status {
+        case .satisfied:
+            var connectionType: ConnectionType = .other
+            if path.usesInterfaceType(.wifi) ||
+                path.usesInterfaceType(.wiredEthernet) {
+                connectionType = .ethernetOrWiFi
+            } else if path.usesInterfaceType(.cellular) {
+                connectionType = .cellular
+            }
+            connectivityStatus = .reachable(type: connectionType)
+        case .unsatisfied:
+            connectivityStatus = .notReachable
+        case .requiresConnection:
+            connectivityStatus = .unknown
+        @unknown default:
+            connectivityStatus = .unknown
         }
-    }
-}
-
-private extension ConnectionType {
-    init(connectionType: NetworkReachabilityManager.ConnectionType) {
-        switch connectionType {
-        case .ethernetOrWiFi:
-            self = .ethernetOrWiFi
-        case .wwan:
-            self = .wwan
-        }
+        return connectivityStatus
     }
 }

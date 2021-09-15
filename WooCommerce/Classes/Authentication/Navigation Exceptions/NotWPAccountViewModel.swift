@@ -37,6 +37,10 @@ struct NotWPAccountViewModel: ULErrorViewModel {
         fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
         viewController?.present(fancyAlert, animated: true)
     }
+
+    func didLoadView(in viewController: UIViewController?) {
+
+    }
 }
 
 

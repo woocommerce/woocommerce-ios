@@ -32,6 +32,10 @@ struct NoSecureConnectionErrorViewModel: ULErrorViewModel {
         // NO-OP
     }
 
+    func didLoadView(in viewController: UIViewController?) {
+
+    }
+
 }
 
 private extension NoSecureConnectionErrorViewModel {

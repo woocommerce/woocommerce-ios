@@ -34,6 +34,10 @@ struct NotWPErrorViewModel: ULErrorViewModel {
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
         // NO-OP
     }
+
+    func didLoadView(in viewController: UIViewController?) {
+
+    }
 }
 
 

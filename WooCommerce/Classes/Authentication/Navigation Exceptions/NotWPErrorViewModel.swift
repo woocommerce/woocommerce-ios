@@ -36,7 +36,7 @@ struct NotWPErrorViewModel: ULErrorViewModel {
     }
 
     func viewDidLoad(in viewController: UIViewController?) {
-
+        // NO-OP
     }
 }
 

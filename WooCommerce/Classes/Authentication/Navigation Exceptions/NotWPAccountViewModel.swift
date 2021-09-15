@@ -39,7 +39,7 @@ struct NotWPAccountViewModel: ULErrorViewModel {
     }
 
     func viewDidLoad(in viewController: UIViewController?) {
-
+        // NO-OP
     }
 }
 

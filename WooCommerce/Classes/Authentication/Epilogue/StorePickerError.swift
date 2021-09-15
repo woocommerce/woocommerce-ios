@@ -1,8 +1,27 @@
 import SwiftUI
+import SafariServices
 
 /// Hosting controller wrapper for `StorePickerError`
 ///
 final class StorePickerErrorHostingController: UIHostingController<StorePickerError> {
+
+    /// Creates an `StorePickerErrorHostingController` with preconfigured button actions.
+    ///
+    static func createWithActions(presentingViewController: UIViewController) -> StorePickerErrorHostingController {
+        .init(
+            troubleshootingAction: {
+                let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
+                presentingViewController.present(safariViewController, animated: true)
+            },
+            contactSupportAction: {
+                ZendeskManager.shared.showNewRequestIfPossible(from: presentingViewController)
+            },
+            dismissAction: {
+                presentingViewController.dismiss(animated: true)
+            }
+        )
+    }
+
     init(troubleshootingAction: @escaping () -> Void, contactSupportAction: @escaping () -> Void, dismissAction: @escaping () -> Void) {
         super.init(rootView: StorePickerError(troubleshootingAction: troubleshootingAction,
                                               contactSupportAction: contactSupportAction,

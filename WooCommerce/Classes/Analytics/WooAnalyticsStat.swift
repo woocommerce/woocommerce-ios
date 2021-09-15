@@ -39,6 +39,7 @@ public enum WooAnalyticsStat: String {
     case loginJetpackRequiredViewInstructionsButtonTapped = "login_jetpack_required_view_instructions_button_tapped"
     case loginWhatIsJetpackHelpScreenViewed               = "login_what_is_jetpack_help_screen_viewed"
     case loginWhatIsJetpackHelpScreenOkButtonTapped       = "login_what_is_jetpack_help_screen_ok_button_tapped"
+    case loginWhatIsJetpackHelpScreenLearnMoreButtonTapped = "login_what_is_jetpack_help_screen_learn_more_button_tapped"
     case loginMagicLinkOpenEmailClientViewed              = "login_magic_link_open_email_client_viewed"
     case loginMagicLinkRequestFormViewed                  = "login_magic_link_request_form_viewed"
     case loginMagicLinkExited                             = "login_magic_link_exited"

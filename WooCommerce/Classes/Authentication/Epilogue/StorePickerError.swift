@@ -28,6 +28,13 @@ final class StorePickerErrorHostingController: UIHostingController<StorePickerEr
         super.init(rootView: StorePickerError())
     }
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        // Allows the view have a clear background when a custom presentation context
+        view.backgroundColor = modalPresentationStyle == .custom ? .clear : view.backgroundColor
+    }
+
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

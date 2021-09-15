@@ -424,6 +424,7 @@ private extension StorePickerViewController {
             switch result {
             case .success(.validWCVersion):
                 self?.updateUIForValidSite()
+                self?.updateUIForEmptyOrErroredSite(named: siteName, with: siteID)
             case .success(.invalidWCVersion):
                 self?.updateUIForInvalidSite(named: siteName)
             case .failure:
@@ -456,7 +457,12 @@ private extension StorePickerViewController {
     func updateUIForEmptyOrErroredSite(named siteName: String, with siteID: Int64) {
         toggleDismissButton(enabled: false)
         updateActionButtonAndTableState(animating: false, enabled: false)
-        displayVersionCheckErrorNotice(siteID: siteID, siteName: siteName)
+
+        let viewController = StorePickerErrorHostingController.createWithActions(presenting: self)
+        viewController.modalPresentationStyle = .custom
+        viewController.transitioningDelegate = self
+        self.present(viewController, animated: true)
+        //displayVersionCheckErrorNotice(siteID: siteID, siteName: siteName)
     }
 
     /// Little helper func that helps manage the actionButton and Table state while checking on a
@@ -518,6 +524,15 @@ private extension StorePickerViewController {
         fancyAlert.modalPresentationStyle = .custom
         fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
         present(fancyAlert, animated: true)
+    }
+}
+
+// MARK: Transition Controller Delegate
+extension StorePickerViewController: UIViewControllerTransitioningDelegate {
+    func presentationController(forPresented presented: UIViewController,
+                                presenting: UIViewController?,
+                                source: UIViewController) -> UIPresentationController? {
+        FancyAlertPresentationController(presentedViewController: presented, presenting: presenting)
     }
 }
 

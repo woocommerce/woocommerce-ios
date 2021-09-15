@@ -48,6 +48,8 @@ struct JetpackErrorViewModel: ULErrorViewModel {
         let safariViewController = SFSafariViewController(url: url)
         safariViewController.modalPresentationStyle = .pageSheet
         viewController?.present(safariViewController, animated: true)
+
+        analytics.track(.loginJetpackRequiredViewInstructionsButtonTapped)
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {

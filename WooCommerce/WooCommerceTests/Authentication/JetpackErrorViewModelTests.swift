@@ -82,7 +82,7 @@ final class JetpackErrorViewModelTests: XCTestCase {
         assertEmpty(analyticsProvider.receivedEvents)
 
         // When
-        viewModel.viewDidLoad(in: nil)
+        viewModel.viewDidLoad()
 
         // Then
         let firstEvent = try XCTUnwrap(analyticsProvider.receivedEvents.first)

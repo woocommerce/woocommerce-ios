@@ -184,7 +184,7 @@ private final class ErrorViewModel: ULErrorViewModel {
         auxiliaryButtonTapped = true
     }
 
-    func viewDidLoad(in viewController: UIViewController?) {
+    func viewDidLoad() {
         viewDidLoadTriggered = true
     }
 }

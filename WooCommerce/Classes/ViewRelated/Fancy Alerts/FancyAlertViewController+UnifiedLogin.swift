@@ -7,7 +7,7 @@ extension FancyAlertViewController {
             controller.dismiss(animated: true)
             analytics.track(.loginWhatIsJetpackHelpScreenOkButtonTapped)
         }
-        let moreInfoButton = makeLearnMoreAboutJetpackButtonConfig()
+        let moreInfoButton = makeLearnMoreAboutJetpackButtonConfig(analytics: analytics)
         let config = FancyAlertViewController.Config(titleText: Localization.whatIsJetpack,
                                                      bodyText: Localization.whatIsJetpackLongDescription,
                                                      headerImage: .whatIsJetpackImage,
@@ -105,6 +105,8 @@ private extension FancyAlertViewController {
             let safariViewController = SFSafariViewController(url: url)
             safariViewController.modalPresentationStyle = .pageSheet
             controller.present(safariViewController, animated: true)
+
+            analytics.track(.loginWhatIsJetpackHelpScreenLearnMoreButtonTapped)
         }
     }
 

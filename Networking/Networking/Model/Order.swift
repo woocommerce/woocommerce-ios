@@ -133,7 +133,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         let paymentMethodID = try container.decode(String.self, forKey: .paymentMethodID)
         let paymentMethodTitle = try container.decode(String.self, forKey: .paymentMethodTitle)
 
-        let items = try? container.decode([OrderItem].self, forKey: .items)
+        let items = try? container.decodeIfPresent([OrderItem].self, forKey: .items) ?? []
 
         let shippingAddress = try? container.decode(Address.self, forKey: .shippingAddress)
         let billingAddress = try? container.decode(Address.self, forKey: .billingAddress)

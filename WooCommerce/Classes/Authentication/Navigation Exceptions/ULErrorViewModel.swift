@@ -21,6 +21,7 @@ protocol ULErrorViewModel {
     /// Provides a title for a secondary action button
     var secondaryButtonTitle: String { get }
 
+    /// Executed by the view controller when its view was loaded.
     func viewDidLoad()
 
     /// Executes action associated to a tap in the view controller primary button

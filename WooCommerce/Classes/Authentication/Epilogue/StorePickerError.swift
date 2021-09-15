@@ -17,7 +17,7 @@ final class StorePickerErrorHostingController: UIHostingController<StorePickerEr
 ///
 struct StorePickerError: View {
     var body: some View {
-        VStack(alignment: .center, spacing: 30) {
+        VStack(alignment: .center, spacing: Layout.mainVerticalSpacing) {
             // Title
             Text(Localization.title)
                 .headlineStyle()
@@ -29,27 +29,29 @@ struct StorePickerError: View {
             Text(Localization.body)
                 .bodyStyle()
 
-            // Primary Button
-            Button(Localization.troubleshoot) {
-                print("Troubleshooting Tips tapped")
-            }
-            .buttonStyle(PrimaryButtonStyle())
+            VStack(spacing: Layout.buttonsSpacing) {
+                // Primary Button
+                Button(Localization.troubleshoot) {
+                    print("Troubleshooting Tips tapped")
+                }
+                .buttonStyle(PrimaryButtonStyle())
 
-            // Secondary button
-            Button(Localization.contact) {
-                print("Contact support tapped")
-            }
-            .buttonStyle(SecondaryButtonStyle())
+                // Secondary button
+                Button(Localization.contact) {
+                    print("Contact support tapped")
+                }
+                .buttonStyle(SecondaryButtonStyle())
 
-            // Dismiss button
-            Button(Localization.back) {
-                print("Back to site")
+                // Dismiss button
+                Button(Localization.back) {
+                    print("Back to site")
+                }
+                .buttonStyle(LinkButtonStyle())
             }
-            .buttonStyle(LinkButtonStyle())
         }
         .padding()
         .background(Color(.basicBackground))
-        .cornerRadius(10)
+        .cornerRadius(Layout.rounderCorners)
     }
 }
 
@@ -66,6 +68,12 @@ private extension StorePickerError {
                                                comment: "Text for the button to contact support from the store picker error screen")
         static let back = NSLocalizedString("Back to Sites",
                                             comment: "Text for the button to dismiss the store picker error screen")
+    }
+
+    enum Layout {
+        static let rounderCorners: CGFloat = 10
+        static let mainVerticalSpacing: CGFloat = 25
+        static let buttonsSpacing: CGFloat = 15
     }
 }
 

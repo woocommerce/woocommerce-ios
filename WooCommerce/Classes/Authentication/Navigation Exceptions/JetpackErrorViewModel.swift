@@ -58,7 +58,7 @@ struct JetpackErrorViewModel: ULErrorViewModel {
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
-        let fancyAlert = FancyAlertViewController.makeWhatIsJetpackAlertController()
+        let fancyAlert = FancyAlertViewController.makeWhatIsJetpackAlertController(analytics: analytics)
         fancyAlert.modalPresentationStyle = .custom
         fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
         viewController?.present(fancyAlert, animated: true)

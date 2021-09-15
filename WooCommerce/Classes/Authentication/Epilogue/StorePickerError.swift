@@ -3,8 +3,10 @@ import SwiftUI
 /// Hosting controller wrapper for `StorePickerError`
 ///
 final class StorePickerErrorHostingController: UIHostingController<StorePickerError> {
-    init() {
-        super.init(rootView: StorePickerError())
+    init(troubleshootingAction: @escaping () -> Void, contactSupportAction: @escaping () -> Void, dismissAction: @escaping () -> Void) {
+        super.init(rootView: StorePickerError(troubleshootingAction: troubleshootingAction,
+                                              contactSupportAction: contactSupportAction,
+                                              dismissAction: dismissAction))
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -16,6 +18,19 @@ final class StorePickerErrorHostingController: UIHostingController<StorePickerEr
 /// Generic Store Picker error view that allows the user to contact support.
 ///
 struct StorePickerError: View {
+
+    /// Closure invoked when the "Troubleshooting" button is pressed
+    ///
+    let troubleshootingAction: () -> Void
+
+    /// Closure invoked when the "Contact Support" button is pressed
+    ///
+    let contactSupportAction: () -> Void
+
+    /// Closure invoked when the "Back To Sites" button is pressed
+    ///
+    let dismissAction: () -> Void
+
     var body: some View {
         VStack(alignment: .center, spacing: Layout.mainVerticalSpacing) {
             // Title
@@ -32,22 +47,16 @@ struct StorePickerError: View {
 
             VStack(spacing: Layout.buttonsSpacing) {
                 // Primary Button
-                Button(Localization.troubleshoot) {
-                    print("Troubleshooting Tips tapped")
-                }
-                .buttonStyle(PrimaryButtonStyle())
+                Button(Localization.troubleshoot, action: troubleshootingAction)
+                    .buttonStyle(PrimaryButtonStyle())
 
                 // Secondary button
-                Button(Localization.contact) {
-                    print("Contact support tapped")
-                }
-                .buttonStyle(SecondaryButtonStyle())
+                Button(Localization.contact, action: contactSupportAction)
+                    .buttonStyle(SecondaryButtonStyle())
 
                 // Dismiss button
-                Button(Localization.back) {
-                    print("Back to site")
-                }
-                .buttonStyle(LinkButtonStyle())
+                Button(Localization.back, action: dismissAction)
+                    .buttonStyle(LinkButtonStyle())
             }
         }
         .padding([.leading, .trailing, .bottom])
@@ -85,14 +94,14 @@ private extension StorePickerError {
 struct StorePickerError_Preview: PreviewProvider {
     static var previews: some View {
         VStack {
-            StorePickerError()
+            StorePickerError(troubleshootingAction: {}, contactSupportAction: {}, dismissAction: {})
         }
         .padding()
         .background(Color.gray)
         .previewLayout(.sizeThatFits)
 
         VStack {
-            StorePickerError()
+            StorePickerError(troubleshootingAction: {}, contactSupportAction: {}, dismissAction: {})
         }
         .padding()
         .background(Color.gray)

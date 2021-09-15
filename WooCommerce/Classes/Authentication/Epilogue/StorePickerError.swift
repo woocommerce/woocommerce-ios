@@ -52,7 +52,7 @@ struct StorePickerError: View {
         }
         .padding([.leading, .trailing, .bottom])
         .padding(.top, Layout.topPadding)
-        .background(Color(.basicBackground))
+        .background(Color(.tertiarySystemBackground))
         .cornerRadius(Layout.rounderCorners)
     }
 }

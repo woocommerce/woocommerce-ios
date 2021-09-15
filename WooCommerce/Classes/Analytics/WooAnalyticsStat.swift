@@ -35,6 +35,7 @@ public enum WooAnalyticsStat: String {
     case loginAutoFillCredentialsFilled         = "login_autofill_credentials_filled"
     case loginAutoFillCredentialsUpdated        = "login_autofill_credentials_updated"
     case loginEmailFormViewed                   = "login_email_form_viewed"
+    case loginJetpackRequiredScreenViewed       = "login_jetpack_required_screen_viewed"
     case loginMagicLinkOpenEmailClientViewed    = "login_magic_link_open_email_client_viewed"
     case loginMagicLinkRequestFormViewed        = "login_magic_link_request_form_viewed"
     case loginMagicLinkExited                   = "login_magic_link_exited"

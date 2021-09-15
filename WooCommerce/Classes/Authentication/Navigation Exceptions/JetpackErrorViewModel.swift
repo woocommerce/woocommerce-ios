@@ -62,6 +62,8 @@ struct JetpackErrorViewModel: ULErrorViewModel {
         fancyAlert.modalPresentationStyle = .custom
         fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
         viewController?.present(fancyAlert, animated: true)
+
+        analytics.track(.loginWhatIsJetpackHelpScreenViewed)
     }
 
     func viewDidLoad(in viewController: UIViewController?) {

@@ -70,10 +70,6 @@ final class ServiceLocator {
     ///
     private static var _receiptPrinter: PrinterService = AirPrintReceiptPrinterService()
 
-    /// Observer for network connectivity
-    ///
-    private static var _connectivityObserver: ConnectivityObserver = DefaultConnectivityObserver()
-
     // MARK: - Getters
 
     /// Provides the access point to the analytics.
@@ -186,12 +182,6 @@ final class ServiceLocator {
     static var receiptPrinterService: PrinterService {
         _receiptPrinter
     }
-
-    /// Provides access point to the ConnectivityObserver.
-    /// - Returns: An implementation of the ConnectivityObserver protocol.
-    static var connectivityObserver: ConnectivityObserver {
-        _connectivityObserver
-    }
 }
 
 
@@ -301,14 +291,6 @@ extension ServiceLocator {
         }
 
         _receiptPrinter = mock
-    }
-
-    static func setConnectivityObserver(_ mock: ConnectivityObserver) {
-        guard isRunningTests() else {
-            return
-        }
-
-        _connectivityObserver = mock
     }
 }
 

@@ -17,38 +17,55 @@ final class StorePickerErrorHostingController: UIHostingController<StorePickerEr
 ///
 struct StorePickerError: View {
     var body: some View {
-        VStack(alignment: .center) {
+        VStack(alignment: .center, spacing: 30) {
             // Title
-            Text("We couldn't load your site")
+            Text(Localization.title)
                 .headlineStyle()
 
             // Main image
             Image(uiImage: .errorImage)
 
             // Body text
-            Text("Please try again or reach out to us and we'll be happy to assist you!")
+            Text(Localization.body)
                 .bodyStyle()
 
             // Primary Button
-            Button("Read our Troubleshooting Tips") {
+            Button(Localization.troubleshoot) {
                 print("Troubleshooting Tips tapped")
             }
             .buttonStyle(PrimaryButtonStyle())
 
             // Secondary button
-            Button("Contact Support") {
+            Button(Localization.contact) {
                 print("Contact support tapped")
             }
             .buttonStyle(SecondaryButtonStyle())
 
             // Dismiss button
-            Button("Back to Sites") {
+            Button(Localization.back) {
                 print("Back to site")
             }
             .buttonStyle(LinkButtonStyle())
         }
         .background(Color(.basicBackground))
+        .cornerRadius(10)
         .padding()
+    }
+}
+
+// MARK: Constant
+
+private extension StorePickerError {
+    enum Localization {
+        static let title = NSLocalizedString("We couldn't load your site", comment: "Title for the default store picker error screen")
+        static let body = NSLocalizedString("Please try again or reach out to us and we'll be happy to assist you!",
+                                            comment: "Body text for the default store picker error screen")
+        static let troubleshoot = NSLocalizedString("Read our Troubleshooting Tips",
+                                                    comment: "Text for the button to navigate to troubleshooting tips from the store picker error screen")
+        static let contact = NSLocalizedString("Contact Support",
+                                               comment: "Text for the button to contact support from the store picker error screen")
+        static let back = NSLocalizedString("Back to Sites",
+                                            comment: "Text for the button to dismiss the store picker error screen")
     }
 }
 
@@ -57,6 +74,6 @@ struct StorePickerError: View {
 struct StorePickerError_Preview: PreviewProvider {
     static var previews: some View {
         StorePickerError()
-            .previewLayout(.fixed(width: 414, height: 768))
+            .previewLayout(.sizeThatFits)
     }
 }

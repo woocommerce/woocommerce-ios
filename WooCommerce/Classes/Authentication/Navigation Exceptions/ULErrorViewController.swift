@@ -50,7 +50,7 @@ final class ULErrorViewController: UIViewController {
 
         setUnifiedMargins(forWidth: view.frame.width)
 
-        viewModel.viewDidLoad(in: self)
+        viewModel.viewDidLoad()
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

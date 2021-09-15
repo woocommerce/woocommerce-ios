@@ -38,7 +38,7 @@ struct NotWPAccountViewModel: ULErrorViewModel {
         viewController?.present(fancyAlert, animated: true)
     }
 
-    func viewDidLoad(in viewController: UIViewController?) {
+    func viewDidLoad() {
         // NO-OP
     }
 }

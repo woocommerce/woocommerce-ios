@@ -27,6 +27,7 @@ struct StorePickerError: View {
 
             // Body text
             Text(Localization.body)
+                .multilineTextAlignment(.center)
                 .bodyStyle()
 
             VStack(spacing: Layout.buttonsSpacing) {
@@ -49,7 +50,8 @@ struct StorePickerError: View {
                 .buttonStyle(LinkButtonStyle())
             }
         }
-        .padding()
+        .padding([.leading, .trailing, .bottom])
+        .padding(.top, Layout.topPadding)
         .background(Color(.basicBackground))
         .cornerRadius(Layout.rounderCorners)
     }
@@ -74,6 +76,7 @@ private extension StorePickerError {
         static let rounderCorners: CGFloat = 10
         static let mainVerticalSpacing: CGFloat = 25
         static let buttonsSpacing: CGFloat = 15
+        static let topPadding: CGFloat = 30
     }
 }
 

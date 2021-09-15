@@ -6,6 +6,7 @@ final class StorePickerErrorHostingController: UIHostingController<StorePickerEr
     init() {
         super.init(rootView: StorePickerError())
     }
+
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -46,6 +47,8 @@ struct StorePickerError: View {
             }
             .buttonStyle(LinkButtonStyle())
         }
+        .background(Color(.basicBackground))
+        .padding()
     }
 }
 
@@ -54,5 +57,6 @@ struct StorePickerError: View {
 struct StorePickerError_Preview: PreviewProvider {
     static var previews: some View {
         StorePickerError()
+            .previewLayout(.fixed(width: 414, height: 768))
     }
 }

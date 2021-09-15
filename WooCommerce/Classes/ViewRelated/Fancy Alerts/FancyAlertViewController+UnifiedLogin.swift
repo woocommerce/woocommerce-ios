@@ -7,7 +7,7 @@ extension FancyAlertViewController {
             controller.dismiss(animated: true)
             analytics.track(.loginWhatIsJetpackHelpScreenOkButtonTapped)
         }
-        let moreInfoButton = makeMoreInfoButtonConfig()
+        let moreInfoButton = makeLearnMoreAboutJetpackButtonConfig()
         let config = FancyAlertViewController.Config(titleText: Localization.whatIsJetpack,
                                                      bodyText: Localization.whatIsJetpackLongDescription,
                                                      headerImage: .whatIsJetpackImage,
@@ -96,7 +96,7 @@ private extension FancyAlertViewController {
         }
     }
 
-    static func makeMoreInfoButtonConfig() -> FancyAlertViewController.Config.ButtonConfig {
+    static func makeLearnMoreAboutJetpackButtonConfig(analytics: Analytics) -> FancyAlertViewController.Config.ButtonConfig {
         return FancyAlertViewController.Config.ButtonConfig(Localization.learnMore) { controller, _ in
             guard let url = URL(string: Strings.whatsJetpackURLString) else {
                 return

@@ -7,32 +7,39 @@ final class StorePickerErrorHostingController: UIHostingController<StorePickerEr
 
     /// Creates an `StorePickerErrorHostingController` with preconfigured button actions.
     ///
-    static func createWithActions(presentingViewController: UIViewController) -> StorePickerErrorHostingController {
-        .init(
-            troubleshootingAction: {
-                let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
-                presentingViewController.present(safariViewController, animated: true)
-            },
-            contactSupportAction: {
-                ZendeskManager.shared.showNewRequestIfPossible(from: presentingViewController)
-            },
-            dismissAction: {
-                presentingViewController.dismiss(animated: true)
+    static func createWithActions(presenting: UIViewController) -> StorePickerErrorHostingController {
+        let viewController = StorePickerErrorHostingController()
+        viewController.setActions(troubleshootingAction: {
+            let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
+            viewController.present(safariViewController, animated: true)
+        },
+        contactSupportAction: {
+            presenting.dismiss(animated: true) {
+                ZendeskManager.shared.showNewRequestIfPossible(from: presenting)
             }
-        )
+        },
+        dismissAction: {
+            presenting.dismiss(animated: true)
+        })
+        return viewController
     }
 
-    init(troubleshootingAction: @escaping () -> Void, contactSupportAction: @escaping () -> Void, dismissAction: @escaping () -> Void) {
-        super.init(rootView: StorePickerError(troubleshootingAction: troubleshootingAction,
-                                              contactSupportAction: contactSupportAction,
-                                              dismissAction: dismissAction))
+    init() {
+        super.init(rootView: StorePickerError())
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-}
 
+    /// Actions are set in a separate function because most of the time, they will require to access `self` to be able to present new view controllers.
+    ///
+    func setActions(troubleshootingAction: @escaping () -> Void, contactSupportAction: @escaping () -> Void, dismissAction: @escaping () -> Void) {
+        self.rootView.troubleshootingAction = troubleshootingAction
+        self.rootView.contactSupportAction = contactSupportAction
+        self.rootView.dismissAction = dismissAction
+    }
+}
 
 /// Generic Store Picker error view that allows the user to contact support.
 ///
@@ -40,15 +47,15 @@ struct StorePickerError: View {
 
     /// Closure invoked when the "Troubleshooting" button is pressed
     ///
-    let troubleshootingAction: () -> Void
+    var troubleshootingAction: () -> Void = {}
 
     /// Closure invoked when the "Contact Support" button is pressed
     ///
-    let contactSupportAction: () -> Void
+    var contactSupportAction: () -> Void = {}
 
     /// Closure invoked when the "Back To Sites" button is pressed
     ///
-    let dismissAction: () -> Void
+    var dismissAction: () -> Void = {}
 
     var body: some View {
         VStack(alignment: .center, spacing: Layout.mainVerticalSpacing) {
@@ -113,14 +120,14 @@ private extension StorePickerError {
 struct StorePickerError_Preview: PreviewProvider {
     static var previews: some View {
         VStack {
-            StorePickerError(troubleshootingAction: {}, contactSupportAction: {}, dismissAction: {})
+            StorePickerError()
         }
         .padding()
         .background(Color.gray)
         .previewLayout(.sizeThatFits)
 
         VStack {
-            StorePickerError(troubleshootingAction: {}, contactSupportAction: {}, dismissAction: {})
+            StorePickerError()
         }
         .padding()
         .background(Color.gray)

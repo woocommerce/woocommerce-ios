@@ -421,6 +421,9 @@ private extension ShippingLabelFormViewController {
             let vm = ShippingLabelPackagesFormViewModel(order: viewModel.order,
                                                         packagesResponse: viewModel.packagesResponse,
                                                         selectedPackages: inputPackages,
+                                                        onSelectionCompletion: { [weak self] selectedPackages in
+                                                            self?.viewModel.handlePackageDetailsValueChanges(details: selectedPackages)
+                                                        },
                                                         onPackageSyncCompletion: { [weak self] (packagesResponse) in
                                                           self?.viewModel.handleNewPackagesResponse(packagesResponse: packagesResponse)
                                                         })

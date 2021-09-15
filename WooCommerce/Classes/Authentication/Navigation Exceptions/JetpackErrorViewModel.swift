@@ -8,9 +8,11 @@ import WordPressUI
 /// an error when Jetpack is not installed or is not connected
 struct JetpackErrorViewModel: ULErrorViewModel {
     private let siteURL: String
+    private let analytics: Analytics
 
-    init(siteURL: String?) {
+    init(siteURL: String?, analytics: Analytics = ServiceLocator.analytics) {
         self.siteURL = siteURL ?? Localization.yourSite
+        self.analytics = analytics
     }
 
     // MARK: - Data and configuration

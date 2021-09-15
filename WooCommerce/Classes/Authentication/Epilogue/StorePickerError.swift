@@ -65,37 +65,41 @@ struct StorePickerError: View {
     var dismissAction: () -> Void = {}
 
     var body: some View {
-        VStack(alignment: .center, spacing: Layout.mainVerticalSpacing) {
-            // Title
-            Text(Localization.title)
-                .headlineStyle()
+        Group {
+            VStack(alignment: .center, spacing: Layout.mainVerticalSpacing) {
+                // Title
+                Text(Localization.title)
+                    .headlineStyle()
 
-            // Main image
-            Image(uiImage: .errorImage)
+                // Main image
+                Image(uiImage: .errorImage)
 
-            // Body text
-            Text(Localization.body)
-                .multilineTextAlignment(.center)
-                .bodyStyle()
+                // Body text
+                Text(Localization.body)
+                    .multilineTextAlignment(.center)
+                    .bodyStyle()
 
-            VStack(spacing: Layout.buttonsSpacing) {
-                // Primary Button
-                Button(Localization.troubleshoot, action: troubleshootingAction)
-                    .buttonStyle(PrimaryButtonStyle())
+                VStack(spacing: Layout.buttonsSpacing) {
+                    // Primary Button
+                    Button(Localization.troubleshoot, action: troubleshootingAction)
+                        .buttonStyle(PrimaryButtonStyle())
 
-                // Secondary button
-                Button(Localization.contact, action: contactSupportAction)
-                    .buttonStyle(SecondaryButtonStyle())
+                    // Secondary button
+                    Button(Localization.contact, action: contactSupportAction)
+                        .buttonStyle(SecondaryButtonStyle())
 
-                // Dismiss button
-                Button(Localization.back, action: dismissAction)
-                    .buttonStyle(LinkButtonStyle())
+                    // Dismiss button
+                    Button(Localization.back, action: dismissAction)
+                        .buttonStyle(LinkButtonStyle())
+                }
             }
+            .padding([.leading, .trailing, .bottom])
+            .padding(.top, Layout.topPadding)
+            .background(Color(.tertiarySystemBackground))
+            .cornerRadius(Layout.rounderCorners)
         }
-        .padding([.leading, .trailing, .bottom])
-        .padding(.top, Layout.topPadding)
-        .background(Color(.tertiarySystemBackground))
-        .cornerRadius(Layout.rounderCorners)
+        .padding([.leading, .trailing], Layout.outerSidePadding) // TODO Review iPad padding
+        .background(Color.clear)
     }
 }
 
@@ -119,6 +123,7 @@ private extension StorePickerError {
         static let mainVerticalSpacing: CGFloat = 25
         static let buttonsSpacing: CGFloat = 15
         static let topPadding: CGFloat = 30
+        static let outerSidePadding: CGFloat = 16
     }
 }
 
@@ -129,15 +134,11 @@ struct StorePickerError_Preview: PreviewProvider {
         VStack {
             StorePickerError()
         }
-        .padding()
-        .background(Color.gray)
         .previewLayout(.sizeThatFits)
 
         VStack {
             StorePickerError()
         }
-        .padding()
-        .background(Color.gray)
         .environment(\.colorScheme, .dark)
         .previewLayout(.sizeThatFits)
     }

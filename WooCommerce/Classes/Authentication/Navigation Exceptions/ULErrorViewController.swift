@@ -49,6 +49,8 @@ final class ULErrorViewController: UIViewController {
         configureSecondaryButton()
 
         setUnifiedMargins(forWidth: view.frame.width)
+
+        viewModel.viewDidLoad(in: self)
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

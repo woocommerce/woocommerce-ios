@@ -48,21 +48,11 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     }
 
     private func updateReaderID() {
-        guard connectedReaders.count > 0 else {
-            connectedReaderID = nil
-            return
-        }
-
-        connectedReaderID = connectedReaders[0].id
+        connectedReaderID = connectedReaders.first?.id
     }
 
     private func updateBatteryLevel() {
-        guard connectedReaders.count > 0 else {
-            connectedReaderBatteryLevel = nil
-            return
-        }
-
-        guard let batteryLevel = connectedReaders[0].batteryLevel else {
+        guard let batteryLevel = connectedReaders.first?.batteryLevel else {
             connectedReaderBatteryLevel = Localization.unknownBatteryStatus
             return
         }
@@ -73,12 +63,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     }
 
     private func updateSoftwareVersion() {
-        guard connectedReaders.count > 0 else {
-            connectedReaderSoftwareVersion = nil
-            return
-        }
-
-        guard let softwareVersion = connectedReaders[0].softwareVersion else {
+        guard let softwareVersion = connectedReaders.first?.softwareVersion else {
             connectedReaderSoftwareVersion = Localization.unknownSoftwareVersion
             return
         }

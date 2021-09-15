@@ -27,11 +27,12 @@ struct ShippingLabelPackagesForm: View {
         .navigationBarItems(trailing: Button(action: {
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow,
                                            withProperties: ["state": "packages_selected"])
-            // TODO-4599: Update selection
+            viewModel.confirmPackageSelection()
             presentation.wrappedValue.dismiss()
         }, label: {
             Text(Localization.doneButton)
-        }))
+        })
+        .disabled(!viewModel.doneButtonEnabled))
     }
 }
 
@@ -51,7 +52,9 @@ struct ShippingLabelPackagesForm_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ShippingLabelPackagesFormViewModel(order: ShippingLabelPackagesFormViewModel.sampleOrder(),
                                                            packagesResponse: ShippingLabelPackagesFormViewModel.samplePackageDetails(),
-                                                           selectedPackages: []) { _ in }
+                                                           selectedPackages: [],
+                                                           onSelectionCompletion: { _ in },
+                                                           onPackageSyncCompletion: { _ in })
 
         ShippingLabelPackagesForm(viewModel: viewModel)
         .environment(\.colorScheme, .light)

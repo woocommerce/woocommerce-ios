@@ -328,7 +328,7 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Add Product Events
     //
-    case addProductTypeSelected =  "add_product_product_type_selected"
+    case addProductTypeSelected = "add_product_product_type_selected"
     case addProductPublishTapped = "add_product_publish_tapped"
     case addProductSaveAsDraftTapped = "add_product_save_as_draft_tapped"
     case addProductSuccess = "add_product_success"

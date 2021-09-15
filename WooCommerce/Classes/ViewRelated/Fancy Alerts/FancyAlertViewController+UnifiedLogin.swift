@@ -1,9 +1,12 @@
 import WordPressUI
 import SafariServices
 
-    static func makeWhatIsJetpackAlertController() -> FancyAlertViewController {
 extension FancyAlertViewController {
-        let dismissButton = makeDismissButtonConfig()
+    static func makeWhatIsJetpackAlertController(analytics: Analytics) -> FancyAlertViewController {
+        let dismissButton = FancyAlertViewController.Config.ButtonConfig(Localization.dismissButton) { controller, _ in
+            controller.dismiss(animated: true)
+            analytics.track(.loginWhatIsJetpackHelpScreenOkButtonTapped)
+        }
         let moreInfoButton = makeMoreInfoButtonConfig()
         let config = FancyAlertViewController.Config(titleText: Localization.whatIsJetpack,
                                                      bodyText: Localization.whatIsJetpackLongDescription,

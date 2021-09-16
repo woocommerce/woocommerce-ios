@@ -64,6 +64,17 @@ final class OrdersRootViewController: UIViewController {
     func presentDetails(for note: Note) {
         ordersViewController.presentDetails(for: note)
     }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        configureOfflineBanner()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        // hide the toolbar in case the next view controller in the stack doesn't provide contents for its `toolbarItems`.
+        navigationController?.isToolbarHidden = true
+    }
 }
 
 // MARK: - Configuration

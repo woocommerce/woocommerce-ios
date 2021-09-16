@@ -2,7 +2,7 @@
 
 7.6
 -----
-
+- [*] Show offline mode banner on screens that display cached data. [https://github.com/woocommerce/woocommerce-ios/pull/5000#event-5310977598]
 
 7.5
 -----

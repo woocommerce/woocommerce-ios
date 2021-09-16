@@ -1,3 +1,5 @@
-Bu sürüm, deneyiminizi daha sorunsuz hale getirmek için birkaç küçük iyileştirme içerir. Sipariş ayrıntılarında, bazı üçüncü taraf uzantıları mantıksal olarak ürün meta verilerini göstermiyordu. Bu ürün ayrıntılarının görüntülenmesini iyileştirmek için bazı değişiklikler yaptık. Artık toplam tutar sıfır olduğunda sipariş iadesi düğmesini gizliyoruz.
+Yaşasın! WooCommerce Shipping & Tax Uzantısını kullanan ABD merkezli satıcılar mutlu olacaklar. Artık müşterilerinizin ABD dışındaki ülkelere yönelik gönderileri için gönderi etiketleri oluşturabilir ve yazdırabilirsiniz.
 
-Bu güncelleme ile ayrıca WooCommerce Shipping & Tax Uzantısını kullanan gönderi etiketi özelliğinde çeşitli geliştirmeler de yapılmıştır. Bu yeni özellikle ilgili tüm geri bildirimleriniz bizim için çok değerlidir!
+Müşteriniz siparişini verirken size not mu bıraktı? Artık bu notları uygulamada düzenleyebileceğinizi göreceksiniz.
+
+Lütfen uygulamayla ilgili tüm geri bildirimlerinizi bize göndermeye devam edin. Merakla bekliyoruz.

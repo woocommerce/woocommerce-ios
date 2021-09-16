@@ -1,3 +1,5 @@
-Peluncuran ini menyertakan beberapa perbaikan kecil untuk menghadirkan pengalaman yang lebih lancar. Pada detail pesanan, beberapa ekstensi pihak ketiga tidak secara logis menampilkan metadata produk. Kami melakukan beberapa perubahan untuk meningkatkan tampilan detail produk tersebut. Kami kini menyembunyikan tombol pengembalian dana pesanan jika jumlah totalnya nol.
+Hore! Kabar gembira untuk penjual yang berlokasi di AS pengguna Ekstensi WooCommerce Shipping & Tax! Kini Anda bisa membuat dan mencetak label pengiriman untuk produk yang dikirim ke pelanggan di luar AS.
 
-Pembaruan ini juga mencakup beberapa peningkatan pada fitur label pengiriman menggunakan Ekstensi Pengiriman & Pajak WooCommerce. Kami menghargai semua saran Anda pada fitur-fitur baru ini!
+Apakah pelanggan sempat memberikan catatan untuk Anda saat membuat pesanan? Sekarang catatan tersebut bisa diedit dari aplikasi.
+
+Mohon terus berikan umpan balik Anda untuk aplikasi – kami menerimanya dengan senang hati!

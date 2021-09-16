@@ -136,11 +136,15 @@ struct StorePickerError_Preview: PreviewProvider {
         VStack {
             StorePickerError()
         }
+        .padding()
+        .background(Color.gray)
         .previewLayout(.sizeThatFits)
 
         VStack {
             StorePickerError()
         }
+        .padding()
+        .background(Color.gray)
         .environment(\.colorScheme, .dark)
         .previewLayout(.sizeThatFits)
     }

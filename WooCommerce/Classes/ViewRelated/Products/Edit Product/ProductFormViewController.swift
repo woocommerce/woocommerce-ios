@@ -134,6 +134,14 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         super.viewWillDisappear(animated)
 
         view.endEditing(true)
+
+        // hide the toolbar in case the next view controller in the stack doesn't provide contents for its `toolbarItems`.
+        navigationController?.isToolbarHidden = true
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        configureOfflineBanner()
     }
 
     // MARK: - Navigation actions handling

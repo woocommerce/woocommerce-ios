@@ -3,8 +3,14 @@ import Foundation
 /// Interface for the observing connectivity
 ///
 protocol ConnectivityObserver {
-    /// Starts the observer with a listener.
-    func startObserving(listener: @escaping (ConnectivityStatus) -> Void)
+    /// Getter for current state of the connectivity.
+    var isConnectivityAvailable: Bool { get }
+
+    /// Starts the observer.
+    func startObserving()
+
+    /// Updates the listener for the connectivity observer.
+    func updateListener(_ listener: @escaping (ConnectivityStatus) -> Void)
 
     /// Stops the observer.
     func stopObserving()

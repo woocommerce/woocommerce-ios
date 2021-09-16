@@ -14,7 +14,7 @@ final class DefaultConnectivityObserver: ConnectivityObserver {
         }
         return false
     }
-    
+
     init(networkMonitor: NWPathMonitor = .init()) {
         self.networkMonitor = networkMonitor
         startObserving()

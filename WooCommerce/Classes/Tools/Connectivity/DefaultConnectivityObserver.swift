@@ -8,11 +8,23 @@ final class DefaultConnectivityObserver: ConnectivityObserver {
     private let networkMonitor: NWPathMonitor
     private let observingQueue: DispatchQueue = .global(qos: .background)
 
+    var isConnectivityAvailable: Bool {
+        if case .reachable = connectivityStatus(from: networkMonitor.currentPath) {
+            return true
+        }
+        return false
+    }
+    
     init(networkMonitor: NWPathMonitor = .init()) {
         self.networkMonitor = networkMonitor
+        startObserving()
     }
 
-    func startObserving(listener: @escaping (ConnectivityStatus) -> Void) {
+    func startObserving() {
+        networkMonitor.start(queue: observingQueue)
+    }
+
+    func updateListener(_ listener: @escaping (ConnectivityStatus) -> Void) {
         networkMonitor.pathUpdateHandler = { [weak self] path in
             guard let self = self else { return }
             let connectivityStatus = self.connectivityStatus(from: path)
@@ -20,7 +32,6 @@ final class DefaultConnectivityObserver: ConnectivityObserver {
                 listener(connectivityStatus)
             }
         }
-        networkMonitor.start(queue: observingQueue)
     }
 
     func stopObserving() {

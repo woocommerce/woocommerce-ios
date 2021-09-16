@@ -65,6 +65,7 @@ struct StorePickerError: View {
     var dismissAction: () -> Void = {}
 
     var body: some View {
+        // Adds an outer transparent padding and constraints the view max width
         Group {
             VStack(alignment: .center, spacing: Layout.mainVerticalSpacing) {
                 // Title
@@ -83,14 +84,17 @@ struct StorePickerError: View {
                     // Primary Button
                     Button(Localization.troubleshoot, action: troubleshootingAction)
                         .buttonStyle(PrimaryButtonStyle())
+                        .fixedSize(horizontal: false, vertical: true)
 
                     // Secondary button
                     Button(Localization.contact, action: contactSupportAction)
                         .buttonStyle(SecondaryButtonStyle())
+                        .fixedSize(horizontal: false, vertical: true)
 
                     // Dismiss button
                     Button(Localization.back, action: dismissAction)
                         .buttonStyle(LinkButtonStyle())
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
             .padding([.leading, .trailing, .bottom])
@@ -98,8 +102,9 @@ struct StorePickerError: View {
             .background(Color(.tertiarySystemBackground))
             .cornerRadius(Layout.rounderCorners)
         }
-        .padding([.leading, .trailing], Layout.outerSidePadding)
+        .padding(Layout.outerSidePadding)
         .background(Color.clear)
+        //.scrollIfNeeded()
         .frame(maxWidth: Layout.maxModalWidth)
     }
 }

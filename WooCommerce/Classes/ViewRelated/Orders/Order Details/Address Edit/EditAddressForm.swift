@@ -56,7 +56,10 @@ struct EditAddressForm: View {
 
     var body: some View {
         NavigationView {
-            formContent
+            // navigation liks require wrapping in a stack to work
+            ZStack {
+                formContent
+            }
         }
         .navigationViewStyle(StackNavigationViewStyle())
     }

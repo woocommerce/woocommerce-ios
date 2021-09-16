@@ -781,15 +781,9 @@ private extension OrderDetailsDataSource {
     private func configureShippingAddress(cell: CustomerInfoTableViewCell) {
         let shippingAddress = order.shippingAddress
 
-        cell.title = NSLocalizedString("Shipping details",
-                                       comment: "Shipping title for customer info cell")
+        cell.title = Title.shippingAddress
         cell.name = shippingAddress?.fullNameWithCompany
-        cell.address = shippingAddress?.formattedPostalAddress ??
-            NSLocalizedString(
-                "No address specified.",
-                comment: "Order details > customer info > shipping details. " +
-                "This is where the address would normally display."
-        )
+        cell.address = shippingAddress?.formattedPostalAddress ?? Title.shippingAddressEmptyAction
 
         cell.onEditTapped = orderEditingEnabled ? { [weak self] in
             self?.onCellAction?(.editShippingAddress, nil)
@@ -1221,6 +1215,8 @@ extension OrderDetailsDataSource {
         static let refundedProducts = NSLocalizedString("Refunded Products", comment: "Section title")
         static let tracking = NSLocalizedString("Tracking", comment: "Order tracking section title")
         static let customerNote = NSLocalizedString("Customer Provided Note", comment: "Customer note section title")
+        static let shippingAddress = NSLocalizedString("Shipping Details",
+                                                       comment: "Shipping title for customer info cell")
         static let information = NSLocalizedString("Customer", comment: "Customer info section title")
         static let payment = NSLocalizedString("Payment", comment: "Payment section title")
         static let notes = NSLocalizedString("Order Notes", comment: "Order notes section title")
@@ -1242,6 +1238,10 @@ extension OrderDetailsDataSource {
             NSLocalizedString("Don’t know how to print from your mobile device?",
                               comment: "Title of button in order details > shipping label that shows the instructions on how to print " +
                                 "a shipping label on the mobile device.")
+        static let shippingAddressEmptyAction =
+            NSLocalizedString("No address specified.",
+                              comment: "Order details > customer info > shipping details. " +
+                                "This is where the address would normally display.")
     }
 
     enum Footer {

@@ -677,7 +677,7 @@ private extension OrderDetailsViewController {
     func editShippingAddressTapped() {
         let viewModel = EditAddressFormViewModel(siteID: viewModel.order.siteID, address: viewModel.order.shippingAddress)
         let editAddressViewController = EditAddressHostingController(viewModel: viewModel)
-        show(editAddressViewController, sender: self)
+        present(editAddressViewController, animated: true, completion: nil)
     }
 
     @objc private func collectPayment(at: IndexPath) {

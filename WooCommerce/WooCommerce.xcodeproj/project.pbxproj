@@ -410,6 +410,7 @@
 		2662D90826E15D6E00E25611 /* CountrySelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2662D90726E15D6E00E25611 /* CountrySelectorCommand.swift */; };
 		2662D90A26E16B3600E25611 /* FilterListSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2662D90926E16B3600E25611 /* FilterListSelector.swift */; };
 		2664210126F3E1BB001FC5B4 /* ModalHostingPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2664210026F3E1BB001FC5B4 /* ModalHostingPresentationController.swift */; };
+		2664210326F40FB1001FC5B4 /* View+ScrollModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2664210226F40FB1001FC5B4 /* View+ScrollModifiers.swift */; };
 		2667BFD7252E5DBF008099D4 /* RefundItemViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFD6252E5DBF008099D4 /* RefundItemViewModelTests.swift */; };
 		2667BFDB252E659A008099D4 /* MockOrderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFDA252E659A008099D4 /* MockOrderItem.swift */; };
 		2667BFDD252F61C5008099D4 /* RefundShippingDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFDC252F61C5008099D4 /* RefundShippingDetailsViewModelTests.swift */; };
@@ -1829,6 +1830,7 @@
 		2662D90726E15D6E00E25611 /* CountrySelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountrySelectorCommand.swift; sourceTree = "<group>"; };
 		2662D90926E16B3600E25611 /* FilterListSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterListSelector.swift; sourceTree = "<group>"; };
 		2664210026F3E1BB001FC5B4 /* ModalHostingPresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalHostingPresentationController.swift; sourceTree = "<group>"; };
+		2664210226F40FB1001FC5B4 /* View+ScrollModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+ScrollModifiers.swift"; sourceTree = "<group>"; };
 		2667BFD6252E5DBF008099D4 /* RefundItemViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundItemViewModelTests.swift; sourceTree = "<group>"; };
 		2667BFDA252E659A008099D4 /* MockOrderItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockOrderItem.swift; sourceTree = "<group>"; };
 		2667BFDC252F61C5008099D4 /* RefundShippingDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundShippingDetailsViewModelTests.swift; sourceTree = "<group>"; };
@@ -3792,6 +3794,7 @@
 			isa = PBXGroup;
 			children = (
 				262A09802628A8F40033AD20 /* WooStyleModifiers.swift */,
+				2664210226F40FB1001FC5B4 /* View+ScrollModifiers.swift */,
 				26E0AE12263359F900A5EB3B /* View+Conditionals.swift */,
 				DE4B3B5526A68DD000EEF2D8 /* View+InsetPaddings.swift */,
 				CC254F3926C54AD4005F3C82 /* View+Toolbars.swift */,
@@ -7387,6 +7390,7 @@
 				451A04F02386F7B500E368C9 /* ProductImageCollectionViewCell.swift in Sources */,
 				02E8B17E23E2C8D900A43403 /* ProductImageActionHandler.swift in Sources */,
 				023D877925EC8BCB00625963 /* UIScrollView+LargeTitleWorkaround.swift in Sources */,
+				2664210326F40FB1001FC5B4 /* View+ScrollModifiers.swift in Sources */,
 				02695770237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift in Sources */,
 				26771A14256FFA8700EE030E /* IssueRefundCoordinatingController.swift in Sources */,
 				027A2E162513356100DA6ACB /* AppleIDCredentialChecker.swift in Sources */,

@@ -12,14 +12,7 @@ final class DefaultConnectivityObserver: ConnectivityObserver {
         self.networkMonitor = networkMonitor
     }
 
-    func startObserving() {
-        networkMonitor.start(queue: observingQueue)
-    }
-
-    func updateListener(_ listener: @escaping (ConnectivityStatus) -> Void) {
-        if networkMonitor.pathUpdateHandler == nil {
-            startObserving()
-        }
+    func startObserving(listener: @escaping (ConnectivityStatus) -> Void) {
         networkMonitor.pathUpdateHandler = { [weak self] path in
             guard let self = self else { return }
             let connectivityStatus = self.connectivityStatus(from: path)
@@ -27,6 +20,7 @@ final class DefaultConnectivityObserver: ConnectivityObserver {
                 listener(connectivityStatus)
             }
         }
+        networkMonitor.start(queue: observingQueue)
     }
 
     func stopObserving() {

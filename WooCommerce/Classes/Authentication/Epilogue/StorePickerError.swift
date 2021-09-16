@@ -1,8 +1,29 @@
 import SwiftUI
+import SafariServices
 
 /// Hosting controller wrapper for `StorePickerError`
 ///
 final class StorePickerErrorHostingController: UIHostingController<StorePickerError> {
+
+    /// Creates an `StorePickerErrorHostingController` with preconfigured button actions.
+    ///
+    static func createWithActions(presenting: UIViewController) -> StorePickerErrorHostingController {
+        let viewController = StorePickerErrorHostingController()
+        viewController.setActions(troubleshootingAction: {
+            let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
+            viewController.present(safariViewController, animated: true)
+        },
+        contactSupportAction: {
+            presenting.dismiss(animated: true) {
+                ZendeskManager.shared.showNewRequestIfPossible(from: presenting)
+            }
+        },
+        dismissAction: {
+            presenting.dismiss(animated: true)
+        })
+        return viewController
+    }
+
     init() {
         super.init(rootView: StorePickerError())
     }
@@ -10,12 +31,32 @@ final class StorePickerErrorHostingController: UIHostingController<StorePickerEr
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-}
 
+    /// Actions are set in a separate function because most of the time, they will require to access `self` to be able to present new view controllers.
+    ///
+    func setActions(troubleshootingAction: @escaping () -> Void, contactSupportAction: @escaping () -> Void, dismissAction: @escaping () -> Void) {
+        self.rootView.troubleshootingAction = troubleshootingAction
+        self.rootView.contactSupportAction = contactSupportAction
+        self.rootView.dismissAction = dismissAction
+    }
+}
 
 /// Generic Store Picker error view that allows the user to contact support.
 ///
 struct StorePickerError: View {
+
+    /// Closure invoked when the "Troubleshooting" button is pressed
+    ///
+    var troubleshootingAction: () -> Void = {}
+
+    /// Closure invoked when the "Contact Support" button is pressed
+    ///
+    var contactSupportAction: () -> Void = {}
+
+    /// Closure invoked when the "Back To Sites" button is pressed
+    ///
+    var dismissAction: () -> Void = {}
+
     var body: some View {
         VStack(alignment: .center, spacing: Layout.mainVerticalSpacing) {
             // Title
@@ -32,22 +73,16 @@ struct StorePickerError: View {
 
             VStack(spacing: Layout.buttonsSpacing) {
                 // Primary Button
-                Button(Localization.troubleshoot) {
-                    print("Troubleshooting Tips tapped")
-                }
-                .buttonStyle(PrimaryButtonStyle())
+                Button(Localization.troubleshoot, action: troubleshootingAction)
+                    .buttonStyle(PrimaryButtonStyle())
 
                 // Secondary button
-                Button(Localization.contact) {
-                    print("Contact support tapped")
-                }
-                .buttonStyle(SecondaryButtonStyle())
+                Button(Localization.contact, action: contactSupportAction)
+                    .buttonStyle(SecondaryButtonStyle())
 
                 // Dismiss button
-                Button(Localization.back) {
-                    print("Back to site")
-                }
-                .buttonStyle(LinkButtonStyle())
+                Button(Localization.back, action: dismissAction)
+                    .buttonStyle(LinkButtonStyle())
             }
         }
         .padding([.leading, .trailing, .bottom])

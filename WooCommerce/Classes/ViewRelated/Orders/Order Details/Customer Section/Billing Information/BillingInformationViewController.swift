@@ -321,6 +321,9 @@ private extension BillingInformationViewController {
         cell.onEditTapped = editingEnabled ? {
             print("Edit Billing Address Tapped")
         } : nil
+        cell.editButtonAccessibilityLabel = NSLocalizedString(
+            "Update Address",
+            comment: "Accessibility Label for the edit button to change the Customer Billing Address in Billing Information")
     }
 
     func setupBillingPhone(cell: WooBasicTableViewCell) {

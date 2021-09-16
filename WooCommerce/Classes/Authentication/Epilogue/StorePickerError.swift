@@ -42,9 +42,9 @@ final class StorePickerErrorHostingController: UIHostingController<StorePickerEr
     /// Actions are set in a separate function because most of the time, they will require to access `self` to be able to present new view controllers.
     ///
     func setActions(troubleshootingAction: @escaping () -> Void, contactSupportAction: @escaping () -> Void, dismissAction: @escaping () -> Void) {
-        self.rootView.troubleshootingAction = troubleshootingAction
-        self.rootView.contactSupportAction = contactSupportAction
-        self.rootView.dismissAction = dismissAction
+        rootView.troubleshootingAction = troubleshootingAction
+        rootView.contactSupportAction = contactSupportAction
+        rootView.dismissAction = dismissAction
     }
 }
 
@@ -98,8 +98,9 @@ struct StorePickerError: View {
             .background(Color(.tertiarySystemBackground))
             .cornerRadius(Layout.rounderCorners)
         }
-        .padding([.leading, .trailing], Layout.outerSidePadding) // TODO Review iPad padding
+        .padding([.leading, .trailing], Layout.outerSidePadding)
         .background(Color.clear)
+        .frame(maxWidth: Layout.maxModalWidth)
     }
 }
 
@@ -124,6 +125,7 @@ private extension StorePickerError {
         static let buttonsSpacing: CGFloat = 15
         static let topPadding: CGFloat = 30
         static let outerSidePadding: CGFloat = 16
+        static let maxModalWidth: CGFloat = 475
     }
 }
 

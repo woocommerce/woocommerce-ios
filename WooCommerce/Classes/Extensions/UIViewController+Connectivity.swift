@@ -20,7 +20,7 @@ extension UIViewController {
 
         let messageLabel = UILabel()
         messageLabel.text = NSLocalizedString("Offline - using cached data", comment: "Message for offline banner")
-        messageLabel.applySecondaryBodyStyle()
+        messageLabel.applyCalloutStyle()
         messageLabel.textColor = .white
 
         stackView.addArrangedSubview(imageView)

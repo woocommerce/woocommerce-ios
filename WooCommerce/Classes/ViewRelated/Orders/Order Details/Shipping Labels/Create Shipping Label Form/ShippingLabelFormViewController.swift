@@ -44,6 +44,17 @@ final class ShippingLabelFormViewController: UIViewController {
         registerTableViewHeaderFooters()
         observeViewModel()
     }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        configureOfflineBanner()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        // hide the toolbar in case the next view controller in the stack doesn't provide contents for its `toolbarItems`.
+        navigationController?.isToolbarHidden = true
+    }
 }
 
 // MARK: - View Configuration

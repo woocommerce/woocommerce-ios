@@ -409,6 +409,7 @@
 		2662D90626E1571900E25611 /* ListSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2662D90526E1571900E25611 /* ListSelector.swift */; };
 		2662D90826E15D6E00E25611 /* CountrySelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2662D90726E15D6E00E25611 /* CountrySelectorCommand.swift */; };
 		2662D90A26E16B3600E25611 /* FilterListSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2662D90926E16B3600E25611 /* FilterListSelector.swift */; };
+		2664210126F3E1BB001FC5B4 /* ModalHostingPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2664210026F3E1BB001FC5B4 /* ModalHostingPresentationController.swift */; };
 		2667BFD7252E5DBF008099D4 /* RefundItemViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFD6252E5DBF008099D4 /* RefundItemViewModelTests.swift */; };
 		2667BFDB252E659A008099D4 /* MockOrderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFDA252E659A008099D4 /* MockOrderItem.swift */; };
 		2667BFDD252F61C5008099D4 /* RefundShippingDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFDC252F61C5008099D4 /* RefundShippingDetailsViewModelTests.swift */; };
@@ -1827,6 +1828,7 @@
 		2662D90526E1571900E25611 /* ListSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListSelector.swift; sourceTree = "<group>"; };
 		2662D90726E15D6E00E25611 /* CountrySelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountrySelectorCommand.swift; sourceTree = "<group>"; };
 		2662D90926E16B3600E25611 /* FilterListSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterListSelector.swift; sourceTree = "<group>"; };
+		2664210026F3E1BB001FC5B4 /* ModalHostingPresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalHostingPresentationController.swift; sourceTree = "<group>"; };
 		2667BFD6252E5DBF008099D4 /* RefundItemViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundItemViewModelTests.swift; sourceTree = "<group>"; };
 		2667BFDA252E659A008099D4 /* MockOrderItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockOrderItem.swift; sourceTree = "<group>"; };
 		2667BFDC252F61C5008099D4 /* RefundShippingDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundShippingDetailsViewModelTests.swift; sourceTree = "<group>"; };
@@ -6072,6 +6074,7 @@
 				CE227096228F152400C0626C /* WooBasicTableViewCell.swift */,
 				CE227098228F180B00C0626C /* WooBasicTableViewCell.xib */,
 				02A410F32583A84C005E2925 /* SpacerTableViewCell.swift */,
+				2664210026F3E1BB001FC5B4 /* ModalHostingPresentationController.swift */,
 				02A410F42583A84C005E2925 /* SpacerTableViewCell.xib */,
 			);
 			path = ReusableViews;
@@ -7273,6 +7276,7 @@
 				451A04EC2386D2B300E368C9 /* ProductImagesCollectionViewDataSource.swift in Sources */,
 				02DD81F9242CAA400060E50B /* WordPressMediaLibraryImagePickerViewController.swift in Sources */,
 				D8C2A28823190B2300F503E9 /* StorageProductReview+Woo.swift in Sources */,
+				2664210126F3E1BB001FC5B4 /* ModalHostingPresentationController.swift in Sources */,
 				D8B4D5F026C2C7EC00F34E94 /* InPersonPaymentsStripeAccountPendingView.swift in Sources */,
 				02784A03238B8BC800BDD6A8 /* UIView+Border.swift in Sources */,
 				CE1CCB402056F21C000EE3AC /* Style.swift in Sources */,

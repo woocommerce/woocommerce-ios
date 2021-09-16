@@ -424,6 +424,7 @@ private extension StorePickerViewController {
             switch result {
             case .success(.validWCVersion):
                 self?.updateUIForValidSite()
+                self?.updateUIForEmptyOrErroredSite(named: siteName, with: siteID)
             case .success(.invalidWCVersion):
                 self?.updateUIForInvalidSite(named: siteName)
             case .failure:
@@ -516,10 +517,9 @@ extension StorePickerViewController: UIViewControllerTransitioningDelegate {
     func presentationController(forPresented presented: UIViewController,
                                 presenting: UIViewController?,
                                 source: UIViewController) -> UIPresentationController? {
-        FancyAlertPresentationController(presentedViewController: presented, presenting: presenting)
+        ModalHostingPresentationController(presentedViewController: presented, presenting: presenting)
     }
 }
-
 
 // MARK: - Action Handlers
 //

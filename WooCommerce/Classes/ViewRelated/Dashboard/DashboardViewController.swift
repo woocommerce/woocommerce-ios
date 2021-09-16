@@ -115,9 +115,20 @@ final class DashboardViewController: UIViewController {
         reloadDashboardUIStatsVersion(forced: false)
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        configureOfflineBanner()
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         dashboardUI?.view.frame = containerView.bounds
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        // hide the toolbar in case the next view controller in the stack doesn't provide contents for its `toolbarItems`.
+        navigationController?.isToolbarHidden = true
     }
 }
 

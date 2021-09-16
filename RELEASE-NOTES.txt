@@ -2,7 +2,7 @@
 
 7.6
 -----
-
+- [x] Show an improved error modal if there are problems while selecting a store. [https://github.com/woocommerce/woocommerce-ios/pull/5006]
 
 7.5
 -----

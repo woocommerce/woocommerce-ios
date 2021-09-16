@@ -382,6 +382,10 @@ private extension OrderDetailsDataSource {
         cell.onEditTapped = { [weak self] in
             self?.onCellAction?(.editCustomerNote, nil)
         }
+
+        cell.editButtonAccessibilityLabel = NSLocalizedString(
+            "Update Note",
+            comment: "Accessibility Label for the edit button to change the Customer Provided Note in Order Details")
     }
 
     private func configureBillingDetail(cell: WooBasicTableViewCell) {
@@ -788,6 +792,10 @@ private extension OrderDetailsDataSource {
         cell.onEditTapped = orderEditingEnabled ? { [weak self] in
             self?.onCellAction?(.editShippingAddress, nil)
         } : nil
+
+        cell.editButtonAccessibilityLabel = NSLocalizedString(
+            "Update Address",
+            comment: "Accessibility Label for the edit button to change the Customer Shipping Address in Order Details")
     }
 
     private func configureShippingMethod(cell: CustomerNoteTableViewCell) {

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-08-31 13:54:46+0000 */
+/* Translation-Revision-Date: 2021-09-15 09:54:56+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -188,6 +188,9 @@
 /* Description of the Action sheet option when the user wants to change the Product type to grouped product */
 "A collection of related products" = "אוסף של מוצרים קשורים";
 
+/* Main message on the Print Customs Invoice screen of Shipping Label flow */
+"A customs form must be printed and included on this international shipment" = "יש להדפיס את טופס המכס ולצרף אותו למשלוח בינלאומי זה";
+
 /* Error message when there was a network error checking In-Person Payments requirements */
 "A network error occurred. Please check your connection and try again." = "אירעה שגיאת רשת. יש לבדוק את החיבור ולנסות שוב.";
 
@@ -341,7 +344,11 @@
 /* Text field address in Shipping Label Address Validation */
 "Address" = "כתובת";
 
-/* Text field address 2 in Shipping Label Address Validation */
+/* Text field address 1 in Edit Address Form */
+"Address 1" = "כתובת 1";
+
+/* Text field address 2 in Edit Address Form
+   Text field address 2 in Shipping Label Address Validation */
 "Address 2" = "שורת כתובת שנייה";
 
 /* Shipping Label Suggested Address entered placeholder */
@@ -367,6 +374,9 @@
 
 /* Title for the second page in the Orders tab. */
 "All Orders" = "כל ההזמנות";
+
+/* Message displayed when there are no packages to display in the Add New Service Package screen in Shipping Label flow */
+"All available packages have been activated" = "כל האריזות הזמינות הופעלו";
 
 /* The message shown in the Orders → Processing tab if the list is empty. */
 "All orders have been fulfilled" = "כל ההזמנות הושלמו";
@@ -550,7 +560,7 @@
 "Can Not Request Link" = "לא ניתן לבקש קישור";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to cancel a payment - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. */
 "Cancel" = "ביטול";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -624,7 +634,8 @@
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "לבחור מהמכשיר";
 
-/* Text field city in Shipping Label Address Validation */
+/* Text field city in Edit Address Form
+   Text field city in Shipping Label Address Validation */
 "City" = "עיר";
 
 /* Error showed in Shipping Label Address Validation for the city field */
@@ -639,7 +650,8 @@
 /* Text on the button that starts collecting a card present payment. */
 "Collect Payment" = "לקבל תשלום";
 
-/* Text field company in Shipping Label Address Validation */
+/* Text field company in Edit Address Form
+   Text field company in Shipping Label Address Validation */
 "Company" = "חברה";
 
 /* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
@@ -647,6 +659,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "יצירת הערה חדשה להזמנה.";
+
+/* Button in a cell to allow the user to connect to that reader for that cell */
+"Connect" = "להתחבר";
 
 /* Settings > Manage Card Reader > Connect > A button to begin a search for a reader */
 "Connect Card Reader" = "לחבר קורא כרטיסים";
@@ -677,6 +692,9 @@
 
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "מתחבר לוורדפרס.קום";
+
+/* Title label for modal dialog that appears when connecting to a card reader */
+"Connecting to reader" = "מתחבר אל קורא הכרטיסים";
 
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "התחברות לחשבונך";
@@ -710,7 +728,7 @@
 "Content Type" = "סוג התכולה";
 
 /* Continue button inside every cell inside Create Shipping Label form
-   The button title text when there is a next step for logging in or signing up. - Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
+   The button title text when there is a next step for logging in or signing up. - Title of continue button - Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
 "Continue" = "המשך";
 
 /* Button title. Takes the user to the login with WordPress.com flow. */
@@ -767,7 +785,8 @@
 /* Error message when tag loading failed */
 "Couldn't load tags." = "לא ניתן לטעון את התגיות.";
 
-/* Text field country in Shipping Label Address Validation */
+/* Text field country in Edit Address Form
+   Text field country in Shipping Label Address Validation - Title to select country from the edit address screen */
 "Country" = "מדינה";
 
 /* Error showed in Shipping Label Address Validation for the country field */
@@ -848,8 +867,14 @@
    Title of the cell Customs inside Create Shipping Label form */
 "Customs" = "מכס";
 
+/* Title on the Print Customs Invoice screen of Shipping Label flow */
+"Customs form" = "טופס מכס";
+
 /* Details text in the shipping label creation info screen */
 "Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "אפשר לדלג על התורים בדואר על ידי הדפסה של תוויות משלוח בבית באמצעות המכשיר הנייד בתעריף מופחת!";
+
+/* Details section title in the Edit Address Form */
+"DETAILS" = "פרטים";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "תאריך משלוח";
@@ -933,7 +958,7 @@
 "Don't have an account? _Sign up_" = "אין לך חשבון עדיין? _הרשמה_";
 
 /* Action title to select products to add to a grouped product from search results
-   Done navigation button in selection list screens - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the edit customer provided note screen */
+   Done navigation button in selection list screens - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Custom Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Service Package screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen */
 "Done" = "בוצע";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -1019,7 +1044,8 @@
 /* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
 "Eligible for free pickup" = "זכאי לאיסוף בחינם";
 
-/* Email address text field placeholder */
+/* Email address text field placeholder
+   Text field email in Edit Address Form */
 "Email" = "אימייל";
 
 /* Accessibility label for the email address text field.
@@ -1199,6 +1225,9 @@
 /* Title of the toolbar button to filter products with filters applied. */
 "Filter (%ld)" = "לסנן (%ld)";
 
+/* Placeholder on the search field to search for a specific country */
+"Filter Countries" = "לסנן את המדינות";
+
 /* Navigation bar title format for filtering a list of products without filters applied. */
 "Filters" = "מסננים";
 
@@ -1219,6 +1248,9 @@
 
 /* Title for the error screen when WooCommerce Payments is installed but not set up */
 "Finish setup WooCommerce Payments in your store admin" = "להשלים את ההגדרה של WooCommerce Payments במנהל המערכת של החנות שלך";
+
+/* Text field name in Edit Address Form */
+"First name" = "שם פרטי";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Follow your favorite sites and discover new blogs." = "לעקוב אחר האתרים המועדפים שלך ולגלות בלוגים חדשים לקריאה.";
@@ -1464,7 +1496,10 @@
 /* Title for the error screen when WooCommerce Payments is not installed */
 "Install WooCommerce Payments" = "להתקין את WooCommerce Payments";
 
-/* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates */
+/* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Placeholder is a literal, e.g \"limited\" */
+"Insurance (%1$@)" = "ביטוח (%1$@)";
+
+/* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Place holder is an amount. */
 "Insurance (up to %1$@)" = "ביטוח (עד %1$@)";
 
 /* Error message for invalid format of ITN in Customs screen of Shipping Label flow */
@@ -1490,6 +1525,9 @@
 
 /* No comment provided by engineer. */
 "Invalid username" = "שם המשתמש אינו תקין";
+
+/* Error for invalid package details on the Add New Custom Package screen in Shipping Label flow */
+"Invalid value" = "ערך לא תקין";
 
 /* Product Inventory Settings navigation title
    Title of the Inventory Settings row on Product main screen - Title of the product form bottom sheet action for editing inventory settings. */
@@ -1548,6 +1586,9 @@
 
 /* Last 7 days section header */
 "Last 7 days" = "7 הימים האחרונים";
+
+/* Text field name in Edit Address Form */
+"Last name" = "שם משפחה";
 
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "להשיק את איתור הבאגים של Wormholy";
@@ -1943,7 +1984,7 @@
 "Option name" = "שם האפשרות";
 
 /* Add Product Category. Placeholder of cell presenting the parent category.
-   Placeholder of the cell text field in Product Inventory Settings > SKU - Text field placeholder in Shipping Label Address Validation - Text field placeholder in Shipping Label Address Validation when specified country has no state */
+   Placeholder of the cell text field in Product Inventory Settings > SKU - Text field placeholder in Edit Address Form - Text field placeholder in Shipping Label Address Validation - Text field placeholder in Shipping Label Address Validation when specified country has no state */
 "Optional" = "אופציונלי";
 
 /* No comment provided by engineer. */
@@ -2012,7 +2053,7 @@
 "PRODUCT" = "מוצר";
 
 /* Package index in Customs screen of Shipping Label flow
-   Package term in Shipping Labels. Reads like Package 1 */
+   Package index in Print Customs Invoice screen of Shipping Label flow if there are more than one invoice - Package term in Shipping Labels. Reads like Package 1 */
 "Package %1$d" = "חבילה ⁦%1$d⁩";
 
 /* Order shipping label package section title format. The number indicates the index of the shipping label package. */
@@ -2081,7 +2122,8 @@
 /* Display label for the product's pending status */
 "Pending review" = "תצוגה מקדימה בהמתנה";
 
-/* Text field phone in Shipping Label Address Validation */
+/* Text field phone in Edit Address Form
+   Text field phone in Shipping Label Address Validation */
 "Phone" = "טלפון";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
@@ -2165,8 +2207,8 @@
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Please update your reader software to keep accepting payments" = "עליך לעדכן את התוכנה של הקורא כדי להמשיך לקבל תשלומים";
 
-/* Message of in-progress modal when requesting shipping label document for printing
-   Message of the in-progress UI while purchasing a shipping label - Message when checking if WooCommerce Payments is supported - Text on the loading view of the survey screen indicating the user to wait */
+/* Message of in-progress modal when preparing for printing customs invoice
+   Message of in-progress modal when requesting shipping label document for printing - Message of the in-progress UI while purchasing a shipping label - Message when checking if WooCommerce Payments is supported - Text on the loading view of the survey screen indicating the user to wait */
 "Please wait" = "רק רגע";
 
 /* Instructions for the progress screen while generating a variation */
@@ -2182,7 +2224,7 @@
    Message of the in-progress UI while deleting the Variation remotely */
 "Please wait while we update your store details" = "עליך להמתין זמן מה בזמן שאנחנו מעדכנים את הפרטים בחנות";
 
-/* Label within the modal dialog that appears when searching for a card reader
+/* Label within the modal dialog that appears when connecting to a card reader
    Text on the loading view of the product downloadable file screen indicating the user to wait */
 "Please wait..." = "רק רגע...";
 
@@ -2190,7 +2232,8 @@
    Navigates to Plugins screen. - Title of the Plugin List screen */
 "Plugins" = "תוספים";
 
-/* Text field postcode in Shipping Label Address Validation */
+/* Text field postcode in Edit Address Form
+   Text field postcode in Shipping Label Address Validation */
 "Postcode" = "מיקוד";
 
 /* Error showed in Shipping Label Address Validation for the postcode field */
@@ -2198,6 +2241,9 @@
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "מופעל על ידי Automattic";
+
+/* Title of in-progress modal when preparing for printing customs invoice */
+"Preparing document" = "מכין את המסמך";
 
 /* Label within the modal dialog that appears when searching for a card reader */
 "Press the power button of your reader until you see a flashing blue light" = "יש ללחוץ על כפתור ההפעלה ב-Reader עד שיופיע אור כחול מהבהב";
@@ -2209,9 +2255,21 @@
    Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
 "Price" = "מחיר";
 
+/* Title of print button on Print Customs Invoice screen of Shipping Label flow when there are more than one invoice */
+"Print" = "להדפיס";
+
+/* Print the customs form for the shipping label from the shipping label more menu action sheet */
+"Print Customs Form" = "הדפסת טופס מכס";
+
 /* Button title to generate a shipping label document for printing
    Navigation bar title to print a shipping label - Text on the button that prints a shipping label */
 "Print Shipping Label" = "להדפיס תווית משלוח";
+
+/* Title of print button on Print Customs Invoice screen of Shipping Label flow when there's only one invoice */
+"Print customs form" = "הדפסת טופס מכס";
+
+/* Navigation title of the Print Customs Invoice screen of Shipping Label flow */
+"Print customs invoice" = "הדפסת חשבונית מכס";
 
 /* Navigation bar title of shipping label printing instructions screen */
 "Print from your mobile device" = "להדפיס מהמכשיר הנייד שלך";
@@ -2368,6 +2426,9 @@
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "Reader is ready" = "הקורא מוכן";
 
+/* A notice presented after a successful update of the card reader software */
+"Reader software updated" = "התוכנה של קורא הכרטיסים עודכנה";
+
 /* Refund note section title */
 "Reason for Refund" = "סיבה להחזר הכספי";
 
@@ -2474,8 +2535,8 @@
    Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "לבקש החזר כספי";
 
-/* Text field placeholder in Shipping Label Address Validation
-   Text field placeholder in Shipping Label Address Validation when phone number is required */
+/* Text field placeholder in Edit Address Form
+   Text field placeholder in Shipping Label Address Validation - Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "חובה";
 
 /* Deletes all activity logs except for the marked 'Current'. */
@@ -2518,6 +2579,9 @@
 
 /* Post Rich content */
 "Rich Content" = "תוכן עשיר";
+
+/* Details section title in the Edit Address Form */
+"SHIPPING ADDRESS" = "כתובת למשלוח";
 
 /* Edit Product SKU navigation title
    Title of the cell in Product Inventory Settings > SKU - Title of the product form bottom sheet action for editing short description. - Title of the SKU row on Product main screen */
@@ -2569,6 +2633,9 @@
 /* Button title to save a shipping label to print later */
 "Save for Later" = "שמירה למועד מאוחר יותר";
 
+/* Save for later button on Print Customs Invoice screen of Shipping Label flow */
+"Save for later" = "שמירה למועד מאוחר יותר";
+
 /* Message text in the shipping label creation info screen */
 "Save time and money by fulfilling with WooCommerce Shipping" = "כדאי לחסוך זמן וכסף על ידי השלמת ההזמנה עם WooCommerce Shipping";
 
@@ -2586,6 +2653,9 @@
 
 /* Title label for modal dialog that appears when searching for a card reader */
 "Scanning for reader" = "סורק כדי לאתר קורא";
+
+/* Label for a cell informing the user that reader scanning is ongoing. */
+"Scanning for readers" = "סורק לאיתור קוראים";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
 "Scans barcodes that are associated with a product SKU for stock management." = "הפעולה סורקת את הברקודים שמשויכים ל-SKU של המוצר לצורך ניהול המלאי.";
@@ -2641,6 +2711,9 @@
 /* Message title of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "יש לבחור את סוג המוצר";
 
+/* Text field placeholder in Edit Address Form */
+"Select an option" = "לבחור אפשרות";
+
 /* Add the shipping carrier. Placeholder of cell presenting carrier name */
 "Select carrier" = "יש לבחור ספק";
 
@@ -2680,12 +2753,16 @@
 /* Tells user to set an email that support can use for replies */
 "Set email" = "הגדרת אימייל";
 
-/* Header text on Add New Custom Package screen in Shipping Label flow */
+/* Header text on Add New Custom Package screen in Shipping Label flow
+   Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "הגדרת האריזה שבה ברצונך לשלוח את המוצרים. אנחנו נשמור אותה להזמנות עתידיות.";
 
 /* Accessibility label for the Settings button.
    Settings navigation title */
 "Settings" = "הגדרות";
+
+/* Title of a modal presenting a list of readers to choose from. */
+"Several readers found" = "נמצאו כמה קוראים";
 
 /* Button title Share in Edit Product More Options Action Sheet */
 "Share" = "שיתוף";
@@ -2716,7 +2793,8 @@
    Shipping label for payment view - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "משלוח";
 
-/* Shipping Address title for customer info section */
+/* Shipping Address title for customer info section
+   Title for the Edit Shipping Address Form */
 "Shipping Address" = "כתובת משלוח";
 
 /* Title of shipping carrier and rates in shipping label details
@@ -2842,7 +2920,8 @@
    Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "לא ידוע";
 
-/* The text on the placeholder overlay when there is issue syncing site plugins */
+/* Error message presented to users after a failure occurs
+   The text on the placeholder overlay when there is issue syncing site plugins */
 "Something went wrong" = "משהו השתבש";
 
 /* Notice format when a shipping label refund request fails. */
@@ -2916,7 +2995,8 @@
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "תקופת התחלה: %1$@, תקופת סיום: %2$@";
 
-/* Text field state in Shipping Label Address Validation */
+/* Text field state in Edit Address Form
+   Text field state in Shipping Label Address Validation */
 "State" = "מדינה";
 
 /* Error showed in Shipping Label Address Validation for the state field */
@@ -2954,9 +3034,15 @@
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "קו חוצה";
 
+/* Display label for subscription product type. */
+"Subscription" = "מינוי";
+
 /* Create Shipping Label form -> Subtotal label
    Subtotal label for a refund details view - Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost */
 "Subtotal" = "סכום ביניים";
+
+/* Notice text after updating the order successfully */
+"Successfully updated" = "העדכון בוצע בהצלחה";
 
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "סיכום המוצרים ומשקל החבילה";
@@ -3221,6 +3307,9 @@
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "אירעה שגיאה בהנפקה של ההחזר הכספי";
 
+/* Notice text after failing to update the order successfully */
+"There was an error updating the order" = "אירעה שגיאה בעת עדכון ההזמנה";
+
 /* Tab selector title that shows the statistics for this month
    Top Performers section title - this month */
 "This Month" = "החודש";
@@ -3244,6 +3333,9 @@
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "כתובת האימייל הזו לא רשומה ב-WordPress.com.";
+
+/* Error for missing package details on the Add New Custom Package screen in Shipping Label flow */
+"This field is required" = "זהו שדה חובה";
 
 /* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
 "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "המידע הזה עוזר לנו לשפר את המוצרים שלנו, להציג שיווק רלוונטי יותר, לספק לך חוויית שימוש אישית ב-WordPress.com ועוד, כפי שמפורט במדיניות הפרטיות שלנו.";
@@ -3374,6 +3466,9 @@
 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "אמון";
+
+/* Button to try again. Presented to users after a failure occurs */
+"Try Again" = "לנסות שוב";
 
 /* Button to trigger connection to another account in store picker */
 "Try With Another Account" = "לנסות עם חשבון אחר";
@@ -3559,6 +3654,9 @@
 /* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM
    Updated on <date> */
 "Updated on %@" = "עודכן בתאריך %@";
+
+/* Headline on the full screen software update modal */
+"Updating software" = "מעדכן את התוכנה";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
@@ -3776,6 +3874,9 @@
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "מה כתובת האתר שלי?";
 
+/* Title of Whats New Component */
+"What’s New in WooCommerce" = "מה חדש ב-WooCommerce";
+
 /* Shipping Labels: info description about WooCommerce Services discount */
 "When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "כאשר רוכשים תוויות משלוח באמצעות WooCommerce, ניתן לקבל מחירים מסחריים בהנחה.";
 
@@ -3862,6 +3963,9 @@
 
 /* shown in promotional screens during first launch */
 "Your notifications travel with you — see comments and likes as they happen." = "ההודעות שלך אתך בכל מקום - אפשר לראות תגובות ולייקים בזמן אמת.";
+
+/* Footnote on the full screen software update modal */
+"Your reader will automatically restart and reconnect after the update is complete" = "לאחר השלמת העדכון, קורא הכרטיסים יופעל מחדש באופן אוטומטי ויתחבר שוב";
 
 /* Subject of email sent with a card present payment receipt */
 "Your receipt" = "הקבלה שלך";

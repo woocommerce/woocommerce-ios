@@ -38,7 +38,9 @@ extension UIViewController {
         navigationController?.toolbar.barTintColor = .gray
 
         ServiceLocator.connectivityObserver.startObserving { [weak self] status in
-            self?.navigationController?.setToolbarHidden(status != .notReachable, animated: true)
+            guard let self = self,
+                  self.isViewOnScreen() else { return }
+            self.navigationController?.setToolbarHidden(status != .notReachable, animated: true)
         }
     }
 }

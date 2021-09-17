@@ -68,18 +68,18 @@ struct AuthenticatedWebView: UIViewRepresentable {
     /// please apply the following patch after replacing [secret] with a sandbox secret from the secret store.
     ///
     private func configureForSandboxEnvironment(_ webview: WKWebView) {
-//        #if DEBUG
-//        if let cookie = HTTPCookie(properties: [
-//            .domain: ".wordpress.com",
-//            .path: "/",
-//            .name: "store_sandbox",
-//            .value: "[secret]",
-//            .secure: "TRUE"
-//        ]) {
-//            webview.configuration.websiteDataStore.httpCookieStore.setCookie(cookie) {
-//            }
-//        }
-//        #endif
+        #if DEBUG
+        if let cookie = HTTPCookie(properties: [
+            .domain: ".wordpress.com",
+            .path: "/",
+            .name: "store_sandbox",
+            .value: "[secret]",
+            .secure: "TRUE"
+        ]) {
+            webview.configuration.websiteDataStore.httpCookieStore.setCookie(cookie) {
+            }
+        }
+        #endif
     }
 
     class AuthenticatedWebViewCoordinator: NSObject, WKNavigationDelegate {
@@ -89,12 +89,13 @@ struct AuthenticatedWebView: UIViewRepresentable {
             parent = uiWebView
         }
 
-        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        func webView(_ webView: WKWebView, decidePolicyFor
+                        navigationAction: WKNavigationAction,
+                     decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
             if let url = webView.url?.absoluteString, let urlTrigger = parent.urlToTriggerExit, url.contains(urlTrigger) {
-                print("TRIGGERED")
                 parent.exitTrigger?()
             }
-            print("current URL", webView.url)
+            decisionHandler(.allow)
         }
     }
 }

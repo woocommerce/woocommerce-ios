@@ -1,3 +1,4 @@
+import Combine
 import Photos
 import UIKit
 import WordPressUI
@@ -53,6 +54,9 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private var cancellableProductName: ObservationToken?
     private var cancellableUpdateEnabled: ObservationToken?
     private var cancellableNewVariationsPrice: ObservationToken?
+
+    /// Strong reference to Combine subscription
+    private var connectivitySubscription: AnyCancellable?
 
     init(viewModel: ViewModel,
          eventLogger: ProductFormEventLoggerProtocol,
@@ -134,14 +138,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         super.viewWillDisappear(animated)
 
         view.endEditing(true)
-
-        // hide the toolbar in case the next view controller in the stack doesn't provide contents for its `toolbarItems`.
-        navigationController?.isToolbarHidden = true
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        configureOfflineBanner()
+    override func hasConfiguredOfflineBanner() -> Bool {
+        connectivitySubscription = observeConnectivity()
+        return true
     }
 
     // MARK: - Navigation actions handling

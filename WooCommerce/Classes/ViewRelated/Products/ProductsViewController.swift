@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 import WordPressUI
 import Yosemite
@@ -139,6 +140,8 @@ final class ProductsViewController: UIViewController {
     ///
     private var hasErrorLoadingData: Bool = false
 
+    private var connectivitySubscription: AnyCancellable?
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -202,15 +205,9 @@ final class ProductsViewController: UIViewController {
         updateTableHeaderViewHeight()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        configureOfflineBanner()
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        // hide the toolbar in case the next view controller in the stack doesn't provide contents for its `toolbarItems`.
-        navigationController?.isToolbarHidden = true
+    override func hasConfiguredOfflineBanner() -> Bool {
+        connectivitySubscription = observeConnectivity()
+        return true
     }
 }
 

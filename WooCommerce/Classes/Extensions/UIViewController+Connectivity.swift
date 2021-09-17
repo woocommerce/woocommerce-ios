@@ -1,49 +1,27 @@
 import UIKit
+import Combine
 
 extension UIViewController {
-    /// Content of offline banner
+    /// Defines if the view controller has been configured to show a "no connection" banner when offline.
+    /// One way to configure the banner is to use `connectivitySubscription`.
+    /// This requires the view controller to be contained inside a `WooNavigationController`.
+    /// Defaults to `false`.
     ///
-    var offlineContentView: UIView {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.spacing = 3
-        stackView.distribution = .fillProportionally
-        stackView.alignment = .center
-
-        let imageView = UIImageView(image: .lightningImage)
-        imageView.tintColor = .white
-        imageView.contentMode = .scaleAspectFit
-        NSLayoutConstraint.activate([
-            imageView.widthAnchor.constraint(equalToConstant: 24),
-            imageView.heightAnchor.constraint(equalToConstant: 24)
-        ])
-
-        let messageLabel = UILabel()
-        messageLabel.text = NSLocalizedString("Offline - using cached data", comment: "Message for offline banner")
-        messageLabel.applyCalloutStyle()
-        messageLabel.textColor = .white
-
-        stackView.addArrangedSubview(imageView)
-        stackView.addArrangedSubview(messageLabel)
-        return stackView
+    @objc func hasConfiguredOfflineBanner() -> Bool {
+        false
     }
 
-    /// Set up toolbar for the view controller to display the offline message,
-    /// and listen to connectivity status changes to change the toolbar's visibility.
+    /// Observes changes in status of connectivity and returns a subscription.
+    /// Keep a strong reference to this subscription to show the offline banner in the navigation controller's built-in toolbar.
+    /// This requires the view controller to be contained inside a `WooNavigationController`.
     ///
-    func configureOfflineBanner() {
-        let offlineItem = UIBarButtonItem(customView: offlineContentView)
-        let spaceItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        toolbarItems = [spaceItem, offlineItem, spaceItem]
-        navigationController?.toolbar.barTintColor = .gray
-
-        let connected = ServiceLocator.connectivityObserver.isConnectivityAvailable
-        navigationController?.setToolbarHidden(connected, animated: true)
-
-        ServiceLocator.connectivityObserver.updateListener { [weak self] status in
-            guard let self = self,
-                  self.isViewOnScreen() else { return }
-            self.navigationController?.setToolbarHidden(status != .notReachable, animated: true)
-        }
+    var connectivitySubscription: AnyCancellable {
+        ServiceLocator.connectivityObserver.statusPublisher
+            .sink { [weak self] status in
+                guard let self = self else { return }
+                guard let navigationController = self.navigationController as? WooNavigationController,
+                      self.isViewOnScreen() else { return }
+                navigationController.setToolbarHidden(status != .notReachable, animated: true)
+            }
     }
 }

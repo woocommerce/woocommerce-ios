@@ -456,7 +456,7 @@ private extension StorePickerViewController {
     func updateUIForEmptyOrErroredSite(named siteName: String, with siteID: Int64) {
         toggleDismissButton(enabled: false)
         updateActionButtonAndTableState(animating: false, enabled: false)
-        displayVersionCheckErrorNotice(siteID: siteID, siteName: siteName)
+        displayUnknownErrorModal()
     }
 
     /// Little helper func that helps manage the actionButton and Table state while checking on a
@@ -492,23 +492,13 @@ private extension StorePickerViewController {
         actionButton.showActivityIndicator(false)
     }
 
-    /// Displays the Error Notice for the version check.
+    /// Displays a generic error view as a modal with options to see troubleshooting tips and to contact support.
     ///
-    func displayVersionCheckErrorNotice(siteID: Int64, siteName: String) {
-        let message = String.localizedStringWithFormat(
-            NSLocalizedString(
-                "Unable to successfully connect to %@",
-                comment: "On the site picker screen, the error displayed when connecting to a site fails. " +
-                "It reads: Unable to successfully connect to {site name}"
-            ),
-            siteName
-        )
-        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
-            self?.displaySiteWCRequirementWarningIfNeeded(siteID: siteID, siteName: siteName)
-        }
-
-        noticePresenter.enqueue(notice: notice)
+    func displayUnknownErrorModal() {
+        let viewController = StorePickerErrorHostingController.createWithActions(presenting: self)
+        viewController.modalPresentationStyle = .custom
+        viewController.transitioningDelegate = self
+        present(viewController, animated: true)
     }
 
     /// Displays the Fancy Alert notice for a failed WC requirement check
@@ -518,6 +508,15 @@ private extension StorePickerViewController {
         fancyAlert.modalPresentationStyle = .custom
         fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
         present(fancyAlert, animated: true)
+    }
+}
+
+// MARK: Transition Controller Delegate
+extension StorePickerViewController: UIViewControllerTransitioningDelegate {
+    func presentationController(forPresented presented: UIViewController,
+                                presenting: UIViewController?,
+                                source: UIViewController) -> UIPresentationController? {
+        FancyAlertPresentationController(presentedViewController: presented, presenting: presenting)
     }
 }
 

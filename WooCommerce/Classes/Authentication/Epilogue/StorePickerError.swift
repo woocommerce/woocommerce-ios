@@ -28,6 +28,13 @@ final class StorePickerErrorHostingController: UIHostingController<StorePickerEr
         super.init(rootView: StorePickerError())
     }
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        // Allows the view have a clear background when a custom presentation context
+        view.backgroundColor = modalPresentationStyle == .custom ? .clear : view.backgroundColor
+    }
+
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -35,9 +42,9 @@ final class StorePickerErrorHostingController: UIHostingController<StorePickerEr
     /// Actions are set in a separate function because most of the time, they will require to access `self` to be able to present new view controllers.
     ///
     func setActions(troubleshootingAction: @escaping () -> Void, contactSupportAction: @escaping () -> Void, dismissAction: @escaping () -> Void) {
-        self.rootView.troubleshootingAction = troubleshootingAction
-        self.rootView.contactSupportAction = contactSupportAction
-        self.rootView.dismissAction = dismissAction
+        rootView.troubleshootingAction = troubleshootingAction
+        rootView.contactSupportAction = contactSupportAction
+        rootView.dismissAction = dismissAction
     }
 }
 
@@ -58,37 +65,42 @@ struct StorePickerError: View {
     var dismissAction: () -> Void = {}
 
     var body: some View {
-        VStack(alignment: .center, spacing: Layout.mainVerticalSpacing) {
-            // Title
-            Text(Localization.title)
-                .headlineStyle()
+        Group {
+            VStack(alignment: .center, spacing: Layout.mainVerticalSpacing) {
+                // Title
+                Text(Localization.title)
+                    .headlineStyle()
 
-            // Main image
-            Image(uiImage: .errorImage)
+                // Main image
+                Image(uiImage: .errorImage)
 
-            // Body text
-            Text(Localization.body)
-                .multilineTextAlignment(.center)
-                .bodyStyle()
+                // Body text
+                Text(Localization.body)
+                    .multilineTextAlignment(.center)
+                    .bodyStyle()
 
-            VStack(spacing: Layout.buttonsSpacing) {
-                // Primary Button
-                Button(Localization.troubleshoot, action: troubleshootingAction)
-                    .buttonStyle(PrimaryButtonStyle())
+                VStack(spacing: Layout.buttonsSpacing) {
+                    // Primary Button
+                    Button(Localization.troubleshoot, action: troubleshootingAction)
+                        .buttonStyle(PrimaryButtonStyle())
 
-                // Secondary button
-                Button(Localization.contact, action: contactSupportAction)
-                    .buttonStyle(SecondaryButtonStyle())
+                    // Secondary button
+                    Button(Localization.contact, action: contactSupportAction)
+                        .buttonStyle(SecondaryButtonStyle())
 
-                // Dismiss button
-                Button(Localization.back, action: dismissAction)
-                    .buttonStyle(LinkButtonStyle())
+                    // Dismiss button
+                    Button(Localization.back, action: dismissAction)
+                        .buttonStyle(LinkButtonStyle())
+                }
             }
+            .padding([.leading, .trailing, .bottom])
+            .padding(.top, Layout.topPadding)
+            .background(Color(.tertiarySystemBackground))
+            .cornerRadius(Layout.rounderCorners)
         }
-        .padding([.leading, .trailing, .bottom])
-        .padding(.top, Layout.topPadding)
-        .background(Color(.tertiarySystemBackground))
-        .cornerRadius(Layout.rounderCorners)
+        .padding([.leading, .trailing], Layout.outerSidePadding)
+        .background(Color.clear)
+        .frame(maxWidth: Layout.maxModalWidth)
     }
 }
 
@@ -112,6 +124,8 @@ private extension StorePickerError {
         static let mainVerticalSpacing: CGFloat = 25
         static let buttonsSpacing: CGFloat = 15
         static let topPadding: CGFloat = 30
+        static let outerSidePadding: CGFloat = 16
+        static let maxModalWidth: CGFloat = 475
     }
 }
 

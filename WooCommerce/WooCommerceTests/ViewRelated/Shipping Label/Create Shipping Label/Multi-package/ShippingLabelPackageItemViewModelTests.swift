@@ -238,6 +238,138 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.totalWeight, "30")
     }
+
+    func test_isValidTotalWeight_returns_true_initially() {
+        // Given
+        let items = [MockOrderItem.sampleItem(name: "Easter Egg", productID: 1, quantity: 0.5)]
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120")
+        let viewModel = ShippingLabelPackageItemViewModel(order: order,
+                                                          orderItems: order.items,
+                                                          packagesResponse: mockPackageResponse(),
+                                                          selectedPackageID: "Test Box",
+                                                          totalWeight: "10",
+                                                          products: [product],
+                                                          productVariations: [],
+                                                          onPackageSwitch: { _ in },
+                                                          onPackagesSync: { _ in },
+                                                          formatter: currencyFormatter,
+                                                          weightUnit: "kg")
+
+        // Then
+        XCTAssertTrue(viewModel.isValidTotalWeight)
+    }
+
+    func test_isValidTotalWeight_returns_the_expected_value_when_the_totalWeight_is_not_valid() {
+        // Given
+        // Given
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: [])
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        let viewModel = ShippingLabelPackageItemViewModel(order: order,
+                                                          orderItems: order.items,
+                                                          packagesResponse: mockPackageResponse(),
+                                                          selectedPackageID: "Test Box",
+                                                          totalWeight: "10",
+                                                          products: [],
+                                                          productVariations: [],
+                                                          onPackageSwitch: { _ in },
+                                                          onPackagesSync: { _ in },
+                                                          formatter: currencyFormatter,
+                                                          weightUnit: "kg")
+
+        // When
+        viewModel.totalWeight = "0.0"
+
+        // Then
+        XCTAssertFalse(viewModel.isValidTotalWeight)
+
+        // When
+        viewModel.totalWeight = "1..1"
+
+        // Then
+        XCTAssertFalse(viewModel.isValidTotalWeight)
+
+        // When
+        viewModel.totalWeight = "test"
+
+        // Then
+        XCTAssertFalse(viewModel.isValidTotalWeight)
+    }
+
+    func test_validatedPackageAttributes_returns_correct_value_when_total_weight_is_valid() {
+        // Given
+        let items = [MockOrderItem.sampleItem(name: "Easter Egg", productID: 1, quantity: 0.5)]
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120")
+        let viewModel = ShippingLabelPackageItemViewModel(order: order,
+                                                          orderItems: order.items,
+                                                          packagesResponse: mockPackageResponse(),
+                                                          selectedPackageID: "Test Box",
+                                                          totalWeight: "10",
+                                                          products: [product],
+                                                          productVariations: [],
+                                                          onPackageSwitch: { _ in },
+                                                          onPackagesSync: { _ in },
+                                                          formatter: currencyFormatter,
+                                                          weightUnit: "kg")
+
+        // Then
+        let expectedPackage1 = ShippingLabelPackageAttributes(packageID: "Test Box", totalWeight: "10", productIDs: [1])
+        XCTAssertEqual(viewModel.validatedPackageAttributes, expectedPackage1)
+
+        // When
+        viewModel.totalWeight = "12"
+
+        // Then
+        let expectedPackage2 = ShippingLabelPackageAttributes(packageID: "Test Box", totalWeight: "12", productIDs: [1])
+        XCTAssertEqual(viewModel.validatedPackageAttributes, expectedPackage2)
+    }
+
+    func test_validatedPackageAttributes_returns_nil_when_the_totalWeight_is_not_valid() {
+        // Given
+        // Given
+        let items = [MockOrderItem.sampleItem(name: "Easter Egg", productID: 1, quantity: 0.5)]
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120")
+        let viewModel = ShippingLabelPackageItemViewModel(order: order,
+                                                          orderItems: order.items,
+                                                          packagesResponse: mockPackageResponse(),
+                                                          selectedPackageID: "Test Box",
+                                                          totalWeight: "10",
+                                                          products: [product],
+                                                          productVariations: [],
+                                                          onPackageSwitch: { _ in },
+                                                          onPackagesSync: { _ in },
+                                                          formatter: currencyFormatter,
+                                                          weightUnit: "kg")
+
+        // When
+        viewModel.totalWeight = "0.0"
+
+        // Then
+        XCTAssertNil(viewModel.validatedPackageAttributes)
+
+        // When
+        viewModel.totalWeight = "1..1"
+
+        // Then
+        XCTAssertNil(viewModel.validatedPackageAttributes)
+
+        // When
+        viewModel.totalWeight = "test"
+
+        // Then
+        XCTAssertNil(viewModel.validatedPackageAttributes)
+    }
 }
 
 // MARK: - Mocks

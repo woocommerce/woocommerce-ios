@@ -17,15 +17,13 @@ final class MockKnownReadersProvider: CardReaderSettingsKnownReadersProvider {
     }
 
     func rememberCardReader(cardReaderID: String) {
-        var readerIDs = knownReadersSubject.value
-        readerIDs.append(cardReaderID)
-        knownReadersSubject.send(readerIDs)
+        /// Note: We only remember a maximum of one reader now
+        ///
+        knownReadersSubject.send([cardReaderID])
     }
 
-    func forgetCardReader(cardReaderID: String) {
-        var readerIDs = knownReadersSubject.value
-        readerIDs = readerIDs.filter {$0 != cardReaderID}
-        knownReadersSubject.send(readerIDs)
+    func forgetCardReader() {
+        knownReadersSubject.send([])
     }
 
 }

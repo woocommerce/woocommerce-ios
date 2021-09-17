@@ -106,10 +106,9 @@ public enum AppSettingsAction: Action {
     ///
     case rememberCardReader(cardReaderID: String, onCompletion: (Result<Void, Error>) -> Void)
 
-    /// Forget the given card reader (i.e. automatic reconnection is no longer desired)
-    /// where `cardReaderID` is a String e.g. "CHB204909005931"
+    /// Forget any remembered card reader (i.e. automatic reconnection is no longer desired)
     ///
-    case forgetCardReader(cardReaderID: String, onCompletion: (Result<Void, Error>) -> Void)
+    case forgetCardReader(onCompletion: (Result<Void, Error>) -> Void)
 
     /// Loads the list of all known (remembered) readers (i.e. card readers that, if discovered, should be reconnected automatically)
     /// E.g.  ["CHB204909005931"]

@@ -92,7 +92,7 @@ final class AppSettingsStoreTests_CardReaderSettings: XCTestCase {
             }
         }
 
-        let forgetAction = AppSettingsAction.forgetCardReader(cardReaderID: TestConstants.mockReaderID, onCompletion: { result in
+        let forgetAction = AppSettingsAction.forgetCardReader(onCompletion: { result in
             XCTAssertTrue(result.isSuccess)
             self.subject.onAction(loadAction)
         })

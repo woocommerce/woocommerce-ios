@@ -24,8 +24,8 @@ final class CardReaderSettingsKnownReadersStoredList: CardReaderSettingsKnownRea
         stores.dispatch(action)
     }
 
-    func forgetCardReader(cardReaderID: String) {
-        let action = AppSettingsAction.forgetCardReader(cardReaderID: cardReaderID, onCompletion: { [weak self] _ in
+    func forgetCardReader() {
+        let action = AppSettingsAction.forgetCardReader(onCompletion: { [weak self] _ in
             self?.loadReaders()
         })
         stores.dispatch(action)

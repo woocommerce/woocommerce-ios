@@ -132,9 +132,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
         self.readerDisconnectInProgress = true
         self.didUpdate?()
 
-        if connectedReaderID != nil {
-            knownReadersProvider?.forgetCardReader(cardReaderID: connectedReaderID!)
-        }
+        knownReadersProvider?.forgetCardReader()
 
         let action = CardPresentPaymentAction.disconnect() { result in
             self.readerDisconnectInProgress = false

@@ -15,7 +15,7 @@ protocol CardReaderSettingsKnownReadersProvider {
     ///
     func rememberCardReader(cardReaderID: String)
 
-    /// Forget a reader. Asynchronous.
+    /// Forget any remembered reader. Asynchronous.
     ///
-    func forgetCardReader(cardReaderID: String)
+    func forgetCardReader()
 }

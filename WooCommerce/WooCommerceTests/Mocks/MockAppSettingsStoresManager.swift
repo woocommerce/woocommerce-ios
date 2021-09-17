@@ -23,13 +23,17 @@ final class MockAppSettingsStoresManager: DefaultStoresManager {
     private func onAppSettingsAction(action: AppSettingsAction) {
         switch action {
         case .rememberCardReader(let cardReaderID, let onCompletion):
-            knownReaderIDs.append(cardReaderID)
+            knownReaderIDs = [cardReaderID]
             onCompletion(Result.success(()))
-        case .forgetCardReader(let cardReaderID, let onCompletion):
-            knownReaderIDs = knownReaderIDs.filter { $0 != cardReaderID }
+        case .forgetCardReader(let onCompletion):
+            knownReaderIDs = []
             onCompletion(Result.success(()))
         case .loadCardReaders(let onCompletion):
-            onCompletion(Result.success(knownReaderIDs))
+            guard let knownReader = knownReaderIDs.last else {
+                onCompletion(Result.success([]))
+                return
+            }
+            onCompletion(Result.success([knownReader]))
         default:
             fatalError("Not available")
         }

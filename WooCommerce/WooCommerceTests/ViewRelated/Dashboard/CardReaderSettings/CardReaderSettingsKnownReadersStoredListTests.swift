@@ -6,6 +6,7 @@ import Combine
 ///
 private struct TestConstants {
     static let mockReaderID = "CHB204909005931"
+    static let secondMockReaderID = "CHB204909005932"
 }
 
 final class CardReaderSettingsKnownReadersStoredListTests: XCTestCase {
@@ -80,6 +81,33 @@ final class CardReaderSettingsKnownReadersStoredListTests: XCTestCase {
         XCTAssertEqual(recordedObservations, [[], [TestConstants.mockReaderID]])
     }
 
+    func test_remembering_mulitple_readers_publishes_most_recent_reader_only() {
+        let mockStoresManager = MockAppSettingsStoresManager(sessionManager: SessionManager.testingInstance)
+
+        let expectation = self.expectation(description: #function)
+        expectation.expectedFulfillmentCount = 3
+
+        var cancellable: AnyCancellable?
+        let readerList = CardReaderSettingsKnownReadersStoredList(stores: mockStoresManager)
+
+        var recordedObservations: [[String]] = []
+
+        cancellable = readerList.knownReaders.sink(receiveValue: { readers in
+            recordedObservations.append(readers)
+            expectation.fulfill()
+        })
+
+        readerList.rememberCardReader(cardReaderID: TestConstants.mockReaderID)
+        readerList.rememberCardReader(cardReaderID: TestConstants.secondMockReaderID)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        cancellable?.cancel()
+
+        XCTAssertEqual(recordedObservations, [[], [TestConstants.mockReaderID], [TestConstants.secondMockReaderID]])
+    }
+
+
     func test_forgetting_a_reader_publishes_change() {
         let mockStoresManager = MockAppSettingsStoresManager(sessionManager: SessionManager.testingInstance)
 
@@ -97,7 +125,7 @@ final class CardReaderSettingsKnownReadersStoredListTests: XCTestCase {
         })
 
         readerList.rememberCardReader(cardReaderID: TestConstants.mockReaderID)
-        readerList.forgetCardReader(cardReaderID: TestConstants.mockReaderID)
+        readerList.forgetCardReader()
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
         cancellable?.cancel()

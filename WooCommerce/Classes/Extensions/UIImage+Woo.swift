@@ -387,7 +387,7 @@ extension UIImage {
     /// Lightning icon on offline banner
     ///
     static var lightningImage: UIImage {
-        return UIImage.gridicon(.offline)
+        return UIImage.gridicon(.offline).imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Invisible Image

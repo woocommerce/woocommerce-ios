@@ -21,8 +21,8 @@ SCREENSHOT_DEVICES = [
   'iPad Pro (12.9-inch) (3rd generation)'
 ].freeze
 
-MAIN_BUNDLE_IDENTIFIERS = %[com.automattic.woocommerce]        # Registered in our main account, for development and AppStore
-ALPHA_BUNDLE_IDENTIFIERS = %[com.automattic.alpha.woocommerce] # Registered in our Enterprise account, for AppCenter / Installable Builds
+MAIN_BUNDLE_IDENTIFIERS = %w[com.automattic.woocommerce]        # Registered in our main account, for development and AppStore
+ALPHA_BUNDLE_IDENTIFIERS = %w[com.automattic.alpha.woocommerce] # Registered in our Enterprise account, for AppCenter / Installable Builds
 
 # Use this instead of getting values from ENV directly
 # It will throw an error if the requested value is missing

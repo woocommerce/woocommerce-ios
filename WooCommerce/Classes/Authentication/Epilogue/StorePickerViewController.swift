@@ -424,7 +424,6 @@ private extension StorePickerViewController {
             switch result {
             case .success(.validWCVersion):
                 self?.updateUIForValidSite()
-                self?.updateUIForEmptyOrErroredSite(named: siteName, with: siteID)
             case .success(.invalidWCVersion):
                 self?.updateUIForInvalidSite(named: siteName)
             case .failure:

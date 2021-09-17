@@ -1,4 +1,4 @@
-import Foundation
+import Combine
 import UIKit
 import Yosemite
 import Gridicons
@@ -45,6 +45,8 @@ final class ReviewDetailsViewController: UIViewController {
     ///
     private var rows = [Row]()
 
+    private var cancellable: AnyCancellable?
+
     /// Designated Initializer
     ///
     init(productReview: ProductReview, product: Product?, notification: Note?) {
@@ -78,15 +80,9 @@ final class ReviewDetailsViewController: UIViewController {
         markAsReadIfNeeded(notification)
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        configureOfflineBanner()
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        // hide the toolbar in case the next view controller in the stack doesn't provide contents for its `toolbarItems`.
-        navigationController?.isToolbarHidden = true
+    override func hasConfiguredOfflineBanner() -> Bool {
+        cancellable = connectivitySubscription
+        return true
     }
 }
 

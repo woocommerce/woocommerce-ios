@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 import SafariServices.SFSafariViewController
 
@@ -109,6 +110,8 @@ final class ReviewsViewController: UIViewController {
                                               })
     }()
 
+    var cancellable: AnyCancellable?
+
     // MARK: - View Lifecycle
 
     init(siteID: Int64) {
@@ -164,15 +167,9 @@ final class ReviewsViewController: UIViewController {
         }
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        configureOfflineBanner()
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        // hide the toolbar in case the next view controller in the stack doesn't provide contents for its `toolbarItems`.
-        navigationController?.isToolbarHidden = true
+    override func hasConfiguredOfflineBanner() -> Bool {
+        cancellable = connectivitySubscription
+        return true
     }
 }
 

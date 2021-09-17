@@ -23,7 +23,7 @@ struct ShippingLabelPackageItem: View {
 
     var body: some View {
         CollapsibleView(isCollapsible: isCollapsible, isCollapsed: $isCollapsed, safeAreaInsets: safeAreaInsets) {
-            ShippingLabelPackageNumberRow(packageNumber: packageNumber, numberOfItems: viewModel.itemsRows.count)
+            ShippingLabelPackageNumberRow(packageNumber: packageNumber, numberOfItems: viewModel.itemsRows.count, isValid: viewModel.isValidTotalWeight)
         } content: {
             ListHeaderView(text: Localization.itemsToFulfillHeader, alignment: .left)
                 .padding(.horizontal, insets: safeAreaInsets)
@@ -66,8 +66,13 @@ struct ShippingLabelPackageItem: View {
             }
             .background(Color(.systemBackground))
 
-            ListHeaderView(text: Localization.footer, alignment: .left)
-                .padding(.horizontal, insets: safeAreaInsets)
+            if viewModel.isValidTotalWeight {
+                ListHeaderView(text: Localization.footer, alignment: .left)
+                    .padding(.horizontal, insets: safeAreaInsets)
+            } else {
+                ValidationErrorRow(errorMessage: Localization.invalidWeight)
+                    .padding(.horizontal, insets: safeAreaInsets)
+            }
         }
     }
 }
@@ -82,6 +87,7 @@ private extension ShippingLabelPackageItem {
                                                           comment: "Title of the row for adding the package weight in Shipping Label Package Detail screen")
         static let footer = NSLocalizedString("Sum of products and package weight",
                                               comment: "Title of the footer in Shipping Label Package Detail screen")
+        static let invalidWeight = NSLocalizedString("Invalid weight", comment: "Error message when total weight is invalid in Package Detail screen")
     }
 
     enum Constants {

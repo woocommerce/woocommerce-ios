@@ -14,6 +14,8 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     private(set) var readerUpdateInProgress: Bool = false
     private(set) var readerUpdateCompletedSuccessfully: Bool = false
 
+    private(set) var readerDisconnectInProgress: Bool = false
+
     var connectedReaderID: String?
     var connectedReaderBatteryLevel: String?
 
@@ -66,6 +68,9 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
             guard let self = self else {
                 return
             }
+            guard !self.readerDisconnectInProgress else {
+                return
+            }
             switch result {
             case .success(let update):
                 self.readerUpdateAvailable = update != nil ? .isTrue : .isFalse
@@ -112,11 +117,17 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     func disconnectReader() {
         ServiceLocator.analytics.track(.cardReaderDisconnectTapped)
 
+        self.readerDisconnectInProgress = true
+        self.didUpdate?()
+
         if connectedReaderID != nil {
             knownReadersProvider?.forgetCardReader(cardReaderID: connectedReaderID!)
         }
 
         let action = CardPresentPaymentAction.disconnect() { result in
+            self.readerDisconnectInProgress = false
+            self.didUpdate?()
+
             guard result.isSuccess else {
                 DDLogError("Unexpected error when disconnecting reader")
                 return

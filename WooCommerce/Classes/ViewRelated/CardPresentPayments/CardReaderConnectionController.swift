@@ -183,10 +183,6 @@ private extension CardReaderConnectionController {
     /// single reader found UI for this particular discovery)
     ///
     func updateShowSeveralFoundReaders() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentSeveralReadersFound) else {
-            return
-        }
-
         if foundReaders.containsMoreThanOne {
             showSeveralFoundReaders = true
         }

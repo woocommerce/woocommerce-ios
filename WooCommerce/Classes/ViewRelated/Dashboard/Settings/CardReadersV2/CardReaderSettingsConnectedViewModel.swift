@@ -197,7 +197,7 @@ private extension CardReaderSettingsConnectedViewModel {
         )
 
         static let versionLabelFormat = NSLocalizedString(
-            "Version: %1$@%",
+            "Version: %1$@",
             comment: "Displays the connected reader software version"
         )
     }

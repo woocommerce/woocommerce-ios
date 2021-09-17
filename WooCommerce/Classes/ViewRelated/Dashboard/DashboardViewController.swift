@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 import Gridicons
 import WordPressUI
@@ -15,6 +16,7 @@ final class DashboardViewController: UIViewController {
 
     private let dashboardUIFactory: DashboardUIFactory
     private var dashboardUI: DashboardUI?
+    private var cancellable: AnyCancellable?
 
     // Used to enable subtitle with store name
     private var shouldShowStoreNameAsSubtitle: Bool {
@@ -115,20 +117,14 @@ final class DashboardViewController: UIViewController {
         reloadDashboardUIStatsVersion(forced: false)
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        configureOfflineBanner()
-    }
-
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         dashboardUI?.view.frame = containerView.bounds
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        // hide the toolbar in case the next view controller in the stack doesn't provide contents for its `toolbarItems`.
-        navigationController?.isToolbarHidden = true
+    override func hasConfiguredOfflineBanner() -> Bool {
+        cancellable = connectivitySubscription
+        return true
     }
 }
 

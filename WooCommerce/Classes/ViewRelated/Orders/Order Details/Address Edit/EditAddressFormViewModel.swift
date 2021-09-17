@@ -92,13 +92,18 @@ final class EditAddressFormViewModel: ObservableObject {
     /// Update the address remotely and invoke a completion block when finished
     ///
     func updateRemoteAddress(onFinish: @escaping (Bool) -> Void) {
-        // TODO: perform network request
-        // TODO: add success/failure notice
-        performingNetworkRequest.send(true)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
-            self?.performingNetworkRequest.send(false)
-            onFinish(true)
+        let updatedAddress = fields.toAddress(selectedCountry: selectedCountry)
+        let modifiedOrder = order.copy(shippingAddress: updatedAddress)
+        let action = OrderAction.updateOrder(siteID: order.siteID, order: modifiedOrder, fields: [.shippingAddress]) { [weak self] result in
+            guard let self = self else { return }
+
+            self.performingNetworkRequest.send(false)
+            // TODO: add success/failure notice
+            onFinish(result.isSuccess)
         }
+
+        performingNetworkRequest.send(true)
+        stores.dispatch(action)
     }
 }
 

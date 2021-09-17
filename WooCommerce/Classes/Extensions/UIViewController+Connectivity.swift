@@ -15,7 +15,7 @@ extension UIViewController {
     /// Keep a strong reference to this subscription to show the offline banner in the navigation controller's built-in toolbar.
     /// This requires the view controller to be contained inside a `WooNavigationController`.
     ///
-    var connectivitySubscription: AnyCancellable {
+    func observeConnectivity() -> AnyCancellable {
         ServiceLocator.connectivityObserver.statusPublisher
             .sink { [weak self] status in
                 guard let self = self else { return }

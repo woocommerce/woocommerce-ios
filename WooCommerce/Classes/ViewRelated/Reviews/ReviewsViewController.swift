@@ -110,7 +110,7 @@ final class ReviewsViewController: UIViewController {
                                               })
     }()
 
-    var cancellable: AnyCancellable?
+    var connectivitySubscription: AnyCancellable?
 
     // MARK: - View Lifecycle
 
@@ -168,7 +168,7 @@ final class ReviewsViewController: UIViewController {
     }
 
     override func hasConfiguredOfflineBanner() -> Bool {
-        cancellable = connectivitySubscription
+        connectivitySubscription = observeConnectivity()
         return true
     }
 }

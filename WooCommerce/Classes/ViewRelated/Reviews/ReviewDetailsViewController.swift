@@ -45,7 +45,7 @@ final class ReviewDetailsViewController: UIViewController {
     ///
     private var rows = [Row]()
 
-    private var cancellable: AnyCancellable?
+    private var connectivitySubscription: AnyCancellable?
 
     /// Designated Initializer
     ///
@@ -81,7 +81,7 @@ final class ReviewDetailsViewController: UIViewController {
     }
 
     override func hasConfiguredOfflineBanner() -> Bool {
-        cancellable = connectivitySubscription
+        connectivitySubscription = observeConnectivity()
         return true
     }
 }

@@ -16,7 +16,7 @@ final class DashboardViewController: UIViewController {
 
     private let dashboardUIFactory: DashboardUIFactory
     private var dashboardUI: DashboardUI?
-    private var cancellable: AnyCancellable?
+    private var connectivitySubscription: AnyCancellable?
 
     // Used to enable subtitle with store name
     private var shouldShowStoreNameAsSubtitle: Bool {
@@ -123,7 +123,7 @@ final class DashboardViewController: UIViewController {
     }
 
     override func hasConfiguredOfflineBanner() -> Bool {
-        cancellable = connectivitySubscription
+        connectivitySubscription = observeConnectivity()
         return true
     }
 }

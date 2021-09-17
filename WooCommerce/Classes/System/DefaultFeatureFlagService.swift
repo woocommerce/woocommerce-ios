@@ -14,12 +14,10 @@ struct DefaultFeatureFlagService: FeatureFlagService {
         case .shippingLabelsAddPaymentMethods:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsAddCustomPackages:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .shippingLabelsMultiPackage:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .orderEditing:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .cardPresentSeveralReadersFound:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .whatsNewOnWooCommerce:
             return buildConfig == .localDeveloper || buildConfig == .alpha

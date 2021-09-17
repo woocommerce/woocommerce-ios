@@ -42,10 +42,6 @@ enum FeatureFlag: Int {
     ///
     case orderEditing
 
-    /// Card-Present Payments Several Readers Found
-    ///
-    case cardPresentSeveralReadersFound
-
     /// Display "What's new on WooCommerce" on App Launch and App Settings
     ///
     case whatsNewOnWooCommerce

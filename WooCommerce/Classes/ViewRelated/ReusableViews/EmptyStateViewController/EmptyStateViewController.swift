@@ -98,6 +98,21 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     /// Used to present the Contact Support dialog if the `Config` is `.withSupportRequest`.
     private let zendeskManager: ZendeskManagerProtocol
 
+    /// Used to pin the stackView to the center of the visible area in the contact view,
+    /// taking account of the banner view when it's shown.
+    private lazy var visiblyCenteredLayoutGuide: UILayoutGuide = {
+        let centerGuide = UILayoutGuide()
+        contentView.addLayoutGuide(centerGuide)
+        let topConstraint = centerGuide.topAnchor.constraint(equalTo: contentView.topAnchor)
+        topConstraint.priority = UILayoutPriority(250)
+        NSLayoutConstraint.activate([
+            topConstraint,
+            centerGuide.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            centerGuide.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            centerGuide.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)])
+        return centerGuide
+    }()
+
     /// Top banner that shows an error if there is a problem loading reviews data
     ///
     private lazy var topBannerView: TopBannerView = {
@@ -129,6 +144,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
 
         view.backgroundColor = style.backgroundColor
         contentView.backgroundColor = style.backgroundColor
+        NSLayoutConstraint.activate([stackView.centerYAnchor.constraint(equalTo: visiblyCenteredLayoutGuide.centerYAnchor)])
 
         messageLabel.applySecondaryTitleStyle()
         detailsLabel.applySecondaryBodyStyle()
@@ -241,7 +257,8 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
             topBannerView.leadingAnchor.constraint(equalTo: contentView.safeLeadingAnchor),
             topBannerView.trailingAnchor.constraint(equalTo: contentView.safeTrailingAnchor),
             topBannerView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            topBannerView.bottomAnchor.constraint(lessThanOrEqualTo: stackView.topAnchor, constant: -16)
+            topBannerView.bottomAnchor.constraint(lessThanOrEqualTo: stackView.topAnchor, constant: -16),
+            visiblyCenteredLayoutGuide.topAnchor.constraint(equalTo: topBannerView.bottomAnchor)
         ])
     }
 

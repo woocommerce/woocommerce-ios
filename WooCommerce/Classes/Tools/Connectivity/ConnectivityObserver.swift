@@ -1,10 +1,13 @@
-import Foundation
+import Combine
 
 /// Interface for the observing connectivity
 ///
 protocol ConnectivityObserver {
     /// Getter for current state of the connectivity.
     var isConnectivityAvailable: Bool { get }
+
+    /// Publisher for connectivity availability.
+    var statusPublisher: AnyPublisher<ConnectivityStatus, Never> { get }
 
     /// Starts the observer.
     func startObserving()

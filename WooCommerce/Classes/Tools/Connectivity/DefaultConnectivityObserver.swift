@@ -1,4 +1,4 @@
-import Foundation
+import Combine
 import Network
 
 final class DefaultConnectivityObserver: ConnectivityObserver {
@@ -8,16 +8,23 @@ final class DefaultConnectivityObserver: ConnectivityObserver {
     private let networkMonitor: NWPathMonitor
     private let observingQueue: DispatchQueue = .global(qos: .background)
 
-    var isConnectivityAvailable: Bool {
-        if case .reachable = connectivityStatus(from: networkMonitor.currentPath) {
-            return true
-        }
-        return false
+    @Published private(set) var isConnectivityAvailable: Bool = false
+    @Published private var connectivityStatus: ConnectivityStatus = .unknown
+
+    var statusPublisher: AnyPublisher<ConnectivityStatus, Never> {
+        $connectivityStatus.eraseToAnyPublisher()
     }
 
     init(networkMonitor: NWPathMonitor = .init()) {
         self.networkMonitor = networkMonitor
         startObserving()
+        networkMonitor.pathUpdateHandler = { [weak self] path in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.isConnectivityAvailable = path.status == .satisfied
+                self.connectivityStatus = self.connectivityStatus(from: path)
+            }
+        }
     }
 
     func startObserving() {
@@ -29,6 +36,8 @@ final class DefaultConnectivityObserver: ConnectivityObserver {
             guard let self = self else { return }
             let connectivityStatus = self.connectivityStatus(from: path)
             DispatchQueue.main.async {
+                self.isConnectivityAvailable = path.status == .satisfied
+                self.connectivityStatus = connectivityStatus
                 listener(connectivityStatus)
             }
         }

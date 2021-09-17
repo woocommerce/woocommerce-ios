@@ -38,6 +38,36 @@ class WooNavigationController: UINavigationController {
 ///
 private class WooNavigationControllerDelegate: NSObject, UINavigationControllerDelegate {
 
+    /// Content of offline banner
+    ///
+    lazy var toolbarItemsForOfflineBanner: [UIBarButtonItem] = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = 3
+        stackView.distribution = .fillProportionally
+        stackView.alignment = .center
+
+        let imageView = UIImageView(image: .lightningImage)
+        imageView.tintColor = .white
+        imageView.contentMode = .scaleAspectFit
+        NSLayoutConstraint.activate([
+            imageView.widthAnchor.constraint(equalToConstant: 24),
+            imageView.heightAnchor.constraint(equalToConstant: 24)
+        ])
+
+        let messageLabel = UILabel()
+        messageLabel.text = NSLocalizedString("Offline - using cached data", comment: "Message for offline banner")
+        messageLabel.applyCalloutStyle()
+        messageLabel.textColor = .white
+
+        stackView.addArrangedSubview(imageView)
+        stackView.addArrangedSubview(messageLabel)
+
+        let offlineItem = UIBarButtonItem(customView: stackView)
+        let spaceItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        return [spaceItem, offlineItem, spaceItem]
+    }()
+
     /// Children delegate, all events will be forwarded to this object
     ///
     weak var forwardDelegate: UINavigationControllerDelegate?
@@ -45,6 +75,12 @@ private class WooNavigationControllerDelegate: NSObject, UINavigationControllerD
     /// Configures the back button for the managed `ViewController` and forwards the event to the children delegate.
     ///
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        if let wooNavigationController = navigationController as? WooNavigationController,
+           viewController.hasConfiguredOfflineBanner() {
+            configureOfflineBanner(for: viewController, in: wooNavigationController)
+        } else {
+            navigationController.isToolbarHidden = true
+        }
         configureBackButton(for: viewController)
         forwardDelegate?.navigationController?(navigationController, willShow: viewController, animated: animated)
     }
@@ -74,5 +110,16 @@ private extension WooNavigationControllerDelegate {
     ///
     func configureBackButton(for viewController: UIViewController) {
         viewController.removeNavigationBackBarButtonText()
+    }
+
+    /// Set up toolbar for the view controller to display the offline message,
+    /// and listen to connectivity status changes to change the toolbar's visibility.
+    ///
+    func configureOfflineBanner(for viewController: UIViewController, in navigationController: WooNavigationController) {
+        viewController.toolbarItems = toolbarItemsForOfflineBanner
+        navigationController.toolbar.barTintColor = .gray
+
+        let connected = ServiceLocator.connectivityObserver.isConnectivityAvailable
+        navigationController.setToolbarHidden(connected, animated: false)
     }
 }

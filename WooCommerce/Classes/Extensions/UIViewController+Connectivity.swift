@@ -21,7 +21,7 @@ extension UIViewController {
                 guard let self = self else { return }
                 guard let navigationController = self.navigationController as? WooNavigationController,
                       self.isViewOnScreen() else { return }
-                navigationController.setToolbarHidden(status != .notReachable, animated: true)
+                navigationController.isToolbarHidden = status != .notReachable
             }
     }
 }

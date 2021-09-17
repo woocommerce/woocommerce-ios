@@ -203,7 +203,8 @@ private extension CardReaderSettingsConnectedViewController {
     private func configureConnectedReader(cell: ConnectedReaderTableViewCell) {
         let cellViewModel = ConnectedReaderTableViewCell.ViewModel(
             name: viewModel?.connectedReaderID,
-            batteryLevel: viewModel?.connectedReaderBatteryLevel
+            batteryLevel: viewModel?.connectedReaderBatteryLevel,
+            softwareVersion: viewModel?.connectedReaderSoftwareVersion
         )
         cell.configure(viewModel: cellViewModel)
         cell.selectionStyle = .none
@@ -288,12 +289,6 @@ extension CardReaderSettingsConnectedViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate Conformance
 //
 extension CardReaderSettingsConnectedViewController: UITableViewDelegate {
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let row = rowAtIndexPath(indexPath)
-        return row.height
-    }
-
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -337,15 +332,6 @@ private enum Row: CaseIterable {
             return ButtonTableViewCell.self
         case .disconnectButton:
             return ButtonTableViewCell.self
-        }
-    }
-
-    var height: CGFloat {
-        switch self {
-        case .connectedReader:
-            return 60
-        default:
-            return UITableView.automaticDimension
         }
     }
 

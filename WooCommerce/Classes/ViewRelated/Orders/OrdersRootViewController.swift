@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 import Yosemite
 
@@ -29,6 +30,8 @@ final class OrdersRootViewController: UIViewController {
     private let hiddenScrollView = UIScrollView()
 
     private let siteID: Int64
+
+    private var connectivitySubscription: AnyCancellable?
 
     // MARK: View Lifecycle
 
@@ -65,15 +68,9 @@ final class OrdersRootViewController: UIViewController {
         ordersViewController.presentDetails(for: note)
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        configureOfflineBanner()
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        // hide the toolbar in case the next view controller in the stack doesn't provide contents for its `toolbarItems`.
-        navigationController?.isToolbarHidden = true
+    override func hasConfiguredOfflineBanner() -> Bool {
+        connectivitySubscription = observeConnectivity()
+        return true
     }
 }
 

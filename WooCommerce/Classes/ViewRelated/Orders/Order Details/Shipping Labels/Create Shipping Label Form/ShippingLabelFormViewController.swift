@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 import Yosemite
 import SwiftUI
@@ -20,6 +21,8 @@ final class ShippingLabelFormViewController: UIViewController {
     /// Assign this closure to be notified after a shipping label is saved for later
     ///
     var onLabelSave: (() -> Void)?
+
+    private var connectivitySubscription: AnyCancellable?
 
     /// Init
     ///
@@ -45,15 +48,9 @@ final class ShippingLabelFormViewController: UIViewController {
         observeViewModel()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        configureOfflineBanner()
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        // hide the toolbar in case the next view controller in the stack doesn't provide contents for its `toolbarItems`.
-        navigationController?.isToolbarHidden = true
+    override func hasConfiguredOfflineBanner() -> Bool {
+        connectivitySubscription = observeConnectivity()
+        return true
     }
 }
 

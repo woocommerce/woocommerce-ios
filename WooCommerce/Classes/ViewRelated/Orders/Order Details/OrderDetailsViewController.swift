@@ -91,6 +91,8 @@ final class OrderDetailsViewController: UIViewController {
         return storyboard.instantiateViewController(withIdentifier: identifier) as? Self
     }
 
+    private var connectivitySubscription: AnyCancellable?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigation()
@@ -118,20 +120,14 @@ final class OrderDetailsViewController: UIViewController {
         }
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        configureOfflineBanner()
-    }
-
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.updateHeaderHeight()
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        // hide the toolbar in case the next view controller in the stack doesn't provide contents for its `toolbarItems`.
-        navigationController?.isToolbarHidden = true
+    override func hasConfiguredOfflineBanner() -> Bool {
+        connectivitySubscription = observeConnectivity()
+        return true
     }
 }
 

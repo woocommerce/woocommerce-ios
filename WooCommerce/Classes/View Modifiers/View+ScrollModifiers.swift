@@ -48,7 +48,7 @@ struct ConditionalVerticalScrollModifier: ViewModifier {
 extension View {
     /// Allows the view to scroll vertically when the content height is greater than it's parent height.
     ///
-    func scrollIfNeeded() -> some View {
+    func scrollVerticallyIfNeeded() -> some View {
         self.modifier(ConditionalVerticalScrollModifier())
     }
 }

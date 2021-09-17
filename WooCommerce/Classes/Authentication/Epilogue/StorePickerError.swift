@@ -104,7 +104,7 @@ struct StorePickerError: View {
         }
         .padding(Layout.outerSidePadding)
         .background(Color.clear)
-        .scrollIfNeeded()
+        .scrollVerticallyIfNeeded()
         .frame(maxWidth: Layout.maxModalWidth)
     }
 }

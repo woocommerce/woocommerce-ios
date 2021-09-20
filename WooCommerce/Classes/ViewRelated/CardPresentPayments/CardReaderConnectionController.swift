@@ -144,8 +144,6 @@ private extension CardReaderConnectionController {
             onCancel()
         case .connectToReader:
             onConnectToReader()
-        case .failed(let error):
-            onFailed(error: error)
         case .connectingFailed(let error):
             onConnectingFailed(error: error)
         case .discoveryFailed(let error):

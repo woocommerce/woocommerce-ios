@@ -1,3 +1,5 @@
-Deze release bevat tal van kleine verbeteringen om je ervaring soepeler te laten verlopen. Sommige extensies van derden gaven product-metagegevens niet op logische wijze weer in de bestellingsgegevens. We hebben ervoor gezorgd dat de weergave van dergelijke productgegevens verbeterd is. De knop bestelling terugbetalen is nu verborgen wanneer het totale bedrag nul is.
+Hoera! Verkopers in de VS die gebruikmaken van de extensie WooCommerce Shipping & Tax: we hebben goed nieuws! Je kunt nu verzendlabels aanmaken en afdrukken voor verzendingen naar klanten buiten de VS.
 
-Deze update omvat tevens enkele verbeteringen van de verzendlabel-functie bij het gebruik van WooCommerce Shipping & Tax-extensie. Feedback op deze nieuwe functie is welkom!
+Heeft de klant enkele opmerkingen voor je achtergelaten bij het plaatsen van de bestelling? Je kunt nu deze opmerkingen in de app bewerken.
+
+Blijf ons al je feedback over de app sturen: we horen graag wat je vindt!

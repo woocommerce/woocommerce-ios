@@ -75,9 +75,9 @@ struct OrderListSyncActionUseCase {
 
     /// The reasons passed to `SyncCoordinator` when synchronizing.
     ///
-    /// We're only currently tracking one reason.
     enum SyncReason: String {
         case pullToRefresh = "pull_to_refresh"
+        case viewWillAppear = "view_will_appear"
     }
 
     let siteID: Int64

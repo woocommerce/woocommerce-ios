@@ -10,6 +10,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     private var connectedReaders = [CardReader]()
     private let knownReadersProvider: CardReaderSettingsKnownReadersProvider?
 
+    private(set) var checkForReaderUpdateInProgress: Bool = false
     private(set) var readerUpdateAvailable: CardReaderSettingsTriState = .isUnknown
     private(set) var readerUpdateInProgress: Bool = false
     private(set) var readerUpdateCompletedSuccessfully: Bool = false
@@ -47,6 +48,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
         updateReaderID()
         updateBatteryLevel()
         updateSoftwareVersion()
+        didUpdate?()
     }
 
     private func updateReaderID() {
@@ -76,6 +78,14 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     /// Dispatch a request to check for reader updates
     ///
     func checkForCardReaderUpdate() {
+        guard !checkForReaderUpdateInProgress else {
+            return
+        }
+
+        readerUpdateAvailable = .isUnknown
+        checkForReaderUpdateInProgress = true
+        didUpdate?()
+
         let action = CardPresentPaymentAction.checkForCardReaderUpdate() { [weak self] result in
             guard let self = self else {
                 return
@@ -90,6 +100,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
                 DDLogError("Unexpected error when checking for reader update")
                 self.readerUpdateAvailable = .isFalse
             }
+            self.checkForReaderUpdateInProgress = false
             self.didUpdate?()
         }
         ServiceLocator.stores.dispatch(action)

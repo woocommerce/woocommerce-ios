@@ -545,13 +545,6 @@ private extension OrderDetailsViewController {
         let reviewOrderViewModel = ReviewOrderViewModel(order: viewModel.order, products: viewModel.products, showAddOns: viewModel.dataSource.showAddOns)
         let controller = ReviewOrderViewController(viewModel: reviewOrderViewModel) { [weak self] in
             guard let self = self else { return }
-            ServiceLocator.analytics.track(
-                .orderStatusChange,
-                withProperties: [
-                    "id": self.viewModel.order.orderID,
-                    "from": self.viewModel.order.status.rawValue,
-                    "to": OrderStatusEnum.completed.rawValue
-                ])
             let fulfillmentProcess = self.viewModel.markCompleted()
             let presenter = OrderFulfillmentNoticePresenter()
             presenter.present(process: fulfillmentProcess)

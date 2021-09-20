@@ -127,6 +127,8 @@ struct ShippingLabelPaymentMethods: View {
                 showAddPaymentWebView = false
                 viewModel.syncShippingLabelAccountSettings()
                 ServiceLocator.analytics.track(.shippingLabelPaymentMethodAdded)
+                let notice = Notice(title: Localization.paymentMethodAddedNotice, feedbackType: .success)
+                ServiceLocator.noticePresenter.enqueue(notice: notice)
             }
             .navigationTitle(Localization.paymentMethodWebviewTitle)
             .navigationBarTitleDisplayMode(.inline)
@@ -164,6 +166,8 @@ private extension ShippingLabelPaymentMethods {
                                                             comment: "Title of the webview of adding a payment method in Shipping Labels")
         static let doneButtonAddPayment = NSLocalizedString("Done",
                                                             comment: "Done navigation button in Shipping Label add payment webview")
+        static let paymentMethodAddedNotice = NSLocalizedString("Payment method added",
+                                                                comment: "Notice that will be displayed after adding a new Shipping Label payment method")
     }
 
     enum Constants {

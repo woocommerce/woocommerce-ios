@@ -106,6 +106,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         configureMainView()
         configureTableView()
         configureMoreDetailsContainerView()
+        configureOfflineBanner()
 
         startListeningToNotifications()
         handleSwipeBackGesture()
@@ -138,8 +139,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         view.endEditing(true)
     }
 
-    override func hasConfiguredOfflineBanner() -> Bool {
-        connectivitySubscription = observeConnectivity()
+    override var shouldShowOfflineBanner: Bool {
         return true
     }
 
@@ -412,6 +412,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 // MARK: - Configuration
 //
 private extension ProductFormViewController {
+    func configureOfflineBanner() {
+        connectivitySubscription = observeConnectivity()
+    }
+
     func configureNavigationBar() {
         updateNavigationBar()
         updateBackButtonTitle()

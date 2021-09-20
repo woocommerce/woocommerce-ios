@@ -54,6 +54,7 @@ final class ReviewOrderViewController: UIViewController {
         configureNavigation()
         configureTableView()
         configureViewModel()
+        configureOfflineBanner()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -68,8 +69,7 @@ final class ReviewOrderViewController: UIViewController {
         tableView.updateFooterHeight()
     }
 
-    override func hasConfiguredOfflineBanner() -> Bool {
-        connectivitySubscription = observeConnectivity()
+    override var shouldShowOfflineBanner: Bool {
         return true
     }
 }
@@ -77,6 +77,10 @@ final class ReviewOrderViewController: UIViewController {
 // MARK: - UI Configuration
 //
 private extension ReviewOrderViewController {
+    private func configureOfflineBanner() {
+        connectivitySubscription = observeConnectivity()
+    }
+
     func configureViewModel() {
         viewModel.configureResultsControllers { [weak self] in
             self?.tableView.reloadData()

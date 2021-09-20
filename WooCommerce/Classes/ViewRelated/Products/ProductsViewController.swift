@@ -167,6 +167,7 @@ final class ProductsViewController: UIViewController {
         configureTableView()
         configureToolBarView()
         configureSyncingCoordinator()
+        configureOfflineBanner()
         registerTableViewCells()
 
         showTopBannerViewIfNeeded()
@@ -205,8 +206,7 @@ final class ProductsViewController: UIViewController {
         updateTableHeaderViewHeight()
     }
 
-    override func hasConfiguredOfflineBanner() -> Bool {
-        connectivitySubscription = observeConnectivity()
+    override var shouldShowOfflineBanner: Bool {
         return true
     }
 }
@@ -260,6 +260,10 @@ private extension ProductsViewController {
 // MARK: - View Configuration
 //
 private extension ProductsViewController {
+
+    func configureOfflineBanner() {
+        connectivitySubscription = observeConnectivity()
+    }
 
     /// Set the title.
     ///

@@ -2,12 +2,11 @@ import UIKit
 import Combine
 
 extension UIViewController {
-    /// Defines if the view controller has been configured to show a "no connection" banner when offline.
-    /// One way to configure the banner is to use `connectivitySubscription`.
+    /// Defines if the view controller should show a "no connection" banner when offline.
     /// This requires the view controller to be contained inside a `WooNavigationController`.
     /// Defaults to `false`.
     ///
-    @objc func hasConfiguredOfflineBanner() -> Bool {
+    @objc var shouldShowOfflineBanner: Bool {
         false
     }
 

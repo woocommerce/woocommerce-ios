@@ -108,6 +108,7 @@ final class DashboardViewController: UIViewController {
         configureNavigation()
         configureView()
         configureDashboardUIContainer()
+        configureOfflineBanner()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -122,8 +123,7 @@ final class DashboardViewController: UIViewController {
         dashboardUI?.view.frame = containerView.bounds
     }
 
-    override func hasConfiguredOfflineBanner() -> Bool {
-        connectivitySubscription = observeConnectivity()
+    override var shouldShowOfflineBanner: Bool {
         return true
     }
 }
@@ -131,6 +131,10 @@ final class DashboardViewController: UIViewController {
 // MARK: - Configuration
 //
 private extension DashboardViewController {
+
+    func configureOfflineBanner() {
+        connectivitySubscription = observeConnectivity()
+    }
 
     func configureView() {
         view.backgroundColor = .listBackground

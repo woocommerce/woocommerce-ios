@@ -46,10 +46,10 @@ final class ShippingLabelFormViewController: UIViewController {
         registerTableViewCells()
         registerTableViewHeaderFooters()
         observeViewModel()
+        configureOfflineBanner()
     }
 
-    override func hasConfiguredOfflineBanner() -> Bool {
-        connectivitySubscription = observeConnectivity()
+    override var shouldShowOfflineBanner: Bool {
         return true
     }
 }
@@ -57,6 +57,10 @@ final class ShippingLabelFormViewController: UIViewController {
 // MARK: - View Configuration
 //
 private extension ShippingLabelFormViewController {
+
+    func configureOfflineBanner() {
+        connectivitySubscription = observeConnectivity()
+    }
 
     func configureNavigationBar() {
         title = Localization.titleView

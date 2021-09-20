@@ -54,6 +54,7 @@ final class OrdersRootViewController: UIViewController {
         configureView()
         configureContainerView()
         configureChildViewController()
+        configureOfflineBanner()
     }
 
     override func viewDidLayoutSubviews() {
@@ -68,8 +69,7 @@ final class OrdersRootViewController: UIViewController {
         ordersViewController.presentDetails(for: note)
     }
 
-    override func hasConfiguredOfflineBanner() -> Bool {
-        connectivitySubscription = observeConnectivity()
+    override var shouldShowOfflineBanner: Bool {
         return true
     }
 }
@@ -77,6 +77,10 @@ final class OrdersRootViewController: UIViewController {
 // MARK: - Configuration
 //
 private extension OrdersRootViewController {
+
+    func configureOfflineBanner() {
+        connectivitySubscription = observeConnectivity()
+    }
 
     func configureView() {
         view.backgroundColor = .listBackground

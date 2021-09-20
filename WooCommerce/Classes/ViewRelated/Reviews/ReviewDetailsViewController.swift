@@ -70,6 +70,7 @@ final class ReviewDetailsViewController: UIViewController {
         configureTableView()
         configureEntityListener()
         configureAppRatingEvent()
+        configureOfflineBanner()
 
         registerTableViewCells()
         reloadInterface()
@@ -80,8 +81,7 @@ final class ReviewDetailsViewController: UIViewController {
         markAsReadIfNeeded(notification)
     }
 
-    override func hasConfiguredOfflineBanner() -> Bool {
-        connectivitySubscription = observeConnectivity()
+    override var shouldShowOfflineBanner: Bool {
         return true
     }
 }
@@ -90,6 +90,10 @@ final class ReviewDetailsViewController: UIViewController {
 // MARK: - User Interface Initialization
 //
 private extension ReviewDetailsViewController {
+
+    func configureOfflineBanner() {
+        connectivitySubscription = observeConnectivity()
+    }
 
     /// Setup: Main View
     ///

@@ -76,7 +76,7 @@ private class WooNavigationControllerDelegate: NSObject, UINavigationControllerD
     ///
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
         if let wooNavigationController = navigationController as? WooNavigationController,
-           viewController.hasConfiguredOfflineBanner() {
+           viewController.shouldShowOfflineBanner {
             configureOfflineBanner(for: viewController, in: wooNavigationController)
         } else {
             navigationController.isToolbarHidden = true

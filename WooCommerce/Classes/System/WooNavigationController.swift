@@ -38,6 +38,12 @@ class WooNavigationController: UINavigationController {
 ///
 private class WooNavigationControllerDelegate: NSObject, UINavigationControllerDelegate {
 
+    private let connectivityObserver: ConnectivityObserver
+
+    init(connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver) {
+        self.connectivityObserver = connectivityObserver
+    }
+
     /// Content of offline banner
     ///
     lazy var toolbarItemsForOfflineBanner: [UIBarButtonItem] = {
@@ -119,7 +125,7 @@ private extension WooNavigationControllerDelegate {
         viewController.toolbarItems = toolbarItemsForOfflineBanner
         navigationController.toolbar.barTintColor = .gray
 
-        let connected = ServiceLocator.connectivityObserver.isConnectivityAvailable
+        let connected = connectivityObserver.isConnectivityAvailable
         navigationController.setToolbarHidden(connected, animated: false)
     }
 }

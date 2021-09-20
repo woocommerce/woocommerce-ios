@@ -16,19 +16,13 @@ final class SeveralReadersFoundViewController: UIViewController, UITableViewDele
     private var sections = [Section]()
 
     private var readerIDs = [String]()
+    private var onConnect: ((String) -> Void)?
+    private var onCancel: (() -> Void)?
 
     init() {
         super.init(nibName: Self.nibName, bundle: nil)
 
         modalPresentationStyle = .overFullScreen
-
-        // TODO: Dummy data for now
-        self.readerIDs = [
-            "CHB204909005931",
-            "CHB204909005942",
-            "CHB204909005953",
-            "CHB204909005964",
-        ]
     }
 
     required init?(coder: NSCoder) {
@@ -62,9 +56,17 @@ final class SeveralReadersFoundViewController: UIViewController, UITableViewDele
         }
     }
 
-    // TODO - accept updates to the list of CardReaderIDs to present and reloadData
+    func configureController(readerIDs: [String], connect: @escaping ((String) -> Void), cancelSearch: @escaping (() -> Void)) {
+        self.readerIDs = readerIDs
+        onConnect = connect
+        onCancel = cancelSearch
+    }
 
-    // TODO - call completion with selected CardReaderID? (nil on cancel)
+    func updateReaderIDs(readerIDs: [String]) {
+        self.readerIDs = readerIDs
+        configureSections()
+        tableView?.reloadData()
+    }
 }
 
 // MARK: - View Configuration
@@ -77,6 +79,9 @@ private extension SeveralReadersFoundViewController {
     func configureNavigation() {
         headlineLabel.text = Localization.headline
         cancelButton.setTitle(Localization.cancel, for: .normal)
+        cancelButton.on(.touchUpInside) { [weak self] _ in
+            self?.didTapCancel()
+        }
     }
 
     /// Setup the sections in this table view
@@ -156,8 +161,13 @@ private extension SeveralReadersFoundViewController {
         guard let cell = cell as? LabelAndButtonTableViewCell else {
             return
         }
-        cell.label.text = readerID
-        cell.button.setTitle(Localization.connect, for: .normal)
+        cell.configure(
+            labelText: readerID,
+            buttonTitle: Localization.connect,
+            didTapButton: {
+                self.didTapConnect(readerID: readerID)
+            }
+        )
         cell.selectionStyle = .none
     }
 
@@ -165,7 +175,7 @@ private extension SeveralReadersFoundViewController {
         guard let cell = cell as? ActivitySpinnerAndLabelTableViewCell else {
             return
         }
-        cell.label.text = Localization.scanningLabel
+        cell.configure(labelText: Localization.scanningLabel)
         cell.selectionStyle = .none
     }
 
@@ -181,6 +191,22 @@ private extension SeveralReadersFoundViewController {
         static let leading: CGFloat = 160
         static let trailing: CGFloat = -160
         static let bottom: CGFloat = -197
+    }
+}
+
+// MARK: - Actions
+//
+private extension SeveralReadersFoundViewController {
+    @objc func didTapConnect(readerID: String) {
+        self.dismiss(animated: true, completion: {
+            self.onConnect?(readerID)
+        })
+    }
+
+    @objc func didTapCancel() {
+        self.dismiss(animated: true, completion: {
+            self.onCancel?()
+        })
     }
 }
 

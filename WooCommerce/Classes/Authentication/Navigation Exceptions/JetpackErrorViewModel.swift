@@ -8,9 +8,11 @@ import WordPressUI
 /// an error when Jetpack is not installed or is not connected
 struct JetpackErrorViewModel: ULErrorViewModel {
     private let siteURL: String
+    private let analytics: Analytics
 
-    init(siteURL: String?) {
+    init(siteURL: String?, analytics: Analytics = ServiceLocator.analytics) {
         self.siteURL = siteURL ?? Localization.yourSite
+        self.analytics = analytics
     }
 
     // MARK: - Data and configuration
@@ -46,6 +48,8 @@ struct JetpackErrorViewModel: ULErrorViewModel {
         let safariViewController = SFSafariViewController(url: url)
         safariViewController.modalPresentationStyle = .pageSheet
         viewController?.present(safariViewController, animated: true)
+
+        analytics.track(.loginJetpackRequiredViewInstructionsButtonTapped)
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
@@ -54,10 +58,16 @@ struct JetpackErrorViewModel: ULErrorViewModel {
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
-        let fancyAlert = FancyAlertViewController.makeWhatIsJetpackAlertController()
+        let fancyAlert = FancyAlertViewController.makeWhatIsJetpackAlertController(analytics: analytics)
         fancyAlert.modalPresentationStyle = .custom
         fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
         viewController?.present(fancyAlert, animated: true)
+
+        analytics.track(.loginWhatIsJetpackHelpScreenViewed)
+    }
+
+    func viewDidLoad() {
+        analytics.track(.loginJetpackRequiredScreenViewed)
     }
 }
 

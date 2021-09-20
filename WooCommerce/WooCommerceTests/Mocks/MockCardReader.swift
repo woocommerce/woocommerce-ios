@@ -11,4 +11,14 @@ struct MockCardReader {
                    readerType: .chipper,
                    locationId: "st_simulated")
     }
+
+    static func bbposChipper2XBTNoVerNoBatt() -> CardReader {
+        CardReader(serial: "WPE-SIMULATOR-1",
+                   vendorIdentifier: "SIMULATOR",
+                   name: "Simulated POS E",
+                   status: .init(connected: false, remembered: false),
+                   softwareVersion: nil,
+                   batteryLevel: nil,
+                   readerType: .mobile)
+    }
 }

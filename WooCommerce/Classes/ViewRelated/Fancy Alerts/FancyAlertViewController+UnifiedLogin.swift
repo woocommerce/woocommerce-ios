@@ -1,10 +1,13 @@
 import WordPressUI
 import SafariServices
 
-public extension FancyAlertViewController {
-    static func makeWhatIsJetpackAlertController() -> FancyAlertViewController {
-        let dismissButton = makeDismissButtonConfig()
-        let moreInfoButton = makeMoreInfoButtonConfig()
+extension FancyAlertViewController {
+    static func makeWhatIsJetpackAlertController(analytics: Analytics) -> FancyAlertViewController {
+        let dismissButton = FancyAlertViewController.Config.ButtonConfig(Localization.dismissButton) { controller, _ in
+            controller.dismiss(animated: true)
+            analytics.track(.loginWhatIsJetpackHelpScreenOkButtonTapped)
+        }
+        let moreInfoButton = makeLearnMoreAboutJetpackButtonConfig(analytics: analytics)
         let config = FancyAlertViewController.Config(titleText: Localization.whatIsJetpack,
                                                      bodyText: Localization.whatIsJetpackLongDescription,
                                                      headerImage: .whatIsJetpackImage,
@@ -93,7 +96,7 @@ private extension FancyAlertViewController {
         }
     }
 
-    static func makeMoreInfoButtonConfig() -> FancyAlertViewController.Config.ButtonConfig {
+    static func makeLearnMoreAboutJetpackButtonConfig(analytics: Analytics) -> FancyAlertViewController.Config.ButtonConfig {
         return FancyAlertViewController.Config.ButtonConfig(Localization.learnMore) { controller, _ in
             guard let url = URL(string: Strings.whatsJetpackURLString) else {
                 return
@@ -102,6 +105,8 @@ private extension FancyAlertViewController {
             let safariViewController = SFSafariViewController(url: url)
             safariViewController.modalPresentationStyle = .pageSheet
             controller.present(safariViewController, animated: true)
+
+            analytics.track(.loginWhatIsJetpackHelpScreenLearnMoreButtonTapped)
         }
     }
 

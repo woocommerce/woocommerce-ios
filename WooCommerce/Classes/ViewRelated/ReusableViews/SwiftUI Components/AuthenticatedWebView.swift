@@ -94,6 +94,9 @@ struct AuthenticatedWebView: UIViewRepresentable {
                      decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
             if let url = webView.url?.absoluteString, let urlTrigger = parent.urlToTriggerExit, url.contains(urlTrigger) {
                 parent.exitTrigger?()
+                decisionHandler(.cancel)
+                webView.navigationDelegate = nil
+                return
             }
             decisionHandler(.allow)
         }

@@ -124,7 +124,7 @@ struct ShippingLabelPaymentMethods: View {
                                  url: WooConstants.URLs.addPaymentMethodWCShip.asURL(),
                                  urlToTriggerExit: viewModel.fetchPaymentMethodURLPath) {
                 showAddPaymentWebView = false
-
+                viewModel.syncShippingLabelAccountSettings()
             }
             .navigationTitle(Localization.paymentMethodWebviewTitle)
             .navigationBarTitleDisplayMode(.inline)

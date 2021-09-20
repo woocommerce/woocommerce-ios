@@ -80,6 +80,23 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
 //
 extension ShippingLabelPaymentMethodsViewModel {
 
+    /// Syncs account settings specific to shipping labels, such as the last selected package and payment methods.
+    ///
+    func syncShippingLabelAccountSettings() {
+        let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: accountSettings.siteID) { [weak self] result in
+            guard let self = self else { return }
+
+            switch result {
+            case .success(let value):
+                self.accountSettings = value
+                self.selectedPaymentMethodID = value.selectedPaymentMethodID
+            case .failure:
+                DDLogError("⛔️ Error synchronizing shipping label account settings")
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
     /// Updates remote shipping label account settings
     ///
     func updateShippingLabelAccountSettings(onCompletion: @escaping ((ShippingLabelAccountSettings) -> Void)) {

@@ -227,9 +227,7 @@ private extension CardReaderSettingsSearchingViewController {
     }
 
     private func configureLearnMore(cell: LearnMoreTableViewCell) {
-        cell.configure(text: Localization.learnMore) { [weak self] url in
-            self?.urlWasPressed(url: url)
-        }
+        cell.configure(text: Localization.learnMore)
         cell.backgroundColor = .systemBackground
         cell.selectionStyle = .none
     }
@@ -302,6 +300,11 @@ extension CardReaderSettingsSearchingViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+
+        let row = rowAtIndexPath(indexPath)
+        if case .connectLearnMore = row {
+            WebviewHelper.launch("https://woocommerce.com/payments/", with: self)
+        }
     }
 }
 
@@ -394,23 +397,9 @@ private extension CardReaderSettingsSearchingViewController {
             comment: "Settings > Manage Card Reader > Connect > A button to begin a search for a reader"
         )
 
-        static let learnMore: NSAttributedString = {
-            let learnMoreText = NSLocalizedString(
-                "<a href=\"https://woocommerce.com/payments\">Learn more</a> about accepting payments with your mobile device and ordering card readers",
-                comment: "A label prompting users to learn more about card readers with an embedded hyperlink"
-            )
-
-            let learnMoreAttributes: [NSAttributedString.Key: Any] = [
-                .font: StyleManager.footerLabelFont,
-                .foregroundColor: UIColor.textSubtle
-            ]
-
-            let learnMoreAttrText = NSMutableAttributedString()
-            learnMoreAttrText.append(learnMoreText.htmlToAttributedString)
-            let range = NSRange(location: 0, length: learnMoreAttrText.length)
-            learnMoreAttrText.addAttributes(learnMoreAttributes, range: range)
-
-            return learnMoreAttrText
-        }()
+        static let learnMore = NSLocalizedString(
+            "Tap to learn more about accepting payments with your mobile device and ordering card readers",
+            comment: "A label prompting users to learn more about card readers"
+        )
     }
 }

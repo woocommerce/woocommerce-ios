@@ -68,11 +68,11 @@ final class ShippingLabelCustomPackageFormViewModel: ObservableObject {
     /// Validated custom package
     ///
     var validatedCustomPackage: ShippingLabelCustomPackage? {
-        guard isPackageValidated, let boxWeight = Double(emptyPackageWeight) else {
+        guard isPackageValidated, let boxWeight = NumberFormatter.double(from: emptyPackageWeight) else {
             return nil
         }
         let isLetter = packageType == .letter
-        let dimensions = "\(packageLength) x \(packageWidth) x \(packageHeight)"
+        let dimensions = "\(packageLength) x \(packageWidth) x \(packageHeight)".replacingOccurrences(of: ",", with: ".")
         return ShippingLabelCustomPackage(isUserDefined: true,
                                           title: packageName,
                                           isLetter: isLetter,
@@ -166,7 +166,7 @@ extension ShippingLabelCustomPackageFormViewModel {
     /// Sanitize string input to return only valid Double values
     ///
     func sanitizeNumericInput(_ value: String) -> String {
-        guard Double(value) != nil else {
+        guard NumberFormatter.double(from: value) != nil else {
             return String(value.dropLast())
         }
         return value
@@ -177,14 +177,14 @@ extension ShippingLabelCustomPackageFormViewModel {
     }
 
     private func validatePackageDimension(_ dimension: String) -> Bool {
-        guard let numericValue = Double(dimension) else {
+        guard dimension.isNotEmpty, let numericValue = NumberFormatter.double(from: dimension) else {
             return false
         }
         return numericValue > 0
     }
 
     private func validatePackageWeight(_ weight: String) -> Bool {
-        guard let numericValue = Double(weight) else {
+        guard let numericValue = NumberFormatter.double(from: weight) else {
             return false
         }
         return numericValue >= 0

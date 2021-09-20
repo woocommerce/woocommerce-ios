@@ -44,8 +44,9 @@ public enum ShippingLabelAction: Action {
     /// Creates a custom package with provided package details.
     ///
     case createPackage(siteID: Int64,
-                       customPackage: ShippingLabelCustomPackage,
-                       completion: (Result<Bool, Error>) -> Void)
+                       customPackage: ShippingLabelCustomPackage? = nil,
+                       predefinedOption: ShippingLabelPredefinedOption? = nil,
+                       completion: (Result<Bool, PackageCreationError>) -> Void)
 
     /// Fetch list of shipping carriers and their rates
     ///

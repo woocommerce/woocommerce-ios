@@ -9,7 +9,7 @@ final class CountrySelectorCommand: ObservableListSelectorCommand {
 
     /// Original array of countries.
     ///
-    private var countries: [Country]
+    private let countries: [Country]
 
     /// Data to display
     ///
@@ -17,16 +17,16 @@ final class CountrySelectorCommand: ObservableListSelectorCommand {
 
     /// Current selected country
     ///
-    private(set) var selected: Country?
+    @Binding private(set) var selected: Country?
 
     /// Navigation bar title
     ///
     let navigationBarTitle: String? = ""
 
-    init(countries: [Country], selected: Country? = nil) {
+    init(countries: [Country], selected: Binding<Country?>) {
         self.countries = countries
         self.data = countries
-        self.selected = selected
+        self._selected = selected
     }
 
     func handleSelectedChange(selected: Country, viewController: ViewController) {
@@ -34,18 +34,11 @@ final class CountrySelectorCommand: ObservableListSelectorCommand {
     }
 
     func isSelected(model: Country) -> Bool {
-        model == selected
+        model.code == selected?.code // I'm only comparing country codes because states can be unsorted
     }
 
     func configureCell(cell: BasicTableViewCell, model: Country) {
         cell.textLabel?.text = model.name
-    }
-
-    /// Resets countries data.
-    ///
-    func resetCountries(_ countries: [Country]) {
-        self.countries = countries
-        self.data = countries
     }
 
     /// Filter available countries that contains a given search term.

@@ -3,7 +3,6 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -24,33 +23,27 @@
                         </constraints>
                         <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </button>
-                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu." textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="pn2-lW-lwh">
-                        <rect key="frame" x="60" y="10" width="334" height="54"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <color key="textColor" systemColor="secondaryLabelColor"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Learn more about accepting payments with your mobile device and ordering card readers" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qFY-eH-PTM">
+                        <rect key="frame" x="50" y="10" width="354" height="54"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
-                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                    </textView>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                 </subviews>
                 <constraints>
                     <constraint firstItem="zTM-KS-b6r" firstAttribute="centerY" secondItem="LCt-GL-faI" secondAttribute="centerY" id="1dG-Vh-eS9"/>
-                    <constraint firstItem="pn2-lW-lwh" firstAttribute="leading" secondItem="zTM-KS-b6r" secondAttribute="trailing" constant="20" id="43S-tV-U7j"/>
-                    <constraint firstAttribute="trailing" secondItem="pn2-lW-lwh" secondAttribute="trailing" constant="20" id="Bdc-wc-k5A"/>
-                    <constraint firstItem="pn2-lW-lwh" firstAttribute="top" secondItem="LCt-GL-faI" secondAttribute="top" constant="10" id="HXe-lL-aq2"/>
-                    <constraint firstAttribute="bottom" secondItem="pn2-lW-lwh" secondAttribute="bottom" constant="10" id="T0d-9M-VAi"/>
+                    <constraint firstItem="qFY-eH-PTM" firstAttribute="top" secondItem="LCt-GL-faI" secondAttribute="top" constant="10" id="IeD-47-O2h"/>
+                    <constraint firstAttribute="bottom" secondItem="qFY-eH-PTM" secondAttribute="bottom" constant="10" id="aap-25-IxP"/>
+                    <constraint firstAttribute="trailing" secondItem="qFY-eH-PTM" secondAttribute="trailing" constant="10" id="ak6-jg-cRZ"/>
+                    <constraint firstItem="qFY-eH-PTM" firstAttribute="leading" secondItem="zTM-KS-b6r" secondAttribute="trailing" constant="10" id="ey7-SL-LuB"/>
                     <constraint firstItem="zTM-KS-b6r" firstAttribute="leading" secondItem="LCt-GL-faI" secondAttribute="leading" constant="20" id="ocx-j6-qGN"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
                 <outlet property="learnMoreButton" destination="zTM-KS-b6r" id="kxk-pX-Y8T"/>
-                <outlet property="learnMoreTextView" destination="pn2-lW-lwh" id="A5r-mE-9rz"/>
+                <outlet property="learnMoreLabel" destination="qFY-eH-PTM" id="FMa-BG-Ntv"/>
             </connections>
             <point key="canvasLocation" x="37.681159420289859" y="103.79464285714285"/>
         </tableViewCell>
     </objects>
-    <resources>
-        <systemColor name="secondaryLabelColor">
-            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-    </resources>
 </document>

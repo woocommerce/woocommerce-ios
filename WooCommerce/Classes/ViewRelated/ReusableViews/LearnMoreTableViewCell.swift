@@ -4,7 +4,7 @@ import UIKit
 ///
 class LearnMoreTableViewCell: UITableViewCell {
     @IBOutlet private weak var learnMoreButton: UIButton!
-    @IBOutlet private weak var learnMoreTextView: UITextView!
+    @IBOutlet private weak var learnMoreLabel: UILabel!
 
     private var onUrlPressed: ((_ url: URL) -> Void)?
 
@@ -15,24 +15,10 @@ class LearnMoreTableViewCell: UITableViewCell {
 
     private func configureCell() {
         learnMoreButton.setImage(.infoOutlineImage, for: .normal)
-        learnMoreTextView.tintColor = .textLink
-        learnMoreTextView.linkTextAttributes = [
-            .foregroundColor: UIColor.textLink,
-            .underlineColor: UIColor.clear
-        ]
-        learnMoreTextView.delegate = self
+        learnMoreLabel.textColor = .textLink
     }
 
-    func configure(text: NSAttributedString?, onUrlPressed: ((_ url: URL) -> Void)? = nil ) {
-        learnMoreTextView.attributedText = text
-        self.onUrlPressed = onUrlPressed
-    }
-}
-
-extension LearnMoreTableViewCell: UITextViewDelegate {
-    func textView(_ textView: UITextView, shouldInteractWith URL: URL,
-                  in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        self.onUrlPressed?(URL)
-        return false
+    func configure(text: String?) {
+        learnMoreLabel.text = text
     }
 }

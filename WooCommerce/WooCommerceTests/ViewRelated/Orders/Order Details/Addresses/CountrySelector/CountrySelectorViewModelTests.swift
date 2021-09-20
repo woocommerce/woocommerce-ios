@@ -1,23 +1,23 @@
 import XCTest
 import Yosemite
 import TestKit
+import Combine
 @testable import WooCommerce
 
 final class CountrySelectorViewModelTests: XCTestCase {
 
-    let sampleSiteID: Int64 = 123
-    let testingStorage = MockStorageManager()
+    var subscriptions = Set<AnyCancellable>()
 
     override func setUp () {
         super.setUp()
 
-        testingStorage.reset()
-        testingStorage.insertSampleCountries(readOnlyCountries: Self.sampleCountries)
+        subscriptions.removeAll()
     }
 
     func test_filter_countries_return_expected_results() {
         // Given
-        let viewModel = CountrySelectorViewModel(siteID: sampleSiteID, storageManager: testingStorage)
+        let binding = Binding<Country?>(get: { nil }, set: { _ in })
+        let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
 
         // When
         viewModel.searchTerm = "Co"
@@ -42,7 +42,8 @@ final class CountrySelectorViewModelTests: XCTestCase {
 
     func test_filter_countries_with_uppercase_letters_return_expected_results() {
         // Given
-        let viewModel = CountrySelectorViewModel(siteID: sampleSiteID, storageManager: testingStorage)
+        let binding = Binding<Country?>(get: { nil }, set: { _ in })
+        let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
 
         // When
         viewModel.searchTerm = "CO"
@@ -67,7 +68,8 @@ final class CountrySelectorViewModelTests: XCTestCase {
 
     func test_cleaning_search_terms_return_all_countries() {
         // Given
-        let viewModel = CountrySelectorViewModel(siteID: sampleSiteID, storageManager: testingStorage)
+        let binding = Binding<Country?>(get: { nil }, set: { _ in })
+        let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
         let totalNumberOfCountries = viewModel.command.data.count
 
         // When
@@ -79,26 +81,30 @@ final class CountrySelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.command.data.count, totalNumberOfCountries)
     }
 
-    func test_starting_view_model_without_stored_countries_fetches_them_remotely() {
+    func test_providing_a_selected_country_is_reflected_on_command() {
         // Given
-        testingStorage.reset()
-        let testingStores = MockStoresManager(sessionManager: .testingInstance)
-
+        let binding = Binding<Country?>(get: { Self.sampleCountries[0] }, set: { _ in })
 
         // When
-        let countriesFetched: Bool = waitFor { promise in
-            testingStores.whenReceivingAction(ofType: DataAction.self) { action in
-                switch action {
-                case .synchronizeCountries:
-                    promise(true)
-                }
-            }
-
-            _ = CountrySelectorViewModel(siteID: self.sampleSiteID, storageManager: self.testingStorage, stores: testingStores)
-        }
+        let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
 
         // Then
-        XCTAssertTrue(countriesFetched)
+        XCTAssertEqual(viewModel.command.selected, binding.wrappedValue)
+    }
+
+    func test_selecting_country_via_command_updates_binding() {
+        // Given
+        let expectedCountry = Self.sampleCountries[0]
+        var selectedCountry: Country? = nil
+        let binding = Binding<Country?>(get: { selectedCountry }, set: { selectedCountry = $0 })
+        let viewModel = CountrySelectorViewModel(countries: Self.sampleCountries, selected: binding)
+
+        // When
+        let viewController = ListSelectorViewController(command: viewModel.command, onDismiss: { _ in }) // Needed because of legacy UIKit ways
+        viewModel.command.handleSelectedChange(selected: expectedCountry, viewController: viewController)
+
+        // Then
+        XCTAssertEqual(selectedCountry, expectedCountry)
     }
 }
 
@@ -108,6 +114,8 @@ private extension CountrySelectorViewModelTests {
         return Locale.isoRegionCodes.map { regionCode in
             let name = Locale.current.localizedString(forRegionCode: regionCode) ?? ""
             return Country(code: regionCode, name: name, states: [])
+        }.sorted { a, b in
+            a.name <= b.name
         }
     }()
 }

@@ -4,6 +4,8 @@ import Yosemite
 struct ShippingLabelAddNewPackage: View {
     @ObservedObject var viewModel: ShippingLabelAddNewPackageViewModel
     @Environment(\.presentationMode) var presentation
+    @State private var isSyncing = false
+    @State private var showingAddPackageError = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -40,18 +42,44 @@ struct ShippingLabelAddNewPackage: View {
                 }
                 // Done button
                 ToolbarItem(placement: .navigationBarTrailing, content: {
-                    Button(Localization.doneButton, action: {
+                    Button(action: {
                         switch viewModel.selectedView {
                         case .customPackage:
                             viewModel.customPackageVM.validatePackage()
-                            if viewModel.customPackageVM.validatedCustomPackage != nil {
-                                // TODO-3909: Save custom package and add it to package list
+                            guard viewModel.customPackageVM.validatedCustomPackage != nil else { return }
+                            isSyncing = true
+                            viewModel.createCustomPackage() { success in
+                                isSyncing = false
+                                guard success else {
+                                    showingAddPackageError = true
+                                    return
+                                }
                                 presentation.wrappedValue.dismiss()
                             }
                         case .servicePackage:
-                            // TODO-3909: Add selected service package and go back to package list
-                            presentation.wrappedValue.dismiss()
+                            isSyncing = true
+                            viewModel.activateServicePackage() { success in
+                                isSyncing = false
+                                guard success else {
+                                    showingAddPackageError = true
+                                    return
+                                }
+                                presentation.wrappedValue.dismiss()
+                            }
                         }
+                    }, label: {
+                        if isSyncing {
+                            ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                                .accentColor(Color(.navigationBarLoadingIndicator))
+                        } else {
+                            Text(Localization.doneButton)
+                        }
+                    })
+                    .disabled(isSyncing)
+                    .alert(isPresented: $showingAddPackageError, content: {
+                        let title = viewModel.error?.alertTitle ?? Localization.errorAlertTitle
+                        let message = viewModel.error?.errorDescription ?? Localization.errorAlertMessage
+                        return Alert(title: Text(title), message: Text(message))
                     })
                 })
             }
@@ -65,12 +93,17 @@ private extension ShippingLabelAddNewPackage {
         static let customPackage = NSLocalizedString("Custom Package", comment: "Custom Package menu in Shipping Label Add New Package flow")
         static let servicePackage = NSLocalizedString("Service Package", comment: "Service Package menu in Shipping Label Add New Package flow")
         static let doneButton = NSLocalizedString("Done", comment: "Done navigation button in the Add New Package screen in Shipping Label flow")
+        static let errorAlertTitle = NSLocalizedString("Cannot add package", comment: "The title of the alert when there is a generic error adding the package")
+        static let errorAlertMessage = NSLocalizedString("Unexpected error",
+                                                         comment: "The message of the alert when there is an unexpected error adding the package")
     }
 }
 
 struct ShippingLabelAddNewPackage_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = ShippingLabelAddNewPackageViewModel(packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails())
+        let viewModel = ShippingLabelAddNewPackageViewModel(siteID: 12345,
+                                                            packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails(),
+                                                            onCompletion: { _, _, _ in })
 
         ShippingLabelAddNewPackage(viewModel: viewModel)
     }

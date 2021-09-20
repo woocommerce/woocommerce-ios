@@ -7,11 +7,12 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
     func test_did_change_should_show_returns_false_if_no_connected_readers() {
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [],
+            discoveredReaders: [],
             sessionManager: SessionManager.testingInstance
         )
         ServiceLocator.setStores(mockStoresManager)
 
-        let expectation = self.expectation(description: "Check shouldShow returns isFalse")
+        let expectation = self.expectation(description: #function)
         let _ = CardReaderSettingsConnectedViewModel(didChangeShouldShow: { shouldShow in
             XCTAssertTrue(shouldShow == .isFalse)
             expectation.fulfill()
@@ -23,11 +24,12 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
     func test_did_change_should_show_returns_true_if_a_reader_is_connected() {
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [MockCardReader.bbposChipper2XBT()],
+            discoveredReaders: [],
             sessionManager: SessionManager.testingInstance
         )
         ServiceLocator.setStores(mockStoresManager)
 
-        let expectation = self.expectation(description: "Check shouldShow returns isTrue")
+        let expectation = self.expectation(description: #function)
 
         let _ = CardReaderSettingsConnectedViewModel(didChangeShouldShow: { shouldShow in
             XCTAssertTrue(shouldShow == .isTrue)
@@ -37,12 +39,61 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    func test_view_model_correctly_formats_connected_card_reader_battery_level() {
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [MockCardReader.bbposChipper2XBT()],
+            discoveredReaders: [],
+            sessionManager: SessionManager.testingInstance
+        )
+        ServiceLocator.setStores(mockStoresManager)
+
+        let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+        XCTAssertEqual(viewModel.connectedReaderBatteryLevel, "50% Battery")
+    }
+
+    func test_view_model_correctly_formats_connected_card_reader_battery_level_when_nil() {
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [MockCardReader.bbposChipper2XBTNoVerNoBatt()],
+            discoveredReaders: [],
+            sessionManager: SessionManager.testingInstance
+        )
+        ServiceLocator.setStores(mockStoresManager)
+
+        let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+        XCTAssertEqual(viewModel.connectedReaderBatteryLevel, "Unknown Battery Level")
+    }
+
+    func test_view_model_correctly_formats_connected_card_reader_software_version() {
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [MockCardReader.bbposChipper2XBT()],
+            discoveredReaders: [],
+            sessionManager: SessionManager.testingInstance
+        )
+        ServiceLocator.setStores(mockStoresManager)
+
+        let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+        XCTAssertEqual(viewModel.connectedReaderSoftwareVersion, "Version: 1.00.03.34-SZZZ_Generic_v45-300001")
+    }
+
+    func test_view_model_correctly_formats_connected_card_reader_software_version_when_nil() {
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [MockCardReader.bbposChipper2XBTNoVerNoBatt()],
+            discoveredReaders: [],
+            sessionManager: SessionManager.testingInstance
+        )
+        ServiceLocator.setStores(mockStoresManager)
+
+        let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+        XCTAssertEqual(viewModel.connectedReaderSoftwareVersion, "Unknown Software Version")
+    }
+
     func test_checkForCardReaderUpdate_properly_handles_update_available() {
         // Given
         let expectation = self.expectation(description: #function)
 
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [MockCardReader.bbposChipper2XBT()],
+            discoveredReaders: [],
             sessionManager: SessionManager.testingInstance,
             readerUpdateAvailable: true
         )
@@ -69,6 +120,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
 
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [MockCardReader.bbposChipper2XBT()],
+            discoveredReaders: [],
             sessionManager: SessionManager.testingInstance,
             readerUpdateAvailable: false
         )
@@ -95,6 +147,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
 
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [MockCardReader.bbposChipper2XBT()],
+            discoveredReaders: [],
             sessionManager: SessionManager.testingInstance,
             failReaderUpdateCheck: true
         )
@@ -121,6 +174,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
 
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [MockCardReader.bbposChipper2XBT()],
+            discoveredReaders: [],
             sessionManager: SessionManager.testingInstance,
             readerUpdateAvailable: true
         )
@@ -161,6 +215,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
 
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [MockCardReader.bbposChipper2XBT()],
+            discoveredReaders: [],
             sessionManager: SessionManager.testingInstance,
             readerUpdateAvailable: true,
             failUpdate: true

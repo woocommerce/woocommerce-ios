@@ -13,6 +13,7 @@
                 <outlet property="actionButtonsView" destination="10Z-y1-ZQ6" id="L1z-Zs-L2J"/>
                 <outlet property="auxiliaryButton" destination="maO-19-PuQ" id="cQA-7p-jmo"/>
                 <outlet property="bottomLabels" destination="k73-qi-GuD" id="LvQ-UE-SBc"/>
+                <outlet property="bottomPaddingRegular" destination="lVZ-pu-Fmb" id="CJM-oy-oSx"/>
                 <outlet property="bottomSubtitleLabel" destination="2Sx-5s-f7J" id="Mco-Vu-Li6"/>
                 <outlet property="bottomTitleLabel" destination="oAj-lv-0k9" id="Clc-oi-Ywf"/>
                 <outlet property="buttonsSpacer" destination="OFI-6w-cag" id="Uva-gQ-T7X"/>
@@ -136,20 +137,57 @@
                             <constraints>
                                 <constraint firstItem="10Z-y1-ZQ6" firstAttribute="leading" secondItem="jIt-xb-rrN" secondAttribute="leading" id="0sg-Uf-xbd"/>
                                 <constraint firstAttribute="trailing" secondItem="10Z-y1-ZQ6" secondAttribute="trailing" id="Nrr-ur-lj3"/>
+                                <constraint firstAttribute="width" constant="248" id="wyC-vo-Y5l"/>
                             </constraints>
+                            <variation key="default">
+                                <mask key="constraints">
+                                    <exclude reference="wyC-vo-Y5l"/>
+                                </mask>
+                            </variation>
+                            <variation key="heightClass=regular-widthClass=regular">
+                                <mask key="constraints">
+                                    <include reference="wyC-vo-Y5l"/>
+                                </mask>
+                            </variation>
                         </stackView>
                     </subviews>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <constraints>
                         <constraint firstItem="jIt-xb-rrN" firstAttribute="leading" secondItem="8Tg-Q2-wkH" secondAttribute="leading" constant="16" id="80k-pZ-tsR"/>
+                        <constraint firstAttribute="width" constant="454" id="Apy-47-NLE"/>
+                        <constraint firstItem="jIt-xb-rrN" firstAttribute="top" secondItem="8Tg-Q2-wkH" secondAttribute="top" constant="42" id="FxC-xu-ACf"/>
                         <constraint firstAttribute="height" priority="250" constant="382" id="J6m-sz-CD5"/>
                         <constraint firstItem="jIt-xb-rrN" firstAttribute="top" secondItem="8Tg-Q2-wkH" secondAttribute="top" constant="32" id="JLA-XJ-MiD"/>
-                        <constraint firstAttribute="bottom" secondItem="jIt-xb-rrN" secondAttribute="bottom" constant="16" id="lVZ-pu-Fmb"/>
+                        <constraint firstAttribute="bottom" secondItem="jIt-xb-rrN" secondAttribute="bottom" constant="16" id="bkK-x1-zVB"/>
+                        <constraint firstAttribute="bottom" secondItem="jIt-xb-rrN" secondAttribute="bottom" constant="42" id="lVZ-pu-Fmb"/>
                         <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="382" id="n7H-7U-izh"/>
                         <constraint firstItem="jIt-xb-rrN" firstAttribute="centerX" secondItem="8Tg-Q2-wkH" secondAttribute="centerX" id="p6Y-jJ-KuU"/>
                         <constraint firstAttribute="width" constant="280" id="uaz-2N-7M4"/>
                         <constraint firstAttribute="trailing" secondItem="jIt-xb-rrN" secondAttribute="trailing" constant="16" id="ufT-Yf-gsb"/>
+                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="490" id="w7w-an-P9s"/>
                     </constraints>
+                    <variation key="default">
+                        <mask key="constraints">
+                            <exclude reference="Apy-47-NLE"/>
+                            <exclude reference="w7w-an-P9s"/>
+                            <exclude reference="FxC-xu-ACf"/>
+                            <exclude reference="lVZ-pu-Fmb"/>
+                        </mask>
+                    </variation>
+                    <variation key="heightClass=regular-widthClass=regular">
+                        <mask key="constraints">
+                            <include reference="Apy-47-NLE"/>
+                            <exclude reference="n7H-7U-izh"/>
+                            <exclude reference="uaz-2N-7M4"/>
+                            <include reference="w7w-an-P9s"/>
+                            <exclude reference="80k-pZ-tsR"/>
+                            <include reference="FxC-xu-ACf"/>
+                            <exclude reference="JLA-XJ-MiD"/>
+                            <exclude reference="bkK-x1-zVB"/>
+                            <include reference="lVZ-pu-Fmb"/>
+                            <exclude reference="ufT-Yf-gsb"/>
+                        </mask>
+                    </variation>
                 </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>

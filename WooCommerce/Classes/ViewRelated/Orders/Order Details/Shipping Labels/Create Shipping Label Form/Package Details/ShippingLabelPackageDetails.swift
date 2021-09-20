@@ -6,14 +6,8 @@ struct ShippingLabelPackageDetails: View {
     @State private var showingPackageSelection = false
     @Environment(\.presentationMode) var presentation
 
-    /// Completion callback
-    ///
-    typealias Completion = (_ selectedPackageID: String?, _ totalPackageWeight: String?) -> Void
-    private let onCompletion: Completion
-
-    init(viewModel: ShippingLabelPackageDetailsViewModel, completion: @escaping Completion) {
+    init(viewModel: ShippingLabelPackageDetailsViewModel) {
         self.viewModel = viewModel
-        onCompletion = completion
         ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "packages_started"])
     }
 
@@ -23,6 +17,8 @@ struct ShippingLabelPackageDetails: View {
                 LazyVStack(spacing: 0) {
                     VStack(spacing: 0) {
                         ShippingLabelPackageNumberRow(packageNumber: 1, numberOfItems: viewModel.itemsRows.count)
+                            .frame(height: Constants.packageNumberRowHeight)
+                            .padding([.leading, .trailing], Constants.horizontalPadding)
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
 
                         Divider()
@@ -40,7 +36,7 @@ struct ShippingLabelPackageDetails: View {
                             .background(Color(.systemBackground))
                         Divider()
                             .padding(.horizontal, insets: geometry.safeAreaInsets)
-                            .padding(.leading, Constants.dividerPadding)
+                            .padding(.leading, Constants.horizontalPadding)
                     }
 
                     ListHeaderView(text: Localization.packageDetailsHeader, alignment: .left)
@@ -54,7 +50,7 @@ struct ShippingLabelPackageDetails: View {
                         }
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
                         .sheet(isPresented: $showingPackageSelection, content: {
-                            ShippingLabelPackageSelection(viewModel: viewModel)
+                            ShippingLabelPackageSelection(viewModel: viewModel.packageListViewModel)
                         })
 
                         Divider()
@@ -82,7 +78,7 @@ struct ShippingLabelPackageDetails: View {
         .navigationBarItems(trailing: Button(action: {
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow,
                                            withProperties: ["state": "packages_selected"])
-            onCompletion(viewModel.selectedPackageID, viewModel.totalWeight)
+            viewModel.savePackageSelection()
             presentation.wrappedValue.dismiss()
         }, label: {
             Text(Localization.doneButton)
@@ -107,7 +103,8 @@ private extension ShippingLabelPackageDetails {
     }
 
     enum Constants {
-        static let dividerPadding: CGFloat = 16
+        static let packageNumberRowHeight: CGFloat = 44
+        static let horizontalPadding: CGFloat = 16
     }
 }
 
@@ -117,16 +114,15 @@ struct ShippingLabelPackageDetails_Previews: PreviewProvider {
 
         let viewModel = ShippingLabelPackageDetailsViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder(),
                                                              packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails(),
-                                                             selectedPackageID: nil,
-                                                             totalWeight: nil)
+                                                             selectedPackages: [],
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
 
-        ShippingLabelPackageDetails(viewModel: viewModel, completion: { (selectedPackageID, totalPackageWeight) in
-        })
+        ShippingLabelPackageDetails(viewModel: viewModel)
         .environment(\.colorScheme, .light)
         .previewDisplayName("Light")
 
-        ShippingLabelPackageDetails(viewModel: viewModel, completion: { (selectedPackageID, totalPackageWeight) in
-        })
+        ShippingLabelPackageDetails(viewModel: viewModel)
         .environment(\.colorScheme, .dark)
         .previewDisplayName("Dark")
     }

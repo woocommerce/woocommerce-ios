@@ -71,6 +71,13 @@ final class OrderListViewController: UIViewController {
     ///
     private let syncingCoordinator = SyncingCoordinator()
 
+    /// Timestamp for last successful sync.
+    ///
+    private var lastFullSyncTimestamp: Date?
+
+    /// Minimum time interval allowed between full sync.
+    ///
+    private let minimalIntervalBetweenSync: TimeInterval = 30
 
     /// UI Active State
     ///
@@ -144,7 +151,7 @@ final class OrderListViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        syncingCoordinator.resynchronize()
+        syncingCoordinator.resynchronize(reason: SyncReason.viewWillAppear.rawValue)
 
         // Fix any incomplete animation of the refresh control
         // when switching tabs mid-animation
@@ -276,6 +283,15 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
     /// Synchronizes the Orders for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
+        if pageNumber == syncingCoordinator.pageFirstIndex,
+           reason == SyncReason.viewWillAppear.rawValue,
+           let lastFullSyncTimestamp = lastFullSyncTimestamp,
+           Date().timeIntervalSince(lastFullSyncTimestamp) < minimalIntervalBetweenSync {
+            // less than 30 s from last full sync
+            onCompletion?(true)
+            return
+        }
+
         transitionToSyncingState()
         setErrorLoadingData(to: false)
 
@@ -292,6 +308,10 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
                     DDLogError("⛔️ Error synchronizing orders: \(error)")
                     self.setErrorLoadingData(to: true)
                 } else {
+                    if pageNumber == self.syncingCoordinator.pageFirstIndex {
+                        // save timestamp of last successful update
+                        self.lastFullSyncTimestamp = Date()
+                    }
                     ServiceLocator.analytics.track(event: .ordersListLoaded(totalDuration: totalDuration,
                                                                             pageNumber: pageNumber,
                                                                             status: self.viewModel.statusFilter))

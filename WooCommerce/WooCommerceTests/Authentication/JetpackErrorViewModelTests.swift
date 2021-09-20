@@ -1,7 +1,24 @@
 import XCTest
+import Yosemite
+import TestKit
 @testable import WooCommerce
 
 final class JetpackErrorViewModelTests: XCTestCase {
+
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
+    override func setUp() {
+        super.setUp()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+    }
+
+    override func tearDown() {
+        analytics = nil
+        analyticsProvider = nil
+        super.tearDown()
+    }
 
     func test_viewmodel_provides_expected_image() {
         // Given
@@ -56,6 +73,48 @@ final class JetpackErrorViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(secondaryButtonTitle, Expectations.secondaryButtonTitle)
+    }
+
+    func test_viewModel_logs_an_event_when_viewDidLoad_is_triggered() throws {
+        // Given
+        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url, analytics: analytics)
+
+        assertEmpty(analyticsProvider.receivedEvents)
+
+        // When
+        viewModel.viewDidLoad()
+
+        // Then
+        let firstEvent = try XCTUnwrap(analyticsProvider.receivedEvents.first)
+        XCTAssertEqual(firstEvent, "login_jetpack_required_screen_viewed")
+    }
+
+    func test_viewModel_logs_an_event_when_see_instructions_button_is_tapped() throws {
+        // Given
+        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url, analytics: analytics)
+
+        assertEmpty(analyticsProvider.receivedEvents)
+
+        // When
+        viewModel.didTapPrimaryButton(in: nil)
+
+        // Then
+        let firstEvent = try XCTUnwrap(analyticsProvider.receivedEvents.first)
+        XCTAssertEqual(firstEvent, "login_jetpack_required_view_instructions_button_tapped")
+    }
+
+    func test_viewModel_logs_an_event_when_the_what_is_jetpack_button_is_tapped() throws {
+        // Given
+        let viewModel = JetpackErrorViewModel(siteURL: Expectations.url, analytics: analytics)
+
+        assertEmpty(analyticsProvider.receivedEvents)
+
+        // When
+        viewModel.didTapAuxiliaryButton(in: nil)
+
+        // Then
+        let firstEvent = try XCTUnwrap(analyticsProvider.receivedEvents.first)
+        XCTAssertEqual(firstEvent, "login_what_is_jetpack_help_screen_viewed")
     }
 }
 

@@ -56,6 +56,17 @@ class CustomerInfoTableViewCell: UITableViewCell {
         }
     }
 
+    /// Accessibility label to be used on the edit button, when shown
+    ///
+    var editButtonAccessibilityLabel: String? {
+        get {
+            editButton.accessibilityLabel
+        }
+        set {
+            editButton.accessibilityLabel = newValue
+        }
+    }
+
     override func awakeFromNib() {
         super.awakeFromNib()
 
@@ -69,6 +80,7 @@ class CustomerInfoTableViewCell: UITableViewCell {
         nameLabel.text = nil
         addressLabel.text = nil
         onEditTapped = nil
+        editButton.accessibilityLabel = nil
     }
 }
 

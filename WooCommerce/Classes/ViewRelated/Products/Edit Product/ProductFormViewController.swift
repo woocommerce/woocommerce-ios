@@ -126,9 +126,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 self.displayErrorAlert(title: title, message: message)
             }
 
-            if productImageStatuses.hasPendingUpload {
-                self.onImageStatusesUpdated(statuses: productImageStatuses)
-            }
+            self.onImageStatusesUpdated(statuses: productImageStatuses)
 
             self.viewModel.updateImages(productImageStatuses.images)
         }

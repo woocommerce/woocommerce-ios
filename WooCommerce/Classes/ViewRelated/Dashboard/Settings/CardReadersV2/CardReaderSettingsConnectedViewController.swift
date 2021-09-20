@@ -203,7 +203,8 @@ private extension CardReaderSettingsConnectedViewController {
     private func configureConnectedReader(cell: ConnectedReaderTableViewCell) {
         let cellViewModel = ConnectedReaderTableViewCell.ViewModel(
             name: viewModel?.connectedReaderID,
-            batteryLevel: viewModel?.connectedReaderBatteryLevel
+            batteryLevel: viewModel?.connectedReaderBatteryLevel,
+            softwareVersion: viewModel?.connectedReaderSoftwareVersion
         )
         cell.configure(viewModel: cellViewModel)
         cell.selectionStyle = .none
@@ -213,6 +214,12 @@ private extension CardReaderSettingsConnectedViewController {
         cell.configure(style: .primary, title: Localization.updateButtonTitle, bottomSpacing: 0) {
             self.viewModel?.startCardReaderUpdate()
         }
+
+        let readerDisconnectInProgress = viewModel?.readerDisconnectInProgress ?? false
+        let readerUpdateInProgress = viewModel?.readerUpdateInProgress ?? false
+        cell.enableButton(!readerDisconnectInProgress && !readerUpdateInProgress)
+        cell.showActivityIndicator(readerUpdateInProgress)
+
         cell.selectionStyle = .none
         cell.backgroundColor = .clear
     }
@@ -222,6 +229,12 @@ private extension CardReaderSettingsConnectedViewController {
         cell.configure(style: style, title: Localization.disconnectButtonTitle) { [weak self] in
             self?.viewModel?.disconnectReader()
         }
+
+        let readerDisconnectInProgress = viewModel?.readerDisconnectInProgress ?? false
+        let readerUpdateInProgress = viewModel?.readerUpdateInProgress ?? false
+        cell.enableButton(!readerDisconnectInProgress && !readerUpdateInProgress)
+        cell.showActivityIndicator(readerDisconnectInProgress)
+
         cell.selectionStyle = .none
         cell.backgroundColor = .clear
     }
@@ -276,12 +289,6 @@ extension CardReaderSettingsConnectedViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate Conformance
 //
 extension CardReaderSettingsConnectedViewController: UITableViewDelegate {
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let row = rowAtIndexPath(indexPath)
-        return row.height
-    }
-
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -325,15 +332,6 @@ private enum Row: CaseIterable {
             return ButtonTableViewCell.self
         case .disconnectButton:
             return ButtonTableViewCell.self
-        }
-    }
-
-    var height: CGFloat {
-        switch self {
-        case .connectedReader:
-            return 60
-        default:
-            return UITableView.automaticDimension
         }
     }
 

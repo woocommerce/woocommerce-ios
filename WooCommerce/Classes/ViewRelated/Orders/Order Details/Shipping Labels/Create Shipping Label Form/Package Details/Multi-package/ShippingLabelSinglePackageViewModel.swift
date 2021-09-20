@@ -3,7 +3,7 @@ import UIKit
 import SwiftUI
 import Yosemite
 
-final class ShippingLabelPackageItemViewModel: ObservableObject {
+final class ShippingLabelSinglePackageViewModel: ObservableObject {
 
     typealias PackageSwitchHandler = (_ newPackage: ShippingLabelPackageAttributes) -> Void
     typealias PackagesSyncHandler = (_ packagesResponse: ShippingLabelPackagesResponse?) -> Void
@@ -128,7 +128,7 @@ final class ShippingLabelPackageItemViewModel: ObservableObject {
 }
 
 // MARK: ShippingLabelPackageSelectionDelegate conformance
-extension ShippingLabelPackageItemViewModel: ShippingLabelPackageSelectionDelegate {
+extension ShippingLabelSinglePackageViewModel: ShippingLabelPackageSelectionDelegate {
     func didSelectPackage(id: String) {
         let newTotalWeight = isPackageWeightEdited ? totalWeight : ""
         let newPackage = ShippingLabelPackageAttributes(packageID: id,
@@ -146,7 +146,7 @@ extension ShippingLabelPackageItemViewModel: ShippingLabelPackageSelectionDelega
 }
 
 // MARK: - Helper methods
-private extension ShippingLabelPackageItemViewModel {
+private extension ShippingLabelSinglePackageViewModel {
     /// Generate the items rows, creating an element in the array for every item (eg. if there is an item with quantity 3,
     /// we will generate 3 different items), and we will remove virtual products.
     ///
@@ -230,7 +230,7 @@ private extension ShippingLabelPackageItemViewModel {
     }
 }
 
-private extension ShippingLabelPackageItemViewModel {
+private extension ShippingLabelSinglePackageViewModel {
     enum Localization {
         static let subtitleFormat =
             NSLocalizedString("%1$@", comment: "In Shipping Labels Package Details,"

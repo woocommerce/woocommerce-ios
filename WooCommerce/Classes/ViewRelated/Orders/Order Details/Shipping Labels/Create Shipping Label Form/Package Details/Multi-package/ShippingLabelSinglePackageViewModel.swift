@@ -3,6 +3,8 @@ import UIKit
 import SwiftUI
 import Yosemite
 
+/// View model for `ShippingLabelSinglePackage`.
+///
 final class ShippingLabelSinglePackageViewModel: ObservableObject {
 
     typealias PackageSwitchHandler = (_ newPackage: ShippingLabelPackageAttributes) -> Void

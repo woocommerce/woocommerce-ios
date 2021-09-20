@@ -1,3 +1,5 @@
-Cette version contient quelques améliorations mineures qui rendent votre expérience plus fluide. Dans les détails de la commande, certaines extensions tierces n’affichaient pas logiquement les métadonnées de produits. Nous avons apporté quelques modifications pour améliorer l’affichage des détails de ces produits. Nous masquons désormais le bouton de remboursement de commande lorsque le montant total est égal à zéro.
+Youpie ! Bonne nouvelle pour les commerçants basés aux États-Unis qui utilisent l’extension WooCommerce Shipping & Tax ! Vous pouvez désormais créer et imprimer des étiquettes d’expédition pour les expéditions des clients vers des pays situés en dehors des États-Unis.
 
-Cette mise à jour inclut également plusieurs améliorations à la fonctionnalité d’étiquette d’expédition utilisant l’extension WooCommerce Shipping & Tax. Nous apprécions tous vos commentaires sur cette nouvelle fonctionnalité !
+Votre client vous a-t-il laissé des notes en passant sa commande ? Vous verrez que vous pouvez à présent les modifier dans l’application.
+
+Continuez à nous envoyer tous vos commentaires au sujet de l’application, votre avis nous intéresse !

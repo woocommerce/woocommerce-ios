@@ -1,3 +1,5 @@
-Den här versionen innehåller en handfull mindre förbättringar som ska göra din upplevelse smidigare. Vissa tredjepartsutökningar visade inte produktmetadata logiskt i beställningsinformationen. Vi har gjort vissa ändringar för att förbättra visningen av denna produktinformation. Vi döljer nu knappen för beställningsåterbetalning när det totala beloppet är noll.
+Hurra! Stort grattis till alla USA-baserade handlare som använder WooCommerce Shipping & Tax-utökningen! Ni kan nu skapa och skriva ut fraktetiketter för försändelser till kunder utanför USA.
 
-Denna uppdatering inkluderar även flera förbättringar av fraktetikettfunktionen i utökningen WooCommerce Shipping & Tax. Vi värdesätter din feedback rörande denna nya funktion!
+Lämnade din kund någon anteckning när beställningen gjordes? Du kommer att märka att det nu går att redigera sådana anteckningar i appen.
+
+Fortsätt att skicka oss feedback om appen – vi uppskattar det!

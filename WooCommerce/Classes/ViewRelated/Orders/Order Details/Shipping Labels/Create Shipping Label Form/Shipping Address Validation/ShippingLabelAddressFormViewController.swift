@@ -142,16 +142,20 @@ private extension ShippingLabelAddressFormViewController {
     }
 
     func registerTableViewCells() {
-            tableView.registerNib(for: TitleAndTextFieldTableViewCell.self)
-            tableView.registerNib(for: BasicTableViewCell.self)
+        tableView.registerNib(for: TitleAndTextFieldTableViewCell.self)
+        tableView.registerNib(for: BasicTableViewCell.self)
     }
 
     func observeViewModel() {
-        viewModel.onChange = { [weak self] in
+        viewModel.onChange = { [weak self] focusedIndex in
             guard let self = self else { return }
             self.configureNavigationBar()
             self.updateTopBannerView()
             self.tableView.reloadData()
+            if let index = focusedIndex,
+               let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? TitleAndTextFieldTableViewCell {
+                cell.textFieldBecomeFirstResponder()
+            }
         }
     }
 
@@ -459,8 +463,7 @@ private extension ShippingLabelAddressFormViewController {
                                                                      placeholder: placeholder,
                                                                      state: .normal,
                                                                      keyboardType: .default,
-                                                                     textFieldAlignment: .leading) { _ in
-        }
+                                                                     textFieldAlignment: .leading) { _ in }
         cell.configure(viewModel: cellViewModel)
         cell.enableTextField(viewModel.statesOfSelectedCountry.isEmpty)
     }
@@ -471,8 +474,7 @@ private extension ShippingLabelAddressFormViewController {
                                                                      placeholder: Localization.countryFieldPlaceholder,
                                                                      state: .normal,
                                                                      keyboardType: .default,
-                                                                     textFieldAlignment: .leading) { _ in
-        }
+                                                                     textFieldAlignment: .leading) { _ in }
         cell.configure(viewModel: cellViewModel)
         cell.enableTextField(false)
     }

@@ -1,3 +1,5 @@
-Esta versão contém algumas pequenas melhorias para tornar sua experiência mais agradável. Em "Detalhes do pedido", algumas extensões de terceiros não mostravam os metadados do produto como deveriam. Fizemos algumas melhorias em como os detalhes dos produtos são exibidos. Agora o botão de solicitar reembolso não é exibido quando o total da compra é igual a 0.
+Oba! Estabelecimentos nos EUA usando a extensão WooCommerce Shipping & Tax já podem comemorar. Agora é possível criar e imprimir etiquetas de envio para os clientes em outros países.
 
-Esta atualização também inclui diversas melhorias na funcionalidade de etiqueta de envio feitas com a extensão WooCommerce Shipping & Tax. Valorizamos muito o seu feedback! Diga-nos o que achou da nossa atualização.
+O cliente deixou alguma anotação para você quando fez o pedido? Agora você pode editar essas anotações no aplicativo.
+
+Continue nos dando feedback sobre o aplicativo. Apreciamos muito sua opinião!

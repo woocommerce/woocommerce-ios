@@ -19,6 +19,7 @@ struct MockCardReader {
                    status: .init(connected: false, remembered: false),
                    softwareVersion: nil,
                    batteryLevel: nil,
-                   readerType: .mobile)
+                   readerType: .chipper,
+                   locationId: "st_simulated")
     }
 }

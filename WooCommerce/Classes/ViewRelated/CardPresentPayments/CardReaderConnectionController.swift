@@ -403,8 +403,8 @@ private extension CardReaderConnectionController {
         let cancel = softwareUpdateCancelable.map { cancelable in
             return { [weak self] in
                 self?.state = .cancel
-                cancelable.cancel { error in
-                    if let error = error {
+                cancelable.cancel { result in
+                    if case .failure(let error) = result {
                         print("=== error canceling software update: \(error)")
                     }
                 }

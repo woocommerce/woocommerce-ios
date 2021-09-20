@@ -79,6 +79,7 @@ struct ShippingLabelPaymentMethods: View {
 
                         Button(action: {
                             showAddPaymentWebView = true
+                            ServiceLocator.analytics.track(.shippingLabelAddPaymentMethodTapped)
                         }) {
                             HStack {
                                 Spacer()
@@ -125,6 +126,7 @@ struct ShippingLabelPaymentMethods: View {
                                  urlToTriggerExit: viewModel.fetchPaymentMethodURLPath) {
                 showAddPaymentWebView = false
                 viewModel.syncShippingLabelAccountSettings()
+                ServiceLocator.analytics.track(.shippingLabelPaymentMethodAdded)
             }
             .navigationTitle(Localization.paymentMethodWebviewTitle)
             .navigationBarTitleDisplayMode(.inline)

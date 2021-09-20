@@ -18,11 +18,12 @@ final class DefaultConnectivityObserver: ConnectivityObserver {
     init(networkMonitor: NetworkMonitoring = NWPathMonitor()) {
         self.networkMonitor = networkMonitor
         startObserving()
-        networkMonitor.pathUpdateHandler = { [weak self] path in
+        networkMonitor.networkUpdateHandler = { [weak self] path in
             guard let self = self else { return }
+            let connectivityStatus = self.connectivityStatus(from: path)
             DispatchQueue.main.async {
                 self.isConnectivityAvailable = path.status == .satisfied
-                self.connectivityStatus = self.connectivityStatus(from: path)
+                self.connectivityStatus = connectivityStatus
             }
         }
     }

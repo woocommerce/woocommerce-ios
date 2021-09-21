@@ -32,6 +32,9 @@ struct ShippingLabelSinglePackage: View {
 
             ForEach(viewModel.itemsRows) { productItemRow in
                 productItemRow
+                    .onTapGesture {
+                        viewModel.requestMovingItem(id: productItemRow.id)
+                    }
                     .padding(.horizontal, insets: safeAreaInsets)
                     .background(Color(.systemBackground))
                 Divider()
@@ -106,6 +109,7 @@ struct ShippingLabelPackageItem_Previews: PreviewProvider {
                                                           totalWeight: "",
                                                           products: [],
                                                           productVariations: [],
+                                                          onItemMoveRequest: { _, _ in },
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in })
         ShippingLabelSinglePackage(packageNumber: 1, isCollapsible: true, safeAreaInsets: .zero, viewModel: viewModel)

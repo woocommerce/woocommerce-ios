@@ -115,6 +115,7 @@ private extension ShippingLabelPackagesFormViewModel {
                                                              totalWeight: details.totalWeight,
                                                              products: products,
                                                              productVariations: variations,
+                                                             onItemMoveRequest: { _, _ in },
                                                              onPackageSwitch: { [weak self] newPackage in
                                                                 self?.switchPackage(currentID: details.packageID, newPackage: newPackage)
                                                              },

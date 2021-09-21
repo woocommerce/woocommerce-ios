@@ -9,6 +9,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
 
     typealias PackageSwitchHandler = (_ newPackage: ShippingLabelPackageAttributes) -> Void
     typealias PackagesSyncHandler = (_ packagesResponse: ShippingLabelPackagesResponse?) -> Void
+    typealias ItemMoveRequestHandler = (_ id: Int64, _ packageName: String?) -> Void
 
     /// The id of the selected package. Defaults to last selected package, if any.
     ///
@@ -57,6 +58,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
     private let orderItems: [OrderItem]
     private let currency: String
     private let currencyFormatter: CurrencyFormatter
+    private let onItemMoveRequest: ItemMoveRequestHandler
     private let onPackageSwitch: PackageSwitchHandler
     private let onPackagesSync: PackagesSyncHandler
 
@@ -79,6 +81,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
          totalWeight: String,
          products: [Product],
          productVariations: [ProductVariation],
+         onItemMoveRequest: @escaping ItemMoveRequestHandler,
          onPackageSwitch: @escaping PackageSwitchHandler,
          onPackagesSync: @escaping PackagesSyncHandler,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
@@ -89,6 +92,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
         self.currencyFormatter = formatter
         self.weightUnit = weightUnit
         self.selectedPackageID = selectedPackageID
+        self.onItemMoveRequest = onItemMoveRequest
         self.onPackageSwitch = onPackageSwitch
         self.onPackagesSync = onPackagesSync
         self.packagesResponse = packagesResponse
@@ -97,6 +101,16 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
         packageListViewModel.didSelectPackage(selectedPackageID)
         configureItemRows(products: products, productVariations: productVariations)
         configureTotalWeight(initialTotalWeight: totalWeight, products: products, productVariations: productVariations)
+    }
+
+    func requestMovingItem(id: Int64) {
+        let packageName: String? = {
+            if selectedPackageName == Localization.selectPackagePlaceholder {
+                return nil
+            }
+            return selectedPackageName
+        }()
+        onItemMoveRequest(id, packageName)
     }
 
     private func configureItemRows(products: [Product], productVariations: [ProductVariation]) {

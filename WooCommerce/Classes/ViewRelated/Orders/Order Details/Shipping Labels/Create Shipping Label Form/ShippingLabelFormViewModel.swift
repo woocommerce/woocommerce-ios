@@ -88,6 +88,13 @@ final class ShippingLabelFormViewModel {
     ///
     var shippingLabelAccountSettings: ShippingLabelAccountSettings?
 
+    /// Shipping Label Account Settings ResultsController
+    ///
+    private lazy var accountSettingsResultsController: ResultsController<StorageShippingLabelAccountSettings> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        return ResultsController<StorageShippingLabelAccountSettings>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
     /// Shipping Label Purchase
     ///
     private(set) var purchasedShippingLabels: [ShippingLabel] = []
@@ -166,6 +173,7 @@ final class ShippingLabelFormViewModel {
         syncShippingLabelAccountSettings()
         syncPackageDetails()
         fetchCountries()
+        monitorAccountSettingsResultsController()
     }
 
     func handleOriginAddressValueChanges(address: ShippingLabelAddress?, validated: Bool) {
@@ -628,6 +636,22 @@ private extension ShippingLabelFormViewModel {
             }()
             return ShippingLabelCustomsForm(packageID: package.packageID, packageName: packageName, productIDs: package.productIDs)
         }
+    }
+
+    /// Shipping Label Account Settings ResultsController monitoring
+    ///
+    private func monitorAccountSettingsResultsController() {
+        accountSettingsResultsController.onDidChangeContent = { [weak self] in
+            guard let self = self else { return }
+            self.shippingLabelAccountSettings = self.accountSettingsResultsController.fetchedObjects.first
+        }
+
+        accountSettingsResultsController.onDidResetContent = { [weak self] in
+            guard let self = self else { return }
+            self.shippingLabelAccountSettings = self.accountSettingsResultsController.fetchedObjects.first
+        }
+
+        try? accountSettingsResultsController.performFetch()
     }
 }
 

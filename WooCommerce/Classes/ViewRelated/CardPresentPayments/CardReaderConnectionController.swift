@@ -42,6 +42,8 @@ final class CardReaderConnectionController {
         ///
         case connectingFailed(Error)
 
+        /// A mandatory update is being installed
+        ///
         case updating(progress: Float)
 
         /// User cancelled search/connecting to a card reader. The completion passed to `searchAndConnect`
@@ -395,6 +397,8 @@ private extension CardReaderConnectionController {
         )
     }
 
+    /// A mandatory update is being installed
+    ///
     func onUpdateProgress(progress: Float) {
         guard let from = fromController else {
             return

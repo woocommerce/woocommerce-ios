@@ -102,7 +102,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
 
         viewModel.didUpdate = {
-            if viewModel.readerUpdateAvailable == .isTrue {
+            if viewModel.readerUpdateAvailable == true {
                 expectation.fulfill()
             }
         }
@@ -129,7 +129,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
 
         viewModel.didUpdate = {
-            if viewModel.readerUpdateAvailable == .isFalse {
+            if viewModel.readerUpdateAvailable == false {
                 expectation.fulfill()
             }
         }
@@ -156,7 +156,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
 
         viewModel.didUpdate = {
-            if viewModel.readerUpdateAvailable == .isFalse {
+            if viewModel.readerUpdateAvailable == false {
                 expectation.fulfill()
             }
         }
@@ -193,10 +193,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
             if updateDidBegin {
                 // But now it has stopped
                 if !viewModel.readerUpdateInProgress {
-                    // But did it succeed?
-                    if viewModel.readerUpdateCompletedSuccessfully {
-                        expectation.fulfill()
-                    }
+                    expectation.fulfill()
                 }
             }
         }
@@ -235,10 +232,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
             if updateDidBegin {
                 // But now it has stopped
                 if !viewModel.readerUpdateInProgress {
-                    // But did it fail?
-                    if !viewModel.readerUpdateCompletedSuccessfully {
-                        expectation.fulfill()
-                    }
+                    expectation.fulfill()
                 }
             }
         }

@@ -332,39 +332,41 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     public func installUpdate() -> AnyPublisher<Float, Error> {
-        // We create a future for the asynchronous call to installUpdate.
-        // Since Combine doesn't offer enough options to combine values and completion events,
-        // this publishes a true value when the update is completed.
-        let installFuture = Future<Bool, Error> { promise in
-            Terminal.shared.installAvailableUpdate()
-            promise(.success(true))
-        }
+        Terminal.shared.installAvailableUpdate()
 
-        // We want to combine the completion from the previous future with the progress events
-        // coming from the delegate through softwareUpdateSubject.
-        // To do this, we prepend an initial false value for `updateFinished`, and while that
-        // is the latest value, we will republish progress events from softwareUpdateSubject.
-        // Once we get a true value from the `installFuture` completion, we'll transform that
-        // into an empty sequence so our publisher can finish.
-        return installFuture
-            .prepend(false)
-            .map { [softwareUpdateSubject] updateFinished -> AnyPublisher<Float, Error> in
-                if updateFinished {
-                    return Empty()
-                        .eraseToAnyPublisher()
+        // We create a publisher that emits a false value while the state is not completed and
+        // a true value when it changes to completed
+        let completionPublisher = softwareUpdateEvents.map { state -> Bool in
+            guard case .completed = state else {
+                return false
+            }
+            return true
+        }
+        .removeDuplicates()
+
+
+        // Then we have a second publisher that emits only when there is a
+        // new .installing value, and publishes the current progress
+        let progressPublisher = softwareUpdateEvents
+            .compactMap({ state -> Float? in
+                guard case .installing(progress: let progress) = state else {
+                    return nil
+                }
+                return progress
+            })
+            .setFailureType(to: Error.self)
+
+        // As long as the completion publisher is not finished, we continue publishing
+        // the progress values, but when the completion publisher finishes this will finish
+        // as well
+        return completionPublisher
+            .flatMap { completed -> AnyPublisher<Float, Error> in
+                if completed {
+                    return Empty().eraseToAnyPublisher()
                 } else {
-                    return softwareUpdateSubject
-                        .compactMap({ state in
-                            guard case .installing(progress: let progress) = state else {
-                                return nil
-                            }
-                            return progress
-                        })
-                        .setFailureType(to: Error.self)
-                        .eraseToAnyPublisher()
+                    return progressPublisher.eraseToAnyPublisher()
                 }
             }
-            .switchToLatest()
             .eraseToAnyPublisher()
     }
 }
@@ -482,6 +484,7 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
     public func reader(_ reader: Reader, didReportAvailableUpdate update: ReaderSoftwareUpdate) {
         let softwareUpdate = CardReaderSoftwareUpdate(update: update)
         sendReaderEvent(.softwareUpdateNeeded(softwareUpdate))
+        softwareUpdateSubject.send(.available)
     }
 
     public func reader(_ reader: Reader, didStartInstallingUpdate update: ReaderSoftwareUpdate, cancelable: StripeTerminal.Cancelable?) {
@@ -495,6 +498,10 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
     }
 
     public func reader(_ reader: Reader, didFinishInstallingUpdate update: ReaderSoftwareUpdate?, error: Error?) {
+        guard error == nil else {
+            softwareUpdateSubject.send(.available)
+            return
+        }
         softwareUpdateSubject.send(.completed)
         softwareUpdateSubject.send(.none)
         sendReaderEvent(.softwareUpToDate)

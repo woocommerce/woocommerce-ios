@@ -26,8 +26,7 @@ struct ShippingLabelPackagesForm: View {
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         }
         .actionSheet(isPresented: $showingMoveItemActionSheet, content: {
-            ActionSheet(title: Text(Localization.moveItemTitle),
-                        message: viewModel.moveItemActionSheetMessage.map(Text.init),
+            ActionSheet(title: Text(viewModel.moveItemActionSheetMessage),
                         buttons: viewModel.moveItemActionSheetButtons)
         })
         .navigationTitle(Localization.title)

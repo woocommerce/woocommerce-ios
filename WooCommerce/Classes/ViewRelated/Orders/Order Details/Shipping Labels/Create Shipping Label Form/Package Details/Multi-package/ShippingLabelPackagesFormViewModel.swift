@@ -15,7 +15,7 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
 
     /// Message displayed on the Move Item action sheet.
     ///
-    @Published private(set) var moveItemActionSheetMessage: String?
+    @Published private(set) var moveItemActionSheetMessage: String = ""
 
     /// Option buttons displayed on the Move Item action sheet.
     ///
@@ -114,7 +114,7 @@ private extension ShippingLabelPackagesFormViewModel {
     func configureItemViewModels(order: Order, packageResponse: ShippingLabelPackagesResponse?) {
         $selectedPackages.combineLatest($products, $productVariations)
             .map { selectedPackages, products, variations -> [ShippingLabelSinglePackageViewModel] in
-                return selectedPackages.map { details in
+                return selectedPackages.enumerated().map { index, details in
                     let orderItems = order.items.filter { details.productIDs.contains($0.productOrVariationID) }
                     return ShippingLabelSinglePackageViewModel(order: order,
                                                              orderItems: orderItems,
@@ -123,7 +123,9 @@ private extension ShippingLabelPackagesFormViewModel {
                                                              totalWeight: details.totalWeight,
                                                              products: products,
                                                              productVariations: variations,
-                                                             onItemMoveRequest: { _, _ in },
+                                                             onItemMoveRequest: { [weak self] itemID, packageName in
+                                                                self?.updateMoveItemActionSheet(for: itemID, index: index, packageName: packageName)
+                                                             },
                                                              onPackageSwitch: { [weak self] newPackage in
                                                                 self?.switchPackage(currentID: details.packageID, newPackage: newPackage)
                                                              },
@@ -137,6 +139,16 @@ private extension ShippingLabelPackagesFormViewModel {
                 self?.observeItemViewModels()
             }
             .store(in: &cancellables)
+    }
+
+    /// Update title and buttons for the Move Item action sheet.
+    ///
+    func updateMoveItemActionSheet(for itemID: Int64, index: Int, packageName: String) {
+        moveItemActionSheetMessage = String(format: Localization.moveItemActionSheetMessage, index + 1, packageName)
+        moveItemActionSheetButtons = [
+            .default(Text(Localization.shipInOriginalPackage)),
+            .cancel()
+        ]
     }
 
     /// Update selected packages when user switch any package.
@@ -213,6 +225,17 @@ private extension ShippingLabelPackagesFormViewModel {
             onCompletion?(nil)
         }
         stores.dispatch(action)
+    }
+}
+
+private extension ShippingLabelPackagesFormViewModel {
+    enum Localization {
+        static let moveItemActionSheetMessage = NSLocalizedString("This item is currently in Package %1$d: %2$@. Where would you like to move it?",
+                                                                  comment: "Message in action sheet when an order item is about to be moved on Package Details screen " +
+                                                                    "of Shipping Label flow. The package name reads like: Package 1: Custom Envelope.")
+        static let shipInOriginalPackage = NSLocalizedString("Ship in Original Packaging",
+                                                             comment: "Option on action sheet when an order item is about to be moved on Package Details screen " +
+                                                                "of Shipping Label flow. The package name reads like: Package 1: Custom Envelope.")
     }
 }
 

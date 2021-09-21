@@ -9,7 +9,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
 
     typealias PackageSwitchHandler = (_ newPackage: ShippingLabelPackageAttributes) -> Void
     typealias PackagesSyncHandler = (_ packagesResponse: ShippingLabelPackagesResponse?) -> Void
-    typealias ItemMoveRequestHandler = (_ id: Int64, _ packageName: String?) -> Void
+    typealias ItemMoveRequestHandler = (_ id: Int64, _ packageName: String) -> Void
 
     /// The id of the selected package. Defaults to last selected package, if any.
     ///
@@ -103,10 +103,10 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
         configureTotalWeight(initialTotalWeight: totalWeight, products: products, productVariations: productVariations)
     }
 
-    func requestMovingItem(id: Int64) {
-        let packageName: String? = {
+    func requestMovingItem(id: Int64, itemName: String) {
+        let packageName: String = {
             if selectedPackageName == Localization.selectPackagePlaceholder {
-                return nil
+                return itemName
             }
             return selectedPackageName
         }()

@@ -34,6 +34,7 @@ struct ShippingLabelPaymentMethods: View {
                     ListHeaderView(text: Localization.paymentMethodsHeader, alignment: .left)
                         .textCase(.uppercase)
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
+                        .renderedIf(viewModel.paymentMethods.isNotEmpty)
                     Divider()
 
                     ForEach(viewModel.paymentMethods, id: \.paymentMethodID) { method in
@@ -55,6 +56,7 @@ struct ShippingLabelPaymentMethods: View {
                                                                           viewModel.storeOwnerWPcomEmail),
                                    alignment: .left)
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
+                        .renderedIf(viewModel.paymentMethods.isNotEmpty)
 
                     Spacer()
                         .frame(height: Constants.spacerHeight)
@@ -69,6 +71,7 @@ struct ShippingLabelPaymentMethods: View {
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
                         .background(Color(.systemBackground))
                         .disabled(!viewModel.canEditNonpaymentSettings)
+                        .renderedIf(viewModel.paymentMethods.isNotEmpty)
 
                     Spacer()
 

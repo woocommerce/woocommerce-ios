@@ -71,13 +71,11 @@ final class OrderListViewController: UIViewController {
     ///
     private let syncingCoordinator = SyncingCoordinator()
 
-    /// Timestamp for last successful sync.
-    ///
-    private var lastFullSyncTimestamp: Date?
-
     /// Minimum time interval allowed between full sync.
     ///
     private let minimalIntervalBetweenSync: TimeInterval = 30
+
+    private let resyncTrigger = PassthroughSubject<SyncReason, Never>()
 
     /// UI Active State
     ///
@@ -146,12 +144,39 @@ final class OrderListViewController: UIViewController {
 
         configureViewModel()
         configureSyncingCoordinator()
+
+        bindThrottleableResyncRequests()
+    }
+
+    private func bindThrottleableResyncRequests() {
+        var lastDate = Date.distantPast
+
+        resyncTrigger.map { [weak self] syncReason -> AnyPublisher<Void, Never> in
+            guard let self = self else {
+                return Just(()).eraseToAnyPublisher()
+            }
+            switch (syncReason, Date().timeIntervalSince(lastDate) > self.minimalIntervalBetweenSync) {
+            case (.pullToRefresh, _),
+                 (_, true):
+                return self.createResyncFuture(reason: syncReason.rawValue)
+                    .handleEvents(receiveOutput: { aa in
+                        lastDate = Date()
+                    })
+                    .eraseToAnyPublisher()
+            default:
+                return Just(()).eraseToAnyPublisher()
+            }
+        }
+        .switchToLatest()
+        .sink {
+            print("Finish Sync")
+        }
+        .store(in: &cancellables)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-        syncingCoordinator.resynchronize(reason: SyncReason.viewWillAppear.rawValue)
+        resyncTrigger.send(.viewWillAppear)
 
         // Fix any incomplete animation of the refresh control
         // when switching tabs mid-animation
@@ -196,7 +221,7 @@ private extension OrderListViewController {
                 return
             }
 
-            self.syncingCoordinator.resynchronize()
+            self.resyncTrigger.send(.viewWillAppear)
         }
 
         viewModel.activate()
@@ -270,9 +295,7 @@ extension OrderListViewController {
     @objc func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.ordersListPulledToRefresh)
         delegate?.orderListViewControllerWillSynchronizeOrders(self)
-        syncingCoordinator.resynchronize(reason: SyncReason.pullToRefresh.rawValue) {
-            sender.endRefreshing()
-        }
+        resyncTrigger.send(.pullToRefresh)
     }
 }
 
@@ -283,15 +306,6 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
     /// Synchronizes the Orders for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
-        if pageNumber == syncingCoordinator.pageFirstIndex,
-           reason == SyncReason.viewWillAppear.rawValue,
-           let lastFullSyncTimestamp = lastFullSyncTimestamp,
-           Date().timeIntervalSince(lastFullSyncTimestamp) < minimalIntervalBetweenSync {
-            // less than 30 s from last full sync
-            onCompletion?(true)
-            return
-        }
-
         transitionToSyncingState()
         setErrorLoadingData(to: false)
 
@@ -308,10 +322,6 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
                     DDLogError("⛔️ Error synchronizing orders: \(error)")
                     self.setErrorLoadingData(to: true)
                 } else {
-                    if pageNumber == self.syncingCoordinator.pageFirstIndex {
-                        // save timestamp of last successful update
-                        self.lastFullSyncTimestamp = Date()
-                    }
                     ServiceLocator.analytics.track(event: .ordersListLoaded(totalDuration: totalDuration,
                                                                             pageNumber: pageNumber,
                                                                             status: self.viewModel.statusFilter))
@@ -322,6 +332,14 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         }
 
         ServiceLocator.stores.dispatch(action)
+    }
+
+    func createResyncFuture(reason: String?) -> AnyPublisher<Void, Never> {
+        Future { [weak self] promise in
+            self?.syncingCoordinator.resynchronize(reason: reason, onCompletion: {
+                promise(.success(())) // Handle Errors?
+            })
+        }.eraseToAnyPublisher()
     }
 
     /// Sets `hasErrorLoadingData` in the view model and shows or hides the banner view accordingly

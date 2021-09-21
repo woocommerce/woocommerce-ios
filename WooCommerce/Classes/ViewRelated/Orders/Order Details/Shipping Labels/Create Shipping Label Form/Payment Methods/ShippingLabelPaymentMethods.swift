@@ -35,7 +35,17 @@ struct ShippingLabelPaymentMethods: View {
                         .textCase(.uppercase)
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
                         .renderedIf(viewModel.paymentMethods.isNotEmpty)
+
+                    // Empty state when there are no payments methods
+                    VStack(alignment: .center) {
+                        Spacer()
+                            .frame(height: Constants.spacerHeight)
+                        EmptyState(title: Localization.pleaseAddPaymentMethodMessage, image: .waitingForCustomersImage)
+                    }
+                    .renderedIf(viewModel.paymentMethods.isEmpty)
+
                     Divider()
+                        .renderedIf(viewModel.paymentMethods.isNotEmpty)
 
                     ForEach(viewModel.paymentMethods, id: \.paymentMethodID) { method in
                         let selected = method.paymentMethodID == viewModel.selectedPaymentMethodID
@@ -171,6 +181,8 @@ private extension ShippingLabelPaymentMethods {
                                                             comment: "Done navigation button in Shipping Label add payment webview")
         static let paymentMethodAddedNotice = NSLocalizedString("Payment method added",
                                                                 comment: "Notice that will be displayed after adding a new Shipping Label payment method")
+        static let pleaseAddPaymentMethodMessage = NSLocalizedString("Please, add a new payment method",
+                                                                     comment: "Message that will be displayed if there are no Shipping Label payment methods.")
     }
 
     enum Constants {

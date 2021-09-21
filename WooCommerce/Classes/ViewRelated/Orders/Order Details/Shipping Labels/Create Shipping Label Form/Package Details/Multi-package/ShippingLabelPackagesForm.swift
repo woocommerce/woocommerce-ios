@@ -17,6 +17,7 @@ struct ShippingLabelPackagesForm: View {
                     ShippingLabelSinglePackage(packageNumber: index + 1,
                                              isCollapsible: viewModel.foundMultiplePackages,
                                              safeAreaInsets: geometry.safeAreaInsets,
+                                             shouldShowMoveItemActionSheet: $showingMoveItemActionSheet,
                                              viewModel: element)
                 }
                 .padding(.bottom, insets: geometry.safeAreaInsets)

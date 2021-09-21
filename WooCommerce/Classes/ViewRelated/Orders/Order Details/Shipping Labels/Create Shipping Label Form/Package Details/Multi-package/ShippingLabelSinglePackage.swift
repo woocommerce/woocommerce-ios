@@ -5,6 +5,7 @@ struct ShippingLabelSinglePackage: View {
     @ObservedObject private var viewModel: ShippingLabelSinglePackageViewModel
     @State private var isCollapsed: Bool = false
     @State private var isShowingPackageSelection = false
+    @Binding private var shouldShowMoveItemActionSheet: Bool
 
     private let isCollapsible: Bool
     private let packageNumber: Int
@@ -13,12 +14,14 @@ struct ShippingLabelSinglePackage: View {
     init(packageNumber: Int,
          isCollapsible: Bool,
          safeAreaInsets: EdgeInsets,
+         shouldShowMoveItemActionSheet: Binding<Bool>,
          viewModel: ShippingLabelSinglePackageViewModel) {
         self.packageNumber = packageNumber
         self.isCollapsible = isCollapsible
         self.safeAreaInsets = safeAreaInsets
         self.viewModel = viewModel
         self.isCollapsed = packageNumber > 1
+        self._shouldShowMoveItemActionSheet = shouldShowMoveItemActionSheet
     }
 
     var body: some View {
@@ -32,14 +35,25 @@ struct ShippingLabelSinglePackage: View {
 
             ForEach(viewModel.itemsRows) { productItemRow in
                 productItemRow
-                    .onTapGesture {
-                        viewModel.requestMovingItem(id: productItemRow.id)
-                    }
+                    .overlay(
+                        HStack {
+                            Spacer()
+                            Button(action: {
+                                viewModel.requestMovingItem(id: productItemRow.id)
+                                shouldShowMoveItemActionSheet = true
+                            }, label: {
+                                Text(Localization.moveButton)
+                                    .font(.footnote)
+                                    .foregroundColor(Color(UIColor(color: .accent)))
+                            })
+                        }
+                        .padding(.trailing, Constants.horizontalPadding)
+                    )
                     .padding(.horizontal, insets: safeAreaInsets)
                     .background(Color(.systemBackground))
                 Divider()
                     .padding(.horizontal, insets: safeAreaInsets)
-                    .padding(.leading, Constants.dividerPadding)
+                    .padding(.leading, Constants.horizontalPadding)
             }
 
             ListHeaderView(text: Localization.packageDetailsHeader, alignment: .left)
@@ -91,10 +105,11 @@ private extension ShippingLabelSinglePackage {
         static let footer = NSLocalizedString("Sum of products and package weight",
                                               comment: "Title of the footer in Shipping Label Package Detail screen")
         static let invalidWeight = NSLocalizedString("Invalid weight", comment: "Error message when total weight is invalid in Package Detail screen")
+        static let moveButton = NSLocalizedString("Move", comment: "Button on each order item of the Package Details screen in Shipping Labels flow.")
     }
 
     enum Constants {
-        static let dividerPadding: CGFloat = 16
+        static let horizontalPadding: CGFloat = 16
     }
 }
 
@@ -112,6 +127,10 @@ struct ShippingLabelPackageItem_Previews: PreviewProvider {
                                                           onItemMoveRequest: { _, _ in },
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in })
-        ShippingLabelSinglePackage(packageNumber: 1, isCollapsible: true, safeAreaInsets: .zero, viewModel: viewModel)
+        ShippingLabelSinglePackage(packageNumber: 1,
+                                   isCollapsible: true,
+                                   safeAreaInsets: .zero,
+                                   shouldShowMoveItemActionSheet: .constant(false),
+                                   viewModel: viewModel)
     }
 }

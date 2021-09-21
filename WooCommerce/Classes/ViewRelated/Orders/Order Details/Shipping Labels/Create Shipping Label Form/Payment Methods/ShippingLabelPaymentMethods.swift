@@ -4,7 +4,7 @@ import Yosemite
 struct ShippingLabelPaymentMethods: View {
     @ObservedObject private var viewModel: ShippingLabelPaymentMethodsViewModel
     @Environment(\.presentationMode) var presentation
-    @State private var showAddPaymentWebView: Bool = false
+    @State private var showingAddPaymentWebView: Bool = false
 
     /// Completion callback
     ///
@@ -78,7 +78,7 @@ struct ShippingLabelPaymentMethods: View {
                         let buttonText = viewModel.paymentMethods.isEmpty ? Localization.addCreditCardButton : Localization.addAnotherCreditCardButton
 
                         Button(action: {
-                            showAddPaymentWebView = true
+                            showingAddPaymentWebView = true
                             ServiceLocator.analytics.track(.shippingLabelAddPaymentMethodTapped)
                         }) {
                             HStack {
@@ -95,7 +95,7 @@ struct ShippingLabelPaymentMethods: View {
                     }
                 }
                 .padding(.bottom, insets: geometry.safeAreaInsets)
-                .sheet(isPresented: $showAddPaymentWebView, content: {
+                .sheet(isPresented: $showingAddPaymentWebView, content: {
                     webview
                 })
             }
@@ -121,10 +121,10 @@ struct ShippingLabelPaymentMethods: View {
 
     private var webview: some View {
         NavigationView {
-            AuthenticatedWebView(isPresented: $showAddPaymentWebView,
+            AuthenticatedWebView(isPresented: $showingAddPaymentWebView,
                                  url: WooConstants.URLs.addPaymentMethodWCShip.asURL(),
                                  urlToTriggerExit: viewModel.fetchPaymentMethodURLPath) {
-                showAddPaymentWebView = false
+                showingAddPaymentWebView = false
                 viewModel.syncShippingLabelAccountSettings()
                 ServiceLocator.analytics.track(.shippingLabelPaymentMethodAdded)
                 let notice = Notice(title: Localization.paymentMethodAddedNotice, feedbackType: .success)
@@ -133,7 +133,7 @@ struct ShippingLabelPaymentMethods: View {
             .navigationTitle(Localization.paymentMethodWebviewTitle)
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(trailing: Button(action: {
-                showAddPaymentWebView = false
+                showingAddPaymentWebView = false
             }, label: {
                 Text(Localization.doneButtonAddPayment)
             }))

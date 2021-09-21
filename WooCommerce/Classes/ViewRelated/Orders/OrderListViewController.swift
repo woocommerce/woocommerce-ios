@@ -149,8 +149,17 @@ final class OrderListViewController: UIViewController {
     }
 
     private func bindThrottleableResyncRequests() {
+
+        // Track last date of a performed request
         var lastDate = Date.distantPast
 
+        /// Map each trigger value and:
+        /// - If reason is pull to refresh: lauch resync call
+        /// - If time passed > 30: launch resync call
+        /// - any other scenario, do nothing.
+        /// Updates last date after request is performed.
+        /// Ends any refreshing state in the table view
+        ///
         resyncTrigger.map { [weak self] syncReason -> AnyPublisher<Void, Never> in
             guard let self = self else {
                 return Just(()).eraseToAnyPublisher()
@@ -161,6 +170,7 @@ final class OrderListViewController: UIViewController {
                 return self.createResyncFuture(reason: syncReason.rawValue)
                     .handleEvents(receiveOutput: { aa in
                         lastDate = Date()
+                        self.refreshControl.endRefreshing()
                     })
                     .eraseToAnyPublisher()
             default:
@@ -296,6 +306,7 @@ extension OrderListViewController {
         ServiceLocator.analytics.track(.ordersListPulledToRefresh)
         delegate?.orderListViewControllerWillSynchronizeOrders(self)
         resyncTrigger.send(.pullToRefresh)
+
     }
 }
 

@@ -21,17 +21,17 @@ extension UIImage {
     }
 
     private static func softwareUpdateProgressFill(progress: CGFloat) -> UIImage? {
-        let rect = CGRect(x: 0, y: 0, width: 91, height: 91)
-        let clippingRect = CGRect(x: 0, y: (1 - progress) * 91, width: 91, height: 91)
+        let rect = CGRect(x: 0, y: 0, width: Constants.size, height: Constants.size)
+        let clippingRect = CGRect(x: 0, y: (1 - progress) * Constants.size, width: Constants.size, height: Constants.size)
         UIGraphicsBeginImageContext(rect.size)
         defer { UIGraphicsEndImageContext() }
 
         guard let context = UIGraphicsGetCurrentContext() else {
             return nil
         }
-        context.setFillColor(red: 0.498, green: 0.329, blue: 0.702, alpha: 1)
+        context.setFillColor(Constants.progressColor.cgColor)
         context.clip(to: clippingRect)
-        context.addEllipse(in: rect.insetBy(dx: 2, dy: 2))
+        context.addEllipse(in: rect.insetBy(dx: Constants.borderWidth, dy: Constants.borderWidth))
         context.drawPath(using: .fill)
 
         return UIGraphicsGetImageFromCurrentImageContext()
@@ -46,6 +46,12 @@ extension UIImage {
             symbol
         ].compactMap { $0 }) ?? .init()
     }
+}
+
+private enum Constants {
+    static let size: CGFloat = 91
+    static let borderWidth: CGFloat = 2
+    static let progressColor = UIColor(red: 0.498, green: 0.329, blue: 0.702, alpha: 1)
 }
 
 struct UpdateProgressImage_Previews: PreviewProvider {

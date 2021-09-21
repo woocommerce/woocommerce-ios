@@ -195,7 +195,10 @@ private extension BillingInformationViewController {
     }
 
     private func copyEmailHandler() {
-        guard let email = order.billingAddress?.email else { return }
+        guard let email = order.billingAddress?.email else {
+            return
+        }
+
         ServiceLocator.analytics.track(.orderDetailCustomerEmailTapped)
         sendToPasteboard(email, includeTrailingNewline: false)
     }

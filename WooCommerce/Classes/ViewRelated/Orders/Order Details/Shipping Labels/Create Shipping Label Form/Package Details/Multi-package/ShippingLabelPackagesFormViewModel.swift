@@ -231,11 +231,12 @@ private extension ShippingLabelPackagesFormViewModel {
 private extension ShippingLabelPackagesFormViewModel {
     enum Localization {
         static let moveItemActionSheetMessage = NSLocalizedString("This item is currently in Package %1$d: %2$@. Where would you like to move it?",
-                                                                  comment: "Message in action sheet when an order item is about to be moved on Package Details screen " +
-                                                                    "of Shipping Label flow. The package name reads like: Package 1: Custom Envelope.")
+                                                                  comment: "Message in action sheet when an order item is about to " +
+                                                                    "be moved on Package Details screen of Shipping Label flow. " +
+                                                                    "The package name reads like: Package 1: Custom Envelope.")
         static let shipInOriginalPackage = NSLocalizedString("Ship in Original Packaging",
-                                                             comment: "Option on action sheet when an order item is about to be moved on Package Details screen " +
-                                                                "of Shipping Label flow. The package name reads like: Package 1: Custom Envelope.")
+                                                             comment: "Option to ship in original packaging on action sheet when an order item is about to " +
+                                                                "be moved on Package Details screen of Shipping Label flow.")
     }
 }
 

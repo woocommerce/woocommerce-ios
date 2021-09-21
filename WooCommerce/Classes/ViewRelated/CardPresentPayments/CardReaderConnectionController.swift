@@ -92,7 +92,7 @@ final class CardReaderConnectionController {
     /// even if the number of found readers drops to less than 2
     private var showSeveralFoundReaders: Bool = false
 
-    private var softwareUpdateCancelable: Cancelable? = nil
+    private var softwareUpdateCancelable: FallibleCancelable? = nil
 
     private var subscriptions = Set<AnyCancellable>()
 

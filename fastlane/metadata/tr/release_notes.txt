@@ -1,5 +1,0 @@
-Yaşasın! WooCommerce Shipping & Tax Uzantısını kullanan ABD merkezli satıcılar mutlu olacaklar. Artık müşterilerinizin ABD dışındaki ülkelere yönelik gönderileri için gönderi etiketleri oluşturabilir ve yazdırabilirsiniz.
-
-Müşteriniz siparişini verirken size not mu bıraktı? Artık bu notları uygulamada düzenleyebileceğinizi göreceksiniz.
-
-Lütfen uygulamayla ilgili tüm geri bildirimlerinizi bize göndermeye devam edin. Merakla bekliyoruz.

@@ -642,13 +642,15 @@ private extension ShippingLabelFormViewModel {
     ///
     private func monitorAccountSettingsResultsController() {
         accountSettingsResultsController.onDidChangeContent = { [weak self] in
-            guard let self = self else { return }
-            self.shippingLabelAccountSettings = self.accountSettingsResultsController.fetchedObjects.first
+            guard let self = self, let fetchedAccountSettings = self.accountSettingsResultsController.fetchedObjects.first else { return }
+
+            self.handlePaymentMethodValueChanges(settings: fetchedAccountSettings, editable: true)
         }
 
         accountSettingsResultsController.onDidResetContent = { [weak self] in
-            guard let self = self else { return }
-            self.shippingLabelAccountSettings = self.accountSettingsResultsController.fetchedObjects.first
+            guard let self = self, let fetchedAccountSettings = self.accountSettingsResultsController.fetchedObjects.first else { return }
+
+            self.handlePaymentMethodValueChanges(settings: fetchedAccountSettings, editable: true)
         }
 
         try? accountSettingsResultsController.performFetch()

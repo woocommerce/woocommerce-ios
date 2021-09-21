@@ -15,7 +15,7 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
 
     /// References of view models for child items.
     ///
-    @Published private(set) var itemViewModels: [ShippingLabelPackageItemViewModel] = []
+    @Published private(set) var itemViewModels: [ShippingLabelSinglePackageViewModel] = []
 
     /// Whether Done button on Package Details screen should be enabled.
     ///
@@ -105,10 +105,10 @@ private extension ShippingLabelPackagesFormViewModel {
     ///
     func configureItemViewModels(order: Order, packageResponse: ShippingLabelPackagesResponse?) {
         $selectedPackages.combineLatest($products, $productVariations)
-            .map { selectedPackages, products, variations -> [ShippingLabelPackageItemViewModel] in
+            .map { selectedPackages, products, variations -> [ShippingLabelSinglePackageViewModel] in
                 return selectedPackages.map { details in
                     let orderItems = order.items.filter { details.productIDs.contains($0.productOrVariationID) }
-                    return ShippingLabelPackageItemViewModel(order: order,
+                    return ShippingLabelSinglePackageViewModel(order: order,
                                                              orderItems: orderItems,
                                                              packagesResponse: packageResponse,
                                                              selectedPackageID: details.packageID,

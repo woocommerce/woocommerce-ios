@@ -2,7 +2,7 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 
-class ShippingLabelPackageItemViewModelTests: XCTestCase {
+class ShippingLabelSinglePackageViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 1234
 
@@ -11,7 +11,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
         // Given
         let order = MockOrders().empty().copy(siteID: sampleSiteID)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
-        let viewModel = ShippingLabelPackageItemViewModel(order: order,
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
                                                           orderItems: order.items,
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "",
@@ -53,7 +53,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                      attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")])
 
         // When
-        let viewModel = ShippingLabelPackageItemViewModel(order: order,
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
                                                           orderItems: items,
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "",
@@ -83,7 +83,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                        maxWeight: 11)
         let order = MockOrders().empty().copy(siteID: sampleSiteID)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
-        let viewModel = ShippingLabelPackageItemViewModel(order: order,
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
                                                           orderItems: order.items,
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "",
@@ -115,10 +115,10 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
 
         var packageToTest: ShippingLabelPackageAttributes?
-        let packageSwitchHandler: ShippingLabelPackageItemViewModel.PackageSwitchHandler = { package in
+        let packageSwitchHandler: ShippingLabelSinglePackageViewModel.PackageSwitchHandler = { package in
             packageToTest = package
         }
-        let viewModel = ShippingLabelPackageItemViewModel(order: order,
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
                                                           orderItems: order.items,
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "Test Box",
@@ -144,7 +144,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
         // Given
         let order = MockOrders().empty().copy(siteID: sampleSiteID)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
-        let viewModel = ShippingLabelPackageItemViewModel(order: order,
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
                                                           orderItems: order.items,
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "Test Box",
@@ -184,7 +184,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                      productVariationID: 49,
                                                      attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")])
 
-        let viewModel = ShippingLabelPackageItemViewModel(order: order,
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
                                                           orderItems: order.items,
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "Box",
@@ -223,7 +223,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                      productVariationID: 49,
                                                      attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")])
 
-        let viewModel = ShippingLabelPackageItemViewModel(order: order,
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
                                                           orderItems: order.items,
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "Box",
@@ -247,7 +247,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
 
         // When
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120")
-        let viewModel = ShippingLabelPackageItemViewModel(order: order,
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
                                                           orderItems: order.items,
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "Test Box",
@@ -269,7 +269,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
         let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: [])
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
 
-        let viewModel = ShippingLabelPackageItemViewModel(order: order,
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
                                                           orderItems: order.items,
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "Test Box",
@@ -308,7 +308,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
 
         // When
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120")
-        let viewModel = ShippingLabelPackageItemViewModel(order: order,
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
                                                           orderItems: order.items,
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "Test Box",
@@ -340,7 +340,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
 
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120")
-        let viewModel = ShippingLabelPackageItemViewModel(order: order,
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
                                                           orderItems: order.items,
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "Test Box",
@@ -373,7 +373,7 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
 }
 
 // MARK: - Mocks
-private extension ShippingLabelPackageItemViewModelTests {
+private extension ShippingLabelSinglePackageViewModelTests {
     func mockPackageResponse(withCustom: Bool = true, withPredefined: Bool = true) -> ShippingLabelPackagesResponse {
         let storeOptions = ShippingLabelStoreOptions(currencySymbol: "$",
                                                      dimensionUnit: "in",

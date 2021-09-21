@@ -13,6 +13,14 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
         selectedPackages.count > 1
     }
 
+    /// Message displayed on the Move Item action sheet.
+    ///
+    @Published private(set) var moveItemActionSheetMessage: String?
+
+    /// Option buttons displayed on the Move Item action sheet.
+    ///
+    @Published private(set) var moveItemActionSheetButtons: [ActionSheet.Button] = []
+
     /// References of view models for child items.
     ///
     @Published private(set) var itemViewModels: [ShippingLabelSinglePackageViewModel] = []

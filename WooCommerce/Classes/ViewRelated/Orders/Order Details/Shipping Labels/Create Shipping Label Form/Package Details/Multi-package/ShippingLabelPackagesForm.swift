@@ -3,6 +3,7 @@ import SwiftUI
 struct ShippingLabelPackagesForm: View {
     @ObservedObject private var viewModel: ShippingLabelPackagesFormViewModel
     @Environment(\.presentationMode) var presentation
+    @State private var showingMoveItemActionSheet: Bool = false
 
     init(viewModel: ShippingLabelPackagesFormViewModel) {
         self.viewModel = viewModel
@@ -23,6 +24,11 @@ struct ShippingLabelPackagesForm: View {
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         }
+        .actionSheet(isPresented: $showingMoveItemActionSheet, content: {
+            ActionSheet(title: Text(Localization.moveItemTitle),
+                        message: viewModel.moveItemActionSheetMessage.map(Text.init),
+                        buttons: viewModel.moveItemActionSheetButtons)
+        })
         .navigationTitle(Localization.title)
         .navigationBarItems(trailing: Button(action: {
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow,
@@ -41,6 +47,9 @@ private extension ShippingLabelPackagesForm {
         static let title = NSLocalizedString("Package Details",
                                              comment: "Navigation bar title of shipping label package details screen")
         static let doneButton = NSLocalizedString("Done", comment: "Done navigation button in the Package Details screen in Shipping Label flow")
+        static let moveItemTitle = NSLocalizedString("Move Item",
+                                                     comment: "Title of the action sheet displayed when moving items in the" +
+                                                        "Package Details screen in Shipping Label flow.")
     }
 
     enum Constants {

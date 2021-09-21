@@ -9,14 +9,8 @@ struct InPersonPaymentsLearnMore: View {
                 .resizable()
                 .foregroundColor(Color(.textSubtle))
                 .frame(width: iconSize, height: iconSize)
-            AttributedText(Localization.learnMore)
+            Text(Localization.learnMore)
                 .font(.subheadline)
-                .attributedTextForegroundColor(Color(.textSubtle))
-                .attributedTextLinkColor(Color(.textLink))
-                .customOpenURL { url in
-                    ServiceLocator.analytics.track(.cardPresentOnboardingLearnMoreTapped)
-                    customOpenURL?(url)
-                }
         }
     }
 
@@ -36,24 +30,10 @@ private enum Localization {
         comment: "Generic error message when In-Person Payments is unavailable"
     )
 
-    static let learnMore: NSAttributedString = {
-        let learnMoreText = NSLocalizedString(
-            "<a href=\"https://woocommerce.com/payments\">Learn more</a> about accepting payments with your mobile device and ordering card readers",
-            comment: "A label prompting users to learn more about card readers with an embedded hyperlink"
-        )
-
-        let learnMoreAttributes: [NSAttributedString.Key: Any] = [
-            .font: StyleManager.footerLabelFont,
-            .foregroundColor: UIColor.textSubtle
-        ]
-
-        let learnMoreAttrText = NSMutableAttributedString()
-        learnMoreAttrText.append(learnMoreText.htmlToAttributedString)
-        let range = NSRange(location: 0, length: learnMoreAttrText.length)
-        learnMoreAttrText.addAttributes(learnMoreAttributes, range: range)
-
-        return learnMoreAttrText
-    }()
+    static let learnMore = NSLocalizedString(
+        "TEMPORARY CHANGE TO AVOID CRASH - DO NOT MERGE.",
+        comment: "Generic error message when In-Person Payments is unavailable"
+    )
 }
 
 struct InPersonPaymentsLearnMore_Previews: PreviewProvider {

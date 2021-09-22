@@ -89,6 +89,12 @@ final class EditAddressFormViewModel: ObservableObject {
         return CountrySelectorViewModel(countries: countriesResultsController.fetchedObjects, selected: selectedCountryBinding)
     }
 
+    /// Creates a view model to be used when selecting a state
+    ///
+    func createStateViewModel() -> StateSelectorViewModel {
+        StateSelectorViewModel()
+    }
+
     /// Update the address remotely and invoke a completion block when finished
     ///
     func updateRemoteAddress(onFinish: @escaping (Bool) -> Void) {

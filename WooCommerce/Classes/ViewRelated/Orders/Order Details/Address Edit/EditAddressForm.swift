@@ -171,7 +171,7 @@ struct EditAddressForm: View {
 
         // Go to edit state
         // TODO: Move `StateSelectorViewModel` creation to the VM when it exists.
-        LazyNavigationLink(destination: FilterListSelector(viewModel: StateSelectorViewModel()), isActive: $showStateSelector) {
+        LazyNavigationLink(destination: FilterListSelector(viewModel: viewModel.createStateViewModel()), isActive: $showStateSelector) {
             EmptyView()
         }
 

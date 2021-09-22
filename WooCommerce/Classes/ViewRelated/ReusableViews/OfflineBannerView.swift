@@ -4,6 +4,8 @@ import UIKit
 ///
 final class OfflineBannerView: UIView {
 
+    static let height: CGFloat = 44
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -41,8 +43,8 @@ final class OfflineBannerView: UIView {
 
         addSubview(stackView)
         NSLayoutConstraint.activate([
-            stackView.safeLeadingAnchor.constraint(equalTo: safeLeadingAnchor, constant: 0),
-            stackView.safeBottomAnchor.constraint(equalTo: safeBottomAnchor, constant: 0),
+            stackView.safeLeadingAnchor.constraint(greaterThanOrEqualTo: safeLeadingAnchor, constant: 0),
+            stackView.safeBottomAnchor.constraint(greaterThanOrEqualTo: safeBottomAnchor, constant: 0),
             stackView.centerXAnchor.constraint(equalTo: centerXAnchor),
             stackView.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])

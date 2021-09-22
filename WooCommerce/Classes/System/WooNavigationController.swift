@@ -90,11 +90,10 @@ private extension WooNavigationControllerDelegate {
     }
 }
 
-// MARK: - Offline banner configuration
+// MARK: Offline banner configuration
 private extension WooNavigationControllerDelegate {
 
-    /// Observes changes in status of connectivity and returns a subscription.
-    /// Keep a strong reference to this subscription to show the offline banner in the navigation controller's built-in toolbar.
+    /// Observes changes in status of connectivity and updates the offline banner in current view controller accordingly.
     ///
     func observeConnectivity() {
         connectivityObserver.statusPublisher
@@ -116,36 +115,43 @@ private extension WooNavigationControllerDelegate {
         }
     }
 
-    /// Displays offline banner in the default tool bar of the view controller's navigation controller.
+    /// Adds offline banner at the bottom of the view controller.
     ///
     func setOfflineBannerWhenNoConnection(for viewController: UIViewController, status: ConnectivityStatus) {
-
-        guard let navigationController = viewController.navigationController else {
-            return
-        }
-
         // We can only show it when we are sure we can't reach the internet
         guard status == .notReachable else {
             return removeOfflineBanner(for: viewController)
         }
 
-        let offlineBannerView = OfflineBannerView(frame: .zero)
-        offlineBannerView.sizeToFit()
-        let offlineItem = UIBarButtonItem(customView: offlineBannerView)
-        let spaceItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-
-        viewController.toolbarItems = [spaceItem, offlineItem, spaceItem]
-        navigationController.toolbar.barTintColor = .gray
-
-        navigationController.setToolbarHidden(false, animated: false)
-    }
-
-    /// Hides the default tool bar in the view controller's navigation controller.
-    ///
-    func removeOfflineBanner(for viewController: UIViewController) {
-        guard let navigationController = viewController.navigationController else {
+        // Only add banner view if it's not already added.
+        guard let navigationController = viewController.navigationController,
+              let view = viewController.view,
+              view.subviews.first(where: { $0 is OfflineBannerView }) == nil else {
             return
         }
-        navigationController.setToolbarHidden(true, animated: false)
+
+        let offlineBannerView = OfflineBannerView(frame: .zero)
+        offlineBannerView.backgroundColor = .gray
+        offlineBannerView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(offlineBannerView)
+
+        let extraBottomSpace = viewController.hidesBottomBarWhenPushed ? navigationController.view.safeAreaInsets.bottom : 0
+        NSLayoutConstraint.activate([
+            offlineBannerView.heightAnchor.constraint(equalToConstant: OfflineBannerView.height),
+            offlineBannerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            offlineBannerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            offlineBannerView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -extraBottomSpace)
+        ])
+        viewController.additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: OfflineBannerView.height, right: 0)
+    }
+
+    /// Removes the offline banner from the view controller if it exists.
+    ///
+    func removeOfflineBanner(for viewController: UIViewController) {
+        guard let offlineBanner = viewController.view.subviews.first(where: { $0 is OfflineBannerView }) else {
+            return
+        }
+        offlineBanner.removeFromSuperview()
+        viewController.additionalSafeAreaInsets = .zero
     }
 }

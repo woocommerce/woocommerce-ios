@@ -38,7 +38,12 @@ public class NotificationStore: Store {
         }
 
         switch action {
-        case .registerDevice(let device, let applicationId, let applicationVersion, let defaultStoreID, let pushNotificationsForAllStoresEnabled, let onCompletion):
+        case .registerDevice(let device,
+                             let applicationId,
+                             let applicationVersion,
+                             let defaultStoreID,
+                             let pushNotificationsForAllStoresEnabled,
+                             let onCompletion):
             registerDevice(device: device,
                            applicationId: applicationId,
                            applicationVersion: applicationVersion,

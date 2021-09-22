@@ -21,6 +21,8 @@ struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .whatsNewOnWooCommerce:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .pushNotificationsForAllStores:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

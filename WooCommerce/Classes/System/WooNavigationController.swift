@@ -43,6 +43,13 @@ private class WooNavigationControllerDelegate: NSObject, UINavigationControllerD
     private var currentController: UIViewController?
     private var subscriptions: Set<AnyCancellable> = []
 
+    private lazy var bannerView: OfflineBannerView = {
+        let offlineBannerView = OfflineBannerView(frame: .zero)
+        offlineBannerView.backgroundColor = .gray
+        offlineBannerView.translatesAutoresizingMaskIntoConstraints = false
+        return offlineBannerView
+    }()
+
     init(connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver) {
         self.connectivityObserver = connectivityObserver
         super.init()
@@ -123,24 +130,29 @@ private extension WooNavigationControllerDelegate {
             return removeOfflineBanner(for: viewController)
         }
 
-        // Only add banner view if it's not already added.
-        guard let navigationController = viewController.navigationController,
-              let view = viewController.view,
-              view.subviews.first(where: { $0 is OfflineBannerView }) == nil else {
+        guard let navigationController = viewController.navigationController else {
             return
         }
 
-        let offlineBannerView = OfflineBannerView(frame: .zero)
-        offlineBannerView.backgroundColor = .gray
-        offlineBannerView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(offlineBannerView)
+        // clean old constraints
+        bannerView.removeFromSuperview()
+        bannerView.removeConstraints(bannerView.constraints)
 
-        let extraBottomSpace = viewController.hidesBottomBarWhenPushed ? navigationController.view.safeAreaInsets.bottom : 0
+        // re add the view
+        navigationController.view.addSubview(bannerView)
+
+        // TODO: calculate size dynamically, probably needs to adjust `BannerView` to give it proper spacing and centering.
+        let bottomSpace: CGFloat = {
+            if viewController.hidesBottomBarWhenPushed {
+                return 0
+            }
+            return OfflineBannerView.height + navigationController.view.safeAreaInsets.bottom
+        }()
         NSLayoutConstraint.activate([
-            offlineBannerView.heightAnchor.constraint(equalToConstant: OfflineBannerView.height),
-            offlineBannerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            offlineBannerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            offlineBannerView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -extraBottomSpace)
+            bannerView.heightAnchor.constraint(equalToConstant: OfflineBannerView.height),
+            bannerView.leadingAnchor.constraint(equalTo: navigationController.view.leadingAnchor),
+            bannerView.trailingAnchor.constraint(equalTo: navigationController.view.trailingAnchor),
+            bannerView.bottomAnchor.constraint(equalTo: navigationController.view.bottomAnchor, constant: -bottomSpace)
         ])
         viewController.additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: OfflineBannerView.height, right: 0)
     }
@@ -148,10 +160,7 @@ private extension WooNavigationControllerDelegate {
     /// Removes the offline banner from the view controller if it exists.
     ///
     func removeOfflineBanner(for viewController: UIViewController) {
-        guard let offlineBanner = viewController.view.subviews.first(where: { $0 is OfflineBannerView }) else {
-            return
-        }
-        offlineBanner.removeFromSuperview()
+        bannerView.removeFromSuperview()
         viewController.additionalSafeAreaInsets = .zero
     }
 }

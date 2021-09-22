@@ -1,3 +1,0 @@
-Cette version contient quelques améliorations mineures qui rendent votre expérience plus fluide. Dans les détails de la commande, certaines extensions tierces n’affichaient pas logiquement les métadonnées de produits. Nous avons apporté quelques modifications pour améliorer l’affichage des détails de ces produits. Nous masquons désormais le bouton de remboursement de commande lorsque le montant total est égal à zéro.
-
-Cette mise à jour inclut également plusieurs améliorations à la fonctionnalité d’étiquette d’expédition utilisant l’extension WooCommerce Shipping & Tax. Nous apprécions tous vos commentaires sur cette nouvelle fonctionnalité !

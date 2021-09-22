@@ -1,3 +1,0 @@
-Den här versionen innehåller en handfull mindre förbättringar som ska göra din upplevelse smidigare. Vissa tredjepartsutökningar visade inte produktmetadata logiskt i beställningsinformationen. Vi har gjort vissa ändringar för att förbättra visningen av denna produktinformation. Vi döljer nu knappen för beställningsåterbetalning när det totala beloppet är noll.
-
-Denna uppdatering inkluderar även flera förbättringar av fraktetikettfunktionen i utökningen WooCommerce Shipping & Tax. Vi värdesätter din feedback rörande denna nya funktion!

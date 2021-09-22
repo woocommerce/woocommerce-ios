@@ -1,3 +1,0 @@
-Esta versión incluye unas cuantas minimejoras para que la experiencia sea más fluida. En los detalles del pedido, algunas extensiones de terceros no mostraban lógicamente los metadatos del producto. Hemos hecho cambios para mejorar la visualización de esos detalles del producto. Ahora el botón de reembolso del pedido se oculta cuando el importe total es cero.
-
-Esta actualización también incluye varias mejoras en la función de etiquetas de envío mediante la extensión WooCommerce Shipping & Tax. Apreciamos todos vuestros comentarios sobre esta nueva función.

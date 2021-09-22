@@ -13,7 +13,7 @@ struct ShippingLabelPackagesForm: View {
         GeometryReader { geometry in
             ScrollView {
                 ForEach(Array(viewModel.itemViewModels.enumerated()), id: \.offset) { index, element in
-                    ShippingLabelPackageItem(packageNumber: index + 1,
+                    ShippingLabelSinglePackage(packageNumber: index + 1,
                                              isCollapsible: viewModel.foundMultiplePackages,
                                              safeAreaInsets: geometry.safeAreaInsets,
                                              viewModel: element)

@@ -1,5 +1,5 @@
-Hurray! USA-based merchants using the WooCommerce Shipping & Tax Extension rejoice! You can now create and print shipping labels for your customers’ shipments to countries outside the USA.
+- [x] Show an improved error modal if there are problems while selecting a store. [https://github.com/woocommerce/woocommerce-ios/pull/5006]
+- [***] Shipping Labels: Merchants can now add new custom and service packages for shipping labels directly from the app. [https://github.com/woocommerce/woocommerce-ios/pull/4976]
+- [*] Fix: when product image upload fails, the image cell stop loading. [https://github.com/woocommerce/woocommerce-ios/pull/4989]
 
-Did your customer leave some notes for you when they placed their order? You’ll find that you can now edit those notes in the app.
 
-Please continue to send us all of your feedback about the app – we welcome it!

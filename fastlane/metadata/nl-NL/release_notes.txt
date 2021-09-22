@@ -1,3 +1,0 @@
-Deze release bevat tal van kleine verbeteringen om je ervaring soepeler te laten verlopen. Sommige extensies van derden gaven product-metagegevens niet op logische wijze weer in de bestellingsgegevens. We hebben ervoor gezorgd dat de weergave van dergelijke productgegevens verbeterd is. De knop bestelling terugbetalen is nu verborgen wanneer het totale bedrag nul is.
-
-Deze update omvat tevens enkele verbeteringen van de verzendlabel-functie bij het gebruik van WooCommerce Shipping & Tax-extensie. Feedback op deze nieuwe functie is welkom!

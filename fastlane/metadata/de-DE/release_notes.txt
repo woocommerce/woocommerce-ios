@@ -1,3 +1,0 @@
-Diese Version enthält ein paar kleinere Verbesserungen am Gesamterlebnis. In den Bestelldetails haben einige Erweiterungen von Drittanbietern die Produkt-Metadaten nicht logisch angezeigt. Wir haben ein paar Änderungen vorgenommen, um die Anzeige dieser Produktdetails zu verbessern. Wir blenden jetzt den Button für die Rückerstattung einer Bestellung aus, wenn der Gesamtpreis Null beträgt.
-
-Dieses Update umfasst auch mehrere Verbesserungen an der Funktion für Versandetiketten mit der Erweiterung „WooCommerce Shipping & Tax“. Wir wissen dein Feedback zu dieser neuen Funktion sehr zu schätzen!

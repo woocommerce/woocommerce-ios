@@ -1,8 +1,8 @@
 import SwiftUI
 
-struct ShippingLabelPackageItem: View {
+struct ShippingLabelSinglePackage: View {
 
-    @ObservedObject private var viewModel: ShippingLabelPackageItemViewModel
+    @ObservedObject private var viewModel: ShippingLabelSinglePackageViewModel
     @State private var isCollapsed: Bool = false
     @State private var isShowingPackageSelection = false
 
@@ -13,7 +13,7 @@ struct ShippingLabelPackageItem: View {
     init(packageNumber: Int,
          isCollapsible: Bool,
          safeAreaInsets: EdgeInsets,
-         viewModel: ShippingLabelPackageItemViewModel) {
+         viewModel: ShippingLabelSinglePackageViewModel) {
         self.packageNumber = packageNumber
         self.isCollapsible = isCollapsible
         self.safeAreaInsets = safeAreaInsets
@@ -77,7 +77,7 @@ struct ShippingLabelPackageItem: View {
     }
 }
 
-private extension ShippingLabelPackageItem {
+private extension ShippingLabelSinglePackage {
     enum Localization {
         static let itemsToFulfillHeader = NSLocalizedString("ITEMS TO FULFILL", comment: "Header section items to fulfill in Shipping Label Package Detail")
         static let packageDetailsHeader = NSLocalizedString("PACKAGE DETAILS", comment: "Header section package details in Shipping Label Package Detail")
@@ -99,7 +99,7 @@ struct ShippingLabelPackageItem_Previews: PreviewProvider {
     static var previews: some View {
         let order = ShippingLabelPackageDetailsViewModel.sampleOrder()
         let packageResponse = ShippingLabelPackageDetailsViewModel.samplePackageDetails()
-        let viewModel = ShippingLabelPackageItemViewModel(order: order,
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
                                                           orderItems: order.items,
                                                           packagesResponse: packageResponse,
                                                           selectedPackageID: "Box 1",
@@ -108,6 +108,6 @@ struct ShippingLabelPackageItem_Previews: PreviewProvider {
                                                           productVariations: [],
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in })
-        ShippingLabelPackageItem(packageNumber: 1, isCollapsible: true, safeAreaInsets: .zero, viewModel: viewModel)
+        ShippingLabelSinglePackage(packageNumber: 1, isCollapsible: true, safeAreaInsets: .zero, viewModel: viewModel)
     }
 }

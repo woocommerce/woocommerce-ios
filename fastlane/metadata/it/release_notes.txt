@@ -1,3 +1,0 @@
-Questa versione contiene alcuni miglioramenti minori per rendere la tua esperienza più fluida. Nei dettagli dell'ordine, alcune estensioni di terze parti non mostravano logicamente i metadati del prodotto. Abbiamo apportato alcune modifiche per migliorare la visualizzazione di questi dettagli del prodotto. Ora stiamo nascondendo il pulsante dell'ordine per il rimborso quando l'importo totale è zero.
-
-Questo aggiornamento include anche vari miglioramenti alla funzionalità dell'etichetta di spedizione usando l'estensione WooCommerce Shipping & Tax. Valutiamo tutti i tuoi feedback su questa nuovissima funzionalità.

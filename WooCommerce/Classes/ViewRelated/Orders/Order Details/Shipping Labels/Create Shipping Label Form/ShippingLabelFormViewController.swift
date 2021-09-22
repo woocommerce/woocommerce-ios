@@ -1,4 +1,3 @@
-import Combine
 import UIKit
 import Yosemite
 import SwiftUI
@@ -22,8 +21,6 @@ final class ShippingLabelFormViewController: UIViewController {
     ///
     var onLabelSave: (() -> Void)?
 
-    private var connectivitySubscription: AnyCancellable?
-
     /// Init
     ///
     init(order: Order) {
@@ -46,7 +43,6 @@ final class ShippingLabelFormViewController: UIViewController {
         registerTableViewCells()
         registerTableViewHeaderFooters()
         observeViewModel()
-        configureOfflineBanner()
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -57,10 +53,6 @@ final class ShippingLabelFormViewController: UIViewController {
 // MARK: - View Configuration
 //
 private extension ShippingLabelFormViewController {
-
-    func configureOfflineBanner() {
-        connectivitySubscription = observeConnectivity()
-    }
 
     func configureNavigationBar() {
         title = Localization.titleView

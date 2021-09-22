@@ -1,4 +1,3 @@
-import Combine
 import UIKit
 import Yosemite
 import Gridicons
@@ -45,8 +44,6 @@ final class ReviewDetailsViewController: UIViewController {
     ///
     private var rows = [Row]()
 
-    private var connectivitySubscription: AnyCancellable?
-
     /// Designated Initializer
     ///
     init(productReview: ProductReview, product: Product?, notification: Note?) {
@@ -70,7 +67,6 @@ final class ReviewDetailsViewController: UIViewController {
         configureTableView()
         configureEntityListener()
         configureAppRatingEvent()
-        configureOfflineBanner()
 
         registerTableViewCells()
         reloadInterface()
@@ -90,10 +86,6 @@ final class ReviewDetailsViewController: UIViewController {
 // MARK: - User Interface Initialization
 //
 private extension ReviewDetailsViewController {
-
-    func configureOfflineBanner() {
-        connectivitySubscription = observeConnectivity()
-    }
 
     /// Setup: Main View
     ///

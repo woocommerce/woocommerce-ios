@@ -1,4 +1,3 @@
-import Combine
 import UIKit
 import WordPressUI
 import Yosemite
@@ -140,8 +139,6 @@ final class ProductsViewController: UIViewController {
     ///
     private var hasErrorLoadingData: Bool = false
 
-    private var connectivitySubscription: AnyCancellable?
-
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -167,7 +164,6 @@ final class ProductsViewController: UIViewController {
         configureTableView()
         configureToolBarView()
         configureSyncingCoordinator()
-        configureOfflineBanner()
         registerTableViewCells()
 
         showTopBannerViewIfNeeded()
@@ -260,10 +256,6 @@ private extension ProductsViewController {
 // MARK: - View Configuration
 //
 private extension ProductsViewController {
-
-    func configureOfflineBanner() {
-        connectivitySubscription = observeConnectivity()
-    }
 
     /// Set the title.
     ///

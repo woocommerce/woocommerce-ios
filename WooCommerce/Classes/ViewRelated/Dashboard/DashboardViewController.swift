@@ -1,4 +1,3 @@
-import Combine
 import UIKit
 import Gridicons
 import WordPressUI
@@ -16,7 +15,6 @@ final class DashboardViewController: UIViewController {
 
     private let dashboardUIFactory: DashboardUIFactory
     private var dashboardUI: DashboardUI?
-    private var connectivitySubscription: AnyCancellable?
 
     // Used to enable subtitle with store name
     private var shouldShowStoreNameAsSubtitle: Bool {
@@ -108,7 +106,6 @@ final class DashboardViewController: UIViewController {
         configureNavigation()
         configureView()
         configureDashboardUIContainer()
-        configureOfflineBanner()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -131,10 +128,6 @@ final class DashboardViewController: UIViewController {
 // MARK: - Configuration
 //
 private extension DashboardViewController {
-
-    func configureOfflineBanner() {
-        connectivitySubscription = observeConnectivity()
-    }
 
     func configureView() {
         view.backgroundColor = .listBackground

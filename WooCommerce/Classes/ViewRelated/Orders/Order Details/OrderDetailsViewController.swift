@@ -91,8 +91,6 @@ final class OrderDetailsViewController: UIViewController {
         return storyboard.instantiateViewController(withIdentifier: identifier) as? Self
     }
 
-    private var connectivitySubscription: AnyCancellable?
-
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigation()
@@ -102,7 +100,6 @@ final class OrderDetailsViewController: UIViewController {
         registerTableViewHeaderFooters()
         configureEntityListener()
         configureViewModel()
-        configureOfflineBanner()
         updateTopBannerView()
 
         // FIXME: this is a hack. https://github.com/woocommerce/woocommerce-ios/issues/1779
@@ -135,10 +132,6 @@ final class OrderDetailsViewController: UIViewController {
 // MARK: - TableView Configuration
 //
 private extension OrderDetailsViewController {
-
-    func configureOfflineBanner() {
-        connectivitySubscription = observeConnectivity()
-    }
 
     /// Setup: TopLoaderView
     func configureTopLoaderView() {

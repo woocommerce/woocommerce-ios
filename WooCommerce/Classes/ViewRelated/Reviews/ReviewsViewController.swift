@@ -1,4 +1,3 @@
-import Combine
 import UIKit
 import SafariServices.SFSafariViewController
 
@@ -110,8 +109,6 @@ final class ReviewsViewController: UIViewController {
                                               })
     }()
 
-    var connectivitySubscription: AnyCancellable?
-
     // MARK: - View Lifecycle
 
     init(siteID: Int64) {
@@ -139,7 +136,6 @@ final class ReviewsViewController: UIViewController {
         configureTableView()
         configureTableViewCells()
         configureResultsController()
-        configureOfflineBanner()
 
         startListeningToNotifications()
         syncingCoordinator.resynchronize()
@@ -177,10 +173,6 @@ final class ReviewsViewController: UIViewController {
 // MARK: - User Interface Initialization
 //
 private extension ReviewsViewController {
-
-    func configureOfflineBanner() {
-        connectivitySubscription = observeConnectivity()
-    }
 
     /// Setup: Sync'ing Coordinator
     ///

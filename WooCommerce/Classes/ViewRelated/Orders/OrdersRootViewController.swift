@@ -1,4 +1,3 @@
-import Combine
 import UIKit
 import Yosemite
 
@@ -31,8 +30,6 @@ final class OrdersRootViewController: UIViewController {
 
     private let siteID: Int64
 
-    private var connectivitySubscription: AnyCancellable?
-
     // MARK: View Lifecycle
 
     init(siteID: Int64) {
@@ -54,7 +51,6 @@ final class OrdersRootViewController: UIViewController {
         configureView()
         configureContainerView()
         configureChildViewController()
-        configureOfflineBanner()
     }
 
     override func viewDidLayoutSubviews() {
@@ -77,10 +73,6 @@ final class OrdersRootViewController: UIViewController {
 // MARK: - Configuration
 //
 private extension OrdersRootViewController {
-
-    func configureOfflineBanner() {
-        connectivitySubscription = observeConnectivity()
-    }
 
     func configureView() {
         view.backgroundColor = .listBackground

@@ -1,4 +1,3 @@
-import Combine
 import Photos
 import UIKit
 import WordPressUI
@@ -55,9 +54,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private var cancellableUpdateEnabled: ObservationToken?
     private var cancellableNewVariationsPrice: ObservationToken?
 
-    /// Strong reference to Combine subscription
-    private var connectivitySubscription: AnyCancellable?
-
     init(viewModel: ViewModel,
          eventLogger: ProductFormEventLoggerProtocol,
          productImageActionHandler: ProductImageActionHandler,
@@ -106,7 +102,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         configureMainView()
         configureTableView()
         configureMoreDetailsContainerView()
-        configureOfflineBanner()
 
         startListeningToNotifications()
         handleSwipeBackGesture()
@@ -412,9 +407,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 // MARK: - Configuration
 //
 private extension ProductFormViewController {
-    func configureOfflineBanner() {
-        connectivitySubscription = observeConnectivity()
-    }
 
     func configureNavigationBar() {
         updateNavigationBar()

@@ -1,4 +1,3 @@
-import Combine
 import SafariServices
 import UIKit
 import Yosemite
@@ -36,8 +35,6 @@ final class ReviewOrderViewController: UIViewController {
     ///
     private lazy var footerView: UIView = configureTableFooterView()
 
-    private var connectivitySubscription: AnyCancellable?
-
     init(viewModel: ReviewOrderViewModel, markOrderCompleteHandler: @escaping () -> Void) {
         self.viewModel = viewModel
         self.markOrderCompleteHandler = markOrderCompleteHandler
@@ -54,7 +51,6 @@ final class ReviewOrderViewController: UIViewController {
         configureNavigation()
         configureTableView()
         configureViewModel()
-        configureOfflineBanner()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -77,9 +73,6 @@ final class ReviewOrderViewController: UIViewController {
 // MARK: - UI Configuration
 //
 private extension ReviewOrderViewController {
-    private func configureOfflineBanner() {
-        connectivitySubscription = observeConnectivity()
-    }
 
     func configureViewModel() {
         viewModel.configureResultsControllers { [weak self] in

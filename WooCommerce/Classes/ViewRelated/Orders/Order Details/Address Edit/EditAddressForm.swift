@@ -55,17 +55,6 @@ struct EditAddressForm: View {
     @State var showStateSelector = false
 
     var body: some View {
-        NavigationView {
-            // navigation liks require wrapping in a stack to work
-            ZStack {
-                formContent
-            }
-        }
-        .navigationViewStyle(StackNavigationViewStyle())
-    }
-
-    @ViewBuilder
-    private var formContent: some View {
         GeometryReader { geometry in
             ScrollView {
                 ListHeaderView(text: Localization.detailsSection, alignment: .left)

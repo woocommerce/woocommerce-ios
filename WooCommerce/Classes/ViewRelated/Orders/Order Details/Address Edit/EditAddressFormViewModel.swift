@@ -162,22 +162,24 @@ extension EditAddressFormViewModel {
             address2 = address.address2 ?? ""
             city = address.city
             postcode = address.postcode
-            state = address.state
         }
 
         mutating func update(with selectedCountry: Yosemite.Country?) {
             country = selectedCountry?.name ?? country
         }
 
+        mutating func update(with selectedState: Yosemite.StateOfACountry?) {
+            state = selectedState?.name ?? state
+        }
 
-        func toAddress(selectedCountry: Yosemite.Country?) -> Yosemite.Address {
+        func toAddress(selectedCountry: Yosemite.Country?, selectedState: Yosemite.StateOfACountry?) -> Yosemite.Address {
             Address(firstName: firstName,
                     lastName: lastName,
                     company: company.isEmpty ? nil : company,
                     address1: address1,
                     address2: address2.isEmpty ? nil : address2,
                     city: city,
-                    state: state,
+                    state: selectedState?.code ?? state,
                     postcode: postcode,
                     country: selectedCountry?.code ?? country,
                     phone: phone.isEmpty ? nil : phone,
@@ -197,12 +199,12 @@ private extension EditAddressFormViewModel {
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
     func bindNavigationTrailingItemPublisher() {
-        Publishers.CombineLatest3($fields, performingNetworkRequest, $selectedCountry)
-            .map { [originalAddress] fields, performingNetworkRequest, selectedCountry -> NavigationItem in
+        Publishers.CombineLatest4($fields, performingNetworkRequest, $selectedCountry, $selectedState)
+            .map { [originalAddress] fields, performingNetworkRequest, selectedCountry, selectedState -> NavigationItem in
                 guard !performingNetworkRequest else {
                     return .loading
                 }
-                return .done(enabled: originalAddress != fields.toAddress(selectedCountry: selectedCountry))
+                return .done(enabled: originalAddress != fields.toAddress(selectedCountry: selectedCountry, selectedState: selectedState))
             }
             .assign(to: &$navigationTrailingItem)
     }

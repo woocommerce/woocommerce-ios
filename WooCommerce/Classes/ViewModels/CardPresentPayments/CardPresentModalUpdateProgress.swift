@@ -26,15 +26,17 @@ final class CardPresentModalUpdateProgress: CardPresentPaymentsModalViewModel {
 
     let bottomTitle: String?
 
-    var bottomSubtitle: String? = Localization.message
+    var bottomSubtitle: String?
 
     init(progress: Float, cancel: (() -> Void)?) {
         self.progress = progress
         self.cancelAction = cancel
 
-        topTitle = progress == 1 ? Localization.titleComplete : Localization.title
+        let isComplete = progress == 1
+        topTitle = isComplete ? Localization.titleComplete : Localization.title
         image = .softwareUpdateProgress(progress: CGFloat(progress))
         bottomTitle = String(format: Localization.percentComplete, 100 * progress)
+        bottomSubtitle = isComplete ? nil : Localization.message
         actionsMode = cancel != nil ? .secondaryOnlyAction : .none
     }
 

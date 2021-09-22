@@ -35,12 +35,7 @@ final class CardPresentModalUpdateProgress: CardPresentPaymentsModalViewModel {
         topTitle = progress == 1 ? Localization.titleComplete : Localization.title
         image = .softwareUpdateProgress(progress: CGFloat(progress))
         bottomTitle = String(format: Localization.percentComplete, 100 * progress)
-
-        if cancel != nil {
-            actionsMode = .secondaryOnlyAction
-        } else {
-            actionsMode = .none
-        }
+        actionsMode = cancel != nil ? .secondaryOnlyAction : .none
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {}

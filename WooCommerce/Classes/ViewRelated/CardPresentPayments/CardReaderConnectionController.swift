@@ -441,8 +441,10 @@ private extension CardReaderConnectionController {
             return
         }
 
-        ServiceLocator.cardReaderService
-            .softwareUpdateEvents.sink { event in
+        let softwareUpdateAction = CardPresentPaymentAction.observeCardReaderUpdateState { [weak self] softwareUpdateEvents in
+            guard let self = self else { return }
+
+            softwareUpdateEvents.sink { event in
                 switch event {
                 case .started(cancelable: let cancelable):
                     self.softwareUpdateCancelable = cancelable
@@ -456,7 +458,9 @@ private extension CardReaderConnectionController {
                     break
                 }
             }
-            .store(in: &subscriptions)
+            .store(in: &self.subscriptions)
+        }
+        ServiceLocator.stores.dispatch(softwareUpdateAction)
 
         let action = CardPresentPaymentAction.connect(reader: candidateReader) { result in
             switch result {

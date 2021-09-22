@@ -39,6 +39,7 @@ final class EditAddressFormViewModel: ObservableObject {
             guard let self = self else { return }
             self.bindSyncTrigger()
             self.bindSelectedCountryIntoFields()
+            self.bindSelectedStateIntoFields()
             self.bindNavigationTrailingItemPublisher()
 
             self.fetchStoredCountriesAndTriggerSyncIfNeeded()
@@ -217,6 +218,13 @@ private extension EditAddressFormViewModel {
                 self?.fields.update(with: newCountry)
             }
             .store(in: &subscriptions)
+    }
+
+    func bindSelectedStateIntoFields() {
+        $selectedState.sink { [weak self] newState in
+            self?.fields.update(with: newState)
+        }
+        .store(in: &subscriptions)
     }
 
     /// Fetches countries from storage, If there are no stored countries, trigger a sync request.

@@ -190,10 +190,11 @@ extension EditAddressFormViewModel {
 }
 
 private extension EditAddressFormViewModel {
-    /// Set initial values from `originalAddress` using the stored countries to compute the current selected country.
+    /// Set initial values from `originalAddress` using the stored countries to compute the current selected country & state.
     ///
     func setFieldsInitialValues() {
         selectedCountry = countriesResultsController.fetchedObjects.first { $0.code == originalAddress.country }
+        selectedState = selectedCountry?.states.first { $0.code == originalAddress.state }
         fields.update(with: originalAddress)
     }
 

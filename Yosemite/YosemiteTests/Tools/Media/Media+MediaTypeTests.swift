@@ -78,6 +78,7 @@ private extension Media_MediaTypeTests {
         return Media(mediaID: 2022,
                      date: Date(),
                      fileExtension: fileExtension,
+                     filename: "",
                      mimeType: mimeType,
                      src: "",
                      thumbnailURL: nil,

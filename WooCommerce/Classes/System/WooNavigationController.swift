@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 
 /// Subclass to set Woo styling. Removes back button text on managed view controllers.
@@ -39,9 +40,13 @@ class WooNavigationController: UINavigationController {
 private class WooNavigationControllerDelegate: NSObject, UINavigationControllerDelegate {
 
     private let connectivityObserver: ConnectivityObserver
+    private var currentController: UIViewController?
+    private var subscriptions: Set<AnyCancellable> = []
 
     init(connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver) {
         self.connectivityObserver = connectivityObserver
+        super.init()
+        observeConnectivity()
     }
 
     /// Children delegate, all events will be forwarded to this object
@@ -51,12 +56,8 @@ private class WooNavigationControllerDelegate: NSObject, UINavigationControllerD
     /// Configures the back button for the managed `ViewController` and forwards the event to the children delegate.
     ///
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        if let wooNavigationController = navigationController as? WooNavigationController,
-           viewController.shouldShowOfflineBanner {
-            configureOfflineBanner(for: viewController, in: wooNavigationController)
-        } else {
-            navigationController.isToolbarHidden = true
-        }
+        currentController = viewController
+        configureOfflineBanner(for: viewController)
         configureBackButton(for: viewController)
         forwardDelegate?.navigationController?(navigationController, willShow: viewController, animated: animated)
     }
@@ -87,11 +88,47 @@ private extension WooNavigationControllerDelegate {
     func configureBackButton(for viewController: UIViewController) {
         viewController.removeNavigationBackBarButtonText()
     }
+}
 
-    /// Set up toolbar for the view controller to display the offline message,
-    /// and listen to connectivity status changes to change the toolbar's visibility.
+// MARK: - Offline banner configuration
+private extension WooNavigationControllerDelegate {
+
+    /// Observes changes in status of connectivity and returns a subscription.
+    /// Keep a strong reference to this subscription to show the offline banner in the navigation controller's built-in toolbar.
     ///
-    func configureOfflineBanner(for viewController: UIViewController, in navigationController: WooNavigationController) {
+    func observeConnectivity() {
+        connectivityObserver.statusPublisher
+            .sink { [weak self] status in
+                guard let self = self, let currentController = self.currentController else { return }
+                self.configureOfflineBanner(for: currentController, status: status)
+            }
+            .store(in: &subscriptions)
+    }
+
+    /// Shows or hides offline banner based on the input connectivity status and
+    /// whether the view controller supports showing the banner.
+    ///
+    func configureOfflineBanner(for viewController: UIViewController, status: ConnectivityStatus? = nil) {
+        if viewController.shouldShowOfflineBanner {
+            setOfflineBannerWhenNoConnection(for: viewController, status: status ?? connectivityObserver.currentStatus)
+        } else {
+            removeOfflineBanner(for: viewController)
+        }
+    }
+
+    /// Displays offline banner in the default tool bar of the view controller's navigation controller.
+    ///
+    func setOfflineBannerWhenNoConnection(for viewController: UIViewController, status: ConnectivityStatus) {
+
+        guard let navigationController = viewController.navigationController else {
+            return
+        }
+
+        // We can only show it when we are sure we can't reach the internet
+        guard status == .notReachable else {
+            return removeOfflineBanner(for: viewController)
+        }
+
         let offlineBannerView = OfflineBannerView(frame: .zero)
         offlineBannerView.sizeToFit()
         let offlineItem = UIBarButtonItem(customView: offlineBannerView)
@@ -100,7 +137,15 @@ private extension WooNavigationControllerDelegate {
         viewController.toolbarItems = [spaceItem, offlineItem, spaceItem]
         navigationController.toolbar.barTintColor = .gray
 
-        let connected = connectivityObserver.currentStatus != .notReachable
-        navigationController.setToolbarHidden(connected, animated: false)
+        navigationController.setToolbarHidden(false, animated: false)
+    }
+
+    /// Hides the default tool bar in the view controller's navigation controller.
+    ///
+    func removeOfflineBanner(for viewController: UIViewController) {
+        guard let navigationController = viewController.navigationController else {
+            return
+        }
+        navigationController.setToolbarHidden(true, animated: false)
     }
 }

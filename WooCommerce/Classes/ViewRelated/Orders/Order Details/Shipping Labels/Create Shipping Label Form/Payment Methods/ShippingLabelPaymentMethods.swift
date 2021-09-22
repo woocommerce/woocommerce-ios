@@ -4,6 +4,7 @@ import Yosemite
 struct ShippingLabelPaymentMethods: View {
     @ObservedObject private var viewModel: ShippingLabelPaymentMethodsViewModel
     @Environment(\.presentationMode) var presentation
+    @State private var showingAddPaymentWebView: Bool = false
 
     /// Completion callback
     ///
@@ -33,7 +34,18 @@ struct ShippingLabelPaymentMethods: View {
                     ListHeaderView(text: Localization.paymentMethodsHeader, alignment: .left)
                         .textCase(.uppercase)
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
+                        .renderedIf(viewModel.paymentMethods.isNotEmpty)
+
+                    // Empty state when there are no payments methods
+                    VStack(alignment: .center) {
+                        Spacer()
+                            .frame(height: Constants.spacerHeight)
+                        EmptyState(title: Localization.pleaseAddPaymentMethodMessage, image: .waitingForCustomersImage)
+                    }
+                    .renderedIf(viewModel.paymentMethods.isEmpty)
+
                     Divider()
+                        .renderedIf(viewModel.paymentMethods.isNotEmpty)
 
                     ForEach(viewModel.paymentMethods, id: \.paymentMethodID) { method in
                         let selected = method.paymentMethodID == viewModel.selectedPaymentMethodID
@@ -54,6 +66,7 @@ struct ShippingLabelPaymentMethods: View {
                                                                           viewModel.storeOwnerWPcomEmail),
                                    alignment: .left)
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
+                        .renderedIf(viewModel.paymentMethods.isNotEmpty)
 
                     Spacer()
                         .frame(height: Constants.spacerHeight)
@@ -68,8 +81,36 @@ struct ShippingLabelPaymentMethods: View {
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
                         .background(Color(.systemBackground))
                         .disabled(!viewModel.canEditNonpaymentSettings)
+                        .renderedIf(viewModel.paymentMethods.isNotEmpty)
+
+                    Spacer()
+
+                    // Add credit card button
+                    if viewModel.canEditPaymentMethod && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsAddPaymentMethods) {
+
+                        let buttonText = viewModel.paymentMethods.isEmpty ? Localization.addCreditCardButton : Localization.addAnotherCreditCardButton
+
+                        Button(action: {
+                            showingAddPaymentWebView = true
+                            ServiceLocator.analytics.track(.shippingLabelAddPaymentMethodTapped)
+                        }) {
+                            HStack {
+                                Spacer()
+                                Text(buttonText)
+                                Image(uiImage: .externalImage)
+                                Spacer()
+                            }
+                        }
+                        .buttonStyle(SecondaryButtonStyle())
+                        .padding(Constants.controlPadding)
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
+                        .background(Color(.listBackground))
+                    }
                 }
                 .padding(.bottom, insets: geometry.safeAreaInsets)
+                .sheet(isPresented: $showingAddPaymentWebView, content: {
+                    webview
+                })
             }
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
@@ -90,6 +131,27 @@ struct ShippingLabelPaymentMethods: View {
             .disabled(!viewModel.isDoneButtonEnabled()))
         }
     }
+
+    private var webview: some View {
+        NavigationView {
+            AuthenticatedWebView(isPresented: $showingAddPaymentWebView,
+                                 url: WooConstants.URLs.addPaymentMethodWCShip.asURL(),
+                                 urlToTriggerExit: viewModel.fetchPaymentMethodURLPath) {
+                showingAddPaymentWebView = false
+                viewModel.syncShippingLabelAccountSettings()
+                ServiceLocator.analytics.track(.shippingLabelPaymentMethodAdded)
+                let notice = Notice(title: Localization.paymentMethodAddedNotice, feedbackType: .success)
+                ServiceLocator.noticePresenter.enqueue(notice: notice)
+            }
+            .navigationTitle(Localization.paymentMethodWebviewTitle)
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarItems(trailing: Button(action: {
+                showingAddPaymentWebView = false
+            }, label: {
+                Text(Localization.doneButtonAddPayment)
+            }))
+        }
+    }
 }
 
 private extension ShippingLabelPaymentMethods {
@@ -108,6 +170,19 @@ private extension ShippingLabelPaymentMethods {
                                 + " %1$@ is a placeholder for the account display name."
                                 + " %2$@ is a placeholder for the username."
                                 + " %3$@ is a placeholder for the WordPress.com email address.")
+        static let addCreditCardButton = NSLocalizedString("Add credit card",
+                                                           comment: "Button title in the Shipping Label Payment Method screen")
+        static let addAnotherCreditCardButton = NSLocalizedString("Add another credit card",
+                                                                  comment: "Button title in the Shipping Label Payment Method" +
+                                                                    " screen if there is an existing payment method")
+        static let paymentMethodWebviewTitle = NSLocalizedString("Payment method",
+                                                            comment: "Title of the webview of adding a payment method in Shipping Labels")
+        static let doneButtonAddPayment = NSLocalizedString("Done",
+                                                            comment: "Done navigation button in Shipping Label add payment webview")
+        static let paymentMethodAddedNotice = NSLocalizedString("No payment method found",
+                                                                comment: "Notice that will be displayed after adding a new Shipping Label payment method")
+        static let pleaseAddPaymentMethodMessage = NSLocalizedString("Please, add a new payment method",
+                                                                     comment: "Message that will be displayed if there are no Shipping Label payment methods.")
     }
 
     enum Constants {
@@ -127,26 +202,26 @@ struct ShippingLabelPaymentMethods_Previews: PreviewProvider {
 
         ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (newAccountSettings) in
         })
-            .colorScheme(.light)
-            .previewDisplayName("Light mode")
+        .colorScheme(.light)
+        .previewDisplayName("Light mode")
 
         ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (newAccountSettings) in
         })
-            .colorScheme(.dark)
-            .previewDisplayName("Dark Mode")
+        .colorScheme(.dark)
+        .previewDisplayName("Dark Mode")
 
         ShippingLabelPaymentMethods(viewModel: disabledViewModel, completion: { (newAccountSettings) in
         })
-            .previewDisplayName("Disabled state")
+        .previewDisplayName("Disabled state")
 
         ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (newAccountSettings) in
         })
-            .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
-            .previewDisplayName("Accessibility: Large Font Size")
+        .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+        .previewDisplayName("Accessibility: Large Font Size")
 
         ShippingLabelPaymentMethods(viewModel: viewModel, completion: { (newAccountSettings) in
         })
-            .environment(\.layoutDirection, .rightToLeft)
-            .previewDisplayName("Localization: Right-to-Left Layout")
+        .environment(\.layoutDirection, .rightToLeft)
+        .previewDisplayName("Localization: Right-to-Left Layout")
     }
 }

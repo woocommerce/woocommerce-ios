@@ -310,8 +310,9 @@ private extension ShippingLabelFormViewController {
                        icon: .creditCardImage,
                        title: Localization.paymentMethodCellTitle,
                        body: viewModel.getPaymentMethodBody(),
-                       buttonTitle: Localization.continueButtonInCells) {
-            // To be implemented as part of the "Add new payment method" flow
+                       buttonTitle: Localization.continueButtonInCells) { [weak self] in
+            guard let self = self else { return }
+            self.displayPaymentMethodVC()
         }
     }
 

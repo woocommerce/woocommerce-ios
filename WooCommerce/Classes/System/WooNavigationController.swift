@@ -142,7 +142,7 @@ private extension WooNavigationControllerDelegate {
             offlineBannerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             offlineBannerView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -extraBottomSpace)
         ])
-        viewController.additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: OfflineBannerView.height, right: 0)
+        viewController.additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: OfflineBannerView.height + extraBottomSpace, right: 0)
     }
 
     /// Removes the offline banner from the view controller if it exists.

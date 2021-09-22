@@ -100,8 +100,10 @@ final class EditAddressFormViewModel: ObservableObject {
             get: { self.selectedState },
             set: { self.selectedState = $0 }
         )
-        // TODO: PASS REAL STATES
-        return StateSelectorViewModel(states: [], selected: selectedStateBinding)
+
+        // Sort states from the selected country
+        let states = selectedCountry?.states.sorted { $0.name < $1.name } ?? []
+        return StateSelectorViewModel(states: states, selected: selectedStateBinding)
     }
 
     /// Update the address remotely and invoke a completion block when finished

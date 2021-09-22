@@ -76,7 +76,7 @@ final class OrderDetailsViewController: UIViewController {
 
         return CardReaderConnectionController(
             forSiteID: siteID,
-            knownReadersProvider: CardReaderSettingsKnownReadersStoredList(),
+            knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
             alertsProvider: CardReaderSettingsAlerts()
         )
     }()

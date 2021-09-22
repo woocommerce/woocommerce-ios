@@ -4,40 +4,40 @@ import Combine
 
 /// Combine aware wrapper around AppSettingsActions for Known Card Readers
 ///
-final class CardReaderSettingsKnownReadersStoredList: CardReaderSettingsKnownReadersProvider {
+final class CardReaderSettingsKnownReaderStorage: CardReaderSettingsKnownReaderProvider {
     private let stores: StoresManager
 
-    var knownReaders: AnyPublisher<[String], Never> {
-        knownReadersSubject.eraseToAnyPublisher()
+    var knownReader: AnyPublisher<String?, Never> {
+        knownReaderSubject.eraseToAnyPublisher()
     }
-    private let knownReadersSubject = CurrentValueSubject<[String], Never>([])
+    private let knownReaderSubject = CurrentValueSubject<String?, Never>(nil)
 
     init(stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
-        self.loadReaders()
+        self.loadReader()
     }
 
     func rememberCardReader(cardReaderID: String) {
         let action = AppSettingsAction.rememberCardReader(cardReaderID: cardReaderID, onCompletion: { [weak self] _ in
-            self?.loadReaders()
+            self?.loadReader()
         })
         stores.dispatch(action)
     }
 
     func forgetCardReader() {
         let action = AppSettingsAction.forgetCardReader(onCompletion: { [weak self] _ in
-            self?.loadReaders()
+            self?.loadReader()
         })
         stores.dispatch(action)
     }
 
-    private func loadReaders() {
-        let action = AppSettingsAction.loadCardReaders(onCompletion: { [knownReadersSubject] result in
+    private func loadReader() {
+        let action = AppSettingsAction.loadCardReader(onCompletion: { [knownReaderSubject] result in
             switch result {
-            case .success(let readers):
-                knownReadersSubject.send(readers)
+            case .success(let reader):
+                knownReaderSubject.send(reader)
             case .failure(let error):
-                DDLogError("⛔️ Error synchronizing known readers: \(error)")
+                DDLogError("⛔️ Error synchronizing known reader: \(error)")
             }
         })
         stores.dispatch(action)

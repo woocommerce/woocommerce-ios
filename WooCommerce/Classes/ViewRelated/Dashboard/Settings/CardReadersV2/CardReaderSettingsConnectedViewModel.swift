@@ -8,7 +8,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
 
     private var didGetConnectedReaders: Bool = false
     private var connectedReaders = [CardReader]()
-    private let knownReadersProvider: CardReaderSettingsKnownReadersProvider?
+    private let knownReaderProvider: CardReaderSettingsKnownReaderProvider?
 
     private(set) var checkForReaderUpdateInProgress: Bool = false
     private(set) var readerUpdateAvailable: CardReaderSettingsTriState = .isUnknown
@@ -21,9 +21,9 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     var connectedReaderBatteryLevel: String?
     var connectedReaderSoftwareVersion: String?
 
-    init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?, knownReadersProvider: CardReaderSettingsKnownReadersProvider? = nil) {
+    init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?, knownReaderProvider: CardReaderSettingsKnownReaderProvider? = nil) {
         self.didChangeShouldShow = didChangeShouldShow
-        self.knownReadersProvider = knownReadersProvider
+        self.knownReaderProvider = knownReaderProvider
         beginObservation()
     }
 
@@ -143,7 +143,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
         self.readerDisconnectInProgress = true
         self.didUpdate?()
 
-        knownReadersProvider?.forgetCardReader()
+        knownReaderProvider?.forgetCardReader()
 
         let action = CardPresentPaymentAction.disconnect() { result in
             self.readerDisconnectInProgress = false

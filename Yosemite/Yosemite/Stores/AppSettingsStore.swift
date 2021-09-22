@@ -134,8 +134,8 @@ public class AppSettingsStore: Store {
             rememberCardReader(cardReaderID: cardReaderID, onCompletion: onCompletion)
         case .forgetCardReader(onCompletion: let onCompletion):
             forgetCardReader(onCompletion: onCompletion)
-        case .loadCardReaders(onCompletion: let onCompletion):
-            loadCardReaders(onCompletion: onCompletion)
+        case .loadCardReader(onCompletion: let onCompletion):
+            loadCardReader(onCompletion: onCompletion)
         case .loadEligibilityErrorInfo(onCompletion: let onCompletion):
             loadEligibilityErrorInfo(onCompletion: onCompletion)
         case .setEligibilityErrorInfo(errorInfo: let errorInfo, onCompletion: let onCompletion):
@@ -299,22 +299,21 @@ private extension AppSettingsStore {
         }
     }
 
-    /// Loads the list of all known (remembered) readers (i.e. card readers that, if discovered, should be reconnected automatically)
+    /// Loads the most recently remembered card reader, if any (i.e. to reconnect to automatically)
     /// NOTE: We now only persist one card reader maximum.
-    /// E.g.  ["CHB204909005931"]
-    /// Note: will pass [] to the completion if there are no known readers
+    /// E.g.  "CHB204909005931"
     ///
-    func loadCardReaders(onCompletion: (Result<[String], Error>) -> Void) {
+    func loadCardReader(onCompletion: (Result<String?, Error>) -> Void) {
         let settings = loadOrCreateGeneralAppSettings()
         /// NOTE: We now only persist one card reader maximum, although for backwards compatibility
         /// we still do so as an array. We use last here so that we can get the most recently remembered
         /// reader from appSettings if populated by an older version
         guard let knownReader = settings.knownCardReaders.last else {
-            onCompletion(.success([]))
+            onCompletion(.success(nil))
             return
         }
 
-        onCompletion(.success([knownReader]))
+        onCompletion(.success(knownReader))
     }
 }
 

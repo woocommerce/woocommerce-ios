@@ -4,26 +4,24 @@ import Combine
 
 /// Allows mocking for CardReaderSettingsKnownReadersProvider
 ///
-final class MockKnownReadersProvider: CardReaderSettingsKnownReadersProvider {
-    var knownReaders: AnyPublisher<[String], Never> {
-        knownReadersSubject.eraseToAnyPublisher()
+final class MockKnownReaderProvider: CardReaderSettingsKnownReaderProvider {
+    var knownReader: AnyPublisher<String?, Never> {
+        knownReaderSubject.eraseToAnyPublisher()
     }
-    private let knownReadersSubject = CurrentValueSubject<[String], Never>([])
+    private let knownReaderSubject = CurrentValueSubject<String?, Never>(nil)
 
-    init(knownReaders: [String]? = nil) {
-        if knownReaders != nil {
-            knownReadersSubject.send(knownReaders!)
+    init(knownReader: String? = nil) {
+        if knownReader != nil {
+            knownReaderSubject.send(knownReader!)
         }
     }
 
     func rememberCardReader(cardReaderID: String) {
-        /// Note: We only remember a maximum of one reader now
-        ///
-        knownReadersSubject.send([cardReaderID])
+        knownReaderSubject.send(cardReaderID)
     }
 
     func forgetCardReader() {
-        knownReadersSubject.send([])
+        knownReaderSubject.send(nil)
     }
 
 }

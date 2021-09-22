@@ -21,13 +21,13 @@ final class CardReaderSettingsSearchingViewController: UIViewController, CardRea
             return nil
         }
 
-        guard let knownReadersProvider = viewModel?.knownReadersProvider else {
+        guard let knownReaderProvider = viewModel?.knownReaderProvider else {
             return nil
         }
 
         return CardReaderConnectionController(
             forSiteID: siteID,
-            knownReadersProvider: knownReadersProvider,
+            knownReaderProvider: knownReaderProvider,
             alertsProvider: CardReaderSettingsAlerts()
         )
     }()
@@ -103,8 +103,7 @@ private extension CardReaderSettingsSearchingViewController {
 
         /// Make sure we have a known reader
         ///
-        let hasKnownReader = viewModel?.noKnownReader == .isFalse
-        guard hasKnownReader else {
+        guard let hasKnownReader = viewModel?.hasKnownReader(), hasKnownReader else {
             return
         }
 

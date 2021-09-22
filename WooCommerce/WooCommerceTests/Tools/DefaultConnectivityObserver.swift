@@ -28,7 +28,7 @@ final class DefaultConnectivityObserverTests: XCTestCase {
         XCTAssertTrue(networkMonitor.didStopMonitoring)
     }
 
-    func test_isConnectivityAvailable_returns_true_when_network_is_satisfied() {
+    func test_currentStatus_returns_correctly_when_network_is_satisfied() {
         // Given
         let network = MockNetwork(status: .satisfied, currentInterface: .wifi)
         let networkMonitor = MockNetworkMonitor(currentNetwork: network)
@@ -37,10 +37,12 @@ final class DefaultConnectivityObserverTests: XCTestCase {
         let observer = DefaultConnectivityObserver(networkMonitor: networkMonitor)
 
         // Then
-        XCTAssertTrue(observer.isConnectivityAvailable)
+        DispatchQueue.main.async {
+            XCTAssertEqual(observer.currentStatus, .reachable(type: .ethernetOrWiFi))
+        }
     }
 
-    func test_isConnectivityAvailable_returns_false_when_network_is_unsatisfied() {
+    func test_currentStatus_returns_correctly_when_network_is_unsatisfied() {
         // Given
         let network = MockNetwork(status: .unsatisfied, currentInterface: .wifi)
         let networkMonitor = MockNetworkMonitor(currentNetwork: network)
@@ -49,7 +51,9 @@ final class DefaultConnectivityObserverTests: XCTestCase {
         let observer = DefaultConnectivityObserver(networkMonitor: networkMonitor)
 
         // Then
-        XCTAssertFalse(observer.isConnectivityAvailable)
+        DispatchQueue.main.async {
+            XCTAssertEqual(observer.currentStatus, .notReachable)
+        }
     }
 
     func test_updateListener_returns_correct_status_in_callback_closure() {
@@ -57,23 +61,18 @@ final class DefaultConnectivityObserverTests: XCTestCase {
         let network = MockNetwork(status: .satisfied, currentInterface: .wifi)
         let networkMonitor = MockNetworkMonitor(currentNetwork: network)
         let networkUpdate = MockNetwork(status: .satisfied, currentInterface: .cellular)
-        let statusExpectation = expectation(description: "Status in callback closure")
 
         // When
         let observer = DefaultConnectivityObserver(networkMonitor: networkMonitor)
         var result: ConnectivityStatus = .unknown
         observer.updateListener { status in
             result = status
-            statusExpectation.fulfill()
         }
         networkMonitor.fakeNetworkUpdate(network: networkUpdate)
 
         // Then
-        waitForExpectations(timeout: 0.3, handler: nil)
-        if case .reachable(let type) = result {
-            XCTAssertEqual(type, .cellular)
-        } else {
-            XCTFail("Incorrect result status in callback closure")
+        DispatchQueue.main.async {
+            XCTAssertEqual(result, .reachable(type: .cellular))
         }
     }
 }

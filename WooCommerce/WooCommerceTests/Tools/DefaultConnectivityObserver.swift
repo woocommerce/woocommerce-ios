@@ -61,19 +61,20 @@ final class DefaultConnectivityObserverTests: XCTestCase {
         let network = MockNetwork(status: .satisfied, currentInterface: .wifi)
         let networkMonitor = MockNetworkMonitor(currentNetwork: network)
         let networkUpdate = MockNetwork(status: .satisfied, currentInterface: .cellular)
+        let statusExpectation = expectation(description: "Status in callback closure")
 
         // When
         let observer = DefaultConnectivityObserver(networkMonitor: networkMonitor)
         var result: ConnectivityStatus = .unknown
         observer.updateListener { status in
             result = status
+            statusExpectation.fulfill()
         }
         networkMonitor.fakeNetworkUpdate(network: networkUpdate)
 
         // Then
-        DispatchQueue.main.async {
-            XCTAssertEqual(result, .reachable(type: .cellular))
-        }
+        waitForExpectations(timeout: 0.3, handler: nil)
+        XCTAssertEqual(result, .reachable(type: .cellular))
     }
 }
 

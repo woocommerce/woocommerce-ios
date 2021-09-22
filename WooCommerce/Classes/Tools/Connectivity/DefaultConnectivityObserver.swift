@@ -34,6 +34,7 @@ final class DefaultConnectivityObserver: ConnectivityObserver {
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.currentStatus = self.connectivityStatus(from: path)
+                listener(self.currentStatus)
             }
         }
     }

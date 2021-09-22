@@ -100,7 +100,7 @@ private extension WooNavigationControllerDelegate {
         viewController.toolbarItems = [spaceItem, offlineItem, spaceItem]
         navigationController.toolbar.barTintColor = .gray
 
-        let connected = connectivityObserver.isConnectivityAvailable
+        let connected = connectivityObserver.currentStatus != .notReachable
         navigationController.setToolbarHidden(connected, animated: false)
     }
 }

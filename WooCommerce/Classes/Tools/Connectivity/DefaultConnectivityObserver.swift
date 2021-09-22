@@ -8,11 +8,10 @@ final class DefaultConnectivityObserver: ConnectivityObserver {
     private let networkMonitor: NetworkMonitoring
     private let observingQueue: DispatchQueue = .global(qos: .background)
 
-    @Published private(set) var isConnectivityAvailable: Bool = false
-    @Published private var connectivityStatus: ConnectivityStatus = .unknown
+    @Published private(set) var currentStatus: ConnectivityStatus = .unknown
 
     var statusPublisher: AnyPublisher<ConnectivityStatus, Never> {
-        $connectivityStatus.eraseToAnyPublisher()
+        $currentStatus.eraseToAnyPublisher()
     }
 
     init(networkMonitor: NetworkMonitoring = NWPathMonitor()) {
@@ -20,10 +19,8 @@ final class DefaultConnectivityObserver: ConnectivityObserver {
         startObserving()
         networkMonitor.networkUpdateHandler = { [weak self] path in
             guard let self = self else { return }
-            let connectivityStatus = self.connectivityStatus(from: path)
             DispatchQueue.main.async {
-                self.isConnectivityAvailable = path.status == .satisfied
-                self.connectivityStatus = connectivityStatus
+                self.currentStatus = self.connectivityStatus(from: path)
             }
         }
     }
@@ -35,11 +32,8 @@ final class DefaultConnectivityObserver: ConnectivityObserver {
     func updateListener(_ listener: @escaping (ConnectivityStatus) -> Void) {
         networkMonitor.networkUpdateHandler = { [weak self] path in
             guard let self = self else { return }
-            let connectivityStatus = self.connectivityStatus(from: path)
             DispatchQueue.main.async {
-                self.isConnectivityAvailable = path.status == .satisfied
-                self.connectivityStatus = connectivityStatus
-                listener(connectivityStatus)
+                self.currentStatus = self.connectivityStatus(from: path)
             }
         }
     }

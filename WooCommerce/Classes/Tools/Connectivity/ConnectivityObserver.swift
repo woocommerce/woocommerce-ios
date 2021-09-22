@@ -4,7 +4,7 @@ import Combine
 ///
 protocol ConnectivityObserver {
     /// Getter for current state of the connectivity.
-    var isConnectivityAvailable: Bool { get }
+    var currentStatus: ConnectivityStatus { get }
 
     /// Publisher for connectivity availability.
     var statusPublisher: AnyPublisher<ConnectivityStatus, Never> { get }

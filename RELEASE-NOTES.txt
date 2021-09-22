@@ -1,5 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+7.7
+-----
+- [*] Show banner on screens that use cached data when device is offline. [https://github.com/woocommerce/woocommerce-ios/pull/5000]
+
+
 7.6
 -----
 - [x] Show an improved error modal if there are problems while selecting a store. [https://github.com/woocommerce/woocommerce-ios/pull/5006]

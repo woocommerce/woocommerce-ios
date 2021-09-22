@@ -2,7 +2,7 @@
 
 7.7
 -----
-
+- [x] Fix: now a default paper size will be selected in Shipping Label print screen. [https://github.com/woocommerce/woocommerce-ios/pull/5035]
 
 7.6
 -----

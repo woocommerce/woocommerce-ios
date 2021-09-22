@@ -54,6 +54,10 @@ final class EditAddressFormViewModel: ObservableObject {
     ///
     @Published private var selectedCountry: Yosemite.Country?
 
+    /// Current selected state.
+    ///
+    @Published private var selectedState: Yosemite.StateOfACountry?
+
     /// Address form fields
     ///
     @Published var fields = FormFields()
@@ -92,7 +96,12 @@ final class EditAddressFormViewModel: ObservableObject {
     /// Creates a view model to be used when selecting a state
     ///
     func createStateViewModel() -> StateSelectorViewModel {
-        StateSelectorViewModel()
+        let selectedStateBinding = Binding(
+            get: { self.selectedState },
+            set: { self.selectedState = $0 }
+        )
+        // TODO: PASS REAL STATES
+        return StateSelectorViewModel(states: [], selected: selectedStateBinding)
     }
 
     /// Update the address remotely and invoke a completion block when finished

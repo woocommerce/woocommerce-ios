@@ -158,6 +158,12 @@ extension MockStorageManager {
         let storedCountries: [StorageCountry] = readOnlyCountries.map { readOnlyCountry in
             let newCountry = viewStorage.insertNewObject(ofType: StorageCountry.self)
             newCountry.update(with: readOnlyCountry)
+            readOnlyCountry.states.forEach { readOnlyState in
+                let newState = viewStorage.insertNewObject(ofType: StorageStateOfACountry.self)
+                newState.update(with: readOnlyState)
+                newCountry.states.insert(newState)
+            }
+
             return newCountry
         }
         return storedCountries

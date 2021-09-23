@@ -69,7 +69,11 @@ struct ShippingLabelSinglePackage: View {
                 .sheet(isPresented: $isShowingPackageSelection, content: {
                     ShippingLabelPackageSelection(viewModel: viewModel.packageListViewModel)
                 })
+            }
+            .background(Color(.systemBackground))
+            .renderedIf(!viewModel.isOriginalPackaging)
 
+            VStack(spacing: 0) {
                 Divider()
 
                 TitleAndTextFieldRow(title: Localization.totalPackageWeight,
@@ -118,15 +122,16 @@ struct ShippingLabelPackageItem_Previews: PreviewProvider {
         let order = ShippingLabelPackageDetailsViewModel.sampleOrder()
         let packageResponse = ShippingLabelPackageDetailsViewModel.samplePackageDetails()
         let viewModel = ShippingLabelSinglePackageViewModel(order: order,
-                                                          orderItems: order.items,
-                                                          packagesResponse: packageResponse,
-                                                          selectedPackageID: "Box 1",
-                                                          totalWeight: "",
-                                                          products: [],
-                                                          productVariations: [],
-                                                          onItemMoveRequest: { _, _ in },
-                                                          onPackageSwitch: { _ in },
-                                                          onPackagesSync: { _ in })
+                                                            orderItems: order.items,
+                                                            packagesResponse: packageResponse,
+                                                            selectedPackageID: "Box 1",
+                                                            totalWeight: "",
+                                                            isOriginalPackaging: false,
+                                                            products: [],
+                                                            productVariations: [],
+                                                            onItemMoveRequest: { _, _ in },
+                                                            onPackageSwitch: { _ in },
+                                                            onPackagesSync: { _ in })
         ShippingLabelSinglePackage(packageNumber: 1,
                                    isCollapsible: true,
                                    safeAreaInsets: .zero,

@@ -31,6 +31,10 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
     ///
     @Published private(set) var isValidTotalWeight: Bool = false
 
+    /// Whether this package is original packaging
+    ///
+    @Published private(set) var isOriginalPackaging: Bool
+
     /// The title of the selected package, if any.
     ///
     var selectedPackageName: String {
@@ -61,7 +65,6 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
     private let onItemMoveRequest: ItemMoveRequestHandler
     private let onPackageSwitch: PackageSwitchHandler
     private let onPackagesSync: PackagesSyncHandler
-    private let isOriginalPackaging: Bool
 
     /// The packages  response fetched from API
     ///

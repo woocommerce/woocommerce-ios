@@ -35,6 +35,10 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
     ///
     @Published private(set) var isOriginalPackaging: Bool
 
+    /// Description of dimensions
+    ///
+    @Published private(set) var originalPackageDimensions: String = ""
+
     /// The title of the selected package, if any.
     ///
     var selectedPackageName: String {
@@ -107,6 +111,9 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
         packageListViewModel.didSelectPackage(selectedPackageID)
         configureItemRows(products: products, productVariations: productVariations)
         configureTotalWeight(initialTotalWeight: totalWeight, products: products, productVariations: productVariations)
+        if isOriginalPackaging, let item = orderItems.first {
+            configureOriginalPackageDimensions(for: item, products: products, productVariations: productVariations)
+        }
     }
 
     func requestMovingItem(id: Int64, itemName: String) {
@@ -243,12 +250,43 @@ private extension ShippingLabelSinglePackageViewModel {
 
     /// Validate that total weight is a valid floating point number.
     ///
-    private func validateTotalWeight(_ totalWeight: String) -> Bool {
+    func validateTotalWeight(_ totalWeight: String) -> Bool {
         guard totalWeight.isNotEmpty,
               let value = NumberFormatter.double(from: totalWeight) else {
             return false
         }
         return value > 0
+    }
+
+    /// Configure dimensions L x W x H <unit> for the original package.
+    ///
+    func configureOriginalPackageDimensions(for item: OrderItem, products: [Product], productVariations: [ProductVariation]) {
+        let isVariation = item.variationID > 0
+        var dimensions: ProductDimensions?
+
+        if isVariation,
+           let variation = productVariations.first(where: { $0.productVariationID == item.variationID }) {
+            dimensions = variation.dimensions
+        } else if let product = products.first(where: { $0.productID == item.productID }) {
+            dimensions = product.dimensions
+        }
+
+        let unit = packagesResponse?.storeOptions.dimensionUnit ?? ""
+        var length = "0"
+        var width = "0"
+        var height = "0"
+        if let dimensions = dimensions {
+            if dimensions.length.isNotEmpty {
+                length = dimensions.length
+            }
+            if dimensions.width.isNotEmpty {
+                width = dimensions.width
+            }
+            if dimensions.height.isNotEmpty {
+                height = dimensions.height
+            }
+        }
+        originalPackageDimensions = String(format: "%@ x %@ x %@ %@", length, width, height, unit)
     }
 }
 

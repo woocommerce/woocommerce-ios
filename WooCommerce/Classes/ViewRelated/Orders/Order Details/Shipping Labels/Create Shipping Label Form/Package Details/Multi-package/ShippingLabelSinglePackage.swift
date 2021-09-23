@@ -86,8 +86,8 @@ struct ShippingLabelSinglePackage: View {
                 Divider()
                     .padding(.horizontal, insets: safeAreaInsets)
                     .padding(.leading, Constants.horizontalPadding)
-                TitleAndSubtitleRow(title: Localization.itemDimension,
-                                    subtitle: "12 in x 12 in x 12 in") // TODO: display real data
+                TitleAndSubtitleRow(title: Localization.itemDimensions,
+                                    subtitle: viewModel.originalPackageDimensions)
                     .padding(.horizontal, insets: safeAreaInsets)
             }
             .background(Color(.systemBackground))
@@ -138,9 +138,9 @@ private extension ShippingLabelSinglePackage {
         static let individuallyShipped = NSLocalizedString("Individually shipped item",
                                                            comment: "Description for detail of package shipped in original " +
                                                            "packaging on Package Details screen in Shipping Labels flow.")
-        static let itemDimension = NSLocalizedString("Item dimension",
-                                                     comment: "Row title for dimension of package shipped in original " +
-                                                     "packaging Package Details screen in Shipping Labels flow.")
+        static let itemDimensions = NSLocalizedString("Item dimensions",
+                                                      comment: "Row title for dimensions of package shipped in original " +
+                                                      "packaging Package Details screen in Shipping Labels flow.")
     }
 
     enum Constants {

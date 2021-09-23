@@ -61,6 +61,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
     private let onItemMoveRequest: ItemMoveRequestHandler
     private let onPackageSwitch: PackageSwitchHandler
     private let onPackagesSync: PackagesSyncHandler
+    private let isOriginalPackaging: Bool
 
     /// The packages  response fetched from API
     ///
@@ -79,6 +80,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
          packagesResponse: ShippingLabelPackagesResponse?,
          selectedPackageID: String,
          totalWeight: String,
+         isOriginalPackaging: Bool,
          products: [Product],
          productVariations: [ProductVariation],
          onItemMoveRequest: @escaping ItemMoveRequestHandler,
@@ -92,6 +94,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
         self.currencyFormatter = formatter
         self.weightUnit = weightUnit
         self.selectedPackageID = selectedPackageID
+        self.isOriginalPackaging = isOriginalPackaging
         self.onItemMoveRequest = onItemMoveRequest
         self.onPackageSwitch = onPackageSwitch
         self.onPackagesSync = onPackagesSync

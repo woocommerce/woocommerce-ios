@@ -29,16 +29,6 @@ final class DefaultConnectivityObserver: ConnectivityObserver {
         networkMonitor.start(queue: observingQueue)
     }
 
-    func updateListener(_ listener: @escaping (ConnectivityStatus) -> Void) {
-        networkMonitor.networkUpdateHandler = { [weak self] path in
-            guard let self = self else { return }
-            DispatchQueue.main.async {
-                self.currentStatus = self.connectivityStatus(from: path)
-                listener(self.currentStatus)
-            }
-        }
-    }
-
     func stopObserving() {
         networkMonitor.cancel()
     }
@@ -70,8 +60,6 @@ final class DefaultConnectivityObserver: ConnectivityObserver {
 
 /// Proxy protocol for mocking `NWPathMonitor`.
 protocol NetworkMonitoring: AnyObject {
-    var currentNetwork: NetworkMonitorable { get }
-
     /// A handler that receives network updates.
     var networkUpdateHandler: ((NetworkMonitorable) -> Void)? { get set }
 
@@ -93,10 +81,6 @@ protocol NetworkMonitorable {
 
 extension NWPath: NetworkMonitorable {}
 extension NWPathMonitor: NetworkMonitoring {
-    var currentNetwork: NetworkMonitorable {
-        currentPath
-    }
-
     var networkUpdateHandler: ((NetworkMonitorable) -> Void)? {
         get {
             let closure: ((NetworkMonitorable) -> Void)? = {

@@ -12,9 +12,6 @@ protocol ConnectivityObserver {
     /// Starts the observer.
     func startObserving()
 
-    /// Updates the listener for the connectivity observer.
-    func updateListener(_ listener: @escaping (ConnectivityStatus) -> Void)
-
     /// Stops the observer.
     func stopObserving()
 }

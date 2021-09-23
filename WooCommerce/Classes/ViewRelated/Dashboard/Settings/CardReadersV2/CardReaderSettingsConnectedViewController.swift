@@ -21,9 +21,6 @@ final class CardReaderSettingsConnectedViewController: UIViewController, CardRea
     /// Last known update view
     private var readerUpdateProgress: Float? = nil
 
-    /// Update view controller
-    private var updateViewController: UpdateViewController?
-
     /// Card Present Payments alerts
     private lazy var paymentAlerts: OrderDetailsPaymentAlerts = {
         OrderDetailsPaymentAlerts(presentingController: self)
@@ -344,18 +341,5 @@ private extension CardReaderSettingsConnectedViewController {
             comment: "Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader"
         )
 
-        static let updateHeadline = NSLocalizedString(
-            "Updating software",
-            comment: "Headline on the full screen software update modal"
-        )
-
-        static let updateFootnote = NSLocalizedString(
-            "Your reader will automatically restart and reconnect after the update is complete",
-            comment: "Footnote on the full screen software update modal"
-        )
-
-        static let updateSuccess = NSLocalizedString(
-            "Reader software updated",
-            comment: "A notice presented after a successful update of the card reader software")
     }
 }

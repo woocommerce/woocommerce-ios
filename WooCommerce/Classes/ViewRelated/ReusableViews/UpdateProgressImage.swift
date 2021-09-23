@@ -21,6 +21,9 @@ extension UIImage {
     }
 
     private static func softwareUpdateProgressFill(progress: CGFloat) -> UIImage? {
+        assert(progress >= 0 && progress <= 1)
+        let progress = progress.clamped(to: 0...1)
+
         let rect = CGRect(x: 0, y: 0, width: Constants.size, height: Constants.size)
         let clippingRect = CGRect(x: 0, y: (1 - progress) * Constants.size, width: Constants.size, height: Constants.size)
         UIGraphicsBeginImageContext(rect.size)
@@ -51,7 +54,7 @@ extension UIImage {
 private enum Constants {
     static let size: CGFloat = 91
     static let borderWidth: CGFloat = 2
-    static let progressColor = UIColor(red: 0.498, green: 0.329, blue: 0.702, alpha: 1)
+    static let progressColor: UIColor = .softwareUpdateProgressFill
 }
 
 struct UpdateProgressImage_Previews: PreviewProvider {

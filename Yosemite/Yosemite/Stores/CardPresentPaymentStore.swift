@@ -59,6 +59,8 @@ public final class CardPresentPaymentStore: Store {
             cancelPayment(onCompletion: completion)
         case .checkForCardReaderUpdate(onCompletion: let completion):
             checkForCardReaderUpdate(onCompletion: completion)
+        case .observeCardReaderUpdateState(onCompletion: let completion):
+            observeCardReaderUpdateState(onCompletion: completion)
         case .startCardReaderUpdate(onProgress: let progress, onCompletion: let completion):
             startCardReaderUpdate(onProgress: progress, onCompletion: completion)
         case .reset:
@@ -214,6 +216,10 @@ private extension CardPresentPaymentStore {
 //            // when the publisher completes, cancel will be called for us, and a Future
 //            // completes after fulfilling its promise.
 //            .store(in: &cancellables)
+    }
+
+    func observeCardReaderUpdateState(onCompletion: (AnyPublisher<CardReaderSoftwareUpdateState, Never>) -> Void) {
+        onCompletion(cardReaderService.softwareUpdateEvents)
     }
 
     func startCardReaderUpdate(onProgress: @escaping (Float) -> Void,

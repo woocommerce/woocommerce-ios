@@ -1,6 +1,6 @@
 import XCTest
 
-let navBackButton = XCUIApplication().navigationBars.element(boundBy: 0).buttons.element(boundBy: 0)
+public let navBackButton = XCUIApplication().navigationBars.element(boundBy: 0).buttons.element(boundBy: 0)
 
 extension XCUIElement {
     /**
@@ -106,7 +106,7 @@ extension XCTestCase {
 
 extension XCUIElement {
 
-    func scroll(byDeltaX deltaX: CGFloat, deltaY: CGFloat) {
+    public func scroll(byDeltaX deltaX: CGFloat, deltaY: CGFloat) {
 
         let startCoordinate = self.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
         let destination = startCoordinate.withOffset(CGVector(dx: deltaX, dy: deltaY * -1))

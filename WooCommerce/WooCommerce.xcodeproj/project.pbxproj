@@ -530,6 +530,7 @@
 		3FF314E126FC74450012E68E /* UITestsFoundation.h in Headers */ = {isa = PBXBuildFile; fileRef = 3FF314E026FC74450012E68E /* UITestsFoundation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3FF314E726FC74560012E68E /* ScreenObject in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF314E626FC74560012E68E /* ScreenObject */; };
 		3FF314E926FC74600012E68E /* XCUITestHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF314E826FC74600012E68E /* XCUITestHelpers */; };
+		3FF314EA26FC751B0012E68E /* XCTest+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997173223DBCF2800592D8E /* XCTest+Extensions.swift */; };
 		3FF314F126FC785C0012E68E /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FF314EF26FC784A0012E68E /* XCTest.framework */; platformFilter = ios; };
 		4506BD712461965300FE6377 /* ProductVisibilityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4506BD6F2461965300FE6377 /* ProductVisibilityViewController.swift */; };
 		4506BD722461965300FE6377 /* ProductVisibilityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4506BD702461965300FE6377 /* ProductVisibilityViewController.xib */; };
@@ -997,7 +998,6 @@
 		CCD2F51A26D67BB50010E679 /* ShippingLabelServicePackageList.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD2F51926D67BB50010E679 /* ShippingLabelServicePackageList.swift */; };
 		CCD2F51C26D697860010E679 /* ShippingLabelServicePackageListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD2F51B26D697860010E679 /* ShippingLabelServicePackageListViewModel.swift */; };
 		CCDC49CD23FFFFF4003166BA /* LoginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDC49CC23FFFFF4003166BA /* LoginTests.swift */; };
-		CCDC49D724000095003166BA /* XCTest+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997173223DBCF2800592D8E /* XCTest+Extensions.swift */; };
 		CCDC49DA2400011F003166BA /* MyStoreScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997172D23DBCDE900592D8E /* MyStoreScreen.swift */; };
 		CCDC49DB2400011F003166BA /* OrdersScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997173423DBEB1900592D8E /* OrdersScreen.swift */; };
 		CCDC49DC2400011F003166BA /* SingleOrderScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997173623DBF02400592D8E /* SingleOrderScreen.swift */; };
@@ -1015,7 +1015,6 @@
 		CCDC49EA2400011F003166BA /* PeriodStatsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997174823DC0A7800592D8E /* PeriodStatsTable.swift */; };
 		CCDC49EB2400011F003166BA /* TabNavComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997172F23DBCEB200592D8E /* TabNavComponent.swift */; };
 		CCDC49ED24000533003166BA /* TestCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDC49EC24000533003166BA /* TestCredentials.swift */; };
-		CCDC49F324007BD3003166BA /* XCTest+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997173223DBCF2800592D8E /* XCTest+Extensions.swift */; };
 		CCE4CD172667EBB100E09FD4 /* ShippingLabelPaymentMethodsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE4CD162667EBB100E09FD4 /* ShippingLabelPaymentMethodsViewModelTests.swift */; };
 		CCE4CD282669324300E09FD4 /* ShippingLabelPaymentMethodsTopBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE4CD272669324300E09FD4 /* ShippingLabelPaymentMethodsTopBanner.swift */; };
 		CCFC00B523E9BD1500157A78 /* ScreenshotCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCFC00B423E9BD1500157A78 /* ScreenshotCredentials.swift */; };
@@ -1396,6 +1395,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		3FF314EB26FC76C60012E68E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B56DB3BE2049BFAA00D4AA8E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3FF314DD26FC74450012E68E;
+			remoteInfo = UITestsFoundation;
+		};
+		3FF314ED26FC76CB0012E68E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B56DB3BE2049BFAA00D4AA8E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3FF314DD26FC74450012E68E;
+			remoteInfo = UITestsFoundation;
+		};
 		B55D4C1420B6131400D7A50F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B56DB3BE2049BFAA00D4AA8E /* Project object */;
@@ -4083,6 +4096,7 @@
 			isa = PBXGroup;
 			children = (
 				3FF314E026FC74450012E68E /* UITestsFoundation.h */,
+				F997173223DBCF2800592D8E /* XCTest+Extensions.swift */,
 			);
 			path = UITestsFoundation;
 			sourceTree = "<group>";
@@ -5497,7 +5511,6 @@
 		CCDC49D8240000A5003166BA /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				F997173223DBCF2800592D8E /* XCTest+Extensions.swift */,
 				CCDC49EC24000533003166BA /* TestCredentials.swift */,
 			);
 			path = Utils;
@@ -6716,6 +6729,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				3FF314EC26FC76C60012E68E /* PBXTargetDependency */,
 				CCDC49D023FFFFF4003166BA /* PBXTargetDependency */,
 			);
 			name = WooCommerceUITests;
@@ -6738,6 +6752,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				3FF314EE26FC76CB0012E68E /* PBXTargetDependency */,
 				F997170823DBB97500592D8E /* PBXTargetDependency */,
 			);
 			name = WooCommerceScreenshots;
@@ -7210,6 +7225,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3FF314EA26FC751B0012E68E /* XCTest+Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8339,7 +8355,6 @@
 				CCDC49EA2400011F003166BA /* PeriodStatsTable.swift in Sources */,
 				CCDC49EB2400011F003166BA /* TabNavComponent.swift in Sources */,
 				CCDC49ED24000533003166BA /* TestCredentials.swift in Sources */,
-				CCDC49D724000095003166BA /* XCTest+Extensions.swift in Sources */,
 				CCDC49CD23FFFFF4003166BA /* LoginTests.swift in Sources */,
 				D8F3A973258862BE0085859B /* PrologueScreen.swift in Sources */,
 			);
@@ -8355,7 +8370,6 @@
 				F93E8E5524087FDA0057FF21 /* SettingsScreen.swift in Sources */,
 				24C5ACC425A530D6008FD769 /* PrologueScreen.swift in Sources */,
 				F997172323DBCD6100592D8E /* LoginPasswordScreen.swift in Sources */,
-				CCDC49F324007BD3003166BA /* XCTest+Extensions.swift in Sources */,
 				F997172C23DBCD8F00592D8E /* BaseScreen.swift in Sources */,
 				F997173F23DBFFEF00592D8E /* ReviewsScreen.swift in Sources */,
 				F997172223DBCD6100592D8E /* LoginUsernamePasswordScreen.swift in Sources */,
@@ -8382,6 +8396,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		3FF314EC26FC76C60012E68E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3FF314DD26FC74450012E68E /* UITestsFoundation */;
+			targetProxy = 3FF314EB26FC76C60012E68E /* PBXContainerItemProxy */;
+		};
+		3FF314EE26FC76CB0012E68E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3FF314DD26FC74450012E68E /* UITestsFoundation */;
+			targetProxy = 3FF314ED26FC76CB0012E68E /* PBXContainerItemProxy */;
+		};
 		B55D4C1520B6131400D7A50F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = B55D4C0F20B612F300D7A50F /* GenerateCredentials */;

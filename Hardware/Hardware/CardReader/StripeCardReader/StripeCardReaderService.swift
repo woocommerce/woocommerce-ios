@@ -331,43 +331,8 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
-    public func installUpdate() -> AnyPublisher<Float, Error> {
+    public func installUpdate() -> Void {
         Terminal.shared.installAvailableUpdate()
-
-        // We create a publisher that emits a false value while the state is not completed and
-        // a true value when it changes to completed
-        let completionPublisher = softwareUpdateEvents.map { state -> Bool in
-            guard case .completed = state else {
-                return false
-            }
-            return true
-        }
-        .removeDuplicates()
-
-
-        // Then we have a second publisher that emits only when there is a
-        // new .installing value, and publishes the current progress
-        let progressPublisher = softwareUpdateEvents
-            .compactMap({ state -> Float? in
-                guard case .installing(progress: let progress) = state else {
-                    return nil
-                }
-                return progress
-            })
-            .setFailureType(to: Error.self)
-
-        // As long as the completion publisher is not finished, we continue publishing
-        // the progress values, but when the completion publisher finishes this will finish
-        // as well
-        return completionPublisher
-            .flatMap { completed -> AnyPublisher<Float, Error> in
-                if completed {
-                    return Empty().eraseToAnyPublisher()
-                } else {
-                    return progressPublisher.eraseToAnyPublisher()
-                }
-            }
-            .eraseToAnyPublisher()
     }
 }
 

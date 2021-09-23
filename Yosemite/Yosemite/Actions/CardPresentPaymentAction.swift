@@ -41,8 +41,7 @@ public enum CardPresentPaymentAction: Action {
     case observeCardReaderUpdateState(onCompletion: (AnyPublisher<CardReaderSoftwareUpdateState, Never>) -> Void)
 
     /// Update card reader firmware.
-    case startCardReaderUpdate(onProgress: (Float) -> Void,
-                        onCompletion: (Result<Void, Error>) -> Void)
+    case startCardReaderUpdate
 
     /// Restarts the card present payments system
     /// This might imply, but not be limited to:

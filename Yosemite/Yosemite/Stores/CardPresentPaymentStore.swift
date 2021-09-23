@@ -59,8 +59,8 @@ public final class CardPresentPaymentStore: Store {
             cancelPayment(onCompletion: completion)
         case .observeCardReaderUpdateState(onCompletion: let completion):
             observeCardReaderUpdateState(onCompletion: completion)
-        case .startCardReaderUpdate(onProgress: let progress, onCompletion: let completion):
-            startCardReaderUpdate(onProgress: progress, onCompletion: completion)
+        case .startCardReaderUpdate:
+            startCardReaderUpdate()
         case .reset:
             reset()
         case .checkCardReaderConnected(onCompletion: let completion):
@@ -200,20 +200,8 @@ private extension CardPresentPaymentStore {
         onCompletion(cardReaderService.softwareUpdateEvents)
     }
 
-    func startCardReaderUpdate(onProgress: @escaping (Float) -> Void,
-                        onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func startCardReaderUpdate() {
         cardReaderService.installUpdate()
-            .subscribe(Subscribers.Sink(
-                receiveCompletion: { value in
-                    switch value {
-                    case .failure(let error):
-                        onCompletion(.failure(error))
-                    case .finished:
-                        onCompletion(.success(()))
-                    }
-                },
-                receiveValue: onProgress
-            ))
     }
 
     func reset() {

@@ -48,31 +48,35 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
         }
         ServiceLocator.stores.dispatch(action)
 
-        ServiceLocator.cardReaderService.softwareUpdateEvents
-            .sink { [weak self] state in
-                guard let self = self else { return }
+        let softwareUpdateAction = CardPresentPaymentAction.observeCardReaderUpdateState { softwareUpdateEvents in
+            softwareUpdateEvents
+                .sink { [weak self] state in
+                    guard let self = self else { return }
 
-                switch state {
-                case .started(cancelable: let cancelable):
-                    self.softwareUpdateCancelable = cancelable
-                    self.readerUpdateProgress = 0
-                case .installing(progress: let progress):
-                    self.readerUpdateProgress = progress
-                case .completed:
-                    self.readerUpdateProgress = 1
-                    // If we were installing a software update, introduce a small delay so the user can
-                    // actually see a success message showing the installation was complete
-                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) { [weak self] in
-                        self?.completeCardReaderUpdate(success: true)
+                    switch state {
+                    case .started(cancelable: let cancelable):
+                        self.softwareUpdateCancelable = cancelable
+                        self.readerUpdateProgress = 0
+                    case .installing(progress: let progress):
+                        self.readerUpdateProgress = progress
+                    case .completed:
+                        self.readerUpdateProgress = 1
+                        self.softwareUpdateCancelable = nil
+                        // If we were installing a software update, introduce a small delay so the user can
+                        // actually see a success message showing the installation was complete
+                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) { [weak self] in
+                            self?.completeCardReaderUpdate(success: true)
+                        }
+                    case .available:
+                        self.readerUpdateAvailable = true
+                    case .none:
+                        self.readerUpdateAvailable = false
                     }
-                case .available:
-                    self.readerUpdateAvailable = true
-                case .none:
-                    self.readerUpdateAvailable = false
+                    self.didUpdate?()
                 }
-                self.didUpdate?()
-            }
-            .store(in: &subscriptions)
+                .store(in: &self.subscriptions)
+        }
+        ServiceLocator.stores.dispatch(softwareUpdateAction)
     }
 
     private func updateProperties() {
@@ -108,12 +112,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     /// Allows the view controller to kick off a card reader update
     ///
     func startCardReaderUpdate() {
-        let action = CardPresentPaymentAction.startCardReaderUpdate(
-            onProgress: { _ in },
-            onCompletion: { [weak self] result in
-                self?.completeCardReaderUpdate(success: result.isSuccess)
-            }
-        )
+        let action = CardPresentPaymentAction.startCardReaderUpdate
         ServiceLocator.stores.dispatch(action)
     }
 

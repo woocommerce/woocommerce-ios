@@ -8,22 +8,20 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
     private var connectedReaders: [CardReader]
     private var discoveredReaders: [CardReader]
     private var failDiscovery: Bool
-    private var readerUpdateAvailable: Bool
     private var failUpdate: Bool
     private var failConnection: Bool
+    private var softwareUpdateSubject: CurrentValueSubject<CardReaderSoftwareUpdateState, Never> = .init(.none)
 
     init(connectedReaders: [CardReader],
          discoveredReaders: [CardReader],
          sessionManager: SessionManager,
          failDiscovery: Bool = false,
-         readerUpdateAvailable: Bool = false,
          failUpdate: Bool = false,
          failConnection: Bool = false
     ) {
         self.connectedReaders = connectedReaders
         self.discoveredReaders = discoveredReaders
         self.failDiscovery = failDiscovery
-        self.readerUpdateAvailable = readerUpdateAvailable
         self.failUpdate = failUpdate
         self.failConnection = failConnection
         super.init(sessionManager: sessionManager)
@@ -60,21 +58,24 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
             onCompletion(Result.success(()))
         case .observeCardReaderUpdateState(onCompletion: let completion):
             completion(softwareUpdateEvents)
-        case .startCardReaderUpdate(let onProgress, let onCompletion):
-            onProgress(0.5)
+        case .startCardReaderUpdate:
+            softwareUpdateSubject.send(.started(cancelable: MockFallibleCancelable(onCancel: { [softwareUpdateSubject] in
+                softwareUpdateSubject.send(.available)
+            })))
+            softwareUpdateSubject.send(.installing(progress: 0.5))
             guard !failUpdate else {
-                onCompletion(Result.failure(MockErrors.readerUpdateFailure))
+                // TODO: send error when we can handle failure state
+//                onCompletion(Result.failure(MockErrors.readerUpdateFailure))
                 return
             }
-            onCompletion(Result.success(()))
+            softwareUpdateSubject.send(.completed)
         default:
             fatalError("Not available")
         }
     }
 
     var softwareUpdateEvents: AnyPublisher<CardReaderSoftwareUpdateState, Never> {
-        Just(readerUpdateAvailable ? .available : .none)
-            .eraseToAnyPublisher()
+        softwareUpdateSubject.eraseToAnyPublisher()
     }
 }
 

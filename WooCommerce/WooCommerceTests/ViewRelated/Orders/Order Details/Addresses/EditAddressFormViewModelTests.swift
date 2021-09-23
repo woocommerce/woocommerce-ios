@@ -221,6 +221,22 @@ final class EditAddressFormViewModelTests: XCTestCase {
         assertEqual(update.order.shippingAddress?.firstName, "Tester")
         assertEqual(update.fields, [.shippingAddress])
     }
+
+    func test_selecting_state_updates_state_field() {
+        // Given
+        let newState = StateOfACountry(code: "CA", name: "California")
+
+        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), storageManager: testingStorage)
+        viewModel.onLoadTrigger.send()
+
+        // When
+        let stateViewModel = viewModel.createStateViewModel()
+        let viewController = ListSelectorViewController(command: stateViewModel.command, onDismiss: { _ in }) // Needed because of legacy UIKit ways
+        stateViewModel.command.handleSelectedChange(selected: newState, viewController: viewController)
+
+        // Then
+        XCTAssertEqual(viewModel.fields.state, newState.name)
+    }
 }
 
 private extension EditAddressFormViewModelTests {

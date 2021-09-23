@@ -336,6 +336,7 @@
 		02DFECE725EE338F0070F212 /* ShippingLabelCreationInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DFECE625EE338F0070F212 /* ShippingLabelCreationInfoViewController.swift */; };
 		02E262C9238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E262C8238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift */; };
 		02E493EF245C1087000AEA9E /* ProductFormBottomSheetListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E493EE245C1087000AEA9E /* ProductFormBottomSheetListSelectorCommandTests.swift */; };
+		02E4AF7126FC4F16002AD9F4 /* MockProductReviewFromNoteParcel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4AF7026FC4F16002AD9F4 /* MockProductReviewFromNoteParcel.swift */; };
 		02E4FD7A230688BA0049610C /* OrderStatsV4Interval+Chart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4FD79230688BA0049610C /* OrderStatsV4Interval+Chart.swift */; };
 		02E4FD7C2306A04C0049610C /* StatsTimeRangeBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4FD7B2306A04C0049610C /* StatsTimeRangeBarView.swift */; };
 		02E4FD7E2306A8180049610C /* StatsTimeRangeBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4FD7D2306A8180049610C /* StatsTimeRangeBarViewModel.swift */; };
@@ -1769,6 +1770,7 @@
 		02DFECE625EE338F0070F212 /* ShippingLabelCreationInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCreationInfoViewController.swift; sourceTree = "<group>"; };
 		02E262C8238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockStatusListSelectorCommand.swift; sourceTree = "<group>"; };
 		02E493EE245C1087000AEA9E /* ProductFormBottomSheetListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormBottomSheetListSelectorCommandTests.swift; sourceTree = "<group>"; };
+		02E4AF7026FC4F16002AD9F4 /* MockProductReviewFromNoteParcel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductReviewFromNoteParcel.swift; sourceTree = "<group>"; };
 		02E4FD79230688BA0049610C /* OrderStatsV4Interval+Chart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Interval+Chart.swift"; sourceTree = "<group>"; };
 		02E4FD7B2306A04C0049610C /* StatsTimeRangeBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTimeRangeBarView.swift; sourceTree = "<group>"; };
 		02E4FD7D2306A8180049610C /* StatsTimeRangeBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTimeRangeBarViewModel.swift; sourceTree = "<group>"; };
@@ -4727,6 +4729,7 @@
 				311F827526CD8AB100DF5BAD /* MockCardReaderSettingsAlerts.swift */,
 				DE4B3B2D269455D400EEF2D8 /* MockShipmentActionStoresManager.swift */,
 				FE3E427626A8545B00C596CE /* MockRoleEligibilityUseCase.swift */,
+				02E4AF7026FC4F16002AD9F4 /* MockProductReviewFromNoteParcel.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -8213,6 +8216,7 @@
 				6856D49DB7DCF4D87745C0B1 /* MockPushNotificationsManager.swift in Sources */,
 				4569D3C925DC065B00CDC3E2 /* SiteAddressTests.swift in Sources */,
 				CC4D1E7925EE415D00B6E4E7 /* RenameAttributesViewModelTests.swift in Sources */,
+				02E4AF7126FC4F16002AD9F4 /* MockProductReviewFromNoteParcel.swift in Sources */,
 				57F42E40253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

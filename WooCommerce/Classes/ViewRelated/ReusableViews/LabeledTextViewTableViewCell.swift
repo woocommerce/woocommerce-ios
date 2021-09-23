@@ -34,6 +34,7 @@ final class LabeledTextViewTableViewCell: UITableViewCell {
         productTextField.onTextDidBeginEditing = viewModel.onTextDidBeginEditing
         productTextField.keyboardType = viewModel.keyboardType
         configureProductStatusLabel(productStatus: viewModel.productStatus)
+        applyStyle(style: viewModel.style)
     }
 }
 

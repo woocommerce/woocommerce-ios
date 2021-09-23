@@ -21,9 +21,9 @@ final class LoginEpilogueScreen: BaseScreen {
         super.init(element: continueButton)
     }
 
-    func continueWithSelectedSite() -> MyStoreScreen {
+    func continueWithSelectedSite() throws -> MyStoreScreen {
         continueButton.tap()
-        return MyStoreScreen()
+        return try MyStoreScreen()
     }
 
     func verifyEpilogueDisplays(displayName expectedDisplayName: String, siteUrl expectedSiteUrl: String) -> LoginEpilogueScreen {

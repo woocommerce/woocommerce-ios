@@ -21,9 +21,9 @@ final class SettingsScreen: BaseScreen {
     }
 
     @discardableResult
-    func goBackToMyStore() -> MyStoreScreen {
+    func goBackToMyStore() throws -> MyStoreScreen {
         navBackButton.tap()
-        return MyStoreScreen()
+        return try MyStoreScreen()
     }
 
     @discardableResult

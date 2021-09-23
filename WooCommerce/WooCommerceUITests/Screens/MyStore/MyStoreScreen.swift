@@ -1,39 +1,36 @@
 import UITestsFoundation
+import ScreenObject
 import XCTest
 
-final class MyStoreScreen: BaseScreen {
-
-    struct ElementStringIDs {
-        static let topBannerCloseButton = "top-banner-view-dismiss-button"
-        static let settingsButton = "dashboard-settings-button"
-    }
+final class MyStoreScreen: ScreenObject {
 
     let tabBar = TabNavComponent()
     let periodStatsTable = PeriodStatsTable()
-    private let settingsButton: XCUIElement
-    private let topBannerCloseButton: XCUIElement
 
-    static var isVisible: Bool {
-        let settingsButton = XCUIApplication().buttons[ElementStringIDs.settingsButton]
-        return settingsButton.exists && settingsButton.isHittable
+    private let settingsButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["dashboard-settings-button"]
     }
 
-    init() {
-        settingsButton = XCUIApplication().buttons[ElementStringIDs.settingsButton]
-        topBannerCloseButton = XCUIApplication().buttons[ElementStringIDs.topBannerCloseButton]
+    private var settingsButton: XCUIElement { settingsButtonGetter(app) }
 
-        super.init(element: settingsButton)
+    static var isVisible: Bool {
+        guard let screen = try? MyStoreScreen() else { return false }
+        return screen.settingsButton.isHittable
+    }
 
-        XCTAssert(settingsButton.waitForExistence(timeout: 3))
+    init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+            expectedElementGetters: [settingsButtonGetter],
+            app: app
+        )
     }
 
     @discardableResult
     func dismissTopBannerIfNeeded() -> MyStoreScreen {
+        let topBannerCloseButton = app.buttons["top-banner-view-dismiss-button"]
+        guard topBannerCloseButton.waitForExistence(timeout: 3) else { return self }
 
-        if topBannerCloseButton.waitForExistence(timeout: 3) {
-            topBannerCloseButton.tap()
-        }
-
+        topBannerCloseButton.tap()
         return self
     }
 

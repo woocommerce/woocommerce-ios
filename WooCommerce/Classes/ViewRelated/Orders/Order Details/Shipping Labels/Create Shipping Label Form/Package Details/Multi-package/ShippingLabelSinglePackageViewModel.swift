@@ -207,7 +207,7 @@ private extension ShippingLabelSinglePackageViewModel {
                     let subtitle = Localization.subtitle(weight: weight.description,
                                                          weightUnit: unit,
                                                          attributes: attributes)
-                    itemsToFulfill.append(ItemToFulfillRow(id: item.itemID, title: item.name, subtitle: subtitle))
+                    itemsToFulfill.append(ItemToFulfillRow(itemID: item.itemID, title: item.name, subtitle: subtitle))
                 }
             }
         }

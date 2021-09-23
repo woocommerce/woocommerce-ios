@@ -39,7 +39,7 @@ struct ShippingLabelSinglePackage: View {
                         HStack {
                             Spacer()
                             Button(action: {
-                                viewModel.requestMovingItem(id: productItemRow.id, itemName: productItemRow.title)
+                                viewModel.requestMovingItem(id: productItemRow.itemID, itemName: productItemRow.title)
                                 shouldShowMoveItemActionSheet = true
                             }, label: {
                                 Text(Localization.moveButton)

@@ -27,7 +27,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_creating_with_address_prefills_fields_with_correct_data() {
         // Given
         let address = sampleAddress()
-        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address, storageManager: testingStorage)
+        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: address), storageManager: testingStorage)
 
         // When
         viewModel.onLoadTrigger.send()
@@ -54,7 +54,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_updating_fields_enables_done_button() {
         // Given
         let address = sampleAddress()
-        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address, storageManager: testingStorage)
+        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: address), storageManager: testingStorage)
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
 
         // When
@@ -67,8 +67,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
 
     func test_updating_fields_back_to_original_values_disables_done_button() {
         // Given
-        let address = sampleAddress()
-        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address, storageManager: testingStorage)
+        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), storageManager: testingStorage)
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
 
         // When
@@ -84,7 +83,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
 
     func test_creating_without_address_disables_done_button() {
         // Given
-        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: nil, storageManager: testingStorage)
+        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: nil), storageManager: testingStorage)
 
         // When
         viewModel.onLoadTrigger.send()
@@ -96,7 +95,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_creating_with_address_with_empty_nullable_fields_disables_done_button() {
         // Given
         let address = sampleAddressWithEmptyNullableFields()
-        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address, storageManager: testingStorage)
+        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: address), storageManager: testingStorage)
 
         // When
         viewModel.onLoadTrigger.send()
@@ -107,8 +106,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
 
     func test_loading_indicator_gets_enabled_during_network_request() {
         // Given
-        let address = sampleAddress()
-        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address, storageManager: testingStorage)
+        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), storageManager: testingStorage)
 
         // When
         viewModel.onLoadTrigger.send()
@@ -120,8 +118,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
 
     func test_loading_indicator_gets_disabled_after_the_network_operation_completes() {
         // Given
-        let address = sampleAddress()
-        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address, storageManager: testingStorage)
+        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), storageManager: testingStorage)
 
         // When
         viewModel.onLoadTrigger.send()
@@ -138,7 +135,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_starting_view_model_without_stored_countries_fetches_them_remotely() {
         // Given
         testingStorage.reset()
-        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: sampleAddress(), storageManager: testingStorage, stores: testingStores)
+        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), storageManager: testingStorage, stores: testingStores)
 
         // When
         let countriesFetched: Bool = waitFor { promise in
@@ -166,7 +163,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
             }
         }
 
-        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: sampleAddress(), storageManager: testingStorage, stores: testingStores)
+        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), storageManager: testingStorage, stores: testingStores)
 
         // When
         let showPlaceholdersStates: [Bool] = waitFor { promise in
@@ -189,8 +186,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
         // Given
         let newCountry = Self.sampleCountries[0]
 
-        let address = sampleAddress()
-        let viewModel = EditAddressFormViewModel(siteID: sampleSiteID, address: address, storageManager: testingStorage)
+        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), storageManager: testingStorage)
         viewModel.onLoadTrigger.send()
 
         // When
@@ -201,9 +197,37 @@ final class EditAddressFormViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.fields.country, newCountry.name)
     }
+
+    func test_view_model_only_updates_shipping_address_field() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), stores: stores)
+
+        // When
+        viewModel.fields.firstName = "Tester"
+        let update: (order: Order, fields: [OrderUpdateField]) = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateOrder(_, order, fields, _):
+                    promise((order, fields))
+                default:
+                    XCTFail("Unsupported Action")
+                }
+            }
+            viewModel.updateRemoteAddress { _ in }
+        }
+
+        // Then
+        assertEqual(update.order.shippingAddress?.firstName, "Tester")
+        assertEqual(update.fields, [.shippingAddress])
+    }
 }
 
 private extension EditAddressFormViewModelTests {
+    func order(withShippingAddress shippingAddress: Address?) -> Order {
+        Order.fake().copy(siteID: 123, orderID: 1234, shippingAddress: shippingAddress)
+    }
+
     func sampleAddress() -> Address {
         return Address(firstName: "Johnny",
                        lastName: "Appleseed",

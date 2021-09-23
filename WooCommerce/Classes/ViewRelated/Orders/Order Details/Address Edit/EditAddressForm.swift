@@ -241,9 +241,37 @@ private extension EditAddressForm {
 
 #if DEBUG
 
+import struct Yosemite.Order
 import struct Yosemite.Address
 
 struct EditAddressForm_Previews: PreviewProvider {
+    static let sampleOrder = Order(siteID: 123,
+                                   orderID: 456,
+                                   parentID: 2,
+                                   customerID: 11,
+                                   number: "789",
+                                   status: .processing,
+                                   currency: "USD",
+                                   customerNote: "",
+                                   dateCreated: Date(),
+                                   dateModified: Date(),
+                                   datePaid: Date(),
+                                   discountTotal: "0.00",
+                                   discountTax: "0.00",
+                                   shippingTotal: "0.00",
+                                   shippingTax: "0.00",
+                                   total: "31.20",
+                                   totalTax: "1.20",
+                                   paymentMethodID: "stripe",
+                                   paymentMethodTitle: "Credit Card (Stripe)",
+                                   items: [],
+                                   billingAddress: sampleAddress,
+                                   shippingAddress: sampleAddress,
+                                   shippingLines: [],
+                                   coupons: [],
+                                   refunds: [],
+                                   fees: [])
+
     static let sampleAddress = Address(firstName: "Johnny",
                                        lastName: "Appleseed",
                                        company: nil,
@@ -255,7 +283,8 @@ struct EditAddressForm_Previews: PreviewProvider {
                                        country: "US",
                                        phone: "333-333-3333",
                                        email: "scrambled@scrambled.com")
-    static let sampleViewModel = EditAddressFormViewModel(siteID: 123, address: sampleAddress)
+
+    static let sampleViewModel = EditAddressFormViewModel(order: sampleOrder)
 
     static var previews: some View {
         NavigationView {

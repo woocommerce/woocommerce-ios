@@ -3,9 +3,6 @@ import Storage
 import Combine
 
 final class EditAddressFormViewModel: ObservableObject {
-    /// Current site ID
-    ///
-    private let siteID: Int64
 
     /// ResultsController for stored countries.
     ///
@@ -31,9 +28,9 @@ final class EditAddressFormViewModel: ObservableObject {
     private var subscriptions = Set<AnyCancellable>()
 
 
-    init(siteID: Int64, address: Address?, storageManager: StorageManagerType = ServiceLocator.storageManager, stores: StoresManager = ServiceLocator.stores) {
-        self.siteID = siteID
-        self.originalAddress = address ?? .empty
+    init(order: Yosemite.Order, storageManager: StorageManagerType = ServiceLocator.storageManager, stores: StoresManager = ServiceLocator.stores) {
+        self.order = order
+        self.originalAddress = order.shippingAddress ?? .empty
         self.storageManager = storageManager
         self.stores = stores
 
@@ -60,6 +57,10 @@ final class EditAddressFormViewModel: ObservableObject {
     /// Address form fields
     ///
     @Published var fields = FormFields()
+
+    /// Order to be edited.
+    ///
+    private let order: Yosemite.Order
 
     /// Trigger to perform any one time setups.
     ///
@@ -91,13 +92,18 @@ final class EditAddressFormViewModel: ObservableObject {
     /// Update the address remotely and invoke a completion block when finished
     ///
     func updateRemoteAddress(onFinish: @escaping (Bool) -> Void) {
-        // TODO: perform network request
-        // TODO: add success/failure notice
-        performingNetworkRequest.send(true)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
-            self?.performingNetworkRequest.send(false)
-            onFinish(true)
+        let updatedAddress = fields.toAddress(selectedCountry: selectedCountry)
+        let modifiedOrder = order.copy(shippingAddress: updatedAddress)
+        let action = OrderAction.updateOrder(siteID: order.siteID, order: modifiedOrder, fields: [.shippingAddress]) { [weak self] result in
+            guard let self = self else { return }
+
+            self.performingNetworkRequest.send(false)
+            // TODO: add success/failure notice
+            onFinish(result.isSuccess)
         }
+
+        performingNetworkRequest.send(true)
+        stores.dispatch(action)
     }
 }
 
@@ -235,7 +241,7 @@ private extension EditAddressFormViewModel {
         Future<Void, Error> { [weak self] promise in
             guard let self = self else { return }
 
-            let action = DataAction.synchronizeCountries(siteID: self.siteID) { result in
+            let action = DataAction.synchronizeCountries(siteID: self.order.siteID) { result in
                 let newResult = result.map { _ in } // Hides the result success type because we don't need it.
                 promise(newResult)
             }

@@ -672,7 +672,7 @@ private extension OrderDetailsViewController {
     }
 
     func editShippingAddressTapped() {
-        let viewModel = EditAddressFormViewModel(siteID: viewModel.order.siteID, address: viewModel.order.shippingAddress)
+        let viewModel = EditAddressFormViewModel(order: viewModel.order)
         let editAddressViewController = EditAddressHostingController(viewModel: viewModel)
         let navigationController = WooNavigationController(rootViewController: editAddressViewController)
         present(navigationController, animated: true, completion: nil)

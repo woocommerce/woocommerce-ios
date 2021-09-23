@@ -105,28 +105,6 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
         connectedReaderSoftwareVersion = String.localizedStringWithFormat(Localization.versionLabelFormat, softwareVersion)
     }
 
-    /// Dispatch a request to check for reader updates
-    ///
-    func checkForCardReaderUpdate() {
-        let action = CardPresentPaymentAction.checkForCardReaderUpdate() { [weak self] result in
-            guard let self = self else {
-                return
-            }
-            guard !self.readerDisconnectInProgress else {
-                return
-            }
-            switch result {
-            case .success(let update):
-                self.readerUpdateAvailable = update != nil
-            case .failure:
-                DDLogError("Unexpected error when checking for reader update")
-                self.readerUpdateAvailable = false
-            }
-            self.didUpdate?()
-        }
-        ServiceLocator.stores.dispatch(action)
-    }
-
     /// Allows the view controller to kick off a card reader update
     ///
     func startCardReaderUpdate() {

@@ -51,11 +51,6 @@ final class CardReaderSettingsConnectedViewController: UIViewController, CardRea
         configureTable()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        checkForCardReaderUpdate()
-    }
-
     override func viewWillDisappear(_ animated: Bool) {
         viewModel?.didUpdate = nil
         super.viewWillDisappear(animated)
@@ -65,13 +60,6 @@ final class CardReaderSettingsConnectedViewController: UIViewController, CardRea
 // MARK: - View Configuration
 //
 private extension CardReaderSettingsConnectedViewController {
-    func checkForCardReaderUpdate() {
-        guard let viewModel = viewModel else {
-            return
-        }
-        viewModel.checkForCardReaderUpdate()
-    }
-
     func onViewModelDidUpdate() {
         configureSections()
         configureTable()

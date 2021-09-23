@@ -1,3 +1,4 @@
+import Combine
 import Yosemite
 @testable import WooCommerce
 
@@ -8,7 +9,6 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
     private var discoveredReaders: [CardReader]
     private var failDiscovery: Bool
     private var readerUpdateAvailable: Bool
-    private var failReaderUpdateCheck: Bool
     private var failUpdate: Bool
     private var failConnection: Bool
 
@@ -17,7 +17,6 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
          sessionManager: SessionManager,
          failDiscovery: Bool = false,
          readerUpdateAvailable: Bool = false,
-         failReaderUpdateCheck: Bool = false,
          failUpdate: Bool = false,
          failConnection: Bool = false
     ) {
@@ -25,7 +24,6 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
         self.discoveredReaders = discoveredReaders
         self.failDiscovery = failDiscovery
         self.readerUpdateAvailable = readerUpdateAvailable
-        self.failReaderUpdateCheck = failReaderUpdateCheck
         self.failUpdate = failUpdate
         self.failConnection = failConnection
         super.init(sessionManager: sessionManager)
@@ -60,16 +58,8 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
             onCompletion(Result.success(reader))
         case .cancelCardReaderDiscovery(let onCompletion):
             onCompletion(Result.success(()))
-        case .checkForCardReaderUpdate(let onCompletion):
-            guard !failReaderUpdateCheck else {
-                onCompletion(Result.failure(MockErrors.readerUpdateCheckFailure))
-                return
-            }
-            guard readerUpdateAvailable else {
-                onCompletion(Result.success(nil))
-                return
-            }
-            onCompletion(Result.success(mockUpdate()))
+        case .observeCardReaderUpdateState(onCompletion: let completion):
+            completion(softwareUpdateEvents)
         case .startCardReaderUpdate(let onProgress, let onCompletion):
             onProgress(0.5)
             guard !failUpdate else {
@@ -81,12 +71,16 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
             fatalError("Not available")
         }
     }
+
+    var softwareUpdateEvents: AnyPublisher<CardReaderSoftwareUpdateState, Never> {
+        Just(readerUpdateAvailable ? .available : .none)
+            .eraseToAnyPublisher()
+    }
 }
 
 extension MockCardPresentPaymentsStoresManager {
     enum MockErrors: Error {
         case discoveryFailure
-        case readerUpdateCheckFailure
         case readerUpdateFailure
         case connectionFailure
     }

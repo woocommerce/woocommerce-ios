@@ -57,8 +57,6 @@ public final class CardPresentPaymentStore: Store {
                            onCompletion: completion)
         case .cancelPayment(let completion):
             cancelPayment(onCompletion: completion)
-        case .checkForCardReaderUpdate(onCompletion: let completion):
-            checkForCardReaderUpdate(onCompletion: completion)
         case .observeCardReaderUpdateState(onCompletion: let completion):
             observeCardReaderUpdateState(onCompletion: completion)
         case .startCardReaderUpdate(onProgress: let progress, onCompletion: let completion):
@@ -196,26 +194,6 @@ private extension CardPresentPaymentStore {
         }, receiveValue: {
             onCompletion?(.success(()))
         }))
-    }
-
-    func checkForCardReaderUpdate(onCompletion: @escaping (Result<CardReaderSoftwareUpdate?, Error>) -> Void) {
-//        cardReaderService.checkForUpdate()
-//            .sink(
-//                // If the future is a failure, it will only fire receiveCompletion
-//                receiveCompletion: { value in
-//                    if case .failure(let error) = value {
-//                        onCompletion(.failure(error))
-//                    }
-//
-//                },
-//                // If the future is a success, it will fire receiveValue and receiveCompletion
-//                receiveValue: { softwareUpdate in
-//                    onCompletion(.success(softwareUpdate))
-//                })
-//            // Note: We don't need to explicitly call cancel on this subscription since
-//            // when the publisher completes, cancel will be called for us, and a Future
-//            // completes after fulfilling its promise.
-//            .store(in: &cancellables)
     }
 
     func observeCardReaderUpdateState(onCompletion: (AnyPublisher<CardReaderSoftwareUpdateState, Never>) -> Void) {

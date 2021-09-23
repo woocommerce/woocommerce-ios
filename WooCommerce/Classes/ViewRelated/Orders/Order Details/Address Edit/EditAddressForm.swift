@@ -9,6 +9,14 @@ final class EditAddressHostingController: UIHostingController<EditAddressForm> {
 
     init(viewModel: EditAddressFormViewModel) {
         super.init(rootView: EditAddressForm(viewModel: viewModel))
+
+        // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
+        rootView.dismiss = { [weak self] in
+            self?.dismiss(animated: true, completion: nil)
+        }
+
+        // Set presentation delegate to track the user dismiss flow event
+        presentationController?.delegate = self
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -16,9 +24,21 @@ final class EditAddressHostingController: UIHostingController<EditAddressForm> {
     }
 }
 
+/// Intercepts to the dismiss drag gesture.
+///
+extension EditAddressHostingController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        // track dimiss gesture
+    }
+}
+
 /// Allows merchant to edit the customer provided address of an order.
 ///
 struct EditAddressForm: View {
+
+    /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
+    ///
+    var dismiss: (() -> Void) = {}
 
     @ObservedObject private var viewModel: EditAddressFormViewModel
 
@@ -131,6 +151,13 @@ struct EditAddressForm: View {
         .navigationTitle(Localization.shippingTitle)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarItems(trailing: navigationBarTrailingItem())
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(Localization.close, action: {
+                    dismiss()
+                })
+            }
+        }
         .redacted(reason: viewModel.showPlaceholders ? .placeholder : [])
         .shimmering(active: viewModel.showPlaceholders)
         .onAppear {
@@ -167,7 +194,9 @@ struct EditAddressForm: View {
         case .done(let enabled):
             Button(Localization.done) {
                 viewModel.updateRemoteAddress(onFinish: { success in
-                    // TODO: dismiss on success
+                    if success {
+                        dismiss()
+                    }
                 })
             }
             .disabled(!enabled)
@@ -185,6 +214,7 @@ private extension EditAddressForm {
 
     enum Localization {
         static let shippingTitle = NSLocalizedString("Shipping Address", comment: "Title for the Edit Shipping Address Form")
+        static let close = NSLocalizedString("Close", comment: "Text for the close button in the Edit Address Form")
         static let done = NSLocalizedString("Done", comment: "Text for the done button in the Edit Address Form")
 
         static let detailsSection = NSLocalizedString("DETAILS", comment: "Details section title in the Edit Address Form")

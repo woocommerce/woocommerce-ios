@@ -382,7 +382,7 @@ private extension MainTabBarController {
         let productsViewController = createProductsViewController(siteID: siteID)
         productsNavigationController.viewControllers = [productsViewController]
 
-        // Configure reivews tab coordinator once per logged in session potentially with multiple sites.
+        // Configure reviews tab coordinator once per logged in session potentially with multiple sites.
         if reviewsTabCoordinator == nil {
             let reviewsTabCoordinator = createReviewsTabCoordinator()
             self.reviewsTabCoordinator = reviewsTabCoordinator

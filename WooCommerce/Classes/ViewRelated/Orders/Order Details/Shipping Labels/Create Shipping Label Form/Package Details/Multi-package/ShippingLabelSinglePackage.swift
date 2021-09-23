@@ -75,6 +75,28 @@ struct ShippingLabelSinglePackage: View {
 
             VStack(spacing: 0) {
                 Divider()
+                TitleAndSubtitleRow(title: Localization.originalPackaging,
+                                    subtitle: Localization.individuallyShipped)
+                    .padding(.horizontal, insets: safeAreaInsets)
+            }
+            .background(Color(.systemBackground))
+            .renderedIf(viewModel.isOriginalPackaging)
+
+            VStack(spacing: 0) {
+                Divider()
+                    .padding(.horizontal, insets: safeAreaInsets)
+                    .padding(.leading, Constants.horizontalPadding)
+                TitleAndSubtitleRow(title: Localization.itemDimension,
+                                    subtitle: "12 in x 12 in x 12 in") // TODO: display real data
+                    .padding(.horizontal, insets: safeAreaInsets)
+            }
+            .background(Color(.systemBackground))
+            .renderedIf(viewModel.isOriginalPackaging)
+
+            VStack(spacing: 0) {
+                Divider()
+                    .padding(.horizontal, insets: safeAreaInsets)
+                    .padding(.leading, Constants.horizontalPadding)
 
                 TitleAndTextFieldRow(title: Localization.totalPackageWeight,
                                      placeholder: "0",
@@ -110,6 +132,15 @@ private extension ShippingLabelSinglePackage {
                                               comment: "Title of the footer in Shipping Label Package Detail screen")
         static let invalidWeight = NSLocalizedString("Invalid weight", comment: "Error message when total weight is invalid in Package Detail screen")
         static let moveButton = NSLocalizedString("Move", comment: "Button on each order item of the Package Details screen in Shipping Labels flow.")
+        static let originalPackaging = NSLocalizedString("Original packaging",
+                                                         comment: "Row title for detail of package shipped in original " +
+                                                         "packaging on Package Details screen in Shipping Labels flow.")
+        static let individuallyShipped = NSLocalizedString("Individually shipped item",
+                                                           comment: "Description for detail of package shipped in original " +
+                                                           "packaging on Package Details screen in Shipping Labels flow.")
+        static let itemDimension = NSLocalizedString("Item dimension",
+                                                     comment: "Row title for dimension of package shipped in original " +
+                                                     "packaging Package Details screen in Shipping Labels flow.")
     }
 
     enum Constants {

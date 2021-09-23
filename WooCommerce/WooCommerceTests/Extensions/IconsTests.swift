@@ -496,4 +496,8 @@ final class IconsTests: XCTestCase {
     func test_welcomeImage_is_not_nil() {
         XCTAssertNotNil(UIImage.welcomeImage)
     }
+
+    func test_lightningImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.lightningImage)
+    }
 }

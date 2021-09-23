@@ -64,6 +64,10 @@ final class OrdersRootViewController: UIViewController {
     func presentDetails(for note: Note) {
         ordersViewController.presentDetails(for: note)
     }
+
+    override var shouldShowOfflineBanner: Bool {
+        return true
+    }
 }
 
 // MARK: - Configuration

@@ -2,6 +2,7 @@
 
 7.7
 -----
+- [*] Show banner on screens that use cached data when device is offline. [https://github.com/woocommerce/woocommerce-ios/pull/5000]
 
 
 7.6
@@ -9,7 +10,6 @@
 - [x] Show an improved error modal if there are problems while selecting a store. [https://github.com/woocommerce/woocommerce-ios/pull/5006]
 - [***] Shipping Labels: Merchants can now add new custom and service packages for shipping labels directly from the app. [https://github.com/woocommerce/woocommerce-ios/pull/4976]
 - [*] Fix: when product image upload fails, the image cell stop loading. [https://github.com/woocommerce/woocommerce-ios/pull/4989]
-
 
 7.5
 -----

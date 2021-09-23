@@ -44,6 +44,10 @@ final class ShippingLabelFormViewController: UIViewController {
         registerTableViewHeaderFooters()
         observeViewModel()
     }
+
+    override var shouldShowOfflineBanner: Bool {
+        return true
+    }
 }
 
 // MARK: - View Configuration

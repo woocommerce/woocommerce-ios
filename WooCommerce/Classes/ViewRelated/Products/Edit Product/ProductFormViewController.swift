@@ -134,6 +134,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         view.endEditing(true)
     }
 
+    override var shouldShowOfflineBanner: Bool {
+        return true
+    }
+
     // MARK: - Navigation actions handling
 
     override func shouldPopOnBackButton() -> Bool {
@@ -403,6 +407,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 // MARK: - Configuration
 //
 private extension ProductFormViewController {
+
     func configureNavigationBar() {
         updateNavigationBar()
         updateBackButtonTitle()

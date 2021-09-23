@@ -64,11 +64,16 @@ final class ReviewOrderViewController: UIViewController {
         super.viewDidLayoutSubviews()
         tableView.updateFooterHeight()
     }
+
+    override var shouldShowOfflineBanner: Bool {
+        return true
+    }
 }
 
 // MARK: - UI Configuration
 //
 private extension ReviewOrderViewController {
+
     func configureViewModel() {
         viewModel.configureResultsControllers { [weak self] in
             self?.tableView.reloadData()

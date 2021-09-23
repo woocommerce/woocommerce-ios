@@ -201,6 +201,10 @@ final class ProductsViewController: UIViewController {
 
         updateTableHeaderViewHeight()
     }
+
+    override var shouldShowOfflineBanner: Bool {
+        return true
+    }
 }
 
 // MARK: - Navigation Bar Actions

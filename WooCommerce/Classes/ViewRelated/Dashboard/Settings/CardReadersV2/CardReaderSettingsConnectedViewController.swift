@@ -143,7 +143,7 @@ private extension CardReaderSettingsConnectedViewController {
 
         if let readerUpdateProgress = viewModel.readerUpdateProgress {
             // If we are updating a reader, show the progress alert
-            settingsAlerts.updateProgress(from: self, progress: readerUpdateProgress, cancel: { [weak self] in
+            settingsAlerts.updateProgress(from: self, requiredUpdate: false, progress: readerUpdateProgress, cancel: { [weak self] in
                 self?.viewModel?.cancelCardReaderUpdate()
             })
         } else {

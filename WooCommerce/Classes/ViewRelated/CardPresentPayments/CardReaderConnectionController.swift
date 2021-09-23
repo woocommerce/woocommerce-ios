@@ -416,6 +416,7 @@ private extension CardReaderConnectionController {
         }
 
         alerts.updateProgress(from: from,
+                              requiredUpdate: true,
                               progress: progress,
                               cancel: cancel)
     }

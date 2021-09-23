@@ -47,7 +47,7 @@ protocol CardReaderSettingsAlertsProvider {
 
     /// Shows progress when a software update is being installed
     ///
-    func updateProgress(from: UIViewController, progress: Float, cancel: (() -> Void)?)
+    func updateProgress(from: UIViewController, requiredUpdate: Bool, progress: Float, cancel: (() -> Void)?)
 
     /// Dismisses any alert being presented
     ///

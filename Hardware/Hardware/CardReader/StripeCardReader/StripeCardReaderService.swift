@@ -14,7 +14,7 @@ public final class StripeCardReaderService: NSObject {
     private let discoveryStatusSubject = CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle)
     private let paymentStatusSubject = CurrentValueSubject<PaymentStatus, Never>(.notReady)
     private let readerEventsSubject = PassthroughSubject<CardReaderEvent, Never>()
-    private let softwareUpdateSubject = CurrentValueSubject<Float, Never>(0)
+    private let softwareUpdateSubject = CurrentValueSubject<CardReaderSoftwareUpdateState, Never>(.none)
 
     /// Volatile, in-memory cache of discovered readers. It has to be cleared after we connect to a reader
     /// see
@@ -60,7 +60,7 @@ extension StripeCardReaderService: CardReaderService {
         readerEventsSubject.eraseToAnyPublisher()
     }
 
-    public var softwareUpdateEvents: AnyPublisher<Float, Never> {
+    public var softwareUpdateEvents: AnyPublisher<CardReaderSoftwareUpdateState, Never> {
         softwareUpdateSubject.eraseToAnyPublisher()
     }
 
@@ -354,6 +354,12 @@ extension StripeCardReaderService: CardReaderService {
                         .eraseToAnyPublisher()
                 } else {
                     return softwareUpdateSubject
+                        .compactMap({ state in
+                            guard case .installing(progress: let progress) = state else {
+                                return nil
+                            }
+                            return progress
+                        })
                         .setFailureType(to: Error.self)
                         .eraseToAnyPublisher()
                 }
@@ -478,16 +484,19 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
         sendReaderEvent(.softwareUpdateNeeded(softwareUpdate))
     }
 
-    public func reader(_ reader: Reader, didStartInstallingUpdate update: ReaderSoftwareUpdate, cancelable: Cancelable?) {
-        // No-OP
+    public func reader(_ reader: Reader, didStartInstallingUpdate update: ReaderSoftwareUpdate, cancelable: StripeTerminal.Cancelable?) {
+        print("==== started software update")
+        softwareUpdateSubject.send(.started(cancelable: cancelable.map(StripeCancelable.init(cancelable:))))
     }
 
     public func reader(_ reader: Reader, didReportReaderSoftwareUpdateProgress progress: Float) {
         print("==== did repost software update progress ", progress)
-        softwareUpdateSubject.send(progress)
+        softwareUpdateSubject.send(.installing(progress: progress))
     }
 
     public func reader(_ reader: Reader, didFinishInstallingUpdate update: ReaderSoftwareUpdate?, error: Error?) {
+        softwareUpdateSubject.send(.completed)
+        softwareUpdateSubject.send(.none)
         sendReaderEvent(.softwareUpToDate)
     }
 

@@ -53,6 +53,10 @@ final class MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         }
     }
 
+    func updateProgress(from: UIViewController, progress: Float, cancel: (() -> Void)?) {
+        // GNDN
+    }
+
     func connectingToReader(from: UIViewController) {
         // GNDN
     }

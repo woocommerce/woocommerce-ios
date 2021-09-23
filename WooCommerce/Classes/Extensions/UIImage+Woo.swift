@@ -372,6 +372,24 @@ extension UIImage {
         return UIImage(named: "card-reader-connecting")!
     }
 
+    /// Card Reader Update background
+    ///
+    static var cardReaderUpdateProgressBackground: UIImage {
+        return UIImage(named: "card-reader-update-progress-background")!
+    }
+
+    /// Card Reader Update arrow
+    ///
+    static var cardReaderUpdateProgressArrow: UIImage {
+        return UIImage(named: "card-reader-update-progress-arrow")!
+    }
+
+    /// Card Reader Update checkmark
+    ///
+    static var cardReaderUpdateProgressCheckmark: UIImage {
+        return UIImage(named: "card-reader-update-progress-checkmark")!
+    }
+
     /// Files Download Icon
     ///
     static var cloudImage: UIImage {

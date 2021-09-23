@@ -64,6 +64,18 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         severalFoundController?.updateReaderIDs(readerIDs: readerIDs)
     }
 
+    /// Shows progress when a software update is being installed
+    ///
+    func updateProgress(from: UIViewController, progress: Float, cancel: (() -> Void)?) {
+        setViewModelAndPresent(
+            from: from,
+            viewModel: CardPresentModalUpdateProgress(
+                progress: progress,
+                cancel: cancel
+            )
+        )
+    }
+
     func dismiss() {
         dismissCommonAndPresent(animated: true)
         dismissSeveralFoundAndPresent(animated: true)

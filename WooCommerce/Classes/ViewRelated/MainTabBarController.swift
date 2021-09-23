@@ -382,9 +382,15 @@ private extension MainTabBarController {
         let productsViewController = createProductsViewController(siteID: siteID)
         productsNavigationController.viewControllers = [productsViewController]
 
-        let reviewsTabCoordinator = createReviewsTabCoordinator(siteID: siteID)
-        self.reviewsTabCoordinator = reviewsTabCoordinator
-        reviewsTabCoordinator.start()
+        // Configure reivews tab coordinator once per logged in session potentially with multiple sites.
+        if reviewsTabCoordinator == nil {
+            let reviewsTabCoordinator = createReviewsTabCoordinator()
+            self.reviewsTabCoordinator = reviewsTabCoordinator
+            reviewsTabCoordinator.start()
+        }
+
+        let reviewsViewController = createReviewsViewController(siteID: siteID)
+        reviewsTabCoordinator?.navigationController.viewControllers = [reviewsViewController]
 
         // Set dashboard to be the default tab.
         selectedIndex = WooTab.myStore.visibleIndex()
@@ -402,9 +408,12 @@ private extension MainTabBarController {
         ProductsViewController(siteID: siteID)
     }
 
-    func createReviewsTabCoordinator(siteID: Int64) -> Coordinator {
-        ReviewsCoordinator(siteID: siteID,
-                           navigationController: reviewsNavigationController,
+    func createReviewsViewController(siteID: Int64) -> UIViewController {
+        ReviewsViewController(siteID: siteID)
+    }
+
+    func createReviewsTabCoordinator() -> Coordinator {
+        ReviewsCoordinator(navigationController: reviewsNavigationController,
                            willPresentReviewDetailsFromPushNotification: { [weak self] in
                             self?.navigateTo(.reviews)
         })

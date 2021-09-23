@@ -21,8 +21,7 @@ final class ReviewsCoordinator: Coordinator {
 
     private let willPresentReviewDetailsFromPushNotification: () -> Void
 
-    init(siteID: Int64,
-         navigationController: UINavigationController,
+    init(navigationController: UINavigationController,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          storesManager: StoresManager = ServiceLocator.stores,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
@@ -34,15 +33,12 @@ final class ReviewsCoordinator: Coordinator {
         self.noticePresenter = noticePresenter
         self.switchStoreUseCase = switchStoreUseCase
         self.willPresentReviewDetailsFromPushNotification = willPresentReviewDetailsFromPushNotification
-
         self.navigationController = navigationController
-        navigationController.viewControllers = [ReviewsViewController(siteID: siteID)]
     }
 
-    convenience init(siteID: Int64, navigationController: UINavigationController, willPresentReviewDetailsFromPushNotification: @escaping () -> Void) {
+    convenience init(navigationController: UINavigationController, willPresentReviewDetailsFromPushNotification: @escaping () -> Void) {
         let storesManager = ServiceLocator.stores
-        self.init(siteID: siteID,
-                  navigationController: navigationController,
+        self.init(navigationController: navigationController,
                   storesManager: storesManager,
                   switchStoreUseCase: SwitchStoreUseCase(stores: storesManager),
                   willPresentReviewDetailsFromPushNotification: willPresentReviewDetailsFromPushNotification)

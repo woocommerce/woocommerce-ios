@@ -178,13 +178,14 @@ final class ReviewsCoordinatorTests: XCTestCase {
 
 private extension ReviewsCoordinatorTests {
     func makeReviewsCoordinator(willPresentReviewDetailsFromPushNotification: (@escaping () -> Void) = { }) -> ReviewsCoordinator {
-        return ReviewsCoordinator(siteID: 1,
-                                  navigationController: UINavigationController(),
-                                  pushNotificationsManager: pushNotificationsManager,
-                                  storesManager: storesManager,
-                                  noticePresenter: noticePresenter,
-                                  switchStoreUseCase: switchStoreUseCase,
-                                  willPresentReviewDetailsFromPushNotification: willPresentReviewDetailsFromPushNotification)
+        let coordinator = ReviewsCoordinator(navigationController: UINavigationController(),
+                                             pushNotificationsManager: pushNotificationsManager,
+                                             storesManager: storesManager,
+                                             noticePresenter: noticePresenter,
+                                             switchStoreUseCase: switchStoreUseCase,
+                                             willPresentReviewDetailsFromPushNotification: willPresentReviewDetailsFromPushNotification)
+        coordinator.navigationController.viewControllers = [ReviewsViewController(siteID: 1)]
+        return coordinator
     }
 
     /// Create a dummy Parcel.

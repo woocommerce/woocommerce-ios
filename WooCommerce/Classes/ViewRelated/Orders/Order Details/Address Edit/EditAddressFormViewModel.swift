@@ -38,8 +38,7 @@ final class EditAddressFormViewModel: ObservableObject {
         onLoadTrigger.first().sink { [weak self] in
             guard let self = self else { return }
             self.bindSyncTrigger()
-            self.bindSelectedCountryIntoFields()
-            self.bindSelectedStateIntoFields()
+            self.bindSelectedCountryAndStateIntoFields()
             self.bindNavigationTrailingItemPublisher()
 
             self.fetchStoredCountriesAndTriggerSyncIfNeeded()
@@ -110,7 +109,7 @@ final class EditAddressFormViewModel: ObservableObject {
     /// Update the address remotely and invoke a completion block when finished
     ///
     func updateRemoteAddress(onFinish: @escaping (Bool) -> Void) {
-        let updatedAddress = fields.toAddress(selectedCountry: selectedCountry)
+        let updatedAddress = fields.toAddress(country: selectedCountry, state: selectedState)
         let modifiedOrder = order.copy(shippingAddress: updatedAddress)
         let action = OrderAction.updateOrder(siteID: order.siteID, order: modifiedOrder, fields: [.shippingAddress]) { [weak self] result in
             guard let self = self else { return }
@@ -165,24 +164,21 @@ extension EditAddressFormViewModel {
             postcode = address.postcode
         }
 
-        mutating func update(with selectedCountry: Yosemite.Country?) {
-            country = selectedCountry?.name ?? country
+        mutating func update(with country: Yosemite.Country?, and state: Yosemite.StateOfACountry?) {
+            self.country = country?.name ?? self.country
+            self.state = state?.name ?? self.state
         }
 
-        mutating func update(with selectedState: Yosemite.StateOfACountry?) {
-            state = selectedState?.name ?? state
-        }
-
-        func toAddress(selectedCountry: Yosemite.Country?, selectedState: Yosemite.StateOfACountry?) -> Yosemite.Address {
+        func toAddress(country: Yosemite.Country?, state: Yosemite.StateOfACountry?) -> Yosemite.Address {
             Address(firstName: firstName,
                     lastName: lastName,
                     company: company.isEmpty ? nil : company,
                     address1: address1,
                     address2: address2.isEmpty ? nil : address2,
                     city: city,
-                    state: selectedState?.code ?? state,
+                    state: state?.code ?? self.state,
                     postcode: postcode,
-                    country: selectedCountry?.code ?? country,
+                    country: country?.code ?? self.country,
                     phone: phone.isEmpty ? nil : phone,
                     email: email.isEmpty ? nil : email)
         }
@@ -206,26 +202,36 @@ private extension EditAddressFormViewModel {
                 guard !performingNetworkRequest else {
                     return .loading
                 }
-                return .done(enabled: originalAddress != fields.toAddress(selectedCountry: selectedCountry, selectedState: selectedState))
+                return .done(enabled: originalAddress != fields.toAddress(country: selectedCountry, state: selectedState))
             }
             .assign(to: &$navigationTrailingItem)
     }
 
-    /// Update published fields when the selected country is updated.
+    /// Update published fields when the selected country and state is updated.
+    /// If the current selected state does not exists within the selected country, then the sate is nilled.
     ///
-    func bindSelectedCountryIntoFields() {
+    func bindSelectedCountryAndStateIntoFields() {
+
+        typealias StatePublisher = AnyPublisher<Yosemite.StateOfACountry?, Never>
+
+        // When a country is selected, check if the current state is a valid state for that country, otherwise `nil` it.
         $selectedCountry
-            .sink { [weak self] newCountry in
-                self?.fields.update(with: newCountry)
+            .withLatestFrom($selectedState)
+            .flatMap { country, state -> StatePublisher in
+                guard let country = country, let state = state, country.states.contains(state) else {
+                    return StatePublisher.init(Empty())
+                }
+                return StatePublisher.init(Just(state))
+            }
+            .assign(to: &$selectedState)
+
+
+        // Update fields with new selections.
+        Publishers.CombineLatest($selectedCountry, $selectedState)
+            .sink { [weak self] country, state in
+                self?.fields.update(with: country, and: state)
             }
             .store(in: &subscriptions)
-    }
-
-    func bindSelectedStateIntoFields() {
-        $selectedState.sink { [weak self] newState in
-            self?.fields.update(with: newState)
-        }
-        .store(in: &subscriptions)
     }
 
     /// Fetches countries from storage, If there are no stored countries, trigger a sync request.

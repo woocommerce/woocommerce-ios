@@ -137,7 +137,7 @@ struct EditAddressForm: View {
                         }
                         Divider()
                             .padding(.leading, Constants.dividerPadding)
-                        TitleAndValueRow(title: Localization.stateField, value: Localization.placeholderSelectOption, selectable: true) {
+                        TitleAndValueRow(title: Localization.stateField, value: viewModel.fields.state, selectable: true) {
                             showStateSelector = true
                         }
                     }

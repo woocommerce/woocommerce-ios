@@ -63,12 +63,9 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
                 softwareUpdateSubject.send(.available)
             })))
             softwareUpdateSubject.send(.installing(progress: 0.5))
-            guard !failUpdate else {
-                // TODO: send error when we can handle failure state
-//                onCompletion(Result.failure(MockErrors.readerUpdateFailure))
-                return
-            }
+            // TODO: send error when we can handle failure state
             softwareUpdateSubject.send(.completed)
+            softwareUpdateSubject.send(.none)
         default:
             fatalError("Not available")
         }

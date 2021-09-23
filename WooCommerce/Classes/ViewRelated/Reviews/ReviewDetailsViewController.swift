@@ -1,4 +1,3 @@
-import Foundation
 import UIKit
 import Yosemite
 import Gridicons
@@ -76,6 +75,10 @@ final class ReviewDetailsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         markAsReadIfNeeded(notification)
+    }
+
+    override var shouldShowOfflineBanner: Bool {
+        return true
     }
 }
 

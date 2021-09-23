@@ -39,7 +39,9 @@ class ShippingLabelPaymentMethodsViewModelTests: XCTestCase {
 
     func test_isDoneButtonEnabled_returns_expected_value() {
         // Given
-        let settings = ShippingLabelAccountSettings.fake().copy(selectedPaymentMethodID: 12345,
+        let paymentMethod = ShippingLabelPaymentMethod.fake().copy()
+        let settings = ShippingLabelAccountSettings.fake().copy(paymentMethods: [paymentMethod],
+                                                                selectedPaymentMethodID: 12345,
                                                                 isEmailReceiptsEnabled: false)
         let viewModel = ShippingLabelPaymentMethodsViewModel(accountSettings: settings)
 

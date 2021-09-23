@@ -122,6 +122,10 @@ final class OrderDetailsViewController: UIViewController {
         super.viewDidLayoutSubviews()
         tableView.updateHeaderHeight()
     }
+
+    override var shouldShowOfflineBanner: Bool {
+        return true
+    }
 }
 
 
@@ -668,9 +672,10 @@ private extension OrderDetailsViewController {
     }
 
     func editShippingAddressTapped() {
-        let viewModel = EditAddressFormViewModel(siteID: viewModel.order.siteID, address: viewModel.order.shippingAddress)
+        let viewModel = EditAddressFormViewModel(order: viewModel.order)
         let editAddressViewController = EditAddressHostingController(viewModel: viewModel)
-        show(editAddressViewController, sender: self)
+        let navigationController = WooNavigationController(rootViewController: editAddressViewController)
+        present(navigationController, animated: true, completion: nil)
     }
 
     @objc private func collectPayment(at: IndexPath) {

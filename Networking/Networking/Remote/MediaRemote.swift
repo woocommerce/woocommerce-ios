@@ -21,7 +21,7 @@ public class MediaRemote: Remote {
             ParameterKey.contextKey: context,
             ParameterKey.pageSize: pageSize,
             ParameterKey.pageNumber: pageNumber,
-            ParameterKey.fields: "ID,date,URL,thumbnails,title,alt,extension,mime_type",
+            ParameterKey.fields: "ID,date,URL,thumbnails,title,alt,extension,mime_type,file",
             ParameterKey.mimeType: "image"
         ]
 

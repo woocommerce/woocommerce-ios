@@ -18,6 +18,7 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                           totalWeight: "",
                                                           products: [],
                                                           productVariations: [],
+                                                          onItemMoveRequest: { _, _ in },
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter)
@@ -39,8 +40,8 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                               variationID: 49,
                                               quantity: 1,
                                               attributes: orderItemAttributes)]
-        let expectedFirstItemRow = ItemToFulfillRow(title: "Easter Egg", subtitle: "123 kg")
-        let expectedLastItemRow = ItemToFulfillRow(title: "Jeans", subtitle: "Box・0 kg")
+        let expectedFirstItemRow = ItemToFulfillRow(id: 123, title: "Easter Egg", subtitle: "123 kg")
+        let expectedLastItemRow = ItemToFulfillRow(id: 234, title: "Jeans", subtitle: "Box・0 kg")
         let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
 
@@ -60,6 +61,7 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                           totalWeight: "",
                                                           products: [product1, product2, product3],
                                                           productVariations: [variation],
+                                                          onItemMoveRequest: { _, _ in },
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -90,6 +92,7 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                           totalWeight: "",
                                                           products: [],
                                                           productVariations: [],
+                                                          onItemMoveRequest: { _, _ in },
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -125,6 +128,7 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                           totalWeight: "",
                                                           products: [],
                                                           productVariations: [],
+                                                          onItemMoveRequest: { _, _ in },
                                                           onPackageSwitch: packageSwitchHandler,
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -151,6 +155,7 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                           totalWeight: "10",
                                                           products: [],
                                                           productVariations: [],
+                                                          onItemMoveRequest: { _, _ in },
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -191,6 +196,7 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                           totalWeight: "",
                                                           products: [product1, product2, product3],
                                                           productVariations: [variation],
+                                                          onItemMoveRequest: { _, _ in },
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -230,6 +236,7 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                           totalWeight: "30",
                                                           products: [product1, product2, product3],
                                                           productVariations: [variation],
+                                                          onItemMoveRequest: { _, _ in },
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -254,6 +261,7 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                           totalWeight: "10",
                                                           products: [product],
                                                           productVariations: [],
+                                                          onItemMoveRequest: { _, _ in },
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -276,6 +284,7 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                           totalWeight: "10",
                                                           products: [],
                                                           productVariations: [],
+                                                          onItemMoveRequest: { _, _ in },
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -315,6 +324,7 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                           totalWeight: "10",
                                                           products: [product],
                                                           productVariations: [],
+                                                          onItemMoveRequest: { _, _ in },
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -347,6 +357,7 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                           totalWeight: "10",
                                                           products: [product],
                                                           productVariations: [],
+                                                          onItemMoveRequest: { _, _ in },
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,

@@ -163,6 +163,10 @@ final class ReviewsViewController: UIViewController {
             self.displayPlaceholderReviews()
         }
     }
+
+    override var shouldShowOfflineBanner: Bool {
+        return true
+    }
 }
 
 

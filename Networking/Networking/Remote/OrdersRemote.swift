@@ -134,19 +134,26 @@ public class OrdersRemote: Remote {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func updateOrder(from siteID: Int64, order: Order, fields: [UpdateOrderField], completion: @escaping (Result<Order, Error>) -> Void) {
-        let path = "\(Constants.ordersPath)/\(order.orderID)"
-        let mapper = OrderMapper(siteID: siteID)
-        let parameters: [String: AnyHashable] = {
-            fields.reduce(into: [:]) { params, field in
-                switch field {
-                case .customerNote:
-                    params[Order.CodingKeys.customerNote.rawValue] = order.customerNote
+        do {
+            let path = "\(Constants.ordersPath)/\(order.orderID)"
+            let mapper = OrderMapper(siteID: siteID)
+            let parameters: [String: Any] = try {
+                try fields.reduce(into: [:]) { params, field in
+                    switch field {
+                    case .customerNote:
+                        params[Order.CodingKeys.customerNote.rawValue] = order.customerNote
+                    case .shippingAddress:
+                        let shippingAddressEncoded = try order.shippingAddress?.toDictionary()
+                        params[Order.CodingKeys.shippingAddress.rawValue] = shippingAddressEncoded
+                    }
                 }
-            }
-        }()
+            }()
 
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
-        enqueue(request, mapper: mapper, completion: completion)
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
     }
 
     /// Adds an order note to a specific Order.
@@ -210,5 +217,6 @@ public extension OrdersRemote {
     ///
     enum UpdateOrderField {
         case customerNote
+        case shippingAddress
     }
 }

@@ -1,6 +1,5 @@
-import Foundation
 import XCTest
-@testable import Yosemite
+import Yosemite
 
 
 final class MockProductReviewFromNoteParcel {
@@ -34,7 +33,7 @@ final class MockProductReviewFromNoteParcel {
                         body: Data(),
                         meta: metaAsData)
         let product = Product.fake()
-        let review = MockReviews().anonymousReview()
+        let review = ProductReview.fake()
 
         return ProductReviewFromNoteParcel(note: note, review: review, product: product)
     }

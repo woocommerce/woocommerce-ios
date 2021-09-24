@@ -21,19 +21,18 @@ struct ShippingLabelPackageItem: Equatable {
 
     /// Attributes of the product or variation
     let attributes: [VariationAttributeViewModel]
+}
 
-    init(productOrVariationID: Int64,
-         name: String,
-         weight: Double,
-         quantity: Decimal,
-         dimensions: ProductDimensions,
-         attributes: [VariationAttributeViewModel]) {
-        self.productOrVariationID = productOrVariationID
-        self.name = name
-        self.weight = weight
+// MARK: Custom initializers
+//
+extension ShippingLabelPackageItem {
+    init(copy: ShippingLabelPackageItem, quantity: Decimal) {
+        self.name = copy.name
+        self.productOrVariationID = copy.productOrVariationID
         self.quantity = quantity
-        self.dimensions = dimensions
-        self.attributes = attributes
+        self.weight = copy.weight
+        self.dimensions = copy.dimensions
+        self.attributes = copy.attributes
     }
 
     init?(orderItem: OrderItem, products: [Product], productVariations: [ProductVariation]) {

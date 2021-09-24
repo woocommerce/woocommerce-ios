@@ -1,20 +1,60 @@
 import Foundation
+import Yosemite
 
 /// A struct that keeps information about items contained in a package in Shipping Label purchase flow.
 ///
 struct ShippingLabelPackageItem: Equatable {
-    /// ID of the product
+    /// ID of the product or variation
     let productOrVariationID: Int64
 
-    /// Name of the product
+    /// Name of the product or variation
     let name: String
 
-    /// Weight of the product
+    /// Weight of the product or variation
     let weight: Double
 
-    /// Quantity of the product
+    /// Quantity of the product or variation
     let quantity: Decimal
 
-    /// Attributes of the product
+    /// Dimensions of the product or variation
+    let dimensions: ProductDimensions
+
+    /// Attributes of the product or variation
     let attributes: [VariationAttributeViewModel]
+
+    init(productOrVariationID: Int64,
+         name: String,
+         weight: Double,
+         quantity: Decimal,
+         dimensions: ProductDimensions,
+         attributes: [VariationAttributeViewModel]) {
+        self.productOrVariationID = productOrVariationID
+        self.name = name
+        self.weight = weight
+        self.quantity = quantity
+        self.dimensions = dimensions
+        self.attributes = attributes
+    }
+
+    init?(orderItem: OrderItem, products: [Product], productVariations: [ProductVariation]) {
+        self.name = orderItem.name
+        self.quantity = orderItem.quantity
+        self.attributes = orderItem.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) }
+
+        let isVariation = orderItem.variationID > 0
+        let product = products.first { $0.productID == orderItem.productID }
+        let productVariation = productVariations.first { $0.productVariationID == orderItem.variationID }
+
+        if isVariation, let productVariation = productVariation, !productVariation.virtual {
+            self.productOrVariationID = productVariation.productVariationID
+            self.weight = Double(productVariation.weight ?? "0") ?? 0
+            self.dimensions = productVariation.dimensions
+        } else if let product = product, !product.virtual {
+            self.productOrVariationID = product.productID
+            self.weight = Double(product.weight ?? "0") ?? 0
+            self.dimensions = product.dimensions
+        } else {
+            return nil
+        }
+    }
 }

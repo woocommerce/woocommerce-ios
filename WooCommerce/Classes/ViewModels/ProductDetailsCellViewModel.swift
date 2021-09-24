@@ -3,7 +3,7 @@ import Yosemite
 
 // MARK: - View Model for a Variation Attribute
 //
-struct VariationAttributeViewModel {
+struct VariationAttributeViewModel: Equatable {
 
     /// Attribute name
     ///

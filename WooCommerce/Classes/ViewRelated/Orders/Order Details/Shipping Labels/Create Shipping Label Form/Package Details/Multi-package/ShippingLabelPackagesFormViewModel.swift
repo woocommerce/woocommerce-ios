@@ -112,7 +112,7 @@ private extension ShippingLabelPackagesFormViewModel {
                                                            items: items)]
     }
 
-    /// Set up item view models on change of products and product variations.
+    /// Set up item view models on change selected packages.
     ///
     func configureItemViewModels(order: Order, packageResponse: ShippingLabelPackagesResponse?) {
         $selectedPackages
@@ -125,8 +125,8 @@ private extension ShippingLabelPackagesFormViewModel {
                                                                selectedPackageID: details.packageID,
                                                                totalWeight: details.totalWeight,
                                                                isOriginalPackaging: isOriginal,
-                                                               onItemMoveRequest: { [weak self] itemID, packageName in
-                        self?.updateMoveItemActionSheet(for: itemID,
+                                                               onItemMoveRequest: { [weak self] productOrVariationID, packageName in
+                        self?.updateMoveItemActionSheet(for: productOrVariationID,
                                                            from: details,
                                                            packageIndex: index,
                                                            packageName: packageName)
@@ -148,7 +148,7 @@ private extension ShippingLabelPackagesFormViewModel {
 
     /// Update title and buttons for the Move Item action sheet.
     ///
-    func updateMoveItemActionSheet(for itemID: Int64,
+    func updateMoveItemActionSheet(for productOrVariationID: Int64,
                                    from currentPackage: ShippingLabelPackageAttributes,
                                    packageIndex: Int,
                                    packageName: String) {
@@ -158,7 +158,7 @@ private extension ShippingLabelPackagesFormViewModel {
             // if package is not original packaging, add option to ship in original package
             if currentPackage.packageID != ShippingLabelPackageAttributes.originalPackagingBoxID {
                 buttons.append(.default(Text(Localization.shipInOriginalPackage)) { [weak self] in
-                    self?.shipInOriginalPackage(itemID: itemID, from: currentPackage)
+                    self?.shipInOriginalPackage(productOrVariationID: productOrVariationID, from: currentPackage)
                 })
             }
             buttons.append(.cancel())
@@ -166,37 +166,48 @@ private extension ShippingLabelPackagesFormViewModel {
         }()
     }
 
-    func shipInOriginalPackage(itemID: Int64, from currentPackage: ShippingLabelPackageAttributes) {
-//        var updatedPackages: [ShippingLabelPackageAttributes] = []
-//        for package in selectedPackages {
-//            if package == currentPackage {
-//                guard let itemProductID = itemList.first(where: { $0.itemID == itemID })?.productOrVariationID else {
-//                    assertionFailure("⛔️ Cannot find productID for itemID \(itemID) to move to original package.")
-//                    continue
-//                }
-//
-//                // Filter the item from its list
-//                let updatedItemList = itemList.filter { $0.itemID != itemID }
-//
-//                // If the resulting item list is not empty, create a copy of the package with their product IDs.
-//                if updatedItemList.isNotEmpty {
-//                    let updatedPackage = ShippingLabelPackageAttributes(packageID: package.packageID,
-//                                                                        totalWeight: package.totalWeight,
-//                                                                        productIDs: updatedItemList.map { $0.productOrVariationID })
-//                    updatedPackages.append(updatedPackage)
-//                }
-//
-//                // Append an original package with the item's product ID.
-//                let originalPackage = ShippingLabelPackageAttributes(packageID: ShippingLabelPackageAttributes.originalPackagingBoxID,
-//                                                                     totalWeight: "",
-//                                                                     productIDs: [itemProductID])
-//                updatedPackages.append(originalPackage)
-//
-//            } else {
-//                updatedPackages.append(package)
-//            }
-//        }
-//        selectedPackages = updatedPackages
+    func shipInOriginalPackage(productOrVariationID: Int64, from currentPackage: ShippingLabelPackageAttributes) {
+        var updatedPackages: [ShippingLabelPackageAttributes] = []
+        for package in selectedPackages {
+            if package == currentPackage {
+                var matchingItem: ShippingLabelPackageItem?
+                var updatedItems: [ShippingLabelPackageItem] = []
+                for item in package.items {
+                    if item.productOrVariationID == productOrVariationID, matchingItem == nil {
+                        matchingItem = ShippingLabelPackageItem(copy: item, quantity: 1)
+                        if item.quantity > 1 {
+                            let newItem = ShippingLabelPackageItem(copy: item, quantity: item.quantity - 1)
+                            updatedItems.append(newItem)
+                        }
+                    } else {
+                        updatedItems.append(item)
+                    }
+                }
+
+                guard let matchingItem = matchingItem else {
+                    assertionFailure("⛔️ Cannot find item with product or variationID \(productOrVariationID) in current package!")
+                    continue
+                }
+
+                // If the resulting item list is not empty, create a copy of the package with the list.
+                if updatedItems.isNotEmpty {
+                    let updatedPackage = ShippingLabelPackageAttributes(packageID: package.packageID,
+                                                                        totalWeight: package.totalWeight,
+                                                                        items: updatedItems)
+                    updatedPackages.append(updatedPackage)
+                }
+
+                // Append a copy of matching item with quantity = 1
+                let originalPackage = ShippingLabelPackageAttributes(packageID: ShippingLabelPackageAttributes.originalPackagingBoxID,
+                                                                     totalWeight: "",
+                                                                     items: [matchingItem])
+                updatedPackages.append(originalPackage)
+
+            } else {
+                updatedPackages.append(package)
+            }
+        }
+        selectedPackages = updatedPackages
     }
 
     /// Update selected packages when user switch any package.

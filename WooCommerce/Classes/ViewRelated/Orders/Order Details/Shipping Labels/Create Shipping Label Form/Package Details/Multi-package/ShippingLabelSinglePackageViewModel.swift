@@ -232,9 +232,9 @@ private extension ShippingLabelSinglePackageViewModel {
     ///
     func configureOriginalPackageDimensions(for item: ShippingLabelPackageItem) {
         let unit = packagesResponse?.storeOptions.dimensionUnit ?? ""
-        let length = String(item.dimensions.length)
-        let width = String(item.dimensions.width)
-        let height = String(item.dimensions.height)
+        let length = item.dimensions.length.isEmpty ? "0" : item.dimensions.length
+        let width = item.dimensions.width.isEmpty ? "0" : item.dimensions.width
+        let height = item.dimensions.height.isEmpty ? "0" : item.dimensions.height
         originalPackageDimensions = String(format: "%@ x %@ x %@ %@", length, width, height, unit)
     }
 }

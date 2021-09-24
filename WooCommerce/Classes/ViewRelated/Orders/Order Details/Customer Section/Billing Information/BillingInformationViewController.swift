@@ -93,6 +93,15 @@ private extension BillingInformationViewController {
             tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
         }
     }
+
+    /// Presents EditAddressForm modal view
+    ///
+    func editBillingAddress() {
+        let viewModel = EditAddressFormViewModel(order: order, type: .billing)
+        let editAddressViewController = EditAddressHostingController(viewModel: viewModel)
+        let navigationController = WooNavigationController(rootViewController: editAddressViewController)
+        present(navigationController, animated: true, completion: nil)
+    }
 }
 
 // MARK: - Initiate communication with a customer (i.e. via email, phone call, sms)
@@ -338,8 +347,8 @@ private extension BillingInformationViewController {
             NSLocalizedString("No address specified.",
                               comment: "Order details > customer info > billing information. This is where the address would normally display.")
 
-        cell.onEditTapped = editingEnabled ? {
-            print("Edit Billing Address Tapped")
+        cell.onEditTapped = editingEnabled ? { [weak self] in
+            self?.editBillingAddress()
         } : nil
         cell.editButtonAccessibilityLabel = NSLocalizedString(
             "Update Address",

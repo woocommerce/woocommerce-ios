@@ -4,6 +4,15 @@ import Combine
 
 final class EditAddressFormViewModel: ObservableObject {
 
+    enum AddressType {
+        case shipping
+        case billing
+    }
+
+    /// Type of order address to edit
+    ///
+    let type: AddressType
+
     /// ResultsController for stored countries.
     ///
     private lazy var countriesResultsController: ResultsController<StorageCountry> = {
@@ -28,9 +37,22 @@ final class EditAddressFormViewModel: ObservableObject {
     private var subscriptions = Set<AnyCancellable>()
 
 
-    init(order: Yosemite.Order, storageManager: StorageManagerType = ServiceLocator.storageManager, stores: StoresManager = ServiceLocator.stores) {
+    init(order: Yosemite.Order,
+         type: AddressType,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         stores: StoresManager = ServiceLocator.stores) {
         self.order = order
-        self.originalAddress = order.shippingAddress ?? .empty
+        self.type = type
+
+        let addressToEdit: Address?
+        switch type {
+        case .shipping:
+            addressToEdit = order.shippingAddress
+        case .billing:
+            addressToEdit = order.billingAddress
+        }
+        self.originalAddress = addressToEdit ?? .empty
+
         self.storageManager = storageManager
         self.stores = stores
 
@@ -93,8 +115,18 @@ final class EditAddressFormViewModel: ObservableObject {
     ///
     func updateRemoteAddress(onFinish: @escaping (Bool) -> Void) {
         let updatedAddress = fields.toAddress(selectedCountry: selectedCountry)
-        let modifiedOrder = order.copy(shippingAddress: updatedAddress)
-        let action = OrderAction.updateOrder(siteID: order.siteID, order: modifiedOrder, fields: [.shippingAddress]) { [weak self] result in
+
+        let modifiedOrder: Yosemite.Order
+        switch type {
+        case .shipping:
+            modifiedOrder = order.copy(shippingAddress: updatedAddress)
+        case .billing:
+            modifiedOrder = order.copy(billingAddress: updatedAddress)
+        }
+
+        let action = OrderAction.updateOrder(siteID: order.siteID,
+                                             order: modifiedOrder,
+                                             fields: [type == .shipping ? .shippingAddress : .billingAddress]) { [weak self] result in
             guard let self = self else { return }
 
             self.performingNetworkRequest.send(false)

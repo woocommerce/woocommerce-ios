@@ -57,13 +57,13 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v7.3-whats-new"
+msgctxt "v7.5-whats-new"
 msgid ""
-"E-mailing a note to a customer for an order with no e-mail address doesn’t make much sense – so we’re hiding that option now in that case.\n"
+"Hurray! USA-based merchants using the WooCommerce Shipping & Tax Extension rejoice! You can now create and print shipping labels for your customers’ shipments to countries outside the USA.\n"
 "\n"
-"Some merchants mentioned to us that orders with negative prices weren’t showing up correctly. We’ve fixed that issue, and now you should feel more positive!\n"
+"Did your customer leave some notes for you when they placed their order? You’ll find that you can now edit those notes in the app.\n"
 "\n"
-"This release also contains a bunch of tiny improvements to make your experience smoother overall. We hope you notice the love we put into our software.\n"
+"Please continue to send us all of your feedback about the app – we welcome it!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

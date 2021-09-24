@@ -1,5 +1,0 @@
-Für Händler in den USA, die Versandetiketten für ihre US-Kunden erstellen möchten, wurden mehrere kleinere Verbesserungen eingeführt. Wenn du noch keine Etiketten über die App druckst, installiere auf deiner Website zunächst die Erweiterung „WooCommerce Shipping & Tax“.
-
-Wir haben uns auch angeschaut, wie die App auf verschiedenen Displaygrößen und Handymodellen aussieht. Wir haben eine Reihe kleinerer, aber wichtiger visueller Probleme korrigiert, die besonders auf iPads auftraten.
-
-Wie immer freuen wir uns über dein Feedback zu unserer App. Kontaktiere uns über die App im Tab „Mein Store“ unter Einstellungen.

@@ -24,29 +24,13 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     ///
     @Published private var productVariations: [ProductVariation] = []
 
-    /// The packages  response fetched from API
-    ///
-    @Published private var packagesResponse: ShippingLabelPackagesResponse?
-
-    var dimensionUnit: String {
-        return packagesResponse?.storeOptions.dimensionUnit ?? ""
-    }
-    var customPackages: [ShippingLabelCustomPackage] {
-        return packagesResponse?.customPackages ?? []
-    }
-    var predefinedOptions: [ShippingLabelPredefinedOption] {
-        return packagesResponse?.predefinedOptions ?? []
-    }
-
-    /// Whether there are saved custom or predefined packages to select from.
-    ///
-    var hasCustomOrPredefinedPackages: Bool {
-        return customPackages.isNotEmpty || predefinedOptions.isNotEmpty
-    }
-
     /// The weight unit used in the Store
     ///
     let weightUnit: String?
+
+    /// View model for the package list
+    ///
+    let packageListViewModel: ShippingLabelPackageListViewModel
 
     /// The items rows observed by the main view `ShippingLabelPackageDetails`
     ///
@@ -56,41 +40,53 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     ///
     @Published var selectedPackageID: String?
 
+    /// List of selected package with basic info.
+    /// TODO-4599: update this to properly support multi-package.
+    ///
+    var selectedPackagesDetails: [ShippingLabelPackageAttributes] {
+        guard let id = selectedPackageID, totalWeight.isNotEmpty else {
+            return []
+        }
+        return [ShippingLabelPackageAttributes(packageID: id, totalWeight: totalWeight, productIDs: orderItems.map { $0.productOrVariationID })]
+    }
+
     /// The title of the selected package, if any.
     ///
     var selectedPackageName: String {
-        if let selectedCustomPackage = selectedCustomPackage {
+        if let selectedCustomPackage = packageListViewModel.selectedCustomPackage {
             return selectedCustomPackage.title
         }
-        else if let selectedPredefinedPackage = selectedPredefinedPackage {
+        else if let selectedPredefinedPackage = packageListViewModel.selectedPredefinedPackage {
             return selectedPredefinedPackage.title
         }
         else {
             return Localization.selectPackagePlaceholder
         }
     }
-    @Published private(set) var selectedCustomPackage: ShippingLabelCustomPackage?
-    @Published private(set) var selectedPredefinedPackage: ShippingLabelPredefinedPackage?
+
     @Published var totalWeight: String = ""
 
     /// Whether the user has edited the total package weight. If true, we won't make any automatic changes to the total weight.
     ///
     @Published private var isPackageWeightEdited: Bool = false
 
-    /// Returns if the custom packages header should be shown in Package List
+    /// Completion callback after package details are synced from remote
     ///
-    var showCustomPackagesHeader: Bool {
-        return customPackages.count > 0
-    }
+    private let onPackageSyncCompletion: (_ packagesResponse: ShippingLabelPackagesResponse?) -> Void
+
+    /// Completion callback after selected package is saved
+    ///
+    private let onPackageSaveCompletion: (_ selectedPackages: [ShippingLabelPackageAttributes]) -> Void
 
     init(order: Order,
          packagesResponse: ShippingLabelPackagesResponse?,
-         selectedPackageID: String?,
-         totalWeight: String?,
+         selectedPackages: [ShippingLabelPackageAttributes],
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
+         weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
+         onPackageSyncCompletion: @escaping (_ packagesResponse: ShippingLabelPackagesResponse?) -> Void,
+         onPackageSaveCompletion: @escaping (_ selectedPackages: [ShippingLabelPackageAttributes]) -> Void) {
         self.order = order
         self.orderItems = order.items
         self.currency = order.currency
@@ -98,15 +94,21 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.weightUnit = weightUnit
-        self.packagesResponse = packagesResponse
-        self.selectedPackageID = selectedPackageID
+        self.packageListViewModel = ShippingLabelPackageListViewModel(siteID: order.siteID, packagesResponse: packagesResponse)
+        // This is temporary solution while supporting both single and multiple packages solution.
+        self.selectedPackageID = selectedPackages.first?.packageID
+        self.onPackageSyncCompletion = onPackageSyncCompletion
+        self.onPackageSaveCompletion = onPackageSaveCompletion
+        self.packageListViewModel.delegate = self
 
         configureResultsControllers()
         setDefaultPackage()
         syncProducts()
         syncProductVariations()
         configureItemRows()
-        configureTotalWeights(initialTotalWeight: totalWeight)
+
+        // This is temporary solution while supporting both single and multiple packages solution.
+        configureTotalWeights(initialTotalWeight: selectedPackages.first?.totalWeight)
     }
 
     /// Observe changes in products and variations to update item rows.
@@ -125,7 +127,9 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     ///
     private func configureTotalWeights(initialTotalWeight: String?) {
         if let initialTotalWeight = initialTotalWeight {
-            let calculatedWeight = calculateTotalWeight(products: products, productVariations: productVariations, customPackage: selectedCustomPackage)
+            let calculatedWeight = calculateTotalWeight(products: products,
+                                                        productVariations: productVariations,
+                                                        customPackage: packageListViewModel.selectedCustomPackage)
             // Return early if manual input is detected
             if initialTotalWeight != String(calculatedWeight) {
                 isPackageWeightEdited = true
@@ -137,7 +141,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         // This takes into account changes of selected custom package, products and variations.
         // The stream should be completed immediately if manual input of package weight is detected.
         //
-        let calculatedWeight = $selectedCustomPackage.combineLatest($products, $productVariations)
+        let calculatedWeight = packageListViewModel.$selectedCustomPackage.combineLatest($products, $productVariations)
             .map { [weak self] (customPackage, products, variations) -> Double in
                 self?.calculateTotalWeight(products: products, productVariations: variations, customPackage: customPackage) ?? 0
             }
@@ -213,7 +217,7 @@ private extension ShippingLabelPackageDetailsViewModel {
                     let subtitle = Localization.subtitle(weight: weight.description,
                                                          weightUnit: unit,
                                                          attributes: attributes)
-                    itemsToFulfill.append(ItemToFulfillRow(title: item.name, subtitle: subtitle))
+                    itemsToFulfill.append(ItemToFulfillRow(id: item.itemID, title: item.name, subtitle: subtitle))
                 }
             }
         }
@@ -262,55 +266,20 @@ extension ShippingLabelPackageDetailsViewModel {
     func isPackageDetailsDoneButtonEnabled() -> Bool {
         return !selectedPackageID.isNilOrEmpty && totalWeight.isNotEmpty && Double(totalWeight) != 0 && Double(totalWeight) != nil
     }
+
+    func savePackageSelection() {
+        onPackageSaveCompletion(selectedPackagesDetails)
+    }
 }
 
 // MARK: - Package Selection
-extension ShippingLabelPackageDetailsViewModel {
-    func didSelectPackage(_ id: String) {
-        selectCustomPackage(id)
-        selectPredefinedPackage(id)
+extension ShippingLabelPackageDetailsViewModel: ShippingLabelPackageSelectionDelegate {
+    func didSelectPackage(id: String) {
+        selectedPackageID = id
     }
 
-    private func selectCustomPackage(_ id: String) {
-        guard let packagesResponse = packagesResponse else {
-            return
-        }
-
-        for customPackage in packagesResponse.customPackages {
-            if customPackage.title == id {
-                selectedCustomPackage = customPackage
-                selectedPredefinedPackage = nil
-                return
-            }
-        }
-    }
-
-    private func selectPredefinedPackage(_ id: String) {
-        guard let packagesResponse = packagesResponse else {
-            return
-        }
-
-        for option in packagesResponse.predefinedOptions {
-            for predefinedPackage in option.predefinedPackages {
-                if predefinedPackage.id == id {
-                    selectedCustomPackage = nil
-                    selectedPredefinedPackage = predefinedPackage
-                    return
-                }
-            }
-        }
-    }
-
-    /// Writes into the binding variable the final package selection value when confirmed.
-    /// Also sets the total weight for the package, including the selected package weight (if any).
-    ///
-    func confirmPackageSelection() {
-        if let selectedCustomPackage = selectedCustomPackage {
-            selectedPackageID = selectedCustomPackage.title
-        }
-        else if let selectedPredefinedPackage = selectedPredefinedPackage {
-            selectedPackageID = selectedPredefinedPackage.id
-        }
+    func didSyncPackages(packagesResponse: ShippingLabelPackagesResponse?) {
+        onPackageSyncCompletion(packagesResponse)
     }
 
     /// Sets the package passed through the init method, or set the last selected package, if any, as the default selected package
@@ -319,8 +288,8 @@ extension ShippingLabelPackageDetailsViewModel {
         guard let selectedPackageID = selectedPackageID ?? resultsControllers?.accountSettings?.lastSelectedPackageID else {
             return
         }
-        didSelectPackage(selectedPackageID)
-        confirmPackageSelection()
+        packageListViewModel.didSelectPackage(selectedPackageID)
+        packageListViewModel.confirmPackageSelection()
     }
 }
 
@@ -492,7 +461,8 @@ extension ShippingLabelPackageDetailsViewModel {
     static func samplePackageDetails() -> ShippingLabelPackagesResponse {
         return ShippingLabelPackagesResponse(storeOptions: sampleShippingLabelStoreOptions(),
                                              customPackages: sampleShippingLabelCustomPackages(),
-                                             predefinedOptions: sampleShippingLabelPredefinedOptions())
+                                             predefinedOptions: sampleShippingLabelPredefinedOptions(),
+                                             unactivatedPredefinedOptions: sampleShippingLabelPredefinedOptions())
     }
 
     static func sampleShippingLabelStoreOptions() -> ShippingLabelStoreOptions {
@@ -526,6 +496,7 @@ extension ShippingLabelPackageDetailsViewModel {
                                                                  isLetter: false,
                                                                  dimensions: "28.57 x 22.22 x 15.24")]
         let predefinedOption1 = ShippingLabelPredefinedOption(title: "USPS Priority Mail Flat Rate Boxes",
+                                                              providerID: "usps",
                                                               predefinedPackages: predefinedPackages1)
 
         let predefinedPackages2 = [ShippingLabelPredefinedPackage(id: "LargePaddedPouch",
@@ -533,6 +504,7 @@ extension ShippingLabelPackageDetailsViewModel {
                                                                   isLetter: true,
                                                                   dimensions: "30.22 x 35.56 x 2.54")]
         let predefinedOption2 = ShippingLabelPredefinedOption(title: "DHL Express",
+                                                              providerID: "dhlexpress",
                                                               predefinedPackages: predefinedPackages2)
 
         return [predefinedOption1, predefinedOption2]

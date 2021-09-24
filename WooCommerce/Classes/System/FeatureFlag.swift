@@ -38,7 +38,11 @@ enum FeatureFlag: Int {
     ///
     case shippingLabelsMultiPackage
 
-    /// Card-Present Payments Onboarding
+    /// Editing of notes, shipping, and billing addresses.
     ///
-    case cardPresentOnboarding
+    case orderEditing
+
+    /// Display "What's new on WooCommerce" on App Launch and App Settings
+    ///
+    case whatsNewOnWooCommerce
 }

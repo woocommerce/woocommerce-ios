@@ -1,5 +1,0 @@
-Los vendedores de EE. UU. que deseen crear etiquetas de envío para los clientes de ese país encontrarán varias mejoras menores. Si aún no imprimes etiquetas desde la aplicación, lo primero que tienes que hacer es instalar la extensión WooCommerce Shipping & Tax en tu sitio.
-
-También hemos comprobado cómo se ve la aplicación en pantallas de diferentes tamaños y tipos de teléfono. Hemos corregido un montón de problemas de visualización menores pero significativos, especialmente notables en el iPad.
-
-Como siempre, agradecemos tus comentarios sobre la aplicación. Puedes contactar con nosotros a través de la aplicación, en la pestaña "Mi tienda".

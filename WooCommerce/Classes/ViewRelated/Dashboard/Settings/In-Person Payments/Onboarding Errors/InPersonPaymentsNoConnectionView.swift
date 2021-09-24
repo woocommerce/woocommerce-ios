@@ -4,7 +4,7 @@ struct InPersonPaymentsNoConnection: View {
     let onRefresh: () -> Void
 
     var body: some View {
-        VStack {
+        ScrollableVStack {
             Spacer()
 
             VStack(alignment: .center, spacing: 42) {
@@ -22,7 +22,6 @@ struct InPersonPaymentsNoConnection: View {
                 .buttonStyle(PrimaryButtonStyle())
                 .padding(.bottom, 24.0)
         }
-          .padding(24.0)
       }
 }
 

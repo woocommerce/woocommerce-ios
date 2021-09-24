@@ -17,6 +17,7 @@ class CustomerInfoTableViewCell: UITableViewCell {
         }
     }
 
+    @IBOutlet private weak var editButton: UIButton!
 
     var title: String? {
         get {
@@ -45,10 +46,41 @@ class CustomerInfoTableViewCell: UITableViewCell {
         }
     }
 
+    /// Closure to be invoked when the edit icon is tapped
+    /// Setting a value makes the button visible
+    ///
+    var onEditTapped: (() -> Void)? {
+        didSet {
+            let shouldHideEditButton = onEditTapped == nil
+            editButton.isHidden = shouldHideEditButton
+        }
+    }
+
+    /// Accessibility label to be used on the edit button, when shown
+    ///
+    var editButtonAccessibilityLabel: String? {
+        get {
+            editButton.accessibilityLabel
+        }
+        set {
+            editButton.accessibilityLabel = newValue
+        }
+    }
+
     override func awakeFromNib() {
         super.awakeFromNib()
 
         configureBackground()
+        configureEditButton()
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        titleLabel.text = nil
+        nameLabel.text = nil
+        addressLabel.text = nil
+        onEditTapped = nil
+        editButton.accessibilityLabel = nil
     }
 }
 
@@ -56,6 +88,15 @@ class CustomerInfoTableViewCell: UITableViewCell {
 private extension CustomerInfoTableViewCell {
     func configureBackground() {
         applyDefaultBackgroundStyle()
+    }
+
+    func configureEditButton() {
+        editButton.applyIconButtonStyle(icon: .pencilImage)
+        editButton.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
+    }
+
+    @objc func editButtonTapped() {
+        onEditTapped?()
     }
 }
 

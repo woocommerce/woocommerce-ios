@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
@@ -17,7 +18,11 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
 
     /// Input customs forms of the shipping label if added initially.
     ///
-    @Published var customsForms: [ShippingLabelCustomsForm]
+    @Published private(set) var customsForms: [ShippingLabelCustomsForm]
+
+    /// Whether done button should be enabled.
+    ///
+    @Published private(set) var doneButtonEnabled: Bool = false
 
     /// Associated order of the shipping label.
     ///
@@ -35,6 +40,14 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
     ///
     private let allCountries: [Country]
 
+    /// Destination country for the shipment.
+    ///
+    private let destinationCountry: Country
+
+    var validatedCustomsForms: [ShippingLabelCustomsForm] {
+        inputViewModels.compactMap { $0.validatedCustomsForm }
+    }
+
     /// Reusing Package Details results controllers since we're interested in the same models.
     ///
     private var resultsControllers: ShippingLabelPackageDetailsResultsControllers?
@@ -51,8 +64,21 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
     ///
     private let currencySymbol: String
 
+    /// Validation states of all customs forms.
+    ///
+    private var customsFormValidation: [String: Bool] = [:] {
+        didSet {
+            configureDoneButton()
+        }
+    }
+
+    /// References to keep the Combine subscriptions alive with the class.
+    ///
+    private var cancellables: Set<AnyCancellable> = []
+
     init(order: Order,
          customsForms: [ShippingLabelCustomsForm],
+         destinationCountry: Country,
          countries: [Country],
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
@@ -61,6 +87,7 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.allCountries = countries
+        self.destinationCountry = destinationCountry
         let currencySymbol: String = {
             guard let currencyCode = CurrencySettings.CurrencyCode(rawValue: order.currency) else {
                 return ""
@@ -68,10 +95,35 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
             return ServiceLocator.currencySettings.symbol(from: currencyCode)
         }()
         self.currencySymbol = currencySymbol
-        self.inputViewModels = customsForms.map { .init(customsForm: $0, countries: countries, currency: currencySymbol) }
-
+        self.inputViewModels = customsForms.map { .init(customsForm: $0,
+                                                        destinationCountry: destinationCountry,
+                                                        countries: countries,
+                                                        currency: currencySymbol) }
+        configureFormsValidation()
         configureResultsControllers()
         updateItemDetails()
+    }
+}
+
+// MARK: - Validation
+//
+private extension ShippingLabelCustomsFormListViewModel {
+    /// Observe changes in all customs forms and save their validation states by package ID.
+    ///
+    func configureFormsValidation() {
+        inputViewModels.forEach { viewModel in
+            viewModel.$validForm
+                .sink { [weak self] isValid in
+                    self?.customsFormValidation[viewModel.packageID] = isValid
+                }
+                .store(in: &cancellables)
+        }
+    }
+
+    /// Check if all forms are validated to enable Done button.
+    ///
+    func configureDoneButton() {
+        doneButtonEnabled = customsFormValidation.values.first(where: { !$0 }) == nil
     }
 }
 
@@ -87,7 +139,11 @@ private extension ShippingLabelCustomsFormListViewModel {
         }
         .handleEvents(receiveOutput: { [weak self] customsForms in
             guard let self = self else { return }
-            self.inputViewModels = customsForms.map { .init(customsForm: $0, countries: self.allCountries, currency: self.currencySymbol) }
+            self.inputViewModels = customsForms.map { .init(customsForm: $0,
+                                                            destinationCountry: self.destinationCountry,
+                                                            countries: self.allCountries,
+                                                            currency: self.currencySymbol) }
+            self.configureFormsValidation()
         })
         .assign(to: &$customsForms)
     }

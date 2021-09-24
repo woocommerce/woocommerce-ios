@@ -5,9 +5,29 @@ import Yosemite
 ///
 final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
     private var connectedReaders: [CardReader]
+    private var discoveredReaders: [CardReader]
+    private var failDiscovery: Bool
+    private var readerUpdateAvailable: Bool
+    private var failReaderUpdateCheck: Bool
+    private var failUpdate: Bool
+    private var failConnection: Bool
 
-    init(connectedReaders: [CardReader], sessionManager: SessionManager) {
+    init(connectedReaders: [CardReader],
+         discoveredReaders: [CardReader],
+         sessionManager: SessionManager,
+         failDiscovery: Bool = false,
+         readerUpdateAvailable: Bool = false,
+         failReaderUpdateCheck: Bool = false,
+         failUpdate: Bool = false,
+         failConnection: Bool = false
+    ) {
         self.connectedReaders = connectedReaders
+        self.discoveredReaders = discoveredReaders
+        self.failDiscovery = failDiscovery
+        self.readerUpdateAvailable = readerUpdateAvailable
+        self.failReaderUpdateCheck = failReaderUpdateCheck
+        self.failUpdate = failUpdate
+        self.failConnection = failConnection
         super.init(sessionManager: sessionManager)
     }
 
@@ -23,8 +43,60 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
         switch action {
         case .observeConnectedReaders(let onCompletion):
             onCompletion(connectedReaders)
+        case .startCardReaderDiscovery(_, let onReaderDiscovered, let onError):
+            guard !failDiscovery else {
+                onError(MockErrors.discoveryFailure)
+                return
+            }
+            guard discoveredReaders.isNotEmpty else {
+                return
+            }
+            onReaderDiscovered(discoveredReaders)
+        case .connect(let reader, let onCompletion):
+            guard !failConnection else {
+                onCompletion(Result.failure(MockErrors.connectionFailure))
+                return
+            }
+            onCompletion(Result.success(reader))
+        case .cancelCardReaderDiscovery(let onCompletion):
+            onCompletion(Result.success(()))
+        case .checkForCardReaderUpdate(let onCompletion):
+            guard !failReaderUpdateCheck else {
+                onCompletion(Result.failure(MockErrors.readerUpdateCheckFailure))
+                return
+            }
+            guard readerUpdateAvailable else {
+                onCompletion(Result.success(nil))
+                return
+            }
+            onCompletion(Result.success(mockUpdate()))
+        case .startCardReaderUpdate(let onProgress, let onCompletion):
+            onProgress(0.5)
+            guard !failUpdate else {
+                onCompletion(Result.failure(MockErrors.readerUpdateFailure))
+                return
+            }
+            onCompletion(Result.success(()))
         default:
             fatalError("Not available")
         }
+    }
+}
+
+extension MockCardPresentPaymentsStoresManager {
+    enum MockErrors: Error {
+        case discoveryFailure
+        case readerUpdateCheckFailure
+        case readerUpdateFailure
+        case connectionFailure
+    }
+}
+
+extension MockCardPresentPaymentsStoresManager {
+    func mockUpdate() -> CardReaderSoftwareUpdate {
+        CardReaderSoftwareUpdate(
+            estimatedUpdateTime: .betweenFiveAndFifteenMinutes,
+            deviceSoftwareVersion: "MOCKVERSION"
+        )
     }
 }

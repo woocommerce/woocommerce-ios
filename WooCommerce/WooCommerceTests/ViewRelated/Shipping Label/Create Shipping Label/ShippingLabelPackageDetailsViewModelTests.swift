@@ -35,10 +35,11 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageID: nil,
-                                                             totalWeight: nil,
+                                                             selectedPackages: [],
                                                              formatter: currencyFormatter,
-                                                             storageManager: storageManager)
+                                                             storageManager: storageManager,
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.itemsRows.count, 0)
@@ -59,17 +60,18 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                               variationID: 49,
                                               quantity: 1,
                                               attributes: orderItemAttributes)]
-        let expectedFirstItemRow = ItemToFulfillRow(title: "Easter Egg", subtitle: "123 kg")
-        let expectedLastItemRow = ItemToFulfillRow(title: "Jeans", subtitle: "Box・0 kg")
+        let expectedFirstItemRow = ItemToFulfillRow(id: 123, title: "Easter Egg", subtitle: "123 kg")
+        let expectedLastItemRow = ItemToFulfillRow(id: 234, title: "Jeans", subtitle: "Box・0 kg")
         let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageID: nil,
-                                                             totalWeight: nil,
+                                                             selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
-                                                             weightUnit: "kg")
+                                                             weightUnit: "kg",
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
         XCTAssertEqual(viewModel.itemsRows.count, 0)
 
         // When
@@ -106,23 +108,24 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageID: nil,
-                                                             totalWeight: nil,
+                                                             selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              stores: stores,
                                                              storageManager: storageManager,
-                                                             weightUnit: "kg")
+                                                             weightUnit: "kg",
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
 
 
-        XCTAssertNil(viewModel.selectedCustomPackage)
-        XCTAssertNil(viewModel.selectedPredefinedPackage)
+        XCTAssertNil(viewModel.packageListViewModel.selectedCustomPackage)
+        XCTAssertNil(viewModel.packageListViewModel.selectedPredefinedPackage)
 
         // When
-        viewModel.didSelectPackage(customPackage.title)
+        viewModel.packageListViewModel.didSelectPackage(customPackage.title)
 
         // Then
-        XCTAssertEqual(viewModel.selectedCustomPackage, customPackage)
-        XCTAssertNil(viewModel.selectedPredefinedPackage)
+        XCTAssertEqual(viewModel.packageListViewModel.selectedCustomPackage, customPackage)
+        XCTAssertNil(viewModel.packageListViewModel.selectedPredefinedPackage)
     }
 
     func test_confirmPackageSelection_returns_the_expected_value() {
@@ -137,19 +140,20 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageID: nil,
-                                                             totalWeight: nil,
+                                                             selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              stores: stores,
                                                              storageManager: storageManager,
-                                                             weightUnit: "kg")
+                                                             weightUnit: "kg",
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
 
-        XCTAssertNil(viewModel.selectedCustomPackage)
-        XCTAssertNil(viewModel.selectedPredefinedPackage)
+        XCTAssertNil(viewModel.packageListViewModel.selectedCustomPackage)
+        XCTAssertNil(viewModel.packageListViewModel.selectedPredefinedPackage)
 
         // When
-        viewModel.didSelectPackage(customPackage.title)
-        viewModel.confirmPackageSelection()
+        viewModel.packageListViewModel.didSelectPackage(customPackage.title)
+        viewModel.packageListViewModel.confirmPackageSelection()
 
         // Then
         XCTAssertEqual(viewModel.selectedPackageID, customPackage.title)
@@ -161,16 +165,17 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageID: nil,
-                                                             totalWeight: nil,
+                                                             selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              stores: stores,
                                                              storageManager: storageManager,
-                                                             weightUnit: "kg")
+                                                             weightUnit: "kg",
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
 
 
         // Then
-        XCTAssertTrue(viewModel.showCustomPackagesHeader)
+        XCTAssertTrue(viewModel.packageListViewModel.showCustomPackagesHeader)
     }
 
     func test_selected_package_defaults_to_last_selected_package() {
@@ -180,12 +185,13 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageID: nil,
-                                                             totalWeight: nil,
+                                                             selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              stores: stores,
                                                              storageManager: storageManager,
-                                                             weightUnit: "kg")
+                                                             weightUnit: "kg",
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.selectedPackageID, "package-1")
@@ -202,11 +208,12 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120"))
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageID: "Box",
-                                                             totalWeight: nil,
+                                                             selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
-                                                             weightUnit: "kg")
+                                                             weightUnit: "kg",
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
 
         // When
         viewModel.selectedPackageID = "sample-package"
@@ -226,11 +233,12 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120"))
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageID: "Box",
-                                                             totalWeight: nil,
+                                                             selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
-                                                             weightUnit: "kg")
+                                                             weightUnit: "kg",
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
 
         // When
         viewModel.selectedPackageID = "sample-package"
@@ -283,12 +291,14 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
 
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageID: "Box",
-                                                             totalWeight: nil,
+                                                             selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
-                                                             weightUnit: "kg")
-
+                                                             weightUnit: "kg",
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
+        viewModel.packageListViewModel.didSelectPackage("Box")
+        viewModel.packageListViewModel.confirmPackageSelection()
 
         // Then
         XCTAssertEqual(viewModel.totalWeight, "72.88")
@@ -319,14 +329,15 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                             productVariationID: 49,
                                             attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")]))
 
-
+        let selectedPackages = [ShippingLabelPackageAttributes(packageID: "Box", totalWeight: "30", productIDs: [1, 33, 23, 49])]
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageID: nil,
-                                                             totalWeight: "30",
+                                                             selectedPackages: selectedPackages,
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
-                                                             weightUnit: "kg")
+                                                             weightUnit: "kg",
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
         XCTAssertEqual(viewModel.totalWeight, "30")
 
         // Then
@@ -349,18 +360,19 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
 
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageID: nil,
-                                                             totalWeight: nil,
+                                                             selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
-                                                             weightUnit: "kg")
+                                                             weightUnit: "kg",
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.totalWeight, "120.0")
 
         // When
-        viewModel.didSelectPackage("Box")
-        viewModel.confirmPackageSelection()
+        viewModel.packageListViewModel.didSelectPackage("Box")
+        viewModel.packageListViewModel.confirmPackageSelection()
 
         // Then
         XCTAssertEqual(viewModel.totalWeight, "130.0")
@@ -374,21 +386,22 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
 
         // When
         insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120"))
-
+        let selectedPackages = [ShippingLabelPackageAttributes(packageID: "Package", totalWeight: "500", productIDs: [1])]
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageID: nil,
-                                                             totalWeight: "500",
+                                                             selectedPackages: selectedPackages,
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
-                                                             weightUnit: "kg")
+                                                             weightUnit: "kg",
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.totalWeight, "500")
 
         // When new package with additional weight is selected
-        viewModel.didSelectPackage("Box")
-        viewModel.confirmPackageSelection()
+        viewModel.packageListViewModel.didSelectPackage("Box")
+        viewModel.packageListViewModel.confirmPackageSelection()
 
         // Then
         XCTAssertEqual(viewModel.totalWeight, "500")
@@ -405,11 +418,12 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
 
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
-                                                             selectedPackageID: nil,
-                                                             totalWeight: nil,
+                                                             selectedPackages: [],
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
-                                                             weightUnit: "kg")
+                                                             weightUnit: "kg",
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.totalWeight, "120.0")
@@ -421,57 +435,11 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.totalWeight, "500")
 
         // When new package with additional weight is selected
-        viewModel.didSelectPackage("Box")
-        viewModel.confirmPackageSelection()
+        viewModel.packageListViewModel.didSelectPackage("Box")
+        viewModel.packageListViewModel.confirmPackageSelection()
 
         // Then
         XCTAssertEqual(viewModel.totalWeight, "500")
-    }
-
-    func test_hasCustomOrPredefinedPackages_returns_the_expected_value() {
-        // Given
-        let order = MockOrders().empty().copy(siteID: sampleSiteID)
-        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
-
-        // When
-        let viewModelWithoutPackages = ShippingLabelPackageDetailsViewModel(order: order,
-                                                                            packagesResponse: nil,
-                                                                            selectedPackageID: nil,
-                                                                            totalWeight: nil,
-                                                                            formatter: currencyFormatter,
-                                                                            stores: stores,
-                                                                            storageManager: storageManager,
-                                                                            weightUnit: "kg")
-        let viewModelWithPackages = ShippingLabelPackageDetailsViewModel(order: order,
-                                                                         packagesResponse: mockPackageResponse(),
-                                                                         selectedPackageID: nil,
-                                                                         totalWeight: nil,
-                                                                         formatter: currencyFormatter,
-                                                                         stores: stores,
-                                                                         storageManager: storageManager,
-                                                                         weightUnit: "kg")
-        let viewModelWithCustomPackages = ShippingLabelPackageDetailsViewModel(order: order,
-                                                                               packagesResponse: mockPackageResponse(withCustom: true, withPredefined: false),
-                                                                               selectedPackageID: nil,
-                                                                               totalWeight: nil,
-                                                                               formatter: currencyFormatter,
-                                                                               stores: stores,
-                                                                               storageManager: storageManager,
-                                                                               weightUnit: "kg")
-        let viewModelWithPredefinedPackages = ShippingLabelPackageDetailsViewModel(order: order,
-                                                                               packagesResponse: mockPackageResponse(withCustom: false, withPredefined: true),
-                                                                               selectedPackageID: nil,
-                                                                               totalWeight: nil,
-                                                                               formatter: currencyFormatter,
-                                                                               stores: stores,
-                                                                               storageManager: storageManager,
-                                                                               weightUnit: "kg")
-
-        // Then
-        XCTAssertFalse(viewModelWithoutPackages.hasCustomOrPredefinedPackages)
-        XCTAssertTrue(viewModelWithPackages.hasCustomOrPredefinedPackages)
-        XCTAssertTrue(viewModelWithCustomPackages.hasCustomOrPredefinedPackages)
-        XCTAssertTrue(viewModelWithPredefinedPackages.hasCustomOrPredefinedPackages)
     }
 }
 
@@ -521,18 +489,21 @@ private extension ShippingLabelPackageDetailsViewModelTests {
                                        boxWeight: 7,
                                        maxWeight: 10)]
 
-        let predefinedOptions = [ShippingLabelPredefinedOption(title: "USPS", predefinedPackages: [ShippingLabelPredefinedPackage(id: "package-1",
-                                                                                                                                  title: "Small",
-                                                                                                                                  isLetter: true,
-                                                                                                                                  dimensions: "3 x 4 x 5"),
-                                                                                                   ShippingLabelPredefinedPackage(id: "package-2",
-                                                                                                                                  title: "Big",
-                                                                                                                                  isLetter: true,
-                                                                                                                                  dimensions: "5 x 7 x 9")])]
+        let predefinedOptions = [ShippingLabelPredefinedOption(title: "USPS",
+                                                               providerID: "usps",
+                                                               predefinedPackages: [ShippingLabelPredefinedPackage(id: "package-1",
+                                                                                                                   title: "Small",
+                                                                                                                   isLetter: true,
+                                                                                                                   dimensions: "3 x 4 x 5"),
+                                                                                    ShippingLabelPredefinedPackage(id: "package-2",
+                                                                                                                   title: "Big",
+                                                                                                                   isLetter: true,
+                                                                                                                   dimensions: "5 x 7 x 9")])]
 
         let packagesResponse = ShippingLabelPackagesResponse(storeOptions: storeOptions,
                                                              customPackages: withCustom ? customPackages : [],
-                                                             predefinedOptions: withPredefined ? predefinedOptions : [])
+                                                             predefinedOptions: withPredefined ? predefinedOptions : [],
+                                                             unactivatedPredefinedOptions: [])
 
         return packagesResponse
     }

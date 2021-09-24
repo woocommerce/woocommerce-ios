@@ -1,5 +1,0 @@
-Handlare i USA som vill skapa fraktetiketter för sina amerikanska kunder kommer att hitta flera mindre förbättringar. Om du inte redan skriver ut etiketter från appen, kom igång genom att installera utökningen WooCommerce Shipping & Tax på din webbplats.
-
-Vi har även tittat på hur appen såg ut med olika skärmstorlekar och telefontyper. Vi har åtgärdat en del mindre men viktiga visuella problem, särskilt noterbara på iPads.
-
-Som alltid välkomnar vi din feedback om appen. Kontakta oss via appen under Inställningar på fliken Min butik.

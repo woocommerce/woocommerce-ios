@@ -53,6 +53,10 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
         accountSettings.canEditSettings
     }
 
+    /// The URL path that will trigger the exit from the webview for adding a new payment method
+    ///
+    let fetchPaymentMethodURLPath = "me/purchases/payment-methods"
+
     init(accountSettings: ShippingLabelAccountSettings) {
         self.accountSettings = accountSettings
         self.selectedPaymentMethodID = accountSettings.selectedPaymentMethodID
@@ -68,13 +72,30 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
     func isDoneButtonEnabled() -> Bool {
         let isPaymentMethodChanged = selectedPaymentMethodID != accountSettings.selectedPaymentMethodID
         let isEmailReceiptsChanged = isEmailReceiptsEnabled != accountSettings.isEmailReceiptsEnabled
-        return ( isPaymentMethodChanged || isEmailReceiptsChanged ) && !isUpdating
+        return ( isPaymentMethodChanged || isEmailReceiptsChanged ) && !isUpdating && accountSettings.paymentMethods.isNotEmpty
     }
 }
 
 // MARK: - API Requests
 //
 extension ShippingLabelPaymentMethodsViewModel {
+
+    /// Syncs account settings specific to shipping labels, such as the last selected package and payment methods.
+    ///
+    func syncShippingLabelAccountSettings() {
+        let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: accountSettings.siteID) { [weak self] result in
+            guard let self = self else { return }
+
+            switch result {
+            case .success(let value):
+                self.accountSettings = value
+                self.selectedPaymentMethodID = value.selectedPaymentMethodID
+            case .failure:
+                DDLogError("⛔️ Error synchronizing shipping label account settings")
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
 
     /// Updates remote shipping label account settings
     ///

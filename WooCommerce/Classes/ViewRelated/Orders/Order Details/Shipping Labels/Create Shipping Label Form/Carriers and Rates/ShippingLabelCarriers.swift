@@ -56,13 +56,15 @@ struct ShippingLabelCarriers: View {
                                     .frame(width: geometry.size.width)
                             }
                         }
+                        .padding(.horizontal, insets: geometry.safeAreaInsets)
                         .frame(minHeight: geometry.size.height)
                     default:
                         EmptyView()
                     }
                 }
+                .padding(.bottom, insets: geometry.safeAreaInsets)
             }
-            .edgesIgnoringSafeArea(.horizontal)
+            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
             .navigationTitle(Localization.titleView)
             .navigationBarItems(trailing: Button(action: {
                 onCompletion(viewModel.getSelectedRates().selectedRate,

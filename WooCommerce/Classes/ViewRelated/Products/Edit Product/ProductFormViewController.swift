@@ -122,9 +122,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 self.displayErrorAlert(title: title, message: message)
             }
 
-            if productImageStatuses.hasPendingUpload {
-                self.onImageStatusesUpdated(statuses: productImageStatuses)
-            }
+            self.onImageStatusesUpdated(statuses: productImageStatuses)
 
             self.viewModel.updateImages(productImageStatuses.images)
         }
@@ -134,6 +132,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         super.viewWillDisappear(animated)
 
         view.endEditing(true)
+    }
+
+    override var shouldShowOfflineBanner: Bool {
+        return true
     }
 
     // MARK: - Navigation actions handling
@@ -405,6 +407,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 // MARK: - Configuration
 //
 private extension ProductFormViewController {
+
     func configureNavigationBar() {
         updateNavigationBar()
         updateBackButtonTitle()

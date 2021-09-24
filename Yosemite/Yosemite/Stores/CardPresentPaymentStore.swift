@@ -49,8 +49,6 @@ public final class CardPresentPaymentStore: Store {
             disconnect(onCompletion: completion)
         case .observeConnectedReaders(let completion):
             observeConnectedReaders(onCompletion: completion)
-        case .fetchOrderCustomer(let siteID, let orderID, let completion):
-            fetchOrderCustomer(siteID: siteID, orderID: orderID, completion: completion)
         case .collectPayment(let siteID, let orderID, let parameters, let event, let completion):
             collectPayment(siteID: siteID,
                            orderID: orderID,
@@ -95,7 +93,10 @@ private extension CardPresentPaymentStore {
                         onError(error)
                     }
                 },
-                receiveValue: onReaderDiscovered
+                receiveValue: { readers in
+                    let supportedReaders = readers.filter({$0.readerType != .notSupported})
+                    onReaderDiscovered(supportedReaders)
+                }
             ))
     }
 
@@ -178,10 +179,6 @@ private extension CardPresentPaymentStore {
         }
     }
 
-    func fetchOrderCustomer(siteID: Int64, orderID: Int64, completion: @escaping (Result<WCPayCustomer, Error>) -> Void) {
-        remote.fetchOrderCustomer(for: siteID, orderID: orderID, completion: completion)
-    }
-
     func cancelPayment(onCompletion: ((Result<Void, Error>) -> Void)?) {
         paymentCancellable?.cancel()
         paymentCancellable = nil
@@ -201,16 +198,22 @@ private extension CardPresentPaymentStore {
 
     func checkForCardReaderUpdate(onCompletion: @escaping (Result<CardReaderSoftwareUpdate?, Error>) -> Void) {
         cardReaderService.checkForUpdate()
-            .subscribe(Subscribers.Sink { value in
-                switch value {
-                case .failure(let error):
-                    onCompletion(.failure(error))
-                case .finished:
-                    onCompletion(.success(nil))
-                }
-            } receiveValue: {softwareUpdate in
-                onCompletion(.success(softwareUpdate))
-            })
+            .sink(
+                // If the future is a failure, it will only fire receiveCompletion
+                receiveCompletion: { value in
+                    if case .failure(let error) = value {
+                        onCompletion(.failure(error))
+                    }
+
+                },
+                // If the future is a success, it will fire receiveValue and receiveCompletion
+                receiveValue: { softwareUpdate in
+                    onCompletion(.success(softwareUpdate))
+                })
+            // Note: We don't need to explicitly call cancel on this subscription since
+            // when the publisher completes, cancel will be called for us, and a Future
+            // completes after fulfilling its promise.
+            .store(in: &cancellables)
     }
 
     func startCardReaderUpdate(onProgress: @escaping (Float) -> Void,

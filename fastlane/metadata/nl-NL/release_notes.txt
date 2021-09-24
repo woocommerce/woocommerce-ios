@@ -1,5 +1,0 @@
-Voor de verkopers in de VS die verzendlabels willen aanmaken voor hun binnenlandse klanten hebben we enkele kleine verbeteringen doorgevoerd. Begin door de extensie WooCommerce Shipping en Tax op je site te installeren, als je nog geen labels vanuit de app afdrukt.
-
-Daarnaast hebben we gekeken hoe de app eruit ziet op verschillende schermformaten en typen telefoons. We hebben een reeks kleine maar belangrijke visuele problemen verholpen, die met name op iPads voorkwamen.
-
-En ook nu weer geldt: we horen graag je feedback over de app. Neem contact met ons op via de app bij Instellingen, binnen het tabblad Mijn winkel.

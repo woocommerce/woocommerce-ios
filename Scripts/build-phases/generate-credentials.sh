@@ -34,7 +34,7 @@ if [ ! -f $SECRETS_PATH ]; then
     ## then copy it into place for the build.
     ##
     if [ ! -f $CREDS_OUTPUT_PATH ]; then
-        echo ">> Creating Credentials File from Template: ${CREDS_FILE_PATH}"
+        echo ">> Creating Credentials File from Template: ${CREDS_TEMPLATE_PATH}"
         cp ${CREDS_TEMPLATE_PATH} ${CREDS_OUTPUT_PATH}
     fi
 
@@ -50,7 +50,7 @@ if [ ! -f $SECRETS_PATH ]; then
     ## then copy it into place for the build.
     ##
     if [ ! -f $BASH_OUTPUT_PATH ]; then
-        echo ">> Creating Bash Secrets File from Template: ${BASH_FILE_PATH}"
+        echo ">> Creating Bash Secrets File from Template: ${BASH_INPUT_PATH}"
         cp ${BASH_INPUT_PATH} ${BASH_OUTPUT_PATH}
     fi
 
@@ -61,6 +61,16 @@ else
     ## Generate the Derived Folder. If needed
     ##
     mkdir -p ${DERIVED_PATH}
+
+    if which rbenv; then
+      # Fix an issue where, depending on the shell you are using on your machine and your rbenv setup,
+      #   running `ruby` in a bash script from Xcode script build phase might not use the right ruby
+      #   (and thus not find the appropriate gems installed by bundle & Gemfile.lock and crash).
+      # So if rbenv is installed, make sure the shims for `ruby` are too in the context of this bash script,
+      #   so that it uses the right ruby version defined in `.ruby-version` instead of risking to use the system one.
+      eval "$(rbenv init -)"
+      rbenv rehash
+    fi
 
     ## Generate ApiCredentials.swift
     ##

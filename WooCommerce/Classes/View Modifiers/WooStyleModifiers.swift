@@ -18,6 +18,15 @@ struct BodyStyle: ViewModifier {
     }
 }
 
+
+struct LargeTitleStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.largeTitle)
+            .foregroundColor(Color(.text))
+    }
+}
+
 struct SecondaryBodyStyle: ViewModifier {
     func body(content: Content) -> some View {
         content
@@ -54,6 +63,14 @@ struct FootnoteStyle: ViewModifier {
     }
 }
 
+struct ErrorStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.body)
+            .foregroundColor(Color(.error))
+    }
+}
+
 // MARK: View extensions
 extension View {
     /// - Parameters:
@@ -74,9 +91,17 @@ extension View {
         self.modifier(SubheadlineStyle())
     }
 
+    func largeTitleStyle() -> some View {
+        self.modifier(LargeTitleStyle())
+    }
+
     /// - Parameters:
     ///     - isEnabled: Whether the view is enabled (to apply specific styles for disabled view)
     func footnoteStyle(_ isEnabled: Bool = true) -> some View {
         self.modifier(FootnoteStyle(isEnabled: isEnabled))
+    }
+
+    func errorStyle() -> some View {
+        self.modifier(ErrorStyle())
     }
 }

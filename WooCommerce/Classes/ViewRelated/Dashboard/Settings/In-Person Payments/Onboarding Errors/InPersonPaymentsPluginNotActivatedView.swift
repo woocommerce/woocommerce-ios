@@ -4,7 +4,7 @@ struct InPersonPaymentsPluginNotActivated: View {
     let onRefresh: () -> Void
 
     var body: some View {
-        VStack {
+        ScrollableVStack {
             Spacer()
 
             VStack(alignment: .center, spacing: 42) {
@@ -26,7 +26,6 @@ struct InPersonPaymentsPluginNotActivated: View {
                 .padding(.bottom, 24.0)
             InPersonPaymentsLearnMore()
         }
-        .padding(24.0)
     }
 }
 

@@ -81,7 +81,8 @@ final class ShippingLabelStoreTests: XCTestCase {
                                  originAddress: origin,
                                  destinationAddress: destination,
                                  productIDs: [3013],
-                                 productNames: ["Password protected!"])
+                                 productNames: ["Password protected!"],
+                                 commercialInvoiceURL: nil)
         }()
         let expectedSettings = Yosemite.ShippingLabelSettings(siteID: sampleSiteID, orderID: orderID, paperSize: .letter)
         let expectedResponse = OrderShippingLabelListResponse(shippingLabels: [expectedShippingLabel], settings: expectedSettings)
@@ -513,7 +514,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
+        let result: Result<Bool, PackageCreationError> = waitFor { promise in
             let action = ShippingLabelAction.createPackage(siteID: self.sampleSiteID, customPackage: self.sampleShippingLabelCustomPackage()) { result in
                 promise(result)
             }
@@ -533,7 +534,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
+        let result: Result<Bool, PackageCreationError> = waitFor { promise in
             let action = ShippingLabelAction.createPackage(siteID: self.sampleSiteID, customPackage: self.sampleShippingLabelCustomPackage()) { result in
                 promise(result)
             }
@@ -541,8 +542,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         }
 
         // Then
-        let error = try XCTUnwrap(result.failure)
-        XCTAssertEqual(error as? NetworkError, expectedError)
+        XCTAssertTrue(result.isFailure)
     }
 
     // MARK: `loadCarriersAndRates`
@@ -912,7 +912,8 @@ private extension ShippingLabelStoreTests {
     func sampleShippingLabelPackagesResponse() -> Yosemite.ShippingLabelPackagesResponse {
         return ShippingLabelPackagesResponse(storeOptions: sampleShippingLabelStoreOptions(),
                                              customPackages: sampleShippingLabelCustomPackages(),
-                                             predefinedOptions: sampleShippingLabelPredefinedOptions())
+                                             predefinedOptions: sampleShippingLabelPredefinedOptions(),
+                                             unactivatedPredefinedOptions: [])
 
     }
 
@@ -956,6 +957,7 @@ private extension ShippingLabelStoreTests {
                                                                  isLetter: false,
                                                                  dimensions: "28.57 x 22.22 x 15.24")]
         let predefinedOption1 = ShippingLabelPredefinedOption(title: "USPS Priority Mail Flat Rate Boxes",
+                                                              providerID: "usps",
                                                               predefinedPackages: predefinedPackages1)
 
         let predefinedPackages2 = [ShippingLabelPredefinedPackage(id: "LargePaddedPouch",
@@ -963,6 +965,7 @@ private extension ShippingLabelStoreTests {
                                                                   isLetter: true,
                                                                   dimensions: "30.22 x 35.56 x 2.54")]
         let predefinedOption2 = ShippingLabelPredefinedOption(title: "DHL Express",
+                                                              providerID: "dhlexpress",
                                                               predefinedPackages: predefinedPackages2)
 
         return [predefinedOption1, predefinedOption2]
@@ -997,7 +1000,7 @@ private extension ShippingLabelStoreTests {
 
     func sampleShippingLabelCarrierRate() -> ShippingLabelCarrierRate {
         let rate = ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
-                                            insurance: 0,
+                                            insurance: "0",
                                             retailRate: 40.060000000000002,
                                             rate: 40.060000000000002,
                                             rateID: "rate_a8a29d5f34984722942f466c30ea27ef",

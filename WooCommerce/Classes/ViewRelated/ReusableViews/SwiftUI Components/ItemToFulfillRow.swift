@@ -3,7 +3,7 @@ import SwiftUI
 /// Represent a row of a Product Item that should be fulfilled
 ///
 struct ItemToFulfillRow: View, Identifiable {
-    let id = UUID()
+    let id: Int64
     let title: String
     let subtitle: String
 
@@ -33,7 +33,7 @@ private extension ItemToFulfillRow {
 
 struct ItemToFulfillRow_Previews: PreviewProvider {
     static var previews: some View {
-        ItemToFulfillRow(title: "Title", subtitle: "My subtitle")
+        ItemToFulfillRow(id: 123, title: "Title", subtitle: "My subtitle")
             .previewLayout(.fixed(width: 375, height: 100))
     }
 }

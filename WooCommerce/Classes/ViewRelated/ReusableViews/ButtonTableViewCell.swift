@@ -3,7 +3,7 @@ import UIKit
 /// Displays a button inside a `UITableViewCell`.
 ///
 final class ButtonTableViewCell: UITableViewCell {
-    @IBOutlet private var button: UIButton!
+    @IBOutlet private var button: ButtonActivityIndicator!
     @IBOutlet private weak var topConstraint: NSLayoutConstraint!
     @IBOutlet private weak var bottomConstraint: NSLayoutConstraint!
 
@@ -48,6 +48,14 @@ final class ButtonTableViewCell: UITableViewCell {
 
     func enableButton(_ enabled: Bool) {
         button.isEnabled = enabled
+    }
+
+    func showActivityIndicator(_ show: Bool) {
+        guard show else {
+            button.hideActivityIndicator()
+            return
+        }
+        button.showActivityIndicator()
     }
 }
 

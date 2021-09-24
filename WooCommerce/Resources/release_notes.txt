@@ -1,5 +1,5 @@
-E-mailing a note to a customer for an order with no e-mail address doesn’t make much sense – so we’re hiding that option now in that case.
+- [x] Show an improved error modal if there are problems while selecting a store. [https://github.com/woocommerce/woocommerce-ios/pull/5006]
+- [***] Shipping Labels: Merchants can now add new custom and service packages for shipping labels directly from the app. [https://github.com/woocommerce/woocommerce-ios/pull/4976]
+- [*] Fix: when product image upload fails, the image cell stop loading. [https://github.com/woocommerce/woocommerce-ios/pull/4989]
 
-Some merchants mentioned to us that orders with negative prices weren’t showing up correctly. We’ve fixed that issue, and now you should feel more positive!
 
-This release also contains a bunch of tiny improvements to make your experience smoother overall. We hope you notice the love we put into our software.

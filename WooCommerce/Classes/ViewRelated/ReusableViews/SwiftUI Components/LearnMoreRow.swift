@@ -6,17 +6,17 @@ struct LearnMoreRow: View {
 
     var body: some View {
         AttributedText(learnMoreAttributedString)
-            .accentColor(Color(.textLink))
+            .font(.subheadline)
+            .attributedTextForegroundColor(Color(.textSubtle))
+            .attributedTextLinkColor(Color(.textLink))
             .customOpenURL(binding: $learnMoreURL)
             .padding(.horizontal, Constants.horizontalPadding)
-            .frame(minHeight: Constants.rowHeight)
+            .frame(maxWidth: .infinity, minHeight: Constants.rowHeight, alignment: .leading)
             .safariSheet(url: $learnMoreURL)
     }
 
     private var learnMoreAttributedString: NSAttributedString {
         let learnMoreAttributes: [NSAttributedString.Key: Any] = [
-            .font: StyleManager.subheadlineFont,
-            .foregroundColor: UIColor.textSubtle,
             .underlineStyle: 0
         ]
 

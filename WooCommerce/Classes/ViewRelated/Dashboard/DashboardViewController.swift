@@ -119,6 +119,10 @@ final class DashboardViewController: UIViewController {
         super.viewDidLayoutSubviews()
         dashboardUI?.view.frame = containerView.bounds
     }
+
+    override var shouldShowOfflineBanner: Bool {
+        return true
+    }
 }
 
 // MARK: - Configuration

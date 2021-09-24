@@ -115,6 +115,14 @@ extension WooConstants {
         ///
         case rolesAndPermissionsInfo = "https://woocommerce.com/posts/a-guide-to-woocommerce-user-roles-permissions-and-security/"
 
+        /// URL for making the login on WordPress.com
+        ///
+        case loginWPCom = "https://wordpress.com/wp-login.php"
+
+        /// URL for adding a payment method in WCShip extension
+        ///
+        case addPaymentMethodWCShip = "https://wordpress.com/me/purchases/add-payment-method"
+
         /// Returns the URL version of the receiver
         ///
         func asURL() -> URL {

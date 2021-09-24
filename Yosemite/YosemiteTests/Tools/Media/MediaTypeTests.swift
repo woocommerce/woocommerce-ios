@@ -5,14 +5,16 @@ final class MediaTypeTests: XCTestCase {
     // MARK: - `init(fileExtension: String)`
     // Reference: https://wordpress.com/support/accepted-filetypes/
 
-    func testInitWithImageFileExtensions() {
+    func testInitWithImageFileExtensions() throws {
+        try XCTSkipIf(testingOnRosetta())
         let imageFileExtensions = ["jpg", "jpeg", "gif", "png"]
         imageFileExtensions.forEach { fileExtension in
             XCTAssertEqual(MediaType(fileExtension: fileExtension), .image, "Unexpected media type for file extension: \(fileExtension)")
         }
     }
 
-    func testInitWithVideoFileExtensions() {
+    func testInitWithVideoFileExtensions() throws {
+        try XCTSkipIf(testingOnRosetta())
         // Note: "ogv" isn't supported on iOS.
         let videoFileExtensions = ["mp4", "m4v", "mov", "wmv", "avi", "mpg", "3gp", "3g2"]
         videoFileExtensions.forEach { fileExtension in
@@ -20,7 +22,8 @@ final class MediaTypeTests: XCTestCase {
         }
     }
 
-    func testInitWithAudioFileExtensions() {
+    func testInitWithAudioFileExtensions() throws {
+        try XCTSkipIf(testingOnRosetta())
         // Note: "ogg" isn't supported on iOS.
         let audioFileExtensions = ["mp3", "m4a", "wav"]
         audioFileExtensions.forEach { fileExtension in
@@ -28,14 +31,16 @@ final class MediaTypeTests: XCTestCase {
         }
     }
 
-    func testInitWithPowerpointFileExtensions() {
+    func testInitWithPowerpointFileExtensions() throws {
+        try XCTSkipIf(testingOnRosetta())
         let presentationFileExtensions = ["ppt", "pptx", "pps", "ppsx"]
         presentationFileExtensions.forEach { fileExtension in
             XCTAssertEqual(MediaType(fileExtension: fileExtension), .powerpoint, "Unexpected media type for file extension: \(fileExtension)")
         }
     }
 
-    func testInitWithOtherFileExtensions() {
+    func testInitWithOtherFileExtensions() throws {
+        try XCTSkipIf(testingOnRosetta())
         let presentationFileExtensions = [
             "pdf", "doc", "odt", "xls", "xlsx",
             // Audio/video formats that are not supported on iOS
@@ -53,14 +58,16 @@ final class MediaTypeTests: XCTestCase {
     // - IANA, the official registry of MIME media types and maintains a list of all the official MIME types:
     //   http://www.iana.org/assignments/media-types/media-types.xhtml
 
-    func testInitWithImageMimeType() {
+    func testInitWithImageMimeType() throws {
+        try XCTSkipIf(testingOnRosetta())
         let imageMimeTypes = ["image/jpeg", "image/gif", "image/png"]
         imageMimeTypes.forEach { mimeType in
             XCTAssertEqual(MediaType(mimeType: mimeType), .image, "Unexpected media type for file extension: \(mimeType)")
         }
     }
 
-    func testInitWithVideoMimeType() {
+    func testInitWithVideoMimeType() throws {
+        try XCTSkipIf(testingOnRosetta())
         let videoMimeTypes = [
             "video/mp4", "video/x-msvideo", "video/mpeg", "video/3gpp", "video/3gpp2",
             // 3gpp/3gpp2 audio is considered as video on iOS
@@ -71,21 +78,24 @@ final class MediaTypeTests: XCTestCase {
         }
     }
 
-    func testInitWithAudioMimeType() {
+    func testInitWithAudioMimeType() throws {
+        try XCTSkipIf(testingOnRosetta())
         let audioMimeTypes = ["audio/midi", "audio/x-midi", "audio/mpeg", "audio/wav"]
         audioMimeTypes.forEach { mimeType in
             XCTAssertEqual(MediaType(mimeType: mimeType), .audio, "Unexpected media type for file extension: \(mimeType)")
         }
     }
 
-    func testInitWithPowerpointMimeType() {
+    func testInitWithPowerpointMimeType() throws {
+        try XCTSkipIf(testingOnRosetta())
         let presentationMimeTypes = ["application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation"]
         presentationMimeTypes.forEach { mimeType in
             XCTAssertEqual(MediaType(mimeType: mimeType), .powerpoint, "Unexpected media type for file extension: \(mimeType)")
         }
     }
 
-    func testInitWithOtherMimeType() {
+    func testInitWithOtherMimeType() throws {
+        try XCTSkipIf(testingOnRosetta())
         let otherMimeTypes = [
             "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             "application/vnd.oasis.opendocument.text", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

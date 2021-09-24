@@ -154,6 +154,7 @@ extension Media {
             mediaID: .fake(),
             date: .fake(),
             fileExtension: .fake(),
+            filename: .fake(),
             mimeType: .fake(),
             src: .fake(),
             thumbnailURL: .fake(),
@@ -930,7 +931,8 @@ extension ShippingLabel {
             originAddress: .fake(),
             destinationAddress: .fake(),
             productIDs: .fake(),
-            productNames: .fake()
+            productNames: .fake(),
+            commercialInvoiceURL: .fake()
         )
     }
 }
@@ -1140,7 +1142,8 @@ extension ShippingLabelPackagesResponse {
         .init(
             storeOptions: .fake(),
             customPackages: .fake(),
-            predefinedOptions: .fake()
+            predefinedOptions: .fake(),
+            unactivatedPredefinedOptions: .fake()
         )
     }
 }
@@ -1177,6 +1180,7 @@ extension ShippingLabelPredefinedOption {
     public static func fake() -> ShippingLabelPredefinedOption {
         .init(
             title: .fake(),
+            providerID: .fake(),
             predefinedPackages: .fake()
         )
     }

@@ -1,5 +1,0 @@
-I commercianti degli Stati Uniti che desiderano creare etichette di spedizione per i propri clienti statunitensi troveranno vari piccoli miglioramenti. Se non stai già stampando etichette dall'app, inizia installando l'estensione WooCommerce Shipping & Tax sul tuo sito.
-
-Abbiamo anche dato un'occhiata all'aspetto dell'app su schermi di diverse dimensioni e tipologie di cellulare differenti. Abbiamo corretto una serie di problemi piccoli ma significativi, evidenti soprattutto sugli iPad.
-
-Come sempre, saremo lieti di ricevere feedback sull'app. Contattaci tramite l'app sotto Impostazioni nella scheda Il mio negozio.

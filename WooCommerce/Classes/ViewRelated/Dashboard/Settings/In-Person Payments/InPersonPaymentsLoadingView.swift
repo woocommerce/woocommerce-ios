@@ -2,7 +2,7 @@ import SwiftUI
 
 struct InPersonPaymentsLoading: View {
     var body: some View {
-        VStack {
+        ScrollableVStack {
             Spacer()
 
             VStack(alignment: .center, spacing: 42) {
@@ -16,7 +16,6 @@ struct InPersonPaymentsLoading: View {
 
             Spacer()
         }
-        .padding(24.0)
     }
 }
 

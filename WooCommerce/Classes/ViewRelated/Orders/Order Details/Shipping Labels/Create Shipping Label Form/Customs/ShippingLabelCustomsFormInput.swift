@@ -27,54 +27,9 @@ struct ShippingLabelCustomsFormInput: View {
                 TitleAndToggleRow(title: Localization.returnPolicyTitle, isSubheadline: true, isOn: $viewModel.returnOnNonDelivery)
                     .padding(.bottom, Constants.verticalPadding)
                     .padding(.horizontal, Constants.horizontalPadding)
-
-                TitleAndValueRow(title: Localization.contentTypeTitle, value: viewModel.contentsType.localizedName, selectable: true) {
-                    showingContentTypes.toggle()
-                }
-                .sheet(isPresented: $showingContentTypes, content: {
-                    SelectionList(title: Localization.contentTypeTitle,
-                                  items: ShippingLabelCustomsForm.ContentsType.allCases,
-                                  contentKeyPath: \.localizedName,
-                                  selected: $viewModel.contentsType)
-                })
-                Divider()
-                    .padding(.leading, Constants.horizontalPadding)
-
-                if viewModel.contentsType == .other {
-                    TitleAndTextFieldRow(title: Localization.contentExplanationTitle,
-                                         placeholder: Localization.contentExplanationPlaceholder,
-                                         text: $viewModel.contentExplanation)
-                    Divider()
-                        .padding(.leading, Constants.horizontalPadding)
-                }
-
-                TitleAndValueRow(title: Localization.restrictionTypeTitle, value: viewModel.restrictionType.localizedName, selectable: true) {
-                    showingRestrictionTypes.toggle()
-                }
-                .sheet(isPresented: $showingRestrictionTypes, content: {
-                    SelectionList(title: Localization.restrictionTypeTitle,
-                                  items: ShippingLabelCustomsForm.RestrictionType.allCases,
-                                  contentKeyPath: \.localizedName,
-                                  selected: $viewModel.restrictionType)
-                })
-                Divider()
-                    .padding(.leading, Constants.horizontalPadding)
-
-                if viewModel.restrictionType == .other {
-                    TitleAndTextFieldRow(title: Localization.restrictionCommentTitle,
-                                         placeholder: Localization.restrictionCommentPlaceholder,
-                                         text: $viewModel.restrictionComments)
-                    Divider()
-                        .padding(.leading, Constants.horizontalPadding)
-                }
-
-                TitleAndTextFieldRow(title: Localization.itnTitle,
-                                     placeholder: Localization.itnPlaceholder,
-                                     text: $viewModel.itn)
-                Divider()
-                    .padding(.leading, Constants.horizontalPadding)
-
-                LearnMoreRow(localizedStringWithHyperlink: Localization.learnMoreITNText)
+                contentRows
+                restrictionRows
+                itnRows
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .padding(.top, Constants.verticalPadding)
@@ -104,6 +59,103 @@ struct ShippingLabelCustomsFormInput: View {
                 .font(.body)
         }
     }
+
+    private var contentRows: some View {
+        VStack(spacing: 0) {
+            TitleAndValueRow(title: Localization.contentTypeTitle, value: viewModel.contentsType.localizedName, selectable: true) {
+                showingContentTypes.toggle()
+            }
+            .sheet(isPresented: $showingContentTypes, content: {
+                SelectionList(title: Localization.contentTypeTitle,
+                              items: ShippingLabelCustomsForm.ContentsType.allCases,
+                              contentKeyPath: \.localizedName,
+                              selected: $viewModel.contentsType)
+            })
+            Divider()
+                .padding(.leading, Constants.horizontalPadding)
+
+            VStack(spacing: 0) {
+                TitleAndTextFieldRow(title: Localization.contentExplanationTitle,
+                                     placeholder: Localization.contentExplanationPlaceholder,
+                                     text: $viewModel.contentExplanation)
+                Divider()
+                    .padding(.leading, Constants.horizontalPadding)
+
+                VStack(spacing: 0) {
+                    ValidationErrorRow(errorMessage: Localization.contentExplanationMissing)
+                        .background(Color(.listBackground))
+                    Divider()
+                        .padding(.leading, Constants.horizontalPadding)
+                }
+                .renderedIf(viewModel.missingContentExplanation)
+            }
+            .renderedIf(viewModel.contentsType == .other)
+        }
+    }
+
+    private var restrictionRows: some View {
+        VStack(spacing: 0) {
+            TitleAndValueRow(title: Localization.restrictionTypeTitle, value: viewModel.restrictionType.localizedName, selectable: true) {
+                showingRestrictionTypes.toggle()
+            }
+            .sheet(isPresented: $showingRestrictionTypes, content: {
+                SelectionList(title: Localization.restrictionTypeTitle,
+                              items: ShippingLabelCustomsForm.RestrictionType.allCases,
+                              contentKeyPath: \.localizedName,
+                              selected: $viewModel.restrictionType)
+            })
+            Divider()
+                .padding(.leading, Constants.horizontalPadding)
+
+            VStack(spacing: 0) {
+                TitleAndTextFieldRow(title: Localization.restrictionCommentTitle,
+                                     placeholder: Localization.restrictionCommentPlaceholder,
+                                     text: $viewModel.restrictionComments)
+                Divider()
+                    .padding(.leading, Constants.horizontalPadding)
+
+                VStack(spacing: 0) {
+                    ValidationErrorRow(errorMessage: Localization.restrictionCommentMissing)
+                        .background(Color(.listBackground))
+                    Divider()
+                        .padding(.leading, Constants.horizontalPadding)
+                }
+                .renderedIf(viewModel.missingRestrictionComments)
+            }
+            .renderedIf(viewModel.restrictionType == .other)
+        }
+    }
+
+    private var itnRows: some View {
+        VStack(spacing: 0) {
+            TitleAndTextFieldRow(title: Localization.itnTitle,
+                                 placeholder: Localization.itnPlaceholder,
+                                 text: $viewModel.itn)
+            Divider()
+                .padding(.leading, Constants.horizontalPadding)
+
+            VStack(spacing: 0) {
+                ValidationErrorRow(errorMessage: validationErrorMessageForITNRow)
+                    .background(Color(.listBackground))
+                Divider()
+                    .padding(.leading, Constants.horizontalPadding)
+            }
+            .renderedIf(validationErrorMessageForITNRow.isNotEmpty)
+
+            LearnMoreRow(localizedStringWithHyperlink: Localization.learnMoreITNText)
+        }
+    }
+
+    private var validationErrorMessageForITNRow: String {
+        if viewModel.invalidITN {
+            return Localization.itnInvalidFormat
+        } else if viewModel.missingITNForDestination {
+            return String(format: Localization.itnMissingForDestination, viewModel.destinationCountry.name)
+        } else if viewModel.missingITNForClassesAbove2500usd {
+            return Localization.itnMissingForClassAbove2500usd
+        }
+        return ""
+    }
 }
 
 private extension ShippingLabelCustomsFormInput {
@@ -122,6 +174,9 @@ private extension ShippingLabelCustomsFormInput {
         static let contentExplanationPlaceholder = NSLocalizedString("Type of contents",
                                                                      comment: "Placeholder for the Content Details row " +
                                                                         "in Customs screen of Shipping Label flow")
+        static let contentExplanationMissing = NSLocalizedString("Please describe what kind of goods this package contains",
+                                                                 comment: "Error message for missing explanation when Content Type" +
+                                                                    "is Other in Customs screen of Shipping Label flow")
         static let restrictionTypeTitle = NSLocalizedString("Restriction Type",
                                                             comment: "Title for the Restriction Type row in Customs screen of Shipping Label flow")
         static let restrictionCommentTitle = NSLocalizedString("Restriction Details",
@@ -129,10 +184,21 @@ private extension ShippingLabelCustomsFormInput {
         static let restrictionCommentPlaceholder = NSLocalizedString("Type of restriction",
                                                                      comment: "Placeholder for the Restriction Details row in " +
                                                                         "Customs screen of Shipping Label flow")
+        static let restrictionCommentMissing = NSLocalizedString("Please describe what kind of restrictions this package must have",
+                                                                 comment: "Error message for missing comments when Restriction Type" +
+                                                                    "is Other in Customs screen of Shipping Label flow")
         static let itnTitle = NSLocalizedString("ITN",
                                                 comment: "Title for the ITN row in Customs screen of Shipping Label flow")
         static let itnPlaceholder = NSLocalizedString("Enter ITN (Optional)",
                                                       comment: "Placeholder for the ITN row in Customs screen of Shippling Label flow")
+        static let itnMissingForDestination = NSLocalizedString("ITN is required for shipments to %1$@",
+                                                                comment: "Error message for missing ITN for destination country in" +
+                                                                    "Customs screen of Shipping Label flow. The placeholder is the destination country.")
+        static let itnMissingForClassAbove2500usd = NSLocalizedString("ITN is required for shipping items valued over $2,500 per tariff number",
+                                                                      comment: "Error message for missing ITN for tariff number valued over $2,500 in" +
+                                                                        "Customs screen of Shipping Label flow")
+        static let itnInvalidFormat = NSLocalizedString("Invalid ITN format",
+                                                        comment: "Error message for invalid format of ITN in Customs screen of Shipping Label flow")
         static let learnMoreITNText = NSLocalizedString("<a href=\"https://pe.usps.com/text/imm/immc5_010.htm\">" +
                                                             "Learn more</a> about Internal Transaction Number",
                                                         comment: "A label prompting users to learn more about internal " +
@@ -146,7 +212,7 @@ struct ShippingLabelCustomsFormInput_Previews: PreviewProvider {
     static let sampleViewModel: ShippingLabelCustomsFormInputViewModel = {
         let sampleOrder = ShippingLabelPackageDetailsViewModel.sampleOrder()
         let sampleForm = ShippingLabelCustomsForm(packageID: "Food Package", packageName: "Food Package", productIDs: sampleOrder.items.map { $0.productID })
-        return .init(customsForm: sampleForm, countries: [], currency: "$")
+        return .init(customsForm: sampleForm, destinationCountry: Country(code: "VN", name: "Vietnam", states: []), countries: [], currency: "$")
     }()
 
     static var previews: some View {

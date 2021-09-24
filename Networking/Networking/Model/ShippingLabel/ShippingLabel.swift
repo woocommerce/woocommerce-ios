@@ -58,6 +58,9 @@ public struct ShippingLabel: Equatable, GeneratedCopiable, GeneratedFakeable {
     /// This is only used to look up a product in case `productIDs` is not available.
     public let productNames: [String]
 
+    /// URL of commercial invoice with customs details, available to several carriers.
+    public let commercialInvoiceURL: String?
+
     public init(siteID: Int64,
                 orderID: Int64,
                 shippingLabelID: Int64,
@@ -74,7 +77,8 @@ public struct ShippingLabel: Equatable, GeneratedCopiable, GeneratedFakeable {
                 originAddress: ShippingLabelAddress,
                 destinationAddress: ShippingLabelAddress,
                 productIDs: [Int64],
-                productNames: [String]) {
+                productNames: [String],
+                commercialInvoiceURL: String?) {
         self.siteID = siteID
         self.orderID = orderID
         self.shippingLabelID = shippingLabelID
@@ -92,6 +96,7 @@ public struct ShippingLabel: Equatable, GeneratedCopiable, GeneratedFakeable {
         self.destinationAddress = destinationAddress
         self.productIDs = productIDs
         self.productNames = productNames
+        self.commercialInvoiceURL = commercialInvoiceURL
     }
 }
 
@@ -115,7 +120,7 @@ extension ShippingLabel: Decodable {
         let packageName = try container.decode(String.self, forKey: .packageName)
         let rate = try container.decode(Double.self, forKey: .rate)
         let currency = try container.decode(String.self, forKey: .currency)
-        let trackingNumber = try container.decode(String.self, forKey: .trackingNumber)
+        let trackingNumber = (try container.decodeIfPresent(String.self, forKey: .trackingNumber)) ?? ""
         let serviceName = try container.decodeIfPresent(String.self, forKey: .serviceName) ?? ""
         let refund = try container.decodeIfPresent(ShippingLabelRefund.self, forKey: .refund)
         let refundableAmount = try container.decode(Double.self, forKey: .refundableAmount)
@@ -125,6 +130,7 @@ extension ShippingLabel: Decodable {
 
         let productIDs = try container.decodeIfPresent([Int64].self, forKey: .productIDs) ?? []
         let productNames = try container.decode([String].self, forKey: .productNames)
+        let commercialInvoiceURL = try container.decodeIfPresent(String.self, forKey: .commercialInvoiceURL)
 
         self.init(siteID: siteID,
                   orderID: orderID,
@@ -142,7 +148,8 @@ extension ShippingLabel: Decodable {
                   originAddress: .init(),
                   destinationAddress: .init(),
                   productIDs: productIDs,
-                  productNames: productNames)
+                  productNames: productNames,
+                  commercialInvoiceURL: commercialInvoiceURL)
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -161,6 +168,7 @@ extension ShippingLabel: Decodable {
         case status
         case productIDs = "product_ids"
         case productNames = "product_names"
+        case commercialInvoiceURL = "commercial_invoice_url"
     }
 }
 

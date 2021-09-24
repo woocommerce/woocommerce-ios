@@ -41,19 +41,6 @@ class BaseScreen {
         return expectedElement.exists
     }
 
-    class func waitForLoadingIndicatorToDisappear(within timeout: TimeInterval) {
-        let networkLoadingIndicator = XCUIApplication().otherElements.deviceStatusBars.networkLoadingIndicators.element
-        let networkLoadingIndicatorDisappeared = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: networkLoadingIndicator)
-        _ = XCTWaiter.wait(for: [networkLoadingIndicatorDisappeared], timeout: timeout)
-    }
-
-    func tapStatusBarToScrollToTop() {
-        // A hack to work around there being no status bar – just tap the appropriate spot on the navigation bar
-        XCUIApplication().navigationBars.allElementsBoundByIndex.forEach {
-           $0.coordinate(withNormalizedOffset: CGVector(dx: 20, dy: -20)).tap()
-        }
-    }
-
     /// Scroll an element into view within another element.
     /// scrollView can be a UIScrollView, or anything that subclasses it like UITableView
     ///
@@ -135,22 +122,6 @@ private extension XCUIElementQuery {
         }
 
         return self.containing(isNetworkLoadingIndicator)
-    }
-
-    var deviceStatusBars: XCUIElementQuery {
-        let deviceWidth = XCUIApplication().frame.width
-
-        let isStatusBar = NSPredicate { (evaluatedObject, _) in
-            guard let element = evaluatedObject as? XCUIElementAttributes else { return false }
-
-            return element.isStatusBar(deviceWidth)
-        }
-
-        return self.containing(isStatusBar)
-    }
-
-    func first(where predicate: (XCUIElement) throws -> Bool) rethrows -> XCUIElement? {
-        return try self.allElementsBoundByIndex.first(where: predicate)
     }
 }
 

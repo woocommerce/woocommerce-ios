@@ -1,5 +1,0 @@
-Penjual di AS yang ingin membuat label pengiriman untuk pelanggan di AS akan menemukan beberapa perbaikan kecil. Jika belum mencetak label dari aplikasi, mulai dengan menginstal ekstensi WooCommerce Shipping & Tax di situs Anda.
-
-Kami juga meningkatkan tampilan aplikasi di berbagai ukuran layar dan jenis ponsel. Kami memperbaiki beberapa masalah visual kecil tetapi penting, yang utamanya tampak di iPad.
-
-Seperti biasa, kami mengharapkan umpan balik Anda terkait aplikasi. Anda dapat memberikannya melalui aplikasi di bawah Pengaturan pada tab Toko saya.

@@ -46,9 +46,11 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var isEligibleForCardPresentPayment: Bool {
         return isOrderAmountEligibleForCardPayment() &&
+            isOrderCurrencyEligibleForCardPayment() &&
             isOrderStatusEligibleForCardPayment() &&
             isOrderPaymentMethodEligibleForCardPayment() &&
-            hasCardPresentEligiblePaymentGatewayAccount()
+            hasCardPresentEligiblePaymentGatewayAccount() &&
+            !orderContainsAnySubscription()
     }
 
     /// Whether the button to create shipping labels should be visible.
@@ -192,11 +194,18 @@ final class OrderDetailsDataSource: NSObject {
 
     private let imageService: ImageService = ServiceLocator.imageService
 
+    /// Indicates if the order editing feature is enabled or not
+    /// Allows editing notes, shipping & billing addresses.
+    ///
+    let orderEditingEnabled: Bool
+
     init(order: Order,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         orderEditingEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderEditing)) {
         self.storageManager = storageManager
         self.order = order
         self.couponLines = order.coupons
+        self.orderEditingEnabled = orderEditingEnabled
 
         super.init()
     }
@@ -367,8 +376,16 @@ private extension OrderDetailsDataSource {
             NSLocalizedString("“%@”",
                               comment: "Customer note, wrapped in quotes"),
             customerNote)
-        cell.body = localizedBody
+        cell.body = customerNote.isNotEmpty ? localizedBody : " "
         cell.selectionStyle = .none
+
+        cell.onEditTapped = { [weak self] in
+            self?.onCellAction?(.editCustomerNote, nil)
+        }
+
+        cell.editButtonAccessibilityLabel = NSLocalizedString(
+            "Update Note",
+            comment: "Accessibility Label for the edit button to change the Customer Provided Note in Order Details")
     }
 
     private func configureBillingDetail(cell: WooBasicTableViewCell) {
@@ -768,15 +785,17 @@ private extension OrderDetailsDataSource {
     private func configureShippingAddress(cell: CustomerInfoTableViewCell) {
         let shippingAddress = order.shippingAddress
 
-        cell.title = NSLocalizedString("Shipping details",
-                                       comment: "Shipping title for customer info cell")
+        cell.title = Title.shippingAddress
         cell.name = shippingAddress?.fullNameWithCompany
-        cell.address = shippingAddress?.formattedPostalAddress ??
-            NSLocalizedString(
-                "No address specified.",
-                comment: "Order details > customer info > shipping details. " +
-                "This is where the address would normally display."
-        )
+        cell.address = shippingAddress?.formattedPostalAddress ?? Title.shippingAddressEmptyAction
+
+        cell.onEditTapped = orderEditingEnabled ? { [weak self] in
+            self?.onCellAction?(.editShippingAddress, nil)
+        } : nil
+
+        cell.editButtonAccessibilityLabel = NSLocalizedString(
+            "Update Address",
+            comment: "Accessibility Label for the edit button to change the Customer Shipping Address in Order Details")
     }
 
     private func configureShippingMethod(cell: CustomerNoteTableViewCell) {
@@ -938,9 +957,8 @@ extension OrderDetailsDataSource {
         let customerInformation: Section = {
             var rows: [Row] = []
 
-            if customerNote.isEmpty == false {
-                rows.append(.customerNote)
-            }
+            /// Always visible to allow editing.
+            rows.append(.customerNote)
 
             let orderContainsOnlyVirtualProducts = self.products.filter { (product) -> Bool in
                 return items.first(where: { $0.productID == product.productID}) != nil
@@ -1205,11 +1223,13 @@ extension OrderDetailsDataSource {
         static let refundedProducts = NSLocalizedString("Refunded Products", comment: "Section title")
         static let tracking = NSLocalizedString("Tracking", comment: "Order tracking section title")
         static let customerNote = NSLocalizedString("Customer Provided Note", comment: "Customer note section title")
+        static let shippingAddress = NSLocalizedString("Shipping Details",
+                                                       comment: "Shipping title for customer info cell")
         static let information = NSLocalizedString("Customer", comment: "Customer info section title")
         static let payment = NSLocalizedString("Payment", comment: "Payment section title")
         static let notes = NSLocalizedString("Order Notes", comment: "Order notes section title")
         static let shippingLabelCreationInfoAction =
-            NSLocalizedString("Learn more about creating labels with your phone",
+            NSLocalizedString("Learn more about creating labels with your mobile device",
                               comment: "Title of button in order details > info link for creating a shipping label on the mobile device.")
         static let shippingLabelPackageFormat =
             NSLocalizedString("Package %d",
@@ -1223,9 +1243,13 @@ extension OrderDetailsDataSource {
             NSLocalizedString("%@ label refund requested",
                               comment: "Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS).")
         static let shippingLabelPrintingInfoAction =
-            NSLocalizedString("Don’t know how to print from your phone?",
+            NSLocalizedString("Don’t know how to print from your mobile device?",
                               comment: "Title of button in order details > shipping label that shows the instructions on how to print " +
                                 "a shipping label on the mobile device.")
+        static let shippingAddressEmptyAction =
+            NSLocalizedString("No address specified.",
+                              comment: "Order details > customer info > shipping details. " +
+                                "This is where the address would normally display.")
     }
 
     enum Footer {
@@ -1419,6 +1443,8 @@ extension OrderDetailsDataSource {
         case createShippingLabel
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)
         case viewAddOns(addOns: [OrderItemAttribute])
+        case editCustomerNote
+        case editShippingAddress
     }
 
     struct Constants {
@@ -1450,6 +1476,10 @@ private extension OrderDetailsDataSource {
         return !paymentViewModel.hasBeenPartiallyCharged
     }
 
+    func isOrderCurrencyEligibleForCardPayment() -> Bool {
+        CurrencySettings.CurrencyCode(rawValue: order.currency) == .USD
+    }
+
     func isOrderStatusEligibleForCardPayment() -> Bool {
         (order.status == .pending || order.status == .onHold || order.status == .processing)
     }
@@ -1461,6 +1491,12 @@ private extension OrderDetailsDataSource {
 
     func hasCardPresentEligiblePaymentGatewayAccount() -> Bool {
         resultsControllers.paymentGatewayAccounts.contains(where: \.isCardPresentEligible)
+    }
+
+    func orderContainsAnySubscription() -> Bool {
+        order.items.contains { item in
+            lookUpProduct(by: item.productID)?.productType == .subscription
+        }
     }
 }
 

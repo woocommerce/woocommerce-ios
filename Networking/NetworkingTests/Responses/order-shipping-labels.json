@@ -68,7 +68,7 @@
                 "carrier_id": "usps",
                 "service_name": "USPS - Priority Mail International",
                 "status": "PURCHASED",
-                "commercial_invoice_url": null,
+                "commercial_invoice_url": "https://woocommerce.com",
                 "package_name": "box",
                 "product_names": [
                     "Password protected!"
@@ -82,7 +82,7 @@
                 "rate": 58.81,
                 "currency": "USD",
                 "expiry_date": 1619268278000,
-                "label_cached": 1603716284000
+                "label_cached": 1603716284000,
             },
             {
                 "label_id": 2511668,
@@ -112,6 +112,42 @@
                     "refund_date": 1
                 },
                 "label_cached": 1603715430000
+            },
+            {
+                "label_id": 2106,
+                "tracking": null,
+                "refundable_amount": 240.8,
+                "created": 1629878803224,
+                "carrier_id": "dhlexpress",
+                "service_name": "DHL - Express Worldwide",
+                "status": "PURCHASE_ERROR",
+                "commercial_invoice_url": "",
+                "package_name": "Food Secured Box",
+                "is_letter": false,
+                "product_names": [
+                    "Pesto Spaghetti",
+                    "Seafood Spaghetti",
+                    "Pho",
+                    "Ramen",
+                    "Tomyum Noodle",
+                    "Cold Udon",
+                    "Carbonara Spaghetti"
+                ],
+                "product_ids": [
+                    119,
+                    123,
+                    121,
+                    127,
+                    131,
+                    129,
+                    125
+                ],
+                "receipt_item_id": 24606630,
+                "created_date": 1629878803000,
+                "main_receipt_id": 19995467,
+                "rate": 240.8,
+                "currency": "USD",
+                "error": "There was a problem purchasing your shipping label. Please try again in a moment."
             }
         ],
         "storeOptions": {

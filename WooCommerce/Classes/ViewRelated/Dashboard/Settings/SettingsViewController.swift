@@ -4,6 +4,7 @@ import MessageUI
 import Gridicons
 import SafariServices
 import WordPressAuthenticator
+import class Networking.UserAgent
 
 
 // MARK: - SettingsViewController
@@ -84,6 +85,10 @@ final class SettingsViewController: UIViewController {
     /// for card present payments
     private var canCollectPayments: Bool = false
 
+    /// Announcement for the current app version
+    ///
+    private var announcement: Announcement?
+
     // MARK: - Overridden Methods
 
     override func viewDidLoad() {
@@ -94,7 +99,7 @@ final class SettingsViewController: UIViewController {
         })
 
         loadPaymentGatewayAccounts()
-
+        loadWhatsNewOnWooCommerce()
         configureNavigation()
         configureMainView()
         configureTableView()
@@ -209,9 +214,6 @@ private extension SettingsViewController {
     private var storeSettingsRows: [Row] {
         var result = [Row]()
         if canCollectPayments {
-            result.append(.cardReadersV2)
-        }
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentOnboarding) {
             result.append(.inPersonPayments)
         }
         return result
@@ -240,6 +242,17 @@ private extension SettingsViewController {
         checkAvailabilityForPayments()
         configureSections()
         tableView.reloadData()
+    }
+
+    func loadWhatsNewOnWooCommerce() {
+        ServiceLocator.stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
+            guard let self = self else { return }
+            guard let (announcement, _) = try? result.get(), announcement.appVersionName == UserAgent.bundleShortVersion else {
+                return DDLogInfo("📣 There are no announcements to show!")
+            }
+
+            self.announcement = announcement
+        }))
     }
 
     func configureSections() {
@@ -306,7 +319,11 @@ private extension SettingsViewController {
         sections.append(Section(title: appSettingsTitle, rows: [.privacy], footerHeight: UITableView.automaticDimension))
 
         // About the App
-        sections.append(Section(title: aboutTheAppTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension))
+        if shouldShowWhatsNew() {
+            sections.append(Section(title: aboutTheAppTitle, rows: [.about, .whatsNew, .licenses], footerHeight: UITableView.automaticDimension))
+        } else {
+            sections.append(Section(title: aboutTheAppTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension))
+        }
 
         // Other
         #if DEBUG
@@ -336,8 +353,6 @@ private extension SettingsViewController {
             configurePlugins(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
             configureSupport(cell: cell)
-        case let cell as BasicTableViewCell where row == .cardReadersV2:
-            configureCardReadersV2(cell: cell)
         case let cell as BasicTableViewCell where row == .inPersonPayments:
             configureInPersonPayments(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
@@ -356,6 +371,8 @@ private extension SettingsViewController {
             configureWormholy(cell: cell)
         case let cell as BasicTableViewCell where row == .logout:
             configureLogout(cell: cell)
+        case let cell as BasicTableViewCell where row == .whatsNew:
+            configureWhatsNew(cell: cell)
         default:
             fatalError()
         }
@@ -384,12 +401,6 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Help & Support", comment: "Contact Support Action")
-    }
-
-    func configureCardReadersV2(cell: BasicTableViewCell) {
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Manage Card Reader", comment: "Navigates to Card Reader management screen")
     }
 
     func configureInPersonPayments(cell: BasicTableViewCell) {
@@ -442,6 +453,12 @@ private extension SettingsViewController {
                                                  comment: "Opens an internal library called Wormholy. Not visible to users.")
     }
 
+    func configureWhatsNew(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("What's New in WooCommerce", comment: "Navigates to screen containing the latest WooCommerce Features")
+    }
+
     func configureLogout(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
@@ -469,6 +486,10 @@ private extension SettingsViewController {
     ///
     func shouldShowPluginsSection() -> Bool {
         ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)
+    }
+
+    func shouldShowWhatsNew() -> Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.whatsNewOnWooCommerce) && announcement != nil
     }
 }
 
@@ -532,17 +553,6 @@ private extension SettingsViewController {
         show(viewController, sender: self)
     }
 
-    func cardReadersV2WasPressed() {
-        ServiceLocator.analytics.track(.settingsCardReadersTapped)
-        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsPresentingViewController.self) else {
-            fatalError("Cannot instantiate `CardReaderSettingsPresentingViewController` from Dashboard storyboard")
-        }
-
-        let viewModelsAndViews = CardReaderSettingsViewModelsOrderedList()
-        viewController.configure(viewModelsAndViews: viewModelsAndViews)
-        show(viewController, sender: self)
-    }
-
     func inPersonPaymentsWasPressed() {
         let viewModel = InPersonPaymentsViewModel()
         let viewController = InPersonPaymentsViewController(viewModel: viewModel)
@@ -594,6 +604,14 @@ private extension SettingsViewController {
     func wormholyWasPressed() {
         // Fire a local notification, which fires Wormholy if enabled.
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "wormholy_fire"), object: nil)
+    }
+
+    func whatsNewWasPressed() {
+        guard let announcement = announcement else { return }
+        let viewController = WhatsNewFactory.whatsNew(announcement) { [weak self] in
+            self?.dismiss(animated: true)
+        }
+        present(viewController, animated: true, completion: nil)
     }
 
     func logOutUser() {
@@ -683,8 +701,6 @@ extension SettingsViewController: UITableViewDelegate {
             sitePluginsWasPressed()
         case .support:
             supportWasPressed()
-        case .cardReadersV2:
-            cardReadersV2WasPressed()
         case .inPersonPayments:
             inPersonPaymentsWasPressed()
         case .privacy:
@@ -701,6 +717,8 @@ extension SettingsViewController: UITableViewDelegate {
             deviceSettingsWasPressed()
         case .wormholy:
             wormholyWasPressed()
+        case .whatsNew:
+            whatsNewWasPressed()
         case .logout:
             logoutWasPressed()
         default:
@@ -728,7 +746,6 @@ private enum Row: CaseIterable {
     case switchStore
     case plugins
     case support
-    case cardReadersV2
     case inPersonPayments
     case logout
     case privacy
@@ -738,6 +755,7 @@ private enum Row: CaseIterable {
     case licenses
     case deviceSettings
     case wormholy
+    case whatsNew
 
     var type: UITableViewCell.Type {
         switch self {
@@ -748,8 +766,6 @@ private enum Row: CaseIterable {
         case .plugins:
             return BasicTableViewCell.self
         case .support:
-            return BasicTableViewCell.self
-        case .cardReadersV2:
             return BasicTableViewCell.self
         case .inPersonPayments:
             return BasicTableViewCell.self
@@ -768,6 +784,8 @@ private enum Row: CaseIterable {
         case .deviceSettings:
             return BasicTableViewCell.self
         case .wormholy:
+            return BasicTableViewCell.self
+        case .whatsNew:
             return BasicTableViewCell.self
         }
     }

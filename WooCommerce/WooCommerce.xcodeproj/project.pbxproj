@@ -1418,13 +1418,6 @@
 			remoteGlobalIDString = B56DB3C52049BFAA00D4AA8E;
 			remoteInfo = WooCommerce;
 		};
-		F9F01DDF23E2151B00418BE8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B56DB3BE2049BFAA00D4AA8E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B55D4C0F20B612F300D7A50F;
-			remoteInfo = GenerateCredentials;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -6676,7 +6669,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				F9F01DE023E2151B00418BE8 /* PBXTargetDependency */,
 				F997170823DBB97500592D8E /* PBXTargetDependency */,
 			);
 			name = WooCommerceScreenshots;
@@ -8319,11 +8311,6 @@
 			isa = PBXTargetDependency;
 			target = B56DB3C52049BFAA00D4AA8E /* WooCommerce */;
 			targetProxy = F997170723DBB97500592D8E /* PBXContainerItemProxy */;
-		};
-		F9F01DE023E2151B00418BE8 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = B55D4C0F20B612F300D7A50F /* GenerateCredentials */;
-			targetProxy = F9F01DDF23E2151B00418BE8 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

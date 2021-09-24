@@ -16,7 +16,7 @@ final class BillingInformationViewController: UIViewController {
 
     /// Order to be Fulfilled
     ///
-    private let order: Order
+    private var order: Order
 
     /// Allows editing of billing address
     ///
@@ -97,7 +97,11 @@ private extension BillingInformationViewController {
     /// Presents EditAddressForm modal view
     ///
     func editBillingAddress() {
-        let viewModel = EditAddressFormViewModel(order: order, type: .billing)
+        let viewModel = EditAddressFormViewModel(order: order, type: .billing) { [weak self] updatedOrder in
+            self?.order = updatedOrder
+            self?.reloadSections()
+            self?.tableView.reloadData()
+        }
         let editAddressViewController = EditAddressHostingController(viewModel: viewModel)
         let navigationController = WooNavigationController(rootViewController: editAddressViewController)
         present(navigationController, animated: true, completion: nil)

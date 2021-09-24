@@ -13,6 +13,10 @@ final class EditAddressFormViewModel: ObservableObject {
     ///
     let type: AddressType
 
+    /// Order update callback
+    ///
+    private let onOrderUpdate: ((Yosemite.Order) -> Void)?
+
     /// ResultsController for stored countries.
     ///
     private lazy var countriesResultsController: ResultsController<StorageCountry> = {
@@ -36,13 +40,14 @@ final class EditAddressFormViewModel: ObservableObject {
     ///
     private var subscriptions = Set<AnyCancellable>()
 
-
     init(order: Yosemite.Order,
          type: AddressType,
+         onOrderUpdate: ((Yosemite.Order) -> Void)? = nil,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores) {
         self.order = order
         self.type = type
+        self.onOrderUpdate = onOrderUpdate
 
         let addressToEdit: Address?
         switch type {
@@ -131,6 +136,12 @@ final class EditAddressFormViewModel: ObservableObject {
 
             self.performingNetworkRequest.send(false)
             // TODO: add success/failure notice
+            switch result {
+            case .success(let updatedOrder):
+                self.onOrderUpdate?(updatedOrder)
+            case .failure:
+                break
+            }
             onFinish(result.isSuccess)
         }
 

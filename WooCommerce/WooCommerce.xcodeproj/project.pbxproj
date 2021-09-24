@@ -7074,13 +7074,14 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"$(SRCROOT)/../Scripts/build-phases/generate-credentials.xcfilelist",
+				"$(SRCROOT)/../Scripts/build-phases/generate-credentials-inputs.xcfilelist",
 			);
 			inputPaths = (
 			);
+			outputFileListPaths = (
+				"$(SRCROOT)/../Scripts/build-phases/generate-credentials-outputs.xcfilelist",
+			);
 			outputPaths = (
-				"$(SRCROOT)/DerivedSources/ApiCredentials.swift",
-				"$(SRCROOT)/DerivedSources/InfoPlist.h",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

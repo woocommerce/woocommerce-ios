@@ -60,8 +60,8 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                               variationID: 49,
                                               quantity: 1,
                                               attributes: orderItemAttributes)]
-        let expectedFirstItemRow = ItemToFulfillRow(id: 123, title: "Easter Egg", subtitle: "123 kg")
-        let expectedLastItemRow = ItemToFulfillRow(id: 234, title: "Jeans", subtitle: "Box・0 kg")
+        let expectedFirstItemRow = ItemToFulfillRow(productOrVariationID: 123, title: "Easter Egg", subtitle: "123 kg")
+        let expectedLastItemRow = ItemToFulfillRow(productOrVariationID: 234, title: "Jeans", subtitle: "Box・0 kg")
         let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
@@ -329,7 +329,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                             productVariationID: 49,
                                             attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")]))
 
-        let selectedPackages = [ShippingLabelPackageAttributes(packageID: "Box", totalWeight: "30", productIDs: [1, 33, 23, 49])]
+        let selectedPackages = [ShippingLabelPackageAttributes(packageID: "Box", totalWeight: "30", items: [])]
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
                                                              selectedPackages: selectedPackages,
@@ -386,7 +386,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
 
         // When
         insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120"))
-        let selectedPackages = [ShippingLabelPackageAttributes(packageID: "Package", totalWeight: "500", productIDs: [1])]
+        let selectedPackages = [ShippingLabelPackageAttributes(packageID: "Package", totalWeight: "500", items: [])]
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              packagesResponse: mockPackageResponse(),
                                                              selectedPackages: selectedPackages,

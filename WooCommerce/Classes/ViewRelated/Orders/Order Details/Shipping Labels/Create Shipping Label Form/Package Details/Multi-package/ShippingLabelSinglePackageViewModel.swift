@@ -87,7 +87,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
          packagesResponse: ShippingLabelPackagesResponse?,
          selectedPackageID: String,
          totalWeight: String,
-         isOriginalPackaging: Bool,
+         isOriginalPackaging: Bool = false,
          onItemMoveRequest: @escaping ItemMoveRequestHandler,
          onPackageSwitch: @escaping PackageSwitchHandler,
          onPackagesSync: @escaping PackagesSyncHandler,

@@ -69,34 +69,8 @@ struct ShippingLabelSinglePackage: View {
                 .sheet(isPresented: $isShowingPackageSelection, content: {
                     ShippingLabelPackageSelection(viewModel: viewModel.packageListViewModel)
                 })
-            }
-            .background(Color(.systemBackground))
-            .renderedIf(!viewModel.isOriginalPackaging)
 
-            VStack(spacing: 0) {
                 Divider()
-                TitleAndSubtitleRow(title: Localization.originalPackaging,
-                                    subtitle: Localization.individuallyShipped)
-                    .padding(.horizontal, insets: safeAreaInsets)
-            }
-            .background(Color(.systemBackground))
-            .renderedIf(viewModel.isOriginalPackaging)
-
-            VStack(spacing: 0) {
-                Divider()
-                    .padding(.horizontal, insets: safeAreaInsets)
-                    .padding(.leading, Constants.horizontalPadding)
-                TitleAndSubtitleRow(title: Localization.itemDimensions,
-                                    subtitle: viewModel.originalPackageDimensions)
-                    .padding(.horizontal, insets: safeAreaInsets)
-            }
-            .background(Color(.systemBackground))
-            .renderedIf(viewModel.isOriginalPackaging)
-
-            VStack(spacing: 0) {
-                Divider()
-                    .padding(.horizontal, insets: safeAreaInsets)
-                    .padding(.leading, Constants.horizontalPadding)
 
                 TitleAndTextFieldRow(title: Localization.totalPackageWeight,
                                      placeholder: "0",
@@ -132,15 +106,6 @@ private extension ShippingLabelSinglePackage {
                                               comment: "Title of the footer in Shipping Label Package Detail screen")
         static let invalidWeight = NSLocalizedString("Invalid weight", comment: "Error message when total weight is invalid in Package Detail screen")
         static let moveButton = NSLocalizedString("Move", comment: "Button on each order item of the Package Details screen in Shipping Labels flow.")
-        static let originalPackaging = NSLocalizedString("Original packaging",
-                                                         comment: "Row title for detail of package shipped in original " +
-                                                         "packaging on Package Details screen in Shipping Labels flow.")
-        static let individuallyShipped = NSLocalizedString("Individually shipped item",
-                                                           comment: "Description for detail of package shipped in original " +
-                                                           "packaging on Package Details screen in Shipping Labels flow.")
-        static let itemDimensions = NSLocalizedString("Item dimensions",
-                                                      comment: "Row title for dimensions of package shipped in original " +
-                                                      "packaging Package Details screen in Shipping Labels flow.")
     }
 
     enum Constants {
@@ -148,19 +113,18 @@ private extension ShippingLabelSinglePackage {
     }
 }
 
-struct ShippingLabelSinglePackage_Previews: PreviewProvider {
+struct ShippingLabelPackageItem_Previews: PreviewProvider {
     static var previews: some View {
         let order = ShippingLabelPackageDetailsViewModel.sampleOrder()
         let packageResponse = ShippingLabelPackageDetailsViewModel.samplePackageDetails()
         let viewModel = ShippingLabelSinglePackageViewModel(order: order,
-                                                            orderItems: [],
-                                                            packagesResponse: packageResponse,
-                                                            selectedPackageID: "Box 1",
-                                                            totalWeight: "",
-                                                            isOriginalPackaging: false,
-                                                            onItemMoveRequest: { _, _ in },
-                                                            onPackageSwitch: { _ in },
-                                                            onPackagesSync: { _ in })
+                                                          orderItems: [],
+                                                          packagesResponse: packageResponse,
+                                                          selectedPackageID: "Box 1",
+                                                          totalWeight: "",
+                                                          onItemMoveRequest: { _, _ in },
+                                                          onPackageSwitch: { _ in },
+                                                          onPackagesSync: { _ in })
         ShippingLabelSinglePackage(packageNumber: 1,
                                    isCollapsible: true,
                                    safeAreaInsets: .zero,

@@ -257,6 +257,15 @@ private extension EditAddressForm {
         static let placeholderRequired = NSLocalizedString("Required", comment: "Text field placeholder in Edit Address Form")
         static let placeholderOptional = NSLocalizedString("Optional", comment: "Text field placeholder in Edit Address Form")
         static let placeholderSelectOption = NSLocalizedString("Select an option", comment: "Text field placeholder in Edit Address Form")
+
+        static func useAddressAs(for type: EditAddressFormViewModel.AddressType) {
+            switch type {
+            case .shipping:
+                return NSLocalizedString("Use as Billing Address", comment: "Title for the Use as Billing Address switch in the Address form")
+            case .billing:
+                return NSLocalizedString("Use as Shipping Address", comment: "Title for the Use as Shipping Address switch in the Address form")
+            }
+        }
     }
 }
 

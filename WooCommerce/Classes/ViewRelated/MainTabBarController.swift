@@ -87,7 +87,7 @@ final class MainTabBarController: UITabBarController {
     private let ordersNavigationController = WooTabNavigationController()
     private let productsNavigationController = WooTabNavigationController()
     private let reviewsNavigationController = WooTabNavigationController()
-    private var reviewsTabCoordinator: Coordinator?
+    private var reviewsTabCoordinator: ReviewsCoordinator?
 
     private var cancellableSiteID: ObservationToken?
 
@@ -389,8 +389,7 @@ private extension MainTabBarController {
             reviewsTabCoordinator.start()
         }
 
-        let reviewsViewController = createReviewsViewController(siteID: siteID)
-        reviewsTabCoordinator?.navigationController.viewControllers = [reviewsViewController]
+        reviewsTabCoordinator?.activate(siteID: siteID)
 
         // Set dashboard to be the default tab.
         selectedIndex = WooTab.myStore.visibleIndex()
@@ -408,11 +407,7 @@ private extension MainTabBarController {
         ProductsViewController(siteID: siteID)
     }
 
-    func createReviewsViewController(siteID: Int64) -> UIViewController {
-        ReviewsViewController(siteID: siteID)
-    }
-
-    func createReviewsTabCoordinator() -> Coordinator {
+    func createReviewsTabCoordinator() -> ReviewsCoordinator {
         ReviewsCoordinator(navigationController: reviewsNavigationController,
                            willPresentReviewDetailsFromPushNotification: { [weak self] in
                             self?.navigateTo(.reviews)

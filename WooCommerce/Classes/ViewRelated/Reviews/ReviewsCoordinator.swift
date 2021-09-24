@@ -49,8 +49,17 @@ final class ReviewsCoordinator: Coordinator {
     }
 
     func start() {
-        observationToken = pushNotificationsManager.inactiveNotifications.subscribe { [weak self] in
-            self?.handleInactiveNotification($0)
+        // No-op: please call `activate(siteID:)` instead when the reviews tab is configured.
+    }
+
+    /// Replaces `start()` because the reviews tab's navigation stack could be updated multiple times when site ID changes.
+    func activate(siteID: Int64) {
+        navigationController.viewControllers = [ReviewsViewController(siteID: siteID)]
+
+        if observationToken == nil {
+            observationToken = pushNotificationsManager.inactiveNotifications.subscribe { [weak self] in
+                self?.handleInactiveNotification($0)
+            }
         }
     }
 

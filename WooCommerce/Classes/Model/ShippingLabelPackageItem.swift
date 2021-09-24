@@ -19,7 +19,7 @@ struct ShippingLabelPackageItem: Equatable {
     /// Dimensions of the product or variation
     let dimensions: ProductDimensions
 
-    /// Attributes of the product or variation
+    /// Attributes of the variation
     let attributes: [VariationAttributeViewModel]
 }
 

@@ -208,7 +208,7 @@ private extension EditAddressFormViewModel {
     }
 
     /// Update published fields when the selected country and state is updated.
-    /// If the current selected state does not exists within the selected country, then the sate is nilled.
+    /// If the current selected state does not exists within the selected country, then the state is nilled.
     ///
     func bindSelectedCountryAndStateIntoFields() {
 

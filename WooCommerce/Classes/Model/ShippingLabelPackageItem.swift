@@ -1,10 +1,10 @@
 import Foundation
 
-/// A struct that keeps information about products contained in a package in Shipping Label purchase flow.
+/// A struct that keeps information about items contained in a package in Shipping Label purchase flow.
 ///
-struct ShippingLabelPackageProduct {
+struct ShippingLabelPackageItem: Equatable {
     /// ID of the product
-    let productID: Int64
+    let productOrVariationID: Int64
 
     /// Name of the product
     let name: String

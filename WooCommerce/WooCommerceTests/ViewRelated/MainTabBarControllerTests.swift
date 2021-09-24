@@ -34,13 +34,13 @@ final class MainTabBarControllerTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(tabBarController.viewControllers?.count, 4)
-        assertThat(tabBarController.tabNavigationController(tab: .myStore).topViewController,
+        assertThat(tabBarController.tabNavigationController(tab: .myStore)?.topViewController,
                    isAnInstanceOf: DashboardViewController.self)
-        assertThat(tabBarController.tabNavigationController(tab: .orders).topViewController,
+        assertThat(tabBarController.tabNavigationController(tab: .orders)?.topViewController,
                    isAnInstanceOf: OrdersRootViewController.self)
-        assertThat(tabBarController.tabNavigationController(tab: .products).topViewController,
+        assertThat(tabBarController.tabNavigationController(tab: .products)?.topViewController,
                    isAnInstanceOf: ProductsViewController.self)
-        assertThat(tabBarController.tabNavigationController(tab: .reviews).topViewController,
+        assertThat(tabBarController.tabNavigationController(tab: .reviews)?.topViewController,
                    isAnInstanceOf: ReviewsViewController.self)
     }
 
@@ -127,6 +127,8 @@ final class MainTabBarControllerTests: XCTestCase {
             }
         }
 
+        assertThat(tabBarController.tabNavigationController(tab: .reviews)?.topViewController, isAnInstanceOf: ReviewsViewController.self)
+
         // Action
         // Send push notification in inactive state
         let pushNotification = PushNotification(noteID: 1_234, kind: .comment, message: "")
@@ -141,14 +143,13 @@ final class MainTabBarControllerTests: XCTestCase {
 
         // Assert
         waitUntil {
-            self.tabBarController.tabNavigationController(tab: .reviews).viewControllers.count == 2
+            self.tabBarController.tabNavigationController(tab: .reviews)?.viewControllers.count == 2
         }
 
         XCTAssertEqual(tabBarController.selectedIndex, WooTab.reviews.visibleIndex())
 
-        let reviewsTabNavigationController = tabBarController.tabNavigationController(tab: .reviews)
         // A ReviewDetailsViewController should be pushed
-        assertThat(reviewsTabNavigationController.topViewController, isAnInstanceOf: ReviewDetailsViewController.self)
+        assertThat(tabBarController.tabNavigationController(tab: .reviews)?.topViewController, isAnInstanceOf: ReviewDetailsViewController.self)
     }
 }
 
@@ -157,9 +158,10 @@ private extension MainTabBarController {
         viewControllers?.compactMap { $0 as? UINavigationController }.compactMap { $0.viewControllers.first } ?? []
     }
 
-    func tabNavigationController(tab: WooTab) -> UINavigationController {
+    func tabNavigationController(tab: WooTab) -> UINavigationController? {
         guard let navigationController = viewControllers?.compactMap({ $0 as? UINavigationController })[tab.visibleIndex()] else {
-            fatalError("Unexpected access to navigation controller at tab: \(tab)")
+            XCTFail("Unexpected access to navigation controller at tab: \(tab)")
+            return nil
         }
         return navigationController
     }

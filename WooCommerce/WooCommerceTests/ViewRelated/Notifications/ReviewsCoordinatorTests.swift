@@ -14,6 +14,8 @@ final class ReviewsCoordinatorTests: XCTestCase {
     private var noticePresenter: MockNoticePresenter!
     private var switchStoreUseCase: MockSwitchStoreUseCase!
 
+    private let siteID: Int64 = 1
+
     override func setUp() {
         super.setUp()
 
@@ -44,6 +46,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
         let pushNotification = PushNotification(noteID: 1_234, kind: .storeOrder, message: "")
 
         coordinator.start()
+        coordinator.activate(siteID: siteID)
 
         XCTAssertEqual(coordinator.navigationController.viewControllers.count, 1)
 
@@ -64,6 +67,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
         let pushNotification = PushNotification(noteID: 1_234, kind: .comment, message: "")
 
         coordinator.start()
+        coordinator.activate(siteID: siteID)
 
         // When
         pushNotificationsManager.sendForegroundNotification(pushNotification)
@@ -85,6 +89,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
             willPresentReviewDetailsFromPushNotificationCallCount += 1
         })
         coordinator.start()
+        coordinator.activate(siteID: siteID)
 
         // When
         pushNotificationsManager.sendInactiveNotification(pushNotification)
@@ -113,6 +118,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
         let pushNotification = PushNotification(noteID: 1_234, kind: .comment, message: "")
 
         coordinator.start()
+        coordinator.activate(siteID: siteID)
 
         assertEmpty(noticePresenter.queuedNotices)
 
@@ -151,6 +157,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
         let differentSiteID: Int64 = 2_000_111
 
         coordinator.start()
+        coordinator.activate(siteID: siteID)
 
         // When
         pushNotificationsManager.sendInactiveNotification(pushNotification)
@@ -184,7 +191,7 @@ private extension ReviewsCoordinatorTests {
                                              noticePresenter: noticePresenter,
                                              switchStoreUseCase: switchStoreUseCase,
                                              willPresentReviewDetailsFromPushNotification: willPresentReviewDetailsFromPushNotification)
-        coordinator.navigationController.viewControllers = [ReviewsViewController(siteID: 1)]
+        coordinator.navigationController.viewControllers = [ReviewsViewController(siteID: siteID)]
         return coordinator
     }
 }

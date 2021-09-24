@@ -43,10 +43,10 @@ final class EditAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.fields.address2, address.address2 ?? "")
         XCTAssertEqual(viewModel.fields.city, address.city)
         XCTAssertEqual(viewModel.fields.postcode, address.postcode)
-        XCTAssertEqual(viewModel.fields.state, address.state)
 
-        let countryName = Self.sampleCountries.first { $0.code == address.country }?.name
-        XCTAssertEqual(viewModel.fields.country, countryName)
+        let country = Self.sampleCountries.first { $0.code == address.country }
+        XCTAssertEqual(viewModel.fields.country, country?.name)
+        XCTAssertEqual(viewModel.fields.state, country?.states.first?.name) // Only one state supported in tests
 
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
     }
@@ -221,6 +221,22 @@ final class EditAddressFormViewModelTests: XCTestCase {
         assertEqual(update.order.shippingAddress?.firstName, "Tester")
         assertEqual(update.fields, [.shippingAddress])
     }
+
+    func test_selecting_state_updates_state_field() {
+        // Given
+        let newState = StateOfACountry(code: "CA", name: "California")
+
+        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), storageManager: testingStorage)
+        viewModel.onLoadTrigger.send()
+
+        // When
+        let stateViewModel = viewModel.createStateViewModel()
+        let viewController = ListSelectorViewController(command: stateViewModel.command, onDismiss: { _ in }) // Needed because of legacy UIKit ways
+        stateViewModel.command.handleSelectedChange(selected: newState, viewController: viewController)
+
+        // Then
+        XCTAssertEqual(viewModel.fields.state, newState.name)
+    }
 }
 
 private extension EditAddressFormViewModelTests {
@@ -261,7 +277,8 @@ private extension EditAddressFormViewModelTests {
     static let sampleCountries: [Country] = {
         return Locale.isoRegionCodes.map { regionCode in
             let name = Locale.current.localizedString(forRegionCode: regionCode) ?? ""
-            return Country(code: regionCode, name: name, states: [])
+            let states = regionCode == "US" ? [StateOfACountry(code: "NY", name: "New York")] : []
+            return Country(code: regionCode, name: name, states: states)
         }.sorted { a, b in
             a.name <= b.name
         }

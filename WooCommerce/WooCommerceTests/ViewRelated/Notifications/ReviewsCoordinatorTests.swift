@@ -185,13 +185,11 @@ final class ReviewsCoordinatorTests: XCTestCase {
 
 private extension ReviewsCoordinatorTests {
     func makeReviewsCoordinator(willPresentReviewDetailsFromPushNotification: (@escaping () -> Void) = { }) -> ReviewsCoordinator {
-        let coordinator = ReviewsCoordinator(navigationController: UINavigationController(),
-                                             pushNotificationsManager: pushNotificationsManager,
-                                             storesManager: storesManager,
-                                             noticePresenter: noticePresenter,
-                                             switchStoreUseCase: switchStoreUseCase,
-                                             willPresentReviewDetailsFromPushNotification: willPresentReviewDetailsFromPushNotification)
-        coordinator.navigationController.viewControllers = [ReviewsViewController(siteID: siteID)]
-        return coordinator
+        ReviewsCoordinator(navigationController: UINavigationController(),
+                           pushNotificationsManager: pushNotificationsManager,
+                           storesManager: storesManager,
+                           noticePresenter: noticePresenter,
+                           switchStoreUseCase: switchStoreUseCase,
+                           willPresentReviewDetailsFromPushNotification: willPresentReviewDetailsFromPushNotification)
     }
 }

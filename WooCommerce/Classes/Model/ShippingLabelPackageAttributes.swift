@@ -12,10 +12,4 @@ struct ShippingLabelPackageAttributes: Equatable {
 
     /// List of items in the package.
     let items: [ShippingLabelPackageItem]
-
-    init(packageID: String, totalWeight: String, items: [ShippingLabelPackageItem]) {
-        self.packageID = packageID
-        self.totalWeight = totalWeight
-        self.items = items
-    }
 }

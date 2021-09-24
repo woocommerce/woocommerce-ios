@@ -532,6 +532,9 @@
 		3FF314E926FC74600012E68E /* XCUITestHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF314E826FC74600012E68E /* XCUITestHelpers */; };
 		3FF314EA26FC751B0012E68E /* XCTest+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997173223DBCF2800592D8E /* XCTest+Extensions.swift */; };
 		3FF314F126FC785C0012E68E /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FF314EF26FC784A0012E68E /* XCTest.framework */; platformFilter = ios; };
+		3FF314F426FD4C4A0012E68E /* BaseScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997172B23DBCD8E00592D8E /* BaseScreen.swift */; };
+		3FF314F526FD4F430012E68E /* UITestsFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FF314DE26FC74450012E68E /* UITestsFoundation.framework */; };
+		3FF314F626FD4F490012E68E /* UITestsFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FF314DE26FC74450012E68E /* UITestsFoundation.framework */; };
 		4506BD712461965300FE6377 /* ProductVisibilityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4506BD6F2461965300FE6377 /* ProductVisibilityViewController.swift */; };
 		4506BD722461965300FE6377 /* ProductVisibilityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4506BD702461965300FE6377 /* ProductVisibilityViewController.xib */; };
 		4508BF622660E34A00707869 /* ShippingLabelCarrierAndRatesTopBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4508BF612660E34A00707869 /* ShippingLabelCarrierAndRatesTopBanner.swift */; };
@@ -1011,7 +1014,6 @@
 		CCDC49E42400011F003166BA /* LoginPasswordScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997171A23DBCD6000592D8E /* LoginPasswordScreen.swift */; };
 		CCDC49E52400011F003166BA /* LoginSiteAddressScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997172123DBCD6100592D8E /* LoginSiteAddressScreen.swift */; };
 		CCDC49E62400011F003166BA /* LoginUsernamePasswordScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997171923DBCD6000592D8E /* LoginUsernamePasswordScreen.swift */; };
-		CCDC49E92400011F003166BA /* BaseScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997172B23DBCD8E00592D8E /* BaseScreen.swift */; };
 		CCDC49EA2400011F003166BA /* PeriodStatsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997174823DC0A7800592D8E /* PeriodStatsTable.swift */; };
 		CCDC49EB2400011F003166BA /* TabNavComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997172F23DBCEB200592D8E /* TabNavComponent.swift */; };
 		CCDC49ED24000533003166BA /* TestCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDC49EC24000533003166BA /* TestCredentials.swift */; };
@@ -1370,7 +1372,6 @@
 		F997172623DBCD6100592D8E /* LinkOrPasswordScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997171D23DBCD6000592D8E /* LinkOrPasswordScreen.swift */; };
 		F997172823DBCD6100592D8E /* LoginCheckMagicLinkScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997171F23DBCD6100592D8E /* LoginCheckMagicLinkScreen.swift */; };
 		F997172A23DBCD6100592D8E /* LoginSiteAddressScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997172123DBCD6100592D8E /* LoginSiteAddressScreen.swift */; };
-		F997172C23DBCD8F00592D8E /* BaseScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997172B23DBCD8E00592D8E /* BaseScreen.swift */; };
 		F997172E23DBCDE900592D8E /* MyStoreScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997172D23DBCDE900592D8E /* MyStoreScreen.swift */; };
 		F997173023DBCEB200592D8E /* TabNavComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997172F23DBCEB200592D8E /* TabNavComponent.swift */; };
 		F997173523DBEB1900592D8E /* OrdersScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997173423DBEB1900592D8E /* OrdersScreen.swift */; };
@@ -2890,6 +2891,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3FF314F526FD4F430012E68E /* UITestsFoundation.framework in Frameworks */,
 				247CE89C2583402A00F9D9D1 /* Embassy in Frameworks */,
 				3F1CA81D26C3542600228BF2 /* XCUITestHelpers in Frameworks */,
 				3FF2247326706AA3008FFA87 /* ScreenObject in Frameworks */,
@@ -2900,6 +2902,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3FF314F626FD4F490012E68E /* UITestsFoundation.framework in Frameworks */,
 				24C5AC7625A53021008FD769 /* Embassy in Frameworks */,
 				3F1CA81F26C3543C00228BF2 /* XCUITestHelpers in Frameworks */,
 				3FF2248A267073AE008FFA87 /* ScreenObject in Frameworks */,
@@ -4095,6 +4098,7 @@
 		3FF314DF26FC74450012E68E /* UITestsFoundation */ = {
 			isa = PBXGroup;
 			children = (
+				F997172B23DBCD8E00592D8E /* BaseScreen.swift */,
 				3FF314E026FC74450012E68E /* UITestsFoundation.h */,
 				F997173223DBCF2800592D8E /* XCTest+Extensions.swift */,
 			);
@@ -6562,7 +6566,6 @@
 				F997171823DBCD5700592D8E /* Login */,
 				F9BB249623F4B1C60068A420 /* Products */,
 				F9BB249923F501FB0068A420 /* Settings */,
-				F997172B23DBCD8E00592D8E /* BaseScreen.swift */,
 				F997172F23DBCEB200592D8E /* TabNavComponent.swift */,
 			);
 			path = Screens;
@@ -7225,6 +7228,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3FF314F426FD4C4A0012E68E /* BaseScreen.swift in Sources */,
 				3FF314EA26FC751B0012E68E /* XCTest+Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -8351,7 +8355,6 @@
 				CCDC49E52400011F003166BA /* LoginSiteAddressScreen.swift in Sources */,
 				CCDC49E62400011F003166BA /* LoginUsernamePasswordScreen.swift in Sources */,
 				D8F3A9792588659E0085859B /* GetStartedScreen.swift in Sources */,
-				CCDC49E92400011F003166BA /* BaseScreen.swift in Sources */,
 				CCDC49EA2400011F003166BA /* PeriodStatsTable.swift in Sources */,
 				CCDC49EB2400011F003166BA /* TabNavComponent.swift in Sources */,
 				CCDC49ED24000533003166BA /* TestCredentials.swift in Sources */,
@@ -8370,7 +8373,6 @@
 				F93E8E5524087FDA0057FF21 /* SettingsScreen.swift in Sources */,
 				24C5ACC425A530D6008FD769 /* PrologueScreen.swift in Sources */,
 				F997172323DBCD6100592D8E /* LoginPasswordScreen.swift in Sources */,
-				F997172C23DBCD8F00592D8E /* BaseScreen.swift in Sources */,
 				F997173F23DBFFEF00592D8E /* ReviewsScreen.swift in Sources */,
 				F997172223DBCD6100592D8E /* LoginUsernamePasswordScreen.swift in Sources */,
 				F997172823DBCD6100592D8E /* LoginCheckMagicLinkScreen.swift in Sources */,

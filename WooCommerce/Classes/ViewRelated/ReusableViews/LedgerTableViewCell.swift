@@ -36,66 +36,81 @@ final class LedgerTableViewCell: UITableViewCell {
     /// Configure an order payment summary "table"
     ///
     func configure(with viewModel: OrderPaymentDetailsViewModel) {
-        subtotalLabel.text = Titles.subtotalLabel
-        subtotalValue.text = viewModel.subtotalValue
-
-        discountLabel.text = viewModel.discountText
-        discountValue.text = viewModel.discountValue
-        discountView.isHidden = viewModel.shouldHideDiscount
-
-        feesLabel.text = Titles.feesLabel
-        feesValue.text = viewModel.feesValue
-        feesView.isHidden = viewModel.shouldHideFees
-
-        shippingLabel.text = Titles.shippingLabel
-        shippingValue.text = viewModel.shippingValue
-
-        taxesLabel.text = Titles.taxesLabel
-        taxesValue.text = viewModel.taxesValue
-        taxesView.isHidden = viewModel.shouldHideTaxes
-
-        totalLabel.text = Titles.totalLabel
-        totalValue.text = viewModel.totalValue
-
-        accessibilityElements = [subtotalLabel as Any,
-                                 subtotalValue as Any,
-                                 discountLabel as Any,
-                                 discountValue as Any,
-                                 feesLabel as Any,
-                                 feesValue as Any,
-                                 shippingLabel as Any,
-                                 shippingValue as Any,
-                                 taxesLabel as Any,
-                                 taxesValue as Any,
-                                 totalLabel as Any,
-                                 totalValue as Any
-                                ]
+        configureSubtotal(label: Titles.subtotalLabel, value: viewModel.subtotalValue)
+        configureDiscount(label: viewModel.discountText, value: viewModel.discountValue, hidden: viewModel.shouldHideDiscount)
+        configureFees(label: Titles.feesLabel, value: viewModel.feesValue, hidden: viewModel.shouldHideFees)
+        configureShipping(label: Titles.shippingLabel, value: viewModel.shippingValue, hidden: false)
+        configureTaxes(label: Titles.taxesLabel, value: viewModel.taxesValue, hidden: viewModel.shouldHideTaxes)
+        configureTotal(label: Titles.totalLabel, value: viewModel.totalValue)
+        configureAccessibility()
     }
 
     /// Configure a refund details "table"
     ///
     func configure(with viewModel: RefundDetailsViewModel) {
-        subtotalLabel.text = Titles.subtotal
-        subtotalValue.text = viewModel.itemSubtotal
+        configureSubtotal(label: Titles.subtotal, value: viewModel.itemSubtotal)
+        configureDiscount(label: nil, value: nil, hidden: true)
+        configureFees(label: nil, value: nil, hidden: true)
+        configureShipping(label: nil, value: nil, hidden: true)
+        configureTaxes(label: Titles.tax, value: viewModel.taxSubtotal, hidden: taxesValue == nil)
+        configureTotal(label: Titles.productsRefund, value: viewModel.productsRefund)
+        configureAccessibility()
+    }
 
-        discountLabel.text = nil
-        discountValue.text = nil
-        discountView.isHidden = true
+    private func configureSubtotal(label: String, value: String) {
+        subtotalLabel.text = label
+        subtotalValue.text = value
+        subtotalView.accessibilityLabel = "\(label) \(value)"
+    }
 
-        feesLabel.text = nil
-        feesValue.text = nil
-        feesView.isHidden = true
+    private func configureDiscount(label: String?, value: String?, hidden: Bool) {
+        discountLabel.text = label
+        discountValue.text = value
+        discountView.accessibilityLabel = "\(label ?? "") \(value ?? "")"
+        discountView.isHidden = hidden
+    }
 
-        shippingLabel.text = nil
-        shippingValue.text = nil
-        shippingView.isHidden = true
+    private func configureFees(label: String?, value: String?, hidden: Bool) {
+        feesLabel.text = label
+        feesValue.text = value
+        feesView.accessibilityLabel = "\(label ?? "") \(value ?? "")"
+        feesView.isHidden = hidden
+    }
 
-        taxesLabel.text = Titles.tax
-        taxesValue.text = viewModel.taxSubtotal
-        taxesView.isHidden = taxesValue == nil
+    private func configureShipping(label: String?, value: String?, hidden: Bool) {
+        shippingLabel.text = label
+        shippingValue.text = value
+        shippingView.accessibilityLabel = "\(label ?? "") \(value ?? "")"
+        shippingView.isHidden = hidden
+    }
 
-        totalLabel.text = Titles.productsRefund
-        totalValue.text = viewModel.productsRefund
+    private func configureTaxes(label: String, value: String?, hidden: Bool) {
+        taxesLabel.text = label
+        taxesValue.text = value
+        taxesView.accessibilityLabel = "\(label) \(value ?? "")"
+        taxesView.isHidden = hidden
+    }
+
+    private func configureTotal(label: String, value: String) {
+        totalLabel.text = label
+        totalValue.text = value
+        totalView.accessibilityLabel = "\(label) \(value)"
+    }
+
+    private func configureAccessibility() {
+        let visibleViews = [subtotalView,
+                            discountView,
+                            feesView,
+                            shippingView,
+                            taxesView,
+                            totalView].filter({
+                                $0?.isHidden == false
+                            })
+                            .map({
+                                $0 as Any
+                            })
+
+        accessibilityElements = visibleViews
     }
 }
 

@@ -39,7 +39,7 @@ struct ShippingLabelSinglePackage: View {
                         HStack {
                             Spacer()
                             Button(action: {
-                                viewModel.requestMovingItem(id: productItemRow.itemID, itemName: productItemRow.title)
+                                viewModel.requestMovingItem(productItemRow.productOrVariationID, itemName: productItemRow.title)
                                 shouldShowMoveItemActionSheet = true
                             }, label: {
                                 Text(Localization.moveButton)
@@ -148,18 +148,16 @@ private extension ShippingLabelSinglePackage {
     }
 }
 
-struct ShippingLabelPackageItem_Previews: PreviewProvider {
+struct ShippingLabelSinglePackage_Previews: PreviewProvider {
     static var previews: some View {
         let order = ShippingLabelPackageDetailsViewModel.sampleOrder()
         let packageResponse = ShippingLabelPackageDetailsViewModel.samplePackageDetails()
         let viewModel = ShippingLabelSinglePackageViewModel(order: order,
-                                                            orderItems: order.items,
+                                                            orderItems: [],
                                                             packagesResponse: packageResponse,
                                                             selectedPackageID: "Box 1",
                                                             totalWeight: "",
                                                             isOriginalPackaging: false,
-                                                            products: [],
-                                                            productVariations: [],
                                                             onItemMoveRequest: { _, _ in },
                                                             onPackageSwitch: { _ in },
                                                             onPackagesSync: { _ in })

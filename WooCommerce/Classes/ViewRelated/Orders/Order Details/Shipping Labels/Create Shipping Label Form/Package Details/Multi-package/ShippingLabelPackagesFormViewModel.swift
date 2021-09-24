@@ -104,29 +104,32 @@ private extension ShippingLabelPackagesFormViewModel {
               let selectedPackageID = resultsControllers?.accountSettings?.lastSelectedPackageID else {
             return
         }
+        let items = order.items.compactMap { ShippingLabelPackageItem(orderItem: $0,
+                                                                      products: products,
+                                                                      productVariations: productVariations) }
         selectedPackages = [ShippingLabelPackageAttributes(packageID: selectedPackageID,
                                                            totalWeight: "",
-                                                           productIDs: order.items.map { $0.productOrVariationID })]
+                                                           items: items)]
     }
 
     /// Set up item view models on change of products and product variations.
     ///
     func configureItemViewModels(order: Order, packageResponse: ShippingLabelPackagesResponse?) {
-        $selectedPackages.combineLatest($products, $productVariations)
-            .map { selectedPackages, products, variations -> [ShippingLabelSinglePackageViewModel] in
+        $selectedPackages
+            .map { selectedPackages -> [ShippingLabelSinglePackageViewModel] in
                 return selectedPackages.enumerated().map { index, details in
-                    let orderItems = order.items.filter { details.productIDs.contains($0.productOrVariationID) }
                     let isOriginal = details.packageID == ShippingLabelPackageAttributes.originalPackagingBoxID
                     return ShippingLabelSinglePackageViewModel(order: order,
-                                                               orderItems: orderItems,
+                                                               orderItems: details.items,
                                                                packagesResponse: packageResponse,
                                                                selectedPackageID: details.packageID,
                                                                totalWeight: details.totalWeight,
                                                                isOriginalPackaging: isOriginal,
-                                                               products: products,
-                                                               productVariations: variations,
                                                                onItemMoveRequest: { [weak self] itemID, packageName in
-                        self?.updateMoveItemActionSheet(for: itemID, from: details, at: index, packageName: packageName)
+                        self?.updateMoveItemActionSheet(for: itemID,
+                                                           from: details,
+                                                           packageIndex: index,
+                                                           packageName: packageName)
                     },
                                                                onPackageSwitch: { [weak self] newPackage in
                         self?.switchPackage(currentPackage: details, newPackage: newPackage)
@@ -147,9 +150,9 @@ private extension ShippingLabelPackagesFormViewModel {
     ///
     func updateMoveItemActionSheet(for itemID: Int64,
                                    from currentPackage: ShippingLabelPackageAttributes,
-                                   at index: Int,
+                                   packageIndex: Int,
                                    packageName: String) {
-        moveItemActionSheetMessage = String(format: Localization.moveItemActionSheetMessage, index + 1, packageName)
+        moveItemActionSheetMessage = String(format: Localization.moveItemActionSheetMessage, packageIndex + 1, packageName)
         moveItemActionSheetButtons = {
             var buttons: [ActionSheet.Button] = []
             // if package is not original packaging, add option to ship in original package
@@ -164,43 +167,36 @@ private extension ShippingLabelPackagesFormViewModel {
     }
 
     func shipInOriginalPackage(itemID: Int64, from currentPackage: ShippingLabelPackageAttributes) {
-        var updatedPackages: [ShippingLabelPackageAttributes] = []
-        for package in selectedPackages {
-            if package == currentPackage {
-                guard let itemProductID = order.items.first(where: { $0.itemID == itemID })?.productOrVariationID else {
-                    assertionFailure("⛔️ Cannot find productID for itemID \(itemID) to move to original package.")
-                    continue
-                }
-
-                // Remove one product ID from the list that matches the item's product ID.
-                var foundProductID = false
-                let updatedProductIDs = package.productIDs.compactMap { id -> Int64? in
-                    if id == itemProductID && !foundProductID {
-                        foundProductID = true
-                        return nil
-                    }
-                    return id
-                }
-
-                // If the resulting product ID list is not empty, create a copy of the package with these IDs.
-                if updatedProductIDs.isNotEmpty {
-                    let updatedPackage = ShippingLabelPackageAttributes(packageID: package.packageID,
-                                                                        totalWeight: package.totalWeight,
-                                                                        productIDs: updatedProductIDs)
-                    updatedPackages.append(updatedPackage)
-                }
-
-                // Append an original package with the item's product ID.
-                let originalPackage = ShippingLabelPackageAttributes(packageID: ShippingLabelPackageAttributes.originalPackagingBoxID,
-                                                                     totalWeight: "",
-                                                                     productIDs: [itemProductID])
-                updatedPackages.append(originalPackage)
-
-            } else {
-                updatedPackages.append(package)
-            }
-        }
-        selectedPackages = updatedPackages
+//        var updatedPackages: [ShippingLabelPackageAttributes] = []
+//        for package in selectedPackages {
+//            if package == currentPackage {
+//                guard let itemProductID = itemList.first(where: { $0.itemID == itemID })?.productOrVariationID else {
+//                    assertionFailure("⛔️ Cannot find productID for itemID \(itemID) to move to original package.")
+//                    continue
+//                }
+//
+//                // Filter the item from its list
+//                let updatedItemList = itemList.filter { $0.itemID != itemID }
+//
+//                // If the resulting item list is not empty, create a copy of the package with their product IDs.
+//                if updatedItemList.isNotEmpty {
+//                    let updatedPackage = ShippingLabelPackageAttributes(packageID: package.packageID,
+//                                                                        totalWeight: package.totalWeight,
+//                                                                        productIDs: updatedItemList.map { $0.productOrVariationID })
+//                    updatedPackages.append(updatedPackage)
+//                }
+//
+//                // Append an original package with the item's product ID.
+//                let originalPackage = ShippingLabelPackageAttributes(packageID: ShippingLabelPackageAttributes.originalPackagingBoxID,
+//                                                                     totalWeight: "",
+//                                                                     productIDs: [itemProductID])
+//                updatedPackages.append(originalPackage)
+//
+//            } else {
+//                updatedPackages.append(package)
+//            }
+//        }
+//        selectedPackages = updatedPackages
     }
 
     /// Update selected packages when user switch any package.

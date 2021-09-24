@@ -4,7 +4,7 @@ import SwiftUI
 ///
 struct ItemToFulfillRow: View, Identifiable {
     let id = UUID()
-    let itemID: Int64
+    let productOrVariationID: Int64
     let title: String
     let subtitle: String
 
@@ -15,7 +15,7 @@ struct ItemToFulfillRow: View, Identifiable {
 
 struct ItemToFulfillRow_Previews: PreviewProvider {
     static var previews: some View {
-        ItemToFulfillRow(itemID: 123, title: "Title", subtitle: "My subtitle")
+        ItemToFulfillRow(productOrVariationID: 123, title: "Title", subtitle: "My subtitle")
             .previewLayout(.fixed(width: 375, height: 100))
     }
 }

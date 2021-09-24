@@ -634,7 +634,7 @@ private extension ShippingLabelFormViewModel {
 
                 return ""
             }()
-            return ShippingLabelCustomsForm(packageID: package.packageID, packageName: packageName, productIDs: package.productIDs)
+            return ShippingLabelCustomsForm(packageID: package.packageID, packageName: packageName, productIDs: package.items.map { $0.productOrVariationID })
         }
     }
 
@@ -770,7 +770,7 @@ extension ShippingLabelFormViewModel {
             }
             return ShippingLabelPackagePurchase(package: package,
                                                 rate: selectedRate,
-                                                productIDs: packageInfo.productIDs,
+                                                productIDs: packageInfo.items.map { $0.productOrVariationID },
                                                 customsForm: package.customsForm)
         }
 

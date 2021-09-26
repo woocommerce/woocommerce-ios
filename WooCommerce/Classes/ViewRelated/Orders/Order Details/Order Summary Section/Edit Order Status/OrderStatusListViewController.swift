@@ -10,6 +10,7 @@ final class OrderStatusListViewController: UIViewController {
     ///
     private var indexOfSelectedStatus: IndexPath? {
         didSet {
+            // Maybe don't change if the indexpath is the same as when the list view is presented?
             activateApplyButton()
         }
     }
@@ -104,6 +105,22 @@ extension OrderStatusListViewController {
         navigationItem.setRightBarButton(rightBarButton, animated: false)
         deActivateApplyButton()
     }
+    func activateRightSpinner() {
+        let activityIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+        let rightBarButton = UIBarButtonItem(customView: activityIndicator)
+        navigationItem.setRightBarButton(rightBarButton, animated: true)
+        activityIndicator.startAnimating()
+    }
+    func deactivateRightSpinner() {
+        let applyButtonTitle = NSLocalizedString("Apply",
+                                               comment: "Change order status screen - button title to apply selection")
+        let rightBarButton = UIBarButtonItem(title: applyButtonTitle,
+                                             style: .done,
+                                             target: self,
+                                             action: #selector(applyButtonTapped))
+        navigationItem.setRightBarButton(rightBarButton, animated: false)
+        deActivateApplyButton()
+    }
 
     func activateApplyButton() {
         navigationItem.rightBarButtonItem?.isEnabled = true
@@ -126,6 +143,7 @@ extension OrderStatusListViewController {
             didSelectCancel?()
             return
         }
+        activateRightSpinner()
         didSelectApply?(selectedStatus)
     }
 }

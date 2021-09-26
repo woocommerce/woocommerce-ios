@@ -930,7 +930,7 @@ private extension OrderDetailsViewController {
 
         statusList.didSelectApply = { (selectedStatus) in
             self.setOrderStatus(to: selectedStatus) {
-                statusList.deactivateRightSpinner()
+                statusList.configureRightButton()
                 statusList.dismiss(animated: true)
             }
         }
@@ -970,7 +970,6 @@ private extension OrderDetailsViewController {
         let newOrder = order.copy(status: status)
         return OrderAction.updateOrder(siteID: siteID, order: newOrder, fields: [.status], onCompletion: { [weak self] result in
             guard let self = self else { return }
-            
             switch result {
             case .success:
                 NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)

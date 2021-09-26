@@ -111,17 +111,6 @@ extension OrderStatusListViewController {
         navigationItem.setRightBarButton(rightBarButton, animated: true)
         activityIndicator.startAnimating()
     }
-    func deactivateRightSpinner() {
-        let applyButtonTitle = NSLocalizedString("Apply",
-                                               comment: "Change order status screen - button title to apply selection")
-        let rightBarButton = UIBarButtonItem(title: applyButtonTitle,
-                                             style: .done,
-                                             target: self,
-                                             action: #selector(applyButtonTapped))
-        navigationItem.setRightBarButton(rightBarButton, animated: false)
-        deActivateApplyButton()
-    }
-
     func activateApplyButton() {
         navigationItem.rightBarButtonItem?.isEnabled = true
     }

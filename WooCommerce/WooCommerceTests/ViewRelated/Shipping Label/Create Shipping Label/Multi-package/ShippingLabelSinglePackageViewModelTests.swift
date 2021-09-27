@@ -320,6 +320,53 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
         // Then
         XCTAssertNil(viewModel.validatedPackageAttributes)
     }
+
+    func test_originalPackageDimensions_returns_correctly_when_package_has_no_dimensions() {
+        // Given
+        let item = ShippingLabelPackageItem.fake()
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
+                                                            orderItems: [item],
+                                                            packagesResponse: mockPackageResponse(),
+                                                            selectedPackageID: "invividual",
+                                                            totalWeight: "",
+                                                            isOriginalPackaging: true,
+                                                            onItemMoveRequest: { _, _ in },
+                                                            onPackageSwitch: { _ in },
+                                                            onPackagesSync: { _ in },
+                                                            formatter: currencyFormatter,
+                                                            weightUnit: "kg")
+
+        // Then
+        XCTAssertEqual(viewModel.originalPackageDimensions, "0 x 0 x 0 in")
+    }
+
+    func test_originalPackageDimensions_returns_correctly_when_package_has_dimensions() {
+        // Given
+        let dimensions = ProductDimensions(length: "2", width: "3", height: "5")
+        let item = ShippingLabelPackageItem.fake(dimensions: dimensions)
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
+                                                            orderItems: [item],
+                                                            packagesResponse: mockPackageResponse(),
+                                                            selectedPackageID: "invividual",
+                                                            totalWeight: "",
+                                                            isOriginalPackaging: true,
+                                                            onItemMoveRequest: { _, _ in },
+                                                            onPackageSwitch: { _ in },
+                                                            onPackagesSync: { _ in },
+                                                            formatter: currencyFormatter,
+                                                            weightUnit: "kg")
+
+        // Then
+        XCTAssertEqual(viewModel.originalPackageDimensions, "2 x 3 x 5 in")
+    }
 }
 
 // MARK: - Mocks

@@ -175,6 +175,18 @@ extension EditAddressFormViewModel {
         case loading
     }
 
+    /// Representation of possible notices that can be displayed
+    enum Notice: Equatable {
+        case success
+        case error(EditAddressError)
+    }
+
+    /// Representation of possible errors that can happen
+    enum EditAddressError {
+        case unableToLoadCountries
+        case unableToUpdateAddress
+    }
+
     /// Type to hold values from all the form fields
     ///
     struct FormFields {

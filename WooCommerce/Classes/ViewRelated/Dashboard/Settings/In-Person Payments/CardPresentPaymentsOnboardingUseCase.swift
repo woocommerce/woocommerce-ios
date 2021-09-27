@@ -182,11 +182,10 @@ private extension CardPresentPaymentsOnboardingUseCase {
         guard let siteID = siteID else {
             return nil
         }
-
-        let account = storageManager.viewStorage
-            .loadPaymentGatewayAccount(siteID: siteID, gatewayID: "woocommerce-payments") // TODO constant
-
-        return account?.toReadOnly()
+        return storageManager.viewStorage
+            .loadPaymentGatewayAccounts(siteID: siteID)
+            .first(where: \.isCardPresentEligible)?
+            .toReadOnly()
     }
 
     func isWCPaySetupCompleted(account: PaymentGatewayAccount) -> Bool {

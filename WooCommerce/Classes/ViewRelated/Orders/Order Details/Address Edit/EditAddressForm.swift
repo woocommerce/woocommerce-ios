@@ -52,14 +52,16 @@ final class EditAddressHostingController: UIHostingController<EditAddressForm> {
 
                 switch notice {
                 case .success:
-                    break
+                    self?.systemNoticePresenter.enqueue(notice: .init(title: EditAddressForm.Localization.success, feedbackType: .error))
+
                 case .error(let error):
                     switch error {
                     case .unableToLoadCountries:
                         self?.systemNoticePresenter.enqueue(notice: .init(title: error.errorDescription ?? "", feedbackType: .error))
                         self?.dismiss(animated: true) // Dismiss VC because we need country information to continue.
+
                     case .unableToUpdateAddress:
-                        break
+                        self?.modalNoticePresenter.enqueue(notice: .init(title: error.errorDescription ?? "", feedbackType: .error))
                     }
                 }
 
@@ -303,6 +305,8 @@ private extension EditAddressForm {
         static let placeholderRequired = NSLocalizedString("Required", comment: "Text field placeholder in Edit Address Form")
         static let placeholderOptional = NSLocalizedString("Optional", comment: "Text field placeholder in Edit Address Form")
         static let placeholderSelectOption = NSLocalizedString("Select an option", comment: "Text field placeholder in Edit Address Form")
+
+        static let success = NSLocalizedString("Address successfully updated.", comment: "Notice text after updating the shipping or billing address")
     }
 }
 

@@ -153,7 +153,10 @@ private extension ShippingLabelPackagesFormViewModel {
             var buttons: [ActionSheet.Button] = []
 
             // Add options to move to other packages.
-            for index in 0..<selectedPackages.count {
+            for (index, package) in selectedPackages.enumerated() {
+                guard !package.isOriginalPackaging else {
+                    continue
+                }
                 if index != packageIndex {
                     guard let name = itemViewModels[safe: index]?.packageName else {
                         continue

@@ -185,7 +185,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
                                                                     destinationAddress: nil)
         let expectedPackageID = "my-package-id"
         let expectedPackageWeight = "55"
-        let selectedPackage = ShippingLabelPackageAttributes(packageID: expectedPackageID, totalWeight: expectedPackageWeight, productIDs: [])
+        let selectedPackage = ShippingLabelPackageAttributes(packageID: expectedPackageID, totalWeight: expectedPackageWeight, items: [])
 
         // When
         shippingLabelFormViewModel.handlePackageDetailsValueChanges(details: [selectedPackage])
@@ -201,7 +201,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
                                                                     destinationAddress: nil)
         let expectedPackageID = "my-package-id"
         let expectedPackageWeight = "55"
-        let selectedPackage = ShippingLabelPackageAttributes(packageID: expectedPackageID, totalWeight: expectedPackageWeight, productIDs: [])
+        let selectedPackage = ShippingLabelPackageAttributes(packageID: expectedPackageID, totalWeight: expectedPackageWeight, items: [])
 
         shippingLabelFormViewModel.handleOriginAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(), validated: true)
         shippingLabelFormViewModel.handleDestinationAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(), validated: true)
@@ -230,7 +230,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
                                                                     destinationAddress: nil)
         let expectedPackageID = "my-package-id"
         let expectedPackageWeight = "55"
-        let selectedPackage = ShippingLabelPackageAttributes(packageID: expectedPackageID, totalWeight: expectedPackageWeight, productIDs: [])
+        let selectedPackage = ShippingLabelPackageAttributes(packageID: expectedPackageID, totalWeight: expectedPackageWeight, items: [])
 
         shippingLabelFormViewModel.handleOriginAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(phone: "0123456789", country: "US"),
                                                                    validated: true)
@@ -881,7 +881,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         // When
         viewModel.handleOriginAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(phone: "0123456789", country: "US"), validated: true)
         viewModel.handleDestinationAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(country: "VN"), validated: true)
-        let selectedPackage = ShippingLabelPackageAttributes(packageID: expectedPackageID, totalWeight: "55", productIDs: [expectedProductID])
+        let item = ShippingLabelPackageItem.fake(id: expectedProductID)
+        let selectedPackage = ShippingLabelPackageAttributes(packageID: expectedPackageID, totalWeight: "55", items: [item])
         viewModel.handlePackageDetailsValueChanges(details: [selectedPackage])
 
         // Then

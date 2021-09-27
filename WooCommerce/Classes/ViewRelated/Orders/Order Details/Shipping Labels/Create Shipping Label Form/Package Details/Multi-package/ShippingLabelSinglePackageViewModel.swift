@@ -15,6 +15,10 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
     ///
     let selectedPackageID: String
 
+    /// Whether this package is shipped in original packaging.
+    ///
+    let isOriginalPackaging: Bool
+
     /// View model for the package list
     ///
     lazy var packageListViewModel: ShippingLabelPackageListViewModel = {
@@ -79,6 +83,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
          packagesResponse: ShippingLabelPackagesResponse?,
          selectedPackageID: String,
          totalWeight: String,
+         isOriginalPackaging: Bool = false,
          onItemMoveRequest: @escaping ItemMoveRequestHandler,
          onPackageSwitch: @escaping PackageSwitchHandler,
          onPackagesSync: @escaping PackagesSyncHandler,
@@ -90,6 +95,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
         self.currencyFormatter = formatter
         self.weightUnit = weightUnit
         self.selectedPackageID = selectedPackageID
+        self.isOriginalPackaging = isOriginalPackaging
         self.onItemMoveRequest = onItemMoveRequest
         self.onPackageSwitch = onPackageSwitch
         self.onPackagesSync = onPackagesSync

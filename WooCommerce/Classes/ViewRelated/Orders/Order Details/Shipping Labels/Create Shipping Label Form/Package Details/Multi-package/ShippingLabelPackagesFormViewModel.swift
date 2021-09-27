@@ -118,11 +118,13 @@ private extension ShippingLabelPackagesFormViewModel {
         $selectedPackages
             .map { selectedPackages -> [ShippingLabelSinglePackageViewModel] in
                 return selectedPackages.enumerated().map { index, details in
+                    let isOriginal = details.packageID == ShippingLabelPackageAttributes.originalPackagingBoxID
                     return .init(order: order,
                                  orderItems: details.items,
                                  packagesResponse: packageResponse,
                                  selectedPackageID: details.packageID,
                                  totalWeight: details.totalWeight,
+                                 isOriginalPackaging: isOriginal,
                                  onItemMoveRequest: { [weak self] productOrVariationID, packageName in
                         self?.updateMoveItemActionSheet(for: productOrVariationID, from: details, packageIndex: index, packageName: packageName)
                     },

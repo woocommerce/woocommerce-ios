@@ -452,10 +452,16 @@ private extension CardReaderConnectionController {
                     self.state = .updating(progress: 0)
                 case .installing(progress: let progress):
                     self.state = .updating(progress: progress)
+                case .failed(error: let error):
+                    // TODO: handle error case
+                    print("Failed installing update: \(error)")
+                    fallthrough
                 case .completed:
                     self.softwareUpdateCancelable = nil
                     self.state = .updating(progress: 1)
-                default:
+                case .available:
+                    break
+                case .none:
                     break
                 }
             }

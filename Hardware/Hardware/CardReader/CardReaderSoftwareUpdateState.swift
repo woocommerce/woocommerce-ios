@@ -9,6 +9,9 @@ public enum CardReaderSoftwareUpdateState {
     /// The update is being installed
     case installing(progress: Float)
 
+    /// The update couldn't be installed because of an error
+    case failed(error: Error)
+
     /// The update has finished installing
     case completed
 

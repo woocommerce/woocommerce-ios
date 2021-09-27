@@ -331,41 +331,8 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
-    public func installUpdate() -> AnyPublisher<Float, Error> {
-        // We create a future for the asynchronous call to installUpdate.
-        // Since Combine doesn't offer enough options to combine values and completion events,
-        // this publishes a true value when the update is completed.
-        let installFuture = Future<Bool, Error> { promise in
-            Terminal.shared.installAvailableUpdate()
-            promise(.success(true))
-        }
-
-        // We want to combine the completion from the previous future with the progress events
-        // coming from the delegate through softwareUpdateSubject.
-        // To do this, we prepend an initial false value for `updateFinished`, and while that
-        // is the latest value, we will republish progress events from softwareUpdateSubject.
-        // Once we get a true value from the `installFuture` completion, we'll transform that
-        // into an empty sequence so our publisher can finish.
-        return installFuture
-            .prepend(false)
-            .map { [softwareUpdateSubject] updateFinished -> AnyPublisher<Float, Error> in
-                if updateFinished {
-                    return Empty()
-                        .eraseToAnyPublisher()
-                } else {
-                    return softwareUpdateSubject
-                        .compactMap({ state in
-                            guard case .installing(progress: let progress) = state else {
-                                return nil
-                            }
-                            return progress
-                        })
-                        .setFailureType(to: Error.self)
-                        .eraseToAnyPublisher()
-                }
-            }
-            .switchToLatest()
-            .eraseToAnyPublisher()
+    public func installUpdate() -> Void {
+        Terminal.shared.installAvailableUpdate()
     }
 }
 
@@ -482,6 +449,7 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
     public func reader(_ reader: Reader, didReportAvailableUpdate update: ReaderSoftwareUpdate) {
         let softwareUpdate = CardReaderSoftwareUpdate(update: update)
         sendReaderEvent(.softwareUpdateNeeded(softwareUpdate))
+        softwareUpdateSubject.send(.available)
     }
 
     public func reader(_ reader: Reader, didStartInstallingUpdate update: ReaderSoftwareUpdate, cancelable: StripeTerminal.Cancelable?) {
@@ -495,6 +463,10 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
     }
 
     public func reader(_ reader: Reader, didFinishInstallingUpdate update: ReaderSoftwareUpdate?, error: Error?) {
+        guard error == nil else {
+            softwareUpdateSubject.send(.available)
+            return
+        }
         softwareUpdateSubject.send(.completed)
         softwareUpdateSubject.send(.none)
         sendReaderEvent(.softwareUpToDate)

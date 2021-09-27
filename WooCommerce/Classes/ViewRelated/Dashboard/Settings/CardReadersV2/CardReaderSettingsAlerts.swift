@@ -66,10 +66,11 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
 
     /// Shows progress when a software update is being installed
     ///
-    func updateProgress(from: UIViewController, progress: Float, cancel: (() -> Void)?) {
+    func updateProgress(from: UIViewController, requiredUpdate: Bool, progress: Float, cancel: (() -> Void)?) {
         setViewModelAndPresent(
             from: from,
             viewModel: CardPresentModalUpdateProgress(
+                requiredUpdate: requiredUpdate,
                 progress: progress,
                 cancel: cancel
             )

@@ -87,87 +87,6 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.connectedReaderSoftwareVersion, "Unknown Software Version")
     }
 
-    func test_checkForCardReaderUpdate_properly_handles_update_available() {
-        // Given
-        let expectation = self.expectation(description: #function)
-
-        let mockStoresManager = MockCardPresentPaymentsStoresManager(
-            connectedReaders: [MockCardReader.bbposChipper2XBT()],
-            discoveredReaders: [],
-            sessionManager: SessionManager.testingInstance,
-            readerUpdateAvailable: true
-        )
-        ServiceLocator.setStores(mockStoresManager)
-
-        let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
-
-        viewModel.didUpdate = {
-            if viewModel.readerUpdateAvailable == .isTrue {
-                expectation.fulfill()
-            }
-        }
-
-        // When
-        viewModel.checkForCardReaderUpdate()
-
-        // Then
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
-    }
-
-    func test_checkForCardReaderUpdate_properly_handles_update_not_available() {
-        // Given
-        let expectation = self.expectation(description: #function)
-
-        let mockStoresManager = MockCardPresentPaymentsStoresManager(
-            connectedReaders: [MockCardReader.bbposChipper2XBT()],
-            discoveredReaders: [],
-            sessionManager: SessionManager.testingInstance,
-            readerUpdateAvailable: false
-        )
-        ServiceLocator.setStores(mockStoresManager)
-
-        let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
-
-        viewModel.didUpdate = {
-            if viewModel.readerUpdateAvailable == .isFalse {
-                expectation.fulfill()
-            }
-        }
-
-        // When
-        viewModel.checkForCardReaderUpdate()
-
-        // Then
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
-    }
-
-    func test_checkForCardReaderUpdate_properly_handles_update_check_failure() {
-        // Given
-        let expectation = self.expectation(description: #function)
-
-        let mockStoresManager = MockCardPresentPaymentsStoresManager(
-            connectedReaders: [MockCardReader.bbposChipper2XBT()],
-            discoveredReaders: [],
-            sessionManager: SessionManager.testingInstance,
-            failReaderUpdateCheck: true
-        )
-        ServiceLocator.setStores(mockStoresManager)
-
-        let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
-
-        viewModel.didUpdate = {
-            if viewModel.readerUpdateAvailable == .isFalse {
-                expectation.fulfill()
-            }
-        }
-
-        // When
-        viewModel.checkForCardReaderUpdate()
-
-        // Then
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
-    }
-
     func test_startCardReaderUpdate_properly_handles_successful_update() {
         // Given
         let expectation = self.expectation(description: #function)
@@ -175,8 +94,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [MockCardReader.bbposChipper2XBT()],
             discoveredReaders: [],
-            sessionManager: SessionManager.testingInstance,
-            readerUpdateAvailable: true
+            sessionManager: SessionManager.testingInstance
         )
         ServiceLocator.setStores(mockStoresManager)
 
@@ -193,10 +111,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
             if updateDidBegin {
                 // But now it has stopped
                 if !viewModel.readerUpdateInProgress {
-                    // But did it succeed?
-                    if viewModel.readerUpdateCompletedSuccessfully {
-                        expectation.fulfill()
-                    }
+                    expectation.fulfill()
                 }
             }
         }
@@ -217,7 +132,6 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
             connectedReaders: [MockCardReader.bbposChipper2XBT()],
             discoveredReaders: [],
             sessionManager: SessionManager.testingInstance,
-            readerUpdateAvailable: true,
             failUpdate: true
         )
         ServiceLocator.setStores(mockStoresManager)
@@ -235,10 +149,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
             if updateDidBegin {
                 // But now it has stopped
                 if !viewModel.readerUpdateInProgress {
-                    // But did it fail?
-                    if !viewModel.readerUpdateCompletedSuccessfully {
-                        expectation.fulfill()
-                    }
+                    expectation.fulfill()
                 }
             }
         }

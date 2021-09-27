@@ -136,8 +136,7 @@ final class MockCardReaderService: CardReaderService {
         }
     }
 
-    func installUpdate() -> AnyPublisher<Float, Error> {
-        Empty<Float, Error>().eraseToAnyPublisher()
+    func installUpdate() -> Void {
     }
 }
 

@@ -19,15 +19,14 @@ final class CardReaderSettingsConnectedViewController: UIViewController, CardRea
     private var sections = [Section]()
 
     /// Last known update view
-    private var updateInProgress: Bool = false
-
-    /// Update view controller
-    private var updateViewController: UpdateViewController?
+    private var readerUpdateProgress: Float? = nil
 
     /// Card Present Payments alerts
     private lazy var paymentAlerts: OrderDetailsPaymentAlerts = {
         OrderDetailsPaymentAlerts(presentingController: self)
     }()
+
+    private let settingsAlerts = CardReaderSettingsAlerts()
 
     /// Accept our viewmodel
     ///
@@ -52,11 +51,6 @@ final class CardReaderSettingsConnectedViewController: UIViewController, CardRea
         configureTable()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        checkForCardReaderUpdate()
-    }
-
     override func viewWillDisappear(_ animated: Bool) {
         viewModel?.didUpdate = nil
         super.viewWillDisappear(animated)
@@ -66,13 +60,6 @@ final class CardReaderSettingsConnectedViewController: UIViewController, CardRea
 // MARK: - View Configuration
 //
 private extension CardReaderSettingsConnectedViewController {
-    func checkForCardReaderUpdate() {
-        guard let viewModel = viewModel else {
-            return
-        }
-        viewModel.checkForCardReaderUpdate()
-    }
-
     func onViewModelDidUpdate() {
         configureSections()
         configureTable()
@@ -83,7 +70,7 @@ private extension CardReaderSettingsConnectedViewController {
         guard let viewModel = viewModel else {
             return false
         }
-        return viewModel.readerUpdateAvailable == .isTrue
+        return viewModel.readerUpdateAvailable == true
     }
 
     /// Set the title and back button.
@@ -135,35 +122,22 @@ private extension CardReaderSettingsConnectedViewController {
 
     func configureUpdateView() {
         // Only proceed if the view model reader update flag has changed since we last looked at it
-        guard let viewModel = viewModel, updateInProgress != viewModel.readerUpdateInProgress else {
+        guard let viewModel = viewModel, readerUpdateProgress != viewModel.readerUpdateProgress else {
             return
         }
 
         // Update our flag to match the view model's
-        updateInProgress = viewModel.readerUpdateInProgress
+        readerUpdateProgress = viewModel.readerUpdateProgress
 
-        // If we are not updating a reader, dismiss any updateViewController
-        if !updateInProgress {
-            updateViewController?.dismiss(animated: true, completion: { [weak self] in
-                guard let self = self else {
-                    return
-                }
-
-                if viewModel.readerUpdateCompletedSuccessfully {
-                    self.displayReaderUpdateSuccessNotice()
-                } else {
-                    self.displayReaderUpdateFailed()
-                }
+        if let readerUpdateProgress = viewModel.readerUpdateProgress {
+            // If we are updating a reader, show the progress alert
+            settingsAlerts.updateProgress(from: self, requiredUpdate: false, progress: readerUpdateProgress, cancel: { [weak self] in
+                self?.viewModel?.cancelCardReaderUpdate()
             })
-            return
+        } else {
+            // If we are not updating a reader, dismiss any progress alert
+            settingsAlerts.dismiss()
         }
-
-        // Otherwise, instantiate and present an updateViewController
-        updateViewController = UpdateViewController(headline: Localization.updateHeadline, footnote: Localization.updateFootnote)
-        guard let updateViewController = updateViewController else {
-            return
-        }
-        self.present(updateViewController, animated: true, completion: nil)
     }
 
     /// Register table cells.
@@ -294,20 +268,6 @@ extension CardReaderSettingsConnectedViewController: UITableViewDelegate {
     }
 }
 
-// MARK: - Notices
-//
-private extension CardReaderSettingsConnectedViewController {
-    func displayReaderUpdateSuccessNotice() {
-        let notice = Notice(title: Localization.updateSuccess, feedbackType: .success)
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
-    }
-
-    func displayReaderUpdateFailed() {
-        paymentAlerts.retryableError(from: self, tryAgain: {
-            self.viewModel?.startCardReaderUpdate()
-        })
-    }
-}
 
 // MARK: - Private Types
 //
@@ -369,18 +329,5 @@ private extension CardReaderSettingsConnectedViewController {
             comment: "Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader"
         )
 
-        static let updateHeadline = NSLocalizedString(
-            "Updating software",
-            comment: "Headline on the full screen software update modal"
-        )
-
-        static let updateFootnote = NSLocalizedString(
-            "Your reader will automatically restart and reconnect after the update is complete",
-            comment: "Footnote on the full screen software update modal"
-        )
-
-        static let updateSuccess = NSLocalizedString(
-            "Reader software updated",
-            comment: "A notice presented after a successful update of the card reader software")
     }
 }

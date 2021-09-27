@@ -163,7 +163,7 @@ private extension ShippingLabelPackagesFormViewModel {
 
                 // Add option to ship in original package
                 buttons.append(.default(Text(Localization.shipInOriginalPackage)) { [weak self] in
-                    self?.shipInOriginalPackage(productOrVariationID: productOrVariationID, from: currentPackage)
+                    self?.shipInOriginalPackage(productOrVariationID: productOrVariationID, from: currentPackage, packageIndex: packageIndex)
                 })
             } else {
                 buttons.append(.default(Text(Localization.addToNewPackage)) { [weak self] in
@@ -178,10 +178,10 @@ private extension ShippingLabelPackagesFormViewModel {
     /// Move the item with `productOrVariationID` from `currentPackage` to a new package,
     /// and update items within `currentPackage` to reflect the change.
     ///
-    func shipInOriginalPackage(productOrVariationID: Int64, from currentPackage: ShippingLabelPackageAttributes) {
+    func shipInOriginalPackage(productOrVariationID: Int64, from currentPackage: ShippingLabelPackageAttributes, packageIndex: Int) {
         var updatedPackages: [ShippingLabelPackageAttributes] = []
-        for package in selectedPackages {
-            if package == currentPackage {
+        for (index, package) in selectedPackages.enumerated() {
+            if index == packageIndex {
                 let (matchingItem, updatedItems) = package.partitionItems(using: productOrVariationID)
 
                 guard let matchingItem = matchingItem else {

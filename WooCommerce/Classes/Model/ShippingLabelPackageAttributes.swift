@@ -21,4 +21,25 @@ extension ShippingLabelPackageAttributes {
     var isOriginalPackaging: Bool {
         packageID == Self.originalPackagingBoxID
     }
+
+    func partitionItems(using productOrVariationID: Int64) -> (matchingItem: ShippingLabelPackageItem?, rest: [ShippingLabelPackageItem]) {
+        var matchingItem: ShippingLabelPackageItem?
+        var updatedItems: [ShippingLabelPackageItem] = []
+        for item in items {
+            if item.productOrVariationID == productOrVariationID, matchingItem == nil {
+                // If found an item with matching product or variation ID,
+                // create a copy of the item with quantity = 1.
+                matchingItem = ShippingLabelPackageItem(copy: item, quantity: 1)
+
+                // If the item has quantity > 1, create a copy of the item with the reduced quantity and append to the list.
+                if item.quantity > 1 {
+                    let newItem = ShippingLabelPackageItem(copy: item, quantity: item.quantity - 1)
+                    updatedItems.append(newItem)
+                }
+            } else {
+                updatedItems.append(item)
+            }
+        }
+        return (matchingItem: matchingItem, rest: updatedItems)
+    }
 }

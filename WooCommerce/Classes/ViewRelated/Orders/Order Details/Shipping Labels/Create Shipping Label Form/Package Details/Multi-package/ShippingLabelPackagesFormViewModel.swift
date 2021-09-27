@@ -152,7 +152,7 @@ private extension ShippingLabelPackagesFormViewModel {
         moveItemActionSheetButtons = {
             var buttons: [ActionSheet.Button] = []
 
-            if currentPackage.isOriginalPackaging {
+            if !currentPackage.isOriginalPackaging {
                 let hasMultipleItems = currentPackage.items.count > 1 || currentPackage.items.first(where: { $0.quantity > 1 }) != nil
                 if hasMultipleItems {
                     // Add option to add item to new package if current package has more than one item.
@@ -182,27 +182,11 @@ private extension ShippingLabelPackagesFormViewModel {
         var updatedPackages: [ShippingLabelPackageAttributes] = []
         for package in selectedPackages {
             if package == currentPackage {
-                var matchingItem: ShippingLabelPackageItem?
-                var updatedItems: [ShippingLabelPackageItem] = []
-                for item in package.items {
-                    if item.productOrVariationID == productOrVariationID, matchingItem == nil {
-                        // If found an item with matching product or variation ID,
-                        // create a copy of the item with quantity = 1.
-                        matchingItem = ShippingLabelPackageItem(copy: item, quantity: 1)
-
-                        // If the item has quantity > 1, create a copy of the item with the reduced quantity and append to the list.
-                        if item.quantity > 1 {
-                            let newItem = ShippingLabelPackageItem(copy: item, quantity: item.quantity - 1)
-                            updatedItems.append(newItem)
-                        }
-                    } else {
-                        updatedItems.append(item)
-                    }
-                }
+                let (matchingItem, updatedItems) = package.partitionItems(using: productOrVariationID)
 
                 guard let matchingItem = matchingItem else {
                     assertionFailure("⛔️ Cannot find item with product or variationID \(productOrVariationID) in current package!")
-                    continue
+                    return
                 }
 
                 // If the resulting item list is not empty, create a copy of the package with the list.
@@ -230,7 +214,46 @@ private extension ShippingLabelPackagesFormViewModel {
     /// and update the old package appropriately.
     ///
     func addItemToNewPackage(productOrVariationID: Int64, from currentPackage: ShippingLabelPackageAttributes) {
-        // TODO
+        var temporaryPackages = selectedPackages
+        guard let foundIndex = temporaryPackages.firstIndex(of: currentPackage) else {
+            return assertionFailure("⛔️ Cannot find current package in the list!")
+        }
+
+        // Remove current package from list
+        temporaryPackages.remove(at: foundIndex)
+
+        if !currentPackage.isOriginalPackaging {
+            let (matchingItem, updatedItems) = currentPackage.partitionItems(using: productOrVariationID)
+
+            guard let matchingItem = matchingItem else {
+                assertionFailure("⛔️ Cannot find item with product or variationID \(productOrVariationID) in current package!")
+                return
+            }
+
+            // If the resulting item list is not empty, create a copy of the package with the items,
+            // and add the new package to the list.
+            if updatedItems.isNotEmpty {
+                let updatedPackage = ShippingLabelPackageAttributes(packageID: currentPackage.packageID,
+                                                                    totalWeight: "",
+                                                                    items: updatedItems)
+                temporaryPackages.append(updatedPackage)
+            }
+
+            // Create new package with the matching item, using same package ID as current package's
+            let newPackage = ShippingLabelPackageAttributes(packageID: currentPackage.packageID,
+                                                            totalWeight: "",
+                                                            items: [matchingItem])
+            temporaryPackages.append(newPackage)
+        } else {
+            // Get last selected package ID to use as ID of the new package if possible.
+            let selectedPackageID = resultsControllers?.accountSettings?.lastSelectedPackageID ?? ""
+            let newPackage = ShippingLabelPackageAttributes(packageID: selectedPackageID,
+                                                            totalWeight: "",
+                                                            items: currentPackage.items)
+            temporaryPackages.insert(newPackage, at: foundIndex)
+        }
+        // This will trigger updating item view models, and therefore updates the package list UI.
+        selectedPackages = temporaryPackages
     }
 
     /// Update selected packages when user switch any package.

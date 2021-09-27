@@ -16,3 +16,9 @@ struct ShippingLabelPackageAttributes: Equatable {
     /// List of items in the package.
     let items: [ShippingLabelPackageItem]
 }
+
+extension ShippingLabelPackageAttributes {
+    var isOriginalPackaging: Bool {
+        packageID == Self.originalPackagingBoxID
+    }
+}

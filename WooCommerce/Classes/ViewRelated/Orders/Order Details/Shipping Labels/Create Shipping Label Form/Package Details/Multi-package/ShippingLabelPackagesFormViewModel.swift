@@ -118,13 +118,12 @@ private extension ShippingLabelPackagesFormViewModel {
         $selectedPackages
             .map { selectedPackages -> [ShippingLabelSinglePackageViewModel] in
                 return selectedPackages.enumerated().map { index, details in
-                    let isOriginal = details.packageID == ShippingLabelPackageAttributes.originalPackagingBoxID
                     return .init(order: order,
                                  orderItems: details.items,
                                  packagesResponse: packageResponse,
                                  selectedPackageID: details.packageID,
                                  totalWeight: details.totalWeight,
-                                 isOriginalPackaging: isOriginal,
+                                 isOriginalPackaging: details.isOriginalPackaging,
                                  onItemMoveRequest: { [weak self] productOrVariationID, packageName in
                         self?.updateMoveItemActionSheet(for: productOrVariationID, from: details, packageIndex: index, packageName: packageName)
                     },
@@ -152,10 +151,23 @@ private extension ShippingLabelPackagesFormViewModel {
         moveItemActionSheetMessage = String(format: Localization.moveItemActionSheetMessage, packageIndex + 1, packageName)
         moveItemActionSheetButtons = {
             var buttons: [ActionSheet.Button] = []
-            // if package is not original packaging, add option to ship in original package
-            if currentPackage.packageID != ShippingLabelPackageAttributes.originalPackagingBoxID {
+
+            if currentPackage.isOriginalPackaging {
+                let hasMultipleItems = currentPackage.items.count > 1 || currentPackage.items.first(where: { $0.quantity > 1 }) != nil
+                if hasMultipleItems {
+                    // Add option to add item to new package if current package has more than one item.
+                    buttons.append(.default(Text(Localization.addToNewPackage)) { [weak self] in
+                        self?.addItemToNewPackage(productOrVariationID: productOrVariationID, from: currentPackage)
+                    })
+                }
+
+                // Add option to ship in original package
                 buttons.append(.default(Text(Localization.shipInOriginalPackage)) { [weak self] in
                     self?.shipInOriginalPackage(productOrVariationID: productOrVariationID, from: currentPackage)
+                })
+            } else {
+                buttons.append(.default(Text(Localization.addToNewPackage)) { [weak self] in
+                    self?.addItemToNewPackage(productOrVariationID: productOrVariationID, from: currentPackage)
                 })
             }
             buttons.append(.cancel())
@@ -212,6 +224,13 @@ private extension ShippingLabelPackagesFormViewModel {
         }
         // This will trigger updating item view models, and therefore updates the package list UI.
         selectedPackages = updatedPackages
+    }
+
+    /// Move the item with `productOrVariationID` to a separate non-original package,
+    /// and update the old package appropriately.
+    ///
+    func addItemToNewPackage(productOrVariationID: Int64, from currentPackage: ShippingLabelPackageAttributes) {
+        // TODO
     }
 
     /// Update selected packages when user switch any package.
@@ -300,6 +319,8 @@ private extension ShippingLabelPackagesFormViewModel {
         static let shipInOriginalPackage = NSLocalizedString("Ship in Original Packaging",
                                                              comment: "Option to ship in original packaging on action sheet when an order item is about to " +
                                                                 "be moved on Package Details screen of Shipping Label flow.")
+        static let addToNewPackage = NSLocalizedString("Add to new package",
+                                                       comment: "Option to add item to new package on Package Details screen of Shipping Label flow.")
     }
 }
 

@@ -12,7 +12,7 @@ struct DefaultFeatureFlagService: FeatureFlagService {
         case .shippingLabelsInternational:
             return true
         case .shippingLabelsAddPaymentMethods:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .shippingLabelsAddCustomPackages:
             return true
         case .shippingLabelsMultiPackage:

@@ -110,6 +110,11 @@ final class EditAddressFormViewModel: ObservableObject {
     ///
     @Published private(set) var showPlaceholders: Bool = false
 
+    /// Defines the current notice that should be shown.
+    /// Defaults to `nil`.
+    ///
+    @Published var presentNotice: Notice?
+
     /// Creates a view model to be used when selecting a country
     ///
     func createCountryViewModel() -> CountrySelectorViewModel {
@@ -182,9 +187,20 @@ extension EditAddressFormViewModel {
     }
 
     /// Representation of possible errors that can happen
-    enum EditAddressError {
+    enum EditAddressError: LocalizedError {
         case unableToLoadCountries
         case unableToUpdateAddress
+
+        var errorDescription: String? {
+            switch self {
+            case .unableToLoadCountries:
+                return NSLocalizedString("Unable to fetch country information, please try again later.",
+                                         comment: "Error notice when we fail to load country information in the edit address screen.")
+            case .unableToUpdateAddress:
+                return NSLocalizedString("Unable to update address, please try again later.",
+                                         comment: "Error notice when we fail to update an address in the edit address screen.")
+            }
+        }
     }
 
     /// Type to hold values from all the form fields

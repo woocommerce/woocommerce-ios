@@ -85,11 +85,16 @@ struct ShippingLabelSinglePackage: View {
                     .padding(.horizontal, insets: safeAreaInsets)
                     .padding(.leading, Constants.horizontalPadding)
                 TitleAndSubtitleRow(title: Localization.itemDimensions,
-                                    subtitle: viewModel.originalPackageDimensions)
+                                    subtitle: viewModel.originalPackageDimensions,
+                                    isError: !viewModel.hasValidPackageDimensions)
                     .padding(.horizontal, insets: safeAreaInsets)
             }
             .background(Color(.systemBackground))
             .renderedIf(viewModel.isOriginalPackaging)
+
+            ValidationErrorRow(errorMessage: Localization.invalidDimensions)
+                .padding(.horizontal, insets: safeAreaInsets)
+                .renderedIf(viewModel.isOriginalPackaging && !viewModel.hasValidPackageDimensions)
 
             VStack(spacing: 0) {
                 Divider()
@@ -139,6 +144,10 @@ private extension ShippingLabelSinglePackage {
         static let itemDimensions = NSLocalizedString("Item dimensions",
                                                       comment: "Row title for dimensions of package shipped in original " +
                                                       "packaging Package Details screen in Shipping Labels flow.")
+        static let invalidDimensions = NSLocalizedString("Package dimensions must be greater than zero. Please update your item’s dimensions in " +
+                                                         "the Shipping section of your product page to continue.",
+                                                         comment: "Validation error for original package without dimensions " +
+                                                         "on Package Details screen in Shipping Labels flow.")
     }
 
     enum Constants {

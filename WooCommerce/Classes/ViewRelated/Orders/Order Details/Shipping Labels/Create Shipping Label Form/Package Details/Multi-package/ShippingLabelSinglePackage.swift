@@ -24,7 +24,7 @@ struct ShippingLabelSinglePackage: View {
 
     var body: some View {
         CollapsibleView(isCollapsible: isCollapsible, safeAreaInsets: safeAreaInsets) {
-            ShippingLabelPackageNumberRow(packageNumber: packageNumber, numberOfItems: viewModel.itemsRows.count, isValid: viewModel.isValidTotalWeight)
+            ShippingLabelPackageNumberRow(packageNumber: packageNumber, numberOfItems: viewModel.itemsRows.count, isValid: viewModel.isValidPackage)
         } content: {
             ListHeaderView(text: Localization.itemsToFulfillHeader, alignment: .left)
                 .padding(.horizontal, insets: safeAreaInsets)

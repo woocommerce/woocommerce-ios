@@ -31,9 +31,17 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
     ///
     @Published private(set) var itemsRows: [ItemToFulfillRow] = []
 
+    /// Whether package is valid.
+    ///
+    @Published private(set) var isValidPackage = false
+
     /// Whether totalWeight is valid
     ///
     @Published private(set) var isValidTotalWeight: Bool = false
+
+    /// Whether the original package has valid dimensions.
+    ///
+    @Published private(set) var hasValidPackageDimensions = false
 
     /// Description of dimensions of the original package.
     ///
@@ -112,6 +120,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
         if isOriginalPackaging, let item = orderItems.first {
             configureOriginalPackageDimensions(for: item)
         }
+        configureValidation(originalPackaging: isOriginalPackaging)
     }
 
     func requestMovingItem(_ productOrVariationID: Int64, itemName: String) {
@@ -149,6 +158,27 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
         $totalWeight
             .map { [weak self] in self?.validateTotalWeight($0) ?? false }
             .assign(to: &$isValidTotalWeight)
+    }
+
+    /// Configure dimensions L x W x H <unit> for the original package.
+    ///
+    private func configureOriginalPackageDimensions(for item: ShippingLabelPackageItem) {
+        let unit = packagesResponse?.storeOptions.dimensionUnit ?? ""
+        let length = item.dimensions.length.isEmpty ? "0" : item.dimensions.length
+        let width = item.dimensions.width.isEmpty ? "0" : item.dimensions.width
+        let height = item.dimensions.height.isEmpty ? "0" : item.dimensions.height
+        originalPackageDimensions = String(format: "%@ x %@ x %@ %@", length, width, height, unit)
+    }
+
+    private func configureValidation(originalPackaging: Bool) {
+        $isValidTotalWeight.combineLatest($hasValidPackageDimensions)
+            .map { validWeight, validDimensions -> Bool in
+                guard originalPackaging else {
+                    return validWeight
+                }
+                return validWeight && validDimensions
+            }
+            .assign(to: &$isValidPackage)
     }
 }
 
@@ -226,16 +256,6 @@ private extension ShippingLabelSinglePackageViewModel {
             return false
         }
         return value > 0
-    }
-
-    /// Configure dimensions L x W x H <unit> for the original package.
-    ///
-    func configureOriginalPackageDimensions(for item: ShippingLabelPackageItem) {
-        let unit = packagesResponse?.storeOptions.dimensionUnit ?? ""
-        let length = item.dimensions.length.isEmpty ? "0" : item.dimensions.length
-        let width = item.dimensions.width.isEmpty ? "0" : item.dimensions.width
-        let height = item.dimensions.height.isEmpty ? "0" : item.dimensions.height
-        originalPackageDimensions = String(format: "%@ x %@ x %@ %@", length, width, height, unit)
     }
 }
 

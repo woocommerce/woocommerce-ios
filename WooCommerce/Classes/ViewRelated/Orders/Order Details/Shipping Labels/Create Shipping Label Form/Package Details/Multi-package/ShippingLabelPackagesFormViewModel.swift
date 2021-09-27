@@ -283,6 +283,7 @@ private extension ShippingLabelPackagesFormViewModel {
         }
 
         var itemToMove: ShippingLabelPackageItem?
+        var updatedCurrentPackage: ShippingLabelPackageAttributes?
 
         if currentPackage.isOriginalPackaging {
             itemToMove = currentPackage.items.first
@@ -293,10 +294,9 @@ private extension ShippingLabelPackagesFormViewModel {
             // If the resulting item list is not empty, create a copy of the package with the items,
             // and add the new package to the list.
             if updatedItems.isNotEmpty {
-                let updatedPackage = ShippingLabelPackageAttributes(packageID: currentPackage.packageID,
-                                                                    totalWeight: "",
-                                                                    items: updatedItems)
-                temporaryPackages[currentPackageIndex] = updatedPackage
+                updatedCurrentPackage = ShippingLabelPackageAttributes(packageID: currentPackage.packageID,
+                                                                       totalWeight: "",
+                                                                       items: updatedItems)
             }
         }
 
@@ -321,7 +321,9 @@ private extension ShippingLabelPackagesFormViewModel {
                                                                items: newItems)
         temporaryPackages[newPackageIndex] = updatedNewPackage
 
-        if currentPackage.isOriginalPackaging {
+        if let updatedCurrentPackage = updatedCurrentPackage {
+            temporaryPackages[currentPackageIndex] = updatedCurrentPackage
+        } else {
             // Remove current package from list
             temporaryPackages.remove(at: currentPackageIndex)
         }

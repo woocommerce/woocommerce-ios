@@ -410,10 +410,12 @@ private extension PushNotificationsManager {
     ///
     func registerDotcomDevice(with deviceToken: String, defaultStoreID: Int64, onCompletion: @escaping (DotcomDevice?, Error?) -> Void) {
         let device = APNSDevice(deviceToken: deviceToken)
+        let pushNotificationsForAllStoresEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pushNotificationsForAllStores)
         let action = NotificationAction.registerDevice(device: device,
                                                        applicationId: WooConstants.pushApplicationID,
                                                        applicationVersion: Bundle.main.version,
                                                        defaultStoreID: defaultStoreID,
+                                                       pushNotificationsForAllStoresEnabled: pushNotificationsForAllStoresEnabled,
                                                        onCompletion: onCompletion)
         stores.dispatch(action)
     }

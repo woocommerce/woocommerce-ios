@@ -1,16 +1,16 @@
-import Foundation
 import XCTest
 
-class BaseScreen {
+open class BaseScreen {
+
     enum UITestError: Error {
         case unableToLocateElement
     }
 
-    var app: XCUIApplication!
+    public private(set) var app: XCUIApplication!
     var expectedElement: XCUIElement!
     var waitTimeout: Double!
 
-    init(element: XCUIElement) {
+    public init(element: XCUIElement) {
         app = XCUIApplication()
         expectedElement = element
         waitTimeout = 20
@@ -22,13 +22,12 @@ class BaseScreen {
         XCTContext.runActivity(named: "Confirm page \(self) is loaded") { (activity) in
             let result = waitFor(element: expectedElement, predicate: "isEnabled == true", timeout: 20)
             XCTAssert(result, "Page \(self) is not loaded.")
-//            Logger.log(message: "Page \(self) is loaded", event: .i)
         }
         return self
     }
 
     @discardableResult
-    func waitFor(element: XCUIElement, predicate: String, timeout: Int? = nil) -> Bool {
+    public func waitFor(element: XCUIElement, predicate: String, timeout: Int? = nil) -> Bool {
         let timeoutValue = timeout ?? 5
 
         let elementPredicate = XCTNSPredicateExpectation(predicate: NSPredicate(format: predicate), object: element)
@@ -63,7 +62,7 @@ class BaseScreen {
     }
 
     // Pops the navigation stack, returning to the item above the current one
-    func pop() {
+    public func pop() {
         navBackButton.tap()
     }
 
@@ -73,7 +72,7 @@ class BaseScreen {
     }
 
     /// This would be way nicer if we could base `Self` as the type of object to the block
-    func then(_ block: (BaseScreen) -> Void) -> Self {
+    public func then(_ block: (BaseScreen) -> Void) -> Self {
         block(self)
         return self
     }

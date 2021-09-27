@@ -16,7 +16,7 @@ enum ProductFormSection: Equatable {
 
     enum PrimaryFieldRow: Equatable {
         case images(isEditable: Bool, allowsMultiple: Bool)
-        case name(name: String?, isEditable: Bool)
+        case name(name: String?, isEditable: Bool, productStatus: ProductStatus)
         case variationName(name: String)
         case description(description: String?, isEditable: Bool)
     }

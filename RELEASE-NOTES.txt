@@ -2,8 +2,8 @@
 
 7.7
 -----
+- [x] Fix: now a default paper size will be selected in Shipping Label print screen. [https://github.com/woocommerce/woocommerce-ios/pull/5035]
 - [*] Show banner on screens that use cached data when device is offline. [https://github.com/woocommerce/woocommerce-ios/pull/5000]
-
 
 7.6
 -----

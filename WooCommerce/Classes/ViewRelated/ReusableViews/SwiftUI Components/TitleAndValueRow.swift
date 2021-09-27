@@ -22,6 +22,7 @@ struct TitleAndValueRow: View {
                 Text(value)
                     .font(.body)
                     .foregroundColor(Color(.textSubtle))
+                    .padding(.vertical, Constants.verticalPadding)
 
                 Image(uiImage: .chevronImage)
                     .flipsForRightToLeftLayoutDirection(true)
@@ -31,16 +32,18 @@ struct TitleAndValueRow: View {
             }
             .contentShape(Rectangle())
         })
-        .frame(height: Constants.height)
-        .padding(.horizontal, Constants.padding)
+        .frame(minHeight: Constants.minHeight)
+        .padding(.horizontal, Constants.horizontalPadding)
     }
 }
 
 private extension TitleAndValueRow {
     enum Constants {
         static let imageSize: CGFloat = 22
-        static let height: CGFloat = 44
-        static let padding: CGFloat = 16
+        static let minHeight: CGFloat = 44
+        static let maxHeight: CGFloat = 136
+        static let horizontalPadding: CGFloat = 16
+        static let verticalPadding: CGFloat = 12
     }
 }
 

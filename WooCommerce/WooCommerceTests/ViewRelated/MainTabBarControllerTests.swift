@@ -139,7 +139,7 @@ final class MainTabBarControllerTests: XCTestCase {
         guard case .retrieveProductReviewFromNote(_, let completion) = receivedAction else {
             return XCTFail("Expected retrieveProductReviewFromNote action.")
         }
-        completion(.success(MockProductReviewFromNoteParcel().parcel(metaSiteID: 606)))
+        completion(.success(ProductReviewFromNoteParcelFactory().parcel(metaSiteID: 606)))
 
         // Assert
         waitUntil {

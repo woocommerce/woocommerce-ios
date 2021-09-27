@@ -2,7 +2,7 @@ import XCTest
 import Yosemite
 
 
-final class MockProductReviewFromNoteParcel {
+final class ProductReviewFromNoteParcelFactory {
     func parcel(metaSiteID: Int64 = 0) -> ProductReviewFromNoteParcel {
         let metaAsData: Data = {
             var ids = [String: Int64]()

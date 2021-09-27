@@ -99,7 +99,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
         guard case .retrieveProductReviewFromNote(_, let completion) = receivedAction else {
             return XCTFail("Expected retrieveProductReviewFromNote action.")
         }
-        completion(.success(MockProductReviewFromNoteParcel().parcel()))
+        completion(.success(ProductReviewFromNoteParcelFactory().parcel()))
 
         // Then
         waitUntil {
@@ -167,7 +167,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
         guard case .retrieveProductReviewFromNote(_, let completion) = receivedProductReviewAction else {
             return XCTFail("Expected retrieveProductReviewFromNote action.")
         }
-        completion(.success(MockProductReviewFromNoteParcel().parcel(metaSiteID: differentSiteID)))
+        completion(.success(ProductReviewFromNoteParcelFactory().parcel(metaSiteID: differentSiteID)))
 
         // Then
         waitUntil {

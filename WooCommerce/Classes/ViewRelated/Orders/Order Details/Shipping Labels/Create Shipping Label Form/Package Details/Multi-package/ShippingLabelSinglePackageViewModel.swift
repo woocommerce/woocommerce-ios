@@ -9,7 +9,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
 
     typealias PackageSwitchHandler = (_ newPackage: ShippingLabelPackageAttributes) -> Void
     typealias PackagesSyncHandler = (_ packagesResponse: ShippingLabelPackagesResponse?) -> Void
-    typealias ItemMoveRequestHandler = (_ id: Int64, _ packageName: String) -> Void
+    typealias ItemMoveRequestHandler = (_ productOrVariationID: Int64, _ packageName: String) -> Void
 
     /// The id of the selected package. Defaults to last selected package, if any.
     ///
@@ -51,11 +51,11 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
         }
         return ShippingLabelPackageAttributes(packageID: selectedPackageID,
                                               totalWeight: totalWeight,
-                                              productIDs: orderItems.map { $0.productOrVariationID })
+                                              items: orderItems)
     }
 
     private let order: Order
-    private let orderItems: [OrderItem]
+    private let orderItems: [ShippingLabelPackageItem]
     private let currency: String
     private let currencyFormatter: CurrencyFormatter
     private let onItemMoveRequest: ItemMoveRequestHandler
@@ -75,12 +75,10 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
     @Published private var isPackageWeightEdited: Bool = false
 
     init(order: Order,
-         orderItems: [OrderItem],
+         orderItems: [ShippingLabelPackageItem],
          packagesResponse: ShippingLabelPackagesResponse?,
          selectedPackageID: String,
          totalWeight: String,
-         products: [Product],
-         productVariations: [ProductVariation],
          onItemMoveRequest: @escaping ItemMoveRequestHandler,
          onPackageSwitch: @escaping PackageSwitchHandler,
          onPackagesSync: @escaping PackagesSyncHandler,
@@ -99,30 +97,28 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
         self.packageListViewModel.delegate = self
 
         packageListViewModel.didSelectPackage(selectedPackageID)
-        configureItemRows(products: products, productVariations: productVariations)
-        configureTotalWeight(initialTotalWeight: totalWeight, products: products, productVariations: productVariations)
+        configureItemRows()
+        configureTotalWeight(initialTotalWeight: totalWeight)
     }
 
-    func requestMovingItem(id: Int64, itemName: String) {
+    func requestMovingItem(_ productOrVariationID: Int64, itemName: String) {
         let packageName: String = {
             if selectedPackageName == Localization.selectPackagePlaceholder {
                 return itemName
             }
             return selectedPackageName
         }()
-        onItemMoveRequest(id, packageName)
+        onItemMoveRequest(productOrVariationID, packageName)
     }
 
-    private func configureItemRows(products: [Product], productVariations: [ProductVariation]) {
-        itemsRows = generateItemsRows(products: products, productVariations: productVariations)
+    private func configureItemRows() {
+        itemsRows = generateItemsRows()
     }
 
     /// Set value for total weight and observe its changes.
     ///
-    private func configureTotalWeight(initialTotalWeight: String, products: [Product], productVariations: [ProductVariation]) {
-        let calculatedWeight = calculateTotalWeight(products: products,
-                                                    productVariations: productVariations,
-                                                    customPackage: packageListViewModel.selectedCustomPackage)
+    private func configureTotalWeight(initialTotalWeight: String) {
+        let calculatedWeight = calculateTotalWeight(customPackage: packageListViewModel.selectedCustomPackage)
         let localizedCalculatedWeight = NumberFormatter.localizedString(from: NSNumber(value: calculatedWeight)) ?? String(calculatedWeight)
         // Set total weight to initialTotalWeight if it's different from the calculated weight.
         // Otherwise use the calculated weight.
@@ -149,7 +145,7 @@ extension ShippingLabelSinglePackageViewModel: ShippingLabelPackageSelectionDele
         let newTotalWeight = isPackageWeightEdited ? totalWeight : ""
         let newPackage = ShippingLabelPackageAttributes(packageID: id,
                                                         totalWeight: newTotalWeight,
-                                                        productIDs: orderItems.map { $0.productOrVariationID })
+                                                        items: orderItems)
 
         onPackageSwitch(newPackage)
     }
@@ -164,67 +160,41 @@ extension ShippingLabelSinglePackageViewModel: ShippingLabelPackageSelectionDele
 // MARK: - Helper methods
 private extension ShippingLabelSinglePackageViewModel {
     /// Generate the items rows, creating an element in the array for every item (eg. if there is an item with quantity 3,
-    /// we will generate 3 different items), and we will remove virtual products.
+    /// we will generate 3 different items).
     ///
-    func generateItemsRows(products: [Product], productVariations: [ProductVariation]) -> [ItemToFulfillRow] {
+    func generateItemsRows() -> [ItemToFulfillRow] {
         var itemsToFulfill: [ItemToFulfillRow] = []
         for item in orderItems {
-            let isVariation = item.variationID > 0
-            var product: Product?
-            var productVariation: ProductVariation?
+            var tempItemQuantity = Double(truncating: item.quantity as NSDecimalNumber)
 
-            if isVariation {
-                productVariation = productVariations.first { $0.productVariationID == item.variationID }
-            }
-            else {
-                product = products.first { $0.productID == item.productID }
-            }
-            if product?.virtual == false || productVariation?.virtual == false {
-                var tempItemQuantity = Double(truncating: item.quantity as NSDecimalNumber)
-
-                for _ in 0..<item.quantity.intValue {
-                    let attributes = item.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) }
-                    var weight = Double(productVariation?.weight ?? product?.weight ?? "0") ?? 0
-                    if tempItemQuantity < 1 {
-                        weight *= tempItemQuantity
-                    } else {
-                        tempItemQuantity -= 1
-                    }
-                    let unit: String = weightUnit ?? ""
-                    let subtitle = Localization.subtitle(weight: weight.description,
-                                                         weightUnit: unit,
-                                                         attributes: attributes)
-                    itemsToFulfill.append(ItemToFulfillRow(id: item.itemID, title: item.name, subtitle: subtitle))
+            for _ in 0..<item.quantity.intValue {
+                var weight = item.weight
+                if tempItemQuantity < 1 {
+                    weight *= tempItemQuantity
+                } else {
+                    tempItemQuantity -= 1
                 }
+                let unit: String = weightUnit ?? ""
+                let subtitle = Localization.subtitle(weight: weight.description,
+                                                     weightUnit: unit,
+                                                     attributes: item.attributes)
+                itemsToFulfill.append(ItemToFulfillRow(productOrVariationID: item.productOrVariationID, title: item.name, subtitle: subtitle))
             }
         }
         return itemsToFulfill
     }
 
     /// Calculate total weight based on the weight of the selected package if it's a custom package;
-    /// And the products and products variation inside the order items, only if they are not virtual products.
+    /// And the weight of items contained in the package.
     ///
     /// Note: Only custom package is needed for input because only custom packages have weight to be included in the total weight.
     ///
-    func calculateTotalWeight(products: [Product], productVariations: [ProductVariation], customPackage: ShippingLabelCustomPackage?) -> Double {
+    func calculateTotalWeight(customPackage: ShippingLabelCustomPackage?) -> Double {
         var tempTotalWeight: Double = 0
 
         // Add each order item's weight to the total weight.
         for item in orderItems {
-            let isVariation = item.variationID > 0
-            var product: Product?
-            var productVariation: ProductVariation?
-
-            if isVariation {
-                productVariation = productVariations.first { $0.productVariationID == item.variationID }
-            }
-            else {
-                product = products.first { $0.productID == item.productID }
-            }
-            if product?.virtual == false || productVariation?.virtual == false {
-                let itemWeight = Double(productVariation?.weight ?? product?.weight ?? "0") ?? 0
-                tempTotalWeight += itemWeight * Double(truncating: item.quantity as NSDecimalNumber)
-            }
+            tempTotalWeight += item.weight * Double(truncating: item.quantity as NSDecimalNumber)
         }
 
         // Add selected package weight to the total weight.
@@ -237,7 +207,7 @@ private extension ShippingLabelSinglePackageViewModel {
 
     /// Validate that total weight is a valid floating point number.
     ///
-    private func validateTotalWeight(_ totalWeight: String) -> Bool {
+    func validateTotalWeight(_ totalWeight: String) -> Bool {
         guard totalWeight.isNotEmpty,
               let value = NumberFormatter.double(from: totalWeight) else {
             return false

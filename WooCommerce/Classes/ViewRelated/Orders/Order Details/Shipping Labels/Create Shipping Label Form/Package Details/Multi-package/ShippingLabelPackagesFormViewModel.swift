@@ -104,34 +104,36 @@ private extension ShippingLabelPackagesFormViewModel {
               let selectedPackageID = resultsControllers?.accountSettings?.lastSelectedPackageID else {
             return
         }
+        let items = order.items.compactMap { ShippingLabelPackageItem(orderItem: $0,
+                                                                      products: products,
+                                                                      productVariations: productVariations) }
         selectedPackages = [ShippingLabelPackageAttributes(packageID: selectedPackageID,
                                                            totalWeight: "",
-                                                           productIDs: order.items.map { $0.productOrVariationID })]
+                                                           items: items)]
     }
 
-    /// Set up item view models on change of products and product variations.
+    /// Set up item view models on change selected packages.
     ///
     func configureItemViewModels(order: Order, packageResponse: ShippingLabelPackagesResponse?) {
-        $selectedPackages.combineLatest($products, $productVariations)
-            .map { selectedPackages, products, variations -> [ShippingLabelSinglePackageViewModel] in
+        $selectedPackages
+            .map { selectedPackages -> [ShippingLabelSinglePackageViewModel] in
                 return selectedPackages.enumerated().map { index, details in
-                    let orderItems = order.items.filter { details.productIDs.contains($0.productOrVariationID) }
                     return ShippingLabelSinglePackageViewModel(order: order,
-                                                             orderItems: orderItems,
-                                                             packagesResponse: packageResponse,
-                                                             selectedPackageID: details.packageID,
-                                                             totalWeight: details.totalWeight,
-                                                             products: products,
-                                                             productVariations: variations,
-                                                             onItemMoveRequest: { [weak self] itemID, packageName in
-                                                                self?.updateMoveItemActionSheet(for: itemID, index: index, packageName: packageName)
-                                                             },
-                                                             onPackageSwitch: { [weak self] newPackage in
-                                                                self?.switchPackage(currentID: details.packageID, newPackage: newPackage)
-                                                             },
-                                                             onPackagesSync: { [weak self] packagesResponse in
-                                                                self?.onPackageSyncCompletion(packagesResponse)
-                                                             })
+                                                               orderItems: details.items,
+                                                               packagesResponse: packageResponse,
+                                                               selectedPackageID: details.packageID,
+                                                               totalWeight: details.totalWeight,
+                                                               onItemMoveRequest: { [weak self] productOrVariationID, packageName in
+                        self?.updateMoveItemActionSheet(for: productOrVariationID,
+                                                           packageIndex: index,
+                                                           packageName: packageName)
+                    },
+                                                               onPackageSwitch: { [weak self] newPackage in
+                        self?.switchPackage(currentPackage: details, newPackage: newPackage)
+                    },
+                                                               onPackagesSync: { [weak self] packagesResponse in
+                        self?.onPackageSyncCompletion(packagesResponse)
+                    })
                 }
             }
             .sink { [weak self] viewModels in
@@ -143,8 +145,8 @@ private extension ShippingLabelPackagesFormViewModel {
 
     /// Update title and buttons for the Move Item action sheet.
     ///
-    func updateMoveItemActionSheet(for itemID: Int64, index: Int, packageName: String) {
-        moveItemActionSheetMessage = String(format: Localization.moveItemActionSheetMessage, index + 1, packageName)
+    func updateMoveItemActionSheet(for productOrVariationID: Int64, packageIndex: Int, packageName: String) {
+        moveItemActionSheetMessage = String(format: Localization.moveItemActionSheetMessage, packageIndex + 1, packageName)
         moveItemActionSheetButtons = [
             .default(Text(Localization.shipInOriginalPackage)),
             .cancel()
@@ -153,9 +155,9 @@ private extension ShippingLabelPackagesFormViewModel {
 
     /// Update selected packages when user switch any package.
     ///
-    func switchPackage(currentID: String, newPackage: ShippingLabelPackageAttributes) {
+    func switchPackage(currentPackage: ShippingLabelPackageAttributes, newPackage: ShippingLabelPackageAttributes) {
         selectedPackages = selectedPackages.map { package in
-            if package.packageID == currentID {
+            if package == currentPackage {
                 return newPackage
             } else {
                 return package

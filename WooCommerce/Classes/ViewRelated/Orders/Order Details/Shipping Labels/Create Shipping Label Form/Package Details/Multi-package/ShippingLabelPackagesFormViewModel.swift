@@ -275,7 +275,59 @@ private extension ShippingLabelPackagesFormViewModel {
     /// Move the item with `productOrVariationID` to the specified package, and update current package accordingly.
     ///
     func moveItem(productOrVariationID: Int64, currentPackageIndex: Int, newPackageIndex: Int) {
-        // TODO
+        var temporaryPackages = selectedPackages
+        guard let currentPackage = temporaryPackages[safe: currentPackageIndex],
+              let newPackage = temporaryPackages[safe: newPackageIndex] else {
+            assertionFailure("⛔️ Cannot find package at either of indices \(currentPackageIndex) and \(newPackageIndex)")
+            return
+        }
+
+        var itemToMove: ShippingLabelPackageItem?
+
+        if currentPackage.isOriginalPackaging {
+            itemToMove = currentPackage.items.first
+        } else {
+            let (matchingItem, updatedItems) = currentPackage.partitionItems(using: productOrVariationID)
+            itemToMove = matchingItem
+
+            // If the resulting item list is not empty, create a copy of the package with the items,
+            // and add the new package to the list.
+            if updatedItems.isNotEmpty {
+                let updatedPackage = ShippingLabelPackageAttributes(packageID: currentPackage.packageID,
+                                                                    totalWeight: "",
+                                                                    items: updatedItems)
+                temporaryPackages[currentPackageIndex] = updatedPackage
+            }
+        }
+
+        guard let itemToMove = itemToMove else {
+            assertionFailure("⛔️ Cannot find item with product or variationID \(productOrVariationID) in current package!")
+            return
+        }
+        var newItems = newPackage.items
+
+        // If found an item with the same product or variation ID as the new item, increase its quantity.
+        // Otherwise add the new item to the package's item list.
+        if let itemIndex = newItems.firstIndex(where: { $0.productOrVariationID == itemToMove.productOrVariationID }) {
+            let foundPackage = newItems[itemIndex]
+            newItems[itemIndex] = ShippingLabelPackageItem(copy: foundPackage, quantity: foundPackage.quantity + 1)
+        } else {
+            newItems.append(itemToMove)
+        }
+
+        // Create a copy of the new package with updated items
+        let updatedNewPackage = ShippingLabelPackageAttributes(packageID: newPackage.packageID,
+                                                               totalWeight: "",
+                                                               items: newItems)
+        temporaryPackages[newPackageIndex] = updatedNewPackage
+
+        if currentPackage.isOriginalPackaging {
+            // Remove current package from list
+            temporaryPackages.remove(at: currentPackageIndex)
+        }
+
+        // This will trigger updating item view models, and therefore updates the package list UI.
+        selectedPackages = temporaryPackages
     }
 
     /// Update selected packages when user switch any package.

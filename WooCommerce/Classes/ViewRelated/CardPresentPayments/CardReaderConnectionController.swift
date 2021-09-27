@@ -62,7 +62,7 @@ final class CardReaderConnectionController {
     }
     private var fromController: UIViewController?
     private var siteID: Int64
-    private var knownCardReadersProvider: CardReaderSettingsKnownReadersProvider
+    private var knownCardReaderProvider: CardReaderSettingsKnownReaderProvider
     private var alerts: CardReaderSettingsAlertsProvider
 
     /// Reader(s) discovered by the card reader service
@@ -71,7 +71,7 @@ final class CardReaderConnectionController {
 
     /// Reader(s) known to us (i.e. we've connected to them in the past)
     ///
-    private var knownReaderIDs: [String]
+    private var knownReaderID: String?
 
     /// Reader(s) discovered by the card reader service that the merchant declined to connect to
     ///
@@ -94,15 +94,15 @@ final class CardReaderConnectionController {
 
     init(
         forSiteID: Int64,
-        knownReadersProvider: CardReaderSettingsKnownReadersProvider,
+        knownReaderProvider: CardReaderSettingsKnownReaderProvider,
         alertsProvider: CardReaderSettingsAlertsProvider
     ) {
         state = .idle
         siteID = forSiteID
-        knownCardReadersProvider = knownReadersProvider
+        knownCardReaderProvider = knownReaderProvider
         alerts = alertsProvider
         foundReaders = []
-        knownReaderIDs = []
+        knownReaderID = nil
         skippedReaderIDs = []
     }
 
@@ -160,10 +160,10 @@ private extension CardReaderConnectionController {
         foundReaders = foundReaders.filter({!skippedReaderIDs.contains($0.id)})
     }
 
-    /// Returns the list of found readers which are also known
+    /// Returns any found reader which is also known
     ///
-    func getFoundKnownReaders() -> [CardReader] {
-        foundReaders.filter({knownReaderIDs.contains($0.id)})
+    func getFoundKnownReader() -> CardReader? {
+        foundReaders.filter({knownReaderID == $0.id}).first
     }
 
     /// A helper to return an array of found reader IDs
@@ -206,12 +206,12 @@ private extension CardReaderConnectionController {
 
         /// Fetch the list of known readers - i.e. readers we should automatically connect to when we see them
         ///
-        knownCardReadersProvider.knownReaders.sink(receiveValue: { [weak self] readerIDs in
+        knownCardReaderProvider.knownReader.sink(receiveValue: { [weak self] readerID in
             guard let self = self else {
                 return
             }
 
-            self.knownReaderIDs = readerIDs
+            self.knownReaderID = readerID
 
             /// Only kick off search if we received a known reader update during intializaton
             if case .initializing = self.state {
@@ -263,8 +263,8 @@ private extension CardReaderConnectionController {
 
                 /// If we have a known reader, advance immediately to connect
                 ///
-                if self.getFoundKnownReaders().isNotEmpty {
-                    self.candidateReader = self.getFoundKnownReaders().first
+                if let foundKnownReader = self.getFoundKnownReader() {
+                    self.candidateReader = foundKnownReader
                     self.state = .connectToReader
                     return
                 }
@@ -308,8 +308,8 @@ private extension CardReaderConnectionController {
         /// "Do you want to connect to" modal was being displayed and if that reader
         /// is known and the merchant tapped keep searching on the first
         /// (unknown) reader, auto-connect to that known reader
-        if self.getFoundKnownReaders().isNotEmpty {
-            self.candidateReader = self.getFoundKnownReaders().first
+        if let foundKnownReader = self.getFoundKnownReader() {
+            self.candidateReader = foundKnownReader
             self.state = .connectToReader
             return
         }
@@ -413,7 +413,7 @@ private extension CardReaderConnectionController {
         let action = CardPresentPaymentAction.connect(reader: candidateReader) { result in
             switch result {
             case .success(let reader):
-                self.knownCardReadersProvider.rememberCardReader(cardReaderID: reader.id)
+                self.knownCardReaderProvider.rememberCardReader(cardReaderID: reader.id)
                 // If the reader does not have a battery, or the battery level is unknown, it will be nil
                 let properties = reader.batteryLevel
                     .map { ["battery_level": $0] }

@@ -19,11 +19,11 @@ class CardReaderConnectionControllerTests: XCTestCase {
         )
         ServiceLocator.setStores(mockStoresManager)
         let mockPresentingViewController = UIViewController()
-        let mockKnownReadersProvider = MockKnownReadersProvider(knownReaders: [])
+        let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .cancelScanning)
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
-            knownReadersProvider: mockKnownReadersProvider,
+            knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
 
@@ -51,11 +51,11 @@ class CardReaderConnectionControllerTests: XCTestCase {
         )
         ServiceLocator.setStores(mockStoresManager)
         let mockPresentingViewController = UIViewController()
-        let mockKnownReadersProvider = MockKnownReadersProvider(knownReaders: [])
+        let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .connectFoundReader)
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
-            knownReadersProvider: mockKnownReadersProvider,
+            knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
 
@@ -85,11 +85,11 @@ class CardReaderConnectionControllerTests: XCTestCase {
         )
         ServiceLocator.setStores(mockStoresManager)
         let mockPresentingViewController = UIViewController()
-        let mockKnownReadersProvider = MockKnownReadersProvider(knownReaders: [knownReader.id])
+        let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: knownReader.id)
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .connectFoundReader)
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
-            knownReadersProvider: mockKnownReadersProvider,
+            knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
 
@@ -118,11 +118,11 @@ class CardReaderConnectionControllerTests: XCTestCase {
         )
         ServiceLocator.setStores(mockStoresManager)
         let mockPresentingViewController = UIViewController()
-        let mockKnownReadersProvider = MockKnownReadersProvider(knownReaders: [])
+        let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .closeScanFailure)
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
-            knownReadersProvider: mockKnownReadersProvider,
+            knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
 
@@ -147,11 +147,11 @@ class CardReaderConnectionControllerTests: XCTestCase {
         )
         ServiceLocator.setStores(mockStoresManager)
         let mockPresentingViewController = UIViewController()
-        let mockKnownReadersProvider = MockKnownReadersProvider(knownReaders: [])
+        let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .cancelFoundSeveral)
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
-            knownReadersProvider: mockKnownReadersProvider,
+            knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
 
@@ -182,12 +182,12 @@ class CardReaderConnectionControllerTests: XCTestCase {
         )
         ServiceLocator.setStores(mockStoresManager)
         let mockPresentingViewController = UIViewController()
-        let mockKnownReadersProvider = MockKnownReadersProvider(knownReaders: [])
+        let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .cancelSearchingAfterConnectionFailure)
 
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
-            knownReadersProvider: mockKnownReadersProvider,
+            knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
 
@@ -215,12 +215,12 @@ class CardReaderConnectionControllerTests: XCTestCase {
 	)
         ServiceLocator.setStores(mockStoresManager)
         let mockPresentingViewController = UIViewController()
-        let mockKnownReadersProvider = MockKnownReadersProvider(knownReaders: [])
+        let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .connectFirstFound)
 
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
-            knownReadersProvider: mockKnownReadersProvider,
+            knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
 
@@ -251,12 +251,12 @@ class CardReaderConnectionControllerTests: XCTestCase {
 	)
         ServiceLocator.setStores(mockStoresManager)
         let mockPresentingViewController = UIViewController()
-        let mockKnownReadersProvider = MockKnownReadersProvider(knownReaders: [])
+        let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .continueSearchingAfterConnectionFailure)
 
         let controller = CardReaderConnectionController(
             forSiteID: sampleSiteID,
-            knownReadersProvider: mockKnownReadersProvider,
+            knownReaderProvider: mockKnownReaderProvider,
             alertsProvider: mockAlerts
         )
 

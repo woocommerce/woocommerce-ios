@@ -146,7 +146,7 @@ struct EditAddressForm: View {
                 .background(Color(.systemBackground))
 
                 Group {
-                    TitleAndToggleRow(title: Localization.useAddressAs(for: viewModel.type), isOn: .constant(false))
+                    TitleAndToggleRow(title: Localization.useAddressAs(for: viewModel.type), isOn: $viewModel.fields.useAsToggle)
                         .padding(.horizontal, Constants.horizontalPadding)
                         .padding(.vertical, Constants.verticalPadding)
                 }

@@ -194,6 +194,8 @@ extension EditAddressFormViewModel {
         var country: String = ""
         var state: String = ""
 
+        var useAsToggle: Bool = false
+
         mutating func update(with address: Address) {
             firstName = address.firstName
             lastName = address.lastName

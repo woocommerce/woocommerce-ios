@@ -123,7 +123,6 @@ public typealias WooAPIVersion = Networking.WooAPIVersion
 public typealias StoredProductSettings = Networking.StoredProductSettings
 public typealias CardReader = Hardware.CardReader
 public typealias CardReaderEvent = Hardware.CardReaderEvent
-public typealias CardReaderSoftwareUpdate = Hardware.CardReaderSoftwareUpdate
 public typealias CardReaderSoftwareUpdateState = Hardware.CardReaderSoftwareUpdateState
 public typealias CardReaderServiceDiscoveryStatus = Hardware.CardReaderServiceDiscoveryStatus
 public typealias CardReaderServiceError = Hardware.CardReaderServiceError

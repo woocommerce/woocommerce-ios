@@ -447,8 +447,6 @@ extension StripeCardReaderService: DiscoveryDelegate {
 // MARK: - ReaderDisplayDelegate.
 extension StripeCardReaderService: BluetoothReaderDelegate {
     public func reader(_ reader: Reader, didReportAvailableUpdate update: ReaderSoftwareUpdate) {
-        let softwareUpdate = CardReaderSoftwareUpdate(update: update)
-        sendReaderEvent(.softwareUpdateNeeded(softwareUpdate))
         softwareUpdateSubject.send(.available)
     }
 
@@ -469,7 +467,6 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
         }
         softwareUpdateSubject.send(.completed)
         softwareUpdateSubject.send(.none)
-        sendReaderEvent(.softwareUpToDate)
     }
 
     /// This method is called by the Stripe Terminal SDK when it wants client apps

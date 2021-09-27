@@ -83,12 +83,3 @@ extension MockCardPresentPaymentsStoresManager {
         case connectionFailure
     }
 }
-
-extension MockCardPresentPaymentsStoresManager {
-    func mockUpdate() -> CardReaderSoftwareUpdate {
-        CardReaderSoftwareUpdate(
-            estimatedUpdateTime: .betweenFiveAndFifteenMinutes,
-            deviceSoftwareVersion: "MOCKVERSION"
-        )
-    }
-}

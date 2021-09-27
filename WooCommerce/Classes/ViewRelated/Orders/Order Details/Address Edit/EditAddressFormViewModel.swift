@@ -157,12 +157,13 @@ final class EditAddressFormViewModel: ObservableObject {
             guard let self = self else { return }
 
             self.performingNetworkRequest.send(false)
-            // TODO: add success/failure notice
             switch result {
             case .success(let updatedOrder):
                 self.onOrderUpdate?(updatedOrder)
-            case .failure:
-                break
+                self.presentNotice = .success
+            case .failure(let error):
+                DDLogError("⛔️ Error updating order: \(error)")
+                self.presentNotice = .error(.unableToUpdateAddress)
             }
             onFinish(result.isSuccess)
         }

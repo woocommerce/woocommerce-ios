@@ -256,7 +256,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
         // Given
         let newState = StateOfACountry(code: "CA", name: "California")
 
-        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), storageManager: testingStorage)
+        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), type: .shipping, storageManager: testingStorage)
         viewModel.onLoadTrigger.send()
 
         // When

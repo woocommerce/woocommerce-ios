@@ -35,6 +35,10 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
     ///
     @Published private(set) var isValidTotalWeight: Bool = false
 
+    /// Description of dimensions of the original package.
+    ///
+    @Published private(set) var originalPackageDimensions: String = ""
+
     /// The title of the selected package, if any.
     ///
     var selectedPackageName: String {
@@ -105,6 +109,9 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
         packageListViewModel.didSelectPackage(selectedPackageID)
         configureItemRows()
         configureTotalWeight(initialTotalWeight: totalWeight)
+        if isOriginalPackaging, let item = orderItems.first {
+            configureOriginalPackageDimensions(for: item)
+        }
     }
 
     func requestMovingItem(_ productOrVariationID: Int64, itemName: String) {
@@ -219,6 +226,16 @@ private extension ShippingLabelSinglePackageViewModel {
             return false
         }
         return value > 0
+    }
+
+    /// Configure dimensions L x W x H <unit> for the original package.
+    ///
+    func configureOriginalPackageDimensions(for item: ShippingLabelPackageItem) {
+        let unit = packagesResponse?.storeOptions.dimensionUnit ?? ""
+        let length = item.dimensions.length.isEmpty ? "0" : item.dimensions.length
+        let width = item.dimensions.width.isEmpty ? "0" : item.dimensions.width
+        let height = item.dimensions.height.isEmpty ? "0" : item.dimensions.height
+        originalPackageDimensions = String(format: "%@ x %@ x %@ %@", length, width, height, unit)
     }
 }
 

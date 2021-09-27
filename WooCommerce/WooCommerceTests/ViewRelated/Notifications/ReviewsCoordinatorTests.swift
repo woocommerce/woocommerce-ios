@@ -14,6 +14,8 @@ final class ReviewsCoordinatorTests: XCTestCase {
     private var noticePresenter: MockNoticePresenter!
     private var switchStoreUseCase: MockSwitchStoreUseCase!
 
+    private let siteID: Int64 = 1
+
     override func setUp() {
         super.setUp()
 
@@ -44,6 +46,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
         let pushNotification = PushNotification(noteID: 1_234, kind: .storeOrder, message: "")
 
         coordinator.start()
+        coordinator.activate(siteID: siteID)
 
         XCTAssertEqual(coordinator.navigationController.viewControllers.count, 1)
 
@@ -64,6 +67,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
         let pushNotification = PushNotification(noteID: 1_234, kind: .comment, message: "")
 
         coordinator.start()
+        coordinator.activate(siteID: siteID)
 
         // When
         pushNotificationsManager.sendForegroundNotification(pushNotification)
@@ -85,6 +89,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
             willPresentReviewDetailsFromPushNotificationCallCount += 1
         })
         coordinator.start()
+        coordinator.activate(siteID: siteID)
 
         // When
         pushNotificationsManager.sendInactiveNotification(pushNotification)
@@ -94,7 +99,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
         guard case .retrieveProductReviewFromNote(_, let completion) = receivedAction else {
             return XCTFail("Expected retrieveProductReviewFromNote action.")
         }
-        completion(.success(makeParcel()))
+        completion(.success(ProductReviewFromNoteParcelFactory().parcel()))
 
         // Then
         waitUntil {
@@ -113,6 +118,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
         let pushNotification = PushNotification(noteID: 1_234, kind: .comment, message: "")
 
         coordinator.start()
+        coordinator.activate(siteID: siteID)
 
         assertEmpty(noticePresenter.queuedNotices)
 
@@ -151,6 +157,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
         let differentSiteID: Int64 = 2_000_111
 
         coordinator.start()
+        coordinator.activate(siteID: siteID)
 
         // When
         pushNotificationsManager.sendInactiveNotification(pushNotification)
@@ -160,7 +167,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
         guard case .retrieveProductReviewFromNote(_, let completion) = receivedProductReviewAction else {
             return XCTFail("Expected retrieveProductReviewFromNote action.")
         }
-        completion(.success(makeParcel(metaSiteID: differentSiteID)))
+        completion(.success(ProductReviewFromNoteParcelFactory().parcel(metaSiteID: differentSiteID)))
 
         // Then
         waitUntil {
@@ -178,48 +185,11 @@ final class ReviewsCoordinatorTests: XCTestCase {
 
 private extension ReviewsCoordinatorTests {
     func makeReviewsCoordinator(willPresentReviewDetailsFromPushNotification: (@escaping () -> Void) = { }) -> ReviewsCoordinator {
-        return ReviewsCoordinator(siteID: 1,
-                                  navigationController: UINavigationController(),
-                                  pushNotificationsManager: pushNotificationsManager,
-                                  storesManager: storesManager,
-                                  noticePresenter: noticePresenter,
-                                  switchStoreUseCase: switchStoreUseCase,
-                                  willPresentReviewDetailsFromPushNotification: willPresentReviewDetailsFromPushNotification)
-    }
-
-    /// Create a dummy Parcel.
-    func makeParcel(metaSiteID: Int64 = 0) -> ProductReviewFromNoteParcel {
-        let metaAsData: Data = {
-            var ids = [String: Int64]()
-            ids[MetaContainer.Keys.site.rawValue] = metaSiteID
-
-            var metaAsJSON = [String: [String: Int64]]()
-            metaAsJSON[MetaContainer.Containers.ids.rawValue] = ids
-            do {
-                return try JSONEncoder().encode(metaAsJSON)
-            } catch {
-                XCTFail("Expected to convert MetaContainer JSON to Data. \(error)")
-                return Data()
-            }
-        }()
-
-        let note = Note(noteID: 1,
-                        hash: 0,
-                        read: false,
-                        icon: nil,
-                        noticon: nil,
-                        timestamp: "",
-                        type: "",
-                        subtype: nil,
-                        url: nil,
-                        title: nil,
-                        subject: Data(),
-                        header: Data(),
-                        body: Data(),
-                        meta: metaAsData)
-        let product = Product.fake()
-        let review = MockReviews().anonymousReview()
-
-        return ProductReviewFromNoteParcel(note: note, review: review, product: product)
+        ReviewsCoordinator(navigationController: UINavigationController(),
+                           pushNotificationsManager: pushNotificationsManager,
+                           storesManager: storesManager,
+                           noticePresenter: noticePresenter,
+                           switchStoreUseCase: switchStoreUseCase,
+                           willPresentReviewDetailsFromPushNotification: willPresentReviewDetailsFromPushNotification)
     }
 }

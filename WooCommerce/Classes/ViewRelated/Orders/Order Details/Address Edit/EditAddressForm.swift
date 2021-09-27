@@ -32,7 +32,20 @@ final class EditAddressHostingController: UIHostingController<EditAddressForm> {
             self?.dismiss(animated: true, completion: nil)
         }
 
-        // Observe the present notice intent and set it back after presented.
+        // Set up notices
+        bindNoticeIntent(of: viewModel)
+
+        // Set presentation delegate to track the user dismiss flow event
+        presentationController?.delegate = self
+    }
+
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    /// Observe the present notice intent and set it back after presented.
+    ///
+    private func bindNoticeIntent(of viewModel: EditAddressFormViewModel) {
         viewModel.$presentNotice
             .compactMap { $0 }
             .sink { [weak self] notice in
@@ -43,7 +56,8 @@ final class EditAddressHostingController: UIHostingController<EditAddressForm> {
                 case .error(let error):
                     switch error {
                     case .unableToLoadCountries:
-                        self?.systemNoticePresenter.enqueue(notice: .init(title: error.errorDescription, feedbackType: .error))
+                        self?.systemNoticePresenter.enqueue(notice: .init(title: error.errorDescription ?? "", feedbackType: .error))
+                        self?.dismiss(animated: true) // Dismiss VC because we need country information to continue.
                     case .unableToUpdateAddress:
                         break
                     }
@@ -53,13 +67,6 @@ final class EditAddressHostingController: UIHostingController<EditAddressForm> {
                 viewModel.presentNotice = nil
             }
             .store(in: &subscriptions)
-
-        // Set presentation delegate to track the user dismiss flow event
-        presentationController?.delegate = self
-    }
-
-    required dynamic init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }
 

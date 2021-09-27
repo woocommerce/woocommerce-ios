@@ -7,13 +7,52 @@ import UIKit
 ///
 final class EditAddressHostingController: UIHostingController<EditAddressForm> {
 
-    init(viewModel: EditAddressFormViewModel) {
+    /// References to keep the Combine subscriptions alive within the lifecycle of the object.
+    ///
+    private var subscriptions: Set<AnyCancellable> = []
+
+    /// Presents an error notice in the current modal presentation context
+    ///
+    private lazy var modalNoticePresenter: NoticePresenter = {
+        let presenter = DefaultNoticePresenter()
+        presenter.presentingViewController = self
+        return presenter
+    }()
+
+    /// Presents a success notice in the tab bar context after this `self` is dismissed.
+    ///
+    private let systemNoticePresenter: NoticePresenter
+
+    init(viewModel: EditAddressFormViewModel, systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
+        self.systemNoticePresenter = systemNoticePresenter
         super.init(rootView: EditAddressForm(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismiss = { [weak self] in
             self?.dismiss(animated: true, completion: nil)
         }
+
+        // Observe the present notice intent and set it back after presented.
+        viewModel.$presentNotice
+            .compactMap { $0 }
+            .sink { [weak self] notice in
+
+                switch notice {
+                case .success:
+                    break
+                case .error(let error):
+                    switch error {
+                    case .unableToLoadCountries:
+                        self?.systemNoticePresenter.enqueue(notice: .init(title: error.errorDescription, feedbackType: .error))
+                    case .unableToUpdateAddress:
+                        break
+                    }
+                }
+
+                // Nullify the presentation intent.
+                viewModel.presentNotice = nil
+            }
+            .store(in: &subscriptions)
 
         // Set presentation delegate to track the user dismiss flow event
         presentationController?.delegate = self

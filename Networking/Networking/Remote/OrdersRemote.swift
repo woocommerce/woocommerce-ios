@@ -145,6 +145,9 @@ public class OrdersRemote: Remote {
                     case .shippingAddress:
                         let shippingAddressEncoded = try order.shippingAddress?.toDictionary()
                         params[Order.CodingKeys.shippingAddress.rawValue] = shippingAddressEncoded
+                    case .billingAddress:
+                        let billingAddressEncoded = try order.billingAddress?.toDictionary()
+                        params[Order.CodingKeys.billingAddress.rawValue] = billingAddressEncoded
                     }
                 }
             }()
@@ -218,5 +221,6 @@ public extension OrdersRemote {
     enum UpdateOrderField {
         case customerNote
         case shippingAddress
+        case billingAddress
     }
 }

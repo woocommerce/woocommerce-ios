@@ -90,7 +90,7 @@ struct EditAddressForm: View {
                 .padding(.horizontal, insets: geometry.safeAreaInsets)
                 .background(Color(.systemBackground))
 
-                ListHeaderView(text: Localization.shippingAddressSection, alignment: .left)
+                ListHeaderView(text: sectionTitle, alignment: .left)
                     .padding(.horizontal, insets: geometry.safeAreaInsets)
                 VStack(spacing: 0) {
                     Group {
@@ -148,7 +148,7 @@ struct EditAddressForm: View {
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         }
-        .navigationTitle(Localization.shippingTitle)
+        .navigationTitle(viewTitle)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarItems(trailing: navigationBarTrailingItem())
         .toolbar {
@@ -208,17 +208,38 @@ struct EditAddressForm: View {
 
 // MARK: Constants
 private extension EditAddressForm {
+
+    var viewTitle: String {
+        switch viewModel.type {
+        case .shipping:
+            return Localization.shippingTitle
+        case .billing:
+            return Localization.billingTitle
+        }
+    }
+
+    var sectionTitle: String {
+        switch viewModel.type {
+        case .shipping:
+            return Localization.shippingAddressSection
+        case .billing:
+            return Localization.billingAddressSection
+        }
+    }
+
     enum Constants {
         static let dividerPadding: CGFloat = 16
     }
 
     enum Localization {
         static let shippingTitle = NSLocalizedString("Shipping Address", comment: "Title for the Edit Shipping Address Form")
+        static let billingTitle = NSLocalizedString("Billing Address", comment: "Title for the Edit Billing Address Form")
         static let close = NSLocalizedString("Close", comment: "Text for the close button in the Edit Address Form")
         static let done = NSLocalizedString("Done", comment: "Text for the done button in the Edit Address Form")
 
         static let detailsSection = NSLocalizedString("DETAILS", comment: "Details section title in the Edit Address Form")
         static let shippingAddressSection = NSLocalizedString("SHIPPING ADDRESS", comment: "Details section title in the Edit Address Form")
+        static let billingAddressSection = NSLocalizedString("BILLING ADDRESS", comment: "Details section title in the Edit Address Form")
 
         static let firstNameField = NSLocalizedString("First name", comment: "Text field name in Edit Address Form")
         static let lastNameField = NSLocalizedString("Last name", comment: "Text field name in Edit Address Form")
@@ -284,7 +305,7 @@ struct EditAddressForm_Previews: PreviewProvider {
                                        phone: "333-333-3333",
                                        email: "scrambled@scrambled.com")
 
-    static let sampleViewModel = EditAddressFormViewModel(order: sampleOrder)
+    static let sampleViewModel = EditAddressFormViewModel(order: sampleOrder, type: .shipping)
 
     static var previews: some View {
         NavigationView {

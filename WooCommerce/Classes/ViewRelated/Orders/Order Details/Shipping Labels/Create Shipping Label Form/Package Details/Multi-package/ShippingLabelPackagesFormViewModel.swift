@@ -155,7 +155,7 @@ private extension ShippingLabelPackagesFormViewModel {
             // if package is not original packaging, add option to ship in original package
             if currentPackage.packageID != ShippingLabelPackageAttributes.originalPackagingBoxID {
                 buttons.append(.default(Text(Localization.shipInOriginalPackage)) { [weak self] in
-                    self?.shipInOriginalPackage(productOrVariationID: productOrVariationID, from: currentPackage)
+                    self?.shipInOriginalPackage(productOrVariationID: productOrVariationID, from: currentPackage, packageIndex: packageIndex)
                 })
             }
             buttons.append(.cancel())
@@ -166,10 +166,10 @@ private extension ShippingLabelPackagesFormViewModel {
     /// Move the item with `productOrVariationID` from `currentPackage` to a new package,
     /// and update items within `currentPackage` to reflect the change.
     ///
-    func shipInOriginalPackage(productOrVariationID: Int64, from currentPackage: ShippingLabelPackageAttributes) {
+    func shipInOriginalPackage(productOrVariationID: Int64, from currentPackage: ShippingLabelPackageAttributes, packageIndex: Int) {
         var updatedPackages: [ShippingLabelPackageAttributes] = []
-        for package in selectedPackages {
-            if package == currentPackage {
+        for (index, package) in selectedPackages.enumerated() {
+            if index == packageIndex {
                 var matchingItem: ShippingLabelPackageItem?
                 var updatedItems: [ShippingLabelPackageItem] = []
                 for item in package.items {

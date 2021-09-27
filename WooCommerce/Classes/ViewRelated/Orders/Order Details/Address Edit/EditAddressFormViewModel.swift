@@ -325,13 +325,22 @@ private extension EditAddressFormViewModel {
     /// Sync countries when requested. Defines the `showPlaceholderState` value depending if countries are being synced or not.
     ///
     func bindSyncTrigger() {
+
+        // Sends an error notice presentation request and hides the publisher error.
+        let syncCountries = makeSyncCountriesFuture()
+            .catch { [weak self] error -> AnyPublisher<Void, Never> in
+                DDLogError("⛔️ Failed to load countries with: \(error)")
+                self?.presentNotice = .error(error)
+                return Just(()).eraseToAnyPublisher()
+            }
+
+        // Perform `syncCountries` when a sync trigger is requested.
         syncCountriesTrigger
             .handleEvents(receiveOutput: { // Set `showPlaceholders` to `true` before initiating sync.
                 self.showPlaceholders = true // I could not find a way to assign this using combine operators. :-(
             })
             .map { // Sync countries
-                self.makeSyncCountriesFuture()
-                    .replaceError(with: ()) // TODO: Handle errors
+                syncCountries
             }
             .switchToLatest()
             .map { _ in // Set `showPlaceholders` to `false` after sync is done.
@@ -342,12 +351,14 @@ private extension EditAddressFormViewModel {
 
     /// Creates a publisher that syncs countries into our storage layer.
     ///
-    func makeSyncCountriesFuture() -> AnyPublisher<Void, Error> {
-        Future<Void, Error> { [weak self] promise in
+    func makeSyncCountriesFuture() -> AnyPublisher<Void, EditAddressError> {
+        Future<Void, EditAddressError> { [weak self] promise in
             guard let self = self else { return }
 
             let action = DataAction.synchronizeCountries(siteID: self.order.siteID) { result in
-                let newResult = result.map { _ in } // Hides the result success type because we don't need it.
+                let newResult = result
+                    .map { _ in } // Hides the result success type because we don't need it.
+                    .mapError { _ in EditAddressError.unableToLoadCountries }
                 promise(newResult)
             }
             self.stores.dispatch(action)

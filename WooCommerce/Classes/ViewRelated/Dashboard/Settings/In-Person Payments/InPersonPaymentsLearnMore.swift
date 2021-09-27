@@ -31,7 +31,7 @@ private enum Localization {
     )
 
     static let learnMore = NSLocalizedString(
-        "TEMPORARY CHANGE TO AVOID CRASH - DO NOT MERGE.",
+        "Visit woocommerce.com/payments to learn more about accepting payments with your mobile device and ordering card readers",
         comment: "Generic error message when In-Person Payments is unavailable"
     )
 }

@@ -152,22 +152,35 @@ private extension ShippingLabelPackagesFormViewModel {
         moveItemActionSheetButtons = {
             var buttons: [ActionSheet.Button] = []
 
+            // Add options to move to other packages.
+            for index in 0..<selectedPackages.count {
+                if index != packageIndex {
+                    guard let name = itemViewModels[safe: index]?.packageName else {
+                        continue
+                    }
+                    let packageTitle = String(format: Localization.packageName, index + 1, name)
+                    buttons.append(.default(Text(packageTitle), action: { [weak self] in
+                        self?.moveItem(productOrVariationID: productOrVariationID, currentPackageIndex: packageIndex, newPackageIndex: index)
+                    }))
+                }
+            }
+
             if !currentPackage.isOriginalPackaging {
                 let hasMultipleItems = currentPackage.items.count > 1 || currentPackage.items.first(where: { $0.quantity > 1 }) != nil
                 if hasMultipleItems {
                     // Add option to add item to new package if current package has more than one item.
                     buttons.append(.default(Text(Localization.addToNewPackage)) { [weak self] in
-                        self?.addItemToNewPackage(productOrVariationID: productOrVariationID, from: currentPackage, packageIndex: packageIndex)
+                        self?.addItemToNewPackage(productOrVariationID: productOrVariationID, packageIndex: packageIndex)
                     })
                 }
 
                 // Add option to ship in original package
                 buttons.append(.default(Text(Localization.shipInOriginalPackage)) { [weak self] in
-                    self?.shipInOriginalPackage(productOrVariationID: productOrVariationID, from: currentPackage, packageIndex: packageIndex)
+                    self?.shipInOriginalPackage(productOrVariationID: productOrVariationID, packageIndex: packageIndex)
                 })
             } else {
                 buttons.append(.default(Text(Localization.addToNewPackage)) { [weak self] in
-                    self?.addItemToNewPackage(productOrVariationID: productOrVariationID, from: currentPackage, packageIndex: packageIndex)
+                    self?.addItemToNewPackage(productOrVariationID: productOrVariationID, packageIndex: packageIndex)
                 })
             }
             buttons.append(.cancel())
@@ -178,7 +191,7 @@ private extension ShippingLabelPackagesFormViewModel {
     /// Move the item with `productOrVariationID` from `currentPackage` to a new package,
     /// and update items within `currentPackage` to reflect the change.
     ///
-    func shipInOriginalPackage(productOrVariationID: Int64, from currentPackage: ShippingLabelPackageAttributes, packageIndex: Int) {
+    func shipInOriginalPackage(productOrVariationID: Int64, packageIndex: Int) {
         var updatedPackages: [ShippingLabelPackageAttributes] = []
         for (index, package) in selectedPackages.enumerated() {
             if index == packageIndex {
@@ -213,7 +226,11 @@ private extension ShippingLabelPackagesFormViewModel {
     /// Move the item with `productOrVariationID` to a separate non-original package,
     /// and update the old package appropriately.
     ///
-    func addItemToNewPackage(productOrVariationID: Int64, from currentPackage: ShippingLabelPackageAttributes, packageIndex: Int) {
+    func addItemToNewPackage(productOrVariationID: Int64, packageIndex: Int) {
+        guard let currentPackage = selectedPackages[safe: packageIndex] else {
+            assertionFailure("⛔️ Cannot find package at index \(packageIndex)")
+            return
+        }
         var temporaryPackages = selectedPackages
         // Remove current package from list
         temporaryPackages.remove(at: packageIndex)
@@ -250,6 +267,12 @@ private extension ShippingLabelPackagesFormViewModel {
         }
         // This will trigger updating item view models, and therefore updates the package list UI.
         selectedPackages = temporaryPackages
+    }
+
+    /// Move the item with `productOrVariationID` to the specified package, and update current package accordingly.
+    ///
+    func moveItem(productOrVariationID: Int64, currentPackageIndex: Int, newPackageIndex: Int) {
+        // TODO
     }
 
     /// Update selected packages when user switch any package.
@@ -333,8 +356,11 @@ private extension ShippingLabelPackagesFormViewModel {
     enum Localization {
         static let moveItemActionSheetMessage = NSLocalizedString("This item is currently in Package %1$d: %2$@. Where would you like to move it?",
                                                                   comment: "Message in action sheet when an order item is about to " +
-                                                                    "be moved on Package Details screen of Shipping Label flow. " +
+                                                                    "be moved on Package Details screen of Shipping Label flow." +
                                                                     "The package name reads like: Package 1: Custom Envelope.")
+        static let packageName = NSLocalizedString("Package %1$d: %2$@",
+                                                   comment: "Name of package to be listed in Move Item action sheet " +
+                                                   "on Package Details screen of Shipping Label flow.")
         static let shipInOriginalPackage = NSLocalizedString("Ship in Original Packaging",
                                                              comment: "Option to ship in original packaging on action sheet when an order item is about to " +
                                                                 "be moved on Package Details screen of Shipping Label flow.")

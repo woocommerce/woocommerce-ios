@@ -168,6 +168,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
         let width = item.dimensions.width.isEmpty ? "0" : item.dimensions.width
         let height = item.dimensions.height.isEmpty ? "0" : item.dimensions.height
         originalPackageDimensions = String(format: "%@ x %@ x %@ %@", length, width, height, unit)
+        hasValidPackageDimensions = item.dimensions.length.isNotEmpty && item.dimensions.width.isNotEmpty && item.dimensions.height.isNotEmpty
     }
 
     private func configureValidation(originalPackaging: Bool) {

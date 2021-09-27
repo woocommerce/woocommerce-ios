@@ -175,4 +175,3 @@ struct ShippingLabelSinglePackage_Previews: PreviewProvider {
                                    viewModel: viewModel)
     }
 }
-

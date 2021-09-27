@@ -230,7 +230,7 @@ private extension ShippingLabelPackagesFormViewModel {
     ///
     func observeItemViewModels() {
         itemViewModels.forEach { item in
-            item.$isValidTotalWeight
+            item.$isValidPackage
                 .sink { [weak self] isValid in
                     self?.packagesValidation[item.selectedPackageID] = isValid
                 }

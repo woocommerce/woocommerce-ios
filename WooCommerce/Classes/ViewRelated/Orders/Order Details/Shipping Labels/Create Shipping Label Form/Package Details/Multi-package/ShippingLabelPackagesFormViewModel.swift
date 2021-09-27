@@ -118,20 +118,18 @@ private extension ShippingLabelPackagesFormViewModel {
         $selectedPackages
             .map { selectedPackages -> [ShippingLabelSinglePackageViewModel] in
                 return selectedPackages.enumerated().map { index, details in
-                    return ShippingLabelSinglePackageViewModel(order: order,
-                                                               orderItems: details.items,
-                                                               packagesResponse: packageResponse,
-                                                               selectedPackageID: details.packageID,
-                                                               totalWeight: details.totalWeight,
-                                                               onItemMoveRequest: { [weak self] productOrVariationID, packageName in
-                        self?.updateMoveItemActionSheet(for: productOrVariationID,
-                                                           packageIndex: index,
-                                                           packageName: packageName)
+                    return .init(order: order,
+                                 orderItems: details.items,
+                                 packagesResponse: packageResponse,
+                                 selectedPackageID: details.packageID,
+                                 totalWeight: details.totalWeight,
+                                 onItemMoveRequest: { [weak self] productOrVariationID, packageName in
+                        self?.updateMoveItemActionSheet(for: productOrVariationID, from: details, packageIndex: index, packageName: packageName)
                     },
-                                                               onPackageSwitch: { [weak self] newPackage in
+                                 onPackageSwitch: { [weak self] newPackage in
                         self?.switchPackage(currentPackage: details, newPackage: newPackage)
                     },
-                                                               onPackagesSync: { [weak self] packagesResponse in
+                                 onPackagesSync: { [weak self] packagesResponse in
                         self?.onPackageSyncCompletion(packagesResponse)
                     })
                 }
@@ -145,12 +143,28 @@ private extension ShippingLabelPackagesFormViewModel {
 
     /// Update title and buttons for the Move Item action sheet.
     ///
-    func updateMoveItemActionSheet(for productOrVariationID: Int64, packageIndex: Int, packageName: String) {
+    func updateMoveItemActionSheet(for productOrVariationID: Int64,
+                                   from currentPackage: ShippingLabelPackageAttributes,
+                                   packageIndex: Int,
+                                   packageName: String) {
         moveItemActionSheetMessage = String(format: Localization.moveItemActionSheetMessage, packageIndex + 1, packageName)
-        moveItemActionSheetButtons = [
-            .default(Text(Localization.shipInOriginalPackage)),
-            .cancel()
-        ]
+        moveItemActionSheetButtons = {
+            var buttons: [ActionSheet.Button] = []
+            // if package is not original packaging, add option to ship in original package
+            if currentPackage.packageID != ShippingLabelPackageAttributes.originalPackagingBoxID {
+                buttons.append(.default(Text(Localization.shipInOriginalPackage)) { [weak self] in
+                    self?.shipInOriginalPackage(productOrVariationID: productOrVariationID, from: currentPackage)
+                })
+            }
+            buttons.append(.cancel())
+            return buttons
+        }()
+    }
+
+    /// Move the item with `productOrVariationID` from `currentPackage` to a new package,
+    /// and update items within `currentPackage` to reflect the change.
+    ///
+    func shipInOriginalPackage(productOrVariationID: Int64, from currentPackage: ShippingLabelPackageAttributes) {
     }
 
     /// Update selected packages when user switch any package.

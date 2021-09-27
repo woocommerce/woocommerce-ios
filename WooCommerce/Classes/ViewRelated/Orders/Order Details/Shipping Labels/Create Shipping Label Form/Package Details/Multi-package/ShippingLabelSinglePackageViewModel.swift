@@ -65,6 +65,9 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
         guard validateTotalWeight(totalWeight) else {
             return nil
         }
+        if isOriginalPackaging, !hasValidPackageDimensions {
+            return nil
+        }
         return ShippingLabelPackageAttributes(packageID: selectedPackageID,
                                               totalWeight: totalWeight,
                                               items: orderItems)

@@ -41,7 +41,8 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     @Published var selectedPackageID: String?
 
     /// List of selected package with basic info.
-    /// This is a workaround to work with multi-package solution.
+    /// This is a workaround to work with multi-package solution which requires a list of packages.
+    /// Since this legacy view model works only with one package, the returned list contains at most one item only.
     ///
     var selectedPackagesDetails: [ShippingLabelPackageAttributes] {
         guard let id = selectedPackageID, totalWeight.isNotEmpty else {

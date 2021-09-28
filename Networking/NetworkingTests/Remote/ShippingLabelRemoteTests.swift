@@ -46,7 +46,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
 
         // When
         let printData: ShippingLabelPrintData = waitFor { promise in
-            remote.printShippingLabel(siteID: self.sampleSiteID, shippingLabelID: 123, paperSize: .label) { result in
+            remote.printShippingLabel(siteID: self.sampleSiteID, shippingLabelIDs: [123], paperSize: .label) { result in
                 guard let printData = try? result.get() else {
                     XCTFail("Error printing shipping label: \(String(describing: result.failure))")
                     return

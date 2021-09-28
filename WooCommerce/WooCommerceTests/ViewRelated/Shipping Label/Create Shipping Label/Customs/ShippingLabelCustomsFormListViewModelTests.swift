@@ -64,6 +64,8 @@ class ShippingLabelCustomsFormListViewModelTests: XCTestCase {
         firstItem?.hsTariffNumber = "111111"
 
         // Then
-        XCTAssertFalse(viewModel.doneButtonEnabled)
+        DispatchQueue.main.async {
+            XCTAssertFalse(viewModel.doneButtonEnabled)
+        }
     }
 }

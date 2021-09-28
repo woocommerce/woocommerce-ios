@@ -7,7 +7,24 @@ import UIKit
 ///
 final class EditAddressHostingController: UIHostingController<EditAddressForm> {
 
-    init(viewModel: EditAddressFormViewModel) {
+    /// References to keep the Combine subscriptions alive within the lifecycle of the object.
+    ///
+    private var subscriptions: Set<AnyCancellable> = []
+
+    /// Presents an error notice in the current modal presentation context
+    ///
+    private lazy var modalNoticePresenter: NoticePresenter = {
+        let presenter = DefaultNoticePresenter()
+        presenter.presentingViewController = self
+        return presenter
+    }()
+
+    /// Presents a success notice in the tab bar context after this `self` is dismissed.
+    ///
+    private let systemNoticePresenter: NoticePresenter
+
+    init(viewModel: EditAddressFormViewModel, systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
+        self.systemNoticePresenter = systemNoticePresenter
         super.init(rootView: EditAddressForm(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
@@ -15,12 +32,43 @@ final class EditAddressHostingController: UIHostingController<EditAddressForm> {
             self?.dismiss(animated: true, completion: nil)
         }
 
+        // Set up notices
+        bindNoticeIntent(of: viewModel)
+
         // Set presentation delegate to track the user dismiss flow event
         presentationController?.delegate = self
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    /// Observe the present notice intent and set it back after presented.
+    ///
+    private func bindNoticeIntent(of viewModel: EditAddressFormViewModel) {
+        viewModel.$presentNotice
+            .compactMap { $0 }
+            .sink { [weak self] notice in
+
+                switch notice {
+                case .success:
+                    self?.systemNoticePresenter.enqueue(notice: .init(title: EditAddressForm.Localization.success, feedbackType: .error))
+
+                case .error(let error):
+                    switch error {
+                    case .unableToLoadCountries:
+                        self?.systemNoticePresenter.enqueue(notice: .init(title: error.errorDescription ?? "", feedbackType: .error))
+                        self?.dismiss(animated: true) // Dismiss VC because we need country information to continue.
+
+                    case .unableToUpdateAddress:
+                        self?.modalNoticePresenter.enqueue(notice: .init(title: error.errorDescription ?? "", feedbackType: .error))
+                    }
+                }
+
+                // Nullify the presentation intent.
+                viewModel.presentNotice = nil
+            }
+            .store(in: &subscriptions)
     }
 }
 
@@ -267,6 +315,8 @@ private extension EditAddressForm {
         static let placeholderRequired = NSLocalizedString("Required", comment: "Text field placeholder in Edit Address Form")
         static let placeholderOptional = NSLocalizedString("Optional", comment: "Text field placeholder in Edit Address Form")
         static let placeholderSelectOption = NSLocalizedString("Select an option", comment: "Text field placeholder in Edit Address Form")
+
+        static let success = NSLocalizedString("Address successfully updated.", comment: "Notice text after updating the shipping or billing address")
 
         static func useAddressAs(for type: EditAddressFormViewModel.AddressType) -> String {
             switch type {

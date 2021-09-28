@@ -321,6 +321,69 @@ final class EditAddressFormViewModelTests: XCTestCase {
         assertEqual(update.order.shippingAddress?.firstName, "Tester")
         assertEqual(update.fields, [.billingAddress, .shippingAddress])
     }
+
+    func test_view_model_fires_success_notice_after_updating_address_successfully() {
+        // Given
+        let viewModel = EditAddressFormViewModel(order: Order.fake(), type: .shipping, stores: testingStores)
+        testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrder(_, order, _, onCompletion):
+                onCompletion(.success(order))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        let noticeRequest = waitFor { promise in
+            viewModel.updateRemoteAddress { _ in
+                promise(viewModel.presentNotice)
+            }
+        }
+
+        // Then
+        assertEqual(noticeRequest, .success)
+    }
+
+    func test_view_model_fires_error_notice_after_failing_to_update_address() {
+        // Given
+        let viewModel = EditAddressFormViewModel(order: Order.fake(), type: .shipping, stores: testingStores)
+        testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrder(_, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "", code: 0)))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        let noticeRequest = waitFor { promise in
+            viewModel.updateRemoteAddress { _ in
+                promise(viewModel.presentNotice)
+            }
+        }
+
+        // Then
+        assertEqual(noticeRequest, .error(.unableToUpdateAddress))
+    }
+
+    func test_view_model_fires_error_notice_after_failing_to_fetch_countries() {
+        // Given
+        testingStorage.reset()
+        testingStores.whenReceivingAction(ofType: DataAction.self) { action in
+            switch action {
+            case .synchronizeCountries(_, let completion):
+                completion(.failure(NSError(domain: "", code: 0)))
+            }
+        }
+
+        let viewModel = EditAddressFormViewModel(order: Order.fake(), type: .shipping, storageManager: testingStorage, stores: testingStores)
+        viewModel.onLoadTrigger.send()
+
+        // Then
+        assertEqual(viewModel.presentNotice, .error(.unableToLoadCountries))
+    }
 }
 
 private extension EditAddressFormViewModelTests {

@@ -137,18 +137,25 @@ final class EditAddressFormViewModel: ObservableObject {
     ///
     func updateRemoteAddress(onFinish: @escaping (Bool) -> Void) {
         let updatedAddress = fields.toAddress(country: selectedCountry, state: selectedState)
+        let orderFields: [OrderUpdateField]
 
         let modifiedOrder: Yosemite.Order
         switch type {
+        case .shipping where fields.useAsToggle:
+            modifiedOrder = order.copy(billingAddress: updatedAddress, shippingAddress: updatedAddress)
+            orderFields = [.shippingAddress, .billingAddress]
         case .shipping:
             modifiedOrder = order.copy(shippingAddress: updatedAddress)
+            orderFields = [.shippingAddress]
+        case .billing where fields.useAsToggle:
+            modifiedOrder = order.copy(billingAddress: updatedAddress, shippingAddress: updatedAddress)
+            orderFields = [.billingAddress, .shippingAddress]
         case .billing:
             modifiedOrder = order.copy(billingAddress: updatedAddress)
+            orderFields = [.billingAddress]
         }
 
-        let action = OrderAction.updateOrder(siteID: order.siteID,
-                                             order: modifiedOrder,
-                                             fields: [type == .shipping ? .shippingAddress : .billingAddress]) { [weak self] result in
+        let action = OrderAction.updateOrder(siteID: order.siteID, order: modifiedOrder, fields: orderFields) { [weak self] result in
             guard let self = self else { return }
 
             self.performingNetworkRequest.send(false)
@@ -193,6 +200,8 @@ extension EditAddressFormViewModel {
         var postcode: String = ""
         var country: String = ""
         var state: String = ""
+
+        var useAsToggle: Bool = false
 
         mutating func update(with address: Address) {
             firstName = address.firstName

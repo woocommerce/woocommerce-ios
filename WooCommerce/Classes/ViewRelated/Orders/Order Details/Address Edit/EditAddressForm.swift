@@ -144,6 +144,14 @@ struct EditAddressForm: View {
                 }
                 .padding(.horizontal, insets: geometry.safeAreaInsets)
                 .background(Color(.systemBackground))
+
+                Group {
+                    TitleAndToggleRow(title: Localization.useAddressAs(for: viewModel.type), isOn: $viewModel.fields.useAsToggle)
+                        .padding(.horizontal, Constants.horizontalPadding)
+                        .padding(.vertical, Constants.verticalPadding)
+                }
+                .padding(.horizontal, insets: geometry.safeAreaInsets)
+                .background(Color(.systemBackground))
             }
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
@@ -229,6 +237,8 @@ private extension EditAddressForm {
 
     enum Constants {
         static let dividerPadding: CGFloat = 16
+        static let horizontalPadding: CGFloat = 16
+        static let verticalPadding: CGFloat = 7
     }
 
     enum Localization {
@@ -257,6 +267,15 @@ private extension EditAddressForm {
         static let placeholderRequired = NSLocalizedString("Required", comment: "Text field placeholder in Edit Address Form")
         static let placeholderOptional = NSLocalizedString("Optional", comment: "Text field placeholder in Edit Address Form")
         static let placeholderSelectOption = NSLocalizedString("Select an option", comment: "Text field placeholder in Edit Address Form")
+
+        static func useAddressAs(for type: EditAddressFormViewModel.AddressType) -> String {
+            switch type {
+            case .shipping:
+                return NSLocalizedString("Use as Billing Address", comment: "Title for the Use as Billing Address switch in the Address form")
+            case .billing:
+                return NSLocalizedString("Use as Shipping Address", comment: "Title for the Use as Shipping Address switch in the Address form")
+            }
+        }
     }
 }
 

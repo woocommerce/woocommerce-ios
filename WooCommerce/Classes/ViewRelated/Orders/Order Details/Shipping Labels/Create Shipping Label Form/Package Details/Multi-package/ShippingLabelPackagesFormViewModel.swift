@@ -38,9 +38,9 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
 
     private var cancellables: Set<AnyCancellable> = []
 
-    /// Validation states of all items.
+    /// Validation states of all items by index of each package.
     ///
-    private var packagesValidation: [String: Bool] = [:] {
+    private var packagesValidation: [Int: Bool] = [:] {
         didSet {
             configureDoneButton()
         }
@@ -347,10 +347,11 @@ private extension ShippingLabelPackagesFormViewModel {
     /// Observe validation state of each package and save it by package ID.
     ///
     func observeItemViewModels() {
-        itemViewModels.forEach { item in
+        packagesValidation.removeAll()
+        itemViewModels.enumerated().forEach { (index, item) in
             item.$isValidPackage
                 .sink { [weak self] isValid in
-                    self?.packagesValidation[item.selectedPackageID] = isValid
+                    self?.packagesValidation[index] = isValid
                 }
                 .store(in: &cancellables)
         }

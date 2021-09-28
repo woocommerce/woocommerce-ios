@@ -57,6 +57,10 @@ struct ShippingLabelCustomsFormInput: View {
                 .font(.body)
             Text(viewModel.packageName)
                 .font(.body)
+            Spacer()
+            Image(uiImage: .noticeImage)
+                .foregroundColor(Color(.error))
+                .renderedIf(!viewModel.validForm)
         }
     }
 

@@ -14,11 +14,11 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
 
     /// References of input view models.
     ///
-    private(set) var inputViewModels: [ShippingLabelCustomsFormInputViewModel]
+    @Published private(set) var inputViewModels: [ShippingLabelCustomsFormInputViewModel]
 
     /// Input customs forms of the shipping label if added initially.
     ///
-    @Published private(set) var customsForms: [ShippingLabelCustomsForm]
+    private let customsForms: [ShippingLabelCustomsForm]
 
     /// Whether done button should be enabled.
     ///
@@ -64,9 +64,9 @@ final class ShippingLabelCustomsFormListViewModel: ObservableObject {
     ///
     private let currencySymbol: String
 
-    /// Validation states of all customs forms.
+    /// Validation states of all customs forms by indices of the forms.
     ///
-    private var customsFormValidation: [String: Bool] = [:] {
+    private var customsFormValidation: [Int: Bool] = [:] {
         didSet {
             configureDoneButton()
         }
@@ -111,10 +111,11 @@ private extension ShippingLabelCustomsFormListViewModel {
     /// Observe changes in all customs forms and save their validation states by package ID.
     ///
     func configureFormsValidation() {
-        inputViewModels.forEach { viewModel in
+        customsFormValidation.removeAll()
+        inputViewModels.enumerated().forEach { (index, viewModel) in
             viewModel.$validForm
                 .sink { [weak self] isValid in
-                    self?.customsFormValidation[viewModel.packageID] = isValid
+                    self?.customsFormValidation[index] = isValid
                 }
                 .store(in: &cancellables)
         }
@@ -137,15 +138,15 @@ private extension ShippingLabelCustomsFormListViewModel {
         $products.combineLatest($productVariations) { [weak self] (products, variations) -> [ShippingLabelCustomsForm] in
             self?.updateCustomsForms(products: products, productVariations: variations) ?? []
         }
-        .handleEvents(receiveOutput: { [weak self] customsForms in
+        .sink { [weak self] customsForms in
             guard let self = self else { return }
             self.inputViewModels = customsForms.map { .init(customsForm: $0,
                                                             destinationCountry: self.destinationCountry,
                                                             countries: self.allCountries,
                                                             currency: self.currencySymbol) }
             self.configureFormsValidation()
-        })
-        .assign(to: &$customsForms)
+        }
+        .store(in: &cancellables)
     }
 
     /// Configure result controllers for products and product variations.

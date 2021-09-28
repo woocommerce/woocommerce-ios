@@ -228,6 +228,33 @@ final class EditAddressFormViewModelTests: XCTestCase {
         assertEqual(update.fields, [.shippingAddress])
     }
 
+    func test_view_model_updates_shipping_and_billing_address_fields_when_use_as_toggle_is_on() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), type: .shipping, stores: stores)
+
+        // When
+        viewModel.fields.firstName = "Tester"
+        viewModel.fields.useAsToggle = true
+
+        let update: (order: Order, fields: [OrderUpdateField]) = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateOrder(_, order, fields, _):
+                    promise((order, fields))
+                default:
+                    XCTFail("Unsupported Action")
+                }
+            }
+            viewModel.updateRemoteAddress { _ in }
+        }
+
+        // Then
+        assertEqual(update.order.shippingAddress?.firstName, "Tester")
+        assertEqual(update.order.billingAddress?.firstName, "Tester")
+        assertEqual(update.fields, [.shippingAddress, .billingAddress])
+    }
+
     func test_view_model_only_updates_billing_address_field() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -266,6 +293,33 @@ final class EditAddressFormViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.fields.state, newState.name)
+    }
+
+    func test_view_model_updates_billing_and_shipping_address_fields_when_use_as_toggle_is_on() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = EditAddressFormViewModel(order: order(withBillingAddress: sampleAddress()), type: .billing, stores: stores)
+
+        // When
+        viewModel.fields.firstName = "Tester"
+        viewModel.fields.useAsToggle = true
+
+        let update: (order: Order, fields: [OrderUpdateField]) = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateOrder(_, order, fields, _):
+                    promise((order, fields))
+                default:
+                    XCTFail("Unsupported Action")
+                }
+            }
+            viewModel.updateRemoteAddress { _ in }
+        }
+
+        // Then
+        assertEqual(update.order.billingAddress?.firstName, "Tester")
+        assertEqual(update.order.shippingAddress?.firstName, "Tester")
+        assertEqual(update.fields, [.billingAddress, .shippingAddress])
     }
 
     func test_view_model_fires_success_notice_after_updating_address_successfully() {

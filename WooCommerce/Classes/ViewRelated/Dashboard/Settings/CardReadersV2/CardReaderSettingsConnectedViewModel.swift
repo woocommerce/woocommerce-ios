@@ -59,10 +59,6 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
                         self.readerUpdateProgress = 0
                     case .installing(progress: let progress):
                         self.readerUpdateProgress = progress
-                    case .failed(error: let error):
-                        // TODO: handle error case
-                        print("Failed installing update: \(error)")
-                        fallthrough
                     case .completed:
                         self.readerUpdateProgress = 1
                         self.softwareUpdateCancelable = nil

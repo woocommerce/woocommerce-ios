@@ -2,20 +2,25 @@ import UserNotifications
 
 final class NotificationService: UNNotificationServiceExtension {
 
-    var contentHandler: ((UNNotificationContent) -> Void)?
-    var bestAttemptContent: UNMutableNotificationContent?
+    private var contentHandler: ((UNNotificationContent) -> Void)?
+    private var bestAttemptContent: UNNotificationContent?
+
+    private let featureFlagService: FeatureFlagService = DefaultFeatureFlagService()
 
     override func didReceive(_ request: UNNotificationRequest, withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
         self.contentHandler = contentHandler
-        bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
 
         guard let content = request.content.mutableCopy() as? UNMutableNotificationContent else {
             return
         }
 
+        guard featureFlagService.isFeatureFlagEnabled(.pushNotificationsForAllStores) else {
+            setContent(content)
+            return
+        }
+
         guard let type = NotificationType(rawValue: content.categoryIdentifier) else {
-            bestAttemptContent = content
-            contentHandler(content)
+            setContent(content)
             return
         }
 
@@ -37,8 +42,7 @@ final class NotificationService: UNNotificationServiceExtension {
             }
         }
 
-        bestAttemptContent = content
-        contentHandler(content)
+        setContent(content)
     }
 
     override func serviceExtensionTimeWillExpire() {
@@ -47,6 +51,13 @@ final class NotificationService: UNNotificationServiceExtension {
         if let contentHandler = contentHandler, let bestAttemptContent =  bestAttemptContent {
             contentHandler(bestAttemptContent)
         }
+    }
+}
+
+private extension NotificationService {
+    func setContent(_ content: UNNotificationContent) {
+        bestAttemptContent = content
+        contentHandler?(content)
     }
 }
 

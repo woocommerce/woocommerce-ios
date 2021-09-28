@@ -204,6 +204,10 @@
 		0269576D23726401001BA0BF /* KeyboardFrameObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0269576C23726401001BA0BF /* KeyboardFrameObserverTests.swift */; };
 		02695770237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0269576F237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift */; };
 		0269A63C2581D26C007B49ED /* ShippingLabelPrintingStepListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0269A63B2581D26C007B49ED /* ShippingLabelPrintingStepListView.swift */; };
+		026A3BAD2703163C00DEADB8 /* FeatureFlag.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B5B21E79B3E0055EEF0 /* FeatureFlag.swift */; };
+		026A3BAE2703165500DEADB8 /* BuildConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B5D21E79C330055EEF0 /* BuildConfiguration.swift */; };
+		026A3BAF2703166100DEADB8 /* FeatureFlagService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE89C8231FB31400E85EF8 /* FeatureFlagService.swift */; };
+		026A3BB02703167500DEADB8 /* DefaultFeatureFlagService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE89CA231FB36600E85EF8 /* DefaultFeatureFlagService.swift */; };
 		026B3C57249A046E00F7823C /* TextFieldTextAlignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026B3C56249A046E00F7823C /* TextFieldTextAlignment.swift */; };
 		026CF63A237E9ABE009563D4 /* ProductVariationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026CF638237E9ABE009563D4 /* ProductVariationsViewController.swift */; };
 		026CF63B237E9ABE009563D4 /* ProductVariationsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 026CF639237E9ABE009563D4 /* ProductVariationsViewController.xib */; };
@@ -7306,6 +7310,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				026A3BAD2703163C00DEADB8 /* FeatureFlag.swift in Sources */,
+				026A3BAE2703165500DEADB8 /* BuildConfiguration.swift in Sources */,
+				026A3BAF2703166100DEADB8 /* FeatureFlagService.swift in Sources */,
+				026A3BB02703167500DEADB8 /* DefaultFeatureFlagService.swift in Sources */,
 				02710EEF27030FEA009008E7 /* NotificationService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

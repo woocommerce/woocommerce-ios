@@ -178,6 +178,12 @@ final class EditAddressFormViewModel: ObservableObject {
         performingNetworkRequest.send(true)
         stores.dispatch(action)
     }
+
+    /// Returns `true` if there are changes pending to commit. `False` otherwise.
+    ///
+    func hasPendingChanges() -> Bool {
+        return navigationTrailingItem == .done(enabled: true)
+    }
 }
 
 extension EditAddressFormViewModel {

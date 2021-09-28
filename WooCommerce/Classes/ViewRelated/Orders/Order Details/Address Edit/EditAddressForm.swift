@@ -84,11 +84,13 @@ final class EditAddressHostingController: UIHostingController<EditAddressForm> {
 ///
 extension EditAddressHostingController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
-
+        !rootView.viewModel.hasPendingChanges()
     }
 
-    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        // track dimiss gesture
+    func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self) { [weak self] in
+            self?.dismiss(animated: true)
+        }
     }
 }
 

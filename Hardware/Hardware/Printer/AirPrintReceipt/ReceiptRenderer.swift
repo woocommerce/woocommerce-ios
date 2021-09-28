@@ -86,7 +86,7 @@ public extension ReceiptRenderer {
                             <span class="card-icon \(parameters.cardDetails.brand.iconName)-icon"></span> - \(parameters.cardDetails.last4)
                         </p>
                     </header>
-                    <h3>\(Localization.summarySectionTitle.uppercased())</h3>
+                    <h3>\(summarySectionTitle.uppercased())</h3>
                     \(summaryTable())
                     <footer>
                         <p>
@@ -169,6 +169,13 @@ private extension ReceiptRenderer {
 
         return .localizedStringWithFormat(Localization.receiptFromFormat, storeName)
     }
+
+    private var summarySectionTitle: String {
+        guard let orderID = parameters.orderID else {
+            return Localization.summarySectionTitle
+        }
+        return String(format: Localization.summarySectionTitleWithOrderFormat, String(orderID))
+    }
 }
 
 
@@ -191,6 +198,11 @@ private extension ReceiptRenderer {
             comment: "Title of receipt."
         )
 
+        static let orderNumberSubtitle = NSLocalizedString(
+            "Order number %1$@",
+            comment: "Subtitle of the receipt, to show the order number. %1$@ is the order number, e.g. 4920"
+        )
+
         static let amountPaidSectionTitle = NSLocalizedString(
             "Amount paid",
             comment: "Title of 'Amount Paid' section in the receipt"
@@ -208,7 +220,12 @@ private extension ReceiptRenderer {
 
         static let summarySectionTitle = NSLocalizedString(
             "Summary",
-            comment: "Title of 'Summary' section in the receipt"
+            comment: "Title of 'Summary' section in the receipt when the order number is unknown"
+        )
+
+        static let summarySectionTitleWithOrderFormat = NSLocalizedString(
+            "Summary: Order #%1$@",
+            comment: "Title of 'Summary' section in the receipt. %1$@ is the order number, e.g. 4920"
         )
 
         static let applicationName = NSLocalizedString(

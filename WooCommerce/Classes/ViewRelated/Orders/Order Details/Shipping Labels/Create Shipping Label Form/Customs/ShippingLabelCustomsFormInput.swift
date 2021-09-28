@@ -215,7 +215,7 @@ private extension ShippingLabelCustomsFormInput {
 struct ShippingLabelCustomsFormInput_Previews: PreviewProvider {
     static let sampleViewModel: ShippingLabelCustomsFormInputViewModel = {
         let sampleOrder = ShippingLabelPackageDetailsViewModel.sampleOrder()
-        let sampleForm = ShippingLabelCustomsForm(packageID: "Food Package", packageName: "Food Package", productIDs: sampleOrder.items.map { $0.productID })
+        let sampleForm = ShippingLabelCustomsForm(packageID: "Food Package", packageName: "Food Package", items: [])
         return .init(customsForm: sampleForm, destinationCountry: Country(code: "VN", name: "Vietnam", states: []), countries: [], currency: "$")
     }()
 

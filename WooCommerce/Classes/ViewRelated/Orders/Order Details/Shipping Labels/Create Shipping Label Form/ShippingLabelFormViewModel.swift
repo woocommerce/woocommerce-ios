@@ -618,23 +618,21 @@ private extension ShippingLabelFormViewModel {
 
         return selectedPackagesDetails.map { package -> ShippingLabelCustomsForm in
             let packageName: String = {
-                guard let response = packagesResponse else {
-                    return ""
+                guard package.isOriginalPackaging else {
+                    return package.packageID
                 }
-
-                if let customPackage = response.customPackages.first(where: { $0.title == package.packageID }) {
-                    return customPackage.title
-                }
-
-                for option in response.predefinedOptions {
-                    if let package = option.predefinedPackages.first(where: { $0.id == package.packageID }) {
-                        return package.title
-                    }
-                }
-
-                return ""
+                return package.items.first?.name ?? ""
             }()
-            return ShippingLabelCustomsForm(packageID: package.packageID, packageName: packageName, productIDs: package.items.map { $0.productOrVariationID })
+            let items: [ShippingLabelCustomsForm.Item] = package.items.map { item in
+                .init(description: item.name,
+                      quantity: item.quantity,
+                      value: item.value,
+                      weight: item.weight,
+                      hsTariffNumber: "",
+                      originCountry: SiteAddress().countryCode,
+                      productID: item.productOrVariationID)
+            }
+            return ShippingLabelCustomsForm(packageID: package.packageID, packageName: packageName, items: items)
         }
     }
 

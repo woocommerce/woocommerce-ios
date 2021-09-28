@@ -16,14 +16,11 @@ struct ShippingLabelCustomsFormList: View {
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
-                ForEach(Array(viewModel.customsForms.enumerated()), id: \.element) { (index, item) in
-                    viewModel.inputViewModels.first(where: { $0.packageID == item.packageID })
-                        .map { inputModel in
-                            ShippingLabelCustomsFormInput(isCollapsible: viewModel.multiplePackagesDetected,
-                                                          packageNumber: index + 1,
-                                                          safeAreaInsets: geometry.safeAreaInsets,
-                                                          viewModel: inputModel)
-                        }
+                ForEach(Array(viewModel.inputViewModels.enumerated()), id: \.offset) { (index, item) in
+                    ShippingLabelCustomsFormInput(isCollapsible: viewModel.multiplePackagesDetected,
+                                                  packageNumber: index + 1,
+                                                  safeAreaInsets: geometry.safeAreaInsets,
+                                                  viewModel: item)
                 }
                 .padding(.bottom, insets: geometry.safeAreaInsets)
             }

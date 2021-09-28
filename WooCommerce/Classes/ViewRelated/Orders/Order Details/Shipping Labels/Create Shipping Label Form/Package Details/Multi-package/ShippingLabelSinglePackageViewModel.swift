@@ -15,6 +15,10 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
     ///
     let selectedPackageID: String
 
+    /// Whether this package is shipped in original packaging.
+    ///
+    let isOriginalPackaging: Bool
+
     /// View model for the package list
     ///
     lazy var packageListViewModel: ShippingLabelPackageListViewModel = {
@@ -27,9 +31,21 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
     ///
     @Published private(set) var itemsRows: [ItemToFulfillRow] = []
 
+    /// Whether package is valid.
+    ///
+    @Published private(set) var isValidPackage = false
+
     /// Whether totalWeight is valid
     ///
     @Published private(set) var isValidTotalWeight: Bool = false
+
+    /// Whether the original package has valid dimensions.
+    ///
+    @Published private(set) var hasValidPackageDimensions = false
+
+    /// Description of dimensions of the original package.
+    ///
+    @Published private(set) var originalPackageDimensions: String = ""
 
     /// The title of the selected package, if any.
     ///
@@ -47,6 +63,9 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
     ///
     var validatedPackageAttributes: ShippingLabelPackageAttributes? {
         guard validateTotalWeight(totalWeight) else {
+            return nil
+        }
+        if isOriginalPackaging, !hasValidPackageDimensions {
             return nil
         }
         return ShippingLabelPackageAttributes(packageID: selectedPackageID,
@@ -79,6 +98,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
          packagesResponse: ShippingLabelPackagesResponse?,
          selectedPackageID: String,
          totalWeight: String,
+         isOriginalPackaging: Bool = false,
          onItemMoveRequest: @escaping ItemMoveRequestHandler,
          onPackageSwitch: @escaping PackageSwitchHandler,
          onPackagesSync: @escaping PackagesSyncHandler,
@@ -90,6 +110,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
         self.currencyFormatter = formatter
         self.weightUnit = weightUnit
         self.selectedPackageID = selectedPackageID
+        self.isOriginalPackaging = isOriginalPackaging
         self.onItemMoveRequest = onItemMoveRequest
         self.onPackageSwitch = onPackageSwitch
         self.onPackagesSync = onPackagesSync
@@ -99,6 +120,10 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
         packageListViewModel.didSelectPackage(selectedPackageID)
         configureItemRows()
         configureTotalWeight(initialTotalWeight: totalWeight)
+        if isOriginalPackaging, let item = orderItems.first {
+            configureOriginalPackageDimensions(for: item)
+        }
+        configureValidation(originalPackaging: isOriginalPackaging)
     }
 
     func requestMovingItem(_ productOrVariationID: Int64, itemName: String) {
@@ -136,6 +161,28 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
         $totalWeight
             .map { [weak self] in self?.validateTotalWeight($0) ?? false }
             .assign(to: &$isValidTotalWeight)
+    }
+
+    /// Configure dimensions L x W x H <unit> for the original package.
+    ///
+    private func configureOriginalPackageDimensions(for item: ShippingLabelPackageItem) {
+        let unit = packagesResponse?.storeOptions.dimensionUnit ?? ""
+        let length = item.dimensions.length.isEmpty ? "0" : item.dimensions.length
+        let width = item.dimensions.width.isEmpty ? "0" : item.dimensions.width
+        let height = item.dimensions.height.isEmpty ? "0" : item.dimensions.height
+        originalPackageDimensions = String(format: "%@ x %@ x %@ %@", length, width, height, unit)
+        hasValidPackageDimensions = item.dimensions.length.isNotEmpty && item.dimensions.width.isNotEmpty && item.dimensions.height.isNotEmpty
+    }
+
+    private func configureValidation(originalPackaging: Bool) {
+        $isValidTotalWeight.combineLatest($hasValidPackageDimensions)
+            .map { validWeight, validDimensions -> Bool in
+                guard originalPackaging else {
+                    return validWeight
+                }
+                return validWeight && validDimensions
+            }
+            .assign(to: &$isValidPackage)
     }
 }
 

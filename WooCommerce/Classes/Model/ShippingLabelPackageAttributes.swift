@@ -4,6 +4,9 @@ import Foundation
 ///
 struct ShippingLabelPackageAttributes: Equatable {
 
+    /// Default box ID for boxes shipping in original packaging.
+    static let originalPackagingBoxID = "individual"
+
     /// ID of the selected package.
     let packageID: String
 

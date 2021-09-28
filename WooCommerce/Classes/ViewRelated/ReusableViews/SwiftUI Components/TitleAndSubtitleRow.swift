@@ -5,6 +5,7 @@ import SwiftUI
 struct TitleAndSubtitleRow: View {
     let title: String
     let subtitle: String
+    var isError: Bool = false
 
     var body: some View {
         HStack {
@@ -13,7 +14,7 @@ struct TitleAndSubtitleRow: View {
                 Text(title)
                     .bodyStyle()
                 Text(subtitle)
-                    .footnoteStyle()
+                    .footnoteStyle(isError: isError)
             }.padding([.leading, .trailing], Constants.vStackPadding)
             Spacer()
         }

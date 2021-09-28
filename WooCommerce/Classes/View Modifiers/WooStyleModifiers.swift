@@ -56,10 +56,25 @@ struct FootnoteStyle: ViewModifier {
     ///
     var isEnabled: Bool
 
+    /// Whether the View shows error state
+    ///
+    var isError: Bool
+
     func body(content: Content) -> some View {
         content
             .font(.footnote)
-            .foregroundColor(isEnabled ? Color(.textSubtle) : Color(.textTertiary))
+            .foregroundColor(textColor)
+    }
+
+    private var textColor: Color {
+        switch (isEnabled, isError) {
+        case (true, false):
+            return Color(.textSubtle)
+        case (_, true):
+            return Color(.error)
+        case (false, _):
+            return Color(.textTertiary)
+        }
     }
 }
 
@@ -97,8 +112,9 @@ extension View {
 
     /// - Parameters:
     ///     - isEnabled: Whether the view is enabled (to apply specific styles for disabled view)
-    func footnoteStyle(_ isEnabled: Bool = true) -> some View {
-        self.modifier(FootnoteStyle(isEnabled: isEnabled))
+    ///     - isError: Whether the view shows error state.
+    func footnoteStyle(isEnabled: Bool = true, isError: Bool = false) -> some View {
+        self.modifier(FootnoteStyle(isEnabled: isEnabled, isError: isError))
     }
 
     func errorStyle() -> some View {

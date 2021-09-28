@@ -27,7 +27,7 @@ struct SelectableItemRow: View {
                     .bodyStyle(isEnabled)
                 subtitle.map {
                     Text($0)
-                        .footnoteStyle(isEnabled)
+                        .footnoteStyle(isEnabled: isEnabled)
                         .padding(.top, 8)
                 }
             }

@@ -4,6 +4,7 @@ struct ShippingLabelSinglePackage: View {
 
     @ObservedObject private var viewModel: ShippingLabelSinglePackageViewModel
     @State private var isShowingPackageSelection = false
+    @State private var isCollapsed: Bool = false
     @Binding private var shouldShowMoveItemActionSheet: Bool
 
     private let isCollapsible: Bool
@@ -23,7 +24,7 @@ struct ShippingLabelSinglePackage: View {
     }
 
     var body: some View {
-        CollapsibleView(isCollapsible: isCollapsible, safeAreaInsets: safeAreaInsets) {
+        CollapsibleView(isCollapsible: isCollapsible, isCollapsed: $isCollapsed, safeAreaInsets: safeAreaInsets) {
             ShippingLabelPackageNumberRow(packageNumber: packageNumber, numberOfItems: viewModel.itemsRows.count, isValid: viewModel.isValidPackage)
         } content: {
             ListHeaderView(text: Localization.itemsToFulfillHeader, alignment: .left)
@@ -37,7 +38,7 @@ struct ShippingLabelSinglePackage: View {
                         HStack {
                             Spacer()
                             Button(action: {
-                                viewModel.requestMovingItem(productItemRow.productOrVariationID, itemName: productItemRow.title)
+                                viewModel.requestMovingItem(productItemRow.productOrVariationID)
                                 shouldShowMoveItemActionSheet = true
                             }, label: {
                                 Text(Localization.moveButton)

@@ -59,6 +59,15 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
         }
     }
 
+    /// The package name to be displayed in Move Item action sheet.
+    ///
+    var packageName: String {
+        if isOriginalPackaging {
+            return orderItems.first?.name ?? ""
+        }
+        return selectedPackageName
+    }
+
     /// Attributes of the package if validated.
     ///
     var validatedPackageAttributes: ShippingLabelPackageAttributes? {
@@ -126,13 +135,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
         configureValidation(originalPackaging: isOriginalPackaging)
     }
 
-    func requestMovingItem(_ productOrVariationID: Int64, itemName: String) {
-        let packageName: String = {
-            if selectedPackageName == Localization.selectPackagePlaceholder {
-                return itemName
-            }
-            return selectedPackageName
-        }()
+    func requestMovingItem(_ productOrVariationID: Int64) {
         onItemMoveRequest(productOrVariationID, packageName)
     }
 

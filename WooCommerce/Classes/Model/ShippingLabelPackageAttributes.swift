@@ -22,6 +22,10 @@ extension ShippingLabelPackageAttributes {
         packageID == Self.originalPackagingBoxID
     }
 
+    /// Returns an item in the package that contains product or variation with the specified ID,
+    /// and the rest of the items in the package. If the item has quantity great than one,
+    /// the rest of the items will contain an item with the same `productOrVariationID` but with reduced quantity.
+    ///
     func partitionItems(using productOrVariationID: Int64) -> (matchingItem: ShippingLabelPackageItem?, rest: [ShippingLabelPackageItem]) {
         var matchingItem: ShippingLabelPackageItem?
         var updatedItems: [ShippingLabelPackageItem] = []

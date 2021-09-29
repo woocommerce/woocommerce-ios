@@ -1,7 +1,6 @@
-import UITestsFoundation
 import XCTest
 
-final class OrderSearchScreen: BaseScreen {
+public final class OrderSearchScreen: BaseScreen {
 
     struct ElementStringIDs {
         static let searchField = "order-search-screen-search-field"
@@ -26,7 +25,7 @@ final class OrderSearchScreen: BaseScreen {
     }
 
     @discardableResult
-    func cancel() -> OrdersScreen {
+    public func cancel() -> OrdersScreen {
         cancelButton.tap()
         return OrdersScreen()
     }

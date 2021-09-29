@@ -1,4 +1,3 @@
-import UITestsFoundation
 import XCTest
 
 private struct ElementStringIDs {
@@ -7,7 +6,7 @@ private struct ElementStringIDs {
     static let continueButton = "Get Started Email Continue Button"
 }
 
-final class GetStartedScreen: BaseScreen {
+public final class GetStartedScreen: BaseScreen {
     private let navBar: XCUIElement
     private let emailTextField: XCUIElement
     private let continueButton: XCUIElement
@@ -21,7 +20,7 @@ final class GetStartedScreen: BaseScreen {
         super.init(element: emailTextField)
     }
 
-    func proceedWith(email: String) -> PasswordScreen {
+    public func proceedWith(email: String) -> PasswordScreen {
         emailTextField.tap()
         emailTextField.typeText(email)
         continueButton.tap()

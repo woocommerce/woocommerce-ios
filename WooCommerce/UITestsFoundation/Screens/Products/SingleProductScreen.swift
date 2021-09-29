@@ -1,7 +1,6 @@
-import UITestsFoundation
 import XCTest
 
-class SingleProductScreen: BaseScreen {
+public class SingleProductScreen: BaseScreen {
 
     struct ElementStringIDs {
         static let editProductMenuButton = "edit-product-more-options-button"

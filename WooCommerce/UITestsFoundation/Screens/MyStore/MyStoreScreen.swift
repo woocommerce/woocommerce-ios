@@ -1,11 +1,10 @@
-import UITestsFoundation
 import ScreenObject
 import XCTest
 
-final class MyStoreScreen: ScreenObject {
+public final class MyStoreScreen: ScreenObject {
 
-    let tabBar = TabNavComponent()
-    let periodStatsTable = PeriodStatsTable()
+    public let tabBar = TabNavComponent()
+    public let periodStatsTable = PeriodStatsTable()
 
     private let settingsButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["dashboard-settings-button"]
@@ -18,7 +17,7 @@ final class MyStoreScreen: ScreenObject {
         return screen.settingsButton.isHittable
     }
 
-    init(app: XCUIApplication = XCUIApplication()) throws {
+    public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [settingsButtonGetter],
             app: app
@@ -26,7 +25,7 @@ final class MyStoreScreen: ScreenObject {
     }
 
     @discardableResult
-    func dismissTopBannerIfNeeded() -> MyStoreScreen {
+    public func dismissTopBannerIfNeeded() -> MyStoreScreen {
         let topBannerCloseButton = app.buttons["top-banner-view-dismiss-button"]
         guard topBannerCloseButton.waitForExistence(timeout: 3) else { return self }
 
@@ -35,7 +34,7 @@ final class MyStoreScreen: ScreenObject {
     }
 
     @discardableResult
-    func openSettingsPane() -> SettingsScreen {
+    public func openSettingsPane() -> SettingsScreen {
         settingsButton.tap()
         return SettingsScreen()
     }

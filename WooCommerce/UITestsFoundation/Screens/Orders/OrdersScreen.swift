@@ -1,14 +1,13 @@
-import UITestsFoundation
 import XCTest
 
-final class OrdersScreen: BaseScreen {
+public final class OrdersScreen: BaseScreen {
 
     struct ElementStringIDs {
         static let searchButton = "order-search-button"
         static let filterButton = "order-filter-button"
     }
 
-    let tabBar = TabNavComponent()
+    public let tabBar = TabNavComponent()
     private let searchButton: XCUIElement
     private let filterButton: XCUIElement
 
@@ -25,13 +24,13 @@ final class OrdersScreen: BaseScreen {
     }
 
     @discardableResult
-    func selectOrder(atIndex index: Int) -> SingleOrderScreen {
+    public func selectOrder(atIndex index: Int) -> SingleOrderScreen {
         XCUIApplication().tables.cells.element(boundBy: index).tap()
         return SingleOrderScreen()
     }
 
     @discardableResult
-    func openSearchPane() -> OrderSearchScreen {
+    public func openSearchPane() -> OrderSearchScreen {
         searchButton.tap()
         return OrderSearchScreen()
     }

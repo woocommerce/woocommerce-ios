@@ -6,25 +6,25 @@ private struct ElementStringIDs {
     static let siteAddressButton = "Prologue Self Hosted Button"
 }
 
-final class PrologueScreen: ScreenObject {
+public final class PrologueScreen: ScreenObject {
 
     private var continueButton: XCUIElement { expectedElement }
     private var siteAddressButton: XCUIElement { app.buttons[ElementStringIDs.siteAddressButton] }
 
-    init(app: XCUIApplication = XCUIApplication()) throws {
+    public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetter: { $0.buttons[ElementStringIDs.continueButton] },
             app: app
         )
     }
 
-    func selectContinueWithWordPress() -> GetStartedScreen {
+    public func selectContinueWithWordPress() -> GetStartedScreen {
         continueButton.tap()
 
         return GetStartedScreen()
     }
 
-    func selectSiteAddress() -> LoginSiteAddressScreen {
+    public func selectSiteAddress() -> LoginSiteAddressScreen {
         siteAddressButton.tap()
 
         return LoginSiteAddressScreen()

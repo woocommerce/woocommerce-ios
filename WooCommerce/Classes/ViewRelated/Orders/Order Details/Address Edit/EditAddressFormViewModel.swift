@@ -193,6 +193,12 @@ final class EditAddressFormViewModel: ObservableObject {
     func hasPendingChanges() -> Bool {
         return navigationTrailingItem == .done(enabled: true)
     }
+
+    /// Track the flow cancel scenario.
+    ///
+    func userDidCancelFlow() {
+        analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCanceled(subject: self.analyticsFlowType()))
+    }
 }
 
 extension EditAddressFormViewModel {

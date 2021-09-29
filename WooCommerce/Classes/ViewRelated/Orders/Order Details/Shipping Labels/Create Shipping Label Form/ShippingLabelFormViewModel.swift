@@ -329,8 +329,14 @@ final class ShippingLabelFormViewModel {
 
             return selectedRate.rate.title + "\n" + price + shippingDays
         } else {
-            // TODO:
-            return ""
+            let ratesCount = String(format: Localization.selectedRatesCount, selectedRates.count)
+
+            let total = selectedRates.reduce(0, { $0 + $1.retailRate })
+            let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+            let price = currencyFormatter.formatAmount(Decimal(total)) ?? ""
+            let totalRate = String(format: Localization.totalRate, price)
+
+            return ratesCount + "\n" + totalRate
         }
     }
 
@@ -803,6 +809,10 @@ private extension ShippingLabelFormViewModel {
                                                            comment: "Singular format of number of business day in Shipping Labels > Carrier and Rates")
         static let businessDaysPlural = NSLocalizedString("%1$d business days",
                                                           comment: "Plural format of number of business days in Shipping Labels > Carrier and Rates")
+        static let selectedRatesCount = NSLocalizedString("%1$d rates selected",
+                                                          comment: "Number of rates selected in Shipping Labels > Carrier and Rates")
+        static let totalRate = NSLocalizedString("$1$@ total",
+                                                 comment: "Total value for the selected rates in Shipping Labels > Carrier and Rates")
         static let paymentMethodPlaceholder = NSLocalizedString("Add a new credit card",
                                                                 comment: "Placeholder in Shipping Label form for the Payment Method row.")
         static let paymentMethodLabel =

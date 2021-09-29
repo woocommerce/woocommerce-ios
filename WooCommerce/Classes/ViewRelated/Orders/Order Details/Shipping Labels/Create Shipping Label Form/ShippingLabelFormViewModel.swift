@@ -283,18 +283,32 @@ final class ShippingLabelFormViewModel {
     }
 
     /// Returns the body of the Package Details cell
-    /// TODO-4599: Update this for multi-package case.
     ///
     func getPackageDetailsBody() -> String {
-        guard let packagesResponse = packagesResponse,
-              let selectedPackage = selectedPackagesDetails.first else {
+        guard selectedPackagesDetails.isNotEmpty else {
             return Localization.packageDetailsPlaceholder
         }
 
-        let packageTitle = searchCustomPackage(id: selectedPackage.packageID)?.title ?? searchPredefinedPackage(id: selectedPackage.packageID)?.title ?? ""
+        let packageTitle: String
 
-        let formatter = WeightFormatter(weightUnit: packagesResponse.storeOptions.weightUnit)
-        let packageWeight = formatter.formatWeight(weight: selectedPackage.totalWeight)
+        if selectedPackagesDetails.count == 1,
+           let selectedPackage = selectedPackagesDetails.first {
+            packageTitle = searchCustomPackage(id: selectedPackage.packageID)?.title ?? searchPredefinedPackage(id: selectedPackage.packageID)?.title ?? ""
+        } else {
+            let itemCount = selectedPackagesDetails
+                .map { package -> Decimal in
+                    package.items.reduce(0, { $0 + $1.quantity })
+                }
+                .reduce(0, { $0 + $1 })
+                .intValue
+            packageTitle = String(format: Localization.packageItemCount, itemCount, selectedPackagesDetails.count)
+        }
+
+        let formatter = WeightFormatter(weightUnit: packagesResponse?.storeOptions.weightUnit ?? "")
+        let totalWeight = selectedPackagesDetails
+            .map { Double($0.totalWeight) ?? 0 }
+            .reduce(0, { $0 + $1 })
+        let packageWeight = formatter.formatWeight(weight: totalWeight)
 
         return packageTitle + "\n" + String.localizedStringWithFormat(Localization.totalPackageWeight, packageWeight)
     }
@@ -811,6 +825,7 @@ private extension ShippingLabelFormViewModel {
                                                                  comment: "Placeholder in Shipping Label form for the Package Details row.")
         static let totalPackageWeight = NSLocalizedString("Total package weight: %1$@",
                                                           comment: "Total package weight label in Shipping Label form. %1$@ is a placeholder for the weight")
+        static let packageItemCount = NSLocalizedString("%1$d items in %2$d packages", comment: "Total number of items and packages in Shipping Label form.")
         static let carrierAndRatesPlaceholder = NSLocalizedString("Select your shipping carrier and rates",
                                                                   comment: "Placeholder in Shipping Label form for the Carrier and Rates row.")
         static let businessDaySingular = NSLocalizedString("%1$d business day",

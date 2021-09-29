@@ -36,6 +36,10 @@ final class EditAddressFormViewModel: ObservableObject {
     ///
     private let stores: StoresManager
 
+    /// Analytics center.
+    ///
+    private let analytics: Analytics
+
     /// Store for publishers subscriptions
     ///
     private var subscriptions = Set<AnyCancellable>()
@@ -44,7 +48,8 @@ final class EditAddressFormViewModel: ObservableObject {
          type: AddressType,
          onOrderUpdate: ((Yosemite.Order) -> Void)? = nil,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.order = order
         self.type = type
         self.onOrderUpdate = onOrderUpdate
@@ -60,6 +65,7 @@ final class EditAddressFormViewModel: ObservableObject {
 
         self.storageManager = storageManager
         self.stores = stores
+        self.analytics = analytics
 
         // Listen only to the first emitted event.
         onLoadTrigger.first().sink { [weak self] in

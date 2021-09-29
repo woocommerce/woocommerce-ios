@@ -251,8 +251,9 @@ private final class WCPayTokenProvider: CardReaderConfigProvider {
     func fetchDefaultLocationID(completion: @escaping(String?, Error?) -> Void) {
         remote.loadDefaultReaderLocation(for: siteID) { result in
             switch result {
-            case .success(let location):
-                completion(location.id, nil)
+            case .success(let wcpayReaderLocation):
+                let readerLocation = wcpayReaderLocation.toReaderLocation(siteID: self.siteID)
+                completion(readerLocation.id, nil)
             case .failure(let error):
                 completion(nil, error)
             }

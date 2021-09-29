@@ -25,8 +25,8 @@ final class PrintShippingLabelViewController: UIViewController {
     ///
     var onAction: ((ActionType) -> Void)?
 
-    init(shippingLabel: ShippingLabel, printType: PrintShippingLabelCoordinator.PrintType) {
-        self.viewModel = PrintShippingLabelViewModel(shippingLabel: shippingLabel)
+    init(shippingLabels: [ShippingLabel], printType: PrintShippingLabelCoordinator.PrintType) {
+        self.viewModel = PrintShippingLabelViewModel(shippingLabels: shippingLabels)
         self.printType = printType
         super.init(nibName: nil, bundle: nil)
         self.rows = rowsToDisplay()

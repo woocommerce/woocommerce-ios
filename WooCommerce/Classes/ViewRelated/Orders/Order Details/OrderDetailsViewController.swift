@@ -676,6 +676,8 @@ private extension OrderDetailsViewController {
         let editAddressViewController = EditAddressHostingController(viewModel: viewModel)
         let navigationController = WooNavigationController(rootViewController: editAddressViewController)
         present(navigationController, animated: true, completion: nil)
+
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowStarted(subject: .shippingAddress))
     }
 
     @objc private func collectPayment(at: IndexPath) {

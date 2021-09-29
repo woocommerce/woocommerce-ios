@@ -43,14 +43,14 @@ final class AppSettingsStoreTests_CardReaderSettings: XCTestCase {
         super.tearDown()
     }
 
-    func test_loading_card_readers_without_previous_data_returns_empty_array() {
+    func test_loading_card_reader_without_previous_data_returns_nil() {
 
         let expectation = self.expectation(description: #function)
 
-        let loadAction = AppSettingsAction.loadCardReaders { result in
+        let loadAction = AppSettingsAction.loadCardReader { result in
             XCTAssertTrue(result.isSuccess)
-            if case .success(let readers) = result {
-                XCTAssertTrue(readers.isEmpty)
+            if case .success(let readerID) = result {
+                XCTAssertTrue(readerID == nil)
                 expectation.fulfill()
             }
         }
@@ -63,10 +63,10 @@ final class AppSettingsStoreTests_CardReaderSettings: XCTestCase {
 
         let expectation = self.expectation(description: #function)
 
-        let loadAction = AppSettingsAction.loadCardReaders { result in
+        let loadAction = AppSettingsAction.loadCardReader { result in
             XCTAssertTrue(result.isSuccess)
-            if case .success(let readers) = result {
-                XCTAssertTrue(readers.contains(TestConstants.mockReaderID))
+            if case .success(let readerID) = result {
+                XCTAssertTrue(readerID == TestConstants.mockReaderID)
                 expectation.fulfill()
             }
         }
@@ -84,15 +84,15 @@ final class AppSettingsStoreTests_CardReaderSettings: XCTestCase {
 
         let expectation = self.expectation(description: #function)
 
-        let loadAction = AppSettingsAction.loadCardReaders { result in
+        let loadAction = AppSettingsAction.loadCardReader { result in
             XCTAssertTrue(result.isSuccess)
-            if case .success(let readers) = result {
-                XCTAssertFalse(readers.contains(TestConstants.mockReaderID))
+            if case .success(let readerID) = result {
+                XCTAssertTrue(readerID == nil)
                 expectation.fulfill()
             }
         }
 
-        let forgetAction = AppSettingsAction.forgetCardReader(cardReaderID: TestConstants.mockReaderID, onCompletion: { result in
+        let forgetAction = AppSettingsAction.forgetCardReader(onCompletion: { result in
             XCTAssertTrue(result.isSuccess)
             self.subject.onAction(loadAction)
         })

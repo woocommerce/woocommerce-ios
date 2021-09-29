@@ -16,7 +16,7 @@ final class BillingInformationViewController: UIViewController {
 
     /// Order to be Fulfilled
     ///
-    private let order: Order
+    private var order: Order
 
     /// Allows editing of billing address
     ///
@@ -92,6 +92,19 @@ private extension BillingInformationViewController {
         for kind in headersAndFooters {
             tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
         }
+    }
+
+    /// Presents EditAddressForm modal view
+    ///
+    func editBillingAddress() {
+        let viewModel = EditAddressFormViewModel(order: order, type: .billing) { [weak self] updatedOrder in
+            self?.order = updatedOrder
+            self?.reloadSections()
+            self?.tableView.reloadData()
+        }
+        let editAddressViewController = EditAddressHostingController(viewModel: viewModel)
+        let navigationController = WooNavigationController(rootViewController: editAddressViewController)
+        present(navigationController, animated: true, completion: nil)
     }
 }
 
@@ -338,8 +351,8 @@ private extension BillingInformationViewController {
             NSLocalizedString("No address specified.",
                               comment: "Order details > customer info > billing information. This is where the address would normally display.")
 
-        cell.onEditTapped = editingEnabled ? {
-            print("Edit Billing Address Tapped")
+        cell.onEditTapped = editingEnabled ? { [weak self] in
+            self?.editBillingAddress()
         } : nil
         cell.editButtonAccessibilityLabel = NSLocalizedString(
             "Update Address",
@@ -437,6 +450,9 @@ private extension BillingInformationViewController {
             }
 
             let title = NSLocalizedString("Contact Details", comment: "Section header title for contact details in billing information")
+            guard rows.count != 0 else {
+                return nil
+            }
             return Section(title: title, secondaryTitle: nil, rows: rows)
         }()
 

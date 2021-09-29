@@ -1,7 +1,7 @@
 import UIKit
 import Gridicons
 
-/// A table view cell that containt an icon and a text view.
+/// A table view cell that contains an icon and a text view.
 ///
 final class TextViewTableViewCell: UITableViewCell {
     struct ViewModel {

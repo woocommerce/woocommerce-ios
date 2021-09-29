@@ -76,7 +76,7 @@ final class OrderDetailsViewController: UIViewController {
 
         return CardReaderConnectionController(
             forSiteID: siteID,
-            knownReadersProvider: CardReaderSettingsKnownReadersStoredList(),
+            knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
             alertsProvider: CardReaderSettingsAlerts()
         )
     }()
@@ -672,7 +672,7 @@ private extension OrderDetailsViewController {
     }
 
     func editShippingAddressTapped() {
-        let viewModel = EditAddressFormViewModel(order: viewModel.order)
+        let viewModel = EditAddressFormViewModel(order: viewModel.order, type: .shipping)
         let editAddressViewController = EditAddressHostingController(viewModel: viewModel)
         let navigationController = WooNavigationController(rootViewController: editAddressViewController)
         present(navigationController, animated: true, completion: nil)

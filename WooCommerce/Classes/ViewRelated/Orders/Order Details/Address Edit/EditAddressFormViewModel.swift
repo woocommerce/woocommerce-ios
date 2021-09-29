@@ -4,6 +4,19 @@ import Combine
 
 final class EditAddressFormViewModel: ObservableObject {
 
+    enum AddressType {
+        case shipping
+        case billing
+    }
+
+    /// Type of order address to edit
+    ///
+    let type: AddressType
+
+    /// Order update callback
+    ///
+    private let onOrderUpdate: ((Yosemite.Order) -> Void)?
+
     /// ResultsController for stored countries.
     ///
     private lazy var countriesResultsController: ResultsController<StorageCountry> = {
@@ -27,10 +40,24 @@ final class EditAddressFormViewModel: ObservableObject {
     ///
     private var subscriptions = Set<AnyCancellable>()
 
-
-    init(order: Yosemite.Order, storageManager: StorageManagerType = ServiceLocator.storageManager, stores: StoresManager = ServiceLocator.stores) {
+    init(order: Yosemite.Order,
+         type: AddressType,
+         onOrderUpdate: ((Yosemite.Order) -> Void)? = nil,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         stores: StoresManager = ServiceLocator.stores) {
         self.order = order
-        self.originalAddress = order.shippingAddress ?? .empty
+        self.type = type
+        self.onOrderUpdate = onOrderUpdate
+
+        let addressToEdit: Address?
+        switch type {
+        case .shipping:
+            addressToEdit = order.shippingAddress
+        case .billing:
+            addressToEdit = order.billingAddress
+        }
+        self.originalAddress = addressToEdit ?? .empty
+
         self.storageManager = storageManager
         self.stores = stores
 
@@ -38,7 +65,7 @@ final class EditAddressFormViewModel: ObservableObject {
         onLoadTrigger.first().sink { [weak self] in
             guard let self = self else { return }
             self.bindSyncTrigger()
-            self.bindSelectedCountryIntoFields()
+            self.bindSelectedCountryAndStateIntoFields()
             self.bindNavigationTrailingItemPublisher()
 
             self.fetchStoredCountriesAndTriggerSyncIfNeeded()
@@ -53,6 +80,10 @@ final class EditAddressFormViewModel: ObservableObject {
     /// Current selected country.
     ///
     @Published private var selectedCountry: Yosemite.Country?
+
+    /// Current selected state.
+    ///
+    @Published private var selectedState: Yosemite.StateOfACountry?
 
     /// Address form fields
     ///
@@ -79,6 +110,11 @@ final class EditAddressFormViewModel: ObservableObject {
     ///
     @Published private(set) var showPlaceholders: Bool = false
 
+    /// Defines the current notice that should be shown.
+    /// Defaults to `nil`.
+    ///
+    @Published var presentNotice: Notice?
+
     /// Creates a view model to be used when selecting a country
     ///
     func createCountryViewModel() -> CountrySelectorViewModel {
@@ -89,16 +125,53 @@ final class EditAddressFormViewModel: ObservableObject {
         return CountrySelectorViewModel(countries: countriesResultsController.fetchedObjects, selected: selectedCountryBinding)
     }
 
+    /// Creates a view model to be used when selecting a state
+    ///
+    func createStateViewModel() -> StateSelectorViewModel {
+        let selectedStateBinding = Binding(
+            get: { self.selectedState },
+            set: { self.selectedState = $0 }
+        )
+
+        // Sort states from the selected country
+        let states = selectedCountry?.states.sorted { $0.name < $1.name } ?? []
+        return StateSelectorViewModel(states: states, selected: selectedStateBinding)
+    }
+
     /// Update the address remotely and invoke a completion block when finished
     ///
     func updateRemoteAddress(onFinish: @escaping (Bool) -> Void) {
-        let updatedAddress = fields.toAddress(selectedCountry: selectedCountry)
-        let modifiedOrder = order.copy(shippingAddress: updatedAddress)
-        let action = OrderAction.updateOrder(siteID: order.siteID, order: modifiedOrder, fields: [.shippingAddress]) { [weak self] result in
+        let updatedAddress = fields.toAddress(country: selectedCountry, state: selectedState)
+        let orderFields: [OrderUpdateField]
+
+        let modifiedOrder: Yosemite.Order
+        switch type {
+        case .shipping where fields.useAsToggle:
+            modifiedOrder = order.copy(billingAddress: updatedAddress, shippingAddress: updatedAddress)
+            orderFields = [.shippingAddress, .billingAddress]
+        case .shipping:
+            modifiedOrder = order.copy(shippingAddress: updatedAddress)
+            orderFields = [.shippingAddress]
+        case .billing where fields.useAsToggle:
+            modifiedOrder = order.copy(billingAddress: updatedAddress, shippingAddress: updatedAddress)
+            orderFields = [.billingAddress, .shippingAddress]
+        case .billing:
+            modifiedOrder = order.copy(billingAddress: updatedAddress)
+            orderFields = [.billingAddress]
+        }
+
+        let action = OrderAction.updateOrder(siteID: order.siteID, order: modifiedOrder, fields: orderFields) { [weak self] result in
             guard let self = self else { return }
 
             self.performingNetworkRequest.send(false)
-            // TODO: add success/failure notice
+            switch result {
+            case .success(let updatedOrder):
+                self.onOrderUpdate?(updatedOrder)
+                self.presentNotice = .success
+            case .failure(let error):
+                DDLogError("⛔️ Error updating order: \(error)")
+                self.presentNotice = .error(.unableToUpdateAddress)
+            }
             onFinish(result.isSuccess)
         }
 
@@ -113,6 +186,29 @@ extension EditAddressFormViewModel {
     enum NavigationItem: Equatable {
         case done(enabled: Bool)
         case loading
+    }
+
+    /// Representation of possible notices that can be displayed
+    enum Notice: Equatable {
+        case success
+        case error(EditAddressError)
+    }
+
+    /// Representation of possible errors that can happen
+    enum EditAddressError: LocalizedError {
+        case unableToLoadCountries
+        case unableToUpdateAddress
+
+        var errorDescription: String? {
+            switch self {
+            case .unableToLoadCountries:
+                return NSLocalizedString("Unable to fetch country information, please try again later.",
+                                         comment: "Error notice when we fail to load country information in the edit address screen.")
+            case .unableToUpdateAddress:
+                return NSLocalizedString("Unable to update address, please try again later.",
+                                         comment: "Error notice when we fail to update an address in the edit address screen.")
+            }
+        }
     }
 
     /// Type to hold values from all the form fields
@@ -134,6 +230,8 @@ extension EditAddressFormViewModel {
         var country: String = ""
         var state: String = ""
 
+        var useAsToggle: Bool = false
+
         mutating func update(with address: Address) {
             firstName = address.firstName
             lastName = address.lastName
@@ -145,24 +243,23 @@ extension EditAddressFormViewModel {
             address2 = address.address2 ?? ""
             city = address.city
             postcode = address.postcode
-            state = address.state
         }
 
-        mutating func update(with selectedCountry: Yosemite.Country?) {
-            country = selectedCountry?.name ?? country
+        mutating func update(with country: Yosemite.Country?, and state: Yosemite.StateOfACountry?) {
+            self.country = country?.name ?? self.country
+            self.state = state?.name ?? self.state
         }
 
-
-        func toAddress(selectedCountry: Yosemite.Country?) -> Yosemite.Address {
+        func toAddress(country: Yosemite.Country?, state: Yosemite.StateOfACountry?) -> Yosemite.Address {
             Address(firstName: firstName,
                     lastName: lastName,
                     company: company.isEmpty ? nil : company,
                     address1: address1,
                     address2: address2.isEmpty ? nil : address2,
                     city: city,
-                    state: state,
+                    state: state?.code ?? self.state,
                     postcode: postcode,
-                    country: selectedCountry?.code ?? country,
+                    country: country?.code ?? self.country,
                     phone: phone.isEmpty ? nil : phone,
                     email: email.isEmpty ? nil : email)
         }
@@ -170,32 +267,50 @@ extension EditAddressFormViewModel {
 }
 
 private extension EditAddressFormViewModel {
-    /// Set initial values from `originalAddress` using the stored countries to compute the current selected country.
+    /// Set initial values from `originalAddress` using the stored countries to compute the current selected country & state.
     ///
     func setFieldsInitialValues() {
         selectedCountry = countriesResultsController.fetchedObjects.first { $0.code == originalAddress.country }
+        selectedState = selectedCountry?.states.first { $0.code == originalAddress.state }
         fields.update(with: originalAddress)
     }
 
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
     func bindNavigationTrailingItemPublisher() {
-        Publishers.CombineLatest3($fields, performingNetworkRequest, $selectedCountry)
-            .map { [originalAddress] fields, performingNetworkRequest, selectedCountry -> NavigationItem in
+        Publishers.CombineLatest4($fields, performingNetworkRequest, $selectedCountry, $selectedState)
+            .map { [originalAddress] fields, performingNetworkRequest, selectedCountry, selectedState -> NavigationItem in
                 guard !performingNetworkRequest else {
                     return .loading
                 }
-                return .done(enabled: originalAddress != fields.toAddress(selectedCountry: selectedCountry))
+                return .done(enabled: originalAddress != fields.toAddress(country: selectedCountry, state: selectedState))
             }
             .assign(to: &$navigationTrailingItem)
     }
 
-    /// Update published fields when the selected country is updated.
+    /// Update published fields when the selected country and state is updated.
+    /// If the current selected state does not exists within the selected country, then the state is nilled.
     ///
-    func bindSelectedCountryIntoFields() {
+    func bindSelectedCountryAndStateIntoFields() {
+
+        typealias StatePublisher = AnyPublisher<Yosemite.StateOfACountry?, Never>
+
+        // When a country is selected, check if the current state is a valid state for that country, otherwise `nil` it.
         $selectedCountry
-            .sink { [weak self] newCountry in
-                self?.fields.update(with: newCountry)
+            .withLatestFrom($selectedState)
+            .flatMap { country, state -> StatePublisher in
+                guard let country = country, let state = state, country.states.contains(state) else {
+                    return StatePublisher.init(Empty())
+                }
+                return StatePublisher.init(Just(state))
+            }
+            .assign(to: &$selectedState)
+
+
+        // Update fields with new selections.
+        Publishers.CombineLatest($selectedCountry, $selectedState)
+            .sink { [weak self] country, state in
+                self?.fields.update(with: country, and: state)
             }
             .store(in: &subscriptions)
     }
@@ -220,13 +335,22 @@ private extension EditAddressFormViewModel {
     /// Sync countries when requested. Defines the `showPlaceholderState` value depending if countries are being synced or not.
     ///
     func bindSyncTrigger() {
+
+        // Sends an error notice presentation request and hides the publisher error.
+        let syncCountries = makeSyncCountriesFuture()
+            .catch { [weak self] error -> AnyPublisher<Void, Never> in
+                DDLogError("⛔️ Failed to load countries with: \(error)")
+                self?.presentNotice = .error(error)
+                return Just(()).eraseToAnyPublisher()
+            }
+
+        // Perform `syncCountries` when a sync trigger is requested.
         syncCountriesTrigger
             .handleEvents(receiveOutput: { // Set `showPlaceholders` to `true` before initiating sync.
                 self.showPlaceholders = true // I could not find a way to assign this using combine operators. :-(
             })
             .map { // Sync countries
-                self.makeSyncCountriesFuture()
-                    .replaceError(with: ()) // TODO: Handle errors
+                syncCountries
             }
             .switchToLatest()
             .map { _ in // Set `showPlaceholders` to `false` after sync is done.
@@ -237,12 +361,14 @@ private extension EditAddressFormViewModel {
 
     /// Creates a publisher that syncs countries into our storage layer.
     ///
-    func makeSyncCountriesFuture() -> AnyPublisher<Void, Error> {
-        Future<Void, Error> { [weak self] promise in
+    func makeSyncCountriesFuture() -> AnyPublisher<Void, EditAddressError> {
+        Future<Void, EditAddressError> { [weak self] promise in
             guard let self = self else { return }
 
             let action = DataAction.synchronizeCountries(siteID: self.order.siteID) { result in
-                let newResult = result.map { _ in } // Hides the result success type because we don't need it.
+                let newResult = result
+                    .map { _ in } // Hides the result success type because we don't need it.
+                    .mapError { _ in EditAddressError.unableToLoadCountries }
                 promise(newResult)
             }
             self.stores.dispatch(action)

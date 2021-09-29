@@ -25,7 +25,7 @@ public protocol ShippingLabelRemoteProtocol {
                               originAddress: ShippingLabelAddress,
                               destinationAddress: ShippingLabelAddress,
                               packages: [ShippingLabelPackageSelected],
-                              completion: @escaping (Result<ShippingLabelCarriersAndRates, Error>) -> Void)
+                              completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void)
     func loadShippingLabelAccountSettings(siteID: Int64,
                                           completion: @escaping (Result<ShippingLabelAccountSettings, Error>) -> Void)
     func updateShippingLabelAccountSettings(siteID: Int64,
@@ -181,7 +181,7 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
                                      originAddress: ShippingLabelAddress,
                                      destinationAddress: ShippingLabelAddress,
                                      packages: [ShippingLabelPackageSelected],
-                                     completion: @escaping (Result<ShippingLabelCarriersAndRates, Error>) -> Void) {
+                                     completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void) {
         do {
             let parameters: [String: Any] = [
                 ParameterKey.originAddress: try originAddress.toDictionary(),

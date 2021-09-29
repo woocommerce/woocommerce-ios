@@ -158,7 +158,9 @@ private extension PrintShippingLabelCoordinator {
     /// Show customs form printing if separate customs form is available
     ///
     func showCustomsFormPrintingIfNeeded() {
-        let urls = shippingLabels.compactMap { $0.commercialInvoiceURL }
+        let urls = shippingLabels
+            .compactMap { $0.commercialInvoiceURL }
+            .filter { $0.isNotEmpty }
         guard urls.isNotEmpty, printType == .print else {
             return
         }

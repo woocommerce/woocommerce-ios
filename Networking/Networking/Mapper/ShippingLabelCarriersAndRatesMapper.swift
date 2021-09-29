@@ -36,10 +36,10 @@ private struct ShippingLabelDefaultBoxEnvelope: Decodable {
     let boxes: [ShippingLabelCarriersAndRates]
 
     init(from decoder: Decoder) throws {
-        
+
         let container = try decoder.singleValueContainer()
         let dictionary = try container.decode([String: ShippingLabelCarriersAndRates].self)
-        
+
         boxes = dictionary.map { key, value in
             return ShippingLabelCarriersAndRates(packageID: key, defaultRates: value.defaultRates, signatureRequired: value.signatureRequired, adultSignatureRequired: value.adultSignatureRequired)
         }

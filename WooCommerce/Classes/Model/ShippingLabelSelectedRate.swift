@@ -2,13 +2,13 @@ import Foundation
 import Yosemite
 
 struct ShippingLabelSelectedRate {
-    /// Rate for the selected carrier
+    /// Basic rate for the selected carrier without additional service.
     let rate: ShippingLabelCarrierRate
 
-    /// Rate for signature if any
+    /// Rate for signature if any.
     let signatureRate: ShippingLabelCarrierRate?
 
-    /// Rate for adult signature if any
+    /// Rate for adult signature if any.
     let adultSignatureRate: ShippingLabelCarrierRate?
 }
 

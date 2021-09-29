@@ -13,7 +13,7 @@ final class MockShippingLabelRemote {
 
     private struct PrintResultKey: Hashable {
         let siteID: Int64
-        let shippingLabelID: Int64
+        let shippingLabelIDs: [Int64]
         let paperSize: String
     }
 
@@ -109,10 +109,10 @@ final class MockShippingLabelRemote {
 
     /// Set the value passed to the `completion` block if `printShippingLabel` is called.
     func whenPrintingShippingLabel(siteID: Int64,
-                                   shippingLabelID: Int64,
+                                   shippingLabelIDs: [Int64],
                                    paperSize: String,
                                    thenReturn result: Result<ShippingLabelPrintData, Error>) {
-        let key = PrintResultKey(siteID: siteID, shippingLabelID: shippingLabelID, paperSize: paperSize)
+        let key = PrintResultKey(siteID: siteID, shippingLabelIDs: shippingLabelIDs, paperSize: paperSize)
         printResults[key] = result
     }
 
@@ -220,13 +220,13 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
     }
 
     func printShippingLabel(siteID: Int64,
-                            shippingLabelID: Int64,
+                            shippingLabelIDs: [Int64],
                             paperSize: ShippingLabelPaperSize,
                             completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
 
-            let key = PrintResultKey(siteID: siteID, shippingLabelID: shippingLabelID, paperSize: paperSize.rawValue)
+            let key = PrintResultKey(siteID: siteID, shippingLabelIDs: shippingLabelIDs, paperSize: paperSize.rawValue)
             if let result = self.printResults[key] {
                 completion(result)
             } else {

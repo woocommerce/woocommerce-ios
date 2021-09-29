@@ -11,7 +11,7 @@ final class PrintShippingLabelViewModel {
     /// Observable selected paper size.
     @Published private(set) var selectedPaperSize: ShippingLabelPaperSize?
 
-    private let shippingLabels: [ShippingLabel]
+    let shippingLabels: [ShippingLabel]
     private let stores: StoresManager
 
     init(shippingLabels: [ShippingLabel], stores: StoresManager = ServiceLocator.stores) {

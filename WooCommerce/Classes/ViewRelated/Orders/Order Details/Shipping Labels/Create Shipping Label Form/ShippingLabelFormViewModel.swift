@@ -606,8 +606,7 @@ private extension ShippingLabelFormViewModel {
         return nil
     }
 
-    /// Temporary solution for creating default customs forms.
-    /// When multi-package support is available, we should create separate form for each package ID.
+    /// Create customs forms based on `selectedPackageDetails` and default values for HS Tariff number and origin country.
     ///
     private func createDefaultCustomsFormsIfNeeded() -> [ShippingLabelCustomsForm] {
         guard customsFormRequired, selectedPackagesDetails.isNotEmpty else {

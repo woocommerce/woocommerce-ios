@@ -141,8 +141,10 @@ struct EditAddressForm: View {
                                          text: $viewModel.fields.email,
                                          symbol: nil,
                                          keyboardType: .emailAddress)
+                        .renderedIf(viewModel.showEmailField)
                     Divider()
                         .padding(.leading, Constants.dividerPadding)
+                        .renderedIf(viewModel.showEmailField)
                     TitleAndTextFieldRow(title: Localization.phoneField,
                                          placeholder: "",
                                          text: $viewModel.fields.phone,

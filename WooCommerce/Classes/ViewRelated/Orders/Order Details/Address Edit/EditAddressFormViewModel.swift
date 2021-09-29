@@ -115,6 +115,17 @@ final class EditAddressFormViewModel: ObservableObject {
     ///
     @Published var presentNotice: Notice?
 
+    /// Defines if the email field should be shown
+    ///
+    var showEmailField: Bool {
+        switch type {
+        case .shipping:
+            return false
+        case .billing:
+            return true
+        }
+    }
+
     /// Creates a view model to be used when selecting a country
     ///
     func createCountryViewModel() -> CountrySelectorViewModel {

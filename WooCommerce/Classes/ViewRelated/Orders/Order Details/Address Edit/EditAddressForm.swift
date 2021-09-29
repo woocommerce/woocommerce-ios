@@ -33,10 +33,18 @@ final class EditAddressHostingController: UIHostingController<EditAddressForm> {
         }
 
         // Set up notices
-        bindNoticeIntent(of: viewModel)
+        bindNoticeIntent()
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
 
         // Set presentation delegate to track the user dismiss flow event
-        presentationController?.delegate = self
+        if let navigationController = navigationController {
+            navigationController.presentationController?.delegate = self
+        } else {
+            presentationController?.delegate = self
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -45,8 +53,8 @@ final class EditAddressHostingController: UIHostingController<EditAddressForm> {
 
     /// Observe the present notice intent and set it back after presented.
     ///
-    private func bindNoticeIntent(of viewModel: EditAddressFormViewModel) {
-        viewModel.$presentNotice
+    private func bindNoticeIntent() {
+        rootView.viewModel.$presentNotice
             .compactMap { $0 }
             .sink { [weak self] notice in
 
@@ -66,7 +74,7 @@ final class EditAddressHostingController: UIHostingController<EditAddressForm> {
                 }
 
                 // Nullify the presentation intent.
-                viewModel.presentNotice = nil
+                self?.rootView.viewModel.presentNotice = nil
             }
             .store(in: &subscriptions)
     }
@@ -75,8 +83,14 @@ final class EditAddressHostingController: UIHostingController<EditAddressForm> {
 /// Intercepts to the dismiss drag gesture.
 ///
 extension EditAddressHostingController: UIAdaptivePresentationControllerDelegate {
-    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        // track dimiss gesture
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        !rootView.viewModel.hasPendingChanges()
+    }
+
+    func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self) { [weak self] in
+            self?.dismiss(animated: true)
+        }
     }
 }
 
@@ -88,7 +102,7 @@ struct EditAddressForm: View {
     ///
     var dismiss: (() -> Void) = {}
 
-    @ObservedObject private var viewModel: EditAddressFormViewModel
+    @ObservedObject private(set) var viewModel: EditAddressFormViewModel
 
     /// Set it to `true` to present the country selector.
     ///

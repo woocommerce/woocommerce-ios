@@ -259,15 +259,15 @@ extension EditAddressFormViewModel {
         func toAddress(country: Yosemite.Country?, state: Yosemite.StateOfACountry?) -> Yosemite.Address {
             Address(firstName: firstName,
                     lastName: lastName,
-                    company: company.isEmpty ? nil : company,
+                    company: company,
                     address1: address1,
-                    address2: address2.isEmpty ? nil : address2,
+                    address2: address2,
                     city: city,
                     state: state?.code ?? self.state,
                     postcode: postcode,
                     country: country?.code ?? self.country,
-                    phone: phone.isEmpty ? nil : phone,
-                    email: email.isEmpty ? nil : email)
+                    phone: phone,
+                    email: email.isEmpty ? nil : email) // Core has a validation on email where we are not allowed to send an empty email.
         }
     }
 }

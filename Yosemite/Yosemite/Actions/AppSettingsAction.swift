@@ -106,16 +106,14 @@ public enum AppSettingsAction: Action {
     ///
     case rememberCardReader(cardReaderID: String, onCompletion: (Result<Void, Error>) -> Void)
 
-    /// Forget the given card reader (i.e. automatic reconnection is no longer desired)
-    /// where `cardReaderID` is a String e.g. "CHB204909005931"
+    /// Forget any remembered card reader (i.e. automatic reconnection is no longer desired)
     ///
-    case forgetCardReader(cardReaderID: String, onCompletion: (Result<Void, Error>) -> Void)
+    case forgetCardReader(onCompletion: (Result<Void, Error>) -> Void)
 
-    /// Loads the list of all known (remembered) readers (i.e. card readers that, if discovered, should be reconnected automatically)
-    /// E.g.  ["CHB204909005931"]
-    /// Note: will pass [] to the completion if there are no known readers
+    /// Loads the most recently membered reader, if any (i.e. a reader that should be reconnected to automatically)
+    /// E.g.  "CHB204909005931"
     ///
-    case loadCardReaders(onCompletion: (Result<[String], Error>) -> Void)
+    case loadCardReader(onCompletion: (Result<String?, Error>) -> Void)
 
     /// Loads the persisted eligibility error information.
     ///

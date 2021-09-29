@@ -1,6 +1,6 @@
 import XCTest
 
-let navBackButton = XCUIApplication().navigationBars.element(boundBy: 0).buttons.element(boundBy: 0)
+public let navBackButton = XCUIApplication().navigationBars.element(boundBy: 0).buttons.element(boundBy: 0)
 
 extension XCUIElement {
     /**
@@ -25,19 +25,6 @@ extension XCUIElement {
 }
 
 extension XCTestCase {
-
-//    public func setUpTestSuite() {
-//        super.setUp()
-//
-//        // In UI tests it is usually best to stop immediately when a failure occurs.
-//        continueAfterFailure = false
-//
-//        let app = XCUIApplication()
-//        app.activate()
-//
-//        // Media permissions alert handler
-//        systemAlertHandler(alertTitle: "“WordPress” Would Like to Access Your Photos", alertButton: "OK")
-//    }
 
     public func takeScreenshotOfFailedTest() {
         if let failureCount = testRun?.failureCount, failureCount > 0 {
@@ -119,7 +106,7 @@ extension XCTestCase {
 
 extension XCUIElement {
 
-    func scroll(byDeltaX deltaX: CGFloat, deltaY: CGFloat) {
+    public func scroll(byDeltaX deltaX: CGFloat, deltaY: CGFloat) {
 
         let startCoordinate = self.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
         let destination = startCoordinate.withOffset(CGVector(dx: deltaX, dy: deltaY * -1))

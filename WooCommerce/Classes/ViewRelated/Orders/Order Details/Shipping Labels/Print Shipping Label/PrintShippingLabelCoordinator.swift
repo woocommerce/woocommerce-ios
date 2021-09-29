@@ -136,7 +136,7 @@ private extension PrintShippingLabelCoordinator {
     func requestDocumentForPrinting(paperSize: ShippingLabelPaperSize, completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
         analytics.track(.shippingLabelReprintRequested)
         let action = ShippingLabelAction.printShippingLabel(siteID: shippingLabel.siteID,
-                                                            shippingLabelID: shippingLabel.shippingLabelID,
+                                                            shippingLabelIDs: [shippingLabel.shippingLabelID],
                                                             paperSize: paperSize) { result in
             completion(result)
         }

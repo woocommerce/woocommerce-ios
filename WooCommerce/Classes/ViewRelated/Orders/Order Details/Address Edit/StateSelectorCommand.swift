@@ -7,26 +7,26 @@ final class StateSelectorCommand: ObservableListSelectorCommand {
     typealias Model = StateOfACountry
     typealias Cell = BasicTableViewCell
 
-    /// Original array of countries.
+    /// Original array of states.
     ///
     private let states: [StateOfACountry]
 
     /// Data to display
     ///
-    private(set) var data: [StateOfACountry]
+    @Published private(set) var data: [StateOfACountry]
 
-    /// Current selected country
+    /// Current selected state
     ///
-    private(set) var selected: StateOfACountry?
+    @Binding private(set) var selected: StateOfACountry?
 
     /// Navigation bar title
     ///
     let navigationBarTitle: String? = ""
 
-    init(states: [StateOfACountry] = temporaryStates, selected: StateOfACountry? = nil) {
+    init(states: [StateOfACountry], selected: Binding<StateOfACountry?>) {
         self.states = states
         self.data = states
-        self.selected = selected
+        self._selected = selected
     }
 
     func handleSelectedChange(selected: StateOfACountry, viewController: ViewController) {
@@ -50,17 +50,4 @@ final class StateSelectorCommand: ObservableListSelectorCommand {
 
         data = states.filter { $0.name.localizedCaseInsensitiveContains(term) }
     }
-}
-
-// MARK: Temporary Methods
-extension StateSelectorCommand {
-
-    // Supported states will come from the view model later.
-    //
-    private static let temporaryStates: [StateOfACountry] = {
-        return Locale.isoRegionCodes.map { regionCode in
-            let name = Locale.current.localizedString(forRegionCode: regionCode) ?? ""
-            return StateOfACountry(code: regionCode, name: name)
-        }
-    }()
 }

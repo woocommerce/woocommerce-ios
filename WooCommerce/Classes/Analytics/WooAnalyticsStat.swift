@@ -241,6 +241,8 @@ public enum WooAnalyticsStat: String {
     case shippingLabelAddPackageTapped = "shipping_label_add_package_tapped"
     case shippingLabelPackageAddedSuccessfully = "shipping_label_package_added_successfully"
     case shippingLabelAddPackageFailed = "shipping_label_add_package_failed"
+    case shippingLabelAddPaymentMethodTapped = "shipping_label_add_payment_method_tapped"
+    case shippingLabelPaymentMethodAdded = "shipping_label_payment_method_added"
 
     // MARK: Receipt Events
     //

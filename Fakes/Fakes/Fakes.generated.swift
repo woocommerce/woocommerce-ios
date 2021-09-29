@@ -154,6 +154,7 @@ extension Media {
             mediaID: .fake(),
             date: .fake(),
             fileExtension: .fake(),
+            filename: .fake(),
             mimeType: .fake(),
             src: .fake(),
             thumbnailURL: .fake(),

@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 
 /// Subclass to set Woo styling. Removes back button text on managed view controllers.
@@ -38,6 +39,16 @@ class WooNavigationController: UINavigationController {
 ///
 private class WooNavigationControllerDelegate: NSObject, UINavigationControllerDelegate {
 
+    private let connectivityObserver: ConnectivityObserver
+    private var currentController: UIViewController?
+    private var subscriptions: Set<AnyCancellable> = []
+
+    init(connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver) {
+        self.connectivityObserver = connectivityObserver
+        super.init()
+        observeConnectivity()
+    }
+
     /// Children delegate, all events will be forwarded to this object
     ///
     weak var forwardDelegate: UINavigationControllerDelegate?
@@ -45,6 +56,8 @@ private class WooNavigationControllerDelegate: NSObject, UINavigationControllerD
     /// Configures the back button for the managed `ViewController` and forwards the event to the children delegate.
     ///
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        currentController = viewController
+        configureOfflineBanner(for: viewController)
         configureBackButton(for: viewController)
         forwardDelegate?.navigationController?(navigationController, willShow: viewController, animated: animated)
     }
@@ -74,5 +87,71 @@ private extension WooNavigationControllerDelegate {
     ///
     func configureBackButton(for viewController: UIViewController) {
         viewController.removeNavigationBackBarButtonText()
+    }
+}
+
+// MARK: Offline banner configuration
+private extension WooNavigationControllerDelegate {
+
+    /// Observes changes in status of connectivity and updates the offline banner in current view controller accordingly.
+    ///
+    func observeConnectivity() {
+        connectivityObserver.statusPublisher
+            .sink { [weak self] status in
+                guard let self = self, let currentController = self.currentController else { return }
+                self.configureOfflineBanner(for: currentController, status: status)
+            }
+            .store(in: &subscriptions)
+    }
+
+    /// Shows or hides offline banner based on the input connectivity status and
+    /// whether the view controller supports showing the banner.
+    ///
+    func configureOfflineBanner(for viewController: UIViewController, status: ConnectivityStatus? = nil) {
+        if viewController.shouldShowOfflineBanner {
+            setOfflineBannerWhenNoConnection(for: viewController, status: status ?? connectivityObserver.currentStatus)
+        } else {
+            removeOfflineBanner(for: viewController)
+        }
+    }
+
+    /// Adds offline banner at the bottom of the view controller.
+    ///
+    func setOfflineBannerWhenNoConnection(for viewController: UIViewController, status: ConnectivityStatus) {
+        // We can only show it when we are sure we can't reach the internet
+        guard status == .notReachable else {
+            return removeOfflineBanner(for: viewController)
+        }
+
+        // Only add banner view if it's not already added.
+        guard let navigationController = viewController.navigationController,
+              let view = viewController.view,
+              view.subviews.first(where: { $0 is OfflineBannerView }) == nil else {
+            return
+        }
+
+        let offlineBannerView = OfflineBannerView(frame: .zero)
+        offlineBannerView.backgroundColor = .gray
+        offlineBannerView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(offlineBannerView)
+
+        let extraBottomSpace = viewController.hidesBottomBarWhenPushed ? navigationController.view.safeAreaInsets.bottom : 0
+        NSLayoutConstraint.activate([
+            offlineBannerView.heightAnchor.constraint(equalToConstant: OfflineBannerView.height),
+            offlineBannerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            offlineBannerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            offlineBannerView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -extraBottomSpace)
+        ])
+        viewController.additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: OfflineBannerView.height, right: 0)
+    }
+
+    /// Removes the offline banner from the view controller if it exists.
+    ///
+    func removeOfflineBanner(for viewController: UIViewController) {
+        guard let offlineBanner = viewController.view.subviews.first(where: { $0 is OfflineBannerView }) else {
+            return
+        }
+        offlineBanner.removeFromSuperview()
+        viewController.additionalSafeAreaInsets = .zero
     }
 }

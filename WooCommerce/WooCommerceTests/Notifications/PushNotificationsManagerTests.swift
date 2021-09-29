@@ -217,7 +217,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         manager.registerDeviceToken(with: tokenAsData, defaultStoreID: Sample.defaultStoreID)
 
-        guard case let .registerDevice(_, _, _, storeID, _) = storesManager.receivedActions.first as! NotificationAction else {
+        guard case let .registerDevice(_, _, _, storeID, _, _) = storesManager.receivedActions.first as! NotificationAction else {
             XCTFail()
             return
         }

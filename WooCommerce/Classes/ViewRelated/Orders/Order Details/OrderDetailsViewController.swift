@@ -76,7 +76,7 @@ final class OrderDetailsViewController: UIViewController {
 
         return CardReaderConnectionController(
             forSiteID: siteID,
-            knownReadersProvider: CardReaderSettingsKnownReadersStoredList(),
+            knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
             alertsProvider: CardReaderSettingsAlerts()
         )
     }()
@@ -121,6 +121,10 @@ final class OrderDetailsViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.updateHeaderHeight()
+    }
+
+    override var shouldShowOfflineBanner: Bool {
+        return true
     }
 }
 
@@ -668,9 +672,10 @@ private extension OrderDetailsViewController {
     }
 
     func editShippingAddressTapped() {
-        let viewModel = EditAddressFormViewModel(siteID: viewModel.order.siteID, address: viewModel.order.shippingAddress)
+        let viewModel = EditAddressFormViewModel(order: viewModel.order, type: .shipping)
         let editAddressViewController = EditAddressHostingController(viewModel: viewModel)
-        show(editAddressViewController, sender: self)
+        let navigationController = WooNavigationController(rootViewController: editAddressViewController)
+        present(navigationController, animated: true, completion: nil)
     }
 
     @objc private func collectPayment(at: IndexPath) {

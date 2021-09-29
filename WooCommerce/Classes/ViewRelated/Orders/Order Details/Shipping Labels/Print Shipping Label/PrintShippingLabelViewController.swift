@@ -30,6 +30,9 @@ final class PrintShippingLabelViewController: UIViewController {
         self.printType = printType
         super.init(nibName: nil, bundle: nil)
         self.rows = rowsToDisplay()
+
+        // Select the first paper size option available
+        viewModel.updateSelectedPaperSize(viewModel.paperSizeOptions.first)
     }
 
     required init?(coder: NSCoder) {

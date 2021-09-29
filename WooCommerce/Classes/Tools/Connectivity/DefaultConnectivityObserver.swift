@@ -1,4 +1,4 @@
-import Foundation
+import Combine
 import Network
 
 final class DefaultConnectivityObserver: ConnectivityObserver {
@@ -8,30 +8,25 @@ final class DefaultConnectivityObserver: ConnectivityObserver {
     private let networkMonitor: NetworkMonitoring
     private let observingQueue: DispatchQueue = .global(qos: .background)
 
-    var isConnectivityAvailable: Bool {
-        if case .reachable = connectivityStatus(from: networkMonitor.currentNetwork) {
-            return true
-        }
-        return false
+    @Published private(set) var currentStatus: ConnectivityStatus = .unknown
+
+    var statusPublisher: AnyPublisher<ConnectivityStatus, Never> {
+        $currentStatus.eraseToAnyPublisher()
     }
 
     init(networkMonitor: NetworkMonitoring = NWPathMonitor()) {
         self.networkMonitor = networkMonitor
         startObserving()
+        networkMonitor.networkUpdateHandler = { [weak self] path in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.currentStatus = self.connectivityStatus(from: path)
+            }
+        }
     }
 
     func startObserving() {
         networkMonitor.start(queue: observingQueue)
-    }
-
-    func updateListener(_ listener: @escaping (ConnectivityStatus) -> Void) {
-        networkMonitor.networkUpdateHandler = { [weak self] path in
-            guard let self = self else { return }
-            let connectivityStatus = self.connectivityStatus(from: path)
-            DispatchQueue.main.async {
-                listener(connectivityStatus)
-            }
-        }
     }
 
     func stopObserving() {
@@ -65,8 +60,6 @@ final class DefaultConnectivityObserver: ConnectivityObserver {
 
 /// Proxy protocol for mocking `NWPathMonitor`.
 protocol NetworkMonitoring: AnyObject {
-    var currentNetwork: NetworkMonitorable { get }
-
     /// A handler that receives network updates.
     var networkUpdateHandler: ((NetworkMonitorable) -> Void)? { get set }
 
@@ -88,10 +81,6 @@ protocol NetworkMonitorable {
 
 extension NWPath: NetworkMonitorable {}
 extension NWPathMonitor: NetworkMonitoring {
-    var currentNetwork: NetworkMonitorable {
-        currentPath
-    }
-
     var networkUpdateHandler: ((NetworkMonitorable) -> Void)? {
         get {
             let closure: ((NetworkMonitorable) -> Void)? = {

@@ -88,6 +88,13 @@ final class ShippingLabelFormViewModel {
     ///
     var shippingLabelAccountSettings: ShippingLabelAccountSettings?
 
+    /// Shipping Label Account Settings ResultsController
+    ///
+    private lazy var accountSettingsResultsController: ResultsController<StorageShippingLabelAccountSettings> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        return ResultsController<StorageShippingLabelAccountSettings>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
     /// Shipping Label Purchase
     ///
     private(set) var purchasedShippingLabels: [ShippingLabel] = []
@@ -166,6 +173,7 @@ final class ShippingLabelFormViewModel {
         syncShippingLabelAccountSettings()
         syncPackageDetails()
         fetchCountries()
+        monitorAccountSettingsResultsController()
     }
 
     func handleOriginAddressValueChanges(address: ShippingLabelAddress?, validated: Bool) {
@@ -566,14 +574,13 @@ private extension ShippingLabelFormViewModel {
 
     // Search the custom package based on the id
     //
-    private func searchCustomPackage(id: String?) -> ShippingLabelCustomPackage? {
-        guard let packagesResponse = packagesResponse,
-              let packageID = id else {
+    private func searchCustomPackage(id: String) -> ShippingLabelCustomPackage? {
+        guard let packagesResponse = packagesResponse else {
             return nil
         }
 
         for customPackage in packagesResponse.customPackages {
-            if customPackage.title == packageID {
+            if customPackage.title == id {
                 return customPackage
             }
         }
@@ -583,15 +590,14 @@ private extension ShippingLabelFormViewModel {
 
     // Search the predefined package based on the id
     //
-    private func searchPredefinedPackage(id: String?) -> ShippingLabelPredefinedPackage? {
-        guard let packagesResponse = packagesResponse,
-              let packageID = id else {
+    private func searchPredefinedPackage(id: String) -> ShippingLabelPredefinedPackage? {
+        guard let packagesResponse = packagesResponse else {
             return nil
         }
 
         for option in packagesResponse.predefinedOptions {
             for predefinedPackage in option.predefinedPackages {
-                if predefinedPackage.id == packageID {
+                if predefinedPackage.id == id {
                     return predefinedPackage
                 }
             }
@@ -600,8 +606,7 @@ private extension ShippingLabelFormViewModel {
         return nil
     }
 
-    /// Temporary solution for creating default customs forms.
-    /// When multi-package support is available, we should create separate form for each package ID.
+    /// Create customs forms based on `selectedPackageDetails` and default values for HS Tariff number and origin country.
     ///
     private func createDefaultCustomsFormsIfNeeded() -> [ShippingLabelCustomsForm] {
         guard customsFormRequired, selectedPackagesDetails.isNotEmpty else {
@@ -610,24 +615,49 @@ private extension ShippingLabelFormViewModel {
 
         return selectedPackagesDetails.map { package -> ShippingLabelCustomsForm in
             let packageName: String = {
-                guard let response = packagesResponse else {
-                    return ""
+                guard !package.isOriginalPackaging else {
+                    return package.items.first?.name ?? ""
                 }
 
-                if let customPackage = response.customPackages.first(where: { $0.title == package.packageID }) {
+                if let customPackage = searchCustomPackage(id: package.packageID) {
                     return customPackage.title
                 }
 
-                for option in response.predefinedOptions {
-                    if let package = option.predefinedPackages.first(where: { $0.id == package.packageID }) {
-                        return package.title
-                    }
+                if let predefinedPackage = searchPredefinedPackage(id: package.packageID) {
+                    return predefinedPackage.title
                 }
 
                 return ""
             }()
-            return ShippingLabelCustomsForm(packageID: package.packageID, packageName: packageName, productIDs: package.productIDs)
+            let items: [ShippingLabelCustomsForm.Item] = package.items.map { item in
+                .init(description: item.name,
+                      quantity: item.quantity,
+                      value: item.value,
+                      weight: item.weight,
+                      hsTariffNumber: "",
+                      originCountry: SiteAddress().countryCode,
+                      productID: item.productOrVariationID)
+            }
+            return ShippingLabelCustomsForm(packageID: package.packageID, packageName: packageName, items: items)
         }
+    }
+
+    /// Shipping Label Account Settings ResultsController monitoring
+    ///
+    private func monitorAccountSettingsResultsController() {
+        accountSettingsResultsController.onDidChangeContent = { [weak self] in
+            guard let self = self, let fetchedAccountSettings = self.accountSettingsResultsController.fetchedObjects.first else { return }
+
+            self.handlePaymentMethodValueChanges(settings: fetchedAccountSettings, editable: true)
+        }
+
+        accountSettingsResultsController.onDidResetContent = { [weak self] in
+            guard let self = self, let fetchedAccountSettings = self.accountSettingsResultsController.fetchedObjects.first else { return }
+
+            self.handlePaymentMethodValueChanges(settings: fetchedAccountSettings, editable: true)
+        }
+
+        try? accountSettingsResultsController.performFetch()
     }
 }
 
@@ -744,7 +774,7 @@ extension ShippingLabelFormViewModel {
             }
             return ShippingLabelPackagePurchase(package: package,
                                                 rate: selectedRate,
-                                                productIDs: packageInfo.productIDs,
+                                                productIDs: packageInfo.items.map { $0.productOrVariationID },
                                                 customsForm: package.customsForm)
         }
 

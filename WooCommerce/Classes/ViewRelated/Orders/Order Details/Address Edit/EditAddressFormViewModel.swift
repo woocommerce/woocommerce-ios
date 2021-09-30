@@ -134,6 +134,12 @@ final class EditAddressFormViewModel: ObservableObject {
         }
     }
 
+    /// Defines if the state field should be defined as a list selector.
+    ///
+    var showStateFieldAsSelector: Bool {
+        selectedCountry?.states.isNotEmpty ?? false
+    }
+
     /// Creates a view model to be used when selecting a country
     ///
     func createCountryViewModel() -> CountrySelectorViewModel {

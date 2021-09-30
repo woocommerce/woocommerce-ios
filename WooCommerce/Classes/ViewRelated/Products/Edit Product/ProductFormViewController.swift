@@ -359,23 +359,22 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 break
             case .variations(let row):
                 ServiceLocator.analytics.track(.productDetailViewVariationsTapped)
-                guard let originalProduct = viewModel.originalProductModel as? EditableProductModel, row.isActionable else {
+                guard row.isActionable else {
                     return
                 }
-                let variationsViewModel = ProductVariationsViewModel(formType: viewModel.formType)
-                let variationsViewController = ProductVariationsViewController(initialViewController: self,
-                                                                               viewModel: variationsViewModel,
-                                                                               product: originalProduct.product)
-                variationsViewController.onProductUpdate = { [viewModel] updatedProduct in
-                    viewModel.updateProductVariations(from: updatedProduct)
+                showVariations()
+            case .noPriceWarning(let viewModel):
+                ServiceLocator.analytics.track(.productDetailViewVariationsTapped)
+                guard viewModel.isActionable else {
+                    return
                 }
-                show(variationsViewController, sender: self)
+                showVariations()
             case .attributes(_, let isEditable):
                 guard isEditable else {
                     return
                 }
                 editAttributes()
-            case .status, .noPriceWarning:
+            case .status:
                 break
             }
         }
@@ -1406,6 +1405,24 @@ private extension ProductFormViewController {
         let viewModel = ProductAddOnsListViewModel(addOns: product.product.addOns)
         let viewController = ProductAddOnsListViewController(viewModel: viewModel)
         show(viewController, sender: self)
+    }
+}
+
+// MARK: Action - Show Product Variations
+//
+private extension ProductFormViewController {
+    func showVariations() {
+        guard let originalProduct = viewModel.originalProductModel as? EditableProductModel else {
+            return
+        }
+        let variationsViewModel = ProductVariationsViewModel(formType: viewModel.formType)
+        let variationsViewController = ProductVariationsViewController(initialViewController: self,
+                                                                       viewModel: variationsViewModel,
+                                                                       product: originalProduct.product)
+        variationsViewController.onProductUpdate = { [viewModel] updatedProduct in
+            viewModel.updateProductVariations(from: updatedProduct)
+        }
+        show(variationsViewController, sender: self)
     }
 }
 

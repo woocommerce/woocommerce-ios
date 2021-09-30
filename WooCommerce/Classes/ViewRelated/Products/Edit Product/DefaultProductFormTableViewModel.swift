@@ -408,7 +408,9 @@ private extension DefaultProductFormTableViewModel {
     func noPriceWarningRow() -> ProductFormSection.SettingsRow.WarningViewModel {
         let icon = UIImage.infoOutlineImage
         let title = Localization.noPriceWarningTitle
-        return ProductFormSection.SettingsRow.WarningViewModel(icon: icon, title: title)
+        return ProductFormSection.SettingsRow.WarningViewModel(icon: icon,
+                                                               title: title,
+                                                               isActionable: true)
     }
 
     func productVariationsAttributesRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {

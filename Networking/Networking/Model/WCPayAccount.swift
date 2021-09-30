@@ -55,7 +55,8 @@ public struct WCPayAccount: Decodable {
         let defaultCurrency = try currencyContainer.decode(String.self, forKey: .defaultCurrency)
         let supportedCurrencies = try currencyContainer.decode([String].self, forKey: .supported)
         let country = try container.decode(String.self, forKey: .country)
-        let cardPresentEligible = try container.decodeIfPresent(Bool.self, forKey: .cardPresentEligible) ?? false
+        /// Ignore the state of the In-Person Payments Beta flag (`.cardPresentEligible`). Allow any site. See #5030
+        /// let cardPresentEligible = try container.decodeIfPresent(Bool.self, forKey: .cardPresentEligible) ?? false
 
         self.init(
             status: status,
@@ -66,7 +67,7 @@ public struct WCPayAccount: Decodable {
             defaultCurrency: defaultCurrency,
             supportedCurrencies: supportedCurrencies,
             country: country,
-            isCardPresentEligible: cardPresentEligible
+            isCardPresentEligible: true
         )
     }
 }

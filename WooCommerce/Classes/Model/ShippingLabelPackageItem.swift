@@ -16,6 +16,9 @@ struct ShippingLabelPackageItem: Equatable {
     /// Quantity of the product or variation
     let quantity: Decimal
 
+    /// Value of the product or variation
+    let value: Double
+
     /// Dimensions of the product or variation
     let dimensions: ProductDimensions
 
@@ -33,11 +36,13 @@ extension ShippingLabelPackageItem {
         self.weight = copy.weight
         self.dimensions = copy.dimensions
         self.attributes = copy.attributes
+        self.value = copy.value
     }
 
     init?(orderItem: OrderItem, products: [Product], productVariations: [ProductVariation]) {
         self.name = orderItem.name
         self.quantity = orderItem.quantity
+        self.value = orderItem.price.doubleValue
         self.attributes = orderItem.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) }
 
         let isVariation = orderItem.variationID > 0

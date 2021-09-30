@@ -4,25 +4,39 @@ struct InPersonPaymentsLearnMore: View {
     @Environment(\.customOpenURL) var customOpenURL
 
     var body: some View {
-        HStack(alignment: .center, spacing: 20) {
-            Image(uiImage: .infoOutlineImage)
-                .resizable()
-                .foregroundColor(Color(.textSubtle))
-                .frame(width: iconSize, height: iconSize)
-            AttributedText(Localization.learnMore)
-                .font(.subheadline)
-                .attributedTextForegroundColor(Color(.textSubtle))
-                .attributedTextLinkColor(Color(.textLink))
-                .customOpenURL { url in
-                    ServiceLocator.analytics.track(.cardPresentOnboardingLearnMoreTapped)
-                    customOpenURL?(url)
-                }
-        }
+        Link(destination: Constants.learnMoreURL!) {
+            Label {
+                Text(Localization.learnMore)
+                    .font(.subheadline)
+                    .foregroundColor(Color(.accent))
+            } icon: {
+                Image(uiImage: .infoOutlineImage)
+                    .resizable()
+                    .foregroundColor(Color(.textSubtle))
+                    .frame(width: iconSize, height: iconSize)
+            }.labelStyle(VerticallyCenteredLabelStyle())
+        }.onOpenURL(perform: { url in
+            ServiceLocator.analytics.track(.cardPresentOnboardingLearnMoreTapped)
+            customOpenURL?(url)
+        })
     }
 
     var iconSize: CGFloat {
         UIFontMetrics(forTextStyle: .subheadline).scaledValue(for: 20)
     }
+
+    struct VerticallyCenteredLabelStyle: LabelStyle {
+        func makeBody(configuration: Configuration) -> some View {
+            HStack(alignment: .center, spacing: 20) {
+                configuration.icon
+                configuration.title
+            }
+        }
+    }
+}
+
+private enum Constants {
+    static let learnMoreURL = URL(string: "https://woocommerce.com/payments")
 }
 
 private enum Localization {
@@ -36,24 +50,10 @@ private enum Localization {
         comment: "Generic error message when In-Person Payments is unavailable"
     )
 
-    static let learnMore: NSAttributedString = {
-        let learnMoreText = NSLocalizedString(
-            "<a href=\"https://woocommerce.com/payments\">Learn more</a> about accepting payments with your mobile device and ordering card readers",
-            comment: "A label prompting users to learn more about card readers with an embedded hyperlink"
-        )
-
-        let learnMoreAttributes: [NSAttributedString.Key: Any] = [
-            .font: StyleManager.footerLabelFont,
-            .foregroundColor: UIColor.textSubtle
-        ]
-
-        let learnMoreAttrText = NSMutableAttributedString()
-        learnMoreAttrText.append(learnMoreText.htmlToAttributedString)
-        let range = NSRange(location: 0, length: learnMoreAttrText.length)
-        learnMoreAttrText.addAttributes(learnMoreAttributes, range: range)
-
-        return learnMoreAttrText
-    }()
+    static let learnMore = NSLocalizedString(
+        "Tap to learn more about accepting payments with your mobile device and ordering card readers",
+        comment: "A label prompting users to learn more about card readers"
+    )
 }
 
 struct InPersonPaymentsLearnMore_Previews: PreviewProvider {

@@ -110,6 +110,11 @@ final class EditAddressFormViewModel: ObservableObject {
     ///
     @Published private(set) var showPlaceholders: Bool = false
 
+    /// Defines the current notice that should be shown.
+    /// Defaults to `nil`.
+    ///
+    @Published var presentNotice: Notice?
+
     /// Creates a view model to be used when selecting a country
     ///
     func createCountryViewModel() -> CountrySelectorViewModel {
@@ -137,33 +142,47 @@ final class EditAddressFormViewModel: ObservableObject {
     ///
     func updateRemoteAddress(onFinish: @escaping (Bool) -> Void) {
         let updatedAddress = fields.toAddress(country: selectedCountry, state: selectedState)
+        let orderFields: [OrderUpdateField]
 
         let modifiedOrder: Yosemite.Order
         switch type {
+        case .shipping where fields.useAsToggle:
+            modifiedOrder = order.copy(billingAddress: updatedAddress, shippingAddress: updatedAddress)
+            orderFields = [.shippingAddress, .billingAddress]
         case .shipping:
             modifiedOrder = order.copy(shippingAddress: updatedAddress)
+            orderFields = [.shippingAddress]
+        case .billing where fields.useAsToggle:
+            modifiedOrder = order.copy(billingAddress: updatedAddress, shippingAddress: updatedAddress)
+            orderFields = [.billingAddress, .shippingAddress]
         case .billing:
             modifiedOrder = order.copy(billingAddress: updatedAddress)
+            orderFields = [.billingAddress]
         }
 
-        let action = OrderAction.updateOrder(siteID: order.siteID,
-                                             order: modifiedOrder,
-                                             fields: [type == .shipping ? .shippingAddress : .billingAddress]) { [weak self] result in
+        let action = OrderAction.updateOrder(siteID: order.siteID, order: modifiedOrder, fields: orderFields) { [weak self] result in
             guard let self = self else { return }
 
             self.performingNetworkRequest.send(false)
-            // TODO: add success/failure notice
             switch result {
             case .success(let updatedOrder):
                 self.onOrderUpdate?(updatedOrder)
-            case .failure:
-                break
+                self.presentNotice = .success
+            case .failure(let error):
+                DDLogError("⛔️ Error updating order: \(error)")
+                self.presentNotice = .error(.unableToUpdateAddress)
             }
             onFinish(result.isSuccess)
         }
 
         performingNetworkRequest.send(true)
         stores.dispatch(action)
+    }
+
+    /// Returns `true` if there are changes pending to commit. `False` otherwise.
+    ///
+    func hasPendingChanges() -> Bool {
+        return navigationTrailingItem == .done(enabled: true)
     }
 }
 
@@ -173,6 +192,29 @@ extension EditAddressFormViewModel {
     enum NavigationItem: Equatable {
         case done(enabled: Bool)
         case loading
+    }
+
+    /// Representation of possible notices that can be displayed
+    enum Notice: Equatable {
+        case success
+        case error(EditAddressError)
+    }
+
+    /// Representation of possible errors that can happen
+    enum EditAddressError: LocalizedError {
+        case unableToLoadCountries
+        case unableToUpdateAddress
+
+        var errorDescription: String? {
+            switch self {
+            case .unableToLoadCountries:
+                return NSLocalizedString("Unable to fetch country information, please try again later.",
+                                         comment: "Error notice when we fail to load country information in the edit address screen.")
+            case .unableToUpdateAddress:
+                return NSLocalizedString("Unable to update address, please try again later.",
+                                         comment: "Error notice when we fail to update an address in the edit address screen.")
+            }
+        }
     }
 
     /// Type to hold values from all the form fields
@@ -193,6 +235,8 @@ extension EditAddressFormViewModel {
         var postcode: String = ""
         var country: String = ""
         var state: String = ""
+
+        var useAsToggle: Bool = false
 
         mutating func update(with address: Address) {
             firstName = address.firstName
@@ -297,13 +341,22 @@ private extension EditAddressFormViewModel {
     /// Sync countries when requested. Defines the `showPlaceholderState` value depending if countries are being synced or not.
     ///
     func bindSyncTrigger() {
+
+        // Sends an error notice presentation request and hides the publisher error.
+        let syncCountries = makeSyncCountriesFuture()
+            .catch { [weak self] error -> AnyPublisher<Void, Never> in
+                DDLogError("⛔️ Failed to load countries with: \(error)")
+                self?.presentNotice = .error(error)
+                return Just(()).eraseToAnyPublisher()
+            }
+
+        // Perform `syncCountries` when a sync trigger is requested.
         syncCountriesTrigger
             .handleEvents(receiveOutput: { // Set `showPlaceholders` to `true` before initiating sync.
                 self.showPlaceholders = true // I could not find a way to assign this using combine operators. :-(
             })
             .map { // Sync countries
-                self.makeSyncCountriesFuture()
-                    .replaceError(with: ()) // TODO: Handle errors
+                syncCountries
             }
             .switchToLatest()
             .map { _ in // Set `showPlaceholders` to `false` after sync is done.
@@ -314,12 +367,14 @@ private extension EditAddressFormViewModel {
 
     /// Creates a publisher that syncs countries into our storage layer.
     ///
-    func makeSyncCountriesFuture() -> AnyPublisher<Void, Error> {
-        Future<Void, Error> { [weak self] promise in
+    func makeSyncCountriesFuture() -> AnyPublisher<Void, EditAddressError> {
+        Future<Void, EditAddressError> { [weak self] promise in
             guard let self = self else { return }
 
             let action = DataAction.synchronizeCountries(siteID: self.order.siteID) { result in
-                let newResult = result.map { _ in } // Hides the result success type because we don't need it.
+                let newResult = result
+                    .map { _ in } // Hides the result success type because we don't need it.
+                    .mapError { _ in EditAddressError.unableToLoadCountries }
                 promise(newResult)
             }
             self.stores.dispatch(action)

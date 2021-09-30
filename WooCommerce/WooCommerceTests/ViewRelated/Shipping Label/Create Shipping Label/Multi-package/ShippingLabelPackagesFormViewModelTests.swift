@@ -180,12 +180,14 @@ extension ShippingLabelPackageItem {
                      name: String = "",
                      weight: Double = 1,
                      quantity: Decimal = 1,
+                     value: Double = 10,
                      dimensions: Yosemite.ProductDimensions = .fake(),
                      attributes: [VariationAttributeViewModel] = []) -> ShippingLabelPackageItem {
         ShippingLabelPackageItem(productOrVariationID: id,
                                  name: name,
                                  weight: weight,
                                  quantity: quantity,
+                                 value: value,
                                  dimensions: dimensions,
                                  attributes: attributes)
     }

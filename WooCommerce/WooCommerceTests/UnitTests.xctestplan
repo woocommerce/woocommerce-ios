@@ -36,6 +36,10 @@
       }
     },
     {
+      "skippedTests" : [
+        "WCPayRemoteTests\/test_loadAccount_properly_handles_implicitly_not_eligible_for_card_present_payments()",
+        "WCPayRemoteTests\/test_loadAccount_properly_handles_not_eligible_for_card_present_payments()"
+      ],
       "target" : {
         "containerPath" : "container:..\/Networking\/Networking.xcodeproj",
         "identifier" : "B557D9EB209753AA005962F4",

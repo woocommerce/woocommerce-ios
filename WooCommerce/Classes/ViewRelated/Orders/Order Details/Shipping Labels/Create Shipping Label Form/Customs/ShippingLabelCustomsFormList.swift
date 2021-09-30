@@ -28,14 +28,17 @@ struct ShippingLabelCustomsFormList: View {
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         }
         .navigationTitle(Localization.navigationTitle)
-        .navigationBarItems(trailing: Button(action: {
-            onCompletion(viewModel.validatedCustomsForms)
-            presentation.wrappedValue.dismiss()
-            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "customs_complete"])
-        }, label: {
-            Text(Localization.doneButton)
-        }).disabled(!viewModel.doneButtonEnabled)
-        )
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    onCompletion(viewModel.validatedCustomsForms)
+                    presentation.wrappedValue.dismiss()
+                    ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "customs_complete"])
+                }, label: {
+                    Text(Localization.doneButton)
+                }).disabled(!viewModel.doneButtonEnabled)
+            }
+        }
     }
 }
 

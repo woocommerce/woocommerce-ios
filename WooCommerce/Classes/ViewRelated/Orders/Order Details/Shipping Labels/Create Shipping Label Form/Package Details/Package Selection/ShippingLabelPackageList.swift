@@ -54,12 +54,16 @@ struct ShippingLabelPackageList: View {
                 .ignoresSafeArea(.container, edges: .horizontal)
                 .navigationTitle(Localization.title)
                 .navigationBarTitleDisplayMode(.inline)
-                .navigationBarItems(trailing: Button(action: {
-                    viewModel.confirmPackageSelection()
-                    presentation.wrappedValue.dismiss()
-                }, label: {
-                    Text(Localization.doneButton)
-                }))
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            viewModel.confirmPackageSelection()
+                            presentation.wrappedValue.dismiss()
+                        }, label: {
+                            Text(Localization.doneButton)
+                        })
+                    }
+                }
 
                 if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsAddCustomPackages) {
                     NavigationLink(destination: ShippingLabelAddNewPackage(viewModel: viewModel.addNewPackageViewModel),

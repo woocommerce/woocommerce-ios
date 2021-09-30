@@ -30,15 +30,19 @@ struct ShippingLabelPackagesForm: View {
                         buttons: viewModel.moveItemActionSheetButtons)
         })
         .navigationTitle(Localization.title)
-        .navigationBarItems(trailing: Button(action: {
-            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow,
-                                           withProperties: ["state": "packages_selected"])
-            viewModel.confirmPackageSelection()
-            presentation.wrappedValue.dismiss()
-        }, label: {
-            Text(Localization.doneButton)
-        })
-        .disabled(!viewModel.doneButtonEnabled))
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    ServiceLocator.analytics.track(.shippingLabelPurchaseFlow,
+                                                   withProperties: ["state": "packages_selected"])
+                    viewModel.confirmPackageSelection()
+                    presentation.wrappedValue.dismiss()
+                }, label: {
+                    Text(Localization.doneButton)
+                })
+                .disabled(!viewModel.doneButtonEnabled)
+            }
+        }
     }
 }
 

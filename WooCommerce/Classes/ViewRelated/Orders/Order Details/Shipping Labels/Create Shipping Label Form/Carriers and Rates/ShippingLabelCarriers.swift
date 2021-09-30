@@ -66,16 +66,20 @@ struct ShippingLabelCarriers: View {
             }
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
             .navigationTitle(Localization.titleView)
-            .navigationBarItems(trailing: Button(action: {
-                onCompletion(viewModel.getSelectedRates().selectedRate,
-                             viewModel.getSelectedRates().selectedSignatureRate,
-                             viewModel.getSelectedRates().selectedAdultSignatureRate)
-                ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "carrier_rates_selected"])
-                presentation.wrappedValue.dismiss()
-            }, label: {
-                Text(Localization.doneButton)
-            })
-            .disabled(!viewModel.isDoneButtonEnabled()))
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        onCompletion(viewModel.getSelectedRates().selectedRate,
+                                     viewModel.getSelectedRates().selectedSignatureRate,
+                                     viewModel.getSelectedRates().selectedAdultSignatureRate)
+                        ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "carrier_rates_selected"])
+                        presentation.wrappedValue.dismiss()
+                    }, label: {
+                        Text(Localization.doneButton)
+                    })
+                    .disabled(!viewModel.isDoneButtonEnabled())
+                }
+            }
         }
     }
 

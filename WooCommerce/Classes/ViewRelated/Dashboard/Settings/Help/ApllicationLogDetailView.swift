@@ -37,20 +37,23 @@ struct ApplicationLogDetailView: View {
                 },
                 alignment: .bottomTrailing)
         }
-        .navigationBarItems(
-            trailing: Button(
-                action: {
-                    viewModel.shareSheetVisible.toggle()
-                }, label: {
-                    Image(systemName: "square.and.arrow.up")
-                })
-                .sharePopover(isPresented: $viewModel.shareSheetVisible) {
-                    ShareSheet(
-                        activityItems: viewModel.activityItems,
-                        excludedActivityTypes: Array(viewModel.excludedActivityTypes)
-                    )
-                }
-        )
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(
+                    action: {
+                        viewModel.shareSheetVisible.toggle()
+                    }, label: {
+                        Image(systemName: "square.and.arrow.up")
+                            .accentColor(Color(.accent))
+                    })
+                    .sharePopover(isPresented: $viewModel.shareSheetVisible) {
+                        ShareSheet(
+                            activityItems: viewModel.activityItems,
+                            excludedActivityTypes: Array(viewModel.excludedActivityTypes)
+                        )
+                    }
+            }
+        }
     }
 
     func scrollToBottomButton(_ action: @escaping () -> Void) -> some View {

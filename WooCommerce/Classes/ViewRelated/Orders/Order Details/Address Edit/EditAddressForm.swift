@@ -225,13 +225,15 @@ struct EditAddressForm: View {
         }
         .navigationTitle(viewTitle)
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarItems(trailing: navigationBarTrailingItem())
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(Localization.close, action: {
                     dismiss()
                     viewModel.userDidCancelFlow()
                 })
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                navigationBarTrailingItem()
             }
         }
         .redacted(reason: viewModel.showPlaceholders ? .placeholder : [])

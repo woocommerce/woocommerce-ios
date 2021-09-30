@@ -60,7 +60,7 @@ struct SelectionList<T: Hashable>: View {
                 .navigationTitle(title)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar(content: {
-                    ToolbarItem(placement: .navigationBarTrailing) {
+                    ToolbarItem(placement: .confirmationAction) {
                         Button(action: {
                             presentation.wrappedValue.dismiss()
                         }, label: {

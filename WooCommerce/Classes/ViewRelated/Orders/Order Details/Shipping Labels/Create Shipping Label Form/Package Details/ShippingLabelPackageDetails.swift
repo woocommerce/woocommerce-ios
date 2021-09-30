@@ -76,7 +76,7 @@ struct ShippingLabelPackageDetails: View {
         }
         .navigationTitle(Localization.title)
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .confirmationAction) {
                 Button(action: {
                     ServiceLocator.analytics.track(.shippingLabelPurchaseFlow,
                                                    withProperties: ["state": "packages_selected"])

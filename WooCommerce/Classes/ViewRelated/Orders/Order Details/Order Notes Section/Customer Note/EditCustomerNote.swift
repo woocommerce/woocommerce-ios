@@ -87,13 +87,13 @@ struct EditCustomerNote: View {
                 .navigationTitle(Localization.title)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
+                    ToolbarItem(placement: .cancellationAction) {
                         Button(Localization.cancel, action: {
                             viewModel.userDidCancelFlow()
                             dismiss()
                         })
                     }
-                    ToolbarItem(placement: .navigationBarTrailing) {
+                    ToolbarItem(placement: .confirmationAction) {
                         navigationBarTrailingItem()
                     }
                 }

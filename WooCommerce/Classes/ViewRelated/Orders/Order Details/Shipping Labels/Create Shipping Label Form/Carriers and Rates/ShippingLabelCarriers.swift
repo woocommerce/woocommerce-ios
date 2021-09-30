@@ -67,7 +67,7 @@ struct ShippingLabelCarriers: View {
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
             .navigationTitle(Localization.titleView)
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     Button(action: {
                         onCompletion(viewModel.getSelectedRates().selectedRate,
                                      viewModel.getSelectedRates().selectedSignatureRate,

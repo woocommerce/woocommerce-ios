@@ -29,7 +29,7 @@ struct ShippingLabelCustomsFormList: View {
         }
         .navigationTitle(Localization.navigationTitle)
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .confirmationAction) {
                 Button(action: {
                     onCompletion(viewModel.validatedCustomsForms)
                     presentation.wrappedValue.dismiss()

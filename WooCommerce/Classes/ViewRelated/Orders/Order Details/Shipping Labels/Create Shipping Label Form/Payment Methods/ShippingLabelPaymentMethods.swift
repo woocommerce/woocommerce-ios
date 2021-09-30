@@ -116,7 +116,7 @@ struct ShippingLabelPaymentMethods: View {
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
             .navigationBarTitle(Localization.navigationBarTitle)
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     Button(action: {
                         viewModel.updateShippingLabelAccountSettings { newSettings in
                             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "payment_method_selected"])
@@ -150,7 +150,7 @@ struct ShippingLabelPaymentMethods: View {
             .navigationTitle(Localization.paymentMethodWebviewTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .confirmationAction) {
                     Button(action: {
                         showingAddPaymentWebView = false
                     }, label: {

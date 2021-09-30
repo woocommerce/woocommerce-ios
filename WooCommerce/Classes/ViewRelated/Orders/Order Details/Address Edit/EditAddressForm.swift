@@ -226,13 +226,13 @@ struct EditAddressForm: View {
         .navigationTitle(viewTitle)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
+            ToolbarItem(placement: .cancellationAction) {
                 Button(Localization.close, action: {
                     dismiss()
                     viewModel.userDidCancelFlow()
                 })
             }
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .confirmationAction) {
                 navigationBarTrailingItem()
             }
         }

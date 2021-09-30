@@ -55,7 +55,7 @@ struct ShippingLabelPackageList: View {
                 .navigationTitle(Localization.title)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
+                    ToolbarItem(placement: .confirmationAction) {
                         Button(action: {
                             viewModel.confirmPackageSelection()
                             presentation.wrappedValue.dismiss()

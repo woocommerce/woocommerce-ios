@@ -8,7 +8,7 @@ struct MinimalNavigationBarBackButton: ViewModifier {
         content
             .navigationBarBackButtonHidden(true)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .cancellationAction) {
                     Button {
                         presentation.wrappedValue.dismiss()
                     } label: {

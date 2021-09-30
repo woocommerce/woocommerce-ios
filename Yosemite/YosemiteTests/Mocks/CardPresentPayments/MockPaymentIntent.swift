@@ -7,7 +7,7 @@ struct MockPaymentIntent {
                       created: Date(),
                       amount: 100,
                       currency: "usd",
-                      metadata: nil,
+                      metadata: mockMetadata(),
                       charges: mockCharges())
     }
 }
@@ -51,5 +51,15 @@ private extension MockPaymentIntent {
                        terminalVerificationResults: "verification_result",
                        transactionStatusInformation: "transaction_status_info",
                        accountType: "account_type")
+    }
+
+    static func mockMetadata() -> [String: String] {
+        PaymentIntent.initMetadata(store: "Store Name",
+                                   customerName: "Customer Name",
+                                   customerEmail: "customer@example.com",
+                                   siteURL: "https://store.example.com",
+                                   orderID: 1920,
+                                   orderKey: "wc_order_0000000000000",
+                                   paymentType: .single)
     }
 }

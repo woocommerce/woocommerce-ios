@@ -10,10 +10,14 @@ public extension PaymentIntent {
             return nil
         }
 
+        let orderID = metadata?[CardPresentReceiptParameters.MetadataKeys.orderID]
+            .flatMap { Int64($0) }
+
         return CardPresentReceiptParameters(amount: amount,
                                             currency: currency,
                                             date: created,
                                             storeName: metadata?[CardPresentReceiptParameters.MetadataKeys.store],
-                                            cardDetails: cardDetails)
+                                            cardDetails: cardDetails,
+                                            orderID: orderID)
     }
 }

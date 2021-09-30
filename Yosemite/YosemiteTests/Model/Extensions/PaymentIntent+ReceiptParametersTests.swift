@@ -18,4 +18,16 @@ final class PaymentIntent_ReceiptParametersTests: XCTestCase {
 
         XCTAssertEqual(receiptParameters?.cardDetails, cardDetails)
     }
+
+    func test_receipt_parameters_includes_store_from_intent_metadata() {
+        let intent = MockPaymentIntent.mock()
+
+        XCTAssertEqual(intent.receiptParameters()?.storeName, "Store Name")
+    }
+
+    func test_receipt_parameters_includes_orderID_from_intent_metadata() {
+        let intent = MockPaymentIntent.mock()
+
+        XCTAssertEqual(intent.receiptParameters()?.orderID, 1920)
+    }
 }

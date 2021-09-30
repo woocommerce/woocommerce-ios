@@ -15,8 +15,8 @@ public final class SingleOrderScreen: BaseScreen {
     }
 
     @discardableResult
-    public func goBackToOrdersScreen() -> OrdersScreen {
+    public func goBackToOrdersScreen() throws -> OrdersScreen {
         pop()
-        return OrdersScreen()
+        return try OrdersScreen()
     }
 }

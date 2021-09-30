@@ -1,31 +1,35 @@
+import ScreenObject
 import XCTest
 
-public final class OrdersScreen: BaseScreen {
-
-    struct ElementStringIDs {
-        static let searchButton = "order-search-button"
-        static let filterButton = "order-filter-button"
-    }
+public final class OrdersScreen: ScreenObject {
 
     public let tabBar = TabNavComponent()
-    private let searchButton: XCUIElement
-    private let filterButton: XCUIElement
 
-    static var isVisible: Bool {
-        let searchButton = XCUIApplication().buttons[ElementStringIDs.searchButton]
-        return searchButton.exists && searchButton.isHittable
+    private let searchButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["order-search-button"]
     }
 
-    init() {
-        searchButton = XCUIApplication().buttons[ElementStringIDs.searchButton]
-        filterButton = XCUIApplication().buttons[ElementStringIDs.filterButton]
+    private var searchButton: XCUIElement { searchButtonGetter(app) }
 
-        super.init(element: searchButton)
+    // TODO: There's only one usage of this and it can be replaced with a screen instantiation
+    static var isVisible: Bool {
+        (try? OrdersScreen().isLoaded) ?? false
+    }
+
+    init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+            expectedElementGetters: [
+                searchButtonGetter,
+                // swiftlint:disable:next opening_braces
+                { $0.buttons["order-filter-button"] }
+            ],
+            app: app
+        )
     }
 
     @discardableResult
     public func selectOrder(atIndex index: Int) -> SingleOrderScreen {
-        XCUIApplication().tables.cells.element(boundBy: index).tap()
+        app.tables.cells.element(boundBy: index).tap()
         return SingleOrderScreen()
     }
 

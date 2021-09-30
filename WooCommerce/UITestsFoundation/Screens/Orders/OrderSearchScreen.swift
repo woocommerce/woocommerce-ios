@@ -20,8 +20,8 @@ public final class OrderSearchScreen: BaseScreen {
     }
 
     @discardableResult
-    public func cancel() -> OrdersScreen {
+    public func cancel() throws -> OrdersScreen {
         cancelButton.tap()
-        return OrdersScreen()
+        return try OrdersScreen()
     }
 }

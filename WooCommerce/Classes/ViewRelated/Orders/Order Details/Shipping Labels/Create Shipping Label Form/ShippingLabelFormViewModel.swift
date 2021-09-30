@@ -293,7 +293,9 @@ final class ShippingLabelFormViewModel {
 
         if selectedPackagesDetails.count == 1,
            let selectedPackage = selectedPackagesDetails.first {
-            packageDescription = searchCustomPackage(id: selectedPackage.packageID)?.title ?? searchPredefinedPackage(id: selectedPackage.packageID)?.title ?? ""
+            let customPackageTitle = searchCustomPackage(id: selectedPackage.packageID)?.title
+            let predefinedPackageTitle = searchPredefinedPackage(id: selectedPackage.packageID)?.title
+            packageDescription = customPackageTitle ?? predefinedPackageTitle ?? ""
         } else {
             let itemCount = selectedPackagesDetails
                 .map { package -> Decimal in

@@ -118,9 +118,9 @@ final class ShippingLabelAddressFormViewModel {
             return
         }
 
-        localErrors.send(validateAddressLocally())
         let index: Int? = sections.first?.rows.firstIndex(where: { $0 == row })
         currentRowIndex.send(index)
+        localErrors.send(validateAddressLocally())
     }
 
     func updateSections() {
@@ -202,6 +202,9 @@ extension ShippingLabelAddressFormViewModel {
                 self?.updateSections()
                 self?.onChange?(index)
             }
+
+        // Append any initial local error.
+        localErrors.send(validateAddressLocally())
     }
 
     /// Validates phone number for the address.

@@ -353,6 +353,18 @@ final class ShippingLabelFormViewModel {
         return String.localizedStringWithFormat(Localization.paymentMethodLabel, selectedPaymentMethod.cardDigits)
     }
 
+    /// Returns retail rate for each package if there are more than one label.
+    ///
+    func getPackageRates() -> [String] {
+        guard selectedRates.count > 1 else {
+            return []
+        }
+        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+        return selectedRates.map { rate in
+            currencyFormatter.formatAmount(Decimal(rate.retailRate)) ?? ""
+        }
+    }
+
     /// Returns the subtotal under the Order Summary.
     ///
     func getSubtotal() -> String {

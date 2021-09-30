@@ -28,7 +28,7 @@ struct FilterListSelector<ViewModel: FilterListSelectorViewModelable>: View {
 
     /// View model to drive the view content
     ///
-    @ObservedObject private(set) var viewModel: ViewModel
+    @StateObject var viewModel: ViewModel
 
     var body: some View {
         VStack(spacing: 0) {

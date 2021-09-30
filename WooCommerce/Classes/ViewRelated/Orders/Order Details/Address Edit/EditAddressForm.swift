@@ -90,7 +90,12 @@ extension EditAddressHostingController: UIAdaptivePresentationControllerDelegate
     func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self) { [weak self] in
             self?.dismiss(animated: true)
+            self?.rootView.viewModel.userDidCancelFlow()
         }
+    }
+
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        rootView.viewModel.userDidCancelFlow()
     }
 }
 
@@ -227,6 +232,7 @@ struct EditAddressForm: View {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(Localization.close, action: {
                     dismiss()
+                    viewModel.userDidCancelFlow()
                 })
             }
         }

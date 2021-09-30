@@ -36,6 +36,10 @@ final class EditAddressFormViewModel: ObservableObject {
     ///
     private let stores: StoresManager
 
+    /// Analytics center.
+    ///
+    private let analytics: Analytics
+
     /// Store for publishers subscriptions
     ///
     private var subscriptions = Set<AnyCancellable>()
@@ -44,7 +48,8 @@ final class EditAddressFormViewModel: ObservableObject {
          type: AddressType,
          onOrderUpdate: ((Yosemite.Order) -> Void)? = nil,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.order = order
         self.type = type
         self.onOrderUpdate = onOrderUpdate
@@ -60,6 +65,7 @@ final class EditAddressFormViewModel: ObservableObject {
 
         self.storageManager = storageManager
         self.stores = stores
+        self.analytics = analytics
 
         // Listen only to the first emitted event.
         onLoadTrigger.first().sink { [weak self] in
@@ -70,6 +76,8 @@ final class EditAddressFormViewModel: ObservableObject {
 
             self.fetchStoredCountriesAndTriggerSyncIfNeeded()
             self.setFieldsInitialValues()
+
+            self.trackOnLoad()
         }.store(in: &subscriptions)
     }
 
@@ -179,9 +187,12 @@ final class EditAddressFormViewModel: ObservableObject {
             case .success(let updatedOrder):
                 self.onOrderUpdate?(updatedOrder)
                 self.presentNotice = .success
+                self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCompleted(subject: self.analyticsFlowType()))
+
             case .failure(let error):
                 DDLogError("⛔️ Error updating order: \(error)")
                 self.presentNotice = .error(.unableToUpdateAddress)
+                self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowFailed(subject: self.analyticsFlowType()))
             }
             onFinish(result.isSuccess)
         }
@@ -194,6 +205,12 @@ final class EditAddressFormViewModel: ObservableObject {
     ///
     func hasPendingChanges() -> Bool {
         return navigationTrailingItem == .done(enabled: true)
+    }
+
+    /// Track the flow cancel scenario.
+    ///
+    func userDidCancelFlow() {
+        analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCanceled(subject: self.analyticsFlowType()))
     }
 }
 
@@ -391,6 +408,23 @@ private extension EditAddressFormViewModel {
             self.stores.dispatch(action)
         }
         .eraseToAnyPublisher()
+    }
+
+    /// Returns the correct analytics subject for the current address form type.
+    ///
+    private func analyticsFlowType() -> WooAnalyticsEvent.OrderDetailsEdit.Subject {
+        switch type {
+        case .shipping:
+            return .shippingAddress
+        case .billing:
+            return .billingAddress
+        }
+    }
+
+    /// Tracks the `orderDetailEditFlowStarted` event
+    ///
+    private func trackOnLoad() {
+        analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowStarted(subject: self.analyticsFlowType()))
     }
 }
 

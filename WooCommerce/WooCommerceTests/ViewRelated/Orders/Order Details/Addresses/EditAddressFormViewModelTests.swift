@@ -385,6 +385,46 @@ final class EditAddressFormViewModelTests: XCTestCase {
         assertEqual(viewModel.presentNotice, .error(.unableToLoadCountries))
     }
 
+    func test_copying_empty_shipping_address_for_billing_does_not_sends_an_empty_email_field() {
+        // Given
+        let viewModel = EditAddressFormViewModel(order: Order.fake(), type: .shipping, storageManager: testingStorage, stores: testingStores)
+        viewModel.onLoadTrigger.send()
+        viewModel.fields.useAsToggle = true
+
+        // When
+        let billingAddress: Address? = waitFor { promise in
+            self.testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateOrder(_, order, _, _):
+                    promise(order.billingAddress)
+                default:
+                    XCTFail("Unsupported Action")
+                }
+            }
+
+            viewModel.updateRemoteAddress(onFinish: { _ in })
+        }
+
+        // Then
+        XCTAssertNil(billingAddress?.email)
+    }
+
+    func test_shipping_view_model_does_not_shows_email_field() {
+        // Given
+        let viewModel = EditAddressFormViewModel(order: Order.fake(), type: .shipping)
+
+        // When & Then
+        XCTAssertFalse(viewModel.showEmailField)
+    }
+
+    func test_billing_view_model_does_shows_email_field() {
+        // Given
+        let viewModel = EditAddressFormViewModel(order: Order.fake(), type: .billing)
+
+        // When & Then
+        XCTAssertTrue(viewModel.showEmailField)
+    }
+
     func test_view_model_tracks_success_after_updating_shipping_address() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()

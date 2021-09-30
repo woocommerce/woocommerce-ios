@@ -1,6 +1,6 @@
 # Fakeable
 
-Instantiating `Networking` models for tests is not a simple task. Sometimes, the initializer has too many attributes and the test does not rely on the full set of attributes.
+Instantiating models for tests is not a simple task. Sometimes, the initializer has too many attributes and the test does not rely on the full set of attributes.
 This inconvenience hurts our ability to efficiently unit test our app, which could discourage members from writing them at all.
 
 To help with this, we have introduced a new framework called `Fakes.framework`. This framework defines `.fake()` functions for all of our networking models.
@@ -28,7 +28,7 @@ func test() {
 
 ## Generating Fake Methods
 
-The `fake()` methods are generated using [Sourcery](https://github.com/krzysztofzablocki/Sourcery). For now, only `classes`, `structs`, and `enums` of the `Networking` target are supported.
+The `fake()` methods are generated using [Sourcery](https://github.com/krzysztofzablocki/Sourcery). For now, only `classes`, `structs`, and `enums` of the `Networking` and `Yosemite` target are supported.
 
 To generate a `fake()` method:
 
@@ -56,10 +56,11 @@ To generate a `fake()` method:
 
 ## Modifying The Fakeable Code Generation
 
-The [`rake generate`](../Rakefile) command executes the Sourcery configuration files located in the [`CodeGeneration/Sourcery/Fakes` folder](../CodeGeneration/Sourcery/Fakes). There is just one configuration file:
+The [`rake generate`](../Rakefile) command executes the Sourcery configuration files located in the [`CodeGeneration/Sourcery/Fakes` folder](../CodeGeneration/Sourcery/Fakes). 
 
 ```
 Networking module → Networking-Fakes.yaml
+Yosemite module → Yosemite-Fakes.yaml
 ```
 
 It uses a single template, [`Fakes.swifttemplate`](../CodeGeneration/Sourcery/Fakes/Fakes.swifttemplate), to generate the code. It's written using [Swift templates](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/writing-templates.html).

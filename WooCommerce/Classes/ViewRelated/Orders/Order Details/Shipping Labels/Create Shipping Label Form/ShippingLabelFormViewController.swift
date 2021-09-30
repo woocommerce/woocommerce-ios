@@ -487,9 +487,12 @@ private extension ShippingLabelFormViewController {
         let carriersView = ShippingLabelCarriers(viewModel: vm) { [weak self] (selectedRate,
                                                                                selectedSignatureRate,
                                                                                selectedAdultSignatureRate) in
-            self?.viewModel.handleCarrierAndRatesValueChanges(selectedRate: selectedRate,
-                                                              selectedSignatureRate: selectedSignatureRate,
-                                                              selectedAdultSignatureRate: selectedAdultSignatureRate,
+            // TODO-4716: Fix this workaround when the carriers screen returns an array of selected rates.
+            guard let selectedRate = selectedRate else {
+                return
+            }
+            let rate = ShippingLabelSelectedRate(rate: selectedRate, signatureRate: selectedSignatureRate, adultSignatureRate: selectedAdultSignatureRate)
+            self?.viewModel.handleCarrierAndRatesValueChanges(selectedRates: [rate],
                                                               editable: true)
         }
         let hostingVC = UIHostingController(rootView: carriersView)

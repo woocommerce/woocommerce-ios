@@ -134,6 +134,9 @@ end
 target 'NetworkingTests' do
   project 'Networking/Networking.xcodeproj'
   networking_pods
+
+  # Including `yosemite_pods` because `Fakes.framework` has a dependency `Yosemite` while `Networking` does not.
+  yosemite_pods
 end
 
 # Storage Layer:

@@ -185,12 +185,14 @@ task :generate do
 
   puts "\n\nDONE. Generated Copiable for all projects."
 
-  puts "\n\nGenerating Fakeable for Networking..."
-  puts '=' * 100
+  %w[Networking Yosemite].each do |prefix|
+    puts "\n\nGenerating Fakes for #{prefix}..."
+    puts '=' * 100
 
-  sh './Pods/Sourcery/bin/sourcery --config CodeGeneration/Sourcery/Fakes/Networking-Fakes.yaml'
+    sh "./Pods/Sourcery/bin/sourcery --config CodeGeneration/Sourcery/Fakes/#{prefix}-Fakes.yaml"
+  end
 
-  puts "\n\nDONE. Generated Fakeable for Networking."
+  puts "\n\nDONE. Generated Fakes."
 end
 
 def fold(label)

@@ -1,23 +1,19 @@
+import ScreenObject
 import XCTest
 
-public final class SingleReviewScreen: BaseScreen {
+public final class SingleReviewScreen: ScreenObject {
 
-    struct ElementStringIDs {
-        static let spamButton = "single-review-spam-button"
-        static let trashButton = "single-review-trash-button"
-        static let approveButton = "single-review-approval-button"
-    }
-
-    private let spamButton = XCUIApplication().buttons[ElementStringIDs.spamButton]
-    private let trashButton = XCUIApplication().buttons[ElementStringIDs.trashButton]
-    private let approveButton = XCUIApplication().buttons[ElementStringIDs.approveButton]
-
-    init() {
-        super.init(element: spamButton)
-
-        XCTAssert(spamButton.waitForExistence(timeout: 3))
-        XCTAssert(trashButton.waitForExistence(timeout: 3))
-        XCTAssert(approveButton.waitForExistence(timeout: 3))
+    init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+            expectedElementGetters: [
+                // swiftlint:disable opening_brace
+                { $0.buttons["single-review-spam-button"] },
+                { $0.buttons["single-review-trash-button"] },
+                { $0.buttons["single-review-approval-button"] }
+                // swiftlint:enable opening_brace
+            ],
+            app: app
+        )
     }
 
     @discardableResult

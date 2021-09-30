@@ -17,8 +17,8 @@ public final class ReviewsScreen: ScreenObject {
     }
 
     @discardableResult
-    public func selectReview(atIndex index: Int) -> SingleReviewScreen {
+    public func selectReview(atIndex index: Int) throws -> SingleReviewScreen {
         app.tables.cells.element(boundBy: index).tap()
-        return SingleReviewScreen()
+        return try SingleReviewScreen()
     }
 }

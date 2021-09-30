@@ -3,9 +3,10 @@
 7.7
 -----
 - [***] Shipping Labels: Merchants can now add new payment methods for shipping labels directly from the app. [https://github.com/woocommerce/woocommerce-ios/pull/5023]
-- [x] Fix: now a default paper size will be selected in Shipping Label print screen. [https://github.com/woocommerce/woocommerce-ios/pull/5035]
+- [*] Fix: now a default paper size will be selected in Shipping Label print screen. [https://github.com/woocommerce/woocommerce-ios/pull/5035]
 - [*] Show banner on screens that use cached data when device is offline. [https://github.com/woocommerce/woocommerce-ios/pull/5000]
-
+- [*] Fix incorrect subtitle on customs row of Shipping Label purchase flow. [https://github.com/woocommerce/woocommerce-ios/pull/5093]
+ 
 7.6
 -----
 - [x] Show an improved error modal if there are problems while selecting a store. [https://github.com/woocommerce/woocommerce-ios/pull/5006]

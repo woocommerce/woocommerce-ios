@@ -204,7 +204,7 @@ private extension ReceiptRenderer {
         )
 
         static let amountPaidSectionTitle = NSLocalizedString(
-            "Amount paid",
+            "Amount Paid",
             comment: "Title of 'Amount Paid' section in the receipt"
         )
 
@@ -229,7 +229,7 @@ private extension ReceiptRenderer {
         )
 
         static let applicationName = NSLocalizedString(
-            "Application name",
+            "Application Name",
             comment: "Reads as 'Application name'. Part of the mandatory data in receipts"
         )
 

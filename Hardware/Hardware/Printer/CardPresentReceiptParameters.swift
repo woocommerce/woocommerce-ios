@@ -17,16 +17,21 @@ public struct CardPresentReceiptParameters: Codable {
     /// to be added to the receipt required by the card networks.
     public let cardDetails: CardPresentTransactionDetails
 
+    /// The order ID
+    public let orderID: Int64?
+
     public init(amount: UInt,
                 currency: String,
                 date: Date,
                 storeName: String?,
-                cardDetails: CardPresentTransactionDetails) {
+                cardDetails: CardPresentTransactionDetails,
+                orderID: Int64?) {
         self.amount = amount
         self.currency = currency
         self.date = date
         self.storeName = storeName
         self.cardDetails = cardDetails
+        self.orderID = orderID
     }
 }
 
@@ -41,5 +46,6 @@ extension CardPresentReceiptParameters {
         case date = "date"
         case storeName = "store_name"
         case cardDetails = "card_details"
+        case orderID = "order_id"
     }
 }

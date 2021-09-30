@@ -76,6 +76,8 @@ final class EditAddressFormViewModel: ObservableObject {
 
             self.fetchStoredCountriesAndTriggerSyncIfNeeded()
             self.setFieldsInitialValues()
+
+            self.trackOnLoad()
         }.store(in: &subscriptions)
     }
 
@@ -417,6 +419,12 @@ private extension EditAddressFormViewModel {
         case .billing:
             return .billingAddress
         }
+    }
+
+    /// Tracks the `orderDetailEditFlowStarted` event
+    ///
+    private func trackOnLoad() {
+        analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowStarted(subject: self.analyticsFlowType()))
     }
 }
 

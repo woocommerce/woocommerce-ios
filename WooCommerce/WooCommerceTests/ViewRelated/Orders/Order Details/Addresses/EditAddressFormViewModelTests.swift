@@ -562,6 +562,32 @@ final class EditAddressFormViewModelTests: XCTestCase {
         assertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.orderDetailEditFlowCanceled.rawValue])
         assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "billing_address")
     }
+
+    func test_view_model_tracks_started_flow_for_shipping_address() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = EditAddressFormViewModel(order: Order.fake(), type: .shipping, analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        viewModel.onLoadTrigger.send()
+
+        // Then
+        assertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.orderDetailEditFlowStarted.rawValue])
+        assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "shipping_address")
+    }
+
+    func test_view_model_tracks_started_flow_for_billing_address() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = EditAddressFormViewModel(order: Order.fake(), type: .billing, analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        viewModel.onLoadTrigger.send()
+
+        // Then
+        assertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.orderDetailEditFlowStarted.rawValue])
+        assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "billing_address")
+    }
 }
 
 private extension EditAddressFormViewModelTests {

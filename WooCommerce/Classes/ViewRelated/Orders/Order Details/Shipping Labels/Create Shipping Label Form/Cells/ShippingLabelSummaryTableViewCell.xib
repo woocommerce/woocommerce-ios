@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -159,6 +159,7 @@
                 <outlet property="discountImage" destination="rKt-4t-goT" id="1dn-pm-SUL"/>
                 <outlet property="discountTitle" destination="Q6d-eZ-aR6" id="D9P-3z-CQA"/>
                 <outlet property="discountView" destination="pze-kN-rzd" id="vbz-LS-guY"/>
+                <outlet property="mainStackView" destination="x8R-iF-LrA" id="UlZ-GN-Dmo"/>
                 <outlet property="orderCompleteSwitch" destination="JZh-Fj-mpq" id="81U-az-KPg"/>
                 <outlet property="orderCompleteTitle" destination="Nbh-nn-FoU" id="Bbd-5f-tgM"/>
                 <outlet property="orderTotalBody" destination="ZPT-Tu-548" id="aaT-QM-yGn"/>

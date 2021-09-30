@@ -71,7 +71,8 @@ final class ShippingLabelFormViewModel {
             if let customPackage = packagesResponse.customPackages.first(where: { $0.title == package.packageID }) {
                 let boxID = customPackage.title
                 let customsForm = customsForms.first(where: { $0.packageID == boxID })
-                return ShippingLabelPackageSelected(boxID: boxID,
+                return ShippingLabelPackageSelected(id: UUID().uuidString,
+                                                    boxID: boxID,
                                                     length: customPackage.getLength(),
                                                     width: customPackage.getWidth(),
                                                     height: customPackage.getHeight(),
@@ -84,7 +85,8 @@ final class ShippingLabelFormViewModel {
                 if let predefinedPackage = option.predefinedPackages.first(where: { $0.id == package.packageID }) {
                     let boxID = predefinedPackage.id
                     let customsForm = customsForms.first(where: { $0.packageID == boxID })
-                    return ShippingLabelPackageSelected(boxID: boxID,
+                    return ShippingLabelPackageSelected(id: UUID().uuidString,
+                                                        boxID: boxID,
                                                         length: predefinedPackage.getLength(),
                                                         width: predefinedPackage.getWidth(),
                                                         height: predefinedPackage.getHeight(),

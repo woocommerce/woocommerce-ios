@@ -115,6 +115,17 @@ final class EditAddressFormViewModel: ObservableObject {
     ///
     @Published var presentNotice: Notice?
 
+    /// Defines if the email field should be shown
+    ///
+    var showEmailField: Bool {
+        switch type {
+        case .shipping:
+            return false
+        case .billing:
+            return true
+        }
+    }
+
     /// Creates a view model to be used when selecting a country
     ///
     func createCountryViewModel() -> CountrySelectorViewModel {
@@ -141,7 +152,7 @@ final class EditAddressFormViewModel: ObservableObject {
     /// Update the address remotely and invoke a completion block when finished
     ///
     func updateRemoteAddress(onFinish: @escaping (Bool) -> Void) {
-        let updatedAddress = fields.toAddress(country: selectedCountry, state: selectedState)
+        let updatedAddress = fields.toAddress(country: selectedCountry, state: selectedState).removingEmptyEmail()
         let orderFields: [OrderUpdateField]
 
         let modifiedOrder: Yosemite.Order
@@ -259,15 +270,15 @@ extension EditAddressFormViewModel {
         func toAddress(country: Yosemite.Country?, state: Yosemite.StateOfACountry?) -> Yosemite.Address {
             Address(firstName: firstName,
                     lastName: lastName,
-                    company: company.isEmpty ? nil : company,
+                    company: company,
                     address1: address1,
-                    address2: address2.isEmpty ? nil : address2,
+                    address2: address2,
                     city: city,
                     state: state?.code ?? self.state,
                     postcode: postcode,
                     country: country?.code ?? self.country,
-                    phone: phone.isEmpty ? nil : phone,
-                    email: email.isEmpty ? nil : email)
+                    phone: phone,
+                    email: email)
         }
     }
 }
@@ -380,5 +391,17 @@ private extension EditAddressFormViewModel {
             self.stores.dispatch(action)
         }
         .eraseToAnyPublisher()
+    }
+}
+
+private extension Address {
+    /// Sets the email value to `nil` when it is empty.
+    /// Needed because core has a validation where a billing address can have a valid email or `nil`.
+    ///
+    func removingEmptyEmail() -> Yosemite.Address {
+        guard let email = email, email.isEmpty else {
+            return self
+        }
+        return copy(email: .some(nil))
     }
 }

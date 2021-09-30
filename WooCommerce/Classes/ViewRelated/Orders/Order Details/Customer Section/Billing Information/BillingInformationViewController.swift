@@ -24,7 +24,7 @@ final class BillingInformationViewController: UIViewController {
 
     /// Designated Initializer
     ///
-    init(order: Order, editingEnabled: Bool = false) {
+    init(order: Order, editingEnabled: Bool) {
         self.order = order
         self.editingEnabled = editingEnabled
         super.init(nibName: type(of: self).nibName, bundle: nil)

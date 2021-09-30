@@ -355,6 +355,7 @@ private extension ShippingLabelFormViewController {
             }
         }
         cell.isOn = false
+        cell.setPackageRates(viewModel.getPackageRates())
         cell.setSubtotal(viewModel.getSubtotal())
         cell.setDiscount(viewModel.getDiscount())
         cell.setOrderTotal(viewModel.getOrderTotal())

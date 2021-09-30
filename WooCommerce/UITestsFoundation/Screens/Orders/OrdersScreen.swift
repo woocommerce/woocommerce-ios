@@ -34,8 +34,8 @@ public final class OrdersScreen: ScreenObject {
     }
 
     @discardableResult
-    public func openSearchPane() -> OrderSearchScreen {
+    public func openSearchPane() throws -> OrderSearchScreen {
         searchButton.tap()
-        return OrderSearchScreen()
+        return try OrderSearchScreen()
     }
 }

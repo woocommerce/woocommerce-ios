@@ -1,22 +1,28 @@
+import ScreenObject
 import XCTest
 
-public final class OrderSearchScreen: BaseScreen {
+public final class OrderSearchScreen: ScreenObject {
 
     struct ElementStringIDs {
         static let searchField = "order-search-screen-search-field"
         static let cancelButton = "order-search-screen-cancel-button"
     }
 
-    private let searchField: XCUIElement
-    private let cancelButton: XCUIElement
+    private let cancelButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["order-search-screen-cancel-button"]
+    }
 
-    init() {
-        searchField = XCUIApplication().otherElements[ElementStringIDs.searchField]
-        cancelButton = XCUIApplication().buttons[ElementStringIDs.cancelButton]
-        super.init(element: cancelButton)
+    private var cancelButton: XCUIElement { cancelButtonGetter(app) }
 
-        XCTAssert(searchField.waitForExistence(timeout: 3))
-        XCTAssert(cancelButton.waitForExistence(timeout: 3))
+    init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+            expectedElementGetters: [
+                cancelButtonGetter,
+                // swiftlint:disable:next opening_braces
+                { $0.otherElements["order-search-screen-search-field"] }
+            ],
+            app: app
+        )
     }
 
     @discardableResult

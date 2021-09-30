@@ -289,11 +289,11 @@ final class ShippingLabelFormViewModel {
             return Localization.packageDetailsPlaceholder
         }
 
-        let packageTitle: String
+        let packageDescription: String
 
         if selectedPackagesDetails.count == 1,
            let selectedPackage = selectedPackagesDetails.first {
-            packageTitle = searchCustomPackage(id: selectedPackage.packageID)?.title ?? searchPredefinedPackage(id: selectedPackage.packageID)?.title ?? ""
+            packageDescription = searchCustomPackage(id: selectedPackage.packageID)?.title ?? searchPredefinedPackage(id: selectedPackage.packageID)?.title ?? ""
         } else {
             let itemCount = selectedPackagesDetails
                 .map { package -> Decimal in
@@ -301,7 +301,7 @@ final class ShippingLabelFormViewModel {
                 }
                 .reduce(0, { $0 + $1 })
                 .intValue
-            packageTitle = String(format: Localization.packageItemCount, itemCount, selectedPackagesDetails.count)
+            packageDescription = String(format: Localization.packageItemCount, itemCount, selectedPackagesDetails.count)
         }
 
         let formatter = WeightFormatter(weightUnit: packagesResponse?.storeOptions.weightUnit ?? "")
@@ -310,7 +310,7 @@ final class ShippingLabelFormViewModel {
             .reduce(0, { $0 + $1 })
         let packageWeight = formatter.formatWeight(weight: totalWeight)
 
-        return packageTitle + "\n" + String.localizedStringWithFormat(Localization.totalPackageWeight, packageWeight)
+        return packageDescription + "\n" + String.localizedStringWithFormat(Localization.totalPackageWeight, packageWeight)
     }
 
     /// Returns the body of the selected Carrier and Rates.

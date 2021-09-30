@@ -9,11 +9,7 @@ struct ShippingLabelCarriers: View {
 
     /// Completion callback
     ///
-    typealias Completion = (_ selectedRate: ShippingLabelCarrierRate?,
-
-                            _ selectedSignatureRate: ShippingLabelCarrierRate?,
-
-                            _ selectedAdultSignatureRate: ShippingLabelCarrierRate?) -> Void
+    typealias Completion = ([ShippingLabelSelectedRate]) -> Void
     private let onCompletion: Completion
 
     init(viewModel: ShippingLabelCarriersViewModel,
@@ -67,9 +63,7 @@ struct ShippingLabelCarriers: View {
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
             .navigationTitle(Localization.titleView)
             .navigationBarItems(trailing: Button(action: {
-                onCompletion(viewModel.getSelectedRates().selectedRate,
-                             viewModel.getSelectedRates().selectedSignatureRate,
-                             viewModel.getSelectedRates().selectedAdultSignatureRate)
+                onCompletion(viewModel.getSelectedRates())
                 ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "carrier_rates_selected"])
                 presentation.wrappedValue.dismiss()
             }, label: {
@@ -116,7 +110,7 @@ struct ShippingLabelCarriers_Previews: PreviewProvider {
                                                 originAddress: shippingAddress,
                                                 destinationAddress: shippingAddress,
                                                 packages: [])
-        ShippingLabelCarriers(viewModel: vm) { (_, _, _) in
+        ShippingLabelCarriers(viewModel: vm) { (_) in
         }
     }
 }

@@ -41,9 +41,7 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
 
     @Published private(set) var syncStatus: SyncStatus = .none
 
-    @Published private var selectedRate: ShippingLabelCarrierRate?
-    @Published private var selectedSignatureRate: ShippingLabelCarrierRate?
-    @Published private var selectedAdultSignatureRate: ShippingLabelCarrierRate?
+    @Published private var selectedRates: [ShippingLabelSelectedRate] = []
 
     /// The rows view models observed by the main view `ShippingLabelCarriers`
     ///
@@ -61,18 +59,14 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
          originAddress: ShippingLabelAddress,
          destinationAddress: ShippingLabelAddress,
          packages: [ShippingLabelPackageSelected],
-         selectedRate: ShippingLabelCarrierRate? = nil,
-         selectedSignatureRate: ShippingLabelCarrierRate? = nil,
-         selectedAdultSignatureRate: ShippingLabelCarrierRate? = nil,
+         selectedRates: [ShippingLabelSelectedRate] = [],
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          stores: StoresManager = ServiceLocator.stores) {
         self.order = order
         self.originAddress = originAddress
         self.destinationAddress = destinationAddress
         self.packages = packages
-        self.selectedRate = selectedRate
-        self.selectedSignatureRate = selectedSignatureRate
-        self.selectedAdultSignatureRate = selectedAdultSignatureRate
+        self.selectedRates = selectedRates
         self.currencySettings = currencySettings
         self.stores = stores
         syncCarriersAndRates()
@@ -85,6 +79,12 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
                 let signature = resp.signatureRequired.first { rate.title == $0.title }
                 let adultSignature = resp.adultSignatureRequired.first { rate.title == $0.title }
 
+                let selected = selectedRates.first { $0.packageID == resp.packageID }
+
+                let selectedRate = selected?.rate
+                let selectedSignatureRate = selected?.signatureRate
+                let selectedAdultSignatureRate = selected?.adultSignatureRate
+
                 return ShippingLabelCarrierRowViewModel(selected: rate.title == selectedRate?.title,
                                                         signatureSelected: selectedSignatureRate?.title == signature?.title && signature != nil,
                                                         adultSignatureSelected: selectedAdultSignatureRate?.title == adultSignature?.title
@@ -93,10 +93,28 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
                                                         signatureRate: signature,
                                                         adultSignatureRate: adultSignature,
                                                         currencySettings: currencySettings) { [weak self] (rate, signature, adultSignature) in
-                    self?.selectedRate = rate
-                    self?.selectedSignatureRate = signature
-                    self?.selectedAdultSignatureRate = adultSignature
-                    self?.generateRows(response: response)
+
+
+                    guard let self = self else { return }
+
+                    // update the existing selected rate for the package
+                    if let index = self.selectedRates.firstIndex(where: { $0.packageID == resp.packageID }) {
+                        self.selectedRates[index] = self.selectedRates[index].copy(rate: rate,
+                                                                                   signatureRate: signature,
+                                                                                   adultSignatureRate: adultSignature)
+                    }
+
+                    // else insert the selected rate for the package
+                    // since it's still not in the the array of selected rates
+                    else if let packageID = resp.packageID {
+                        let selectedRate = ShippingLabelSelectedRate(packageID: packageID,
+                                                                     rate: rate,
+                                                                     signatureRate: signature,
+                                                                     adultSignatureRate: adultSignature)
+                        self.selectedRates.append(selectedRate)
+                    }
+
+                    self.generateRows(response: response)
                 }
             }
         }
@@ -106,17 +124,13 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
     /// Return true if the done button should be enabled
     ///
     func isDoneButtonEnabled() -> Bool {
-        return selectedRate != nil
+        return selectedRates.isNotEmpty
     }
 
     /// Return the selected rates
     ///
-    func getSelectedRates() -> (selectedRate: ShippingLabelCarrierRate?,
-                                selectedSignatureRate: ShippingLabelCarrierRate?,
-                                selectedAdultSignatureRate: ShippingLabelCarrierRate?) {
-        return (selectedRate: selectedRate,
-                selectedSignatureRate: selectedSignatureRate,
-                selectedAdultSignatureRate: selectedAdultSignatureRate)
+    func getSelectedRates() -> [ShippingLabelSelectedRate] {
+        return selectedRates
     }
 }
 

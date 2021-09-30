@@ -45,21 +45,6 @@ final class ShippingLabelFormViewModel {
     ///
     private(set) var selectedRates: [ShippingLabelSelectedRate] = []
 
-    // TODO-4716: Remove this when carriers & rates is updated for multi-package support
-    var selectedRate: ShippingLabelCarrierRate? {
-        selectedRates.first?.rate
-    }
-
-    // TODO-4716: Remove this when carriers & rates is updated for multi-package support
-    var selectedSignatureRate: ShippingLabelCarrierRate? {
-        selectedRates.first?.signatureRate
-    }
-
-    // TODO-4716: Remove this when carriers & rates is updated for multi-package support
-    var selectedAdultSignatureRate: ShippingLabelCarrierRate? {
-        selectedRates.first?.adultSignatureRate
-    }
-
     var selectedPackages: [ShippingLabelPackageSelected] {
         guard let packagesResponse = packagesResponse else {
             return []

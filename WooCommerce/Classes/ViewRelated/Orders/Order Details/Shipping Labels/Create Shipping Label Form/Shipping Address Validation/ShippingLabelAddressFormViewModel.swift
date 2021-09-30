@@ -198,7 +198,6 @@ extension ShippingLabelAddressFormViewModel {
         validationSubscription = localErrors
             .removeDuplicates()
             .withLatestFrom(currentRowIndex)
-            .dropFirst()
             .sink { [weak self] _, index in
                 self?.updateSections()
                 self?.onChange?(index)

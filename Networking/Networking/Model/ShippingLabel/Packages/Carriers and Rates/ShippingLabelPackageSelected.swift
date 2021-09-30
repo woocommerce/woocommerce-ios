@@ -5,7 +5,6 @@ import Codegen
 ///
 public struct ShippingLabelPackageSelected: Equatable, GeneratedFakeable {
 
-    /// The id will be always the name of the package.
     public let id: String
     public let boxID: String
     public let length: Double
@@ -30,28 +29,6 @@ public struct ShippingLabelPackageSelected: Equatable, GeneratedFakeable {
         self.height = height
         self.weight = weight
         self.isLetter = isLetter
-        self.customsForm = customsForm
-    }
-
-    public init(customPackage: ShippingLabelCustomPackage, totalWeight: Double, customsForm: ShippingLabelCustomsForm?) {
-        self.id = customPackage.title
-        self.boxID = customPackage.title
-        self.length = customPackage.getLength()
-        self.width = customPackage.getWidth()
-        self.height = customPackage.getHeight()
-        self.weight = totalWeight
-        self.isLetter = customPackage.isLetter
-        self.customsForm = customsForm
-    }
-
-    public init(predefinedPackage: ShippingLabelPredefinedPackage, totalWeight: Double, customsForm: ShippingLabelCustomsForm?) {
-        self.id = predefinedPackage.id
-        self.boxID = predefinedPackage.id
-        self.length = predefinedPackage.getLength()
-        self.width = predefinedPackage.getWidth()
-        self.height = predefinedPackage.getHeight()
-        self.weight = totalWeight
-        self.isLetter = predefinedPackage.isLetter
         self.customsForm = customsForm
     }
 }

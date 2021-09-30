@@ -93,7 +93,8 @@ private extension PrintShippingLabelCoordinator {
     }
 
     func presentPrintInProgressUI() {
-        let viewProperties = InProgressViewProperties(title: Localization.inProgressTitle, message: Localization.inProgressMessage)
+        let viewProperties = InProgressViewProperties(title: Localization.inProgressTitle(labelCount: shippingLabels.count),
+                                                      message: Localization.inProgressMessage)
         let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
         inProgressViewController.modalPresentationStyle = .overCurrentContext
         sourceNavigationController.present(inProgressViewController, animated: true, completion: nil)
@@ -180,8 +181,15 @@ private extension PrintShippingLabelCoordinator {
 
 private extension PrintShippingLabelCoordinator {
     enum Localization {
-        static let inProgressTitle = NSLocalizedString("Printing Label",
-                                                       comment: "Title of in-progress modal when requesting shipping label document for printing")
+        static func inProgressTitle(labelCount: Int) -> String {
+            if labelCount == 1 {
+                return NSLocalizedString("Printing Label",
+                                         comment: "Title of in-progress modal when requesting shipping label document for printing")
+            } else {
+                return NSLocalizedString("Printing Labels",
+                                         comment: "Title of in-progress modal when requesting document with multiple shipping labels for printing")
+            }
+        }
         static let inProgressMessage = NSLocalizedString("Please wait",
                                                          comment: "Message of in-progress modal when requesting shipping label document for printing")
         static let printErrorAlertTitle = NSLocalizedString("Error previewing shipping label",

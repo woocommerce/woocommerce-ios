@@ -10,11 +10,6 @@ public final class OrderSearchScreen: BaseScreen {
     private let searchField: XCUIElement
     private let cancelButton: XCUIElement
 
-    static var isVisible: Bool {
-        let cancelButton = XCUIApplication().buttons[ElementStringIDs.cancelButton]
-        return cancelButton.exists && cancelButton.isHittable
-    }
-
     init() {
         searchField = XCUIApplication().otherElements[ElementStringIDs.searchField]
         cancelButton = XCUIApplication().buttons[ElementStringIDs.cancelButton]

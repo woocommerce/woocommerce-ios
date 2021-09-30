@@ -68,7 +68,7 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
                                                        originAddress: MockShippingLabelAddress.sampleAddress(),
                                                        destinationAddress: MockShippingLabelAddress.sampleAddress(),
                                                        packages: [],
-                                                       selectedRate: MockShippingLabelCarrierRate.makeRate(),
+                                                       selectedRates: sampleShippingLabelSelectedRate(),
                                                        currencySettings: CurrencySettings())
 
         // Then
@@ -81,13 +81,15 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
                                                        originAddress: MockShippingLabelAddress.sampleAddress(),
                                                        destinationAddress: MockShippingLabelAddress.sampleAddress(),
                                                        packages: [],
-                                                       selectedRate: MockShippingLabelCarrierRate.makeRate(),
+                                                       selectedRates: sampleShippingLabelSelectedRate(),
                                                        currencySettings: CurrencySettings())
 
         // Then
-        XCTAssertEqual(viewModel.getSelectedRates().selectedRate, MockShippingLabelCarrierRate.makeRate())
-        XCTAssertEqual(viewModel.getSelectedRates().selectedSignatureRate, nil)
-        XCTAssertEqual(viewModel.getSelectedRates().selectedAdultSignatureRate, nil)
+        XCTAssertEqual(viewModel.getSelectedRates().first?.rate, MockShippingLabelCarrierRate.makeRate())
+        XCTAssertEqual(viewModel.getSelectedRates().first?.signatureRate, MockShippingLabelCarrierRate.makeRate(title: "USPS - Parcel Select Mail",
+                                                                                                                rate: 45.060000000000002))
+        XCTAssertEqual(viewModel.getSelectedRates().first?.adultSignatureRate, MockShippingLabelCarrierRate.makeRate(title: "USPS - Parcel Select Mail",
+                                                                                                                     rate: 50.060000000000002))
     }
 
     func test_shouldDisplayTopBanner_returns_the_expected_value() {
@@ -96,7 +98,7 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
                                                        originAddress: MockShippingLabelAddress.sampleAddress(),
                                                        destinationAddress: MockShippingLabelAddress.sampleAddress(),
                                                        packages: [],
-                                                       selectedRate: MockShippingLabelCarrierRate.makeRate(),
+                                                       selectedRates: sampleShippingLabelSelectedRate(),
                                                        currencySettings: CurrencySettings())
 
         // Then
@@ -115,7 +117,7 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
                                                        originAddress: MockShippingLabelAddress.sampleAddress(),
                                                        destinationAddress: MockShippingLabelAddress.sampleAddress(),
                                                        packages: [],
-                                                       selectedRate: MockShippingLabelCarrierRate.makeRate(),
+                                                       selectedRates: sampleShippingLabelSelectedRate(),
                                                        currencySettings: CurrencySettings())
 
         // Then
@@ -134,7 +136,7 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
                                                        originAddress: MockShippingLabelAddress.sampleAddress(),
                                                        destinationAddress: MockShippingLabelAddress.sampleAddress(),
                                                        packages: [],
-                                                       selectedRate: MockShippingLabelCarrierRate.makeRate(),
+                                                       selectedRates: sampleShippingLabelSelectedRate(),
                                                        currencySettings: CurrencySettings())
 
         // Then
@@ -143,6 +145,15 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
 }
 
 private extension ShippingLabelCarriersViewModelTests {
+    func sampleShippingLabelSelectedRate() -> [ShippingLabelSelectedRate] {
+        return [ShippingLabelSelectedRate(packageID: "123",
+                                          rate: MockShippingLabelCarrierRate.makeRate(),
+                                          signatureRate: MockShippingLabelCarrierRate.makeRate(title: "USPS - Parcel Select Mail",
+                                                                                               rate: 45.060000000000002),
+                                          adultSignatureRate: MockShippingLabelCarrierRate.makeRate(title: "USPS - Parcel Select Mail",
+                                                                                                    rate: 50.060000000000002))]
+    }
+
     func sampleShippingLabelCarriersAndRates() -> [ShippingLabelCarriersAndRates] {
         return [ShippingLabelCarriersAndRates(packageID: "123",
                                               defaultRates: [

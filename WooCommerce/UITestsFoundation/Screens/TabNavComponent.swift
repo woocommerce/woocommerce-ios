@@ -49,12 +49,12 @@ public final class TabNavComponent: BaseScreen {
     }
 
     @discardableResult
-    public func gotoProductsScreen() -> ProductsScreen {
+    public func gotoProductsScreen() throws -> ProductsScreen {
         if !ProductsScreen.isVisible {
             productsTabButton.tap()
         }
 
-        return ProductsScreen()
+        return try ProductsScreen()
     }
 
     @discardableResult

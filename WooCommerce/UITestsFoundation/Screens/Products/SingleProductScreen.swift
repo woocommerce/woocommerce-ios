@@ -19,8 +19,8 @@ public class SingleProductScreen: BaseScreen {
     }
 
     @discardableResult
-    func goBackToProductList() -> ProductsScreen {
+    func goBackToProductList() throws -> ProductsScreen {
         navBackButton.tap()
-        return ProductsScreen()
+        return try ProductsScreen()
     }
 }

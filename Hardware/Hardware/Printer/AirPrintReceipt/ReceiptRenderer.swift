@@ -5,6 +5,7 @@ import UIKit
 public final class ReceiptRenderer: UIPrintPageRenderer {
     private let lines: [ReceiptLineItem]
     private let parameters: CardPresentReceiptParameters
+    private let cartTotals: ReceiptCartTotals
 
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -18,6 +19,7 @@ public final class ReceiptRenderer: UIPrintPageRenderer {
     public init(content: ReceiptContent) {
         self.lines = content.lineItems
         self.parameters = content.parameters
+        self.cartTotals = content.cartTotals
 
         super.init()
 
@@ -127,19 +129,39 @@ private extension ReceiptRenderer {
         for line in lines {
             summaryContent += "<tr><td>\(line.title) × \(line.quantity)</td><td>\(line.amount) \(parameters.currency.uppercased())</td></tr>"
         }
-        summaryContent += """
-                            <tr>
-                                <td>
-                                    \(Localization.amountPaidSectionTitle)
-                                </td>
-                                <td>
-                                    \(formattedAmount()) \(parameters.currency.uppercased())
-                                </td>
-                            </tr>
-                            """
+        summaryContent += taxesSummaryRow()
+        summaryContent += amountPaidSummaryRow()
         summaryContent += "</table>"
 
         return summaryContent
+    }
+
+    private func taxesSummaryRow() -> String {
+        return taxSummaryRow(title: Localization.totalTaxLineDescription, amount: cartTotals.totalTax)
+    }
+
+    private func taxSummaryRow(title: String, amount: String) -> String {
+        guard amount != "0.00" else {
+            return ""
+        }
+        return summaryRow(title: title, amount: amount)
+    }
+
+    private func summaryRow(title: String, amount: String) -> String {
+        """
+            <tr>
+                <td>
+                    \(title)
+                </td>
+                <td>
+                    \(amount) \(parameters.currency.uppercased())
+                </td>
+            </tr>
+        """
+    }
+
+    private func amountPaidSummaryRow() -> String {
+        return summaryRow(title: Localization.amountPaidSectionTitle, amount: formattedAmount())
     }
 
     private func requiredItems() -> String {
@@ -242,5 +264,9 @@ private extension ReceiptRenderer {
             "Account Type",
             comment: "Reads as 'Account Type'. Part of the mandatory data in receipts"
         )
+
+        static let totalTaxLineDescription = NSLocalizedString(
+            "Total Tax",
+            comment: "Line description for tax charged on the whole cart. Only shown when >0")
     }
 }

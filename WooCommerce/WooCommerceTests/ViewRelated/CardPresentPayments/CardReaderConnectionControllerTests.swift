@@ -272,4 +272,40 @@ class CardReaderConnectionControllerTests: XCTestCase {
         // Then
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    func test_user_can_continue_search_after_update_error() {
+        // Given
+        let expectation = self.expectation(description: #function)
+
+        let discoveredReaders = [MockCardReader.bbposChipper2XBT()]
+
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [],
+            discoveredReaders: discoveredReaders,
+            sessionManager: SessionManager.testingInstance,
+            failUpdate: true
+    )
+        ServiceLocator.setStores(mockStoresManager)
+        let mockPresentingViewController = UIViewController()
+        let mockKnownReadersProvider = MockKnownReadersProvider(knownReaders: [])
+        let mockAlerts = MockCardReaderSettingsAlerts(mode: .continueSearchingAfterConnectionFailure)
+
+        let controller = CardReaderConnectionController(
+            forSiteID: sampleSiteID,
+            knownReadersProvider: mockKnownReadersProvider,
+            alertsProvider: mockAlerts
+        )
+
+        // When
+        controller.searchAndConnect(from: mockPresentingViewController) { result in
+            XCTAssertTrue(result.isSuccess)
+            if case .success(let connected) = result {
+                XCTAssertFalse(connected)
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }

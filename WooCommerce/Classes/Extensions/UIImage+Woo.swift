@@ -390,6 +390,12 @@ extension UIImage {
         return UIImage(named: "card-reader-update-progress-checkmark")!
     }
 
+    /// Card Reader Low Battery
+    ///
+    static var cardReaderLowBattery: UIImage {
+        return UIImage(named: "card-reader-low-battery")!
+    }
+
     /// Files Download Icon
     ///
     static var cloudImage: UIImage {

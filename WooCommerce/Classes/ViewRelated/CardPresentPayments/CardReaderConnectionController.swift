@@ -503,12 +503,31 @@ private extension CardReaderConnectionController {
         ///
         self.foundReaders = []
 
+        if case CardReaderServiceError.softwareUpdate(underlyingError: .readerSoftwareUpdateFailedBatteryLow, batteryLevel: _) = error {
+            return onUpdateFailed(error: error)
+        }
+
         alerts.connectingFailed(
             from: from,
             continueSearch: {
                 self.state = .searching
             }, cancelSearch: {
                 self.state = .cancel
+            }
+        )
+    }
+
+    private func onUpdateFailed(error: Error) {
+        guard let from = fromController,
+              case CardReaderServiceError.softwareUpdate(underlyingError: .readerSoftwareUpdateFailedBatteryLow, batteryLevel: let batteryLevel) = error else {
+            return
+        }
+
+        alerts.updatingFailedLowBattery(
+            from: from,
+            batteryLevel: batteryLevel,
+            close: {
+                self.state = .searching
             }
         )
     }

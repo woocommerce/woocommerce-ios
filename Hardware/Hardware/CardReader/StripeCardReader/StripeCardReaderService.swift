@@ -301,6 +301,11 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     public func connect(_ reader: StripeTerminal.Reader, configuration: BluetoothConnectionConfiguration) -> Future <CardReader, Error> {
+        // Keep a copy of the battery level in case the connection fails due to low battery
+        // If that happens, the reader object won't be accessible anymore, and we want to show
+        // the current charge percentage if possible
+        let batteryLevel = reader.batteryLevel?.doubleValue
+
         return Future { [weak self] promise in
 
             guard let self = self else {
@@ -319,7 +324,12 @@ extension StripeCardReaderService: CardReaderService {
 
                 if let error = error {
                     let underlyingError = UnderlyingError(with: error)
-                    promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
+                    // Starting with StripeTerminal 2.0, required software updates happen transparently on connection
+                    // Any error related to that will be reported here, but we don't want to treat it as a connection error
+                    let serviceError: CardReaderServiceError = underlyingError.isSoftwareUpdateError ?
+                        .softwareUpdate(underlyingError: underlyingError, batteryLevel: batteryLevel) :
+                        .connection(underlyingError: underlyingError)
+                    promise(.failure(serviceError))
                 }
 
                 if let reader = reader {
@@ -447,8 +457,6 @@ extension StripeCardReaderService: DiscoveryDelegate {
 // MARK: - ReaderDisplayDelegate.
 extension StripeCardReaderService: BluetoothReaderDelegate {
     public func reader(_ reader: Reader, didReportAvailableUpdate update: ReaderSoftwareUpdate) {
-        let softwareUpdate = CardReaderSoftwareUpdate(update: update)
-        sendReaderEvent(.softwareUpdateNeeded(softwareUpdate))
         softwareUpdateSubject.send(.available)
     }
 
@@ -469,7 +477,6 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
         }
         softwareUpdateSubject.send(.completed)
         softwareUpdateSubject.send(.none)
-        sendReaderEvent(.softwareUpToDate)
     }
 
     /// This method is called by the Stripe Terminal SDK when it wants client apps

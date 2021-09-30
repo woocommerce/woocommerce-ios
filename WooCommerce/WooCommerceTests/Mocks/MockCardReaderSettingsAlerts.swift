@@ -83,6 +83,10 @@ final class MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         }
     }
 
+    func updatingFailedLowBattery(from: UIViewController, batteryLevel: Double?, close: @escaping () -> Void) {
+        close()
+    }
+
     func updateSeveralReadersList(readerIDs: [String]) {
         // GNDN
     }

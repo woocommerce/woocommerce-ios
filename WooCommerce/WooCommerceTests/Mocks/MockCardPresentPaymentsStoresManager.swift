@@ -53,6 +53,9 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
                 onCompletion(Result.failure(MockErrors.connectionFailure))
                 return
             }
+            guard !failUpdate else {
+                return onCompletion(.failure(CardReaderServiceError.softwareUpdate(underlyingError: .readerSoftwareUpdateFailedBatteryLow, batteryLevel: 0.25)))
+            }
             onCompletion(Result.success(reader))
         case .cancelCardReaderDiscovery(let onCompletion):
             onCompletion(Result.success(()))
@@ -81,14 +84,5 @@ extension MockCardPresentPaymentsStoresManager {
         case discoveryFailure
         case readerUpdateFailure
         case connectionFailure
-    }
-}
-
-extension MockCardPresentPaymentsStoresManager {
-    func mockUpdate() -> CardReaderSoftwareUpdate {
-        CardReaderSoftwareUpdate(
-            estimatedUpdateTime: .betweenFiveAndFifteenMinutes,
-            deviceSoftwareVersion: "MOCKVERSION"
-        )
     }
 }

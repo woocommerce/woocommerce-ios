@@ -119,23 +119,6 @@ final class MockCardReaderService: CardReaderService {
         }
     }
 
-    func checkForUpdate() -> Future<CardReaderSoftwareUpdate?, Error> {
-        Future() { [weak self] promise in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                guard let self = self else {
-                    return
-                }
-                if self.shouldFailReaderUpdateCheck {
-                    promise(Result.failure(MockErrors.readerUpdateCheckFailure))
-                } else if self.hasReaderUpdate {
-                    promise(Result.success(self.mockUpdate()))
-                } else {
-                    promise(Result.success(nil))
-                }
-            }
-        }
-    }
-
     func installUpdate() -> Void {
     }
 }
@@ -143,14 +126,5 @@ final class MockCardReaderService: CardReaderService {
 private extension MockCardReaderService {
     enum MockErrors: Error {
         case readerUpdateCheckFailure
-    }
-}
-
-private extension MockCardReaderService {
-    func mockUpdate() -> CardReaderSoftwareUpdate {
-        CardReaderSoftwareUpdate(
-            estimatedUpdateTime: .betweenFiveAndFifteenMinutes,
-            deviceSoftwareVersion: "MOCKVERSION"
-        )
     }
 }

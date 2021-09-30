@@ -254,6 +254,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.cardReaderUpdateProgressCheckmark)
     }
 
+    func test_payment_card_reader_low_battery() {
+        XCTAssertNotNil(UIImage.cardReaderLowBattery)
+    }
+
     func test_payment_card_image() {
         XCTAssertNotNil(UIImage.cardPresentImage)
     }

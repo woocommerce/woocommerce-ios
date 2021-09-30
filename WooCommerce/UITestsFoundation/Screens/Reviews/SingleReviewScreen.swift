@@ -21,8 +21,8 @@ public final class SingleReviewScreen: BaseScreen {
     }
 
     @discardableResult
-    public func goBackToReviewsScreen() -> ReviewsScreen {
+    public func goBackToReviewsScreen() throws -> ReviewsScreen {
         pop()
-        return ReviewsScreen()
+        return try ReviewsScreen()
     }
 }

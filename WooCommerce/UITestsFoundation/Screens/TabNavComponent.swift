@@ -58,12 +58,12 @@ public final class TabNavComponent: BaseScreen {
     }
 
     @discardableResult
-    public func gotoReviewsScreen() -> ReviewsScreen {
+    public func gotoReviewsScreen() throws -> ReviewsScreen {
         if !ReviewsScreen.isVisible {
             reviewsTabButton.tap()
         }
 
-        return ReviewsScreen()
+        return try ReviewsScreen()
     }
 
     static func isLoaded() -> Bool {

@@ -1125,6 +1125,7 @@ extension ShippingLabelPackageSelected {
     ///
     public static func fake() -> ShippingLabelPackageSelected {
         .init(
+            id: .fake(),
             boxID: .fake(),
             length: .fake(),
             width: .fake(),

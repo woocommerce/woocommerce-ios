@@ -9,11 +9,6 @@ public final class SingleOrderScreen: BaseScreen {
     let tabBar = TabNavComponent()
     private let summaryTitleLabel: XCUIElement
 
-    static var isVisible: Bool {
-        let summaryTitleLabel = XCUIApplication().staticTexts[ElementStringIDs.summaryTitleLabel]
-        return summaryTitleLabel.exists && summaryTitleLabel.isHittable
-    }
-
     init() {
         summaryTitleLabel = XCUIApplication().staticTexts[ElementStringIDs.summaryTitleLabel]
         super.init(element: summaryTitleLabel)

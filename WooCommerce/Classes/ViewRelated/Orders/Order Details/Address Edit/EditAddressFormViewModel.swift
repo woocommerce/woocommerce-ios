@@ -395,7 +395,7 @@ private extension EditAddressFormViewModel {
 }
 
 private extension Address {
-    /// Sets the email value to `nil` when it is empty..
+    /// Sets the email value to `nil` when it is empty.
     /// Needed because core has a validation where a billing address can have a valid email or `nil`.
     ///
     func removingEmptyEmail() -> Yosemite.Address {

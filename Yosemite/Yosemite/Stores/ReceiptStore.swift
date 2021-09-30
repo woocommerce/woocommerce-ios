@@ -63,17 +63,24 @@ private extension ReceiptStore {
         }
     }
 
-    func print(order: Order, parameters: CardPresentReceiptParameters, completion: @escaping (PrintingResult) -> Void) {
-        let lineItems = generateLineItems(order: order)
+    func generateCartTotals(order: Order) -> ReceiptCartTotals {
+        ReceiptCartTotals(totalTax: order.totalTax)
+    }
 
-        let content = ReceiptContent(parameters: parameters, lineItems: lineItems)
+    func generateReceiptContent(order: Order, parameters: CardPresentReceiptParameters) -> ReceiptContent {
+        let lineItems = generateLineItems(order: order)
+        let cartTotals = generateCartTotals(order: order)
+
+        return ReceiptContent(parameters: parameters, lineItems: lineItems, cartTotals: cartTotals)
+    }
+
+    func print(order: Order, parameters: CardPresentReceiptParameters, completion: @escaping (PrintingResult) -> Void) {
+        let content = generateReceiptContent(order: order, parameters: parameters)
         receiptPrinterService.printReceipt(content: content, completion: completion)
     }
 
     func generateContent(order: Order, parameters: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {
-        let lineItems = generateLineItems(order: order)
-
-        let content = ReceiptContent(parameters: parameters, lineItems: lineItems)
+        let content = generateReceiptContent(order: order, parameters: parameters)
         let renderer = ReceiptRenderer(content: content)
         onContent(renderer.htmlContent())
     }
@@ -99,9 +106,7 @@ private extension ReceiptStore {
     }
 
     func saveReceipt(order: Order, parameters: CardPresentReceiptParameters) {
-        let lineItems = generateLineItems(order: order)
-
-        let content = ReceiptContent(parameters: parameters, lineItems: lineItems)
+        let content = generateReceiptContent(order: order, parameters: parameters)
 
         guard let outputURL = try? fileURL(order: order) else {
             DDLogError("⛔️ Unable to create file for receipt for order id: \(order.orderID)")

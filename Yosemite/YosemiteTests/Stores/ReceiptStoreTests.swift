@@ -82,6 +82,25 @@ final class ReceiptStoreTests: XCTestCase {
         XCTAssertEqual(UInt(mockOrder.total), parametersProvided?.parameters.amount)
         XCTAssertEqual(mockOrder.currency, parametersProvided?.parameters.currency)
     }
+
+    func test_print_callsPrint_passing_cartTotals() throws {
+        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        let mockOrder = makeOrder()
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        let contentProvided = receiptPrinterService.contentProvided
+
+        XCTAssertEqual(mockOrder.totalTax, contentProvided?.cartTotals.totalTax)
+    }
 }
 
 
@@ -99,11 +118,11 @@ private extension ReceiptStoreTests {
               dateModified: Date(),
               datePaid: nil,
               discountTotal: "",
-              discountTax: "",
+              discountTax: "1.21",
               shippingTotal: "",
-              shippingTax: "",
+              shippingTax: "0.50",
               total: "100",
-              totalTax: "",
+              totalTax: "10.71",
               paymentMethodID: "",
               paymentMethodTitle: "",
               items: [],

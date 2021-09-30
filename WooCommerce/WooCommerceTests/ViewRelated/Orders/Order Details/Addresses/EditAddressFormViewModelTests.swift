@@ -384,6 +384,210 @@ final class EditAddressFormViewModelTests: XCTestCase {
         // Then
         assertEqual(viewModel.presentNotice, .error(.unableToLoadCountries))
     }
+
+    func test_copying_empty_shipping_address_for_billing_does_not_sends_an_empty_email_field() {
+        // Given
+        let viewModel = EditAddressFormViewModel(order: Order.fake(), type: .shipping, storageManager: testingStorage, stores: testingStores)
+        viewModel.onLoadTrigger.send()
+        viewModel.fields.useAsToggle = true
+
+        // When
+        let billingAddress: Address? = waitFor { promise in
+            self.testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateOrder(_, order, _, _):
+                    promise(order.billingAddress)
+                default:
+                    XCTFail("Unsupported Action")
+                }
+            }
+
+            viewModel.updateRemoteAddress(onFinish: { _ in })
+        }
+
+        // Then
+        XCTAssertNil(billingAddress?.email)
+    }
+
+    func test_shipping_view_model_does_not_shows_email_field() {
+        // Given
+        let viewModel = EditAddressFormViewModel(order: Order.fake(), type: .shipping)
+
+        // When & Then
+        XCTAssertFalse(viewModel.showEmailField)
+    }
+
+    func test_billing_view_model_does_shows_email_field() {
+        // Given
+        let viewModel = EditAddressFormViewModel(order: Order.fake(), type: .billing)
+
+        // When & Then
+        XCTAssertTrue(viewModel.showEmailField)
+    }
+
+    func test_view_model_tracks_success_after_updating_shipping_address() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = EditAddressFormViewModel(order: Order.fake(),
+                                                 type: .shipping,
+                                                 stores: testingStores,
+                                                 analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrder(_, order, _, onCompletion):
+                onCompletion(.success(order))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        _ = waitFor { promise in
+            viewModel.updateRemoteAddress(onFinish: { finished in
+                promise(finished)
+            })
+        }
+
+        // Then
+        assertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.orderDetailEditFlowCompleted.rawValue])
+        assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "shipping_address")
+    }
+
+    func test_view_model_tracks_success_after_updating_billing_address() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = EditAddressFormViewModel(order: Order.fake(),
+                                                 type: .billing,
+                                                 stores: testingStores,
+                                                 analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrder(_, order, _, onCompletion):
+                onCompletion(.success(order))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        _ = waitFor { promise in
+            viewModel.updateRemoteAddress(onFinish: { finished in
+                promise(finished)
+            })
+        }
+
+        // Then
+        assertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.orderDetailEditFlowCompleted.rawValue])
+        assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "billing_address")
+    }
+
+    func test_view_model_tracks_failure_after_updating_shipping_address() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = EditAddressFormViewModel(order: Order.fake(),
+                                                 type: .shipping,
+                                                 stores: testingStores,
+                                                 analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrder(_, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "", code: 0)))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        _ = waitFor { promise in
+            viewModel.updateRemoteAddress(onFinish: { finished in
+                promise(finished)
+            })
+        }
+
+        // Then
+        assertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.orderDetailEditFlowFailed.rawValue])
+        assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "shipping_address")
+    }
+
+    func test_view_model_tracks_failure_after_updating_billing_address() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = EditAddressFormViewModel(order: Order.fake(),
+                                                 type: .billing,
+                                                 stores: testingStores,
+                                                 analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrder(_, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "", code: 0)))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        _ = waitFor { promise in
+            viewModel.updateRemoteAddress(onFinish: { finished in
+                promise(finished)
+            })
+        }
+
+        // Then
+        assertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.orderDetailEditFlowFailed.rawValue])
+        assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "billing_address")
+    }
+
+    func test_view_model_tracks_cancel_flow_for_shipping_address() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = EditAddressFormViewModel(order: Order.fake(), type: .shipping, analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        viewModel.userDidCancelFlow()
+
+        // Then
+        assertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.orderDetailEditFlowCanceled.rawValue])
+        assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "shipping_address")
+    }
+
+    func test_view_model_tracks_cancel_flow_for_billing_address() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = EditAddressFormViewModel(order: Order.fake(), type: .billing, analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        viewModel.userDidCancelFlow()
+
+        // Then
+        assertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.orderDetailEditFlowCanceled.rawValue])
+        assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "billing_address")
+    }
+
+    func test_view_model_tracks_started_flow_for_shipping_address() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = EditAddressFormViewModel(order: Order.fake(), type: .shipping, analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        viewModel.onLoadTrigger.send()
+
+        // Then
+        assertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.orderDetailEditFlowStarted.rawValue])
+        assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "shipping_address")
+    }
+
+    func test_view_model_tracks_started_flow_for_billing_address() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = EditAddressFormViewModel(order: Order.fake(), type: .billing, analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        viewModel.onLoadTrigger.send()
+
+        // Then
+        assertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.orderDetailEditFlowStarted.rawValue])
+        assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "billing_address")
+    }
 }
 
 private extension EditAddressFormViewModelTests {

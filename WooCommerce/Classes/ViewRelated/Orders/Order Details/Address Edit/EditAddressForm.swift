@@ -90,7 +90,12 @@ extension EditAddressHostingController: UIAdaptivePresentationControllerDelegate
     func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self) { [weak self] in
             self?.dismiss(animated: true)
+            self?.rootView.viewModel.userDidCancelFlow()
         }
+    }
+
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        rootView.viewModel.userDidCancelFlow()
     }
 }
 
@@ -141,8 +146,10 @@ struct EditAddressForm: View {
                                          text: $viewModel.fields.email,
                                          symbol: nil,
                                          keyboardType: .emailAddress)
+                        .renderedIf(viewModel.showEmailField)
                     Divider()
                         .padding(.leading, Constants.dividerPadding)
+                        .renderedIf(viewModel.showEmailField)
                     TitleAndTextFieldRow(title: Localization.phoneField,
                                          placeholder: "",
                                          text: $viewModel.fields.phone,
@@ -225,6 +232,7 @@ struct EditAddressForm: View {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(Localization.close, action: {
                     dismiss()
+                    viewModel.userDidCancelFlow()
                 })
             }
         }

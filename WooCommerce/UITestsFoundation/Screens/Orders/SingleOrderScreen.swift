@@ -1,17 +1,15 @@
+import ScreenObject
 import XCTest
 
-public final class SingleOrderScreen: BaseScreen {
-
-    struct ElementStringIDs {
-        static let summaryTitleLabel = "summary-table-view-cell-title-label"
-    }
+public final class SingleOrderScreen: ScreenObject {
 
     let tabBar = TabNavComponent()
-    private let summaryTitleLabel: XCUIElement
 
-    init() {
-        summaryTitleLabel = XCUIApplication().staticTexts[ElementStringIDs.summaryTitleLabel]
-        super.init(element: summaryTitleLabel)
+    init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+            expectedElementGetters: [ { $0.staticTexts["summary-table-view-cell-title-label"] } ],
+            app: app
+        )
     }
 
     @discardableResult

@@ -42,12 +42,4 @@ public final class PeriodStatsTable: BaseScreen {
         yearsTab.tap()
         return self
     }
-
-    static func isLoaded() -> Bool {
-        return XCUIApplication().buttons[ElementStringIDs.daysTab].exists
-    }
-
-    static func isVisible() -> Bool {
-        return XCUIApplication().buttons[ElementStringIDs.daysTab].isHittable
-    }
 }

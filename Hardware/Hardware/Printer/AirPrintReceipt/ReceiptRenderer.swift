@@ -1,7 +1,7 @@
 import UIKit
 
 /// Renders a receipt in an AirPrint enabled printer.
-/// To be properly implemented in https://github.com/woocommerce/woocommerce-ios/issues/3978
+///
 public final class ReceiptRenderer: UIPrintPageRenderer {
     private let lines: [ReceiptLineItem]
     private let parameters: CardPresentReceiptParameters

@@ -18,10 +18,15 @@ final class BillingInformationViewController: UIViewController {
     ///
     private var order: Order
 
+    /// Allows editing of billing address
+    ///
+    let editingEnabled: Bool
+
     /// Designated Initializer
     ///
-    init(order: Order) {
+    init(order: Order, editingEnabled: Bool = false) {
         self.order = order
+        self.editingEnabled = editingEnabled
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -346,9 +351,9 @@ private extension BillingInformationViewController {
             NSLocalizedString("No address specified.",
                               comment: "Order details > customer info > billing information. This is where the address would normally display.")
 
-        cell.onEditTapped = { [weak self] in
+        cell.onEditTapped = editingEnabled ? { [weak self] in
             self?.editBillingAddress()
-        }
+        } : nil
         cell.editButtonAccessibilityLabel = NSLocalizedString(
             "Update Address",
             comment: "Accessibility Label for the edit button to change the Customer Billing Address in Billing Information")

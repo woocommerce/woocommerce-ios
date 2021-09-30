@@ -194,10 +194,18 @@ final class OrderDetailsDataSource: NSObject {
 
     private let imageService: ImageService = ServiceLocator.imageService
 
-    init(order: Order, storageManager: StorageManagerType = ServiceLocator.storageManager) {
+    /// Indicates if the order editing feature is enabled or not
+    /// Allows editing notes, shipping & billing addresses.
+    ///
+    let orderEditingEnabled: Bool
+
+    init(order: Order,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         orderEditingEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderEditing)) {
         self.storageManager = storageManager
         self.order = order
         self.couponLines = order.coupons
+        self.orderEditingEnabled = orderEditingEnabled
 
         super.init()
     }
@@ -781,9 +789,9 @@ private extension OrderDetailsDataSource {
         cell.name = shippingAddress?.fullNameWithCompany
         cell.address = shippingAddress?.formattedPostalAddress ?? Title.shippingAddressEmptyAction
 
-        cell.onEditTapped = { [weak self] in
+        cell.onEditTapped = orderEditingEnabled ? { [weak self] in
             self?.onCellAction?(.editShippingAddress, nil)
-        }
+        } : nil
 
         cell.editButtonAccessibilityLabel = NSLocalizedString(
             "Update Address",

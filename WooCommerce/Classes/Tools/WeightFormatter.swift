@@ -31,6 +31,15 @@ final class WeightFormatter {
         }
         return formatWithFormatter(weight: weightValue, unit: unit)
     }
+
+    /// Returns the formatted weight with the unit.
+    ///
+    func formatWeight(weight: Double) -> String {
+        guard let unit = unit(symbol: weightUnit) else {
+            return fallbackFormatWeight(weight: String(weight))
+        }
+        return formatWithFormatter(weight: weight, unit: unit)
+    }
 }
 
 private extension WeightFormatter {

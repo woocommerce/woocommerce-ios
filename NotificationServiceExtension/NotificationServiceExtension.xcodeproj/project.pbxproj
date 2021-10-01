@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		022693BA2706D95300C797CE /* NotificationServiceExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 022693B02706D95300C797CE /* NotificationServiceExtension.framework */; };
-		022693BF2706D95300C797CE /* NotificationServiceExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022693BE2706D95300C797CE /* NotificationServiceExtensionTests.swift */; };
+		022693BF2706D95300C797CE /* NotificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022693BE2706D95300C797CE /* NotificationServiceTests.swift */; };
 		022693C12706D95300C797CE /* NotificationServiceExtension.h in Headers */ = {isa = PBXBuildFile; fileRef = 022693B32706D95300C797CE /* NotificationServiceExtension.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		022693CB2706D99100C797CE /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022693CA2706D99100C797CE /* NotificationService.swift */; };
 		0266CADC2706DA9B00148B61 /* Experiments.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0266CADB2706DA9B00148B61 /* Experiments.framework */; };
@@ -46,7 +46,7 @@
 		022693B32706D95300C797CE /* NotificationServiceExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NotificationServiceExtension.h; sourceTree = "<group>"; };
 		022693B42706D95300C797CE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		022693B92706D95300C797CE /* NotificationServiceExtensionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NotificationServiceExtensionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		022693BE2706D95300C797CE /* NotificationServiceExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationServiceExtensionTests.swift; sourceTree = "<group>"; };
+		022693BE2706D95300C797CE /* NotificationServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationServiceTests.swift; sourceTree = "<group>"; };
 		022693C02706D95300C797CE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		022693CA2706D99100C797CE /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		0266CADB2706DA9B00148B61 /* Experiments.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Experiments.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -107,7 +107,7 @@
 			isa = PBXGroup;
 			children = (
 				02A72C2F2706F63F00158ABD /* MockFeatureFlagService.swift */,
-				022693BE2706D95300C797CE /* NotificationServiceExtensionTests.swift */,
+				022693BE2706D95300C797CE /* NotificationServiceTests.swift */,
 				022693C02706D95300C797CE /* Info.plist */,
 			);
 			path = NotificationServiceExtensionTests;
@@ -243,7 +243,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				02A72C302706F63F00158ABD /* MockFeatureFlagService.swift in Sources */,
-				022693BF2706D95300C797CE /* NotificationServiceExtensionTests.swift in Sources */,
+				022693BF2706D95300C797CE /* NotificationServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

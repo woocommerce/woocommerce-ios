@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,6 +13,8 @@
 		022693CB2706D99100C797CE /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022693CA2706D99100C797CE /* NotificationService.swift */; };
 		0266CADC2706DA9B00148B61 /* Experiments.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0266CADB2706DA9B00148B61 /* Experiments.framework */; };
 		0266CADD2706DA9B00148B61 /* Experiments.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0266CADB2706DA9B00148B61 /* Experiments.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		0285446B2706E3780073EC8D /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 0285446A2706E3780073EC8D /* TestKit */; };
+		02A72C302706F63F00158ABD /* MockFeatureFlagService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A72C2F2706F63F00158ABD /* MockFeatureFlagService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +50,7 @@
 		022693C02706D95300C797CE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		022693CA2706D99100C797CE /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		0266CADB2706DA9B00148B61 /* Experiments.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Experiments.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		02A72C2F2706F63F00158ABD /* MockFeatureFlagService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFeatureFlagService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +67,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				022693BA2706D95300C797CE /* NotificationServiceExtension.framework in Frameworks */,
+				0285446B2706E3780073EC8D /* TestKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,6 +106,7 @@
 		022693BD2706D95300C797CE /* NotificationServiceExtensionTests */ = {
 			isa = PBXGroup;
 			children = (
+				02A72C2F2706F63F00158ABD /* MockFeatureFlagService.swift */,
 				022693BE2706D95300C797CE /* NotificationServiceExtensionTests.swift */,
 				022693C02706D95300C797CE /* Info.plist */,
 			);
@@ -163,6 +168,9 @@
 				022693BC2706D95300C797CE /* PBXTargetDependency */,
 			);
 			name = NotificationServiceExtensionTests;
+			packageProductDependencies = (
+				0285446A2706E3780073EC8D /* TestKit */,
+			);
 			productName = NotificationServiceExtensionTests;
 			productReference = 022693B92706D95300C797CE /* NotificationServiceExtensionTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -234,6 +242,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				02A72C302706F63F00158ABD /* MockFeatureFlagService.swift in Sources */,
 				022693BF2706D95300C797CE /* NotificationServiceExtensionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -489,6 +498,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		0285446A2706E3780073EC8D /* TestKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TestKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 022693A72706D95300C797CE /* Project object */;
 }

@@ -358,16 +358,16 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 editGroupedProducts()
                 break
             case .variations(let row):
-                ServiceLocator.analytics.track(.productDetailViewVariationsTapped)
                 guard row.isActionable else {
                     return
                 }
+                ServiceLocator.analytics.track(.productDetailViewVariationsTapped)
                 showVariations()
             case .noPriceWarning(let viewModel):
-                ServiceLocator.analytics.track(.productDetailViewVariationsTapped)
                 guard viewModel.isActionable else {
                     return
                 }
+                ServiceLocator.analytics.track(.productDetailViewVariationsTapped)
                 showVariations()
             case .attributes(_, let isEditable):
                 guard isEditable else {

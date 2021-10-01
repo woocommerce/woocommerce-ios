@@ -58,6 +58,24 @@ public class ReceiptStore: Store {
 
 
 private extension ReceiptStore {
+    func print(order: Order, parameters: CardPresentReceiptParameters, completion: @escaping (PrintingResult) -> Void) {
+        let content = generateReceiptContent(order: order, parameters: parameters)
+        receiptPrinterService.printReceipt(content: content, completion: completion)
+    }
+
+    func generateContent(order: Order, parameters: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {
+        let content = generateReceiptContent(order: order, parameters: parameters)
+        let renderer = ReceiptRenderer(content: content)
+        onContent(renderer.htmlContent())
+    }
+
+    func generateReceiptContent(order: Order, parameters: CardPresentReceiptParameters) -> ReceiptContent {
+        let lineItems = generateLineItems(order: order)
+        let cartTotals = generateCartTotals(order: order, parameters: parameters)
+
+        return ReceiptContent(parameters: parameters, lineItems: lineItems, cartTotals: cartTotals)
+    }
+
     func generateLineItems(order: Order) -> [ReceiptLineItem] {
         order.items.map { item in
             ReceiptLineItem(
@@ -76,24 +94,6 @@ private extension ReceiptStore {
         }
         totalLines.append(ReceiptTotalLine(description: ReceiptContent.Localization.amountPaidLineDescription, amount: parameters.formattedAmount))
         return totalLines
-    }
-
-    func generateReceiptContent(order: Order, parameters: CardPresentReceiptParameters) -> ReceiptContent {
-        let lineItems = generateLineItems(order: order)
-        let cartTotals = generateCartTotals(order: order, parameters: parameters)
-
-        return ReceiptContent(parameters: parameters, lineItems: lineItems, cartTotals: cartTotals)
-    }
-
-    func print(order: Order, parameters: CardPresentReceiptParameters, completion: @escaping (PrintingResult) -> Void) {
-        let content = generateReceiptContent(order: order, parameters: parameters)
-        receiptPrinterService.printReceipt(content: content, completion: completion)
-    }
-
-    func generateContent(order: Order, parameters: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {
-        let content = generateReceiptContent(order: order, parameters: parameters)
-        let renderer = ReceiptRenderer(content: content)
-        onContent(renderer.htmlContent())
     }
 
     func loadReceipt(order: Order, onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {

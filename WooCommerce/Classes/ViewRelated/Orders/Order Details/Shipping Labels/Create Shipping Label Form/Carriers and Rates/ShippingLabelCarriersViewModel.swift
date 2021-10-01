@@ -78,24 +78,29 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
         syncCarriersAndRates()
     }
 
-    func generateRows(response: ShippingLabelCarriersAndRates) {
-        self.rows = response.defaultRates.map { rate in
-            let signature = response.signatureRequired.first { rate.title == $0.title }
-            let adultSignature = response.adultSignatureRequired.first { rate.title == $0.title }
+    func generateRows(response: [ShippingLabelCarriersAndRates]) {
+        var tempRows: [ShippingLabelCarrierRowViewModel] = []
+        for resp in response {
+            tempRows += resp.defaultRates.map { rate in
+                let signature = resp.signatureRequired.first { rate.title == $0.title }
+                let adultSignature = resp.adultSignatureRequired.first { rate.title == $0.title }
 
-            return ShippingLabelCarrierRowViewModel(selected: rate.title == selectedRate?.title,
-                                                    signatureSelected: selectedSignatureRate?.title == signature?.title && signature != nil,
-                                                    adultSignatureSelected: selectedAdultSignatureRate?.title == adultSignature?.title && adultSignature != nil,
-                                                    rate: rate,
-                                                    signatureRate: signature,
-                                                    adultSignatureRate: adultSignature,
-                                                    currencySettings: currencySettings) { [weak self] (rate, signature, adultSignature) in
-                self?.selectedRate = rate
-                self?.selectedSignatureRate = signature
-                self?.selectedAdultSignatureRate = adultSignature
-                self?.generateRows(response: response)
+                return ShippingLabelCarrierRowViewModel(selected: rate.title == selectedRate?.title,
+                                                        signatureSelected: selectedSignatureRate?.title == signature?.title && signature != nil,
+                                                        adultSignatureSelected: selectedAdultSignatureRate?.title == adultSignature?.title
+                                                        && adultSignature != nil,
+                                                        rate: rate,
+                                                        signatureRate: signature,
+                                                        adultSignatureRate: adultSignature,
+                                                        currencySettings: currencySettings) { [weak self] (rate, signature, adultSignature) in
+                    self?.selectedRate = rate
+                    self?.selectedSignatureRate = signature
+                    self?.selectedAdultSignatureRate = adultSignature
+                    self?.generateRows(response: response)
+                }
             }
         }
+        rows = tempRows
     }
 
     /// Return true if the done button should be enabled

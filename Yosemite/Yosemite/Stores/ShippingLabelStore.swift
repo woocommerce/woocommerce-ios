@@ -187,7 +187,7 @@ private extension ShippingLabelStore {
                               originAddress: ShippingLabelAddress,
                               destinationAddress: ShippingLabelAddress,
                               packages: [ShippingLabelPackageSelected],
-                              completion: @escaping (Result<ShippingLabelCarriersAndRates, Error>) -> Void) {
+                              completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void) {
         remote.loadCarriersAndRates(siteID: siteID,
                                     orderID: orderID,
                                     originAddress: originAddress,

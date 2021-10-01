@@ -71,7 +71,8 @@ final class ShippingLabelFormViewModel {
             if let customPackage = packagesResponse.customPackages.first(where: { $0.title == package.packageID }) {
                 let boxID = customPackage.title
                 let customsForm = customsForms.first(where: { $0.packageID == boxID })
-                return ShippingLabelPackageSelected(boxID: boxID,
+                return ShippingLabelPackageSelected(id: UUID().uuidString,
+                                                    boxID: boxID,
                                                     length: customPackage.getLength(),
                                                     width: customPackage.getWidth(),
                                                     height: customPackage.getHeight(),
@@ -84,7 +85,8 @@ final class ShippingLabelFormViewModel {
                 if let predefinedPackage = option.predefinedPackages.first(where: { $0.id == package.packageID }) {
                     let boxID = predefinedPackage.id
                     let customsForm = customsForms.first(where: { $0.packageID == boxID })
-                    return ShippingLabelPackageSelected(boxID: boxID,
+                    return ShippingLabelPackageSelected(id: UUID().uuidString,
+                                                        boxID: boxID,
                                                         length: predefinedPackage.getLength(),
                                                         width: predefinedPackage.getWidth(),
                                                         height: predefinedPackage.getHeight(),
@@ -323,6 +325,21 @@ final class ShippingLabelFormViewModel {
         let packageWeight = formatter.formatWeight(weight: totalWeight)
 
         return packageDescription + "\n" + String.localizedStringWithFormat(Localization.totalPackageWeight, packageWeight)
+    }
+
+    /// Returns the description of the Customs Form row.
+    ///
+    func getCustomsFormBody() -> String {
+        guard let rows = state.sections.first?.rows,
+              let customsRow = rows.first(where: { $0.type == .customs }) else {
+            return ""
+        }
+        switch customsRow.dataState {
+        case .pending:
+            return Localization.fillCustomsForm
+        case .validated:
+            return Localization.customsFormCompleted
+        }
     }
 
     /// Returns the body of the selected Carrier and Rates.
@@ -824,6 +841,10 @@ private extension ShippingLabelFormViewModel {
         static let totalPackageWeight = NSLocalizedString("Total package weight: %1$@",
                                                           comment: "Total package weight label in Shipping Label form. %1$@ is a placeholder for the weight")
         static let packageItemCount = NSLocalizedString("%1$d items in %2$d packages", comment: "Total number of items and packages in Shipping Label form.")
+        static let fillCustomsForm = NSLocalizedString("Fill out customs form", comment: "Subtitle of the cell Customs inside Create Shipping Label form")
+        static let customsFormCompleted = NSLocalizedString("Customs form completed",
+                                                            comment: "Subtitle of the cell Customs inside " +
+                                                                "Create Shipping Label form when the form is completed")
         static let carrierAndRatesPlaceholder = NSLocalizedString("Select your shipping carrier and rates",
                                                                   comment: "Placeholder in Shipping Label form for the Carrier and Rates row.")
         static let businessDaySingular = NSLocalizedString("%1$d business day",

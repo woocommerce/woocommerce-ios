@@ -4,11 +4,11 @@ import Foundation
 /// Mapper: Shipping Label Carriers and Rates Data
 ///
 struct ShippingLabelCarriersAndRatesMapper: Mapper {
-    /// (Attempts) to convert a dictionary into ShippingLabelCarriersAndRates.
+    /// (Attempts) to convert a dictionary into ShippingLabelCarriersAndRates array.
     ///
-    func map(response: Data) throws -> ShippingLabelCarriersAndRates {
+    func map(response: Data) throws -> [ShippingLabelCarriersAndRates] {
         let decoder = JSONDecoder()
-        return try decoder.decode(ShippingLabelDataEnvelope.self, from: response).data.rates.defaultBox
+        return try decoder.decode(ShippingLabelDataEnvelope.self, from: response).data.rates.boxes
     }
 }
 
@@ -33,9 +33,18 @@ private struct ShippingLabelRatesEnvelope: Decodable {
 }
 
 private struct ShippingLabelDefaultBoxEnvelope: Decodable {
-    let defaultBox: ShippingLabelCarriersAndRates
+    let boxes: [ShippingLabelCarriersAndRates]
 
-    private enum CodingKeys: String, CodingKey {
-        case defaultBox = "default_box"
+    init(from decoder: Decoder) throws {
+
+        let container = try decoder.singleValueContainer()
+        let dictionary = try container.decode([String: ShippingLabelCarriersAndRates].self)
+
+        boxes = dictionary.map { key, value in
+            return ShippingLabelCarriersAndRates(packageID: key,
+                                                 defaultRates: value.defaultRates,
+                                                 signatureRequired: value.signatureRequired,
+                                                 adultSignatureRequired: value.adultSignatureRequired)
+        }
     }
 }

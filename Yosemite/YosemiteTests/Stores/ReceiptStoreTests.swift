@@ -183,14 +183,103 @@ final class ReceiptStoreTests: XCTestCase {
         }
         XCTAssertNil(actualShippingLine)
     }
+
+    func test_print_callsPrint_passing_Discount() throws {
+        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        let coupons = [OrderCouponLine(couponID: 123, code: "5off", discount: "5.00", discountTax: "0.00")]
+        let mockOrder = makeOrder(discountTotal: "5.00", coupons: coupons)
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        let actualDiscountLine = receiptPrinterService.contentProvided?.cartTotals.first {
+            $0.description.starts(with: expectedDiscountLineDescription())
+        }
+        XCTAssertEqual(mockOrder.discountTotal, actualDiscountLine?.amount)
+    }
+
+    func test_print_OrderWithoutDiscountOrCoupons_DoesNotIncludeDiscountInReceiptContent() throws {
+        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        let mockOrder = makeOrder(discountTotal: "0.00", coupons: [])
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        let actualDiscountLine = receiptPrinterService.contentProvided?.cartTotals.first {
+            $0.description.starts(with: expectedDiscountLineDescription())
+        }
+        XCTAssertNil(actualDiscountLine)
+    }
+
+    func test_print_OrderWithoutDiscount_WithCoupon_IncludesCouponInReceiptContent() throws {
+        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        let coupons = [OrderCouponLine(couponID: 123, code: "FreeShipping", discount: "0.00", discountTax: "0.00")]
+        let mockOrder = makeOrder(discountTotal: "0.00", coupons: coupons)
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        let actualDiscountLine = try XCTUnwrap(receiptPrinterService.contentProvided?.cartTotals.first {
+            $0.description.starts(with: expectedDiscountLineDescription())
+        })
+
+        XCTAssert(actualDiscountLine.description.contains("(FreeShipping)"))
+        XCTAssertEqual(actualDiscountLine.amount, "0.00")
+    }
+
+    func test_print_OrderWithDiscountFromMultipleCoupons_ListsCouponsInReceiptContent() throws {
+        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        let coupons = [OrderCouponLine(couponID: 123, code: "1off", discount: "1.00", discountTax: "0.00"),
+                       OrderCouponLine(couponID: 1901, code: "AVQW112", discount: "12.50", discountTax: "0.00")]
+        let mockOrder = makeOrder(discountTotal: "13.50", coupons: coupons)
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        let actualDiscountLine = try XCTUnwrap(receiptPrinterService.contentProvided?.cartTotals.first {
+            $0.description.starts(with: expectedDiscountLineDescription())
+        })
+
+        XCTAssert(actualDiscountLine.description.contains("(1off, AVQW112)"))
+    }
 }
 
 
 private extension ReceiptStoreTests {
-    func makeOrder(discountTax: String = "",
+    func makeOrder(discountTotal: String = "",
+                   discountTax: String = "",
                    shippingTotal: String = "",
                    shippingTax: String = "",
-                   totalTax: String = "") -> Networking.Order {
+                   totalTax: String = "",
+                   coupons: [OrderCouponLine] = []) -> Networking.Order {
         Order(siteID: 1234,
               orderID: 0,
               parentID: 0,
@@ -202,7 +291,7 @@ private extension ReceiptStoreTests {
               dateCreated: Date(),
               dateModified: Date(),
               datePaid: nil,
-              discountTotal: "",
+              discountTotal: discountTotal,
               discountTax: discountTax,
               shippingTotal: shippingTotal,
               shippingTax: shippingTax,
@@ -214,8 +303,12 @@ private extension ReceiptStoreTests {
               billingAddress: nil,
               shippingAddress: nil,
               shippingLines: [],
-              coupons: [],
+              coupons: coupons,
               refunds: [],
               fees: [])
+    }
+
+    func expectedDiscountLineDescription() -> String {
+        return String.localizedStringWithFormat(ReceiptContent.Localization.discountLineDescription, "")
     }
 }

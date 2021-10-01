@@ -87,17 +87,43 @@ private extension ReceiptStore {
     }
 
     func generateCartTotals(order: Order, parameters: CardPresentReceiptParameters) -> [ReceiptTotalLine] {
-        let subtotalLines = [ReceiptTotalLine(description: ReceiptContent.Localization.shippingLineDescription,
-                                              amount: order.shippingTotal),
-                             ReceiptTotalLine(description: ReceiptContent.Localization.totalTaxLineDescription,
-                                              amount: order.totalTax)]
-            .filter {
-                NSDecimalNumber(apiAmount: $0.amount).decimalValue > 0.00
-            }
+        let subtotalLines = [discountLine(order: order),
+                             lineIfNonZero(description: ReceiptContent.Localization.shippingLineDescription,
+                                           amount: order.shippingTotal),
+                             lineIfNonZero(description: ReceiptContent.Localization.totalTaxLineDescription,
+                                           amount: order.totalTax)]
+            .compactMap { $0 }
         let totalLine = [ReceiptTotalLine(description: ReceiptContent.Localization.amountPaidLineDescription,
                                          amount: parameters.formattedAmount)]
 
         return subtotalLines + totalLine
+    }
+
+    func discountLine(order: Order) -> ReceiptTotalLine? {
+        if NSDecimalNumber(apiAmount: order.discountTotal).decimalValue == 0 &&
+            order.coupons.isEmpty {
+            return nil
+        }
+        return ReceiptTotalLine(description: discountLineDescription(order: order), amount: order.discountTotal)
+    }
+
+    func discountLineDescription(order: Order) -> String {
+        var couponCodes = ""
+        if order.coupons.count > 0 {
+            couponCodes = order.coupons.map {
+                $0.code
+            }
+            .joined(separator: ", ")
+            couponCodes = "(\(couponCodes))"
+        }
+        return String.localizedStringWithFormat(ReceiptContent.Localization.discountLineDescription, couponCodes)
+    }
+
+    func lineIfNonZero(description: String, amount: String) -> ReceiptTotalLine? {
+        guard NSDecimalNumber(apiAmount: amount).decimalValue != 0 else {
+            return nil
+        }
+        return ReceiptTotalLine(description: description, amount: amount)
     }
 
     func loadReceipt(order: Order, onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {

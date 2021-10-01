@@ -100,10 +100,10 @@ private extension ShippingLabelPackagesFormViewModel {
     /// If no initial packages was input, set up default package from last selected package ID and all order items.
     ///
     func configureDefaultPackage() {
-        guard selectedPackages.isEmpty,
-              let selectedPackageID = resultsControllers?.accountSettings?.lastSelectedPackageID else {
+        guard selectedPackages.isEmpty else {
             return
         }
+        let selectedPackageID = resultsControllers?.accountSettings?.lastSelectedPackageID ?? ""
         let items = order.items.compactMap { ShippingLabelPackageItem(orderItem: $0,
                                                                       products: products,
                                                                       productVariations: productVariations) }
@@ -351,7 +351,7 @@ private extension ShippingLabelPackagesFormViewModel {
         itemViewModels.enumerated().forEach { (index, item) in
             item.$isValidPackage
                 .sink { [weak self] isValid in
-                    self?.packagesValidation[index] = isValid
+                    self?.packagesValidation[index] = isValid && item.selectedPackageID.isNotEmpty
                 }
                 .store(in: &cancellables)
         }

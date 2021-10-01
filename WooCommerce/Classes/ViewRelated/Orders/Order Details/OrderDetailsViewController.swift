@@ -620,7 +620,7 @@ private extension OrderDetailsViewController {
             self?.show(refundViewController, sender: self)
         }
 
-        if let url = shippingLabel.commercialInvoiceURL {
+        if let url = shippingLabel.commercialInvoiceURL, url.isNotEmpty {
             actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelMoreMenu.printCustomsFormAction) { [weak self] _ in
                 let printCustomsFormsView = PrintCustomsFormsView(invoiceURLs: [url])
                 let hostingController = UIHostingController(rootView: printCustomsFormsView)

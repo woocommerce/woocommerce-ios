@@ -59,18 +59,30 @@ struct ShippingLabelSinglePackage: View {
                 .padding(.horizontal, insets: safeAreaInsets)
 
             VStack(spacing: 0) {
-                Divider()
+                VStack(spacing: 0) {
+                    Divider()
 
-                TitleAndValueRow(title: Localization.packageSelected, value: viewModel.selectedPackageName, selectable: true) {
-                    isShowingPackageSelection.toggle()
+                    TitleAndValueRow(title: Localization.packageSelected, value: viewModel.selectedPackageName, selectable: true) {
+                        isShowingPackageSelection.toggle()
+                    }
+                    .padding(.horizontal, insets: safeAreaInsets)
+                    .sheet(isPresented: $isShowingPackageSelection, content: {
+                        ShippingLabelPackageSelection(viewModel: viewModel.packageListViewModel)
+                    })
                 }
-                .padding(.horizontal, insets: safeAreaInsets)
-                .sheet(isPresented: $isShowingPackageSelection, content: {
-                    ShippingLabelPackageSelection(viewModel: viewModel.packageListViewModel)
-                })
+                .background(Color(.systemBackground))
+                .renderedIf(!viewModel.isOriginalPackaging)
+
+                VStack(spacing: 0) {
+                    Divider()
+                        .padding(.horizontal, insets: safeAreaInsets)
+                        .padding(.leading, Constants.horizontalPadding)
+
+                    ValidationErrorRow(errorMessage: Localization.selectPackage)
+                        .padding(.horizontal, insets: safeAreaInsets)
+                }
+                .renderedIf(!viewModel.isOriginalPackaging && viewModel.selectedPackageID.isEmpty)
             }
-            .background(Color(.systemBackground))
-            .renderedIf(!viewModel.isOriginalPackaging)
 
             VStack(spacing: 0) {
                 Divider()
@@ -130,6 +142,8 @@ private extension ShippingLabelSinglePackage {
         static let packageDetailsHeader = NSLocalizedString("PACKAGE DETAILS", comment: "Header section package details in Shipping Label Package Detail")
         static let packageSelected = NSLocalizedString("Package Selected",
                                                        comment: "Title of the row for selecting a package in Shipping Label Package Detail screen")
+        static let selectPackage = NSLocalizedString("Please select a package",
+                                                     comment: "Error message when no package is selected on Shipping Label Package Details screen")
         static let totalPackageWeight = NSLocalizedString("Total package weight",
                                                           comment: "Title of the row for adding the package weight in Shipping Label Package Detail screen")
         static let footer = NSLocalizedString("Sum of products and package weight",

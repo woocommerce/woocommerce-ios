@@ -283,6 +283,10 @@ extension EditAddressFormViewModel {
             address2 = address.address2 ?? ""
             city = address.city
             postcode = address.postcode
+
+            // Only use the address.state if we haven't set a value before.
+            // Like when selecting a state from the picker
+            state = state.isEmpty ? address.state : state
         }
 
         mutating func update(with country: Yosemite.Country?, and state: Yosemite.StateOfACountry?) {
@@ -329,7 +333,7 @@ private extension EditAddressFormViewModel {
     }
 
     /// Update published fields when the selected country and state is updated.
-    /// If the current selected state does not exists within the selected country, then the state is nilled.
+    /// If the selected country changes and it has a specific state to choose, clear the previous state.
     ///
     func bindSelectedCountryAndStateIntoFields() {
 
@@ -337,15 +341,17 @@ private extension EditAddressFormViewModel {
 
         // When a country is selected, check if the current state is a valid state for that country, otherwise `nil` it.
         $selectedCountry
-            .withLatestFrom($selectedState)
-            .flatMap { country, state -> StatePublisher in
-                guard let country = country, let state = state, country.states.contains(state) else {
+            .flatMap { country -> StatePublisher in
+                guard let country = country, country.states.isNotEmpty else {
                     return StatePublisher.init(Empty())
                 }
-                return StatePublisher.init(Just(state))
+                return StatePublisher.init(Just(nil))
             }
-            .assign(to: &$selectedState)
-
+            .sink { _ in
+                self.selectedState = nil
+                self.fields.state = ""
+            }
+            .store(in: &subscriptions)
 
         // Update fields with new selections.
         Publishers.CombineLatest($selectedCountry, $selectedState)

@@ -1,5 +1,6 @@
 import Foundation
 import CocoaLumberjack
+import Experiments
 import Storage
 import Yosemite
 import Hardware

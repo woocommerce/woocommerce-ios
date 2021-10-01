@@ -1,6 +1,6 @@
 import Foundation
 
-enum BuildConfiguration: String {
+public enum BuildConfiguration: String {
     /// Development build, usually run from Xcode
     case localDeveloper
 
@@ -11,7 +11,7 @@ enum BuildConfiguration: String {
     /// Production build released in the app store
     case appStore
 
-    static var current: BuildConfiguration {
+    public static var current: BuildConfiguration {
         #if DEBUG
         return testingOverride ?? .localDeveloper
         #elseif ALPHA
@@ -35,15 +35,15 @@ enum BuildConfiguration: String {
     }
     #endif
 
-    static var shouldUseScreenshotsNetworkLayer: Bool {
+    public static var shouldUseScreenshotsNetworkLayer: Bool {
         return ProcessInfo.processInfo.arguments.contains("mocked-network-layer")
     }
 
-    static var shouldLogoutAtLaunch: Bool {
+    public static var shouldLogoutAtLaunch: Bool {
         ProcessInfo.processInfo.arguments.contains("logout-at-launch")
     }
 
-    static var shouldDisableAnimations: Bool {
+    public static var shouldDisableAnimations: Bool {
         ProcessInfo.processInfo.arguments.contains("disable-animations")
     }
 }

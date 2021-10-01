@@ -4,6 +4,7 @@ import Storage
 import class Networking.UserAgent
 
 import CocoaLumberjack
+import Experiments
 import KeychainAccess
 import WordPressUI
 import WordPressKit

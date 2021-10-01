@@ -33,23 +33,21 @@ struct ShippingLabelSinglePackage: View {
             Divider()
 
             ForEach(viewModel.itemsRows) { productItemRow in
-                productItemRow
-                    .overlay(
-                        HStack {
-                            Spacer()
-                            Button(action: {
-                                viewModel.requestMovingItem(productItemRow.productOrVariationID)
-                                shouldShowMoveItemActionSheet = true
-                            }, label: {
-                                Text(Localization.moveButton)
-                                    .font(.footnote)
-                                    .foregroundColor(Color(UIColor(color: .accent)))
-                            })
-                        }
-                        .padding(.trailing, Constants.horizontalPadding)
-                    )
-                    .padding(.horizontal, insets: safeAreaInsets)
-                    .background(Color(.systemBackground))
+                HStack {
+                    productItemRow
+                    Spacer()
+                    Button(action: {
+                        viewModel.requestMovingItem(productItemRow.productOrVariationID)
+                        shouldShowMoveItemActionSheet = true
+                    }, label: {
+                        Text(Localization.moveButton)
+                            .font(.footnote)
+                            .foregroundColor(Color(UIColor(color: .accent)))
+                    })
+                    .padding(.trailing, Constants.horizontalPadding)
+                }
+                .padding(.horizontal, insets: safeAreaInsets)
+                .background(Color(.systemBackground))
                 Divider()
                     .padding(.horizontal, insets: safeAreaInsets)
                     .padding(.leading, Constants.horizontalPadding)

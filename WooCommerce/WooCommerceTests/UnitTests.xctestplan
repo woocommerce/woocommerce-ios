@@ -73,6 +73,13 @@
         "identifier" : "D88FDB0725DD216B00CB0DBD",
         "name" : "HardwareTests"
       }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/NotificationServiceExtension\/NotificationServiceExtension.xcodeproj",
+        "identifier" : "022693B82706D95300C797CE",
+        "name" : "NotificationServiceExtensionTests"
+      }
     }
   ],
   "version" : 1

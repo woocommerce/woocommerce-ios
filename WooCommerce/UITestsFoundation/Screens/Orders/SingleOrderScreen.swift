@@ -3,7 +3,8 @@ import XCTest
 
 public final class SingleOrderScreen: ScreenObject {
 
-    let tabBar = TabNavComponent()
+    // TODO: Remove force `try` once `ScreenObject` migration is completed
+    let tabBar = try! TabNavComponent()
 
     init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(

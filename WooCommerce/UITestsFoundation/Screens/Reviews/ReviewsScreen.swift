@@ -3,7 +3,8 @@ import XCTest
 
 public final class ReviewsScreen: ScreenObject {
 
-    public let tabBar = TabNavComponent()
+    // TODO: Remove force `try` once `ScreenObject` migration is completed
+    public let tabBar = try! TabNavComponent()
 
     static var isVisible: Bool {
         (try? ReviewsScreen().isLoaded) ?? false

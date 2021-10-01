@@ -25,7 +25,10 @@ final class PrintShippingLabelViewModel {
 extension PrintShippingLabelViewModel {
     /// Sets the default selected paper size to the one from the first shipping label's settings, if the user has not selected one in the print UI.
     func loadShippingLabelSettingsForDefaultPaperSize() {
-        let action = ShippingLabelAction.loadShippingLabelSettings(shippingLabel: shippingLabels[0]) { [weak self] settings in
+        guard let firstLabel = shippingLabels.first else {
+            return
+        }
+        let action = ShippingLabelAction.loadShippingLabelSettings(shippingLabel: firstLabel) { [weak self] settings in
             guard let self = self else { return }
             guard let settings = settings, self.selectedPaperSize == nil else {
                 return

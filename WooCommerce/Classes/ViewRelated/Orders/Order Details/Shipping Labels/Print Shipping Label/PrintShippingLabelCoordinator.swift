@@ -135,8 +135,11 @@ private extension PrintShippingLabelCoordinator {
 private extension PrintShippingLabelCoordinator {
     /// Requests document data for printing a shipping label with the selected paper size.
     func requestDocumentForPrinting(paperSize: ShippingLabelPaperSize, completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
+        guard let firstLabel = shippingLabels.first else {
+            return
+        }
         analytics.track(.shippingLabelReprintRequested)
-        let action = ShippingLabelAction.printShippingLabel(siteID: shippingLabels[0].siteID,
+        let action = ShippingLabelAction.printShippingLabel(siteID: firstLabel.siteID,
                                                             shippingLabelIDs: shippingLabels.map { $0.shippingLabelID },
                                                             paperSize: paperSize) { result in
             completion(result)

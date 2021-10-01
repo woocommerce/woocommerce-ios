@@ -283,19 +283,21 @@ extension StripeCardReaderService: CardReaderService {
                 return
             }
 
-            if let locationId = reader.locationId {
-                promise(.success(BluetoothConnectionConfiguration(locationId: locationId)))
-            } else {
-                self.readerLocationProvider?.fetchDefaultLocationID { (locationId, error) in
-                    if let error = error {
-                        let underlyingError = UnderlyingError(with: error)
-                        promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
-                    }
-
-                    if let locationId = locationId {
-                        promise(.success(BluetoothConnectionConfiguration(locationId: locationId)))
-                    }
+            // TODO - If we've recently connected to this reader, use the cached locationId from the
+            // Terminal SDK instead of making this fetch. See #5116 and #5087
+            self.readerLocationProvider?.fetchDefaultLocationID { (locationId, error) in
+                if let error = error {
+                    let underlyingError = UnderlyingError(with: error)
+                    promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
+                    return
                 }
+
+                if let locationId = locationId {
+                    promise(.success(BluetoothConnectionConfiguration(locationId: locationId)))
+                    return
+                }
+
+                promise(.failure(CardReaderServiceError.connection()))
             }
         }
     }

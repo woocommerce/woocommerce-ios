@@ -38,9 +38,17 @@ struct ShippingLabelCarriers: View {
                                                               edgeInsets: edgeInsets,
                                                               shippingMethod: viewModel.shippingMethod,
                                                               shippingCost: viewModel.shippingCost).renderedIf(viewModel.shouldDisplayTopBanner)
-                        ForEach(viewModel.rows) { carrierRowVM in
-                            ShippingLabelCarrierRow(carrierRowVM)
-                            Divider().padding(.leading, Constants.dividerPadding)
+                        ForEach(viewModel.sections) { sectionVM in
+                            CollapsibleView(isCollapsible: true,
+                                            isCollapsed: .constant(false),
+                                            safeAreaInsets: geometry.safeAreaInsets) {
+                                ShippingLabelCarrierSectionHeader(packageNumber: sectionVM.packageNumber)
+                                    } content: {
+                                        ForEach(sectionVM.rows) { rowVM in
+                                            ShippingLabelCarrierRow(rowVM)
+                                            Divider().padding(.leading, Constants.dividerPadding)
+                                        }
+                                    }
                         }
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
                     case .error:

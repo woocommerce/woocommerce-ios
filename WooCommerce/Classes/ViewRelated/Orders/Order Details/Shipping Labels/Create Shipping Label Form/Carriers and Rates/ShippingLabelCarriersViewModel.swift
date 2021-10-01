@@ -43,9 +43,9 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
 
     @Published private var selectedRates: [ShippingLabelSelectedRate] = []
 
-    /// The rows view models observed by the main view `ShippingLabelCarriers`
+    /// The sections view models observed by the main view `ShippingLabelCarriers`
     ///
-    @Published private(set) var rows: [ShippingLabelCarrierRowViewModel] = []
+    @Published private(set) var sections: [ShippingLabelCarriersSectionViewModel] = []
 
     /// View models of the ghost rows used during the loading process.
     ///
@@ -72,10 +72,10 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
         syncCarriersAndRates()
     }
 
-    func generateRows(response: [ShippingLabelCarriersAndRates]) {
-        var tempRows: [ShippingLabelCarrierRowViewModel] = []
-        for resp in response {
-            tempRows += resp.defaultRates.map { rate in
+    func generateSections(response: [ShippingLabelCarriersAndRates]) {
+        var tempSections: [ShippingLabelCarriersSectionViewModel] = []
+        for (index, resp) in response.enumerated() {
+            let rows: [ShippingLabelCarrierRowViewModel] = resp.defaultRates.map { rate in
                 let signature = resp.signatureRequired.first { rate.title == $0.title }
                 let adultSignature = resp.adultSignatureRequired.first { rate.title == $0.title }
 
@@ -114,11 +114,19 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
                         self.selectedRates.append(selectedRate)
                     }
 
-                    self.generateRows(response: response)
+                    self.generateSections(response: response)
                 }
             }
+
+            // If there are rows, we will create a new compactable section
+            if rows.isNotEmpty {
+                let section = ShippingLabelCarriersSectionViewModel(packageNumber: index + 1,
+                                                                    isValid: true,
+                                                                    rows: rows)
+                tempSections.append(section)
+            }
         }
-        rows = tempRows
+        sections = tempSections
     }
 
     /// Return true if the done button should be enabled
@@ -147,15 +155,15 @@ private extension ShippingLabelCarriersViewModel {
             guard let self = self else { return }
             switch result {
             case .success(let response):
-                self.generateRows(response: response)
-                if self.rows.isEmpty {
+                self.generateSections(response: response)
+                if self.sections.isEmpty {
                     self.syncStatus = .error
                 }
                 else {
                     self.syncStatus = .success
                 }
             case .failure:
-                self.rows = []
+                self.sections = []
                 self.syncStatus = .error
             }
         }

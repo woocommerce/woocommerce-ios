@@ -471,12 +471,13 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
     }
 
     public func reader(_ reader: Reader, didFinishInstallingUpdate update: ReaderSoftwareUpdate?, error: Error?) {
-        guard error == nil else {
+        if let error = error {
+            softwareUpdateSubject.send(.failed(error: error))
             softwareUpdateSubject.send(.available)
-            return
+        } else {
+            softwareUpdateSubject.send(.completed)
+            softwareUpdateSubject.send(.none)
         }
-        softwareUpdateSubject.send(.completed)
-        softwareUpdateSubject.send(.none)
     }
 
     /// This method is called by the Stripe Terminal SDK when it wants client apps

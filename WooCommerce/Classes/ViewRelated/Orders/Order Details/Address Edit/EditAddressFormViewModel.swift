@@ -333,23 +333,27 @@ private extension EditAddressFormViewModel {
     }
 
     /// Update published fields when the selected country and state is updated.
-    /// If the selected country changes and it has a specific state to choose, clear the previous state.
+    /// If the selected country changes and it has a specific state to choose, clear the previous selected state.
     ///
     func bindSelectedCountryAndStateIntoFields() {
 
         typealias StatePublisher = AnyPublisher<Yosemite.StateOfACountry?, Never>
 
-        // When a country is selected, check if the current state is a valid state for that country, otherwise `nil` it.
+        // When a country is selected, check if the new country has a state list.
+        // If it has, clear the selected state and the state field.
+        // If it doesn't only clear the selected state
         $selectedCountry
-            .flatMap { country -> StatePublisher in
-                guard let country = country, country.states.isNotEmpty else {
-                    return StatePublisher.init(Empty())
+            .withLatestFrom($selectedState)
+            .map { country, state -> String in
+                guard let country = country else {
+                    return ""
                 }
-                return StatePublisher.init(Just(nil))
+                let currentStateName = state?.name ?? ""
+                return country.states.isEmpty ? currentStateName : ""
             }
-            .sink { _ in
+            .sink { stateName in
                 self.selectedState = nil
-                self.fields.state = ""
+                self.fields.state = stateName
             }
             .store(in: &subscriptions)
 

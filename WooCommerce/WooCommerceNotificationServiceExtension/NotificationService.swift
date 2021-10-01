@@ -6,7 +6,8 @@ final class NotificationService: UNNotificationServiceExtension {
     private var contentHandler: ((UNNotificationContent) -> Void)?
     private var bestAttemptContent: UNNotificationContent?
 
-    private let featureFlagService: FeatureFlagService = DefaultFeatureFlagService()
+    // `UNNotificationServiceExtension` does not allow a custom initializer, thus the feature flag service is a public property for unit testing.
+    var featureFlagService: FeatureFlagService = DefaultFeatureFlagService()
 
     override func didReceive(_ request: UNNotificationRequest, withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
         self.contentHandler = contentHandler

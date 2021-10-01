@@ -1,21 +1,18 @@
+import ScreenObject
 import XCTest
 
-public class SingleProductScreen: BaseScreen {
-
-    struct ElementStringIDs {
-        static let editProductMenuButton = "edit-product-more-options-button"
-    }
-
-    private let editProductMenuButton = XCUIApplication().buttons[ElementStringIDs.editProductMenuButton]
+public class SingleProductScreen: ScreenObject {
 
     static var isVisible: Bool {
-        let updateButton = XCUIApplication().buttons[ElementStringIDs.editProductMenuButton]
-        return updateButton.exists && updateButton.isHittable
+        guard let screen = try? SingleProductScreen() else { return false }
+        return screen.isLoaded && screen.expectedElement.isHittable
     }
 
-    init() {
-        super.init(element: editProductMenuButton)
-        XCTAssert(editProductMenuButton.waitForExistence(timeout: 3))
+    init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+            expectedElementGetters: [ { $0.buttons["edit-product-more-options-button"] }],
+            app: app
+        )
     }
 
     @discardableResult

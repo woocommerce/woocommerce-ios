@@ -47,8 +47,8 @@ public class ProductsScreen: ScreenObject {
     }
 
     @discardableResult
-    public func selectProduct(atIndex index: Int) -> SingleProductScreen {
+    public func selectProduct(atIndex index: Int) throws -> SingleProductScreen {
         XCUIApplication().tables.cells.element(boundBy: index).tap()
-        return SingleProductScreen()
+        return try SingleProductScreen()
     }
 }

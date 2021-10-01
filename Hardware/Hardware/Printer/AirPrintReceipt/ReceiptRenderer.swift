@@ -5,7 +5,7 @@ import UIKit
 public final class ReceiptRenderer: UIPrintPageRenderer {
     private let lines: [ReceiptLineItem]
     private let parameters: CardPresentReceiptParameters
-    private let cartTotals: ReceiptCartTotals
+    private let cartTotals: [ReceiptTotalLine]
 
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -77,7 +77,7 @@ public extension ReceiptRenderer {
                         <h1>\(receiptTitle)</h1>
                         <h3>\(Localization.amountPaidSectionTitle.uppercased())</h3>
                         <p>
-                            \(formattedAmount()) \(parameters.currency.uppercased())
+                            \(parameters.formattedAmount) \(parameters.currency.uppercased())
                         </p>
                         <h3>\(Localization.datePaidSectionTitle.uppercased())</h3>
                         <p>
@@ -110,41 +110,23 @@ private extension ReceiptRenderer {
         addPrintFormatter(formatter, startingAtPageAt: 0)
     }
 
-    private func formattedAmount() -> String {
-        // We should use CurrencyFormatter instead for consistency
-        let formatter = NumberFormatter()
-
-        let fractionDigits = 2 // TODO - support non cent currencies like JPY - see #3948
-        formatter.minimumFractionDigits = fractionDigits
-        formatter.maximumFractionDigits = fractionDigits
-
-        var amount: Decimal = Decimal(parameters.amount)
-        amount = amount / pow(10, fractionDigits)
-
-        return formatter.string(for: amount) ?? ""
-    }
-
     private func summaryTable() -> String {
         var summaryContent = "<table>"
         for line in lines {
             summaryContent += "<tr><td>\(line.title) × \(line.quantity)</td><td>\(line.amount) \(parameters.currency.uppercased())</td></tr>"
         }
-        summaryContent += taxesSummaryRow()
-        summaryContent += amountPaidSummaryRow()
+        summaryContent += totalRows()
         summaryContent += "</table>"
 
         return summaryContent
     }
 
-    private func taxesSummaryRow() -> String {
-        return taxSummaryRow(title: Localization.totalTaxLineDescription, amount: cartTotals.totalTax)
-    }
-
-    private func taxSummaryRow(title: String, amount: String) -> String {
-        guard amount != "0.00" else {
-            return ""
+    private func totalRows() -> String {
+        var rows = ""
+        for total in cartTotals {
+            rows += summaryRow(title: total.description, amount: total.amount)
         }
-        return summaryRow(title: title, amount: amount)
+        return rows
     }
 
     private func summaryRow(title: String, amount: String) -> String {
@@ -158,10 +140,6 @@ private extension ReceiptRenderer {
                 </td>
             </tr>
         """
-    }
-
-    private func amountPaidSummaryRow() -> String {
-        return summaryRow(title: Localization.amountPaidSectionTitle, amount: formattedAmount())
     }
 
     private func requiredItems() -> String {
@@ -220,11 +198,6 @@ private extension ReceiptRenderer {
             comment: "Title of receipt."
         )
 
-        static let orderNumberSubtitle = NSLocalizedString(
-            "Order number %1$@",
-            comment: "Subtitle of the receipt, to show the order number. %1$@ is the order number, e.g. 4920"
-        )
-
         static let amountPaidSectionTitle = NSLocalizedString(
             "Amount Paid",
             comment: "Title of 'Amount Paid' section in the receipt"
@@ -264,9 +237,5 @@ private extension ReceiptRenderer {
             "Account Type",
             comment: "Reads as 'Account Type'. Part of the mandatory data in receipts"
         )
-
-        static let totalTaxLineDescription = NSLocalizedString(
-            "Total Tax",
-            comment: "Line description for tax charged on the whole cart. Only shown when >0")
     }
 }

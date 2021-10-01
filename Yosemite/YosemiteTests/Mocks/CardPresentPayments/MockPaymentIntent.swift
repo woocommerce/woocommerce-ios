@@ -5,7 +5,7 @@ struct MockPaymentIntent {
         PaymentIntent(id: "intent_id",
                       status: .requiresCapture,
                       created: Date(),
-                      amount: 100,
+                      amount: 10000,
                       currency: "usd",
                       metadata: mockMetadata(),
                       charges: mockCharges())

@@ -132,7 +132,7 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
     /// Return true if the done button should be enabled
     ///
     func isDoneButtonEnabled() -> Bool {
-        return selectedRates.isNotEmpty
+        return selectedRates.count == packages.count && selectedRates.isNotEmpty
     }
 
     /// Return the selected rates

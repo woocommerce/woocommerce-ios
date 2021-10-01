@@ -535,7 +535,7 @@ private extension CardReaderConnectionController {
         } else {
             alerts.updatingFailed(
                 from: from,
-                error: underlyingError,
+                tryAgain: nil,
                 close: {
                     self.state = .searching
                 })

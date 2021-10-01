@@ -1319,6 +1319,7 @@
 		E10DFC78267331590083AFF2 /* ApplicationLogViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10DFC77267331590083AFF2 /* ApplicationLogViewModelTests.swift */; };
 		E10DFC7A2673595A0083AFF2 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10DFC792673595A0083AFF2 /* ShareSheet.swift */; };
 		E11228BC2707161E004E9F2D /* CardPresentModalUpdateFailed.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11228BB2707161E004E9F2D /* CardPresentModalUpdateFailed.swift */; };
+		E11228BE2707267F004E9F2D /* CardPresentModalUpdateFailedNonRetryable.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11228BD2707267F004E9F2D /* CardPresentModalUpdateFailedNonRetryable.swift */; };
 		E120F63826C26B550005A029 /* InPersonPaymentsLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E120F63726C26B550005A029 /* InPersonPaymentsLoadingView.swift */; };
 		E12AF69926BA8ADC00C371C1 /* CardPresentPaymentsOnboardingUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12AF69826BA8ADC00C371C1 /* CardPresentPaymentsOnboardingUseCase.swift */; };
 		E12AF69B26BA8B2000C371C1 /* CardPresentPaymentsOnboardingUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12AF69A26BA8B2000C371C1 /* CardPresentPaymentsOnboardingUseCaseTests.swift */; };
@@ -2763,6 +2764,7 @@
 		E10DFC77267331590083AFF2 /* ApplicationLogViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLogViewModelTests.swift; sourceTree = "<group>"; };
 		E10DFC792673595A0083AFF2 /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 		E11228BB2707161E004E9F2D /* CardPresentModalUpdateFailed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalUpdateFailed.swift; sourceTree = "<group>"; };
+		E11228BD2707267F004E9F2D /* CardPresentModalUpdateFailedNonRetryable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalUpdateFailedNonRetryable.swift; sourceTree = "<group>"; };
 		E120F63726C26B550005A029 /* InPersonPaymentsLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsLoadingView.swift; sourceTree = "<group>"; };
 		E12AF69826BA8ADC00C371C1 /* CardPresentPaymentsOnboardingUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsOnboardingUseCase.swift; sourceTree = "<group>"; };
 		E12AF69A26BA8B2000C371C1 /* CardPresentPaymentsOnboardingUseCaseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsOnboardingUseCaseTests.swift; sourceTree = "<group>"; };
@@ -6280,6 +6282,7 @@
 				E1E125A926EB42530068A9B0 /* CardPresentModalUpdateProgress.swift */,
 				E1308380270311E200D5A68D /* CardPresentModalUpdateFailedLowBattery.swift */,
 				E11228BB2707161E004E9F2D /* CardPresentModalUpdateFailed.swift */,
+				E11228BD2707267F004E9F2D /* CardPresentModalUpdateFailedNonRetryable.swift */,
 				E1BE7039265E6F47006CA4D9 /* CardPresentModalScanningFailed.swift */,
 				3190D61A26D6D82900EF364D /* CardPresentRetryableError.swift */,
 				E1F52DC52668E03B00349D75 /* CardPresentModalBluetoothRequired.swift */,
@@ -7152,6 +7155,7 @@
 				4569D3C325DC008700CDC3E2 /* SiteAddress.swift in Sources */,
 				31FE28C225E6D338003519F2 /* LearnMoreTableViewCell.swift in Sources */,
 				02D45647231CB1FB008CF0A9 /* UIImage+Dot.swift in Sources */,
+				E11228BE2707267F004E9F2D /* CardPresentModalUpdateFailedNonRetryable.swift in Sources */,
 				5739D2D426274D580020E737 /* NoSecureConnectionErrorViewModel.swift in Sources */,
 				7459A6C621B0680300F83A78 /* RequirementsChecker.swift in Sources */,
 				CE1D5A55228A0AD200DF3715 /* TwoColumnTableViewCell.swift in Sources */,

@@ -29,8 +29,8 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         setViewModelAndPresent(from: from, viewModel: updatingFailedLowBattery(from: from, batteryLevel: batteryLevel, close: close))
     }
 
-    func updatingFailed(from: UIViewController, error: Error, close: @escaping () -> Void) {
-        setViewModelAndPresent(from: from, viewModel: updatingFailed(from: from, error: error, close: close))
+    func updatingFailed(from: UIViewController, tryAgain: (() -> Void)?, close: @escaping () -> Void) {
+        setViewModelAndPresent(from: from, viewModel: updatingFailed(from: from, tryAgain: tryAgain, close: close))
     }
 
     func foundReader(from: UIViewController,
@@ -164,8 +164,12 @@ private extension CardReaderSettingsAlerts {
         CardPresentModalUpdateFailedLowBattery(batteryLevel: batteryLevel, close: close)
     }
 
-    func updatingFailed(from: UIViewController, error: Error, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalUpdateFailed(error: error, close: close)
+    func updatingFailed(from: UIViewController, tryAgain: (() -> Void)?, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        if let tryAgain = tryAgain {
+            return CardPresentModalUpdateFailed(tryAgain: tryAgain, close: close)
+        } else {
+            return CardPresentModalUpdateFailedNonRetryable(close: close)
+        }
     }
 
     func foundReader(name: String, connect: @escaping () -> Void, continueSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {

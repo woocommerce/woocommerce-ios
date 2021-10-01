@@ -53,7 +53,7 @@ protocol CardReaderSettingsAlertsProvider {
 
     /// Defines an alert indicating an update couldn't be installed.
     ///
-    func updatingFailed(from: UIViewController, error: Error, close: @escaping () -> Void)
+    func updatingFailed(from: UIViewController, tryAgain: (() -> Void)?, close: @escaping () -> Void)
 
     /// Shows progress when a software update is being installed
     ///

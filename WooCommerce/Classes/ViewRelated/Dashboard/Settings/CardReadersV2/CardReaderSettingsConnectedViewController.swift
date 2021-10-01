@@ -130,9 +130,15 @@ private extension CardReaderSettingsConnectedViewController {
                     settingsAlerts.dismiss()
                 })
             } else {
-                settingsAlerts.updatingFailed(from: self, error: error, close: { [settingsAlerts] in
-                    settingsAlerts.dismiss()
-                })
+                settingsAlerts.updatingFailed(
+                    from: self,
+                    tryAgain: {
+                        viewModel.startCardReaderUpdate()
+                    },
+                    close: { [settingsAlerts] in
+                        settingsAlerts.dismiss()
+                    }
+                )
             }
         } else if let readerUpdateProgress = viewModel.readerUpdateProgress {
             // If we are updating a reader, show the progress alert

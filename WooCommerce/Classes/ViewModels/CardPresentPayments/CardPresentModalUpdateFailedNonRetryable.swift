@@ -1,11 +1,10 @@
 import UIKit
 
-final class CardPresentModalUpdateFailed: CardPresentPaymentsModalViewModel {
-    private let tryAgain: () -> Void
+final class CardPresentModalUpdateFailedNonRetryable: CardPresentPaymentsModalViewModel {
     private let close: () -> Void
 
     let textMode: PaymentsModalTextMode = .noBottomInfo
-    let actionsMode: PaymentsModalActionsMode = .twoAction
+    let actionsMode: PaymentsModalActionsMode = .secondaryOnlyAction
 
     let topTitle: String = Localization.title
 
@@ -13,9 +12,9 @@ final class CardPresentModalUpdateFailed: CardPresentPaymentsModalViewModel {
 
     let image: UIImage = .paymentErrorImage
 
-    let primaryButtonTitle: String? = Localization.tryAgain
+    let primaryButtonTitle: String? = nil
 
-    let secondaryButtonTitle: String? = Localization.cancel
+    let secondaryButtonTitle: String? = Localization.dismiss
 
     let auxiliaryButtonTitle: String? = nil
 
@@ -23,14 +22,11 @@ final class CardPresentModalUpdateFailed: CardPresentPaymentsModalViewModel {
 
     let bottomSubtitle: String? = nil
 
-    init(tryAgain: @escaping () -> Void, close: @escaping () -> Void) {
-        self.tryAgain = tryAgain
+    init(close: @escaping () -> Void) {
         self.close = close
     }
 
-    func didTapPrimaryButton(in viewController: UIViewController?) {
-        tryAgain()
-    }
+    func didTapPrimaryButton(in viewController: UIViewController?) { }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
         close()
@@ -39,20 +35,15 @@ final class CardPresentModalUpdateFailed: CardPresentPaymentsModalViewModel {
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
 }
 
-private extension CardPresentModalUpdateFailed {
+private extension CardPresentModalUpdateFailedNonRetryable {
     enum Localization {
         static let title = NSLocalizedString(
             "We couldn’t update your reader’s software",
             comment: "Error message. Presented to users when updating the card reader software fails"
         )
 
-        static let tryAgain = NSLocalizedString(
-            "Try Again",
-            comment: "Button to retry a software update. Presented to users when updating the card reader software fails"
-        )
-
-        static let cancel = NSLocalizedString(
-            "Cancel",
+        static let dismiss = NSLocalizedString(
+            "Dismiss",
             comment: "Button to dismiss. Presented to users when updating the card reader software fails"
         )
     }

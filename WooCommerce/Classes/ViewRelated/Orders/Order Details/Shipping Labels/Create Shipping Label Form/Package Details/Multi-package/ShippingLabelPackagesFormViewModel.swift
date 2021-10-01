@@ -351,7 +351,7 @@ private extension ShippingLabelPackagesFormViewModel {
         itemViewModels.enumerated().forEach { (index, item) in
             item.$isValidPackage
                 .sink { [weak self] isValid in
-                    self?.packagesValidation[index] = isValid
+                    self?.packagesValidation[index] = isValid && item.selectedPackageID.isNotEmpty
                 }
                 .store(in: &cancellables)
         }

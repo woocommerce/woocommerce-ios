@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		0270C08B27069A8900FC799F /* Experiments.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0270C08127069A8900FC799F /* Experiments.framework */; };
-		0270C09027069A8900FC799F /* ExperimentsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0270C08F27069A8900FC799F /* ExperimentsTests.swift */; };
 		0270C09C27069AE700FC799F /* FeatureFlag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0270C09B27069AE700FC799F /* FeatureFlag.swift */; };
 		0270C09F27069B0000FC799F /* Experiments.h in Headers */ = {isa = PBXBuildFile; fileRef = 0270C09D27069B0000FC799F /* Experiments.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0270C0A327069B7800FC799F /* FeatureFlagService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0270C0A227069B7800FC799F /* FeatureFlagService.swift */; };
@@ -29,7 +28,6 @@
 /* Begin PBXFileReference section */
 		0270C08127069A8900FC799F /* Experiments.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Experiments.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0270C08A27069A8900FC799F /* ExperimentsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ExperimentsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		0270C08F27069A8900FC799F /* ExperimentsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentsTests.swift; sourceTree = "<group>"; };
 		0270C09127069A8900FC799F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0270C09B27069AE700FC799F /* FeatureFlag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlag.swift; sourceTree = "<group>"; };
 		0270C09D27069B0000FC799F /* Experiments.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Experiments.h; sourceTree = "<group>"; };
@@ -92,7 +90,6 @@
 		0270C08E27069A8900FC799F /* ExperimentsTests */ = {
 			isa = PBXGroup;
 			children = (
-				0270C08F27069A8900FC799F /* ExperimentsTests.swift */,
 				0270C09127069A8900FC799F /* Info.plist */,
 			);
 			path = ExperimentsTests;
@@ -218,7 +215,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0270C09027069A8900FC799F /* ExperimentsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,10 +1,3 @@
-//
-//  Experiments.h
-//  Experiments
-//
-//  Created by Jaclyn Chen on 10/1/21.
-//
-
 #import <Foundation/Foundation.h>
 
 //! Project version number for Experiments.

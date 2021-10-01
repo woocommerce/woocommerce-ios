@@ -11,6 +11,7 @@ final class NotificationService: UNNotificationServiceExtension {
 
     override func didReceive(_ request: UNNotificationRequest, withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
         self.contentHandler = contentHandler
+        bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
 
         guard let content = request.content.mutableCopy() as? UNMutableNotificationContent else {
             return
@@ -21,26 +22,25 @@ final class NotificationService: UNNotificationServiceExtension {
             return
         }
 
-        guard let type = NotificationType(rawValue: content.categoryIdentifier) else {
+        guard let type = NotificationType(rawValue: content.categoryIdentifier),
+              let siteID = content.userInfo[NotificationKey.siteID] as? Int64 else {
             setContent(content)
             return
         }
 
-        if let siteID = content.userInfo[NotificationKey.siteID] as? Int {
-            content.threadIdentifier = "\(type.rawValue) \(siteID)"
-        }
+        content.threadIdentifier = "\(type.rawValue) \(siteID)"
 
         switch type {
         case .storeOrder:
             if let message = content.userInfo[NotificationKey.message] as? String {
-                content.title = NSLocalizedString("You have 1 new order! 🎉", comment: "Title of new order push notification.")
+                content.title = Localization.orderNotificationTitle
                 content.body = message
             }
         case .storeReview:
             if let message = content.userInfo[NotificationKey.message] as? String {
-                content.title = NSLocalizedString("You have 1 new review! ⭐️", comment: "Title of new order push notification.")
+                content.title = Localization.reviewNotificationTitle
                 let prompt = content.body
-                content.body = "\(prompt): \(message)" // TODO: localize
+                content.body = String.localizedStringWithFormat(Localization.reviewNotificationBodyFormat, prompt, message)
             }
         }
 
@@ -65,12 +65,22 @@ private extension NotificationService {
 
 // MARK: - Private Types
 //
-private enum NotificationKey {
-    static let siteID = "blog"
-    static let message = "message"
-}
+private extension NotificationService {
+    enum NotificationKey {
+        static let siteID = "blog"
+        static let message = "message"
+    }
 
-private enum NotificationType: String {
-    case storeOrder = "store_order"
-    case storeReview = "store_review"
+    enum NotificationType: String {
+        case storeOrder = "store_order"
+        case storeReview = "store_review"
+    }
+
+    enum Localization {
+        static let orderNotificationTitle = NSLocalizedString("You have 1 new order! 🎉", comment: "Title of new order push notification.")
+        static let reviewNotificationTitle = NSLocalizedString("You have 1 new review! ⭐️", comment: "Title of new review push notification.")
+        static let reviewNotificationBodyFormat = NSLocalizedString("%1$@: %2$@", comment: "Body format of new review push notification."
+                                                                        + " %1$@ reads like 'User name left a review on product name."
+                                                                        + " %2$@ is the review content.")
+    }
 }

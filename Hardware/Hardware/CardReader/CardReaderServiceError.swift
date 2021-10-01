@@ -194,7 +194,7 @@ public enum UnderlyingError: Error {
 extension UnderlyingError {
     /// Returns true if the error is related to card reader software updates
     ///
-    var isSoftwareUpdateError: Bool {
+    public var isSoftwareUpdateError: Bool {
         switch self {
         case .readerSoftwareUpdateFailed,
              .readerSoftwareUpdateFailedReader,

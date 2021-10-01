@@ -503,7 +503,8 @@ private extension CardReaderConnectionController {
         ///
         self.foundReaders = []
 
-        if case CardReaderServiceError.softwareUpdate(underlyingError: .readerSoftwareUpdateFailedBatteryLow, batteryLevel: _) = error {
+        if case CardReaderServiceError.softwareUpdate(underlyingError: let underlyingError, batteryLevel: _) = error,
+           underlyingError.isSoftwareUpdateError {
             return onUpdateFailed(error: error)
         }
 
@@ -519,17 +520,26 @@ private extension CardReaderConnectionController {
 
     private func onUpdateFailed(error: Error) {
         guard let from = fromController,
-              case CardReaderServiceError.softwareUpdate(underlyingError: .readerSoftwareUpdateFailedBatteryLow, batteryLevel: let batteryLevel) = error else {
+              case CardReaderServiceError.softwareUpdate(underlyingError: let underlyingError, batteryLevel: let batteryLevel) = error else {
             return
         }
 
-        alerts.updatingFailedLowBattery(
-            from: from,
-            batteryLevel: batteryLevel,
-            close: {
-                self.state = .searching
-            }
-        )
+        if underlyingError == .readerSoftwareUpdateFailedBatteryLow {
+            alerts.updatingFailedLowBattery(
+                from: from,
+                batteryLevel: batteryLevel,
+                close: {
+                    self.state = .searching
+                }
+            )
+        } else {
+            alerts.updatingFailed(
+                from: from,
+                error: underlyingError,
+                close: {
+                    self.state = .searching
+                })
+        }
     }
 
     /// An error occurred during discovery

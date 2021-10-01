@@ -30,4 +30,10 @@ final class PaymentIntent_ReceiptParametersTests: XCTestCase {
 
         XCTAssertEqual(intent.receiptParameters()?.orderID, 1920)
     }
+
+    func test_receiptParameters_Includes_formattedAmount_WithDecimalFormatting() {
+        let intent = MockPaymentIntent.mock()
+
+        XCTAssertEqual(intent.receiptParameters()?.formattedAmount, "100.00")
+    }
 }

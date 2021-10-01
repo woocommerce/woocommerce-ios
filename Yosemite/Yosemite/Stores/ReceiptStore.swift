@@ -87,13 +87,17 @@ private extension ReceiptStore {
     }
 
     func generateCartTotals(order: Order, parameters: CardPresentReceiptParameters) -> [ReceiptTotalLine] {
-        var totalLines = [ReceiptTotalLine]()
-        if NSDecimalNumber(apiAmount: order.totalTax).decimalValue > 0.00 {
-            totalLines.append(ReceiptTotalLine(description: ReceiptContent.Localization.totalTaxLineDescription,
-                                          amount: order.totalTax))
-        }
-        totalLines.append(ReceiptTotalLine(description: ReceiptContent.Localization.amountPaidLineDescription, amount: parameters.formattedAmount))
-        return totalLines
+        let subtotalLines = [ReceiptTotalLine(description: ReceiptContent.Localization.shippingLineDescription,
+                                              amount: order.shippingTotal),
+                             ReceiptTotalLine(description: ReceiptContent.Localization.totalTaxLineDescription,
+                                              amount: order.totalTax)]
+            .filter {
+                NSDecimalNumber(apiAmount: $0.amount).decimalValue > 0.00
+            }
+        let totalLine = [ReceiptTotalLine(description: ReceiptContent.Localization.amountPaidLineDescription,
+                                         amount: parameters.formattedAmount)]
+
+        return subtotalLines + totalLine
     }
 
     func loadReceipt(order: Order, onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {

@@ -143,11 +143,52 @@ final class ReceiptStoreTests: XCTestCase {
         }
         XCTAssertNil(actualTaxLine)
     }
+
+    func test_print_callsPrint_passing_Shipping() throws {
+        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        let mockOrder = makeOrder(shippingTotal: "5.50")
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        let actualShippingLine = receiptPrinterService.contentProvided?.cartTotals.first {
+            $0.description == ReceiptContent.Localization.shippingLineDescription
+        }
+        XCTAssertEqual(mockOrder.shippingTotal, actualShippingLine?.amount)
+    }
+
+    func test_print_OrderWithoutShipping_DoesNotIncludeShippingInReceiptContent() throws {
+        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        let mockOrder = makeOrder(shippingTotal: "0.00")
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        let actualShippingLine = receiptPrinterService.contentProvided?.cartTotals.first {
+            $0.description == ReceiptContent.Localization.shippingLineDescription
+        }
+        XCTAssertNil(actualShippingLine)
+    }
 }
 
 
 private extension ReceiptStoreTests {
     func makeOrder(discountTax: String = "",
+                   shippingTotal: String = "",
                    shippingTax: String = "",
                    totalTax: String = "") -> Networking.Order {
         Order(siteID: 1234,
@@ -163,7 +204,7 @@ private extension ReceiptStoreTests {
               datePaid: nil,
               discountTotal: "",
               discountTax: discountTax,
-              shippingTotal: "",
+              shippingTotal: shippingTotal,
               shippingTax: shippingTax,
               total: "100.00",
               totalTax: totalTax,

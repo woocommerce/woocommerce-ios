@@ -90,7 +90,6 @@
 		0225C42824768A4C00C5B4F0 /* FilterProductListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225C42724768A4C00C5B4F0 /* FilterProductListViewModelTests.swift */; };
 		0225C42A24768CE900C5B4F0 /* FilterProductListViewModelProductListFilterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225C42924768CE900C5B4F0 /* FilterProductListViewModelProductListFilterTests.swift */; };
 		0225C42C2477D0D500C5B4F0 /* ProductFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225C42B2477D0D500C5B4F0 /* ProductFormViewModel.swift */; };
-		022693812706C3EA00C797CE /* NotificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022693802706C3EA00C797CE /* NotificationServiceTests.swift */; };
 		02279586237A50C900787C63 /* AztecUnorderedListFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02279583237A50C900787C63 /* AztecUnorderedListFormatBarCommand.swift */; };
 		02279587237A50C900787C63 /* AztecHeaderFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02279584237A50C900787C63 /* AztecHeaderFormatBarCommand.swift */; };
 		0227958D237A51F300787C63 /* OptionsTableViewController+Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0227958C237A51F300787C63 /* OptionsTableViewController+Styles.swift */; };
@@ -139,6 +138,7 @@
 		0245465B24EE7637004F531C /* ProductFormEventLoggerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0245465A24EE7637004F531C /* ProductFormEventLoggerProtocol.swift */; };
 		0245465D24EE779D004F531C /* ProductFormEventLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0245465C24EE779D004F531C /* ProductFormEventLogger.swift */; };
 		0245465F24EE9106004F531C /* ProductVariationFormEventLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0245465E24EE9106004F531C /* ProductVariationFormEventLogger.swift */; };
+		0245AB6E2706F15B00B10BA8 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0245AB6D2706F15B00B10BA8 /* NotificationService.swift */; };
 		0246405F258B122100C10A7D /* PrintShippingLabelCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0246405E258B122100C10A7D /* PrintShippingLabelCoordinatorTests.swift */; };
 		0247AAA223A3C5A6007F967E /* DecimalInputFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0247AAA123A3C5A6007F967E /* DecimalInputFormatterTests.swift */; };
 		02482A8B237BE8C7007E73ED /* LinkSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02482A89237BE8C7007E73ED /* LinkSettingsViewController.swift */; };
@@ -261,7 +261,6 @@
 		02913E9523A774C500707A0C /* UnitInputFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02913E9423A774C500707A0C /* UnitInputFormatter.swift */; };
 		02913E9723A774E600707A0C /* DecimalInputFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02913E9623A774E600707A0C /* DecimalInputFormatter.swift */; };
 		0294A3BE2706DD9700B59C37 /* WooCommerceNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 0294A3B72706DD9700B59C37 /* WooCommerceNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		0294A3C52706DDC200B59C37 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0294A3C32706DDC200B59C37 /* NotificationService.swift */; };
 		0294A3C82706DEB100B59C37 /* NotificationServiceExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0294A3C72706DEB100B59C37 /* NotificationServiceExtension.framework */; };
 		0294A3C92706DEB100B59C37 /* NotificationServiceExtension.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0294A3C72706DEB100B59C37 /* NotificationServiceExtension.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0294F8AB25E8A12C005B537A /* WooTabNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0294F8AA25E8A12C005B537A /* WooTabNavigationController.swift */; };
@@ -1576,7 +1575,6 @@
 		0225C42924768CE900C5B4F0 /* FilterProductListViewModelProductListFilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductListViewModelProductListFilterTests.swift; sourceTree = "<group>"; };
 		0225C42B2477D0D500C5B4F0 /* ProductFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormViewModel.swift; sourceTree = "<group>"; };
 		0226937A2706C20900C797CE /* Experiments.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Experiments.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		022693802706C3EA00C797CE /* NotificationServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationServiceTests.swift; sourceTree = "<group>"; };
 		022693CC2706D9B600C797CE /* NotificationServiceExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = NotificationServiceExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		02279583237A50C900787C63 /* AztecUnorderedListFormatBarCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AztecUnorderedListFormatBarCommand.swift; sourceTree = "<group>"; };
 		02279584237A50C900787C63 /* AztecHeaderFormatBarCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AztecHeaderFormatBarCommand.swift; sourceTree = "<group>"; };
@@ -1626,6 +1624,7 @@
 		0245465A24EE7637004F531C /* ProductFormEventLoggerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormEventLoggerProtocol.swift; sourceTree = "<group>"; };
 		0245465C24EE779D004F531C /* ProductFormEventLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormEventLogger.swift; sourceTree = "<group>"; };
 		0245465E24EE9106004F531C /* ProductVariationFormEventLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationFormEventLogger.swift; sourceTree = "<group>"; };
+		0245AB6D2706F15B00B10BA8 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		0246405E258B122100C10A7D /* PrintShippingLabelCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintShippingLabelCoordinatorTests.swift; sourceTree = "<group>"; };
 		0247AAA123A3C5A6007F967E /* DecimalInputFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecimalInputFormatterTests.swift; sourceTree = "<group>"; };
 		02482A89237BE8C7007E73ED /* LinkSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkSettingsViewController.swift; sourceTree = "<group>"; };
@@ -1749,7 +1748,6 @@
 		02913E9423A774C500707A0C /* UnitInputFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitInputFormatter.swift; sourceTree = "<group>"; };
 		02913E9623A774E600707A0C /* DecimalInputFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecimalInputFormatter.swift; sourceTree = "<group>"; };
 		0294A3B72706DD9700B59C37 /* WooCommerceNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WooCommerceNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		0294A3C32706DDC200B59C37 /* NotificationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		0294A3C42706DDC200B59C37 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0294A3C72706DEB100B59C37 /* NotificationServiceExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = NotificationServiceExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0294F8AA25E8A12C005B537A /* WooTabNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooTabNavigationController.swift; sourceTree = "<group>"; };
@@ -3145,14 +3143,6 @@
 			path = "Inventory Settings";
 			sourceTree = "<group>";
 		};
-		0226937F2706C3D800C797CE /* NotificationServiceExtension */ = {
-			isa = PBXGroup;
-			children = (
-				022693802706C3EA00C797CE /* NotificationServiceTests.swift */,
-			);
-			path = NotificationServiceExtension;
-			sourceTree = "<group>";
-		};
 		0227958E237A5D5200787C63 /* Editor */ = {
 			isa = PBXGroup;
 			children = (
@@ -3652,7 +3642,7 @@
 			isa = PBXGroup;
 			children = (
 				0294A3C42706DDC200B59C37 /* Info.plist */,
-				0294A3C32706DDC200B59C37 /* NotificationService.swift */,
+				0245AB6D2706F15B00B10BA8 /* NotificationService.swift */,
 			);
 			path = WooCommerceNotificationServiceExtension;
 			sourceTree = "<group>";
@@ -5213,7 +5203,6 @@
 		B56DB3E02049BFAA00D4AA8E /* WooCommerceTests */ = {
 			isa = PBXGroup;
 			children = (
-				0226937F2706C3D800C797CE /* NotificationServiceExtension */,
 				D8F01DD125DEDC0100CE70BE /* Stripe Integration Tests */,
 				5791FB4024EC833200117FD6 /* ViewModels */,
 				57C2F6E324C27B0C00131012 /* Authentication */,
@@ -6877,6 +6866,7 @@
 				TargetAttributes = {
 					0294A3B62706DD9700B59C37 = {
 						CreatedOnToolsVersion = 12.5.1;
+						LastSwiftMigration = 1250;
 					};
 					3FF314DD26FC74450012E68E = {
 						CreatedOnToolsVersion = 13.0;
@@ -7337,7 +7327,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0294A3C52706DDC200B59C37 /* NotificationService.swift in Sources */,
+				0245AB6E2706F15B00B10BA8 /* NotificationService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8258,7 +8248,6 @@
 				A650BE862578E76600C655E0 /* MockStorageManager+Sample.swift in Sources */,
 				5791FB4224EC834300117FD6 /* MainTabViewModelTests.swift in Sources */,
 				020BE76D23B4A404007FE54C /* AztecStrikethroughFormatBarCommandTests.swift in Sources */,
-				022693812706C3EA00C797CE /* NotificationServiceTests.swift in Sources */,
 				2667BFDF252F762E008099D4 /* IssueRefundViewModelTests.swift in Sources */,
 				02404EE02314FE5900FF1170 /* DashboardUIFactoryTests.swift in Sources */,
 				31F21B60263CB78A0035B50A /* MockCardReader.swift in Sources */,
@@ -8598,8 +8587,10 @@
 		0294A3C02706DD9700B59C37 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 7.6.0.1;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = WooCommerceNotificationServiceExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -8608,11 +8599,13 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				MARKETING_VERSION = 7.6;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce.WooCommerceNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -8621,9 +8614,11 @@
 		0294A3C12706DD9700B59C37 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 7.6.0.1;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = WooCommerceNotificationServiceExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -8632,6 +8627,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				MARKETING_VERSION = 7.6;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce.WooCommerceNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -8644,9 +8640,11 @@
 		0294A3C22706DD9700B59C37 /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 7.6.0.1;
 				DEVELOPMENT_TEAM = 99KV9Z6BKV;
 				INFOPLIST_FILE = WooCommerceNotificationServiceExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -8655,6 +8653,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				MARKETING_VERSION = 7.6;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce.WooCommerceNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";

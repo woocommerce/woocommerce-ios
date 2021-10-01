@@ -290,7 +290,7 @@ private extension ShippingLabelFormViewController {
         cell.configure(state: row.cellState,
                        icon: .globeImage,
                        title: Localization.customsCellTitle,
-                       body: Localization.customsCellSubtitle,
+                       body: viewModel.getCustomsFormBody(),
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
             guard let self = self else { return }
             self.displayCustomsFormListVC(customsForms: self.viewModel.customsForms)
@@ -633,7 +633,6 @@ private extension ShippingLabelFormViewController {
         static let continueButtonInCells = NSLocalizedString("Continue",
                                                              comment: "Continue button inside every cell inside Create Shipping Label form")
         static let customsCellTitle = NSLocalizedString("Customs", comment: "Title of the cell Customs inside Create Shipping Label form")
-        static let customsCellSubtitle = NSLocalizedString("Fill out customs form", comment: "Subtitle of the cell Customs inside Create Shipping Label form")
         // Purchase progress view
         static let purchaseProgressTitle = NSLocalizedString("Purchasing Label", comment: "Title of the in-progress UI while purchasing a shipping label")
         static let purchaseProgressMessage = NSLocalizedString("Please wait", comment: "Message of the in-progress UI while purchasing a shipping label")

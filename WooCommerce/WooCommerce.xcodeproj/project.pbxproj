@@ -284,6 +284,8 @@
 		02A65301246AA63600755A01 /* ProductDetailsFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A65300246AA63600755A01 /* ProductDetailsFactory.swift */; };
 		02A9A496244D84AB00757B99 /* ProductsSortOrderBottomSheetListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A9A495244D84AB00757B99 /* ProductsSortOrderBottomSheetListSelectorCommandTests.swift */; };
 		02AAD54525023A8300BA1E26 /* ProductFormRemoteActionUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AAD54425023A8300BA1E26 /* ProductFormRemoteActionUseCase.swift */; };
+		02AB82EC27069D5D008D7334 /* Experiments.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02AB82EB27069D5D008D7334 /* Experiments.framework */; };
+		02AB82ED27069D5D008D7334 /* Experiments.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 02AB82EB27069D5D008D7334 /* Experiments.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		02AC822C2498BC9700A615FB /* ProductFormViewModel+UpdatesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AC822B2498BC9700A615FB /* ProductFormViewModel+UpdatesTests.swift */; };
 		02ADC7CC239762E0008D4BED /* PaginatedListSelectorViewProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ADC7CB239762E0008D4BED /* PaginatedListSelectorViewProperties.swift */; };
 		02ADC7CE23978EAA008D4BED /* PaginatedProductShippingClassListSelectorDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ADC7CD23978EAA008D4BED /* PaginatedProductShippingClassListSelectorDataSourceTests.swift */; };
@@ -1464,6 +1466,7 @@
 				D88FDB4625DD223B00CB0DBD /* Hardware.framework in Embed Frameworks */,
 				263E37E22641AD8300260D3B /* Codegen in Embed Frameworks */,
 				B5C3B5EA20D189FC0072CB9D /* Storage.framework in Embed Frameworks */,
+				02AB82ED27069D5D008D7334 /* Experiments.framework in Embed Frameworks */,
 				B5C3B5E920D189F70072CB9D /* Yosemite.framework in Embed Frameworks */,
 				B5C3B5E820D189F30072CB9D /* Networking.framework in Embed Frameworks */,
 			);
@@ -1659,6 +1662,7 @@
 		026B3C56249A046E00F7823C /* TextFieldTextAlignment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldTextAlignment.swift; sourceTree = "<group>"; };
 		026CF638237E9ABE009563D4 /* ProductVariationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationsViewController.swift; sourceTree = "<group>"; };
 		026CF639237E9ABE009563D4 /* ProductVariationsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductVariationsViewController.xib; sourceTree = "<group>"; };
+		0270C0A827069BEF00FC799F /* Experiments.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Experiments.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0270F47524D005B00005210A /* ProductFormViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormViewModelProtocol.swift; sourceTree = "<group>"; };
 		0270F47724D006F60005210A /* ProductFormPresentationStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormPresentationStyle.swift; sourceTree = "<group>"; };
 		0271139924DD15D800574A07 /* ProductsTabProductViewModel+VariationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductsTabProductViewModel+VariationTests.swift"; sourceTree = "<group>"; };
@@ -1736,6 +1740,7 @@
 		02A65300246AA63600755A01 /* ProductDetailsFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailsFactory.swift; sourceTree = "<group>"; };
 		02A9A495244D84AB00757B99 /* ProductsSortOrderBottomSheetListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsSortOrderBottomSheetListSelectorCommandTests.swift; sourceTree = "<group>"; };
 		02AAD54425023A8300BA1E26 /* ProductFormRemoteActionUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormRemoteActionUseCase.swift; sourceTree = "<group>"; };
+		02AB82EB27069D5D008D7334 /* Experiments.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Experiments.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		02AC822B2498BC9700A615FB /* ProductFormViewModel+UpdatesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormViewModel+UpdatesTests.swift"; sourceTree = "<group>"; };
 		02ADC7CB239762E0008D4BED /* PaginatedListSelectorViewProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedListSelectorViewProperties.swift; sourceTree = "<group>"; };
 		02ADC7CD23978EAA008D4BED /* PaginatedProductShippingClassListSelectorDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedProductShippingClassListSelectorDataSourceTests.swift; sourceTree = "<group>"; };
@@ -2879,6 +2884,7 @@
 				B5C3B5E320D189E60072CB9D /* Networking.framework in Frameworks */,
 				45455E322657C3F300BBB0C4 /* Shimmer in Frameworks */,
 				86DBBB0BDEA3488E2BEBB314 /* Pods_WooCommerce.framework in Frameworks */,
+				02AB82EC27069D5D008D7334 /* Experiments.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4892,6 +4898,8 @@
 		88A44ABE866401E6DB03AC60 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				02AB82EB27069D5D008D7334 /* Experiments.framework */,
+				0270C0A827069BEF00FC799F /* Experiments.framework */,
 				3FF314EF26FC784A0012E68E /* XCTest.framework */,
 				315E14F32698DA24000AD5FF /* PassKit.framework */,
 				D88FDB4425DD223B00CB0DBD /* Hardware.framework */,

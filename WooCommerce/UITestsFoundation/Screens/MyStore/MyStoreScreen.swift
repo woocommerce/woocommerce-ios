@@ -35,8 +35,8 @@ public final class MyStoreScreen: ScreenObject {
     }
 
     @discardableResult
-    public func openSettingsPane() -> SettingsScreen {
+    public func openSettingsPane() throws -> SettingsScreen {
         settingsButton.tap()
-        return SettingsScreen()
+        return try SettingsScreen()
     }
 }

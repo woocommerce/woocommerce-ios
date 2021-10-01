@@ -31,8 +31,8 @@ class BetaFeaturesScreen: ScreenObject {
     }
 
     @discardableResult
-    func goBackToSettingsScreen() -> SettingsScreen {
+    func goBackToSettingsScreen() throws -> SettingsScreen {
         navBackButton.tap()
-        return SettingsScreen()
+        return try SettingsScreen()
     }
 }

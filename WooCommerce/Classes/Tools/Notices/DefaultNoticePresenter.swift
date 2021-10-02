@@ -24,6 +24,9 @@ class DefaultNoticePresenter: NoticePresenter {
     ///
     weak var presentingViewController: UIViewController?
 
+    /// Observes keyboard and repositions Notice
+    ///
+    private var keyboardFrameObserver: KeyboardFrameObserver!
 
     /// Enqueues the specified Notice for display.
     ///
@@ -94,6 +97,25 @@ private extension DefaultNoticePresenter {
         noticeView.translatesAutoresizingMaskIntoConstraints = false
 
         let noticeContainerView = NoticeContainerView(noticeView: noticeView)
+
+        var onScreenBottomOffsetAdjustedForKeyboard: CGFloat = 0
+        keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+            guard let self = self else { return }
+            // Subtract the tab bar height from keyboard height, if keyboard is visible
+            onScreenBottomOffsetAdjustedForKeyboard = -(keyboardFrame.height - (keyboardFrame.height > 0 ? self.offscreenBottomOffset : 0))
+
+            // Adjust the bottom constraint ONLY if the noticeContainerView is already presented.
+            // If noticeContainerView is not already presented, it will be presented using onScreenBottomOffsetAdjustedForKeyboard.
+            //
+            if noticeContainerView.superview != nil {
+                noticeContainerView.noticeBottomConstraint.constant = onScreenBottomOffsetAdjustedForKeyboard
+                self.animatePresentation(toState: {
+                    noticeContainerView.layoutIfNeeded()
+                })
+            }
+        }
+        keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
+
         addNoticeContainerToPresentingViewController(noticeContainerView)
 
         NSLayoutConstraint.activate([
@@ -111,7 +133,7 @@ private extension DefaultNoticePresenter {
 
         let onScreenState = {
             noticeView.alpha = UIKitConstants.alphaFull
-            noticeContainerView.noticeBottomConstraint.constant = 0
+            noticeContainerView.noticeBottomConstraint.constant = onScreenBottomOffsetAdjustedForKeyboard
 
             noticeContainerView.layoutIfNeeded()
         }
@@ -144,6 +166,7 @@ private extension DefaultNoticePresenter {
 
     func dismiss() {
         noticeOnScreen = nil
+        keyboardFrameObserver = nil
         presentNextNoticeIfPossible()
     }
 
@@ -175,8 +198,10 @@ private extension DefaultNoticePresenter {
         return 0
     }
 
-    func animatePresentation(fromState: () -> Void, toState: @escaping () -> Void, completion: @escaping () -> Void) {
-        fromState()
+    func animatePresentation(fromState: (() -> Void)? = nil,
+                             toState: @escaping () -> Void,
+                             completion: (() -> Void)? = nil) {
+        fromState?()
 
         UIView.animate(withDuration: Animations.appearanceDuration,
                        delay: 0,
@@ -185,7 +210,7 @@ private extension DefaultNoticePresenter {
                        options: [],
                        animations: toState,
                        completion: { _ in
-                        completion()
+                        completion?()
         })
     }
 

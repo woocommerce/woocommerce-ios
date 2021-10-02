@@ -5,8 +5,8 @@ import Codegen
 ///
 public struct ShippingLabelPackageSelected: Equatable, GeneratedFakeable {
 
-    /// The id will be always "default_box"
-    public let id: String = "default_box"
+    /// The id will be always the name of the package.
+    public let id: String
     public let boxID: String
     public let length: Double
     public let width: Double
@@ -15,7 +15,15 @@ public struct ShippingLabelPackageSelected: Equatable, GeneratedFakeable {
     public let isLetter: Bool
     public let customsForm: ShippingLabelCustomsForm?
 
-    public init(boxID: String, length: Double, width: Double, height: Double, weight: Double, isLetter: Bool, customsForm: ShippingLabelCustomsForm?) {
+    public init(id: String,
+                boxID: String,
+                length: Double,
+                width: Double,
+                height: Double,
+                weight: Double,
+                isLetter: Bool,
+                customsForm: ShippingLabelCustomsForm?) {
+        self.id = id
         self.boxID = boxID
         self.length = length
         self.width = width
@@ -26,6 +34,7 @@ public struct ShippingLabelPackageSelected: Equatable, GeneratedFakeable {
     }
 
     public init(customPackage: ShippingLabelCustomPackage, totalWeight: Double, customsForm: ShippingLabelCustomsForm?) {
+        self.id = customPackage.title
         self.boxID = customPackage.title
         self.length = customPackage.getLength()
         self.width = customPackage.getWidth()
@@ -36,6 +45,7 @@ public struct ShippingLabelPackageSelected: Equatable, GeneratedFakeable {
     }
 
     public init(predefinedPackage: ShippingLabelPredefinedPackage, totalWeight: Double, customsForm: ShippingLabelCustomsForm?) {
+        self.id = predefinedPackage.id
         self.boxID = predefinedPackage.id
         self.length = predefinedPackage.getLength()
         self.width = predefinedPackage.getWidth()

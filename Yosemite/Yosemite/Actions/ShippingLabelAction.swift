@@ -55,7 +55,7 @@ public enum ShippingLabelAction: Action {
                               originAddress: ShippingLabelAddress,
                               destinationAddress: ShippingLabelAddress,
                               packages: [ShippingLabelPackageSelected],
-                              completion: (Result<ShippingLabelCarriersAndRates, Error>) -> Void)
+                              completion: (Result<[ShippingLabelCarriersAndRates], Error>) -> Void)
 
     /// Loads account-level shipping label settings for a store.
     ///

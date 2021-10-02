@@ -1,5 +1,7 @@
 // Generated using Sourcery 1.0.3 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
+
+import Yosemite
 import Networking
 
 extension APNSDevice {
@@ -1125,6 +1127,7 @@ extension ShippingLabelPackageSelected {
     ///
     public static func fake() -> ShippingLabelPackageSelected {
         .init(
+            id: .fake(),
             boxID: .fake(),
             length: .fake(),
             width: .fake(),

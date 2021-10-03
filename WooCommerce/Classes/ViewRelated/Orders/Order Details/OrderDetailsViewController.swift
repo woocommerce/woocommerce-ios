@@ -931,8 +931,8 @@ private extension OrderDetailsViewController {
         }
 
         statusList.didSelectApply = { (selectedStatus) in
+            statusList.activateRightSpinner()
             self.setOrderStatus(to: selectedStatus) {
-                statusList.configureRightButton()
                 statusList.dismiss(animated: true)
             }
         }
@@ -942,14 +942,23 @@ private extension OrderDetailsViewController {
         present(navigationController, animated: true)
     }
 
-    func setOrderStatus(to newStatus: OrderStatusEnum?, completionHandler: @escaping () -> Void) {
+    func setOrderStatus(to newStatus: OrderStatusEnum?, onCompletion closeListView: @escaping () -> Void) {
         guard let newStatus = newStatus else {
             return
         }
         let order = viewModel.order
         let undoStatus = viewModel.order.status
-        let done = updateOrderStatusAction(siteID: order.siteID, order: order, status: newStatus, closeListView: completionHandler)
-        let undo = updateOrderStatusAction(siteID: order.siteID, order: order, status: undoStatus, closeListView: completionHandler)
+        let undo = updateOrderStatusAction(siteID: order.siteID, order: order, status: undoStatus, closeList: closeListView) {
+        }
+        let done = updateOrderStatusAction(siteID: order.siteID, order: order, status: newStatus, closeList: closeListView) { [weak self] in
+            self?.displayOrderStatusUpdatedNotice {
+                ServiceLocator.stores.dispatch(undo)
+                ServiceLocator.analytics.track(.orderStatusChange,
+                                               withProperties: ["id": order.orderID,
+                                                                "from": newStatus.rawValue,
+                                                                "to": undoStatus.rawValue])
+            }
+        }
 
         ServiceLocator.stores.dispatch(done)
 
@@ -957,18 +966,10 @@ private extension OrderDetailsViewController {
                                        withProperties: ["id": order.orderID,
                                                         "from": undoStatus.rawValue,
                                                         "to": newStatus.rawValue])
-        // TODO: Move this to display once the list view dismisses
-        displayOrderStatusUpdatedNotice {
-            ServiceLocator.stores.dispatch(undo)
-            ServiceLocator.analytics.track(.orderStatusChange,
-                                           withProperties: ["id": order.orderID,
-                                                            "from": newStatus.rawValue,
-                                                            "to": undoStatus.rawValue])
-        }
     }
     /// Returns an Order Update Action that will result in the specified Order Status updated accordingly.
     ///
-    private func updateOrderStatusAction(siteID: Int64, order: Order, status: OrderStatusEnum, closeListView: @escaping () -> Void) -> Action {
+    private func updateOrderStatusAction(siteID: Int64, order: Order, status: OrderStatusEnum, closeList: @escaping () -> Void, showSuccess: @escaping () -> Void) -> Action {
         let newOrder = order.copy(status: status)
         return OrderAction.updateOrder(siteID: siteID, order: newOrder, fields: [.status], onCompletion: { [weak self] result in
             guard let self = self else { return }
@@ -977,14 +978,13 @@ private extension OrderDetailsViewController {
                 NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
                 self.syncNotes()
                 ServiceLocator.analytics.track(.orderStatusChangeSuccess)
-                closeListView()
-                return
+                closeList()
+                showSuccess()
             case .failure(let error):
                 ServiceLocator.analytics.track(.orderStatusChangeFailed, withError: error)
                 DDLogError("⛔️ Order Update Failure: [\(order.orderID).status = \(status)]. Error: \(error)")
-
+                closeList()
                 self.displayOrderStatusErrorNotice(orderID: order.orderID, status: status)
-                closeListView()
             }
         })
     }
@@ -1011,9 +1011,7 @@ private extension OrderDetailsViewController {
         let title = String.localizedStringWithFormat(titleFormat, orderID)
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: title, message: nil, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
-            self?.setOrderStatus(to: status) {
-                print("Retry Action Complete")
-            }
+            self?.setOrderStatus(to: status) {}
         }
 
         ServiceLocator.noticePresenter.enqueue(notice: notice)

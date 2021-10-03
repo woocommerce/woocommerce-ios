@@ -145,18 +145,14 @@ public class OrdersRemote: Remote {
                     case .shippingAddress:
                         let shippingAddressEncoded = try order.shippingAddress?.toDictionary()
                         params[Order.CodingKeys.shippingAddress.rawValue] = shippingAddressEncoded
-<<<<<<< HEAD
                     case .status:
                         params[Order.CodingKeys.status.rawValue] = order.status.rawValue
-=======
                     case .billingAddress:
                         let billingAddressEncoded = try order.billingAddress?.toDictionary()
                         params[Order.CodingKeys.billingAddress.rawValue] = billingAddressEncoded
->>>>>>> 7f8993ff8f4aefaa6700099d0a8db0de7193cea9
                     }
                 }
             }()
-
             let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
             enqueue(request, mapper: mapper, completion: completion)
         } catch {

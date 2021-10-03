@@ -5,13 +5,24 @@ final class OrderStatusListViewController: UIViewController {
     /// Main TableView.
     ///
     @IBOutlet private var tableView: UITableView!
+    
+    /// The index of the status stored in the database when list view is presented
+    ///
+    private var storedStatus: IndexPath?
 
     /// The index of (new) order status selected by the user tapping on a table row.
     ///
     private var indexOfSelectedStatus: IndexPath? {
         didSet {
-            // Maybe don't change if the indexpath is the same as when the list view is presented?
-            activateApplyButton()
+            guard let storedStatus = storedStatus else {
+                activateApplyButton()
+                return
+            }
+            if storedStatus != indexOfSelectedStatus {
+                activateApplyButton()
+            } else {
+                deActivateApplyButton()
+            }
         }
     }
 
@@ -54,6 +65,7 @@ final class OrderStatusListViewController: UIViewController {
             return
         }
         tableView.selectRow(at: selectedStatusIndex, animated: false, scrollPosition: .none)
+        storedStatus = selectedStatusIndex
     }
 
     /// Registers all of the available TableViewCells
@@ -105,12 +117,14 @@ extension OrderStatusListViewController {
         navigationItem.setRightBarButton(rightBarButton, animated: false)
         deActivateApplyButton()
     }
+    
     func activateRightSpinner() {
-        let activityIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+        let activityIndicator = UIActivityIndicatorView(style: .medium)
         let rightBarButton = UIBarButtonItem(customView: activityIndicator)
         navigationItem.setRightBarButton(rightBarButton, animated: true)
         activityIndicator.startAnimating()
     }
+    
     func activateApplyButton() {
         navigationItem.rightBarButtonItem?.isEnabled = true
     }
@@ -132,7 +146,6 @@ extension OrderStatusListViewController {
             didSelectCancel?()
             return
         }
-        activateRightSpinner()
         didSelectApply?(selectedStatus)
     }
 }

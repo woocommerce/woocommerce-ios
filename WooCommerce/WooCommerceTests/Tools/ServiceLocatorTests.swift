@@ -39,12 +39,6 @@ final class ServiceLocatorTests: XCTestCase {
         XCTAssertNotNil(ServiceLocator.pushNotesManager)
     }
 
-    func test_pushNotesManager_defaults_to_PushNotificationsManager() {
-        let pushNotes = ServiceLocator.pushNotesManager
-
-        XCTAssertTrue(pushNotes is PushNotificationsManager)
-    }
-
     func test_ServiceLocator_provides_authenticationManager() {
         XCTAssertNotNil(ServiceLocator.authenticationManager)
     }

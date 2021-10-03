@@ -4,6 +4,19 @@ import Combine
 
 final class EditAddressFormViewModel: ObservableObject {
 
+    enum AddressType {
+        case shipping
+        case billing
+    }
+
+    /// Type of order address to edit
+    ///
+    let type: AddressType
+
+    /// Order update callback
+    ///
+    private let onOrderUpdate: ((Yosemite.Order) -> Void)?
+
     /// ResultsController for stored countries.
     ///
     private lazy var countriesResultsController: ResultsController<StorageCountry> = {
@@ -23,16 +36,36 @@ final class EditAddressFormViewModel: ObservableObject {
     ///
     private let stores: StoresManager
 
+    /// Analytics center.
+    ///
+    private let analytics: Analytics
+
     /// Store for publishers subscriptions
     ///
     private var subscriptions = Set<AnyCancellable>()
 
-
-    init(order: Yosemite.Order, storageManager: StorageManagerType = ServiceLocator.storageManager, stores: StoresManager = ServiceLocator.stores) {
+    init(order: Yosemite.Order,
+         type: AddressType,
+         onOrderUpdate: ((Yosemite.Order) -> Void)? = nil,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.order = order
-        self.originalAddress = order.shippingAddress ?? .empty
+        self.type = type
+        self.onOrderUpdate = onOrderUpdate
+
+        let addressToEdit: Address?
+        switch type {
+        case .shipping:
+            addressToEdit = order.shippingAddress
+        case .billing:
+            addressToEdit = order.billingAddress
+        }
+        self.originalAddress = addressToEdit ?? .empty
+
         self.storageManager = storageManager
         self.stores = stores
+        self.analytics = analytics
 
         // Listen only to the first emitted event.
         onLoadTrigger.first().sink { [weak self] in
@@ -43,6 +76,8 @@ final class EditAddressFormViewModel: ObservableObject {
 
             self.fetchStoredCountriesAndTriggerSyncIfNeeded()
             self.setFieldsInitialValues()
+
+            self.trackOnLoad()
         }.store(in: &subscriptions)
     }
 
@@ -83,6 +118,22 @@ final class EditAddressFormViewModel: ObservableObject {
     ///
     @Published private(set) var showPlaceholders: Bool = false
 
+    /// Defines the current notice that should be shown.
+    /// Defaults to `nil`.
+    ///
+    @Published var presentNotice: Notice?
+
+    /// Defines if the email field should be shown
+    ///
+    var showEmailField: Bool {
+        switch type {
+        case .shipping:
+            return false
+        case .billing:
+            return true
+        }
+    }
+
     /// Creates a view model to be used when selecting a country
     ///
     func createCountryViewModel() -> CountrySelectorViewModel {
@@ -109,18 +160,57 @@ final class EditAddressFormViewModel: ObservableObject {
     /// Update the address remotely and invoke a completion block when finished
     ///
     func updateRemoteAddress(onFinish: @escaping (Bool) -> Void) {
-        let updatedAddress = fields.toAddress(country: selectedCountry, state: selectedState)
-        let modifiedOrder = order.copy(shippingAddress: updatedAddress)
-        let action = OrderAction.updateOrder(siteID: order.siteID, order: modifiedOrder, fields: [.shippingAddress]) { [weak self] result in
+        let updatedAddress = fields.toAddress(country: selectedCountry, state: selectedState).removingEmptyEmail()
+        let orderFields: [OrderUpdateField]
+
+        let modifiedOrder: Yosemite.Order
+        switch type {
+        case .shipping where fields.useAsToggle:
+            modifiedOrder = order.copy(billingAddress: updatedAddress, shippingAddress: updatedAddress)
+            orderFields = [.shippingAddress, .billingAddress]
+        case .shipping:
+            modifiedOrder = order.copy(shippingAddress: updatedAddress)
+            orderFields = [.shippingAddress]
+        case .billing where fields.useAsToggle:
+            modifiedOrder = order.copy(billingAddress: updatedAddress, shippingAddress: updatedAddress)
+            orderFields = [.billingAddress, .shippingAddress]
+        case .billing:
+            modifiedOrder = order.copy(billingAddress: updatedAddress)
+            orderFields = [.billingAddress]
+        }
+
+        let action = OrderAction.updateOrder(siteID: order.siteID, order: modifiedOrder, fields: orderFields) { [weak self] result in
             guard let self = self else { return }
 
             self.performingNetworkRequest.send(false)
-            // TODO: add success/failure notice
+            switch result {
+            case .success(let updatedOrder):
+                self.onOrderUpdate?(updatedOrder)
+                self.presentNotice = .success
+                self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCompleted(subject: self.analyticsFlowType()))
+
+            case .failure(let error):
+                DDLogError("⛔️ Error updating order: \(error)")
+                self.presentNotice = .error(.unableToUpdateAddress)
+                self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowFailed(subject: self.analyticsFlowType()))
+            }
             onFinish(result.isSuccess)
         }
 
         performingNetworkRequest.send(true)
         stores.dispatch(action)
+    }
+
+    /// Returns `true` if there are changes pending to commit. `False` otherwise.
+    ///
+    func hasPendingChanges() -> Bool {
+        return navigationTrailingItem == .done(enabled: true)
+    }
+
+    /// Track the flow cancel scenario.
+    ///
+    func userDidCancelFlow() {
+        analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCanceled(subject: self.analyticsFlowType()))
     }
 }
 
@@ -130,6 +220,29 @@ extension EditAddressFormViewModel {
     enum NavigationItem: Equatable {
         case done(enabled: Bool)
         case loading
+    }
+
+    /// Representation of possible notices that can be displayed
+    enum Notice: Equatable {
+        case success
+        case error(EditAddressError)
+    }
+
+    /// Representation of possible errors that can happen
+    enum EditAddressError: LocalizedError {
+        case unableToLoadCountries
+        case unableToUpdateAddress
+
+        var errorDescription: String? {
+            switch self {
+            case .unableToLoadCountries:
+                return NSLocalizedString("Unable to fetch country information, please try again later.",
+                                         comment: "Error notice when we fail to load country information in the edit address screen.")
+            case .unableToUpdateAddress:
+                return NSLocalizedString("Unable to update address, please try again later.",
+                                         comment: "Error notice when we fail to update an address in the edit address screen.")
+            }
+        }
     }
 
     /// Type to hold values from all the form fields
@@ -150,6 +263,8 @@ extension EditAddressFormViewModel {
         var postcode: String = ""
         var country: String = ""
         var state: String = ""
+
+        var useAsToggle: Bool = false
 
         mutating func update(with address: Address) {
             firstName = address.firstName
@@ -172,15 +287,15 @@ extension EditAddressFormViewModel {
         func toAddress(country: Yosemite.Country?, state: Yosemite.StateOfACountry?) -> Yosemite.Address {
             Address(firstName: firstName,
                     lastName: lastName,
-                    company: company.isEmpty ? nil : company,
+                    company: company,
                     address1: address1,
-                    address2: address2.isEmpty ? nil : address2,
+                    address2: address2,
                     city: city,
                     state: state?.code ?? self.state,
                     postcode: postcode,
                     country: country?.code ?? self.country,
-                    phone: phone.isEmpty ? nil : phone,
-                    email: email.isEmpty ? nil : email)
+                    phone: phone,
+                    email: email)
         }
     }
 }
@@ -254,13 +369,22 @@ private extension EditAddressFormViewModel {
     /// Sync countries when requested. Defines the `showPlaceholderState` value depending if countries are being synced or not.
     ///
     func bindSyncTrigger() {
+
+        // Sends an error notice presentation request and hides the publisher error.
+        let syncCountries = makeSyncCountriesFuture()
+            .catch { [weak self] error -> AnyPublisher<Void, Never> in
+                DDLogError("⛔️ Failed to load countries with: \(error)")
+                self?.presentNotice = .error(error)
+                return Just(()).eraseToAnyPublisher()
+            }
+
+        // Perform `syncCountries` when a sync trigger is requested.
         syncCountriesTrigger
             .handleEvents(receiveOutput: { // Set `showPlaceholders` to `true` before initiating sync.
                 self.showPlaceholders = true // I could not find a way to assign this using combine operators. :-(
             })
             .map { // Sync countries
-                self.makeSyncCountriesFuture()
-                    .replaceError(with: ()) // TODO: Handle errors
+                syncCountries
             }
             .switchToLatest()
             .map { _ in // Set `showPlaceholders` to `false` after sync is done.
@@ -271,16 +395,47 @@ private extension EditAddressFormViewModel {
 
     /// Creates a publisher that syncs countries into our storage layer.
     ///
-    func makeSyncCountriesFuture() -> AnyPublisher<Void, Error> {
-        Future<Void, Error> { [weak self] promise in
+    func makeSyncCountriesFuture() -> AnyPublisher<Void, EditAddressError> {
+        Future<Void, EditAddressError> { [weak self] promise in
             guard let self = self else { return }
 
             let action = DataAction.synchronizeCountries(siteID: self.order.siteID) { result in
-                let newResult = result.map { _ in } // Hides the result success type because we don't need it.
+                let newResult = result
+                    .map { _ in } // Hides the result success type because we don't need it.
+                    .mapError { _ in EditAddressError.unableToLoadCountries }
                 promise(newResult)
             }
             self.stores.dispatch(action)
         }
         .eraseToAnyPublisher()
+    }
+
+    /// Returns the correct analytics subject for the current address form type.
+    ///
+    private func analyticsFlowType() -> WooAnalyticsEvent.OrderDetailsEdit.Subject {
+        switch type {
+        case .shipping:
+            return .shippingAddress
+        case .billing:
+            return .billingAddress
+        }
+    }
+
+    /// Tracks the `orderDetailEditFlowStarted` event
+    ///
+    private func trackOnLoad() {
+        analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowStarted(subject: self.analyticsFlowType()))
+    }
+}
+
+private extension Address {
+    /// Sets the email value to `nil` when it is empty.
+    /// Needed because core has a validation where a billing address can have a valid email or `nil`.
+    ///
+    func removingEmptyEmail() -> Yosemite.Address {
+        guard let email = email, email.isEmpty else {
+            return self
+        }
+        return copy(email: .some(nil))
     }
 }

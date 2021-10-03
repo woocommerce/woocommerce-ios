@@ -5,17 +5,17 @@ import Combine
 /// Allows us to support multiple implementations/dependency injection, and avoid introducing
 /// Combine into the Storage layer
 ///
-protocol CardReaderSettingsKnownReadersProvider {
+protocol CardReaderSettingsKnownReaderProvider {
 
-    /// Publishes changes to the known reader list.
+    /// Publishes changes to the known reader. (We remember only one reader.)
     ///
-    var knownReaders: AnyPublisher<[String], Never> { get }
+    var knownReader: AnyPublisher<String?, Never> { get }
 
-    /// Remember a reader. Asynchronous.
+    /// Remember this reader. Asynchronous.
     ///
     func rememberCardReader(cardReaderID: String)
 
-    /// Forget a reader. Asynchronous.
+    /// Forget the remembered reader. Asynchronous.
     ///
-    func forgetCardReader(cardReaderID: String)
+    func forgetCardReader()
 }

@@ -1,4 +1,4 @@
-import Foundation
+import UITestsFoundation
 import XCTest
 
 final class SingleOrderScreen: BaseScreen {

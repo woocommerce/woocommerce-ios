@@ -34,13 +34,13 @@ final class MainTabBarControllerTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(tabBarController.viewControllers?.count, 4)
-        assertThat((tabBarController.viewControllers?[WooTab.myStore.visibleIndex()] as? UINavigationController)?.topViewController,
+        assertThat(tabBarController.tabNavigationController(tab: .myStore)?.topViewController,
                    isAnInstanceOf: DashboardViewController.self)
-        assertThat((tabBarController.viewControllers?[WooTab.orders.visibleIndex()] as? UINavigationController)?.topViewController,
+        assertThat(tabBarController.tabNavigationController(tab: .orders)?.topViewController,
                    isAnInstanceOf: OrdersRootViewController.self)
-        assertThat((tabBarController.viewControllers?[WooTab.products.visibleIndex()] as? UINavigationController)?.topViewController,
+        assertThat(tabBarController.tabNavigationController(tab: .products)?.topViewController,
                    isAnInstanceOf: ProductsViewController.self)
-        assertThat((tabBarController.viewControllers?[WooTab.reviews.visibleIndex()] as? UINavigationController)?.topViewController,
+        assertThat(tabBarController.tabNavigationController(tab: .reviews)?.topViewController,
                    isAnInstanceOf: ReviewsViewController.self)
     }
 
@@ -95,10 +95,74 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertEqual(selectedTabIndexBeforeSiteChange, WooTab.products.visibleIndex())
         XCTAssertEqual(selectedTabIndexAfterSiteChange, WooTab.myStore.visibleIndex())
     }
+
+    func test_when_receiving_a_review_notification_from_a_different_site_navigates_to_reviews_tab_and_presents_review_details() throws {
+        // Arrange
+        let pushNotificationsManager = MockPushNotificationsManager()
+        ServiceLocator.setPushNotesManager(pushNotificationsManager)
+
+        let storesManager = MockStoresManager(sessionManager: .testingInstance)
+        // Reset `receivedActions`
+        storesManager.reset()
+        ServiceLocator.setStores(storesManager)
+
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+        stores.updateDefaultStore(storeID: 134)
+
+        // Simulate successful state resetting after logging out from push notification store switching
+        storesManager.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            if case let .resetStoredStats(completion) = action {
+                completion()
+            }
+        }
+        storesManager.whenReceivingAction(ofType: OrderAction.self) { action in
+            if case let .resetStoredOrders(completion) = action {
+                completion()
+            }
+        }
+        storesManager.whenReceivingAction(ofType: ProductReviewAction.self) { action in
+            if case let .resetStoredProductReviews(completion) = action {
+                completion()
+            }
+        }
+
+        assertThat(tabBarController.tabNavigationController(tab: .reviews)?.topViewController, isAnInstanceOf: ReviewsViewController.self)
+
+        // Action
+        // Send push notification in inactive state
+        let pushNotification = PushNotification(noteID: 1_234, kind: .comment, message: "")
+        pushNotificationsManager.sendInactiveNotification(pushNotification)
+
+        // Simulate that the network call returns a parcel
+        let receivedAction = try XCTUnwrap(storesManager.receivedActions.first as? ProductReviewAction)
+        guard case .retrieveProductReviewFromNote(_, let completion) = receivedAction else {
+            return XCTFail("Expected retrieveProductReviewFromNote action.")
+        }
+        completion(.success(ProductReviewFromNoteParcelFactory().parcel(metaSiteID: 606)))
+
+        // Assert
+        waitUntil {
+            self.tabBarController.tabNavigationController(tab: .reviews)?.viewControllers.count == 2
+        }
+
+        XCTAssertEqual(tabBarController.selectedIndex, WooTab.reviews.visibleIndex())
+
+        // A ReviewDetailsViewController should be pushed
+        assertThat(tabBarController.tabNavigationController(tab: .reviews)?.topViewController, isAnInstanceOf: ReviewDetailsViewController.self)
+    }
 }
 
 private extension MainTabBarController {
     var tabRootViewControllers: [UIViewController] {
         viewControllers?.compactMap { $0 as? UINavigationController }.compactMap { $0.viewControllers.first } ?? []
+    }
+
+    func tabNavigationController(tab: WooTab) -> UINavigationController? {
+        guard let navigationController = viewControllers?.compactMap({ $0 as? UINavigationController })[tab.visibleIndex()] else {
+            XCTFail("Unexpected access to navigation controller at tab: \(tab)")
+            return nil
+        }
+        return navigationController
     }
 }

@@ -18,7 +18,7 @@ final class PaymentIntentMetadataTests: XCTestCase {
     func test_non_nil_store() throws {
         let metadata = PaymentIntent.initMetadata(store: "foo")
         let store = try XCTUnwrap(metadata["paymentintent.storename"])
-        XCTAssertEqual(store as? String, "foo")
+        XCTAssertEqual(store, "foo")
         XCTAssertEqual(metadata.count, 1)
     }
 
@@ -33,7 +33,7 @@ final class PaymentIntentMetadataTests: XCTestCase {
     func test_non_nil_customer_name() throws {
         let metadata = PaymentIntent.initMetadata(customerName: "foo")
         let customerName = try XCTUnwrap(metadata["customer_name"])
-        XCTAssertEqual(customerName as? String, "foo")
+        XCTAssertEqual(customerName, "foo")
         XCTAssertEqual(metadata.count, 1)
     }
 
@@ -48,7 +48,7 @@ final class PaymentIntentMetadataTests: XCTestCase {
     func test_non_nil_customer_email() throws {
         let metadata = PaymentIntent.initMetadata(customerEmail: "foo")
         let customerEmail = try XCTUnwrap(metadata["customer_email"])
-        XCTAssertEqual(customerEmail as? String, "foo")
+        XCTAssertEqual(customerEmail, "foo")
         XCTAssertEqual(metadata.count, 1)
     }
 
@@ -63,7 +63,7 @@ final class PaymentIntentMetadataTests: XCTestCase {
     func test_non_nil_site_url() throws {
         let metadata = PaymentIntent.initMetadata(siteURL: "foo")
         let siteURL = try XCTUnwrap(metadata["site_url"])
-        XCTAssertEqual(siteURL as? String, "foo")
+        XCTAssertEqual(siteURL, "foo")
         XCTAssertEqual(metadata.count, 1)
     }
 
@@ -78,7 +78,7 @@ final class PaymentIntentMetadataTests: XCTestCase {
     func test_non_nil_orderID() throws {
         let metadata = PaymentIntent.initMetadata(orderID: 1234)
         let orderID = try XCTUnwrap(metadata["order_id"])
-        XCTAssertEqual(orderID as? Int64, 1234)
+        XCTAssertEqual(orderID, "1234")
         XCTAssertEqual(metadata.count, 1)
     }
 
@@ -93,7 +93,7 @@ final class PaymentIntentMetadataTests: XCTestCase {
     func test_non_nil_order_key() throws {
         let metadata = PaymentIntent.initMetadata(orderKey: "wc_order_0000000000000")
         let orderKey = try XCTUnwrap(metadata["order_key"])
-        XCTAssertEqual(orderKey as? String, "wc_order_0000000000000")
+        XCTAssertEqual(orderKey, "wc_order_0000000000000")
         XCTAssertEqual(metadata.count, 1)
     }
 
@@ -108,7 +108,7 @@ final class PaymentIntentMetadataTests: XCTestCase {
     func test_single_payment_type() throws {
         let metadata = PaymentIntent.initMetadata(paymentType: PaymentIntent.PaymentTypes.single)
         let paymentType = try XCTUnwrap(metadata["payment_type"])
-        XCTAssertEqual(paymentType as? String, "single")
+        XCTAssertEqual(paymentType, "single")
         XCTAssertEqual(metadata.count, 1)
     }
 
@@ -118,7 +118,7 @@ final class PaymentIntentMetadataTests: XCTestCase {
     func test_recurring_payment_type() throws {
         let metadata = PaymentIntent.initMetadata(paymentType: PaymentIntent.PaymentTypes.recurring)
         let paymentType = try XCTUnwrap(metadata["payment_type"])
-        XCTAssertEqual(paymentType as? String, "recurring")
+        XCTAssertEqual(paymentType, "recurring")
         XCTAssertEqual(metadata.count, 1)
     }
 }

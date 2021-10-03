@@ -143,8 +143,9 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
 }
 
 private extension ShippingLabelCarriersViewModelTests {
-    func sampleShippingLabelCarriersAndRates() -> ShippingLabelCarriersAndRates {
-        return ShippingLabelCarriersAndRates(defaultRates: [
+    func sampleShippingLabelCarriersAndRates() -> [ShippingLabelCarriersAndRates] {
+        return [ShippingLabelCarriersAndRates(packageID: "123",
+                                              defaultRates: [
                                                 MockShippingLabelCarrierRate.makeRate(),
                                                 MockShippingLabelCarrierRate.makeRate(title: "UPS", insurance: "2500"),
                                                 MockShippingLabelCarrierRate.makeRate(title: "UPS", insurance: "limited")],
@@ -152,6 +153,6 @@ private extension ShippingLabelCarriersViewModelTests {
                                                                                                        rate: 45.060000000000002)],
                                              adultSignatureRequired:
                                                 [MockShippingLabelCarrierRate.makeRate(title: "USPS - Parcel Select Mail",
-                                                                                                            rate: 50.060000000000002)])
+                                                                                                            rate: 50.060000000000002)])]
     }
 }

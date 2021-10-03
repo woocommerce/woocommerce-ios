@@ -8,7 +8,7 @@ public enum ShippingLabelAction: Action {
     /// Generates a shipping label document for printing.
     ///
     case printShippingLabel(siteID: Int64,
-                            shippingLabelID: Int64,
+                            shippingLabelIDs: [Int64],
                             paperSize: ShippingLabelPaperSize,
                             completion: (Result<ShippingLabelPrintData, Error>) -> Void)
 
@@ -55,7 +55,7 @@ public enum ShippingLabelAction: Action {
                               originAddress: ShippingLabelAddress,
                               destinationAddress: ShippingLabelAddress,
                               packages: [ShippingLabelPackageSelected],
-                              completion: (Result<ShippingLabelCarriersAndRates, Error>) -> Void)
+                              completion: (Result<[ShippingLabelCarriersAndRates], Error>) -> Void)
 
     /// Loads account-level shipping label settings for a store.
     ///

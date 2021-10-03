@@ -7,7 +7,24 @@ import UIKit
 ///
 final class EditAddressHostingController: UIHostingController<EditAddressForm> {
 
-    init(viewModel: EditAddressFormViewModel) {
+    /// References to keep the Combine subscriptions alive within the lifecycle of the object.
+    ///
+    private var subscriptions: Set<AnyCancellable> = []
+
+    /// Presents an error notice in the current modal presentation context
+    ///
+    private lazy var modalNoticePresenter: NoticePresenter = {
+        let presenter = DefaultNoticePresenter()
+        presenter.presentingViewController = self
+        return presenter
+    }()
+
+    /// Presents a success notice in the tab bar context after this `self` is dismissed.
+    ///
+    private let systemNoticePresenter: NoticePresenter
+
+    init(viewModel: EditAddressFormViewModel, systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
+        self.systemNoticePresenter = systemNoticePresenter
         super.init(rootView: EditAddressForm(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
@@ -15,20 +32,70 @@ final class EditAddressHostingController: UIHostingController<EditAddressForm> {
             self?.dismiss(animated: true, completion: nil)
         }
 
+        // Set up notices
+        bindNoticeIntent()
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
         // Set presentation delegate to track the user dismiss flow event
-        presentationController?.delegate = self
+        if let navigationController = navigationController {
+            navigationController.presentationController?.delegate = self
+        } else {
+            presentationController?.delegate = self
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    /// Observe the present notice intent and set it back after presented.
+    ///
+    private func bindNoticeIntent() {
+        rootView.viewModel.$presentNotice
+            .compactMap { $0 }
+            .sink { [weak self] notice in
+
+                switch notice {
+                case .success:
+                    self?.systemNoticePresenter.enqueue(notice: .init(title: EditAddressForm.Localization.success, feedbackType: .error))
+
+                case .error(let error):
+                    switch error {
+                    case .unableToLoadCountries:
+                        self?.systemNoticePresenter.enqueue(notice: .init(title: error.errorDescription ?? "", feedbackType: .error))
+                        self?.dismiss(animated: true) // Dismiss VC because we need country information to continue.
+
+                    case .unableToUpdateAddress:
+                        self?.modalNoticePresenter.enqueue(notice: .init(title: error.errorDescription ?? "", feedbackType: .error))
+                    }
+                }
+
+                // Nullify the presentation intent.
+                self?.rootView.viewModel.presentNotice = nil
+            }
+            .store(in: &subscriptions)
     }
 }
 
 /// Intercepts to the dismiss drag gesture.
 ///
 extension EditAddressHostingController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        !rootView.viewModel.hasPendingChanges()
+    }
+
+    func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self) { [weak self] in
+            self?.dismiss(animated: true)
+            self?.rootView.viewModel.userDidCancelFlow()
+        }
+    }
+
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        // track dimiss gesture
+        rootView.viewModel.userDidCancelFlow()
     }
 }
 
@@ -40,7 +107,7 @@ struct EditAddressForm: View {
     ///
     var dismiss: (() -> Void) = {}
 
-    @ObservedObject private var viewModel: EditAddressFormViewModel
+    @ObservedObject private(set) var viewModel: EditAddressFormViewModel
 
     /// Set it to `true` to present the country selector.
     ///
@@ -79,8 +146,10 @@ struct EditAddressForm: View {
                                          text: $viewModel.fields.email,
                                          symbol: nil,
                                          keyboardType: .emailAddress)
+                        .renderedIf(viewModel.showEmailField)
                     Divider()
                         .padding(.leading, Constants.dividerPadding)
+                        .renderedIf(viewModel.showEmailField)
                     TitleAndTextFieldRow(title: Localization.phoneField,
                                          placeholder: "",
                                          text: $viewModel.fields.phone,
@@ -90,7 +159,7 @@ struct EditAddressForm: View {
                 .padding(.horizontal, insets: geometry.safeAreaInsets)
                 .background(Color(.systemBackground))
 
-                ListHeaderView(text: Localization.shippingAddressSection, alignment: .left)
+                ListHeaderView(text: sectionTitle, alignment: .left)
                     .padding(.horizontal, insets: geometry.safeAreaInsets)
                 VStack(spacing: 0) {
                     Group {
@@ -144,17 +213,26 @@ struct EditAddressForm: View {
                 }
                 .padding(.horizontal, insets: geometry.safeAreaInsets)
                 .background(Color(.systemBackground))
+
+                Group {
+                    TitleAndToggleRow(title: Localization.useAddressAs(for: viewModel.type), isOn: $viewModel.fields.useAsToggle)
+                        .padding(.horizontal, Constants.horizontalPadding)
+                        .padding(.vertical, Constants.verticalPadding)
+                }
+                .padding(.horizontal, insets: geometry.safeAreaInsets)
+                .background(Color(.systemBackground))
             }
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         }
-        .navigationTitle(Localization.shippingTitle)
+        .navigationTitle(viewTitle)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarItems(trailing: navigationBarTrailingItem())
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(Localization.close, action: {
                     dismiss()
+                    viewModel.userDidCancelFlow()
                 })
             }
         }
@@ -208,17 +286,40 @@ struct EditAddressForm: View {
 
 // MARK: Constants
 private extension EditAddressForm {
+
+    var viewTitle: String {
+        switch viewModel.type {
+        case .shipping:
+            return Localization.shippingTitle
+        case .billing:
+            return Localization.billingTitle
+        }
+    }
+
+    var sectionTitle: String {
+        switch viewModel.type {
+        case .shipping:
+            return Localization.shippingAddressSection
+        case .billing:
+            return Localization.billingAddressSection
+        }
+    }
+
     enum Constants {
         static let dividerPadding: CGFloat = 16
+        static let horizontalPadding: CGFloat = 16
+        static let verticalPadding: CGFloat = 7
     }
 
     enum Localization {
         static let shippingTitle = NSLocalizedString("Shipping Address", comment: "Title for the Edit Shipping Address Form")
+        static let billingTitle = NSLocalizedString("Billing Address", comment: "Title for the Edit Billing Address Form")
         static let close = NSLocalizedString("Close", comment: "Text for the close button in the Edit Address Form")
         static let done = NSLocalizedString("Done", comment: "Text for the done button in the Edit Address Form")
 
         static let detailsSection = NSLocalizedString("DETAILS", comment: "Details section title in the Edit Address Form")
         static let shippingAddressSection = NSLocalizedString("SHIPPING ADDRESS", comment: "Details section title in the Edit Address Form")
+        static let billingAddressSection = NSLocalizedString("BILLING ADDRESS", comment: "Details section title in the Edit Address Form")
 
         static let firstNameField = NSLocalizedString("First name", comment: "Text field name in Edit Address Form")
         static let lastNameField = NSLocalizedString("Last name", comment: "Text field name in Edit Address Form")
@@ -236,6 +337,17 @@ private extension EditAddressForm {
         static let placeholderRequired = NSLocalizedString("Required", comment: "Text field placeholder in Edit Address Form")
         static let placeholderOptional = NSLocalizedString("Optional", comment: "Text field placeholder in Edit Address Form")
         static let placeholderSelectOption = NSLocalizedString("Select an option", comment: "Text field placeholder in Edit Address Form")
+
+        static let success = NSLocalizedString("Address successfully updated.", comment: "Notice text after updating the shipping or billing address")
+
+        static func useAddressAs(for type: EditAddressFormViewModel.AddressType) -> String {
+            switch type {
+            case .shipping:
+                return NSLocalizedString("Use as Billing Address", comment: "Title for the Use as Billing Address switch in the Address form")
+            case .billing:
+                return NSLocalizedString("Use as Shipping Address", comment: "Title for the Use as Shipping Address switch in the Address form")
+            }
+        }
     }
 }
 
@@ -284,7 +396,7 @@ struct EditAddressForm_Previews: PreviewProvider {
                                        phone: "333-333-3333",
                                        email: "scrambled@scrambled.com")
 
-    static let sampleViewModel = EditAddressFormViewModel(order: sampleOrder)
+    static let sampleViewModel = EditAddressFormViewModel(order: sampleOrder, type: .shipping)
 
     static var previews: some View {
         NavigationView {

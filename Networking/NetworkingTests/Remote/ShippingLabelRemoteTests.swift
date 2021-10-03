@@ -46,7 +46,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
 
         // When
         let printData: ShippingLabelPrintData = waitFor { promise in
-            remote.printShippingLabel(siteID: self.sampleSiteID, shippingLabelID: 123, paperSize: .label) { result in
+            remote.printShippingLabel(siteID: self.sampleSiteID, shippingLabelIDs: [123], paperSize: .label) { result in
                 guard let printData = try? result.get() else {
                     XCTFail("Error printing shipping label: \(String(describing: result.failure))")
                     return
@@ -285,7 +285,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
         let expectedDefaultRate = sampleShippingLabelCarrierRate()
 
         // When
-        let result: Result<ShippingLabelCarriersAndRates, Error> = waitFor { promise in
+        let result: Result<[ShippingLabelCarriersAndRates], Error> = waitFor { promise in
             remote.loadCarriersAndRates(siteID: self.sampleSiteID,
                                         orderID: self.sampleOrderID,
                                         originAddress: ShippingLabelAddress.fake(), destinationAddress: ShippingLabelAddress.fake(),
@@ -296,7 +296,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
 
         // Then
         let successResponse = try XCTUnwrap(result.get())
-        XCTAssertEqual(successResponse.defaultRates.first, expectedDefaultRate)
+        XCTAssertEqual(successResponse.first?.defaultRates.first, expectedDefaultRate)
     }
 
     func test_loadCarriersAndRates_returns_error_on_failure() throws {

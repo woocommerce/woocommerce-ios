@@ -79,14 +79,77 @@ final class ReceiptStoreTests: XCTestCase {
 
         let parametersProvided = receiptPrinterService.contentProvided
 
-        XCTAssertEqual(UInt(mockOrder.total), parametersProvided?.parameters.amount)
+        XCTAssertEqual(mockParameters.amount, parametersProvided?.parameters.amount)
         XCTAssertEqual(mockOrder.currency, parametersProvided?.parameters.currency)
+        XCTAssertEqual("100.00", parametersProvided?.parameters.formattedAmount)
+    }
+
+    func test_print_callsPrint_passing_TotalAmountPaid() throws {
+        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        let mockOrder = makeOrder()
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        let amountPaidLine = receiptPrinterService.contentProvided?.cartTotals.first {
+            $0.description == ReceiptContent.Localization.amountPaidLineDescription
+        }
+        XCTAssertEqual("100.00", amountPaidLine?.amount)
+    }
+
+    func test_print_callsPrint_passing_TotalTaxes() throws {
+        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        let mockOrder = makeOrder(discountTax: "1.21", shippingTax: "0.50", totalTax: "10.71")
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        let actualTaxLine = receiptPrinterService.contentProvided?.cartTotals.first {
+            $0.description == ReceiptContent.Localization.totalTaxLineDescription
+        }
+        XCTAssertEqual(mockOrder.totalTax, actualTaxLine?.amount)
+    }
+
+    func test_print_OrderWithoutTaxes_DoesNotIncludeTaxesInReceiptContent() throws {
+        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        let mockOrder = makeOrder(totalTax: "0.00")
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        let actualTaxLine = receiptPrinterService.contentProvided?.cartTotals.first {
+            $0.description == ReceiptContent.Localization.totalTaxLineDescription
+        }
+        XCTAssertNil(actualTaxLine)
     }
 }
 
 
 private extension ReceiptStoreTests {
-    func makeOrder() -> Networking.Order {
+    func makeOrder(discountTax: String = "",
+                   shippingTax: String = "",
+                   totalTax: String = "") -> Networking.Order {
         Order(siteID: 1234,
               orderID: 0,
               parentID: 0,
@@ -99,11 +162,11 @@ private extension ReceiptStoreTests {
               dateModified: Date(),
               datePaid: nil,
               discountTotal: "",
-              discountTax: "",
+              discountTax: discountTax,
               shippingTotal: "",
-              shippingTax: "",
-              total: "100",
-              totalTax: "",
+              shippingTax: shippingTax,
+              total: "100.00",
+              totalTax: totalTax,
               paymentMethodID: "",
               paymentMethodTitle: "",
               items: [],

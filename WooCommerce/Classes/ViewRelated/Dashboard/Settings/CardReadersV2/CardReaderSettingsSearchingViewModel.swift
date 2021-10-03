@@ -12,24 +12,15 @@ final class CardReaderSettingsSearchingViewModel: CardReaderSettingsPresentedVie
             didUpdate?()
         }
     }
-    private(set) var noKnownReader: CardReaderSettingsTriState = .isUnknown {
-        didSet {
-            didUpdate?()
-        }
-    }
-    private(set) var knownReadersProvider: CardReaderSettingsKnownReadersProvider?
+
+    private(set) var knownReaderProvider: CardReaderSettingsKnownReaderProvider?
     private(set) var siteID: Int64
 
     private var subscriptions = Set<AnyCancellable>()
 
-    private var knownReaderIDs: [String]? {
+    private var knownReaderID: String? {
         didSet {
-            guard let knownReaderIDs = knownReaderIDs else {
-                noKnownReader = .isUnknown
-                return
-            }
-
-            noKnownReader = knownReaderIDs.isEmpty ? .isTrue : .isFalse
+            didUpdate?()
         }
     }
     private var foundReader: CardReader?
@@ -38,10 +29,10 @@ final class CardReaderSettingsSearchingViewModel: CardReaderSettingsPresentedVie
         foundReader?.id
     }
 
-    init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?, knownReadersProvider: CardReaderSettingsKnownReadersProvider? = nil) {
+    init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?, knownReaderProvider: CardReaderSettingsKnownReaderProvider? = nil) {
         self.didChangeShouldShow = didChangeShouldShow
         self.siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
-        self.knownReadersProvider = knownReadersProvider
+        self.knownReaderProvider = knownReaderProvider
 
         beginKnownReaderObservation()
         beginConnectedReaderObservation()
@@ -51,18 +42,22 @@ final class CardReaderSettingsSearchingViewModel: CardReaderSettingsPresentedVie
         subscriptions.removeAll()
     }
 
-    /// Monitor the list of known readers
+    func hasKnownReader() -> Bool {
+        knownReaderID != nil
+    }
+
+    /// Monitor for a known reader
     ///
     private func beginKnownReaderObservation() {
-        guard knownReadersProvider != nil else {
-            self.knownReaderIDs = []
+        guard knownReaderProvider != nil else {
+            self.knownReaderID = nil
             self.reevaluateShouldShow()
             return
         }
 
-        knownReadersProvider?.knownReaders
-            .sink(receiveValue: { [weak self] readerIDs in
-                self?.knownReaderIDs = readerIDs
+        knownReaderProvider?.knownReader
+            .sink(receiveValue: { [weak self] readerID in
+                self?.knownReaderID = readerID
                 self?.reevaluateShouldShow()
             })
             .store(in: &subscriptions)

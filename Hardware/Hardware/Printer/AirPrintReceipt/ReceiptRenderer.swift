@@ -1,10 +1,11 @@
 import UIKit
 
 /// Renders a receipt in an AirPrint enabled printer.
-/// To be properly implemented in https://github.com/woocommerce/woocommerce-ios/issues/3978
+///
 public final class ReceiptRenderer: UIPrintPageRenderer {
     private let lines: [ReceiptLineItem]
     private let parameters: CardPresentReceiptParameters
+    private let cartTotals: [ReceiptTotalLine]
 
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -18,6 +19,7 @@ public final class ReceiptRenderer: UIPrintPageRenderer {
     public init(content: ReceiptContent) {
         self.lines = content.lineItems
         self.parameters = content.parameters
+        self.cartTotals = content.cartTotals
 
         super.init()
 
@@ -75,7 +77,7 @@ public extension ReceiptRenderer {
                         <h1>\(receiptTitle)</h1>
                         <h3>\(Localization.amountPaidSectionTitle.uppercased())</h3>
                         <p>
-                            \(formattedAmount()) \(parameters.currency.uppercased())
+                            \(parameters.formattedAmount) \(parameters.currency.uppercased())
                         </p>
                         <h3>\(Localization.datePaidSectionTitle.uppercased())</h3>
                         <p>
@@ -86,7 +88,7 @@ public extension ReceiptRenderer {
                             <span class="card-icon \(parameters.cardDetails.brand.iconName)-icon"></span> - \(parameters.cardDetails.last4)
                         </p>
                     </header>
-                    <h3>\(Localization.summarySectionTitle.uppercased())</h3>
+                    <h3>\(summarySectionTitle.uppercased())</h3>
                     \(summaryTable())
                     <footer>
                         <p>
@@ -108,38 +110,36 @@ private extension ReceiptRenderer {
         addPrintFormatter(formatter, startingAtPageAt: 0)
     }
 
-    private func formattedAmount() -> String {
-        // We should use CurrencyFormatter instead for consistency
-        let formatter = NumberFormatter()
-
-        let fractionDigits = 2 // TODO - support non cent currencies like JPY - see #3948
-        formatter.minimumFractionDigits = fractionDigits
-        formatter.maximumFractionDigits = fractionDigits
-
-        var amount: Decimal = Decimal(parameters.amount)
-        amount = amount / pow(10, fractionDigits)
-
-        return formatter.string(for: amount) ?? ""
-    }
-
     private func summaryTable() -> String {
         var summaryContent = "<table>"
         for line in lines {
             summaryContent += "<tr><td>\(line.title) × \(line.quantity)</td><td>\(line.amount) \(parameters.currency.uppercased())</td></tr>"
         }
-        summaryContent += """
-                            <tr>
-                                <td>
-                                    \(Localization.amountPaidSectionTitle)
-                                </td>
-                                <td>
-                                    \(formattedAmount()) \(parameters.currency.uppercased())
-                                </td>
-                            </tr>
-                            """
+        summaryContent += totalRows()
         summaryContent += "</table>"
 
         return summaryContent
+    }
+
+    private func totalRows() -> String {
+        var rows = ""
+        for total in cartTotals {
+            rows += summaryRow(title: total.description, amount: total.amount)
+        }
+        return rows
+    }
+
+    private func summaryRow(title: String, amount: String) -> String {
+        """
+            <tr>
+                <td>
+                    \(title)
+                </td>
+                <td>
+                    \(amount) \(parameters.currency.uppercased())
+                </td>
+            </tr>
+        """
     }
 
     private func requiredItems() -> String {
@@ -169,6 +169,13 @@ private extension ReceiptRenderer {
 
         return .localizedStringWithFormat(Localization.receiptFromFormat, storeName)
     }
+
+    private var summarySectionTitle: String {
+        guard let orderID = parameters.orderID else {
+            return Localization.summarySectionTitle
+        }
+        return String(format: Localization.summarySectionTitleWithOrderFormat, String(orderID))
+    }
 }
 
 
@@ -192,7 +199,7 @@ private extension ReceiptRenderer {
         )
 
         static let amountPaidSectionTitle = NSLocalizedString(
-            "Amount paid",
+            "Amount Paid",
             comment: "Title of 'Amount Paid' section in the receipt"
         )
 
@@ -208,11 +215,16 @@ private extension ReceiptRenderer {
 
         static let summarySectionTitle = NSLocalizedString(
             "Summary",
-            comment: "Title of 'Summary' section in the receipt"
+            comment: "Title of 'Summary' section in the receipt when the order number is unknown"
+        )
+
+        static let summarySectionTitleWithOrderFormat = NSLocalizedString(
+            "Summary: Order #%1$@",
+            comment: "Title of 'Summary' section in the receipt. %1$@ is the order number, e.g. 4920"
         )
 
         static let applicationName = NSLocalizedString(
-            "Application name",
+            "Application Name",
             comment: "Reads as 'Application name'. Part of the mandatory data in receipts"
         )
 

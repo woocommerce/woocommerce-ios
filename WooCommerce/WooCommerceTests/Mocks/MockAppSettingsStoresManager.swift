@@ -5,10 +5,10 @@ import Yosemite
 ///
 final class MockAppSettingsStoresManager: DefaultStoresManager {
 
-    private var knownReaderIDs: [String]
+    private var knownReaderID: String?
 
-    init(sessionManager: SessionManager, knownReaderIDs: [String] = []) {
-        self.knownReaderIDs = knownReaderIDs
+    init(sessionManager: SessionManager, knownReaderID: String? = nil) {
+        self.knownReaderID = knownReaderID
         super.init(sessionManager: sessionManager)
     }
 
@@ -23,13 +23,13 @@ final class MockAppSettingsStoresManager: DefaultStoresManager {
     private func onAppSettingsAction(action: AppSettingsAction) {
         switch action {
         case .rememberCardReader(let cardReaderID, let onCompletion):
-            knownReaderIDs.append(cardReaderID)
+            knownReaderID = cardReaderID
             onCompletion(Result.success(()))
-        case .forgetCardReader(let cardReaderID, let onCompletion):
-            knownReaderIDs = knownReaderIDs.filter { $0 != cardReaderID }
+        case .forgetCardReader(let onCompletion):
+            knownReaderID = nil
             onCompletion(Result.success(()))
-        case .loadCardReaders(let onCompletion):
-            onCompletion(Result.success(knownReaderIDs))
+        case .loadCardReader(let onCompletion):
+            onCompletion(Result.success(knownReaderID))
         default:
             fatalError("Not available")
         }

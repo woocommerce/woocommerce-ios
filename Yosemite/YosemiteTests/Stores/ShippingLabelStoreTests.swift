@@ -173,7 +173,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let remote = MockShippingLabelRemote()
         let expectedPrintData = ShippingLabelPrintData(mimeType: "application/pdf", base64Content: "////")
         remote.whenPrintingShippingLabel(siteID: sampleSiteID,
-                                         shippingLabelID: sampleShippingLabelID,
+                                         shippingLabelIDs: [sampleShippingLabelID],
                                          paperSize: "label",
                                          thenReturn: .success(expectedPrintData))
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
@@ -181,7 +181,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         // When
         let result: Result<ShippingLabelPrintData, Error> = waitFor { promise in
             let action = ShippingLabelAction.printShippingLabel(siteID: self.sampleSiteID,
-                                                                shippingLabelID: self.sampleShippingLabelID,
+                                                                shippingLabelIDs: [self.sampleShippingLabelID],
                                                                 paperSize: .label) { result in
                 promise(result)
             }
@@ -198,7 +198,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let remote = MockShippingLabelRemote()
         let expectedError = NetworkError.notFound
         remote.whenPrintingShippingLabel(siteID: sampleSiteID,
-                                         shippingLabelID: sampleShippingLabelID,
+                                         shippingLabelIDs: [sampleShippingLabelID],
                                          paperSize: "label",
                                          thenReturn: .failure(expectedError))
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
@@ -206,7 +206,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         // When
         let result: Result<ShippingLabelPrintData, Error> = waitFor { promise in
             let action = ShippingLabelAction.printShippingLabel(siteID: self.sampleSiteID,
-                                                                shippingLabelID: self.sampleShippingLabelID,
+                                                                shippingLabelIDs: [self.sampleShippingLabelID],
                                                                 paperSize: .label) { result in
                 promise(result)
             }
@@ -554,7 +554,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<ShippingLabelCarriersAndRates, Error> = waitFor { promise in
+        let result: Result<[ShippingLabelCarriersAndRates], Error> = waitFor { promise in
             let action = ShippingLabelAction.loadCarriersAndRates(siteID: self.sampleSiteID,
                                                                   orderID: self.sampleOrderID,
                                                                   originAddress: ShippingLabelAddress.fake(),
@@ -577,7 +577,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<ShippingLabelCarriersAndRates, Error> = waitFor { promise in
+        let result: Result<[ShippingLabelCarriersAndRates], Error> = waitFor { promise in
             let action = ShippingLabelAction.loadCarriersAndRates(siteID: self.sampleSiteID,
                                                                   orderID: self.sampleOrderID,
                                                                   originAddress: ShippingLabelAddress.fake(),
@@ -992,10 +992,11 @@ private extension ShippingLabelStoreTests {
                                             lastSelectedPackageID: "small_flat_box")
     }
 
-    func sampleShippingLabelCarriersAndRates() -> ShippingLabelCarriersAndRates {
-        return ShippingLabelCarriersAndRates(defaultRates: [sampleShippingLabelCarrierRate()],
+    func sampleShippingLabelCarriersAndRates() -> [ShippingLabelCarriersAndRates] {
+        return [ShippingLabelCarriersAndRates(packageID: "123",
+                                             defaultRates: [sampleShippingLabelCarrierRate()],
                                              signatureRequired: [],
-                                             adultSignatureRequired: [])
+                                             adultSignatureRequired: [])]
     }
 
     func sampleShippingLabelCarrierRate() -> ShippingLabelCarrierRate {

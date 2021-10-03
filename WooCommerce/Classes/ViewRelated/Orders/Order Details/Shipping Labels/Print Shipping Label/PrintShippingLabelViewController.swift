@@ -25,8 +25,8 @@ final class PrintShippingLabelViewController: UIViewController {
     ///
     var onAction: ((ActionType) -> Void)?
 
-    init(shippingLabel: ShippingLabel, printType: PrintShippingLabelCoordinator.PrintType) {
-        self.viewModel = PrintShippingLabelViewModel(shippingLabel: shippingLabel)
+    init(shippingLabels: [ShippingLabel], printType: PrintShippingLabelCoordinator.PrintType) {
+        self.viewModel = PrintShippingLabelViewModel(shippingLabels: shippingLabels)
         self.printType = printType
         super.init(nibName: nil, bundle: nil)
         self.rows = rowsToDisplay()
@@ -106,7 +106,7 @@ private extension PrintShippingLabelViewController {
 // MARK: Configuration
 private extension PrintShippingLabelViewController {
     func configureNavigationBar() {
-        navigationItem.title = Localization.navigationBarTitle
+        navigationItem.title = Localization.navigationBarTitle(labelCount: viewModel.shippingLabels.count)
     }
 
     func configureTableView() {
@@ -130,7 +130,7 @@ private extension PrintShippingLabelViewController {
             return
         }
         reprintButton.applyPrimaryButtonStyle()
-        reprintButton.setTitle(Localization.printButtonTitle, for: .normal)
+        reprintButton.setTitle(Localization.printButtonTitle(labelCount: viewModel.shippingLabels.count), for: .normal)
         reprintButton.on(.touchUpInside) { [weak self] _ in
             self?.printShippingLabel()
         }
@@ -250,7 +250,7 @@ private extension PrintShippingLabelViewController {
     func configureHeaderText(cell: BasicTableViewCell) {
         switch printType {
         case .print:
-            cell.textLabel?.text = Localization.printHeaderText
+            cell.textLabel?.text = Localization.printHeaderText(labelCount: viewModel.shippingLabels.count)
             cell.textLabel?.applyHeadlineStyle()
             cell.textLabel?.textAlignment = .center
         case .reprint:
@@ -326,7 +326,7 @@ private extension PrintShippingLabelViewController {
 
     func configurePrintButtonRow(cell: ButtonTableViewCell) {
         cell.configure(style: .primary,
-                       title: Localization.printButtonTitle,
+                       title: Localization.printButtonTitle(labelCount: viewModel.shippingLabels.count),
                        topSpacing: Constants.buttonVerticalSpacing,
                        bottomSpacing: Constants.buttonVerticalSpacing) { [weak self] in
             self?.printShippingLabel()
@@ -355,14 +355,34 @@ private extension PrintShippingLabelViewController {
     }
 
     enum Localization {
-        static let navigationBarTitle = NSLocalizedString("Print Shipping Label",
-                                                          comment: "Navigation bar title to print a shipping label")
-        static let printButtonTitle = NSLocalizedString("Print Shipping Label",
-                                                          comment: "Button title to generate a shipping label document for printing")
+        static func navigationBarTitle(labelCount: Int) -> String {
+            if labelCount == 1 {
+                return NSLocalizedString("Print Shipping Label",
+                                         comment: "Navigation bar title to print a shipping label")
+            } else {
+                return NSLocalizedString("Print Shipping Labels",
+                                         comment: "Navigation bar title to print multiple shipping labels")
+            }
+        }
+        static func printButtonTitle(labelCount: Int) -> String {
+            if labelCount == 1 {
+                return NSLocalizedString("Print Shipping Label",
+                                         comment: "Button title to generate a shipping label document for printing")
+            } else {
+                return NSLocalizedString("Print Shipping Labels",
+                                         comment: "Button title to generate a document with multiple shipping labels for printing")
+            }
+        }
         static let saveButtonTitle = NSLocalizedString("Save for Later",
                                                           comment: "Button title to save a shipping label to print later")
         static let paperSizeSelectorTitle = NSLocalizedString("Paper Size", comment: "Title of the paper size selector row for printing a shipping label")
-        static let printHeaderText = NSLocalizedString("Shipping label purchased!", comment: "Header text when printing a newly purchased shipping label")
+        static func printHeaderText(labelCount: Int) -> String {
+            if labelCount == 1 {
+                return NSLocalizedString("Shipping label purchased!", comment: "Header text when printing a newly purchased shipping label")
+            } else {
+                return NSLocalizedString("Shipping labels purchased!", comment: "Header text when printing multiple newly purchased shipping labels")
+            }
+        }
         static let reprintHeaderText = NSLocalizedString(
             "If there was a printing error when you purchased the label, you can print it again.",
             comment: "Header text when reprinting a shipping label")

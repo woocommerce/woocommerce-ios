@@ -199,6 +199,7 @@ public extension OrdersRemote {
     }
 
     enum ParameterValues {
+        // Same as singleOrderFieldValues except we exclude the line_items and shipping fields
         static let listFieldValues: String = """
             id,parent_id,number,status,currency,customer_id,customer_note,date_created_gmt,date_modified_gmt,date_paid_gmt,\
             discount_total,discount_tax,shipping_total,shipping_tax,total,total_tax,payment_method,payment_method_title,\

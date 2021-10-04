@@ -132,10 +132,10 @@ public class AppSettingsStore: Store {
             loadOrderAddOnsSwitchState(onCompletion: onCompletion)
         case .rememberCardReader(cardReaderID: let cardReaderID, onCompletion: let onCompletion):
             rememberCardReader(cardReaderID: cardReaderID, onCompletion: onCompletion)
-        case .forgetCardReader(cardReaderID: let cardReaderID, onCompletion: let onCompletion):
-            forgetCardReader(cardReaderID: cardReaderID, onCompletion: onCompletion)
-        case .loadCardReaders(onCompletion: let onCompletion):
-            loadCardReaders(onCompletion: onCompletion)
+        case .forgetCardReader(onCompletion: let onCompletion):
+            forgetCardReader(onCompletion: onCompletion)
+        case .loadCardReader(onCompletion: let onCompletion):
+            loadCardReader(onCompletion: onCompletion)
         case .loadEligibilityErrorInfo(onCompletion: let onCompletion):
             loadEligibilityErrorInfo(onCompletion: onCompletion)
         case .setEligibilityErrorInfo(errorInfo: let errorInfo, onCompletion: let onCompletion):
@@ -272,7 +272,9 @@ private extension AppSettingsStore {
                 return onCompletion(.success(()))
             }
 
-            let knownCardReadersToSave = settings.knownCardReaders + [cardReaderID]
+            /// NOTE: We now only persist one card reader maximum, although for backwards compatibility
+            /// we still do so as an array
+            let knownCardReadersToSave = [cardReaderID]
             let settingsToSave = settings.copy(knownCardReaders: knownCardReadersToSave)
             try saveGeneralAppSettings(settingsToSave)
 
@@ -282,34 +284,36 @@ private extension AppSettingsStore {
         }
     }
 
-    /// Forget the given card reader (i.e. automatic reconnection is no longer desired)
-    /// where `cardReaderID` is a String e.g. "CHB204909005931"
+    /// Forget any remembered card reader (i.e. automatic reconnection is no longer desired)
     ///
-    func forgetCardReader(cardReaderID: String, onCompletion: (Result<Void, Error>) -> Void) {
+    func forgetCardReader(onCompletion: (Result<Void, Error>) -> Void) {
         do {
             let settings = loadOrCreateGeneralAppSettings()
-
-            guard settings.knownCardReaders.contains(cardReaderID) else {
-                return onCompletion(.success(()))
-            }
-
-            let knownCardReadersToSave = settings.knownCardReaders.filter { $0 != cardReaderID }
-            let settingsToSave = settings.copy(knownCardReaders: knownCardReadersToSave)
+            /// NOTE: Since we now only persist one card reader maximum, we no longer use
+            /// the argument and always save an empty array to the settings.
+            let settingsToSave = settings.copy(knownCardReaders: [])
             try saveGeneralAppSettings(settingsToSave)
-
             onCompletion(.success(()))
         } catch {
             onCompletion(.failure(error))
         }
     }
 
-    /// Loads the list of all known (remembered) readers (i.e. card readers that, if discovered, should be reconnected automatically)
-    /// E.g.  ["CHB204909005931"]
-    /// Note: will pass [] to the completion if there are no known readers
+    /// Loads the most recently remembered card reader, if any (i.e. to reconnect to automatically)
+    /// NOTE: We now only persist one card reader maximum.
+    /// E.g.  "CHB204909005931"
     ///
-    func loadCardReaders(onCompletion: (Result<[String], Error>) -> Void) {
+    func loadCardReader(onCompletion: (Result<String?, Error>) -> Void) {
         let settings = loadOrCreateGeneralAppSettings()
-        onCompletion(.success(settings.knownCardReaders))
+        /// NOTE: We now only persist one card reader maximum, although for backwards compatibility
+        /// we still do so as an array. We use last here so that we can get the most recently remembered
+        /// reader from appSettings if populated by an older version
+        guard let knownReader = settings.knownCardReaders.last else {
+            onCompletion(.success(nil))
+            return
+        }
+
+        onCompletion(.success(knownReader))
     }
 }
 

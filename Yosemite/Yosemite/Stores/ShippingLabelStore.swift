@@ -38,8 +38,8 @@ public final class ShippingLabelStore: Store {
         switch action {
         case .synchronizeShippingLabels(let siteID, let orderID, let completion):
             synchronizeShippingLabels(siteID: siteID, orderID: orderID, completion: completion)
-        case .printShippingLabel(let siteID, let shippingLabelID, let paperSize, let completion):
-            printShippingLabel(siteID: siteID, shippingLabelID: shippingLabelID, paperSize: paperSize, completion: completion)
+        case .printShippingLabel(let siteID, let shippingLabelIDs, let paperSize, let completion):
+            printShippingLabel(siteID: siteID, shippingLabelIDs: shippingLabelIDs, paperSize: paperSize, completion: completion)
         case .refundShippingLabel(let shippingLabel, let completion):
             refundShippingLabel(shippingLabel: shippingLabel,
                                 completion: completion)
@@ -101,10 +101,10 @@ private extension ShippingLabelStore {
     }
 
     func printShippingLabel(siteID: Int64,
-                            shippingLabelID: Int64,
+                            shippingLabelIDs: [Int64],
                             paperSize: ShippingLabelPaperSize,
                             completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
-        remote.printShippingLabel(siteID: siteID, shippingLabelID: shippingLabelID, paperSize: paperSize, completion: completion)
+        remote.printShippingLabel(siteID: siteID, shippingLabelIDs: shippingLabelIDs, paperSize: paperSize, completion: completion)
     }
 
     func refundShippingLabel(shippingLabel: ShippingLabel,
@@ -187,7 +187,7 @@ private extension ShippingLabelStore {
                               originAddress: ShippingLabelAddress,
                               destinationAddress: ShippingLabelAddress,
                               packages: [ShippingLabelPackageSelected],
-                              completion: @escaping (Result<ShippingLabelCarriersAndRates, Error>) -> Void) {
+                              completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void) {
         remote.loadCarriersAndRates(siteID: siteID,
                                     orderID: orderID,
                                     originAddress: originAddress,

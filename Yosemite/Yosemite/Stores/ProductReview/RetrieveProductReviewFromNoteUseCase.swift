@@ -1,11 +1,12 @@
 
 import Foundation
 import Networking
+import Codegen
 import protocol Storage.StorageType
 
 /// The result from `RetrieveProductReviewFromNoteUseCase`.
 ///
-public struct ProductReviewFromNoteParcel {
+public struct ProductReviewFromNoteParcel: GeneratedFakeable {
     public let note: Note
     public let review: ProductReview
     public let product: Product

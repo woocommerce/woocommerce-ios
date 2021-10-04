@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 import Yosemite
 
@@ -25,15 +26,16 @@ final class ShippingLabelAddressFormViewModel {
     private let stores: StoresManager
 
     /// Closure to notify the `ViewController` when the view model properties change.
+    /// Accepts optional index for row to be focused after reloading the table view.
     ///
-    var onChange: (() -> (Void))?
+    var onChange: ((_ focusedRowIndex: Int?) -> (Void))?
 
     /// Current `ViewModel` state.
     ///
     private var state: State = State() {
         didSet {
             updateSections()
-            onChange?()
+            onChange?(nil)
         }
     }
 
@@ -65,6 +67,10 @@ final class ShippingLabelAddressFormViewModel {
         return statesOfSelectedCountry.first { $0.code == address?.state }?.name
     }
 
+    private let localErrors = CurrentValueSubject<[ValidationError], Never>([])
+    private let currentRowIndex = CurrentValueSubject<Int?, Never>(nil)
+    private var validationSubscription: AnyCancellable?
+
     init(
         siteID: Int64,
         type: ShipType,
@@ -85,6 +91,7 @@ final class ShippingLabelAddressFormViewModel {
         }
         self.countries = countries
         updateSections()
+        configureValidationError()
     }
 
     func handleAddressValueChanges(row: Row, newValue: String?) {
@@ -106,10 +113,14 @@ final class ShippingLabelAddressFormViewModel {
         case .state:
             address = address?.copy(state: newValue)
         case .country:
-            address = address?.copy(country: newValue)
+            address = address?.copy(country: newValue, state: "")
         default:
             return
         }
+
+        let index: Int? = sections.first?.rows.firstIndex(where: { $0 == row })
+        currentRowIndex.send(index)
+        localErrors.send(validateAddressLocally())
     }
 
     func updateSections() {
@@ -181,21 +192,51 @@ extension ShippingLabelAddressFormViewModel {
         case invalidPhoneNumber
     }
 
-    /// Validates phone number for origin address.
+    /// Triggers reloading table view if there's a change in local errors.
+    ///
+    private func configureValidationError() {
+        validationSubscription = localErrors
+            .removeDuplicates()
+            .withLatestFrom(currentRowIndex)
+            .sink { [weak self] _, index in
+                self?.updateSections()
+                self?.onChange?(index)
+            }
+
+        // Append any initial local error.
+        localErrors.send(validateAddressLocally())
+    }
+
+    /// Validates phone number for the address.
     /// This take into account whether phone is not empty,
     /// has length 10 with additional "1" area code for US.
-    ///
-    /// Note: This logic may need to be updated if there is a need for validating other cases.
     ///
     private var isPhoneNumberValid: Bool {
         guard let phone = address?.phone, phone.isNotEmpty else {
             return false
+        }
+        guard address?.country == "US" else {
+            return true
         }
         if phone.hasPrefix("1") {
             return phone.count == 11
         } else {
             return phone.count == 10
         }
+    }
+
+    private var phoneValidationError: ValidationError? {
+        guard let addressToBeValidated = address else {
+            return nil
+        }
+        if phoneNumberRequired {
+            if addressToBeValidated.phone.isEmpty {
+                return .missingPhoneNumber
+            } else if !isPhoneNumberValid {
+                return .invalidPhoneNumber
+            }
+        }
+        return nil
     }
 
     private func validateAddressLocally() -> [ValidationError] {
@@ -220,12 +261,8 @@ extension ShippingLabelAddressFormViewModel {
             if addressToBeValidated.country.isEmpty {
                 errors.append(.country)
             }
-            if phoneNumberRequired {
-                if addressToBeValidated.phone.isEmpty {
-                    errors.append(.missingPhoneNumber)
-                } else if !isPhoneNumberValid {
-                    errors.append(.invalidPhoneNumber)
-                }
+            if let error = phoneValidationError {
+                errors.append(error)
             }
         }
 

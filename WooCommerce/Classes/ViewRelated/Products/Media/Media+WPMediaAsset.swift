@@ -60,4 +60,12 @@ extension CancellableMedia: WPMediaAsset {
         }
         return CGSize(width: width, height: height)
     }
+
+    public func filename() -> String? {
+        return media.filename
+    }
+
+    public func fileExtension() -> String? {
+        return media.fileExtension
+    }
 }

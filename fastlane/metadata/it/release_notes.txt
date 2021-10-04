@@ -1,3 +1,3 @@
-Questa versione contiene alcuni miglioramenti minori per rendere la tua esperienza più fluida. Nei dettagli dell'ordine, alcune estensioni di terze parti non mostravano logicamente i metadati del prodotto. Abbiamo apportato alcune modifiche per migliorare la visualizzazione di questi dettagli del prodotto. Ora stiamo nascondendo il pulsante dell'ordine per il rimborso quando l'importo totale è zero.
+I commercianti che usano l'estensione WooCommerce Shipping & Tax scopriranno che la creazione del pacchetto personalizzato per un'etichetta di spedizione ora è una bazzecola. La creazione e la stampa delle etichette di spedizione dal dispositivo mobile ora è molto più divertente.
 
-Questo aggiornamento include anche vari miglioramenti alla funzionalità dell'etichetta di spedizione usando l'estensione WooCommerce Shipping & Tax. Valutiamo tutti i tuoi feedback su questa nuovissima funzionalità.
+Abbiamo anche risolto e migliorato una serie di piccole cose nell'app in base al tuo feedback.

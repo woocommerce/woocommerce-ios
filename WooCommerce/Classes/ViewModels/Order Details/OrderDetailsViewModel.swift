@@ -264,7 +264,7 @@ extension OrderDetailsViewModel {
             viewController.show(productListVC, sender: nil)
         case .billingDetail:
             ServiceLocator.analytics.track(.orderDetailShowBillingTapped)
-            let billingInformationViewController = BillingInformationViewController(order: order, editingEnabled: dataSource.orderEditingEnabled)
+            let billingInformationViewController = BillingInformationViewController(order: order, editingEnabled: true)
             viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
         case .seeReceipt:
             ServiceLocator.analytics.track(.receiptViewTapped)

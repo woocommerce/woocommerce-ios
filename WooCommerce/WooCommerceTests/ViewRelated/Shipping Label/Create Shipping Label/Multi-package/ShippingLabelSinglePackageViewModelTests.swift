@@ -2,7 +2,7 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 
-class ShippingLabelPackageItemViewModelTests: XCTestCase {
+class ShippingLabelSinglePackageViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 1234
 
@@ -11,13 +11,12 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
         // Given
         let order = MockOrders().empty().copy(siteID: sampleSiteID)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
-        let viewModel = ShippingLabelPackageItemViewModel(order: order,
-                                                          orderItems: order.items,
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
+                                                          orderItems: [],
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "",
                                                           totalWeight: "",
-                                                          products: [],
-                                                          productVariations: [],
+                                                          onItemMoveRequest: { _, _ in },
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter)
@@ -30,36 +29,26 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
     func test_itemsRows_returns_expected_values() {
 
         // Given
-        let orderItemAttributes = [OrderItemAttribute(metaID: 170, name: "Packaging", value: "Box")]
-        let items = [MockOrderItem.sampleItem(name: "Easter Egg", productID: 1, quantity: 1),
-                     MockOrderItem.sampleItem(name: "Jacket", productID: 33, quantity: 1),
-                     MockOrderItem.sampleItem(name: "Italian Jacket", productID: 23, quantity: 2),
-                     MockOrderItem.sampleItem(name: "Jeans",
-                                              productID: 49,
-                                              variationID: 49,
-                                              quantity: 1,
-                                              attributes: orderItemAttributes)]
-        let expectedFirstItemRow = ItemToFulfillRow(title: "Easter Egg", subtitle: "123 kg")
-        let expectedLastItemRow = ItemToFulfillRow(title: "Jeans", subtitle: "Box・0 kg")
-        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
+        let orderItemAttribute = OrderItemAttribute(metaID: 170, name: "Packaging", value: "Box")
+        let items: [ShippingLabelPackageItem] = [
+            .fake(id: 1, name: "Easter Egg", weight: 123),
+            .fake(id: 33, name: "Jacket", weight: 9),
+            .fake(id: 23, name: "Italian Jacket", weight: 1),
+            .fake(id: 49, name: "Jeans", weight: 0, attributes: [VariationAttributeViewModel(orderItemAttribute: orderItemAttribute)])
+        ]
+
+        let expectedFirstItemRow = ItemToFulfillRow(productOrVariationID: 1, title: "Easter Egg", subtitle: "123 kg")
+        let expectedLastItemRow = ItemToFulfillRow(productOrVariationID: 49, title: "Jeans", subtitle: "Box・0 kg")
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
 
-        let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "123")
-        let product2 = Product.fake().copy(siteID: sampleSiteID, productID: 33, virtual: true, weight: "9")
-        let product3 = Product.fake().copy(siteID: sampleSiteID, productID: 23, virtual: false, weight: "1")
-        let variation = ProductVariation.fake().copy(siteID: sampleSiteID,
-                                                     productID: 49,
-                                                     productVariationID: 49,
-                                                     attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")])
-
         // When
-        let viewModel = ShippingLabelPackageItemViewModel(order: order,
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
                                                           orderItems: items,
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "",
                                                           totalWeight: "",
-                                                          products: [product1, product2, product3],
-                                                          productVariations: [variation],
+                                                          onItemMoveRequest: { _, _ in },
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -83,13 +72,12 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
                                                        maxWeight: 11)
         let order = MockOrders().empty().copy(siteID: sampleSiteID)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
-        let viewModel = ShippingLabelPackageItemViewModel(order: order,
-                                                          orderItems: order.items,
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
+                                                          orderItems: [],
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "",
                                                           totalWeight: "",
-                                                          products: [],
-                                                          productVariations: [],
+                                                          onItemMoveRequest: { _, _ in },
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -115,16 +103,15 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
 
         var packageToTest: ShippingLabelPackageAttributes?
-        let packageSwitchHandler: ShippingLabelPackageItemViewModel.PackageSwitchHandler = { package in
+        let packageSwitchHandler: ShippingLabelSinglePackageViewModel.PackageSwitchHandler = { package in
             packageToTest = package
         }
-        let viewModel = ShippingLabelPackageItemViewModel(order: order,
-                                                          orderItems: order.items,
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
+                                                          orderItems: [],
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "Test Box",
                                                           totalWeight: "",
-                                                          products: [],
-                                                          productVariations: [],
+                                                          onItemMoveRequest: { _, _ in },
                                                           onPackageSwitch: packageSwitchHandler,
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -137,20 +124,19 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(packageToTest, ShippingLabelPackageAttributes(packageID: customPackage.title,
                                                                      totalWeight: "",
-                                                                     productIDs: order.items.map { $0.productOrVariationID }))
+                                                                     items: []))
     }
 
     func test_showCustomPackagesHeader_returns_the_expected_value() {
         // Given
         let order = MockOrders().empty().copy(siteID: sampleSiteID)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
-        let viewModel = ShippingLabelPackageItemViewModel(order: order,
-                                                          orderItems: order.items,
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
+                                                          orderItems: [],
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "Test Box",
                                                           totalWeight: "10",
-                                                          products: [],
-                                                          productVariations: [],
+                                                          onItemMoveRequest: { _, _ in },
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -163,34 +149,21 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
 
     func test_totalWeight_returns_the_expected_value() {
         // Given
-        let orderItemAttributes = [OrderItemAttribute(metaID: 170, name: "Packaging", value: "Box")]
-        let items = [MockOrderItem.sampleItem(name: "Easter Egg", productID: 1, quantity: 0.5),
-                     MockOrderItem.sampleItem(name: "Jacket", productID: 33, quantity: 1),
-                     MockOrderItem.sampleItem(name: "Italian Jacket", productID: 23, quantity: 2),
-                     MockOrderItem.sampleItem(name: "Jeans",
-                                              productID: 49,
-                                              variationID: 49,
-                                              quantity: 1,
-                                              attributes: orderItemAttributes)]
-        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
+        let items: [ShippingLabelPackageItem] = [
+            .fake(id: 1, name: "Easter Egg", weight: 120, quantity: 0.5),
+            .fake(id: 23, name: "Italian Jacket", weight: 1.44, quantity: 2),
+            .fake(id: 49, name: "Jeans", weight: 0)
+        ]
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
 
         // When
-        let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120")
-        let product2 = Product.fake().copy(siteID: sampleSiteID, productID: 33, virtual: true, weight: "9")
-        let product3 = Product.fake().copy(siteID: sampleSiteID, productID: 23, virtual: false, weight: "1.44")
-        let variation = ProductVariation.fake().copy(siteID: sampleSiteID,
-                                                     productID: 49,
-                                                     productVariationID: 49,
-                                                     attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")])
-
-        let viewModel = ShippingLabelPackageItemViewModel(order: order,
-                                                          orderItems: order.items,
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
+                                                          orderItems: items,
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "Box",
                                                           totalWeight: "",
-                                                          products: [product1, product2, product3],
-                                                          productVariations: [variation],
+                                                          onItemMoveRequest: { _, _ in },
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -202,34 +175,21 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
 
     func test_totalWeight_returns_the_expected_value_when_already_set() {
         // Given
-        let orderItemAttributes = [OrderItemAttribute(metaID: 170, name: "Packaging", value: "Box")]
-        let items = [MockOrderItem.sampleItem(name: "Easter Egg", productID: 1, quantity: 1),
-                     MockOrderItem.sampleItem(name: "Jacket", productID: 33, quantity: 1),
-                     MockOrderItem.sampleItem(name: "Italian Jacket", productID: 23, quantity: 2),
-                     MockOrderItem.sampleItem(name: "Jeans",
-                                              productID: 49,
-                                              variationID: 49,
-                                              quantity: 1,
-                                              attributes: orderItemAttributes)]
-        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
+        let items: [ShippingLabelPackageItem] = [
+            .fake(id: 1, name: "Easter Egg", weight: 120),
+            .fake(id: 23, name: "Italian Jacket", weight: 1.44),
+            .fake(id: 49, name: "Jeans", weight: 0)
+        ]
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
 
         // When
-        let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "123")
-        let product2 = Product.fake().copy(siteID: sampleSiteID, productID: 33, virtual: true, weight: "9")
-        let product3 = Product.fake().copy(siteID: sampleSiteID, productID: 23, virtual: false, weight: "1")
-        let variation = ProductVariation.fake().copy(siteID: sampleSiteID,
-                                                     productID: 49,
-                                                     productVariationID: 49,
-                                                     attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")])
-
-        let viewModel = ShippingLabelPackageItemViewModel(order: order,
-                                                          orderItems: order.items,
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
+                                                          orderItems: items,
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "Box",
                                                           totalWeight: "30",
-                                                          products: [product1, product2, product3],
-                                                          productVariations: [variation],
+                                                          onItemMoveRequest: { _, _ in },
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -241,19 +201,16 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
 
     func test_isValidTotalWeight_returns_true_initially() {
         // Given
-        let items = [MockOrderItem.sampleItem(name: "Easter Egg", productID: 1, quantity: 0.5)]
-        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
 
         // When
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120")
-        let viewModel = ShippingLabelPackageItemViewModel(order: order,
-                                                          orderItems: order.items,
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
+                                                          orderItems: [],
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "Test Box",
                                                           totalWeight: "10",
-                                                          products: [product],
-                                                          productVariations: [],
+                                                          onItemMoveRequest: { _, _ in },
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -265,17 +222,15 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
 
     func test_isValidTotalWeight_returns_the_expected_value_when_the_totalWeight_is_not_valid() {
         // Given
-        // Given
-        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: [])
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
 
-        let viewModel = ShippingLabelPackageItemViewModel(order: order,
-                                                          orderItems: order.items,
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
+                                                          orderItems: [],
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "Test Box",
                                                           totalWeight: "10",
-                                                          products: [],
-                                                          productVariations: [],
+                                                          onItemMoveRequest: { _, _ in },
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -302,51 +257,46 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
 
     func test_validatedPackageAttributes_returns_correct_value_when_total_weight_is_valid() {
         // Given
-        let items = [MockOrderItem.sampleItem(name: "Easter Egg", productID: 1, quantity: 0.5)]
-        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
+        let items: [ShippingLabelPackageItem] = [.fake(weight: 120, quantity: 0.5)]
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
 
         // When
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120")
-        let viewModel = ShippingLabelPackageItemViewModel(order: order,
-                                                          orderItems: order.items,
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
+                                                          orderItems: items,
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "Test Box",
                                                           totalWeight: "10",
-                                                          products: [product],
-                                                          productVariations: [],
+                                                          onItemMoveRequest: { _, _ in },
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
                                                           weightUnit: "kg")
 
         // Then
-        let expectedPackage1 = ShippingLabelPackageAttributes(packageID: "Test Box", totalWeight: "10", productIDs: [1])
+        let expectedPackage1 = ShippingLabelPackageAttributes(packageID: "Test Box", totalWeight: "10", items: items)
         XCTAssertEqual(viewModel.validatedPackageAttributes, expectedPackage1)
 
         // When
         viewModel.totalWeight = "12"
 
         // Then
-        let expectedPackage2 = ShippingLabelPackageAttributes(packageID: "Test Box", totalWeight: "12", productIDs: [1])
+        let expectedPackage2 = ShippingLabelPackageAttributes(packageID: "Test Box", totalWeight: "12", items: items)
         XCTAssertEqual(viewModel.validatedPackageAttributes, expectedPackage2)
     }
 
     func test_validatedPackageAttributes_returns_nil_when_the_totalWeight_is_not_valid() {
         // Given
-        // Given
-        let items = [MockOrderItem.sampleItem(name: "Easter Egg", productID: 1, quantity: 0.5)]
-        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
+        let items: [ShippingLabelPackageItem] = [.fake(weight: 120, quantity: 0.5)]
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
 
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "120")
-        let viewModel = ShippingLabelPackageItemViewModel(order: order,
-                                                          orderItems: order.items,
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
+                                                          orderItems: items,
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "Test Box",
                                                           totalWeight: "10",
-                                                          products: [product],
-                                                          productVariations: [],
+                                                          onItemMoveRequest: { _, _ in },
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -370,10 +320,107 @@ class ShippingLabelPackageItemViewModelTests: XCTestCase {
         // Then
         XCTAssertNil(viewModel.validatedPackageAttributes)
     }
+
+    func test_validatedPackageAttributes_returns_nil_when_original_package_dimensions_is_invalid() {
+        // Given
+        let items: [ShippingLabelPackageItem] = [.fake(weight: 120, quantity: 0.5)]
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
+                                                            orderItems: items,
+                                                            packagesResponse: mockPackageResponse(),
+                                                            selectedPackageID: "invividual",
+                                                            totalWeight: "10",
+                                                            isOriginalPackaging: true,
+                                                            onItemMoveRequest: { _, _ in },
+                                                            onPackageSwitch: { _ in },
+                                                            onPackagesSync: { _ in },
+                                                            formatter: currencyFormatter,
+                                                            weightUnit: "kg")
+
+        // Then
+        XCTAssertEqual(viewModel.validatedPackageAttributes, nil)
+    }
+
+    func test_validatedPackageAttributes_returns_correctly_when_original_package_dimensions_is_valid() {
+        // Given
+        let dimensions = ProductDimensions(length: "2", width: "3", height: "5")
+        let items: [ShippingLabelPackageItem] = [.fake(weight: 120, quantity: 0.5, dimensions: dimensions)]
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
+                                                            orderItems: items,
+                                                            packagesResponse: mockPackageResponse(),
+                                                            selectedPackageID: "invividual",
+                                                            totalWeight: "",
+                                                            isOriginalPackaging: true,
+                                                            onItemMoveRequest: { _, _ in },
+                                                            onPackageSwitch: { _ in },
+                                                            onPackagesSync: { _ in },
+                                                            formatter: currencyFormatter,
+                                                            weightUnit: "kg")
+
+        // Then
+        let expectedPackage = ShippingLabelPackageAttributes(packageID: "invividual", totalWeight: "60", items: items)
+        XCTAssertEqual(viewModel.validatedPackageAttributes, expectedPackage)
+    }
+
+    func test_originalPackageDimensions_returns_correctly_when_package_has_no_dimensions() {
+        // Given
+        let item = ShippingLabelPackageItem.fake()
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
+                                                            orderItems: [item],
+                                                            packagesResponse: mockPackageResponse(),
+                                                            selectedPackageID: "invividual",
+                                                            totalWeight: "",
+                                                            isOriginalPackaging: true,
+                                                            onItemMoveRequest: { _, _ in },
+                                                            onPackageSwitch: { _ in },
+                                                            onPackagesSync: { _ in },
+                                                            formatter: currencyFormatter,
+                                                            weightUnit: "kg")
+
+        // Then
+        XCTAssertEqual(viewModel.originalPackageDimensions, "0 x 0 x 0 in")
+        XCTAssertFalse(viewModel.hasValidPackageDimensions)
+    }
+
+    func test_originalPackageDimensions_returns_correctly_when_package_has_dimensions() {
+        // Given
+        let dimensions = ProductDimensions(length: "2", width: "3", height: "5")
+        let item = ShippingLabelPackageItem.fake(dimensions: dimensions)
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
+                                                            orderItems: [item],
+                                                            packagesResponse: mockPackageResponse(),
+                                                            selectedPackageID: "invividual",
+                                                            totalWeight: "",
+                                                            isOriginalPackaging: true,
+                                                            onItemMoveRequest: { _, _ in },
+                                                            onPackageSwitch: { _ in },
+                                                            onPackagesSync: { _ in },
+                                                            formatter: currencyFormatter,
+                                                            weightUnit: "kg")
+
+        // Then
+        XCTAssertEqual(viewModel.originalPackageDimensions, "2 x 3 x 5 in")
+        XCTAssertTrue(viewModel.hasValidPackageDimensions)
+    }
 }
 
 // MARK: - Mocks
-private extension ShippingLabelPackageItemViewModelTests {
+private extension ShippingLabelSinglePackageViewModelTests {
     func mockPackageResponse(withCustom: Bool = true, withPredefined: Bool = true) -> ShippingLabelPackagesResponse {
         let storeOptions = ShippingLabelStoreOptions(currencySymbol: "$",
                                                      dimensionUnit: "in",

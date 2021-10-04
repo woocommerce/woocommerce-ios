@@ -64,11 +64,16 @@ final class ReviewOrderViewController: UIViewController {
         super.viewDidLayoutSubviews()
         tableView.updateFooterHeight()
     }
+
+    override var shouldShowOfflineBanner: Bool {
+        return true
+    }
 }
 
 // MARK: - UI Configuration
 //
 private extension ReviewOrderViewController {
+
     func configureViewModel() {
         viewModel.configureResultsControllers { [weak self] in
             self?.tableView.reloadData()
@@ -394,7 +399,7 @@ private extension ReviewOrderViewController {
     /// Show billing information screen
     ///
     func billingInformationTapped() {
-        let billingInformationViewController = BillingInformationViewController(order: viewModel.order)
+        let billingInformationViewController = BillingInformationViewController(order: viewModel.order, editingEnabled: false)
         navigationController?.pushViewController(billingInformationViewController, animated: true)
     }
 

@@ -13,9 +13,17 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
         selectedPackages.count > 1
     }
 
+    /// Message displayed on the Move Item action sheet.
+    ///
+    @Published private(set) var moveItemActionSheetMessage: String = ""
+
+    /// Option buttons displayed on the Move Item action sheet.
+    ///
+    @Published private(set) var moveItemActionSheetButtons: [ActionSheet.Button] = []
+
     /// References of view models for child items.
     ///
-    @Published private(set) var itemViewModels: [ShippingLabelPackageItemViewModel] = []
+    @Published private(set) var itemViewModels: [ShippingLabelSinglePackageViewModel] = []
 
     /// Whether Done button on Package Details screen should be enabled.
     ///
@@ -30,9 +38,9 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
 
     private var cancellables: Set<AnyCancellable> = []
 
-    /// Validation states of all items.
+    /// Validation states of all items by index of each package.
     ///
-    private var packagesValidation: [String: Bool] = [:] {
+    private var packagesValidation: [Int: Bool] = [:] {
         didSet {
             configureDoneButton()
         }
@@ -92,35 +100,39 @@ private extension ShippingLabelPackagesFormViewModel {
     /// If no initial packages was input, set up default package from last selected package ID and all order items.
     ///
     func configureDefaultPackage() {
-        guard selectedPackages.isEmpty,
-              let selectedPackageID = resultsControllers?.accountSettings?.lastSelectedPackageID else {
+        guard selectedPackages.isEmpty else {
             return
         }
+        let selectedPackageID = resultsControllers?.accountSettings?.lastSelectedPackageID ?? ""
+        let items = order.items.compactMap { ShippingLabelPackageItem(orderItem: $0,
+                                                                      products: products,
+                                                                      productVariations: productVariations) }
         selectedPackages = [ShippingLabelPackageAttributes(packageID: selectedPackageID,
                                                            totalWeight: "",
-                                                           productIDs: order.items.map { $0.productOrVariationID })]
+                                                           items: items)]
     }
 
-    /// Set up item view models on change of products and product variations.
+    /// Set up item view models on change selected packages.
     ///
     func configureItemViewModels(order: Order, packageResponse: ShippingLabelPackagesResponse?) {
-        $selectedPackages.combineLatest($products, $productVariations)
-            .map { selectedPackages, products, variations -> [ShippingLabelPackageItemViewModel] in
-                return selectedPackages.map { details in
-                    let orderItems = order.items.filter { details.productIDs.contains($0.productOrVariationID) }
-                    return ShippingLabelPackageItemViewModel(order: order,
-                                                             orderItems: orderItems,
-                                                             packagesResponse: packageResponse,
-                                                             selectedPackageID: details.packageID,
-                                                             totalWeight: details.totalWeight,
-                                                             products: products,
-                                                             productVariations: variations,
-                                                             onPackageSwitch: { [weak self] newPackage in
-                                                                self?.switchPackage(currentID: details.packageID, newPackage: newPackage)
-                                                             },
-                                                             onPackagesSync: { [weak self] packagesResponse in
-                                                                self?.onPackageSyncCompletion(packagesResponse)
-                                                             })
+        $selectedPackages
+            .map { selectedPackages -> [ShippingLabelSinglePackageViewModel] in
+                return selectedPackages.enumerated().map { index, details in
+                    return .init(order: order,
+                                 orderItems: details.items,
+                                 packagesResponse: packageResponse,
+                                 selectedPackageID: details.packageID,
+                                 totalWeight: details.totalWeight,
+                                 isOriginalPackaging: details.isOriginalPackaging,
+                                 onItemMoveRequest: { [weak self] productOrVariationID, packageName in
+                        self?.updateMoveItemActionSheet(for: productOrVariationID, from: details, packageIndex: index, packageName: packageName)
+                    },
+                                 onPackageSwitch: { [weak self] newPackage in
+                        self?.switchPackage(currentPackage: details, newPackage: newPackage)
+                    },
+                                 onPackagesSync: { [weak self] packagesResponse in
+                        self?.onPackageSyncCompletion(packagesResponse)
+                    })
                 }
             }
             .sink { [weak self] viewModels in
@@ -130,11 +142,201 @@ private extension ShippingLabelPackagesFormViewModel {
             .store(in: &cancellables)
     }
 
+    /// Update title and buttons for the Move Item action sheet.
+    ///
+    func updateMoveItemActionSheet(for productOrVariationID: Int64,
+                                   from currentPackage: ShippingLabelPackageAttributes,
+                                   packageIndex: Int,
+                                   packageName: String) {
+        moveItemActionSheetMessage = String(format: Localization.moveItemActionSheetMessage, packageIndex + 1, packageName)
+        moveItemActionSheetButtons = {
+            var buttons: [ActionSheet.Button] = []
+
+            // Add options to move to other packages.
+            for (index, package) in selectedPackages.enumerated() {
+                guard !package.isOriginalPackaging else {
+                    continue
+                }
+                if index != packageIndex {
+                    guard let name = itemViewModels[safe: index]?.packageName else {
+                        continue
+                    }
+                    let packageTitle = String(format: Localization.packageName, index + 1, name)
+                    buttons.append(.default(Text(packageTitle), action: { [weak self] in
+                        self?.moveItem(productOrVariationID: productOrVariationID, currentPackageIndex: packageIndex, newPackageIndex: index)
+                    }))
+                }
+            }
+
+            if !currentPackage.isOriginalPackaging {
+                let hasMultipleItems = currentPackage.items.count > 1 || currentPackage.items.first(where: { $0.quantity > 1 }) != nil
+                if hasMultipleItems {
+                    // Add option to add item to new package if current package has more than one item.
+                    buttons.append(.default(Text(Localization.addToNewPackage)) { [weak self] in
+                        self?.addItemToNewPackage(productOrVariationID: productOrVariationID, packageIndex: packageIndex)
+                    })
+                }
+
+                // Add option to ship in original package
+                buttons.append(.default(Text(Localization.shipInOriginalPackage)) { [weak self] in
+                    self?.shipInOriginalPackage(productOrVariationID: productOrVariationID, packageIndex: packageIndex)
+                })
+            } else {
+                buttons.append(.default(Text(Localization.addToNewPackage)) { [weak self] in
+                    self?.addItemToNewPackage(productOrVariationID: productOrVariationID, packageIndex: packageIndex)
+                })
+            }
+            buttons.append(.cancel())
+            return buttons
+        }()
+    }
+
+    /// Move the item with `productOrVariationID` from `currentPackage` to a new package,
+    /// and update items within `currentPackage` to reflect the change.
+    ///
+    func shipInOriginalPackage(productOrVariationID: Int64, packageIndex: Int) {
+        var updatedPackages: [ShippingLabelPackageAttributes] = []
+        for (index, package) in selectedPackages.enumerated() {
+            if index == packageIndex {
+                let (matchingItem, updatedItems) = package.partitionItems(using: productOrVariationID)
+
+                guard let matchingItem = matchingItem else {
+                    assertionFailure("⛔️ Cannot find item with product or variationID \(productOrVariationID) in current package!")
+                    return
+                }
+
+                // If the resulting item list is not empty, create a copy of the package with the list.
+                if updatedItems.isNotEmpty {
+                    let updatedPackage = ShippingLabelPackageAttributes(packageID: package.packageID,
+                                                                        totalWeight: package.totalWeight,
+                                                                        items: updatedItems)
+                    updatedPackages.append(updatedPackage)
+                }
+
+                // Create a package with original packaging box ID and the matching item.
+                let originalPackage = ShippingLabelPackageAttributes(packageID: ShippingLabelPackageAttributes.originalPackagingBoxID,
+                                                                     totalWeight: "",
+                                                                     items: [matchingItem])
+                updatedPackages.append(originalPackage)
+            } else {
+                updatedPackages.append(package)
+            }
+        }
+        // This will trigger updating item view models, and therefore updates the package list UI.
+        selectedPackages = updatedPackages
+    }
+
+    /// Move the item with `productOrVariationID` to a separate non-original package,
+    /// and update the old package appropriately.
+    ///
+    func addItemToNewPackage(productOrVariationID: Int64, packageIndex: Int) {
+        guard let currentPackage = selectedPackages[safe: packageIndex] else {
+            assertionFailure("⛔️ Cannot find package at index \(packageIndex)")
+            return
+        }
+        var temporaryPackages = selectedPackages
+        // Remove current package from list
+        temporaryPackages.remove(at: packageIndex)
+
+        if !currentPackage.isOriginalPackaging {
+            let (matchingItem, updatedItems) = currentPackage.partitionItems(using: productOrVariationID)
+
+            guard let matchingItem = matchingItem else {
+                assertionFailure("⛔️ Cannot find item with product or variationID \(productOrVariationID) in current package!")
+                return
+            }
+
+            // If the resulting item list is not empty, create a copy of the package with the items,
+            // and add the new package to the list.
+            if updatedItems.isNotEmpty {
+                let updatedPackage = ShippingLabelPackageAttributes(packageID: currentPackage.packageID,
+                                                                    totalWeight: "",
+                                                                    items: updatedItems)
+                temporaryPackages.append(updatedPackage)
+            }
+
+            // Create new package with the matching item, using same package ID as current package's
+            let newPackage = ShippingLabelPackageAttributes(packageID: currentPackage.packageID,
+                                                            totalWeight: "",
+                                                            items: [matchingItem])
+            temporaryPackages.append(newPackage)
+        } else {
+            // Get last selected package ID to use as ID of the new package if possible.
+            let selectedPackageID = resultsControllers?.accountSettings?.lastSelectedPackageID ?? ""
+            let newPackage = ShippingLabelPackageAttributes(packageID: selectedPackageID,
+                                                            totalWeight: "",
+                                                            items: currentPackage.items)
+            temporaryPackages.insert(newPackage, at: packageIndex)
+        }
+        // This will trigger updating item view models, and therefore updates the package list UI.
+        selectedPackages = temporaryPackages
+    }
+
+    /// Move the item with `productOrVariationID` to the specified package, and update current package accordingly.
+    ///
+    func moveItem(productOrVariationID: Int64, currentPackageIndex: Int, newPackageIndex: Int) {
+        var temporaryPackages = selectedPackages
+        guard let currentPackage = temporaryPackages[safe: currentPackageIndex],
+              let newPackage = temporaryPackages[safe: newPackageIndex] else {
+            assertionFailure("⛔️ Cannot find package at either of indices \(currentPackageIndex) and \(newPackageIndex)")
+            return
+        }
+
+        var itemToMove: ShippingLabelPackageItem?
+        var updatedCurrentPackage: ShippingLabelPackageAttributes?
+
+        if currentPackage.isOriginalPackaging {
+            itemToMove = currentPackage.items.first
+        } else {
+            let (matchingItem, updatedItems) = currentPackage.partitionItems(using: productOrVariationID)
+            itemToMove = matchingItem
+
+            // If the resulting item list is not empty, create a copy of the package with the items,
+            // and add the new package to the list.
+            if updatedItems.isNotEmpty {
+                updatedCurrentPackage = ShippingLabelPackageAttributes(packageID: currentPackage.packageID,
+                                                                       totalWeight: "",
+                                                                       items: updatedItems)
+            }
+        }
+
+        guard let itemToMove = itemToMove else {
+            assertionFailure("⛔️ Cannot find item with product or variationID \(productOrVariationID) in current package!")
+            return
+        }
+        var newItems = newPackage.items
+
+        // If found an item with the same product or variation ID as the new item, increase its quantity.
+        // Otherwise add the new item to the package's item list.
+        if let itemIndex = newItems.firstIndex(where: { $0.productOrVariationID == itemToMove.productOrVariationID }) {
+            let foundPackage = newItems[itemIndex]
+            newItems[itemIndex] = ShippingLabelPackageItem(copy: foundPackage, quantity: foundPackage.quantity + 1)
+        } else {
+            newItems.append(itemToMove)
+        }
+
+        // Create a copy of the new package with updated items
+        let updatedNewPackage = ShippingLabelPackageAttributes(packageID: newPackage.packageID,
+                                                               totalWeight: "",
+                                                               items: newItems)
+        temporaryPackages[newPackageIndex] = updatedNewPackage
+
+        if let updatedCurrentPackage = updatedCurrentPackage {
+            temporaryPackages[currentPackageIndex] = updatedCurrentPackage
+        } else {
+            // Remove current package from list
+            temporaryPackages.remove(at: currentPackageIndex)
+        }
+
+        // This will trigger updating item view models, and therefore updates the package list UI.
+        selectedPackages = temporaryPackages
+    }
+
     /// Update selected packages when user switch any package.
     ///
-    func switchPackage(currentID: String, newPackage: ShippingLabelPackageAttributes) {
+    func switchPackage(currentPackage: ShippingLabelPackageAttributes, newPackage: ShippingLabelPackageAttributes) {
         selectedPackages = selectedPackages.map { package in
-            if package.packageID == currentID {
+            if package == currentPackage {
                 return newPackage
             } else {
                 return package
@@ -145,10 +347,11 @@ private extension ShippingLabelPackagesFormViewModel {
     /// Observe validation state of each package and save it by package ID.
     ///
     func observeItemViewModels() {
-        itemViewModels.forEach { item in
-            item.$isValidTotalWeight
+        packagesValidation.removeAll()
+        itemViewModels.enumerated().forEach { (index, item) in
+            item.$isValidPackage
                 .sink { [weak self] isValid in
-                    self?.packagesValidation[item.selectedPackageID] = isValid
+                    self?.packagesValidation[index] = isValid && item.selectedPackageID.isNotEmpty
                 }
                 .store(in: &cancellables)
         }
@@ -204,6 +407,23 @@ private extension ShippingLabelPackagesFormViewModel {
             onCompletion?(nil)
         }
         stores.dispatch(action)
+    }
+}
+
+private extension ShippingLabelPackagesFormViewModel {
+    enum Localization {
+        static let moveItemActionSheetMessage = NSLocalizedString("This item is currently in Package %1$d: %2$@. Where would you like to move it?",
+                                                                  comment: "Message in action sheet when an order item is about to " +
+                                                                    "be moved on Package Details screen of Shipping Label flow." +
+                                                                    "The package name reads like: Package 1: Custom Envelope.")
+        static let packageName = NSLocalizedString("Package %1$d: %2$@",
+                                                   comment: "Name of package to be listed in Move Item action sheet " +
+                                                   "on Package Details screen of Shipping Label flow.")
+        static let shipInOriginalPackage = NSLocalizedString("Ship in Original Packaging",
+                                                             comment: "Option to ship in original packaging on action sheet when an order item is about to " +
+                                                                "be moved on Package Details screen of Shipping Label flow.")
+        static let addToNewPackage = NSLocalizedString("Add to new package",
+                                                       comment: "Option to add item to new package on Package Details screen of Shipping Label flow.")
     }
 }
 

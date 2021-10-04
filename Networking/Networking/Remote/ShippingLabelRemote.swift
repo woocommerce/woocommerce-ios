@@ -4,7 +4,7 @@ import Foundation
 public protocol ShippingLabelRemoteProtocol {
     func loadShippingLabels(siteID: Int64, orderID: Int64, completion: @escaping (Result<OrderShippingLabelListResponse, Error>) -> Void)
     func printShippingLabel(siteID: Int64,
-                            shippingLabelID: Int64,
+                            shippingLabelIDs: [Int64],
                             paperSize: ShippingLabelPaperSize,
                             completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void)
     func refundShippingLabel(siteID: Int64,
@@ -25,7 +25,7 @@ public protocol ShippingLabelRemoteProtocol {
                               originAddress: ShippingLabelAddress,
                               destinationAddress: ShippingLabelAddress,
                               packages: [ShippingLabelPackageSelected],
-                              completion: @escaping (Result<ShippingLabelCarriersAndRates, Error>) -> Void)
+                              completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void)
     func loadShippingLabelAccountSettings(siteID: Int64,
                                           completion: @escaping (Result<ShippingLabelAccountSettings, Error>) -> Void)
     func updateShippingLabelAccountSettings(siteID: Int64,
@@ -66,17 +66,17 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
 
     /// Generates shipping label data for printing.
     /// - Parameters:
-    ///   - siteID: Remote ID of the site that owns the shipping label.
-    ///   - shippingLabelID: Remote ID of the shipping label.
+    ///   - siteID: Remote ID of the site that owns the shipping labels.
+    ///   - shippingLabelIDs: Remote IDs of the shipping labels.
     ///   - paperSize: Paper size option (current options are "label", "legal", and "letter").
     ///   - completion: Closure to be executed upon completion.
     public func printShippingLabel(siteID: Int64,
-                                   shippingLabelID: Int64,
+                                   shippingLabelIDs: [Int64],
                                    paperSize: ShippingLabelPaperSize,
                                    completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
-        let parameters = [
+        let parameters: [String: Any] = [
             ParameterKey.paperSize: paperSize.rawValue,
-            ParameterKey.labelIDCSV: String(shippingLabelID),
+            ParameterKey.labelIDCSV: shippingLabelIDs.map(String.init).joined(separator: ","),
             ParameterKey.captionCSV: "",
             ParameterKey.json: "true" // `json=true` is necessary, otherwise it results in 500 error "no_response_body".
         ]
@@ -181,7 +181,7 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
                                      originAddress: ShippingLabelAddress,
                                      destinationAddress: ShippingLabelAddress,
                                      packages: [ShippingLabelPackageSelected],
-                                     completion: @escaping (Result<ShippingLabelCarriersAndRates, Error>) -> Void) {
+                                     completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void) {
         do {
             let parameters: [String: Any] = [
                 ParameterKey.originAddress: try originAddress.toDictionary(),

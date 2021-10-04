@@ -4,36 +4,18 @@ import SwiftUI
 ///
 struct ItemToFulfillRow: View, Identifiable {
     let id = UUID()
+    let productOrVariationID: Int64
     let title: String
     let subtitle: String
 
     var body: some View {
-        HStack {
-            VStack(alignment: .leading,
-                   spacing: 8) {
-                Text(title)
-                    .bodyStyle()
-                Text(subtitle)
-                    .footnoteStyle()
-            }.padding([.leading, .trailing], Constants.vStackPadding)
-            Spacer()
-        }
-        .padding([.top, .bottom], Constants.hStackPadding)
-        .frame(minHeight: Constants.height)
-    }
-}
-
-private extension ItemToFulfillRow {
-    enum Constants {
-        static let vStackPadding: CGFloat = 16
-        static let hStackPadding: CGFloat = 10
-        static let height: CGFloat = 64
+        TitleAndSubtitleRow(title: title, subtitle: subtitle)
     }
 }
 
 struct ItemToFulfillRow_Previews: PreviewProvider {
     static var previews: some View {
-        ItemToFulfillRow(title: "Title", subtitle: "My subtitle")
+        ItemToFulfillRow(productOrVariationID: 123, title: "Title", subtitle: "My subtitle")
             .previewLayout(.fixed(width: 375, height: 100))
     }
 }

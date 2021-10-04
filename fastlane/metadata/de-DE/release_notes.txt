@@ -1,3 +1,3 @@
-Diese Version enthält ein paar kleinere Verbesserungen am Gesamterlebnis. In den Bestelldetails haben einige Erweiterungen von Drittanbietern die Produkt-Metadaten nicht logisch angezeigt. Wir haben ein paar Änderungen vorgenommen, um die Anzeige dieser Produktdetails zu verbessern. Wir blenden jetzt den Button für die Rückerstattung einer Bestellung aus, wenn der Gesamtpreis Null beträgt.
+Für Verkäufer, die die Erweiterung „WooCommerce Shipping & Tax“ verwenden, wird das Erstellen individueller Pakete für ein Versandetikett jetzt zum Kinderspiel. Von deinem Mobilgerät kannst du nun ganz leicht Versandetiketten erstellen und drucken.
 
-Dieses Update umfasst auch mehrere Verbesserungen an der Funktion für Versandetiketten mit der Erweiterung „WooCommerce Shipping & Tax“. Wir wissen dein Feedback zu dieser neuen Funktion sehr zu schätzen!
+Mit deinem Feedback konnten wir außerdem ein paar Kleinigkeiten in der App beheben und verbessern.

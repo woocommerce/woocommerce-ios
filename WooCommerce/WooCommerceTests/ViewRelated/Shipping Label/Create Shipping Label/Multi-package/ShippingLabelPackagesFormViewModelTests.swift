@@ -30,8 +30,8 @@ class ShippingLabelPackagesFormViewModelTests: XCTestCase {
     func test_foundMultiplePackages_returns_correctly() {
         // Given
         let order = MockOrders().empty().copy(siteID: sampleSiteID)
-        let package1 = ShippingLabelPackageAttributes(packageID: "Box 1", totalWeight: "12", productIDs: [1, 2, 3])
-        let package2 = ShippingLabelPackageAttributes(packageID: "Box 2", totalWeight: "5.5", productIDs: [1, 2, 3])
+        let package1 = ShippingLabelPackageAttributes(packageID: "Box 1", totalWeight: "12", items: [.fake(), .fake(), .fake()])
+        let package2 = ShippingLabelPackageAttributes(packageID: "Box 2", totalWeight: "5.5", items: [.fake(), .fake()])
 
         // When & Then
         let viewModel1 = ShippingLabelPackagesFormViewModel(order: order,
@@ -77,8 +77,12 @@ class ShippingLabelPackagesFormViewModelTests: XCTestCase {
     func test_itemViewModels_returns_correctly_when_initial_selectedPackages_is_not_empty() {
         // Given
         let order = MockOrders().makeOrder().copy(siteID: sampleSiteID)
-        let package1 = ShippingLabelPackageAttributes(packageID: "Box 1", totalWeight: "12", productIDs: [1, 33, 23])
-        let package2 = ShippingLabelPackageAttributes(packageID: "Box 2", totalWeight: "5.5", productIDs: [49])
+        let package1 = ShippingLabelPackageAttributes(packageID: "Box 1",
+                                                      totalWeight: "12",
+                                                      items: [.fake(id: 1),
+                                                              .fake(id: 33),
+                                                              .fake(id: 23)])
+        let package2 = ShippingLabelPackageAttributes(packageID: "Box 2", totalWeight: "5.5", items: [.fake(id: 49)])
 
         // When
         let viewModel = ShippingLabelPackagesFormViewModel(order: order,
@@ -96,8 +100,8 @@ class ShippingLabelPackagesFormViewModelTests: XCTestCase {
     func test_doneButtonEnabled_returns_true_when_all_packages_are_valid() {
         // Given
         let order = MockOrders().empty().copy(siteID: sampleSiteID)
-        let package1 = ShippingLabelPackageAttributes(packageID: "Box 1", totalWeight: "12", productIDs: [1, 2, 3])
-        let package2 = ShippingLabelPackageAttributes(packageID: "Box 2", totalWeight: "5.5", productIDs: [1, 2, 3])
+        let package1 = ShippingLabelPackageAttributes(packageID: "Box 1", totalWeight: "12", items: [.fake(), .fake()])
+        let package2 = ShippingLabelPackageAttributes(packageID: "Box 2", totalWeight: "5.5", items: [.fake()])
 
         // When
         let viewModel = ShippingLabelPackagesFormViewModel(order: order,
@@ -113,8 +117,8 @@ class ShippingLabelPackagesFormViewModelTests: XCTestCase {
     func test_doneButtonEnabled_returns_false_when_not_all_packages_are_valid() {
         // Given
         let order = MockOrders().empty().copy(siteID: sampleSiteID)
-        let package1 = ShippingLabelPackageAttributes(packageID: "Box 1", totalWeight: "12", productIDs: [1, 2, 3])
-        let package2 = ShippingLabelPackageAttributes(packageID: "Box 2", totalWeight: "5.5", productIDs: [1, 2, 3])
+        let package1 = ShippingLabelPackageAttributes(packageID: "Box 1", totalWeight: "12", items: [.fake(), .fake()])
+        let package2 = ShippingLabelPackageAttributes(packageID: "Box 2", totalWeight: "5.5", items: [.fake()])
 
         // When
         let viewModel = ShippingLabelPackagesFormViewModel(order: order,
@@ -131,8 +135,8 @@ class ShippingLabelPackagesFormViewModelTests: XCTestCase {
     func test_onCompletion_returns_correctly() {
         // Given
         let order = MockOrders().empty().copy(siteID: sampleSiteID)
-        let package1 = ShippingLabelPackageAttributes(packageID: "Box 1", totalWeight: "12", productIDs: [1, 2, 3])
-        let package2 = ShippingLabelPackageAttributes(packageID: "Box 2", totalWeight: "5.5", productIDs: [1, 2, 3])
+        let package1 = ShippingLabelPackageAttributes(packageID: "Box 1", totalWeight: "12", items: [.fake(), .fake()])
+        let package2 = ShippingLabelPackageAttributes(packageID: "Box 2", totalWeight: "5.5", items: [.fake()])
 
         var result: [ShippingLabelPackageAttributes] = []
         let completionHandler = { packages in
@@ -168,5 +172,23 @@ private extension ShippingLabelPackagesFormViewModelTests {
     func insert(_ readOnlyAccountSettings: Yosemite.ShippingLabelAccountSettings) {
         let accountSettings = storage.insertNewObject(ofType: StorageShippingLabelAccountSettings.self)
         accountSettings.update(with: readOnlyAccountSettings)
+    }
+}
+
+extension ShippingLabelPackageItem {
+    static func fake(id: Int64 = 1,
+                     name: String = "",
+                     weight: Double = 1,
+                     quantity: Decimal = 1,
+                     value: Double = 10,
+                     dimensions: Yosemite.ProductDimensions = .fake(),
+                     attributes: [VariationAttributeViewModel] = []) -> ShippingLabelPackageItem {
+        ShippingLabelPackageItem(productOrVariationID: id,
+                                 name: name,
+                                 weight: weight,
+                                 quantity: quantity,
+                                 value: value,
+                                 dimensions: dimensions,
+                                 attributes: attributes)
     }
 }

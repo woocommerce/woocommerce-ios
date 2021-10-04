@@ -12,14 +12,14 @@ struct DefaultFeatureFlagService: FeatureFlagService {
         case .shippingLabelsInternational:
             return true
         case .shippingLabelsAddPaymentMethods:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .shippingLabelsAddCustomPackages:
             return true
         case .shippingLabelsMultiPackage:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .orderEditing:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .whatsNewOnWooCommerce:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .pushNotificationsForAllStores:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

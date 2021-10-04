@@ -1,5 +1,6 @@
 import Embassy
 import ScreenObject
+import UITestsFoundation
 import XCTest
 
 class WooCommerceScreenshots: XCTestCase {

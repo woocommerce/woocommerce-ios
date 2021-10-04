@@ -50,7 +50,7 @@ target 'WooCommerce' do
 
   aztec
 
-  pod 'WPMediaPicker', '~> 1.7.1'
+  pod 'WPMediaPicker', '~> 1.7.3-beta.1'
 
   # External Libraries
   # ==================
@@ -134,6 +134,9 @@ end
 target 'NetworkingTests' do
   project 'Networking/Networking.xcodeproj'
   networking_pods
+
+  # Including `yosemite_pods` because `Fakes.framework` has a dependency `Yosemite` while `Networking` does not.
+  yosemite_pods
 end
 
 # Storage Layer:

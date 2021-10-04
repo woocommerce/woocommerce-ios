@@ -1,5 +1,6 @@
 import Combine
 import SwiftUI
+import Yosemite
 
 /// View Model for the `StateSelector` view.
 ///
@@ -10,13 +11,12 @@ final class StateSelectorViewModel: FilterListSelectorViewModelable, ObservableO
     var searchTerm: String = "" {
         didSet {
             command.filterStates(term: searchTerm)
-            objectWillChange.send()
         }
     }
 
     /// Command that powers the `ListSelector` view.
     ///
-    let command = StateSelectorCommand()
+    let command: StateSelectorCommand
 
     /// Navigation title
     ///
@@ -25,6 +25,10 @@ final class StateSelectorViewModel: FilterListSelectorViewModelable, ObservableO
     /// Filter text field placeholder
     ///
     let filterPlaceholder = Localization.placeholder
+
+    init(states: [StateOfACountry], selected: Binding<StateOfACountry?>) {
+        self.command = StateSelectorCommand(states: states, selected: selected)
+    }
 }
 
 // MARK: Constants

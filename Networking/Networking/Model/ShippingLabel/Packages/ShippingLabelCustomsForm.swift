@@ -63,10 +63,7 @@ public struct ShippingLabelCustomsForm: Hashable, Equatable, GeneratedFakeable, 
 
     /// Convenient intializer
     ///
-    public init(packageID: String, packageName: String, productIDs: [Int64]) {
-        let items = productIDs.map { id in
-            Item(description: "", quantity: 1, value: 0, weight: 0, hsTariffNumber: "", originCountry: "", productID: id)
-        }
+    public init(packageID: String, packageName: String, items: [Item]) {
         self.init(packageID: packageID,
                   packageName: packageName,
                   contentsType: .merchandise,

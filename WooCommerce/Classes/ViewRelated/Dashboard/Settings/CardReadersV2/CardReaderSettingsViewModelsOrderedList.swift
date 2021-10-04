@@ -15,12 +15,12 @@ final class CardReaderSettingsViewModelsOrderedList: CardReaderSettingsPrioritiz
 
     var onPriorityChanged: ((CardReaderSettingsViewModelAndView?) -> ())?
 
-    private var knownReadersProvider: CardReaderSettingsKnownReadersProvider?
+    private var knownReaderProvider: CardReaderSettingsKnownReaderProvider?
 
     init() {
         /// Initialize dependencies for viewmodels first, then viewmodels
         ///
-        knownReadersProvider = CardReaderSettingsKnownReadersStoredList()
+        knownReaderProvider = CardReaderSettingsKnownReaderStorage()
 
         /// Instantiate and add each viewmodel related to card reader settings to the
         /// array. Viewmodels will be evaluated for shouldShow starting at the top
@@ -34,7 +34,7 @@ final class CardReaderSettingsViewModelsOrderedList: CardReaderSettingsPrioritiz
                     didChangeShouldShow: { [weak self] state in
                         self?.onDidChangeShouldShow(state)
                     },
-                    knownReadersProvider: knownReadersProvider
+                    knownReaderProvider: knownReaderProvider
                 ),
                 viewIdentifier: "CardReaderSettingsSearchingViewController"
             )
@@ -46,7 +46,7 @@ final class CardReaderSettingsViewModelsOrderedList: CardReaderSettingsPrioritiz
                     didChangeShouldShow: { [weak self] state in
                         self?.onDidChangeShouldShow(state)
                     },
-                    knownReadersProvider: knownReadersProvider
+                    knownReaderProvider: knownReaderProvider
                 ),
                 viewIdentifier: "CardReaderSettingsConnectedViewController"
             )

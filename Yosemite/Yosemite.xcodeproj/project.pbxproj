@@ -88,6 +88,7 @@
 		02FF056B23DED3670058E6E7 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 02FF056A23DED3670058E6E7 /* Media.xcassets */; };
 		02FF056D23DEDCB90058E6E7 /* MockImageSourceWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF056C23DEDCB90058E6E7 /* MockImageSourceWriter.swift */; };
 		02FF056F23E04F320058E6E7 /* MockMediaExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF056E23E04F320058E6E7 /* MockMediaExportService.swift */; };
+		031FD8A026FC970400B315C7 /* RosettaTestingHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031FD89F26FC970300B315C7 /* RosettaTestingHelper.swift */; };
 		077F39DE26A5A1CB00ABEADC /* SystemStatusAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39DD26A5A1CB00ABEADC /* SystemStatusAction.swift */; };
 		077F39E026A5A6F500ABEADC /* SystemStatusStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39DF26A5A6F500ABEADC /* SystemStatusStore.swift */; };
 		077F39E226A5AFCA00ABEADC /* SystemPlugin+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39E126A5AFCA00ABEADC /* SystemPlugin+ReadOnlyConvertible.swift */; };
@@ -455,6 +456,7 @@
 		02FF056A23DED3670058E6E7 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		02FF056C23DEDCB90058E6E7 /* MockImageSourceWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockImageSourceWriter.swift; sourceTree = "<group>"; };
 		02FF056E23E04F320058E6E7 /* MockMediaExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockMediaExportService.swift; sourceTree = "<group>"; };
+		031FD89F26FC970300B315C7 /* RosettaTestingHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RosettaTestingHelper.swift; sourceTree = "<group>"; };
 		077F39DD26A5A1CB00ABEADC /* SystemStatusAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusAction.swift; sourceTree = "<group>"; };
 		077F39DF26A5A6F500ABEADC /* SystemStatusStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusStore.swift; sourceTree = "<group>"; };
 		077F39E126A5AFCA00ABEADC /* SystemPlugin+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemPlugin+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
@@ -1474,6 +1476,7 @@
 				2614E12B24C74593007CEE60 /* Stats */,
 				B54EAF2021188C470029C35E /* EntityListenerTests.swift */,
 				B5F2AE9420EBAD6000FEDC59 /* ResultsControllerTests.swift */,
+				031FD89F26FC970300B315C7 /* RosettaTestingHelper.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -1999,6 +2002,7 @@
 				578CE7902475EBAB00492EBF /* MockProductReviewsRemote.swift in Sources */,
 				D87F615E2265B1BC0031A13B /* AppSettingsStoreTests.swift in Sources */,
 				02E7FFD52562226B00C53030 /* ShippingLabelStoreTests.swift in Sources */,
+				031FD8A026FC970400B315C7 /* RosettaTestingHelper.swift in Sources */,
 				077F39E526A5C98200ABEADC /* SystemStatusStoreTests.swift in Sources */,
 				022F931D257F27B40011CD94 /* MockShippingLabelAddress.swift in Sources */,
 				02FF056923DECD5B0058E6E7 /* MediaImageExporterTests.swift in Sources */,

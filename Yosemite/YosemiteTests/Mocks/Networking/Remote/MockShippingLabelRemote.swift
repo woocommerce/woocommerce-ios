@@ -13,7 +13,7 @@ final class MockShippingLabelRemote {
 
     private struct PrintResultKey: Hashable {
         let siteID: Int64
-        let shippingLabelID: Int64
+        let shippingLabelIDs: [Int64]
         let paperSize: String
     }
 
@@ -82,7 +82,7 @@ final class MockShippingLabelRemote {
     private var createPackageResults = [CreatePackageResultKey: Result<Bool, Error>]()
 
     /// The results to return based on the given arguments in `loadCarriersAndRates`
-    private var loadCarriersAndRatesResults = [LoadCarriersAndRatesKey: Result<ShippingLabelCarriersAndRates, Error>]()
+    private var loadCarriersAndRatesResults = [LoadCarriersAndRatesKey: Result<[ShippingLabelCarriersAndRates], Error>]()
 
     /// The results to return based on the given arguments in `loadShippingLabelAccountSettings`
     private var loadAccountSettings = [LoadAccountSettingsResultKey: Result<ShippingLabelAccountSettings, Error>]()
@@ -109,10 +109,10 @@ final class MockShippingLabelRemote {
 
     /// Set the value passed to the `completion` block if `printShippingLabel` is called.
     func whenPrintingShippingLabel(siteID: Int64,
-                                   shippingLabelID: Int64,
+                                   shippingLabelIDs: [Int64],
                                    paperSize: String,
                                    thenReturn result: Result<ShippingLabelPrintData, Error>) {
-        let key = PrintResultKey(siteID: siteID, shippingLabelID: shippingLabelID, paperSize: paperSize)
+        let key = PrintResultKey(siteID: siteID, shippingLabelIDs: shippingLabelIDs, paperSize: paperSize)
         printResults[key] = result
     }
 
@@ -148,7 +148,7 @@ final class MockShippingLabelRemote {
 
     /// Set the value passed to the `completion` block if `loadCarriersAndRates` is called.
     func whenLoadCarriersAndRates(siteID: Int64,
-                           thenReturn result: Result<ShippingLabelCarriersAndRates, Error>) {
+                           thenReturn result: Result<[ShippingLabelCarriersAndRates], Error>) {
         let key = LoadCarriersAndRatesKey(siteID: siteID)
         loadCarriersAndRatesResults[key] = result
     }
@@ -220,13 +220,13 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
     }
 
     func printShippingLabel(siteID: Int64,
-                            shippingLabelID: Int64,
+                            shippingLabelIDs: [Int64],
                             paperSize: ShippingLabelPaperSize,
                             completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
 
-            let key = PrintResultKey(siteID: siteID, shippingLabelID: shippingLabelID, paperSize: paperSize.rawValue)
+            let key = PrintResultKey(siteID: siteID, shippingLabelIDs: shippingLabelIDs, paperSize: paperSize.rawValue)
             if let result = self.printResults[key] {
                 completion(result)
             } else {
@@ -296,7 +296,7 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
                               originAddress: ShippingLabelAddress,
                               destinationAddress: ShippingLabelAddress,
                               packages: [ShippingLabelPackageSelected],
-                              completion: @escaping (Result<ShippingLabelCarriersAndRates, Error>) -> Void) {
+                              completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             let key = LoadCarriersAndRatesKey(siteID: siteID)

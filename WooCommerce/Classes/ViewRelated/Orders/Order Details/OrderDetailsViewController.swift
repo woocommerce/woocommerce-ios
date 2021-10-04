@@ -76,7 +76,7 @@ final class OrderDetailsViewController: UIViewController {
 
         return CardReaderConnectionController(
             forSiteID: siteID,
-            knownReadersProvider: CardReaderSettingsKnownReadersStoredList(),
+            knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
             alertsProvider: CardReaderSettingsAlerts()
         )
     }()
@@ -121,6 +121,10 @@ final class OrderDetailsViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.updateHeaderHeight()
+    }
+
+    override var shouldShowOfflineBanner: Bool {
+        return true
     }
 }
 
@@ -514,7 +518,9 @@ private extension OrderDetailsViewController {
                 assertionFailure("Cannot reprint a shipping label because `navigationController` is nil")
                 return
             }
-            let coordinator = PrintShippingLabelCoordinator(shippingLabel: shippingLabel, printType: .reprint, sourceNavigationController: navigationController)
+            let coordinator = PrintShippingLabelCoordinator(shippingLabels: [shippingLabel],
+                                                            printType: .reprint,
+                                                            sourceNavigationController: navigationController)
             coordinator.showPrintUI()
         case .createShippingLabel:
             let shippingLabelFormVC = ShippingLabelFormViewController(order: viewModel.order)
@@ -545,13 +551,6 @@ private extension OrderDetailsViewController {
         let reviewOrderViewModel = ReviewOrderViewModel(order: viewModel.order, products: viewModel.products, showAddOns: viewModel.dataSource.showAddOns)
         let controller = ReviewOrderViewController(viewModel: reviewOrderViewModel) { [weak self] in
             guard let self = self else { return }
-            ServiceLocator.analytics.track(
-                .orderStatusChange,
-                withProperties: [
-                    "id": self.viewModel.order.orderID,
-                    "from": self.viewModel.order.status.rawValue,
-                    "to": OrderStatusEnum.completed.rawValue
-                ])
             let fulfillmentProcess = self.viewModel.markCompleted()
             let presenter = OrderFulfillmentNoticePresenter()
             presenter.present(process: fulfillmentProcess)
@@ -623,7 +622,7 @@ private extension OrderDetailsViewController {
             self?.show(refundViewController, sender: self)
         }
 
-        if let url = shippingLabel.commercialInvoiceURL {
+        if let url = shippingLabel.commercialInvoiceURL, url.isNotEmpty {
             actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelMoreMenu.printCustomsFormAction) { [weak self] _ in
                 let printCustomsFormsView = PrintCustomsFormsView(invoiceURLs: [url])
                 let hostingController = UIHostingController(rootView: printCustomsFormsView)
@@ -675,9 +674,10 @@ private extension OrderDetailsViewController {
     }
 
     func editShippingAddressTapped() {
-        let viewModel = EditAddressFormViewModel(siteID: viewModel.order.siteID, address: viewModel.order.shippingAddress)
+        let viewModel = EditAddressFormViewModel(order: viewModel.order, type: .shipping)
         let editAddressViewController = EditAddressHostingController(viewModel: viewModel)
-        show(editAddressViewController, sender: self)
+        let navigationController = WooNavigationController(rootViewController: editAddressViewController)
+        present(navigationController, animated: true, completion: nil)
     }
 
     @objc private func collectPayment(at: IndexPath) {

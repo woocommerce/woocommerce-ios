@@ -41,13 +41,17 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     @Published var selectedPackageID: String?
 
     /// List of selected package with basic info.
-    /// TODO-4599: update this to properly support multi-package.
+    /// This is a workaround to work with multi-package solution which requires a list of packages.
+    /// Since this legacy view model works only with one package, the returned list contains at most one item only.
     ///
     var selectedPackagesDetails: [ShippingLabelPackageAttributes] {
         guard let id = selectedPackageID, totalWeight.isNotEmpty else {
             return []
         }
-        return [ShippingLabelPackageAttributes(packageID: id, totalWeight: totalWeight, productIDs: orderItems.map { $0.productOrVariationID })]
+        let items = orderItems.compactMap { ShippingLabelPackageItem(orderItem: $0,
+                                                                     products: products,
+                                                                     productVariations: productVariations) }
+        return [ShippingLabelPackageAttributes(packageID: id, totalWeight: totalWeight, items: items)]
     }
 
     /// The title of the selected package, if any.
@@ -217,7 +221,7 @@ private extension ShippingLabelPackageDetailsViewModel {
                     let subtitle = Localization.subtitle(weight: weight.description,
                                                          weightUnit: unit,
                                                          attributes: attributes)
-                    itemsToFulfill.append(ItemToFulfillRow(title: item.name, subtitle: subtitle))
+                    itemsToFulfill.append(ItemToFulfillRow(productOrVariationID: item.productOrVariationID, title: item.name, subtitle: subtitle))
                 }
             }
         }

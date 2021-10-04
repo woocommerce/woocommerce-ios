@@ -1,3 +1,3 @@
-Bu sürüm, deneyiminizi daha sorunsuz hale getirmek için birkaç küçük iyileştirme içerir. Sipariş ayrıntılarında, bazı üçüncü taraf uzantıları mantıksal olarak ürün meta verilerini göstermiyordu. Bu ürün ayrıntılarının görüntülenmesini iyileştirmek için bazı değişiklikler yaptık. Artık toplam tutar sıfır olduğunda sipariş iadesi düğmesini gizliyoruz.
+WooCommerce Shipping & Tax Uzantısını kullanan satıcılar artık bir gönderi etiketi için özel ambalaj oluşturmanın çok kolay olduğunu görecekler. Mobil cihazınızdan gönderi etiketleri oluşturmak ve yazdırmak artık çok eğlenceli.
 
-Bu güncelleme ile ayrıca WooCommerce Shipping & Tax Uzantısını kullanan gönderi etiketi özelliğinde çeşitli geliştirmeler de yapılmıştır. Bu yeni özellikle ilgili tüm geri bildirimleriniz bizim için çok değerlidir!
+Ayrıca geri bildirimlerinizi dikkate alarak uygulamada bir dizi küçük sorunu düzelttik ve geliştirdik.

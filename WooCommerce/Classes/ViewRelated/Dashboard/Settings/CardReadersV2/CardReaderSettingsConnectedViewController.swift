@@ -92,15 +92,13 @@ private extension CardReaderSettingsConnectedViewController {
 
         /// This section displays whether or not there is update for the reader software
         ///
-        let checkForReaderUpdateInProgress = viewModel?.checkForReaderUpdateInProgress ?? false
-        var rows = [Row]()
-        if checkForReaderUpdateInProgress {
-            rows = [.checkingForUpdate]
-        } else {
-            rows = [.updatePrompt]
-        }
-
-        sections.append(Section(title: nil, rows: rows))
+        sections.append(
+            Section(title: nil,
+                    rows: [
+                        .updatePrompt
+                    ]
+            )
+        )
 
         /// This section displays details about the connected reader
         ///
@@ -167,8 +165,6 @@ private extension CardReaderSettingsConnectedViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as ActivitySpinnerAndLabelTableViewCell where row == .checkingForUpdate:
-            configureCheckingForUpdate(cell: cell)
         case let cell as LeftImageTableViewCell where row == .updatePrompt:
             configureUpdatePrompt(cell: cell)
         case let cell as ConnectedReaderTableViewCell where row == .connectedReader:
@@ -182,26 +178,24 @@ private extension CardReaderSettingsConnectedViewController {
         }
     }
 
-    private func configureCheckingForUpdate(cell: ActivitySpinnerAndLabelTableViewCell) {
-        cell.configure(labelText: Localization.updateChecking)
-        cell.selectionStyle = .none
-    }
-
     private func configureUpdatePrompt(cell: LeftImageTableViewCell) {
         guard let readerUpdateAvailable = viewModel?.readerUpdateAvailable else {
             return
         }
 
-        if readerUpdateAvailable == .isFalse {
-            cell.configure(image: .infoOutlineImage, text: Localization.updateNotNeeded)
-            cell.backgroundColor = .none
-            cell.imageView?.tintColor = .info
-        }
-
-        if readerUpdateAvailable == .isTrue {
-            cell.configure(image: .infoOutlineImage, text: Localization.updateAvailable)
-            cell.backgroundColor = .warningBackground
-            cell.imageView?.tintColor = .warning
+        switch readerUpdateAvailable {
+            case .isUnknown:
+                cell.configure(image: .infoOutlineImage, text: Localization.updateChecking)
+                cell.backgroundColor = .none
+                cell.imageView?.tintColor = .warning
+            case .isFalse:
+                cell.configure(image: .infoOutlineImage, text: Localization.updateNotNeeded)
+                cell.backgroundColor = .none
+                cell.imageView?.tintColor = .info
+            case .isTrue:
+                cell.configure(image: .infoOutlineImage, text: Localization.updateAvailable)
+                cell.backgroundColor = .warningBackground
+                cell.imageView?.tintColor = .warning
         }
 
         cell.selectionStyle = .none
@@ -333,7 +327,6 @@ private struct Section {
 }
 
 private enum Row: CaseIterable {
-    case checkingForUpdate
     case updatePrompt
     case connectedReader
     case updateButton
@@ -341,8 +334,6 @@ private enum Row: CaseIterable {
 
     var type: UITableViewCell.Type {
         switch self {
-        case .checkingForUpdate:
-            return ActivitySpinnerAndLabelTableViewCell.self
         case .updatePrompt:
             return LeftImageTableViewCell.self
         case .connectedReader:

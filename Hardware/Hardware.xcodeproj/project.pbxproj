@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		030338102705F7D400764131 /* ReceiptTotalLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0303380F2705F7D400764131 /* ReceiptTotalLine.swift */; };
 		311889EB2653286B0080AEA2 /* PaymentIntentMetadataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311889EA2653286B0080AEA2 /* PaymentIntentMetadataTests.swift */; };
 		5A747BE9FA06EC8752A35752 /* Pods_HardwareTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1DC5B6141B8184FAC29B0A4 /* Pods_HardwareTests.framework */; };
 		8FFAA245E257B9EB98E2FCBD /* Pods_SampleReceiptPrinter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AFA997D6786C67B0A061854 /* Pods_SampleReceiptPrinter.framework */; };
@@ -125,6 +126,7 @@
 
 /* Begin PBXFileReference section */
 		02351FF56149ADCD11338B19 /* Pods-SampleReceiptPrinter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleReceiptPrinter.release.xcconfig"; path = "Target Support Files/Pods-SampleReceiptPrinter/Pods-SampleReceiptPrinter.release.xcconfig"; sourceTree = "<group>"; };
+		0303380F2705F7D400764131 /* ReceiptTotalLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptTotalLine.swift; sourceTree = "<group>"; };
 		0C16E0AAFF5A7B364BD4E171 /* Pods-Hardware.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hardware.release-alpha.xcconfig"; path = "Target Support Files/Pods-Hardware/Pods-Hardware.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		1CC96A71F2937BCB7432766F /* Pods-HardwareTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HardwareTests.debug.xcconfig"; path = "Target Support Files/Pods-HardwareTests/Pods-HardwareTests.debug.xcconfig"; sourceTree = "<group>"; };
 		2AFA997D6786C67B0A061854 /* Pods_SampleReceiptPrinter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SampleReceiptPrinter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -289,6 +291,7 @@
 		D845BE4E262ED7AE00A3E40F /* Printer */ = {
 			isa = PBXGroup;
 			children = (
+				0303380F2705F7D400764131 /* ReceiptTotalLine.swift */,
 				D845BE57262ED81D00A3E40F /* AirPrintReceipt */,
 				D845BE53262ED7CC00A3E40F /* PrinterService.swift */,
 				E1E4FA2E2653CFD5007B9D4F /* PrintingResult.swift */,
@@ -759,6 +762,7 @@
 				D88ECCD9262091CF0094398A /* CardReaderSoftwareUpdate.swift in Sources */,
 				D89B8F1E25DDCD3D0001C726 /* PaymentIntent+Stripe.swift in Sources */,
 				D89B8F1625DDCC810001C726 /* ChargeStatus+Stripe.swift in Sources */,
+				030338102705F7D400764131 /* ReceiptTotalLine.swift in Sources */,
 				D8DF5F4425DD9F36008AFE25 /* CardReaderType.swift in Sources */,
 				D845BDBC262D980C00A3E40F /* CardPresentTransactionDetails.swift in Sources */,
 				D88ECCE3262095A10094398A /* UpdateTimeEstimate.swift in Sources */,

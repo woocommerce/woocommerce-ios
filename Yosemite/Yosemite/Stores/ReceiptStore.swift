@@ -13,6 +13,16 @@ public class ReceiptStore: Store {
         return storageManager.writerDerivedStorage
     }()
 
+    private lazy var receiptNumberFormatter: NumberFormatter = {
+        // We should use CurrencyFormatter instead for consistency
+        let formatter = NumberFormatter()
+
+        let fractionDigits = 2 // TODO - support non cent currencies like JPY - see #3948
+        formatter.minimumFractionDigits = fractionDigits
+        formatter.maximumFractionDigits = fractionDigits
+        return formatter
+    }()
+
     public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, receiptPrinterService: PrinterService, fileStorage: FileStorage) {
         self.receiptPrinterService = receiptPrinterService
         self.fileStorage = fileStorage
@@ -49,31 +59,39 @@ public class ReceiptStore: Store {
 
 private extension ReceiptStore {
     func generateLineItems(order: Order) -> [ReceiptLineItem] {
-        // We should use CurrencyFormatter instead for consistency
-        let formatter = NumberFormatter()
-        formatter.minimumFractionDigits = 2
-        formatter.maximumFractionDigits = 2
-
-        return order.items.map { item in
+        order.items.map { item in
             ReceiptLineItem(
                 title: item.name,
                 quantity: item.quantity.description,
-                amount: formatter.string(from: item.price) ?? ""
+                amount: receiptNumberFormatter.string(from: item.price) ?? ""
             )
         }
     }
 
-    func print(order: Order, parameters: CardPresentReceiptParameters, completion: @escaping (PrintingResult) -> Void) {
-        let lineItems = generateLineItems(order: order)
+    func generateCartTotals(order: Order, parameters: CardPresentReceiptParameters) -> [ReceiptTotalLine] {
+        var totalLines = [ReceiptTotalLine]()
+        if NSDecimalNumber(apiAmount: order.totalTax).decimalValue > 0.00 {
+            totalLines.append(ReceiptTotalLine(description: ReceiptContent.Localization.totalTaxLineDescription,
+                                          amount: order.totalTax))
+        }
+        totalLines.append(ReceiptTotalLine(description: ReceiptContent.Localization.amountPaidLineDescription, amount: parameters.formattedAmount))
+        return totalLines
+    }
 
-        let content = ReceiptContent(parameters: parameters, lineItems: lineItems)
+    func generateReceiptContent(order: Order, parameters: CardPresentReceiptParameters) -> ReceiptContent {
+        let lineItems = generateLineItems(order: order)
+        let cartTotals = generateCartTotals(order: order, parameters: parameters)
+
+        return ReceiptContent(parameters: parameters, lineItems: lineItems, cartTotals: cartTotals)
+    }
+
+    func print(order: Order, parameters: CardPresentReceiptParameters, completion: @escaping (PrintingResult) -> Void) {
+        let content = generateReceiptContent(order: order, parameters: parameters)
         receiptPrinterService.printReceipt(content: content, completion: completion)
     }
 
     func generateContent(order: Order, parameters: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {
-        let lineItems = generateLineItems(order: order)
-
-        let content = ReceiptContent(parameters: parameters, lineItems: lineItems)
+        let content = generateReceiptContent(order: order, parameters: parameters)
         let renderer = ReceiptRenderer(content: content)
         onContent(renderer.htmlContent())
     }
@@ -99,9 +117,7 @@ private extension ReceiptStore {
     }
 
     func saveReceipt(order: Order, parameters: CardPresentReceiptParameters) {
-        let lineItems = generateLineItems(order: order)
-
-        let content = ReceiptContent(parameters: parameters, lineItems: lineItems)
+        let content = generateReceiptContent(order: order, parameters: parameters)
 
         guard let outputURL = try? fileURL(order: order) else {
             DDLogError("⛔️ Unable to create file for receipt for order id: \(order.orderID)")
@@ -140,4 +156,10 @@ public enum ReceiptStoreError: Error {
     /// There was an error reading the content of the file containing the
     /// receipt metadata
     case fileError
+}
+
+private extension NSDecimalNumber {
+    convenience init(apiAmount: String) {
+        self.init(string: apiAmount, locale: Locale(identifier: "en_US"))
+    }
 }

@@ -399,7 +399,7 @@ private extension ReviewOrderViewController {
     /// Show billing information screen
     ///
     func billingInformationTapped() {
-        let billingInformationViewController = BillingInformationViewController(order: viewModel.order)
+        let billingInformationViewController = BillingInformationViewController(order: viewModel.order, editingEnabled: false)
         navigationController?.pushViewController(billingInformationViewController, animated: true)
     }
 

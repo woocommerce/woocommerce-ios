@@ -3,21 +3,15 @@ import Foundation
 
 struct ShippingLabelCarrierSectionHeader: View {
     let packageNumber: Int
-    let isValid: Bool
 
-    init(packageNumber: Int, isValid: Bool = true) {
+    init(packageNumber: Int) {
         self.packageNumber = packageNumber
-        self.isValid = isValid
     }
 
     var body: some View {
         HStack {
             Text(String(format: Localization.package, packageNumber))
                 .font(.headline)
-            Spacer()
-            Image(uiImage: .noticeImage)
-                .foregroundColor(Color(.error))
-                .renderedIf(!isValid)
         }
     }
 }
@@ -35,9 +29,6 @@ struct ShippingLabelCarrierCompactableRow_Previews: PreviewProvider {
             .previewLayout(.fixed(width: 375, height: 50))
 
         ShippingLabelCarrierSectionHeader(packageNumber: 7)
-            .previewLayout(.fixed(width: 375, height: 50))
-
-        ShippingLabelCarrierSectionHeader(packageNumber: 7, isValid: false)
             .previewLayout(.fixed(width: 375, height: 50))
     }
 }

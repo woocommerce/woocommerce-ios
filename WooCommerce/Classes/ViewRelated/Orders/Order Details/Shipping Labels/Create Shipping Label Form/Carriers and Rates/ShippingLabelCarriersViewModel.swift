@@ -93,8 +93,6 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
                                                         signatureRate: signature,
                                                         adultSignatureRate: adultSignature,
                                                         currencySettings: currencySettings) { [weak self] (rate, signature, adultSignature) in
-
-
                     guard let self = self else { return }
 
                     // update the existing selected rate for the package
@@ -121,7 +119,6 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
             // If there are rows, we will create a new compactable section
             if rows.isNotEmpty {
                 let section = ShippingLabelCarriersSectionViewModel(packageNumber: index + 1,
-                                                                    isValid: true,
                                                                     rows: rows)
                 tempSections.append(section)
             }

@@ -38,17 +38,8 @@ struct ShippingLabelCarriers: View {
                                                               edgeInsets: edgeInsets,
                                                               shippingMethod: viewModel.shippingMethod,
                                                               shippingCost: viewModel.shippingCost).renderedIf(viewModel.shouldDisplayTopBanner)
-                        ForEach(viewModel.sections) { sectionVM in
-                            CollapsibleView(isCollapsible: true,
-                                            isCollapsed: .constant(false),
-                                            safeAreaInsets: geometry.safeAreaInsets) {
-                                ShippingLabelCarrierSectionHeader(packageNumber: sectionVM.packageNumber)
-                                    } content: {
-                                        ForEach(sectionVM.rows) { rowVM in
-                                            ShippingLabelCarrierRow(rowVM)
-                                            Divider().padding(.leading, Constants.dividerPadding)
-                                        }
-                                    }
+                        ForEach(Array(viewModel.sections.enumerated()), id: \.offset) { index, sectionVM in
+                            ShippingLabelCarriersSection(section: sectionVM, safeAreaInsets: geometry.safeAreaInsets)
                         }
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
                     case .error:
@@ -83,6 +74,29 @@ struct ShippingLabelCarriers: View {
 
     enum Constants {
         static let dividerPadding: CGFloat = 80
+    }
+
+    private struct ShippingLabelCarriersSection: View {
+        let section: ShippingLabelCarriersSectionViewModel
+        @State private var isCollapsed: Bool = false
+        let safeAreaInsets: EdgeInsets
+
+        var body: some View {
+            CollapsibleView(isCollapsible: true,
+                            isCollapsed: $isCollapsed,
+                            safeAreaInsets: safeAreaInsets) {
+                ShippingLabelCarrierSectionHeader(packageNumber: section.packageNumber)
+            } content: {
+                ForEach(section.rows) { rowVM in
+                    ShippingLabelCarrierRow(rowVM)
+
+                    // The separator will be added only if the element is not the last one of the list
+                    if section.rows.last != rowVM {
+                        Divider().padding(.leading, Constants.dividerPadding)
+                    }
+                }
+            }
+        }
     }
 }
 

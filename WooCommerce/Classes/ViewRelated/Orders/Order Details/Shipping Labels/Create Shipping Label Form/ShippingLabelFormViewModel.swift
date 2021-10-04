@@ -50,13 +50,13 @@ final class ShippingLabelFormViewModel {
             return []
         }
 
-        return selectedPackagesDetails.compactMap { package -> ShippingLabelPackageSelected? in
+        return selectedPackagesDetails.enumerated().compactMap { (index, package) -> ShippingLabelPackageSelected? in
             let weight = Double(package.totalWeight) ?? .zero
 
             if let customPackage = packagesResponse.customPackages.first(where: { $0.title == package.packageID }) {
                 let boxID = customPackage.title
                 let customsForm = customsForms.first(where: { $0.packageID == boxID })
-                return ShippingLabelPackageSelected(id: UUID().uuidString,
+                return ShippingLabelPackageSelected(id: "\(index)-custom-package",
                                                     boxID: boxID,
                                                     length: customPackage.getLength(),
                                                     width: customPackage.getWidth(),
@@ -70,7 +70,7 @@ final class ShippingLabelFormViewModel {
                 if let predefinedPackage = option.predefinedPackages.first(where: { $0.id == package.packageID }) {
                     let boxID = predefinedPackage.id
                     let customsForm = customsForms.first(where: { $0.packageID == boxID })
-                    return ShippingLabelPackageSelected(id: UUID().uuidString,
+                    return ShippingLabelPackageSelected(id: "\(index)-predefined-package",
                                                         boxID: boxID,
                                                         length: predefinedPackage.getLength(),
                                                         width: predefinedPackage.getWidth(),
@@ -819,7 +819,7 @@ private extension ShippingLabelFormViewModel {
                                                           comment: "Plural format of number of business days in Shipping Labels > Carrier and Rates")
         static let selectedRatesCount = NSLocalizedString("%1$d rates selected",
                                                           comment: "Number of rates selected in Shipping Labels > Carrier and Rates")
-        static let totalRate = NSLocalizedString("$1$@ total",
+        static let totalRate = NSLocalizedString("%1$@ total",
                                                  comment: "Total value for the selected rates in Shipping Labels > Carrier and Rates")
         static let paymentMethodPlaceholder = NSLocalizedString("Add a new credit card",
                                                                 comment: "Placeholder in Shipping Label form for the Payment Method row.")

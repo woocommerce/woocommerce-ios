@@ -6,7 +6,7 @@ import protocol Storage.StorageType
 
 /// The result from `RetrieveProductReviewFromNoteUseCase`.
 ///
-public struct ProductReviewFromNoteParcel: GeneratedFakeable {
+public struct ProductReviewFromNoteParcel: GeneratedFakeable, GeneratedCopiable {
     public let note: Note
     public let review: ProductReview
     public let product: Product

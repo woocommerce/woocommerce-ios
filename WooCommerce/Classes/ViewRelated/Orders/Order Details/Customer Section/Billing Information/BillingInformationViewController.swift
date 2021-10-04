@@ -97,7 +97,7 @@ private extension BillingInformationViewController {
     /// Presents EditOrderAddressForm modal view
     ///
     func editBillingAddress() {
-        let viewModel = EditAddressFormViewModel(order: order, type: .billing) { [weak self] updatedOrder in
+        let viewModel = EditOrderAddressFormViewModel(order: order, type: .billing) { [weak self] updatedOrder in
             self?.order = updatedOrder
             self?.reloadSections()
             self?.tableView.reloadData()

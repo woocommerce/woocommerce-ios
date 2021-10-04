@@ -23,7 +23,7 @@ final class EditOrderAddressHostingController: UIHostingController<EditOrderAddr
     ///
     private let systemNoticePresenter: NoticePresenter
 
-    init(viewModel: EditAddressFormViewModel, systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
+    init(viewModel: EditOrderAddressFormViewModel, systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.systemNoticePresenter = systemNoticePresenter
         super.init(rootView: EditOrderAddressForm(viewModel: viewModel))
 
@@ -107,13 +107,13 @@ struct EditOrderAddressForm: View {
     ///
     var dismiss: (() -> Void) = {}
 
-    @ObservedObject private(set) var viewModel: EditAddressFormViewModel
+    @ObservedObject private(set) var viewModel: EditOrderAddressFormViewModel
 
     /// Set it to `true` to present the country selector.
     ///
     @State var showCountrySelector: Bool = false
 
-    init(viewModel: EditAddressFormViewModel) {
+    init(viewModel: EditOrderAddressFormViewModel) {
         self.viewModel = viewModel
     }
 
@@ -354,7 +354,7 @@ private extension EditOrderAddressForm {
 
         static let success = NSLocalizedString("Address successfully updated.", comment: "Notice text after updating the shipping or billing address")
 
-        static func useAddressAs(for type: EditAddressFormViewModel.AddressType) -> String {
+        static func useAddressAs(for type: EditOrderAddressFormViewModel.AddressType) -> String {
             switch type {
             case .shipping:
                 return NSLocalizedString("Use as Billing Address", comment: "Title for the Use as Billing Address switch in the Address form")
@@ -410,7 +410,7 @@ struct EditAddressForm_Previews: PreviewProvider {
                                        phone: "333-333-3333",
                                        email: "scrambled@scrambled.com")
 
-    static let sampleViewModel = EditAddressFormViewModel(order: sampleOrder, type: .shipping)
+    static let sampleViewModel = EditOrderAddressFormViewModel(order: sampleOrder, type: .shipping)
 
     static var previews: some View {
         NavigationView {

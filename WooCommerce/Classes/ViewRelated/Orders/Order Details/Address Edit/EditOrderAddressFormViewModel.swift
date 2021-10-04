@@ -2,7 +2,7 @@ import Yosemite
 import Storage
 import Combine
 
-final class EditAddressFormViewModel: ObservableObject {
+final class EditOrderAddressFormViewModel: ObservableObject {
 
     enum AddressType {
         case shipping
@@ -220,7 +220,7 @@ final class EditAddressFormViewModel: ObservableObject {
     }
 }
 
-extension EditAddressFormViewModel {
+extension EditOrderAddressFormViewModel {
     /// Representation of possible navigation bar trailing buttons
     ///
     enum NavigationItem: Equatable {
@@ -310,7 +310,7 @@ extension EditAddressFormViewModel {
     }
 }
 
-private extension EditAddressFormViewModel {
+private extension EditOrderAddressFormViewModel {
     /// Set initial values from `originalAddress` using the stored countries to compute the current selected country & state.
     ///
     func setFieldsInitialValues() {

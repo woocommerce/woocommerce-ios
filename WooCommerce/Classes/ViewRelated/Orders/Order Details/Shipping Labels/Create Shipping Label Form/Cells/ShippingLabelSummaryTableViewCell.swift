@@ -77,6 +77,7 @@ final class ShippingLabelSummaryTableViewCell: UITableViewCell {
     func setPackageRates(_ rates: [String]) {
         packageRatesStackViews.forEach { stackView in
             mainStackView.removeArrangedSubview(stackView)
+            stackView.removeFromSuperview()
         }
         if rates.isNotEmpty {
             packageRatesStackViews = rates.enumerated().map { (index, rateText) in

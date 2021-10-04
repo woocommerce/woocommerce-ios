@@ -4,7 +4,7 @@ import TestKit
 import Combine
 @testable import WooCommerce
 
-final class EditAddressFormViewModelTests: XCTestCase {
+final class EditOrderAddressFormViewModelTests: XCTestCase {
 
     let sampleSiteID: Int64 = 123
 
@@ -590,7 +590,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     }
 }
 
-private extension EditAddressFormViewModelTests {
+private extension EditOrderAddressFormViewModelTests {
     func order(withShippingAddress shippingAddress: Address?) -> Order {
         Order.fake().copy(siteID: 123, orderID: 1234, shippingAddress: shippingAddress)
     }
@@ -628,7 +628,7 @@ private extension EditAddressFormViewModelTests {
     }
 }
 
-private extension EditAddressFormViewModelTests {
+private extension EditOrderAddressFormViewModelTests {
     static let sampleCountries: [Country] = {
         return Locale.isoRegionCodes.map { regionCode in
             let name = Locale.current.localizedString(forRegionCode: regionCode) ?? ""

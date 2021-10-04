@@ -51,6 +51,10 @@ protocol CardReaderSettingsAlertsProvider {
                                   batteryLevel: Double?,
                                   close: @escaping () -> Void)
 
+    /// Defines an alert indicating an update couldn't be installed.
+    ///
+    func updatingFailed(from: UIViewController, tryAgain: (() -> Void)?, close: @escaping () -> Void)
+
     /// Shows progress when a software update is being installed
     ///
     func updateProgress(from: UIViewController, requiredUpdate: Bool, progress: Float, cancel: (() -> Void)?)

@@ -87,6 +87,10 @@ final class MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         close()
     }
 
+    func updatingFailed(from: UIViewController, tryAgain: (() -> Void)?, close: @escaping () -> Void) {
+        close()
+    }
+
     func updateSeveralReadersList(readerIDs: [String]) {
         // GNDN
     }

@@ -16,6 +16,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
         readerUpdateProgress != nil
     }
     private(set) var readerUpdateProgress: Float? = nil
+    private(set) var readerUpdateError: Error? = nil
     private var softwareUpdateCancelable: FallibleCancelable? = nil
 
     private(set) var readerDisconnectInProgress: Bool = false
@@ -55,10 +56,14 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
 
                     switch state {
                     case .started(cancelable: let cancelable):
+                        self.readerUpdateError = nil
                         self.softwareUpdateCancelable = cancelable
                         self.readerUpdateProgress = 0
                     case .installing(progress: let progress):
                         self.readerUpdateProgress = progress
+                    case .failed(error: let error):
+                        self.readerUpdateError = error
+                        self.completeCardReaderUpdate(success: false)
                     case .completed:
                         self.readerUpdateProgress = 1
                         self.softwareUpdateCancelable = nil

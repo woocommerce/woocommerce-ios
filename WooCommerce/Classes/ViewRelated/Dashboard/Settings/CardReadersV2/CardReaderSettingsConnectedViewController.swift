@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import Yosemite
 
 /// This view controller is used when a reader is currently connected. It assists
 /// the merchant in updating and/or disconnecting from the reader, as needed.
@@ -17,9 +18,6 @@ final class CardReaderSettingsConnectedViewController: UIViewController, CardRea
     /// Table Sections to be rendered
     ///
     private var sections = [Section]()
-
-    /// Last known update view
-    private var readerUpdateProgress: Float? = nil
 
     /// Card Present Payments alerts
     private lazy var paymentAlerts: OrderDetailsPaymentAlerts = {
@@ -121,15 +119,28 @@ private extension CardReaderSettingsConnectedViewController {
     }
 
     func configureUpdateView() {
-        // Only proceed if the view model reader update flag has changed since we last looked at it
-        guard let viewModel = viewModel, readerUpdateProgress != viewModel.readerUpdateProgress else {
+        guard let viewModel = viewModel else {
             return
         }
 
-        // Update our flag to match the view model's
-        readerUpdateProgress = viewModel.readerUpdateProgress
-
-        if let readerUpdateProgress = viewModel.readerUpdateProgress {
+        if let error = viewModel.readerUpdateError {
+            if case CardReaderServiceError.softwareUpdate(underlyingError: let underlyingError, batteryLevel: let batteryLevel) = error,
+               underlyingError == .readerSoftwareUpdateFailedBatteryLow {
+                settingsAlerts.updatingFailedLowBattery(from: self, batteryLevel: batteryLevel, close: { [settingsAlerts] in
+                    settingsAlerts.dismiss()
+                })
+            } else {
+                settingsAlerts.updatingFailed(
+                    from: self,
+                    tryAgain: {
+                        viewModel.startCardReaderUpdate()
+                    },
+                    close: { [settingsAlerts] in
+                        settingsAlerts.dismiss()
+                    }
+                )
+            }
+        } else if let readerUpdateProgress = viewModel.readerUpdateProgress {
             // If we are updating a reader, show the progress alert
             settingsAlerts.updateProgress(from: self, requiredUpdate: false, progress: readerUpdateProgress, cancel: { [weak self] in
                 self?.viewModel?.cancelCardReaderUpdate()

@@ -1,0 +1,7 @@
+{
+    "code": "wcpay_invalid_request",
+    "message": "Error: You passed an empty string for 'address[line2]'",
+    "data": {
+        "status": 400
+    }
+}

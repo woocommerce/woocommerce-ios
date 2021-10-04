@@ -75,10 +75,19 @@ public class WCPayRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+    /// Load the store's location for use as a default location for a card reader
+    /// The backend (since WCPay plugin 3.0.0) coordinates this with Stripe to return a proper Stripe Location object ID
+    ///- Parameters:
+    ///   - siteID: Site for which we'll fetch the location.
+    ///   - completion: Closure to be run on completion.
+    ///
     public func loadDefaultReaderLocation(for siteID: Int64,
-                                          onCompletion: @escaping (Result<ReaderLocation, Error>) -> Void) {
-        let mockLocation = ReaderLocation(siteID: siteID, id: "tml_ESzXnASTnYZK5y", displayName: "st_simulated_display_name")
-        onCompletion(.success(mockLocation))
+                                          onCompletion: @escaping (Result<WCPayReaderLocation, Error>) -> Void) {
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: Path.locations, parameters: [:])
+
+        let mapper = WCPayReaderLocationMapper()
+
+        enqueue(request, mapper: mapper, completion: onCompletion)
     }
 }
 
@@ -91,7 +100,7 @@ private extension WCPayRemote {
         static let orders = "payments/orders"
         static let captureTerminalPayment = "capture_terminal_payment"
         static let createCustomer = "create_customer"
-        static let locations = "terminals/locations/store"
+        static let locations = "payments/terminal/locations/store"
     }
 
     enum AccountParameterKeys {

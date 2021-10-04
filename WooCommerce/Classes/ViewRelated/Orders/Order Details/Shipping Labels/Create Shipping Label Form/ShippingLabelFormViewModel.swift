@@ -823,7 +823,7 @@ private extension ShippingLabelFormViewModel {
                                                           comment: "Plural format of number of business days in Shipping Labels > Carrier and Rates")
         static let selectedRatesCount = NSLocalizedString("%1$d rates selected",
                                                           comment: "Number of rates selected in Shipping Labels > Carrier and Rates")
-        static let totalRate = NSLocalizedString("$1$@ total",
+        static let totalRate = NSLocalizedString("%1$@ total",
                                                  comment: "Total value for the selected rates in Shipping Labels > Carrier and Rates")
         static let paymentMethodPlaceholder = NSLocalizedString("Add a new credit card",
                                                                 comment: "Placeholder in Shipping Label form for the Payment Method row.")

@@ -202,7 +202,7 @@ final class ReceiptStoreTests: XCTestCase {
         let actualDiscountLine = receiptPrinterService.contentProvided?.cartTotals.first {
             $0.description.starts(with: expectedDiscountLineDescription())
         }
-        XCTAssertEqual(mockOrder.discountTotal, actualDiscountLine?.amount)
+        XCTAssertEqual(actualDiscountLine?.amount, "-5.00")
     }
 
     func test_print_OrderWithoutDiscountOrCoupons_DoesNotIncludeDiscountInReceiptContent() throws {

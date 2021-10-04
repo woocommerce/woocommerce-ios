@@ -100,11 +100,12 @@ private extension ReceiptStore {
     }
 
     func discountLine(order: Order) -> ReceiptTotalLine? {
-        if NSDecimalNumber(apiAmount: order.discountTotal).decimalValue == 0 &&
-            order.coupons.isEmpty {
+        let discountValue = NSDecimalNumber(apiAmount: order.discountTotal).decimalValue
+        if discountValue == 0 && order.coupons.isEmpty {
             return nil
         }
-        return ReceiptTotalLine(description: discountLineDescription(order: order), amount: order.discountTotal)
+        return ReceiptTotalLine(description: discountLineDescription(order: order),
+                                amount: discountLineAmount(order: order, value: discountValue))
     }
 
     func discountLineDescription(order: Order) -> String {
@@ -117,6 +118,14 @@ private extension ReceiptStore {
             couponCodes = "(\(couponCodes))"
         }
         return String.localizedStringWithFormat(ReceiptContent.Localization.discountLineDescription, couponCodes)
+    }
+
+    func discountLineAmount(order: Order, value: Decimal) -> String {
+        if value > 0 {
+            return "-\(order.discountTotal)"
+        } else {
+            return order.discountTotal
+        }
     }
 
     func lineIfNonZero(description: String, amount: String) -> ReceiptTotalLine? {

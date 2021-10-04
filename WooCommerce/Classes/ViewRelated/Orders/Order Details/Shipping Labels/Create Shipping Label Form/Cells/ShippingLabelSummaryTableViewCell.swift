@@ -75,11 +75,10 @@ final class ShippingLabelSummaryTableViewCell: UITableViewCell {
     }
 
     func setPackageRates(_ rates: [String]) {
-        if rates.isEmpty {
-            packageRatesStackViews.forEach { stackView in
-                mainStackView.removeArrangedSubview(stackView)
-            }
-        } else {
+        packageRatesStackViews.forEach { stackView in
+            mainStackView.removeArrangedSubview(stackView)
+        }
+        if rates.isNotEmpty {
             packageRatesStackViews = rates.enumerated().map { (index, rateText) in
                 let titleLabel = UILabel()
                 titleLabel.applyBodyStyle()

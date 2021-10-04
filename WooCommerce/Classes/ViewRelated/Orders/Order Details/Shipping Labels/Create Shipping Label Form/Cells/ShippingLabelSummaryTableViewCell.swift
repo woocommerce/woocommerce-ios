@@ -88,9 +88,7 @@ final class ShippingLabelSummaryTableViewCell: UITableViewCell {
 
                 let descriptionLabel = UILabel()
                 descriptionLabel.applyBodyStyle()
-                // swiftlint:disable:next inverse_text_alignment
-                descriptionLabel.textAlignment = .right
-                // swiftlint:enable:next inverse_text_alignment
+                descriptionLabel.textAlignment = .right // swiftlint:disable:this inverse_text_alignment
                 descriptionLabel.text = rateText
                 descriptionLabel.setContentHuggingPriority(UILayoutPriority(250), for: .horizontal)
 

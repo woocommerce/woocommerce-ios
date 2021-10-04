@@ -40,6 +40,8 @@ struct ShippingLabelCarriers: View {
                                                               shippingCost: viewModel.shippingCost).renderedIf(viewModel.shouldDisplayTopBanner)
                         ForEach(Array(viewModel.sections.enumerated()), id: \.offset) { index, sectionVM in
                             ShippingLabelCarriersSection(section: sectionVM, safeAreaInsets: geometry.safeAreaInsets)
+                                .background(Color(.systemBackground))
+                            Spacer().frame(height: Constants.spaceBetweenSections)
                         }
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
                     case .error:
@@ -59,6 +61,7 @@ struct ShippingLabelCarriers: View {
                 }
                 .padding(.bottom, insets: geometry.safeAreaInsets)
             }
+            .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
             .navigationTitle(Localization.titleView)
             .navigationBarItems(trailing: Button(action: {
@@ -73,6 +76,7 @@ struct ShippingLabelCarriers: View {
     }
 
     enum Constants {
+        static let spaceBetweenSections: CGFloat = 16
         static let dividerPadding: CGFloat = 80
     }
 

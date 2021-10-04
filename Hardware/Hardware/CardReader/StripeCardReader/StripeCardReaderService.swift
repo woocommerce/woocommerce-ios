@@ -472,7 +472,10 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
 
     public func reader(_ reader: Reader, didFinishInstallingUpdate update: ReaderSoftwareUpdate?, error: Error?) {
         if let error = error {
-            softwareUpdateSubject.send(.failed(error: error))
+            let underlyingError = UnderlyingError(with: error)
+            if underlyingError != .commandCancelled {
+                softwareUpdateSubject.send(.failed(error: error))
+            }
             softwareUpdateSubject.send(.available)
         } else {
             softwareUpdateSubject.send(.completed)

@@ -3,9 +3,9 @@ import Combine
 import SwiftUI
 import UIKit
 
-/// Hosting controller that wraps an `EditAddressForm`.
+/// Hosting controller that wraps an `EditOrderAddressForm`.
 ///
-final class EditAddressHostingController: UIHostingController<EditAddressForm> {
+final class EditOrderAddressHostingController: UIHostingController<EditOrderAddressForm> {
 
     /// References to keep the Combine subscriptions alive within the lifecycle of the object.
     ///
@@ -25,7 +25,7 @@ final class EditAddressHostingController: UIHostingController<EditAddressForm> {
 
     init(viewModel: EditAddressFormViewModel, systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.systemNoticePresenter = systemNoticePresenter
-        super.init(rootView: EditAddressForm(viewModel: viewModel))
+        super.init(rootView: EditOrderAddressForm(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismiss = { [weak self] in
@@ -60,7 +60,7 @@ final class EditAddressHostingController: UIHostingController<EditAddressForm> {
 
                 switch notice {
                 case .success:
-                    self?.systemNoticePresenter.enqueue(notice: .init(title: EditAddressForm.Localization.success, feedbackType: .error))
+                    self?.systemNoticePresenter.enqueue(notice: .init(title: EditOrderAddressForm.Localization.success, feedbackType: .error))
 
                 case .error(let error):
                     switch error {
@@ -82,7 +82,7 @@ final class EditAddressHostingController: UIHostingController<EditAddressForm> {
 
 /// Intercepts to the dismiss drag gesture.
 ///
-extension EditAddressHostingController: UIAdaptivePresentationControllerDelegate {
+extension EditOrderAddressHostingController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
         !rootView.viewModel.hasPendingChanges()
     }
@@ -101,7 +101,7 @@ extension EditAddressHostingController: UIAdaptivePresentationControllerDelegate
 
 /// Allows merchant to edit the customer provided address of an order.
 ///
-struct EditAddressForm: View {
+struct EditOrderAddressForm: View {
 
     /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
     ///
@@ -299,7 +299,7 @@ struct EditAddressForm: View {
 }
 
 // MARK: Constants
-private extension EditAddressForm {
+private extension EditOrderAddressForm {
 
     var viewTitle: String {
         switch viewModel.type {
@@ -414,7 +414,7 @@ struct EditAddressForm_Previews: PreviewProvider {
 
     static var previews: some View {
         NavigationView {
-            EditAddressForm(viewModel: sampleViewModel)
+            EditOrderAddressForm(viewModel: sampleViewModel)
         }
     }
 }

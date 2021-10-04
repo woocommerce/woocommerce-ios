@@ -288,13 +288,11 @@ extension StripeCardReaderService: CardReaderService {
             self.readerLocationProvider?.fetchDefaultLocationID { (locationId, error) in
                 if let error = error {
                     let underlyingError = UnderlyingError(with: error)
-                    promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
-                    return
+                    return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
                 }
 
                 if let locationId = locationId {
-                    promise(.success(BluetoothConnectionConfiguration(locationId: locationId)))
-                    return
+                    return promise(.success(BluetoothConnectionConfiguration(locationId: locationId)))
                 }
 
                 promise(.failure(CardReaderServiceError.connection()))

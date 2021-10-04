@@ -134,6 +134,12 @@ final class EditAddressFormViewModel: ObservableObject {
         }
     }
 
+    /// Defines if the state field should be defined as a list selector.
+    ///
+    var showStateFieldAsSelector: Bool {
+        selectedCountry?.states.isNotEmpty ?? false
+    }
+
     /// Creates a view model to be used when selecting a country
     ///
     func createCountryViewModel() -> CountrySelectorViewModel {
@@ -277,6 +283,10 @@ extension EditAddressFormViewModel {
             address2 = address.address2 ?? ""
             city = address.city
             postcode = address.postcode
+
+            // Only use the address.state if we haven't set a value before.
+            // Like when selecting a state from the picker
+            state = state.isEmpty ? address.state : state
         }
 
         mutating func update(with country: Yosemite.Country?, and state: Yosemite.StateOfACountry?) {
@@ -323,23 +333,29 @@ private extension EditAddressFormViewModel {
     }
 
     /// Update published fields when the selected country and state is updated.
-    /// If the current selected state does not exists within the selected country, then the state is nilled.
+    /// If the selected country changes and it has a specific state to choose, clear the previous selected state.
     ///
     func bindSelectedCountryAndStateIntoFields() {
 
         typealias StatePublisher = AnyPublisher<Yosemite.StateOfACountry?, Never>
 
-        // When a country is selected, check if the current state is a valid state for that country, otherwise `nil` it.
+        // When a country is selected, check if the new country has a state list.
+        // If it has, clear the selected state and the state field.
+        // If it doesn't only clear the selected state
         $selectedCountry
             .withLatestFrom($selectedState)
-            .flatMap { country, state -> StatePublisher in
-                guard let country = country, let state = state, country.states.contains(state) else {
-                    return StatePublisher.init(Empty())
+            .map { country, state -> String in
+                guard let country = country else {
+                    return ""
                 }
-                return StatePublisher.init(Just(state))
+                let currentStateName = state?.name ?? ""
+                return country.states.isEmpty ? currentStateName : ""
             }
-            .assign(to: &$selectedState)
-
+            .sink { stateName in
+                self.selectedState = nil
+                self.fields.state = stateName
+            }
+            .store(in: &subscriptions)
 
         // Update fields with new selections.
         Publishers.CombineLatest($selectedCountry, $selectedState)

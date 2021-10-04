@@ -206,9 +206,7 @@ struct EditAddressForm: View {
                         }
                         Divider()
                             .padding(.leading, Constants.dividerPadding)
-                        TitleAndValueRow(title: Localization.stateField, value: viewModel.fields.state, selectable: true) {
-                            showStateSelector = true
-                        }
+                        stateRow()
                     }
                 }
                 .padding(.horizontal, insets: geometry.safeAreaInsets)
@@ -280,6 +278,22 @@ struct EditAddressForm: View {
             .disabled(!enabled)
         case .loading:
             ProgressView()
+        }
+    }
+
+    /// Decides if the state row should be rendered as a list selector field or as a text input field.
+    ///
+    @ViewBuilder private func stateRow() -> some View {
+        if viewModel.showStateFieldAsSelector {
+            TitleAndValueRow(title: Localization.stateField, value: viewModel.fields.state, selectable: true) {
+                showStateSelector = true
+            }
+        } else {
+            TitleAndTextFieldRow(title: Localization.stateField,
+                                 placeholder: "",
+                                 text: $viewModel.fields.state,
+                                 symbol: nil,
+                                 keyboardType: .default)
         }
     }
 }

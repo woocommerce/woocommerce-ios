@@ -22,7 +22,7 @@ struct MockAppSettingsActionHandler: MockActionHandler {
             case .loadProductsSettings(let siteId, let onCompletion):
                 loadProductSettings(siteId: siteId, onCompletion: onCompletion)
             case .loadEligibilityErrorInfo(let onCompletion):
-                loadEligibilityErrorInfo(onCompletion: onCompletion)
+                onCompletion(.failure(AppSettingsStoreErrors.noEligibilityErrorInfo))
             case .loadOrderAddOnsSwitchState(let onCompletion):
                 onCompletion(.failure(AppSettingsStoreErrors.noEligibilityErrorInfo))
             case .resetEligibilityErrorInfo:

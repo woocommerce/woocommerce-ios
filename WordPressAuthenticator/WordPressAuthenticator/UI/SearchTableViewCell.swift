@@ -23,6 +23,14 @@ open class SearchTableViewCell: UITableViewCell {
     ///
     open weak var delegate: SearchTableViewCellDelegate?
 
+    /// If `true` the search delegate callback is called as the text field is edited.
+    /// This class does not implement any Debouncer or assume a minimum character count because
+    /// each search is different.
+    ///
+    open var liveSearch: Bool = false
+
+    open var allowSpaces: Bool = true
+
     /// Search UITextField's placeholder
     ///
     open var placeholder: String? {
@@ -62,15 +70,59 @@ private extension SearchTableViewCell {
 //
 extension SearchTableViewCell: UITextFieldDelegate {
     open func textFieldShouldClear(_ textField: UITextField) -> Bool {
-        delegate?.startSearch(for: "")
+        if !liveSearch {
+            delegate?.startSearch(for: "")
+        }
+
         return true
     }
 
     open func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if let searchText = textField.text {
+        if !liveSearch,
+           let searchText = textField.text {
             delegate?.startSearch(for: searchText)
         }
+
         return false
+    }
+
+    open func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let sanitizedString: String
+
+        if allowSpaces {
+            sanitizedString = string
+        } else {
+            sanitizedString = string.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+
+        if sanitizedString.count > 0 || range.length > 0 {
+            guard let currentText = (textField.text as? NSString) else {
+                // This shouldn't really happen but if it does, let's at least let the edit go through
+                return true
+            }
+
+            textField.text = currentText.replacingCharacters(in: range, with: sanitizedString)
+        }
+
+        startLiveSearchAfterEdit()
+        return false
+    }
+
+    /// Convenience method to abstract the logic that tells the delegate to start a live search after the search text field
+    /// has been edited.
+    ///
+    private func startLiveSearchAfterEdit() {
+        guard liveSearch,
+              let delegate = delegate,
+              let text = textField.text else {
+            return
+        }
+
+        if text.count == 0 {
+            delegate.startSearch(for: "")
+        } else {
+            delegate.startSearch(for: text)
+        }
     }
 }
 

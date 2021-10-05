@@ -131,6 +131,11 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
         })
     }
 
+    func dismissReaderUpdateError() {
+        readerUpdateError = nil
+        didUpdate?()
+    }
+
     private func completeCardReaderUpdate(success: Bool) {
         readerUpdateAvailable = !success
         readerUpdateProgress = nil

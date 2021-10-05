@@ -43,7 +43,6 @@ struct ShippingLabelCarriers: View {
                                 .background(Color(.systemBackground))
                             Spacer().frame(height: Constants.spaceBetweenSections)
                         }
-                        .padding(.horizontal, insets: geometry.safeAreaInsets)
                     case .error:
                         VStack {
                             HStack (alignment: .center) {
@@ -93,6 +92,7 @@ struct ShippingLabelCarriers: View {
             } content: {
                 ForEach(section.rows) { rowVM in
                     ShippingLabelCarrierRow(rowVM)
+                        .padding(.horizontal, insets: safeAreaInsets)
 
                     // The separator will be added only if the element is not the last one of the list
                     if section.rows.last != rowVM {

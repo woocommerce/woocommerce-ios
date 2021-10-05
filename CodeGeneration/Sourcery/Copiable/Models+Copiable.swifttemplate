@@ -103,8 +103,6 @@ let matchingTypes = types.based["GeneratedCopiable"].filter {
 let modulesToGenerateImports: [String] = {
     let modulesFromType: [String] =  matchingTypes.flatMap { type in
         type.imports.map { $0.description }
-        // Importing a protocol (e.g. `import protocol Storage.StorageType`) generates a type "protocol" that is not needed
-        .filter { $0 != "protocol" }
     }
 
     let modulesFromProperties: [String] = matchingTypes.flatMap { type in 

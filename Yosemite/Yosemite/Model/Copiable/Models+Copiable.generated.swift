@@ -2,7 +2,6 @@
 // DO NOT EDIT
 import Codegen
 import Foundation
-import Networking
 
 
 extension ProductReviewFromNoteParcel {

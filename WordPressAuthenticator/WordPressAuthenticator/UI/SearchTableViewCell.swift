@@ -95,16 +95,18 @@ extension SearchTableViewCell: UITextFieldDelegate {
             sanitizedString = string.trimmingCharacters(in: .whitespacesAndNewlines)
         }
 
-        if sanitizedString.count > 0 || range.length > 0 {
+        let hasValidEdits = sanitizedString.count > 0 || range.length > 0
+
+        if hasValidEdits {
             guard let currentText = (textField.text as? NSString) else {
                 // This shouldn't really happen but if it does, let's at least let the edit go through
                 return true
             }
 
             textField.text = currentText.replacingCharacters(in: range, with: sanitizedString)
+            startLiveSearchAfterEdit()
         }
 
-        startLiveSearchAfterEdit()
         return false
     }
 

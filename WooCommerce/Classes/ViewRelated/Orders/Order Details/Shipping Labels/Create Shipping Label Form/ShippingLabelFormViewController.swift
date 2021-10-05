@@ -328,8 +328,7 @@ private extension ShippingLabelFormViewController {
         } onButtonTouchUp: { [weak self] in
             guard let self = self else { return }
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_initiated",
-                 "amount": self.viewModel.selectedRates.map { $0.totalRate }
-                                                       .reduce(0, +),
+                 "amount": self.viewModel.totalAmount,
                 "fulfill_order": self.shouldMarkOrderComplete])
             self.displayPurchaseProgressView()
             self.viewModel.purchaseLabel { [weak self] result in
@@ -337,8 +336,7 @@ private extension ShippingLabelFormViewController {
                 switch result {
                 case .success(let totalDuration):
                     ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_succeeded",
-                                         "amount": self.viewModel.selectedRates.map { $0.totalRate }
-                                             .reduce(0, +),
+                                         "amount": self.viewModel.totalAmount,
                                          "fulfill_order": self.shouldMarkOrderComplete,
                                          "total_duration": Double(totalDuration)])
                     self.onLabelPurchase?(self.shouldMarkOrderComplete)
@@ -346,8 +344,7 @@ private extension ShippingLabelFormViewController {
                     self.displayPrintShippingLabelVC()
                 case .failure:
                     ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_failed",
-                                         "amount": self.viewModel.selectedRates.map { $0.totalRate }
-                                          .reduce(0, +),
+                                         "amount": self.viewModel.totalAmount,
                                          "fulfill_order": self.shouldMarkOrderComplete])
                     self.dismiss(animated: true)
                     self.displayLabelPurchaseErrorNotice()

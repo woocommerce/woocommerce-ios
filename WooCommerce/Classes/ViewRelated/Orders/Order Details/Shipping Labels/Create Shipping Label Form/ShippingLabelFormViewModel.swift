@@ -45,6 +45,12 @@ final class ShippingLabelFormViewModel {
     ///
     private(set) var selectedRates: [ShippingLabelSelectedRate] = []
 
+    /// The total amount of the selected rates
+    ///
+    var totalAmount: Double {
+        selectedRates.map { $0.totalRate }.reduce(0, +)
+    }
+
     var selectedPackages: [ShippingLabelPackageSelected] {
         guard let packagesResponse = packagesResponse else {
             return []

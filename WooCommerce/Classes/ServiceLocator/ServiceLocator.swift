@@ -217,7 +217,7 @@ extension ServiceLocator {
     }
 
     static func setStores(_ mock: StoresManager) {
-        guard isRunningTests() || BuildConfiguration.shouldUseScreenshotsNetworkLayer else {
+        guard isRunningTests() || ProcessConfiguration.shouldUseScreenshotsNetworkLayer else {
             return
         }
 

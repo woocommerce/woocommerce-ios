@@ -95,6 +95,7 @@
 		0227958D237A51F300787C63 /* OptionsTableViewController+Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0227958C237A51F300787C63 /* OptionsTableViewController+Styles.swift */; };
 		02279590237A5DC900787C63 /* AztecUnorderedListFormatBarCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0227958F237A5DC900787C63 /* AztecUnorderedListFormatBarCommandTests.swift */; };
 		02279594237A60FD00787C63 /* AztecHeaderFormatBarCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02279593237A60FD00787C63 /* AztecHeaderFormatBarCommandTests.swift */; };
+		02291737270BEFF200449FA0 /* ProcessConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02291736270BEFF200449FA0 /* ProcessConfiguration.swift */; };
 		0229ED00258767BC00C336F8 /* ShippingLabelPrintingStepContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0229ECFF258767BC00C336F8 /* ShippingLabelPrintingStepContentView.swift */; };
 		022A45EE237BADA6001417F0 /* Product+ProductFormTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022A45ED237BADA6001417F0 /* Product+ProductFormTests.swift */; };
 		022BF7FD23B9D708000A1DFB /* InProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022BF7FB23B9D708000A1DFB /* InProgressViewController.swift */; };
@@ -1546,6 +1547,7 @@
 		0227958C237A51F300787C63 /* OptionsTableViewController+Styles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OptionsTableViewController+Styles.swift"; sourceTree = "<group>"; };
 		0227958F237A5DC900787C63 /* AztecUnorderedListFormatBarCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecUnorderedListFormatBarCommandTests.swift; sourceTree = "<group>"; };
 		02279593237A60FD00787C63 /* AztecHeaderFormatBarCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecHeaderFormatBarCommandTests.swift; sourceTree = "<group>"; };
+		02291736270BEFF200449FA0 /* ProcessConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessConfiguration.swift; sourceTree = "<group>"; };
 		0229ECFF258767BC00C336F8 /* ShippingLabelPrintingStepContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPrintingStepContentView.swift; sourceTree = "<group>"; };
 		022A45ED237BADA6001417F0 /* Product+ProductFormTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+ProductFormTests.swift"; sourceTree = "<group>"; };
 		022BF7FB23B9D708000A1DFB /* InProgressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InProgressViewController.swift; sourceTree = "<group>"; };
@@ -5419,6 +5421,7 @@
 				B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */,
 				CE2409F0215D12D30091F887 /* WooNavigationController.swift */,
 				0294F8AA25E8A12C005B537A /* WooTabNavigationController.swift */,
+				02291736270BEFF200449FA0 /* ProcessConfiguration.swift */,
 			);
 			path = System;
 			sourceTree = "<group>";
@@ -7672,6 +7675,7 @@
 				0219B03723964527007DCD5E /* PaginatedProductShippingClassListSelectorDataSource.swift in Sources */,
 				DE279BAA26E9C91D002BA963 /* ShippingLabelSinglePackageViewModel.swift in Sources */,
 				024DF31923742C3F006658FE /* AztecFormatBarFactory.swift in Sources */,
+				02291737270BEFF200449FA0 /* ProcessConfiguration.swift in Sources */,
 				45CE2D322625AA9A00E3CA00 /* ShippingLabelPackageList.swift in Sources */,
 				02535CBB25823F7A00E137BB /* ShippingLabelPaperSize+UI.swift in Sources */,
 				CCD2E67E25DD4DC900BD975D /* ProductVariationsViewModel.swift in Sources */,

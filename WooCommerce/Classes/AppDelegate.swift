@@ -304,15 +304,15 @@ private extension AppDelegate {
     }
 
     func handleLaunchArguments() {
-        if BuildConfiguration.shouldLogoutAtLaunch {
+        if ProcessConfiguration.shouldLogoutAtLaunch {
             ServiceLocator.stores.deauthenticate()
         }
 
-        if BuildConfiguration.shouldUseScreenshotsNetworkLayer {
+        if ProcessConfiguration.shouldUseScreenshotsNetworkLayer {
             ServiceLocator.setStores(ScreenshotStoresManager(storageManager: ServiceLocator.storageManager))
         }
 
-        if BuildConfiguration.shouldDisableAnimations {
+        if ProcessConfiguration.shouldDisableAnimations {
             UIView.setAnimationsEnabled(false)
 
             /// Trick found at: https://twitter.com/twannl/status/1232966604142653446

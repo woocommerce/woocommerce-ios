@@ -34,16 +34,4 @@ public enum BuildConfiguration: String {
         BuildConfiguration.testingOverride = nil
     }
     #endif
-
-    public static var shouldUseScreenshotsNetworkLayer: Bool {
-        return ProcessInfo.processInfo.arguments.contains("mocked-network-layer")
-    }
-
-    public static var shouldLogoutAtLaunch: Bool {
-        ProcessInfo.processInfo.arguments.contains("logout-at-launch")
-    }
-
-    public static var shouldDisableAnimations: Bool {
-        ProcessInfo.processInfo.arguments.contains("disable-animations")
-    }
 }

@@ -1,7 +1,6 @@
-import UITestsFoundation
 import XCTest
 
-class ProductsScreen: BaseScreen {
+public class ProductsScreen: BaseScreen {
 
        struct ElementStringIDs {
         static let searchButton = "product-search-button"
@@ -24,7 +23,7 @@ class ProductsScreen: BaseScreen {
     }
 
     @discardableResult
-    func collapseTopBannerIfNeeded() -> Self {
+    public func collapseTopBannerIfNeeded() -> Self {
 
         /// Without the info label, we don't need to collapse the top banner
         guard topBannerInfoLabel.waitForExistence(timeout: 3) else {
@@ -41,7 +40,7 @@ class ProductsScreen: BaseScreen {
     }
 
     @discardableResult
-    func selectProduct(atIndex index: Int) -> SingleProductScreen {
+    public func selectProduct(atIndex index: Int) -> SingleProductScreen {
         XCUIApplication().tables.cells.element(boundBy: index).tap()
         return SingleProductScreen()
     }

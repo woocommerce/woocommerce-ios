@@ -1,7 +1,6 @@
-import UITestsFoundation
 import XCTest
 
-final class SingleReviewScreen: BaseScreen {
+public final class SingleReviewScreen: BaseScreen {
 
     struct ElementStringIDs {
         static let spamButton = "single-review-spam-button"
@@ -28,7 +27,7 @@ final class SingleReviewScreen: BaseScreen {
     }
 
     @discardableResult
-    func goBackToReviewsScreen() -> ReviewsScreen {
+    public func goBackToReviewsScreen() -> ReviewsScreen {
         pop()
         return ReviewsScreen()
     }

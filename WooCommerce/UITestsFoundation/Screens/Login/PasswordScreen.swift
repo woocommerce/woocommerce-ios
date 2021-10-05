@@ -1,4 +1,3 @@
-import UITestsFoundation
 import XCTest
 
 private struct ElementStringIDs {
@@ -8,7 +7,7 @@ private struct ElementStringIDs {
     static let errorLabel = "Password Error"
 }
 
-final class PasswordScreen: BaseScreen {
+public final class PasswordScreen: BaseScreen {
     private let navBar: XCUIElement
     private let passwordTextField: XCUIElement
     private let continueButton: XCUIElement
@@ -22,13 +21,13 @@ final class PasswordScreen: BaseScreen {
         super.init(element: passwordTextField)
     }
 
-    func proceedWith(password: String) -> LoginEpilogueScreen {
+    public func proceedWith(password: String) -> LoginEpilogueScreen {
         _ = tryProceed(password: password)
 
         return LoginEpilogueScreen()
     }
 
-    func tryProceed(password: String) -> PasswordScreen {
+    public func tryProceed(password: String) -> PasswordScreen {
         passwordTextField.tap()
         passwordTextField.typeText(password)
         continueButton.tap()
@@ -38,7 +37,7 @@ final class PasswordScreen: BaseScreen {
         return self
     }
 
-    func verifyLoginError() -> PasswordScreen {
+    public func verifyLoginError() -> PasswordScreen {
         let errorLabel = app.cells[ElementStringIDs.errorLabel]
         _ = errorLabel.waitForExistence(timeout: 2)
 

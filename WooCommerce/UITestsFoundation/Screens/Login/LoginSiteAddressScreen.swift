@@ -1,4 +1,3 @@
-import UITestsFoundation
 import XCTest
 
 private struct ElementStringIDs {
@@ -15,7 +14,7 @@ private struct ElementStringIDs {
     static let siteAddressTextField = "Site address"
 }
 
-final class LoginSiteAddressScreen: BaseScreen {
+public final class LoginSiteAddressScreen: BaseScreen {
     private let navBar: XCUIElement
     private let siteAddressTextField: XCUIElement
     private let nextButton: XCUIElement
@@ -29,7 +28,7 @@ final class LoginSiteAddressScreen: BaseScreen {
         super.init(element: siteAddressTextField)
     }
 
-    func proceedWith(siteUrl: String) -> GetStartedScreen {
+    public func proceedWith(siteUrl: String) -> GetStartedScreen {
         siteAddressTextField.tap()
         siteAddressTextField.typeText(siteUrl)
         nextButton.tap()

@@ -1,7 +1,6 @@
-import UITestsFoundation
 import XCTest
 
-final class PeriodStatsTable: BaseScreen {
+public final class PeriodStatsTable: BaseScreen {
 
     struct ElementStringIDs {
         static let daysTab = "period-data-today-tab"
@@ -39,7 +38,7 @@ final class PeriodStatsTable: BaseScreen {
        }
 
     @discardableResult
-    func switchToYearsTab() -> Self {
+    public func switchToYearsTab() -> Self {
         yearsTab.tap()
         return self
     }

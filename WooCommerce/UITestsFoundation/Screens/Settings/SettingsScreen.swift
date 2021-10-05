@@ -1,7 +1,6 @@
-import UITestsFoundation
 import XCTest
 
-final class SettingsScreen: BaseScreen {
+public final class SettingsScreen: BaseScreen {
 
     struct ElementStringIDs {
         static let headlineLabel = "headline-label"
@@ -27,7 +26,7 @@ final class SettingsScreen: BaseScreen {
     }
 
     @discardableResult
-    func logOut() throws -> PrologueScreen {
+    public func logOut() throws -> PrologueScreen {
         logOutButton.tap()
 
         // Some localizations have very long "log out" text, which causes the UIAlertView
@@ -46,7 +45,7 @@ final class SettingsScreen: BaseScreen {
 /// Assertions
 extension SettingsScreen {
 
-    func verifySelectedStoreDisplays(storeName expectedStoreName: String, siteUrl expectedSiteUrl: String) -> SettingsScreen {
+    public func verifySelectedStoreDisplays(storeName expectedStoreName: String, siteUrl expectedSiteUrl: String) -> SettingsScreen {
         let actualStoreName = selectedStoreName.label
         let expectedSiteUrl = expectedSiteUrl.replacingOccurrences(of: "http://", with: "")
         let actualSiteUrl = selectedSiteUrl.label

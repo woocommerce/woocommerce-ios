@@ -1,7 +1,6 @@
-import UITestsFoundation
 import XCTest
 
-final class SingleOrderScreen: BaseScreen {
+public final class SingleOrderScreen: BaseScreen {
 
     struct ElementStringIDs {
         static let summaryTitleLabel = "summary-table-view-cell-title-label"
@@ -21,7 +20,7 @@ final class SingleOrderScreen: BaseScreen {
     }
 
     @discardableResult
-    func goBackToOrdersScreen() -> OrdersScreen {
+    public func goBackToOrdersScreen() -> OrdersScreen {
         pop()
         return OrdersScreen()
     }

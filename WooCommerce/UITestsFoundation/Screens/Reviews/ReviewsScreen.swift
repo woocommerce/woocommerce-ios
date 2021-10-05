@@ -1,13 +1,12 @@
-import UITestsFoundation
 import XCTest
 
-final class ReviewsScreen: BaseScreen {
+public final class ReviewsScreen: BaseScreen {
 
     struct ElementStringIDs {
         static let markAllAsReadButton = "reviews-mark-all-as-read-button"
     }
 
-    let tabBar = TabNavComponent()
+    public let tabBar = TabNavComponent()
     private let markAllAsReadButton: XCUIElement
 
     static var isVisible: Bool {
@@ -21,7 +20,7 @@ final class ReviewsScreen: BaseScreen {
     }
 
     @discardableResult
-    func selectReview(atIndex index: Int) -> SingleReviewScreen {
+    public func selectReview(atIndex index: Int) -> SingleReviewScreen {
         XCUIApplication().tables.cells.element(boundBy: index).tap()
         return SingleReviewScreen()
     }

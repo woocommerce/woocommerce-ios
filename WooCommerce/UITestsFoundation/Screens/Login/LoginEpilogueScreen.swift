@@ -1,4 +1,3 @@
-import UITestsFoundation
 import XCTest
 
 private struct ElementStringIDs {
@@ -7,7 +6,7 @@ private struct ElementStringIDs {
     static let continueButton = "login-epilogue-continue-button"
 }
 
-final class LoginEpilogueScreen: BaseScreen {
+public final class LoginEpilogueScreen: BaseScreen {
     private let continueButton: XCUIElement
     private let displayNameField: XCUIElement
     private let siteUrlField: XCUIElement
@@ -21,12 +20,12 @@ final class LoginEpilogueScreen: BaseScreen {
         super.init(element: continueButton)
     }
 
-    func continueWithSelectedSite() throws -> MyStoreScreen {
+    public func continueWithSelectedSite() throws -> MyStoreScreen {
         continueButton.tap()
         return try MyStoreScreen()
     }
 
-    func verifyEpilogueDisplays(displayName expectedDisplayName: String, siteUrl expectedSiteUrl: String) -> LoginEpilogueScreen {
+    public func verifyEpilogueDisplays(displayName expectedDisplayName: String, siteUrl expectedSiteUrl: String) -> LoginEpilogueScreen {
         let actualDisplayName = displayNameField.label
         let actualSiteUrl = siteUrlField.label
 

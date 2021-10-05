@@ -1,7 +1,6 @@
-import UITestsFoundation
 import XCTest
 
-final class TabNavComponent: BaseScreen {
+public final class TabNavComponent: BaseScreen {
 
     struct ElementStringIDs {
         static let myStoreTabBarItem = "tab-bar-my-store-item"
@@ -40,7 +39,7 @@ final class TabNavComponent: BaseScreen {
     }
 
     @discardableResult
-    func gotoOrdersScreen() -> OrdersScreen {
+    public func gotoOrdersScreen() -> OrdersScreen {
         // Avoid transitioning if it is already on screen
         if !OrdersScreen.isVisible {
             ordersTabButton.tap()
@@ -50,7 +49,7 @@ final class TabNavComponent: BaseScreen {
     }
 
     @discardableResult
-    func gotoProductsScreen() -> ProductsScreen {
+    public func gotoProductsScreen() -> ProductsScreen {
         if !ProductsScreen.isVisible {
             productsTabButton.tap()
         }
@@ -59,7 +58,7 @@ final class TabNavComponent: BaseScreen {
     }
 
     @discardableResult
-    func gotoReviewsScreen() -> ReviewsScreen {
+    public func gotoReviewsScreen() -> ReviewsScreen {
         if !ReviewsScreen.isVisible {
             reviewsTabButton.tap()
         }

@@ -250,6 +250,12 @@ key points.
 
 More on [Hardware](HARDWARE.md)
 
+## **Experiments.framework**
+
+The Experiments framework allows us to experiment features in any of our frameworks like in app extensions.
+
+More on [Experiments](EXPERIMENTS.md)
+
 ### Main Flows
 
     1.  Performing Tasks

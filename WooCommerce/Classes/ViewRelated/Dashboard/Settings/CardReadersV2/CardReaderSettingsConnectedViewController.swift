@@ -70,6 +70,9 @@ private extension CardReaderSettingsConnectedViewController {
         guard let viewModel = viewModel else {
             return
         }
+
+
+
         viewModel.checkForCardReaderUpdate()
     }
 
@@ -199,7 +202,13 @@ private extension CardReaderSettingsConnectedViewController {
         }
 
         if readerUpdateAvailable == .isTrue {
-            cell.configure(image: .infoOutlineImage, text: Localization.updateAvailable)
+            let readerBatteryTooLow = viewModel?.readerBatteryTooLowForUpdates ?? false
+
+            if readerBatteryTooLow {
+                cell.configure(image: .infoOutlineImage, text: Localization.updateAvailableLowBatt)
+            } else {
+                cell.configure(image: .infoOutlineImage, text: Localization.updateAvailable)
+            }
             cell.backgroundColor = .warningBackground
             cell.imageView?.tintColor = .warning
         }
@@ -231,7 +240,8 @@ private extension CardReaderSettingsConnectedViewController {
 
         let readerDisconnectInProgress = viewModel?.readerDisconnectInProgress ?? false
         let readerUpdateInProgress = viewModel?.readerUpdateInProgress ?? false
-        cell.enableButton(readerUpdateAvailable && !readerDisconnectInProgress && !readerUpdateInProgress)
+        let readerBatteryTooLow = viewModel?.readerBatteryTooLowForUpdates ?? false
+        cell.enableButton(readerUpdateAvailable && !readerDisconnectInProgress && !readerUpdateInProgress && !readerBatteryTooLow)
         cell.showActivityIndicator(readerUpdateInProgress)
 
         cell.selectionStyle = .none
@@ -376,6 +386,11 @@ private extension CardReaderSettingsConnectedViewController {
         static let updateAvailable = NSLocalizedString(
             "Please update your reader software to keep accepting payments",
             comment: "Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software"
+        )
+
+        static let updateAvailableLowBatt = NSLocalizedString(
+            "An update is available, but your reader battery is too low to update. Please charge your reader right away to continue accepting payments",
+            comment: "Settings > Manage Card Reader > Connected Reader > A prompt to charge a reader running older software"
         )
 
         static let updateNotNeeded = NSLocalizedString(

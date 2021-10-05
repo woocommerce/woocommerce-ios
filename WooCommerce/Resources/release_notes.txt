@@ -1,3 +1,9 @@
-Merchants using the WooCommerce Shipping & Tax Extension will find creating custom packaging for a shipping label is now a breeze! Creating and printing shipping labels from your mobile device is so much fun!
-
-We also fixed and improved a bunch of little things in the app based on your feedback.
+- [***] In-Person Payments: US merchants can now obtain a card reader and then collect payments directly from the app. [https://github.com/woocommerce/woocommerce-ios/pull/5030]
+- [***] Shipping Labels: Merchants can now add new payment methods for shipping labels directly from the app. [https://github.com/woocommerce/woocommerce-ios/pull/5023]
+- [**] Merchants can now edit shipping & billing addresses from orders. [https://github.com/woocommerce/woocommerce-ios/pull/5097]
+- [x] Fix: now a default paper size will be selected in Shipping Label print screen. [https://github.com/woocommerce/woocommerce-ios/pull/5035]
+- [*] Show banner on screens that use cached data when device is offline. [https://github.com/woocommerce/woocommerce-ios/pull/5000]
+- [*] Fix incorrect subtitle on customs row of Shipping Label purchase flow. [https://github.com/woocommerce/woocommerce-ios/pull/5093]
+- [*] Make sure customs form printing option is not available on non-international orders. [https://github.com/woocommerce/woocommerce-ios/pull/5104]
+- [*] Fix incorrect logo for DHL in Shipping Labels flow. [https://github.com/woocommerce/woocommerce-ios/pull/5105]
+ 

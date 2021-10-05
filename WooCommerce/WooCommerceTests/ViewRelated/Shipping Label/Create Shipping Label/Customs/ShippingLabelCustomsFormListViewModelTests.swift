@@ -8,7 +8,7 @@ class ShippingLabelCustomsFormListViewModelTests: XCTestCase {
 
     func test_done_button_is_enabled_when_all_fields_are_valid() {
         // Given
-        let item = ShippingLabelCustomsForm.Item.fake()
+        let item = ShippingLabelCustomsForm.Item.fake().copy(quantity: 1)
         let order = MockOrders().makeOrder().copy(siteID: sampleSiteID)
         let customsForm = ShippingLabelCustomsForm(packageID: "Custom package", packageName: "Custom package", items: [item])
 
@@ -38,7 +38,7 @@ class ShippingLabelCustomsFormListViewModelTests: XCTestCase {
 
     func test_done_button_is_disable_when_not_all_fields_are_valid() {
         // Given
-        let item = ShippingLabelCustomsForm.Item.fake()
+        let item = ShippingLabelCustomsForm.Item.fake().copy(quantity: 1)
         let order = MockOrders().makeOrder().copy(siteID: sampleSiteID)
         let customsForm = ShippingLabelCustomsForm(packageID: "Custom package", packageName: "Custom package", items: [item])
 
@@ -64,8 +64,6 @@ class ShippingLabelCustomsFormListViewModelTests: XCTestCase {
         firstItem?.hsTariffNumber = "111111"
 
         // Then
-        DispatchQueue.main.async {
-            XCTAssertFalse(viewModel.doneButtonEnabled)
-        }
+        XCTAssertFalse(viewModel.doneButtonEnabled)
     }
 }

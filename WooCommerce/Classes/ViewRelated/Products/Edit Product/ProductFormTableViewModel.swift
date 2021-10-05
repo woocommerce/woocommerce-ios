@@ -87,6 +87,7 @@ enum ProductFormSection: Equatable {
         struct WarningViewModel: Equatable {
             let icon: UIImage
             let title: String?
+            let isActionable: Bool
         }
     }
 }

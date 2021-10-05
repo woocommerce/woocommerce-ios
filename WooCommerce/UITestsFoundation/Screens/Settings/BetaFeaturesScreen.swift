@@ -8,11 +8,6 @@ class BetaFeaturesScreen: BaseScreen {
 
     private let enableProductsButton = XCUIApplication().cells[ElementStringIDs.enableProductsButton]
 
-    static var isVisible: Bool {
-        let enableProductsButton = XCUIApplication().buttons[ElementStringIDs.enableProductsButton]
-        return enableProductsButton.exists && enableProductsButton.isHittable
-    }
-
     init() {
         super.init(element: enableProductsButton)
         XCTAssert(enableProductsButton.waitForExistence(timeout: 3))

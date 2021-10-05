@@ -177,6 +177,21 @@ open class NUXButtonViewController: UIViewController {
         shadowView?.isHidden = true
     }
 
+    public func setTopButtonState(isLoading: Bool, isEnabled: Bool) {
+        topButton?.showActivityIndicator(isLoading)
+        topButton?.isEnabled = isEnabled
+    }
+
+    public func setBottomButtonState(isLoading: Bool, isEnabled: Bool) {
+        bottomButton?.showActivityIndicator(isLoading)
+        bottomButton?.isEnabled = isEnabled
+    }
+
+    public func setTertiaryButtonState(isLoading: Bool, isEnabled: Bool) {
+        tertiaryButton?.showActivityIndicator(isLoading)
+        tertiaryButton?.isEnabled = isEnabled
+    }
+
     // MARK: - Helpers
 
     private func buttonConfigFor(socialService: SocialServiceName, onTap callback: @escaping CallBackType) -> NUXButtonConfig {

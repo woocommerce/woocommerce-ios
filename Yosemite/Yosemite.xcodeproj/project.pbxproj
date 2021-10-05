@@ -152,6 +152,7 @@
 		3147030626701E2800EF253A /* PaymentGatewayAccountAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3147030526701E2800EF253A /* PaymentGatewayAccountAction.swift */; };
 		3147030A2670295300EF253A /* PaymentGatewayAccountStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314703092670295300EF253A /* PaymentGatewayAccountStore.swift */; };
 		3147030C2670333200EF253A /* WCPayAccount+PaymentGatewayAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3147030B2670333200EF253A /* WCPayAccount+PaymentGatewayAccount.swift */; };
+		31799AFA27050D9C00D78179 /* WCPayReaderLocation+ReaderLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31799AF927050D9C00D78179 /* WCPayReaderLocation+ReaderLocation.swift */; };
 		31BF226526715FDE00BC5A4B /* PaymentGatewayAccountStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31BF226426715FDE00BC5A4B /* PaymentGatewayAccountStoreTests.swift */; };
 		36941EA7B9242CAB1FF828BC /* Pods_YosemiteTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 991BBCE6E4A92F0A028885D8 /* Pods_YosemiteTests.framework */; };
 		450106872399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106862399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift */; };
@@ -515,6 +516,7 @@
 		3147030526701E2800EF253A /* PaymentGatewayAccountAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGatewayAccountAction.swift; sourceTree = "<group>"; };
 		314703092670295300EF253A /* PaymentGatewayAccountStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGatewayAccountStore.swift; sourceTree = "<group>"; };
 		3147030B2670333200EF253A /* WCPayAccount+PaymentGatewayAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayAccount+PaymentGatewayAccount.swift"; sourceTree = "<group>"; };
+		31799AF927050D9C00D78179 /* WCPayReaderLocation+ReaderLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayReaderLocation+ReaderLocation.swift"; sourceTree = "<group>"; };
 		31BF226426715FDE00BC5A4B /* PaymentGatewayAccountStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGatewayAccountStoreTests.swift; sourceTree = "<group>"; };
 		35381AA86D039850A916E336 /* Pods-YosemiteTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		450106862399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxClass+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
@@ -1486,6 +1488,7 @@
 			children = (
 				D8652E1F26303D4800350F37 /* PaymentIntent+ReceiptParameters.swift */,
 				3147030B2670333200EF253A /* WCPayAccount+PaymentGatewayAccount.swift */,
+				31799AF927050D9C00D78179 /* WCPayReaderLocation+ReaderLocation.swift */,
 			);
 			path = Payments;
 			sourceTree = "<group>";
@@ -1832,6 +1835,7 @@
 				2665034D2620E0A90079A159 /* ProductAddOnOption+ReadOnlyConvertible.swift in Sources */,
 				02FF055323D983F30058E6E7 /* URL+Media.swift in Sources */,
 				022F00BE24725BAF008CD97F /* NotificationCountStore.swift in Sources */,
+				31799AFA27050D9C00D78179 /* WCPayReaderLocation+ReaderLocation.swift in Sources */,
 				7499936620EFBC7200CF01CD /* OrderNoteStore.swift in Sources */,
 				74858DB421C02B5A00754F3E /* OrderNote+ReadOnlyType.swift in Sources */,
 				0248B3652459018100A271A4 /* ResultsController+FilterProducts.swift in Sources */,

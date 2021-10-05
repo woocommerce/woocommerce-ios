@@ -135,8 +135,8 @@ private extension CardReaderSettingsConnectedViewController {
                     tryAgain: {
                         viewModel.startCardReaderUpdate()
                     },
-                    close: { [settingsAlerts] in
-                        settingsAlerts.dismiss()
+                    close: {
+                        viewModel.dismissReaderUpdateError()
                     }
                 )
             }

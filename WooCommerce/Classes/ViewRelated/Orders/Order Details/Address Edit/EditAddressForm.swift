@@ -236,6 +236,7 @@ struct EditAddressForm: View {
                 navigationBarTrailingItem()
             }
         }
+        .navigationBarStyle()
         .redacted(reason: viewModel.showPlaceholders ? .placeholder : [])
         .shimmering(active: viewModel.showPlaceholders)
         .onAppear {

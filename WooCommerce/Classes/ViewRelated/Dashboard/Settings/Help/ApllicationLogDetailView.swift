@@ -44,7 +44,6 @@ struct ApplicationLogDetailView: View {
                         viewModel.shareSheetVisible.toggle()
                     }, label: {
                         Image(systemName: "square.and.arrow.up")
-                            .accentColor(Color(.accent))
                     })
                     .sharePopover(isPresented: $viewModel.shareSheetVisible) {
                         ShareSheet(
@@ -54,6 +53,7 @@ struct ApplicationLogDetailView: View {
                     }
             }
         }
+        .navigationBarStyle()
     }
 
     func scrollToBottomButton(_ action: @escaping () -> Void) -> some View {

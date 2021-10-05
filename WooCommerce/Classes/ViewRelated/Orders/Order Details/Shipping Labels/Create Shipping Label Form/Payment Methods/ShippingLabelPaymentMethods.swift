@@ -159,6 +159,7 @@ struct ShippingLabelPaymentMethods: View {
                 }
             }
         }
+        .navigationBarStyle()
     }
 }
 

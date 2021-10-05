@@ -11,7 +11,7 @@ struct ShippingLabelCarrierRow: View {
 
     var body: some View {
         VStack(alignment: .leading,
-               spacing: Constants.vStackSpacing) {
+               spacing: Constants.padding) {
             HStack(alignment: .top, spacing: Constants.hStackSpacing) {
                 if viewModel.selected {
                     Image(uiImage: .checkmarkStyledImage)
@@ -47,7 +47,7 @@ struct ShippingLabelCarrierRow: View {
             if viewModel.selected {
                 HStack {
                     Spacer().frame(width: Constants.leadingSpaceSignature)
-                    VStack(alignment: .leading, spacing: Constants.vStackSpacing) {
+                    VStack(alignment: .leading, spacing: Constants.padding) {
                         if viewModel.displaySignatureRequired {
                             HStack (spacing: Constants.padding) {
                                 let image: UIImage = viewModel.signatureSelected ? UIImage.checkmarkImage : UIImage.plusImage

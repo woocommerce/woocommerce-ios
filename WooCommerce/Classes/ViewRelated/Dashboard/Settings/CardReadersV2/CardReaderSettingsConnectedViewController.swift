@@ -71,8 +71,6 @@ private extension CardReaderSettingsConnectedViewController {
             return
         }
 
-
-
         viewModel.checkForCardReaderUpdate()
     }
 

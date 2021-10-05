@@ -14,8 +14,10 @@ None at the moment.
 
 ## Build configurations
 
-The project has three build configurations, the same as the WooCommerce app: `Debug`, `Release`, and `Release-Alpha`. The `BuildConfiguration` enum is then based on the build configuration via the Experiments project build settings > `Active Compilation Conditions`:
+The project has three build configurations to match the WooCommerce app: `Debug`, `Release`, and `Release-Alpha`. The `BuildConfiguration` enum is then based on the build configuration via the Experiments project build settings > `Active Compilation Conditions`:
 
 - `Debug` build configuration: `DEBUG` value is set. Used for debug builds from Xcode
 - `Release` build configuration: no values are set. Used for release builds for the App Store
 - `Release-Alpha` build configuration: `ALPHA` value is set. Used for one-off installable builds for internal testing, which we can trigger from a commit in a pull request
+
+In the default implementation of `FeatureFlagService`, some of the feature flags are based on build configurations - enabled in `Debug` and `Release-Alpha` configurations, and disabled in `Release` builds.

@@ -2,6 +2,8 @@ import UIKit
 
 final class ShippingLabelSummaryTableViewCell: UITableViewCell {
 
+    @IBOutlet private weak var mainStackView: UIStackView!
+
     @IBOutlet private weak var subtotalTitle: UILabel!
     @IBOutlet private weak var subtotalBody: UILabel!
 
@@ -18,6 +20,10 @@ final class ShippingLabelSummaryTableViewCell: UITableViewCell {
 
     @IBOutlet private weak var separator: UIImageView!
     @IBOutlet private weak var button: ButtonActivityIndicator!
+
+    /// Extra stack views for package rates when there are more than one label.
+    ///
+    private var packageRatesStackViews: [UIStackView] = []
 
     /// Boolean indicating if the Switch is On or Off.
     ///
@@ -68,6 +74,37 @@ final class ShippingLabelSummaryTableViewCell: UITableViewCell {
         onButtonTouchUp?()
     }
 
+    func setPackageRates(_ rates: [String]) {
+        packageRatesStackViews.forEach { stackView in
+            mainStackView.removeArrangedSubview(stackView)
+            stackView.removeFromSuperview()
+        }
+        if rates.isNotEmpty {
+            packageRatesStackViews = rates.enumerated().map { (index, rateText) in
+                let titleLabel = UILabel()
+                titleLabel.applyBodyStyle()
+                titleLabel.text = String(format: Localization.packageNumber, index + 1)
+                titleLabel.setContentHuggingPriority(UILayoutPriority(251), for: .horizontal)
+
+                let descriptionLabel = UILabel()
+                descriptionLabel.applyBodyStyle()
+                descriptionLabel.textAlignment = .right // swiftlint:disable:this inverse_text_alignment
+                descriptionLabel.text = rateText
+                descriptionLabel.setContentHuggingPriority(UILayoutPriority(250), for: .horizontal)
+
+                let stackView = UIStackView()
+                stackView.axis = .horizontal
+                stackView.spacing = 8.0
+                stackView.addArrangedSubviews([titleLabel, descriptionLabel])
+                return stackView
+            }
+            packageRatesStackViews.enumerated().forEach { (index, stackView) in
+                mainStackView.insertArrangedSubview(stackView, at: index)
+            }
+        }
+        updateSubtotalLabels()
+    }
+
     func setSubtotal(_ total: String) {
         subtotalBody.text = total
     }
@@ -99,11 +136,10 @@ private extension ShippingLabelSummaryTableViewCell {
     }
 
     func configureLabels() {
-        subtotalTitle.applyBodyStyle()
         subtotalTitle.text = Localization.subtotal
         subtotalTitle.numberOfLines = 0
-        subtotalBody.applyBodyStyle()
         subtotalBody.numberOfLines = 0
+        updateSubtotalLabels()
         discountTitle.applyBodyStyle()
         discountTitle.text = Localization.discount
         discountTitle.numberOfLines = 0
@@ -117,6 +153,16 @@ private extension ShippingLabelSummaryTableViewCell {
         orderCompleteTitle.applySubheadlineStyle()
         orderCompleteTitle.text = Localization.orderComplete
         orderCompleteTitle.numberOfLines = 0
+    }
+
+    func updateSubtotalLabels() {
+        if packageRatesStackViews.isEmpty {
+            subtotalTitle.applyBodyStyle()
+            subtotalBody.applyBodyStyle()
+        } else {
+            subtotalTitle.applyHeadlineStyle()
+            subtotalBody.applyHeadlineStyle()
+        }
     }
 
     func configureSwitch() {
@@ -148,5 +194,6 @@ private extension ShippingLabelSummaryTableViewCell {
         static let orderComplete = NSLocalizedString("Mark this order as complete and notify the customer",
                                                      comment: "Create Shipping Label form -> Mark order as complete label")
         static let button = NSLocalizedString("Purchase Label", comment: "Create Shipping Label form -> Purchase Label button")
+        static let packageNumber = NSLocalizedString("Package %1$d", comment: "Create Shipping Label form -> Package number")
     }
 }

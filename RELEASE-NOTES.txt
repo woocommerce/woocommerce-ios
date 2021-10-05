@@ -2,7 +2,7 @@
 
 7.8
 -----
-
+- [*] Fix: Navigation bar buttons are now consistently pink on iOS 15. [https://github.com/woocommerce/woocommerce-ios/pull/5139]
 
 7.7
 -----

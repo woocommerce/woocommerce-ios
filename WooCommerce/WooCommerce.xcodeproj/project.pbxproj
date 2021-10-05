@@ -854,13 +854,13 @@
 		A655725D258B91AE008AE7CA /* OrderListCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A655725C258B91AE008AE7CA /* OrderListCellViewModelTests.swift */; };
 		AEB73C0C25CD734200A8454A /* AttributePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */; };
 		AEB73C1725CD8E5800A8454A /* AttributePickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C1625CD8E5800A8454A /* AttributePickerViewModelTests.swift */; };
-		AECD57D226DFDF7500A3B580 /* EditAddressForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECD57D126DFDF7500A3B580 /* EditAddressForm.swift */; };
+		AECD57D226DFDF7500A3B580 /* EditOrderAddressForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECD57D126DFDF7500A3B580 /* EditOrderAddressForm.swift */; };
 		AEDDDA0A25CA9C980077F9B2 /* AttributePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDDA0925CA9C980077F9B2 /* AttributePickerViewController.swift */; };
 		AEDDDA1A25CAB2170077F9B2 /* AttributePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AEDDDA1925CAB2170077F9B2 /* AttributePickerViewController.xib */; };
 		AEE1D4F525D14F88006A490B /* AttributeOptionListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE1D4F425D14F88006A490B /* AttributeOptionListSelectorCommand.swift */; };
 		AEE1D4FF25D1580E006A490B /* AttributeOptionListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE1D4FE25D1580E006A490B /* AttributeOptionListSelectorCommandTests.swift */; };
-		AEE2610F26E664CE00B142A0 /* EditAddressFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE2610E26E664CE00B142A0 /* EditAddressFormViewModel.swift */; };
-		AEE2611126E6785400B142A0 /* EditAddressFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE2611026E6785400B142A0 /* EditAddressFormViewModelTests.swift */; };
+		AEE2610F26E664CE00B142A0 /* EditOrderAddressFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE2610E26E664CE00B142A0 /* EditOrderAddressFormViewModel.swift */; };
+		AEE2611126E6785400B142A0 /* EditOrderAddressFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE2611026E6785400B142A0 /* EditOrderAddressFormViewModelTests.swift */; };
 		B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112D2049E27A007D25DC /* DashboardViewController.swift */; };
 		B509FED121C041DF000076A9 /* Locale+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509FED021C041DF000076A9 /* Locale+Woo.swift */; };
 		B509FED321C05121000076A9 /* SupportManagerAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509FED221C05121000076A9 /* SupportManagerAdapter.swift */; };
@@ -2257,13 +2257,13 @@
 		A655725C258B91AE008AE7CA /* OrderListCellViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListCellViewModelTests.swift; sourceTree = "<group>"; };
 		AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewModel.swift; sourceTree = "<group>"; };
 		AEB73C1625CD8E5800A8454A /* AttributePickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewModelTests.swift; sourceTree = "<group>"; };
-		AECD57D126DFDF7500A3B580 /* EditAddressForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditAddressForm.swift; sourceTree = "<group>"; };
+		AECD57D126DFDF7500A3B580 /* EditOrderAddressForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditOrderAddressForm.swift; sourceTree = "<group>"; };
 		AEDDDA0925CA9C980077F9B2 /* AttributePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewController.swift; sourceTree = "<group>"; };
 		AEDDDA1925CAB2170077F9B2 /* AttributePickerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AttributePickerViewController.xib; sourceTree = "<group>"; };
 		AEE1D4F425D14F88006A490B /* AttributeOptionListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeOptionListSelectorCommand.swift; sourceTree = "<group>"; };
 		AEE1D4FE25D1580E006A490B /* AttributeOptionListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeOptionListSelectorCommandTests.swift; sourceTree = "<group>"; };
-		AEE2610E26E664CE00B142A0 /* EditAddressFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditAddressFormViewModel.swift; sourceTree = "<group>"; };
-		AEE2611026E6785400B142A0 /* EditAddressFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditAddressFormViewModelTests.swift; sourceTree = "<group>"; };
+		AEE2610E26E664CE00B142A0 /* EditOrderAddressFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditOrderAddressFormViewModel.swift; sourceTree = "<group>"; };
+		AEE2611026E6785400B142A0 /* EditOrderAddressFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditOrderAddressFormViewModelTests.swift; sourceTree = "<group>"; };
 		B509112D2049E27A007D25DC /* DashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
 		B509FED021C041DF000076A9 /* Locale+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locale+Woo.swift"; sourceTree = "<group>"; };
 		B509FED221C05121000076A9 /* SupportManagerAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportManagerAdapter.swift; sourceTree = "<group>"; };
@@ -3959,7 +3959,7 @@
 			isa = PBXGroup;
 			children = (
 				26C6E8E226E2D85300C7BB0F /* CountrySelector */,
-				AEE2611026E6785400B142A0 /* EditAddressFormViewModelTests.swift */,
+				AEE2611026E6785400B142A0 /* EditOrderAddressFormViewModelTests.swift */,
 			);
 			path = Addresses;
 			sourceTree = "<group>";
@@ -4912,8 +4912,8 @@
 		AECD57D026DFDF3E00A3B580 /* Address Edit */ = {
 			isa = PBXGroup;
 			children = (
-				AECD57D126DFDF7500A3B580 /* EditAddressForm.swift */,
-				AEE2610E26E664CE00B142A0 /* EditAddressFormViewModel.swift */,
+				AECD57D126DFDF7500A3B580 /* EditOrderAddressForm.swift */,
+				AEE2610E26E664CE00B142A0 /* EditOrderAddressFormViewModel.swift */,
 				2662D90926E16B3600E25611 /* FilterListSelector.swift */,
 				2662D90726E15D6E00E25611 /* CountrySelectorCommand.swift */,
 				26C6E8DF26E2B7BD00C7BB0F /* CountrySelectorViewModel.swift */,
@@ -7291,7 +7291,7 @@
 				B59D49CD219B587E006BF0AD /* UILabel+OrderStatus.swift in Sources */,
 				265BCA0C2430E741004E53EE /* ProductCategoryTableViewCell.swift in Sources */,
 				451A9973260E39270059D135 /* ShippingLabelPackageNumberRow.swift in Sources */,
-				AEE2610F26E664CE00B142A0 /* EditAddressFormViewModel.swift in Sources */,
+				AEE2610F26E664CE00B142A0 /* EditOrderAddressFormViewModel.swift in Sources */,
 				025C00BA25514A7100FAC222 /* BarcodeScannerFrameScaler.swift in Sources */,
 				02913E9723A774E600707A0C /* DecimalInputFormatter.swift in Sources */,
 				E15F163126C5117300D3059B /* InPersonPaymentsNoConnectionView.swift in Sources */,
@@ -7409,7 +7409,7 @@
 				4569317F2653E82B009ED69D /* ShippingLabelCarriers.swift in Sources */,
 				024DF30B23742297006658FE /* AztecFormatBarCommand.swift in Sources */,
 				CC254F3426C4113B005F3C82 /* ShippingLabelPackageSelection.swift in Sources */,
-				AECD57D226DFDF7500A3B580 /* EditAddressForm.swift in Sources */,
+				AECD57D226DFDF7500A3B580 /* EditOrderAddressForm.swift in Sources */,
 				26C6E8EC26E8FF4800C7BB0F /* LazyNavigationLink.swift in Sources */,
 				45E9A6E724DAE23300A600E8 /* ProductReviewsViewModel.swift in Sources */,
 				028BAC4222F30B05008BB4AF /* StoreStatsV4PeriodViewController.swift in Sources */,
@@ -8119,7 +8119,7 @@
 				02279594237A60FD00787C63 /* AztecHeaderFormatBarCommandTests.swift in Sources */,
 				0259EF77246BF4EC00B84FDF /* ProductDetailsFactoryTests.swift in Sources */,
 				4574745F24EA9ADE00CF49BC /* ProductTypeBottomSheetListSelectorCommandTests.swift in Sources */,
-				AEE2611126E6785400B142A0 /* EditAddressFormViewModelTests.swift in Sources */,
+				AEE2611126E6785400B142A0 /* EditOrderAddressFormViewModelTests.swift in Sources */,
 				0212683724C049F000F8A892 /* ProductListMultiSelectorDataSourceTests.swift in Sources */,
 				DE7842EF26F079A60030C792 /* NumberFormatter+LocalizedTests.swift in Sources */,
 				5768315126694ADC00FDFB6C /* AuthenticationManagerTests.swift in Sources */,

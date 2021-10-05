@@ -4,7 +4,7 @@ import TestKit
 import Combine
 @testable import WooCommerce
 
-final class EditAddressFormViewModelTests: XCTestCase {
+final class EditOrderAddressFormViewModelTests: XCTestCase {
 
     let sampleSiteID: Int64 = 123
 
@@ -27,7 +27,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_creating_with_address_prefills_fields_with_correct_data() {
         // Given
         let address = sampleAddress()
-        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: address), type: .shipping, storageManager: testingStorage)
+        let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: address), type: .shipping, storageManager: testingStorage)
 
         // When
         viewModel.onLoadTrigger.send()
@@ -54,7 +54,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_updating_fields_enables_done_button() {
         // Given
         let address = sampleAddress()
-        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: address), type: .shipping, storageManager: testingStorage)
+        let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: address), type: .shipping, storageManager: testingStorage)
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
 
         // When
@@ -67,7 +67,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
 
     func test_updating_fields_back_to_original_values_disables_done_button() {
         // Given
-        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), type: .shipping, storageManager: testingStorage)
+        let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), type: .shipping, storageManager: testingStorage)
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
 
         // When
@@ -83,7 +83,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
 
     func test_creating_without_address_disables_done_button() {
         // Given
-        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: nil), type: .shipping, storageManager: testingStorage)
+        let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: nil), type: .shipping, storageManager: testingStorage)
 
         // When
         viewModel.onLoadTrigger.send()
@@ -95,7 +95,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_creating_with_address_with_empty_nullable_fields_disables_done_button() {
         // Given
         let address = sampleAddressWithEmptyNullableFields()
-        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: address), type: .shipping, storageManager: testingStorage)
+        let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: address), type: .shipping, storageManager: testingStorage)
 
         // When
         viewModel.onLoadTrigger.send()
@@ -106,7 +106,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
 
     func test_loading_indicator_gets_enabled_during_network_request() {
         // Given
-        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), type: .shipping, storageManager: testingStorage)
+        let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), type: .shipping, storageManager: testingStorage)
 
         // When
         viewModel.onLoadTrigger.send()
@@ -118,7 +118,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
 
     func test_loading_indicator_gets_disabled_after_the_network_operation_completes() {
         // Given
-        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), type: .shipping, storageManager: testingStorage)
+        let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), type: .shipping, storageManager: testingStorage)
 
         // When
         viewModel.onLoadTrigger.send()
@@ -135,7 +135,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_starting_view_model_without_stored_countries_fetches_them_remotely() {
         // Given
         testingStorage.reset()
-        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: sampleAddress()),
+        let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: sampleAddress()),
                                                  type: .shipping,
                                                  storageManager: testingStorage,
                                                  stores: testingStores)
@@ -166,7 +166,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
             }
         }
 
-        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: sampleAddress()),
+        let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: sampleAddress()),
                                                  type: .shipping,
                                                  storageManager: testingStorage,
                                                  stores: testingStores)
@@ -192,7 +192,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
         // Given
         let newCountry = Self.sampleCountries[0]
 
-        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), type: .shipping, storageManager: testingStorage)
+        let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), type: .shipping, storageManager: testingStorage)
         viewModel.onLoadTrigger.send()
 
         // When
@@ -207,7 +207,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_view_model_only_updates_shipping_address_field() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), type: .shipping, stores: stores)
+        let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), type: .shipping, stores: stores)
 
         // When
         viewModel.fields.firstName = "Tester"
@@ -231,7 +231,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_view_model_updates_shipping_and_billing_address_fields_when_use_as_toggle_is_on() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), type: .shipping, stores: stores)
+        let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), type: .shipping, stores: stores)
 
         // When
         viewModel.fields.firstName = "Tester"
@@ -258,7 +258,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_view_model_only_updates_billing_address_field() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = EditAddressFormViewModel(order: order(withBillingAddress: sampleAddress()), type: .billing, stores: stores)
+        let viewModel = EditOrderAddressFormViewModel(order: order(withBillingAddress: sampleAddress()), type: .billing, stores: stores)
 
         // When
         viewModel.fields.firstName = "Tester"
@@ -283,7 +283,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
         // Given
         let newState = StateOfACountry(code: "CA", name: "California")
 
-        let viewModel = EditAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), type: .shipping, storageManager: testingStorage)
+        let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), type: .shipping, storageManager: testingStorage)
         viewModel.onLoadTrigger.send()
 
         // When
@@ -298,7 +298,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_view_model_updates_billing_and_shipping_address_fields_when_use_as_toggle_is_on() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = EditAddressFormViewModel(order: order(withBillingAddress: sampleAddress()), type: .billing, stores: stores)
+        let viewModel = EditOrderAddressFormViewModel(order: order(withBillingAddress: sampleAddress()), type: .billing, stores: stores)
 
         // When
         viewModel.fields.firstName = "Tester"
@@ -324,7 +324,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
 
     func test_view_model_fires_success_notice_after_updating_address_successfully() {
         // Given
-        let viewModel = EditAddressFormViewModel(order: Order.fake(), type: .shipping, stores: testingStores)
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping, stores: testingStores)
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .updateOrder(_, order, _, onCompletion):
@@ -347,7 +347,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
 
     func test_view_model_fires_error_notice_after_failing_to_update_address() {
         // Given
-        let viewModel = EditAddressFormViewModel(order: Order.fake(), type: .shipping, stores: testingStores)
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping, stores: testingStores)
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
             case let .updateOrder(_, _, _, onCompletion):
@@ -378,7 +378,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
             }
         }
 
-        let viewModel = EditAddressFormViewModel(order: Order.fake(), type: .shipping, storageManager: testingStorage, stores: testingStores)
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping, storageManager: testingStorage, stores: testingStores)
         viewModel.onLoadTrigger.send()
 
         // Then
@@ -387,7 +387,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
 
     func test_copying_empty_shipping_address_for_billing_does_not_sends_an_empty_email_field() {
         // Given
-        let viewModel = EditAddressFormViewModel(order: Order.fake(), type: .shipping, storageManager: testingStorage, stores: testingStores)
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping, storageManager: testingStorage, stores: testingStores)
         viewModel.onLoadTrigger.send()
         viewModel.fields.useAsToggle = true
 
@@ -411,7 +411,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
 
     func test_shipping_view_model_does_not_shows_email_field() {
         // Given
-        let viewModel = EditAddressFormViewModel(order: Order.fake(), type: .shipping)
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping)
 
         // When & Then
         XCTAssertFalse(viewModel.showEmailField)
@@ -419,7 +419,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
 
     func test_billing_view_model_does_shows_email_field() {
         // Given
-        let viewModel = EditAddressFormViewModel(order: Order.fake(), type: .billing)
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .billing)
 
         // When & Then
         XCTAssertTrue(viewModel.showEmailField)
@@ -428,7 +428,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_view_model_tracks_success_after_updating_shipping_address() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
-        let viewModel = EditAddressFormViewModel(order: Order.fake(),
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(),
                                                  type: .shipping,
                                                  stores: testingStores,
                                                  analytics: WooAnalytics(analyticsProvider: analyticsProvider))
@@ -456,7 +456,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_view_model_tracks_success_after_updating_billing_address() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
-        let viewModel = EditAddressFormViewModel(order: Order.fake(),
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(),
                                                  type: .billing,
                                                  stores: testingStores,
                                                  analytics: WooAnalytics(analyticsProvider: analyticsProvider))
@@ -484,7 +484,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_view_model_tracks_failure_after_updating_shipping_address() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
-        let viewModel = EditAddressFormViewModel(order: Order.fake(),
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(),
                                                  type: .shipping,
                                                  stores: testingStores,
                                                  analytics: WooAnalytics(analyticsProvider: analyticsProvider))
@@ -512,7 +512,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_view_model_tracks_failure_after_updating_billing_address() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
-        let viewModel = EditAddressFormViewModel(order: Order.fake(),
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(),
                                                  type: .billing,
                                                  stores: testingStores,
                                                  analytics: WooAnalytics(analyticsProvider: analyticsProvider))
@@ -540,7 +540,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_view_model_tracks_cancel_flow_for_shipping_address() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
-        let viewModel = EditAddressFormViewModel(order: Order.fake(), type: .shipping, analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping, analytics: WooAnalytics(analyticsProvider: analyticsProvider))
 
         // When
         viewModel.userDidCancelFlow()
@@ -553,7 +553,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_view_model_tracks_cancel_flow_for_billing_address() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
-        let viewModel = EditAddressFormViewModel(order: Order.fake(), type: .billing, analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .billing, analytics: WooAnalytics(analyticsProvider: analyticsProvider))
 
         // When
         viewModel.userDidCancelFlow()
@@ -566,7 +566,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_view_model_tracks_started_flow_for_shipping_address() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
-        let viewModel = EditAddressFormViewModel(order: Order.fake(), type: .shipping, analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping, analytics: WooAnalytics(analyticsProvider: analyticsProvider))
 
         // When
         viewModel.onLoadTrigger.send()
@@ -579,7 +579,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     func test_view_model_tracks_started_flow_for_billing_address() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
-        let viewModel = EditAddressFormViewModel(order: Order.fake(), type: .billing, analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .billing, analytics: WooAnalytics(analyticsProvider: analyticsProvider))
 
         // When
         viewModel.onLoadTrigger.send()
@@ -590,7 +590,7 @@ final class EditAddressFormViewModelTests: XCTestCase {
     }
 }
 
-private extension EditAddressFormViewModelTests {
+private extension EditOrderAddressFormViewModelTests {
     func order(withShippingAddress shippingAddress: Address?) -> Order {
         Order.fake().copy(siteID: 123, orderID: 1234, shippingAddress: shippingAddress)
     }
@@ -628,7 +628,7 @@ private extension EditAddressFormViewModelTests {
     }
 }
 
-private extension EditAddressFormViewModelTests {
+private extension EditOrderAddressFormViewModelTests {
     static let sampleCountries: [Country] = {
         return Locale.isoRegionCodes.map { regionCode in
             let name = Locale.current.localizedString(forRegionCode: regionCode) ?? ""

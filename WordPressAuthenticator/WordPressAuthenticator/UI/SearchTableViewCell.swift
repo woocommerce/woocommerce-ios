@@ -98,12 +98,16 @@ extension SearchTableViewCell: UITextFieldDelegate {
         let hasValidEdits = sanitizedString.count > 0 || range.length > 0
 
         if hasValidEdits {
-            guard let currentText = (textField.text as? NSString) else {
+            guard let currentText = (textField.text as? NSString),
+                  let start = textField.position(from: textField.beginningOfDocument, offset: range.location),
+                  let end = textField.position(from: start, offset: range.length),
+                  let textRange = textField.textRange(from: start, to: end) else {
+
                 // This shouldn't really happen but if it does, let's at least let the edit go through
                 return true
             }
 
-            textField.text = currentText.replacingCharacters(in: range, with: sanitizedString)
+            textField.replace(textRange, withText: sanitizedString)
             startLiveSearchAfterEdit()
         }
 

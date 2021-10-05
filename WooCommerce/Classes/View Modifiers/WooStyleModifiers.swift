@@ -86,6 +86,13 @@ struct ErrorStyle: ViewModifier {
     }
 }
 
+struct NavigationBarStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .accentColor(Color(.accent)) // The color of bar button items in the navigation bar
+    }
+}
+
 // MARK: View extensions
 extension View {
     /// - Parameters:
@@ -119,5 +126,9 @@ extension View {
 
     func errorStyle() -> some View {
         self.modifier(ErrorStyle())
+    }
+
+    func navigationBarStyle() -> some View {
+        self.modifier(NavigationBarStyle())
     }
 }

@@ -3,9 +3,9 @@ import Combine
 import SwiftUI
 import UIKit
 
-/// Hosting controller that wraps an `EditAddressForm`.
+/// Hosting controller that wraps an `EditOrderAddressForm`.
 ///
-final class EditAddressHostingController: UIHostingController<EditAddressForm> {
+final class EditOrderAddressHostingController: UIHostingController<EditOrderAddressForm> {
 
     /// References to keep the Combine subscriptions alive within the lifecycle of the object.
     ///
@@ -23,9 +23,9 @@ final class EditAddressHostingController: UIHostingController<EditAddressForm> {
     ///
     private let systemNoticePresenter: NoticePresenter
 
-    init(viewModel: EditAddressFormViewModel, systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
+    init(viewModel: EditOrderAddressFormViewModel, systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.systemNoticePresenter = systemNoticePresenter
-        super.init(rootView: EditAddressForm(viewModel: viewModel))
+        super.init(rootView: EditOrderAddressForm(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismiss = { [weak self] in
@@ -60,7 +60,7 @@ final class EditAddressHostingController: UIHostingController<EditAddressForm> {
 
                 switch notice {
                 case .success:
-                    self?.systemNoticePresenter.enqueue(notice: .init(title: EditAddressForm.Localization.success, feedbackType: .error))
+                    self?.systemNoticePresenter.enqueue(notice: .init(title: EditOrderAddressForm.Localization.success, feedbackType: .error))
 
                 case .error(let error):
                     switch error {
@@ -82,7 +82,7 @@ final class EditAddressHostingController: UIHostingController<EditAddressForm> {
 
 /// Intercepts to the dismiss drag gesture.
 ///
-extension EditAddressHostingController: UIAdaptivePresentationControllerDelegate {
+extension EditOrderAddressHostingController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
         !rootView.viewModel.hasPendingChanges()
     }
@@ -101,19 +101,19 @@ extension EditAddressHostingController: UIAdaptivePresentationControllerDelegate
 
 /// Allows merchant to edit the customer provided address of an order.
 ///
-struct EditAddressForm: View {
+struct EditOrderAddressForm: View {
 
     /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
     ///
     var dismiss: (() -> Void) = {}
 
-    @ObservedObject private(set) var viewModel: EditAddressFormViewModel
+    @ObservedObject private(set) var viewModel: EditOrderAddressFormViewModel
 
     /// Set it to `true` to present the country selector.
     ///
     @State var showCountrySelector: Bool = false
 
-    init(viewModel: EditAddressFormViewModel) {
+    init(viewModel: EditOrderAddressFormViewModel) {
         self.viewModel = viewModel
     }
 
@@ -302,7 +302,7 @@ struct EditAddressForm: View {
 }
 
 // MARK: Constants
-private extension EditAddressForm {
+private extension EditOrderAddressForm {
 
     var viewTitle: String {
         switch viewModel.type {
@@ -357,7 +357,7 @@ private extension EditAddressForm {
 
         static let success = NSLocalizedString("Address successfully updated.", comment: "Notice text after updating the shipping or billing address")
 
-        static func useAddressAs(for type: EditAddressFormViewModel.AddressType) -> String {
+        static func useAddressAs(for type: EditOrderAddressFormViewModel.AddressType) -> String {
             switch type {
             case .shipping:
                 return NSLocalizedString("Use as Billing Address", comment: "Title for the Use as Billing Address switch in the Address form")
@@ -413,11 +413,11 @@ struct EditAddressForm_Previews: PreviewProvider {
                                        phone: "333-333-3333",
                                        email: "scrambled@scrambled.com")
 
-    static let sampleViewModel = EditAddressFormViewModel(order: sampleOrder, type: .shipping)
+    static let sampleViewModel = EditOrderAddressFormViewModel(order: sampleOrder, type: .shipping)
 
     static var previews: some View {
         NavigationView {
-            EditAddressForm(viewModel: sampleViewModel)
+            EditOrderAddressForm(viewModel: sampleViewModel)
         }
     }
 }

@@ -29,6 +29,9 @@ open class SearchTableViewCell: UITableViewCell {
     ///
     open var liveSearch: Bool = false
 
+    /// If `true` then the user can type in spaces regularly.  If `false` the whitespaces will be
+    /// stripped before they're entered into the field.
+    ///
     open var allowSpaces: Bool = true
 
     /// Search UITextField's placeholder

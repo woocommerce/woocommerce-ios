@@ -201,7 +201,9 @@ struct EditOrderAddressForm: View {
                     }
 
                     Group {
-                        TitleAndValueRow(title: Localization.countryField, value: viewModel.fields.country, selectable: true) {
+                        TitleAndValueRow(title: Localization.countryField,
+                                         value: .init(placeHolder: Localization.placeholderSelectOption, content: viewModel.fields.country),
+                                         selectable: true) {
                             showCountrySelector = true
                         }
                         Divider()
@@ -285,7 +287,9 @@ struct EditOrderAddressForm: View {
     ///
     @ViewBuilder private func stateRow() -> some View {
         if viewModel.showStateFieldAsSelector {
-            TitleAndValueRow(title: Localization.stateField, value: viewModel.fields.state, selectable: true) {
+            TitleAndValueRow(title: Localization.stateField,
+                             value: .init(placeHolder: Localization.placeholderSelectOption, content: viewModel.fields.state),
+                             selectable: true) {
                 showStateSelector = true
             }
         } else {

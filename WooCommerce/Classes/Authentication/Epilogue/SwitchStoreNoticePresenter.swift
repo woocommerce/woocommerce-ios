@@ -45,7 +45,7 @@ extension SwitchStoreNoticePresenter {
                                 + "Parameters: %1$@ - store name")
         static let titleFormat = NSLocalizedString("Switched to %1$@.",
                                                    comment: "Message presented after users switch to a new store. "
-                                                    + "Reads like: Switched to {store name}. You will only receive notifications from this store. "
+                                                    + "Reads like: Switched to {store name}. "
                                                     + "Parameters: %1$@ - store name")
     }
 }

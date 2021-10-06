@@ -71,6 +71,7 @@ struct ColorStudio {
     static let green = ColorStudio(name: .green)
     static let yellow = ColorStudio(name: .yellow)
     static let orange = ColorStudio(name: .orange)
+    static let celadon = ColorStudio(name: .celadon)
 
     /// The full name of the color, with required shade value
     func assetName() -> String {

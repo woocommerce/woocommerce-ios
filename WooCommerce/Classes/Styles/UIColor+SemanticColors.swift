@@ -48,18 +48,18 @@ extension UIColor {
                        dark: .withColorStudio(.orange, shade: .shade90))
     }
 
-    /// Info. Green with Shade 40
+    /// Info. Celadon-40 (< iOS 13 and Light Mode) and Green-50 (Dark Mode)
     ///
     static var info: UIColor {
-        return UIColor(light: .withColorStudio(.green, shade: .shade50),
-                       dark: .withColorStudio(.orange, shade: .shade30))
+        return UIColor(light: .withColorStudio(.celadon, shade: .shade40),
+                       dark: .withColorStudio(.green, shade: .shade50))
     }
 
-    /// Info. Green-80 (< iOS 13 and Light Mode) and Orange-70 (Dark Mode)
+    /// Info. Celadon-5 (< iOS 13 and Light Mode) and Green-80 (Dark Mode)
     ///
     static var infoBackground: UIColor {
-        return UIColor(light: .withColorStudio(.green, shade: .shade80),
-                       dark: .withColorStudio(.orange, shade: .shade70))
+        return UIColor(light: .withColorStudio(.celadon, shade: .shade5),
+                       dark: .withColorStudio(.green, shade: .shade80))
     }
 
     /// Blue. Blue-50 (< iOS 13 and Light Mode) and Blue-30 (Dark Mode)

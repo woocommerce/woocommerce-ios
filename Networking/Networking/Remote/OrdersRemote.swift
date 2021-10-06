@@ -117,19 +117,23 @@ public class OrdersRemote: Remote {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func createOrder(siteID: Int64, order: Order, fields: [CreateOrderField], completion: @escaping (Result<Order, Error>) -> Void) {
-        let path = Constants.ordersPath
-        let mapper = OrderMapper(siteID: siteID)
-        let parameters: [String: Any] = {
-            fields.reduce(into: [:]) { params, field in
-                switch field {
-                case .total:
-                    params[Order.CodingKeys.total.rawValue] = order.total
+        do {
+            let path = Constants.ordersPath
+            let mapper = OrderMapper(siteID: siteID)
+            let parameters: [String: Any] = try {
+                try fields.reduce(into: [:]) { params, field in
+                    switch field {
+                    case .feeLines:
+                        params[Order.CodingKeys.feeLines.rawValue] = try order.fees.compactMap { try $0.toDictionary() }
+                    }
                 }
-            }
-        }()
+            }()
 
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
-        enqueue(request, mapper: mapper, completion: completion)
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
     }
 
     /// Updates the `OrderStatus` of a given Order.
@@ -257,6 +261,6 @@ public extension OrdersRemote {
     /// Order fields supported for create
     ///
     enum CreateOrderField {
-        case total
+        case feeLines
     }
 }

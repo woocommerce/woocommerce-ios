@@ -409,11 +409,10 @@ final class PushNotificationsManagerTests: XCTestCase {
                                                                userNotificationsCenter: self.userNotificationCenter)
             return PushNotificationsManager(configuration: configuration)
         }()
-        ServiceLocator.setPushNotesManager(manager)
         stores.authenticate(credentials: SessionSettings.credentials)
         let siteID = Int64(123)
         stores.updateDefaultStore(storeID: siteID)
-        XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.clearsBadgeOnly)
+        XCTAssertEqual(application.applicationIconBadgeNumber, .min)
 
         // Action
         let userInfo = notificationPayload(badgeCount: 10, type: .comment, siteID: siteID)
@@ -427,8 +426,8 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.hasUnreadPushNotifications)
     }
 
-    /// Verifies that `handleNotification` does not update app badge number when the notification is from a different site.
-    func test_receiving_notification_from_a_different_site_does_not_change_app_badge_number() {
+    /// Verifies that `handleNotification` clears app badge number without clearing push notifications when the notification is from a different site.
+    func test_receiving_notification_from_a_different_site_clears_app_badge_number_only() {
         // Arrange
         // A site ID and the default stores are required to update the application badge number.
         let stores = DefaultStoresManager.testingInstance
@@ -440,10 +439,9 @@ final class PushNotificationsManagerTests: XCTestCase {
                                                                userNotificationsCenter: self.userNotificationCenter)
             return PushNotificationsManager(configuration: configuration)
         }()
-        ServiceLocator.setPushNotesManager(manager)
         stores.authenticate(credentials: SessionSettings.credentials)
         stores.updateDefaultStore(storeID: 123)
-        XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.clearsBadgeOnly)
+        XCTAssertEqual(application.applicationIconBadgeNumber, .min)
 
         // Action
         let userInfo = notificationPayload(badgeCount: 10, type: .comment, siteID: 556)

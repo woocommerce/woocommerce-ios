@@ -23,6 +23,17 @@ open class SearchTableViewCell: UITableViewCell {
     ///
     open weak var delegate: SearchTableViewCellDelegate?
 
+    /// If `true` the search delegate callback is called as the text field is edited.
+    /// This class does not implement any Debouncer or assume a minimum character count because
+    /// each search is different.
+    ///
+    open var liveSearch: Bool = false
+
+    /// If `true` then the user can type in spaces regularly.  If `false` the whitespaces will be
+    /// stripped before they're entered into the field.
+    ///
+    open var allowSpaces: Bool = true
+
     /// Search UITextField's placeholder
     ///
     open var placeholder: String? {
@@ -62,15 +73,67 @@ private extension SearchTableViewCell {
 //
 extension SearchTableViewCell: UITextFieldDelegate {
     open func textFieldShouldClear(_ textField: UITextField) -> Bool {
-        delegate?.startSearch(for: "")
+        if !liveSearch {
+            delegate?.startSearch(for: "")
+        }
+
         return true
     }
 
     open func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if let searchText = textField.text {
+        if !liveSearch,
+           let searchText = textField.text {
             delegate?.startSearch(for: searchText)
         }
+
         return false
+    }
+
+    open func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let sanitizedString: String
+
+        if allowSpaces {
+            sanitizedString = string
+        } else {
+            sanitizedString = string.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+
+        let hasValidEdits = sanitizedString.count > 0 || range.length > 0
+
+        if hasValidEdits {
+            guard let start = textField.position(from: textField.beginningOfDocument, offset: range.location),
+                  let end = textField.position(from: start, offset: range.length),
+                  let textRange = textField.textRange(from: start, to: end) else {
+
+                // This shouldn't really happen but if it does, let's at least let the edit go through
+                return true
+            }
+
+            textField.replace(textRange, withText: sanitizedString)
+
+            if liveSearch {
+                startLiveSearch()
+            }
+        }
+
+        return false
+    }
+
+    /// Convenience method to abstract the logic that tells the delegate to start a live search.
+    ///
+    /// - Precondition: make sure you check if `liveSearch` is enabled before calling this method.
+    ///
+    private func startLiveSearch() {
+        guard let delegate = delegate,
+              let text = textField.text else {
+            return
+        }
+
+        if text.count == 0 {
+            delegate.startSearch(for: "")
+        } else {
+            delegate.startSearch(for: text)
+        }
     }
 }
 

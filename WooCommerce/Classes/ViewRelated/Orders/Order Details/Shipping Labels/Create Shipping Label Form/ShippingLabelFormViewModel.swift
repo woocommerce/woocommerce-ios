@@ -329,6 +329,21 @@ final class ShippingLabelFormViewModel {
         return packageDescription + "\n" + String.localizedStringWithFormat(Localization.totalPackageWeight, packageWeight)
     }
 
+    /// Returns the description of the Customs Form row.
+    ///
+    func getCustomsFormBody() -> String {
+        guard let rows = state.sections.first?.rows,
+              let customsRow = rows.first(where: { $0.type == .customs }) else {
+            return ""
+        }
+        switch customsRow.dataState {
+        case .pending:
+            return Localization.fillCustomsForm
+        case .validated:
+            return Localization.customsFormCompleted
+        }
+    }
+
     /// Returns the body of the selected Carrier and Rates.
     ///
     func getCarrierAndRatesBody() -> String {
@@ -371,6 +386,18 @@ final class ShippingLabelFormViewModel {
         }
 
         return String.localizedStringWithFormat(Localization.paymentMethodLabel, selectedPaymentMethod.cardDigits)
+    }
+
+    /// Returns retail rate for each package if there are more than one label.
+    ///
+    func getPackageRates() -> [String] {
+        guard selectedRates.count > 1 else {
+            return []
+        }
+        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+        return selectedRates.map { rate in
+            currencyFormatter.formatAmount(Decimal(rate.retailRate)) ?? ""
+        }
     }
 
     /// Returns the subtotal under the Order Summary.
@@ -828,6 +855,10 @@ private extension ShippingLabelFormViewModel {
         static let totalPackageWeight = NSLocalizedString("Total package weight: %1$@",
                                                           comment: "Total package weight label in Shipping Label form. %1$@ is a placeholder for the weight")
         static let packageItemCount = NSLocalizedString("%1$d items in %2$d packages", comment: "Total number of items and packages in Shipping Label form.")
+        static let fillCustomsForm = NSLocalizedString("Fill out customs form", comment: "Subtitle of the cell Customs inside Create Shipping Label form")
+        static let customsFormCompleted = NSLocalizedString("Customs form completed",
+                                                            comment: "Subtitle of the cell Customs inside " +
+                                                                "Create Shipping Label form when the form is completed")
         static let carrierAndRatesPlaceholder = NSLocalizedString("Select your shipping carrier and rates",
                                                                   comment: "Placeholder in Shipping Label form for the Carrier and Rates row.")
         static let businessDaySingular = NSLocalizedString("%1$d business day",

@@ -47,10 +47,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
     }
 
     func test_itemsRows_returns_expected_values() {
-
         // Given
-        let expect = expectation(description: "itemsRows returns expected values")
-
         let orderItemAttributes = [OrderItemAttribute(metaID: 170, name: "Packaging", value: "Box")]
         let items = [MockOrderItem.sampleItem(name: "Easter Egg", productID: 1, quantity: 1),
                      MockOrderItem.sampleItem(name: "Jacket", productID: 33, quantity: 1),
@@ -64,17 +61,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         let expectedLastItemRow = ItemToFulfillRow(productOrVariationID: 234, title: "Jeans", subtitle: "Box・0 kg")
         let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
-        let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
-                                                             packagesResponse: mockPackageResponse(),
-                                                             selectedPackages: [],
-                                                             formatter: currencyFormatter,
-                                                             storageManager: storageManager,
-                                                             weightUnit: "kg",
-                                                             onPackageSyncCompletion: { _ in },
-                                                             onPackageSaveCompletion: { _ in })
-        XCTAssertEqual(viewModel.itemsRows.count, 0)
 
-        // When
         insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, virtual: false, weight: "123"))
         insert(Product.fake().copy(siteID: sampleSiteID, productID: 33, virtual: true, weight: "9"))
         insert(Product.fake().copy(siteID: sampleSiteID, productID: 23, virtual: false, weight: "1"))
@@ -83,17 +70,22 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                             productVariationID: 49,
                                             attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")]))
 
-        // Then
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            XCTAssertEqual(viewModel.itemsRows.count, 4)
-            XCTAssertEqual(viewModel.itemsRows.first?.title, expectedFirstItemRow.title)
-            XCTAssertEqual(viewModel.itemsRows.first?.subtitle, expectedFirstItemRow.subtitle)
-            XCTAssertEqual(viewModel.itemsRows.last?.title, expectedLastItemRow.title)
-            XCTAssertEqual(viewModel.itemsRows.last?.subtitle, expectedLastItemRow.subtitle)
-            expect.fulfill()
-        }
+        // When
+        let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
+                                                             packagesResponse: mockPackageResponse(),
+                                                             selectedPackages: [],
+                                                             formatter: currencyFormatter,
+                                                             storageManager: storageManager,
+                                                             weightUnit: "kg",
+                                                             onPackageSyncCompletion: { _ in },
+                                                             onPackageSaveCompletion: { _ in })
 
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+        // Then
+        XCTAssertEqual(viewModel.itemsRows.count, 4)
+        XCTAssertEqual(viewModel.itemsRows.first?.title, expectedFirstItemRow.title)
+        XCTAssertEqual(viewModel.itemsRows.first?.subtitle, expectedFirstItemRow.subtitle)
+        XCTAssertEqual(viewModel.itemsRows.last?.title, expectedLastItemRow.title)
+        XCTAssertEqual(viewModel.itemsRows.last?.subtitle, expectedLastItemRow.subtitle)
     }
 
     func test_didSelectPackage_returns_the_expected_value() {

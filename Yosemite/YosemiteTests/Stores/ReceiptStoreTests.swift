@@ -79,14 +79,207 @@ final class ReceiptStoreTests: XCTestCase {
 
         let parametersProvided = receiptPrinterService.contentProvided
 
-        XCTAssertEqual(UInt(mockOrder.total), parametersProvided?.parameters.amount)
+        XCTAssertEqual(mockParameters.amount, parametersProvided?.parameters.amount)
         XCTAssertEqual(mockOrder.currency, parametersProvided?.parameters.currency)
+        XCTAssertEqual("100.00", parametersProvided?.parameters.formattedAmount)
+    }
+
+    func test_print_callsPrint_passing_TotalAmountPaid() throws {
+        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        let mockOrder = makeOrder()
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        let amountPaidLine = receiptPrinterService.contentProvided?.cartTotals.first {
+            $0.description == ReceiptContent.Localization.amountPaidLineDescription
+        }
+        XCTAssertEqual("100.00", amountPaidLine?.amount)
+    }
+
+    func test_print_callsPrint_passing_TotalTaxes() throws {
+        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        let mockOrder = makeOrder(discountTax: "1.21", shippingTax: "0.50", totalTax: "10.71")
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        let actualTaxLine = receiptPrinterService.contentProvided?.cartTotals.first {
+            $0.description == ReceiptContent.Localization.totalTaxLineDescription
+        }
+        XCTAssertEqual(mockOrder.totalTax, actualTaxLine?.amount)
+    }
+
+    func test_print_OrderWithoutTaxes_DoesNotIncludeTaxesInReceiptContent() throws {
+        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        let mockOrder = makeOrder(totalTax: "0.00")
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        let actualTaxLine = receiptPrinterService.contentProvided?.cartTotals.first {
+            $0.description == ReceiptContent.Localization.totalTaxLineDescription
+        }
+        XCTAssertNil(actualTaxLine)
+    }
+
+    func test_print_callsPrint_passing_Shipping() throws {
+        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        let mockOrder = makeOrder(shippingTotal: "5.50")
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        let actualShippingLine = receiptPrinterService.contentProvided?.cartTotals.first {
+            $0.description == ReceiptContent.Localization.shippingLineDescription
+        }
+        XCTAssertEqual(mockOrder.shippingTotal, actualShippingLine?.amount)
+    }
+
+    func test_print_OrderWithoutShipping_DoesNotIncludeShippingInReceiptContent() throws {
+        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        let mockOrder = makeOrder(shippingTotal: "0.00")
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        let actualShippingLine = receiptPrinterService.contentProvided?.cartTotals.first {
+            $0.description == ReceiptContent.Localization.shippingLineDescription
+        }
+        XCTAssertNil(actualShippingLine)
+    }
+
+    func test_print_callsPrint_passing_Discount() throws {
+        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        let coupons = [OrderCouponLine(couponID: 123, code: "5off", discount: "5.00", discountTax: "0.00")]
+        let mockOrder = makeOrder(discountTotal: "5.00", coupons: coupons)
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        let actualDiscountLine = receiptPrinterService.contentProvided?.cartTotals.first {
+            $0.description.starts(with: expectedDiscountLineDescription())
+        }
+        XCTAssertEqual(actualDiscountLine?.amount, "-5.00")
+    }
+
+    func test_print_OrderWithoutDiscountOrCoupons_DoesNotIncludeDiscountInReceiptContent() throws {
+        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        let mockOrder = makeOrder(discountTotal: "0.00", coupons: [])
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        let actualDiscountLine = receiptPrinterService.contentProvided?.cartTotals.first {
+            $0.description.starts(with: expectedDiscountLineDescription())
+        }
+        XCTAssertNil(actualDiscountLine)
+    }
+
+    func test_print_OrderWithoutDiscount_WithCoupon_IncludesCouponInReceiptContent() throws {
+        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        let coupons = [OrderCouponLine(couponID: 123, code: "FreeShipping", discount: "0.00", discountTax: "0.00")]
+        let mockOrder = makeOrder(discountTotal: "0.00", coupons: coupons)
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        let actualDiscountLine = try XCTUnwrap(receiptPrinterService.contentProvided?.cartTotals.first {
+            $0.description.starts(with: expectedDiscountLineDescription())
+        })
+
+        XCTAssert(actualDiscountLine.description.contains("(FreeShipping)"))
+        XCTAssertEqual(actualDiscountLine.amount, "0.00")
+    }
+
+    func test_print_OrderWithDiscountFromMultipleCoupons_ListsCouponsInReceiptContent() throws {
+        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        let coupons = [OrderCouponLine(couponID: 123, code: "1off", discount: "1.00", discountTax: "0.00"),
+                       OrderCouponLine(couponID: 1901, code: "AVQW112", discount: "12.50", discountTax: "0.00")]
+        let mockOrder = makeOrder(discountTotal: "13.50", coupons: coupons)
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        let actualDiscountLine = try XCTUnwrap(receiptPrinterService.contentProvided?.cartTotals.first {
+            $0.description.starts(with: expectedDiscountLineDescription())
+        })
+
+        XCTAssert(actualDiscountLine.description.contains("(1off, AVQW112)"))
     }
 }
 
 
 private extension ReceiptStoreTests {
-    func makeOrder() -> Networking.Order {
+    func makeOrder(discountTotal: String = "",
+                   discountTax: String = "",
+                   shippingTotal: String = "",
+                   shippingTax: String = "",
+                   totalTax: String = "",
+                   coupons: [OrderCouponLine] = []) -> Networking.Order {
         Order(siteID: 1234,
               orderID: 0,
               parentID: 0,
@@ -98,20 +291,24 @@ private extension ReceiptStoreTests {
               dateCreated: Date(),
               dateModified: Date(),
               datePaid: nil,
-              discountTotal: "",
-              discountTax: "",
-              shippingTotal: "",
-              shippingTax: "",
-              total: "100",
-              totalTax: "",
+              discountTotal: discountTotal,
+              discountTax: discountTax,
+              shippingTotal: shippingTotal,
+              shippingTax: shippingTax,
+              total: "100.00",
+              totalTax: totalTax,
               paymentMethodID: "",
               paymentMethodTitle: "",
               items: [],
               billingAddress: nil,
               shippingAddress: nil,
               shippingLines: [],
-              coupons: [],
+              coupons: coupons,
               refunds: [],
               fees: [])
+    }
+
+    func expectedDiscountLineDescription() -> String {
+        return String.localizedStringWithFormat(ReceiptContent.Localization.discountLineDescription, "")
     }
 }

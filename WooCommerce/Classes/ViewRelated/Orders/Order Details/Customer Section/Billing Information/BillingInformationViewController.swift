@@ -24,7 +24,7 @@ final class BillingInformationViewController: UIViewController {
 
     /// Designated Initializer
     ///
-    init(order: Order, editingEnabled: Bool = false) {
+    init(order: Order, editingEnabled: Bool) {
         self.order = order
         self.editingEnabled = editingEnabled
         super.init(nibName: type(of: self).nibName, bundle: nil)
@@ -94,15 +94,15 @@ private extension BillingInformationViewController {
         }
     }
 
-    /// Presents EditAddressForm modal view
+    /// Presents EditOrderAddressForm modal view
     ///
     func editBillingAddress() {
-        let viewModel = EditAddressFormViewModel(order: order, type: .billing) { [weak self] updatedOrder in
+        let viewModel = EditOrderAddressFormViewModel(order: order, type: .billing) { [weak self] updatedOrder in
             self?.order = updatedOrder
             self?.reloadSections()
             self?.tableView.reloadData()
         }
-        let editAddressViewController = EditAddressHostingController(viewModel: viewModel)
+        let editAddressViewController = EditOrderAddressHostingController(viewModel: viewModel)
         let navigationController = WooNavigationController(rootViewController: editAddressViewController)
         present(navigationController, animated: true, completion: nil)
     }

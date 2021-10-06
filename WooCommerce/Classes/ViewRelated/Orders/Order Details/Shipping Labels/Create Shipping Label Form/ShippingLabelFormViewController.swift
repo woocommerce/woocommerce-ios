@@ -288,7 +288,7 @@ private extension ShippingLabelFormViewController {
         cell.configure(state: row.cellState,
                        icon: .globeImage,
                        title: Localization.customsCellTitle,
-                       body: Localization.customsCellSubtitle,
+                       body: viewModel.getCustomsFormBody(),
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
             guard let self = self else { return }
             self.displayCustomsFormListVC(customsForms: self.viewModel.customsForms)
@@ -352,6 +352,7 @@ private extension ShippingLabelFormViewController {
             }
         }
         cell.isOn = false
+        cell.setPackageRates(viewModel.getPackageRates())
         cell.setSubtotal(viewModel.getSubtotal())
         cell.setDiscount(viewModel.getDiscount())
         cell.setOrderTotal(viewModel.getOrderTotal())
@@ -510,11 +511,9 @@ private extension ShippingLabelFormViewController {
 
     /// Removes the Shipping Label Form from the navigation stack and displays the Print Shipping Label screen.
     /// This prevents navigating back to the purchase form after successfully purchasing the label.
-    /// TODO-4599: Update for multi-package support
     ///
     func displayPrintShippingLabelVC() {
-        guard let purchasedShippingLabel = viewModel.purchasedShippingLabels.first,
-              let navigationController = navigationController else {
+        guard let navigationController = navigationController else {
             return
         }
 
@@ -522,7 +521,7 @@ private extension ShippingLabelFormViewController {
             let viewControllersExcludingSelf = Array(navigationController.viewControllers[0..<indexOfSelf])
             navigationController.setViewControllers(viewControllersExcludingSelf, animated: false)
         }
-        let printCoordinator = PrintShippingLabelCoordinator(shippingLabel: purchasedShippingLabel,
+        let printCoordinator = PrintShippingLabelCoordinator(shippingLabels: viewModel.purchasedShippingLabels,
                                                              printType: .print,
                                                              sourceNavigationController: navigationController,
                                                              onCompletion: onLabelSave)
@@ -619,7 +618,6 @@ private extension ShippingLabelFormViewController {
         static let continueButtonInCells = NSLocalizedString("Continue",
                                                              comment: "Continue button inside every cell inside Create Shipping Label form")
         static let customsCellTitle = NSLocalizedString("Customs", comment: "Title of the cell Customs inside Create Shipping Label form")
-        static let customsCellSubtitle = NSLocalizedString("Fill out customs form", comment: "Subtitle of the cell Customs inside Create Shipping Label form")
         // Purchase progress view
         static let purchaseProgressTitle = NSLocalizedString("Purchasing Label", comment: "Title of the in-progress UI while purchasing a shipping label")
         static let purchaseProgressMessage = NSLocalizedString("Please wait", comment: "Message of the in-progress UI while purchasing a shipping label")

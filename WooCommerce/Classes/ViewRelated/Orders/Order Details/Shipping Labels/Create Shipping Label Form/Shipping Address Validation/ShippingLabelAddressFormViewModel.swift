@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 import Yosemite
 
@@ -66,6 +67,10 @@ final class ShippingLabelAddressFormViewModel {
         return statesOfSelectedCountry.first { $0.code == address?.state }?.name
     }
 
+    private let localErrors = CurrentValueSubject<[ValidationError], Never>([])
+    private let currentRowIndex = CurrentValueSubject<Int?, Never>(nil)
+    private var validationSubscription: AnyCancellable?
+
     init(
         siteID: Int64,
         type: ShipType,
@@ -86,6 +91,7 @@ final class ShippingLabelAddressFormViewModel {
         }
         self.countries = countries
         updateSections()
+        configureValidationError()
     }
 
     func handleAddressValueChanges(row: Row, newValue: String?) {
@@ -112,9 +118,9 @@ final class ShippingLabelAddressFormViewModel {
             return
         }
 
-        updateSections()
         let index: Int? = sections.first?.rows.firstIndex(where: { $0 == row })
-        onChange?(index)
+        currentRowIndex.send(index)
+        localErrors.send(validateAddressLocally())
     }
 
     func updateSections() {
@@ -184,6 +190,21 @@ extension ShippingLabelAddressFormViewModel {
         case country
         case missingPhoneNumber
         case invalidPhoneNumber
+    }
+
+    /// Triggers reloading table view if there's a change in local errors.
+    ///
+    private func configureValidationError() {
+        validationSubscription = localErrors
+            .removeDuplicates()
+            .withLatestFrom(currentRowIndex)
+            .sink { [weak self] _, index in
+                self?.updateSections()
+                self?.onChange?(index)
+            }
+
+        // Append any initial local error.
+        localErrors.send(validateAddressLocally())
     }
 
     /// Validates phone number for the address.

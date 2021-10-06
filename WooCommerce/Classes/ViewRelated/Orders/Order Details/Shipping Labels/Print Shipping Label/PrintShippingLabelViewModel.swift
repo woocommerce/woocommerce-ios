@@ -11,11 +11,11 @@ final class PrintShippingLabelViewModel {
     /// Observable selected paper size.
     @Published private(set) var selectedPaperSize: ShippingLabelPaperSize?
 
-    private let shippingLabel: ShippingLabel
+    let shippingLabels: [ShippingLabel]
     private let stores: StoresManager
 
-    init(shippingLabel: ShippingLabel, stores: StoresManager = ServiceLocator.stores) {
-        self.shippingLabel = shippingLabel
+    init(shippingLabels: [ShippingLabel], stores: StoresManager = ServiceLocator.stores) {
+        self.shippingLabels = shippingLabels
         self.stores = stores
     }
 }
@@ -23,9 +23,12 @@ final class PrintShippingLabelViewModel {
 // MARK: Public methods
 //
 extension PrintShippingLabelViewModel {
-    /// Sets the default selected paper size to the one from shipping label settings, if the user has not selected one in the print UI.
+    /// Sets the default selected paper size to the one from the first shipping label's settings, if the user has not selected one in the print UI.
     func loadShippingLabelSettingsForDefaultPaperSize() {
-        let action = ShippingLabelAction.loadShippingLabelSettings(shippingLabel: shippingLabel) { [weak self] settings in
+        guard let firstLabel = shippingLabels.first else {
+            return
+        }
+        let action = ShippingLabelAction.loadShippingLabelSettings(shippingLabel: firstLabel) { [weak self] settings in
             guard let self = self else { return }
             guard let settings = settings, self.selectedPaperSize == nil else {
                 return

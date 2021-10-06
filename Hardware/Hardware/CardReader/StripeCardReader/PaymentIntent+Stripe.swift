@@ -10,7 +10,7 @@ extension PaymentIntent {
         self.created = intent.created
         self.amount = intent.amount
         self.currency = intent.currency
-        self.metadata = intent.metadata
+        self.metadata = intent.metadata as? [String: String]
         self.charges = intent.charges.map { .init(charge: $0) }
     }
 }

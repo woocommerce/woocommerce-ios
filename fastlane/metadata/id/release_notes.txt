@@ -1,0 +1,3 @@
+Penjual yang menggunakan Ekstensi Pengiriman & Pajak WooCommerce kini dapat membuat kemasan khusus untuk label pengiriman dengan mudah! Membuat dan mencetak label pengiriman dari perangkat seluler Anda jadi menyenangkan!
+
+Kami juga memperbaiki dan meningkatkan banyak hal kecil di aplikasi berdasarkan masukan dari Anda.

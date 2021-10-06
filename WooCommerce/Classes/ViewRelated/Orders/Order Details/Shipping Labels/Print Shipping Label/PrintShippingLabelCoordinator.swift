@@ -2,27 +2,27 @@ import UIKit
 import SwiftUI
 import Yosemite
 
-/// Coordinates navigation actions for printing a shipping label.
+/// Coordinates navigation actions for printing shipping labels.
 final class PrintShippingLabelCoordinator {
     private let sourceNavigationController: UINavigationController
-    private let shippingLabel: ShippingLabel
+    private let shippingLabels: [ShippingLabel]
     private let stores: StoresManager
     private let analytics: Analytics
     private let printType: PrintType
     private let onCompletion: (() -> Void)?
 
-    /// - Parameter shippingLabel: The shipping label to print.
+    /// - Parameter shippingLabels: The shipping labels to print.
     /// - Parameter printType: Whether the label is being printed for the first time or reprinted.
     /// - Parameter sourceNavigationController: The navigation controller that shows the print UI in the first place.
     /// - Parameter stores: Handles Yosemite store actions.
     /// - Parameter analytics: Tracks analytics events.
-    init(shippingLabel: ShippingLabel,
+    init(shippingLabels: [ShippingLabel],
          printType: PrintType,
          sourceNavigationController: UINavigationController,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          onCompletion: (() -> Void)? = nil) {
-        self.shippingLabel = shippingLabel
+        self.shippingLabels = shippingLabels
         self.printType = printType
         self.sourceNavigationController = sourceNavigationController
         self.stores = stores
@@ -34,7 +34,7 @@ final class PrintShippingLabelCoordinator {
     /// `self` is retained in the action callbacks so that the coordinator has the same life cycle as the main view controller
     /// (`PrintShippingLabelViewController`).
     func showPrintUI() {
-        let printViewController = PrintShippingLabelViewController(shippingLabel: shippingLabel, printType: printType)
+        let printViewController = PrintShippingLabelViewController(shippingLabels: shippingLabels, printType: printType)
 
         printViewController.onAction = { actionType in
             switch actionType {
@@ -93,7 +93,8 @@ private extension PrintShippingLabelCoordinator {
     }
 
     func presentPrintInProgressUI() {
-        let viewProperties = InProgressViewProperties(title: Localization.inProgressTitle, message: Localization.inProgressMessage)
+        let viewProperties = InProgressViewProperties(title: Localization.inProgressTitle(labelCount: shippingLabels.count),
+                                                      message: Localization.inProgressMessage)
         let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
         inProgressViewController.modalPresentationStyle = .overCurrentContext
         sourceNavigationController.present(inProgressViewController, animated: true, completion: nil)
@@ -134,9 +135,12 @@ private extension PrintShippingLabelCoordinator {
 private extension PrintShippingLabelCoordinator {
     /// Requests document data for printing a shipping label with the selected paper size.
     func requestDocumentForPrinting(paperSize: ShippingLabelPaperSize, completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
+        guard let firstLabel = shippingLabels.first else {
+            return
+        }
         analytics.track(.shippingLabelReprintRequested)
-        let action = ShippingLabelAction.printShippingLabel(siteID: shippingLabel.siteID,
-                                                            shippingLabelIDs: [shippingLabel.shippingLabelID],
+        let action = ShippingLabelAction.printShippingLabel(siteID: firstLabel.siteID,
+                                                            shippingLabelIDs: shippingLabels.map { $0.shippingLabelID },
                                                             paperSize: paperSize) { result in
             completion(result)
         }
@@ -158,12 +162,14 @@ private extension PrintShippingLabelCoordinator {
     /// Show customs form printing if separate customs form is available
     ///
     func showCustomsFormPrintingIfNeeded() {
-        guard let url = shippingLabel.commercialInvoiceURL,
-              printType == .print else {
+        let urls = shippingLabels
+            .compactMap { $0.commercialInvoiceURL }
+            .filter { $0.isNotEmpty }
+        guard urls.isNotEmpty, printType == .print else {
             return
         }
 
-        let printCustomsFormsView = PrintCustomsFormsView(invoiceURLs: [url], showsSaveForLater: true)
+        let printCustomsFormsView = PrintCustomsFormsView(invoiceURLs: urls, showsSaveForLater: true)
         let hostingController = UIHostingController(rootView: printCustomsFormsView)
         hostingController.hidesBottomBarWhenPushed = true
 
@@ -178,8 +184,15 @@ private extension PrintShippingLabelCoordinator {
 
 private extension PrintShippingLabelCoordinator {
     enum Localization {
-        static let inProgressTitle = NSLocalizedString("Printing Label",
-                                                       comment: "Title of in-progress modal when requesting shipping label document for printing")
+        static func inProgressTitle(labelCount: Int) -> String {
+            if labelCount == 1 {
+                return NSLocalizedString("Printing Label",
+                                         comment: "Title of in-progress modal when requesting shipping label document for printing")
+            } else {
+                return NSLocalizedString("Printing Labels",
+                                         comment: "Title of in-progress modal when requesting document with multiple shipping labels for printing")
+            }
+        }
         static let inProgressMessage = NSLocalizedString("Please wait",
                                                          comment: "Message of in-progress modal when requesting shipping label document for printing")
         static let printErrorAlertTitle = NSLocalizedString("Error previewing shipping label",

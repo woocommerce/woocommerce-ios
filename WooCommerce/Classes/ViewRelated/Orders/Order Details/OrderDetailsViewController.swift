@@ -518,7 +518,9 @@ private extension OrderDetailsViewController {
                 assertionFailure("Cannot reprint a shipping label because `navigationController` is nil")
                 return
             }
-            let coordinator = PrintShippingLabelCoordinator(shippingLabel: shippingLabel, printType: .reprint, sourceNavigationController: navigationController)
+            let coordinator = PrintShippingLabelCoordinator(shippingLabels: [shippingLabel],
+                                                            printType: .reprint,
+                                                            sourceNavigationController: navigationController)
             coordinator.showPrintUI()
         case .createShippingLabel:
             let shippingLabelFormVC = ShippingLabelFormViewController(order: viewModel.order)
@@ -620,7 +622,7 @@ private extension OrderDetailsViewController {
             self?.show(refundViewController, sender: self)
         }
 
-        if let url = shippingLabel.commercialInvoiceURL {
+        if let url = shippingLabel.commercialInvoiceURL, url.isNotEmpty {
             actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelMoreMenu.printCustomsFormAction) { [weak self] _ in
                 let printCustomsFormsView = PrintCustomsFormsView(invoiceURLs: [url])
                 let hostingController = UIHostingController(rootView: printCustomsFormsView)
@@ -672,8 +674,8 @@ private extension OrderDetailsViewController {
     }
 
     func editShippingAddressTapped() {
-        let viewModel = EditAddressFormViewModel(order: viewModel.order, type: .shipping)
-        let editAddressViewController = EditAddressHostingController(viewModel: viewModel)
+        let viewModel = EditOrderAddressFormViewModel(order: viewModel.order, type: .shipping)
+        let editAddressViewController = EditOrderAddressHostingController(viewModel: viewModel)
         let navigationController = WooNavigationController(rootViewController: editAddressViewController)
         present(navigationController, animated: true, completion: nil)
     }

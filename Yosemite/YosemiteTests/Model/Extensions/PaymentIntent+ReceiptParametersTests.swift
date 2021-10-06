@@ -5,10 +5,10 @@ final class PaymentIntent_ReceiptParametersTests: XCTestCase {
     func test_receipt_parameters_is_generated_from_valid_intent() {
         let intent = MockPaymentIntent.mock()
 
-        let receiptParametes = intent.receiptParameters()
+        let receiptParameters = intent.receiptParameters()
 
-        XCTAssertEqual(receiptParametes?.amount, intent.amount)
-        XCTAssertEqual(receiptParametes?.currency, intent.currency)
+        XCTAssertEqual(receiptParameters?.amount, intent.amount)
+        XCTAssertEqual(receiptParameters?.currency, intent.currency)
 
         guard let paymentMethod = intent.charges.first?.paymentMethod,
               case .presentCard(details: let cardDetails) = paymentMethod else {
@@ -16,6 +16,24 @@ final class PaymentIntent_ReceiptParametersTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(receiptParametes?.cardDetails, cardDetails)
+        XCTAssertEqual(receiptParameters?.cardDetails, cardDetails)
+    }
+
+    func test_receipt_parameters_includes_store_from_intent_metadata() {
+        let intent = MockPaymentIntent.mock()
+
+        XCTAssertEqual(intent.receiptParameters()?.storeName, "Store Name")
+    }
+
+    func test_receipt_parameters_includes_orderID_from_intent_metadata() {
+        let intent = MockPaymentIntent.mock()
+
+        XCTAssertEqual(intent.receiptParameters()?.orderID, 1920)
+    }
+
+    func test_receiptParameters_Includes_formattedAmount_WithDecimalFormatting() {
+        let intent = MockPaymentIntent.mock()
+
+        XCTAssertEqual(intent.receiptParameters()?.formattedAmount, "100.00")
     }
 }

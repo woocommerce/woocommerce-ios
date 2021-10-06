@@ -22,7 +22,7 @@ struct PrintCustomsFormsView: View {
                     .padding(.top, Constants.verticalSpacing)
                 VStack(spacing: Constants.verticalSpacing) {
                     Image("woo-shipping-label-printing-instructions")
-                    Text(Localization.printingMessage)
+                    Text(invoiceURLs.count == 1 ? Localization.singlePrintingMessage : Localization.printingMessage)
                         .bodyStyle()
                         .multilineTextAlignment(.center)
                         .fixedSize(horizontal: false, vertical: true)
@@ -132,8 +132,10 @@ private extension PrintCustomsFormsView {
                                                        comment: "Navigation title of the Print Customs Invoice screen of Shipping Label flow")
         static let customsFormTitle = NSLocalizedString("Customs form",
                                                         comment: "Title on the Print Customs Invoice screen of Shipping Label flow")
-        static let printingMessage = NSLocalizedString("A customs form must be printed and included on this international shipment",
+        static let singlePrintingMessage = NSLocalizedString("A customs form must be printed and included on this international shipment",
                                                        comment: "Main message on the Print Customs Invoice screen of Shipping Label flow")
+        static let printingMessage = NSLocalizedString("Customs forms must be printed and included on these international shipments",
+                                                       comment: "Main message on the Print Customs Invoice screen of Shipping Label flow for multiple invoices")
         static let singlePrintButton = NSLocalizedString("Print customs form",
                                                          comment: "Title of print button on Print Customs Invoice screen" +
                                                             " of Shipping Label flow when there's only one invoice")

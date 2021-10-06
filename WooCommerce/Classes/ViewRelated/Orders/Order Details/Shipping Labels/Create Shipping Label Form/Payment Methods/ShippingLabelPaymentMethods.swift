@@ -115,20 +115,24 @@ struct ShippingLabelPaymentMethods: View {
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
             .navigationBarTitle(Localization.navigationBarTitle)
-            .navigationBarItems(trailing: Button(action: {
-                viewModel.updateShippingLabelAccountSettings { newSettings in
-                    ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "payment_method_selected"])
-                    onCompletion(newSettings)
-                    presentation.wrappedValue.dismiss()
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        viewModel.updateShippingLabelAccountSettings { newSettings in
+                            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "payment_method_selected"])
+                            onCompletion(newSettings)
+                            presentation.wrappedValue.dismiss()
+                        }
+                    }, label: {
+                        if viewModel.isUpdating {
+                            ProgressView()
+                        } else {
+                            Text(Localization.doneButton)
+                        }
+                    })
+                    .disabled(!viewModel.isDoneButtonEnabled())
                 }
-            }, label: {
-                if viewModel.isUpdating {
-                    ProgressView()
-                } else {
-                    Text(Localization.doneButton)
-                }
-            })
-            .disabled(!viewModel.isDoneButtonEnabled()))
+            }
         }
     }
 
@@ -145,12 +149,17 @@ struct ShippingLabelPaymentMethods: View {
             }
             .navigationTitle(Localization.paymentMethodWebviewTitle)
             .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(trailing: Button(action: {
-                showingAddPaymentWebView = false
-            }, label: {
-                Text(Localization.doneButtonAddPayment)
-            }))
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        showingAddPaymentWebView = false
+                    }, label: {
+                        Text(Localization.doneButtonAddPayment)
+                    })
+                }
+            }
         }
+        .wooNavigationBarStyle()
     }
 }
 

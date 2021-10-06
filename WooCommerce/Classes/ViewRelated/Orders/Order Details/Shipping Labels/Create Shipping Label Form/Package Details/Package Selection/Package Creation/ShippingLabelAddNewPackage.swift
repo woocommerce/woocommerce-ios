@@ -33,7 +33,7 @@ struct ShippingLabelAddNewPackage: View {
             .navigationBarBackButtonHidden(true)
             .toolbar {
                 // Minimal back button
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .cancellationAction) {
                     Button {
                         presentation.wrappedValue.dismiss()
                     } label: {
@@ -41,7 +41,7 @@ struct ShippingLabelAddNewPackage: View {
                     }
                 }
                 // Done button
-                ToolbarItem(placement: .navigationBarTrailing, content: {
+                ToolbarItem(placement: .confirmationAction, content: {
                     Button(action: {
                         switch viewModel.selectedView {
                         case .customPackage:

@@ -170,7 +170,7 @@ private extension ShippingLabelCarrierRowViewModel {
             case .usps:
                 return UIImage(named: "shipping-label-usps-logo")
             case .dhlExpress, .dhlEcommerce, .dhlEcommerceAsia:
-                return UIImage(named: "shipping-label-fedex-logo")
+                return UIImage(named: "shipping-label-dhl-logo")
             }
         }
     }

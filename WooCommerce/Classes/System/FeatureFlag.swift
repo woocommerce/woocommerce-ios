@@ -38,10 +38,6 @@ enum FeatureFlag: Int {
     ///
     case shippingLabelsMultiPackage
 
-    /// Editing of notes, shipping, and billing addresses.
-    ///
-    case orderEditing
-
     /// Display "What's new on WooCommerce" on App Launch and App Settings
     ///
     case whatsNewOnWooCommerce

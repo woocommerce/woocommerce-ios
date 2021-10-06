@@ -1,0 +1,3 @@
+Handlare som använder utökningen WooCommerce Shipping & Tax kommer att märka att det nu är lätt som en plätt att skapa anpassade paket för en fraktetikett! Det är roligt att skapa och skriva ut fraktetiketter från din mobila enhet!
+
+Vi har också korrigerat och förbättrat en mängd olika små saker i appen baserat på er feedback.

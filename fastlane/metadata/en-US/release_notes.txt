@@ -1,0 +1,3 @@
+Merchants using the WooCommerce Shipping & Tax Extension will find creating custom packaging for a shipping label is now a breeze! Creating and printing shipping labels from your mobile device is so much fun!
+
+We also fixed and improved a bunch of little things in the app based on your feedback.

@@ -19,7 +19,7 @@ public struct PaymentIntent: Identifiable {
     public let currency: String
 
     /// Set of key-value pairs attached to the object.
-    public let metadata: [AnyHashable: Any]?
+    public let metadata: [String: String]?
 
     // Charges that were created by this PaymentIntent, if any.
     public let charges: [Charge]
@@ -89,14 +89,16 @@ public extension PaymentIntent {
                           orderID: Int64? = nil,
                           orderKey: String? = nil,
                           paymentType: PaymentTypes? = nil
-    ) -> [AnyHashable: Any] {
-        var metadata = [AnyHashable: Any]()
+    ) -> [String: String] {
+        var metadata = [String: String]()
 
         metadata[PaymentIntent.MetadataKeys.store] = store
         metadata[PaymentIntent.MetadataKeys.customerName] = customerName
         metadata[PaymentIntent.MetadataKeys.customerEmail] = customerEmail
         metadata[PaymentIntent.MetadataKeys.siteURL] = siteURL
-        metadata[PaymentIntent.MetadataKeys.orderID] = orderID
+        if let orderID = orderID {
+            metadata[PaymentIntent.MetadataKeys.orderID] = String(orderID)
+        }
         metadata[PaymentIntent.MetadataKeys.orderKey] = orderKey
         metadata[PaymentIntent.MetadataKeys.paymentType] = paymentType?.rawValue
 

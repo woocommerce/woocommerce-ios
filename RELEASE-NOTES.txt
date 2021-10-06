@@ -1,11 +1,21 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+7.8
+-----
+- [*] Fix: Navigation bar buttons are now consistently pink on iOS 15. [https://github.com/woocommerce/woocommerce-ios/pull/5139]
+- [*] Fix incorrect info banner color and signature option spacing on Carrier and Rates screen. [https://github.com/woocommerce/woocommerce-ios/pull/5144]
+
 7.7
 -----
+- [***] In-Person Payments: US merchants can now obtain a card reader and then collect payments directly from the app. [https://github.com/woocommerce/woocommerce-ios/pull/5030]
 - [***] Shipping Labels: Merchants can now add new payment methods for shipping labels directly from the app. [https://github.com/woocommerce/woocommerce-ios/pull/5023]
+- [**] Merchants can now edit shipping & billing addresses from orders. [https://github.com/woocommerce/woocommerce-ios/pull/5097]
 - [x] Fix: now a default paper size will be selected in Shipping Label print screen. [https://github.com/woocommerce/woocommerce-ios/pull/5035]
 - [*] Show banner on screens that use cached data when device is offline. [https://github.com/woocommerce/woocommerce-ios/pull/5000]
-
+- [*] Fix incorrect subtitle on customs row of Shipping Label purchase flow. [https://github.com/woocommerce/woocommerce-ios/pull/5093]
+- [*] Make sure customs form printing option is not available on non-international orders. [https://github.com/woocommerce/woocommerce-ios/pull/5104]
+- [*] Fix incorrect logo for DHL in Shipping Labels flow. [https://github.com/woocommerce/woocommerce-ios/pull/5105]
+ 
 7.6
 -----
 - [x] Show an improved error modal if there are problems while selecting a store. [https://github.com/woocommerce/woocommerce-ios/pull/5006]

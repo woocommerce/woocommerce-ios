@@ -11,8 +11,10 @@
 		263E383C2641FED600260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E383B2641FED600260D3B /* Codegen */; };
 		26CA6D2625F6C87800B01F48 /* Fakes.h in Headers */ = {isa = PBXBuildFile; fileRef = 26CA6D2425F6C87800B01F48 /* Fakes.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		26CA6D2F25F6C8FC00B01F48 /* Fake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CA6D2D25F6C8FB00B01F48 /* Fake.swift */; };
-		26CA6D3025F6C8FC00B01F48 /* Fakes.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CA6D2E25F6C8FC00B01F48 /* Fakes.generated.swift */; };
 		26CA6D3625F6C93C00B01F48 /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26CA6D3525F6C93C00B01F48 /* Networking.framework */; };
+		26EEDC8D26FE1C1C00D5BA0E /* Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EEDC8C26FE1C1C00D5BA0E /* Yosemite.framework */; };
+		26EEDC9026FE1C7B00D5BA0E /* Networking.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26EEDC8E26FE1C7B00D5BA0E /* Networking.generated.swift */; };
+		26EEDC9126FE1C7B00D5BA0E /* Yosemite.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26EEDC8F26FE1C7B00D5BA0E /* Yosemite.generated.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -34,9 +36,11 @@
 		26CA6D2425F6C87800B01F48 /* Fakes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Fakes.h; sourceTree = "<group>"; };
 		26CA6D2525F6C87800B01F48 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		26CA6D2D25F6C8FB00B01F48 /* Fake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fake.swift; sourceTree = "<group>"; };
-		26CA6D2E25F6C8FC00B01F48 /* Fakes.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fakes.generated.swift; sourceTree = "<group>"; };
 		26CA6D3325F6C92100B01F48 /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		26CA6D3525F6C93C00B01F48 /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		26EEDC8C26FE1C1C00D5BA0E /* Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		26EEDC8E26FE1C7B00D5BA0E /* Networking.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Networking.generated.swift; sourceTree = "<group>"; };
+		26EEDC8F26FE1C7B00D5BA0E /* Yosemite.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Yosemite.generated.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,8 +48,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				263E383C2641FED600260D3B /* Codegen in Frameworks */,
+				26EEDC8D26FE1C1C00D5BA0E /* Yosemite.framework in Frameworks */,
 				26CA6D3625F6C93C00B01F48 /* Networking.framework in Frameworks */,
+				263E383C2641FED600260D3B /* Codegen in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,7 +86,8 @@
 			isa = PBXGroup;
 			children = (
 				26CA6D2D25F6C8FB00B01F48 /* Fake.swift */,
-				26CA6D2E25F6C8FC00B01F48 /* Fakes.generated.swift */,
+				26EEDC8E26FE1C7B00D5BA0E /* Networking.generated.swift */,
+				26EEDC8F26FE1C7B00D5BA0E /* Yosemite.generated.swift */,
 				26106B3B25FA4F5F0000DF30 /* Products */,
 				26CA6D2425F6C87800B01F48 /* Fakes.h */,
 				26CA6D2525F6C87800B01F48 /* Info.plist */,
@@ -92,6 +98,7 @@
 		26CA6D3225F6C92100B01F48 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				26EEDC8C26FE1C1C00D5BA0E /* Yosemite.framework */,
 				26CA6D3525F6C93C00B01F48 /* Networking.framework */,
 				26CA6D3325F6C92100B01F48 /* Networking.framework */,
 			);
@@ -182,8 +189,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				26CA6D2F25F6C8FC00B01F48 /* Fake.swift in Sources */,
+				26EEDC9026FE1C7B00D5BA0E /* Networking.generated.swift in Sources */,
 				26106B3D25FA4F6C0000DF30 /* ProductFactory.swift in Sources */,
-				26CA6D3025F6C8FC00B01F48 /* Fakes.generated.swift in Sources */,
+				26EEDC9126FE1C7B00D5BA0E /* Yosemite.generated.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

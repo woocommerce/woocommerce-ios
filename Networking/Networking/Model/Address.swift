@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents an Address Entity.
 ///
-public struct Address: Codable, GeneratedFakeable {
+public struct Address: Codable, GeneratedFakeable, GeneratedCopiable {
     public let firstName: String
     public let lastName: String
     public let company: String?

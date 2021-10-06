@@ -60,7 +60,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                 totalTax: String,
                 paymentMethodID: String,
                 paymentMethodTitle: String,
-                items: [OrderItem],
+                items: [OrderItem]?,
                 billingAddress: Address?,
                 shippingAddress: Address?,
                 shippingLines: [ShippingLine],
@@ -91,7 +91,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         self.paymentMethodID = paymentMethodID
         self.paymentMethodTitle = paymentMethodTitle
 
-        self.items = items
+        self.items = items ?? []
         self.billingAddress = billingAddress
         self.shippingAddress = shippingAddress
         self.shippingLines = shippingLines
@@ -133,7 +133,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         let paymentMethodID = try container.decode(String.self, forKey: .paymentMethodID)
         let paymentMethodTitle = try container.decode(String.self, forKey: .paymentMethodTitle)
 
-        let items = try container.decode([OrderItem].self, forKey: .items)
+        let items = try? container.decodeIfPresent([OrderItem].self, forKey: .items) ?? []
 
         let shippingAddress = try? container.decode(Address.self, forKey: .shippingAddress)
         let billingAddress = try? container.decode(Address.self, forKey: .billingAddress)

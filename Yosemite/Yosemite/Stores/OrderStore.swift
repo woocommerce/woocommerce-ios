@@ -60,8 +60,8 @@ public class OrderStore: Store {
         case let .updateOrder(siteID, order, fields, onCompletion):
             updateOrder(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
 
-        case let .createOrder(siteID, order, fields, onCompletion):
-            createOrder(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
+        case let .createQuickPayOrder(siteID, amount, onCompletion):
+            createQuickPayOrder(siteID: siteID, amount: amount, onCompletion: onCompletion)
         }
     }
 }
@@ -241,11 +241,11 @@ private extension OrderStore {
         }
     }
 
-    /// Creates an order with the specified fields from a given order
+    /// Creates a quick pay order with a specific amount value and no tax,
     ///
-    // TODO: Add Unit tests
-    func createOrder(siteID: Int64, order: Order, fields: [OrderCreateField], onCompletion: @escaping (Result<Order, Error>) -> Void) {
-        remote.createOrder(siteID: siteID, order: order, fields: fields) { [weak self] result in
+    func createQuickPayOrder(siteID: Int64, amount: String, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        let order = OrderFactory.quickPayOrder(amount: amount)
+        remote.createOrder(siteID: siteID, order: order, fields: [.feeLines]) { [weak self] result in
             switch result {
             case .success(let order):
                 self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {

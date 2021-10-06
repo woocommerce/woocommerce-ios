@@ -218,8 +218,9 @@ extension PushNotificationsManager {
         // Badge: Update
         if let typeString = userInfo.string(forKey: APNSKey.type),
             let type = Note.Kind(rawValue: typeString),
-            let siteID = userInfo[APNSKey.siteID] as? Int64 {
-            incrementNotificationCount(siteID: siteID, type: type, incrementCount: 1) { [weak self] in
+            let siteID = siteID,
+            let notificationSiteID = userInfo[APNSKey.siteID] as? Int64 {
+            incrementNotificationCount(siteID: notificationSiteID, type: type, incrementCount: 1) { [weak self] in
                 self?.loadNotificationCountAndUpdateApplicationBadgeNumberAndPostNotifications(siteID: siteID, type: type)
                 onBadgeUpdateCompletion()
             }
@@ -519,6 +520,17 @@ private extension PushNotification {
     }
 }
 
+// MARK: - App Icon Badge Number
+
+enum AppIconBadgeNumber {
+    /// Indicates that there are unread push notifications in Notification Center.
+    static let hasUnreadPushNotifications = 1
+    /// An unofficial workaround to clear the app icon badge without clearing all push notifications in Notification Center.
+    static let clearsBadgeOnly = -1
+    /// Clears the app icon badge and all push notifications in Notification Center.
+    static let clearsBadgeAndAllPushNotifications = 0
+}
+
 // MARK: - Private Types
 //
 private enum APNSKey {
@@ -527,15 +539,6 @@ private enum APNSKey {
     static let identifier = "note_id"
     static let type = "type"
     static let siteID = "blog"
-}
-
-private enum AppIconBadgeNumber {
-    /// Indicates that there are unread push notifications in Notification Center.
-    static let hasUnreadPushNotifications = 1
-    /// An unofficial workaround to clear the app icon badge without clearing all push notifications in Notification Center.
-    static let clearsBadgeOnly = -1
-    /// Clears the app icon badge and all push notifications in Notification Center.
-    static let clearsBadgeAndAllPushNotifications = 0
 }
 
 private enum AnalyticKey {

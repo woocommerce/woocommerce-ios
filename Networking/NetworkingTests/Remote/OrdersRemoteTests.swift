@@ -248,10 +248,13 @@ final class OrdersRemoteTests: XCTestCase {
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
-        let feeLine = try XCTUnwrap((request.parameters["fee_lines"] as? [[String: String]])?.first)
-        XCTAssertEqual(feeLine["name"], fee.name)
-        XCTAssertEqual(feeLine["tax_status"], fee.taxStatus.rawValue)
-        XCTAssertEqual(feeLine["tax_class"], fee.taxClass)
-        XCTAssertEqual(feeLine["total"], fee.total)
+        let received = try XCTUnwrap(request.parameters["fee_lines"] as? [[String: String]]).first
+        let expected = [
+            "name": fee.name,
+            "tax_status": fee.taxStatus.rawValue,
+            "tax_class": fee.taxClass,
+            "total": fee.total
+        ]
+        assertEqual(received, expected)
     }
 }

@@ -59,6 +59,9 @@ public class OrderStore: Store {
 
         case let .updateOrder(siteID, order, fields, onCompletion):
             updateOrder(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
+
+        case let .createOrder(siteID, order, fields, onCompletion):
+            createOrder(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
         }
     }
 }
@@ -234,6 +237,22 @@ private extension OrderStore {
 
             self?.upsertStoredOrdersInBackground(readOnlyOrders: [order]) {
                 onCompletion(order, nil)
+            }
+        }
+    }
+
+    /// Creates an order with the specified fields from a given order
+    ///
+    // TODO: Add Unit tests
+    func createOrder(siteID: Int64, order: Order, fields: [OrderCreateField], onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        remote.createOrder(siteID: siteID, order: order, fields: fields) { [weak self] result in
+            switch result {
+            case .success(let order):
+                self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
+                    onCompletion(result)
+                })
+            case .failure:
+                onCompletion(result)
             }
         }
     }

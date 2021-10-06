@@ -61,5 +61,5 @@ public enum OrderAction: Action {
 
     /// Creates an order with the specified fields from a given order
     ///
-    case createOrder(siteID: Int64, order: Order, fields: [CreateOrderField], onCompletion: (Result<Order, Error>) -> Void)
+    case createOrder(siteID: Int64, order: Order, fields: [OrderCreateField], onCompletion: (Result<Order, Error>) -> Void)
 }

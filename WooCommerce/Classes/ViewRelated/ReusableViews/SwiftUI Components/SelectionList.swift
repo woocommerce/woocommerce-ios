@@ -69,7 +69,7 @@ struct SelectionList<T: Hashable>: View {
                     }
                 })
             }
-            .navigationBarStyle()
+            .wooNavigationBarStyle()
         }
     }
 }

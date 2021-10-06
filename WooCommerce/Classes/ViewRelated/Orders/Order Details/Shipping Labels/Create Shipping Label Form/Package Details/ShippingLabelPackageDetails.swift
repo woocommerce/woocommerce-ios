@@ -88,7 +88,7 @@ struct ShippingLabelPackageDetails: View {
                 .disabled(!viewModel.isPackageDetailsDoneButtonEnabled())
             }
         }
-        .navigationBarStyle()
+        .wooNavigationBarStyle()
     }
 }
 

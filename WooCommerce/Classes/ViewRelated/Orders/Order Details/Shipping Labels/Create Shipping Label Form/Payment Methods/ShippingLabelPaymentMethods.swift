@@ -159,7 +159,7 @@ struct ShippingLabelPaymentMethods: View {
                 }
             }
         }
-        .navigationBarStyle()
+        .wooNavigationBarStyle()
     }
 }
 

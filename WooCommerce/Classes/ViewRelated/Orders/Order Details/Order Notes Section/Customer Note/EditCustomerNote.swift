@@ -99,7 +99,7 @@ struct EditCustomerNote: View {
                 }
         }
         .navigationViewStyle(StackNavigationViewStyle())
-        .navigationBarStyle()
+        .wooNavigationBarStyle()
     }
 
     /// Decides if the navigation trailing item should be a done button or a loading indicator.

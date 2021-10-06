@@ -236,7 +236,7 @@ struct EditOrderAddressForm: View {
                 navigationBarTrailingItem()
             }
         }
-        .navigationBarStyle()
+        .wooNavigationBarStyle()
         .redacted(reason: viewModel.showPlaceholders ? .placeholder : [])
         .shimmering(active: viewModel.showPlaceholders)
         .onAppear {

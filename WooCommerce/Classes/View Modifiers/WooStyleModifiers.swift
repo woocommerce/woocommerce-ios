@@ -86,7 +86,7 @@ struct ErrorStyle: ViewModifier {
     }
 }
 
-struct NavigationBarStyle: ViewModifier {
+struct WooNavigationBarStyle: ViewModifier {
     func body(content: Content) -> some View {
         content
             .accentColor(Color(.accent)) // The color of bar button items in the navigation bar
@@ -128,7 +128,7 @@ extension View {
         self.modifier(ErrorStyle())
     }
 
-    func navigationBarStyle() -> some View {
-        self.modifier(NavigationBarStyle())
+    func wooNavigationBarStyle() -> some View {
+        self.modifier(WooNavigationBarStyle())
     }
 }

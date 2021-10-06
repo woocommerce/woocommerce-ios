@@ -53,7 +53,7 @@ struct ApplicationLogDetailView: View {
                     }
             }
         }
-        .navigationBarStyle()
+        .wooNavigationBarStyle()
     }
 
     func scrollToBottomButton(_ action: @escaping () -> Void) -> some View {

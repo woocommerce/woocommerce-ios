@@ -108,6 +108,30 @@ public class OrdersRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+    /// Creates an order using the specified fields of a given order
+    ///
+    /// - Parameters:
+    ///     - siteID: Site which hosts the Order.
+    ///     - order: Order to be created.
+    ///     - fields: Fields of the order to be created.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func createOrder(siteID: Int64, order: Order, fields: [CreateOrderField], completion: @escaping (Result<Order, Error>) -> Void) {
+        let path = Constants.ordersPath
+        let mapper = OrderMapper(siteID: siteID)
+        let parameters: [String: Any] = {
+            fields.reduce(into: [:]) { params, field in
+                switch field {
+                case .total:
+                    params[Order.CodingKeys.total.rawValue] = order.total
+                }
+            }
+        }()
+
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
     /// Updates the `OrderStatus` of a given Order.
     ///
     /// - Parameters:
@@ -228,5 +252,11 @@ public extension OrdersRemote {
         case customerNote
         case shippingAddress
         case billingAddress
+    }
+
+    /// Order fields supported for create
+    ///
+    enum CreateOrderField {
+        case total
     }
 }

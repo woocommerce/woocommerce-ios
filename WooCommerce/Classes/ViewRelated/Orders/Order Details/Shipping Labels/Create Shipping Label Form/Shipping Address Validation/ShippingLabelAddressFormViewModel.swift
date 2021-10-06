@@ -51,6 +51,10 @@ final class ShippingLabelAddressFormViewModel {
 
     private(set) var countries: [Country]
 
+    var nameRequired: Bool {
+        address?.company.isEmpty == true
+    }
+
     var statesOfSelectedCountry: [StateOfACountry] {
         countries.first { $0.code == address?.country }?.states.sorted { $0.name < $1.name } ?? []
     }
@@ -243,7 +247,7 @@ extension ShippingLabelAddressFormViewModel {
         var errors: [ValidationError] = []
 
         if let addressToBeValidated = address {
-            if addressToBeValidated.name.isEmpty {
+            if addressToBeValidated.name.isEmpty && nameRequired {
                 errors.append(.name)
             }
             if addressToBeValidated.address1.isEmpty {

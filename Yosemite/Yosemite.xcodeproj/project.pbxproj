@@ -20,6 +20,10 @@
 		0212AC62242C68B600C51F6C /* ResultsController+SortProducts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0212AC61242C68B600C51F6C /* ResultsController+SortProducts.swift */; };
 		0212AC64242C6FC300C51F6C /* ProductStore+ProductsSortOrderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0212AC63242C6FC300C51F6C /* ProductStore+ProductsSortOrderTests.swift */; };
 		0212AC67242C799B00C51F6C /* ResultsController+StorageProductTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0212AC66242C799B00C51F6C /* ResultsController+StorageProductTests.swift */; };
+		02137901270AB204006430F7 /* MockUserActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02137900270AB204006430F7 /* MockUserActionHandler.swift */; };
+		02137903270ABDDE006430F7 /* MockAnnouncementsActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02137902270ABDDE006430F7 /* MockAnnouncementsActionHandler.swift */; };
+		02137905270AC39C006430F7 /* MockPaymentGatewayAccountActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02137904270AC39C006430F7 /* MockPaymentGatewayAccountActionHandler.swift */; };
+		02137907270AC5A0006430F7 /* MockReceiptActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02137906270AC5A0006430F7 /* MockReceiptActionHandler.swift */; };
 		0218B4EE242E08B20083A847 /* MediaType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0218B4ED242E08B20083A847 /* MediaType.swift */; };
 		0218B4F0242E091C0083A847 /* Media+MediaType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0218B4EF242E091C0083A847 /* Media+MediaType.swift */; };
 		0218B4F2242E09E80083A847 /* MediaTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0218B4F1242E09E80083A847 /* MediaTypeTests.swift */; };
@@ -388,6 +392,10 @@
 		0212AC61242C68B600C51F6C /* ResultsController+SortProducts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ResultsController+SortProducts.swift"; sourceTree = "<group>"; };
 		0212AC63242C6FC300C51F6C /* ProductStore+ProductsSortOrderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductStore+ProductsSortOrderTests.swift"; sourceTree = "<group>"; };
 		0212AC66242C799B00C51F6C /* ResultsController+StorageProductTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ResultsController+StorageProductTests.swift"; sourceTree = "<group>"; };
+		02137900270AB204006430F7 /* MockUserActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserActionHandler.swift; sourceTree = "<group>"; };
+		02137902270ABDDE006430F7 /* MockAnnouncementsActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAnnouncementsActionHandler.swift; sourceTree = "<group>"; };
+		02137904270AC39C006430F7 /* MockPaymentGatewayAccountActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPaymentGatewayAccountActionHandler.swift; sourceTree = "<group>"; };
+		02137906270AC5A0006430F7 /* MockReceiptActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockReceiptActionHandler.swift; sourceTree = "<group>"; };
 		0218B4ED242E08B20083A847 /* MediaType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaType.swift; sourceTree = "<group>"; };
 		0218B4EF242E091C0083A847 /* Media+MediaType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Media+MediaType.swift"; sourceTree = "<group>"; };
 		0218B4F1242E09E80083A847 /* MediaTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaTypeTests.swift; sourceTree = "<group>"; };
@@ -931,6 +939,10 @@
 				247CE8432582F3BB00F9D9D1 /* MockSettingActionHandler.swift */,
 				247CE86B25832D5800F9D9D1 /* MockShipmentActionHandler.swift */,
 				247CE86725832BEE00F9D9D1 /* MockShippingLabelActionHandler.swift */,
+				02137900270AB204006430F7 /* MockUserActionHandler.swift */,
+				02137902270ABDDE006430F7 /* MockAnnouncementsActionHandler.swift */,
+				02137904270AC39C006430F7 /* MockPaymentGatewayAccountActionHandler.swift */,
+				02137906270AC5A0006430F7 /* MockReceiptActionHandler.swift */,
 			);
 			path = ActionHandlers;
 			sourceTree = "<group>";
@@ -1768,6 +1780,7 @@
 				247CE83C2582F36800F9D9D1 /* MockOrderActionHandler.swift in Sources */,
 				45E462142684C92D00011BF2 /* DataStore.swift in Sources */,
 				02FF055423D983F30058E6E7 /* MediaExport.swift in Sources */,
+				02137905270AC39C006430F7 /* MockPaymentGatewayAccountActionHandler.swift in Sources */,
 				74643EE1221F567E00EDC51A /* ShipmentAction.swift in Sources */,
 				02FF054E23D983F30058E6E7 /* MediaImageExporter.swift in Sources */,
 				2685C117263C98CF00D9EE97 /* AddOnGroupStore.swift in Sources */,
@@ -1779,6 +1792,7 @@
 				45ED6096257E7472007B4AC6 /* ProductAttributeStore.swift in Sources */,
 				077F39E026A5A6F500ABEADC /* SystemStatusStore.swift in Sources */,
 				02FF054D23D983F30058E6E7 /* MediaFileManager.swift in Sources */,
+				02137901270AB204006430F7 /* MockUserActionHandler.swift in Sources */,
 				B56C1EC220EAE2E500D749F9 /* ReadOnlyConvertible.swift in Sources */,
 				D8C11A5022DF2D9400D4A88D /* StatsStoreV4.swift in Sources */,
 				D87F614A22657A690031A13B /* AppSettingsAction.swift in Sources */,
@@ -1814,6 +1828,7 @@
 				CE4FD4502350F27C00A16B31 /* OrderItemTax+ReadOnlyConvertible.swift in Sources */,
 				02FF055123D983F30058E6E7 /* MediaAssetExporter.swift in Sources */,
 				45AB8B1724AA4B3D00B5B36E /* ProductTagStore.swift in Sources */,
+				02137903270ABDDE006430F7 /* MockAnnouncementsActionHandler.swift in Sources */,
 				247CE8342582F20100F9D9D1 /* MockAppSettingsActionHandler.swift in Sources */,
 				025CA2CA238F515600B05C81 /* ProductShippingClassStore.swift in Sources */,
 				3147030A2670295300EF253A /* PaymentGatewayAccountStore.swift in Sources */,
@@ -1827,6 +1842,7 @@
 				933A27352222352500C2143A /* Logging.swift in Sources */,
 				261CF1ED255B37B40090D8D3 /* PaymentGatewayAction.swift in Sources */,
 				74685D5020F7F3CE008958C1 /* OrderCoupon+ReadOnlyConvertible.swift in Sources */,
+				02137907270AC5A0006430F7 /* MockReceiptActionHandler.swift in Sources */,
 				74A7689020D45F9300F9D437 /* OrderAction.swift in Sources */,
 				D88E234525AE0EB90023F3B1 /* OrderFeeLine+ReadOnlyConvertible.swift in Sources */,
 				2665034D2620E0A90079A159 /* ProductAddOnOption+ReadOnlyConvertible.swift in Sources */,

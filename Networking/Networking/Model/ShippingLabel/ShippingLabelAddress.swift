@@ -56,6 +56,8 @@ public struct ShippingLabelAddress: GeneratedCopiable, Equatable, GeneratedFakea
 extension ShippingLabelAddress: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        // If no name is sent to validation address request, no name will be received in response.
+        // So make sure to decode it only if it's present.
         let name = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
         let company = try container.decode(String.self, forKey: .company)
         let phone = try container.decode(String.self, forKey: .phone)
@@ -81,6 +83,9 @@ extension ShippingLabelAddress: Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(company, forKey: .company)
+        // Make sure to only send address name if it's not empty,
+        // otherwise requests to fetch rates and purchase label will fail.
+        // Reference: https://git.io/JVQzC
         if !name.isEmpty {
             try container.encode(name, forKey: .name)
         }

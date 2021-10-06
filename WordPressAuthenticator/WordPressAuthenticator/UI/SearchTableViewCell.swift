@@ -110,18 +110,21 @@ extension SearchTableViewCell: UITextFieldDelegate {
             }
 
             textField.replace(textRange, withText: sanitizedString)
-            startLiveSearchAfterEdit()
+
+            if liveSearch {
+                startLiveSearchAfterEdit()
+            }
         }
 
         return false
     }
 
-    /// Convenience method to abstract the logic that tells the delegate to start a live search after the search text field
-    /// has been edited.
+    /// Convenience method to abstract the logic that tells the delegate to start a live search.
     ///
-    private func startLiveSearchAfterEdit() {
-        guard liveSearch,
-              let delegate = delegate,
+    /// - Precondition: make sure you check if `liveSearch` is enabled before calling this method.
+    ///
+    private func startLiveSearch() {
+        guard let delegate = delegate,
               let text = textField.text else {
             return
         }

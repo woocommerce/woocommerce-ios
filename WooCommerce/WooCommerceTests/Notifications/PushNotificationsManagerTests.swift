@@ -320,7 +320,8 @@ final class PushNotificationsManagerTests: XCTestCase {
             handleNotificationCallbackWasExecuted = true
         }
 
-        guard case let .synchronizeNotifications(onCompletion) = storesManager.receivedActions.first as! NotificationAction else {
+        guard case let .synchronizeNotifications(onCompletion) =
+                storesManager.receivedActions.compactMap { $0 as? NotificationAction }.first else {
             XCTFail()
             return
         }
@@ -344,7 +345,8 @@ final class PushNotificationsManagerTests: XCTestCase {
             handleNotificationCallbackWasExecuted = true
         }
 
-        guard case let .synchronizeNotifications(onCompletion) = storesManager.receivedActions.first as! NotificationAction else {
+        guard case let .synchronizeNotifications(onCompletion) =
+                storesManager.receivedActions.compactMap({ $0 as? NotificationAction }).first else {
             XCTFail()
             return
         }
@@ -466,14 +468,15 @@ private extension PushNotificationsManagerTests {
 
     /// Returns a Sample Notification Payload
     ///
-    func notificationPayload(badgeCount: Int = 0, noteID: Int64 = 1234, type: Note.Kind = .comment) -> [String: Any] {
+    func notificationPayload(badgeCount: Int = 0, noteID: Int64 = 1234, type: Note.Kind = .comment, siteID: Int64 = 134) -> [String: Any] {
         return [
             "aps": [
                 "badge": badgeCount,
                 "alert": Sample.defaultMessage
             ],
             "note_id": noteID,
-            "type": type.rawValue
+            "type": type.rawValue,
+            "blog": siteID
         ]
     }
 }

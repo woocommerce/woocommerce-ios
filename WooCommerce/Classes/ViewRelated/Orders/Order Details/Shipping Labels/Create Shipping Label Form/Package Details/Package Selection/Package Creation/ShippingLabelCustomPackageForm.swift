@@ -19,7 +19,7 @@ struct ShippingLabelCustomPackageForm: View {
                     VStack(spacing: 0) {
                         // Package type
                         TitleAndValueRow(title: Localization.packageTypeLabel,
-                                         value: viewModel.packageType.localizedName,
+                                         value: .placeholder(viewModel.packageType.localizedName),
                                          selectable: true) {
                             showingPackageTypes.toggle()
                         }

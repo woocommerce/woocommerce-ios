@@ -112,7 +112,7 @@ extension SearchTableViewCell: UITextFieldDelegate {
             textField.replace(textRange, withText: sanitizedString)
 
             if liveSearch {
-                startLiveSearchAfterEdit()
+                startLiveSearch()
             }
         }
 

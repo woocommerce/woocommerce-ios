@@ -227,15 +227,18 @@ struct EditOrderAddressForm: View {
         }
         .navigationTitle(viewTitle)
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarItems(trailing: navigationBarTrailingItem())
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
+            ToolbarItem(placement: .cancellationAction) {
                 Button(Localization.close, action: {
                     dismiss()
                     viewModel.userDidCancelFlow()
                 })
             }
+            ToolbarItem(placement: .confirmationAction) {
+                navigationBarTrailingItem()
+            }
         }
+        .wooNavigationBarStyle()
         .redacted(reason: viewModel.showPlaceholders ? .placeholder : [])
         .shimmering(active: viewModel.showPlaceholders)
         .onAppear {

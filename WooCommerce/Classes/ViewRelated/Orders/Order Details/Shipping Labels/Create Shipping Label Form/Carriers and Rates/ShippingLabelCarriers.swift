@@ -66,9 +66,7 @@ struct ShippingLabelCarriers: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(action: {
-                        onCompletion(viewModel.getSelectedRates().selectedRate,
-                                     viewModel.getSelectedRates().selectedSignatureRate,
-                                     viewModel.getSelectedRates().selectedAdultSignatureRate)
+                        onCompletion(viewModel.getSelectedRates())
                         ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "carrier_rates_selected"])
                         presentation.wrappedValue.dismiss()
                     }, label: {

@@ -58,4 +58,8 @@ public enum OrderAction: Action {
     /// Updates the specified fields from an order.
     ///
     case updateOrder(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: (Result<Order, Error>) -> Void)
+
+    /// Creates an order with the specified fields from a given order
+    ///
+    case createOrder(siteID: Int64, order: Order, fields: [CreateOrderField], onCompletion: (Result<Order, Error>) -> Void)
 }

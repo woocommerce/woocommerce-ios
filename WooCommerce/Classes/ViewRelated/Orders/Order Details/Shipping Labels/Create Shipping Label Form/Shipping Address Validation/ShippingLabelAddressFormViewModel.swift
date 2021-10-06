@@ -72,7 +72,7 @@ final class ShippingLabelAddressFormViewModel {
     }
 
     private let localErrors = CurrentValueSubject<[ValidationError], Never>([])
-    private let currentRowIndex = CurrentValueSubject<Int?, Never>(nil)
+    private let currentRow = CurrentValueSubject<Row?, Never>(nil)
     private var validationSubscription: AnyCancellable?
 
     init(
@@ -122,8 +122,7 @@ final class ShippingLabelAddressFormViewModel {
             return
         }
 
-        let index: Int? = sections.first?.rows.firstIndex(where: { $0 == row })
-        currentRowIndex.send(index)
+        currentRow.send(row)
         localErrors.send(validateAddressLocally())
     }
 
@@ -201,10 +200,12 @@ extension ShippingLabelAddressFormViewModel {
     private func configureValidationError() {
         validationSubscription = localErrors
             .removeDuplicates()
-            .withLatestFrom(currentRowIndex)
-            .sink { [weak self] _, index in
-                self?.updateSections()
-                self?.onChange?(index)
+            .withLatestFrom(currentRow)
+            .sink { [weak self] _, row in
+                guard let self = self else { return }
+                self.updateSections()
+                let index: Int? = self.sections.first?.rows.firstIndex(where: { $0 == row })
+                self.onChange?(index)
             }
 
         // Append any initial local error.

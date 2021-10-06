@@ -538,6 +538,42 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.extendedCountryName, "United States")
         XCTAssertEqual(viewModel.extendedStateName, "California")
     }
+
+    func test_correct_row_index_is_returned_in_onChange_callback() {
+        // Given
+        let shippingAddress = MockShippingLabelAddress.sampleAddress(company: "Automattic",
+                                                                     name: "",
+                                                                     phone: "0111111111",
+                                                                     country: "US",
+                                                                     state: "CA",
+                                                                     address1: "13 Main street",
+                                                                     address2: "",
+                                                                     city: "California",
+                                                                     postcode: "900000")
+
+        // When
+        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10,
+                                                          type: .origin,
+                                                          address: shippingAddress,
+                                                          validationError: nil,
+                                                          countries: [])
+        var rowIndex: Int?
+        viewModel.onChange = { index in
+            rowIndex = index
+        }
+        viewModel.handleAddressValueChanges(row: .company, newValue: "")
+
+        // Then
+        XCTAssertNotNil(viewModel.sections.first?.rows.first(where: { $0 == .fieldError(.name) }))
+        XCTAssertEqual(rowIndex, 2)
+
+        // When
+        viewModel.handleAddressValueChanges(row: .company, newValue: "Apple")
+
+        // Then
+        XCTAssertNil(viewModel.sections.first?.rows.first(where: { $0 == .fieldError(.name) }))
+        XCTAssertEqual(rowIndex, 1)
+    }
 }
 
 private extension ShippingLabelAddressFormViewModelTests {

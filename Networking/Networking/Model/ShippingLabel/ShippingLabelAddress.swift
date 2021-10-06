@@ -54,11 +54,36 @@ public struct ShippingLabelAddress: GeneratedCopiable, Equatable, GeneratedFakea
 
 // MARK: Codable
 extension ShippingLabelAddress: Codable {
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let name = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
+        let company = try container.decode(String.self, forKey: .company)
+        let phone = try container.decode(String.self, forKey: .phone)
+        let country = try container.decode(String.self, forKey: .country)
+        let state = try container.decode(String.self, forKey: .state)
+        let address1 = try container.decode(String.self, forKey: .address1)
+        let address2 = try container.decode(String.self, forKey: .address2)
+        let city = try container.decode(String.self, forKey: .city)
+        let postcode = try container.decode(String.self, forKey: .postcode)
+
+        self.init(company: company,
+                  name: name,
+                  phone: phone,
+                  country: country,
+                  state: state,
+                  address1: address1,
+                  address2: address2,
+                  city: city,
+                  postcode: postcode)
+    }
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(company, forKey: .company)
-        try container.encode(name, forKey: .name)
+        if !name.isEmpty {
+            try container.encode(name, forKey: .name)
+        }
         try container.encode(phone, forKey: .phone)
         try container.encode(country, forKey: .country)
         try container.encode(state, forKey: .state)

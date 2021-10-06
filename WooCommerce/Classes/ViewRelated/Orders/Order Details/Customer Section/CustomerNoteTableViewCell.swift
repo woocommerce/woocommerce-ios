@@ -6,8 +6,6 @@ final class CustomerNoteTableViewCell: UITableViewCell {
 
     @IBOutlet private weak var bodyLabel: UILabel!
 
-    @IBOutlet private weak var bodyLabelTrailingConstraint: NSLayoutConstraint!
-
     @IBOutlet private weak var editButton: UIButton!
 
     /// Headline label text
@@ -39,7 +37,6 @@ final class CustomerNoteTableViewCell: UITableViewCell {
         didSet {
             let shouldHideEditButton = onEditTapped == nil
             editButton.isHidden = shouldHideEditButton
-            bodyLabelTrailingConstraint.constant = shouldHideEditButton ? 0 : -editButton.frame.width
         }
     }
 

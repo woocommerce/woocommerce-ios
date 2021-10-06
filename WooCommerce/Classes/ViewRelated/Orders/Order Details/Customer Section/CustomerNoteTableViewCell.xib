@@ -16,7 +16,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="100"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="3Ns-D0-Lmm">
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="3Ns-D0-Lmm">
                         <rect key="frame" x="16" y="16" width="288" height="68"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Headline Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T3S-nL-Xv3">
@@ -26,16 +26,16 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="KMy-GB-2vj">
-                                <rect key="frame" x="0.0" y="24" width="288" height="44"/>
+                                <rect key="frame" x="0.0" y="20.5" width="288" height="47.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Body Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z0H-LC-lIr">
-                                        <rect key="frame" x="0.0" y="12" width="244" height="20.5"/>
+                                        <rect key="frame" x="0.0" y="13.5" width="244" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AEi-vO-v71">
-                                        <rect key="frame" x="244" y="0.0" width="44" height="44"/>
+                                        <rect key="frame" x="244" y="2" width="44" height="44"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="AEi-vO-v71" secondAttribute="height" multiplier="1:1" id="QS6-Re-4g0"/>
                                             <constraint firstAttribute="width" constant="44" id="jEO-lC-Tht"/>
@@ -43,9 +43,18 @@
                                     </button>
                                 </subviews>
                             </stackView>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8sO-TX-YXZ">
+                                <rect key="frame" x="0.0" y="68" width="288" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="JD7-UH-chp"/>
+                                </constraints>
+                                <state key="normal" title="Add Customer Note"/>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="KMy-GB-2vj" firstAttribute="leading" secondItem="3Ns-D0-Lmm" secondAttribute="leading" id="1sf-8Q-Erz"/>
+                            <constraint firstItem="8sO-TX-YXZ" firstAttribute="leading" secondItem="3Ns-D0-Lmm" secondAttribute="leading" id="CXr-SC-scr"/>
+                            <constraint firstAttribute="trailing" secondItem="8sO-TX-YXZ" secondAttribute="trailing" id="db6-Qe-0lI"/>
                             <constraint firstAttribute="trailing" secondItem="KMy-GB-2vj" secondAttribute="trailing" id="uSW-Ze-AEM"/>
                         </constraints>
                     </stackView>
@@ -59,6 +68,7 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="U1C-V1-Or8"/>
             <connections>
+                <outlet property="addButton" destination="8sO-TX-YXZ" id="69l-hj-M3Q"/>
                 <outlet property="bodyLabel" destination="z0H-LC-lIr" id="eha-ch-GUr"/>
                 <outlet property="editButton" destination="AEi-vO-v71" id="kDj-Jd-NCM"/>
                 <outlet property="headlineLabel" destination="T3S-nL-Xv3" id="ogO-Et-oBd"/>

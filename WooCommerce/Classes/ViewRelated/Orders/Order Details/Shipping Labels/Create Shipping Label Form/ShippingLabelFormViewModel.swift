@@ -87,6 +87,17 @@ final class ShippingLabelFormViewModel {
                 }
             }
 
+            if package.isOriginalPackaging, let item = package.items.first {
+                return ShippingLabelPackageSelected(id: "\(index)-individual-package",
+                                                    boxID: "\(index)-individual-package",
+                                                    length: Double(item.dimensions.length) ?? 0,
+                                                    width: Double(item.dimensions.width) ?? 0,
+                                                    height: Double(item.dimensions.height) ?? 0,
+                                                    weight: item.weight,
+                                                    isLetter: false,
+                                                    customsForm: customsForms.first(where: { $0.packageID == package.packageID }))
+            }
+
             return nil
         }
     }

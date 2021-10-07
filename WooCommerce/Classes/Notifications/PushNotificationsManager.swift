@@ -109,7 +109,7 @@ extension PushNotificationsManager {
     }
 
 
-    /// Registers the Application for Remote Notifgications.
+    /// Registers the Application for Remote Notifications.
     ///
     func registerForRemoteNotifications() {
         DDLogInfo("📱 Registering for Remote Notifications...")
@@ -151,7 +151,9 @@ extension PushNotificationsManager {
 
     func resetBadgeCountForAllStores(onCompletion: @escaping () -> Void) {
         let action = NotificationCountAction.resetForAllSites() { [weak self] in
-            self?.configuration.application.applicationIconBadgeNumber = AppIconBadgeNumber.clearsBadgeAndAllPushNotifications
+            guard let self = self else { return }
+            self.configuration.application.applicationIconBadgeNumber = AppIconBadgeNumber.clearsBadgeAndAllPushNotifications
+            self.removeAllNotifications()
             onCompletion()
         }
         stores.dispatch(action)
@@ -289,6 +291,10 @@ private extension PushNotificationsManager {
         default:
             break
         }
+    }
+
+    func removeAllNotifications() {
+        configuration.userNotificationsCenter.removeAllNotifications()
     }
 }
 

@@ -152,7 +152,7 @@ extension PushNotificationsManager {
     func resetBadgeCountForAllStores(onCompletion: @escaping () -> Void) {
         let action = NotificationCountAction.resetForAllSites() { [weak self] in
             guard let self = self else { return }
-            self.configuration.application.applicationIconBadgeNumber = AppIconBadgeNumber.clearsBadgeAndAllPushNotifications
+            self.configuration.application.applicationIconBadgeNumber = AppIconBadgeNumber.clearsBadgeAndPotentiallyAllPushNotifications
             self.removeAllNotifications()
             onCompletion()
         }
@@ -533,8 +533,8 @@ enum AppIconBadgeNumber {
     static let hasUnreadPushNotifications = 1
     /// An unofficial workaround to clear the app icon badge without clearing all push notifications in Notification Center.
     static let clearsBadgeOnly = -1
-    /// Clears the app icon badge and all push notifications in Notification Center.
-    static let clearsBadgeAndAllPushNotifications = 0
+    /// Clears the app icon badge and potentially all push notifications in Notification Center.
+    static let clearsBadgeAndPotentiallyAllPushNotifications = 0
 }
 
 // MARK: - Private Types

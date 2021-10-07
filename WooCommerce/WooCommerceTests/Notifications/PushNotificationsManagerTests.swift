@@ -514,7 +514,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.clearsBadgeAndAllPushNotifications)
+        XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.clearsBadgeAndPotentiallyAllPushNotifications)
         XCTAssertTrue(userNotificationCenter.removeAllNotificationsWasCalled)
     }
 }

@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		02FAE3BB270EA46E0015EC53 /* NotificationServiceExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02FAE3B1270EA46E0015EC53 /* NotificationServiceExtension.framework */; };
-		02FAE3C0270EA46E0015EC53 /* NotificationServiceExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FAE3BF270EA46E0015EC53 /* NotificationServiceExtensionTests.swift */; };
 		02FAE3C2270EA46E0015EC53 /* NotificationServiceExtension.h in Headers */ = {isa = PBXBuildFile; fileRef = 02FAE3B4270EA46E0015EC53 /* NotificationServiceExtension.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
@@ -27,7 +26,6 @@
 		02FAE3B4270EA46E0015EC53 /* NotificationServiceExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NotificationServiceExtension.h; sourceTree = "<group>"; };
 		02FAE3B5270EA46E0015EC53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		02FAE3BA270EA46E0015EC53 /* NotificationServiceExtensionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NotificationServiceExtensionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		02FAE3BF270EA46E0015EC53 /* NotificationServiceExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationServiceExtensionTests.swift; sourceTree = "<group>"; };
 		02FAE3C1270EA46E0015EC53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -80,7 +78,6 @@
 		02FAE3BE270EA46E0015EC53 /* NotificationServiceExtensionTests */ = {
 			isa = PBXGroup;
 			children = (
-				02FAE3BF270EA46E0015EC53 /* NotificationServiceExtensionTests.swift */,
 				02FAE3C1270EA46E0015EC53 /* Info.plist */,
 			);
 			path = NotificationServiceExtensionTests;
@@ -201,7 +198,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				02FAE3C0270EA46E0015EC53 /* NotificationServiceExtensionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

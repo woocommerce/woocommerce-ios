@@ -236,4 +236,25 @@ final class OrdersRemoteTests: XCTestCase {
         }
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    func test_create_order_properly_encodes_fee_lines() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let fee = OrderFeeLine(feeID: 0, name: "Line", taxClass: "", taxStatus: .none, total: "12.34", totalTax: "", taxes: [], attributes: [])
+        let order = Order.fake().copy(fees: [fee])
+
+        // When
+        remote.createOrder(siteID: 123, order: order, fields: [.feeLines]) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["fee_lines"] as? [[String: String]]).first
+        let expected = [
+            "name": fee.name,
+            "tax_status": fee.taxStatus.rawValue,
+            "tax_class": fee.taxClass,
+            "total": fee.total
+        ]
+        assertEqual(received, expected)
+    }
 }

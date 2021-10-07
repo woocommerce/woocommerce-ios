@@ -422,6 +422,7 @@
 		CC0786C5267BAF0F00BA9AC1 /* ShippingLabelStatusMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0786C4267BAF0F00BA9AC1 /* ShippingLabelStatusMapper.swift */; };
 		CC0786C7267BB10700BA9AC1 /* shipping-label-status-success.json in Resources */ = {isa = PBXBuildFile; fileRef = CC0786C6267BB10700BA9AC1 /* shipping-label-status-success.json */; };
 		CC0786C9267BB32800BA9AC1 /* ShippingLabelStatusMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0786C8267BB32800BA9AC1 /* ShippingLabelStatusMapperTests.swift */; };
+		CC6A1FF5270E042200F6AF4A /* OrderMetaData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6A1FF4270E042200F6AF4A /* OrderMetaData.swift */; };
 		CC851D0625E51ADF00249E9C /* Decimal+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC851D0525E51ADF00249E9C /* Decimal+Extensions.swift */; };
 		CC851D1425E52AB500249E9C /* Decimal+ExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC851D1325E52AB500249E9C /* Decimal+ExtensionsTests.swift */; };
 		CC9A24A32641BCF2005DE56E /* ShippingLabelCreationEligibilityResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9A24A22641BCF2005DE56E /* ShippingLabelCreationEligibilityResponse.swift */; };
@@ -987,6 +988,7 @@
 		CC0786C4267BAF0F00BA9AC1 /* ShippingLabelStatusMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelStatusMapper.swift; sourceTree = "<group>"; };
 		CC0786C6267BB10700BA9AC1 /* shipping-label-status-success.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "shipping-label-status-success.json"; sourceTree = "<group>"; };
 		CC0786C8267BB32800BA9AC1 /* ShippingLabelStatusMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelStatusMapperTests.swift; sourceTree = "<group>"; };
+		CC6A1FF4270E042200F6AF4A /* OrderMetaData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderMetaData.swift; sourceTree = "<group>"; };
 		CC851D0525E51ADF00249E9C /* Decimal+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Decimal+Extensions.swift"; sourceTree = "<group>"; };
 		CC851D1325E52AB500249E9C /* Decimal+ExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Decimal+ExtensionsTests.swift"; sourceTree = "<group>"; };
 		CC9A24A22641BCF2005DE56E /* ShippingLabelCreationEligibilityResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCreationEligibilityResponse.swift; sourceTree = "<group>"; };
@@ -1517,6 +1519,7 @@
 				B5C6FCCE20A3592900A4F8E4 /* OrderItem.swift */,
 				021EAA5525493B3600AA8CCD /* OrderItemAttribute.swift */,
 				CE430671234B9EB20073CBFF /* OrderItemTax.swift */,
+				CC6A1FF4270E042200F6AF4A /* OrderMetaData.swift */,
 				74C8F06320EEB44800B6EDC9 /* OrderNote.swift */,
 				CEF88DAC233E95B000BED485 /* OrderRefundCondensed.swift */,
 				CE12FBD8221F3A6F00C59248 /* OrderStatus.swift */,
@@ -2417,6 +2420,7 @@
 				B557DA0320975500005962F4 /* Remote.swift in Sources */,
 				B53EF53C21814900003E146F /* SuccessResultMapper.swift in Sources */,
 				D8EDFE2625EE8A60003D2213 /* WCPayConnectionTokenMapper.swift in Sources */,
+				CC6A1FF5270E042200F6AF4A /* OrderMetaData.swift in Sources */,
 				02C254A4256371B200A04423 /* ShippingLabelSettings.swift in Sources */,
 				B554FA912180BCFC00C54DFF /* NoteHash.swift in Sources */,
 				CE0A0F19223987DF0075ED8D /* ProductListMapper.swift in Sources */,

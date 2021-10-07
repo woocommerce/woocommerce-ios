@@ -6,7 +6,7 @@ import protocol Storage.StorageManagerType
 ///
 final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
 
-    /// Indicates if the view model is updating the remote account settings
+    /// Indicates if the view model is updating the remote account settings or fetching remote account settings
     ///
     @Published var isUpdating: Bool = false
 
@@ -83,9 +83,11 @@ extension ShippingLabelPaymentMethodsViewModel {
     /// Syncs account settings specific to shipping labels, such as the last selected package and payment methods.
     ///
     func syncShippingLabelAccountSettings() {
+        isUpdating = true
         let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: accountSettings.siteID) { [weak self] result in
             guard let self = self else { return }
 
+            self.isUpdating = false
             switch result {
             case .success(let value):
                 self.accountSettings = value

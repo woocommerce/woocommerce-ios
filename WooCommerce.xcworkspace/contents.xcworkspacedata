@@ -20,6 +20,9 @@
       location = "group:Hardware/Hardware.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:NotificationServiceExtension/NotificationServiceExtension.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Fakes/Fakes.xcodeproj">
    </FileRef>
    <FileRef

@@ -241,7 +241,7 @@ private extension OrderStore {
         }
     }
 
-    /// Creates a quick pay order with a specific amount value and no tax,
+    /// Creates a quick pay order with a specific amount value and no tax.
     ///
     func createQuickPayOrder(siteID: Int64, amount: String, onCompletion: @escaping (Result<Order, Error>) -> Void) {
         let order = OrderFactory.quickPayOrder(amount: amount)

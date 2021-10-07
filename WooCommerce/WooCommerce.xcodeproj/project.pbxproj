@@ -373,6 +373,10 @@
 		02F6800925807CD300C3BAD2 /* GridStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F6800825807CD300C3BAD2 /* GridStackView.swift */; };
 		02FAE379270EA1960015EC53 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FAE378270EA1960015EC53 /* NotificationService.swift */; };
 		02FAE37D270EA1960015EC53 /* WooCommerceNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 02FAE376270EA1960015EC53 /* WooCommerceNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		02FAE3CC270EA53A0015EC53 /* NotificationServiceExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02FAE3CB270EA53A0015EC53 /* NotificationServiceExtension.framework */; };
+		02FAE3CD270EA53A0015EC53 /* NotificationServiceExtension.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 02FAE3CB270EA53A0015EC53 /* NotificationServiceExtension.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		02FAE3D0270EA53F0015EC53 /* Experiments.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02FAE3CF270EA53F0015EC53 /* Experiments.framework */; };
+		02FAE3D1270EA53F0015EC53 /* Experiments.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 02FAE3CF270EA53F0015EC53 /* Experiments.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		02FE89C7231FAA4100E85EF8 /* MainTabBarControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE89C6231FAA4100E85EF8 /* MainTabBarControllerTests.swift */; };
 		247CE89C2583402A00F9D9D1 /* Embassy in Frameworks */ = {isa = PBXBuildFile; productRef = 247CE89B2583402A00F9D9D1 /* Embassy */; };
 		247CE8A6258340E600F9D9D1 /* ScreenshotImages.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 247CE8A5258340E600F9D9D1 /* ScreenshotImages.xcassets */; };
@@ -1441,6 +1445,18 @@
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		02FAE3CE270EA53A0015EC53 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				02FAE3CD270EA53A0015EC53 /* NotificationServiceExtension.framework in Embed Frameworks */,
+				02FAE3D1270EA53F0015EC53 /* Experiments.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		263E37F22641FA0B00260D3B /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1824,6 +1840,8 @@
 		02FAE376270EA1960015EC53 /* WooCommerceNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WooCommerceNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		02FAE378270EA1960015EC53 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		02FAE37A270EA1960015EC53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		02FAE3CB270EA53A0015EC53 /* NotificationServiceExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = NotificationServiceExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		02FAE3CF270EA53F0015EC53 /* Experiments.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Experiments.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		02FE89C6231FAA4100E85EF8 /* MainTabBarControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarControllerTests.swift; sourceTree = "<group>"; };
 		247CE8A5258340E600F9D9D1 /* ScreenshotImages.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ScreenshotImages.xcassets; sourceTree = "<group>"; };
 		24C579D124F476300076E1B4 /* Woo-Alpha.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Woo-Alpha.entitlements"; sourceTree = "<group>"; };
@@ -2860,6 +2878,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				02FAE3CC270EA53A0015EC53 /* NotificationServiceExtension.framework in Frameworks */,
+				02FAE3D0270EA53F0015EC53 /* Experiments.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4910,6 +4930,8 @@
 		88A44ABE866401E6DB03AC60 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				02FAE3CF270EA53F0015EC53 /* Experiments.framework */,
+				02FAE3CB270EA53A0015EC53 /* NotificationServiceExtension.framework */,
 				02AB82EB27069D5D008D7334 /* Experiments.framework */,
 				0270C0A827069BEF00FC799F /* Experiments.framework */,
 				3FF314EF26FC784A0012E68E /* XCTest.framework */,
@@ -6682,6 +6704,7 @@
 				02FAE372270EA1960015EC53 /* Sources */,
 				02FAE373270EA1960015EC53 /* Frameworks */,
 				02FAE374270EA1960015EC53 /* Resources */,
+				02FAE3CE270EA53A0015EC53 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

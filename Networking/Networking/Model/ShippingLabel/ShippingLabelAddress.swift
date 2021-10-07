@@ -86,7 +86,7 @@ extension ShippingLabelAddress: Codable {
         // Make sure to only send address name if it's not empty,
         // otherwise requests to fetch rates and purchase label will fail.
         // Reference: https://git.io/JVQzC
-        if name.isNotEmpty {
+        if !name.isEmpty {
             try container.encode(name, forKey: .name)
         }
         try container.encode(phone, forKey: .phone)

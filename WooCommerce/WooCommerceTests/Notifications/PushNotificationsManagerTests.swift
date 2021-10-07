@@ -424,6 +424,41 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.hasUnreadPushNotifications)
+        XCTAssertFalse(userNotificationCenter.removeAllNotificationsWasCalled)
+    }
+
+    /// Verifies that `handleNotification` twice does not change app badge number from 1 when both notifications are from the same site.
+    func test_receiving_two_notifications_from_the_same_site_does_does_not_change_app_badge_number() {
+        // Arrange
+        // A site ID and the default stores are required to update the application badge number.
+        let stores = DefaultStoresManager.testingInstance
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: stores,
+                                                               supportManager: self.supportManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+            return PushNotificationsManager(configuration: configuration)
+        }()
+        stores.authenticate(credentials: SessionSettings.credentials)
+        let siteID = Int64(123)
+        stores.updateDefaultStore(storeID: siteID)
+        XCTAssertEqual(application.applicationIconBadgeNumber, .min)
+
+        // Action
+        let userInfoForTheFirstNotification = notificationPayload(badgeCount: 10, type: .comment, siteID: siteID)
+        let userInfoForTheSecondNotification = notificationPayload(badgeCount: 2, type: .storeOrder, siteID: siteID)
+        waitFor { promise in
+            self.manager.handleNotification(userInfoForTheFirstNotification, onBadgeUpdateCompletion: {
+                self.manager.handleNotification(userInfoForTheSecondNotification, onBadgeUpdateCompletion: {
+                    promise(())
+                }) { _ in }
+            }) { _ in }
+        }
+
+        // Assert
+        XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.hasUnreadPushNotifications)
+        XCTAssertFalse(userNotificationCenter.removeAllNotificationsWasCalled)
     }
 
     /// Verifies that `handleNotification` clears app badge number without clearing push notifications when the notification is from a different site.
@@ -453,6 +488,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.clearsBadgeOnly)
+        XCTAssertFalse(userNotificationCenter.removeAllNotificationsWasCalled)
     }
 
     /// Verifies that `resetBadgeCountForAllStores` clears app badge number and push notifications.
@@ -479,6 +515,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.clearsBadgeAndAllPushNotifications)
+        XCTAssertTrue(userNotificationCenter.removeAllNotificationsWasCalled)
     }
 }
 

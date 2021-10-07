@@ -36,6 +36,10 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
     private let onSelectionCompletion: (_ selectedPackages: [ShippingLabelPackageAttributes]) -> Void
     private let onPackageSyncCompletion: (_ packagesResponse: ShippingLabelPackagesResponse?) -> Void
 
+    /// The packages  response fetched from API
+    ///
+    private var packagesResponse: ShippingLabelPackagesResponse?
+
     private var cancellables: Set<AnyCancellable> = []
 
     /// Validation states of all items by index of each package.
@@ -76,6 +80,7 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
         self.order = order
+        self.packagesResponse = packagesResponse
         self.stores = stores
         self.storageManager = storageManager
         self.selectedPackages = selectedPackages
@@ -86,7 +91,7 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
         syncProducts()
         syncProductVariations()
         configureDefaultPackage()
-        configureItemViewModels(order: order, packageResponse: packagesResponse)
+        configureItemViewModels(order: order)
     }
 
     func confirmPackageSelection() {
@@ -114,13 +119,16 @@ private extension ShippingLabelPackagesFormViewModel {
 
     /// Set up item view models on change selected packages.
     ///
-    func configureItemViewModels(order: Order, packageResponse: ShippingLabelPackagesResponse?) {
+    func configureItemViewModels(order: Order) {
         $selectedPackages
-            .map { selectedPackages -> [ShippingLabelSinglePackageViewModel] in
+            .map { [weak self] selectedPackages -> [ShippingLabelSinglePackageViewModel] in
+                guard let self = self else {
+                    return []
+                }
                 return selectedPackages.enumerated().map { index, details in
                     return .init(order: order,
                                  orderItems: details.items,
-                                 packagesResponse: packageResponse,
+                                 packagesResponse: self.packagesResponse,
                                  selectedPackageID: details.packageID,
                                  totalWeight: details.totalWeight,
                                  isOriginalPackaging: details.isOriginalPackaging,
@@ -130,7 +138,8 @@ private extension ShippingLabelPackagesFormViewModel {
                                  onPackageSwitch: { [weak self] newPackage in
                         self?.switchPackage(currentPackage: details, newPackage: newPackage)
                     },
-                                 onPackagesSync: { [weak self] packagesResponse in
+                            onPackagesSync: { [weak self] packagesResponse in
+                        self?.packagesResponse = packagesResponse
                         self?.onPackageSyncCompletion(packagesResponse)
                     })
                 }

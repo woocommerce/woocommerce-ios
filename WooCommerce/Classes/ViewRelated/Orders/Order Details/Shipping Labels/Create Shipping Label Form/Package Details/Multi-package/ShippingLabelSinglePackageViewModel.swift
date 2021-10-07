@@ -202,7 +202,6 @@ extension ShippingLabelSinglePackageViewModel: ShippingLabelPackageSelectionDele
 
     func didSyncPackages(packagesResponse: ShippingLabelPackagesResponse?) {
         self.packagesResponse = packagesResponse
-        packageListViewModel = .init(siteID: order.siteID, packagesResponse: packagesResponse)
         onPackagesSync(packagesResponse)
     }
 }

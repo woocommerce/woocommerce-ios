@@ -68,6 +68,10 @@ struct OrdersUpsertUseCase {
         let siteID = readOnlyOrder.siteID
         let orderID = readOnlyOrder.orderID
 
+        guard readOnlyOrder.items.count > 0 else {
+            return
+        }
+
         // Upsert the items from the read-only order
         for readOnlyItem in readOnlyOrder.items {
             if let existingStorageItem = storage.loadOrderItem(siteID: siteID, orderID: orderID, itemID: readOnlyItem.itemID) {

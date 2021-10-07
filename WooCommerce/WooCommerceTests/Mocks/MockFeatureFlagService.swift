@@ -7,17 +7,20 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isShippingLabelsPaymentMethodCreationOn: Bool
     private let isShippingLabelsPackageCreationOn: Bool
     private let isShippingLabelsMultiPackageOn: Bool
+    private let isPushNotificationsForAllStoresOn: Bool
 
     init(isShippingLabelsM2M3On: Bool = false,
          isInternationalShippingLabelsOn: Bool = false,
          isShippingLabelsPaymentMethodCreationOn: Bool = false,
          isShippingLabelsPackageCreationOn: Bool = false,
-         isShippingLabelsMultiPackageOn: Bool = false) {
+         isShippingLabelsMultiPackageOn: Bool = false,
+         isPushNotificationsForAllStoresOn: Bool = false) {
         self.isShippingLabelsM2M3On = isShippingLabelsM2M3On
         self.isInternationalShippingLabelsOn = isInternationalShippingLabelsOn
         self.isShippingLabelsPaymentMethodCreationOn = isShippingLabelsPaymentMethodCreationOn
         self.isShippingLabelsPackageCreationOn = isShippingLabelsPackageCreationOn
         self.isShippingLabelsMultiPackageOn = isShippingLabelsMultiPackageOn
+        self.isPushNotificationsForAllStoresOn = isPushNotificationsForAllStoresOn
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -32,6 +35,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isShippingLabelsPackageCreationOn
         case .shippingLabelsMultiPackage:
             return isShippingLabelsMultiPackageOn
+        case .pushNotificationsForAllStores:
+            return isPushNotificationsForAllStoresOn
         default:
             return false
         }

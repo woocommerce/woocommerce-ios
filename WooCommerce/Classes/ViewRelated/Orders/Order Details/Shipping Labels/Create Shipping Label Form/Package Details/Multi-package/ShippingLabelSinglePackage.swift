@@ -60,7 +60,7 @@ struct ShippingLabelSinglePackage: View {
                 VStack(spacing: 0) {
                     Divider()
 
-                    TitleAndValueRow(title: Localization.packageSelected, value: viewModel.selectedPackageName, selectable: true) {
+                    TitleAndValueRow(title: Localization.packageSelected, value: .placeholder(viewModel.selectedPackageName), selectable: true) {
                         isShowingPackageSelection.toggle()
                     }
                     .padding(.horizontal, insets: safeAreaInsets)

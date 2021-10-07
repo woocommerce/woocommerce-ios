@@ -1,3 +1,4 @@
+import UITestsFoundation
 import XCTest
 
 final class LoginTests: XCTestCase {

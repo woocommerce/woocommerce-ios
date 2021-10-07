@@ -811,9 +811,17 @@ extension ShippingLabelFormViewModel {
                   let details = selectedPackagesDetails[safe: index] else {
                 return nil
             }
+            let productIDs: [Int64] = {
+                var ids: [Int64] = []
+                details.items.forEach { item in
+                    let quantity = item.quantity.intValue
+                    ids.append(contentsOf: Array(repeating: item.productOrVariationID, count: quantity))
+                }
+                return ids
+            }()
             return ShippingLabelPackagePurchase(package: package,
                                                 rate: selectedRate.rate,
-                                                productIDs: details.items.map { $0.productOrVariationID },
+                                                productIDs: productIDs,
                                                 customsForm: package.customsForm)
         }
 

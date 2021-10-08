@@ -63,7 +63,19 @@ final class OrderMapperTests: XCTestCase {
             XCTAssertEqual(address.state, "NY")
             XCTAssertEqual(address.postcode, "14304")
             XCTAssertEqual(address.country, "US")
+            XCTAssertEqual(address.phone, "333-333-3333")
         }
+    }
+
+    /// Verifies that Order shipping phone is parsed correctly from metadata.
+    ///
+    func test_Order_shipping_phone_is_correctly_parsed_from_metadata() {
+        guard let order = mapLoadFullyRefundedOrderResponse(), let shippingAddress = order.shippingAddress else {
+            XCTFail("Expected a mapped order response with a non-nil shipping address.")
+            return
+        }
+
+        XCTAssertEqual(shippingAddress.phone, "555-666-7777")
     }
 
     /// Verifies that all of the Order Items are parsed correctly.

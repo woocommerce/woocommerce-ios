@@ -64,10 +64,19 @@
                                     </button>
                                 </subviews>
                             </stackView>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PXt-fH-GM8">
+                                <rect key="frame" x="0.0" y="92" width="288" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="1vO-Pa-Rrp"/>
+                                </constraints>
+                                <state key="normal" title="Add Customer Note"/>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="ROw-w5-B5y" firstAttribute="leading" secondItem="KmX-Sc-g7S" secondAttribute="leading" id="748-v2-bRN"/>
                             <constraint firstAttribute="trailing" secondItem="ROw-w5-B5y" secondAttribute="trailing" id="HEe-FX-fCQ"/>
+                            <constraint firstAttribute="trailing" secondItem="PXt-fH-GM8" secondAttribute="trailing" id="gQG-Rd-zLW"/>
+                            <constraint firstItem="PXt-fH-GM8" firstAttribute="leading" secondItem="KmX-Sc-g7S" secondAttribute="leading" id="mdw-Th-NpD"/>
                         </constraints>
                     </stackView>
                 </subviews>
@@ -80,6 +89,7 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
+                <outlet property="addButton" destination="PXt-fH-GM8" id="dUB-nu-XDA"/>
                 <outlet property="addressLabel" destination="KJW-Ch-VgS" id="W8H-je-t7J"/>
                 <outlet property="editButton" destination="zA3-Zq-pRC" id="Igf-KB-IhK"/>
                 <outlet property="nameLabel" destination="pQe-4r-eVj" id="vSy-Fd-TAw"/>

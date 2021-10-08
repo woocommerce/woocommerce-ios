@@ -2,6 +2,10 @@
 
 This framework allows us to develop and test experimental features with different build configurations in release and debug builds. In the future, we can expand the framework to include more advanced experimentation like AB testing (using ExPlat in the Tracks library) and remote feature flag configuration.
 
+## Requirements
+
+The framework should [only contain APIs that are safe in app extensions](https://developer.apple.com/library/archive/documentation/General/Conceptual/ExtensibilityPG/ExtensionScenarios.html), since it is used in the notification service extension (and possibly more app extensions in the future).
+
 ## Dependencies
 
 None at the moment.

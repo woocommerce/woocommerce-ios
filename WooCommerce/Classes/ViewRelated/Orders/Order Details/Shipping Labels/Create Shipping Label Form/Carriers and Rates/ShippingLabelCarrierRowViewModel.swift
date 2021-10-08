@@ -128,6 +128,12 @@ struct ShippingLabelCarrierRowViewModel: Identifiable {
     }
 }
 
+extension ShippingLabelCarrierRowViewModel: Equatable {
+    static func == (lhs: ShippingLabelCarrierRowViewModel, rhs: ShippingLabelCarrierRowViewModel) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
 private extension ShippingLabelCarrierRowViewModel {
     enum Localization {
         static let businessDaySingular =

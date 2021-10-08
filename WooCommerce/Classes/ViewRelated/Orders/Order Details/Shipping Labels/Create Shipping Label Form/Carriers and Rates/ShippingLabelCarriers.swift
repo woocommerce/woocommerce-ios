@@ -9,11 +9,7 @@ struct ShippingLabelCarriers: View {
 
     /// Completion callback
     ///
-    typealias Completion = (_ selectedRate: ShippingLabelCarrierRate?,
-
-                            _ selectedSignatureRate: ShippingLabelCarrierRate?,
-
-                            _ selectedAdultSignatureRate: ShippingLabelCarrierRate?) -> Void
+    typealias Completion = ([ShippingLabelSelectedRate]) -> Void
     private let onCompletion: Completion
 
     init(viewModel: ShippingLabelCarriersViewModel,
@@ -42,11 +38,11 @@ struct ShippingLabelCarriers: View {
                                                               edgeInsets: edgeInsets,
                                                               shippingMethod: viewModel.shippingMethod,
                                                               shippingCost: viewModel.shippingCost).renderedIf(viewModel.shouldDisplayTopBanner)
-                        ForEach(viewModel.rows) { carrierRowVM in
-                            ShippingLabelCarrierRow(carrierRowVM)
-                            Divider().padding(.leading, Constants.dividerPadding)
+                        ForEach(Array(viewModel.sections.enumerated()), id: \.offset) { index, sectionVM in
+                            ShippingLabelCarriersSection(section: sectionVM, safeAreaInsets: geometry.safeAreaInsets)
+                                .background(Color(.systemBackground))
+                            Spacer().frame(height: Constants.spaceBetweenSections)
                         }
-                        .padding(.horizontal, insets: geometry.safeAreaInsets)
                     case .error:
                         VStack {
                             HStack (alignment: .center) {
@@ -64,14 +60,13 @@ struct ShippingLabelCarriers: View {
                 }
                 .padding(.bottom, insets: geometry.safeAreaInsets)
             }
+            .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
             .navigationTitle(Localization.titleView)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(action: {
-                        onCompletion(viewModel.getSelectedRates().selectedRate,
-                                     viewModel.getSelectedRates().selectedSignatureRate,
-                                     viewModel.getSelectedRates().selectedAdultSignatureRate)
+                        onCompletion(viewModel.getSelectedRates())
                         ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "carrier_rates_selected"])
                         presentation.wrappedValue.dismiss()
                     }, label: {
@@ -84,7 +79,32 @@ struct ShippingLabelCarriers: View {
     }
 
     enum Constants {
+        static let spaceBetweenSections: CGFloat = 16
         static let dividerPadding: CGFloat = 80
+    }
+
+    private struct ShippingLabelCarriersSection: View {
+        let section: ShippingLabelCarriersSectionViewModel
+        @State private var isCollapsed: Bool = false
+        let safeAreaInsets: EdgeInsets
+
+        var body: some View {
+            CollapsibleView(isCollapsible: true,
+                            isCollapsed: $isCollapsed,
+                            safeAreaInsets: safeAreaInsets) {
+                ShippingLabelCarrierSectionHeader(packageNumber: section.packageNumber)
+            } content: {
+                ForEach(section.rows) { rowVM in
+                    ShippingLabelCarrierRow(rowVM)
+                        .padding(.horizontal, insets: safeAreaInsets)
+
+                    // The separator will be added only if the element is not the last one of the list
+                    if section.rows.last != rowVM {
+                        Divider().padding(.leading, Constants.dividerPadding)
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -120,7 +140,7 @@ struct ShippingLabelCarriers_Previews: PreviewProvider {
                                                 originAddress: shippingAddress,
                                                 destinationAddress: shippingAddress,
                                                 packages: [])
-        ShippingLabelCarriers(viewModel: vm) { (_, _, _) in
+        ShippingLabelCarriers(viewModel: vm) { (_) in
         }
     }
 }

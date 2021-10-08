@@ -604,11 +604,13 @@
 		453A908325EFC9B2006EE892 /* ShippingLabelSuggestedAddressTopBannerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453A908225EFC9B2006EE892 /* ShippingLabelSuggestedAddressTopBannerFactory.swift */; };
 		453DBF8E2387F34A006762A5 /* UICollectionViewCell+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453DBF8D2387F34A006762A5 /* UICollectionViewCell+Helpers.swift */; };
 		453DBF9023882814006762A5 /* ProductImagesFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453DBF8F23882814006762A5 /* ProductImagesFlowLayout.swift */; };
+		4541D88A270718F6005A9E30 /* ShippingLabelCarriersSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4541D889270718F6005A9E30 /* ShippingLabelCarriersSectionViewModel.swift */; };
 		45455E322657C3F300BBB0C4 /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 45455E312657C3F300BBB0C4 /* Shimmer */; };
 		45455EFA26580B5D00BBB0C4 /* ShippingLabelCarrierRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45455EF926580B5D00BBB0C4 /* ShippingLabelCarrierRowViewModel.swift */; };
 		454B28BE23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454B28BD23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift */; };
 		4552085B25829091001CF873 /* AddAttributeViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4552085A25829091001CF873 /* AddAttributeViewModelTests.swift */; };
 		45527A412472C6160078D609 /* SwitchStoreUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45527A402472C6160078D609 /* SwitchStoreUseCase.swift */; };
+		4556ED38270645A6005CBC0D /* ShippingLabelCarrierSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4556ED37270645A5005CBC0D /* ShippingLabelCarrierSectionHeader.swift */; };
 		455800CC24C6F83F00A8D117 /* ProductSettingsSectionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455800CB24C6F83F00A8D117 /* ProductSettingsSectionsTests.swift */; };
 		455A2FDB246B1349000CA72C /* ProductVisibilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455A2FDA246B1349000CA72C /* ProductVisibilityTests.swift */; };
 		456396A725C81C9A001F1A26 /* ShippingLabelFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456396A525C81C9A001F1A26 /* ShippingLabelFormViewController.swift */; };
@@ -2001,10 +2003,12 @@
 		453A908225EFC9B2006EE892 /* ShippingLabelSuggestedAddressTopBannerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelSuggestedAddressTopBannerFactory.swift; sourceTree = "<group>"; };
 		453DBF8D2387F34A006762A5 /* UICollectionViewCell+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionViewCell+Helpers.swift"; sourceTree = "<group>"; };
 		453DBF8F23882814006762A5 /* ProductImagesFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesFlowLayout.swift; sourceTree = "<group>"; };
+		4541D889270718F6005A9E30 /* ShippingLabelCarriersSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCarriersSectionViewModel.swift; sourceTree = "<group>"; };
 		45455EF926580B5D00BBB0C4 /* ShippingLabelCarrierRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCarrierRowViewModel.swift; sourceTree = "<group>"; };
 		454B28BD23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateIntervalFormatter+Helpers.swift"; sourceTree = "<group>"; };
 		4552085A25829091001CF873 /* AddAttributeViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAttributeViewModelTests.swift; sourceTree = "<group>"; };
 		45527A402472C6160078D609 /* SwitchStoreUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchStoreUseCase.swift; sourceTree = "<group>"; };
+		4556ED37270645A5005CBC0D /* ShippingLabelCarrierSectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCarrierSectionHeader.swift; sourceTree = "<group>"; };
 		455800CB24C6F83F00A8D117 /* ProductSettingsSectionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsSectionsTests.swift; sourceTree = "<group>"; };
 		455A2FDA246B1349000CA72C /* ProductVisibilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVisibilityTests.swift; sourceTree = "<group>"; };
 		456396A525C81C9A001F1A26 /* ShippingLabelFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelFormViewController.swift; sourceTree = "<group>"; };
@@ -4238,6 +4242,8 @@
 			children = (
 				4569317E2653E82B009ED69D /* ShippingLabelCarriers.swift */,
 				45693188265403A1009ED69D /* ShippingLabelCarriersViewModel.swift */,
+				4541D889270718F6005A9E30 /* ShippingLabelCarriersSectionViewModel.swift */,
+				4556ED37270645A5005CBC0D /* ShippingLabelCarrierSectionHeader.swift */,
 				456931832653E9F1009ED69D /* ShippingLabelCarrierRow.swift */,
 				45455EF926580B5D00BBB0C4 /* ShippingLabelCarrierRowViewModel.swift */,
 				4508BF612660E34A00707869 /* ShippingLabelCarrierAndRatesTopBanner.swift */,
@@ -7643,6 +7649,7 @@
 				B554E17B2152F27200F31188 /* UILabel+Appearance.swift in Sources */,
 				020B2F8F23BD9F1F00BD79AD /* IntegerInputFormatter.swift in Sources */,
 				7441EBC9226A71AA008BF83D /* TitleBodyTableViewCell.swift in Sources */,
+				4556ED38270645A6005CBC0D /* ShippingLabelCarrierSectionHeader.swift in Sources */,
 				B541B21C2189F3D8008FE7C1 /* StringStyles.swift in Sources */,
 				B58B4AB82108F14700076FDD /* NoticeNotificationInfo.swift in Sources */,
 				CE24BCD8212F25D4001CD12E /* StorageOrder+Woo.swift in Sources */,
@@ -7893,6 +7900,7 @@
 				D81F2D37225F0D160084BF9C /* EmptyListMessageWithActionView.swift in Sources */,
 				575472812452185300A94C3C /* PushNotification.swift in Sources */,
 				26F94E26267A559300DB6CCF /* ProductAddOn.swift in Sources */,
+				4541D88A270718F6005A9E30 /* ShippingLabelCarriersSectionViewModel.swift in Sources */,
 				77E53EBF2510C153003D385F /* ProductDownloadListViewModel.swift in Sources */,
 				DE19BB1A26C3B5DC00AB70D9 /* ShippingLabelCustomsFormItemDetailsViewModel.swift in Sources */,
 				2667BFE52530DCF4008099D4 /* RefundItemsValuesCalculationUseCase.swift in Sources */,

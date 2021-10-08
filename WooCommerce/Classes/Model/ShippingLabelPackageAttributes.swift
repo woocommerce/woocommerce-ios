@@ -7,7 +7,10 @@ struct ShippingLabelPackageAttributes: Equatable {
     /// Default box ID for boxes shipping in original packaging.
     static let originalPackagingBoxID = "individual"
 
-    /// ID of the selected package.
+    /// Unique ID of the package.
+    let id: String = UUID().uuidString
+
+    /// Name of the package.
     let packageID: String
 
     /// Total weight of the package in string value.

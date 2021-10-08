@@ -45,19 +45,10 @@ final class ShippingLabelFormViewModel {
     ///
     private(set) var selectedRates: [ShippingLabelSelectedRate] = []
 
-    // TODO-4716: Remove this when carriers & rates is updated for multi-package support
-    var selectedRate: ShippingLabelCarrierRate? {
-        selectedRates.first?.rate
-    }
-
-    // TODO-4716: Remove this when carriers & rates is updated for multi-package support
-    var selectedSignatureRate: ShippingLabelCarrierRate? {
-        selectedRates.first?.signatureRate
-    }
-
-    // TODO-4716: Remove this when carriers & rates is updated for multi-package support
-    var selectedAdultSignatureRate: ShippingLabelCarrierRate? {
-        selectedRates.first?.adultSignatureRate
+    /// The total amount of the selected rates
+    ///
+    var totalAmount: Double {
+        selectedRates.map { $0.totalRate }.reduce(0, +)
     }
 
     var selectedPackages: [ShippingLabelPackageSelected] {
@@ -67,11 +58,11 @@ final class ShippingLabelFormViewModel {
 
         return selectedPackagesDetails.compactMap { package -> ShippingLabelPackageSelected? in
             let weight = Double(package.totalWeight) ?? .zero
+            let customsForm = customsForms.first(where: { $0.packageID == package.id })
 
             if let customPackage = packagesResponse.customPackages.first(where: { $0.title == package.packageID }) {
                 let boxID = customPackage.title
-                let customsForm = customsForms.first(where: { $0.packageID == boxID })
-                return ShippingLabelPackageSelected(id: UUID().uuidString,
+                return ShippingLabelPackageSelected(id: package.id,
                                                     boxID: boxID,
                                                     length: customPackage.getLength(),
                                                     width: customPackage.getWidth(),
@@ -84,8 +75,7 @@ final class ShippingLabelFormViewModel {
             for option in packagesResponse.predefinedOptions {
                 if let predefinedPackage = option.predefinedPackages.first(where: { $0.id == package.packageID }) {
                     let boxID = predefinedPackage.id
-                    let customsForm = customsForms.first(where: { $0.packageID == boxID })
-                    return ShippingLabelPackageSelected(id: UUID().uuidString,
+                    return ShippingLabelPackageSelected(id: package.id,
                                                         boxID: boxID,
                                                         length: predefinedPackage.getLength(),
                                                         width: predefinedPackage.getWidth(),
@@ -94,6 +84,17 @@ final class ShippingLabelFormViewModel {
                                                         isLetter: predefinedPackage.isLetter,
                                                         customsForm: customsForm)
                 }
+            }
+
+            if package.isOriginalPackaging, let item = package.items.first {
+                return ShippingLabelPackageSelected(id: package.id,
+                                                    boxID: package.packageID,
+                                                    length: Double(item.dimensions.length) ?? 0,
+                                                    width: Double(item.dimensions.width) ?? 0,
+                                                    height: Double(item.dimensions.height) ?? 0,
+                                                    weight: item.weight,
+                                                    isLetter: false,
+                                                    customsForm: customsForm)
             }
 
             return nil
@@ -674,7 +675,7 @@ private extension ShippingLabelFormViewModel {
                       originCountry: SiteAddress().countryCode,
                       productID: item.productOrVariationID)
             }
-            return ShippingLabelCustomsForm(packageID: package.packageID, packageName: packageName, items: items)
+            return ShippingLabelCustomsForm(packageID: package.id, packageName: packageName, items: items)
         }
     }
 
@@ -805,8 +806,8 @@ extension ShippingLabelFormViewModel {
         }
 
         let packages = selectedPackages.enumerated().compactMap { (index, package) -> ShippingLabelPackagePurchase? in
-            guard let selectedRate = selectedRates[safe: index],
-                  let details = selectedPackagesDetails[safe: index] else {
+            guard let selectedRate = selectedRates.first(where: { $0.packageID == package.id }),
+                  let details = selectedPackagesDetails.first(where: { $0.id == package.id }) else {
                 return nil
             }
             return ShippingLabelPackagePurchase(package: package,

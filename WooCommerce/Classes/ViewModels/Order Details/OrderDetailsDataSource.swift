@@ -368,11 +368,18 @@ private extension OrderDetailsDataSource {
             NSLocalizedString("“%@”",
                               comment: "Customer note, wrapped in quotes"),
             customerNote)
-        cell.body = customerNote.isNotEmpty ? localizedBody : " "
         cell.selectionStyle = .none
 
-        cell.onEditTapped = { [weak self] in
-            self?.onCellAction?(.editCustomerNote, nil)
+        if customerNote.isNotEmpty {
+            cell.body = localizedBody
+            cell.onEditTapped = { [weak self] in
+                self?.onCellAction?(.editCustomerNote, nil)
+            }
+        } else {
+            cell.body = nil
+            cell.onAddTapped = { [weak self] in
+                self?.onCellAction?(.editCustomerNote, nil)
+            }
         }
 
         cell.editButtonAccessibilityLabel = NSLocalizedString(

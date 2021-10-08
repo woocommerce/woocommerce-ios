@@ -9,53 +9,71 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="79" id="hBw-ST-ECJ" customClass="CustomerNoteTableViewCell" customModule="WooCommerce" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="79"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="100" id="hBw-ST-ECJ" customClass="CustomerNoteTableViewCell" customModule="WooCommerce" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="100"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="hBw-ST-ECJ" id="OND-C1-icR">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="79"/>
+                <rect key="frame" x="0.0" y="0.0" width="320" height="100"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Headline Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T3S-nL-Xv3">
-                        <rect key="frame" x="16" y="16" width="288" height="20.5"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Body Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z0H-LC-lIr">
-                        <rect key="frame" x="16" y="40.5" width="288" height="22.5"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
-                    <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AEi-vO-v71">
-                        <rect key="frame" x="260" y="30" width="44" height="44"/>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="3Ns-D0-Lmm">
+                        <rect key="frame" x="16" y="16" width="288" height="68"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Headline Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T3S-nL-Xv3">
+                                <rect key="frame" x="0.0" y="0.0" width="113" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <stackView opaque="NO" contentMode="scaleToFill" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="KMy-GB-2vj">
+                                <rect key="frame" x="0.0" y="20.5" width="288" height="47.5"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Body Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z0H-LC-lIr">
+                                        <rect key="frame" x="0.0" y="13.5" width="288" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button hidden="YES" opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AEi-vO-v71">
+                                        <rect key="frame" x="288" y="2" width="44" height="44"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="AEi-vO-v71" secondAttribute="height" multiplier="1:1" id="QS6-Re-4g0"/>
+                                            <constraint firstAttribute="width" constant="44" id="jEO-lC-Tht"/>
+                                        </constraints>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8sO-TX-YXZ">
+                                <rect key="frame" x="0.0" y="68" width="288" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="JD7-UH-chp"/>
+                                </constraints>
+                                <state key="normal" title="Add Customer Note"/>
+                            </button>
+                        </subviews>
                         <constraints>
-                            <constraint firstAttribute="width" secondItem="AEi-vO-v71" secondAttribute="height" multiplier="1:1" id="QS6-Re-4g0"/>
-                            <constraint firstAttribute="width" constant="44" id="jEO-lC-Tht"/>
+                            <constraint firstItem="KMy-GB-2vj" firstAttribute="leading" secondItem="3Ns-D0-Lmm" secondAttribute="leading" id="1sf-8Q-Erz"/>
+                            <constraint firstItem="8sO-TX-YXZ" firstAttribute="leading" secondItem="3Ns-D0-Lmm" secondAttribute="leading" id="CXr-SC-scr"/>
+                            <constraint firstAttribute="trailing" secondItem="8sO-TX-YXZ" secondAttribute="trailing" id="db6-Qe-0lI"/>
+                            <constraint firstAttribute="trailing" secondItem="KMy-GB-2vj" secondAttribute="trailing" id="uSW-Ze-AEM"/>
                         </constraints>
-                    </button>
+                    </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="z0H-LC-lIr" firstAttribute="trailing" secondItem="T3S-nL-Xv3" secondAttribute="trailing" id="AuN-8r-SjX"/>
-                    <constraint firstItem="z0H-LC-lIr" firstAttribute="top" secondItem="T3S-nL-Xv3" secondAttribute="bottom" constant="4" id="b0p-Qy-hA7"/>
-                    <constraint firstItem="T3S-nL-Xv3" firstAttribute="trailing" secondItem="OND-C1-icR" secondAttribute="trailingMargin" id="d9o-iH-3E2"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="z0H-LC-lIr" secondAttribute="bottom" constant="5" id="gao-id-FZ7"/>
-                    <constraint firstItem="T3S-nL-Xv3" firstAttribute="top" secondItem="OND-C1-icR" secondAttribute="topMargin" constant="5" id="j7x-pf-RCp"/>
-                    <constraint firstItem="AEi-vO-v71" firstAttribute="centerY" secondItem="z0H-LC-lIr" secondAttribute="centerY" id="pYJ-sG-fZy"/>
-                    <constraint firstItem="T3S-nL-Xv3" firstAttribute="leading" secondItem="OND-C1-icR" secondAttribute="leadingMargin" id="thJ-Ra-SNq"/>
-                    <constraint firstAttribute="trailing" secondItem="AEi-vO-v71" secondAttribute="trailing" constant="16" id="xps-O6-jUr"/>
-                    <constraint firstItem="z0H-LC-lIr" firstAttribute="leading" secondItem="T3S-nL-Xv3" secondAttribute="leading" id="yUO-YZ-lQr"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="3Ns-D0-Lmm" secondAttribute="bottom" constant="5" id="3aC-Bl-suK"/>
+                    <constraint firstItem="3Ns-D0-Lmm" firstAttribute="top" secondItem="OND-C1-icR" secondAttribute="topMargin" constant="5" id="5Zo-az-QAY"/>
+                    <constraint firstItem="3Ns-D0-Lmm" firstAttribute="leading" secondItem="OND-C1-icR" secondAttribute="leadingMargin" id="lJe-LI-FsU"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="3Ns-D0-Lmm" secondAttribute="trailing" id="wMT-qX-5nb"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="U1C-V1-Or8"/>
             <connections>
+                <outlet property="addButton" destination="8sO-TX-YXZ" id="69l-hj-M3Q"/>
                 <outlet property="bodyLabel" destination="z0H-LC-lIr" id="eha-ch-GUr"/>
-                <outlet property="bodyLabelTrailingConstraint" destination="AuN-8r-SjX" id="vyp-5o-HQO"/>
                 <outlet property="editButton" destination="AEi-vO-v71" id="kDj-Jd-NCM"/>
                 <outlet property="headlineLabel" destination="T3S-nL-Xv3" id="ogO-Et-oBd"/>
             </connections>
-            <point key="canvasLocation" x="47.826086956521742" y="124.88839285714285"/>
+            <point key="canvasLocation" x="47.826086956521742" y="131.91964285714286"/>
         </tableViewCell>
     </objects>
 </document>

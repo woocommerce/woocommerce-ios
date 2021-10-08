@@ -6,9 +6,9 @@ final class CustomerNoteTableViewCell: UITableViewCell {
 
     @IBOutlet private weak var bodyLabel: UILabel!
 
-    @IBOutlet private weak var bodyLabelTrailingConstraint: NSLayoutConstraint!
-
     @IBOutlet private weak var editButton: UIButton!
+
+    @IBOutlet private weak var addButton: UIButton!
 
     /// Headline label text
     ///
@@ -33,13 +33,22 @@ final class CustomerNoteTableViewCell: UITableViewCell {
     }
 
     /// Closure to be invoked when the edit icon is tapped
-    /// Setting a value makes the button visible and insets the body trailing constraint.
+    /// Setting a value makes the button visible
     ///
     var onEditTapped: (() -> Void)? {
         didSet {
             let shouldHideEditButton = onEditTapped == nil
             editButton.isHidden = shouldHideEditButton
-            bodyLabelTrailingConstraint.constant = shouldHideEditButton ? 0 : -editButton.frame.width
+        }
+    }
+
+    /// Closure to be invoked when the add button is tapped
+    /// Setting a value makes the button visible
+    ///
+    var onAddTapped: (() -> Void)? {
+        didSet {
+            let shouldHideAddButton = onAddTapped == nil
+            addButton.isHidden = shouldHideAddButton
         }
     }
 
@@ -59,6 +68,7 @@ final class CustomerNoteTableViewCell: UITableViewCell {
         configureBackground()
         configureLabels()
         configureEditButton()
+        configureAddButton()
     }
 
     override func prepareForReuse() {
@@ -66,6 +76,7 @@ final class CustomerNoteTableViewCell: UITableViewCell {
         headlineLabel.text = nil
         bodyLabel.text = nil
         onEditTapped = nil
+        onAddTapped = nil
         editButton.accessibilityLabel = nil
     }
 }
@@ -88,8 +99,22 @@ private extension CustomerNoteTableViewCell {
         editButton.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
     }
 
+    func configureAddButton() {
+        addButton.applyLinkButtonStyle()
+        addButton.setImage(.plusImage, for: .normal)
+        addButton.contentHorizontalAlignment = .leading
+        addButton.contentVerticalAlignment = .bottom
+        addButton.contentEdgeInsets = .zero
+        addButton.distributeTitleAndImage(spacing: Constants.buttonTitleAndImageSpacing)
+        addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
+    }
+
     @objc func editButtonTapped() {
         onEditTapped?()
+    }
+
+    @objc func addButtonTapped() {
+        onAddTapped?()
     }
 }
 
@@ -102,5 +127,11 @@ extension CustomerNoteTableViewCell {
 
     func getBodyLabel() -> UILabel {
         return bodyLabel
+    }
+}
+
+private extension CustomerNoteTableViewCell {
+    enum Constants {
+        static let buttonTitleAndImageSpacing: CGFloat = 16
     }
 }

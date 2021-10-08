@@ -371,8 +371,8 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
     }
 
     enum PluginVersion: String {
-        case supported = "2.6.1"
-        case supportedExact = "2.5"
+        case supported = "3.1.1"
+        case supportedExact = "3.1"
         case unsupported = "2.4.2"
     }
 }

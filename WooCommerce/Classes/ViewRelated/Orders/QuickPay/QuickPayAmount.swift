@@ -31,8 +31,12 @@ struct QuickPayAmount: View {
     ///
     @State private var amount: String = ""
 
+    /// Keeps track of the current content scale due to accessibility changes
+    ///
+    @ScaledMetric private var scale: CGFloat = 1.0
+
     var body: some View {
-        VStack(alignment: .center) {
+        VStack(alignment: .center, spacing: Layout.mainVerticalSpacing) {
 
             Spacer()
 
@@ -40,7 +44,7 @@ struct QuickPayAmount: View {
                 .secondaryBodyStyle()
 
             TextField(Localization.amountPlaceholder, text: $amount)
-                .font(.system(size: 56, weight: .bold, design: .default))
+                .font(.system(size: Layout.amountFontSize(scale: scale), weight: .bold, design: .default))
                 .foregroundColor(Color(.text))
                 .fixedSize(horizontal: true, vertical: false)
 
@@ -64,6 +68,13 @@ private extension QuickPayAmount {
         static let amountPlaceholder = NSLocalizedString("$0.00", comment: "Placeholder for the amount textfield in the quick pay screen")
         static let buttonTitle = NSLocalizedString("Done", comment: "Title for the button to confirm the amount in the quick pay screen")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the quick pay screen")
+    }
+
+    enum Layout {
+        static let mainVerticalSpacing: CGFloat = 8
+        static func amountFontSize(scale: CGFloat) -> CGFloat {
+            56 * scale
+        }
     }
 }
 

@@ -46,10 +46,10 @@ struct QuickPayAmount: View {
 
             // Amount Textfield
             TextField(Localization.amountPlaceholder, text: $amount)
-                .keyboardType(.decimalPad)
-                .foregroundColor(Color(.text))
                 .font(.system(size: Layout.amountFontSize(scale: scale), weight: .bold, design: .default))
-                .fixedSize(horizontal: true, vertical: true)
+                .foregroundColor(Color(.text))
+                .multilineTextAlignment(.center)
+                .keyboardType(.decimalPad)
 
             Spacer()
 

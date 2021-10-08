@@ -30,7 +30,7 @@ struct OrderMetaData: Decodable {
 ///
 private extension OrderMetaData {
     enum CodingKeys: String, CodingKey {
-        case key = "key"
-        case value = "value"
+        case key
+        case value
     }
 }

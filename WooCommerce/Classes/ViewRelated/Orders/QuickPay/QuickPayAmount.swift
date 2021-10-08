@@ -55,8 +55,15 @@ struct QuickPayAmount: View {
             }
             .buttonStyle(PrimaryButtonStyle())
         }
-        .navigationTitle(Localization.title)
         .padding()
+        .navigationTitle(Localization.title)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(Localization.cancelTitle, action: {
+                    dismiss()
+                })
+            }
+        }
     }
 }
 

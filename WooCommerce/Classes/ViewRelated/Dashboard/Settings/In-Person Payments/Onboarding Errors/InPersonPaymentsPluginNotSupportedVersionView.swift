@@ -36,7 +36,7 @@ private enum Localization {
     )
 
     static let message = NSLocalizedString(
-        "The WooCommerce Payments extension is installed on your store, but the installed version does not support In-Person Payments. "
+        "The WooCommerce Payments extension is installed on your store, but needs to be updated for In-Person Payments. "
             + "Please update WooCommerce Payments to the most recent version.",
         comment: "Error message when WooCommerce Payments is installed but the version is not supported"
     )

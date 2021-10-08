@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0281A7A3270FD374003B72FC /* Experiments.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0281A7A2270FD374003B72FC /* Experiments.framework */; };
+		0281A7A4270FD374003B72FC /* Experiments.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0281A7A2270FD374003B72FC /* Experiments.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		02FAE3BB270EA46E0015EC53 /* NotificationServiceExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02FAE3B1270EA46E0015EC53 /* NotificationServiceExtension.framework */; };
 		02FAE3C2270EA46E0015EC53 /* NotificationServiceExtension.h in Headers */ = {isa = PBXBuildFile; fileRef = 02FAE3B4270EA46E0015EC53 /* NotificationServiceExtension.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
@@ -21,7 +23,22 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		0281A7A5270FD374003B72FC /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				0281A7A4270FD374003B72FC /* Experiments.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		0281A7A2270FD374003B72FC /* Experiments.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Experiments.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		02FAE3B1270EA46E0015EC53 /* NotificationServiceExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NotificationServiceExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		02FAE3B4270EA46E0015EC53 /* NotificationServiceExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NotificationServiceExtension.h; sourceTree = "<group>"; };
 		02FAE3B5270EA46E0015EC53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -34,6 +51,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0281A7A3270FD374003B72FC /* Experiments.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -48,12 +66,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0281A7A1270FD374003B72FC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0281A7A2270FD374003B72FC /* Experiments.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		02FAE3A7270EA46E0015EC53 = {
 			isa = PBXGroup;
 			children = (
 				02FAE3B3270EA46E0015EC53 /* NotificationServiceExtension */,
 				02FAE3BE270EA46E0015EC53 /* NotificationServiceExtensionTests */,
 				02FAE3B2270EA46E0015EC53 /* Products */,
+				0281A7A1270FD374003B72FC /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -105,6 +132,7 @@
 				02FAE3AD270EA46E0015EC53 /* Sources */,
 				02FAE3AE270EA46E0015EC53 /* Frameworks */,
 				02FAE3AF270EA46E0015EC53 /* Resources */,
+				0281A7A5270FD374003B72FC /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -144,6 +172,7 @@
 				TargetAttributes = {
 					02FAE3B0270EA46E0015EC53 = {
 						CreatedOnToolsVersion = 12.5.1;
+						LastSwiftMigration = 1250;
 					};
 					02FAE3B9270EA46E0015EC53 = {
 						CreatedOnToolsVersion = 12.5.1;
@@ -216,6 +245,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -264,7 +294,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -280,6 +310,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -322,7 +353,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -337,6 +368,7 @@
 		02FAE3C6270EA46E0015EC53 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -352,6 +384,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce.NotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -360,6 +393,7 @@
 		02FAE3C7270EA46E0015EC53 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;

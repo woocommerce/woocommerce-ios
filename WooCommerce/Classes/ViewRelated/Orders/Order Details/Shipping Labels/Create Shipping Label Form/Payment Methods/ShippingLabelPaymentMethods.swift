@@ -188,7 +188,7 @@ private extension ShippingLabelPaymentMethods {
                                                             comment: "Title of the webview of adding a payment method in Shipping Labels")
         static let doneButtonAddPayment = NSLocalizedString("Done",
                                                             comment: "Done navigation button in Shipping Label add payment webview")
-        static let paymentMethodAddedNotice = NSLocalizedString("No payment method found",
+        static let paymentMethodAddedNotice = NSLocalizedString("Payment method added",
                                                                 comment: "Notice that will be displayed after adding a new Shipping Label payment method")
         static let pleaseAddPaymentMethodMessage = NSLocalizedString("Please, add a new payment method",
                                                                      comment: "Message that will be displayed if there are no Shipping Label payment methods.")

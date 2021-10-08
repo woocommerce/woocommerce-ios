@@ -1,4 +1,5 @@
 @testable import WooCommerce
+import Experiments
 
 struct MockFeatureFlagService: FeatureFlagService {
     private let isShippingLabelsM2M3On: Bool

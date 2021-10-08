@@ -29,13 +29,13 @@
                                 <rect key="frame" x="0.0" y="20.5" width="288" height="47.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Body Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z0H-LC-lIr">
-                                        <rect key="frame" x="0.0" y="13.5" width="244" height="20.5"/>
+                                        <rect key="frame" x="0.0" y="13.5" width="288" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AEi-vO-v71">
-                                        <rect key="frame" x="244" y="2" width="44" height="44"/>
+                                    <button hidden="YES" opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AEi-vO-v71">
+                                        <rect key="frame" x="288" y="2" width="44" height="44"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="AEi-vO-v71" secondAttribute="height" multiplier="1:1" id="QS6-Re-4g0"/>
                                             <constraint firstAttribute="width" constant="44" id="jEO-lC-Tht"/>

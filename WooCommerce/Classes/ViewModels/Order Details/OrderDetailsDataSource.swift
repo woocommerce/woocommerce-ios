@@ -376,6 +376,7 @@ private extension OrderDetailsDataSource {
                 self?.onCellAction?(.editCustomerNote, nil)
             }
         } else {
+            cell.body = nil
             cell.onAddTapped = { [weak self] in
                 self?.onCellAction?(.editCustomerNote, nil)
             }

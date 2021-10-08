@@ -56,13 +56,13 @@ final class ShippingLabelFormViewModel {
             return []
         }
 
-        return selectedPackagesDetails.enumerated().compactMap { (index, package) -> ShippingLabelPackageSelected? in
+        return selectedPackagesDetails.compactMap { package -> ShippingLabelPackageSelected? in
             let weight = Double(package.totalWeight) ?? .zero
+            let customsForm = customsForms.first(where: { $0.packageID == package.id })
 
             if let customPackage = packagesResponse.customPackages.first(where: { $0.title == package.packageID }) {
                 let boxID = customPackage.title
-                let customsForm = customsForms.first(where: { $0.packageID == boxID })
-                return ShippingLabelPackageSelected(id: "\(index)-custom-package",
+                return ShippingLabelPackageSelected(id: package.id,
                                                     boxID: boxID,
                                                     length: customPackage.getLength(),
                                                     width: customPackage.getWidth(),
@@ -75,8 +75,7 @@ final class ShippingLabelFormViewModel {
             for option in packagesResponse.predefinedOptions {
                 if let predefinedPackage = option.predefinedPackages.first(where: { $0.id == package.packageID }) {
                     let boxID = predefinedPackage.id
-                    let customsForm = customsForms.first(where: { $0.packageID == boxID })
-                    return ShippingLabelPackageSelected(id: "\(index)-predefined-package",
+                    return ShippingLabelPackageSelected(id: package.id,
                                                         boxID: boxID,
                                                         length: predefinedPackage.getLength(),
                                                         width: predefinedPackage.getWidth(),
@@ -88,14 +87,14 @@ final class ShippingLabelFormViewModel {
             }
 
             if package.isOriginalPackaging, let item = package.items.first {
-                return ShippingLabelPackageSelected(id: "\(index)-individual-package",
-                                                    boxID: "\(index)-individual-package",
+                return ShippingLabelPackageSelected(id: package.id,
+                                                    boxID: package.packageID,
                                                     length: Double(item.dimensions.length) ?? 0,
                                                     width: Double(item.dimensions.width) ?? 0,
                                                     height: Double(item.dimensions.height) ?? 0,
                                                     weight: item.weight,
                                                     isLetter: false,
-                                                    customsForm: customsForms.first(where: { $0.packageID == package.packageID }))
+                                                    customsForm: customsForm)
             }
 
             return nil
@@ -676,7 +675,7 @@ private extension ShippingLabelFormViewModel {
                       originCountry: SiteAddress().countryCode,
                       productID: item.productOrVariationID)
             }
-            return ShippingLabelCustomsForm(packageID: package.packageID, packageName: packageName, items: items)
+            return ShippingLabelCustomsForm(packageID: package.id, packageName: packageName, items: items)
         }
     }
 
@@ -807,8 +806,8 @@ extension ShippingLabelFormViewModel {
         }
 
         let packages = selectedPackages.enumerated().compactMap { (index, package) -> ShippingLabelPackagePurchase? in
-            guard let selectedRate = selectedRates[safe: index],
-                  let details = selectedPackagesDetails[safe: index] else {
+            guard let selectedRate = selectedRates.first(where: { $0.packageID == package.id }),
+                  let details = selectedPackagesDetails.first(where: { $0.id == package.id }) else {
                 return nil
             }
             return ShippingLabelPackagePurchase(package: package,

@@ -234,9 +234,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
                                                                     originAddress: nil,
                                                                     destinationAddress: nil)
-        let expectedPackageID = "my-package-id"
         let expectedPackageWeight = "55"
-        let selectedPackage = ShippingLabelPackageAttributes(packageID: expectedPackageID, totalWeight: expectedPackageWeight, items: [])
+        let selectedPackage = ShippingLabelPackageAttributes(packageID: "my-package-id", totalWeight: expectedPackageWeight, items: [])
 
         shippingLabelFormViewModel.handleOriginAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(phone: "0123456789", country: "US"),
                                                                    validated: true)
@@ -256,7 +255,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         shippingLabelFormViewModel.handlePackageDetailsValueChanges(details: [selectedPackage])
 
         // Then
-        XCTAssertEqual(shippingLabelFormViewModel.customsForms.first?.packageID, expectedPackageID)
+        XCTAssertEqual(shippingLabelFormViewModel.customsForms.first?.packageID, selectedPackage.id)
         XCTAssertTrue(shippingLabelFormViewModel.selectedRates.isEmpty)
 
         let rows = shippingLabelFormViewModel.state.sections.first?.rows
@@ -883,7 +882,6 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
     func test_customsForms_returns_correctly_when_updating_selectedPackageID() {
         // Given
         let expectedProductID: Int64 = 123
-        let expectedPackageID = "Food Package"
         let orderItem = OrderItem.fake().copy(productID: expectedProductID)
         let order = MockOrders().makeOrder(items: [orderItem])
         let viewModel = ShippingLabelFormViewModel(order: order, originAddress: nil, destinationAddress: nil)
@@ -892,13 +890,13 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         viewModel.handleOriginAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(phone: "0123456789", country: "US"), validated: true)
         viewModel.handleDestinationAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(country: "VN"), validated: true)
         let item = ShippingLabelPackageItem.fake(id: expectedProductID)
-        let selectedPackage = ShippingLabelPackageAttributes(packageID: expectedPackageID, totalWeight: "55", items: [item])
+        let selectedPackage = ShippingLabelPackageAttributes(packageID: "Food Package", totalWeight: "55", items: [item])
         viewModel.handlePackageDetailsValueChanges(details: [selectedPackage])
 
         // Then
         let defaultForms = viewModel.customsForms
         XCTAssertEqual(defaultForms.count, 1)
-        XCTAssertEqual(defaultForms.first?.packageID, expectedPackageID)
+        XCTAssertEqual(defaultForms.first?.packageID, selectedPackage.id)
         XCTAssertEqual(defaultForms.first?.items.count, 1)
         XCTAssertEqual(defaultForms.first?.items.first?.productID, expectedProductID)
         XCTAssertEqual(defaultForms.first?.items.first?.weight, item.weight)

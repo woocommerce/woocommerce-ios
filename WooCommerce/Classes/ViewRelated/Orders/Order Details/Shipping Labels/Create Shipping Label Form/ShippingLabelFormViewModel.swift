@@ -75,7 +75,6 @@ final class ShippingLabelFormViewModel {
             for option in packagesResponse.predefinedOptions {
                 if let predefinedPackage = option.predefinedPackages.first(where: { $0.id == package.packageID }) {
                     let boxID = predefinedPackage.id
-                    let customsForm = customsForms.first(where: { $0.packageID == package.id })
                     return ShippingLabelPackageSelected(id: package.id,
                                                         boxID: boxID,
                                                         length: predefinedPackage.getLength(),

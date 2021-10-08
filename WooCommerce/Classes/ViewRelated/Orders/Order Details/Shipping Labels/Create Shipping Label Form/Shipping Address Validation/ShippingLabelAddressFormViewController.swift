@@ -450,7 +450,7 @@ private extension ShippingLabelAddressFormViewController {
                                                                      text: viewModel.address?.postcode,
                                                                      placeholder: Localization.postcodeFieldPlaceholder,
                                                                      state: .normal,
-                                                                     keyboardType: .phonePad,
+                                                                     keyboardType: viewModel.isUSAddress ? .phonePad : .namePhonePad,
                                                                      textFieldAlignment: .leading) { [weak self] (newText) in
             self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
         }

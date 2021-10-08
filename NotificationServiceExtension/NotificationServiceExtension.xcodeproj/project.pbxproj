@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0281A7A3270FD374003B72FC /* Experiments.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0281A7A2270FD374003B72FC /* Experiments.framework */; };
 		0281A7A4270FD374003B72FC /* Experiments.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0281A7A2270FD374003B72FC /* Experiments.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		0281A7A7270FD5CA003B72FC /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0281A7A6270FD5CA003B72FC /* NotificationService.swift */; };
 		02FAE3BB270EA46E0015EC53 /* NotificationServiceExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02FAE3B1270EA46E0015EC53 /* NotificationServiceExtension.framework */; };
 		02FAE3C2270EA46E0015EC53 /* NotificationServiceExtension.h in Headers */ = {isa = PBXBuildFile; fileRef = 02FAE3B4270EA46E0015EC53 /* NotificationServiceExtension.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
@@ -39,6 +40,7 @@
 
 /* Begin PBXFileReference section */
 		0281A7A2270FD374003B72FC /* Experiments.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Experiments.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0281A7A6270FD5CA003B72FC /* NotificationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		02FAE3B1270EA46E0015EC53 /* NotificationServiceExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NotificationServiceExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		02FAE3B4270EA46E0015EC53 /* NotificationServiceExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NotificationServiceExtension.h; sourceTree = "<group>"; };
 		02FAE3B5270EA46E0015EC53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -96,6 +98,7 @@
 		02FAE3B3270EA46E0015EC53 /* NotificationServiceExtension */ = {
 			isa = PBXGroup;
 			children = (
+				0281A7A6270FD5CA003B72FC /* NotificationService.swift */,
 				02FAE3B4270EA46E0015EC53 /* NotificationServiceExtension.h */,
 				02FAE3B5270EA46E0015EC53 /* Info.plist */,
 			);
@@ -220,6 +223,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0281A7A7270FD5CA003B72FC /* NotificationService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -417,6 +421,7 @@
 		02FAE3C9270EA46E0015EC53 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = NotificationServiceExtensionTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -434,6 +439,7 @@
 		02FAE3CA270EA46E0015EC53 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = NotificationServiceExtensionTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

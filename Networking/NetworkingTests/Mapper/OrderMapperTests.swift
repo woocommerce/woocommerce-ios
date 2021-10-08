@@ -71,7 +71,7 @@ final class OrderMapperTests: XCTestCase {
     ///
     func test_Order_shipping_phone_is_correctly_parsed_from_metadata() {
         guard let order = mapLoadFullyRefundedOrderResponse(), let shippingAddress = order.shippingAddress else {
-            XCTFail()
+            XCTFail("Expected a mapped order response with a non-nil shipping address.")
             return
         }
 

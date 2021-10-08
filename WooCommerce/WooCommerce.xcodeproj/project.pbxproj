@@ -375,8 +375,6 @@
 		02FAE37D270EA1960015EC53 /* WooCommerceNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 02FAE376270EA1960015EC53 /* WooCommerceNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		02FAE3CC270EA53A0015EC53 /* NotificationServiceExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02FAE3CB270EA53A0015EC53 /* NotificationServiceExtension.framework */; };
 		02FAE3CD270EA53A0015EC53 /* NotificationServiceExtension.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 02FAE3CB270EA53A0015EC53 /* NotificationServiceExtension.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		02FAE3D0270EA53F0015EC53 /* Experiments.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02FAE3CF270EA53F0015EC53 /* Experiments.framework */; };
-		02FAE3D1270EA53F0015EC53 /* Experiments.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 02FAE3CF270EA53F0015EC53 /* Experiments.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		02FE89C7231FAA4100E85EF8 /* MainTabBarControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE89C6231FAA4100E85EF8 /* MainTabBarControllerTests.swift */; };
 		247CE89C2583402A00F9D9D1 /* Embassy in Frameworks */ = {isa = PBXBuildFile; productRef = 247CE89B2583402A00F9D9D1 /* Embassy */; };
 		247CE8A6258340E600F9D9D1 /* ScreenshotImages.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 247CE8A5258340E600F9D9D1 /* ScreenshotImages.xcassets */; };
@@ -1452,7 +1450,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				02FAE3CD270EA53A0015EC53 /* NotificationServiceExtension.framework in Embed Frameworks */,
-				02FAE3D1270EA53F0015EC53 /* Experiments.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2879,7 +2876,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				02FAE3CC270EA53A0015EC53 /* NotificationServiceExtension.framework in Frameworks */,
-				02FAE3D0270EA53F0015EC53 /* Experiments.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -63,6 +63,17 @@ final class CustomerNoteTableViewCell: UITableViewCell {
         }
     }
 
+    /// Title to be used on the add button, when shown
+    ///
+    var addButtonTitle: String? {
+        get {
+            addButton.currentTitle
+        }
+        set {
+            addButton.setTitle(newValue, for: .normal)
+        }
+    }
+
     override func awakeFromNib() {
         super.awakeFromNib()
         configureBackground()

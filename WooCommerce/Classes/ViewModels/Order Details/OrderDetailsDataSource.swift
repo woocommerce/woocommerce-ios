@@ -382,6 +382,7 @@ private extension OrderDetailsDataSource {
             }
         }
 
+        cell.addButtonTitle = NSLocalizedString("Add Customer Note", comment: "Title for the button to add the Customer Provided Note in Order Details")
         cell.editButtonAccessibilityLabel = NSLocalizedString(
             "Update Note",
             comment: "Accessibility Label for the edit button to change the Customer Provided Note in Order Details")

@@ -6,7 +6,7 @@ This framework enables us to unit test the service extension logic, which is the
 
 ## Dependencies
 
-- Experiments framework
+- [Experiments framework](EXPERIMENTS.md)
 
 ![Service extension dependency diagram](images/notification-service-extension-frameworks.png)
 
@@ -16,4 +16,4 @@ The tests also depend on:
 
 ## Public interfaces
 
-- Class `NotificationService`, a subclass of `UNNotificationServiceExtension`: the extension can call the functions from this class in its own `UNNotificationServiceExtension` subclass. At the moment, we cannot set a `UNNotificationServiceExtension` subclass from a different framework inside a notification service extension (Info.plist's `NSExtensionPrincipalClass` field).
+- Class `NotificationService: UNNotificationServiceExtension`: the extension can call the functions from this class in its own `UNNotificationServiceExtension` subclass. At the moment, we cannot set a `UNNotificationServiceExtension` subclass from a different framework inside a notification service extension (Info.plist's `NSExtensionPrincipalClass` field).

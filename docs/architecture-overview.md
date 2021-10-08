@@ -260,7 +260,7 @@ More on [Experiments](EXPERIMENTS.md)
 
 The NotificationServiceExtension framework enables unit testing for the notification service extension (WooCommerceNotificationServiceExtension), since XCTest is currently not supported in app extensions. The main logic for the extension resides in the NotificationServiceExtension framework, and the extension just calls from the framework.
 
-More on [Experiments](EXPERIMENTS.md)
+More on [NotificationServiceExtension](NOTIFICATIONSERVICEEXTENSION.md)
 
 ### Main Flows
 

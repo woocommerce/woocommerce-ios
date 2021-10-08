@@ -181,7 +181,7 @@ final class ShippingLabelFormViewModel {
                                                                company: company,
                                                                siteAddress: SiteAddress(),
                                                                account: defaultAccount)
-        self.destinationAddress = ShippingLabelFormViewModel.fromAddressToShippingLabelAddress(address: destinationAddress)
+        self.destinationAddress = ShippingLabelFormViewModel.getDestinationAddress(order: order, address: destinationAddress)
 
         self.stores = stores
         self.storageManager = storageManager
@@ -568,6 +568,17 @@ private extension ShippingLabelFormViewModel {
                               country: siteAddress.countryCode,
                               phone: "",
                               email: account?.email)
+        return fromAddressToShippingLabelAddress(address: address)
+    }
+
+    /// Gets the destination address as a `ShippingLabelAddress`.
+    /// The order's billing phone is used as a fallback if there is no shipping phone.
+    ///
+    static func getDestinationAddress(order: Order, address: Address?) -> ShippingLabelAddress? {
+        guard let phone = address?.phone, phone.isNotEmpty else {
+            let destinationAddress = address?.copy(phone: order.billingAddress?.phone)
+            return fromAddressToShippingLabelAddress(address: destinationAddress)
+        }
         return fromAddressToShippingLabelAddress(address: address)
     }
 

@@ -905,6 +905,33 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertEqual(defaultForms.first?.items.first?.value, item.value)
         XCTAssertEqual(defaultForms.first?.items.first?.originCountry, "")
     }
+
+    func test_getDestinationAddress_uses_shipping_phone_if_available() {
+        // Given
+        let billingAddress = Address.fake().copy(phone: "555-555-5555")
+        let shippingAddress = Address.fake().copy(phone: "333-333-3333")
+
+        // When
+        let viewModel = ShippingLabelFormViewModel(order: Order.fake().copy(billingAddress: billingAddress),
+                                                   originAddress: nil,
+                                                   destinationAddress: shippingAddress)
+
+        // Then
+        XCTAssertEqual(viewModel.destinationAddress?.phone, shippingAddress.phone)
+    }
+
+    func test_getDestinationAddress_uses_billing_phone_when_no_shipping_phone_available() {
+        // Given
+        let billingAddress = Address.fake().copy(phone: "555-555-5555")
+
+        // When
+        let viewModel = ShippingLabelFormViewModel(order: Order.fake().copy(billingAddress: billingAddress),
+                                                   originAddress: nil,
+                                                   destinationAddress: Address.fake())
+
+        // Then
+        XCTAssertEqual(viewModel.destinationAddress?.phone, billingAddress.phone)
+    }
 }
 
 // MARK: - Utils

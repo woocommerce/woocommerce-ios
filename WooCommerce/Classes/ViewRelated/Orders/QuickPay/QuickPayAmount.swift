@@ -40,9 +40,11 @@ struct QuickPayAmount: View {
 
             Spacer()
 
+            // Instructions Label
             Text(Localization.instructions)
                 .secondaryBodyStyle()
 
+            // Amount Textfield
             TextField(Localization.amountPlaceholder, text: $amount)
                 .font(.system(size: Layout.amountFontSize(scale: scale), weight: .bold, design: .default))
                 .foregroundColor(Color(.text))
@@ -50,6 +52,7 @@ struct QuickPayAmount: View {
 
             Spacer()
 
+            // Done button
             Button(Localization.buttonTitle) {
                 print("Done tapped")
             }

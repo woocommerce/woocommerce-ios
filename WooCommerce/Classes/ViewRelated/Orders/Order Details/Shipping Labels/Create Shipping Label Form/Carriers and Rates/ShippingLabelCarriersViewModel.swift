@@ -153,7 +153,7 @@ private extension ShippingLabelCarriersViewModel {
             switch result {
             case .success(let response):
                 self.generateSections(response: response)
-                if self.sections.isEmpty {
+                if self.sections.isEmpty || self.sections.count != self.packages.count {
                     self.syncStatus = .error
                 }
                 else {

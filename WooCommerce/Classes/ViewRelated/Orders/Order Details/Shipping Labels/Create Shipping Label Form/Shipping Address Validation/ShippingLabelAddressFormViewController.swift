@@ -343,9 +343,10 @@ private extension ShippingLabelAddressFormViewController {
     }
 
     func configureName(cell: TitleAndTextFieldTableViewCell, row: Row) {
+        let placeholder = viewModel.nameRequired ? Localization.requiredNameFieldPlaceholder : Localization.optionalNameFieldPlaceholder
         let cellViewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.nameField,
                                                                      text: viewModel.address?.name,
-                                                                     placeholder: Localization.nameFieldPlaceholder,
+                                                                     placeholder: placeholder,
                                                                      state: .normal,
                                                                      keyboardType: .default,
                                                                      textFieldAlignment: .leading) { [weak self] (newText) in
@@ -527,7 +528,12 @@ private extension ShippingLabelAddressFormViewController {
         static let titleViewShipTo = NSLocalizedString("Ship to", comment: "Shipping Label Address Validation navigation title")
 
         static let nameField = NSLocalizedString("Name", comment: "Text field name in Shipping Label Address Validation")
-        static let nameFieldPlaceholder = NSLocalizedString("Required", comment: "Text field placeholder in Shipping Label Address Validation")
+        static let requiredNameFieldPlaceholder = NSLocalizedString("Required",
+                                                                    comment: "Name text field placeholder in Shipping Label "
+                                                                    + "Address Validation when it's required")
+        static let optionalNameFieldPlaceholder = NSLocalizedString("Optional",
+                                                                    comment: "Name text field placeholder in Shipping Label "
+                                                                    + "Address Validation when it's optional")
         static let companyField = NSLocalizedString("Company", comment: "Text field company in Shipping Label Address Validation")
         static let companyFieldPlaceholder = NSLocalizedString("Optional", comment: "Text field placeholder in Shipping Label Address Validation")
         static let phoneField = NSLocalizedString("Phone", comment: "Text field phone in Shipping Label Address Validation")

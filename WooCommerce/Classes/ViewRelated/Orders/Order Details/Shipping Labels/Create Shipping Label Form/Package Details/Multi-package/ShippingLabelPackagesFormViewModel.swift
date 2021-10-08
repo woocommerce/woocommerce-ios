@@ -172,6 +172,7 @@ private extension ShippingLabelPackagesFormViewModel {
                     }
                     let packageTitle = String(format: Localization.packageName, index + 1, name)
                     buttons.append(.default(Text(packageTitle), action: { [weak self] in
+                        ServiceLocator.analytics.track(.shippingLabelItemMoved, withProperties: ["destination": "existing_package"])
                         self?.moveItem(productOrVariationID: productOrVariationID, currentPackageIndex: packageIndex, newPackageIndex: index)
                     }))
                 }
@@ -182,16 +183,19 @@ private extension ShippingLabelPackagesFormViewModel {
                 if hasMultipleItems {
                     // Add option to add item to new package if current package has more than one item.
                     buttons.append(.default(Text(Localization.addToNewPackage)) { [weak self] in
+                        ServiceLocator.analytics.track(.shippingLabelItemMoved, withProperties: ["destination": "new_package"])
                         self?.addItemToNewPackage(productOrVariationID: productOrVariationID, packageIndex: packageIndex)
                     })
                 }
 
                 // Add option to ship in original package
                 buttons.append(.default(Text(Localization.shipInOriginalPackage)) { [weak self] in
+                    ServiceLocator.analytics.track(.shippingLabelItemMoved, withProperties: ["destination": "original_packaging"])
                     self?.shipInOriginalPackage(productOrVariationID: productOrVariationID, packageIndex: packageIndex)
                 })
             } else {
                 buttons.append(.default(Text(Localization.addToNewPackage)) { [weak self] in
+                    ServiceLocator.analytics.track(.shippingLabelItemMoved, withProperties: ["destination": "new_package"])
                     self?.addItemToNewPackage(productOrVariationID: productOrVariationID, packageIndex: packageIndex)
                 })
             }

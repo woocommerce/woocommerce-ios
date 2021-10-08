@@ -270,6 +270,67 @@ final class ReceiptStoreTests: XCTestCase {
 
         XCTAssert(actualDiscountLine.description.contains("(1off, AVQW112)"))
     }
+
+    func test_print_callsPrint_passing_Fees() throws {
+        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        let fees = [makeFee(amount: "5.00"), makeFee(amount: "15.50")]
+        let mockOrder = makeOrder(fees: fees)
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        let actualFeesLine = receiptPrinterService.contentProvided?.cartTotals.first {
+            $0.description == ReceiptContent.Localization.feesLineDescription
+        }
+        XCTAssertEqual(actualFeesLine?.amount, "20.50")
+    }
+
+    func test_print_OrderWithoutFees_DoesNotIncludeFeesInReceiptContent() throws {
+        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        let mockOrder = makeOrder(fees: [])
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        let actualFeesLine = receiptPrinterService.contentProvided?.cartTotals.first {
+            $0.description == ReceiptContent.Localization.feesLineDescription
+        }
+        XCTAssertNil(actualFeesLine)
+    }
+
+    func test_print_OrderWithZeroFees_DoesNotIncludeFeesInReceiptContent() throws {
+        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        let mockOrder = makeOrder(fees: [makeFee(amount: "0.00")])
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        let actualFeesLine = receiptPrinterService.contentProvided?.cartTotals.first {
+            $0.description == ReceiptContent.Localization.feesLineDescription
+        }
+        XCTAssertNil(actualFeesLine)
+    }
 }
 
 
@@ -279,7 +340,8 @@ private extension ReceiptStoreTests {
                    shippingTotal: String = "",
                    shippingTax: String = "",
                    totalTax: String = "",
-                   coupons: [OrderCouponLine] = []) -> Networking.Order {
+                   coupons: [OrderCouponLine] = [],
+                   fees: [Yosemite.OrderFeeLine] = []) -> Networking.Order {
         Order(siteID: 1234,
               orderID: 0,
               parentID: 0,
@@ -305,10 +367,23 @@ private extension ReceiptStoreTests {
               shippingLines: [],
               coupons: coupons,
               refunds: [],
-              fees: [])
+              fees: fees)
     }
 
     func expectedDiscountLineDescription() -> String {
         return String.localizedStringWithFormat(ReceiptContent.Localization.discountLineDescription, "")
+    }
+
+    func makeFee(id: Int64 = 123,
+                 name: String = "Fee",
+                 amount: String) -> Yosemite.OrderFeeLine {
+        Yosemite.OrderFeeLine(feeID: id,
+                              name: name,
+                              taxClass: "",
+                              taxStatus: .none,
+                              total: amount,
+                              totalTax: "0",
+                              taxes: [],
+                              attributes: [])
     }
 }

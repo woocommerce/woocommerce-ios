@@ -26,6 +26,11 @@ public extension ReceiptContent {
             "Discount %1$@",
             comment: "Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s)")
 
+        public static let feesLineDescription = NSLocalizedString(
+            "Fees",
+            comment: "Line description for 'Fees' cart total on the receipt. Only shown when non-zero."
+        )
+
         public static let shippingLineDescription = NSLocalizedString(
             "Shipping",
             comment: "Line description for 'Shipping' cart total on the receipt. Only shown when non-zero"

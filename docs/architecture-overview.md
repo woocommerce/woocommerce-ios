@@ -256,6 +256,12 @@ The Experiments framework allows us to experiment features in any of our framewo
 
 More on [Experiments](EXPERIMENTS.md)
 
+## **NotificationServiceExtension.framework**
+
+The NotificationServiceExtension framework enables unit testing for the notification service extension (WooCommerceNotificationServiceExtension), since XCTest is currently not supported in app extensions. The main logic for the extension resides in the NotificationServiceExtension framework, and the extension just calls from the framework.
+
+More on [Experiments](EXPERIMENTS.md)
+
 ### Main Flows
 
     1.  Performing Tasks

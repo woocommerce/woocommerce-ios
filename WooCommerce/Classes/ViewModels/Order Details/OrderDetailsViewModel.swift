@@ -526,7 +526,6 @@ extension OrderDetailsViewModel {
     /// to Storage, associated to an order. We would not need to propagate
     /// that object outside of Yosemite.
     func collectPayment(onPresentMessage: @escaping () -> Void,
-                        onClearMessage: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
         /// We don't have a concept of priority yet, so use the first paymentGatewayAccount for now
@@ -539,7 +538,6 @@ extension OrderDetailsViewModel {
         paymentOrchestrator.collectPayment(for: self.order,
                                            paymentsAccount: self.cardPresentPaymentGatewayAccounts.first,
                                            onPresentMessage: onPresentMessage,
-                                           onClearMessage: onClearMessage,
                                            onProcessingMessage: onProcessingMessage,
                                            onCompletion: onCompletion)
 

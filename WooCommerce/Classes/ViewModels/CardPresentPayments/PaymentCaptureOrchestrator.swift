@@ -17,7 +17,6 @@ final class PaymentCaptureOrchestrator {
     func collectPayment(for order: Order,
                         paymentsAccount: PaymentGatewayAccount?,
                         onPresentMessage: @escaping () -> Void,
-                        onClearMessage: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
         /// First ask the backend to create/assign a Stripe customer for the order
@@ -54,8 +53,6 @@ final class PaymentCaptureOrchestrator {
                         onPresentMessage()
                     case .waitingForInput:
                         onPresentMessage()
-                    case .cardRemoved:
-                        onClearMessage()
                     default:
                         break
                     }

@@ -491,6 +491,18 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
     public func reader(_ reader: Reader, didRequestReaderDisplayMessage displayMessage: ReaderDisplayMessage) {
         sendReaderEvent(CardReaderEvent.make(displayMessage: displayMessage))
     }
+
+    /// Forward chip card events from the Terminal SDK
+    public func reader(_ reader: Reader, didReportReaderEvent event: ReaderEvent, info: [AnyHashable: Any]?) {
+        switch event {
+        case .cardInserted:
+            sendReaderEvent(.cardInserted)
+        case .cardRemoved:
+            sendReaderEvent(.cardRemoved)
+        default:
+            break
+        }
+    }
 }
 
 // MARK: - Terminal delegate

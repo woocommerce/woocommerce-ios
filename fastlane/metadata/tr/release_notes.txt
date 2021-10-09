@@ -1,3 +1,0 @@
-WooCommerce Shipping & Tax Uzantısını kullanan satıcılar artık bir gönderi etiketi için özel ambalaj oluşturmanın çok kolay olduğunu görecekler. Mobil cihazınızdan gönderi etiketleri oluşturmak ve yazdırmak artık çok eğlenceli.
-
-Ayrıca geri bildirimlerinizi dikkate alarak uygulamada bir dizi küçük sorunu düzelttik ve geliştirdik.

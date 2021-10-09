@@ -1,3 +1,0 @@
-Ahora, los vendedores que utilicen la extensión WooCommerce Shipping & Tax Extension podrán crear un envoltorio personalizado para una etiqueta de envío en un abrir y cerrar de ojos. Crear e imprimir etiquetas de envío desde tu dispositivo móvil es muy divertido.
-
-También hemos corregido y mejorado muchos detalles pequeños en la aplicación con vuestros comentarios.

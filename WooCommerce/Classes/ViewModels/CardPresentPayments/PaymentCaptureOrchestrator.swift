@@ -16,7 +16,7 @@ final class PaymentCaptureOrchestrator {
 
     func collectPayment(for order: Order,
                         paymentsAccount: PaymentGatewayAccount?,
-                        onPresentMessage: @escaping (String) -> Void,
+                        onPresentMessage: @escaping () -> Void,
                         onClearMessage: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
@@ -48,11 +48,12 @@ final class PaymentCaptureOrchestrator {
                 orderID: order.orderID,
                 parameters: parameters,
                 onCardReaderMessage: { (event) in
+                    print("==== \(event)")
                     switch event {
-                    case .displayMessage (let message):
-                        onPresentMessage(message)
-                    case .waitingForInput (let message):
-                        onPresentMessage(message)
+                    case .displayMessage:
+                        onPresentMessage()
+                    case .waitingForInput:
+                        onPresentMessage()
                     case .cardRemoved:
                         onClearMessage()
                     default:

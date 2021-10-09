@@ -394,8 +394,6 @@ private extension StripeCardReaderService {
             /// to this cancellable if we want to cancel 
             self?.paymentCancellable = Terminal.shared.collectPaymentMethod(intent) { (intent, error) in
                 self?.paymentCancellable = nil
-                // Notify clients that the card, no matter if tapped or inserted, is not needed anymore.
-                self?.sendReaderEvent(.cardRemoved)
 
                 if let error = error {
                     let underlyingError = UnderlyingError(with: error)

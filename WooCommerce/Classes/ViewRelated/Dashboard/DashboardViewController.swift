@@ -108,7 +108,7 @@ final class DashboardViewController: UIViewController {
         configureDashboardUIContainer()
 
         DispatchQueue.main.asyncAfter(deadline: .now()) {
-            let vc = QuickPayAmountHostingController()
+            let vc = QuickPayAmountHostingController(viewModel: QuickPayAmountViewModel())
             let nav = WooNavigationController(rootViewController: vc)
             self.present(nav, animated: true)
         }

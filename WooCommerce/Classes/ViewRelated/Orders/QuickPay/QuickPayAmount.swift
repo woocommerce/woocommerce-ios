@@ -5,8 +5,8 @@ import SwiftUI
 ///
 final class QuickPayAmountHostingController: UIHostingController<QuickPayAmount> {
 
-    init() {
-        super.init(rootView: QuickPayAmount())
+    init(viewModel: QuickPayAmountViewModel) {
+        super.init(rootView: QuickPayAmount(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismiss = { [weak self] in
@@ -34,6 +34,10 @@ struct QuickPayAmount: View {
     /// Keeps track of the current content scale due to accessibility changes
     ///
     @ScaledMetric private var scale: CGFloat = 1.0
+
+    /// ViewModel to drive the view content
+    ///
+    @ObservedObject private(set) var viewModel: QuickPayAmountViewModel
 
     var body: some View {
         VStack(alignment: .center, spacing: Layout.mainVerticalSpacing) {
@@ -86,13 +90,5 @@ private extension QuickPayAmount {
         static func amountFontSize(scale: CGFloat) -> CGFloat {
             56 * scale
         }
-    }
-}
-
-// MARK: Previews
-private struct QuickPayAmount_Preview: PreviewProvider {
-    static var previews: some View {
-        QuickPayAmount()
-            .environment(\.colorScheme, .light)
     }
 }

@@ -47,6 +47,10 @@ final class ShippingLabelAddressFormViewModel {
         return state.isLoading
     }
 
+    var isUSAddress: Bool {
+        address?.country == "US"
+    }
+
     var sections: [Section] = []
 
     private(set) var countries: [Country]
@@ -220,7 +224,7 @@ extension ShippingLabelAddressFormViewModel {
         guard let phone = address?.phone, phone.isNotEmpty else {
             return false
         }
-        guard address?.country == "US" else {
+        guard isUSAddress else {
             return true
         }
         if phone.hasPrefix("1") {

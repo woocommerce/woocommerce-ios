@@ -51,7 +51,7 @@ final class TitleAndTextFieldTableViewCell: UITableViewCell {
         configureTapGestureRecognizer()
     }
 
-    func configure(viewModel: ViewModel) {
+    func configure(viewModel: ViewModel, textFieldEnabled: Bool = true) {
         titleLabel.text = viewModel.title
         titleLabel.textColor = viewModel.state.textColor
         textField.text = viewModel.text
@@ -59,11 +59,8 @@ final class TitleAndTextFieldTableViewCell: UITableViewCell {
         textField.textColor = viewModel.state.textColor
         textField.keyboardType = viewModel.keyboardType
         textField.textAlignment = viewModel.textFieldAlignment.toTextAlignment()
+        textField.isEnabled = textFieldEnabled
         onTextChange = viewModel.onTextChange
-    }
-
-    func enableTextField(_ enabled: Bool) {
-        textField.isEnabled = enabled
     }
 
     func textFieldBecomeFirstResponder() {

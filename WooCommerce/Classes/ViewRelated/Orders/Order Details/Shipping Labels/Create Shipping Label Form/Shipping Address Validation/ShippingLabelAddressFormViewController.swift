@@ -465,8 +465,7 @@ private extension ShippingLabelAddressFormViewController {
                                                                      state: .normal,
                                                                      keyboardType: .default,
                                                                      textFieldAlignment: .leading) { _ in }
-        cell.configure(viewModel: cellViewModel)
-        cell.enableTextField(viewModel.statesOfSelectedCountry.isEmpty)
+        cell.configure(viewModel: cellViewModel, textFieldEnabled: viewModel.statesOfSelectedCountry.isEmpty)
     }
 
     func configureCountry(cell: TitleAndTextFieldTableViewCell, row: Row) {
@@ -476,8 +475,7 @@ private extension ShippingLabelAddressFormViewController {
                                                                      state: .normal,
                                                                      keyboardType: .default,
                                                                      textFieldAlignment: .leading) { _ in }
-        cell.configure(viewModel: cellViewModel)
-        cell.enableTextField(false)
+        cell.configure(viewModel: cellViewModel, textFieldEnabled: false)
     }
 }
 

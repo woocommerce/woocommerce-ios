@@ -49,8 +49,6 @@ final class PaymentCaptureOrchestrator {
                 onCardReaderMessage: { (event) in
                     print("==== \(event)")
                     switch event {
-                    case .displayMessage:
-                        onPresentMessage()
                     case .waitingForInput:
                         onPresentMessage()
                     default:

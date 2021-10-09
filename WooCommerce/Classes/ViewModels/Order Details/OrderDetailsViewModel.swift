@@ -525,7 +525,7 @@ extension OrderDetailsViewModel {
     /// When we implement persistance, the receipt metadata would be persisted
     /// to Storage, associated to an order. We would not need to propagate
     /// that object outside of Yosemite.
-    func collectPayment(onPresentMessage: @escaping () -> Void,
+    func collectPayment(onPresentMessage: @escaping () -> Void, // currently only used to prompt user to swipe/insert/tap card
                         onProcessingMessage: @escaping () -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
         /// We don't have a concept of priority yet, so use the first paymentGatewayAccount for now

@@ -30,14 +30,20 @@ private extension QuickPayAmountViewModel {
             formattedAmount.insert("$", at: formattedAmount.startIndex)
         }
 
-        // Trims to two decimal places
-        guard let separatorIndex = formattedAmount.firstIndex(of: "."),
-              let thirdDecimalIndex = formattedAmount.index(separatorIndex, offsetBy: 3, limitedBy: formattedAmount.endIndex) else {
-            return formattedAmount
+        // Trim to two decimals & remove any extra "."
+        let components = formattedAmount.split(separator: ".")
+        switch components.count {
+        case 1 where formattedAmount.contains("."):
+            return components[0] + "."
+        case 1:
+            return "\(components[0])"
+        case 2...Int.max:
+            let number = components[0]
+            let decimals = components[1]
+            let trimmedDecimals = decimals.count > 2 ? decimals.prefix(2) : decimals
+            return "\(number).\(trimmedDecimals)"
+        default:
+            fatalError("Should not happen, components can't be 0 or negative")
         }
-        let unwantedDecimalsRange = thirdDecimalIndex..<formattedAmount.endIndex
-        formattedAmount.removeSubrange(unwantedDecimalsRange)
-
-        return formattedAmount
     }
 }

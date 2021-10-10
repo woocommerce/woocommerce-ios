@@ -27,10 +27,6 @@ struct QuickPayAmount: View {
     ///
     var dismiss: (() -> Void) = {}
 
-    /// Temporary store for the typed amount
-    ///
-    @State private var amount: String = ""
-
     /// Keeps track of the current content scale due to accessibility changes
     ///
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -49,7 +45,7 @@ struct QuickPayAmount: View {
                 .secondaryBodyStyle()
 
             // Amount Textfield
-            TextField(Localization.amountPlaceholder, text: $amount)
+            TextField(Localization.amountPlaceholder, text: $viewModel.amount)
                 .font(.system(size: Layout.amountFontSize(scale: scale), weight: .bold, design: .default))
                 .foregroundColor(Color(.text))
                 .multilineTextAlignment(.center)

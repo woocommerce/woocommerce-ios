@@ -57,7 +57,7 @@ struct QuickPayAmount: View {
             Button(Localization.buttonTitle) {
                 print("Done tapped")
             }
-            .buttonStyle(PrimaryButtonStyle())
+            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.amount == "$10"))
         }
         .padding()
         .navigationTitle(Localization.title)

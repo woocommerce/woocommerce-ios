@@ -367,7 +367,6 @@ private extension StripeCardReaderService {
     }
 
     func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<StripeTerminal.PaymentIntent, Error> {
-        print ("==== StripeCardReaderService createPaymentIntent")
         return Future() { [weak self] promise in
             // Shortcircuit if we have an inconsistent set of parameters
             guard let parameters = parameters.toStripe() else {
@@ -395,7 +394,6 @@ private extension StripeCardReaderService {
     }
 
     func collectPaymentMethod(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {
-        print ("==== StripeCardReaderService collectPaymentMethod")
         return Future() { [weak self] promise in
             /// Collect Payment method returns a cancellable
             /// Because we are chaining promises, we need to retain a reference
@@ -428,7 +426,6 @@ private extension StripeCardReaderService {
     }
 
     func waitForInsertedCardToBeRemoved(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {
-        print("==== StripeCardReaderService waitForInsertedCardToBeRemoved")
         return Future() { [weak self] promise in
             guard let self = self else {
                 return
@@ -444,10 +441,7 @@ private extension StripeCardReaderService {
                     return
                 }
 
-                print("==== Waiting for chip card to be removed")
-
                 if !self.isChipCardInserted {
-                    print("==== Chip card removed!")
                     self.chipCardTimer?.invalidate()
                     return promise(.success(intent))
                 }
@@ -456,7 +450,6 @@ private extension StripeCardReaderService {
     }
 
     func processPayment(intent: StripeTerminal.PaymentIntent) -> Future<PaymentIntent, Error> {
-        print ("==== StripeCardReaderService processPayment")
         return Future() { [weak self] promise in
             Terminal.shared.processPayment(intent) { (intent, error) in
                 if let error = error {

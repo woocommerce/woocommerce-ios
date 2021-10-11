@@ -54,7 +54,6 @@ final class OrderDetailsPaymentAlerts {
     }
 
     func displayReaderMessage(message: String) {
-        print("==== in OrderDetailPaymentAlerts displayReaderMessage \(message)")
         let viewModel = displayMessage(message: message)
         presentViewModel(viewModel: viewModel)
     }

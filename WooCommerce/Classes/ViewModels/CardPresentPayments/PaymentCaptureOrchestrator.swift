@@ -48,7 +48,6 @@ final class PaymentCaptureOrchestrator {
                 orderID: order.orderID,
                 parameters: parameters,
                 onCardReaderMessage: { (event) in
-                    print("==== PaymentCaptureOrchestrator collectPayment onCardReaderMessage \(event)")
                     switch event {
                     case .waitingForInput:
                         onPresentMessage()
@@ -59,7 +58,6 @@ final class PaymentCaptureOrchestrator {
                     }
                 },
                 onCompletion: { [weak self] result in
-                    print("==== PaymentCaptureOrchestrator collectPayment onCompletion")
                     self?.allowPassPresentation()
                     onProcessingMessage()
                     self?.completePaymentIntentCapture(
@@ -163,7 +161,6 @@ private extension PaymentCaptureOrchestrator {
     func completePaymentIntentCapture(order: Order,
                                     captureResult: Result<PaymentIntent, Error>,
                                     onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
-        print("==== PaymentCaptureOrchestrator completePaymentIntentCapture")
         switch captureResult {
         case .failure(let error):
             onCompletion(.failure(error))
@@ -179,7 +176,6 @@ private extension PaymentCaptureOrchestrator {
                              order: Order,
                              paymentIntent: PaymentIntent,
                              onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
-        print("==== PaymentCaptureOrchestrator submitPaymentIntent")
         let action = PaymentGatewayAccountAction.captureOrderPayment(siteID: siteID,
                                                                      orderID: order.orderID,
                                                                      paymentIntentID: paymentIntent.id) { [weak self] result in

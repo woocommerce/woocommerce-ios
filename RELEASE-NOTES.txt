@@ -5,6 +5,7 @@
 - [*] Fix: Navigation bar buttons are now consistently pink on iOS 15. [https://github.com/woocommerce/woocommerce-ios/pull/5139]
 - [*] Fix incorrect info banner color and signature option spacing on Carrier and Rates screen. [https://github.com/woocommerce/woocommerce-ios/pull/5144]
 - [x] Fix an error where merchants were unable to connect to valid stores when they have other stores with corrupted information https://github.com/woocommerce/woocommerce-ios/pull/5161
+- [*] Shipping Labels: The shipping address now prefills the phone number from the billing address if a shipping phone number is not available. [https://github.com/woocommerce/woocommerce-ios/pull/5177]
 
 7.7
 -----

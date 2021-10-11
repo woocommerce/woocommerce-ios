@@ -53,11 +53,6 @@ final class OrderDetailsPaymentAlerts {
         presentViewModel(viewModel: viewModel)
     }
 
-    func removeCard() {
-        let viewModel = remove()
-        presentViewModel(viewModel: viewModel)
-    }
-
     func displayReaderMessage(message: String) {
         print("==== in OrderDetailPaymentAlerts displayReaderMessage \(message)")
         let viewModel = displayMessage(message: message)
@@ -97,10 +92,6 @@ private extension OrderDetailsPaymentAlerts {
 
     func tapOrInsert() -> CardPresentPaymentsModalViewModel {
         CardPresentModalTapCard(name: name, amount: amount)
-    }
-
-    func remove() -> CardPresentPaymentsModalViewModel {
-        CardPresentModalRemoveCard(name: name, amount: amount)
     }
 
     func displayMessage(message: String) -> CardPresentPaymentsModalViewModel {

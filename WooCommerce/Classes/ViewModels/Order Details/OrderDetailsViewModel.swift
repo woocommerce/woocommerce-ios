@@ -528,7 +528,7 @@ extension OrderDetailsViewModel {
     func collectPayment(onPresentMessage: @escaping () -> Void, // i.e. "present" card for payment - used to prompt user to swipe/insert/tap card
                         onProcessingMessage: @escaping () -> Void, // i.e. payment is processing
                         onDisplayMessage: @escaping (String) -> Void, // e.g. "Remove Card"
-                        onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) { // used to tell user payment completed (or not) and offer receipt
+                        onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) { // used to tell user payment completed (or not)
         /// We don't have a concept of priority yet, so use the first paymentGatewayAccount for now
         /// since we can't yet have multiple accounts
         ///

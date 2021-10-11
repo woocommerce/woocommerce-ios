@@ -352,7 +352,7 @@ final class ShippingLabelFormViewModel {
 
         if selectedRates.count == 1, let selectedRate = selectedRates.first {
             let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-            let price = currencyFormatter.formatAmount(Decimal(selectedRate.retailRate)) ?? ""
+            let price = currencyFormatter.formatAmount(Decimal(selectedRate.totalRate)) ?? ""
 
             let formatString = selectedRate.rate.deliveryDays == 1 ? Localization.businessDaySingular : Localization.businessDaysPlural
 
@@ -365,7 +365,7 @@ final class ShippingLabelFormViewModel {
         } else {
             let ratesCount = String(format: Localization.selectedRatesCount, selectedRates.count)
 
-            let total = selectedRates.reduce(0, { $0 + $1.retailRate })
+            let total = selectedRates.reduce(0, { $0 + $1.totalRate })
             let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
             let price = currencyFormatter.formatAmount(Decimal(total)) ?? ""
             let totalRate = String(format: Localization.totalRate, price)
@@ -395,7 +395,7 @@ final class ShippingLabelFormViewModel {
         }
         let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
         return selectedRates.map { rate in
-            currencyFormatter.formatAmount(Decimal(rate.retailRate)) ?? ""
+            currencyFormatter.formatAmount(Decimal(rate.totalRate)) ?? ""
         }
     }
 

@@ -39,6 +39,7 @@ struct ShippingLabelSinglePackage: View {
                     Button(action: {
                         viewModel.requestMovingItem(productItemRow.productOrVariationID)
                         shouldShowMoveItemActionSheet = true
+                        ServiceLocator.analytics.track(.shippingLabelMoveItemTapped)
                     }, label: {
                         Text(Localization.moveButton)
                             .font(.footnote)

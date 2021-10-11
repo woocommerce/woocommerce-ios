@@ -6,6 +6,7 @@
 - [*] Fix incorrect info banner color and signature option spacing on Carrier and Rates screen. [https://github.com/woocommerce/woocommerce-ios/pull/5144]
 - [x] Fix an error where merchants were unable to connect to valid stores when they have other stores with corrupted information https://github.com/woocommerce/woocommerce-ios/pull/5161
 - [*] Shipping Labels: The shipping address now prefills the phone number from the billing address if a shipping phone number is not available. [https://github.com/woocommerce/woocommerce-ios/pull/5177]
+- [*] Shipping Labels: now in Carrier and Rates we always display the discounted rate instead of the retail rate if available.
 
 7.7
 -----

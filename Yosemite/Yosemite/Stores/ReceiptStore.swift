@@ -81,7 +81,7 @@ private extension ReceiptStore {
             ReceiptLineItem(
                 title: item.name,
                 quantity: item.quantity.description,
-                amount: receiptNumberFormatter.string(from: item.price) ?? ""
+                amount: item.subtotal
             )
         }
     }

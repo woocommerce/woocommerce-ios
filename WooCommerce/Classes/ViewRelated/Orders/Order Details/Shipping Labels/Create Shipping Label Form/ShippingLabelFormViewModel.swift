@@ -57,7 +57,7 @@ final class ShippingLabelFormViewModel {
         }
 
         return selectedPackagesDetails.compactMap { package -> ShippingLabelPackageSelected? in
-            let weight = Double(package.totalWeight) ?? .zero
+            let weight = NumberFormatter.double(from: package.totalWeight) ?? .zero
             let customsForm = customsForms.first(where: { $0.packageID == package.id })
 
             if let customPackage = packagesResponse.customPackages.first(where: { $0.title == package.packageID }) {
@@ -321,7 +321,7 @@ final class ShippingLabelFormViewModel {
 
         let formatter = WeightFormatter(weightUnit: packagesResponse?.storeOptions.weightUnit ?? "")
         let totalWeight = selectedPackagesDetails
-            .map { Double($0.totalWeight) ?? 0 }
+            .map { NumberFormatter.double(from: ($0.totalWeight)) ?? 0 }
             .reduce(0, { $0 + $1 })
         let packageWeight = formatter.formatWeight(weight: totalWeight)
 

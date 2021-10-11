@@ -257,7 +257,7 @@ private extension ShippingLabelStore {
                     guard let self = self else { return }
 
                     // Poll the status of the label purchases from the response above
-                    // with a delay of 1 second each time, with a maximum of 3 retries for error
+                    // with a delay of 1 second each time, with a maximum of 3 retries for failed requests.
                     self.pollLabelStatus(withDelayInSeconds: 1.0,
                                          maxErrorRetries: 3,
                                          siteID: siteID,
@@ -415,6 +415,8 @@ private extension ShippingLabelStore {
         }
     }
 
+    /// Polls the status of the purchases for labels with given IDs,
+    /// with a delay of 1 second each time, and a maximum of 3 retries for failed requests.
     func pollLabelStatus(withDelayInSeconds delay: Double,
                          maxErrorRetries: Int64,
                          siteID: Int64,

@@ -257,9 +257,9 @@ private extension ShippingLabelStore {
                     guard let self = self else { return }
 
                     // Poll the status of the label purchases from the response above
-                    // with a delay of 1 second each time, with a maximum of 3 retries
+                    // with a delay of 1 second each time, with a maximum of 3 retries for error
                     self.pollLabelStatus(withDelayInSeconds: 1.0,
-                                         maxRetries: 3,
+                                         maxErrorRetries: 3,
                                          siteID: siteID,
                                          orderID: orderID,
                                          labelIDs: labelPurchaseIDs,
@@ -416,12 +416,12 @@ private extension ShippingLabelStore {
     }
 
     func pollLabelStatus(withDelayInSeconds delay: Double,
-                         maxRetries: Int64,
+                         maxErrorRetries: Int64,
                          siteID: Int64,
                          orderID: Int64,
                          labelIDs: [Int64],
                          completion: @escaping (Result<[ShippingLabel], Error>) -> Void) {
-        remote.checkLabelStatus(siteID: siteID, orderID: orderID, labelIDs: labelIDs) { result in
+        remote.checkLabelStatus(siteID: siteID, orderID: orderID, labelIDs: labelIDs) { [weak self] result in
             switch result {
             case .success(let labelStatusResponse):
                 // If all labels have PURCHASED status, stop polling
@@ -437,10 +437,10 @@ private extension ShippingLabelStore {
                 }
 
                 // If no errors but status is not PURCHASED for all labels, poll again after delay
-                else if maxRetries > 0 {
+                else {
                     DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
                         self?.pollLabelStatus(withDelayInSeconds: delay,
-                                              maxRetries: maxRetries - 1,
+                                              maxErrorRetries: maxErrorRetries,
                                               siteID: siteID,
                                               orderID: orderID,
                                               labelIDs: labelIDs,
@@ -448,18 +448,12 @@ private extension ShippingLabelStore {
                     }
                 }
 
-                // If there are no retries left
-                else {
-                    DDLogError("⛔️ Shipping label purchase for order \(orderID) still in progress")
-                    completion(.failure(LabelPurchaseError.purchaseIncomplete))
-                }
-
             case .failure(let error):
                 // If there are retries left, poll again after delay
-                if maxRetries > 0 {
+                if maxErrorRetries > 0 {
                     DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
                         self?.pollLabelStatus(withDelayInSeconds: delay,
-                                              maxRetries: maxRetries - 1,
+                                              maxErrorRetries: maxErrorRetries - 1,
                                               siteID: siteID,
                                               orderID: orderID,
                                               labelIDs: labelIDs,

@@ -525,9 +525,10 @@ extension OrderDetailsViewModel {
     /// When we implement persistance, the receipt metadata would be persisted
     /// to Storage, associated to an order. We would not need to propagate
     /// that object outside of Yosemite.
-    func collectPayment(onPresentMessage: @escaping () -> Void, // currently only used to prompt user to swipe/insert/tap card
-                        onProcessingMessage: @escaping () -> Void,
-                        onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
+    func collectPayment(onPresentMessage: @escaping () -> Void, // i.e. "present" card for payment - used to prompt user to swipe/insert/tap card
+                        onProcessingMessage: @escaping () -> Void, // i.e. payment is processing
+                        onDisplayMessage: @escaping (String) -> Void, // e.g. "Remove Card"
+                        onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) { // used to tell user payment completed (or not) and offer receipt
         /// We don't have a concept of priority yet, so use the first paymentGatewayAccount for now
         /// since we can't yet have multiple accounts
         ///
@@ -537,8 +538,9 @@ extension OrderDetailsViewModel {
 
         paymentOrchestrator.collectPayment(for: self.order,
                                            paymentsAccount: self.cardPresentPaymentGatewayAccounts.first,
-                                           onPresentMessage: onPresentMessage,
+                                           onPresentMessage: onPresentMessage, // AKA Present Payment
                                            onProcessingMessage: onProcessingMessage,
+                                           onDisplayMessage: onDisplayMessage,
                                            onCompletion: onCompletion)
 
     }

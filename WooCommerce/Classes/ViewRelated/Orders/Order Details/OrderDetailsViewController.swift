@@ -704,10 +704,12 @@ private extension OrderDetailsViewController {
                                     amount: value)
 
         ServiceLocator.analytics.track(.collectPaymentTapped)
-        viewModel.collectPayment { [weak self] in // onPresentMessage
+        viewModel.collectPayment { [weak self] in // onPresentMessage - aka prompt to present a card for payment
             self?.paymentAlerts.tapOrInsertCard()
         } onProcessingMessage: { [weak self] in
             self?.paymentAlerts.processingPayment()
+        } onDisplayMessage: { [weak self] message in // display a message from the reader, e.g. "Remove Card"
+            self?.paymentAlerts.displayReaderMessage(message: message)
         } onCompletion: { [weak self] result in
             guard let self = self else {
                 return

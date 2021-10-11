@@ -161,12 +161,17 @@ private extension CardPresentPaymentStore {
                         parameters: PaymentParameters,
                         onCardReaderMessage: @escaping (CardReaderEvent) -> Void,
                         onCompletion: @escaping (Result<PaymentIntent, Error>) -> Void) {
+
+        print("==== CardPresentPaymentStore collectPayment")
+
         // Observe status events fired by the card reader
+        print("==== CardPresentPaymentStore collectPayment capturePayment enabling events subscription")
         let readerEventsSubscription = cardReaderService.readerEvents.sink { event in
             onCardReaderMessage(event)
         }
 
         paymentCancellable = cardReaderService.capturePayment(parameters).sink { error in
+            print("==== CardPresentPaymentStore collectPayment capturePayment receiveCompletion - cancelling events subscription")
             readerEventsSubscription.cancel()
             switch error {
             case .failure(let error):
@@ -175,6 +180,7 @@ private extension CardPresentPaymentStore {
                 break
             }
         } receiveValue: { intent in
+            print("==== CardPresentPaymentStore collectPayment capturePayment receiveValue")
             onCompletion(.success(intent))
         }
     }

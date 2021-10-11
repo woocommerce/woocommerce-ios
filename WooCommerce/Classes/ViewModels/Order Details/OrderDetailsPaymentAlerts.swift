@@ -58,6 +58,12 @@ final class OrderDetailsPaymentAlerts {
         presentViewModel(viewModel: viewModel)
     }
 
+    func displayReaderMessage(message: String) {
+        print("==== in OrderDetailPaymentAlerts displayReaderMessage \(message)")
+        let viewModel = displayMessage(message: message)
+        presentViewModel(viewModel: viewModel)
+    }
+
     func processingPayment() {
         let viewModel = processing()
         presentViewModel(viewModel: viewModel)
@@ -95,6 +101,10 @@ private extension OrderDetailsPaymentAlerts {
 
     func remove() -> CardPresentPaymentsModalViewModel {
         CardPresentModalRemoveCard(name: name, amount: amount)
+    }
+
+    func displayMessage(message: String) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalDisplayMessage(name: name, amount: amount, message: message)
     }
 
     func processing() -> CardPresentPaymentsModalViewModel {

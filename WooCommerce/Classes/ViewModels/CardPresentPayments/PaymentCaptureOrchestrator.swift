@@ -18,6 +18,7 @@ final class PaymentCaptureOrchestrator {
                         paymentsAccount: PaymentGatewayAccount?,
                         onPresentMessage: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
+                        onDisplayMessage: @escaping (String) -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
         /// First ask the backend to create/assign a Stripe customer for the order
         ///
@@ -47,15 +48,18 @@ final class PaymentCaptureOrchestrator {
                 orderID: order.orderID,
                 parameters: parameters,
                 onCardReaderMessage: { (event) in
-                    print("==== \(event)")
+                    print("==== PaymentCaptureOrchestrator collectPayment onCardReaderMessage \(event)")
                     switch event {
                     case .waitingForInput:
                         onPresentMessage()
+                    case .displayMessage(let message):
+                        onDisplayMessage(message)
                     default:
                         break
                     }
                 },
                 onCompletion: { [weak self] result in
+                    print("==== PaymentCaptureOrchestrator collectPayment onCompletion")
                     self?.allowPassPresentation()
                     onProcessingMessage()
                     self?.completePaymentIntentCapture(
@@ -159,6 +163,7 @@ private extension PaymentCaptureOrchestrator {
     func completePaymentIntentCapture(order: Order,
                                     captureResult: Result<PaymentIntent, Error>,
                                     onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
+        print("==== PaymentCaptureOrchestrator completePaymentIntentCapture")
         switch captureResult {
         case .failure(let error):
             onCompletion(.failure(error))
@@ -174,6 +179,7 @@ private extension PaymentCaptureOrchestrator {
                              order: Order,
                              paymentIntent: PaymentIntent,
                              onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
+        print("==== PaymentCaptureOrchestrator submitPaymentIntent")
         let action = PaymentGatewayAccountAction.captureOrderPayment(siteID: siteID,
                                                                      orderID: order.orderID,
                                                                      paymentIntentID: paymentIntent.id) { [weak self] result in
@@ -189,7 +195,7 @@ private extension PaymentCaptureOrchestrator {
 
             switch result {
             case .success:
-                self?.celebrate()
+                self?.celebrate() // plays a sound, haptic
                 self?.saveReceipt(for: order, params: receiptParameters)
                 onCompletion(.success(receiptParameters))
             case .failure(let error):

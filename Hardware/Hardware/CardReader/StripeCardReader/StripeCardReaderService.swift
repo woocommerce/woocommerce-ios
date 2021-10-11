@@ -27,6 +27,10 @@ public final class StripeCardReaderService: NSObject {
     private let discoveryLock = NSLock()
 
     private var readerLocationProvider: ReaderLocationProvider?
+
+    /// Keeps track of whether a chip card needs to be removed
+    private var chipCardTimer: Timer?
+    private var isChipCardInserted: Bool = false
 }
 
 
@@ -225,6 +229,8 @@ extension StripeCardReaderService: CardReaderService {
             .flatMap { intent in
                 self.collectPaymentMethod(intent: intent)
             }.flatMap { intent in
+                self.waitForInsertedCardToBeRemoved(intent: intent)
+            }.flatMap { intent in
                 self.processPayment(intent: intent)
             }.eraseToAnyPublisher()
     }
@@ -361,6 +367,7 @@ private extension StripeCardReaderService {
     }
 
     func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<StripeTerminal.PaymentIntent, Error> {
+        print ("==== StripeCardReaderService createPaymentIntent")
         return Future() { [weak self] promise in
             // Shortcircuit if we have an inconsistent set of parameters
             guard let parameters = parameters.toStripe() else {
@@ -388,6 +395,7 @@ private extension StripeCardReaderService {
     }
 
     func collectPaymentMethod(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {
+        print ("==== StripeCardReaderService collectPaymentMethod")
         return Future() { [weak self] promise in
             /// Collect Payment method returns a cancellable
             /// Because we are chaining promises, we need to retain a reference
@@ -419,7 +427,36 @@ private extension StripeCardReaderService {
         }
     }
 
+    func waitForInsertedCardToBeRemoved(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {
+        print("==== StripeCardReaderService waitForInsertedCardToBeRemoved")
+        return Future() { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            // If there is no chip card inserted, it is ok to immediatedly return. The payment method may have been swipe or tap.
+            if !self.isChipCardInserted {
+                return promise(.success(intent))
+            }
+
+            self.chipCardTimer =  Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+                guard let self = self else {
+                    return
+                }
+
+                print("==== Waiting for chip card to be removed")
+
+                if !self.isChipCardInserted {
+                    print("==== Chip card removed!")
+                    self.chipCardTimer?.invalidate()
+                    return promise(.success(intent))
+                }
+            }
+        }
+    }
+
     func processPayment(intent: StripeTerminal.PaymentIntent) -> Future<PaymentIntent, Error> {
+        print ("==== StripeCardReaderService processPayment")
         return Future() { [weak self] promise in
             Terminal.shared.processPayment(intent) { (intent, error) in
                 if let error = error {
@@ -492,12 +529,16 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
         sendReaderEvent(CardReaderEvent.make(displayMessage: displayMessage))
     }
 
-    /// Forward chip card events from the Terminal SDK
+    /// Monitor and forward chip card insertion/removal events from the Terminal SDK
+    /// So we can make sure inserted cards are removed during the collection of payment
+    ///
     public func reader(_ reader: Reader, didReportReaderEvent event: ReaderEvent, info: [AnyHashable: Any]?) {
         switch event {
         case .cardInserted:
+            isChipCardInserted = true
             sendReaderEvent(.cardInserted)
         case .cardRemoved:
+            isChipCardInserted = false
             sendReaderEvent(.cardRemoved)
         default:
             break

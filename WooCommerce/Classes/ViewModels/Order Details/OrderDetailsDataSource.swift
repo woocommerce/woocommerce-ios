@@ -382,6 +382,7 @@ private extension OrderDetailsDataSource {
             }
         }
 
+        cell.addButtonTitle = NSLocalizedString("Add Customer Note", comment: "Title for the button to add the Customer Provided Note in Order Details")
         cell.editButtonAccessibilityLabel = NSLocalizedString(
             "Update Note",
             comment: "Accessibility Label for the edit button to change the Customer Provided Note in Order Details")
@@ -786,12 +787,20 @@ private extension OrderDetailsDataSource {
 
         cell.title = Title.shippingAddress
         cell.name = shippingAddress?.fullNameWithCompany
-        cell.address = shippingAddress?.formattedPostalAddress ?? Title.shippingAddressEmptyAction
 
-        cell.onEditTapped = { [weak self] in
-            self?.onCellAction?(.editShippingAddress, nil)
+        if let formattedPostalAddress = shippingAddress?.formattedPostalAddress {
+            cell.address = formattedPostalAddress
+            cell.onEditTapped = { [weak self] in
+                self?.onCellAction?(.editShippingAddress, nil)
+            }
+        } else {
+            cell.address = nil
+            cell.onAddTapped = { [weak self] in
+                self?.onCellAction?(.editShippingAddress, nil)
+            }
         }
 
+        cell.addButtonTitle = NSLocalizedString("Add Shipping Address", comment: "Title for the button to add the Shipping Address in Order Details")
         cell.editButtonAccessibilityLabel = NSLocalizedString(
             "Update Address",
             comment: "Accessibility Label for the edit button to change the Customer Shipping Address in Order Details")
@@ -1245,10 +1254,6 @@ extension OrderDetailsDataSource {
             NSLocalizedString("Don’t know how to print from your mobile device?",
                               comment: "Title of button in order details > shipping label that shows the instructions on how to print " +
                                 "a shipping label on the mobile device.")
-        static let shippingAddressEmptyAction =
-            NSLocalizedString("No address specified.",
-                              comment: "Order details > customer info > shipping details. " +
-                                "This is where the address would normally display.")
     }
 
     enum Footer {

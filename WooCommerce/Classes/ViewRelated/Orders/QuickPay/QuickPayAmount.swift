@@ -58,6 +58,7 @@ struct QuickPayAmount: View {
                 print("Done tapped")
             }
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.amount == "$10"))
+            .disabled(viewModel.shouldDisableDoneButton)
         }
         .padding()
         .navigationTitle(Localization.title)

@@ -12,6 +12,13 @@ final class QuickPayAmountViewModel: ObservableObject {
             amount = formatAmount(amount)
         }
     }
+
+    /// Returns true when amount has less than two characters.
+    /// Less than two, because `$` should be the first character.
+    ///
+    var shouldDisableDoneButton: Bool {
+        amount.count < 2
+    }
 }
 
 // MARK: Helpers

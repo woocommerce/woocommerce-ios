@@ -59,4 +59,37 @@ final class QuickPayAmountViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.amount, "$6.")
     }
+
+    func test_view_model_disables_next_button_when_there_is_no_amount() {
+        // Given
+        let viewModel = QuickPayAmountViewModel()
+
+        // When
+        viewModel.amount = ""
+
+        // Then
+        XCTAssertTrue(viewModel.shouldDisableDoneButton)
+    }
+
+    func test_view_model_disables_next_button_when_amount_only_has_currency_symbol() {
+        // Given
+        let viewModel = QuickPayAmountViewModel()
+
+        // When
+        viewModel.amount = "$"
+
+        // Then
+        XCTAssertTrue(viewModel.shouldDisableDoneButton)
+    }
+
+    func test_view_model_enables_next_button_when_amount_has_more_than_one_character() {
+        // Given
+        let viewModel = QuickPayAmountViewModel()
+
+        // When
+        viewModel.amount = "$2"
+
+        // Then
+        XCTAssertFalse(viewModel.shouldDisableDoneButton)
+    }
 }

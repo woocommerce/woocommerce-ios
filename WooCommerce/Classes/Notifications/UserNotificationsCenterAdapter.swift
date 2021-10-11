@@ -13,6 +13,9 @@ protocol UserNotificationsCenterAdapter {
     /// Requests Push Notifications Authorization
     ///
     func requestAuthorization(queue: DispatchQueue, completion: @escaping (Bool) -> Void)
+
+    /// Removes all push notifications that have been delivered or scheduled
+    func removeAllNotifications()
 }
 
 
@@ -38,5 +41,10 @@ extension UNUserNotificationCenter: UserNotificationsCenterAdapter {
                 completion(allowed)
             }
         }
+    }
+
+    func removeAllNotifications() {
+        removeAllDeliveredNotifications()
+        removeAllPendingNotificationRequests()
     }
 }

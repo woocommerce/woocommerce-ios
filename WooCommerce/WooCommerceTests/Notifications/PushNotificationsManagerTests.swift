@@ -82,37 +82,6 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertTrue(application.registerWasCalled)
     }
 
-
-    /// Verifies that `resetBadgeCount` sets the badgeNumber to zero
-    ///
-    func testResetBadgeCountEffectivelyDropsTheBadgeNumberToZero() {
-        // Arrange
-        // The default stores are required to update the application badge number.
-        let stores = DefaultStoresManager.testingInstance
-        manager = {
-            let configuration = PushNotificationsConfiguration(application: self.application,
-                                                               defaults: self.defaults,
-                                                               storesManager: stores,
-                                                               supportManager: self.supportManager,
-                                                               userNotificationsCenter: self.userNotificationCenter)
-
-            return PushNotificationsManager(configuration: configuration)
-        }()
-
-        application.applicationIconBadgeNumber = 90
-
-        // Action
-        let expectation = self.expectation(description: "Wait for badge count reset for all stores")
-        manager.resetBadgeCountForAllStores {
-            expectation.fulfill()
-        }
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
-
-        // Assert
-        XCTAssertEqual(application.applicationIconBadgeNumber, 0)
-    }
-
-
     /// Verifies that `ensureAuthorizationIsRequested` effectively requests Push Notes Auth via UNUserNotificationsCenter,
     /// whenever the initial status is `.notDetermined`. This specific tests verifies the `Non Authorized` flow.
     ///
@@ -272,41 +241,6 @@ final class PushNotificationsManagerTests: XCTestCase {
         }
     }
 
-
-    /// Verifies that `handleNotification` effectively updates the App's Badge Number.
-    ///
-    func testHandleNotificationUpdatesApplicationsBadgeNumber() {
-        // Arrange
-        // A site ID and the default stores are required to update the application badge number.
-        let stores = DefaultStoresManager.testingInstance
-        stores.authenticate(credentials: SessionSettings.credentials)
-        stores.updateDefaultStore(storeID: 123)
-        manager = {
-            let configuration = PushNotificationsConfiguration(application: self.application,
-                                                               defaults: self.defaults,
-                                                               storesManager: stores,
-                                                               supportManager: self.supportManager,
-                                                               userNotificationsCenter: self.userNotificationCenter)
-
-            return PushNotificationsManager(configuration: configuration)
-        }()
-
-        let updatedBadgeNumber = 10
-        let userInfo = notificationPayload(badgeCount: updatedBadgeNumber, type: .comment)
-        XCTAssertEqual(application.applicationIconBadgeNumber, Int.min)
-
-        // Action
-        let expectation = self.expectation(description: "Wait for badge update from handling notification")
-        manager.handleNotification(userInfo, onBadgeUpdateCompletion: {
-            expectation.fulfill()
-        }) { _ in }
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
-
-        // Assert
-        XCTAssertEqual(application.applicationIconBadgeNumber, 1)
-    }
-
-
     /// Verifies that `handleNotification` dispatches a `synchronizeNotifications` Action, which, in turn, signals that there's
     /// new data available in the app, on success.
     ///
@@ -320,7 +254,8 @@ final class PushNotificationsManagerTests: XCTestCase {
             handleNotificationCallbackWasExecuted = true
         }
 
-        guard case let .synchronizeNotifications(onCompletion) = storesManager.receivedActions.first as! NotificationAction else {
+        guard case let .synchronizeNotifications(onCompletion) =
+                storesManager.receivedActions.compactMap({ $0 as? NotificationAction }).first else {
             XCTFail()
             return
         }
@@ -344,7 +279,8 @@ final class PushNotificationsManagerTests: XCTestCase {
             handleNotificationCallbackWasExecuted = true
         }
 
-        guard case let .synchronizeNotifications(onCompletion) = storesManager.receivedActions.first as! NotificationAction else {
+        guard case let .synchronizeNotifications(onCompletion) =
+                storesManager.receivedActions.compactMap({ $0 as? NotificationAction }).first else {
             XCTFail()
             return
         }
@@ -457,6 +393,130 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertEqual(emittedNotification.noteID, 9_981)
         XCTAssertEqual(emittedNotification.message, Sample.defaultMessage)
     }
+
+    // MARK: - App Badge Number
+
+    /// Verifies that `handleNotification` updates app badge number to 1 when the notification is from the same site.
+    func test_receiving_notification_from_the_same_site_updates_app_badge_number() {
+        // Arrange
+        // A site ID and the default stores are required to update the application badge number.
+        let stores = DefaultStoresManager.testingInstance
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: stores,
+                                                               supportManager: self.supportManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+            return PushNotificationsManager(configuration: configuration)
+        }()
+        stores.authenticate(credentials: SessionSettings.credentials)
+        let siteID = Int64(123)
+        stores.updateDefaultStore(storeID: siteID)
+        XCTAssertEqual(application.applicationIconBadgeNumber, .min)
+
+        // Action
+        let userInfo = notificationPayload(badgeCount: 10, type: .comment, siteID: siteID)
+        waitFor { promise in
+            self.manager.handleNotification(userInfo, onBadgeUpdateCompletion: {
+                promise(())
+            }) { _ in }
+        }
+
+        // Assert
+        XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.hasUnreadPushNotifications)
+        XCTAssertFalse(userNotificationCenter.removeAllNotificationsWasCalled)
+    }
+
+    /// Verifies that `handleNotification` twice does not change app badge number from 1 when both notifications are from the same site.
+    func test_receiving_two_notifications_from_the_same_site_does_does_not_change_app_badge_number() {
+        // Arrange
+        // A site ID and the default stores are required to update the application badge number.
+        let stores = DefaultStoresManager.testingInstance
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: stores,
+                                                               supportManager: self.supportManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+            return PushNotificationsManager(configuration: configuration)
+        }()
+        stores.authenticate(credentials: SessionSettings.credentials)
+        let siteID = Int64(123)
+        stores.updateDefaultStore(storeID: siteID)
+        XCTAssertEqual(application.applicationIconBadgeNumber, .min)
+
+        // Action
+        let userInfoForTheFirstNotification = notificationPayload(badgeCount: 10, type: .comment, siteID: siteID)
+        let userInfoForTheSecondNotification = notificationPayload(badgeCount: 2, type: .storeOrder, siteID: siteID)
+        waitFor { promise in
+            self.manager.handleNotification(userInfoForTheFirstNotification, onBadgeUpdateCompletion: {
+                self.manager.handleNotification(userInfoForTheSecondNotification, onBadgeUpdateCompletion: {
+                    promise(())
+                }) { _ in }
+            }) { _ in }
+        }
+
+        // Assert
+        XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.hasUnreadPushNotifications)
+        XCTAssertFalse(userNotificationCenter.removeAllNotificationsWasCalled)
+    }
+
+    /// Verifies that `handleNotification` clears app badge number without clearing push notifications when the notification is from a different site.
+    func test_receiving_notification_from_a_different_site_clears_app_badge_number_only() {
+        // Arrange
+        // A site ID and the default stores are required to update the application badge number.
+        let stores = DefaultStoresManager.testingInstance
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: stores,
+                                                               supportManager: self.supportManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+            return PushNotificationsManager(configuration: configuration)
+        }()
+        stores.authenticate(credentials: SessionSettings.credentials)
+        stores.updateDefaultStore(storeID: 123)
+        XCTAssertEqual(application.applicationIconBadgeNumber, .min)
+
+        // Action
+        let userInfo = notificationPayload(badgeCount: 10, type: .comment, siteID: 556)
+        waitFor { promise in
+            self.manager.handleNotification(userInfo, onBadgeUpdateCompletion: {
+                promise(())
+            }) { _ in }
+        }
+
+        // Assert
+        XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.clearsBadgeOnly)
+        XCTAssertFalse(userNotificationCenter.removeAllNotificationsWasCalled)
+    }
+
+    /// Verifies that `resetBadgeCountForAllStores` clears app badge number and push notifications.
+    func test_resetBadgeCountForAllStores_clears_app_badge_number_and_push_notifications() {
+        // Arrange
+        // The default stores are required to update the application badge number.
+        let stores = DefaultStoresManager.testingInstance
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: stores,
+                                                               supportManager: self.supportManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+            return PushNotificationsManager(configuration: configuration)
+        }()
+        application.applicationIconBadgeNumber = 90
+
+        // Action
+        waitFor { promise in
+            self.manager.resetBadgeCountForAllStores {
+                promise(())
+            }
+        }
+
+        // Assert
+        XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.clearsBadgeAndPotentiallyAllPushNotifications)
+        XCTAssertTrue(userNotificationCenter.removeAllNotificationsWasCalled)
+    }
 }
 
 
@@ -466,14 +526,15 @@ private extension PushNotificationsManagerTests {
 
     /// Returns a Sample Notification Payload
     ///
-    func notificationPayload(badgeCount: Int = 0, noteID: Int64 = 1234, type: Note.Kind = .comment) -> [String: Any] {
+    func notificationPayload(badgeCount: Int = 0, noteID: Int64 = 1234, type: Note.Kind = .comment, siteID: Int64 = 134) -> [String: Any] {
         return [
             "aps": [
                 "badge": badgeCount,
                 "alert": Sample.defaultMessage
             ],
             "note_id": noteID,
-            "type": type.rawValue
+            "type": type.rawValue,
+            "blog": siteID
         ]
     }
 }

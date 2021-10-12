@@ -58,12 +58,12 @@ struct ShippingLabelCarrierRowViewModel: Identifiable {
 
         price = {
             if signatureSelected, let signatureRate = signatureRate {
-                    return currencyFormatter.formatAmount(Decimal(signatureRate.retailRate)) ?? ""
+                    return currencyFormatter.formatAmount(Decimal(signatureRate.rate)) ?? ""
                 }
                 if adultSignatureSelected, let adultSignatureRate = adultSignatureRate {
-                    return currencyFormatter.formatAmount(Decimal(adultSignatureRate.retailRate)) ?? ""
+                    return currencyFormatter.formatAmount(Decimal(adultSignatureRate.rate)) ?? ""
                 }
-            return currencyFormatter.formatAmount(Decimal(rate.retailRate)) ?? ""
+            return currencyFormatter.formatAmount(Decimal(rate.rate)) ?? ""
         }()
 
         carrierLogo = CarrierLogo(rawValue: rate.carrierID)?.image()
@@ -92,14 +92,14 @@ struct ShippingLabelCarrierRowViewModel: Identifiable {
         displayAdultSignatureRequired = adultSignatureRate != nil
 
         if displaySignatureRequired, let signatureRate = signatureRate {
-            let amount = currencyFormatter.formatAmount(Decimal(signatureRate.retailRate - rate.retailRate)) ?? ""
+            let amount = currencyFormatter.formatAmount(Decimal(signatureRate.rate - rate.rate)) ?? ""
               signatureRequiredText = String(format: Localization.signatureRequired, amount)
         } else {
             signatureRequiredText = ""
         }
 
         if displayAdultSignatureRequired, let adultSignatureRate = adultSignatureRate {
-            let amount = currencyFormatter.formatAmount(Decimal(adultSignatureRate.retailRate - rate.retailRate)) ?? ""
+            let amount = currencyFormatter.formatAmount(Decimal(adultSignatureRate.rate - rate.rate)) ?? ""
             adultSignatureRequiredText = String(format: Localization.adultSignatureRequired, amount)
         }
         else {

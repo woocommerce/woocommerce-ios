@@ -103,7 +103,7 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
         viewModel.onOrderCreated = { [weak self] order in
             guard let self = self else { return }
 
-            self.moveToViewController(at: 1, animated: false) // AllOrders list is at index 2
+            self.moveToViewController(at: 1, animated: false) // AllOrders list is at index 1
             self.dismiss(animated: true) {
                 self.navigateToOrderDetail(order)
             }

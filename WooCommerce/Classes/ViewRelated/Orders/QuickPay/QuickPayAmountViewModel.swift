@@ -18,6 +18,10 @@ final class QuickPayAmountViewModel: ObservableObject {
     ///
     @Published private(set) var loading: Bool = false
 
+    /// Assign this closure to be notified when a new order is created
+    ///
+    var onOrderCreated: (Order) -> Void = { _ in }
+
     /// Returns true when amount has less than two characters.
     /// Less than two, because `$` should be the first character.
     ///
@@ -46,18 +50,16 @@ final class QuickPayAmountViewModel: ObservableObject {
     /// Called when the view taps the done button.
     /// Creates a quick pay order.
     ///
-    func createQuickPayOrder(onCompletion: @escaping (Bool) -> Void) {
+    func createQuickPayOrder() {
         loading = true
         let action = OrderAction.createQuickPayOrder(siteID: siteID, amount: amount) { [weak self] result in
             self?.loading = false
 
             switch result {
-            case .success:
-                // TODO: Send order just created.
-                onCompletion(true)
+            case .success(let order):
+                self?.onOrderCreated(order)
 
             case .failure(let error):
-                onCompletion(false)
                 DDLogError("⛔️ Error creating quick pay order: \(error)")
                 // TODO: Show error notice
             }

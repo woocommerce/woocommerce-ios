@@ -33,9 +33,14 @@ final class QuickPayAmountViewModel: ObservableObject {
     ///
     private let stores: StoresManager
 
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
+    /// Users locale, needed to use the correct decimal separator
+    ///
+    private let userLocale: Locale
+
+    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, locale: Locale = Locale.autoupdatingCurrent) {
         self.siteID = siteID
         self.stores = stores
+        self.userLocale = locale
     }
 
     /// Called when the view taps the done button.
@@ -65,12 +70,14 @@ final class QuickPayAmountViewModel: ObservableObject {
 private extension QuickPayAmountViewModel {
 
     /// Formats a received value by making sure the `$` symbol is present and trimming content to two decimal places.
+    /// TODO: Update to support multiple currencies
     ///
     func formatAmount(_ amount: String) -> String {
         guard amount.isNotEmpty else { return amount }
 
         // Removes any unwanted character
-        var formattedAmount = amount.filter { $0.isNumber || $0.isCurrencySymbol || $0 == "." }
+        let separatorCharacter = userLocale.decimalSeparator ?? "."
+        var formattedAmount = amount.filter { $0.isNumber || $0.isCurrencySymbol || "\($0)" == separatorCharacter }
 
         // Prepend the `$` symbol if needed.
         if formattedAmount.first != "$" {
@@ -78,17 +85,17 @@ private extension QuickPayAmountViewModel {
         }
 
         // Trim to two decimals & remove any extra "."
-        let components = formattedAmount.split(separator: ".")
+        let components = formattedAmount.components(separatedBy: separatorCharacter)
         switch components.count {
-        case 1 where formattedAmount.contains("."):
-            return components[0] + "."
+        case 1 where formattedAmount.contains(separatorCharacter):
+            return components[0] + separatorCharacter
         case 1:
-            return "\(components[0])"
+            return components[0]
         case 2...Int.max:
             let number = components[0]
             let decimals = components[1]
-            let trimmedDecimals = decimals.count > 2 ? decimals.prefix(2) : decimals
-            return "\(number).\(trimmedDecimals)"
+            let trimmedDecimals = decimals.count > 2 ? "\(decimals.prefix(2))" : decimals
+            return number + separatorCharacter + trimmedDecimals
         default:
             fatalError("Should not happen, components can't be 0 or negative")
         }

@@ -81,7 +81,7 @@ private extension QuickPayAmount {
     enum Localization {
         static let title = NSLocalizedString("Take Payment", comment: "Title for the quick pay screen")
         static let instructions = NSLocalizedString("Enter Amount", comment: "Short instructions label in the quick pay screen")
-        static let amountPlaceholder = NSLocalizedString("$0.00", comment: "Placeholder for the amount textfield in the quick pay screen")
+        static let amountPlaceholder = "$0.00" // Not localized for now as the prototype does not supporting multiple currencies.
         static let buttonTitle = NSLocalizedString("Done", comment: "Title for the button to confirm the amount in the quick pay screen")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the quick pay screen")
     }

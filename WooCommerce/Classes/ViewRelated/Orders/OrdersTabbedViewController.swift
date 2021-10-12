@@ -193,10 +193,14 @@ extension OrdersTabbedViewController {
     /// Create a `UIBarButtonItem` to be used as a way to create a new quick pay order.
     ///
     func createAddQuickPayOrderItem() -> UIBarButtonItem {
-        UIBarButtonItem(image: .plusBarButtonItemImage,
-                        style: .plain,
-                        target: self,
-                        action: #selector(presentQuickPayAmountController))
+        let button = UIBarButtonItem(image: .plusBarButtonItemImage,
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(presentQuickPayAmountController))
+        button.accessibilityTraits = .button
+        button.accessibilityLabel = NSLocalizedString("Add quick pay order", comment: "Navigates to a screen to create a quick pay order")
+        button.accessibilityIdentifier = "quick-pay-add-button"
+        return button
     }
 
     /// Creates the view controllers to be shown in tabs.

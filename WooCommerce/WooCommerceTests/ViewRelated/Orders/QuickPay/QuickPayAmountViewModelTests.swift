@@ -8,9 +8,11 @@ final class QuickPayAmountViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 123
 
+    private let usLocale = Locale(identifier: "en_US")
+
     func test_view_model_prepends_currency_symbol() {
         // Given
-        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID)
+        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID, locale: usLocale)
 
         // When
         viewModel.amount = "12"
@@ -21,7 +23,7 @@ final class QuickPayAmountViewModelTests: XCTestCase {
 
     func test_view_model_removes_non_digit_characters() {
         // Given
-        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID)
+        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID, locale: usLocale)
 
         // When
         viewModel.amount = "hi:11.30-"
@@ -32,7 +34,7 @@ final class QuickPayAmountViewModelTests: XCTestCase {
 
     func test_view_model_trims_more_than_two_decimal_numbers() {
         // Given
-        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID)
+        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID, locale: usLocale)
 
         // When
         viewModel.amount = "$67.321432432"
@@ -43,7 +45,7 @@ final class QuickPayAmountViewModelTests: XCTestCase {
 
     func test_view_model_removes_duplicated_decimal_separators() {
         // Given
-        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID)
+        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID, locale: usLocale)
 
         // When
         viewModel.amount = "$6.7.3"
@@ -54,7 +56,7 @@ final class QuickPayAmountViewModelTests: XCTestCase {
 
     func test_view_model_removes_consecutive_decimal_separators() {
         // Given
-        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID)
+        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID, locale: usLocale)
 
         // When
         viewModel.amount = "$6..."

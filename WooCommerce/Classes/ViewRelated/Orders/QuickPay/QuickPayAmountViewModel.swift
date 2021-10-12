@@ -18,6 +18,11 @@ final class QuickPayAmountViewModel: ObservableObject {
     ///
     @Published private(set) var loading: Bool = false
 
+    /// Defines the current notice that should be shown.
+    /// Defaults to `nil`.
+    ///
+    @Published var presentNotice: Notice?
+
     /// Assign this closure to be notified when a new order is created
     ///
     var onOrderCreated: (Order) -> Void = { _ in }
@@ -53,15 +58,16 @@ final class QuickPayAmountViewModel: ObservableObject {
     func createQuickPayOrder() {
         loading = true
         let action = OrderAction.createQuickPayOrder(siteID: siteID, amount: amount) { [weak self] result in
-            self?.loading = false
+            guard let self = self else { return }
+            self.loading = false
 
             switch result {
             case .success(let order):
-                self?.onOrderCreated(order)
+                self.onOrderCreated(order)
 
             case .failure(let error):
+                self.presentNotice = .error
                 DDLogError("⛔️ Error creating quick pay order: \(error)")
-                // TODO: Show error notice
             }
         }
         stores.dispatch(action)
@@ -101,5 +107,13 @@ private extension QuickPayAmountViewModel {
         default:
             fatalError("Should not happen, components can't be 0 or negative")
         }
+    }
+}
+
+// MARK: Definitions
+extension QuickPayAmountViewModel {
+    /// Representation of possible notices that can be displayed
+    enum Notice: Equatable {
+        case error
     }
 }

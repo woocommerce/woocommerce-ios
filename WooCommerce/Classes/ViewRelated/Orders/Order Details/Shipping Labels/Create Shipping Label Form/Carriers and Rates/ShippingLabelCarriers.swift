@@ -40,7 +40,7 @@ struct ShippingLabelCarriers: View {
                                                               shippingCost: viewModel.shippingCost).renderedIf(viewModel.shouldDisplayTopBanner)
                         ForEach(Array(viewModel.sections.enumerated()), id: \.offset) { index, sectionVM in
                             ShippingLabelCarriersSection(section: sectionVM, safeAreaInsets: geometry.safeAreaInsets)
-                                .background(Color(.systemBackground))
+                                .background(Color(.listForeground))
                             Spacer().frame(height: Constants.spaceBetweenSections)
                         }
                     case .error:

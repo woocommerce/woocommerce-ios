@@ -12,6 +12,14 @@ final class QuickPayAmountViewModel: ObservableObject {
             amount = formatAmount(amount)
         }
     }
+
+    /// Users locale, needed to use the correct decimal separator
+    ///
+    private let userLocale: Locale
+
+    init(locale: Locale = Locale.autoupdatingCurrent) {
+        self.userLocale = locale
+    }
 }
 
 // MARK: Helpers
@@ -24,7 +32,8 @@ private extension QuickPayAmountViewModel {
         guard amount.isNotEmpty else { return amount }
 
         // Removes any unwanted character
-        var formattedAmount = amount.filter { $0.isNumber || $0.isCurrencySymbol || $0 == "." }
+        let separatorCharacter = userLocale.decimalSeparator ?? "."
+        var formattedAmount = amount.filter { $0.isNumber || $0.isCurrencySymbol || "\($0)" == separatorCharacter }
 
         // Prepend the `$` symbol if needed.
         if formattedAmount.first != "$" {
@@ -32,17 +41,17 @@ private extension QuickPayAmountViewModel {
         }
 
         // Trim to two decimals & remove any extra "."
-        let components = formattedAmount.split(separator: ".")
+        let components = formattedAmount.components(separatedBy: separatorCharacter)
         switch components.count {
-        case 1 where formattedAmount.contains("."):
-            return components[0] + "."
+        case 1 where formattedAmount.contains(separatorCharacter):
+            return components[0] + separatorCharacter
         case 1:
-            return "\(components[0])"
+            return components[0]
         case 2...Int.max:
             let number = components[0]
             let decimals = components[1]
-            let trimmedDecimals = decimals.count > 2 ? decimals.prefix(2) : decimals
-            return "\(number).\(trimmedDecimals)"
+            let trimmedDecimals = decimals.count > 2 ? "\(decimals.prefix(2))" : decimals
+            return number + separatorCharacter + trimmedDecimals
         default:
             fatalError("Should not happen, components can't be 0 or negative")
         }

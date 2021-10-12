@@ -113,7 +113,7 @@ final class QuickPayAmountViewModelTests: XCTestCase {
                     XCTFail("Received unsupported action: \(action)")
                 }
             }
-            viewModel.createQuickPayOrder()
+            viewModel.createQuickPayOrder { _ in }
         }
 
         // Then

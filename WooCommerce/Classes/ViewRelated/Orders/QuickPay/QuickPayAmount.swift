@@ -55,7 +55,11 @@ struct QuickPayAmount: View {
 
             // Done button
             Button(Localization.buttonTitle) {
-                viewModel.createQuickPayOrder()
+                viewModel.createQuickPayOrder { success  in
+                    if success {
+                        dismiss()
+                    }
+                }
             }
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.loading))
             .disabled(viewModel.shouldDisableDoneButton)

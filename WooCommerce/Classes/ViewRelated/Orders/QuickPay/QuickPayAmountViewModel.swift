@@ -41,20 +41,20 @@ final class QuickPayAmountViewModel: ObservableObject {
     /// Called when the view taps the done button.
     /// Creates a quick pay order.
     ///
-    func createQuickPayOrder() {
+    func createQuickPayOrder(onCompletion: @escaping (Bool) -> Void) {
         loading = true
         let action = OrderAction.createQuickPayOrder(siteID: siteID, amount: amount) { [weak self] result in
             self?.loading = false
 
             switch result {
             case .success:
-                break
-                // TODO: Inform about completion
+                // TODO: Send order just created.
+                onCompletion(true)
 
             case .failure(let error):
+                onCompletion(false)
                 DDLogError("⛔️ Error creating quick pay order: \(error)")
                 // TODO: Show error notice
-                // TODO: Inform about completion
             }
         }
         stores.dispatch(action)

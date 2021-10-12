@@ -1,4 +1,5 @@
 import Foundation
+import Yosemite
 
 /// View Model for the `QuickPayAmount` view.
 ///
@@ -13,11 +14,50 @@ final class QuickPayAmountViewModel: ObservableObject {
         }
     }
 
+    /// True while performing the create order operation. False otherwise.
+    ///
+    @Published private(set) var loading: Bool = false
+
     /// Returns true when amount has less than two characters.
     /// Less than two, because `$` should be the first character.
     ///
     var shouldDisableDoneButton: Bool {
         amount.count < 2
+    }
+
+    /// Current store ID
+    ///
+    private let siteID: Int64
+
+    /// Stores to dispatch actions
+    ///
+    private let stores: StoresManager
+
+    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
+        self.siteID = siteID
+        self.stores = stores
+    }
+
+    /// Called when the view taps the done button.
+    /// Creates a quick pay order.
+    ///
+    func createQuickPayOrder() {
+        loading = true
+        let action = OrderAction.createQuickPayOrder(siteID: siteID, amount: amount) { [weak self] result in
+            self?.loading = false
+
+            switch result {
+            case .success:
+                break
+                // TODO: Inform about completion
+
+            case .failure(let error):
+                DDLogError("⛔️ Error creating quick pay order: \(error)")
+                // TODO: Show error notice
+                // TODO: Inform about completion
+            }
+        }
+        stores.dispatch(action)
     }
 }
 

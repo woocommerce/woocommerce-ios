@@ -88,7 +88,7 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
     /// Presents `QuickPayAmountHostingController`.
     ///
     @objc private func presentQuickPayAmountController() {
-        let viewController = QuickPayAmountHostingController(viewModel: QuickPayAmountViewModel())
+        let viewController = QuickPayAmountHostingController(viewModel: QuickPayAmountViewModel(siteID: siteID))
         let navigationController = WooNavigationController(rootViewController: viewController)
         present(navigationController, animated: true)
     }

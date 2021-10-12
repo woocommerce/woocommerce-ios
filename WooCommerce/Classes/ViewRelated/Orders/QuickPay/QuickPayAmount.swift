@@ -55,9 +55,9 @@ struct QuickPayAmount: View {
 
             // Done button
             Button(Localization.buttonTitle) {
-                print("Done tapped")
+                viewModel.createQuickPayOrder()
             }
-            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.amount == "$10"))
+            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.loading))
             .disabled(viewModel.shouldDisableDoneButton)
         }
         .padding()

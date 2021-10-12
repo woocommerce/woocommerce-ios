@@ -83,8 +83,8 @@ final class ShippingLabelCustomsFormItemDetailsViewModel: ObservableObject {
         self.quantity = item.quantity
         self.productID = item.productID
         self.description = item.description
-        self.value = String(item.value)
-        self.weight = String(item.weight)
+        self.value = NumberFormatter.localizedString(from: NSNumber(value: item.value)) ?? String(item.value)
+        self.weight = NumberFormatter.localizedString(from: NSNumber(value: item.weight)) ?? String(item.weight)
         self.hsTariffNumber = item.hsTariffNumber
         self.allCountries = countries
         self.currency = currency
@@ -129,14 +129,14 @@ private extension ShippingLabelCustomsFormItemDetailsViewModel {
     }
 
     func getValidatedValue(from value: String) -> Double? {
-        guard let numericValue = Double(value), numericValue > 0 else {
+        guard let numericValue = NumberFormatter.double(from: value), numericValue > 0 else {
             return nil
         }
         return numericValue
     }
 
     func getValidatedWeight(from weight: String) -> Double? {
-        guard let numericWeight = Double(weight), numericWeight > 0 else {
+        guard let numericWeight = NumberFormatter.double(from: weight), numericWeight > 0 else {
             return nil
         }
         return numericWeight

@@ -18,6 +18,7 @@ final class QuickPayAmountViewModel: ObservableObject {
 private extension QuickPayAmountViewModel {
 
     /// Formats a received value by making sure the `$` symbol is present and trimming content to two decimal places.
+    /// TODO: Update to support multiple currencies
     ///
     func formatAmount(_ amount: String) -> String {
         guard amount.isNotEmpty else { return amount }

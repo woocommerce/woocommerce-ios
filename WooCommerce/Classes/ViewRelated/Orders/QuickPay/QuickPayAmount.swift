@@ -5,8 +5,8 @@ import SwiftUI
 ///
 final class QuickPayAmountHostingController: UIHostingController<QuickPayAmount> {
 
-    init() {
-        super.init(rootView: QuickPayAmount())
+    init(viewModel: QuickPayAmountViewModel) {
+        super.init(rootView: QuickPayAmount(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismiss = { [weak self] in
@@ -27,13 +27,13 @@ struct QuickPayAmount: View {
     ///
     var dismiss: (() -> Void) = {}
 
-    /// Temporary store for the typed amount
-    ///
-    @State private var amount: String = ""
-
     /// Keeps track of the current content scale due to accessibility changes
     ///
     @ScaledMetric private var scale: CGFloat = 1.0
+
+    /// ViewModel to drive the view content
+    ///
+    @ObservedObject private(set) var viewModel: QuickPayAmountViewModel
 
     var body: some View {
         VStack(alignment: .center, spacing: Layout.mainVerticalSpacing) {
@@ -45,7 +45,7 @@ struct QuickPayAmount: View {
                 .secondaryBodyStyle()
 
             // Amount Textfield
-            TextField(Localization.amountPlaceholder, text: $amount)
+            TextField(Localization.amountPlaceholder, text: $viewModel.amount)
                 .font(.system(size: Layout.amountFontSize(scale: scale), weight: .bold, design: .default))
                 .foregroundColor(Color(.text))
                 .multilineTextAlignment(.center)
@@ -76,7 +76,7 @@ private extension QuickPayAmount {
     enum Localization {
         static let title = NSLocalizedString("Take Payment", comment: "Title for the quick pay screen")
         static let instructions = NSLocalizedString("Enter Amount", comment: "Short instructions label in the quick pay screen")
-        static let amountPlaceholder = NSLocalizedString("$0.00", comment: "Placeholder for the amount textfield in the quick pay screen")
+        static let amountPlaceholder = "$0.00" // Not localized for now as the prototype does not supporting multiple currencies.
         static let buttonTitle = NSLocalizedString("Done", comment: "Title for the button to confirm the amount in the quick pay screen")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the quick pay screen")
     }
@@ -86,13 +86,5 @@ private extension QuickPayAmount {
         static func amountFontSize(scale: CGFloat) -> CGFloat {
             56 * scale
         }
-    }
-}
-
-// MARK: Previews
-private struct QuickPayAmount_Preview: PreviewProvider {
-    static var previews: some View {
-        QuickPayAmount()
-            .environment(\.colorScheme, .light)
     }
 }

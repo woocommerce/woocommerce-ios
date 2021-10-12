@@ -85,6 +85,14 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
         present(navigationController, animated: true, completion: nil)
     }
 
+    /// Presents `QuickPayAmountHostingController`.
+    ///
+    @objc private func presentQuickPayAmountController() {
+        let viewController = QuickPayAmountHostingController(viewModel: QuickPayAmountViewModel())
+        let navigationController = WooNavigationController(rootViewController: viewController)
+        present(navigationController, animated: true)
+    }
+
     // MARK: - ButtonBarPagerTabStripViewController Conformance
 
     /// Return the ViewControllers for "Processing" and "All Orders".
@@ -179,6 +187,19 @@ extension OrdersTabbedViewController {
         )
         button.accessibilityIdentifier = "order-search-button"
 
+        return button
+    }
+
+    /// Create a `UIBarButtonItem` to be used as a way to create a new quick pay order.
+    ///
+    func createAddQuickPayOrderItem() -> UIBarButtonItem {
+        let button = UIBarButtonItem(image: .plusBarButtonItemImage,
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(presentQuickPayAmountController))
+        button.accessibilityTraits = .button
+        button.accessibilityLabel = NSLocalizedString("Add quick pay order", comment: "Navigates to a screen to create a quick pay order")
+        button.accessibilityIdentifier = "quick-pay-add-button"
         return button
     }
 

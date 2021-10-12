@@ -93,7 +93,12 @@ private extension OrdersRootViewController {
     /// For `viewDidLoad` only, set up `navigationItem` buttons.
     ///
     func configureNavigationButtons() {
-        navigationItem.rightBarButtonItem = ordersViewController.createSearchBarButtonItem()
+        let isQuickPayEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.quickPayPrototype)
+        let buttons: [UIBarButtonItem?] = [
+            ordersViewController.createSearchBarButtonItem(),
+            isQuickPayEnabled ? ordersViewController.createAddQuickPayOrderItem() : nil
+        ]
+        navigationItem.rightBarButtonItems = buttons.compactMap { $0 }
     }
 
     func configureContainerView() {

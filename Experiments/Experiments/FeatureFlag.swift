@@ -45,4 +45,8 @@ public enum FeatureFlag: Int {
     /// Push notifications for all stores
     ///
     case pushNotificationsForAllStores
+
+    /// Allows to create quick pay orders
+    ///
+    case quickPayPrototype
 }

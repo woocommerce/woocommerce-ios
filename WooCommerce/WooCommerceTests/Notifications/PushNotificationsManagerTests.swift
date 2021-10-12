@@ -295,8 +295,19 @@ final class PushNotificationsManagerTests: XCTestCase {
     /// Verifies that `handleNotification` opens the Notification Details for the newly received note, whenever the application
     /// state is inactive.
     ///
-    func testHandleNotificationDisplaysDetailsForTheNewNotificationWheneverTheAppStateIsInactive() {
-        let payload = notificationPayload(type: .storeOrder)
+    func test_handleNotification_displays_new_notification_details_whenever_the_app_state_is_inactive_with_multi_store_notifications_disabled() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPushNotificationsForAllStoresOn: false)
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: self.storesManager,
+                                                               supportManager: self.supportManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+
+            return PushNotificationsManager(configuration: configuration, featureFlagService: featureFlagService)
+        }()
+        let payload = notificationPayload(type: .storeOrder, featureFlagService: featureFlagService)
         var handleNotificationCallbackWasExecuted = false
 
         application.applicationState = .inactive
@@ -309,6 +320,34 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertTrue(handleNotificationCallbackWasExecuted)
     }
 
+    /// Verifies that `handleNotification` opens the Notification Details for the newly received note, whenever the application
+    /// state is inactive.
+    ///
+    func test_handleNotification_displays_details_for_the_new_notification_whenever_the_app_state_is_inactive() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPushNotificationsForAllStoresOn: true)
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: self.storesManager,
+                                                               supportManager: self.supportManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+
+            return PushNotificationsManager(configuration: configuration, featureFlagService: featureFlagService)
+        }()
+        let payload = notificationPayload(type: .storeOrder, featureFlagService: featureFlagService)
+        var handleNotificationCallbackWasExecuted = false
+
+        application.applicationState = .inactive
+        manager.handleNotification(payload, onBadgeUpdateCompletion: {}) { result in
+            XCTAssertEqual(result, .newData)
+            handleNotificationCallbackWasExecuted = true
+        }
+
+        XCTAssertEqual(application.presentDetailsNoteIDs.first, 1234)
+        XCTAssertTrue(handleNotificationCallbackWasExecuted)
+
+    }
 
     /// Verifies that `handleNotification` displays an InApp Notification with only the title whenever the app is in active state when
     /// multi-store push notifications feature is disabled.

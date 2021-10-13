@@ -718,7 +718,7 @@ private extension OrderDetailsViewController {
                 guard let self = self else {
                     return
                 }
-                
+
                 switch result {
                 case .failure(let error):
                     ServiceLocator.analytics.track(.collectPaymentFailed, withError: error)
@@ -730,7 +730,7 @@ private extension OrderDetailsViewController {
                     self.syncOrderAfterPaymentCollection {
                         self.refreshCardPresentPaymentEligibility()
                     }
-                    
+
                     self.paymentAlerts.success(printReceipt: {
                         self.viewModel.printReceipt(params: receiptParameters)
                     }, emailReceipt: {

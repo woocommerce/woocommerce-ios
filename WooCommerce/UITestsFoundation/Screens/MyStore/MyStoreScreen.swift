@@ -3,8 +3,10 @@ import XCTest
 
 public final class MyStoreScreen: ScreenObject {
 
-    public let tabBar = TabNavComponent()
-    public let periodStatsTable = PeriodStatsTable()
+    // TODO: Remove force `try` once `ScreenObject` migration is completed
+    public let tabBar = try! TabNavComponent()
+    // TODO: Remove force `try` once `ScreenObject` migration is completed
+    public let periodStatsTable = try! PeriodStatsTable()
 
     private let settingsButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["dashboard-settings-button"]
@@ -34,8 +36,8 @@ public final class MyStoreScreen: ScreenObject {
     }
 
     @discardableResult
-    public func openSettingsPane() -> SettingsScreen {
+    public func openSettingsPane() throws -> SettingsScreen {
         settingsButton.tap()
-        return SettingsScreen()
+        return try SettingsScreen()
     }
 }

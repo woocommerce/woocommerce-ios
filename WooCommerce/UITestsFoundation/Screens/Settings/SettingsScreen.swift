@@ -1,22 +1,29 @@
+import ScreenObject
 import XCTest
 
-public final class SettingsScreen: BaseScreen {
+public final class SettingsScreen: ScreenObject {
 
-    struct ElementStringIDs {
-        static let headlineLabel = "headline-label"
-        static let bodyLabel = "body-label"
-        static let logOutButton = "settings-log-out-button"
+    private let selectedStoreNameGetter: (XCUIApplication) -> XCUIElement = {
+        $0.cells.staticTexts["headline-label"]
     }
 
-    private let selectedStoreName = XCUIApplication().cells.staticTexts[ElementStringIDs.headlineLabel]
-    private let selectedSiteUrl = XCUIApplication().cells.staticTexts[ElementStringIDs.bodyLabel]
-    private let logOutButton = XCUIApplication().cells[ElementStringIDs.logOutButton]
-    private let logOutAlert = XCUIApplication().alerts.element(boundBy: 0)
+    private let selectedSiteUrlGetter: (XCUIApplication) -> XCUIElement = {
+        $0.cells.staticTexts["body-label"]
+    }
 
-    init() {
-        super.init(element: logOutButton)
+    private let logOutButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.cells["settings-log-out-button"]
+    }
 
-        XCTAssert(logOutButton.waitForExistence(timeout: 3))
+    init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+            expectedElementGetters: [
+                selectedStoreNameGetter,
+                selectedSiteUrlGetter,
+                logOutButtonGetter
+            ],
+            app: app
+        )
     }
 
     @discardableResult
@@ -27,7 +34,9 @@ public final class SettingsScreen: BaseScreen {
 
     @discardableResult
     public func logOut() throws -> PrologueScreen {
-        logOutButton.tap()
+        logOutButtonGetter(app).tap()
+
+        let logOutAlert = app.alerts.element(boundBy: 0)
 
         // Some localizations have very long "log out" text, which causes the UIAlertView
         // to stack. We need to detect these cases in order to reliably tap the correct button
@@ -46,9 +55,9 @@ public final class SettingsScreen: BaseScreen {
 extension SettingsScreen {
 
     public func verifySelectedStoreDisplays(storeName expectedStoreName: String, siteUrl expectedSiteUrl: String) -> SettingsScreen {
-        let actualStoreName = selectedStoreName.label
+        let actualStoreName = selectedStoreNameGetter(app).label
         let expectedSiteUrl = expectedSiteUrl.replacingOccurrences(of: "http://", with: "")
-        let actualSiteUrl = selectedSiteUrl.label
+        let actualSiteUrl = selectedSiteUrlGetter(app).label
 
         XCTAssertEqual(expectedStoreName, actualStoreName,
                        "Expected display name '\(expectedStoreName)' but '\(actualStoreName)' was displayed instead.")

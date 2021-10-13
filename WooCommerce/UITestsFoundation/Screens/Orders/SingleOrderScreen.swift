@@ -1,22 +1,21 @@
+import ScreenObject
 import XCTest
 
-public final class SingleOrderScreen: BaseScreen {
+public final class SingleOrderScreen: ScreenObject {
 
-    struct ElementStringIDs {
-        static let summaryTitleLabel = "summary-table-view-cell-title-label"
-    }
+    // TODO: Remove force `try` once `ScreenObject` migration is completed
+    let tabBar = try! TabNavComponent()
 
-    let tabBar = TabNavComponent()
-    private let summaryTitleLabel: XCUIElement
-
-    init() {
-        summaryTitleLabel = XCUIApplication().staticTexts[ElementStringIDs.summaryTitleLabel]
-        super.init(element: summaryTitleLabel)
+    init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+            expectedElementGetters: [ { $0.staticTexts["summary-table-view-cell-title-label"] } ],
+            app: app
+        )
     }
 
     @discardableResult
-    public func goBackToOrdersScreen() -> OrdersScreen {
+    public func goBackToOrdersScreen() throws -> OrdersScreen {
         pop()
-        return OrdersScreen()
+        return try OrdersScreen()
     }
 }

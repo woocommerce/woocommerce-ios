@@ -6,11 +6,23 @@ final class OrderStatusListViewController: UIViewController {
     ///
     @IBOutlet private var tableView: UITableView!
 
+    /// The index of the status stored in the database when list view is presented
+    ///
+    private var storedStatus: IndexPath?
+    
     /// The index of (new) order status selected by the user tapping on a table row.
     ///
     private var indexOfSelectedStatus: IndexPath? {
         didSet {
-            activateApplyButton()
+            guard let storedStatus = storedStatus else {
+                activateApplyButton()
+                return
+            }
+            if storedStatus != indexOfSelectedStatus {
+                activateApplyButton()
+            } else {
+                deActivateApplyButton()
+            }
         }
     }
 
@@ -53,6 +65,7 @@ final class OrderStatusListViewController: UIViewController {
             return
         }
         tableView.selectRow(at: selectedStatusIndex, animated: false, scrollPosition: .none)
+        storedStatus = selectedStatusIndex
     }
 
     /// Registers all of the available TableViewCells

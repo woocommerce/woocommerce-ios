@@ -1,6 +1,7 @@
 
 import UIKit
 import XLPagerTabStrip
+import struct Yosemite.Order
 import struct Yosemite.OrderStatus
 import enum Yosemite.OrderStatusEnum
 import struct Yosemite.Note
@@ -85,10 +86,30 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
         present(navigationController, animated: true, completion: nil)
     }
 
+    /// Pushes an `OrderDetailsViewController` onto the navigation stack.
+    ///
+    private func navigateToOrderDetail(_ order: Order) {
+        guard let orderViewController = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else { return }
+        orderViewController.viewModel = OrderDetailsViewModel(order: order)
+        show(orderViewController, sender: self)
+
+        ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID, "status": order.status.rawValue])
+    }
+
     /// Presents `QuickPayAmountHostingController`.
     ///
     @objc private func presentQuickPayAmountController() {
-        let viewController = QuickPayAmountHostingController(viewModel: QuickPayAmountViewModel(siteID: siteID))
+        let viewModel = QuickPayAmountViewModel(siteID: siteID)
+        viewModel.onOrderCreated = { [weak self] order in
+            guard let self = self else { return }
+
+            self.moveToViewController(at: 1, animated: false) // AllOrders list is at index 1
+            self.dismiss(animated: true) {
+                self.navigateToOrderDetail(order)
+            }
+        }
+
+        let viewController = QuickPayAmountHostingController(viewModel: viewModel)
         let navigationController = WooNavigationController(rootViewController: viewController)
         present(navigationController, animated: true)
     }

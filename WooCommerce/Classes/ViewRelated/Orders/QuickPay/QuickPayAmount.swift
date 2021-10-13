@@ -1,9 +1,22 @@
 import Foundation
 import SwiftUI
+import Combine
 
 /// Hosting controller that wraps an `QuickPayAmount` view.
 ///
 final class QuickPayAmountHostingController: UIHostingController<QuickPayAmount> {
+
+    /// References to keep the Combine subscriptions alive within the lifecycle of the object.
+    ///
+    private var subscriptions: Set<AnyCancellable> = []
+
+    /// Presents notices in the current modal presentation context
+    ///
+    private lazy var modalNoticePresenter: NoticePresenter = {
+        let presenter = DefaultNoticePresenter()
+        presenter.presentingViewController = self
+        return presenter
+    }()
 
     init(viewModel: QuickPayAmountViewModel) {
         super.init(rootView: QuickPayAmount(viewModel: viewModel))
@@ -12,6 +25,24 @@ final class QuickPayAmountHostingController: UIHostingController<QuickPayAmount>
         rootView.dismiss = { [weak self] in
             self?.dismiss(animated: true, completion: nil)
         }
+
+        // Observe the present notice intent and set it back to `nil` after presented.
+        viewModel.$presentNotice
+            .compactMap { $0 }
+            .sink { [weak self] notice in
+
+                // To prevent keyboard to hide the notice
+                self?.view.endEditing(true)
+
+                switch notice {
+                case .error:
+                    self?.modalNoticePresenter.enqueue(notice: .init(title: QuickPayAmount.Localization.error, feedbackType: .error))
+                }
+
+                // Nullify the presentation intent.
+                viewModel.presentNotice = nil
+            }
+            .store(in: &subscriptions)
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -55,11 +86,7 @@ struct QuickPayAmount: View {
 
             // Done button
             Button(Localization.buttonTitle) {
-                viewModel.createQuickPayOrder { success  in
-                    if success {
-                        dismiss()
-                    }
-                }
+                viewModel.createQuickPayOrder()
             }
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.loading))
             .disabled(viewModel.shouldDisableDoneButton)
@@ -84,6 +111,7 @@ private extension QuickPayAmount {
         static let amountPlaceholder = "$0.00" // Not localized for now as the prototype does not supporting multiple currencies.
         static let buttonTitle = NSLocalizedString("Done", comment: "Title for the button to confirm the amount in the quick pay screen")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the quick pay screen")
+        static let error = NSLocalizedString("There was an error creating the order", comment: "Notice text after failing to create a quick pay order.")
     }
 
     enum Layout {

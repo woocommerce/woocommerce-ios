@@ -115,10 +115,56 @@ final class QuickPayAmountViewModelTests: XCTestCase {
                     XCTFail("Received unsupported action: \(action)")
                 }
             }
-            viewModel.createQuickPayOrder { _ in }
+            viewModel.createQuickPayOrder()
         }
 
         // Then
         XCTAssertTrue(isLoading)
     }
+
+    func test_view_model_call_onOrderCreated_closure_after_an_order_is_created() {
+        // Given
+        let testingStore = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID, stores: testingStore)
+        testingStore.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .createQuickPayOrder(_, _, onCompletion):
+                onCompletion(.success(.fake()))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        // When
+        let onOrderCreatedCalled: Bool = waitFor { promise in
+            viewModel.onOrderCreated = { _ in
+                promise(true)
+            }
+            viewModel.createQuickPayOrder()
+        }
+
+        // Then
+        XCTAssertTrue(onOrderCreatedCalled)
+    }
+
+    func test_view_model_attempts_error_notice_presentation_when_failing_to_crete_order() {
+        // Given
+        let testingStore = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID, stores: testingStore)
+        testingStore.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .createQuickPayOrder(_, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "Error", code: 0)))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        // When
+        viewModel.createQuickPayOrder()
+
+        // Then
+        XCTAssertEqual(viewModel.presentNotice, .error)
+    }
+
 }

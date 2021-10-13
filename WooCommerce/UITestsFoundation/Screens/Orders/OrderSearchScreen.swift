@@ -3,11 +3,6 @@ import XCTest
 
 public final class OrderSearchScreen: ScreenObject {
 
-    struct ElementStringIDs {
-        static let searchField = "order-search-screen-search-field"
-        static let cancelButton = "order-search-screen-cancel-button"
-    }
-
     private let cancelButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["order-search-screen-cancel-button"]
     }

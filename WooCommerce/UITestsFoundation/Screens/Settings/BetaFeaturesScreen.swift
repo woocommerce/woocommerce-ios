@@ -6,10 +6,6 @@ import XCTest
 // it'll be already available if someone needs to work with it or on it in the future.
 class BetaFeaturesScreen: ScreenObject {
 
-    struct ElementStringIDs {
-        static let enableProductsButton = "beta-features-products-cell"
-    }
-
     // `expectedElement` is a `ScreenObject` utility to get the first element from the
     // `expectedElementGetters` list.
     private var enableProductsButton: XCUIElement { expectedElement }

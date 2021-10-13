@@ -10,7 +10,7 @@ class BetaFeaturesScreen: ScreenObject {
         static let enableProductsButton = "beta-features-products-cell"
     }
 
-    // `expectedElement` is a `ScreenObject` utility to get the first element for the
+    // `expectedElement` is a `ScreenObject` utility to get the first element from the
     // `expectedElementGetters` list.
     private var enableProductsButton: XCUIElement { expectedElement }
 

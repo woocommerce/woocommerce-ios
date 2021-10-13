@@ -34,6 +34,12 @@ final class QuickPayAmountViewModel: ObservableObject {
         amount.count < 2
     }
 
+    /// Dynamically builds the amount placeholder based on the store decimal separator.
+    ///
+    lazy var amountPlaceholder: String = {
+        "$0\(storeCurrencySettings.decimalSeparator)00" // Not localized for now as the prototype does not supporting multiple currencies.
+    }()
+
     /// Current store ID
     ///
     private let siteID: Int64
@@ -46,10 +52,18 @@ final class QuickPayAmountViewModel: ObservableObject {
     ///
     private let userLocale: Locale
 
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, locale: Locale = Locale.autoupdatingCurrent) {
+    /// Current store currency settings
+    ///
+    private let storeCurrencySettings: CurrencySettings
+
+    init(siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
+         locale: Locale = Locale.autoupdatingCurrent,
+         storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.siteID = siteID
         self.stores = stores
         self.userLocale = locale
+        self.storeCurrencySettings = storeCurrencySettings
     }
 
     /// Called when the view taps the done button.
@@ -83,9 +97,13 @@ private extension QuickPayAmountViewModel {
     func formatAmount(_ amount: String) -> String {
         guard amount.isNotEmpty else { return amount }
 
-        // Removes any unwanted character
-        let separatorCharacter = userLocale.decimalSeparator ?? "."
-        var formattedAmount = amount.filter { $0.isNumber || $0.isCurrencySymbol || "\($0)" == separatorCharacter }
+        let deviceDecimalSeparator = userLocale.decimalSeparator ?? "."
+        let storeDecimalSeparator = storeCurrencySettings.decimalSeparator
+
+        // Removes any unwanted character & makes sure to use the store decimal separator
+        var formattedAmount = amount
+            .replacingOccurrences(of: deviceDecimalSeparator, with: storeDecimalSeparator)
+            .filter { $0.isNumber || $0.isCurrencySymbol || "\($0)" == storeDecimalSeparator }
 
         // Prepend the `$` symbol if needed.
         if formattedAmount.first != "$" {
@@ -93,17 +111,17 @@ private extension QuickPayAmountViewModel {
         }
 
         // Trim to two decimals & remove any extra "."
-        let components = formattedAmount.components(separatedBy: separatorCharacter)
+        let components = formattedAmount.components(separatedBy: storeDecimalSeparator)
         switch components.count {
-        case 1 where formattedAmount.contains(separatorCharacter):
-            return components[0] + separatorCharacter
+        case 1 where formattedAmount.contains(storeDecimalSeparator):
+            return components[0] + storeDecimalSeparator
         case 1:
             return components[0]
         case 2...Int.max:
             let number = components[0]
             let decimals = components[1]
             let trimmedDecimals = decimals.count > 2 ? "\(decimals.prefix(2))" : decimals
-            return number + separatorCharacter + trimmedDecimals
+            return number + storeDecimalSeparator + trimmedDecimals
         default:
             fatalError("Should not happen, components can't be 0 or negative")
         }

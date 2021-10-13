@@ -76,7 +76,7 @@ struct QuickPayAmount: View {
                 .secondaryBodyStyle()
 
             // Amount Textfield
-            TextField(Localization.amountPlaceholder, text: $viewModel.amount)
+            TextField(viewModel.amountPlaceholder, text: $viewModel.amount)
                 .font(.system(size: Layout.amountFontSize(scale: scale), weight: .bold, design: .default))
                 .foregroundColor(Color(.text))
                 .multilineTextAlignment(.center)
@@ -108,7 +108,6 @@ private extension QuickPayAmount {
     enum Localization {
         static let title = NSLocalizedString("Take Payment", comment: "Title for the quick pay screen")
         static let instructions = NSLocalizedString("Enter Amount", comment: "Short instructions label in the quick pay screen")
-        static let amountPlaceholder = "$0.00" // Not localized for now as the prototype does not supporting multiple currencies.
         static let buttonTitle = NSLocalizedString("Done", comment: "Title for the button to confirm the amount in the quick pay screen")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the quick pay screen")
         static let error = NSLocalizedString("There was an error creating the order", comment: "Notice text after failing to create a quick pay order.")

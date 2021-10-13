@@ -36,8 +36,9 @@ final class QuickPayAmountViewModel: ObservableObject {
 
     /// Dynamically builds the amount placeholder based on the store decimal separator.
     ///
-    lazy var amountPlaceholder: String = {
-        "$0\(storeCurrencySettings.decimalSeparator)00" // Not localized for now as the prototype does not supporting multiple currencies.
+    private(set) lazy var amountPlaceholder: String = {
+        // TODO: We are appending the currency symbol always to the left, we should use `CurrencyFormatter` when releasing to more countries.
+        storeCurrencySymbol + "0" + storeCurrencySettings.decimalSeparator + "00"
     }()
 
     /// Current store ID
@@ -56,6 +57,10 @@ final class QuickPayAmountViewModel: ObservableObject {
     ///
     private let storeCurrencySettings: CurrencySettings
 
+    /// Current store currency symbol
+    ///
+    private let storeCurrencySymbol: String
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          locale: Locale = Locale.autoupdatingCurrent,
@@ -64,6 +69,7 @@ final class QuickPayAmountViewModel: ObservableObject {
         self.stores = stores
         self.userLocale = locale
         self.storeCurrencySettings = storeCurrencySettings
+        self.storeCurrencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
     }
 
     /// Called when the view taps the done button.
@@ -105,9 +111,10 @@ private extension QuickPayAmountViewModel {
             .replacingOccurrences(of: deviceDecimalSeparator, with: storeDecimalSeparator)
             .filter { $0.isNumber || $0.isCurrencySymbol || "\($0)" == storeDecimalSeparator }
 
-        // Prepend the `$` symbol if needed.
-        if formattedAmount.first != "$" {
-            formattedAmount.insert("$", at: formattedAmount.startIndex)
+        // Prepend the store currency symbol if needed.
+        // TODO: We are appending the currency symbol always to the left, we should use `CurrencyFormatter` when releasing to more countries.
+        if !formattedAmount.hasPrefix(storeCurrencySymbol) {
+            formattedAmount.insert(contentsOf: storeCurrencySymbol, at: formattedAmount.startIndex)
         }
 
         // Trim to two decimals & remove any extra "."

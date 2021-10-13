@@ -718,6 +718,7 @@ private extension OrderDetailsViewController {
             switch result {
             case .failure(let error):
                 ServiceLocator.analytics.track(.collectPaymentFailed, withError: error)
+                DDLogError("Failed to collect payment: \(error)")
                 self.paymentAlerts.error(error: error, tryAgain: {
                     self.retryCollectPayment()
                 })

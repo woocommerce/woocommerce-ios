@@ -60,6 +60,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
     init(siteID: Int64,
          type: ShipType,
          address: ShippingLabelAddress?,
+         email: String?,
          phoneNumberRequired: Bool = false,
          validationError: ShippingLabelAddressValidationError?,
          countries: [Country],
@@ -67,6 +68,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
         viewModel = ShippingLabelAddressFormViewModel(siteID: siteID,
                                                       type: type,
                                                       address: address,
+                                                      email: email,
                                                       phoneNumberRequired: phoneNumberRequired,
                                                       validationError: validationError,
                                                       countries: countries)

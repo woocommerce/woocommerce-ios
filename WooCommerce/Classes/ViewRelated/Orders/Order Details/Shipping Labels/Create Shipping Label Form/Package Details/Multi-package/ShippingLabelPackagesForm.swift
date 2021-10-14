@@ -43,6 +43,7 @@ struct ShippingLabelPackagesForm: View {
                 .disabled(!viewModel.doneButtonEnabled)
             }
         }
+        .wooNavigationBarStyle()
     }
 }
 

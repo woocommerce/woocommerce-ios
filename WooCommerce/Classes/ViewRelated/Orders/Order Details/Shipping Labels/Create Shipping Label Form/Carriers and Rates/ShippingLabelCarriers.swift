@@ -75,6 +75,7 @@ struct ShippingLabelCarriers: View {
                     .disabled(!viewModel.isDoneButtonEnabled())
                 }
             }
+            .wooNavigationBarStyle()
         }
     }
 

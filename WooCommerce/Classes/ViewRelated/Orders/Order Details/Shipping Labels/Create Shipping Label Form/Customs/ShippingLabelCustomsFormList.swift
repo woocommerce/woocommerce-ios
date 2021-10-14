@@ -39,6 +39,7 @@ struct ShippingLabelCustomsFormList: View {
                 }).disabled(!viewModel.doneButtonEnabled)
             }
         }
+        .wooNavigationBarStyle()
     }
 }
 

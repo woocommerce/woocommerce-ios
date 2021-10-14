@@ -331,6 +331,27 @@ final class ReceiptStoreTests: XCTestCase {
         }
         XCTAssertNil(actualFeesLine)
     }
+
+    func test_print_callsPrint_passing_LineItemsTotal_calculatedUsing_UndiscountedSubtotals() throws {
+        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        let items = [makeItem(subtotal: "20.00", total: "12.50"), makeItem(subtotal: "10.00", total: "10.00")]
+        let mockOrder = makeOrder(items: items)
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        let lineItemsTotalLine = receiptPrinterService.contentProvided?.cartTotals.first {
+            $0.description == ReceiptContent.Localization.productTotalLineDescription
+        }
+        XCTAssertEqual("30.00", lineItemsTotalLine?.amount)
+    }
 }
 
 
@@ -340,6 +361,7 @@ private extension ReceiptStoreTests {
                    shippingTotal: String = "",
                    shippingTax: String = "",
                    totalTax: String = "",
+                   items: [Yosemite.OrderItem] = [],
                    coupons: [OrderCouponLine] = [],
                    fees: [Yosemite.OrderFeeLine] = []) -> Networking.Order {
         Order(siteID: 1234,
@@ -361,7 +383,7 @@ private extension ReceiptStoreTests {
               totalTax: totalTax,
               paymentMethodID: "",
               paymentMethodTitle: "",
-              items: [],
+              items: items,
               billingAddress: nil,
               shippingAddress: nil,
               shippingLines: [],
@@ -385,5 +407,26 @@ private extension ReceiptStoreTests {
                               totalTax: "0",
                               taxes: [],
                               attributes: [])
+    }
+
+    func makeItem(id: Int64 = 12345,
+                  quantity: Decimal = Decimal(1),
+                  price: NSDecimalNumber = NSDecimalNumber(10),
+                  subtotal: String = "15",
+                  total: String = "10") -> Yosemite.OrderItem {
+        Yosemite.OrderItem(itemID: id,
+                           name: "Product",
+                           productID: 1234,
+                           variationID: 123456,
+                           quantity: quantity,
+                           price: price,
+                           sku: nil,
+                           subtotal: subtotal,
+                           subtotalTax: "",
+                           taxClass: "",
+                           taxes: [],
+                           total: total,
+                           totalTax: "",
+                           attributes: [])
     }
 }

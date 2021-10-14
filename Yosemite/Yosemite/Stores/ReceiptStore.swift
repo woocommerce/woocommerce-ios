@@ -81,24 +81,31 @@ private extension ReceiptStore {
             ReceiptLineItem(
                 title: item.name,
                 quantity: item.quantity.description,
-                amount: receiptNumberFormatter.string(from: item.price) ?? ""
+                amount: item.subtotal
             )
         }
     }
 
     func generateCartTotals(order: Order, parameters: CardPresentReceiptParameters) -> [ReceiptTotalLine] {
-        let subtotalLines = [discountLine(order: order),
-                             lineIfNonZero(description: ReceiptContent.Localization.feesLineDescription,
-                                           amount: feesLineAmount(fees: order.fees)),
-                             lineIfNonZero(description: ReceiptContent.Localization.shippingLineDescription,
-                                           amount: order.shippingTotal),
-                             lineIfNonZero(description: ReceiptContent.Localization.totalTaxLineDescription,
-                                           amount: order.totalTax)]
-            .compactMap { $0 }
+        let subtotalLines = [
+            productTotalLine(order: order),
+            discountLine(order: order),
+            lineIfNonZero(description: ReceiptContent.Localization.feesLineDescription, amount: feesLineAmount(fees: order.fees)),
+            lineIfNonZero(description: ReceiptContent.Localization.shippingLineDescription, amount: order.shippingTotal),
+            lineIfNonZero(description: ReceiptContent.Localization.totalTaxLineDescription, amount: order.totalTax)
+        ].compactMap { $0 }
         let totalLine = [ReceiptTotalLine(description: ReceiptContent.Localization.amountPaidLineDescription,
                                          amount: parameters.formattedAmount)]
 
         return subtotalLines + totalLine
+    }
+
+    func productTotalLine(order: Order) -> ReceiptTotalLine {
+        let lineItemsTotal = order.items.reduce(into: Decimal(0)) { result, item in
+            result += NSDecimalNumber(apiAmount: item.subtotal).decimalValue
+        }
+        return ReceiptTotalLine(description: ReceiptContent.Localization.productTotalLineDescription,
+                                amount: receiptNumberFormatter.string(from: lineItemsTotal as NSNumber) ?? "")
     }
 
     func discountLine(order: Order) -> ReceiptTotalLine? {

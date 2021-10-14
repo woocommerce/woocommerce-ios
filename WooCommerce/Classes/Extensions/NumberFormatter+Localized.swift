@@ -6,6 +6,12 @@ extension NumberFormatter {
     static func double(from string: String, locale: Locale = .current) -> Double? {
         let formatter = NumberFormatter()
         formatter.locale = locale
+        formatter.usesGroupingSeparator = true
+        formatter.groupingSize = 3
+        formatter.formatterBehavior = .behavior10_4
+        formatter.numberStyle = .decimal
+        formatter.generatesDecimalNumbers = true
+        formatter.roundingMode = .halfUp
         let number = formatter.number(from: string)
         return number?.doubleValue
     }

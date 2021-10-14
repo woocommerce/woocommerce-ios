@@ -98,6 +98,40 @@ final class QuickPayAmountViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldDisableDoneButton)
     }
 
+    func test_view_model_changes_coma_separator_for_dot_separator_when_the_store_requires_it() {
+        // Given
+        let comaSeparatorLocale = Locale(identifier: "es_AR")
+        let storeSettings = CurrencySettings() // Default is US settings
+        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID, locale: comaSeparatorLocale, storeCurrencySettings: storeSettings)
+
+        // When
+        viewModel.amount = "10,25"
+
+        // Then
+        XCTAssertEqual(viewModel.amount, "$10.25")
+    }
+
+    func test_view_model_uses_the_store_currency_symbol() {
+        // Given
+        let storeSettings = CurrencySettings(currencyCode: .EUR, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
+        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID, locale: usLocale, storeCurrencySettings: storeSettings)
+
+        // When
+        viewModel.amount = "10.25"
+
+        // Then
+        XCTAssertEqual(viewModel.amount, "€10.25")
+    }
+
+    func test_amount_placeholder_is_formatted_with_store_currency_settings() {
+        // Given
+        let storeSettings = CurrencySettings(currencyCode: .EUR, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ",", numberOfDecimals: 2)
+        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID, locale: usLocale, storeCurrencySettings: storeSettings)
+
+        // When & Then
+        XCTAssertEqual(viewModel.amountPlaceholder, "€0,00")
+    }
+
     func test_view_model_enables_loading_state_while_performing_network_operations() {
         // Given
         let testingStore = MockStoresManager(sessionManager: .testingInstance)

@@ -166,19 +166,21 @@ final class EditOrderAddressFormViewModel: ObservableObject {
     /// Update the address remotely and invoke a completion block when finished
     ///
     func updateRemoteAddress(onFinish: @escaping (Bool) -> Void) {
-        let updatedAddress = fields.toAddress(country: selectedCountry, state: selectedState).removingEmptyEmail()
+        let updatedAddress = fields.toAddress(country: selectedCountry, state: selectedState)
         let orderFields: [OrderUpdateField]
 
         let modifiedOrder: Yosemite.Order
         switch type {
         case .shipping where fields.useAsToggle:
-            modifiedOrder = order.copy(billingAddress: updatedAddress, shippingAddress: updatedAddress)
+            modifiedOrder = order.copy(billingAddress: updatedAddress.removingEmptyEmail(),
+                                       shippingAddress: updatedAddress.removingEmptyEmail())
             orderFields = [.shippingAddress, .billingAddress]
         case .shipping:
-            modifiedOrder = order.copy(shippingAddress: updatedAddress)
+            modifiedOrder = order.copy(shippingAddress: updatedAddress.removingEmptyEmail())
             orderFields = [.shippingAddress]
         case .billing where fields.useAsToggle:
-            modifiedOrder = order.copy(billingAddress: updatedAddress, shippingAddress: updatedAddress)
+            modifiedOrder = order.copy(billingAddress: updatedAddress,
+                                       shippingAddress: updatedAddress.copy(email: .some(nil)))
             orderFields = [.billingAddress, .shippingAddress]
         case .billing:
             modifiedOrder = order.copy(billingAddress: updatedAddress)

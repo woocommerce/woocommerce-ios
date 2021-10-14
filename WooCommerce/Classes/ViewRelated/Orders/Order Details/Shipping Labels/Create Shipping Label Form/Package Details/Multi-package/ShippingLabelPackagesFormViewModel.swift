@@ -13,14 +13,6 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
         selectedPackages.count > 1
     }
 
-    /// Message displayed on the Move Item action sheet.
-    ///
-    @Published private(set) var moveItemActionSheetMessage: String = ""
-
-    /// Option buttons displayed on the Move Item action sheet.
-    ///
-    @Published private(set) var moveItemActionSheetButtons: [ActionSheet.Button] = []
-
     /// References of view models for child items.
     ///
     @Published private(set) var itemViewModels: [ShippingLabelSinglePackageViewModel] = []
@@ -128,13 +120,12 @@ private extension ShippingLabelPackagesFormViewModel {
                 return selectedPackages.enumerated().map { index, details in
                     return .init(order: order,
                                  orderItems: details.items,
+                                 packageNumber: index + 1,
                                  packagesResponse: self.packagesResponse,
                                  selectedPackageID: details.packageID,
                                  totalWeight: details.totalWeight,
+                                 moveItemActionButtons: self.moveItemActionButtons(for: details, packageIndex: index),
                                  isOriginalPackaging: details.isOriginalPackaging,
-                                 onItemMoveRequest: { [weak self] productOrVariationID, packageName in
-                        self?.updateMoveItemActionSheet(for: productOrVariationID, from: details, packageIndex: index, packageName: packageName)
-                    },
                                  onPackageSwitch: { [weak self] newPackage in
                         self?.switchPackage(currentPackage: details, newPackage: newPackage)
                     },
@@ -153,55 +144,55 @@ private extension ShippingLabelPackagesFormViewModel {
 
     /// Update title and buttons for the Move Item action sheet.
     ///
-    func updateMoveItemActionSheet(for productOrVariationID: Int64,
-                                   from currentPackage: ShippingLabelPackageAttributes,
-                                   packageIndex: Int,
-                                   packageName: String) {
-        moveItemActionSheetMessage = String(format: Localization.moveItemActionSheetMessage, packageIndex + 1, packageName)
-        moveItemActionSheetButtons = {
-            var buttons: [ActionSheet.Button] = []
+    func moveItemActionButtons(for currentPackage: ShippingLabelPackageAttributes,
+                               packageIndex: Int) -> [String: [ActionSheet.Button]] {
+        var actionButtons: [String: [ActionSheet.Button]] = [:]
+        currentPackage.items
+            .forEach { item in
+                var buttons: [ActionSheet.Button] = []
 
-            // Add options to move to other packages.
-            for (index, package) in selectedPackages.enumerated() {
-                guard !package.isOriginalPackaging else {
-                    continue
-                }
-                if index != packageIndex {
-                    guard let name = itemViewModels[safe: index]?.packageName else {
+                // Add options to move to other packages.
+                for (index, package) in selectedPackages.enumerated() {
+                    guard !package.isOriginalPackaging else {
                         continue
                     }
-                    let packageTitle = String(format: Localization.packageName, index + 1, name)
-                    buttons.append(.default(Text(packageTitle), action: { [weak self] in
-                        ServiceLocator.analytics.track(.shippingLabelItemMoved, withProperties: ["destination": "existing_package"])
-                        self?.moveItem(productOrVariationID: productOrVariationID, currentPackageIndex: packageIndex, newPackageIndex: index)
-                    }))
+                    if index != packageIndex {
+                        guard let name = itemViewModels[safe: index]?.packageName else {
+                            continue
+                        }
+                        let packageTitle = String(format: Localization.packageName, index + 1, name)
+                        buttons.append(.default(Text(packageTitle), action: { [weak self] in
+                            ServiceLocator.analytics.track(.shippingLabelItemMoved, withProperties: ["destination": "existing_package"])
+                            self?.moveItem(productOrVariationID: item.productOrVariationID, currentPackageIndex: packageIndex, newPackageIndex: index)
+                        }))
+                    }
                 }
-            }
 
-            if !currentPackage.isOriginalPackaging {
-                let hasMultipleItems = currentPackage.items.count > 1 || currentPackage.items.first(where: { $0.quantity > 1 }) != nil
-                if hasMultipleItems {
-                    // Add option to add item to new package if current package has more than one item.
+                if !currentPackage.isOriginalPackaging {
+                    let hasMultipleItems = currentPackage.items.count > 1 || currentPackage.items.first(where: { $0.quantity > 1 }) != nil
+                    if hasMultipleItems {
+                        // Add option to add item to new package if current package has more than one item.
+                        buttons.append(.default(Text(Localization.addToNewPackage)) { [weak self] in
+                            ServiceLocator.analytics.track(.shippingLabelItemMoved, withProperties: ["destination": "new_package"])
+                            self?.addItemToNewPackage(productOrVariationID: item.productOrVariationID, packageIndex: packageIndex)
+                        })
+                    }
+
+                    // Add option to ship in original package
+                    buttons.append(.default(Text(Localization.shipInOriginalPackage)) { [weak self] in
+                        ServiceLocator.analytics.track(.shippingLabelItemMoved, withProperties: ["destination": "original_packaging"])
+                        self?.shipInOriginalPackage(productOrVariationID: item.productOrVariationID, packageIndex: packageIndex)
+                    })
+                } else {
                     buttons.append(.default(Text(Localization.addToNewPackage)) { [weak self] in
                         ServiceLocator.analytics.track(.shippingLabelItemMoved, withProperties: ["destination": "new_package"])
-                        self?.addItemToNewPackage(productOrVariationID: productOrVariationID, packageIndex: packageIndex)
+                        self?.addItemToNewPackage(productOrVariationID: item.productOrVariationID, packageIndex: packageIndex)
                     })
                 }
-
-                // Add option to ship in original package
-                buttons.append(.default(Text(Localization.shipInOriginalPackage)) { [weak self] in
-                    ServiceLocator.analytics.track(.shippingLabelItemMoved, withProperties: ["destination": "original_packaging"])
-                    self?.shipInOriginalPackage(productOrVariationID: productOrVariationID, packageIndex: packageIndex)
-                })
-            } else {
-                buttons.append(.default(Text(Localization.addToNewPackage)) { [weak self] in
-                    ServiceLocator.analytics.track(.shippingLabelItemMoved, withProperties: ["destination": "new_package"])
-                    self?.addItemToNewPackage(productOrVariationID: productOrVariationID, packageIndex: packageIndex)
-                })
+                buttons.append(.cancel())
+                actionButtons[item.id] = buttons
             }
-            buttons.append(.cancel())
-            return buttons
-        }()
+        return actionButtons
     }
 
     /// Move the item with `productOrVariationID` from `currentPackage` to a new package,
@@ -425,10 +416,6 @@ private extension ShippingLabelPackagesFormViewModel {
 
 private extension ShippingLabelPackagesFormViewModel {
     enum Localization {
-        static let moveItemActionSheetMessage = NSLocalizedString("This item is currently in Package %1$d: %2$@. Where would you like to move it?",
-                                                                  comment: "Message in action sheet when an order item is about to " +
-                                                                    "be moved on Package Details screen of Shipping Label flow." +
-                                                                    "The package name reads like: Package 1: Custom Envelope.")
         static let packageName = NSLocalizedString("Package %1$d: %2$@",
                                                    comment: "Name of package to be listed in Move Item action sheet " +
                                                    "on Package Details screen of Shipping Label flow.")

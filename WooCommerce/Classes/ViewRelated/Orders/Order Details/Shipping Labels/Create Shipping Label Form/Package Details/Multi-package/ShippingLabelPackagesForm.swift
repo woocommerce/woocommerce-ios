@@ -12,12 +12,10 @@ struct ShippingLabelPackagesForm: View {
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
-                ForEach(Array(viewModel.itemViewModels.enumerated()), id: \.offset) { index, element in
-                    ShippingLabelSinglePackage(packageNumber: index + 1,
-                                             isCollapsible: viewModel.foundMultiplePackages,
-                                             safeAreaInsets: geometry.safeAreaInsets,
-                                             shouldShowMoveItemActionSheet: $showingMoveItemActionSheet,
-                                             viewModel: element)
+                ForEach(Array(viewModel.itemViewModels.enumerated()), id: \.offset) { _, element in
+                    ShippingLabelSinglePackage(isCollapsible: viewModel.foundMultiplePackages,
+                                               safeAreaInsets: geometry.safeAreaInsets,
+                                               viewModel: element)
                 }
                 .padding(.bottom, insets: geometry.safeAreaInsets)
             }

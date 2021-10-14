@@ -5,27 +5,21 @@ struct ShippingLabelSinglePackage: View {
     @ObservedObject private var viewModel: ShippingLabelSinglePackageViewModel
     @State private var isShowingPackageSelection = false
     @State private var isCollapsed: Bool = false
-    @Binding private var shouldShowMoveItemActionSheet: Bool
 
     private let isCollapsible: Bool
-    private let packageNumber: Int
     private let safeAreaInsets: EdgeInsets
 
-    init(packageNumber: Int,
-         isCollapsible: Bool,
+    init(isCollapsible: Bool,
          safeAreaInsets: EdgeInsets,
-         shouldShowMoveItemActionSheet: Binding<Bool>,
          viewModel: ShippingLabelSinglePackageViewModel) {
-        self.packageNumber = packageNumber
         self.isCollapsible = isCollapsible
         self.safeAreaInsets = safeAreaInsets
         self.viewModel = viewModel
-        self._shouldShowMoveItemActionSheet = shouldShowMoveItemActionSheet
     }
 
     var body: some View {
         CollapsibleView(isCollapsible: isCollapsible, isCollapsed: $isCollapsed, safeAreaInsets: safeAreaInsets) {
-            ShippingLabelPackageNumberRow(packageNumber: packageNumber, numberOfItems: viewModel.itemsRows.count, isValid: viewModel.isValidPackage)
+            ShippingLabelPackageNumberRow(packageNumber: viewModel.packageNumber, numberOfItems: viewModel.itemsRows.count, isValid: viewModel.isValidPackage)
         } content: {
             ListHeaderView(text: Localization.itemsToFulfillHeader, alignment: .left)
                 .padding(.horizontal, insets: safeAreaInsets)
@@ -33,22 +27,9 @@ struct ShippingLabelSinglePackage: View {
             Divider()
 
             ForEach(viewModel.itemsRows) { productItemRow in
-                HStack {
-                    productItemRow
-                    Spacer()
-                    Button(action: {
-                        viewModel.requestMovingItem(productItemRow.productOrVariationID)
-                        shouldShowMoveItemActionSheet = true
-                        ServiceLocator.analytics.track(.shippingLabelMoveItemTapped)
-                    }, label: {
-                        Text(Localization.moveButton)
-                            .font(.footnote)
-                            .foregroundColor(Color(UIColor(color: .accent)))
-                    })
-                    .padding(.trailing, Constants.horizontalPadding)
-                }
-                .padding(.horizontal, insets: safeAreaInsets)
-                .background(Color(.listForeground))
+                productItemRow
+                    .padding(.horizontal, insets: safeAreaInsets)
+                    .background(Color(.listForeground))
                 Divider()
                     .padding(.horizontal, insets: safeAreaInsets)
                     .padding(.leading, Constants.horizontalPadding)
@@ -148,7 +129,6 @@ private extension ShippingLabelSinglePackage {
         static let footer = NSLocalizedString("Sum of products and package weight",
                                               comment: "Title of the footer in Shipping Label Package Detail screen")
         static let invalidWeight = NSLocalizedString("Invalid weight", comment: "Error message when total weight is invalid in Package Detail screen")
-        static let moveButton = NSLocalizedString("Move", comment: "Button on each order item of the Package Details screen in Shipping Labels flow.")
         static let originalPackaging = NSLocalizedString("Original packaging",
                                                          comment: "Row title for detail of package shipped in original " +
                                                          "packaging on Package Details screen in Shipping Labels flow.")
@@ -175,17 +155,16 @@ struct ShippingLabelSinglePackage_Previews: PreviewProvider {
         let packageResponse = ShippingLabelPackageDetailsViewModel.samplePackageDetails()
         let viewModel = ShippingLabelSinglePackageViewModel(order: order,
                                                             orderItems: [],
+                                                            packageNumber: 1,
                                                             packagesResponse: packageResponse,
                                                             selectedPackageID: "Box 1",
                                                             totalWeight: "",
+                                                            moveItemActionButtons: [:],
                                                             isOriginalPackaging: false,
-                                                            onItemMoveRequest: { _, _ in },
                                                             onPackageSwitch: { _ in },
                                                             onPackagesSync: { _ in })
-        ShippingLabelSinglePackage(packageNumber: 1,
-                                   isCollapsible: true,
+        ShippingLabelSinglePackage(isCollapsible: true,
                                    safeAreaInsets: .zero,
-                                   shouldShowMoveItemActionSheet: .constant(false),
                                    viewModel: viewModel)
     }
 }

@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import Combine
 
 /// The root tab controller for Orders.
 ///
@@ -30,6 +31,14 @@ final class OrdersRootViewController: UIViewController {
 
     private let siteID: Int64
 
+    /// Lets us know if the store is ready to receive in person payments
+    ///
+    private let inPersonPaymentsUseCase = CardPresentPaymentsOnboardingUseCase()
+
+    /// Stores any active observation.
+    ///
+    private var subscriptions = Set<AnyCancellable>()
+
     // MARK: View Lifecycle
 
     init(siteID: Int64) {
@@ -51,6 +60,7 @@ final class OrdersRootViewController: UIViewController {
         configureView()
         configureContainerView()
         configureChildViewController()
+        observeInPersonPaymentsStoreState()
     }
 
     override func viewDidLayoutSubviews() {
@@ -93,10 +103,14 @@ private extension OrdersRootViewController {
     /// For `viewDidLoad` only, set up `navigationItem` buttons.
     ///
     func configureNavigationButtons() {
-        let isQuickPayEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.quickPayPrototype)
+        let shouldShowQuickPayButton: Bool = {
+            let isQuickPayEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.quickPayPrototype)
+            let isInPersonPaymentsConfigured = inPersonPaymentsUseCase.state == .completed
+            return isQuickPayEnabled && isInPersonPaymentsConfigured
+        }()
         let buttons: [UIBarButtonItem?] = [
             ordersViewController.createSearchBarButtonItem(),
-            isQuickPayEnabled ? ordersViewController.createAddQuickPayOrderItem() : nil
+            shouldShowQuickPayButton ? ordersViewController.createAddQuickPayOrderItem() : nil
         ]
         navigationItem.rightBarButtonItems = buttons.compactMap { $0 }
     }
@@ -126,6 +140,18 @@ private extension OrdersRootViewController {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) {
             ordersViewController.scrollDelegate = self
         }
+    }
+
+    /// Observes the store `InPersonPayments` state and reconfigure navigation buttons appropriately.
+    ///
+    func observeInPersonPaymentsStoreState() {
+        inPersonPaymentsUseCase.$state
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.configureNavigationButtons()
+            }
+            .store(in: &subscriptions)
+        inPersonPaymentsUseCase.refresh()
     }
 }
 

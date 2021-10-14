@@ -131,6 +131,11 @@ private extension ShippingLabelPackagesFormViewModel {
                             onPackagesSync: { [weak self] packagesResponse in
                         self?.packagesResponse = packagesResponse
                         self?.onPackageSyncCompletion(packagesResponse)
+                    },
+                                 onMoveAction: { [weak self] in
+                        self?.itemViewModels.forEach {
+                            $0.dismissPopover()
+                        }
                     })
                 }
                 viewModels.enumerated().forEach { index, model in

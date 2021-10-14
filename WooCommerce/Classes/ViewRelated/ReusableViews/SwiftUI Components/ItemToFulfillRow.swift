@@ -9,7 +9,9 @@ struct ItemToFulfillRow: View, Identifiable {
     let subtitle: String
     var moveItemActionSheetTitle: String = ""
     var moveItemActionSheetButtons: [ActionSheet.Button] = []
-    @State private var showingMoveItemDialog: Bool = false
+    var onMoveAction: () -> Void = {}
+    @State var showingMoveItemDialog: Bool = false
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsInternational) {
@@ -18,11 +20,21 @@ struct ItemToFulfillRow: View, Identifiable {
                 Spacer()
                 Button(action: {
                     guard !showingMoveItemDialog else {
-                        showingMoveItemDialog = false
                         return
                     }
-                    showingMoveItemDialog = true
-                    ServiceLocator.analytics.track(.shippingLabelMoveItemTapped)
+                    switch horizontalSizeClass {
+                    case .some(.regular): // popover is displayed instead of action sheet
+                        onMoveAction()
+                        // delay to make sure that any other popover has been dismissed.
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            showingMoveItemDialog = true
+                            ServiceLocator.analytics.track(.shippingLabelMoveItemTapped)
+                        }
+                    default:
+                        showingMoveItemDialog = true
+                        ServiceLocator.analytics.track(.shippingLabelMoveItemTapped)
+                    }
+
                 }, label: {
                     Text(Localization.moveButton)
                         .font(.footnote)

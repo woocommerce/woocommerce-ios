@@ -161,7 +161,8 @@ struct ShippingLabelSinglePackage_Previews: PreviewProvider {
                                                             totalWeight: "",
                                                             isOriginalPackaging: false,
                                                             onPackageSwitch: { _ in },
-                                                            onPackagesSync: { _ in })
+                                                            onPackagesSync: { _ in },
+                                                            onMoveAction: {})
         ShippingLabelSinglePackage(isCollapsible: true,
                                    safeAreaInsets: .zero,
                                    viewModel: viewModel)

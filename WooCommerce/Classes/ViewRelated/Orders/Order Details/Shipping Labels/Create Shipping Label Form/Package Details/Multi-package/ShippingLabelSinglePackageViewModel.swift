@@ -91,6 +91,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
     private let currencyFormatter: CurrencyFormatter
     private let onPackageSwitch: PackageSwitchHandler
     private let onPackagesSync: PackagesSyncHandler
+    private let onMoveAction: () -> Void
 
     /// The packages  response fetched from API
     ///
@@ -121,6 +122,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
          isOriginalPackaging: Bool = false,
          onPackageSwitch: @escaping PackageSwitchHandler,
          onPackagesSync: @escaping PackagesSyncHandler,
+         onMoveAction: @escaping () -> Void,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
         self.order = order
@@ -133,6 +135,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
         self.isOriginalPackaging = isOriginalPackaging
         self.onPackageSwitch = onPackageSwitch
         self.onPackagesSync = onPackagesSync
+        self.onMoveAction = onMoveAction
         self.packagesResponse = packagesResponse
         self.packageListViewModel.delegate = self
 
@@ -147,6 +150,12 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
 
     func updateActionSheetButtons(_ buttons: [String: [ActionSheet.Button]]) {
         moveItemActionButtons = buttons
+    }
+
+    func dismissPopover() {
+        itemsRows.forEach {
+            $0.showingMoveItemDialog = false
+        }
     }
 
     private func configureItemRows() {
@@ -242,7 +251,8 @@ private extension ShippingLabelSinglePackageViewModel {
                                                        title: item.name,
                                                        subtitle: subtitle,
                                                        moveItemActionSheetTitle: actionSheetTitle,
-                                                       moveItemActionSheetButtons: moveItemActionButtons[item.id] ?? []))
+                                                       moveItemActionSheetButtons: moveItemActionButtons[item.id] ?? [],
+                                                       onMoveAction: onMoveAction))
             }
         }
         return itemsToFulfill

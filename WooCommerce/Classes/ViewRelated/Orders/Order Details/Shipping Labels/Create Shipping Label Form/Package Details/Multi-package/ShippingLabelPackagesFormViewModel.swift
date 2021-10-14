@@ -125,17 +125,17 @@ private extension ShippingLabelPackagesFormViewModel {
                                  selectedPackageID: details.packageID,
                                  totalWeight: details.totalWeight,
                                  isOriginalPackaging: details.isOriginalPackaging,
+                                 onItemMoveRequest: { [weak self] in
+                        self?.itemViewModels.forEach {
+                            $0.dismissPopover()
+                        }
+                    },
                                  onPackageSwitch: { [weak self] newPackage in
                         self?.switchPackage(currentPackage: details, newPackage: newPackage)
                     },
                             onPackagesSync: { [weak self] packagesResponse in
                         self?.packagesResponse = packagesResponse
                         self?.onPackageSyncCompletion(packagesResponse)
-                    },
-                                 onMoveAction: { [weak self] in
-                        self?.itemViewModels.forEach {
-                            $0.dismissPopover()
-                        }
                     })
                 }
                 viewModels.enumerated().forEach { index, model in

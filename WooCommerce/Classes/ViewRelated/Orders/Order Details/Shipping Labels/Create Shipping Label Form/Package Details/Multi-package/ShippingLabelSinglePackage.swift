@@ -155,14 +155,13 @@ struct ShippingLabelSinglePackage_Previews: PreviewProvider {
         let packageResponse = ShippingLabelPackageDetailsViewModel.samplePackageDetails()
         let viewModel = ShippingLabelSinglePackageViewModel(order: order,
                                                             orderItems: [],
-                                                            packageNumber: 1,
                                                             packagesResponse: packageResponse,
                                                             selectedPackageID: "Box 1",
                                                             totalWeight: "",
                                                             isOriginalPackaging: false,
+                                                            onItemMoveRequest: {},
                                                             onPackageSwitch: { _ in },
-                                                            onPackagesSync: { _ in },
-                                                            onMoveAction: {})
+                                                            onPackagesSync: { _ in })
         ShippingLabelSinglePackage(isCollapsible: true,
                                    safeAreaInsets: .zero,
                                    viewModel: viewModel)

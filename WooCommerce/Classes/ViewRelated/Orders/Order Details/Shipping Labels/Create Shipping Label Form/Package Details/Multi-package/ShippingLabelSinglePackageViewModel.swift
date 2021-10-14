@@ -91,7 +91,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
     private let currencyFormatter: CurrencyFormatter
     private let onPackageSwitch: PackageSwitchHandler
     private let onPackagesSync: PackagesSyncHandler
-    private let onMoveAction: () -> Void
+    private let onItemMoveRequest: () -> Void
 
     /// The packages  response fetched from API
     ///
@@ -115,14 +115,14 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
 
     init(order: Order,
          orderItems: [ShippingLabelPackageItem],
-         packageNumber: Int,
+         packageNumber: Int = 1,
          packagesResponse: ShippingLabelPackagesResponse?,
          selectedPackageID: String,
          totalWeight: String,
          isOriginalPackaging: Bool = false,
+         onItemMoveRequest: @escaping () -> Void,
          onPackageSwitch: @escaping PackageSwitchHandler,
          onPackagesSync: @escaping PackagesSyncHandler,
-         onMoveAction: @escaping () -> Void,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
         self.order = order
@@ -135,7 +135,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
         self.isOriginalPackaging = isOriginalPackaging
         self.onPackageSwitch = onPackageSwitch
         self.onPackagesSync = onPackagesSync
-        self.onMoveAction = onMoveAction
+        self.onItemMoveRequest = onItemMoveRequest
         self.packagesResponse = packagesResponse
         self.packageListViewModel.delegate = self
 
@@ -252,7 +252,7 @@ private extension ShippingLabelSinglePackageViewModel {
                                                        subtitle: subtitle,
                                                        moveItemActionSheetTitle: actionSheetTitle,
                                                        moveItemActionSheetButtons: moveItemActionButtons[item.id] ?? [],
-                                                       onMoveAction: onMoveAction))
+                                                       onMoveAction: onItemMoveRequest))
             }
         }
         return itemsToFulfill

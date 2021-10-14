@@ -159,7 +159,6 @@ struct ShippingLabelSinglePackage_Previews: PreviewProvider {
                                                             packagesResponse: packageResponse,
                                                             selectedPackageID: "Box 1",
                                                             totalWeight: "",
-                                                            moveItemActionButtons: [:],
                                                             isOriginalPackaging: false,
                                                             onPackageSwitch: { _ in },
                                                             onPackagesSync: { _ in })

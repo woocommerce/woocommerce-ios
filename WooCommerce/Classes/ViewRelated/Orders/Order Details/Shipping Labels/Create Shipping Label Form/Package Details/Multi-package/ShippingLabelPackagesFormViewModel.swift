@@ -113,18 +113,17 @@ private extension ShippingLabelPackagesFormViewModel {
     ///
     func configureItemViewModels(order: Order) {
         $selectedPackages
-            .map { [weak self] selectedPackages -> [ShippingLabelSinglePackageViewModel] in
+            .map { [weak self] packages -> [ShippingLabelSinglePackageViewModel] in
                 guard let self = self else {
                     return []
                 }
-                return selectedPackages.enumerated().map { index, details in
+                let viewModels = packages.enumerated().map { index, details -> ShippingLabelSinglePackageViewModel in
                     return .init(order: order,
                                  orderItems: details.items,
                                  packageNumber: index + 1,
                                  packagesResponse: self.packagesResponse,
                                  selectedPackageID: details.packageID,
                                  totalWeight: details.totalWeight,
-                                 moveItemActionButtons: self.moveItemActionButtons(for: details, packageIndex: index),
                                  isOriginalPackaging: details.isOriginalPackaging,
                                  onPackageSwitch: { [weak self] newPackage in
                         self?.switchPackage(currentPackage: details, newPackage: newPackage)
@@ -134,6 +133,14 @@ private extension ShippingLabelPackagesFormViewModel {
                         self?.onPackageSyncCompletion(packagesResponse)
                     })
                 }
+                viewModels.enumerated().forEach { index, model in
+                    guard let details = packages[safe: index] else {
+                        return
+                    }
+                    let actionSheetButtons = self.moveItemActionButtons(for: details, selectedPackages: packages, itemViewModels: viewModels)
+                    model.updateActionSheetButtons(actionSheetButtons)
+                }
+                return viewModels
             }
             .sink { [weak self] viewModels in
                 self?.itemViewModels = viewModels
@@ -145,7 +152,11 @@ private extension ShippingLabelPackagesFormViewModel {
     /// Update title and buttons for the Move Item action sheet.
     ///
     func moveItemActionButtons(for currentPackage: ShippingLabelPackageAttributes,
-                               packageIndex: Int) -> [String: [ActionSheet.Button]] {
+                               selectedPackages: [ShippingLabelPackageAttributes],
+                               itemViewModels: [ShippingLabelSinglePackageViewModel]) -> [String: [ActionSheet.Button]] {
+        guard let packageIndex = selectedPackages.firstIndex(where: { $0 == currentPackage }) else {
+            return [:]
+        }
         var actionButtons: [String: [ActionSheet.Button]] = [:]
         currentPackage.items
             .forEach { item in

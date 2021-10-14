@@ -18,10 +18,6 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
     ///
     let isOriginalPackaging: Bool
 
-    /// Move Item action buttons for each package item.
-    ///
-    let moveItemActionButtons: [String: [ActionSheet.Button]]
-
     /// View model for the package list
     ///
     lazy var packageListViewModel: ShippingLabelPackageListViewModel = {
@@ -100,6 +96,14 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
     ///
     private var packagesResponse: ShippingLabelPackagesResponse?
 
+    /// Move Item action buttons for each package item.
+    ///
+    private var moveItemActionButtons: [String: [ActionSheet.Button]] = [:] {
+        didSet {
+            configureItemRows()
+        }
+    }
+
     /// The weight unit used in the Store
     ///
     let weightUnit: String?
@@ -114,7 +118,6 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
          packagesResponse: ShippingLabelPackagesResponse?,
          selectedPackageID: String,
          totalWeight: String,
-         moveItemActionButtons: [String: [ActionSheet.Button]],
          isOriginalPackaging: Bool = false,
          onPackageSwitch: @escaping PackageSwitchHandler,
          onPackagesSync: @escaping PackagesSyncHandler,
@@ -127,7 +130,6 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
         self.currencyFormatter = formatter
         self.weightUnit = weightUnit
         self.selectedPackageID = selectedPackageID
-        self.moveItemActionButtons = moveItemActionButtons
         self.isOriginalPackaging = isOriginalPackaging
         self.onPackageSwitch = onPackageSwitch
         self.onPackagesSync = onPackagesSync
@@ -141,6 +143,10 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
             configureOriginalPackageDimensions(for: item)
         }
         configureValidation(originalPackaging: isOriginalPackaging)
+    }
+
+    func updateActionSheetButtons(_ buttons: [String: [ActionSheet.Button]]) {
+        moveItemActionButtons = buttons
     }
 
     private func configureItemRows() {

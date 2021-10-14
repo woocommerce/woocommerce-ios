@@ -88,7 +88,7 @@ private extension ReceiptStore {
 
     func generateCartTotals(order: Order, parameters: CardPresentReceiptParameters) -> [ReceiptTotalLine] {
         let subtotalLines = [
-            subtotalLine(order: order),
+            productTotalLine(order: order),
             discountLine(order: order),
             lineIfNonZero(description: ReceiptContent.Localization.feesLineDescription, amount: feesLineAmount(fees: order.fees)),
             lineIfNonZero(description: ReceiptContent.Localization.shippingLineDescription, amount: order.shippingTotal),
@@ -100,7 +100,7 @@ private extension ReceiptStore {
         return subtotalLines + totalLine
     }
 
-    func subtotalLine(order: Order) -> ReceiptTotalLine {
+    func productTotalLine(order: Order) -> ReceiptTotalLine {
         let lineItemsTotal = order.items.reduce(into: Decimal(0)) { result, item in
             result += NSDecimalNumber(apiAmount: item.subtotal).decimalValue
         }

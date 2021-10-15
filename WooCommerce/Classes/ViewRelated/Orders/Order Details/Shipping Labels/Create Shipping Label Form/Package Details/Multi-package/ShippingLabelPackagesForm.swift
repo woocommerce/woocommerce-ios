@@ -3,7 +3,6 @@ import SwiftUI
 struct ShippingLabelPackagesForm: View {
     @ObservedObject private var viewModel: ShippingLabelPackagesFormViewModel
     @Environment(\.presentationMode) var presentation
-    @State private var showingMoveItemActionSheet: Bool = false
 
     init(viewModel: ShippingLabelPackagesFormViewModel) {
         self.viewModel = viewModel
@@ -13,22 +12,16 @@ struct ShippingLabelPackagesForm: View {
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
-                ForEach(Array(viewModel.itemViewModels.enumerated()), id: \.offset) { index, element in
-                    ShippingLabelSinglePackage(packageNumber: index + 1,
-                                             isCollapsible: viewModel.foundMultiplePackages,
-                                             safeAreaInsets: geometry.safeAreaInsets,
-                                             shouldShowMoveItemActionSheet: $showingMoveItemActionSheet,
-                                             viewModel: element)
+                ForEach(viewModel.itemViewModels) { element in
+                    ShippingLabelSinglePackage(isCollapsible: viewModel.foundMultiplePackages,
+                                               safeAreaInsets: geometry.safeAreaInsets,
+                                               viewModel: element)
                 }
                 .padding(.bottom, insets: geometry.safeAreaInsets)
             }
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         }
-        .actionSheet(isPresented: $showingMoveItemActionSheet, content: {
-            ActionSheet(title: Text(viewModel.moveItemActionSheetMessage),
-                        buttons: viewModel.moveItemActionSheetButtons)
-        })
         .navigationTitle(Localization.title)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {

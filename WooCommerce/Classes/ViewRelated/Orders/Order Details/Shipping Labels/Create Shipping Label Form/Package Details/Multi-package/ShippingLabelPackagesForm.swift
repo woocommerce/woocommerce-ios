@@ -25,9 +25,10 @@ struct ShippingLabelPackagesForm: View {
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         }
-        .actionSheet(isPresented: $showingMoveItemActionSheet, content: {
-            ActionSheet(title: Text(viewModel.moveItemActionSheetMessage),
-                        buttons: viewModel.moveItemActionSheetButtons)
+        .popSheet(isPresented: $showingMoveItemActionSheet,
+                  content: {
+            PopSheet(title: Text(viewModel.moveItemActionSheetMessage),
+                     buttons: viewModel.moveItemActionSheetButtons)
         })
         .navigationTitle(Localization.title)
         .toolbar {

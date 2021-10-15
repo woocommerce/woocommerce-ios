@@ -19,7 +19,7 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
 
     /// Option buttons displayed on the Move Item action sheet.
     ///
-    @Published private(set) var moveItemActionSheetButtons: [ActionSheet.Button] = []
+    @Published private(set) var moveItemActionSheetButtons: [PopSheet.Button] = []
 
     /// References of view models for child items.
     ///
@@ -159,7 +159,7 @@ private extension ShippingLabelPackagesFormViewModel {
                                    packageName: String) {
         moveItemActionSheetMessage = String(format: Localization.moveItemActionSheetMessage, packageIndex + 1, packageName)
         moveItemActionSheetButtons = {
-            var buttons: [ActionSheet.Button] = []
+            var buttons: [PopSheet.Button] = []
 
             // Add options to move to other packages.
             for (index, package) in selectedPackages.enumerated() {

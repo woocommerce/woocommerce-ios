@@ -705,7 +705,7 @@ private extension OrderDetailsViewController {
 
         ServiceLocator.analytics.track(.collectPaymentTapped)
         viewModel.collectPayment(
-            onPresentMessage: { [weak self] in
+            onWaitingForInput: { [weak self] in
                 self?.paymentAlerts.tapOrInsertCard()
             },
             onProcessingMessage: { [weak self] in

@@ -16,7 +16,7 @@ final class PaymentCaptureOrchestrator {
 
     func collectPayment(for order: Order,
                         paymentsAccount: PaymentGatewayAccount?,
-                        onPresentMessage: @escaping () -> Void,
+                        onWaitingForInput: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onDisplayMessage: @escaping (String) -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
@@ -50,7 +50,7 @@ final class PaymentCaptureOrchestrator {
                 onCardReaderMessage: { (event) in
                     switch event {
                     case .waitingForInput:
-                        onPresentMessage()
+                        onWaitingForInput()
                     case .displayMessage(let message):
                         onDisplayMessage(message)
                     default:

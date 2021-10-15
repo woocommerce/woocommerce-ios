@@ -15,11 +15,15 @@ final class EditProductCategoryListViewModel {
         self.product = product
     }
 
+    /// Add a new category added remotely, and that will be selected
+    ///
     func addAndSelectNewCategory(category: ProductCategory) {
         newProductCategoryListViewModel?.selectedCategories.append(category)
         newProductCategoryListViewModel?.updateViewModelsArray()
     }
 
+    /// Informs of wether there are still changes that were not commited
+    ///
     func hasUnsavedChanges() -> Bool {
         return product.categories.sorted() != newProductCategoryListViewModel?.selectedCategories.sorted()
     }

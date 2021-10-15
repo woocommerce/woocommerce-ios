@@ -109,13 +109,12 @@ final class ProductCategoryListViewModel: ProductCategoryListViewModelProtocol {
             selectedCategories.remove(at: indexCategory)
         }
         else if let category = resultController.fetchedObjects.first(where: { $0.categoryID == categoryViewModel.categoryID }) {
-            debugPrint("selected category name \(category.name)")
+
             if enforceUniqueSelection {
                 selectedCategories = [category]
             } else {
                 selectedCategories.append(category)
             }
-
         }
 
         updateViewModelsArray()

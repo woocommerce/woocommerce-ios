@@ -1,0 +1,7 @@
+Du kommer att bli glad att höra att du nu kan redigera flera viktiga fält på dina kunders beställningar. Gör mindre korrigeringar innan du fullföljer en beställning direkt i appen!
+
+Handlare som använder WooCommerce Payments i USA kan ta emot personliga betalningar via kreditkort för kundbetalningar vid leverans eller upphämtning.
+
+Handlare som använder utökningen WooCommerce Shipping & Tax kommer att hitta förbättringar rörande pappersstorlek, DHL-stöd och betalningsmetoder. Det är roligt att skapa och skriva ut fraktetiketter från din mobila enhet!
+
+I den här versionen ingår dessutom ett antal mindre förbättringar som är baserade på er feedback. Tack för att ni hjälper oss att skapa en bättre app för alla.

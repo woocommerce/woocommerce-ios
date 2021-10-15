@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-10-05 15:34:38+0000 */
+/* Translation-Revision-Date: 2021-10-12 11:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -7,7 +7,7 @@
 "#%@ %@" = "#%1$@ %2$@";
 
 /* Total value for the selected rates in Shipping Labels > Carrier and Rates */
-"$1$@ total" = "$1$@ total";
+"$1$@ total" = "$1$@ totalt";
 
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
 "%1$@" = "%1$@";
@@ -76,10 +76,10 @@
 "%1$d items" = "%1$d varor";
 
 /* Total number of items and packages in Shipping Label form. */
-"%1$d items in %2$d packages" = "%1$d items in %2$d packages";
+"%1$d items in %2$d packages" = "%1$d varor i %2$d förpackningar";
 
 /* Number of rates selected in Shipping Labels > Carrier and Rates */
-"%1$d rates selected" = "%1$d rates selected";
+"%1$d rates selected" = "%1$d avgifter valda";
 
 /* Format for the variations detail row in singular form. Reads, `1 variation` */
 "%1$ld variation" = "%1$ld variation";
@@ -348,7 +348,7 @@
 "Add products' downloadable files' info remotely" = "Lägg till produktinformation för nedladdningsbara filer på distans";
 
 /* Option to add item to new package on Package Details screen of Shipping Label flow. */
-"Add to new package" = "Add to new package";
+"Add to new package" = "Lägg till i nytt paket";
 
 /* Title for adding variations row on Product main screen for a variable product */
 "Add variations" = "Lägg till variationer";
@@ -655,7 +655,7 @@
 "Check your email!" = "Kontrollera din e-post!";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to indicate we are checking for reader updates */
-"Checking for reader software updates" = "Checking for reader software updates";
+"Checking for reader software updates" = "Söker efter programvaruuppdateringar för läsare";
 
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "Välj pappersstorlek";
@@ -696,7 +696,7 @@
 "Composes a new order note." = "Skapar en ny ordernotering.";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
-"Congratulations! Your reader is running the latest software" = "Congratulations! Your reader is running the latest software";
+"Congratulations! Your reader is running the latest software" = "Grattis! Din läsare har den senaste programvaran";
 
 /* Button in a cell to allow the user to connect to that reader for that cell */
 "Connect" = "Anslut";
@@ -909,10 +909,10 @@
 "Customs form" = "Tullformulär";
 
 /* Subtitle of the cell Customs inside Create Shipping Label form when the form is completed */
-"Customs form completed" = "Customs form completed";
+"Customs form completed" = "Tullformulär ifyllt";
 
 /* Main message on the Print Customs Invoice screen of Shipping Label flow for multiple invoices */
-"Customs forms must be printed and included on these international shipments" = "Customs forms must be printed and included on these international shipments";
+"Customs forms must be printed and included on these international shipments" = "Tullformulär måste skrivas ut och inkluderas i dessa internationella försändelser";
 
 /* Details text in the shipping label creation info screen */
 "Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "Skippa kön på postkontoret genom att skriva ut fraktetiketter till rabatterade priser hemma med din mobila enhet!";
@@ -1273,7 +1273,7 @@
 "Filter Countries" = "Filtrera öänder";
 
 /* Placeholder on the search field to search for a specific state */
-"Filter States" = "Filter States";
+"Filter States" = "Filtrera stater";
 
 /* Navigation bar title format for filtering a list of products without filters applied. */
 "Filters" = "Filter";
@@ -1532,7 +1532,7 @@
 "Increase sales with upsells and cross-sells" = "Öka försäljningen med merförsäljning och korsförsäljning";
 
 /* Description for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
-"Individually shipped item" = "Individually shipped item";
+"Individually shipped item" = "Vara som skickas för sig";
 
 /* Label action for inserting a link on the editor */
 "Insert" = "Infoga";
@@ -1614,7 +1614,7 @@
 "Item description is required" = "Artikelbeskrivning krävs";
 
 /* Row title for dimensions of package shipped in original packaging Package Details screen in Shipping Labels flow. */
-"Item dimensions" = "Item dimensions";
+"Item dimensions" = "Varumått";
 
 /* Error message for missing value in Value row in Customs screen of Shipping Label flow */
 "Item value must be larger than 0" = "Artikelvärdet måste överstiga 0";
@@ -2150,7 +2150,7 @@
 "Package Type" = "Pakettyp";
 
 /* Validation error for original package without dimensions on Package Details screen in Shipping Labels flow. */
-"Package dimensions must be greater than zero. Please update your item’s dimensions in the Shipping section of your product page to continue." = "Package dimensions must be greater than zero. Please update your item’s dimensions in the Shipping section of your product page to continue.";
+"Package dimensions must be greater than zero. Please update your item’s dimensions in the Shipping section of your product page to continue." = "Paketets mått måste vara större än noll. Uppdatera måtten för din vara i sektionen Frakt på din produktsida för att fortsätta.";
 
 /* The title for the customer payment cell */
 "Paid" = "Betald";
@@ -2284,7 +2284,7 @@
 "Please try again later or reach out to us and we'll be happy to assist you!" = "Försök igen senare eller kontakta oss så hjälper vi dig gärna!";
 
 /* Body text for the default store picker error screen */
-"Please try again or reach out to us and we'll be happy to assist you!" = "Please try again or reach out to us and we'll be happy to assist you!";
+"Please try again or reach out to us and we'll be happy to assist you!" = "Försök igen eller kontakta oss så hjälper vi dig gärna!";
 
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "Försök igen.";
@@ -2370,7 +2370,7 @@
 "Printing Label" = "Skriva ut etikett";
 
 /* Title of in-progress modal when requesting document with multiple shipping labels for printing */
-"Printing Labels" = "Printing Labels";
+"Printing Labels" = "Skriva ut etiketter";
 
 /* Opens the California Privacy Policy web page */
 "Privacy Notice for California Users" = "Integritetsnotis för användare i Kalifornien";
@@ -2867,7 +2867,7 @@
 "Ship from" = "Avsändare";
 
 /* Option to ship in original packaging on action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow. */
-"Ship in Original Packaging" = "Ship in Original Packaging";
+"Ship in Original Packaging" = "Skicka i originalförpackning";
 
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title - Title of destination address in shipping label details - Title of the cell Ship From inside Create Shipping Label form */
@@ -2925,7 +2925,7 @@
 "Shipping label purchased!" = "Fraktetikett köpt!";
 
 /* Header text when printing multiple newly purchased shipping labels */
-"Shipping labels purchased!" = "Shipping labels purchased!";
+"Shipping labels purchased!" = "Fraktetikett köpt!";
 
 /* VoiceOver accessibility label for the shipping notice about the order */
 "Shipping notice about the order" = "Fraktmeddelande om beställningen";
@@ -3189,7 +3189,7 @@
 "Tap to insert a Link" = "Tryck för att infoga en länk";
 
 /* A label prompting users to learn more about card readers */
-"Tap to learn more about accepting payments with your mobile device and ordering card readers" = "Tap to learn more about accepting payments with your mobile device and ordering card readers";
+"Tap to learn more about accepting payments with your mobile device and ordering card readers" = "Tryck för att läsa mer om att ta emot betalningar med din mobila enhet och att beställa kortläsare";
 
 /* The accessibility hint for the quantity button when selecting an item to refund */
 "Tap to modify the item refund quantity" = "Tryck för att ändra kvantiteten för varuåterbetalning";
@@ -3343,7 +3343,7 @@
 "The new custom package name is not unique." = "Det nya anpassade paketnamnet är inte unikt.";
 
 /* The message of the alert when another service package has the same name */
-"The new service package name is not unique." = "The new service package name is not unique.";
+"The new service package name is not unique." = "Det nya tjänstepaketnamnet är inte unikt.";
 
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "Telefonnumret är inte giltigt eller så kan du inte ringa kunden från denna enhet.";
@@ -3460,7 +3460,7 @@
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "Det här är URL:en till den fil som kunderna kommer att få tillgång till. URL:er som anges bör redan vara kodade.";
 
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
-"This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "This item is currently in Package %1$d: %2$@. Where would you like to move it?";
+"This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "Denna artikel är för närvarande i förpackning %1$d: %2$@. Vart vill du flytta den?";
 
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
@@ -3513,7 +3513,7 @@
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "För att fortsätta med detta Google-konto måste du först logga in med ditt lösenord för WordPress.com. Detta behövs bara en gång.";
 
 /* Label within the modal dialog that appears when searching for a card reader */
-"To turn on your card reader, briefly press its power button. When powered on, the power LED will blink blue." = "To turn on your card reader, briefly press its power button. When powered on, the power LED will blink blue.";
+"To turn on your card reader, briefly press its power button. When powered on, the power LED will blink blue." = "För att starta din kortläsare, tryck kort på dess strömknapp. När den är påslagen kommer ström-LED-lampan att blinka blått.";
 
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "För att använda den här appen för %@ måste du ha installerat och anslutit Jetpack-tillägget på din butik.";
@@ -3584,7 +3584,7 @@
 "Try Again" = "Försök igen";
 
 /* Button to try to collect a payment again. Presented to users after a collecting a payment fails */
-"Try Collecting Again" = "Try Collecting Again";
+"Try Collecting Again" = "Prova att ta emot igen";
 
 /* Button to trigger connection to another account in store picker */
 "Try With Another Account" = "Prova med ett annat konto";
@@ -3699,7 +3699,7 @@
 "Unknown Battery Level" = "Okänd batteristatus";
 
 /* Displayed in the unlikely event a card reader has an indeterminate software version */
-"Unknown Software Version" = "Unknown Software Version";
+"Unknown Software Version" = "Okänd programvaruversion";
 
 /* No comment provided by engineer. */
 "Unknown error" = "Okänt fel";
@@ -3743,7 +3743,7 @@
 "Update Instructions" = "Uppdatera instruktioner";
 
 /* Accessibility Label for the edit button to change the Customer Provided Note in Order Details */
-"Update Note" = "Update Note";
+"Update Note" = "Uppdatera anteckning";
 
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "Uppdatera orderstatus";

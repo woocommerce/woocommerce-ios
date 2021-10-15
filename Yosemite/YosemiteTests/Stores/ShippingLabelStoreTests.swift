@@ -1,3 +1,4 @@
+import Foundation
 import XCTest
 @testable import Yosemite
 @testable import Networking
@@ -832,7 +833,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(error as? LabelPurchaseError, LabelPurchaseError.purchaseErrorStatus)
     }
 
-    func test_purchaseShippingLabel_returns_error_if_purchase_remains_in_progress() throws {
+    func test_purchaseShippingLabel_does_not_return_error_if_purchase_remains_in_progress() throws {
         // Given
         let mockAddress = ShippingLabelAddress.fake()
         let mockPackages = [ShippingLabelPackagePurchase.fake()]
@@ -853,22 +854,23 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<[Yosemite.ShippingLabel], Error> = waitFor(timeout: 6.0) { promise in
-            let action = ShippingLabelAction.purchaseShippingLabel(siteID: self.sampleSiteID,
-                                                                   orderID: self.sampleOrderID,
-                                                                   originAddress: mockAddress,
-                                                                   destinationAddress: mockAddress,
-                                                                   packages: mockPackages,
-                                                                   emailCustomerReceipt: true) { result in
-                promise(result)
+        var purchaseResult: Result<[Yosemite.ShippingLabel], Error>? = waitFor(timeout: 6.0) { promise in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5.9) {
+                promise(nil)
             }
-            store.onAction(action)
         }
+        let action = ShippingLabelAction.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                                               orderID: self.sampleOrderID,
+                                                               originAddress: mockAddress,
+                                                               destinationAddress: mockAddress,
+                                                               packages: mockPackages,
+                                                               emailCustomerReceipt: true) { result in
+            purchaseResult = result
+        }
+        store.onAction(action)
 
         // Then
-        XCTAssertTrue(result.isFailure)
-        let error = try XCTUnwrap(result.failure)
-        XCTAssertEqual(error as? LabelPurchaseError, LabelPurchaseError.purchaseIncomplete)
+        XCTAssertNil(purchaseResult)
     }
 }
 

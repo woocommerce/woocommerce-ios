@@ -22,9 +22,18 @@ extension ReceiptContent {
 
 public extension ReceiptContent {
     enum Localization {
+        public static let productTotalLineDescription = NSLocalizedString(
+            "Subtotal",
+            comment: "Line description for 'Subtotal' cart total on the receipt. The subtotal of the products purchased before discounts.")
+
         public static let discountLineDescription = NSLocalizedString(
             "Discount %1$@",
             comment: "Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s)")
+
+        public static let feesLineDescription = NSLocalizedString(
+            "Fees",
+            comment: "Line description for 'Fees' cart total on the receipt. Only shown when non-zero."
+        )
 
         public static let shippingLineDescription = NSLocalizedString(
             "Shipping",

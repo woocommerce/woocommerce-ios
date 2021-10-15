@@ -1,17 +1,48 @@
 import Foundation
 import SwiftUI
+import Combine
 
 /// Hosting controller that wraps an `QuickPayAmount` view.
 ///
 final class QuickPayAmountHostingController: UIHostingController<QuickPayAmount> {
 
-    init() {
-        super.init(rootView: QuickPayAmount())
+    /// References to keep the Combine subscriptions alive within the lifecycle of the object.
+    ///
+    private var subscriptions: Set<AnyCancellable> = []
+
+    /// Presents notices in the current modal presentation context
+    ///
+    private lazy var modalNoticePresenter: NoticePresenter = {
+        let presenter = DefaultNoticePresenter()
+        presenter.presentingViewController = self
+        return presenter
+    }()
+
+    init(viewModel: QuickPayAmountViewModel) {
+        super.init(rootView: QuickPayAmount(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismiss = { [weak self] in
             self?.dismiss(animated: true, completion: nil)
         }
+
+        // Observe the present notice intent and set it back to `nil` after presented.
+        viewModel.$presentNotice
+            .compactMap { $0 }
+            .sink { [weak self] notice in
+
+                // To prevent keyboard to hide the notice
+                self?.view.endEditing(true)
+
+                switch notice {
+                case .error:
+                    self?.modalNoticePresenter.enqueue(notice: .init(title: QuickPayAmount.Localization.error, feedbackType: .error))
+                }
+
+                // Nullify the presentation intent.
+                viewModel.presentNotice = nil
+            }
+            .store(in: &subscriptions)
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -27,13 +58,13 @@ struct QuickPayAmount: View {
     ///
     var dismiss: (() -> Void) = {}
 
-    /// Temporary store for the typed amount
-    ///
-    @State private var amount: String = ""
-
     /// Keeps track of the current content scale due to accessibility changes
     ///
     @ScaledMetric private var scale: CGFloat = 1.0
+
+    /// ViewModel to drive the view content
+    ///
+    @ObservedObject private(set) var viewModel: QuickPayAmountViewModel
 
     var body: some View {
         VStack(alignment: .center, spacing: Layout.mainVerticalSpacing) {
@@ -45,7 +76,7 @@ struct QuickPayAmount: View {
                 .secondaryBodyStyle()
 
             // Amount Textfield
-            TextField(Localization.amountPlaceholder, text: $amount)
+            TextField(viewModel.amountPlaceholder, text: $viewModel.amount)
                 .font(.system(size: Layout.amountFontSize(scale: scale), weight: .bold, design: .default))
                 .foregroundColor(Color(.text))
                 .multilineTextAlignment(.center)
@@ -55,9 +86,10 @@ struct QuickPayAmount: View {
 
             // Done button
             Button(Localization.buttonTitle) {
-                print("Done tapped")
+                viewModel.createQuickPayOrder()
             }
-            .buttonStyle(PrimaryButtonStyle())
+            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.loading))
+            .disabled(viewModel.shouldDisableDoneButton)
         }
         .padding()
         .navigationTitle(Localization.title)
@@ -76,9 +108,9 @@ private extension QuickPayAmount {
     enum Localization {
         static let title = NSLocalizedString("Take Payment", comment: "Title for the quick pay screen")
         static let instructions = NSLocalizedString("Enter Amount", comment: "Short instructions label in the quick pay screen")
-        static let amountPlaceholder = NSLocalizedString("$0.00", comment: "Placeholder for the amount textfield in the quick pay screen")
         static let buttonTitle = NSLocalizedString("Done", comment: "Title for the button to confirm the amount in the quick pay screen")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the quick pay screen")
+        static let error = NSLocalizedString("There was an error creating the order", comment: "Notice text after failing to create a quick pay order.")
     }
 
     enum Layout {
@@ -86,13 +118,5 @@ private extension QuickPayAmount {
         static func amountFontSize(scale: CGFloat) -> CGFloat {
             56 * scale
         }
-    }
-}
-
-// MARK: Previews
-private struct QuickPayAmount_Preview: PreviewProvider {
-    static var previews: some View {
-        QuickPayAmount()
-            .environment(\.colorScheme, .light)
     }
 }

@@ -48,7 +48,7 @@ struct ShippingLabelSinglePackage: View {
                     .padding(.trailing, Constants.horizontalPadding)
                 }
                 .padding(.horizontal, insets: safeAreaInsets)
-                .background(Color(.systemBackground))
+                .background(Color(.listForeground))
                 Divider()
                     .padding(.horizontal, insets: safeAreaInsets)
                     .padding(.leading, Constants.horizontalPadding)
@@ -69,7 +69,7 @@ struct ShippingLabelSinglePackage: View {
                         ShippingLabelPackageSelection(viewModel: viewModel.packageListViewModel)
                     })
                 }
-                .background(Color(.systemBackground))
+                .background(Color(.listForeground))
                 .renderedIf(!viewModel.isOriginalPackaging)
 
                 VStack(spacing: 0) {
@@ -89,7 +89,7 @@ struct ShippingLabelSinglePackage: View {
                                     subtitle: Localization.individuallyShipped)
                     .padding(.horizontal, insets: safeAreaInsets)
             }
-            .background(Color(.systemBackground))
+            .background(Color(.listForeground))
             .renderedIf(viewModel.isOriginalPackaging)
 
             VStack(spacing: 0) {
@@ -101,7 +101,7 @@ struct ShippingLabelSinglePackage: View {
                                     isError: !viewModel.hasValidPackageDimensions)
                     .padding(.horizontal, insets: safeAreaInsets)
             }
-            .background(Color(.systemBackground))
+            .background(Color(.listForeground))
             .renderedIf(viewModel.isOriginalPackaging)
 
             ValidationErrorRow(errorMessage: Localization.invalidDimensions)
@@ -122,7 +122,7 @@ struct ShippingLabelSinglePackage: View {
 
                 Divider()
             }
-            .background(Color(.systemBackground))
+            .background(Color(.listForeground))
 
             if viewModel.isValidTotalWeight {
                 ListHeaderView(text: Localization.footer, alignment: .left)

@@ -1,28 +1,29 @@
+import ScreenObject
 import XCTest
 
-public final class PeriodStatsTable: BaseScreen {
+public final class PeriodStatsTable: ScreenObject {
 
-    struct ElementStringIDs {
-        static let daysTab = "period-data-today-tab"
-        static let weeksTab = "period-data-thisWeek-tab"
-        static let monthsTab = "period-data-thisMonth-tab"
-        static let yearsTab = "period-data-thisYear-tab"
+    private let daysTabGetter: (XCUIApplication) -> XCUIElement = {
+        $0.cells["period-data-today-tab"]
     }
 
+    private let weeksTabGetter: (XCUIApplication) -> XCUIElement = {
+        $0.cells["period-data-thisWeek-tab"]
+    }
 
-    private let daysTab = XCUIApplication().cells[ElementStringIDs.daysTab]
-    private let weeksTab = XCUIApplication().cells[ElementStringIDs.weeksTab]
-    private let monthsTab = XCUIApplication().cells[ElementStringIDs.monthsTab]
-    private let yearsTab = XCUIApplication().cells[ElementStringIDs.yearsTab]
+    private let yearsTabGetter: (XCUIApplication) -> XCUIElement = {
+        $0.cells["period-data-thisYear-tab"]
+    }
 
-    init() {
+    private var daysTab: XCUIElement { daysTabGetter(app) }
+    private var weeksTab: XCUIElement { weeksTabGetter(app) }
+    private var yearsTab: XCUIElement { yearsTabGetter(app) }
 
-        super.init(element: daysTab)
-
-        XCTAssert(daysTab.waitForExistence(timeout: 3))
-        XCTAssert(weeksTab.waitForExistence(timeout: 3))
-        XCTAssert(monthsTab.waitForExistence(timeout: 3))
-        XCTAssert(yearsTab.waitForExistence(timeout: 3))
+    init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+            expectedElementGetters: [daysTabGetter, weeksTabGetter, yearsTabGetter],
+            app: app
+        )
     }
 
     @discardableResult

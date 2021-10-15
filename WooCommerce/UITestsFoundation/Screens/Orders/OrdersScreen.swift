@@ -1,37 +1,42 @@
+import ScreenObject
 import XCTest
 
-public final class OrdersScreen: BaseScreen {
+public final class OrdersScreen: ScreenObject {
 
-    struct ElementStringIDs {
-        static let searchButton = "order-search-button"
-        static let filterButton = "order-filter-button"
+    // TODO: Remove force `try` once `ScreenObject` migration is completed
+    public let tabBar = try! TabNavComponent()
+
+    private let searchButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["order-search-button"]
     }
 
-    public let tabBar = TabNavComponent()
-    private let searchButton: XCUIElement
-    private let filterButton: XCUIElement
+    private var searchButton: XCUIElement { searchButtonGetter(app) }
 
+    // TODO: There's only one usage of this and it can be replaced with a screen instantiation
     static var isVisible: Bool {
-        let searchButton = XCUIApplication().buttons[ElementStringIDs.searchButton]
-        return searchButton.exists && searchButton.isHittable
+        (try? OrdersScreen().isLoaded) ?? false
     }
 
-    init() {
-        searchButton = XCUIApplication().buttons[ElementStringIDs.searchButton]
-        filterButton = XCUIApplication().buttons[ElementStringIDs.filterButton]
-
-        super.init(element: searchButton)
-    }
-
-    @discardableResult
-    public func selectOrder(atIndex index: Int) -> SingleOrderScreen {
-        XCUIApplication().tables.cells.element(boundBy: index).tap()
-        return SingleOrderScreen()
+    init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+            expectedElementGetters: [
+                searchButtonGetter,
+                // swiftlint:disable:next opening_braces
+                { $0.buttons["order-filter-button"] }
+            ],
+            app: app
+        )
     }
 
     @discardableResult
-    public func openSearchPane() -> OrderSearchScreen {
+    public func selectOrder(atIndex index: Int) throws -> SingleOrderScreen {
+        app.tables.cells.element(boundBy: index).tap()
+        return try SingleOrderScreen()
+    }
+
+    @discardableResult
+    public func openSearchPane() throws -> OrderSearchScreen {
         searchButton.tap()
-        return OrderSearchScreen()
+        return try OrderSearchScreen()
     }
 }

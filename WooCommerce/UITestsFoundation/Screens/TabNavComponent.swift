@@ -1,32 +1,39 @@
+import ScreenObject
 import XCTest
 
-public final class TabNavComponent: BaseScreen {
+public final class TabNavComponent: ScreenObject {
 
-    struct ElementStringIDs {
-        static let myStoreTabBarItem = "tab-bar-my-store-item"
-        static let ordersTabBarItem = "tab-bar-orders-item"
-        static let reviewsTabBarItem = "tab-bar-reviews-item"
-        static let productsTabBarItem = "tab-bar-products-item"
+    private let myStoreTabButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.tabBars.firstMatch.buttons["tab-bar-my-store-item"]
     }
 
+    private let ordersTabButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.tabBars.firstMatch.buttons["tab-bar-orders-item"]
+    }
 
-    private let myStoreTabButton: XCUIElement
-    private let ordersTabButton: XCUIElement
-    private let reviewsTabButton: XCUIElement
-    let productsTabButton: XCUIElement
+    private let reviewsTabButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.tabBars.firstMatch.buttons["tab-bar-reviews-item"]
+    }
 
-    init() {
-        let tabBar = XCUIApplication().tabBars.firstMatch
+    private let productsTabButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.tabBars.firstMatch.buttons["tab-bar-products-item"]
+    }
 
-        myStoreTabButton = tabBar.buttons[ElementStringIDs.myStoreTabBarItem]
-        ordersTabButton = tabBar.buttons[ElementStringIDs.ordersTabBarItem]
-        reviewsTabButton = tabBar.buttons[ElementStringIDs.reviewsTabBarItem]
-        productsTabButton = tabBar.buttons[ElementStringIDs.productsTabBarItem]
+    private var myStoreTabButton: XCUIElement { myStoreTabButtonGetter(app) }
+    private var ordersTabButton: XCUIElement { ordersTabButtonGetter(app) }
+    private var reviewsTabButton: XCUIElement { reviewsTabButtonGetter(app) }
+    var productsTabButton: XCUIElement { productsTabButtonGetter(app) }
 
-        super.init(element: myStoreTabButton)
-
-        XCTAssert(myStoreTabButton.waitForExistence(timeout: 3))
-        XCTAssert(ordersTabButton.waitForExistence(timeout: 3))
+    init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+            expectedElementGetters: [
+                myStoreTabButtonGetter,
+                ordersTabButtonGetter,
+                reviewsTabButtonGetter,
+                productsTabButtonGetter
+            ],
+            app: app
+        )
     }
 
     @discardableResult
@@ -39,38 +46,40 @@ public final class TabNavComponent: BaseScreen {
     }
 
     @discardableResult
-    public func gotoOrdersScreen() -> OrdersScreen {
+    public func gotoOrdersScreen() throws -> OrdersScreen {
         // Avoid transitioning if it is already on screen
         if !OrdersScreen.isVisible {
             ordersTabButton.tap()
         }
 
-        return OrdersScreen()
+        return try OrdersScreen()
     }
 
     @discardableResult
-    public func gotoProductsScreen() -> ProductsScreen {
+    public func gotoProductsScreen() throws -> ProductsScreen {
         if !ProductsScreen.isVisible {
             productsTabButton.tap()
         }
 
-        return ProductsScreen()
+        return try ProductsScreen()
     }
 
     @discardableResult
-    public func gotoReviewsScreen() -> ReviewsScreen {
+    public func gotoReviewsScreen() throws -> ReviewsScreen {
         if !ReviewsScreen.isVisible {
             reviewsTabButton.tap()
         }
 
-        return ReviewsScreen()
+        return try ReviewsScreen()
     }
 
     static func isLoaded() -> Bool {
-        return XCUIApplication().buttons[ElementStringIDs.myStoreTabBarItem].exists
+        (try? TabNavComponent().isLoaded) ?? false
     }
 
-    static func isVisible() -> Bool {
-        return XCUIApplication().buttons[ElementStringIDs.myStoreTabBarItem].isHittable
+    // TODO: This paradigm is used enough around the test suits that it would be worth extracting to `ScreenObject`.
+   static func isVisible() -> Bool {
+        guard let tabNavComponent = try? TabNavComponent() else { return false }
+        return tabNavComponent.isLoaded && tabNavComponent.expectedElement.isHittable
     }
 }

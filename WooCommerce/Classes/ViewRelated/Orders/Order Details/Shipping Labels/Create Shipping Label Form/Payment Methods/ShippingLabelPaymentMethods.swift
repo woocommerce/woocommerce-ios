@@ -133,6 +133,7 @@ struct ShippingLabelPaymentMethods: View {
                     .disabled(!viewModel.isDoneButtonEnabled())
                 }
             }
+            .wooNavigationBarStyle()
         }
     }
 

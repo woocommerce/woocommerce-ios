@@ -37,7 +37,7 @@ final class MockApplicationAdapter: ApplicationAdapter {
 
     /// Innocuous `presentInAppNotification`
     ///
-    func presentInAppNotification(title: String, message: String?) {
+    func presentInAppNotification(title: String, subtitle: String?, message: String?) {
         presentInAppMessages.append((title: title, message: message))
     }
 

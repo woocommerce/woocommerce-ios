@@ -29,7 +29,7 @@ public final class StripeCardReaderService: NSObject {
     private var readerLocationProvider: ReaderLocationProvider?
 
     /// Keeps track of whether a chip card needs to be removed
-    private var chipCardTimer: Timer?
+    private var timerCancellable: Cancellable?
     private var isChipCardInserted: Bool = false
 }
 
@@ -436,16 +436,15 @@ private extension StripeCardReaderService {
                 return promise(.success(intent))
             }
 
-            self.chipCardTimer =  Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
-                guard let self = self else {
-                    return
-                }
-
-                if !self.isChipCardInserted {
-                    self.chipCardTimer?.invalidate()
-                    return promise(.success(intent))
-                }
-            }
+            self.timerCancellable = Timer.publish(every: 1, tolerance: 0.1, on: .main, in: .default)
+                .autoconnect()
+                .receive(on: DispatchQueue.main)
+                .sink(receiveValue: { _ in
+                    if !self.isChipCardInserted {
+                        self.timerCancellable?.cancel()
+                        return promise(.success(intent))
+                    }
+                })
         }
     }
 

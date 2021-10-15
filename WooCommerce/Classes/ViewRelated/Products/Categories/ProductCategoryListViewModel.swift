@@ -65,10 +65,6 @@ final class ProductCategoryListViewModel {
         selectedCategories = []
     }
 
-    convenience init(siteID: Int64) {
-        self.init(storesManager: ServiceLocator.stores, siteID: siteID)
-    }
-
     /// Load existing categories from storage and fire the synchronize all categories action.
     ///
     func performFetch() {

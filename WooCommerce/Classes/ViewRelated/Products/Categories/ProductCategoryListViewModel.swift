@@ -1,6 +1,8 @@
 import Foundation
 import Yosemite
 
+/// Manages the presentation of a `ProductCategoryListView`, taking care of fetching, syncing, and providing the category view models for each cell
+///
 final class ProductCategoryListViewModel {
 
     /// Obscure token that allows the view model to retry the synchronizeCategories operation
@@ -22,13 +24,13 @@ final class ProductCategoryListViewModel {
     ///
     private let storesManager: StoresManager
 
-    /// Product the user is editiing
+    /// Site Id of the related categories
     ///
-    private let product: Product
+    private let siteID: Int64
 
     /// Product categories that will be eventually modified by the user
     ///
-    private(set) var selectedCategories: [ProductCategory]
+    var selectedCategories: [ProductCategory]
 
     /// Array of view models to be rendered by the View Controller.
     ///
@@ -51,15 +53,20 @@ final class ProductCategoryListViewModel {
 
     private lazy var resultController: ResultsController<StorageProductCategory> = {
         let storageManager = ServiceLocator.storageManager
-        let predicate = NSPredicate(format: "siteID = %ld", self.product.siteID)
+        let predicate = NSPredicate(format: "siteID = %ld", self.siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageProductCategory.name, ascending: true)
         return ResultsController<StorageProductCategory>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
-    init(storesManager: StoresManager = ServiceLocator.stores, product: Product) {
+    init(storesManager: StoresManager = ServiceLocator.stores, siteID: Int64) {
         self.storesManager = storesManager
-        self.product = product
-        selectedCategories = product.categories
+        self.siteID = siteID
+
+        selectedCategories = []
+    }
+
+    convenience init(siteID: Int64) {
+        self.init(storesManager: ServiceLocator.stores, siteID: siteID)
     }
 
     /// Load existing categories from storage and fire the synchronize all categories action.
@@ -104,15 +111,11 @@ final class ProductCategoryListViewModel {
         updateViewModelsArray()
     }
 
-    /// Add a new category added remotely, and that will be selected
+    /// Updates  `categoryViewModels` from  the resultController's fetched objects.
     ///
-    func addAndSelectNewCategory(category: ProductCategory) {
-        selectedCategories.append(category)
-        updateViewModelsArray()
-    }
-
-    func hasUnsavedChanges() -> Bool {
-        return product.categories.sorted() != selectedCategories.sorted()
+    func updateViewModelsArray() {
+        let fetchedCategories = resultController.fetchedObjects
+        categoryViewModels =  ProductCategoryListViewModel.CellViewModelBuilder.viewModels(from: fetchedCategories, selectedCategories: selectedCategories)
     }
 }
 
@@ -123,7 +126,7 @@ private extension ProductCategoryListViewModel {
     ///
     func synchronizeAllCategories(fromPageNumber: Int = Default.firstPageNumber) {
         self.syncCategoriesState = .syncing
-        let action = ProductCategoryAction.synchronizeProductCategories(siteID: product.siteID, fromPageNumber: fromPageNumber) { [weak self] error in
+        let action = ProductCategoryAction.synchronizeProductCategories(siteID: siteID, fromPageNumber: fromPageNumber) { [weak self] error in
             // Make sure we always have view models to display
             self?.updateViewModelsArray()
 
@@ -147,13 +150,6 @@ private extension ProductCategoryListViewModel {
             syncCategoriesState = .failed(retryToken)
             DDLogError("⛔️ Error fetching product categories: \(rawError.localizedDescription)")
         }
-    }
-
-    /// Updates  `categoryViewModels` from  the resultController's fetched objects.
-    ///
-    func updateViewModelsArray() {
-        let fetchedCategories = resultController.fetchedObjects
-        categoryViewModels = CellViewModelBuilder.viewModels(from: fetchedCategories, selectedCategories: selectedCategories)
     }
 }
 

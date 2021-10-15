@@ -24,8 +24,8 @@ final class ProductCategoryListViewModelTests: XCTestCase {
     func testItTransitionsToSyncedStateAfterSynchronizingCategories() {
         // Given
         let exp = expectation(description: #function)
-        let product = Product.fake()
-        let viewModel = ProductCategoryListViewModel(storesManager: storesManager, product: product)
+        let siteID: Int64 = 1
+        let viewModel = ProductCategoryListViewModel(storesManager: storesManager, siteID: siteID)
         storesManager.productCategoryResponse = nil
 
         // When
@@ -44,8 +44,8 @@ final class ProductCategoryListViewModelTests: XCTestCase {
     func testItTransitionsToFailedStateAfterSynchronizingCategoriesErrors() {
         // Given
         let exp = expectation(description: #function)
-        let product = Product.fake()
-        let viewModel = ProductCategoryListViewModel(storesManager: storesManager, product: product)
+        let siteID: Int64 = 1
+        let viewModel = ProductCategoryListViewModel(storesManager: storesManager, siteID: siteID)
         let rawError = NSError(domain: "Category Error", code: 1, userInfo: nil)
         let error = ProductCategoryActionError.categoriesSynchronization(pageNumber: 1, rawError: rawError)
         storesManager.productCategoryResponse = error
@@ -62,32 +62,9 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(storesManager.numberOfResponsesConsumed, 1)
     }
-
-    func testAddAndSelectNewCategory() {
-        // Given
-        let product = Product.fake()
-        let viewModel = ProductCategoryListViewModel(storesManager: storesManager, product: product)
-        let newCategory = sampleCategory(categoryID: 1234, name: "Test")
-
-        // When
-        viewModel.addAndSelectNewCategory(category: newCategory)
-
-        // Then
-        XCTAssertEqual(viewModel.selectedCategories.first, newCategory)
-    }
 }
 
-private extension ProductCategoryListViewModelTests {
-    func sampleCategories(count: Int64) -> [ProductCategory] {
-        return (0..<count).map {
-            return sampleCategory(categoryID: $0, name: String($0))
-        }
-    }
 
-    func sampleCategory(categoryID: Int64, name: String) -> ProductCategory {
-        return ProductCategory(categoryID: categoryID, siteID: 123, parentID: 0, name: name, slug: "")
-    }
-}
 
 /// Mock Product Category Store Manager
 ///

@@ -1,6 +1,5 @@
 import UIKit
 import Observables
-import Yosemite
 
 /// The view model protocol for filtering a list of models with generic filters.
 ///
@@ -52,8 +51,8 @@ final class FilterTypeViewModel {
 enum FilterListValueSelectorConfig {
     // Standard list selector with fixed options
     case staticOptions(options: [FilterType])
-    // Filter list selector for categories, retrieved dynamically
-    case categories(siteID: Int64)
+    // Example: Categories
+    case custom
 }
 
 /// Contains data for rendering a filter type row.
@@ -226,9 +225,8 @@ private extension FilterListViewController {
                 }
                 let staticListSelector = ListSelectorViewController(command: command, tableViewStyle: .plain) { _ in }
                 self.listSelector.navigationController?.pushViewController(staticListSelector, animated: true)
-            case let .categories(siteID):
-                self.listSelector.navigationController?
-                    .pushViewController(FilterProductCategoryListViewController(siteID: siteID), animated: true)
+            case .custom:
+                break
             }
         }
     }

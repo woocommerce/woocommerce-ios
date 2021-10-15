@@ -34,9 +34,9 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
 
     private var cancellables: Set<AnyCancellable> = []
 
-    /// Validation states of all items by index of each package.
+    /// Validation states of all items by ID of each package.
     ///
-    private var packagesValidation: [Int: Bool] = [:] {
+    private var packagesValidation: [String: Bool] = [:] {
         didSet {
             configureDoneButton()
         }
@@ -117,7 +117,8 @@ private extension ShippingLabelPackagesFormViewModel {
     ///
     func configureItemViewModels(order: Order) {
         itemViewModels = selectedPackages.enumerated().map { index, details -> ShippingLabelSinglePackageViewModel in
-            return .init(order: order,
+            return .init(id: details.id,
+                         order: order,
                          orderItems: details.items,
                          packageNumber: index + 1,
                          packagesResponse: self.packagesResponse,
@@ -138,10 +139,10 @@ private extension ShippingLabelPackagesFormViewModel {
             })
         }
 
-        // Move action buttons needs updated `itemViewModels` to get package names for selection,
-        // so we have to update buttons after creating the view model.
+        // We need the updated `itemViewModels` to get package names for selection,
+        // so we have to update buttons after creating the view models.
         itemViewModels.enumerated().forEach { index, model in
-            guard let details = selectedPackages[safe: index] else {
+            guard let details = selectedPackages.first(where: { $0.id == model.id }) else {
                 return
             }
             let actionSheetButtons = moveItemActionButtons(for: details, packageIndex: index)
@@ -165,7 +166,7 @@ private extension ShippingLabelPackagesFormViewModel {
                         continue
                     }
                     if index != packageIndex {
-                        guard let name = itemViewModels[safe: index]?.packageName else {
+                        guard let name = itemViewModels.first(where: { $0.id == package.id })?.packageName else {
                             continue
                         }
                         let packageTitle = String(format: Localization.packageName, index + 1, name)
@@ -360,10 +361,10 @@ private extension ShippingLabelPackagesFormViewModel {
     ///
     func observeItemViewModels() {
         packagesValidation.removeAll()
-        itemViewModels.enumerated().forEach { (index, item) in
+        itemViewModels.forEach { item in
             item.$isValidPackage
                 .sink { [weak self] isValid in
-                    self?.packagesValidation[index] = isValid && item.selectedPackageID.isNotEmpty
+                    self?.packagesValidation[item.id] = isValid && item.selectedPackageID.isNotEmpty
                 }
                 .store(in: &cancellables)
         }

@@ -5,10 +5,14 @@ import Yosemite
 
 /// View model for `ShippingLabelSinglePackage`.
 ///
-final class ShippingLabelSinglePackageViewModel: ObservableObject {
+final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable {
 
     typealias PackageSwitchHandler = (_ newPackage: ShippingLabelPackageAttributes) -> Void
     typealias PackagesSyncHandler = (_ packagesResponse: ShippingLabelPackagesResponse?) -> Void
+
+    /// Unique ID for the view model.
+    ///
+    let id: String
 
     /// The id of the selected package. Defaults to last selected package, if any.
     ///
@@ -113,7 +117,8 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
     ///
     @Published private var isPackageWeightEdited: Bool = false
 
-    init(order: Order,
+    init(id: String = UUID().uuidString,
+         order: Order,
          orderItems: [ShippingLabelPackageItem],
          packageNumber: Int = 1,
          packagesResponse: ShippingLabelPackagesResponse?,
@@ -125,6 +130,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
          onPackagesSync: @escaping PackagesSyncHandler,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
+        self.id = id
         self.order = order
         self.orderItems = orderItems
         self.packageNumber = packageNumber

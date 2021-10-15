@@ -27,6 +27,10 @@ public final class StripeCardReaderService: NSObject {
     private let discoveryLock = NSLock()
 
     private var readerLocationProvider: ReaderLocationProvider?
+
+    /// Keeps track of whether a chip card needs to be removed
+    private var timerCancellable: Cancellable?
+    private var isChipCardInserted: Bool = false
 }
 
 
@@ -225,6 +229,8 @@ extension StripeCardReaderService: CardReaderService {
             .flatMap { intent in
                 self.collectPaymentMethod(intent: intent)
             }.flatMap { intent in
+                self.waitForInsertedCardToBeRemoved(intent: intent)
+            }.flatMap { intent in
                 self.processPayment(intent: intent)
             }.eraseToAnyPublisher()
     }
@@ -394,8 +400,6 @@ private extension StripeCardReaderService {
             /// to this cancellable if we want to cancel 
             self?.paymentCancellable = Terminal.shared.collectPaymentMethod(intent) { (intent, error) in
                 self?.paymentCancellable = nil
-                // Notify clients that the card, no matter if tapped or inserted, is not needed anymore.
-                self?.sendReaderEvent(.cardRemoved)
 
                 if let error = error {
                     let underlyingError = UnderlyingError(with: error)
@@ -418,6 +422,29 @@ private extension StripeCardReaderService {
                     promise(.success(intent))
                 }
             }
+        }
+    }
+
+    func waitForInsertedCardToBeRemoved(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {
+        return Future() { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            // If there is no chip card inserted, it is ok to immediatedly return. The payment method may have been swipe or tap.
+            if !self.isChipCardInserted {
+                return promise(.success(intent))
+            }
+
+            self.timerCancellable = Timer.publish(every: 1, tolerance: 0.1, on: .main, in: .default)
+                .autoconnect()
+                .receive(on: DispatchQueue.main)
+                .sink(receiveValue: { _ in
+                    if !self.isChipCardInserted {
+                        self.timerCancellable?.cancel()
+                        return promise(.success(intent))
+                    }
+                })
         }
     }
 
@@ -492,6 +519,22 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
     /// In this case the Stripe Terminal SDK wants us to present a string on screen
     public func reader(_ reader: Reader, didRequestReaderDisplayMessage displayMessage: ReaderDisplayMessage) {
         sendReaderEvent(CardReaderEvent.make(displayMessage: displayMessage))
+    }
+
+    /// Monitor and forward chip card insertion/removal events from the Terminal SDK
+    /// So we can make sure inserted cards are removed during the collection of payment
+    ///
+    public func reader(_ reader: Reader, didReportReaderEvent event: ReaderEvent, info: [AnyHashable: Any]?) {
+        switch event {
+        case .cardInserted:
+            isChipCardInserted = true
+            sendReaderEvent(.cardInserted)
+        case .cardRemoved:
+            isChipCardInserted = false
+            sendReaderEvent(.cardRemoved)
+        default:
+            break
+        }
     }
 }
 

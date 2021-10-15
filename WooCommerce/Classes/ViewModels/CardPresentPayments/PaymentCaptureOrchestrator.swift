@@ -16,9 +16,9 @@ final class PaymentCaptureOrchestrator {
 
     func collectPayment(for order: Order,
                         paymentsAccount: PaymentGatewayAccount?,
-                        onPresentMessage: @escaping (String) -> Void,
-                        onClearMessage: @escaping () -> Void,
+                        onWaitingForInput: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
+                        onDisplayMessage: @escaping (String) -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
         /// First ask the backend to create/assign a Stripe customer for the order
         ///
@@ -49,12 +49,10 @@ final class PaymentCaptureOrchestrator {
                 parameters: parameters,
                 onCardReaderMessage: { (event) in
                     switch event {
-                    case .displayMessage (let message):
-                        onPresentMessage(message)
-                    case .waitingForInput (let message):
-                        onPresentMessage(message)
-                    case .cardRemoved:
-                        onClearMessage()
+                    case .waitingForInput:
+                        onWaitingForInput()
+                    case .displayMessage(let message):
+                        onDisplayMessage(message)
                     default:
                         break
                     }
@@ -193,7 +191,7 @@ private extension PaymentCaptureOrchestrator {
 
             switch result {
             case .success:
-                self?.celebrate()
+                self?.celebrate() // plays a sound, haptic
                 self?.saveReceipt(for: order, params: receiptParameters)
                 onCompletion(.success(receiptParameters))
             case .failure(let error):

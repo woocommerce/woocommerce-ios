@@ -704,39 +704,44 @@ private extension OrderDetailsViewController {
                                     amount: value)
 
         ServiceLocator.analytics.track(.collectPaymentTapped)
-        viewModel.collectPayment { [weak self] readerEventMessage in
-            self?.paymentAlerts.tapOrInsertCard()
-        } onClearMessage: { [weak self] in
-            self?.paymentAlerts.removeCard()
-        } onProcessingMessage: { [weak self] in
-            self?.paymentAlerts.processingPayment()
-        } onCompletion: { [weak self] result in
-            guard let self = self else {
-                return
-            }
-
-            switch result {
-            case .failure(let error):
-                ServiceLocator.analytics.track(.collectPaymentFailed, withError: error)
-                self.paymentAlerts.error(error: error, tryAgain: {
-                    self.retryCollectPayment()
-                })
-            case .success(let receiptParameters):
-                ServiceLocator.analytics.track(.collectPaymentSuccess)
-                self.syncOrderAfterPaymentCollection {
-                    self.refreshCardPresentPaymentEligibility()
+        viewModel.collectPayment(
+            onWaitingForInput: { [weak self] in
+                self?.paymentAlerts.tapOrInsertCard()
+            },
+            onProcessingMessage: { [weak self] in
+                self?.paymentAlerts.processingPayment()
+            },
+            onDisplayMessage: { [weak self] message in // display a message from the reader, e.g. "Remove Card"
+                self?.paymentAlerts.displayReaderMessage(message: message)
+            },
+            onCompletion: { [weak self] result in
+                guard let self = self else {
+                    return
                 }
 
-                self.paymentAlerts.success(printReceipt: {
-                    self.viewModel.printReceipt(params: receiptParameters)
-                }, emailReceipt: {
-                    self.viewModel.emailReceipt(params: receiptParameters, onContent: { emailContent in
-                        self.emailReceipt(emailContent)
+                switch result {
+                case .failure(let error):
+                    ServiceLocator.analytics.track(.collectPaymentFailed, withError: error)
+                    self.paymentAlerts.error(error: error, tryAgain: {
+                        self.retryCollectPayment()
                     })
+                case .success(let receiptParameters):
+                    ServiceLocator.analytics.track(.collectPaymentSuccess)
+                    self.syncOrderAfterPaymentCollection {
+                        self.refreshCardPresentPaymentEligibility()
+                    }
+
+                    self.paymentAlerts.success(printReceipt: {
+                        self.viewModel.printReceipt(params: receiptParameters)
+                    }, emailReceipt: {
+                        self.viewModel.emailReceipt(params: receiptParameters, onContent: { emailContent in
+                            self.emailReceipt(emailContent)
+                        })
+                    }
+                    )
                 }
-                )
             }
-        }
+        )
     }
 
     private func retryCollectPayment() {

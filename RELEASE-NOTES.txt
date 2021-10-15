@@ -9,6 +9,7 @@
 - [*] Shipping Labels: Fix issue with decimal values on customs form when setting the device with locales that use comma as decimal point. [https://github.com/woocommerce/woocommerce-ios/pull/5195]
 - [*] Shipping Labels: The shipping address now prefills the phone number from the billing address if a shipping phone number is not available. [https://github.com/woocommerce/woocommerce-ios/pull/5177]
 - [*] Shipping Labels: now in Carrier and Rates we always display the discounted rate instead of the retail rate if available. [https://github.com/woocommerce/woocommerce-ios/pull/5188]
+- [*] Shipping Labels: If the shipping address is invalid, there are now options to email, call, or message the customer. [https://github.com/woocommerce/woocommerce-ios/pull/5228]
 
 7.7
 -----

@@ -43,7 +43,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
             actionSheet.view.tintColor = .text
 
             actionSheet.addCancelActionWithTitle(Localization.contactActionCancel)
-            if let email = email, email.isNotEmpty, MFMailComposeViewController.canSendMail() {
+            if let email = email, email.isNotEmpty {
                 actionSheet.addDefaultActionWithTitle(Localization.contactActionEmail) { _ in
                     self.sendEmail(to: email)
                 }
@@ -555,11 +555,13 @@ extension ShippingLabelAddressFormViewController {
 extension ShippingLabelAddressFormViewController: MFMailComposeViewControllerDelegate {
 
     func sendEmail(to email: String) {
-        let mail = MFMailComposeViewController()
-        mail.mailComposeDelegate = self
-        mail.setToRecipients([email])
+        if MFMailComposeViewController.canSendMail() {
+            let mail = MFMailComposeViewController()
+            mail.mailComposeDelegate = self
+            mail.setToRecipients([email])
 
-        present(mail, animated: true)
+            present(mail, animated: true)
+        }
     }
 
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {

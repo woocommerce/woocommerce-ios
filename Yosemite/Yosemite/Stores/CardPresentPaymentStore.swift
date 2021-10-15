@@ -161,7 +161,6 @@ private extension CardPresentPaymentStore {
                         parameters: PaymentParameters,
                         onCardReaderMessage: @escaping (CardReaderEvent) -> Void,
                         onCompletion: @escaping (Result<PaymentIntent, Error>) -> Void) {
-
         // Observe status events fired by the card reader
         let readerEventsSubscription = cardReaderService.readerEvents.sink { event in
             onCardReaderMessage(event)

@@ -52,7 +52,11 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
 
     /// List of selected package with basic info.
     ///
-    @Published private var selectedPackages: [ShippingLabelPackageAttributes] = []
+    private var selectedPackages: [ShippingLabelPackageAttributes] = [] {
+        didSet {
+            configureItemViewModels(order: order)
+        }
+    }
 
     /// Products contained inside the Order and fetched from Core Data
     ///
@@ -112,56 +116,44 @@ private extension ShippingLabelPackagesFormViewModel {
     /// Set up item view models on change selected packages.
     ///
     func configureItemViewModels(order: Order) {
-        $selectedPackages
-            .map { [weak self] packages -> [ShippingLabelSinglePackageViewModel] in
-                guard let self = self else {
-                    return []
+        itemViewModels = selectedPackages.enumerated().map { index, details -> ShippingLabelSinglePackageViewModel in
+            return .init(order: order,
+                         orderItems: details.items,
+                         packageNumber: index + 1,
+                         packagesResponse: self.packagesResponse,
+                         selectedPackageID: details.packageID,
+                         totalWeight: details.totalWeight,
+                         isOriginalPackaging: details.isOriginalPackaging,
+                         onItemMoveRequest: { [weak self] in
+                self?.itemViewModels.forEach {
+                    $0.dismissPopover()
                 }
-                let viewModels = packages.enumerated().map { index, details -> ShippingLabelSinglePackageViewModel in
-                    return .init(order: order,
-                                 orderItems: details.items,
-                                 packageNumber: index + 1,
-                                 packagesResponse: self.packagesResponse,
-                                 selectedPackageID: details.packageID,
-                                 totalWeight: details.totalWeight,
-                                 isOriginalPackaging: details.isOriginalPackaging,
-                                 onItemMoveRequest: { [weak self] in
-                        self?.itemViewModels.forEach {
-                            $0.dismissPopover()
-                        }
-                    },
-                                 onPackageSwitch: { [weak self] newPackage in
-                        self?.switchPackage(currentPackage: details, newPackage: newPackage)
-                    },
-                            onPackagesSync: { [weak self] packagesResponse in
-                        self?.packagesResponse = packagesResponse
-                        self?.onPackageSyncCompletion(packagesResponse)
-                    })
-                }
-                viewModels.enumerated().forEach { index, model in
-                    guard let details = packages[safe: index] else {
-                        return
-                    }
-                    let actionSheetButtons = self.moveItemActionButtons(for: details, selectedPackages: packages, itemViewModels: viewModels)
-                    model.updateActionSheetButtons(actionSheetButtons)
-                }
-                return viewModels
+            },
+                         onPackageSwitch: { [weak self] newPackage in
+                self?.switchPackage(currentPackage: details, newPackage: newPackage)
+            },
+                    onPackagesSync: { [weak self] packagesResponse in
+                self?.packagesResponse = packagesResponse
+                self?.onPackageSyncCompletion(packagesResponse)
+            })
+        }
+
+        // Move action buttons needs updated `itemViewModels` to get package names for selection,
+        // so we have to update buttons after creating the view model.
+        itemViewModels.enumerated().forEach { index, model in
+            guard let details = selectedPackages[safe: index] else {
+                return
             }
-            .sink { [weak self] viewModels in
-                self?.itemViewModels = viewModels
-                self?.observeItemViewModels()
-            }
-            .store(in: &cancellables)
+            let actionSheetButtons = moveItemActionButtons(for: details, packageIndex: index)
+            model.updateActionSheetButtons(actionSheetButtons)
+        }
+        observeItemViewModels()
     }
 
     /// Update title and buttons for the Move Item action sheet.
     ///
     func moveItemActionButtons(for currentPackage: ShippingLabelPackageAttributes,
-                               selectedPackages: [ShippingLabelPackageAttributes],
-                               itemViewModels: [ShippingLabelSinglePackageViewModel]) -> [String: [ActionSheet.Button]] {
-        guard let packageIndex = selectedPackages.firstIndex(where: { $0 == currentPackage }) else {
-            return [:]
-        }
+                               packageIndex: Int) -> [String: [ActionSheet.Button]] {
         var actionButtons: [String: [ActionSheet.Button]] = [:]
         currentPackage.items
             .forEach { item in

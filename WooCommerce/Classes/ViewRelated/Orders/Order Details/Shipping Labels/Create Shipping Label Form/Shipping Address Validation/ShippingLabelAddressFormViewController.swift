@@ -19,10 +19,12 @@ final class ShippingLabelAddressFormViewController: UIViewController {
     /// Top banner that shows a warning in case there is an error in the address validation.
     ///
     private var topBannerView: TopBannerView {
+        let phone = viewModel.address?.phone
+        let email = viewModel.email
         let topBanner = ShippingLabelAddressTopBannerFactory.addressErrorTopBannerView(
             shipType: viewModel.type,
-            phoneNumber: viewModel.address?.phone,
-            emailAddress: viewModel.email
+            hasPhone: !phone.isNilOrEmpty,
+            hasEmail: !email.isNilOrEmpty
         ) { [weak self] in
             MapsHelper.openAppleMaps(address: self?.viewModel.address?.formattedPostalAddress) { [weak self] (result) in
                 ServiceLocator.analytics.track(.shippingLabelEditAddressOpenMapButtonTapped)
@@ -41,12 +43,12 @@ final class ShippingLabelAddressFormViewController: UIViewController {
             actionSheet.view.tintColor = .text
 
             actionSheet.addCancelActionWithTitle(Localization.contactActionCancel)
-            if let email = self.viewModel.email, email.isNotEmpty, MFMailComposeViewController.canSendMail() {
+            if let email = email, email.isNotEmpty, MFMailComposeViewController.canSendMail() {
                 actionSheet.addDefaultActionWithTitle(Localization.contactActionEmail) { _ in
                     self.sendEmail(to: email)
                 }
             }
-            if let phoneNumber = self.viewModel.address?.phone, phoneNumber.isNotEmpty {
+            if let phoneNumber = phone, phoneNumber.isNotEmpty {
                 actionSheet.addDefaultActionWithTitle(Localization.contactActionCall) { _ in
                     if PhoneHelper.callPhoneNumber(phone: phoneNumber) == false {
                         self.displayPhoneNumberErrorNotice()

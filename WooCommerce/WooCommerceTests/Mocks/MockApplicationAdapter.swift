@@ -19,9 +19,9 @@ final class MockApplicationAdapter: ApplicationAdapter {
     ///
     var registerWasCalled = false
 
-    /// Title and message tuples received via the `presentInAppNotification` method.
+    /// Title, subtitle, and message tuples received via the `presentInAppNotification` method.
     ///
-    var presentInAppMessages = [(title: String, message: String?)]()
+    var presentInAppMessages = [(title: String, subtitle: String?, message: String?)]()
 
     /// Notification Identifiers received via the `presentNotificationDetails` method.
     ///
@@ -38,7 +38,7 @@ final class MockApplicationAdapter: ApplicationAdapter {
     /// Innocuous `presentInAppNotification`
     ///
     func presentInAppNotification(title: String, subtitle: String?, message: String?) {
-        presentInAppMessages.append((title: title, message: message))
+        presentInAppMessages.append((title: title, subtitle: subtitle, message: message))
     }
 
     /// Innocuous `displayNotificationDetails`

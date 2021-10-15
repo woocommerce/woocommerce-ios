@@ -338,15 +338,16 @@ final class PushNotificationsManagerTests: XCTestCase {
         let payload = notificationPayload(type: .storeOrder, featureFlagService: featureFlagService)
         var handleNotificationCallbackWasExecuted = false
 
+        // When
         application.applicationState = .inactive
         manager.handleNotification(payload, onBadgeUpdateCompletion: {}) { result in
             XCTAssertEqual(result, .newData)
             handleNotificationCallbackWasExecuted = true
         }
 
+        // Then
         XCTAssertEqual(application.presentDetailsNoteIDs.first, 1234)
         XCTAssertTrue(handleNotificationCallbackWasExecuted)
-
     }
 
     /// Verifies that `handleNotification` displays an InApp Notification with only the title whenever the app is in active state when
@@ -374,6 +375,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         // Then
         XCTAssertEqual(application.presentInAppMessages.first?.title, Sample.defaultMessage)
+        XCTAssertNil(application.presentInAppMessages.first?.subtitle)
         XCTAssertNil(application.presentInAppMessages.first?.message)
     }
 
@@ -383,7 +385,10 @@ final class PushNotificationsManagerTests: XCTestCase {
     func test_handleNotification_displays_inApp_notice_with_title_and_message_when_app_state_is_active() {
         // Given
         let featureFlagService = MockFeatureFlagService(isPushNotificationsForAllStoresOn: true)
-        let payload = notificationPayload(title: Sample.defaultTitle, message: Sample.defaultMessage, featureFlagService: featureFlagService)
+        let payload = notificationPayload(title: Sample.defaultTitle,
+                                          subtitle: Sample.defaultSubtitle,
+                                          message: Sample.defaultMessage,
+                                          featureFlagService: featureFlagService)
         manager = {
             let configuration = PushNotificationsConfiguration(application: self.application,
                                                                defaults: self.defaults,
@@ -402,13 +407,14 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         // Then
         XCTAssertEqual(application.presentInAppMessages.first?.title, Sample.defaultTitle)
+        XCTAssertEqual(application.presentInAppMessages.first?.subtitle, Sample.defaultSubtitle)
         XCTAssertEqual(application.presentInAppMessages.first?.message, Sample.defaultMessage)
     }
 
     /// Verifies that `handleNotification` displays an InApp Notification with title only whenever the app is in active state and only title
     /// is present in the payload.
     ///
-    func test_handleNotification_displays_inApp_notice_with_title_only_when_app_state_is_active_and_no_message_in_payload() {
+    func test_handleNotification_displays_inApp_notice_with_title_only_when_app_state_is_active_and_only_title_in_payload() {
         // Given
         let featureFlagService = MockFeatureFlagService(isPushNotificationsForAllStoresOn: true)
         let payload = notificationPayload(title: Sample.defaultTitle, message: nil, featureFlagService: featureFlagService)
@@ -430,6 +436,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         // Then
         XCTAssertEqual(application.presentInAppMessages.first?.title, Sample.defaultTitle)
+        XCTAssertNil(application.presentInAppMessages.first?.subtitle)
         XCTAssertNil(application.presentInAppMessages.first?.message)
     }
 
@@ -469,6 +476,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertEqual(emittedNotification.kind, .storeOrder)
         XCTAssertEqual(emittedNotification.noteID, 9_981)
         XCTAssertEqual(emittedNotification.title, Sample.defaultMessage)
+        XCTAssertNil(emittedNotification.subtitle)
         XCTAssertNil(emittedNotification.message)
     }
 
@@ -495,6 +503,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let userinfo = notificationPayload(noteID: 9_981,
                                            type: .storeOrder,
                                            title: Sample.defaultTitle,
+                                           subtitle: Sample.defaultSubtitle,
                                            message: Sample.defaultMessage,
                                            featureFlagService: featureFlagService)
 
@@ -510,6 +519,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertEqual(emittedNotification.kind, .storeOrder)
         XCTAssertEqual(emittedNotification.noteID, 9_981)
         XCTAssertEqual(emittedNotification.title, Sample.defaultTitle)
+        XCTAssertEqual(emittedNotification.subtitle, Sample.defaultSubtitle)
         XCTAssertEqual(emittedNotification.message, Sample.defaultMessage)
     }
 
@@ -533,7 +543,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertTrue(emittedNotifications.isEmpty)
     }
 
-    func test_it_emits_inactive_notifications_with_title_only_when_it_receives_a_notification_while_the_app_is_not_active_and_no_message_in_payload() throws {
+    func test_it_emits_inactive_notifications_with_title_only_when_it_receives_a_notification_while_the_app_is_not_active_and_only_title_in_payload() throws {
         // Given
         application.applicationState = .inactive
         let featureFlagService = MockFeatureFlagService(isPushNotificationsForAllStoresOn: true)
@@ -552,7 +562,7 @@ final class PushNotificationsManagerTests: XCTestCase {
             emittedNotifications.append(notification)
         }
 
-        let userinfo = notificationPayload(noteID: 9_981, type: .storeOrder, title: Sample.defaultTitle, message: nil, featureFlagService: featureFlagService)
+        let userinfo = notificationPayload(noteID: 9_981, type: .storeOrder, title: Sample.defaultTitle, featureFlagService: featureFlagService)
 
         // When
         manager.handleNotification(userinfo, onBadgeUpdateCompletion: {}) { _ in
@@ -566,6 +576,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertEqual(emittedNotification.kind, .storeOrder)
         XCTAssertEqual(emittedNotification.noteID, 9_981)
         XCTAssertEqual(emittedNotification.title, Sample.defaultTitle)
+        XCTAssertNil(emittedNotification.subtitle)
         XCTAssertNil(emittedNotification.message)
     }
 
@@ -706,6 +717,7 @@ private extension PushNotificationsManagerTests {
                              type: Note.Kind = .comment,
                              siteID: Int64 = 134,
                              title: String = Sample.defaultTitle,
+                             subtitle: String? = nil,
                              message: String? = nil,
                              featureFlagService: FeatureFlagService = MockFeatureFlagService(isPushNotificationsForAllStoresOn: true)) -> [String: Any] {
         if featureFlagService.isFeatureFlagEnabled(.pushNotificationsForAllStores) {
@@ -714,6 +726,7 @@ private extension PushNotificationsManagerTests {
                     "badge": badgeCount,
                     "alert": [
                         "title": title,
+                        "subtitle": subtitle,
                         "body": message
                     ]
                 ],
@@ -759,6 +772,10 @@ private struct Sample {
     /// Sample Title
     ///
     static let defaultTitle = "You have a new order! 🎊"
+
+    /// Sample Subtitle
+    ///
+    static let defaultSubtitle = "Your favorite shop"
 
     /// Sample Message
     ///

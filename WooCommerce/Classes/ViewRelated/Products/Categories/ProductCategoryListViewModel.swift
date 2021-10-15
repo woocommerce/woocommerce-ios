@@ -51,6 +51,9 @@ final class ProductCategoryListViewModel: ProductCategoryListViewModelProtocol {
         }
     }
 
+    /// Whether the user can select one category, or multiple.
+    /// If the user can select just one, one should be always selected; if the user can select multiple they can deselect so none is selected.
+    ///
     private var enforceUniqueSelection: Bool
 
     private lazy var resultController: ResultsController<StorageProductCategory> = {

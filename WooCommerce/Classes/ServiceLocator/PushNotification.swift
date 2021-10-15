@@ -15,6 +15,9 @@ struct PushNotification {
     /// The `alert.title` value received from the Remote Notification's `userInfo`.
     ///
     let title: String
+    /// The `alert.subtitle` value received from the Remote Notification's `userInfo`.
+    ///
+    let subtitle: String?
     /// The `alert.message` value received from the Remote Notification's `userInfo`.
     ///
     let message: String?

@@ -13,6 +13,10 @@ struct Notice {
 
     /// An optional subtitle for the notice
     ///
+    let subtitle: String?
+
+    /// An optional subtitle for the notice
+    ///
     let message: String?
 
     /// An optional taptic feedback type. If provided, taptic feedback will be triggered when the notice is displayed.
@@ -35,12 +39,14 @@ struct Notice {
     /// Designated Initializer
     ///
     init(title: String,
+         subtitle: String? = nil,
          message: String? = nil,
          feedbackType: UINotificationFeedbackGenerator.FeedbackType? = nil,
          notificationInfo: NoticeNotificationInfo? = nil,
          actionTitle: String? = nil,
          actionHandler: ((() -> Void))? = nil) {
         self.title = title
+        self.subtitle = subtitle
         self.message = message
         self.feedbackType = feedbackType
         self.notificationInfo = notificationInfo
@@ -52,6 +58,7 @@ struct Notice {
 extension Notice: Equatable {
     static func == (lhs: Notice, rhs: Notice) -> Bool {
         return lhs.title == rhs.title &&
+            lhs.subtitle == rhs.subtitle &&
             lhs.message == rhs.message &&
             lhs.feedbackType == rhs.feedbackType &&
             lhs.notificationInfo?.identifier == rhs.notificationInfo?.identifier &&

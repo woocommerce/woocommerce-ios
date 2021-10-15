@@ -353,7 +353,10 @@ private extension PushNotificationsManager {
         let pushNotificationsForAllStoresEnabled = featureFlagService.isFeatureFlagEnabled(.pushNotificationsForAllStores)
         if let foregroundNotification = PushNotification.from(userInfo: userInfo,
                                                               pushNotificationsForAllStoresEnabled: pushNotificationsForAllStoresEnabled) {
-            configuration.application.presentInAppNotification(title: foregroundNotification.title, message: foregroundNotification.message)
+            configuration.application
+                .presentInAppNotification(title: foregroundNotification.title,
+                                          subtitle: foregroundNotification.subtitle,
+                                          message: foregroundNotification.message)
 
             foregroundNotificationsSubject.send(foregroundNotification)
         }
@@ -532,8 +535,9 @@ private extension PushNotification {
                   let noteKind = Note.Kind(rawValue: type) else {
                 return nil
             }
+            let subtitle = alert.string(forKey: APNSKey.alertSubtitle)
             let message = alert.string(forKey: APNSKey.alertMessage)
-            return PushNotification(noteID: noteID, kind: noteKind, title: title, message: message)
+            return PushNotification(noteID: noteID, kind: noteKind, title: title, subtitle: subtitle, message: message)
         } else {
             guard let noteID = userInfo.integer(forKey: APNSKey.identifier),
                   let title = userInfo.dictionary(forKey: APNSKey.aps)?.string(forKey: APNSKey.alert),
@@ -541,7 +545,7 @@ private extension PushNotification {
                   let noteKind = Note.Kind(rawValue: type) else {
                 return nil
             }
-            return PushNotification(noteID: noteID, kind: noteKind, title: title, message: nil)
+            return PushNotification(noteID: noteID, kind: noteKind, title: title, subtitle: nil, message: nil)
         }
     }
 }
@@ -563,6 +567,7 @@ private enum APNSKey {
     static let aps = "aps"
     static let alert = "alert"
     static let alertTitle = "title"
+    static let alertSubtitle = "subtitle"
     static let alertMessage = "body"
     static let identifier = "note_id"
     static let type = "type"

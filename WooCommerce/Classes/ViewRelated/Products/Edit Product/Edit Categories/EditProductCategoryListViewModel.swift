@@ -4,11 +4,13 @@ import Yosemite
 /// View Model for the `EditProductCategory` view. Extends the presentation of a list of categories by handling the adition of a new category.
 ///
 final class EditProductCategoryListViewModel {
-    weak var newProductCategoryListViewModel: ProductCategoryListViewModelProtocol?
+    /// The shown product category list view model
+    ///
+    weak var baseProductCategoryListViewModel: ProductCategoryListViewModelProtocol?
 
     let product: Product
     var selectedCategories: [ProductCategory] {
-        newProductCategoryListViewModel?.selectedCategories ?? []
+        baseProductCategoryListViewModel?.selectedCategories ?? []
     }
 
     init(storesManager: StoresManager = ServiceLocator.stores, product: Product) {
@@ -18,13 +20,13 @@ final class EditProductCategoryListViewModel {
     /// Add a new category added remotely, and that will be selected
     ///
     func addAndSelectNewCategory(category: ProductCategory) {
-        newProductCategoryListViewModel?.selectedCategories.append(category)
-        newProductCategoryListViewModel?.updateViewModelsArray()
+        baseProductCategoryListViewModel?.selectedCategories.append(category)
+        baseProductCategoryListViewModel?.updateViewModelsArray()
     }
 
     /// Informs of wether there are still changes that were not commited
     ///
     func hasUnsavedChanges() -> Bool {
-        return product.categories.sorted() != newProductCategoryListViewModel?.selectedCategories.sorted()
+        return product.categories.sorted() != baseProductCategoryListViewModel?.selectedCategories.sorted()
     }
 }

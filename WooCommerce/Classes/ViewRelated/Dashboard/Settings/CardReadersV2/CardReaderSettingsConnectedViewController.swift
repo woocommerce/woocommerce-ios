@@ -191,7 +191,7 @@ private extension CardReaderSettingsConnectedViewController {
             if readerBatteryTooLow {
                 cell.configure(image: .infoOutlineImage, text: Localization.updateAvailableLowBatt)
             } else {
-                cell.configure(image: .infoOutlineImage, text: Localization.updateAvailable)
+                cell.configure(image: .infoOutlineImage, text: Localization.updatePromptText)
             }
             cell.backgroundColor = .warningBackground
             cell.imageView?.tintColor = .warning
@@ -213,6 +213,10 @@ private extension CardReaderSettingsConnectedViewController {
     }
 
     private func configureUpdateButton(cell: ButtonTableViewCell) {
+        guard let readerUpdateAvailable = viewModel?.readerUpdateAvailable else {
+            return
+        }
+
         cell.configure(style: .primary, title: Localization.updateButtonTitle, bottomSpacing: 0) {
             self.viewModel?.startCardReaderUpdate()
         }

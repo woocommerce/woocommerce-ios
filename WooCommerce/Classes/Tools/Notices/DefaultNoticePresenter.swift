@@ -26,7 +26,7 @@ class DefaultNoticePresenter: NoticePresenter {
 
     /// Observes keyboard and repositions Notice
     ///
-    private var keyboardFrameObserver: KeyboardFrameObserver!
+    private var keyboardFrameObserver: KeyboardFrameObserver?
 
     /// Enqueues the specified Notice for display.
     ///
@@ -119,7 +119,7 @@ private extension DefaultNoticePresenter {
                 })
             }
         }
-        keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
+        keyboardFrameObserver?.startObservingKeyboardFrame(sendInitialEvent: true)
 
         addNoticeContainerToPresentingViewController(noticeContainerView)
 

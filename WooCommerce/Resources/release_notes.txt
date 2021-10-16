@@ -1,9 +1,7 @@
-- [***] In-Person Payments: US merchants can now obtain a card reader and then collect payments directly from the app. [https://github.com/woocommerce/woocommerce-ios/pull/5030]
-- [***] Shipping Labels: Merchants can now add new payment methods for shipping labels directly from the app. [https://github.com/woocommerce/woocommerce-ios/pull/5023]
-- [**] Merchants can now edit shipping & billing addresses from orders. [https://github.com/woocommerce/woocommerce-ios/pull/5097]
-- [x] Fix: now a default paper size will be selected in Shipping Label print screen. [https://github.com/woocommerce/woocommerce-ios/pull/5035]
-- [*] Show banner on screens that use cached data when device is offline. [https://github.com/woocommerce/woocommerce-ios/pull/5000]
-- [*] Fix incorrect subtitle on customs row of Shipping Label purchase flow. [https://github.com/woocommerce/woocommerce-ios/pull/5093]
-- [*] Make sure customs form printing option is not available on non-international orders. [https://github.com/woocommerce/woocommerce-ios/pull/5104]
-- [*] Fix incorrect logo for DHL in Shipping Labels flow. [https://github.com/woocommerce/woocommerce-ios/pull/5105]
- 
+You’ll be excited to learn that you can now edit several essential fields on your customers’ orders. Make those minor fixes before fulfilling an order right in the app!
+
+Merchants using WooCommerce Payments in the USA can accept in-person credit card payments for your customers’ payment upon delivery or pickup orders.
+
+Merchants using the WooCommerce Shipping & Tax Extension will find improvements with paper sizes, DHL support, and payment methods. Creating and printing shipping labels from your mobile device is so much fun!
+
+Also included in this release are a few minor improvements based on your feedback. Thanks for helping us make a better app for everyone.

@@ -59,6 +59,9 @@ public class OrderStore: Store {
 
         case let .updateOrder(siteID, order, fields, onCompletion):
             updateOrder(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
+
+        case let .createQuickPayOrder(siteID, amount, onCompletion):
+            createQuickPayOrder(siteID: siteID, amount: amount, onCompletion: onCompletion)
         }
     }
 }
@@ -234,6 +237,22 @@ private extension OrderStore {
 
             self?.upsertStoredOrdersInBackground(readOnlyOrders: [order]) {
                 onCompletion(order, nil)
+            }
+        }
+    }
+
+    /// Creates a quick pay order with a specific amount value and no tax.
+    ///
+    func createQuickPayOrder(siteID: Int64, amount: String, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        let order = OrderFactory.quickPayOrder(amount: amount)
+        remote.createOrder(siteID: siteID, order: order, fields: [.feeLines]) { [weak self] result in
+            switch result {
+            case .success(let order):
+                self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
+                    onCompletion(result)
+                })
+            case .failure:
+                onCompletion(result)
             }
         }
     }

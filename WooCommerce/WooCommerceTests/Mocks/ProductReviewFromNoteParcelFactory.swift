@@ -1,3 +1,4 @@
+import Codegen
 import XCTest
 import Yosemite
 
@@ -32,9 +33,6 @@ final class ProductReviewFromNoteParcelFactory {
                         header: Data(),
                         body: Data(),
                         meta: metaAsData)
-        let product = Product.fake()
-        let review = ProductReview.fake()
-
-        return ProductReviewFromNoteParcel(note: note, review: review, product: product)
+        return ProductReviewFromNoteParcel.fake().copy(note: note)
     }
 }

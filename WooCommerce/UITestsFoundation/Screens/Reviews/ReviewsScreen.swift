@@ -1,27 +1,25 @@
+import ScreenObject
 import XCTest
 
-public final class ReviewsScreen: BaseScreen {
+public final class ReviewsScreen: ScreenObject {
 
-    struct ElementStringIDs {
-        static let markAllAsReadButton = "reviews-mark-all-as-read-button"
-    }
-
-    public let tabBar = TabNavComponent()
-    private let markAllAsReadButton: XCUIElement
+    // TODO: Remove force `try` once `ScreenObject` migration is completed
+    public let tabBar = try! TabNavComponent()
 
     static var isVisible: Bool {
-        let markAllAsReadButton = XCUIApplication().buttons[ElementStringIDs.markAllAsReadButton]
-        return markAllAsReadButton.exists && markAllAsReadButton.isHittable
+        (try? ReviewsScreen().isLoaded) ?? false
     }
 
-    init() {
-        markAllAsReadButton = XCUIApplication().buttons[ElementStringIDs.markAllAsReadButton]
-        super.init(element: markAllAsReadButton)
+    init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+            expectedElementGetters: [ { $0.buttons["reviews-mark-all-as-read-button"] } ],
+            app: app
+        )
     }
 
     @discardableResult
-    public func selectReview(atIndex index: Int) -> SingleReviewScreen {
-        XCUIApplication().tables.cells.element(boundBy: index).tap()
-        return SingleReviewScreen()
+    public func selectReview(atIndex index: Int) throws -> SingleReviewScreen {
+        app.tables.cells.element(boundBy: index).tap()
+        return try SingleReviewScreen()
     }
 }

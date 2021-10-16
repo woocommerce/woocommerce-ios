@@ -16,7 +16,7 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "",
                                                           totalWeight: "",
-                                                          onItemMoveRequest: { _, _ in },
+                                                          onItemMoveRequest: {},
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter)
@@ -48,7 +48,7 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "",
                                                           totalWeight: "",
-                                                          onItemMoveRequest: { _, _ in },
+                                                          onItemMoveRequest: {},
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -77,7 +77,7 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "",
                                                           totalWeight: "",
-                                                          onItemMoveRequest: { _, _ in },
+                                                          onItemMoveRequest: {},
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -111,7 +111,7 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "Test Box",
                                                           totalWeight: "",
-                                                          onItemMoveRequest: { _, _ in },
+                                                          onItemMoveRequest: {},
                                                           onPackageSwitch: packageSwitchHandler,
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -122,9 +122,9 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
         viewModel.packageListViewModel.confirmPackageSelection()
 
         // Then
-        XCTAssertEqual(packageToTest, ShippingLabelPackageAttributes(packageID: customPackage.title,
-                                                                     totalWeight: "",
-                                                                     items: []))
+        XCTAssertEqual(packageToTest?.packageID, customPackage.title)
+        XCTAssertEqual(packageToTest?.totalWeight, "")
+        XCTAssertEqual(packageToTest?.items, [])
     }
 
     func test_showCustomPackagesHeader_returns_the_expected_value() {
@@ -136,7 +136,7 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "Test Box",
                                                           totalWeight: "10",
-                                                          onItemMoveRequest: { _, _ in },
+                                                          onItemMoveRequest: {},
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -163,7 +163,7 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "Box",
                                                           totalWeight: "",
-                                                          onItemMoveRequest: { _, _ in },
+                                                          onItemMoveRequest: {},
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -189,7 +189,7 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "Box",
                                                           totalWeight: "30",
-                                                          onItemMoveRequest: { _, _ in },
+                                                          onItemMoveRequest: {},
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -210,7 +210,7 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "Test Box",
                                                           totalWeight: "10",
-                                                          onItemMoveRequest: { _, _ in },
+                                                          onItemMoveRequest: {},
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -230,7 +230,7 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "Test Box",
                                                           totalWeight: "10",
-                                                          onItemMoveRequest: { _, _ in },
+                                                          onItemMoveRequest: {},
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -267,22 +267,24 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "Test Box",
                                                           totalWeight: "10",
-                                                          onItemMoveRequest: { _, _ in },
+                                                          onItemMoveRequest: {},
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
                                                           weightUnit: "kg")
 
         // Then
-        let expectedPackage1 = ShippingLabelPackageAttributes(packageID: "Test Box", totalWeight: "10", items: items)
-        XCTAssertEqual(viewModel.validatedPackageAttributes, expectedPackage1)
+        XCTAssertEqual(viewModel.validatedPackageAttributes?.packageID, "Test Box")
+        XCTAssertEqual(viewModel.validatedPackageAttributes?.totalWeight, "10")
+        XCTAssertEqual(viewModel.validatedPackageAttributes?.items, items)
 
         // When
         viewModel.totalWeight = "12"
 
         // Then
-        let expectedPackage2 = ShippingLabelPackageAttributes(packageID: "Test Box", totalWeight: "12", items: items)
-        XCTAssertEqual(viewModel.validatedPackageAttributes, expectedPackage2)
+        XCTAssertEqual(viewModel.validatedPackageAttributes?.packageID, "Test Box")
+        XCTAssertEqual(viewModel.validatedPackageAttributes?.totalWeight, "12")
+        XCTAssertEqual(viewModel.validatedPackageAttributes?.items, items)
     }
 
     func test_validatedPackageAttributes_returns_nil_when_the_totalWeight_is_not_valid() {
@@ -296,7 +298,7 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                           packagesResponse: mockPackageResponse(),
                                                           selectedPackageID: "Test Box",
                                                           totalWeight: "10",
-                                                          onItemMoveRequest: { _, _ in },
+                                                          onItemMoveRequest: {},
                                                           onPackageSwitch: { _ in },
                                                           onPackagesSync: { _ in },
                                                           formatter: currencyFormatter,
@@ -334,7 +336,7 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                             selectedPackageID: "invividual",
                                                             totalWeight: "10",
                                                             isOriginalPackaging: true,
-                                                            onItemMoveRequest: { _, _ in },
+                                                            onItemMoveRequest: {},
                                                             onPackageSwitch: { _ in },
                                                             onPackagesSync: { _ in },
                                                             formatter: currencyFormatter,
@@ -358,15 +360,16 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                             selectedPackageID: "invividual",
                                                             totalWeight: "",
                                                             isOriginalPackaging: true,
-                                                            onItemMoveRequest: { _, _ in },
+                                                            onItemMoveRequest: {},
                                                             onPackageSwitch: { _ in },
                                                             onPackagesSync: { _ in },
                                                             formatter: currencyFormatter,
                                                             weightUnit: "kg")
 
         // Then
-        let expectedPackage = ShippingLabelPackageAttributes(packageID: "invividual", totalWeight: "60", items: items)
-        XCTAssertEqual(viewModel.validatedPackageAttributes, expectedPackage)
+        XCTAssertEqual(viewModel.validatedPackageAttributes?.packageID, "invividual")
+        XCTAssertEqual(viewModel.validatedPackageAttributes?.totalWeight, "60")
+        XCTAssertEqual(viewModel.validatedPackageAttributes?.items, items)
     }
 
     func test_originalPackageDimensions_returns_correctly_when_package_has_no_dimensions() {
@@ -382,7 +385,7 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                             selectedPackageID: "invividual",
                                                             totalWeight: "",
                                                             isOriginalPackaging: true,
-                                                            onItemMoveRequest: { _, _ in },
+                                                            onItemMoveRequest: {},
                                                             onPackageSwitch: { _ in },
                                                             onPackagesSync: { _ in },
                                                             formatter: currencyFormatter,
@@ -407,7 +410,7 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
                                                             selectedPackageID: "invividual",
                                                             totalWeight: "",
                                                             isOriginalPackaging: true,
-                                                            onItemMoveRequest: { _, _ in },
+                                                            onItemMoveRequest: {},
                                                             onPackageSwitch: { _ in },
                                                             onPackagesSync: { _ in },
                                                             formatter: currencyFormatter,

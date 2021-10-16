@@ -21,6 +21,12 @@ struct MockAppSettingsActionHandler: MockActionHandler {
                 setInstallationDateIfNecessary(date: date, onCompletion: onCompletion)
             case .loadProductsSettings(let siteId, let onCompletion):
                 loadProductSettings(siteId: siteId, onCompletion: onCompletion)
+            case .loadEligibilityErrorInfo(let onCompletion):
+                onCompletion(.failure(AppSettingsStoreErrors.noEligibilityErrorInfo))
+            case .loadOrderAddOnsSwitchState(let onCompletion):
+                onCompletion(.failure(AppSettingsStoreErrors.noEligibilityErrorInfo))
+            case .resetEligibilityErrorInfo:
+                break
             default: unimplementedAction(action: action)
         }
     }

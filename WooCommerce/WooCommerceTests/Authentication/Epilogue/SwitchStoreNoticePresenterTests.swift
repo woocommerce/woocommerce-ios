@@ -31,7 +31,10 @@ final class SwitchStoreNoticePresenterTests: XCTestCase {
         let site = makeSite()
         sessionManager.defaultSite = site
 
-        let presenter = SwitchStoreNoticePresenter(sessionManager: sessionManager, noticePresenter: noticePresenter)
+        let featureFlagService = MockFeatureFlagService(isPushNotificationsForAllStoresOn: true)
+        let presenter = SwitchStoreNoticePresenter(sessionManager: sessionManager,
+                                                   noticePresenter: noticePresenter,
+                                                   featureFlagService: featureFlagService)
 
         assertEmpty(noticePresenter.queuedNotices)
 
@@ -43,6 +46,8 @@ final class SwitchStoreNoticePresenterTests: XCTestCase {
 
         let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
         assertThat(notice.title, contains: site.name)
+        let expectedTitle = String.localizedStringWithFormat(SwitchStoreNoticePresenter.Localization.titleFormat, site.name)
+        XCTAssertEqual(notice.title, expectedTitle)
     }
 
     func test_it_does_not_enqueue_a_notice_when_not_switching_stores() throws {
@@ -54,6 +59,29 @@ final class SwitchStoreNoticePresenterTests: XCTestCase {
 
         // Then
         assertEmpty(noticePresenter.queuedNotices)
+    }
+
+    func test_notice_title_contains_single_store_push_notifications_message_when_switching_stores_with_pushNotificationsForAllStores_disabled() throws {
+        // Given
+        let site = makeSite()
+        sessionManager.defaultSite = site
+
+        let featureFlagService = MockFeatureFlagService(isPushNotificationsForAllStoresOn: false)
+        let presenter = SwitchStoreNoticePresenter(sessionManager: sessionManager,
+                                                   noticePresenter: noticePresenter,
+                                                   featureFlagService: featureFlagService)
+
+        assertEmpty(noticePresenter.queuedNotices)
+
+        // When
+        presenter.presentStoreSwitchedNotice(configuration: .switchingStores)
+
+        // Then
+        let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
+        assertThat(notice.title, contains: site.name)
+        let expectedTitle =
+            String.localizedStringWithFormat(SwitchStoreNoticePresenter.Localization.titleFormatWithPushNotificationsForAllStoresDisabled, site.name)
+        XCTAssertEqual(notice.title, expectedTitle)
     }
 }
 

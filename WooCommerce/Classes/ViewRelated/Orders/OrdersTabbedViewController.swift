@@ -1,6 +1,7 @@
 
 import UIKit
 import XLPagerTabStrip
+import struct Yosemite.Order
 import struct Yosemite.OrderStatus
 import enum Yosemite.OrderStatusEnum
 import struct Yosemite.Note
@@ -83,6 +84,34 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
         let navigationController = WooNavigationController(rootViewController: searchViewController)
 
         present(navigationController, animated: true, completion: nil)
+    }
+
+    /// Pushes an `OrderDetailsViewController` onto the navigation stack.
+    ///
+    private func navigateToOrderDetail(_ order: Order) {
+        guard let orderViewController = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else { return }
+        orderViewController.viewModel = OrderDetailsViewModel(order: order)
+        show(orderViewController, sender: self)
+
+        ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID, "status": order.status.rawValue])
+    }
+
+    /// Presents `QuickPayAmountHostingController`.
+    ///
+    @objc private func presentQuickPayAmountController() {
+        let viewModel = QuickPayAmountViewModel(siteID: siteID)
+        viewModel.onOrderCreated = { [weak self] order in
+            guard let self = self else { return }
+
+            self.moveToViewController(at: 1, animated: false) // AllOrders list is at index 1
+            self.dismiss(animated: true) {
+                self.navigateToOrderDetail(order)
+            }
+        }
+
+        let viewController = QuickPayAmountHostingController(viewModel: viewModel)
+        let navigationController = WooNavigationController(rootViewController: viewController)
+        present(navigationController, animated: true)
     }
 
     // MARK: - ButtonBarPagerTabStripViewController Conformance
@@ -179,6 +208,19 @@ extension OrdersTabbedViewController {
         )
         button.accessibilityIdentifier = "order-search-button"
 
+        return button
+    }
+
+    /// Create a `UIBarButtonItem` to be used as a way to create a new quick pay order.
+    ///
+    func createAddQuickPayOrderItem() -> UIBarButtonItem {
+        let button = UIBarButtonItem(image: .plusBarButtonItemImage,
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(presentQuickPayAmountController))
+        button.accessibilityTraits = .button
+        button.accessibilityLabel = NSLocalizedString("Add quick pay order", comment: "Navigates to a screen to create a quick pay order")
+        button.accessibilityIdentifier = "quick-pay-add-button"
         return button
     }
 

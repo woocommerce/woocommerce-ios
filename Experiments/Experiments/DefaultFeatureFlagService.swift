@@ -1,5 +1,7 @@
-struct DefaultFeatureFlagService: FeatureFlagService {
-    func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
+public struct DefaultFeatureFlagService: FeatureFlagService {
+    public init() {}
+
+    public func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
         let buildConfig = BuildConfiguration.current
 
         switch featureFlag {
@@ -16,10 +18,12 @@ struct DefaultFeatureFlagService: FeatureFlagService {
         case .shippingLabelsAddCustomPackages:
             return true
         case .shippingLabelsMultiPackage:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .whatsNewOnWooCommerce:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .pushNotificationsForAllStores:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .quickPayPrototype:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

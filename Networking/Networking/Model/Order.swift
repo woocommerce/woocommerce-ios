@@ -135,7 +135,14 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
 
         let items = try? container.decodeIfPresent([OrderItem].self, forKey: .items) ?? []
 
-        let shippingAddress = try? container.decode(Address.self, forKey: .shippingAddress)
+        var shippingAddress = try? container.decode(Address.self, forKey: .shippingAddress)
+        // In WooCommerce <5.6.0, the shipping phone number can be stored in the order metadata
+        if let address = shippingAddress, address.phone == nil {
+            let allOrderMetaData = try? container.decode([OrderMetaData].self, forKey: .metadata)
+            let shippingPhone = allOrderMetaData?.first(where: { $0.key == "_shipping_phone" })?.value
+            shippingAddress = address.copy(phone: shippingPhone)
+        }
+
         let billingAddress = try? container.decode(Address.self, forKey: .billingAddress)
         let shippingLines = try container.decodeIfPresent([ShippingLine].self, forKey: .shippingLines) ?? []
 
@@ -213,6 +220,7 @@ internal extension Order {
         case couponLines        = "coupon_lines"
         case refunds            = "refunds"
         case feeLines           = "fee_lines"
+        case metadata           = "meta_data"
     }
 }
 

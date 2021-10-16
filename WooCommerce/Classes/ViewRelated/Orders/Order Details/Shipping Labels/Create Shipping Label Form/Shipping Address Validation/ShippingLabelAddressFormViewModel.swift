@@ -47,9 +47,17 @@ final class ShippingLabelAddressFormViewModel {
         return state.isLoading
     }
 
+    var isUSAddress: Bool {
+        address?.country == "US"
+    }
+
     var sections: [Section] = []
 
     private(set) var countries: [Country]
+
+    var nameRequired: Bool {
+        address?.company.isEmpty == true
+    }
 
     var statesOfSelectedCountry: [StateOfACountry] {
         countries.first { $0.code == address?.country }?.states.sorted { $0.name < $1.name } ?? []
@@ -68,7 +76,7 @@ final class ShippingLabelAddressFormViewModel {
     }
 
     private let localErrors = CurrentValueSubject<[ValidationError], Never>([])
-    private let currentRowIndex = CurrentValueSubject<Int?, Never>(nil)
+    private let currentRow = CurrentValueSubject<Row?, Never>(nil)
     private var validationSubscription: AnyCancellable?
 
     init(
@@ -118,8 +126,7 @@ final class ShippingLabelAddressFormViewModel {
             return
         }
 
-        let index: Int? = sections.first?.rows.firstIndex(where: { $0 == row })
-        currentRowIndex.send(index)
+        currentRow.send(row)
         localErrors.send(validateAddressLocally())
     }
 
@@ -197,10 +204,12 @@ extension ShippingLabelAddressFormViewModel {
     private func configureValidationError() {
         validationSubscription = localErrors
             .removeDuplicates()
-            .withLatestFrom(currentRowIndex)
-            .sink { [weak self] _, index in
-                self?.updateSections()
-                self?.onChange?(index)
+            .withLatestFrom(currentRow)
+            .sink { [weak self] _, row in
+                guard let self = self else { return }
+                self.updateSections()
+                let index: Int? = self.sections.first?.rows.firstIndex(where: { $0 == row })
+                self.onChange?(index)
             }
 
         // Append any initial local error.
@@ -215,7 +224,7 @@ extension ShippingLabelAddressFormViewModel {
         guard let phone = address?.phone, phone.isNotEmpty else {
             return false
         }
-        guard address?.country == "US" else {
+        guard isUSAddress else {
             return true
         }
         if phone.hasPrefix("1") {
@@ -243,7 +252,7 @@ extension ShippingLabelAddressFormViewModel {
         var errors: [ValidationError] = []
 
         if let addressToBeValidated = address {
-            if addressToBeValidated.name.isEmpty {
+            if addressToBeValidated.name.isEmpty && nameRequired {
                 errors.append(.name)
             }
             if addressToBeValidated.address1.isEmpty {

@@ -1,3 +1,7 @@
-I commercianti che usano l'estensione WooCommerce Shipping & Tax scopriranno che la creazione del pacchetto personalizzato per un'etichetta di spedizione ora è una bazzecola. La creazione e la stampa delle etichette di spedizione dal dispositivo mobile ora è molto più divertente.
+Sarai entusiasta di sapere che ora puoi modificare diversi campi essenziali sugli ordini dei tuoi clienti. Apporta queste correzioni minori prima di evadere un ordine direttamente nell'app.
 
-Abbiamo anche risolto e migliorato una serie di piccole cose nell'app in base al tuo feedback.
+I venditori che usano WooCommerce Payments negli Stati Uniti possono accettare pagamenti con carta di credito di persona per il pagamento alla consegna dei clienti o per gli ordini di ritiro.
+
+I venditori che usano l'estensione WooCommerce Shipping & Tax troveranno miglioramenti con le dimensioni del foglio, il supporto DHL e i metodi di pagamento. La creazione e la stampa delle etichette di spedizione dal dispositivo mobile ora è molto più divertente.
+
+In questo rilascio sono inclusi anche alcuni miglioramenti minori basati sul tuo feedback. Grazie per averci aiutato a creare un'app migliore per tutti.

@@ -1,3 +1,7 @@
-Verkopers die WooCommerce Shipping & Tax Extension gebruiken, vinden het maken van aangepaste pakketten voor een verzendlabel nu heel gemakkelijk. Het is echt leuk om verzendlabels vanaf je mobiele apparaat te maken en te printen!
+Dit gaan jullie tof vinden: je kunt nu verschillende belangrijke velden op de bestellingen van je klanten bewerken. Voer rechtstreeks vanuit de app die kleine verbeteringen door voordat een bestelling wordt afgehandeld!
 
-We hebben ook op basis van je feedback een heleboel kleine dingen opgelost en verbeterd in de app.
+Verkopers in de VS die gebruikmaken van WooCommerce Payments kunnen fysieke creditcardbetalingen aannemen voor de betalingen van je klanten bij levering of ophaalbestellingen.
+
+Verkopers die gebruikmaken van de extensie WooCommerce Shipping en Tax ervaren verbeteringen aan papierformaten, DHL-ondersteuning en betaalmethoden. Het is echt leuk om verzendlabels vanaf je mobiele apparaat te maken en te printen!
+
+In deze versie zijn tevens een aantal kleine verbeteringen doorgevoerd, op basis van jullie feedback. Bedankt voor de hulp, zo kunnen we voor iedereen een betere app maken.

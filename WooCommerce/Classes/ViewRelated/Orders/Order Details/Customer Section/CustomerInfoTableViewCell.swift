@@ -19,6 +19,8 @@ class CustomerInfoTableViewCell: UITableViewCell {
 
     @IBOutlet private weak var editButton: UIButton!
 
+    @IBOutlet private weak var addButton: UIButton!
+
     var title: String? {
         get {
             return titleLabel.text
@@ -56,6 +58,16 @@ class CustomerInfoTableViewCell: UITableViewCell {
         }
     }
 
+    /// Closure to be invoked when the add button is tapped
+    /// Setting a value makes the button visible
+    ///
+    var onAddTapped: (() -> Void)? {
+        didSet {
+            let shouldHideAddButton = onAddTapped == nil
+            addButton.isHidden = shouldHideAddButton
+        }
+    }
+
     /// Accessibility label to be used on the edit button, when shown
     ///
     var editButtonAccessibilityLabel: String? {
@@ -67,11 +79,23 @@ class CustomerInfoTableViewCell: UITableViewCell {
         }
     }
 
+    /// Title to be used on the add button, when shown
+    ///
+    var addButtonTitle: String? {
+        get {
+            addButton.currentTitle
+        }
+        set {
+            addButton.setTitle(newValue, for: .normal)
+        }
+    }
+
     override func awakeFromNib() {
         super.awakeFromNib()
 
         configureBackground()
         configureEditButton()
+        configureAddButton()
     }
 
     override func prepareForReuse() {
@@ -80,6 +104,7 @@ class CustomerInfoTableViewCell: UITableViewCell {
         nameLabel.text = nil
         addressLabel.text = nil
         onEditTapped = nil
+        onAddTapped = nil
         editButton.accessibilityLabel = nil
     }
 }
@@ -95,8 +120,22 @@ private extension CustomerInfoTableViewCell {
         editButton.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
     }
 
+    func configureAddButton() {
+        addButton.applyLinkButtonStyle()
+        addButton.setImage(.plusImage, for: .normal)
+        addButton.contentHorizontalAlignment = .leading
+        addButton.contentVerticalAlignment = .bottom
+        addButton.contentEdgeInsets = .zero
+        addButton.distributeTitleAndImage(spacing: Constants.buttonTitleAndImageSpacing)
+        addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
+    }
+
     @objc func editButtonTapped() {
         onEditTapped?()
+    }
+
+    @objc func addButtonTapped() {
+        onAddTapped?()
     }
 }
 
@@ -112,5 +151,11 @@ extension CustomerInfoTableViewCell {
 
     func getAddressLabel() -> UILabel {
         return addressLabel
+    }
+}
+
+private extension CustomerInfoTableViewCell {
+    enum Constants {
+        static let buttonTitleAndImageSpacing: CGFloat = 16
     }
 }

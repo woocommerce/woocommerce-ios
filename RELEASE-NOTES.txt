@@ -2,7 +2,15 @@
 
 7.8
 -----
-
+- [***] Shipping Labels: merchants can create multiple packages for the same order, moving the items between different packages. [https://github.com/woocommerce/woocommerce-ios/pull/5190]
+- [*] Fix: Navigation bar buttons are now consistently pink on iOS 15. [https://github.com/woocommerce/woocommerce-ios/pull/5139]
+- [*] Fix incorrect info banner color and signature option spacing on Carrier and Rates screen. [https://github.com/woocommerce/woocommerce-ios/pull/5144]
+- [x] Fix an error where merchants were unable to connect to valid stores when they have other stores with corrupted information https://github.com/woocommerce/woocommerce-ios/pull/5161
+- [*] Shipping Labels: Fix issue with decimal values on customs form when setting the device with locales that use comma as decimal point. [https://github.com/woocommerce/woocommerce-ios/pull/5195]
+- [*] Shipping Labels: Fix crash when tapping on Learn more rows of customs form. [https://github.com/woocommerce/woocommerce-ios/pull/5207]
+- [*] Shipping Labels: The shipping address now prefills the phone number from the billing address if a shipping phone number is not available. [https://github.com/woocommerce/woocommerce-ios/pull/5177]
+- [*] Shipping Labels: now in Carrier and Rates we always display the discounted rate instead of the retail rate if available. [https://github.com/woocommerce/woocommerce-ios/pull/5188]
+- [*] Accessibility: notify when offline mode banner appears or disappears. [https://github.com/woocommerce/woocommerce-ios/pull/5225]
 
 7.7
 -----

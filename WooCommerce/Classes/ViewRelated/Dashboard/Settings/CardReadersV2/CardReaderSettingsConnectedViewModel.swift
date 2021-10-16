@@ -18,6 +18,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     private(set) var readerUpdateProgress: Float? = nil
     private(set) var readerUpdateError: Error? = nil
     private var softwareUpdateCancelable: FallibleCancelable? = nil
+    private(set) var readerBatteryTooLowForUpdates: Bool = false
 
     private(set) var readerDisconnectInProgress: Bool = false
 
@@ -99,6 +100,8 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
             connectedReaderBatteryLevel = Localization.unknownBatteryStatus
             return
         }
+
+        readerBatteryTooLowForUpdates = batteryLevel < Constants.batteryLevelNeededForUpdates
 
         let batteryLevelPercent = Int(100 * batteryLevel)
         let batteryLevelString = NumberFormatter.localizedString(from: batteryLevelPercent as NSNumber, number: .decimal)
@@ -185,6 +188,14 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
         if didChange {
             didChangeShouldShow?(shouldShow)
         }
+    }
+}
+
+// MARK: - Constants
+//
+private extension CardReaderSettingsConnectedViewModel {
+    enum Constants {
+        static let batteryLevelNeededForUpdates = Float(0.5)
     }
 }
 

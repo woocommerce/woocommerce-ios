@@ -40,3 +40,24 @@ extension AggregateOrderItem {
         )
     }
 }
+
+extension ShippingLabelSelectedRate {
+    func copy(
+        packageID: CopiableProp<String> = .copy,
+        rate: CopiableProp<ShippingLabelCarrierRate> = .copy,
+        signatureRate: NullableCopiableProp<ShippingLabelCarrierRate> = .copy,
+        adultSignatureRate: NullableCopiableProp<ShippingLabelCarrierRate> = .copy
+    ) -> ShippingLabelSelectedRate {
+        let packageID = packageID ?? self.packageID
+        let rate = rate ?? self.rate
+        let signatureRate = signatureRate ?? self.signatureRate
+        let adultSignatureRate = adultSignatureRate ?? self.adultSignatureRate
+
+        return ShippingLabelSelectedRate(
+            packageID: packageID,
+            rate: rate,
+            signatureRate: signatureRate,
+            adultSignatureRate: adultSignatureRate
+        )
+    }
+}

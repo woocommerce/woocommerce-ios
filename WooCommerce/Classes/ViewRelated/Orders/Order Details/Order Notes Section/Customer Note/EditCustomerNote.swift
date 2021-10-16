@@ -86,17 +86,20 @@ struct EditCustomerNote: View {
                 .padding()
                 .navigationTitle(Localization.title)
                 .navigationBarTitleDisplayMode(.inline)
-                .navigationBarItems(trailing: navigationBarTrailingItem()) // The only way I've found to make buttons bold is to set them here.
                 .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
+                    ToolbarItem(placement: .cancellationAction) {
                         Button(Localization.cancel, action: {
                             viewModel.userDidCancelFlow()
                             dismiss()
                         })
                     }
+                    ToolbarItem(placement: .confirmationAction) {
+                        navigationBarTrailingItem()
+                    }
                 }
         }
         .navigationViewStyle(StackNavigationViewStyle())
+        .wooNavigationBarStyle()
     }
 
     /// Decides if the navigation trailing item should be a done button or a loading indicator.

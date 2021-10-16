@@ -115,20 +115,25 @@ struct ShippingLabelPaymentMethods: View {
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
             .navigationBarTitle(Localization.navigationBarTitle)
-            .navigationBarItems(trailing: Button(action: {
-                viewModel.updateShippingLabelAccountSettings { newSettings in
-                    ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "payment_method_selected"])
-                    onCompletion(newSettings)
-                    presentation.wrappedValue.dismiss()
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        viewModel.updateShippingLabelAccountSettings { newSettings in
+                            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "payment_method_selected"])
+                            onCompletion(newSettings)
+                            presentation.wrappedValue.dismiss()
+                        }
+                    }, label: {
+                        if viewModel.isUpdating {
+                            ProgressView()
+                        } else {
+                            Text(Localization.doneButton)
+                        }
+                    })
+                    .disabled(!viewModel.isDoneButtonEnabled())
                 }
-            }, label: {
-                if viewModel.isUpdating {
-                    ProgressView()
-                } else {
-                    Text(Localization.doneButton)
-                }
-            })
-            .disabled(!viewModel.isDoneButtonEnabled()))
+            }
+            .wooNavigationBarStyle()
         }
     }
 
@@ -145,12 +150,17 @@ struct ShippingLabelPaymentMethods: View {
             }
             .navigationTitle(Localization.paymentMethodWebviewTitle)
             .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(trailing: Button(action: {
-                showingAddPaymentWebView = false
-            }, label: {
-                Text(Localization.doneButtonAddPayment)
-            }))
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        showingAddPaymentWebView = false
+                    }, label: {
+                        Text(Localization.doneButtonAddPayment)
+                    })
+                }
+            }
         }
+        .wooNavigationBarStyle()
     }
 }
 
@@ -179,7 +189,7 @@ private extension ShippingLabelPaymentMethods {
                                                             comment: "Title of the webview of adding a payment method in Shipping Labels")
         static let doneButtonAddPayment = NSLocalizedString("Done",
                                                             comment: "Done navigation button in Shipping Label add payment webview")
-        static let paymentMethodAddedNotice = NSLocalizedString("No payment method found",
+        static let paymentMethodAddedNotice = NSLocalizedString("Payment method added",
                                                                 comment: "Notice that will be displayed after adding a new Shipping Label payment method")
         static let pleaseAddPaymentMethodMessage = NSLocalizedString("Please, add a new payment method",
                                                                      comment: "Message that will be displayed if there are no Shipping Label payment methods.")

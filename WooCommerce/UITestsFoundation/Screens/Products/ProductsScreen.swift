@@ -1,25 +1,32 @@
+import ScreenObject
 import XCTest
 
-public class ProductsScreen: BaseScreen {
+public class ProductsScreen: ScreenObject {
 
-       struct ElementStringIDs {
-        static let searchButton = "product-search-button"
-        static let topBannerCollapseButton = "top-banner-view-expand-collapse-button"
-        static let topBannerInfoLabel = "top-banner-view-info-label"
+    private let topBannerCollapseButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["top-banner-view-expand-collapse-button"]
+    }
+    private let topBannerInfoLabelGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["top-banner-view-info-label"]
     }
 
-    private let searchButton = XCUIApplication().buttons[ElementStringIDs.searchButton]
-    private let topBannerCollapseButton = XCUIApplication().buttons[ElementStringIDs.topBannerCollapseButton]
-    private let topBannerInfoLabel = XCUIApplication().staticTexts[ElementStringIDs.topBannerInfoLabel]
+    private var topBannerInfoLabel: XCUIElement { topBannerInfoLabelGetter(app) }
+    private var topBannerCollapseButton: XCUIElement { topBannerCollapseButtonGetter(app) }
 
     static var isVisible: Bool {
-        let searchButton = XCUIApplication().buttons[ElementStringIDs.searchButton]
-        return searchButton.exists && searchButton.isHittable
+        (try? ProductsScreen().isLoaded) ?? false
     }
 
-    init() {
-        super.init(element: searchButton)
-        XCTAssert(searchButton.waitForExistence(timeout: 3))
+    init(app: XCUIApplication = XCUIApplication()) throws {
+        try super.init(
+            expectedElementGetters: [
+                topBannerCollapseButtonGetter,
+                topBannerInfoLabelGetter,
+                // swiftlint:skip:next opening_brace
+                { $0.buttons["product-search-button"] }
+            ],
+            app: app
+        )
     }
 
     @discardableResult
@@ -40,8 +47,8 @@ public class ProductsScreen: BaseScreen {
     }
 
     @discardableResult
-    public func selectProduct(atIndex index: Int) -> SingleProductScreen {
+    public func selectProduct(atIndex index: Int) throws -> SingleProductScreen {
         XCUIApplication().tables.cells.element(boundBy: index).tap()
-        return SingleProductScreen()
+        return try SingleProductScreen()
     }
 }

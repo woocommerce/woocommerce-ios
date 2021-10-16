@@ -92,16 +92,19 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
                                                            address2: "Street #343",
                                                            city: "San Francisco",
                                                            postcode: "94121-2303")
-        let rate = ShippingLabelSelectedRate(rate: MockShippingLabelCarrierRate.makeRate(), signatureRate: nil, adultSignatureRate: nil)
+        let rate = ShippingLabelSelectedRate(packageID: "123",
+                                             rate: MockShippingLabelCarrierRate.makeRate(),
+                                             signatureRate: nil,
+                                             adultSignatureRate: nil)
         shippingLabelFormViewModel.handleCarrierAndRatesValueChanges(selectedRates: [rate],
                                                                      editable: true)
-        XCTAssertNotNil(shippingLabelFormViewModel.selectedRate)
+        XCTAssertTrue(shippingLabelFormViewModel.selectedRates.isNotEmpty)
 
         // When
         shippingLabelFormViewModel.handleOriginAddressValueChanges(address: expectedShippingAddress, validated: true)
 
         // Then
-        XCTAssertNil(shippingLabelFormViewModel.selectedRate)
+        XCTAssertTrue(shippingLabelFormViewModel.selectedRates.isEmpty)
 
         let rows = shippingLabelFormViewModel.state.sections.first?.rows
         let row = rows?.first { $0.type == .shippingCarrierAndRates }
@@ -145,16 +148,19 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
                                                            address2: "Street #343",
                                                            city: "San Francisco",
                                                            postcode: "94121-2303")
-        let rate = ShippingLabelSelectedRate(rate: MockShippingLabelCarrierRate.makeRate(), signatureRate: nil, adultSignatureRate: nil)
+        let rate = ShippingLabelSelectedRate(packageID: "123",
+                                             rate: MockShippingLabelCarrierRate.makeRate(),
+                                             signatureRate: nil,
+                                             adultSignatureRate: nil)
         shippingLabelFormViewModel.handleCarrierAndRatesValueChanges(selectedRates: [rate],
                                                                      editable: true)
-        XCTAssertNotNil(shippingLabelFormViewModel.selectedRate)
+        XCTAssertTrue(shippingLabelFormViewModel.selectedRates.isNotEmpty)
 
         // When
         shippingLabelFormViewModel.handleDestinationAddressValueChanges(address: expectedShippingAddress, validated: true)
 
         // Then
-        XCTAssertNil(shippingLabelFormViewModel.selectedRate)
+        XCTAssertTrue(shippingLabelFormViewModel.selectedRates.isEmpty)
 
         let rows = shippingLabelFormViewModel.state.sections.first?.rows
         let row = rows?.first { $0.type == .shippingCarrierAndRates }
@@ -203,16 +209,19 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
 
         shippingLabelFormViewModel.handleOriginAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(), validated: true)
         shippingLabelFormViewModel.handleDestinationAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(), validated: true)
-        let rate = ShippingLabelSelectedRate(rate: MockShippingLabelCarrierRate.makeRate(), signatureRate: nil, adultSignatureRate: nil)
+        let rate = ShippingLabelSelectedRate(packageID: "123",
+                                             rate: MockShippingLabelCarrierRate.makeRate(),
+                                             signatureRate: nil,
+                                             adultSignatureRate: nil)
         shippingLabelFormViewModel.handleCarrierAndRatesValueChanges(selectedRates: [rate],
                                                                      editable: true)
-        XCTAssertNotNil(shippingLabelFormViewModel.selectedRate)
+        XCTAssertTrue(shippingLabelFormViewModel.selectedRates.isNotEmpty)
 
         // When
         shippingLabelFormViewModel.handlePackageDetailsValueChanges(details: [selectedPackage])
 
         // Then
-        XCTAssertNil(shippingLabelFormViewModel.selectedRate)
+        XCTAssertTrue(shippingLabelFormViewModel.selectedRates.isEmpty)
 
         let rows = shippingLabelFormViewModel.state.sections.first?.rows
         let row = rows?.first { $0.type == .shippingCarrierAndRates }
@@ -225,27 +234,29 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
                                                                     originAddress: nil,
                                                                     destinationAddress: nil)
-        let expectedPackageID = "my-package-id"
         let expectedPackageWeight = "55"
-        let selectedPackage = ShippingLabelPackageAttributes(packageID: expectedPackageID, totalWeight: expectedPackageWeight, items: [])
+        let selectedPackage = ShippingLabelPackageAttributes(packageID: "my-package-id", totalWeight: expectedPackageWeight, items: [])
 
         shippingLabelFormViewModel.handleOriginAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(phone: "0123456789", country: "US"),
                                                                    validated: true)
         shippingLabelFormViewModel.handleDestinationAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(phone: "0987654321", country: "VN"),
                                                                         validated: true)
         shippingLabelFormViewModel.handleCustomsFormsValueChanges(customsForms: [ShippingLabelCustomsForm.fake()], isValidated: true)
-        let rate = ShippingLabelSelectedRate(rate: MockShippingLabelCarrierRate.makeRate(), signatureRate: nil, adultSignatureRate: nil)
+        let rate = ShippingLabelSelectedRate(packageID: "123",
+                                             rate: MockShippingLabelCarrierRate.makeRate(),
+                                             signatureRate: nil,
+                                             adultSignatureRate: nil)
         shippingLabelFormViewModel.handleCarrierAndRatesValueChanges(selectedRates: [rate],
                                                                      editable: true)
         XCTAssertFalse(shippingLabelFormViewModel.customsForms.isEmpty)
-        XCTAssertNotNil(shippingLabelFormViewModel.selectedRate)
+        XCTAssertTrue(shippingLabelFormViewModel.selectedRates.isNotEmpty)
 
         // When
         shippingLabelFormViewModel.handlePackageDetailsValueChanges(details: [selectedPackage])
 
         // Then
-        XCTAssertEqual(shippingLabelFormViewModel.customsForms.first?.packageID, expectedPackageID)
-        XCTAssertNil(shippingLabelFormViewModel.selectedRate)
+        XCTAssertEqual(shippingLabelFormViewModel.customsForms.first?.packageID, selectedPackage.id)
+        XCTAssertTrue(shippingLabelFormViewModel.selectedRates.isEmpty)
 
         let rows = shippingLabelFormViewModel.state.sections.first?.rows
         let customsRow = rows?.first { $0.type == .customs }
@@ -267,16 +278,19 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
                                                                    validated: true)
         shippingLabelFormViewModel.handleDestinationAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(country: "VN"), validated: true)
         shippingLabelFormViewModel.handleCustomsFormsValueChanges(customsForms: [ShippingLabelCustomsForm.fake()], isValidated: true)
-        let rate = ShippingLabelSelectedRate(rate: MockShippingLabelCarrierRate.makeRate(), signatureRate: nil, adultSignatureRate: nil)
+        let rate = ShippingLabelSelectedRate(packageID: "123",
+                                             rate: MockShippingLabelCarrierRate.makeRate(),
+                                             signatureRate: nil,
+                                             adultSignatureRate: nil)
         shippingLabelFormViewModel.handleCarrierAndRatesValueChanges(selectedRates: [rate],
                                                                      editable: true)
-        XCTAssertNotNil(shippingLabelFormViewModel.selectedRate)
+        XCTAssertTrue(shippingLabelFormViewModel.selectedRates.isNotEmpty)
 
         // When
         shippingLabelFormViewModel.handleCustomsFormsValueChanges(customsForms: [ShippingLabelCustomsForm.fake()], isValidated: true)
 
         // Then
-        XCTAssertNil(shippingLabelFormViewModel.selectedRate)
+        XCTAssertTrue(shippingLabelFormViewModel.selectedRates.isEmpty)
 
         let rows = shippingLabelFormViewModel.state.sections.first?.rows
         let carrierRow = rows?.first { $0.type == .shippingCarrierAndRates }
@@ -289,21 +303,20 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
                                                                     originAddress: nil,
                                                                     destinationAddress: nil)
-        XCTAssertNil(shippingLabelFormViewModel.selectedRate)
-        XCTAssertNil(shippingLabelFormViewModel.selectedSignatureRate)
-        XCTAssertNil(shippingLabelFormViewModel.selectedAdultSignatureRate)
+        XCTAssertTrue(shippingLabelFormViewModel.selectedRates.isEmpty)
 
         // When
-        let rate = ShippingLabelSelectedRate(rate: MockShippingLabelCarrierRate.makeRate(),
+        let rate = ShippingLabelSelectedRate(packageID: "123",
+                                             rate: MockShippingLabelCarrierRate.makeRate(),
                                              signatureRate: MockShippingLabelCarrierRate.makeRate(title: "UPS"),
                                              adultSignatureRate: nil)
         shippingLabelFormViewModel.handleCarrierAndRatesValueChanges(selectedRates: [rate],
                                                                      editable: true)
 
         // Then
-        XCTAssertEqual(shippingLabelFormViewModel.selectedRate, MockShippingLabelCarrierRate.makeRate())
-        XCTAssertEqual(shippingLabelFormViewModel.selectedSignatureRate, MockShippingLabelCarrierRate.makeRate(title: "UPS"))
-        XCTAssertNil(shippingLabelFormViewModel.selectedAdultSignatureRate)
+        XCTAssertEqual(shippingLabelFormViewModel.selectedRates.first?.rate, MockShippingLabelCarrierRate.makeRate())
+        XCTAssertEqual(shippingLabelFormViewModel.selectedRates.first?.signatureRate, MockShippingLabelCarrierRate.makeRate(title: "UPS"))
+        XCTAssertNil(shippingLabelFormViewModel.selectedRates.first?.adultSignatureRate)
     }
 
     func test_sections_returns_updated_rows_after_validating_origin_address() {
@@ -869,7 +882,6 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
     func test_customsForms_returns_correctly_when_updating_selectedPackageID() {
         // Given
         let expectedProductID: Int64 = 123
-        let expectedPackageID = "Food Package"
         let orderItem = OrderItem.fake().copy(productID: expectedProductID)
         let order = MockOrders().makeOrder(items: [orderItem])
         let viewModel = ShippingLabelFormViewModel(order: order, originAddress: nil, destinationAddress: nil)
@@ -878,13 +890,13 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         viewModel.handleOriginAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(phone: "0123456789", country: "US"), validated: true)
         viewModel.handleDestinationAddressValueChanges(address: MockShippingLabelAddress.sampleAddress(country: "VN"), validated: true)
         let item = ShippingLabelPackageItem.fake(id: expectedProductID)
-        let selectedPackage = ShippingLabelPackageAttributes(packageID: expectedPackageID, totalWeight: "55", items: [item])
+        let selectedPackage = ShippingLabelPackageAttributes(packageID: "Food Package", totalWeight: "55", items: [item])
         viewModel.handlePackageDetailsValueChanges(details: [selectedPackage])
 
         // Then
         let defaultForms = viewModel.customsForms
         XCTAssertEqual(defaultForms.count, 1)
-        XCTAssertEqual(defaultForms.first?.packageID, expectedPackageID)
+        XCTAssertEqual(defaultForms.first?.packageID, selectedPackage.id)
         XCTAssertEqual(defaultForms.first?.items.count, 1)
         XCTAssertEqual(defaultForms.first?.items.first?.productID, expectedProductID)
         XCTAssertEqual(defaultForms.first?.items.first?.weight, item.weight)
@@ -892,6 +904,33 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertEqual(defaultForms.first?.items.first?.hsTariffNumber, "")
         XCTAssertEqual(defaultForms.first?.items.first?.value, item.value)
         XCTAssertEqual(defaultForms.first?.items.first?.originCountry, "")
+    }
+
+    func test_getDestinationAddress_uses_shipping_phone_if_available() {
+        // Given
+        let billingAddress = Address.fake().copy(phone: "555-555-5555")
+        let shippingAddress = Address.fake().copy(phone: "333-333-3333")
+
+        // When
+        let viewModel = ShippingLabelFormViewModel(order: Order.fake().copy(billingAddress: billingAddress),
+                                                   originAddress: nil,
+                                                   destinationAddress: shippingAddress)
+
+        // Then
+        XCTAssertEqual(viewModel.destinationAddress?.phone, shippingAddress.phone)
+    }
+
+    func test_getDestinationAddress_uses_billing_phone_when_no_shipping_phone_available() {
+        // Given
+        let billingAddress = Address.fake().copy(phone: "555-555-5555")
+
+        // When
+        let viewModel = ShippingLabelFormViewModel(order: Order.fake().copy(billingAddress: billingAddress),
+                                                   originAddress: nil,
+                                                   destinationAddress: Address.fake())
+
+        // Then
+        XCTAssertEqual(viewModel.destinationAddress?.phone, billingAddress.phone)
     }
 }
 

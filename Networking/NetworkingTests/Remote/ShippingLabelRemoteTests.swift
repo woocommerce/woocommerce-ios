@@ -126,6 +126,27 @@ final class ShippingLabelRemoteTests: XCTestCase {
         }
     }
 
+    func test_shippingAddressValidation_returns_address_without_name_on_success() throws {
+        // Given
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "normalize-address", filename: "shipping-label-address-without-name-validation-success")
+
+        // When
+        let result: Result<ShippingLabelAddressValidationSuccess, Error> = waitFor { promise in
+            remote.addressValidation(siteID: self.sampleSiteID, address: self.sampleShippingLabelAddressWithoutNameVerification()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        switch result {
+        case .success(let response):
+            XCTAssertEqual(response.address, sampleShippingLabelAddressWithoutName())
+        case .failure(let error):
+            XCTFail("Expected successful result, got error instead: \(error)")
+        }
+    }
+
     func test_shippingAddressValidation_returns_errors_on_failure() throws {
         // Given
         let remote = ShippingLabelRemote(network: network)
@@ -519,9 +540,26 @@ private extension ShippingLabelRemoteTests {
         return ShippingLabelAddressVerification(address: sampleShippingLabelAddress(), type: type)
     }
 
+    func sampleShippingLabelAddressWithoutNameVerification() -> ShippingLabelAddressVerification {
+        let type: ShippingLabelAddressVerification.ShipType = .destination
+        return ShippingLabelAddressVerification(address: sampleShippingLabelAddressWithoutName(), type: type)
+    }
+
     func sampleShippingLabelAddress() -> ShippingLabelAddress {
         return ShippingLabelAddress(company: "",
                                     name: "Anitaa",
+                                    phone: "41535032",
+                                    country: "US",
+                                    state: "CA",
+                                    address1: "60 29TH ST # 343",
+                                    address2: "",
+                                    city: "SAN FRANCISCO",
+                                    postcode: "94110-4929")
+    }
+
+    func sampleShippingLabelAddressWithoutName() -> ShippingLabelAddress {
+        return ShippingLabelAddress(company: "Automattic",
+                                    name: "",
                                     phone: "41535032",
                                     country: "US",
                                     state: "CA",

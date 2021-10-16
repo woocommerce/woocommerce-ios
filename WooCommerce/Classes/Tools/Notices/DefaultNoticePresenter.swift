@@ -106,8 +106,15 @@ private extension DefaultNoticePresenter {
         var onScreenBottomOffsetAdjustedForKeyboard: CGFloat = 0
         keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
             guard let self = self else { return }
+
+            onScreenBottomOffsetAdjustedForKeyboard = -keyboardFrame.height
+
             // Subtract the tab bar height from keyboard height, if keyboard is visible
-            onScreenBottomOffsetAdjustedForKeyboard = -(keyboardFrame.height - (keyboardFrame.height > 0 ? self.offscreenBottomOffset : 0))
+            // to avoid having extra gap between keyboard and notice, when `offscreenBottomOffset` has a positive value
+            //
+            if keyboardFrame.height > 0 {
+                onScreenBottomOffsetAdjustedForKeyboard -= self.offscreenBottomOffset
+            }
 
             // Adjust the bottom constraint ONLY if the noticeContainerView is already presented.
             // If noticeContainerView is not already presented, it will be presented using onScreenBottomOffsetAdjustedForKeyboard.

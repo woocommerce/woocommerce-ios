@@ -115,21 +115,27 @@ extension ShippingLabelPackageListViewModel {
         guard let packagesResponse = packagesResponse else {
             return
         }
-
+        let shouldNotifyDelegate = !hasCustomOrPredefinedPackages
         self.packagesResponse = packagesResponse
+        delegate?.didSyncPackages(packagesResponse: packagesResponse)
+
         addNewPackageViewModel = .init(siteID: siteID,
                                        packagesResponse: packagesResponse,
                                        onCompletion: { [weak self] (customPackage, predefinedOption, packagesResponse) in
                                          guard let self = self else { return }
                                          self.handleNewPackage(customPackage, predefinedOption, packagesResponse)
                                        })
+
         if let customPackage = customPackage {
             selectCustomPackage(customPackage.title)
-        }
-        else if let servicePackage = servicePackage {
+            if shouldNotifyDelegate {
+                delegate?.didSelectPackage(id: customPackage.title)
+            }
+        } else if let servicePackage = servicePackage {
             selectPredefinedPackage(servicePackage.id)
+            if shouldNotifyDelegate {
+                delegate?.didSelectPackage(id: servicePackage.id)
+            }
         }
-
-        delegate?.didSyncPackages(packagesResponse: packagesResponse)
     }
 }

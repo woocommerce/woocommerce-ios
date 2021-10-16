@@ -1,0 +1,7 @@
+Vous serez ravi d’apprendre que vous pouvez désormais modifier plusieurs champs essentiels sur les commandes de vos clients. Apportez ces modifications mineures avant d’exécuter une commande directement dans l’application.
+
+Les commerçants qui utilisent WooCommerce Payments aux États-Unis peuvent accepter les paiements en personne par carte de crédit pour les commandes de leurs clients avec paiement à la livraison ou au moment du retrait.
+
+Les commerçants qui utilisent l’extension WooCommerce Shipping & Tax pourront constater des améliorations au niveau des formats papier, de l’assistance DHL et des modes de paiement. C’est tellement amusant de créer et d’imprimer des étiquettes de livraison à partir de votre appareil mobile.
+
+Cette version inclut également quelques améliorations mineures basées sur vos commentaires. Merci de nous aider à améliorer l’application pour tout le monde.

@@ -28,7 +28,7 @@ public class OrdersRemote: Remote {
                 ParameterKeys.page: String(pageNumber),
                 ParameterKeys.perPage: String(pageSize),
                 ParameterKeys.statusKey: statusKey ?? Defaults.statusAny,
-                ParameterKeys.fields: ParameterValues.fieldValues,
+                ParameterKeys.fields: ParameterValues.listFieldValues,
             ]
 
             if let before = before {
@@ -54,7 +54,7 @@ public class OrdersRemote: Remote {
     ///
     public func loadOrder(for siteID: Int64, orderID: Int64, completion: @escaping (Order?, Error?) -> Void) {
         let parameters = [
-            ParameterKeys.fields: ParameterValues.fieldValues
+            ParameterKeys.fields: ParameterValues.singleOrderFieldValues
         ]
 
         let path = "\(Constants.ordersPath)/\(orderID)"
@@ -98,7 +98,7 @@ public class OrdersRemote: Remote {
             ParameterKeys.page: String(pageNumber),
             ParameterKeys.perPage: String(pageSize),
             ParameterKeys.statusKey: Defaults.statusAny,
-            ParameterKeys.fields: ParameterValues.fieldValues
+            ParameterKeys.fields: ParameterValues.listFieldValues
         ]
 
         let path = Constants.ordersPath
@@ -106,6 +106,34 @@ public class OrdersRemote: Remote {
         let mapper = OrderListMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Creates an order using the specified fields of a given order
+    ///
+    /// - Parameters:
+    ///     - siteID: Site which hosts the Order.
+    ///     - order: Order to be created.
+    ///     - fields: Fields of the order to be created.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func createOrder(siteID: Int64, order: Order, fields: [CreateOrderField], completion: @escaping (Result<Order, Error>) -> Void) {
+        do {
+            let path = Constants.ordersPath
+            let mapper = OrderMapper(siteID: siteID)
+            let parameters: [String: Any] = try {
+                try fields.reduce(into: [:]) { params, field in
+                    switch field {
+                    case .feeLines:
+                        params[Order.CodingKeys.feeLines.rawValue] = try order.fees.compactMap { try $0.toDictionary() }
+                    }
+                }
+            }()
+
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
     }
 
     /// Updates the `OrderStatus` of a given Order.
@@ -209,11 +237,17 @@ public extension OrdersRemote {
     }
 
     enum ParameterValues {
-        static let fieldValues: String = """
+        // Same as singleOrderFieldValues except we exclude the line_items and shipping fields
+        static let listFieldValues: String = """
             id,parent_id,number,status,currency,customer_id,customer_note,date_created_gmt,date_modified_gmt,date_paid_gmt,\
-            discount_total,discount_tax,shipping_total,shipping_tax,total,total_tax,payment_method,payment_method_title,line_items,shipping,\
+            discount_total,discount_tax,shipping_total,shipping_tax,total,total_tax,payment_method,payment_method_title,\
             billing,coupon_lines,shipping_lines,refunds,fee_lines
             """
+        static let singleOrderFieldValues: String = """
+            id,parent_id,number,status,currency,customer_id,customer_note,date_created_gmt,date_modified_gmt,date_paid_gmt,\
+            discount_total,discount_tax,shipping_total,shipping_tax,total,total_tax,payment_method,payment_method_title,shipping,\
+            billing,coupon_lines,shipping_lines,refunds,fee_lines,line_items
+        """
     }
 
     /// Order fields supported for update
@@ -222,5 +256,11 @@ public extension OrdersRemote {
         case customerNote
         case shippingAddress
         case billingAddress
+    }
+
+    /// Order fields supported for create
+    ///
+    enum CreateOrderField {
+        case feeLines
     }
 }

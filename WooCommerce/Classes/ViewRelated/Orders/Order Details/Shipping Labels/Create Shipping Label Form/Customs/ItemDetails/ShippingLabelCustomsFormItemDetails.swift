@@ -70,7 +70,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
                 .renderedIf(!viewModel.hasValidHSTariffNumber)
 
                 VStack(spacing: 0) {
-                    LearnMoreRow(localizedStringWithHyperlink: Localization.learnMoreHSTariffText)
+                    LearnMoreRow(content: Localization.learnMoreHSTariffText, contentURL: Constants.hsTariffURL)
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)
                 }
@@ -125,7 +125,7 @@ struct ShippingLabelCustomsFormItemDetails: View {
             // Origin country
             VStack(spacing: 0) {
                 VStack(spacing: 0) {
-                    TitleAndValueRow(title: Localization.originTitle, value: viewModel.originCountry.name, selectable: true) {
+                    TitleAndValueRow(title: Localization.originTitle, value: .placeholder(viewModel.originCountry.name), selectable: true) {
                         isShowingCountries.toggle()
                     }
                     .sheet(isPresented: $isShowingCountries, content: {
@@ -164,6 +164,7 @@ private extension ShippingLabelCustomsFormItemDetails {
     enum Constants {
         static let horizontalSpacing: CGFloat = 16
         static let verticalSpacing: CGFloat = 8
+        static let hsTariffURL: URL? = .init(string: "https://docs.woocommerce.com/document/woocommerce-shipping-and-tax/woocommerce-shipping/#section-29")
     }
 
     enum Localization {
@@ -184,9 +185,8 @@ private extension ShippingLabelCustomsFormItemDetails {
         static let hsTariffNumberError = NSLocalizedString("HS Tariff Number must be 6 digits long",
                                                            comment: "Validation error for HS Tariff Number row in Customs screen of Shipping Label flow")
         static let learnMoreHSTariffText = NSLocalizedString(
-            "<a href=\"https://docs.woocommerce.com/document/woocommerce-shipping-and-tax/woocommerce-shipping/#section-29\">Learn more</a> " +
-                "about HS Tariff Number",
-            comment: "A label prompting users to learn more about HS Tariff Number with an embedded hyperlink in Customs screen of Shipping Label flow")
+            "Learn more about HS Tariff Number",
+            comment: "A label prompting users to learn more about HS Tariff Number in Customs screen of Shipping Label flow")
         static let weightTitle = NSLocalizedString("Weight (%1$@ per unit)",
                                                    comment: "Title for the Weight row in item details in Customs screen of Shipping Label flow")
         static let weightError = NSLocalizedString("Item weight must be larger than 0",

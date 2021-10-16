@@ -58,4 +58,8 @@ public enum OrderAction: Action {
     /// Updates the specified fields from an order.
     ///
     case updateOrder(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: (Result<Order, Error>) -> Void)
+
+    /// Creates a quick pay order with a specific amount value and no tax.
+    ///
+    case createQuickPayOrder(siteID: Int64, amount: String, onCompletion: (Result<Order, Error>) -> Void)
 }

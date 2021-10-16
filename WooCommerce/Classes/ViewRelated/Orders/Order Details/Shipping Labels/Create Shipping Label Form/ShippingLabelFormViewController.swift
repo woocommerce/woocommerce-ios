@@ -167,9 +167,7 @@ extension ShippingLabelFormViewController: UITableViewDelegate {
         case Row(type: .customs, dataState: .validated, displayMode: .editable):
             displayCustomsFormListVC(customsForms: viewModel.customsForms)
         case Row(type: .shippingCarrierAndRates, dataState: .validated, displayMode: .editable):
-            displayCarriersAndRatesVC(selectedRate: viewModel.selectedRate,
-                                      selectedSignatureRate: viewModel.selectedSignatureRate,
-                                      selectedAdultSignatureRate: viewModel.selectedAdultSignatureRate)
+            displayCarriersAndRatesVC(selectedRates: viewModel.selectedRates)
         case Row(type: .paymentMethod, dataState: .validated, displayMode: .editable):
             displayPaymentMethodVC()
         default:
@@ -303,9 +301,8 @@ private extension ShippingLabelFormViewController {
                        title: Localization.shippingCarrierAndRatesCellTitle,
                        body: viewModel.getCarrierAndRatesBody(),
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
-            self?.displayCarriersAndRatesVC(selectedRate: self?.viewModel.selectedRate,
-                                            selectedSignatureRate: self?.viewModel.selectedSignatureRate,
-                                            selectedAdultSignatureRate: self?.viewModel.selectedAdultSignatureRate)
+            guard let self = self else { return }
+            self.displayCarriersAndRatesVC(selectedRates: self.viewModel.selectedRates)
         }
     }
 
@@ -331,30 +328,31 @@ private extension ShippingLabelFormViewController {
         } onButtonTouchUp: { [weak self] in
             guard let self = self else { return }
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_initiated",
-                                                                                        "amount": self.viewModel.selectedRate?.rate ?? 0,
-                                                                                        "fulfill_order": self.shouldMarkOrderComplete])
+                 "amount": self.viewModel.totalAmount,
+                "fulfill_order": self.shouldMarkOrderComplete])
             self.displayPurchaseProgressView()
             self.viewModel.purchaseLabel { [weak self] result in
                 guard let self = self else { return }
                 switch result {
                 case .success(let totalDuration):
                     ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_succeeded",
-                                                                                                "amount": self.viewModel.selectedRate?.rate ?? 0,
-                                                                                                "fulfill_order": self.shouldMarkOrderComplete,
-                                                                                                "total_duration": Double(totalDuration)])
+                                         "amount": self.viewModel.totalAmount,
+                                         "fulfill_order": self.shouldMarkOrderComplete,
+                                         "total_duration": Double(totalDuration)])
                     self.onLabelPurchase?(self.shouldMarkOrderComplete)
                     self.dismiss(animated: true)
                     self.displayPrintShippingLabelVC()
                 case .failure:
                     ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_failed",
-                                                                                                "amount": self.viewModel.selectedRate?.rate ?? 0,
-                                                                                                "fulfill_order": self.shouldMarkOrderComplete])
+                                         "amount": self.viewModel.totalAmount,
+                                         "fulfill_order": self.shouldMarkOrderComplete])
                     self.dismiss(animated: true)
                     self.displayLabelPurchaseErrorNotice()
                 }
             }
         }
         cell.isOn = false
+        cell.setPackageRates(viewModel.getPackageRates())
         cell.setSubtotal(viewModel.getSubtotal())
         cell.setDiscount(viewModel.getDiscount())
         cell.setOrderTotal(viewModel.getOrderTotal())
@@ -467,9 +465,7 @@ private extension ShippingLabelFormViewController {
         navigationController?.show(hostingVC, sender: nil)
     }
 
-    func displayCarriersAndRatesVC(selectedRate: ShippingLabelCarrierRate?,
-                                   selectedSignatureRate: ShippingLabelCarrierRate?,
-                                   selectedAdultSignatureRate: ShippingLabelCarrierRate?) {
+    func displayCarriersAndRatesVC(selectedRates: [ShippingLabelSelectedRate]) {
         guard let originAddress = viewModel.originAddress,
               let destinationAddress = viewModel.destinationAddress,
               viewModel.selectedPackages.isNotEmpty else {
@@ -480,19 +476,10 @@ private extension ShippingLabelFormViewController {
                                                 originAddress: originAddress,
                                                 destinationAddress: destinationAddress,
                                                 packages: viewModel.selectedPackages,
-                                                selectedRate: selectedRate,
-                                                selectedSignatureRate: selectedSignatureRate,
-                                                selectedAdultSignatureRate: selectedAdultSignatureRate)
+                                                selectedRates: selectedRates)
 
-        let carriersView = ShippingLabelCarriers(viewModel: vm) { [weak self] (selectedRate,
-                                                                               selectedSignatureRate,
-                                                                               selectedAdultSignatureRate) in
-            // TODO-4716: Fix this workaround when the carriers screen returns an array of selected rates.
-            guard let selectedRate = selectedRate else {
-                return
-            }
-            let rate = ShippingLabelSelectedRate(rate: selectedRate, signatureRate: selectedSignatureRate, adultSignatureRate: selectedAdultSignatureRate)
-            self?.viewModel.handleCarrierAndRatesValueChanges(selectedRates: [rate],
+        let carriersView = ShippingLabelCarriers(viewModel: vm) { [weak self] (selectedRates) in
+            self?.viewModel.handleCarrierAndRatesValueChanges(selectedRates: selectedRates,
                                                               editable: true)
         }
         let hostingVC = UIHostingController(rootView: carriersView)

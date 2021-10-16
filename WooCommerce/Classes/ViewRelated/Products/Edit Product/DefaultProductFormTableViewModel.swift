@@ -91,7 +91,7 @@ private extension DefaultProductFormTableViewModel {
             case .linkedProducts(let editable):
                 return .linkedProducts(viewModel: linkedProductsRow(product: product, isEditable: editable), isEditable: editable)
             case .noPriceWarning:
-                return .noPriceWarning(viewModel: noPriceWarningRow())
+                return .noPriceWarning(viewModel: noPriceWarningRow(isActionable: true))
             case .attributes(let editable):
                 return .attributes(viewModel: productVariationsAttributesRow(product: product.product, isEditable: editable), isEditable: editable)
             default:
@@ -116,7 +116,7 @@ private extension DefaultProductFormTableViewModel {
             case .status(let editable):
                 return .status(viewModel: variationStatusRow(productVariation: productVariation, isEditable: editable), isEditable: editable)
             case .noPriceWarning:
-                return .noPriceWarning(viewModel: noPriceWarningRow())
+                return .noPriceWarning(viewModel: noPriceWarningRow(isActionable: false))
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil
@@ -405,10 +405,12 @@ private extension DefaultProductFormTableViewModel {
         return ProductFormSection.SettingsRow.SwitchableViewModel(viewModel: viewModel, isSwitchOn: isSwitchOn, isActionable: isEditable)
     }
 
-    func noPriceWarningRow() -> ProductFormSection.SettingsRow.WarningViewModel {
+    func noPriceWarningRow(isActionable: Bool) -> ProductFormSection.SettingsRow.WarningViewModel {
         let icon = UIImage.infoOutlineImage
         let title = Localization.noPriceWarningTitle
-        return ProductFormSection.SettingsRow.WarningViewModel(icon: icon, title: title)
+        return ProductFormSection.SettingsRow.WarningViewModel(icon: icon,
+                                                               title: title,
+                                                               isActionable: isActionable)
     }
 
     func productVariationsAttributesRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {

@@ -5,7 +5,7 @@ import UserNotifications
 
 /// MockUserNotificationsCenterAdapter: UNUserNotificationCenter Mock
 ///
-class MockUserNotificationsCenterAdapter: UserNotificationsCenterAdapter {
+final class MockUserNotificationsCenterAdapter: UserNotificationsCenterAdapter {
 
     /// User Notifications Authorization Status
     ///
@@ -19,6 +19,9 @@ class MockUserNotificationsCenterAdapter: UserNotificationsCenterAdapter {
     ///
     var requestAuthorizationIsSuccessful = false
 
+    /// Indicates if `removeAllNotifications` was called
+    ///
+    var removeAllNotificationsWasCalled = false
 
     /// "Simulates" an UNUserNotificationCenter Load Status OP
     ///
@@ -31,6 +34,10 @@ class MockUserNotificationsCenterAdapter: UserNotificationsCenterAdapter {
     func requestAuthorization(queue: DispatchQueue, completion: @escaping (Bool) -> Void) {
         requestAuthorizationWasCalled = true
         completion(requestAuthorizationIsSuccessful)
+    }
+
+    func removeAllNotifications() {
+        removeAllNotificationsWasCalled = true
     }
 
     /// Restores the initial state

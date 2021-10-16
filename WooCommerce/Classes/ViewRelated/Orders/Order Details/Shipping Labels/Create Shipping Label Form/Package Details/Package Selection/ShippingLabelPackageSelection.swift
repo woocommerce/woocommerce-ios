@@ -11,6 +11,7 @@ struct ShippingLabelPackageSelection: View {
                 ShippingLabelAddNewPackage(viewModel: viewModel.addNewPackageViewModel)
             }
         }
+        .wooNavigationBarStyle()
     }
 }
 

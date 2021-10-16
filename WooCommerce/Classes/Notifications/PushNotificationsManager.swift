@@ -109,7 +109,7 @@ extension PushNotificationsManager {
     }
 
 
-    /// Registers the Application for Remote Notifgications.
+    /// Registers the Application for Remote Notifications.
     ///
     func registerForRemoteNotifications() {
         DDLogInfo("📱 Registering for Remote Notifications...")
@@ -151,7 +151,9 @@ extension PushNotificationsManager {
 
     func resetBadgeCountForAllStores(onCompletion: @escaping () -> Void) {
         let action = NotificationCountAction.resetForAllSites() { [weak self] in
-            self?.configuration.application.applicationIconBadgeNumber = 0
+            guard let self = self else { return }
+            self.configuration.application.applicationIconBadgeNumber = AppIconBadgeNumber.clearsBadgeAndPotentiallyAllPushNotifications
+            self.removeAllNotifications()
             onCompletion()
         }
         stores.dispatch(action)
@@ -208,7 +210,7 @@ extension PushNotificationsManager {
     }
 
 
-    /// Handles a Remote Push Notifican Payload. On completion the `completionHandler` will be executed.
+    /// Handles a Remote Push Notification Payload. On completion the `completionHandler` will be executed.
     ///
     func handleNotification(_ userInfo: [AnyHashable: Any],
                             onBadgeUpdateCompletion: @escaping () -> Void,
@@ -218,8 +220,9 @@ extension PushNotificationsManager {
         // Badge: Update
         if let typeString = userInfo.string(forKey: APNSKey.type),
             let type = Note.Kind(rawValue: typeString),
-            let siteID = siteID {
-            incrementNotificationCount(siteID: siteID, type: type, incrementCount: 1) { [weak self] in
+            let siteID = siteID,
+            let notificationSiteID = userInfo[APNSKey.siteID] as? Int64 {
+            incrementNotificationCount(siteID: notificationSiteID, type: type, incrementCount: 1) { [weak self] in
                 self?.loadNotificationCountAndUpdateApplicationBadgeNumberAndPostNotifications(siteID: siteID, type: type)
                 onBadgeUpdateCompletion()
             }
@@ -264,7 +267,8 @@ private extension PushNotificationsManager {
 
     func loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: Int64) {
         let action = NotificationCountAction.load(siteID: siteID, type: .allKinds) { [weak self] count in
-            self?.configuration.application.applicationIconBadgeNumber = count
+            self?.configuration.application.applicationIconBadgeNumber = count > 0 ?
+                AppIconBadgeNumber.hasUnreadPushNotifications: AppIconBadgeNumber.clearsBadgeOnly
         }
         stores.dispatch(action)
     }
@@ -287,6 +291,10 @@ private extension PushNotificationsManager {
         default:
             break
         }
+    }
+
+    func removeAllNotifications() {
+        configuration.userNotificationsCenter.removeAllNotifications()
     }
 }
 
@@ -518,6 +526,17 @@ private extension PushNotification {
     }
 }
 
+// MARK: - App Icon Badge Number
+
+enum AppIconBadgeNumber {
+    /// Indicates that there are unread push notifications in Notification Center.
+    static let hasUnreadPushNotifications = 1
+    /// An unofficial workaround to clear the app icon badge without clearing all push notifications in Notification Center.
+    static let clearsBadgeOnly = -1
+    /// Clears the app icon badge and potentially all push notifications in Notification Center.
+    static let clearsBadgeAndPotentiallyAllPushNotifications = 0
+}
+
 // MARK: - Private Types
 //
 private enum APNSKey {
@@ -525,6 +544,7 @@ private enum APNSKey {
     static let alert = "alert"
     static let identifier = "note_id"
     static let type = "type"
+    static let siteID = "blog"
 }
 
 private enum AnalyticKey {

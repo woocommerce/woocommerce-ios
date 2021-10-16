@@ -4,22 +4,23 @@ import Yosemite
 
 final class ShippingLabelCarriersViewModelTests: XCTestCase {
 
-    func test_rows_generation_returns_expected_data() {
+    func test_sections_generation_returns_expected_data() throws {
         // Given
         let viewModel = ShippingLabelCarriersViewModel(order: MockOrders().sampleOrder(),
                                                        originAddress: MockShippingLabelAddress.sampleAddress(),
                                                        destinationAddress: MockShippingLabelAddress.sampleAddress(),
                                                        packages: [],
                                                        currencySettings: CurrencySettings())
-        XCTAssertEqual(viewModel.rows.count, 0)
+        XCTAssertEqual(viewModel.sections.count, 0)
 
         // When
-        viewModel.generateRows(response: sampleShippingLabelCarriersAndRates())
+        viewModel.generateSections(response: sampleShippingLabelCarriersAndRates())
 
         // Then
-        XCTAssertEqual(viewModel.rows.count, 3)
+        XCTAssertEqual(viewModel.sections.count, 1)
+        XCTAssertEqual(viewModel.sections.first?.rows.count, 3)
 
-        let row = viewModel.rows[0]
+        let row = try XCTUnwrap(viewModel.sections.first?.rows.first)
         XCTAssertEqual(row.selected, false)
         XCTAssertEqual(row.signatureSelected, false)
         XCTAssertEqual(row.adultSignatureSelected, false)
@@ -33,7 +34,7 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
         XCTAssertEqual(row.signatureRequiredText, "Signature required (+$5.00)")
         XCTAssertEqual(row.adultSignatureRequiredText, "Adult signature required (+$10.00)")
 
-        let row2 = viewModel.rows[1]
+        let row2 = try XCTUnwrap(viewModel.sections.first?.rows[1])
         XCTAssertEqual(row2.selected, false)
         XCTAssertEqual(row2.signatureSelected, false)
         XCTAssertEqual(row2.adultSignatureSelected, false)
@@ -47,7 +48,7 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
         XCTAssertEqual(row2.signatureRequiredText, "")
         XCTAssertEqual(row2.adultSignatureRequiredText, "")
 
-        let row3 = viewModel.rows[2]
+        let row3 = try XCTUnwrap(viewModel.sections.first?.rows[2])
         XCTAssertEqual(row3.selected, false)
         XCTAssertEqual(row3.signatureSelected, false)
         XCTAssertEqual(row3.adultSignatureSelected, false)
@@ -67,8 +68,8 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
         let viewModel = ShippingLabelCarriersViewModel(order: MockOrders().sampleOrder(),
                                                        originAddress: MockShippingLabelAddress.sampleAddress(),
                                                        destinationAddress: MockShippingLabelAddress.sampleAddress(),
-                                                       packages: [],
-                                                       selectedRate: MockShippingLabelCarrierRate.makeRate(),
+                                                       packages: [ShippingLabelPackageSelected.fake()],
+                                                       selectedRates: sampleShippingLabelSelectedRate(),
                                                        currencySettings: CurrencySettings())
 
         // Then
@@ -81,13 +82,15 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
                                                        originAddress: MockShippingLabelAddress.sampleAddress(),
                                                        destinationAddress: MockShippingLabelAddress.sampleAddress(),
                                                        packages: [],
-                                                       selectedRate: MockShippingLabelCarrierRate.makeRate(),
+                                                       selectedRates: sampleShippingLabelSelectedRate(),
                                                        currencySettings: CurrencySettings())
 
         // Then
-        XCTAssertEqual(viewModel.getSelectedRates().selectedRate, MockShippingLabelCarrierRate.makeRate())
-        XCTAssertEqual(viewModel.getSelectedRates().selectedSignatureRate, nil)
-        XCTAssertEqual(viewModel.getSelectedRates().selectedAdultSignatureRate, nil)
+        XCTAssertEqual(viewModel.getSelectedRates().first?.rate, MockShippingLabelCarrierRate.makeRate())
+        XCTAssertEqual(viewModel.getSelectedRates().first?.signatureRate, MockShippingLabelCarrierRate.makeRate(title: "USPS - Parcel Select Mail",
+                                                                                                                rate: 45.060000000000002))
+        XCTAssertEqual(viewModel.getSelectedRates().first?.adultSignatureRate, MockShippingLabelCarrierRate.makeRate(title: "USPS - Parcel Select Mail",
+                                                                                                                     rate: 50.060000000000002))
     }
 
     func test_shouldDisplayTopBanner_returns_the_expected_value() {
@@ -96,7 +99,7 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
                                                        originAddress: MockShippingLabelAddress.sampleAddress(),
                                                        destinationAddress: MockShippingLabelAddress.sampleAddress(),
                                                        packages: [],
-                                                       selectedRate: MockShippingLabelCarrierRate.makeRate(),
+                                                       selectedRates: sampleShippingLabelSelectedRate(),
                                                        currencySettings: CurrencySettings())
 
         // Then
@@ -115,7 +118,7 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
                                                        originAddress: MockShippingLabelAddress.sampleAddress(),
                                                        destinationAddress: MockShippingLabelAddress.sampleAddress(),
                                                        packages: [],
-                                                       selectedRate: MockShippingLabelCarrierRate.makeRate(),
+                                                       selectedRates: sampleShippingLabelSelectedRate(),
                                                        currencySettings: CurrencySettings())
 
         // Then
@@ -134,7 +137,7 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
                                                        originAddress: MockShippingLabelAddress.sampleAddress(),
                                                        destinationAddress: MockShippingLabelAddress.sampleAddress(),
                                                        packages: [],
-                                                       selectedRate: MockShippingLabelCarrierRate.makeRate(),
+                                                       selectedRates: sampleShippingLabelSelectedRate(),
                                                        currencySettings: CurrencySettings())
 
         // Then
@@ -143,6 +146,15 @@ final class ShippingLabelCarriersViewModelTests: XCTestCase {
 }
 
 private extension ShippingLabelCarriersViewModelTests {
+    func sampleShippingLabelSelectedRate() -> [ShippingLabelSelectedRate] {
+        return [ShippingLabelSelectedRate(packageID: "123",
+                                          rate: MockShippingLabelCarrierRate.makeRate(),
+                                          signatureRate: MockShippingLabelCarrierRate.makeRate(title: "USPS - Parcel Select Mail",
+                                                                                               rate: 45.060000000000002),
+                                          adultSignatureRate: MockShippingLabelCarrierRate.makeRate(title: "USPS - Parcel Select Mail",
+                                                                                                    rate: 50.060000000000002))]
+    }
+
     func sampleShippingLabelCarriersAndRates() -> [ShippingLabelCarriersAndRates] {
         return [ShippingLabelCarriersAndRates(packageID: "123",
                                               defaultRates: [

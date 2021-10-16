@@ -1,10 +1,13 @@
-/* Translation-Revision-Date: 2021-09-14 09:54:05+0000 */
+/* Translation-Revision-Date: 2021-10-12 09:54:51+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
 
 /* No comment provided by engineer. */
 "#%@ %@" = "%1$@ › %2$@";
+
+/* Total value for the selected rates in Shipping Labels > Carrier and Rates */
+"$1$@ total" = "총 $1$@개";
 
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
 "%1$@" = "%1$@";
@@ -71,6 +74,12 @@
 
 /* For example: `5 items` in Shipping Label package row */
 "%1$d items" = "%1$d개 아이템";
+
+/* Total number of items and packages in Shipping Label form. */
+"%1$d items in %2$d packages" = "%2$d개 패키지의 %1$d개 아이템";
+
+/* Number of rates selected in Shipping Labels > Carrier and Rates */
+"%1$d rates selected" = "%1$d개 요금 선택됨";
 
 /* Format for the variations detail row in singular form. Reads, `1 variation` */
 "%1$ld variation" = "%1$ld개 변형";
@@ -175,9 +184,6 @@
 
 /* A label prompting users to learn more about internal transaction number with an embedded hyperlink */
 "<a href=\"https:\/\/pe.usps.com\/text\/imm\/immc5_010.htm\">Learn more<\/a> about Internal Transaction Number" = "내부 거래 번호에 대해 <a href=\"https:\/\/pe.usps.com\/text\/imm\/immc5_010.htm\">더 알아보기<\/a>";
-
-/* A label prompting users to learn more about card readers with an embedded hyperlink */
-"<a href=\"https:\/\/woocommerce.com\/payments\">Learn more<\/a> about accepting payments with your mobile device and ordering card readers" = "모바일 장치로 결제 수락 및 카드 리더 주문에 대해 <a href=\"https:\/\/woocommerce.com\/payments\">더 알아보기<\/a>";
 
 /* Placeholder of the Product Short Description row on Product main screen */
 "A brief excerpt about the product" = "간단한 제품 요약문";
@@ -310,8 +316,14 @@
 /* Accessibility label for the 'Add a tracking' button */
 "Add a tracking" = "추적 추가";
 
+/* Button title in the Shipping Label Payment Method screen if there is an existing payment method */
+"Add another credit card" = "다른 신용카드 추가";
+
 /* Add Product Attribute screen navigation title */
 "Add attribute" = "속성 추가";
+
+/* Button title in the Shipping Label Payment Method screen */
+"Add credit card" = "신용카드 추가";
 
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press enter" = "각 옵션 추가 및 Enter 키 누르기";
@@ -334,6 +346,9 @@
 
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "원격으로 제품의 다운로드 가능한 파일의 정보 입력";
+
+/* Option to add item to new package on Package Details screen of Shipping Label flow. */
+"Add to new package" = "새 패키지에 추가";
 
 /* Title for adding variations row on Product main screen for a variable product */
 "Add variations" = "변형 추가";
@@ -359,6 +374,9 @@
 
 /* Error showed in Shipping Label Address Validation for the address field */
 "Address missing" = "주소 누락";
+
+/* Notice text after updating the shipping or billing address */
+"Address successfully updated." = "주소가 업데이트되었습니다.";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "주문에 대한 추적을 추가합니다.";
@@ -501,8 +519,18 @@
    Awaiting payment via (payment method title) */
 "Awaiting payment via %@" = "%@을(를) 통한 결제 대기 중";
 
+/* Details section title in the Edit Address Form */
+"BILLING ADDRESS" = "청구 주소";
+
 /* Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "뒤로";
+
+/* Button to dismiss modal overlay. Presented to users after a payment has been successfully collected
+   Button to dismiss modal overlay. Presented to users after collecting a payment fails */
+"Back to Order" = "주문으로 돌아가기";
+
+/* Text for the button to dismiss the store picker error screen */
+"Back to Sites" = "사이트로 돌아가기";
 
 /* Title of a button to dismiss the survey complete screen */
 "Back to store" = "스토어로 돌아가기";
@@ -517,7 +545,8 @@
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "표시줄 번호 %1$i, %2$@, ";
 
-/* Section header title for billing address in billing information */
+/* Section header title for billing address in billing information
+   Title for the Edit Billing Address Form */
 "Billing Address" = "청구 주소";
 
 /* Billing Information view Title */
@@ -560,7 +589,7 @@
 "Can Not Request Link" = "링크를 요청할 수 없음";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. */
 "Cancel" = "취소";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -568,6 +597,9 @@
 
 /* Title of the alert when there is an error adding new product tags. */
 "Cannot Add Tags" = "태그를 추가할 수 없습니다.";
+
+/* The title of the alert when there is a generic error adding the package */
+"Cannot add package" = "패키지를 추가할 수 없음";
 
 /* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
    The title of the alert when there is an error updating the product */
@@ -622,6 +654,9 @@
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "이메일을 확인하세요!";
 
+/* Settings > Manage Card Reader > Connected Reader > A prompt to indicate we are checking for reader updates */
+"Checking for reader software updates" = "리더 소프트웨어 업데이트 확인";
+
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "용지 크기 선택";
 
@@ -644,6 +679,9 @@
 /* Button title for clearing all filters for the list. */
 "Clear all" = "모두 지우기";
 
+/* Text for the close button in the Edit Address Form */
+"Close" = "닫기";
+
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "정보 수집";
 
@@ -654,11 +692,11 @@
    Text field company in Shipping Label Address Validation */
 "Company" = "회사";
 
-/* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
-"Composes a new email message to the billing customer." = "청구 고객에게 보낼 새 이메일 메시지를 작성합니다.";
-
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "새 주문 메모를 작성합니다.";
+
+/* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
+"Congratulations! Your reader is running the latest software" = "축하합니다! 리더에서 최신 소프트웨어 실행 중";
 
 /* Button in a cell to allow the user to connect to that reader for that cell */
 "Connect" = "연결";
@@ -709,7 +747,7 @@
 "Contact Email" = "연락처 이메일";
 
 /* Contact Support title
-   The title of the button to contact support in the Error Loading Data banner */
+   Text for the button to contact support from the store picker error screen - The title of the button to contact support in the Error Loading Data banner */
 "Contact Support" = "지원팀에 문의";
 
 /* Contact WooComerce Payments Support title */
@@ -870,6 +908,12 @@
 /* Title on the Print Customs Invoice screen of Shipping Label flow */
 "Customs form" = "세관 양식";
 
+/* Subtitle of the cell Customs inside Create Shipping Label form when the form is completed */
+"Customs form completed" = "세관 양식 완료됨";
+
+/* Main message on the Print Customs Invoice screen of Shipping Label flow for multiple invoices */
+"Customs forms must be printed and included on these international shipments" = "세관 양식을 인쇄하고 이러한 국제 배송에 포함해야 함";
+
 /* Details text in the shipping label creation info screen */
 "Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "집에서 모바일 장치로 배송 레이블을 할인된 요금으로 인쇄하여 우체국에 가는 시간을 줄이세요!";
 
@@ -958,7 +1002,7 @@
 "Don't have an account? _Sign up_" = "아직 계정이 없으신가요? _가입_";
 
 /* Action title to select products to add to a grouped product from search results
-   Done navigation button in selection list screens - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Custom Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Service Package screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen */
+   Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen */
 "Done" = "완료";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -1045,7 +1089,7 @@
 "Eligible for free pickup" = "무료 수령에 적합";
 
 /* Email address text field placeholder
-   Text field email in Edit Address Form */
+   Text field email in Edit Address Form - Title of Email accessibility action, opens a compose view */
 "Email" = "이메일";
 
 /* Accessibility label for the email address text field.
@@ -1227,6 +1271,9 @@
 
 /* Placeholder on the search field to search for a specific country */
 "Filter Countries" = "국가 필터링";
+
+/* Placeholder on the search field to search for a specific state */
+"Filter States" = "광역시\/도 필터링";
 
 /* Navigation bar title format for filtering a list of products without filters applied. */
 "Filters" = "필터";
@@ -1484,6 +1531,9 @@
 /* Subtitle of the product form bottom sheet action for linked products. */
 "Increase sales with upsells and cross-sells" = "상향 판매 및 교차 판매로 판매 늘리기";
 
+/* Description for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
+"Individually shipped item" = "개별적으로 배송한 아이템";
+
 /* Label action for inserting a link on the editor */
 "Insert" = "삽입";
 
@@ -1504,6 +1554,9 @@
 
 /* Error message for invalid format of ITN in Customs screen of Shipping Label flow */
 "Invalid ITN format" = "유효하지 않은 ITN 형식";
+
+/* The title of the alert when there is an error with the package name */
+"Invalid Package Name" = "유효하지 않은 패키지 이름";
 
 /* The title of the alert when there is an error updating the product SKU */
 "Invalid Product SKU" = "유효하지 않은 제품 SKU";
@@ -1528,6 +1581,9 @@
 
 /* Error for invalid package details on the Add New Custom Package screen in Shipping Label flow */
 "Invalid value" = "유효하지 않은 값";
+
+/* Error message when total weight is invalid in Package Detail screen */
+"Invalid weight" = "유효하지 않은 무게";
 
 /* Product Inventory Settings navigation title
    Title of the Inventory Settings row on Product main screen - Title of the product form bottom sheet action for editing inventory settings. */
@@ -1556,6 +1612,9 @@
 
 /* Error message for missing value in Description row in Customs screen of Shipping Label flow */
 "Item description is required" = "아이템 설명이 필요합니다.";
+
+/* Row title for dimensions of package shipped in original packaging Package Details screen in Shipping Labels flow. */
+"Item dimensions" = "아이템 규격";
 
 /* Error message for missing value in Value row in Customs screen of Shipping Label flow */
 "Item value must be larger than 0" = "아이템 가격은 0 이상이어야 합니다.";
@@ -1790,6 +1849,12 @@
    Accessibility label to show the More Options action sheet */
 "More options" = "추가 옵션";
 
+/* Button on each order item of the Package Details screen in Shipping Labels flow. */
+"Move" = "이동";
+
+/* Title of the action sheet displayed when moving items in thePackage Details screen in Shipping Label flow. */
+"Move Item" = "아이템 이동";
+
 /* Confirmation button on the alert when the user is moving a product to the trash */
 "Move to Trash" = "휴지통으로 이동";
 
@@ -1873,6 +1938,9 @@
 /* Placeholder of the cell text field in Download limit */
 "No limit" = "제한 없음";
 
+/* Notice that will be displayed after adding a new Shipping Label payment method */
+"No payment method found" = "결제 수단을 찾을 수 없음";
+
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "가격이 설정되지 않음";
 
@@ -1901,10 +1969,6 @@
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "아직 세금 클래스가 없음";
 
-/* Button to dismiss modal overlay. Presented to users after a payment has been successfully collected
-   Button to dismiss modal overlay. Presented to users after collecting a payment fails */
-"No thanks" = "괜찮습니다.";
-
 /* Display label for the order fee's tax status setting option
    Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow */
 "None" = "없음";
@@ -1930,6 +1994,9 @@
 
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "끔";
+
+/* Message for offline banner */
+"Offline - using cached data" = "오프라인 - 캐시된 데이터 사용";
 
 /* +2 Days Section Header */
 "Older than 2 days" = "2일 이상 지남";
@@ -2039,6 +2106,9 @@
 /* Error message for missing value in Origin Country row in Customs screen of Shipping Label flow */
 "Origin Country is required" = "원산지 국가가 필요합니다.";
 
+/* Row title for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
+"Original packaging" = "원래 포장";
+
 /* My Store > Settings > Other app section
    Restriction type Other for contents declared in the customs form for Shipping Label flow - Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "기타";
@@ -2055,6 +2125,9 @@
 /* Package index in Customs screen of Shipping Label flow
    Package index in Print Customs Invoice screen of Shipping Label flow if there are more than one invoice - Package term in Shipping Labels. Reads like Package 1 */
 "Package %1$d" = "패키지 %1$d";
+
+/* Name of package to be listed in Move Item action sheet on Package Details screen of Shipping Label flow. */
+"Package %1$d: %2$@" = "패키지 %1$d: %2$@";
 
 /* Order shipping label package section title format. The number indicates the index of the shipping label package. */
 "Package %d" = "패키지 %d";
@@ -2075,6 +2148,9 @@
 
 /* Title for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
 "Package Type" = "패키지 유형";
+
+/* Validation error for original package without dimensions on Package Details screen in Shipping Labels flow. */
+"Package dimensions must be greater than zero. Please update your item’s dimensions in the Shipping section of your product page to continue." = "패키지 규격은 0보다 커야 합니다. 계속하려면 상품 페이지의 배송 섹션에서 아이템의 규격을 업데이트하세요.";
 
 /* The title for the customer payment cell */
 "Paid" = "유료";
@@ -2108,6 +2184,9 @@
 /* Error message. Presented to users after a collecting a payment fails
    Error message. Presented to users after collecting a payment fails */
 "Payment failed" = "결제 실패";
+
+/* Title of the webview of adding a payment method in Shipping Labels */
+"Payment method" = "결제 수단";
 
 /* Label informing users that the payment succeeded. Presented to users when a payment is collected */
 "Payment successful" = "결제 성공";
@@ -2198,8 +2277,14 @@
 /* Label asking users to remove card. Presented to users when a payment is in the process of being collected */
 "Please remove card" = "카드를 제거하세요";
 
+/* Error message when no package is selected on Shipping Label Package Details screen */
+"Please select a package" = "패키지를 선택하세요.";
+
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "나중에 다시 시도해 보세요. 또는 당사에 연락하면 기꺼이 도와드리겠습니다!";
+
+/* Body text for the default store picker error screen */
+"Please try again or reach out to us and we'll be happy to assist you!" = "다시 시도해 보세요. 또는 당사에 연락하면 기꺼이 도와드리겠습니다!";
 
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "다시 시도하세요.";
@@ -2228,6 +2313,9 @@
    Text on the loading view of the product downloadable file screen indicating the user to wait */
 "Please wait..." = "기다려주세요...";
 
+/* Message that will be displayed if there are no Shipping Label payment methods. */
+"Please, add a new payment method" = "새 결제 수단을 추가하세요.";
+
 /* My Store > Settings > Plugins section title
    Navigates to Plugins screen. - Title of the Plugin List screen */
 "Plugins" = "플러그인";
@@ -2244,9 +2332,6 @@
 
 /* Title of in-progress modal when preparing for printing customs invoice */
 "Preparing document" = "문서 준비 중";
-
-/* Label within the modal dialog that appears when searching for a card reader */
-"Press the power button of your reader until you see a flashing blue light" = "파란불이 깜박일 때까지 리더의 전원 버튼 누르기";
 
 /* A label representing the amount that was previously refunded for the order. */
 "Previously Refunded" = "이전에 환불됨";
@@ -2265,6 +2350,10 @@
    Navigation bar title to print a shipping label - Text on the button that prints a shipping label */
 "Print Shipping Label" = "배송 레이블 인쇄";
 
+/* Button title to generate a document with multiple shipping labels for printing
+   Navigation bar title to print multiple shipping labels */
+"Print Shipping Labels" = "배송 레이블 인쇄";
+
 /* Title of print button on Print Customs Invoice screen of Shipping Label flow when there's only one invoice */
 "Print customs form" = "세관 양식 인쇄";
 
@@ -2279,6 +2368,9 @@
 
 /* Title of in-progress modal when requesting shipping label document for printing */
 "Printing Label" = "레이블 인쇄";
+
+/* Title of in-progress modal when requesting document with multiple shipping labels for printing */
+"Printing Labels" = "레이블 인쇄";
 
 /* Opens the California Privacy Policy web page */
 "Privacy Notice for California Users" = "캘리포니아 사용자를 위한 개인정보 공지";
@@ -2358,9 +2450,6 @@
 /* Cell description for Upsells products in Linked Products Settings screen */
 "Products promoted instead of the currently viewed product (ie more profitable products)" = "현재 보이는 제품 대신에 프로모션하는 제품(즉, 수익성이 더 높은 제품)";
 
-/* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
-"Prompts with the option to call or message the billing customer." = "청구 고객에게 전화를 걸거나 메시지를 보낼 수 있는 옵션이 표시된 메시지가 나타납니다.";
-
 /* One of the possible options in Product Visibility */
 "Public" = "공개";
 
@@ -2419,6 +2508,9 @@
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "해피니스 엔지니어에게 문의하여 어려운 질문에 대한 답변 받기";
+
+/* Text for the button to navigate to troubleshooting tips from the store picker error screen */
+"Read our Troubleshooting Tips" = "문제 해결 팁 읽기";
 
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "개인정보 취급방침 읽기";
@@ -2774,6 +2866,9 @@
    Shipping Label Suggested Address navigation title - Title of origin address in shipping label details - Title of the cell Ship from inside Create Shipping Label form */
 "Ship from" = "출발지";
 
+/* Option to ship in original packaging on action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow. */
+"Ship in Original Packaging" = "원래 포장으로 배송";
+
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title - Title of destination address in shipping label details - Title of the cell Ship From inside Create Shipping Label form */
 "Ship to" = "배송지";
@@ -2804,6 +2899,9 @@
 /* Title of view displaying all available Shipment Tracking Carriers */
 "Shipping Carriers" = "운송업체";
 
+/* Shipping title for customer info cell */
+"Shipping Details" = "배송 상세 내역";
+
 /* Shipping method title for customer info cell
    Shipping method title for customer info section */
 "Shipping Method" = "배송 방법";
@@ -2820,14 +2918,14 @@
 /* Navigation bar title of the Product shipping class selector screen */
 "Shipping classes" = "배송 클래스";
 
-/* Shipping title for customer info cell */
-"Shipping details" = "배송 상세 내역";
-
 /* Header of the order summary section in the shipping label creation form */
 "Shipping label order summary" = "배송 레이블 주문 요약";
 
 /* Header text when printing a newly purchased shipping label */
 "Shipping label purchased!" = "배송 레이블이 구매되었습니다!";
+
+/* Header text when printing multiple newly purchased shipping labels */
+"Shipping labels purchased!" = "배송 레이블이 구매되었습니다!";
 
 /* VoiceOver accessibility label for the shipping notice about the order */
 "Shipping notice about the order" = "주문 관련 배송 알림";
@@ -2996,7 +3094,7 @@
 "Starting period %@, ending period %@" = "시작 기간 %1$@, 종료 기간 %2$@";
 
 /* Text field state in Edit Address Form
-   Text field state in Shipping Label Address Validation */
+   Text field state in Shipping Label Address Validation - Title to select state from the edit address screen */
 "State" = "주";
 
 /* Error showed in Shipping Label Address Validation for the state field */
@@ -3089,6 +3187,9 @@
 
 /* Accessibility hint for insert link button on formatting toolbar. */
 "Tap to insert a Link" = "링크를 삽입하려면 누르세요.";
+
+/* A label prompting users to learn more about card readers */
+"Tap to learn more about accepting payments with your mobile device and ordering card readers" = "눌러서 모바일 장치로 결제 수락 및 카드 리더 주문에 대해 더 알아보기";
 
 /* The accessibility hint for the quantity button when selecting an item to refund */
 "Tap to modify the item refund quantity" = "아이템 환불 수량을 눌러서 수정";
@@ -3238,6 +3339,12 @@
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "주문이 완료되면 고객에게 이메일이 수신됩니다.";
 
+/* The message of the alert when another custom package has the same name */
+"The new custom package name is not unique." = "새 사용자 정의 패키지 이름이 고유하지 않습니다.";
+
+/* The message of the alert when another service package has the same name */
+"The new service package name is not unique." = "새 서비스 패키지 이름이 고유하지 않습니다.";
+
 /* Error in calling the phone number of the customer in the Shipping Label Address Validation */
 "The phone number is not valid or you can't call the customer from this device." = "전화번호가 유효하지 않거나 이 기기에서 고객에게 전화를 걸 수 없습니다.";
 
@@ -3352,6 +3459,9 @@
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "고객이 액세스할 파일의 URL입니다. 입력한 URL은 이미 인코딩되어 있어야 합니다.";
 
+/* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
+"This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "이 아이템은 현재 패키지 %1$d: %2$@에 있습니다. 해당 아이템을 어디로 이동하시겠어요?";
+
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
 "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete." = "이 주문은 확장을 사용하여 배송 요금을 계산합니다. 표시된 배송 방법이 불완전할 수 있습니다.";
@@ -3401,6 +3511,9 @@
 
 /* Instructional text shown when requesting the user's password for Google login. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "이 Google 계정을 진행하려면 먼저 워드프레스닷컴 비밀번호로 로그인하세요. 이 메시지는 한 번만 표시됩니다.";
+
+/* Label within the modal dialog that appears when searching for a card reader */
+"To turn on your card reader, briefly press its power button. When powered on, the power LED will blink blue." = "카드 리더를 켜려면 전원 버튼만 누르면 됩니다. 전원이 켜지면 전원 LED가 파란색으로 깜박입니다.";
 
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "%@에 이 앱을 사용하려면 스토어에 설치되고 연결된 Jetpack 플러그인이 있어야 합니다.";
@@ -3470,14 +3583,15 @@
 /* Button to try again. Presented to users after a failure occurs */
 "Try Again" = "재시도";
 
+/* Button to try to collect a payment again. Presented to users after a collecting a payment fails */
+"Try Collecting Again" = "다시 수집 시도";
+
 /* Button to trigger connection to another account in store picker */
 "Try With Another Account" = "다른 계정으로 시도";
 
-/* Action to resync on the placeholder overlay when there is issue syncing site plugins */
+/* Action to resync on the placeholder overlay when there is issue syncing site plugins
+   Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
 "Try again" = "다시 시도";
-
-/* Button to try to collect a payment again. Presented to users after a collecting a payment fails */
-"Try collecting payment again" = "다시 결제받기 시도";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "다른 이메일로 시도";
@@ -3519,6 +3633,9 @@
 /* Unable to fetch countries action failed in Shipping Label Form */
 "Unable to fetch countries." = "국가를 가져올 수 없습니다.";
 
+/* Error notice when we fail to load country information in the edit address screen. */
+"Unable to fetch country information, please try again later." = "국가 정보를 가져올 수 없습니다. 나중에 다시 시도하세요.";
+
 /* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
 "Unable to fulfill order #%1$d" = "%1$d번 주문을 처리할 수 없음";
 
@@ -3549,8 +3666,8 @@
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
 "Unable to save changes to the payment method" = "변경 사항을 지급 방법에 저장할 수 없음";
 
-/* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
-"Unable to successfully connect to %@" = "%@에 연결할 수 없습니다.";
+/* Error notice when we fail to update an address in the edit address screen. */
+"Unable to update address, please try again later." = "주소를 업데이트할 수 없습니다. 나중에 다시 시도하세요.";
 
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "이 스토어의 대면 결제를 확인할 수 없음";
@@ -3570,7 +3687,8 @@
 /* Undo Action */
 "Undo" = "실행 취소";
 
-/* The message of the alert when there is an unexpected error updating the product */
+/* The message of the alert when there is an unexpected error adding the package
+   The message of the alert when there is an unexpected error updating the product */
 "Unexpected error" = "예기치 않은 오류";
 
 /* Unknown Application State
@@ -3579,6 +3697,9 @@
 
 /* Displayed in the unlikely event a card reader has an indeterminate battery status */
 "Unknown Battery Level" = "알 수 없는 배터리 잔량";
+
+/* Displayed in the unlikely event a card reader has an indeterminate software version */
+"Unknown Software Version" = "알 수 없는 소프트웨어 버전";
 
 /* No comment provided by engineer. */
 "Unknown error" = "알려지지 않은 에러";
@@ -3614,8 +3735,15 @@
 /* Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app */
 "Update %@ to WooCommerce 3.5" = "%@을(를) WooCommerce 3.5로 업데이트";
 
+/* Accessibility Label for the edit button to change the Customer Billing Address in Billing Information
+   Accessibility Label for the edit button to change the Customer Shipping Address in Order Details */
+"Update Address" = "주소 업데이트";
+
 /* Update instructions button title shown in alert warning users to upgrade to WC 3.5. */
 "Update Instructions" = "업데이트 지침";
+
+/* Accessibility Label for the edit button to change the Customer Provided Note in Order Details */
+"Update Note" = "메모 업데이트";
 
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "주문 상태 업데이트";
@@ -3671,6 +3799,12 @@
 /* Action to use the address in Shipping Label Suggested screen as suggested */
 "Use Suggested Address" = "제안된 주소 사용";
 
+/* Title for the Use as Billing Address switch in the Address form */
+"Use as Billing Address" = "청구 주소로 사용";
+
+/* Title for the Use as Shipping Address switch in the Address form */
+"Use as Shipping Address" = "배송 주소로 사용";
+
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */
 "Username" = "사용자명";
@@ -3705,6 +3839,9 @@
 
 /* Displays the version of the App */
 "Version %@" = "버전 %@";
+
+/* Displays the connected reader software version */
+"Version: %1$@" = "버전: %1$@";
 
 /* Cell title on the beta features screen to enable the order add-ons feature
    Title of the button on the order detail item to navigate to add-ons - Title of the button on the order details product list item to navigate to add-ons */
@@ -3785,8 +3922,14 @@
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "스토어 분석을 표시할 수 없습니다.";
 
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails */
+"We couldn't connect your reader" = "리더를 연결할 수 없음";
+
 /* The title of the Error Loading Data banner */
 "We couldn't load your data" = "데이터를 로드할 수 없음";
+
+/* Title for the default store picker error screen */
+"We couldn't load your site" = "사이트를 로드할 수 없음";
 
 /* Title for the error screen when WooCommerce Payments is not supported in a specific country */
 "We don’t support In-Person Payments in %@" = "%@에서는 대면 결제가 지원되지 않음";
@@ -3870,6 +4013,9 @@
 
 /* Shipping Labels: info title about WooCommerce Services discount */
 "What is WooCommerce Services discount?" = "WooCommerce 서비스 할인이란?";
+
+/* Navigates to screen containing the latest WooCommerce Features */
+"What's New in WooCommerce" = "우커머스의 새로운 기능";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "내 사이트 주소는 무엇인가요?";

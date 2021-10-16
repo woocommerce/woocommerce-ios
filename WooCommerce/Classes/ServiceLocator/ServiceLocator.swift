@@ -1,5 +1,6 @@
 import Foundation
 import CocoaLumberjack
+import Experiments
 import Storage
 import Yosemite
 import Hardware
@@ -216,7 +217,7 @@ extension ServiceLocator {
     }
 
     static func setStores(_ mock: StoresManager) {
-        guard isRunningTests() || BuildConfiguration.shouldUseScreenshotsNetworkLayer else {
+        guard isRunningTests() || ProcessConfiguration.shouldUseScreenshotsNetworkLayer else {
             return
         }
 

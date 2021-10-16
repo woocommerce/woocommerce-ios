@@ -1,6 +1,9 @@
 ﻿/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "#%@ %@" = "#%1$@ %2$@";
 
+/* Total value for the selected rates in Shipping Labels > Carrier and Rates */
+"$1$@ total" = "$1$@ total";
+
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
 "%1$@" = "%1$@";
 
@@ -66,6 +69,12 @@
 
 /* For example: `5 items` in Shipping Label package row */
 "%1$d items" = "%1$d items";
+
+/* Total number of items and packages in Shipping Label form. */
+"%1$d items in %2$d packages" = "%1$d items in %2$d packages";
+
+/* Number of rates selected in Shipping Labels > Carrier and Rates */
+"%1$d rates selected" = "%1$d rates selected";
 
 /* Format for the variations detail row in singular form. Reads, `1 variation` */
 "%1$ld variation" = "%1$ld variation";
@@ -171,9 +180,6 @@
 /* A label prompting users to learn more about internal transaction number with an embedded hyperlink */
 "<a href=\"https://pe.usps.com/text/imm/immc5_010.htm\">Learn more</a> about Internal Transaction Number" = "<a href=\"https://pe.usps.com/text/imm/immc5_010.htm\">Learn more</a> about Internal Transaction Number";
 
-/* A label prompting users to learn more about card readers with an embedded hyperlink */
-"<a href=\"https://woocommerce.com/payments\">Learn more</a> about accepting payments with your mobile device and ordering card readers" = "<a href=\"https://woocommerce.com/payments\">Learn more</a> about accepting payments with your mobile device and ordering card readers";
-
 /* Comment Attachment Label */
 "[COMMENT]" = "[COMMENT]";
 
@@ -263,6 +269,9 @@
 /* Accessibility label for the 'Add a tracking' button */
 "Add a tracking" = "Add a tracking";
 
+/* Button title in the Shipping Label Payment Method screen if there is an existing payment method */
+"Add another credit card" = "Add another credit card";
+
 /* Add Product Attribute screen navigation title */
 "Add attribute" = "Add attribute";
 
@@ -272,6 +281,9 @@
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "Add Category";
+
+/* Button title in the Shipping Label Payment Method screen */
+"Add credit card" = "Add credit card";
 
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "Add Downloadable File";
@@ -326,6 +338,9 @@
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "Add products' downloadable files' info remotely";
 
+/* Option to add item to new package on Package Details screen of Shipping Label flow. */
+"Add to new package" = "Add to new package";
+
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
 "Add Tracking" = "Add Tracking";
@@ -354,6 +369,9 @@
 
 /* Error showed in Shipping Label Address Validation for the address field */
 "Address missing" = "Address missing";
+
+/* Notice text after updating the shipping or billing address */
+"Address successfully updated." = "Address successfully updated.";
 
 /* Shipping Label Suggested address entered placeholder */
 "Address Suggested" = "Address Suggested";
@@ -502,6 +520,13 @@
 /* Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "Back";
 
+/* Button to dismiss modal overlay. Presented to users after a payment has been successfully collected
+   Button to dismiss modal overlay. Presented to users after collecting a payment fails */
+"Back to Order" = "Back to Order";
+
+/* Text for the button to dismiss the store picker error screen */
+"Back to Sites" = "Back to Sites";
+
 /* Title of a button to dismiss the survey complete screen */
 "Back to store" = "Back to store";
 
@@ -515,8 +540,12 @@
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "Bar number %1$i, %2$@, ";
 
-/* Section header title for billing address in billing information */
+/* Section header title for billing address in billing information
+   Title for the Edit Billing Address Form */
 "Billing Address" = "Billing Address";
+
+/* Details section title in the Edit Address Form */
+"BILLING ADDRESS" = "BILLING ADDRESS";
 
 /* Billing Information view Title */
 "Billing Information" = "Billing Information";
@@ -555,11 +584,14 @@
 "Can Not Request Link" = "Can Not Request Link";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. */
 "Cancel" = "Cancel";
 
 /* Title of the alert when there is an error creating a new product category */
 "Cannot Add Category" = "Cannot Add Category";
+
+/* The title of the alert when there is a generic error adding the package */
+"Cannot add package" = "Cannot add package";
 
 /* Title of the alert when there is an error adding new product tags. */
 "Cannot Add Tags" = "Cannot Add Tags";
@@ -617,6 +649,9 @@
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "Check your email!";
 
+/* Settings > Manage Card Reader > Connected Reader > A prompt to indicate we are checking for reader updates */
+"Checking for reader software updates" = "Checking for reader software updates";
+
 /* Navigation title on the shipping label country selector screen */
 "Choose a Country" = "Choose a Country";
 
@@ -639,6 +674,9 @@
 /* Button title for clearing all filters for the list. */
 "Clear all" = "Clear all";
 
+/* Text for the close button in the Edit Address Form */
+"Close" = "Close";
+
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Collect Information";
 
@@ -649,11 +687,11 @@
    Text field company in Shipping Label Address Validation */
 "Company" = "Company";
 
-/* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
-"Composes a new email message to the billing customer." = "Composes a new email message to the billing customer.";
-
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "Composes a new order note.";
+
+/* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
+"Congratulations! Your reader is running the latest software" = "Congratulations! Your reader is running the latest software";
 
 /* Button in a cell to allow the user to connect to that reader for that cell */
 "Connect" = "Connect";
@@ -704,7 +742,7 @@
 "Contact Email" = "Contact Email";
 
 /* Contact Support title
-   The title of the button to contact support in the Error Loading Data banner */
+   Text for the button to contact support from the store picker error screen - The title of the button to contact support in the Error Loading Data banner */
 "Contact Support" = "Contact Support";
 
 /* Title of a button to contact support in the error screen for In-Person payments */
@@ -868,6 +906,12 @@
 /* Title on the Print Customs Invoice screen of Shipping Label flow */
 "Customs form" = "Customs form";
 
+/* Subtitle of the cell Customs inside Create Shipping Label form when the form is completed */
+"Customs form completed" = "Customs form completed";
+
+/* Main message on the Print Customs Invoice screen of Shipping Label flow for multiple invoices */
+"Customs forms must be printed and included on these international shipments" = "Customs forms must be printed and included on these international shipments";
+
 /* Details text in the shipping label creation info screen */
 "Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!";
 
@@ -956,7 +1000,7 @@
 "Don't have an account? _Sign up_" = "Don't have an account? _Sign up_";
 
 /* Action title to select products to add to a grouped product from search results
-   Done navigation button in selection list screens - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Custom Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Service Package screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen */
+   Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen */
 "Done" = "Done";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -1043,7 +1087,7 @@
 "Eligible for free pickup" = "Eligible for free pickup";
 
 /* Email address text field placeholder
-   Text field email in Edit Address Form */
+   Text field email in Edit Address Form - Title of Email accessibility action, opens a compose view */
 "Email" = "Email";
 
 /* Accessibility label for the email address text field.
@@ -1229,6 +1273,9 @@
 
 /* Placeholder on the search field to search for a specific country */
 "Filter Countries" = "Filter Countries";
+
+/* Placeholder on the search field to search for a specific state */
+"Filter States" = "Filter States";
 
 /* Navigation bar title format for filtering a list of products without filters applied. */
 "Filters" = "Filters";
@@ -1474,6 +1521,9 @@
 /* Subtitle of the product form bottom sheet action for linked products. */
 "Increase sales with upsells and cross-sells" = "Increase sales with upsells and cross-sells";
 
+/* Description for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
+"Individually shipped item" = "Individually shipped item";
+
 /* Label action for inserting a link on the editor */
 "Insert" = "Insert";
 
@@ -1498,6 +1548,9 @@
 /* Error message for invalid format of ITN in Customs screen of Shipping Label flow */
 "Invalid ITN format" = "Invalid ITN format";
 
+/* The title of the alert when there is an error with the package name */
+"Invalid Package Name" = "Invalid Package Name";
+
 /* The title of the alert when there is an error updating the product SKU */
 "Invalid Product SKU" = "Invalid Product SKU";
 
@@ -1518,6 +1571,9 @@
 
 /* Error for invalid package details on the Add New Custom Package screen in Shipping Label flow */
 "Invalid value" = "Invalid value";
+
+/* Error message when total weight is invalid in Package Detail screen */
+"Invalid weight" = "Invalid weight";
 
 /* Product Inventory Settings navigation title
    Title of the Inventory Settings row on Product main screen - Title of the product form bottom sheet action for editing inventory settings. */
@@ -1546,6 +1602,9 @@
 
 /* Error message for missing value in Description row in Customs screen of Shipping Label flow */
 "Item description is required" = "Item description is required";
+
+/* Row title for dimensions of package shipped in original packaging Package Details screen in Shipping Labels flow. */
+"Item dimensions" = "Item dimensions";
 
 /* Error message for missing value in Value row in Customs screen of Shipping Label flow */
 "Item value must be larger than 0" = "Item value must be larger than 0";
@@ -1798,6 +1857,12 @@
 /* Title of the More Options section on Product Settings screen */
 "More Options" = "More Options";
 
+/* Button on each order item of the Package Details screen in Shipping Labels flow. */
+"Move" = "Move";
+
+/* Title of the action sheet displayed when moving items in thePackage Details screen in Shipping Label flow. */
+"Move Item" = "Move Item";
+
 /* Confirmation button on the alert when the user is moving a product to the trash */
 "Move to Trash" = "Move to Trash";
 
@@ -1881,6 +1946,9 @@
 /* Placeholder of the cell text field in Download limit */
 "No limit" = "No limit";
 
+/* Notice that will be displayed after adding a new Shipping Label payment method */
+"No payment method found" = "No payment method found";
+
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "No price set";
 
@@ -1909,10 +1977,6 @@
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "No tax classes yet";
 
-/* Button to dismiss modal overlay. Presented to users after a payment has been successfully collected
-   Button to dismiss modal overlay. Presented to users after collecting a payment fails */
-"No thanks" = "No thanks";
-
 /* Display label for the order fee's tax status setting option
    Display label for the product's tax status setting option - Restriction type None for contents declared in the customs form for Shipping Label flow */
 "None" = "None";
@@ -1931,6 +1995,9 @@
 
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "Off";
+
+/* Message for offline banner */
+"Offline - using cached data" = "Offline - using cached data";
 
 /* Alert dismissal title
    Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for printing - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
@@ -2047,6 +2114,9 @@
 /* Error message for missing value in Origin Country row in Customs screen of Shipping Label flow */
 "Origin Country is required" = "Origin Country is required";
 
+/* Row title for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
+"Original packaging" = "Original packaging";
+
 /* My Store > Settings > Other app section
    Restriction type Other for contents declared in the customs form for Shipping Label flow - Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "Other";
@@ -2057,6 +2127,9 @@
 /* Package index in Customs screen of Shipping Label flow
    Package index in Print Customs Invoice screen of Shipping Label flow if there are more than one invoice - Package term in Shipping Labels. Reads like Package 1 */
 "Package %1$d" = "Package %1$d";
+
+/* Name of package to be listed in Move Item action sheet on Package Details screen of Shipping Label flow. */
+"Package %1$d: %2$@" = "Package %1$d: %2$@";
 
 /* Order shipping label package section title format. The number indicates the index of the shipping label package. */
 "Package %d" = "Package %d";
@@ -2070,6 +2143,9 @@
 /* Navigation bar title of shipping label package details screen
    Title of package details in shipping label details - Title of the cell Package Details inside Create Shipping Label form */
 "Package Details" = "Package Details";
+
+/* Validation error for original package without dimensions on Package Details screen in Shipping Labels flow. */
+"Package dimensions must be greater than zero. Please update your item’s dimensions in the Shipping section of your product page to continue." = "Package dimensions must be greater than zero. Please update your item’s dimensions in the Shipping section of your product page to continue.";
 
 /* Title for the row to enter the package name on the Add New Custom Package screen in Shipping Label flow */
 "Package Name" = "Package Name";
@@ -2113,6 +2189,9 @@
 /* Navigation bar title in the Shipping Label Payment Method screen
    Title of payment method in shipping label details - Title of the cell Payment Method inside Create Shipping Label form */
 "Payment Method" = "Payment Method";
+
+/* Title of the webview of adding a payment method in Shipping Labels */
+"Payment method" = "Payment method";
 
 /* Header for list of payment methods in Payment Method screen */
 "Payment Method Selected" = "Payment Method Selected";
@@ -2206,8 +2285,14 @@
 /* Label asking users to remove card. Presented to users when a payment is in the process of being collected */
 "Please remove card" = "Please remove card";
 
+/* Error message when no package is selected on Shipping Label Package Details screen */
+"Please select a package" = "Please select a package";
+
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "Please try again later or reach out to us and we'll be happy to assist you!";
+
+/* Body text for the default store picker error screen */
+"Please try again or reach out to us and we'll be happy to assist you!" = "Please try again or reach out to us and we'll be happy to assist you!";
 
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "Please try again.";
@@ -2236,6 +2321,9 @@
    Text on the loading view of the product downloadable file screen indicating the user to wait */
 "Please wait..." = "Please wait...";
 
+/* Message that will be displayed if there are no Shipping Label payment methods. */
+"Please, add a new payment method" = "Please, add a new payment method";
+
 /* My Store > Settings > Plugins section title
    Navigates to Plugins screen. - Title of the Plugin List screen */
 "Plugins" = "Plugins";
@@ -2252,9 +2340,6 @@
 
 /* Title of in-progress modal when preparing for printing customs invoice */
 "Preparing document" = "Preparing document";
-
-/* Label within the modal dialog that appears when searching for a card reader */
-"Press the power button of your reader until you see a flashing blue light" = "Press the power button of your reader until you see a flashing blue light";
 
 /* A label representing the amount that was previously refunded for the order. */
 "Previously Refunded" = "Previously Refunded";
@@ -2285,8 +2370,15 @@
    Navigation bar title to print a shipping label - Text on the button that prints a shipping label */
 "Print Shipping Label" = "Print Shipping Label";
 
+/* Button title to generate a document with multiple shipping labels for printing
+   Navigation bar title to print multiple shipping labels */
+"Print Shipping Labels" = "Print Shipping Labels";
+
 /* Title of in-progress modal when requesting shipping label document for printing */
 "Printing Label" = "Printing Label";
+
+/* Title of in-progress modal when requesting document with multiple shipping labels for printing */
+"Printing Labels" = "Printing Labels";
 
 /* Opens the California Privacy Policy web page */
 "Privacy Notice for California Users" = "Privacy Notice for California Users";
@@ -2369,9 +2461,6 @@
    Title on the refund screen that lists the products refund total cost */
 "Products Refund" = "Products Refund";
 
-/* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
-"Prompts with the option to call or message the billing customer." = "Prompts with the option to call or message the billing customer.";
-
 /* One of the possible options in Product Visibility */
 "Public" = "Public";
 
@@ -2436,6 +2525,9 @@
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Reach our happiness engineers who can help answer tough questions";
+
+/* Text for the button to navigate to troubleshooting tips from the store picker error screen */
+"Read our Troubleshooting Tips" = "Read our Troubleshooting Tips";
 
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "Read privacy policy";
@@ -2772,6 +2864,9 @@
    Shipping Label Suggested Address navigation title - Title of origin address in shipping label details - Title of the cell Ship from inside Create Shipping Label form */
 "Ship from" = "Ship from";
 
+/* Option to ship in original packaging on action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow. */
+"Ship in Original Packaging" = "Ship in Original Packaging";
+
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title - Title of destination address in shipping label details - Title of the cell Ship From inside Create Shipping Label form */
 "Ship to" = "Ship to";
@@ -2815,13 +2910,16 @@
 "Shipping classes" = "Shipping classes";
 
 /* Shipping title for customer info cell */
-"Shipping details" = "Shipping details";
+"Shipping Details" = "Shipping Details";
 
 /* Header of the order summary section in the shipping label creation form */
 "Shipping label order summary" = "Shipping label order summary";
 
 /* Header text when printing a newly purchased shipping label */
 "Shipping label purchased!" = "Shipping label purchased!";
+
+/* Header text when printing multiple newly purchased shipping labels */
+"Shipping labels purchased!" = "Shipping labels purchased!";
 
 /* Shipping method title for customer info cell
    Shipping method title for customer info section */
@@ -3013,7 +3111,7 @@
 "Starting period %@, ending period %@" = "Starting period %1$@, ending period %2$@";
 
 /* Text field state in Edit Address Form
-   Text field state in Shipping Label Address Validation */
+   Text field state in Shipping Label Address Validation - Title to select state from the edit address screen */
 "State" = "State";
 
 /* Error showed in Shipping Label Address Validation for the state field */
@@ -3106,6 +3204,9 @@
 
 /* Accessibility hint for insert link button on formatting toolbar. */
 "Tap to insert a Link" = "Tap to insert a Link";
+
+/* A label prompting users to learn more about card readers */
+"Tap to learn more about accepting payments with your mobile device and ordering card readers" = "Tap to learn more about accepting payments with your mobile device and ordering card readers";
 
 /* The accessibility hint for the quantity button when selecting an item to refund */
 "Tap to modify the item refund quantity" = "Tap to modify the item refund quantity";
@@ -3243,6 +3344,12 @@
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "The Google account \"%@\" doesn't match any account on WordPress.com";
 
+/* The message of the alert when another custom package has the same name */
+"The new custom package name is not unique." = "The new custom package name is not unique.";
+
+/* The message of the alert when another service package has the same name */
+"The new service package name is not unique." = "The new service package name is not unique.";
+
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "The Order couldn't be loaded!";
 
@@ -3354,6 +3461,9 @@
 /* Footer text in Product Slug screen */
 "This is the URL-friendly version of the product title" = "This is the URL-friendly version of the product title";
 
+/* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
+"This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "This item is currently in Package %1$d: %2$@. Where would you like to move it?";
+
 /* Tab selector title that shows the statistics for this month
    Top Performers section title - this month */
 "This Month" = "This Month";
@@ -3418,6 +3528,9 @@
 
 /* Instructional text shown when requesting the user's password for Google login. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once.";
+
+/* Label within the modal dialog that appears when searching for a card reader */
+"To turn on your card reader, briefly press its power button. When powered on, the power LED will blink blue." = "To turn on your card reader, briefly press its power button. When powered on, the power LED will blink blue.";
 
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store.";
@@ -3487,14 +3600,15 @@
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Trust";
 
-/* Action to resync on the placeholder overlay when there is issue syncing site plugins */
+/* Action to resync on the placeholder overlay when there is issue syncing site plugins
+   Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
 "Try again" = "Try again";
 
 /* Button to try again. Presented to users after a failure occurs */
 "Try Again" = "Try Again";
 
 /* Button to try to collect a payment again. Presented to users after a collecting a payment fails */
-"Try collecting payment again" = "Try collecting payment again";
+"Try Collecting Again" = "Try Collecting Again";
 
 /* Button to trigger connection to another account in store picker */
 "Try With Another Account" = "Try With Another Account";
@@ -3535,6 +3649,9 @@
 /* Unable to fetch countries action failed in Shipping Label Form */
 "Unable to fetch countries." = "Unable to fetch countries.";
 
+/* Error notice when we fail to load country information in the edit address screen. */
+"Unable to fetch country information, please try again later." = "Unable to fetch country information, please try again later.";
+
 /* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
 "Unable to fulfill order #%1$d" = "Unable to fulfill order #%1$d";
 
@@ -3565,8 +3682,8 @@
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
 "Unable to save changes to the payment method" = "Unable to save changes to the payment method";
 
-/* On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name} */
-"Unable to successfully connect to %@" = "Unable to successfully connect to %@";
+/* Error notice when we fail to update an address in the edit address screen. */
+"Unable to update address, please try again later." = "Unable to update address, please try again later.";
 
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "Unable to verify In-Person Payments for this store";
@@ -3586,7 +3703,8 @@
 /* Undo Action */
 "Undo" = "Undo";
 
-/* The message of the alert when there is an unexpected error updating the product */
+/* The message of the alert when there is an unexpected error adding the package
+   The message of the alert when there is an unexpected error updating the product */
 "Unexpected error" = "Unexpected error";
 
 /* Unknown Application State
@@ -3601,6 +3719,9 @@
 
 /* Error message when capturing a unknown media type */
 "Unknown media type" = "Unknown media type";
+
+/* Displayed in the unlikely event a card reader has an indeterminate software version */
+"Unknown Software Version" = "Unknown Software Version";
 
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "unknown url";
@@ -3633,8 +3754,15 @@
 /* Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app */
 "Update %@ to WooCommerce 3.5" = "Update %@ to WooCommerce 3.5";
 
+/* Accessibility Label for the edit button to change the Customer Billing Address in Billing Information
+   Accessibility Label for the edit button to change the Customer Shipping Address in Order Details */
+"Update Address" = "Update Address";
+
 /* Update instructions button title shown in alert warning users to upgrade to WC 3.5. */
 "Update Instructions" = "Update Instructions";
+
+/* Accessibility Label for the edit button to change the Customer Provided Note in Order Details */
+"Update Note" = "Update Note";
 
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "Update Order Status";
@@ -3691,6 +3819,12 @@
 /* Action to use the address in Shipping Label Suggested screen as entered placeholder */
 "Use Address Entered" = "Use Address Entered";
 
+/* Title for the Use as Billing Address switch in the Address form */
+"Use as Billing Address" = "Use as Billing Address";
+
+/* Title for the Use as Shipping Address switch in the Address form */
+"Use as Shipping Address" = "Use as Shipping Address";
+
 /* Action to use the address in Shipping Label Suggested screen as suggested */
 "Use Suggested Address" = "Use Suggested Address";
 
@@ -3728,6 +3862,9 @@
 
 /* Displays the version of the App */
 "Version %@" = "Version %@";
+
+/* Displays the connected reader software version */
+"Version: %1$@" = "Version: %1$@";
 
 /* Cell title on the beta features screen to enable the order add-ons feature
    Title of the button on the order detail item to navigate to add-ons - Title of the button on the order details product list item to navigate to add-ons */
@@ -3805,8 +3942,14 @@
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "We can’t display your store’s analytics";
 
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails */
+"We couldn't connect your reader" = "We couldn't connect your reader";
+
 /* The title of the Error Loading Data banner */
 "We couldn't load your data" = "We couldn't load your data";
+
+/* Title for the default store picker error screen */
+"We couldn't load your site" = "We couldn't load your site";
 
 /* Title for the error screen when WooCommerce Payments is not supported in a specific country */
 "We don’t support In-Person Payments in %@" = "We don’t support In-Person Payments in %@";
@@ -3893,6 +4036,9 @@
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "What's my site address?";
+
+/* Navigates to screen containing the latest WooCommerce Features */
+"What's New in WooCommerce" = "What's New in WooCommerce";
 
 /* Title of Whats New Component */
 "What’s New in WooCommerce" = "What’s New in WooCommerce";

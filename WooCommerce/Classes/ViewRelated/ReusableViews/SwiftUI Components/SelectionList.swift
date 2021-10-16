@@ -59,12 +59,18 @@ struct SelectionList<T: Hashable>: View {
                 .ignoresSafeArea(.container, edges: .horizontal)
                 .navigationTitle(title)
                 .navigationBarTitleDisplayMode(.inline)
-                .navigationBarItems(trailing: Button(action: {
-                    presentation.wrappedValue.dismiss()
-                }, label: {
-                    Text(NSLocalizedString("Done", comment: "Done navigation button in selection list screens"))
-                }))
+                .toolbar(content: {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button(action: {
+                            presentation.wrappedValue.dismiss()
+                        }, label: {
+                            Text(NSLocalizedString("Done", comment: "Done navigation button in selection list screens"))
+                        })
+                    }
+                })
             }
+            .navigationViewStyle(StackNavigationViewStyle())
+            .wooNavigationBarStyle()
         }
     }
 }

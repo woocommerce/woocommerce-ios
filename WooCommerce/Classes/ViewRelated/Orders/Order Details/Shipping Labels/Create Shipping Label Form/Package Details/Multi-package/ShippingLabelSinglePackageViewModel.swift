@@ -5,11 +5,14 @@ import Yosemite
 
 /// View model for `ShippingLabelSinglePackage`.
 ///
-final class ShippingLabelSinglePackageViewModel: ObservableObject {
+final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable {
 
     typealias PackageSwitchHandler = (_ newPackage: ShippingLabelPackageAttributes) -> Void
     typealias PackagesSyncHandler = (_ packagesResponse: ShippingLabelPackagesResponse?) -> Void
-    typealias ItemMoveRequestHandler = (_ productOrVariationID: Int64, _ packageName: String) -> Void
+
+    /// Unique ID for the view model.
+    ///
+    let id: String
 
     /// The id of the selected package. Defaults to last selected package, if any.
     ///
@@ -26,6 +29,10 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
     }()
 
     @Published var totalWeight: String = ""
+
+    /// Number of package in the list.
+    ///
+    let packageNumber: Int
 
     /// The items rows observed by the main view `ShippingLabelPackageItem`
     ///
@@ -86,13 +93,21 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
     private let orderItems: [ShippingLabelPackageItem]
     private let currency: String
     private let currencyFormatter: CurrencyFormatter
-    private let onItemMoveRequest: ItemMoveRequestHandler
     private let onPackageSwitch: PackageSwitchHandler
     private let onPackagesSync: PackagesSyncHandler
+    private let onItemMoveRequest: () -> Void
 
     /// The packages  response fetched from API
     ///
     private var packagesResponse: ShippingLabelPackagesResponse?
+
+    /// Move Item action buttons for each package item.
+    ///
+    private var moveItemActionButtons: [String: [ActionSheet.Button]] = [:] {
+        didSet {
+            configureItemRows()
+        }
+    }
 
     /// The weight unit used in the Store
     ///
@@ -102,27 +117,31 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
     ///
     @Published private var isPackageWeightEdited: Bool = false
 
-    init(order: Order,
+    init(id: String = UUID().uuidString,
+         order: Order,
          orderItems: [ShippingLabelPackageItem],
+         packageNumber: Int = 1,
          packagesResponse: ShippingLabelPackagesResponse?,
          selectedPackageID: String,
          totalWeight: String,
          isOriginalPackaging: Bool = false,
-         onItemMoveRequest: @escaping ItemMoveRequestHandler,
+         onItemMoveRequest: @escaping () -> Void,
          onPackageSwitch: @escaping PackageSwitchHandler,
          onPackagesSync: @escaping PackagesSyncHandler,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
+        self.id = id
         self.order = order
         self.orderItems = orderItems
+        self.packageNumber = packageNumber
         self.currency = order.currency
         self.currencyFormatter = formatter
         self.weightUnit = weightUnit
         self.selectedPackageID = selectedPackageID
         self.isOriginalPackaging = isOriginalPackaging
-        self.onItemMoveRequest = onItemMoveRequest
         self.onPackageSwitch = onPackageSwitch
         self.onPackagesSync = onPackagesSync
+        self.onItemMoveRequest = onItemMoveRequest
         self.packagesResponse = packagesResponse
         self.packageListViewModel.delegate = self
 
@@ -135,8 +154,14 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject {
         configureValidation(originalPackaging: isOriginalPackaging)
     }
 
-    func requestMovingItem(_ productOrVariationID: Int64) {
-        onItemMoveRequest(productOrVariationID, packageName)
+    func updateActionSheetButtons(_ buttons: [String: [ActionSheet.Button]]) {
+        moveItemActionButtons = buttons
+    }
+
+    func dismissPopover() {
+        itemsRows.forEach {
+            $0.showingMoveItemDialog = false
+        }
     }
 
     private func configureItemRows() {
@@ -202,7 +227,6 @@ extension ShippingLabelSinglePackageViewModel: ShippingLabelPackageSelectionDele
 
     func didSyncPackages(packagesResponse: ShippingLabelPackagesResponse?) {
         self.packagesResponse = packagesResponse
-        packageListViewModel = .init(siteID: order.siteID, packagesResponse: packagesResponse)
         onPackagesSync(packagesResponse)
     }
 }
@@ -228,7 +252,13 @@ private extension ShippingLabelSinglePackageViewModel {
                 let subtitle = Localization.subtitle(weight: weight.description,
                                                      weightUnit: unit,
                                                      attributes: item.attributes)
-                itemsToFulfill.append(ItemToFulfillRow(productOrVariationID: item.productOrVariationID, title: item.name, subtitle: subtitle))
+                let actionSheetTitle = String(format: Localization.moveItemActionSheetMessage, packageNumber, packageName)
+                itemsToFulfill.append(ItemToFulfillRow(productOrVariationID: item.productOrVariationID,
+                                                       title: item.name,
+                                                       subtitle: subtitle,
+                                                       moveItemActionSheetTitle: actionSheetTitle,
+                                                       moveItemActionSheetButtons: moveItemActionButtons[item.id] ?? [],
+                                                       onMoveAction: onItemMoveRequest))
             }
         }
         return itemsToFulfill
@@ -288,5 +318,9 @@ private extension ShippingLabelSinglePackageViewModel {
         }
         static let selectPackagePlaceholder = NSLocalizedString("Select a package",
                                                                 comment: "Placeholder for the selected package in the Shipping Labels Package Details screen")
+        static let moveItemActionSheetMessage = NSLocalizedString("This item is currently in Package %1$d: %2$@. Where would you like to move it?",
+                                                                  comment: "Message in action sheet when an order item is about to " +
+                                                                    "be moved on Package Details screen of Shipping Label flow." +
+                                                                    "The package name reads like: Package 1: Custom Envelope.")
     }
 }

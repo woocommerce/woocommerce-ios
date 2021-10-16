@@ -1,7 +1,12 @@
 import Foundation
 import Yosemite
+import Codegen
 
-struct ShippingLabelSelectedRate {
+struct ShippingLabelSelectedRate: GeneratedCopiable {
+
+    /// The ID of the package related to the selected rate.
+    let packageID: String
+
     /// Basic rate for the selected carrier without additional service.
     let rate: ShippingLabelCarrierRate
 

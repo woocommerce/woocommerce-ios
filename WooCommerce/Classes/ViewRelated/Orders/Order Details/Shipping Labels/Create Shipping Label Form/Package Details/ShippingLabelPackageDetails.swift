@@ -45,7 +45,7 @@ struct ShippingLabelPackageDetails: View {
                     VStack(spacing: 0) {
                         Divider()
 
-                        TitleAndValueRow(title: Localization.packageSelected, value: viewModel.selectedPackageName, selectable: true) {
+                        TitleAndValueRow(title: Localization.packageSelected, value: .placeholder(viewModel.selectedPackageName), selectable: true) {
                             showingPackageSelection.toggle()
                         }
                         .padding(.horizontal, insets: geometry.safeAreaInsets)
@@ -75,15 +75,20 @@ struct ShippingLabelPackageDetails: View {
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         }
         .navigationTitle(Localization.title)
-        .navigationBarItems(trailing: Button(action: {
-            ServiceLocator.analytics.track(.shippingLabelPurchaseFlow,
-                                           withProperties: ["state": "packages_selected"])
-            viewModel.savePackageSelection()
-            presentation.wrappedValue.dismiss()
-        }, label: {
-            Text(Localization.doneButton)
-        })
-        .disabled(!viewModel.isPackageDetailsDoneButtonEnabled()))
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button(action: {
+                    ServiceLocator.analytics.track(.shippingLabelPurchaseFlow,
+                                                   withProperties: ["state": "packages_selected"])
+                    viewModel.savePackageSelection()
+                    presentation.wrappedValue.dismiss()
+                }, label: {
+                    Text(Localization.doneButton)
+                })
+                .disabled(!viewModel.isPackageDetailsDoneButtonEnabled())
+            }
+        }
+        .wooNavigationBarStyle()
     }
 }
 

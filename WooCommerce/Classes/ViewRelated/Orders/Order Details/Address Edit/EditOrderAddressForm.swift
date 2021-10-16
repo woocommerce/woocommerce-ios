@@ -221,6 +221,7 @@ struct EditOrderAddressForm: View {
                 }
                 .padding(.horizontal, insets: geometry.safeAreaInsets)
                 .background(Color(.systemBackground))
+                .renderedIf(viewModel.shouldShowUseAddressAsToggle)
             }
             .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])

@@ -134,6 +134,20 @@ final class EditOrderAddressFormViewModel: ObservableObject {
         }
     }
 
+    /// Defines whether "Use as {Shipping/Billing} Address" toggle should be shown.
+    /// Show the toggle, only if the entered address is different from it's counterpart.
+    /// i.e. Compare entered address with shipping address while editing billing address, and vice versa.
+    ///
+    var shouldShowUseAddressAsToggle: Bool {
+        let addressInForm = fields.toAddress(country: selectedCountry, state: selectedState)
+        switch type {
+        case .shipping:
+            return addressInForm != order.billingAddress
+        case .billing:
+            return addressInForm != order.shippingAddress
+        }
+    }
+
     /// Defines if the state field should be defined as a list selector.
     ///
     var showStateFieldAsSelector: Bool {
@@ -323,12 +337,20 @@ private extension EditOrderAddressFormViewModel {
     ///
     func bindNavigationTrailingItemPublisher() {
         Publishers.CombineLatest4($fields, performingNetworkRequest, $selectedCountry, $selectedState)
-            .map { [originalAddress] fields, performingNetworkRequest, selectedCountry, selectedState -> NavigationItem in
+            .map { [originalAddress, weak self] fields, performingNetworkRequest, selectedCountry, selectedState -> NavigationItem? in
+                guard let self = self else { return nil }
+
                 guard !performingNetworkRequest else {
                     return .loading
                 }
+
+                if self.shouldShowUseAddressAsToggle, fields.useAsToggle {
+                    return .done(enabled: true)
+                }
+
                 return .done(enabled: originalAddress != fields.toAddress(country: selectedCountry, state: selectedState))
             }
+            .compactMap({ $0 })
             .assign(to: &$navigationTrailingItem)
     }
 

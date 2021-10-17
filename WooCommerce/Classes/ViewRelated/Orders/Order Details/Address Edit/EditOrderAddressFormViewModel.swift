@@ -135,7 +135,7 @@ final class EditOrderAddressFormViewModel: ObservableObject {
     }
 
     /// Defines whether "Use as {Shipping/Billing} Address" toggle should be shown.
-    /// Show the toggle, only if the entered address is different from it's counterpart.
+    /// Show the toggle, only if the entered address is different from its counterpart.
     /// i.e. Compare entered address with shipping address while editing billing address, and vice versa.
     ///
     var shouldShowUseAddressAsToggle: Bool {

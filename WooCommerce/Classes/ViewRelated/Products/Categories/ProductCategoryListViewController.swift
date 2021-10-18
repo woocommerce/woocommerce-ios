@@ -14,7 +14,7 @@ final class ProductCategoryListViewController: UIViewController {
     private let siteID: Int64
 
     init(siteID: Int64) {
-        self.viewModel = ProductCategoryListViewModel(siteID: siteID)
+        viewModel = ProductCategoryListViewModel(siteID: siteID)
         self.siteID = siteID
 
         super.init(nibName: type(of: self).nibName, bundle: nil)

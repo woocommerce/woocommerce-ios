@@ -23,9 +23,9 @@ final class EditProductCategoryListViewController: UIViewController {
 
     init(product: Product, completion: @escaping Completion) {
         self.product = product
-        self.productCategoryListViewController = ProductCategoryListViewController(siteID: product.siteID)
-        self.viewModel = EditProductCategoryListViewModel(product: product, baseProductCategoryListViewModel: productCategoryListViewController.viewModel)
-        self.siteID = product.siteID
+        productCategoryListViewController = ProductCategoryListViewController(siteID: product.siteID)
+        viewModel = EditProductCategoryListViewModel(product: product, baseProductCategoryListViewModel: productCategoryListViewController.viewModel)
+        siteID = product.siteID
         onCompletion = completion
 
         super.init(nibName: type(of: self).nibName, bundle: nil)

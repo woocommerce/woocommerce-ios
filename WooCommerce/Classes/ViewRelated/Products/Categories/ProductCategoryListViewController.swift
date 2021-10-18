@@ -8,7 +8,7 @@ import WordPressUI
 ///
 final class ProductCategoryListViewController: UIViewController {
 
-    @IBOutlet var tableView: UITableView!
+    @IBOutlet private var tableView: UITableView!
     private let ghostTableView = UITableView()
 
     let viewModel: ProductCategoryListViewModel
@@ -68,6 +68,9 @@ private extension ProductCategoryListViewController {
 private extension ProductCategoryListViewController {
     func configureViewModel() {
         viewModel.performFetch()
+        viewModel.observeReloadNeeded { [weak self] in
+            self?.tableView.reloadData()
+        }
         viewModel.observeCategoryListStateChanges { [weak self] syncState in
             switch syncState {
             case .initialized:

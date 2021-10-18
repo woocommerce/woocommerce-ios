@@ -40,6 +40,10 @@ final class ProductCategoryListViewModel {
     ///
     private var onSyncStateChange: ((SyncingState) -> Void)?
 
+    /// Closure invoked when the list needs to reload
+    ///
+    private var onReloadNeeded: (() -> Void)?
+
     /// Current  category synchronization state
     ///
     private var syncCategoriesState: SyncingState = .initialized {
@@ -87,6 +91,20 @@ final class ProductCategoryListViewModel {
     func observeCategoryListStateChanges(onStateChanges: @escaping (SyncingState) -> Void) {
         onSyncStateChange = onStateChanges
         onSyncStateChange?(syncCategoriesState)
+    }
+
+    /// Observe the need of reload by passing a closure that will be invoked when there is a need to reload the data.
+    /// Calling this method will remove any other previous observer.
+    ///
+    func observeReloadNeeded(onReloadNeeded: @escaping () -> Void) {
+        self.onReloadNeeded = onReloadNeeded
+    }
+
+    /// The invokation of this method will trigger a reload of the list without performing any new fetch,
+    /// neither local or remote.
+    ///
+    func reloadData() {
+        onReloadNeeded?()
     }
 
     /// Select or Deselect a category

@@ -41,6 +41,7 @@ final class EditProductCategoryListViewModel {
     func addAndSelectNewCategory(category: ProductCategory) {
         selectedCategories.append(category)
         baseProductCategoryListViewModel.updateViewModelsArray()
+        baseProductCategoryListViewModel.reloadData()
     }
 
     /// Informs of wether there are still changes that were not commited

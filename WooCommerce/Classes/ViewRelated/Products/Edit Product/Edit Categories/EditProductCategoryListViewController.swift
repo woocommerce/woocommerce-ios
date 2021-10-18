@@ -118,7 +118,6 @@ extension EditProductCategoryListViewController {
                 self?.dismiss(animated: true, completion: nil)
             }
             self?.viewModel.addAndSelectNewCategory(category: newCategory)
-            self?.productCategoryListViewController.tableView.reloadData()
         }
         let navController = WooNavigationController(rootViewController: addCategoryViewController)
         present(navController, animated: true, completion: nil)

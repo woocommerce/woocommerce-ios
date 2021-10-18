@@ -33,7 +33,6 @@ final class EditProductCategoryListViewModel {
     init(product: Product, baseProductCategoryListViewModel: ProductCategoryListViewModel) {
         self.product = product
         self.baseProductCategoryListViewModel = baseProductCategoryListViewModel
-
         self.selectedCategories = product.categories
     }
 

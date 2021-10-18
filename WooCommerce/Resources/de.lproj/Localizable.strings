@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-10-12 15:54:04+0000 */
+/* Translation-Revision-Date: 2021-10-14 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -3584,7 +3584,7 @@
 "Try Again" = "Erneut versuchen";
 
 /* Button to try to collect a payment again. Presented to users after a collecting a payment fails */
-"Try Collecting Again" = "Versuche, die Information erneut abzurufen";
+"Try Collecting Again" = "Versuche, die Zahlung erneut einzuziehen";
 
 /* Button to trigger connection to another account in store picker */
 "Try With Another Account" = "Mit einem anderen Konto probieren";

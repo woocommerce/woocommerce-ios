@@ -8,6 +8,14 @@ final class EditProductCategoryListViewModel {
     ///
     let addCategoryButtonTitle: String = .addCategoryButtonTitle
 
+    /// Title for the screen
+    ///
+    let screenTitle: String = .screenTitle
+
+    /// Title for the done button
+    ///
+    let doneButtonTitle: String = .doneButtonTitle
+
     /// The shown product category list view model
     ///
     private let baseProductCategoryListViewModel: ProductCategoryListViewModel
@@ -47,4 +55,9 @@ final class EditProductCategoryListViewModel {
 
 private extension String {
     static let addCategoryButtonTitle = NSLocalizedString("Add Category", comment: "Action to add category on the Product Categories screen")
+
+    static let screenTitle = NSLocalizedString("Categories", comment: "Edit product categories screen - Screen title")
+
+    static let doneButtonTitle = NSLocalizedString("Done",
+                                                   comment: "Edit product categories screen - button title to apply categories selection")
 }

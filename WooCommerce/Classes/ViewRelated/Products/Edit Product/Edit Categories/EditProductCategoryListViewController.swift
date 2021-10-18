@@ -64,7 +64,7 @@ private extension EditProductCategoryListViewController {
     }
 
     func configureTitle() {
-        title = NSLocalizedString("Categories", comment: "Edit product categories screen - Screen title")
+        title = viewModel.addCategoryButtonTitle
     }
 
     func configureProductCategoryListView() {
@@ -80,8 +80,7 @@ private extension EditProductCategoryListViewController {
     }
 
     func configureRightButton() {
-        let applyButtonTitle = NSLocalizedString("Done",
-                                               comment: "Edit product categories screen - button title to apply categories selection")
+        let applyButtonTitle = viewModel.doneButtonTitle
         let rightBarButton = UIBarButtonItem(title: applyButtonTitle,
                                              style: .done,
                                              target: self,

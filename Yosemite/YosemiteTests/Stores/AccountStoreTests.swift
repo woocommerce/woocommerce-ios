@@ -1,3 +1,4 @@
+import Fakes
 import XCTest
 @testable import Yosemite
 @testable import Networking
@@ -7,7 +8,7 @@ import XCTest
 
 /// AccountStore Unit Tests
 ///
-class AccountStoreTests: XCTestCase {
+final class AccountStoreTests: XCTestCase {
 
     /// Mock Dispatcher!
     ///
@@ -245,6 +246,32 @@ class AccountStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 2)
+    }
+
+    /// Verifies that `synchronizeSites` deletes storage sites that do not exist remotely anymore.
+    ///
+    func test_synchronizeSites_deletes_sites_that_do_not_exist_remotely() {
+        // Given
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let siteIDInStorageOnly = Int64(127)
+        storageManager.insertSampleSite(readOnlySite: Site.fake().copy(siteID: siteIDInStorageOnly))
+        network.simulateResponse(requestUrlSuffix: "me/sites", filename: "sites")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 1)
+        XCTAssertNotNil(viewStorage.loadSite(siteID: siteIDInStorageOnly))
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = AccountAction.synchronizeSites { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        // `sites.json` contains 2 sites that do not match `siteIDInStorageOnly`.
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 2)
+        XCTAssertNil(viewStorage.loadSite(siteID: siteIDInStorageOnly))
     }
 
     // MARK: - AccountAction.loadAccount

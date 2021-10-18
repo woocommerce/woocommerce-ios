@@ -195,6 +195,13 @@ extension AccountStore {
     func upsertStoredSitesInBackground(readOnlySites: [Networking.Site], onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
+            // Deletes sites in storage that are not in `readOnlySites`.
+            let storageSites = derivedStorage.loadAllSites()
+            storageSites?.filter { readOnlySites.map { $0.siteID }.contains($0.siteID) == false }
+                .forEach { remotelyDeletedSite in
+                    derivedStorage.deleteObject(remotelyDeletedSite)
+                }
+
             for readOnlySite in readOnlySites {
                 let storageSite = derivedStorage.loadSite(siteID: readOnlySite.siteID) ?? derivedStorage.insertNewObject(ofType: Storage.Site.self)
                 storageSite.update(with: readOnlySite)

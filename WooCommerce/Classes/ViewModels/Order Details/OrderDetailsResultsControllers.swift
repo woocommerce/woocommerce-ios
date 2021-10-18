@@ -7,7 +7,7 @@ import protocol Storage.StorageManagerType
 final class OrderDetailsResultsControllers {
     private let storageManager: StorageManagerType
 
-    private let order: Order
+    private var order: Order
     private let siteID: Int64
 
     /// Shipment Tracking ResultsController.
@@ -147,6 +147,10 @@ final class OrderDetailsResultsControllers {
         configureShippingLabelResultsController(onReload: onReload)
         configurePaymentGatewayAccountResultsController(onReload: onReload)
         configureAddOnGroupResultsController(onReload: onReload)
+    }
+
+    func update(order: Order) {
+        self.order = order
     }
 }
 

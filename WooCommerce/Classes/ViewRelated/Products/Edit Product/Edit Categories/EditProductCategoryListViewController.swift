@@ -73,7 +73,7 @@ private extension EditProductCategoryListViewController {
         productCategoryListViewController.didMove(toParent: self)
     }
 
-    private func attachSubview(_ subview: UIView) {
+    func attachSubview(_ subview: UIView) {
         subview.translatesAutoresizingMaskIntoConstraints = false
         bottomContainerView.addSubview(subview)
         bottomContainerView.pinSubviewToAllEdges(subview)

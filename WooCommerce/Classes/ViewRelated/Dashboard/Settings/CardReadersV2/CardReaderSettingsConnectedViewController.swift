@@ -177,27 +177,10 @@ private extension CardReaderSettingsConnectedViewController {
     }
 
     private func configureUpdatePrompt(cell: LeftImageTableViewCell) {
-        guard let readerUpdateAvailable = viewModel?.readerUpdateAvailable else {
-            return
-        }
-
-        if readerUpdateAvailable {
-            cell.configure(image: .infoOutlineImage, text: Localization.updateNotNeeded)
-            cell.backgroundColor = .none
-            cell.imageView?.tintColor = .info
-        } else {
-            let readerBatteryTooLow = viewModel?.readerBatteryTooLowForUpdates ?? false
-
-            if readerBatteryTooLow {
-                cell.configure(image: .infoOutlineImage, text: Localization.updateAvailableLowBatt)
-            } else {
-                cell.configure(image: .infoOutlineImage, text: Localization.updatePromptText)
-            }
-            cell.backgroundColor = .warningBackground
-            cell.imageView?.tintColor = .warning
-        }
-
+        cell.configure(image: .infoOutlineImage, text: Localization.updatePromptText)
         cell.selectionStyle = .none
+        cell.backgroundColor = .warningBackground
+        cell.imageView?.tintColor = .warning
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.textColor = .text
     }
@@ -213,18 +196,13 @@ private extension CardReaderSettingsConnectedViewController {
     }
 
     private func configureUpdateButton(cell: ButtonTableViewCell) {
-        guard let readerUpdateAvailable = viewModel?.readerUpdateAvailable else {
-            return
-        }
-
         cell.configure(style: .primary, title: Localization.updateButtonTitle, bottomSpacing: 0) {
             self.viewModel?.startCardReaderUpdate()
         }
 
         let readerDisconnectInProgress = viewModel?.readerDisconnectInProgress ?? false
         let readerUpdateInProgress = viewModel?.readerUpdateInProgress ?? false
-        let readerBatteryTooLow = viewModel?.readerBatteryTooLowForUpdates ?? false
-        cell.enableButton(readerUpdateAvailable && !readerDisconnectInProgress && !readerUpdateInProgress && !readerBatteryTooLow)
+        cell.enableButton(!readerDisconnectInProgress && !readerUpdateInProgress)
         cell.showActivityIndicator(readerUpdateInProgress)
 
         cell.selectionStyle = .none
@@ -344,16 +322,6 @@ private extension CardReaderSettingsConnectedViewController {
 
         static let updatePromptText = NSLocalizedString(
             "Please update your reader software to keep accepting payments",
-            comment: "Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software"
-        )
-
-        static let updateAvailableLowBatt = NSLocalizedString(
-            "An update is available, but your reader battery is too low to update. Please charge your reader right away to continue accepting payments",
-            comment: "Settings > Manage Card Reader > Connected Reader > A prompt to charge a reader running older software"
-        )
-
-        static let updateNotNeeded = NSLocalizedString(
-            "Congratulations! Your reader is running the latest software",
             comment: "Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software"
         )
 

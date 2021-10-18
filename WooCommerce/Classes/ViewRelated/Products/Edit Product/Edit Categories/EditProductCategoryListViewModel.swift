@@ -4,6 +4,9 @@ import Yosemite
 /// View Model for the `EditProductCategory` view. Extends the presentation of a list of categories by handling the adition of a new category.
 ///
 final class EditProductCategoryListViewModel {
+    /// Title for the add category button
+    ///
+    let addCategoryButtonTitle: String = .addCategoryButtonTitle
 
     /// The shown product category list view model
     ///
@@ -38,4 +41,10 @@ final class EditProductCategoryListViewModel {
     func hasUnsavedChanges() -> Bool {
         return product.categories.sorted() != selectedCategories.sorted()
     }
+}
+
+// MARK: - Localization
+
+private extension String {
+    static let addCategoryButtonTitle = NSLocalizedString("Add Category", comment: "Action to add category on the Product Categories screen")
 }

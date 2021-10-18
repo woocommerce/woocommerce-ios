@@ -49,7 +49,7 @@ final class EditProductCategoryListViewController: UIViewController {
 //
 private extension EditProductCategoryListViewController {
     func configureAddButton() {
-        addButton.setTitle(NSLocalizedString("Add Category", comment: "Action to add category on the Product Categories screen"), for: .normal)
+        addButton.setTitle(viewModel.addCategoryButtonTitle, for: .normal)
         addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
         addButton.applySecondaryButtonStyle()
     }

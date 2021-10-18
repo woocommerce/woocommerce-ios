@@ -205,7 +205,6 @@ final class OrderDetailsDataSource: NSObject {
     func update(order: Order) {
         self.order = order
         resultsControllers.update(order: order)
-        reloadSections()
     }
 
     func configureResultsControllers(onReload: @escaping () -> Void) {

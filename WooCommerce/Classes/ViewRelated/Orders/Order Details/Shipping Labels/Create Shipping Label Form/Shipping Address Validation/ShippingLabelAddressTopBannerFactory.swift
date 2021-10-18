@@ -5,8 +5,7 @@ import Yosemite
 ///
 final class ShippingLabelAddressTopBannerFactory {
     static func addressErrorTopBannerView(shipType: ShipType,
-                                          hasPhone: Bool,
-                                          hasEmail: Bool,
+                                          hasContactInfo: Bool,
                                           openMapPressed: @escaping () -> Void,
                                           contactCustomerPressed: @escaping () -> Void) -> TopBannerView {
         // Set banner text and action buttons based on shipping address type (origin or destination),
@@ -15,7 +14,7 @@ final class ShippingLabelAddressTopBannerFactory {
             if shipType == .origin {
                 return Localization.infoShipFrom
             }
-            return hasPhone || hasEmail ? Localization.infoShipTo : Localization.infoShipToNoContact
+            return hasContactInfo ? Localization.infoShipTo : Localization.infoShipToNoContact
         }()
 
         let openMapAction = TopBannerViewModel.ActionButton(title: Localization.openMapAction) {
@@ -23,7 +22,7 @@ final class ShippingLabelAddressTopBannerFactory {
         }
 
         let contactCustomerAction: TopBannerViewModel.ActionButton? = {
-            guard hasPhone || hasEmail else {
+            guard hasContactInfo else {
                 return nil
             }
             return .init(title: Localization.contactCustomerAction) {

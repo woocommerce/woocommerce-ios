@@ -23,8 +23,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
         let email = viewModel.email
         let topBanner = ShippingLabelAddressTopBannerFactory.addressErrorTopBannerView(
             shipType: viewModel.type,
-            hasPhone: !phone.isNilOrEmpty,
-            hasEmail: !email.isNilOrEmpty
+            hasContactInfo: !phone.isNilOrEmpty || !email.isNilOrEmpty
         ) { [weak self] in
             MapsHelper.openAppleMaps(address: self?.viewModel.address?.formattedPostalAddress) { [weak self] (result) in
                 ServiceLocator.analytics.track(.shippingLabelEditAddressOpenMapButtonTapped)

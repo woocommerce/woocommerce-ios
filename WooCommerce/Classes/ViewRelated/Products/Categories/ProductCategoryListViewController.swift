@@ -3,6 +3,8 @@ import Yosemite
 import WordPressUI
 
 /// ProductCategoryListViewController: Displays the list of ProductCategories associated to the active Account.
+/// Please note that this class cannot be used as is, since there is not configuration for navigation.
+/// Instead, it shall be embedded through view controller containment by adding it as a child to other view controllers.
 ///
 final class ProductCategoryListViewController: UIViewController {
 

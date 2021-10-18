@@ -472,7 +472,7 @@ private extension PushNotificationsManager {
     /// Tracks the specified Notification's Payload.
     ///
     func trackNotification(with userInfo: [AnyHashable: Any]) {
-        var properties = [String: String]()
+        var properties = [String: Any]()
 
         if let noteID = userInfo.string(forKey: APNSKey.identifier) {
             properties[AnalyticKey.identifier] = noteID
@@ -484,6 +484,11 @@ private extension PushNotificationsManager {
 
         if let theToken = deviceToken {
             properties[AnalyticKey.token] = theToken
+        }
+
+        if let siteID = siteID,
+           let notificationSiteID = userInfo[APNSKey.siteID] as? Int64 {
+            properties[AnalyticKey.fromSelectedSite] = siteID == notificationSiteID
         }
 
         let event: WooAnalyticsStat = (applicationState == .background) ? .pushNotificationReceived : .pushNotificationAlertPressed
@@ -551,6 +556,7 @@ private enum AnalyticKey {
     static let identifier = "push_notification_note_id"
     static let type = "push_notification_type"
     static let token = "push_notification_token"
+    static let fromSelectedSite = "is_from_selected_site"
 }
 
 private enum PushType {

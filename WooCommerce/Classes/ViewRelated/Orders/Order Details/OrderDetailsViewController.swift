@@ -704,6 +704,7 @@ private extension OrderDetailsViewController {
                                     amount: value)
 
         ServiceLocator.analytics.track(.collectPaymentTapped)
+
         viewModel.collectPayment(
             onWaitingForInput: { [weak self] in
                 self?.paymentAlerts.tapOrInsertCard()
@@ -722,6 +723,7 @@ private extension OrderDetailsViewController {
                 switch result {
                 case .failure(let error):
                     ServiceLocator.analytics.track(.collectPaymentFailed, withError: error)
+                    DDLogError("Failed to collect payment: \(error.localizedDescription)")
                     self.paymentAlerts.error(error: error, tryAgain: {
                         self.retryCollectPayment()
                     })

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-10-13 11:54:05+0000 */
+/* Translation-Revision-Date: 2021-10-14 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -3634,7 +3634,7 @@
 "Unable to fetch countries." = "No se han podido recuperar los países.";
 
 /* Error notice when we fail to load country information in the edit address screen. */
-"Unable to fetch country information, please try again later." = "No se puede obtener la información sobre el país, inténtalo de nuevo más tarde.";
+"Unable to fetch country information, please try again later." = "No se puede obtener la información sobre el país; inténtalo de nuevo más tarde.";
 
 /* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
 "Unable to fulfill order #%1$d" = "No se ha podido realizar el pedido n.º %1$d";
@@ -3667,7 +3667,7 @@
 "Unable to save changes to the payment method" = "No se han podido guardar los cambios hechos en el método de pago";
 
 /* Error notice when we fail to update an address in the edit address screen. */
-"Unable to update address, please try again later." = "No se puede actualizar la dirección, inténtalo de nuevo más tarde.";
+"Unable to update address, please try again later." = "No se puede actualizar la dirección; inténtalo de nuevo más tarde.";
 
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "No se ha podido verificar Pagos en Persona para esta tienda";

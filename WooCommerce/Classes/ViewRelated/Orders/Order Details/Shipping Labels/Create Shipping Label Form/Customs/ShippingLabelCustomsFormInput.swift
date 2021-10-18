@@ -133,7 +133,7 @@ struct ShippingLabelCustomsFormInput: View {
     private var itnRows: some View {
         VStack(spacing: 0) {
             TitleAndTextFieldRow(title: Localization.itnTitle,
-                                 placeholder: viewModel.missingITNForDestination ? Localization.itnRequiredPlaceholder : Localization.itnPlaceholder,
+                                 placeholder: viewModel.missingITNForDestination || viewModel.missingITNForClassesAbove2500usd ? Localization.itnRequiredPlaceholder : Localization.itnPlaceholder,
                                  text: $viewModel.itn)
             Divider()
                 .padding(.leading, Constants.horizontalPadding)

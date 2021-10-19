@@ -40,6 +40,8 @@ private extension FilteredOrdersHeaderBar {
         backgroundColor = .listForeground
     }
 
+    /// Setup: Filters View
+    ///
     func configureFiltersView() {
         filtersView.layer.cornerRadius = 14.0
         filtersView.layer.borderWidth = 1.0

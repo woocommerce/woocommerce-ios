@@ -19,7 +19,7 @@ final class EditProductCategoryListViewModelTests: XCTestCase {
                                                          completion: { categories in
             selectedCategoriesOnCompletion = categories
         })
-    
+
         let newCategory = sampleCategory(categoryID: 1234, name: "Test")
 
         // When

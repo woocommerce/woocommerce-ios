@@ -10,6 +10,10 @@ final class FilteredOrdersHeaderBar: UIView {
     @IBOutlet private weak var filtersButtonLabel: UILabel!
     @IBOutlet private weak var filtersNumberLabel: UILabel!
 
+    /// The number of filters applied
+    ///
+    private var numberOfFilters = 0
+
     override func awakeFromNib() {
         super.awakeFromNib()
         configureBackground()
@@ -18,12 +22,8 @@ final class FilteredOrdersHeaderBar: UIView {
     }
 
     func setNumberOfFilters(_ filters: Int) {
-        guard filters != 0 else {
-            filtersNumberLabel.isHidden = true
-            return
-        }
-        filtersNumberLabel.isHidden = false
-        filtersNumberLabel.text = "\(filters)"
+        numberOfFilters = filters
+        configureLabels()
     }
 }
 
@@ -44,15 +44,19 @@ private extension FilteredOrdersHeaderBar {
     ///
     func configureLabels() {
         mainLabel.applyHeadlineStyle()
-        mainLabel.text = Localization.mainLabel
+        mainLabel.text = numberOfFilters == 0 ? Localization.noFiltersApplied : Localization.filtersApplied
         filtersButtonLabel.applySubheadlineStyle()
         filtersButtonLabel.text = Localization.filters
         filtersNumberLabel.applyFootnoteStyle()
+        filtersNumberLabel.isHidden = numberOfFilters == 0
+        filtersNumberLabel.text = "\(numberOfFilters)"
     }
 
     enum Localization {
-        static let mainLabel = NSLocalizedString("Filtered Orders",
-                                                 comment: "Filtered Orders header bar label on top of order list")
+        static let noFiltersApplied = NSLocalizedString("All Orders",
+                                                        comment: "Header bar label on top of order list when no filters are applied")
+        static let filtersApplied = NSLocalizedString("Filtered Orders",
+                                                      comment: "Header bar label on top of order list when filters are applied")
         static let filters = NSLocalizedString("Filters",
                                                comment: "Filters button text on header bar on top of order list")
     }

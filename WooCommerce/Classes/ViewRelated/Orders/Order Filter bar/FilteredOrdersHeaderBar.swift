@@ -36,7 +36,16 @@ private extension FilteredOrdersHeaderBar {
     ///
     func configureLabels() {
         mainLabel.applyHeadlineStyle()
+        mainLabel.text = Localization.mainLabel
         filtersButtonLabel.applySubheadlineStyle()
+        filtersButtonLabel.text = Localization.filters
         filtersNumberLabel.applyFootnoteStyle()
+    }
+
+    enum Localization {
+        static let mainLabel = NSLocalizedString("Filtered Orders",
+                                                 comment: "Filtered Orders header bar label on top of order list")
+        static let filters = NSLocalizedString("Filters",
+                                               comment: "Filters button text on header bar on top of order list")
     }
 }

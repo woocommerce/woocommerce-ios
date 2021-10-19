@@ -14,6 +14,8 @@ final class FilteredOrdersHeaderBar: UIView {
     ///
     private var numberOfFilters = 0
 
+    var onAction: (() -> Void)?
+
     override func awakeFromNib() {
         super.awakeFromNib()
         configureBackground()
@@ -24,6 +26,10 @@ final class FilteredOrdersHeaderBar: UIView {
     func setNumberOfFilters(_ filters: Int) {
         numberOfFilters = filters
         configureLabels()
+    }
+
+    @objc private func viewTapped() {
+        onAction?()
     }
 }
 
@@ -38,6 +44,9 @@ private extension FilteredOrdersHeaderBar {
         filtersView.layer.cornerRadius = 14.0
         filtersView.layer.borderWidth = 1.0
         filtersView.layer.borderColor = UIColor.secondaryButtonBorder.cgColor
+
+        let recognizer = UITapGestureRecognizer(target: self, action: #selector(viewTapped))
+        filtersView.addGestureRecognizer(recognizer)
     }
 
     /// Setup: Labels

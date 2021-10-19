@@ -27,10 +27,14 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
     ///
     @IBOutlet weak var topStackView: UIStackView!
 
-    /// The top bar for apply a filter, that will be embedded inside the stackview, on top of everything.
+    /// The top bar for apply filters, that will be embedded inside the stackview, on top of everything.
     ///
     private var filteredOrdersBar: FilteredOrdersHeaderBar = {
-        return FilteredOrdersHeaderBar.instantiateFromNib()
+        let filteredOrdersBar: FilteredOrdersHeaderBar = FilteredOrdersHeaderBar.instantiateFromNib()
+        filteredOrdersBar.onAction = {
+            // TODO: handle action
+        }
+        return filteredOrdersBar
     }()
 
     private lazy var analytics = ServiceLocator.analytics

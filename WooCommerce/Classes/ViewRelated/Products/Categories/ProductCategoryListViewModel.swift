@@ -30,7 +30,7 @@ final class ProductCategoryListViewModel {
 
     /// Product categories that will be eventually modified by the user
     ///
-    var selectedCategories: [ProductCategory]
+    private(set) var selectedCategories: [ProductCategory]
 
     /// Array of view models to be rendered by the View Controller.
     ///
@@ -104,6 +104,14 @@ final class ProductCategoryListViewModel {
     ///
     func reloadData() {
         onReloadNeeded?()
+    }
+
+    /// Add a new category added remotely, that will be selected
+    ///
+    func addAndSelectNewCategory(category: ProductCategory) {
+        selectedCategories.append(category)
+        updateViewModelsArray()
+        reloadData()
     }
 
     /// Select or Deselect a category

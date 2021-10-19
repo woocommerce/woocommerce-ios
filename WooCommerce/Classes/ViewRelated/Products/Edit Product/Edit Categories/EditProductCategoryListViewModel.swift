@@ -34,9 +34,7 @@ final class EditProductCategoryListViewModel {
     /// Add a new category added remotely, and that will be selected
     ///
     func addAndSelectNewCategory(category: ProductCategory) {
-        baseProductCategoryListViewModel.selectedCategories.append(category)
-        baseProductCategoryListViewModel.updateViewModelsArray()
-        baseProductCategoryListViewModel.reloadData()
+        baseProductCategoryListViewModel.addAndSelectNewCategory(category: category)
     }
 
     /// Reacts to the completion action

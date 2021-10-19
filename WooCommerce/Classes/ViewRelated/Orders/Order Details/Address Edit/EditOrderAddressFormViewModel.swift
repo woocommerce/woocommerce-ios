@@ -199,6 +199,9 @@ final class EditOrderAddressFormViewModel: ObservableObject {
 
             case .failure(let error):
                 DDLogError("⛔️ Error updating order: \(error)")
+                if self.type == .billing, updatedAddress.hasEmailAddress == false {
+                    DDLogError("⛔️ Email is nil in address. It won't work in WC < 5.9.0 (https://git.io/J68Gl)")
+                }
                 self.presentNotice = .error(.unableToUpdateAddress)
                 self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowFailed(subject: self.analyticsFlowType()))
             }

@@ -49,4 +49,8 @@ public enum FeatureFlag: Int {
     /// Allows to create quick pay orders
     ///
     case quickPayPrototype
+    
+    /// Display the bar for displaying the filters in the Order List
+    ///
+    case orderListFilters
 }

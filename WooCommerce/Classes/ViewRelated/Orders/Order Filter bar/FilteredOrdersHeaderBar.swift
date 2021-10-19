@@ -16,7 +16,6 @@ final class FilteredOrdersHeaderBar: UIView {
         configureLabels()
     }
 
-
 }
 
 // MARK: - Setup

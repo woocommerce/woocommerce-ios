@@ -50,6 +50,8 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
 
     override func viewDidLoad() {
 
+        // Display the filtered orders bar
+        // if the feature flag is enabled
         let isOrderListFiltersEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderListFilters)
         if isOrderListFiltersEnabled {
             topStackView.addArrangedSubview(filteredOrdersBar)

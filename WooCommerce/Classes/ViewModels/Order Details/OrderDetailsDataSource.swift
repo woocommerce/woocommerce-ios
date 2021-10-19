@@ -1490,7 +1490,7 @@ private extension OrderDetailsDataSource {
 
     func isOrderPaymentMethodEligibleForCardPayment() -> Bool {
         let paymentMethod = OrderPaymentMethod(rawValue: order.paymentMethodID)
-        return paymentMethod == .cod || paymentMethod == .none
+        return paymentMethod == .cod || paymentMethod == .woocommercePayments || paymentMethod == .none
     }
 
     func hasCardPresentEligiblePaymentGatewayAccount() -> Bool {

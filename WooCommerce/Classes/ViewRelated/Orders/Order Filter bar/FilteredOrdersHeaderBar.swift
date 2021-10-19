@@ -17,6 +17,14 @@ final class FilteredOrdersHeaderBar: UIView {
         configureLabels()
     }
 
+    func setNumberOfFilters(_ filters: Int) {
+        guard filters != 0 else {
+            filtersNumberLabel.isHidden = true
+            return
+        }
+        filtersNumberLabel.isHidden = false
+        filtersNumberLabel.text = "\(filters)"
+    }
 }
 
 // MARK: - Setup

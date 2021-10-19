@@ -8,23 +8,28 @@ final class FilteredOrdersHeaderBar: UIView {
     @IBOutlet private weak var mainLabel: UILabel!
     @IBOutlet private weak var filtersView: UIView!
     @IBOutlet private weak var filtersButtonLabel: UILabel!
+    @IBOutlet private weak var filtersNumberView: UIView!
     @IBOutlet private weak var filtersNumberLabel: UILabel!
 
     /// The number of filters applied
     ///
-    private var numberOfFilters = 0
+    private var numberOfFilters = 4 {
+        didSet {
+            filtersNumberLabel.text = "\(numberOfFilters)"
+        }
+    }
 
     var onAction: (() -> Void)?
 
     override func awakeFromNib() {
         super.awakeFromNib()
         configureBackground()
-        configureFiltersView()
-        configureLabels()
+        configureViews()
     }
 
     func setNumberOfFilters(_ filters: Int) {
         numberOfFilters = filters
+        filtersNumberView.isHidden = numberOfFilters == 0
         configureLabels()
     }
 
@@ -40,15 +45,17 @@ private extension FilteredOrdersHeaderBar {
         backgroundColor = .listForeground
     }
 
-    /// Setup: Filters View
+    /// Setup: Views
     ///
-    func configureFiltersView() {
+    func configureViews() {
         filtersView.layer.cornerRadius = 14.0
         filtersView.layer.borderWidth = 1.0
         filtersView.layer.borderColor = UIColor.secondaryButtonBorder.cgColor
-
         let recognizer = UITapGestureRecognizer(target: self, action: #selector(viewTapped))
         filtersView.addGestureRecognizer(recognizer)
+
+        filtersNumberView.backgroundColor = .accent
+        filtersNumberView.layer.cornerRadius = filtersNumberView.frame.height/2
     }
 
     /// Setup: Labels
@@ -59,8 +66,6 @@ private extension FilteredOrdersHeaderBar {
         filtersButtonLabel.applySubheadlineStyle()
         filtersButtonLabel.text = Localization.filters
         filtersNumberLabel.applyFootnoteStyle()
-        filtersNumberLabel.isHidden = numberOfFilters == 0
-        filtersNumberLabel.text = "\(numberOfFilters)"
     }
 
     enum Localization {

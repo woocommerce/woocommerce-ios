@@ -21,33 +21,34 @@ final class EditProductCategoryListViewModel {
     private let baseProductCategoryListViewModel: ProductCategoryListViewModel
 
     private let product: Product
-    var selectedCategories: [ProductCategory] {
-        get {
-            baseProductCategoryListViewModel.selectedCategories
-        }
-        set {
-            baseProductCategoryListViewModel.selectedCategories = newValue
-        }
-    }
+    private let onCompletion: EditProductCategoryListViewController.Completion
 
-    init(product: Product, baseProductCategoryListViewModel: ProductCategoryListViewModel) {
+    init(product: Product,
+         baseProductCategoryListViewModel: ProductCategoryListViewModel,
+         completion: @escaping EditProductCategoryListViewController.Completion) {
         self.product = product
         self.baseProductCategoryListViewModel = baseProductCategoryListViewModel
-        self.selectedCategories = product.categories
+        onCompletion = completion
     }
 
     /// Add a new category added remotely, and that will be selected
     ///
     func addAndSelectNewCategory(category: ProductCategory) {
-        selectedCategories.append(category)
+        baseProductCategoryListViewModel.selectedCategories.append(category)
         baseProductCategoryListViewModel.updateViewModelsArray()
         baseProductCategoryListViewModel.reloadData()
+    }
+
+    /// Reacts to the completion action
+    ///
+    func doneButtonTapped() {
+        onCompletion(baseProductCategoryListViewModel.selectedCategories)
     }
 
     /// Informs of wether there are still changes that were not commited
     ///
     func hasUnsavedChanges() -> Bool {
-        return product.categories.sorted() != selectedCategories.sorted()
+        return product.categories.sorted() != baseProductCategoryListViewModel.selectedCategories.sorted()
     }
 }
 

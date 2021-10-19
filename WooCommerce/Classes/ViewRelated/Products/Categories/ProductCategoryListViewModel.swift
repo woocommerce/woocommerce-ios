@@ -62,11 +62,10 @@ final class ProductCategoryListViewModel {
         return ResultsController<StorageProductCategory>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
-    init(storesManager: StoresManager = ServiceLocator.stores, siteID: Int64) {
+    init(storesManager: StoresManager = ServiceLocator.stores, siteID: Int64, selectedCategories: [ProductCategory]) {
         self.storesManager = storesManager
         self.siteID = siteID
-
-        selectedCategories = []
+        self.selectedCategories = selectedCategories
     }
 
     /// Load existing categories from storage and fire the synchronize all categories action.

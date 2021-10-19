@@ -23,8 +23,10 @@ final class EditProductCategoryListViewController: UIViewController {
 
     init(product: Product, completion: @escaping Completion) {
         self.product = product
-        productCategoryListViewController = ProductCategoryListViewController(siteID: product.siteID)
-        viewModel = EditProductCategoryListViewModel(product: product, baseProductCategoryListViewModel: productCategoryListViewController.viewModel)
+        productCategoryListViewController = ProductCategoryListViewController(siteID: product.siteID, selectedCategories: product.categories)
+        viewModel = EditProductCategoryListViewModel(product: product,
+                                                     baseProductCategoryListViewModel: productCategoryListViewController.viewModel,
+                                                     completion: completion)
         siteID = product.siteID
         onCompletion = completion
 
@@ -108,7 +110,7 @@ extension EditProductCategoryListViewController {
 
     @objc private func doneButtonTapped() {
         ServiceLocator.analytics.track(.productCategorySettingsDoneButtonTapped)
-        onCompletion(viewModel.selectedCategories)
+        viewModel.doneButtonTapped()
     }
 
     @objc private func addButtonTapped() {

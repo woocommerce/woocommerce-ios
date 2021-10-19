@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+7.9
+-----
+
+
 7.8
 -----
 - [***] Shipping Labels: merchants can create multiple packages for the same order, moving the items between different packages. [https://github.com/woocommerce/woocommerce-ios/pull/5190]

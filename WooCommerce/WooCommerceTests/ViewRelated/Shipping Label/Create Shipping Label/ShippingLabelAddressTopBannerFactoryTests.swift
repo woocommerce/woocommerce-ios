@@ -8,7 +8,7 @@ class ShippingLabelAddressTopBannerFactoryTests: XCTestCase {
         let topBannerView = ShippingLabelAddressTopBannerFactory.addressErrorTopBannerView(shipType: .origin,
                                                                                            hasContactInfo: false,
                                                                                            openMapPressed: {},
-                                                                                           contactCustomerPressed: {})
+                                                                                           contactCustomerPressed: { _ in })
 
         // Then
         XCTAssertNotNil(topBannerView)
@@ -22,7 +22,7 @@ class ShippingLabelAddressTopBannerFactoryTests: XCTestCase {
         let topBannerView = ShippingLabelAddressTopBannerFactory.addressErrorTopBannerView(shipType: .destination,
                                                                                            hasContactInfo: false,
                                                                                            openMapPressed: {},
-                                                                                           contactCustomerPressed: {})
+                                                                                           contactCustomerPressed: { _ in })
 
         // Then
         XCTAssertNotNil(topBannerView)
@@ -36,7 +36,7 @@ class ShippingLabelAddressTopBannerFactoryTests: XCTestCase {
         let topBannerView = ShippingLabelAddressTopBannerFactory.addressErrorTopBannerView(shipType: .destination,
                                                                                            hasContactInfo: true,
                                                                                            openMapPressed: {},
-                                                                                           contactCustomerPressed: {})
+                                                                                           contactCustomerPressed: { _ in })
 
         // Then
         XCTAssertNotNil(topBannerView)

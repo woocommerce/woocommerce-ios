@@ -12,14 +12,22 @@ final class EditProductCategoryListViewModelTests: XCTestCase {
     func testAddAndSelectNewCategory() {
         // Given
         let product = Product.fake()
-        let viewModel = EditProductCategoryListViewModel(product: product, baseProductCategoryListViewModel: ProductCategoryListViewModel(siteID: 1))
+
+        var selectedCategoriesOnCompletion: [ProductCategory] = []
+        let viewModel = EditProductCategoryListViewModel(product: product,
+                                                         baseProductCategoryListViewModel: ProductCategoryListViewModel(siteID: 1),
+                                                         completion: { categories in
+            selectedCategoriesOnCompletion = categories
+        })
+    
         let newCategory = sampleCategory(categoryID: 1234, name: "Test")
 
         // When
         viewModel.addAndSelectNewCategory(category: newCategory)
+        viewModel.onCompletion()
 
         // Then
-        XCTAssertEqual(viewModel.selectedCategories.first, newCategory)
+        XCTAssertEqual(selectedCategoriesOnCompletion.first, newCategory)
     }
 }
 

@@ -62,7 +62,7 @@ final class ProductCategoryListViewModel {
         return ResultsController<StorageProductCategory>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
-    init(storesManager: StoresManager = ServiceLocator.stores, siteID: Int64, selectedCategories: [ProductCategory]) {
+    init(storesManager: StoresManager = ServiceLocator.stores, siteID: Int64, selectedCategories: [ProductCategory] = []) {
         self.storesManager = storesManager
         self.siteID = siteID
         self.selectedCategories = selectedCategories

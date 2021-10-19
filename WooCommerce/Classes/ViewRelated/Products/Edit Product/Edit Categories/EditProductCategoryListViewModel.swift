@@ -21,14 +21,14 @@ final class EditProductCategoryListViewModel {
     private let baseProductCategoryListViewModel: ProductCategoryListViewModel
 
     private let product: Product
-    private let onCompletion: EditProductCategoryListViewController.Completion
+    private let onCompletionCallback: EditProductCategoryListViewController.Completion
 
     init(product: Product,
          baseProductCategoryListViewModel: ProductCategoryListViewModel,
          completion: @escaping EditProductCategoryListViewController.Completion) {
         self.product = product
         self.baseProductCategoryListViewModel = baseProductCategoryListViewModel
-        onCompletion = completion
+        onCompletionCallback = completion
     }
 
     /// Add a new category added remotely, and that will be selected
@@ -39,8 +39,8 @@ final class EditProductCategoryListViewModel {
 
     /// Reacts to the completion action
     ///
-    func doneButtonTapped() {
-        onCompletion(baseProductCategoryListViewModel.selectedCategories)
+    func onCompletion() {
+        onCompletionCallback(baseProductCategoryListViewModel.selectedCategories)
     }
 
     /// Informs of wether there are still changes that were not commited

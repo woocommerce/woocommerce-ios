@@ -62,6 +62,22 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(storesManager.numberOfResponsesConsumed, 1)
     }
+
+    func testItCallsReloadNeededWhenRequested() {
+        // Given
+        let siteID: Int64 = 1
+        let viewModel = ProductCategoryListViewModel(storesManager: storesManager, siteID: siteID)
+        var reloadNeededIsCalled = false
+        viewModel.observeReloadNeeded {
+            reloadNeededIsCalled = true
+        }
+
+        // When
+        viewModel.reloadData()
+
+        // Then
+        XCTAssertTrue(reloadNeededIsCalled)
+    }
 }
 
 

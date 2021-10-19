@@ -110,7 +110,7 @@ extension EditProductCategoryListViewController {
 
     @objc private func doneButtonTapped() {
         ServiceLocator.analytics.track(.productCategorySettingsDoneButtonTapped)
-        viewModel.doneButtonTapped()
+        viewModel.onCompletion()
     }
 
     @objc private func addButtonTapped() {

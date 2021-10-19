@@ -3,8 +3,8 @@ import UIKit
 /// Modal presented on error
 final class CardPresentModalError: CardPresentPaymentsModalViewModel {
 
-    /// The error rmessage eturned by the stack. Usually error.localizedDescription.
-    private let message: String
+    /// The error returned by the stack
+    private let error: Error
 
     /// A closure to execute when the primary button is tapped
     private let primaryAction: () -> Void
@@ -25,13 +25,13 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
     let auxiliaryButtonTitle: String? = nil
 
     var bottomTitle: String? {
-        message
+        error.localizedDescription
     }
 
     let bottomSubtitle: String? = nil
 
-    init(message: String, primaryAction: @escaping () -> Void) {
-        self.message = message
+    init(error: Error, primaryAction: @escaping () -> Void) {
+        self.error = error
         self.primaryAction = primaryAction
     }
 

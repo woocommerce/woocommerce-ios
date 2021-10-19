@@ -24,10 +24,10 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="34c-zg-V3z">
-                    <rect key="frame" x="254" y="8" width="105" height="28"/>
+                    <rect key="frame" x="246" y="8" width="113" height="28"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="P55-TE-oxY">
-                            <rect key="frame" x="8" y="4" width="89" height="20.5"/>
+                            <rect key="frame" x="12" y="4" width="89" height="20.5"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y4N-fM-glL">
                                     <rect key="frame" x="0.0" y="0.0" width="41.5" height="20.5"/>
@@ -46,10 +46,10 @@
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstItem="P55-TE-oxY" firstAttribute="leading" secondItem="34c-zg-V3z" secondAttribute="leading" constant="8" id="6aM-sM-MR0"/>
+                        <constraint firstItem="P55-TE-oxY" firstAttribute="leading" secondItem="34c-zg-V3z" secondAttribute="leading" constant="12" id="6aM-sM-MR0"/>
                         <constraint firstItem="P55-TE-oxY" firstAttribute="centerY" secondItem="34c-zg-V3z" secondAttribute="centerY" id="Qaj-Ua-xWs"/>
                         <constraint firstAttribute="height" constant="28" id="t8e-fB-Ai6"/>
-                        <constraint firstAttribute="trailing" secondItem="P55-TE-oxY" secondAttribute="trailing" constant="8" id="u1L-jA-nHA"/>
+                        <constraint firstAttribute="trailing" secondItem="P55-TE-oxY" secondAttribute="trailing" constant="12" id="u1L-jA-nHA"/>
                     </constraints>
                 </view>
             </subviews>

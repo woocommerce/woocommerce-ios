@@ -23,37 +23,49 @@
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="P55-TE-oxY">
-                    <rect key="frame" x="276" y="0.0" width="83" height="44"/>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="34c-zg-V3z">
+                    <rect key="frame" x="260" y="8" width="99" height="28"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y4N-fM-glL">
-                            <rect key="frame" x="0.0" y="0.0" width="41.5" height="44"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                            <nil key="textColor"/>
-                            <nil key="highlightedColor"/>
-                        </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QuU-Io-Dz9">
-                            <rect key="frame" x="41.5" y="0.0" width="41.5" height="44"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                            <nil key="textColor"/>
-                            <nil key="highlightedColor"/>
-                        </label>
+                        <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="P55-TE-oxY">
+                            <rect key="frame" x="8" y="4" width="83" height="20.5"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y4N-fM-glL">
+                                    <rect key="frame" x="0.0" y="0.0" width="41.5" height="20.5"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QuU-Io-Dz9">
+                                    <rect key="frame" x="41.5" y="0.0" width="41.5" height="20.5"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                        </stackView>
                     </subviews>
-                </stackView>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstItem="P55-TE-oxY" firstAttribute="leading" secondItem="34c-zg-V3z" secondAttribute="leading" constant="8" id="6aM-sM-MR0"/>
+                        <constraint firstItem="P55-TE-oxY" firstAttribute="centerY" secondItem="34c-zg-V3z" secondAttribute="centerY" id="Qaj-Ua-xWs"/>
+                        <constraint firstAttribute="height" constant="28" id="t8e-fB-Ai6"/>
+                        <constraint firstAttribute="trailing" secondItem="P55-TE-oxY" secondAttribute="trailing" constant="8" id="u1L-jA-nHA"/>
+                    </constraints>
+                </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="DSK-6z-QUa"/>
             <constraints>
-                <constraint firstItem="P55-TE-oxY" firstAttribute="top" secondItem="eDg-Zp-eCF" secondAttribute="top" id="I97-ZJ-Njt"/>
-                <constraint firstAttribute="trailing" secondItem="P55-TE-oxY" secondAttribute="trailing" constant="16" id="UyD-zE-enW"/>
+                <constraint firstItem="34c-zg-V3z" firstAttribute="centerY" secondItem="eDg-Zp-eCF" secondAttribute="centerY" id="Dxb-3k-0d0"/>
+                <constraint firstAttribute="trailing" secondItem="34c-zg-V3z" secondAttribute="trailing" constant="16" id="IqR-eo-3Ec"/>
                 <constraint firstItem="r3U-zo-uYF" firstAttribute="top" secondItem="eDg-Zp-eCF" secondAttribute="top" id="Vq0-Yg-FRD"/>
                 <constraint firstAttribute="bottom" secondItem="r3U-zo-uYF" secondAttribute="bottom" id="W7n-Hy-Hyd"/>
                 <constraint firstItem="r3U-zo-uYF" firstAttribute="leading" secondItem="eDg-Zp-eCF" secondAttribute="leading" constant="16" id="pG9-uN-iXD"/>
-                <constraint firstItem="DSK-6z-QUa" firstAttribute="bottom" secondItem="P55-TE-oxY" secondAttribute="bottom" id="t98-KC-Y4V"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
                 <outlet property="filtersButtonLabel" destination="Y4N-fM-glL" id="slT-Fb-M5m"/>
                 <outlet property="filtersNumberLabel" destination="QuU-Io-Dz9" id="HBo-dZ-pYI"/>
+                <outlet property="filtersView" destination="34c-zg-V3z" id="PrQ-7k-vYX"/>
                 <outlet property="mainLabel" destination="r3U-zo-uYF" id="2bV-ER-1xX"/>
             </connections>
             <point key="canvasLocation" x="81.884057971014499" y="-99.107142857142847"/>

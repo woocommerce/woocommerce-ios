@@ -6,13 +6,14 @@ import UIKit
 final class FilteredOrdersHeaderBar: UIView {
 
     @IBOutlet private weak var mainLabel: UILabel!
+    @IBOutlet private weak var filtersView: UIView!
     @IBOutlet private weak var filtersButtonLabel: UILabel!
     @IBOutlet private weak var filtersNumberLabel: UILabel!
 
     override func awakeFromNib() {
         super.awakeFromNib()
-
         configureBackground()
+        configureFiltersView()
         configureLabels()
     }
 
@@ -23,6 +24,12 @@ final class FilteredOrdersHeaderBar: UIView {
 private extension FilteredOrdersHeaderBar {
     func configureBackground() {
         backgroundColor = .listForeground
+    }
+
+    func configureFiltersView() {
+        filtersView.layer.cornerRadius = 14.0
+        filtersView.layer.borderWidth = 1.0
+        filtersView.layer.borderColor = UIColor.secondaryButtonBorder.cgColor
     }
 
     /// Setup: Labels

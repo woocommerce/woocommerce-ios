@@ -724,7 +724,7 @@ private extension OrderDetailsViewController {
                 case .failure(let error):
                     ServiceLocator.analytics.track(.collectPaymentFailed, withError: error)
                     DDLogError("Failed to collect payment: \(error.localizedDescription)")
-                    self.paymentAlerts.error(error: error, tryAgain: {
+                    self.paymentAlerts.error(message: error.localizedDescription, tryAgain: {
                         self.retryCollectPayment()
                     })
                 case .success(let receiptParameters):

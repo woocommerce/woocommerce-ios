@@ -68,8 +68,8 @@ final class OrderDetailsPaymentAlerts {
         presentViewModel(viewModel: viewModel)
     }
 
-    func error(error: Error, tryAgain: @escaping () -> Void) {
-        let viewModel = errorViewModel(error: error, tryAgain: tryAgain)
+    func error(message: String, tryAgain: @escaping () -> Void) {
+        let viewModel = errorViewModel(message: message, tryAgain: tryAgain)
         presentViewModel(viewModel: viewModel)
     }
 
@@ -109,8 +109,8 @@ private extension OrderDetailsPaymentAlerts {
         }
     }
 
-    func errorViewModel(error: Error, tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalError(error: error, primaryAction: tryAgain)
+    func errorViewModel(message: String, tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalError(message: message, primaryAction: tryAgain)
     }
 
     func retryableErrorViewModel(tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {

@@ -34,7 +34,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
                     self?.displayAppleMapsErrorNotice()
                 }
             }
-        } contactCustomerPressed: { [weak self] in
+        } contactCustomerPressed: { [weak self] sourceView in
             guard let self = self else { return }
             ServiceLocator.analytics.track(.shippingLabelEditAddressContactCustomerButtonTapped)
 
@@ -59,7 +59,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
             }
 
             let popoverController = actionSheet.popoverPresentationController
-            popoverController?.sourceView = self.tableView.tableHeaderView
+            popoverController?.sourceView = sourceView
 
             self.present(actionSheet, animated: true)
         }

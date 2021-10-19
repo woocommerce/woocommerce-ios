@@ -30,10 +30,10 @@ struct OrderAddOnTopBanner: UIViewRepresentable {
         let topButton = TopBannerViewModel.TopButtonType.chevron {
             context.coordinator.bannerWrapper.invalidateIntrinsicContentSize() // Forces the view to recalculate it's size as it collapses/expands
         }
-        let giveFeedbackButton = TopBannerViewModel.ActionButton(title: Localization.giveFeedback) {
+        let giveFeedbackButton = TopBannerViewModel.ActionButton(title: Localization.giveFeedback) { _ in
             onGiveFeedback?()
         }
-        let dismissButton = TopBannerViewModel.ActionButton(title: Localization.dismiss) {
+        let dismissButton = TopBannerViewModel.ActionButton(title: Localization.dismiss) { _ in
             onDismiss?()
         }
 

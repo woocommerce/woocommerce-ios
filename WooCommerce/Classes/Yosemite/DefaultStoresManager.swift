@@ -396,14 +396,13 @@ private extension DefaultStoresManager {
     /// Loads the specified siteID into the Session, if possible.
     ///
     func restoreSessionSite(with siteID: Int64) {
-        let action = AccountAction.loadSite(siteID: siteID) { [weak self] site in
-            guard let `self` = self, let site = site else {
+        let action = AccountAction.loadAndSynchronizeSiteIfNeeded(siteID: siteID) { [weak self] result in
+            guard let self = self else { return }
+            guard case .success(let site) = result else {
                 return
             }
-
             self.sessionManager.defaultSite = site
         }
-
         dispatch(action)
     }
 }

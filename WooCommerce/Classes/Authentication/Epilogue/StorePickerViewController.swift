@@ -604,7 +604,7 @@ extension StorePickerViewController: UITableViewDataSource {
         cell.name = site.name
         cell.url = site.url
         cell.allowsCheckmark = state.multipleStoresAvailable
-        cell.displaysCheckmark = currentlySelectedSite == site
+        cell.displaysCheckmark = currentlySelectedSite?.siteID == site.siteID
 
         return cell
     }

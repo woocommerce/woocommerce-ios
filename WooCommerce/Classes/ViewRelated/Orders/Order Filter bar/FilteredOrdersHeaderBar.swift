@@ -6,36 +6,30 @@ import UIKit
 final class FilteredOrdersHeaderBar: UIView {
 
     @IBOutlet private weak var mainLabel: UILabel!
-    @IBOutlet private weak var filtersView: UIView!
-    @IBOutlet private weak var filtersButtonLabel: UILabel!
-    @IBOutlet private weak var filtersNumberView: UIView!
-    @IBOutlet private weak var filtersNumberLabel: UILabel!
+    @IBOutlet private weak var filterButton: UIButton!
 
     /// The number of filters applied
     ///
-    private var numberOfFilters = 4 {
-        didSet {
-            filtersNumberLabel.text = "\(numberOfFilters)"
-        }
-    }
+    private var numberOfFilters = 4
 
     var onAction: (() -> Void)?
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureBackground()
-        configureViews()
+        configureLabels()
+        configureButtons()
     }
 
     func setNumberOfFilters(_ filters: Int) {
         numberOfFilters = filters
-        filtersNumberView.isHidden = numberOfFilters == 0
         configureLabels()
+        configureButtons()
     }
 
-    @objc private func viewTapped() {
+    @IBAction func filterButtonTapped(_ sender: Any) {
         onAction?()
     }
+
 }
 
 // MARK: - Setup
@@ -45,27 +39,22 @@ private extension FilteredOrdersHeaderBar {
         backgroundColor = .listForeground
     }
 
-    /// Setup: Views
-    ///
-    func configureViews() {
-        filtersView.layer.cornerRadius = 14.0
-        filtersView.layer.borderWidth = 1.0
-        filtersView.layer.borderColor = UIColor.secondaryButtonBorder.cgColor
-        let recognizer = UITapGestureRecognizer(target: self, action: #selector(viewTapped))
-        filtersView.addGestureRecognizer(recognizer)
-
-        filtersNumberView.backgroundColor = .accent
-        filtersNumberView.layer.cornerRadius = filtersNumberView.frame.height/2
-    }
-
     /// Setup: Labels
     ///
     func configureLabels() {
         mainLabel.applyHeadlineStyle()
         mainLabel.text = numberOfFilters == 0 ? Localization.noFiltersApplied : Localization.filtersApplied
-        filtersButtonLabel.applySubheadlineStyle()
-        filtersButtonLabel.text = Localization.filters
-        filtersNumberLabel.applyFootnoteStyle()
+    }
+
+    /// Setup: Buttons
+    ///
+    func configureButtons() {
+        filterButton.applyLinkButtonStyle()
+        let title =  numberOfFilters == 0 ?
+        Localization.buttonWithoutActiveFilters :
+        String.localizedStringWithFormat(Localization.buttonWithActiveFilters, numberOfFilters)
+
+        filterButton.setTitle(title, for: .normal)
     }
 
     enum Localization {
@@ -75,5 +64,11 @@ private extension FilteredOrdersHeaderBar {
                                                       comment: "Header bar label on top of order list when filters are applied")
         static let filters = NSLocalizedString("Filters",
                                                comment: "Filters button text on header bar on top of order list")
+        static let buttonWithoutActiveFilters =
+            NSLocalizedString("Filter",
+                              comment: "Title of the toolbar button to filter orders without filters applied.")
+        static let buttonWithActiveFilters =
+            NSLocalizedString("Filter (%ld)",
+                              comment: "Title of the toolbar button to filter orders with filters applied.")
     }
 }

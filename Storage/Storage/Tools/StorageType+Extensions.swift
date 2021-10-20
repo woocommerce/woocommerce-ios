@@ -28,7 +28,7 @@ public extension StorageType {
 
     /// Retrieves all stored sites.
     ///
-    func loadAllSites() -> [Site]? {
+    func loadAllSites() -> [Site] {
         allObjects(ofType: Site.self, matching: nil, sortedBy: nil)
     }
 

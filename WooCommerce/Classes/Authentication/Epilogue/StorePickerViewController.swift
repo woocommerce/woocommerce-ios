@@ -274,7 +274,7 @@ private extension StorePickerViewController {
 //
 private extension StorePickerViewController {
     func synchronizeSites(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let action = AccountAction.synchronizeSites { _ in }
+        let action = AccountAction.synchronizeSites(onCompletion: onCompletion)
         ServiceLocator.stores.dispatch(action)
     }
 }

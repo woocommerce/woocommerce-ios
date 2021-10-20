@@ -207,11 +207,15 @@ private enum Row: CaseIterable {
     case orderAddOns
     case orderAddOnsDescription
 
+    // Orders.
+    case quickPay
+    case quickPayDescription
+
     var type: UITableViewCell.Type {
         switch self {
-        case .orderAddOns:
+        case .orderAddOns, .quickPay:
             return SwitchTableViewCell.self
-        case .orderAddOnsDescription:
+        case .orderAddOnsDescription, .quickPayDescription:
             return BasicTableViewCell.self
         }
     }
@@ -226,5 +230,9 @@ private extension BetaFeaturesViewController {
         static let orderAddOnsTitle = NSLocalizedString("View Add-Ons", comment: "Cell title on the beta features screen to enable the order add-ons feature")
         static let orderAddOnsDescription = NSLocalizedString("Test out viewing Order Add-Ons as we get ready to launch",
                                                               comment: "Cell description on the beta features screen to enable the order add-ons feature")
+
+        static let quickPayTitle = NSLocalizedString("Quick Order", comment: "Cell title on the beta features screen to enable the Quick Pay feature")
+        static let quickPayDescription = NSLocalizedString("Test out creating orders with minimal information as we get ready to launch",
+                                                              comment: "Cell description on the beta features screen to enable the Quick Pay feature")
     }
 }

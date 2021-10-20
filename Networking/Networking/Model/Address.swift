@@ -70,6 +70,36 @@ public struct Address: Codable, GeneratedFakeable, GeneratedCopiable {
                   email: email)
     }
 
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(firstName, forKey: .firstName)
+        try container.encode(lastName, forKey: .lastName)
+        try container.encodeIfPresent(company, forKey: .company)
+        try container.encode(address1, forKey: .address1)
+        try container.encodeIfPresent(address2, forKey: .address2)
+        try container.encode(city, forKey: .city)
+        try container.encode(state, forKey: .state)
+        try container.encode(postcode, forKey: .postcode)
+        try container.encode(country, forKey: .country)
+        try container.encodeIfPresent(phone, forKey: .phone)
+
+        /// Encoding an `email` has some special conditions.
+        /// - Encode the content to update the value.
+        /// - Encode `nil` to clear the value
+        /// - Don't encode to leave the value unaltered.
+        /// PS: Encoding an empty string will produce an error due to server validations.
+        ///
+        switch email {
+        case .some(let content) where content.isEmpty:
+            try container.encodeNil(forKey: .email)
+        case .some(let content):
+            try container.encode(content, forKey: .email)
+        case .none:
+            break
+        }
+    }
+
     public static var empty: Address {
         self.init(firstName: "",
                   lastName: "",

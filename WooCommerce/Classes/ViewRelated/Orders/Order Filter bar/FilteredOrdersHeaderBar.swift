@@ -10,7 +10,7 @@ final class FilteredOrdersHeaderBar: UIView {
 
     /// The number of filters applied
     ///
-    private var numberOfFilters = 4
+    private var numberOfFilters = 0
 
     var onAction: (() -> Void)?
 

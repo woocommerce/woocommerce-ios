@@ -55,6 +55,7 @@ private extension FilteredOrdersHeaderBar {
         String.localizedStringWithFormat(Localization.buttonWithActiveFilters, numberOfFilters)
 
         filterButton.setTitle(title, for: .normal)
+        filterButton.contentEdgeInsets = .zero
     }
 
     enum Localization {

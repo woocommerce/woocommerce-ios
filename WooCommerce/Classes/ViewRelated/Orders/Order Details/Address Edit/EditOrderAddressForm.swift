@@ -69,7 +69,9 @@ final class EditOrderAddressHostingController: UIHostingController<EditOrderAddr
                         self?.dismiss(animated: true) // Dismiss VC because we need country information to continue.
 
                     case .unableToUpdateAddress:
-                        self?.modalNoticePresenter.enqueue(notice: .init(title: error.errorDescription ?? "", feedbackType: .error))
+                        self?.modalNoticePresenter.enqueue(notice: .init(title: error.errorDescription ?? "",
+                                                                         message: error.recoverySuggestion,
+                                                                         feedbackType: .error))
                     }
                 }
 

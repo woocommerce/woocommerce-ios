@@ -250,8 +250,18 @@ extension EditOrderAddressFormViewModel {
                 return NSLocalizedString("Unable to fetch country information, please try again later.",
                                          comment: "Error notice when we fail to load country information in the edit address screen.")
             case .unableToUpdateAddress:
-                return NSLocalizedString("Unable to update address, please try again later.",
-                                         comment: "Error notice when we fail to update an address in the edit address screen.")
+                return NSLocalizedString("Unable to update address.",
+                                         comment: "Error notice title when we fail to update an address in the edit address screen.")
+            }
+        }
+
+        var recoverySuggestion: String? {
+            switch self {
+            case .unableToLoadCountries:
+                return nil
+            case .unableToUpdateAddress:
+                return NSLocalizedString("Please make sure you are running the latest version of WooCommerce and try again later.",
+                                         comment: "Error notice recovery suggestion when we fail to update an address in the edit address screen.")
             }
         }
     }

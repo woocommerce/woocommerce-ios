@@ -74,8 +74,8 @@ private extension BetaFeaturesViewController {
     func configureSections() {
         self.sections = [
             productsSection(),
-            ordersSection()
-        ]
+            ServiceLocator.featureFlagService.isFeatureFlagEnabled(.quickPayPrototype) ? ordersSection() : nil
+        ].compactMap { $0 }
     }
 
     func productsSection() -> Section {

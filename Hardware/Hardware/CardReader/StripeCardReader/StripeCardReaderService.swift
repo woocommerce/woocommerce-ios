@@ -279,6 +279,10 @@ extension StripeCardReaderService: CardReaderService {
             }.eraseToAnyPublisher()
         }
         
+        print("==== connecting to ")
+        print(stripeReader)
+        print("//// connecting to ")
+        
         return getInternetConfiguration(stripeReader).flatMap { configuration in
             self.connect(stripeReader, configuration: configuration)
         }.eraseToAnyPublisher()

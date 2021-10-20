@@ -197,7 +197,8 @@ extension AccountStore {
         derivedStorage.perform {
             // Deletes sites in storage that are not in `readOnlySites`.
             let storageSites = derivedStorage.loadAllSites()
-            storageSites?.filter { readOnlySites.map { $0.siteID }.contains($0.siteID) == false }
+            let readOnlySiteIDs = readOnlySites.map(\.siteID)
+            storageSites.filter { readOnlySiteIDs.contains($0.siteID) == false }
                 .forEach { remotelyDeletedSite in
                     derivedStorage.deleteObject(remotelyDeletedSite)
                 }

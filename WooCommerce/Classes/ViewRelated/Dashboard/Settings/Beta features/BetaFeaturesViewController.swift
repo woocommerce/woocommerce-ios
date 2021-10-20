@@ -73,13 +73,19 @@ private extension BetaFeaturesViewController {
     ///
     func configureSections() {
         self.sections = [
-            productsSection()
+            productsSection(),
+            ordersSection()
         ]
     }
 
     func productsSection() -> Section {
         return Section(rows: [.orderAddOns,
                               .orderAddOnsDescription])
+    }
+
+    func ordersSection() -> Section {
+        Section(rows: [.quickPay,
+                       .quickPayDescription])
     }
 
     /// Register table cells.
@@ -104,6 +110,11 @@ private extension BetaFeaturesViewController {
             configureOrderAddOnsSwitch(cell: cell)
         case let cell as BasicTableViewCell where row == .orderAddOnsDescription:
             configureOrderAddOnsDescription(cell: cell)
+        // Orders
+        case let cell as SwitchTableViewCell where row == .quickPay:
+            configureQuickPaySwitch(cell: cell)
+        case let cell as BasicTableViewCell where row == .quickPayDescription:
+            configureQuickPayDescription(cell: cell)
         default:
             fatalError()
         }
@@ -142,6 +153,16 @@ private extension BetaFeaturesViewController {
     func configureOrderAddOnsDescription(cell: BasicTableViewCell) {
         configureCommonStylesForDescriptionCell(cell)
         cell.textLabel?.text = Localization.orderAddOnsDescription
+    }
+
+    func configureQuickPaySwitch(cell: SwitchTableViewCell) {
+        configureCommonStylesForSwitchCell(cell)
+        cell.title = Localization.quickPayTitle
+    }
+
+    func configureQuickPayDescription(cell: BasicTableViewCell) {
+        configureCommonStylesForDescriptionCell(cell)
+        cell.textLabel?.text = Localization.quickPayDescription
     }
 }
 

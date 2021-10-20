@@ -94,7 +94,7 @@ private extension CardPresentPaymentStore {
                     }
                 },
                 receiveValue: { readers in
-                    let supportedReaders = readers.filter({$0.readerType == .chipper || $0.readerType == .stripeM2})
+                    let supportedReaders = readers.filter({$0.readerType == .chipper || $0.readerType == .stripeM2 || $0.readerType == .other})
                     onReaderDiscovered(supportedReaders)
                 }
             ))

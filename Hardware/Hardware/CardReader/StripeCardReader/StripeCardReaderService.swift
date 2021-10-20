@@ -82,11 +82,13 @@ extension StripeCardReaderService: CardReaderService {
             DDLogDebug("💳 [StripeTerminal] \(message)")
         }
         Terminal.shared.logLevel = terminalLogLevel
+        
+        let config = DiscoveryConfiguration(discoveryMethod: .internet, locationId: "tml_ESCNWwpwlfv5JB", simulated: true)
 
-        let config = DiscoveryConfiguration(
-            discoveryMethod: .bluetoothScan,
-            simulated: shouldUseSimulatedCardReader
-        )
+//        let config = DiscoveryConfiguration(
+//            discoveryMethod: .bluetoothScan,
+//            simulated: shouldUseSimulatedCardReader
+//        )
 
         // If we're using the simulated reader, we don't want to check for Bluetooth permissions
         // as the simulator won't have Bluetooth available.
@@ -276,10 +278,40 @@ extension StripeCardReaderService: CardReaderService {
                 promise(.failure(CardReaderServiceError.connection()))
             }.eraseToAnyPublisher()
         }
-
-        return getBluetoothConfiguration(stripeReader).flatMap { configuration in
+        
+        return getInternetConfiguration(stripeReader).flatMap { configuration in
             self.connect(stripeReader, configuration: configuration)
         }.eraseToAnyPublisher()
+
+//        return getBluetoothConfiguration(stripeReader).flatMap { configuration in
+//            self.connect(stripeReader, configuration: configuration)
+//        }.eraseToAnyPublisher()
+    }
+    
+    private func getInternetConfiguration(_ reader: StripeTerminal.Reader) -> Future<InternetConnectionConfiguration, Error> {
+        return Future() { [weak self] promise in
+            guard let self = self else {
+                promise(.failure(CardReaderServiceError.connection()))
+                return
+            }
+            
+            promise(.success(InternetConnectionConfiguration(failIfInUse: true)))
+
+//            // TODO - If we've recently connected to this reader, use the cached locationId from the
+//            // Terminal SDK instead of making this fetch. See #5116 and #5087
+//            self.readerLocationProvider?.fetchDefaultLocationID { (locationId, error) in
+//                if let error = error {
+//                    let underlyingError = UnderlyingError(with: error)
+//                    return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
+//                }
+//
+//                if let locationId = locationId {
+//                    return promise(.success(InternetConnectionConfiguration(failIfInUse: true)))
+//                }
+//
+//                promise(.failure(CardReaderServiceError.connection()))
+//            }
+        }
     }
 
     private func getBluetoothConfiguration(_ reader: StripeTerminal.Reader) -> Future<BluetoothConnectionConfiguration, Error> {
@@ -303,6 +335,73 @@ extension StripeCardReaderService: CardReaderService {
 
                 promise(.failure(CardReaderServiceError.connection()))
             }
+        }
+    }
+    
+    public func connect(_ reader: StripeTerminal.Reader, configuration: InternetConnectionConfiguration) -> Future <CardReader, Error> {
+        // Keep a copy of the battery level in case the connection fails due to low battery
+        // If that happens, the reader object won't be accessible anymore, and we want to show
+        // the current charge percentage if possible
+        let batteryLevel = reader.batteryLevel?.doubleValue
+
+        return Future { [weak self] promise in
+
+            guard let self = self else {
+                promise(.failure(CardReaderServiceError.connection()))
+                return
+            }
+            
+            Terminal.shared.connectInternetReader(reader, connectionConfig: configuration) { [weak self] (reader, error) in
+                guard let self = self else {
+                    promise(.failure(CardReaderServiceError.connection()))
+                    return
+                }
+                
+                // Clear cached readers, as per Stripe's documentation.
+                self.discoveredStripeReadersCache.clear()
+                
+                if let error = error {
+                    let underlyingError = UnderlyingError(with: error)
+                    // Starting with StripeTerminal 2.0, required software updates happen transparently on connection
+                    // Any error related to that will be reported here, but we don't want to treat it as a connection error
+                    let serviceError: CardReaderServiceError = underlyingError.isSoftwareUpdateError ?
+                        .softwareUpdate(underlyingError: underlyingError, batteryLevel: batteryLevel) :
+                        .connection(underlyingError: underlyingError)
+                    promise(.failure(serviceError))
+                }
+                
+                if let reader = reader {
+                    self.connectedReadersSubject.send([CardReader(reader: reader)])
+                    self.switchStatusToIdle()
+                    promise(.success(CardReader(reader: reader)))
+                }
+            }
+
+//            Terminal.shared.connectBluetoothReader(reader, delegate: self, connectionConfig: configuration) { [weak self] (reader, error) in
+//                guard let self = self else {
+//                    promise(.failure(CardReaderServiceError.connection()))
+//                    return
+//                }
+//
+//                // Clear cached readers, as per Stripe's documentation.
+//                self.discoveredStripeReadersCache.clear()
+//
+//                if let error = error {
+//                    let underlyingError = UnderlyingError(with: error)
+//                    // Starting with StripeTerminal 2.0, required software updates happen transparently on connection
+//                    // Any error related to that will be reported here, but we don't want to treat it as a connection error
+//                    let serviceError: CardReaderServiceError = underlyingError.isSoftwareUpdateError ?
+//                        .softwareUpdate(underlyingError: underlyingError, batteryLevel: batteryLevel) :
+//                        .connection(underlyingError: underlyingError)
+//                    promise(.failure(serviceError))
+//                }
+//
+//                if let reader = reader {
+//                    self.connectedReadersSubject.send([CardReader(reader: reader)])
+//                    self.switchStatusToIdle()
+//                    promise(.success(CardReader(reader: reader)))
+//                }
+//            }
         }
     }
 
@@ -377,19 +476,32 @@ private extension StripeCardReaderService {
             /// Add the reader_ID to the request metadata so we can attribute this intent to the connected reader
             ///
             parameters.metadata?[Constants.readerIDMetadataKey] = self?.readerIDForIntent()
-
-            Terminal.shared.createPaymentIntent(parameters) { (intent, error) in
+            
+            Terminal.shared.retrievePaymentIntent(clientSecret: "client_secret") { (intent, error) in
                 if let error = error {
                     let underlyingError = UnderlyingError(with: error)
                     promise(.failure(CardReaderServiceError.intentCreation(underlyingError: underlyingError)))
                 }
-
+                
                 self?.activePaymentIntent = intent
-
+                
                 if let intent = intent {
                     promise(.success(intent))
                 }
             }
+
+//            Terminal.shared.createPaymentIntent(parameters) { (intent, error) in
+//                if let error = error {
+//                    let underlyingError = UnderlyingError(with: error)
+//                    promise(.failure(CardReaderServiceError.intentCreation(underlyingError: underlyingError)))
+//                }
+//
+//                self?.activePaymentIntent = intent
+//
+//                if let intent = intent {
+//                    promise(.success(intent))
+//                }
+//            }
         }
     }
 
@@ -469,6 +581,9 @@ private extension StripeCardReaderService {
 // MARK: - DiscoveryDelegate.
 extension StripeCardReaderService: DiscoveryDelegate {
     public func terminal(_ terminal: Terminal, didUpdateDiscoveredReaders readers: [Reader]) {
+        print("===== discovered readers ====")
+        print(readers)
+        print("///// discovered readers ====")
         // Cache discovered readers. The cache needs to be cleared after we connect to a
         // specific reader
         discoveredStripeReadersCache.insert(readers)

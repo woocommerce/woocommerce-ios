@@ -23,19 +23,16 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wqX-zR-Ley">
+                    <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                </view>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="nqW-eP-g9y">
                     <rect key="frame" x="0.0" y="44" width="414" height="0.0"/>
                     <constraints>
                         <constraint firstAttribute="height" priority="100" id="05s-ZC-Zgk"/>
                     </constraints>
                 </stackView>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wqX-zR-Ley">
-                    <rect key="frame" x="0.0" y="44" width="414" height="44"/>
-                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="44" id="G6J-ed-pDG"/>
-                    </constraints>
-                </view>
                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="7lu-ed-U2a" customClass="ButtonBarView" customModule="XLPagerTabStrip">
                     <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -58,18 +55,19 @@
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="VD7-Yu-YwE" firstAttribute="leading" secondItem="xuO-pm-Bnd" secondAttribute="leading" id="1oC-b9-sf9"/>
+                <constraint firstItem="wqX-zR-Ley" firstAttribute="top" secondItem="rGE-vr-B04" secondAttribute="top" id="4EI-Hm-Ndo"/>
                 <constraint firstAttribute="trailing" secondItem="VD7-Yu-YwE" secondAttribute="trailing" id="9vb-3t-PWE"/>
-                <constraint firstItem="wqX-zR-Ley" firstAttribute="top" secondItem="nqW-eP-g9y" secondAttribute="bottom" id="A3q-N1-Fwo"/>
                 <constraint firstItem="7lu-ed-U2a" firstAttribute="top" secondItem="nqW-eP-g9y" secondAttribute="bottom" id="F32-cv-57F"/>
+                <constraint firstAttribute="trailing" secondItem="wqX-zR-Ley" secondAttribute="trailing" id="F8T-7Z-XKi"/>
+                <constraint firstItem="VD7-Yu-YwE" firstAttribute="top" secondItem="wqX-zR-Ley" secondAttribute="bottom" id="GMd-fY-hoa"/>
                 <constraint firstItem="VD7-Yu-YwE" firstAttribute="top" secondItem="7lu-ed-U2a" secondAttribute="bottom" id="L4N-Ce-OKC"/>
                 <constraint firstItem="rGE-vr-B04" firstAttribute="bottom" secondItem="VD7-Yu-YwE" secondAttribute="bottom" id="LZC-0z-fDh"/>
-                <constraint firstItem="wqX-zR-Ley" firstAttribute="leading" secondItem="xuO-pm-Bnd" secondAttribute="leading" id="Lo6-gd-Emr"/>
-                <constraint firstAttribute="trailing" secondItem="wqX-zR-Ley" secondAttribute="trailing" id="SAn-A3-97p"/>
                 <constraint firstItem="rGE-vr-B04" firstAttribute="trailing" secondItem="nqW-eP-g9y" secondAttribute="trailing" id="TZF-MH-fH4"/>
                 <constraint firstItem="nqW-eP-g9y" firstAttribute="leading" secondItem="rGE-vr-B04" secondAttribute="leading" id="XCG-Mm-PUt"/>
                 <constraint firstItem="nqW-eP-g9y" firstAttribute="top" secondItem="rGE-vr-B04" secondAttribute="top" id="YPO-jO-rX3"/>
                 <constraint firstItem="7lu-ed-U2a" firstAttribute="leading" secondItem="rGE-vr-B04" secondAttribute="leading" id="Zdd-er-iM1"/>
                 <constraint firstItem="rGE-vr-B04" firstAttribute="trailing" secondItem="7lu-ed-U2a" secondAttribute="trailing" id="lJ7-pc-DWf"/>
+                <constraint firstItem="wqX-zR-Ley" firstAttribute="leading" secondItem="xuO-pm-Bnd" secondAttribute="leading" id="w0i-dw-rEZ"/>
             </constraints>
             <point key="canvasLocation" x="-317.39130434782612" y="152.67857142857142"/>
         </view>

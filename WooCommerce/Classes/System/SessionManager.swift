@@ -133,13 +133,6 @@ final class SessionManager: SessionManagerProtocol {
     ///
     var defaultSite: Yosemite.Site?
 
-    /// Observable site ID
-    ///
-    var siteID: Observable<Int64?> {
-        storeIDSubject
-    }
-    private let storeIDSubject = BehaviorSubject<Int64?>(nil)
-
     private var defaultStoreIDObserver: NSKeyValueObservation?
 
     /// Designated Initializer.
@@ -151,7 +144,6 @@ final class SessionManager: SessionManagerProtocol {
         defaultStoreIDSubject = .init(defaults[.defaultStoreID])
         defaultStoreIDObserver = defaults.observe(\.defaultStoreID, options: [.initial, .new], changeHandler: { [weak self] _, change in
             let storeID = change.newValue.flatMap { Int64($0) }
-            self?.storeIDSubject.send(storeID)
         })
     }
 

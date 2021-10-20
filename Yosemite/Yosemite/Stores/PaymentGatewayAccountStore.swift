@@ -166,8 +166,8 @@ public enum PaymentGatewayAccountError: Error, LocalizedError {
 
     enum Localizations {
         static let defaultMessage = NSLocalizedString(
-            "Unknown error",
-            comment: "Message presented when no error message is available."
+            "An unexpected error occurred with the store's payment gateway when capturing payment for the order",
+            comment: "Message presented when an unexpected error occurs with the store's payment gateway."
         )
     }
 }

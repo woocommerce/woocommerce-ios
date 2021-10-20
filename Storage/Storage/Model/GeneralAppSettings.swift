@@ -89,6 +89,7 @@ extension GeneralAppSettings {
         self.installationDate = try container.decodeIfPresent(Date.self, forKey: .installationDate)
         self.feedbacks = try container.decodeIfPresent([FeedbackType: FeedbackSettings].self, forKey: .feedbacks) ?? [:]
         self.isViewAddOnsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isViewAddOnsSwitchEnabled) ?? false
+        self.isQuickPaySwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isQuickPaySwitchEnabled) ?? false
         self.knownCardReaders = try container.decodeIfPresent([String].self, forKey: .knownCardReaders) ?? []
         self.lastEligibilityErrorInfo = try container.decodeIfPresent(EligibilityErrorInfo.self, forKey: .lastEligibilityErrorInfo)
 

@@ -23,7 +23,7 @@ struct TopBannerViewModel {
     ///
     struct ActionButton {
         let title: String
-        let action: () -> Void
+        let action: (_ sourceView: UIView) -> Void
     }
 
     enum BannerType {

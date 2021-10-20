@@ -26,7 +26,7 @@ final class FilteredOrdersHeaderBar: UIView {
         configureButtons()
     }
 
-    @IBAction func filterButtonTapped(_ sender: Any) {
+    @IBAction private func filterButtonTapped(_ sender: Any) {
         onAction?()
     }
 

@@ -57,10 +57,10 @@
             <constraints>
                 <constraint firstItem="db8-Tb-7MB" firstAttribute="trailing" secondItem="dIz-JV-Btd" secondAttribute="trailing" id="IET-wN-GZH"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="dIz-JV-Btd" secondAttribute="bottom" id="YT0-Rd-x5y"/>
-                <constraint firstItem="dIz-JV-Btd" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="b8f-m3-tul"/>
-                <constraint firstItem="db8-Tb-7MB" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="iFc-6t-3d8"/>
+                <constraint firstItem="dIz-JV-Btd" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="b8f-m3-tul"/>
                 <constraint firstItem="dIz-JV-Btd" firstAttribute="top" secondItem="db8-Tb-7MB" secondAttribute="bottom" id="jkG-ir-ptn"/>
-                <constraint firstAttribute="trailing" secondItem="dIz-JV-Btd" secondAttribute="trailing" id="nLt-cD-KYQ"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="dIz-JV-Btd" secondAttribute="trailing" id="nLt-cD-KYQ"/>
+                <constraint firstItem="db8-Tb-7MB" firstAttribute="leading" secondItem="dIz-JV-Btd" secondAttribute="leading" id="phT-6n-kKv"/>
                 <constraint firstItem="db8-Tb-7MB" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="zYm-K0-76Y"/>
             </constraints>
             <point key="canvasLocation" x="137.27678571428569" y="127.53623188405798"/>

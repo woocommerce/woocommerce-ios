@@ -158,6 +158,29 @@ private extension BetaFeaturesViewController {
     func configureQuickPaySwitch(cell: SwitchTableViewCell) {
         configureCommonStylesForSwitchCell(cell)
         cell.title = Localization.quickPayTitle
+
+        // Fetch switch's state stored value.
+        let action = AppSettingsAction.loadQuickPaySwitchState() { result in
+            guard let isEnabled = try? result.get() else {
+                return cell.isOn = false
+            }
+            cell.isOn = isEnabled
+        }
+        ServiceLocator.stores.dispatch(action)
+
+        // Change switch's state stored value
+        cell.onChange = { isSwitchOn in
+            // TODO: Add analytics
+
+            let action = AppSettingsAction.setQuickPayFeatureSwitchState(isEnabled: isSwitchOn, onCompletion: { result in
+                // Roll back toggle if an error occurred
+                if result.isFailure {
+                    cell.isOn.toggle()
+                }
+            })
+            ServiceLocator.stores.dispatch(action)
+        }
+        cell.accessibilityIdentifier = "beta-features-order-quick-pay-cell"
     }
 
     func configureQuickPayDescription(cell: BasicTableViewCell) {

@@ -1,7 +1,7 @@
+import Combine
 import UIKit
 import Yosemite
 import WordPressUI
-import Observables
 
 
 /// Enum representing the individual tabs
@@ -89,7 +89,7 @@ final class MainTabBarController: UITabBarController {
     private let reviewsNavigationController = WooTabNavigationController()
     private var reviewsTabCoordinator: ReviewsCoordinator?
 
-    private var cancellableSiteID: ObservationToken?
+    private var cancellableSiteID: AnyCancellable?
 
     private let stores: StoresManager = ServiceLocator.stores
 
@@ -356,7 +356,7 @@ private extension MainTabBarController {
     }
 
     func observeSiteIDForViewControllers() {
-        cancellableSiteID = stores.siteID.subscribe { [weak self] siteID in
+        cancellableSiteID = stores.siteID.sink { [weak self] siteID in
             guard let self = self else {
                 return
             }

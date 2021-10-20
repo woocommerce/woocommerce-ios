@@ -82,8 +82,8 @@ public class MockStoresManager: StoresManager {
 
     /// The current site ID
     ///
-    public var siteID: Observable<Int64?> {
-        sessionManager.siteID
+    public var siteID: AnyPublisher<Int64?, Never> {
+        sessionManager.defaultStoreIDPublisher
     }
 
     public func dispatch(_ action: Action) {

@@ -1,14 +1,12 @@
 import Combine
 import XCTest
 import Networking
-import Observables
 @testable import WooCommerce
 
 
 /// StoresManager Unit Tests
 ///
-class StoresManagerTests: XCTestCase {
-    private var observationToken: ObservationToken?
+final class StoresManagerTests: XCTestCase {
     private var cancellable: AnyCancellable?
 
     // MARK: - Overridden Methods
@@ -154,7 +152,7 @@ class StoresManagerTests: XCTestCase {
         ServiceLocator.setAuthenticationManager(mockAuthenticationManager)
         let manager = DefaultStoresManager.testingInstance
         var siteIDValues = [Int64?]()
-        observationToken = manager.siteID.subscribe { siteID in
+        cancellable = manager.siteID.sink { siteID in
             siteIDValues.append(siteID)
         }
 

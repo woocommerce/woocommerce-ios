@@ -72,8 +72,8 @@ class DefaultStoresManager: StoresManager {
             .eraseToAnyPublisher()
     }
 
-    var siteID: Observable<Int64?> {
-        sessionManager.siteID
+    var siteID: AnyPublisher<Int64?, Never> {
+        sessionManager.defaultStoreIDPublisher
     }
 
     /// Designated Initializer

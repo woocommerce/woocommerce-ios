@@ -47,7 +47,7 @@ public protocol StoresManager {
 
     /// The currently logged in store/site ID. Nil when the app is logged out.
     ///
-    var siteID: Observable<Int64?> { get }
+    var siteID: AnyPublisher<Int64?, Never> { get }
 
     /// Indicates if we need a Default StoreID, or there's one already set.
     ///

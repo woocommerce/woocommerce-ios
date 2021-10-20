@@ -1,6 +1,5 @@
 import Combine
 import Foundation
-import Observables
 
 public protocol SessionManagerProtocol {
 
@@ -31,10 +30,6 @@ public protocol SessionManagerProtocol {
     /// Anonymous UserID.
     ///
     var anonymousUserID: String? { get }
-
-    /// Observable site ID
-    ///
-    var siteID: Observable<Int64?> { get }
 
     /// Default Credentials.
     ///

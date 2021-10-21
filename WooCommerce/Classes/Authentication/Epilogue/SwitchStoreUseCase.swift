@@ -16,6 +16,8 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
     }
 
     /// A static method which allows easily to switch store. The boolean argument in `onCompletion` indicates that the site was changed.
+    /// When `onCompletion` is called, the selected site ID is updated while `Site` might still not be available if the site does not exist in storage yet
+    /// (e.g. a newly connected site).
     ///
     func switchStore(with storeID: Int64, onCompletion: @escaping (Bool) -> Void) {
         guard storeID != stores.sessionManager.defaultStoreID else {

@@ -3,6 +3,7 @@ import Yosemite
 import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
 import Observables
+import Combine
 
 /// ViewModel for `OrderListViewController`.
 ///
@@ -20,6 +21,7 @@ import Observables
 /// in here next.
 ///
 final class OrderListViewModel {
+    private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let pushNotificationsManager: PushNotesManager
     private let notificationCenter: NotificationCenter
@@ -69,7 +71,7 @@ final class OrderListViewModel {
 
     /// Set when sync fails, and used to display an error loading data banner
     ///
-    var hasErrorLoadingData: Bool = false
+    @Published var hasErrorLoadingData: Bool = false
 
     /// Determines what top banner should be shown
     ///
@@ -88,11 +90,13 @@ final class OrderListViewModel {
     private let isQuickPayDevelopmentComplete = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.quickPayPrototype)
 
     init(siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
          statusFilter: OrderStatus?) {
         self.siteID = siteID
+        self.stores = stores
         self.storageManager = storageManager
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
@@ -118,6 +122,8 @@ final class OrderListViewModel {
                                        name: UIApplication.didBecomeActiveNotification, object: nil)
 
         observeForegroundRemoteNotifications()
+        inPersonPaymentsReadyUseCase.refresh()
+        bindTopBannerState()
     }
 
     /// Starts the snapshotsProvider, logging any errors.
@@ -216,6 +222,48 @@ private extension OrderListViewModel {
 
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
         return currentSiteStatuses.first(where: { $0.status == order.status })
+    }
+}
+
+// MARK: Quick Pay
+
+extension OrderListViewModel {
+    /// Reloads the state of the Quick Pay experimental feature switch state.
+    ///
+    func reloadQuickPayExperimentalFeatureState() {
+        let action = AppSettingsAction.loadQuickPaySwitchState { [weak self] result in
+            self?.isQuickPayEnabled = (try? result.get()) ?? false
+        }
+        stores.dispatch(action)
+    }
+
+    /// Figures out what top banner should be shown based on the view model internal state.
+    ///
+    private func bindTopBannerState() {
+        let enrolledState = inPersonPaymentsReadyUseCase.$state.removeDuplicates()
+        let errorState = $hasErrorLoadingData.removeDuplicates()
+        Publishers.CombineLatest(enrolledState, errorState)
+            .map { [weak self] state, hasError -> TopBanner in
+                guard let self = self else { return .none }
+
+                guard !hasError else {
+                    return .error
+                }
+
+                guard self.isQuickPayDevelopmentComplete else {
+                    return .none
+                }
+
+                switch (state, self.isQuickPayEnabled) {
+                case (.completed, false):
+                    return .quickPayDisabled
+                case (.completed, true):
+                    return .quickPayEnabled
+                default:
+                    return .none
+                }
+            }
+            .assign(to: &$topBanner)
     }
 }
 

@@ -10,6 +10,7 @@ final class FilterProductListViewModel: FilterListViewModel {
         let stockStatus: ProductStockStatus?
         let productStatus: ProductStatus?
         let productType: ProductType?
+        let productCategory: ProductCategory?
 
         let numberOfActiveFilters: Int
 
@@ -17,13 +18,19 @@ final class FilterProductListViewModel: FilterListViewModel {
             stockStatus = nil
             productStatus = nil
             productType = nil
+            productCategory = nil
             numberOfActiveFilters = 0
         }
 
-        init(stockStatus: ProductStockStatus?, productStatus: ProductStatus?, productType: ProductType?, numberOfActiveFilters: Int) {
+        init(stockStatus: ProductStockStatus?,
+             productStatus: ProductStatus?,
+             productType: ProductType?,
+             productCategory: ProductCategory?,
+             numberOfActiveFilters: Int) {
             self.stockStatus = stockStatus
             self.productStatus = productStatus
             self.productType = productType
+            self.productCategory = productCategory
             self.numberOfActiveFilters = numberOfActiveFilters
         }
 
@@ -41,6 +48,7 @@ final class FilterProductListViewModel: FilterListViewModel {
     private let stockStatusFilterViewModel: FilterTypeViewModel
     private let productStatusFilterViewModel: FilterTypeViewModel
     private let productTypeFilterViewModel: FilterTypeViewModel
+    private let productCategoryFilterViewModel: FilterTypeViewModel
 
     /// - Parameters:
     ///   - filters: the filters to be applied initially.
@@ -48,20 +56,39 @@ final class FilterProductListViewModel: FilterListViewModel {
         self.stockStatusFilterViewModel = ProductListFilter.stockStatus.createViewModel(filters: filters)
         self.productStatusFilterViewModel = ProductListFilter.productStatus.createViewModel(filters: filters)
         self.productTypeFilterViewModel = ProductListFilter.productType.createViewModel(filters: filters)
+        self.productCategoryFilterViewModel = ProductListFilter.productCategory.createViewModel(filters: filters)
 
-        self.filterTypeViewModels = [
+        var filterTypeViewModels = [
             stockStatusFilterViewModel,
             productStatusFilterViewModel,
             productTypeFilterViewModel
         ]
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.filterProductsByCategory) {
+            filterTypeViewModels.append(productCategoryFilterViewModel)
+        }
+
+        self.filterTypeViewModels = filterTypeViewModels
     }
 
     var criteria: Filters {
         let stockStatus = stockStatusFilterViewModel.selectedValue as? ProductStockStatus ?? nil
         let productStatus = productStatusFilterViewModel.selectedValue as? ProductStatus ?? nil
         let productType = productTypeFilterViewModel.selectedValue as? ProductType ?? nil
+        var productCategory: ProductCategory? = nil
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.filterProductsByCategory),
+           let selectedProductCategory = productCategoryFilterViewModel.selectedValue as? ProductCategory {
+            productCategory = selectedProductCategory
+        }
+
         let numberOfActiveFilters = filterTypeViewModels.numberOfActiveFilters
-        return Filters(stockStatus: stockStatus, productStatus: productStatus, productType: productType, numberOfActiveFilters: numberOfActiveFilters)
+
+        return Filters(stockStatus: stockStatus,
+                       productStatus: productStatus,
+                       productType: productType,
+                       productCategory: productCategory,
+                       numberOfActiveFilters: numberOfActiveFilters)
     }
 
     func clearAll() {
@@ -73,6 +100,11 @@ final class FilterProductListViewModel: FilterListViewModel {
 
         let clearedProductType: ProductType? = nil
         productTypeFilterViewModel.selectedValue = clearedProductType
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.filterProductsByCategory) {
+            let clearedProductCategory: ProductCategory? = nil
+            productCategoryFilterViewModel.selectedValue = clearedProductCategory
+        }
     }
 }
 
@@ -83,6 +115,7 @@ extension FilterProductListViewModel {
         case stockStatus
         case productStatus
         case productType
+        case productCategory
     }
 }
 
@@ -95,6 +128,8 @@ private extension FilterProductListViewModel.ProductListFilter {
             return NSLocalizedString("Product Status", comment: "Row title for filtering products by product status.")
         case .productType:
             return NSLocalizedString("Product Type", comment: "Row title for filtering products by product type.")
+        case .productCategory:
+            return NSLocalizedString("Product Category", comment: "Row title for filtering products by product category.")
         }
     }
 }
@@ -117,6 +152,10 @@ extension FilterProductListViewModel.ProductListFilter {
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .staticOptions(options: options),
                                        selectedValue: filters.productType)
+        case .productCategory:
+            return FilterTypeViewModel(title: title,
+                                       listSelectorConfig: .categories,
+                                       selectedValue: filters.productCategory)
         }
     }
 }

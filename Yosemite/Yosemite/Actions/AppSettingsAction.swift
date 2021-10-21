@@ -68,6 +68,7 @@ public enum AppSettingsAction: Action {
                                 stockStatusFilter: ProductStockStatus? = nil,
                                 productStatusFilter: ProductStatus? = nil,
                                 productTypeFilter: ProductType? = nil,
+                                productCategoryFilter: ProductCategory? = nil,
                                 onCompletion: (Error?) -> Void)
 
     /// Clears all the products settings

@@ -44,7 +44,12 @@ struct MockAppSettingsActionHandler: MockActionHandler {
     }
 
     func loadProductSettings(siteId: Int64, onCompletion: (Result<StoredProductSettings.Setting, Error>) -> Void) {
-        let emptySetting = StoredProductSettings.Setting(siteID: siteId, sort: nil, stockStatusFilter: nil, productStatusFilter: nil, productTypeFilter: nil)
+        let emptySetting = StoredProductSettings.Setting(siteID: siteId,
+                                                         sort: nil,
+                                                         stockStatusFilter: nil,
+                                                         productStatusFilter: nil,
+                                                         productTypeFilter: nil,
+                                                         productCategoryFilter: nil)
         onCompletion(.success(emptySetting))
     }
 }

@@ -17,6 +17,10 @@ class BetaFeaturesViewController: UIViewController {
     ///
     private var sections = [Section]()
 
+    /// Use case to tell us if the store is enrolled in the in-person payments program.
+    ///
+    private let paymentsStoreUseCase = CardPresentPaymentsOnboardingUseCase()
+
     init() {
         super.init(nibName: nil, bundle: nil)
     }
@@ -74,7 +78,7 @@ private extension BetaFeaturesViewController {
     func configureSections() {
         self.sections = [
             productsSection(),
-            ServiceLocator.featureFlagService.isFeatureFlagEnabled(.quickPayPrototype) ? ordersSection() : nil
+            ordersSection()
         ].compactMap { $0 }
     }
 
@@ -83,9 +87,15 @@ private extension BetaFeaturesViewController {
                               .orderAddOnsDescription])
     }
 
-    func ordersSection() -> Section {
-        Section(rows: [.quickPay,
-                       .quickPayDescription])
+    /// A section is returned only when the store is ready to receive payments
+    ///
+    func ordersSection() -> Section? {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.quickPayPrototype), paymentsStoreUseCase.state == .completed else {
+            return nil
+        }
+
+        return Section(rows: [.quickPay,
+                              .quickPayDescription])
     }
 
     /// Register table cells.

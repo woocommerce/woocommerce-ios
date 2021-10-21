@@ -82,7 +82,7 @@ extension StripeCardReaderService: CardReaderService {
             DDLogDebug("💳 [StripeTerminal] \(message)")
         }
         Terminal.shared.logLevel = terminalLogLevel
-        
+
         let config = DiscoveryConfiguration(discoveryMethod: .internet, locationId: "tml_ESCNWwpwlfv5JB", simulated: true)
 
 //        let config = DiscoveryConfiguration(
@@ -278,11 +278,11 @@ extension StripeCardReaderService: CardReaderService {
                 promise(.failure(CardReaderServiceError.connection()))
             }.eraseToAnyPublisher()
         }
-        
+
         print("==== connecting to ")
         print(stripeReader)
         print("//// connecting to ")
-        
+
         return getInternetConfiguration(stripeReader).flatMap { configuration in
             self.connect(stripeReader, configuration: configuration)
         }.eraseToAnyPublisher()
@@ -291,14 +291,14 @@ extension StripeCardReaderService: CardReaderService {
 //            self.connect(stripeReader, configuration: configuration)
 //        }.eraseToAnyPublisher()
     }
-    
+
     private func getInternetConfiguration(_ reader: StripeTerminal.Reader) -> Future<InternetConnectionConfiguration, Error> {
         return Future() { [weak self] promise in
             guard let self = self else {
                 promise(.failure(CardReaderServiceError.connection()))
                 return
             }
-            
+
             promise(.success(InternetConnectionConfiguration(failIfInUse: true)))
 
 //            // TODO - If we've recently connected to this reader, use the cached locationId from the
@@ -341,7 +341,7 @@ extension StripeCardReaderService: CardReaderService {
             }
         }
     }
-    
+
     public func connect(_ reader: StripeTerminal.Reader, configuration: InternetConnectionConfiguration) -> Future <CardReader, Error> {
         // Keep a copy of the battery level in case the connection fails due to low battery
         // If that happens, the reader object won't be accessible anymore, and we want to show
@@ -354,16 +354,16 @@ extension StripeCardReaderService: CardReaderService {
                 promise(.failure(CardReaderServiceError.connection()))
                 return
             }
-            
+
             Terminal.shared.connectInternetReader(reader, connectionConfig: configuration) { [weak self] (reader, error) in
                 guard let self = self else {
                     promise(.failure(CardReaderServiceError.connection()))
                     return
                 }
-                
+
                 // Clear cached readers, as per Stripe's documentation.
                 self.discoveredStripeReadersCache.clear()
-                
+
                 if let error = error {
                     let underlyingError = UnderlyingError(with: error)
                     // Starting with StripeTerminal 2.0, required software updates happen transparently on connection
@@ -373,7 +373,7 @@ extension StripeCardReaderService: CardReaderService {
                         .connection(underlyingError: underlyingError)
                     promise(.failure(serviceError))
                 }
-                
+
                 if let reader = reader {
                     self.connectedReadersSubject.send([CardReader(reader: reader)])
                     self.switchStatusToIdle()
@@ -480,15 +480,15 @@ private extension StripeCardReaderService {
             /// Add the reader_ID to the request metadata so we can attribute this intent to the connected reader
             ///
             parameters.metadata?[Constants.readerIDMetadataKey] = self?.readerIDForIntent()
-            
+
             Terminal.shared.retrievePaymentIntent(clientSecret: "client_secret") { (intent, error) in
                 if let error = error {
                     let underlyingError = UnderlyingError(with: error)
                     promise(.failure(CardReaderServiceError.intentCreation(underlyingError: underlyingError)))
                 }
-                
+
                 self?.activePaymentIntent = intent
-                
+
                 if let intent = intent {
                     promise(.success(intent))
                 }

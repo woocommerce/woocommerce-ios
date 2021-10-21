@@ -143,6 +143,7 @@ private extension WooNavigationControllerDelegate {
             offlineBannerView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -extraBottomSpace)
         ])
         viewController.additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: OfflineBannerView.height, right: 0)
+        UIAccessibility.post(notification: .announcement, argument: Localization.offlineAnnouncement)
     }
 
     /// Removes the offline banner from the view controller if it exists.
@@ -153,5 +154,15 @@ private extension WooNavigationControllerDelegate {
         }
         offlineBanner.removeFromSuperview()
         viewController.additionalSafeAreaInsets = .zero
+        UIAccessibility.post(notification: .announcement, argument: Localization.onlineAnnouncement)
+    }
+}
+
+private extension WooNavigationControllerDelegate {
+    enum Localization {
+        static let offlineAnnouncement = NSLocalizedString("Offline - using cached data",
+                                                           comment: "Accessibility announcement message when device goes offline")
+        static let onlineAnnouncement = NSLocalizedString("Back online",
+                                                          comment: "Accessibility announcement message when device goes back online")
     }
 }

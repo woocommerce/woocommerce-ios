@@ -9,10 +9,11 @@ final class QuickPayAmountViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 123
 
     private let usLocale = Locale(identifier: "en_US")
+    private let usStoreSettings = CurrencySettings() // Default is US settings
 
     func test_view_model_prepends_currency_symbol() {
         // Given
-        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID, locale: usLocale)
+        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID, locale: usLocale, storeCurrencySettings: usStoreSettings)
 
         // When
         viewModel.amount = "12"
@@ -23,7 +24,7 @@ final class QuickPayAmountViewModelTests: XCTestCase {
 
     func test_view_model_removes_non_digit_characters() {
         // Given
-        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID, locale: usLocale)
+        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID, locale: usLocale, storeCurrencySettings: usStoreSettings)
 
         // When
         viewModel.amount = "hi:11.30-"
@@ -34,7 +35,7 @@ final class QuickPayAmountViewModelTests: XCTestCase {
 
     func test_view_model_trims_more_than_two_decimal_numbers() {
         // Given
-        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID, locale: usLocale)
+        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID, locale: usLocale, storeCurrencySettings: usStoreSettings)
 
         // When
         viewModel.amount = "$67.321432432"
@@ -45,7 +46,7 @@ final class QuickPayAmountViewModelTests: XCTestCase {
 
     func test_view_model_removes_duplicated_decimal_separators() {
         // Given
-        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID, locale: usLocale)
+        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID, locale: usLocale, storeCurrencySettings: usStoreSettings)
 
         // When
         viewModel.amount = "$6.7.3"
@@ -56,7 +57,7 @@ final class QuickPayAmountViewModelTests: XCTestCase {
 
     func test_view_model_removes_consecutive_decimal_separators() {
         // Given
-        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID, locale: usLocale)
+        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID, locale: usLocale, storeCurrencySettings: usStoreSettings)
 
         // When
         viewModel.amount = "$6..."
@@ -78,7 +79,7 @@ final class QuickPayAmountViewModelTests: XCTestCase {
 
     func test_view_model_disables_next_button_when_amount_only_has_currency_symbol() {
         // Given
-        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID)
+        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID, storeCurrencySettings: usStoreSettings)
 
         // When
         viewModel.amount = "$"
@@ -89,7 +90,7 @@ final class QuickPayAmountViewModelTests: XCTestCase {
 
     func test_view_model_enables_next_button_when_amount_has_more_than_one_character() {
         // Given
-        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID)
+        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID, storeCurrencySettings: usStoreSettings)
 
         // When
         viewModel.amount = "$2"
@@ -101,8 +102,7 @@ final class QuickPayAmountViewModelTests: XCTestCase {
     func test_view_model_changes_coma_separator_for_dot_separator_when_the_store_requires_it() {
         // Given
         let comaSeparatorLocale = Locale(identifier: "es_AR")
-        let storeSettings = CurrencySettings() // Default is US settings
-        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID, locale: comaSeparatorLocale, storeCurrencySettings: storeSettings)
+        let viewModel = QuickPayAmountViewModel(siteID: sampleSiteID, locale: comaSeparatorLocale, storeCurrencySettings: usStoreSettings)
 
         // When
         viewModel.amount = "10,25"

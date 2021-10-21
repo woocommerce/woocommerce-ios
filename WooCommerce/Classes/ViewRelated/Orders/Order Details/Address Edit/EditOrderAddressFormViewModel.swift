@@ -166,19 +166,21 @@ final class EditOrderAddressFormViewModel: ObservableObject {
     /// Update the address remotely and invoke a completion block when finished
     ///
     func updateRemoteAddress(onFinish: @escaping (Bool) -> Void) {
-        let updatedAddress = fields.toAddress(country: selectedCountry, state: selectedState).removingEmptyEmail()
+        let updatedAddress = fields.toAddress(country: selectedCountry, state: selectedState)
         let orderFields: [OrderUpdateField]
 
         let modifiedOrder: Yosemite.Order
         switch type {
         case .shipping where fields.useAsToggle:
-            modifiedOrder = order.copy(billingAddress: updatedAddress, shippingAddress: updatedAddress)
+            modifiedOrder = order.copy(billingAddress: updatedAddress.removingEmptyEmail(),
+                                       shippingAddress: updatedAddress.removingEmptyEmail())
             orderFields = [.shippingAddress, .billingAddress]
         case .shipping:
-            modifiedOrder = order.copy(shippingAddress: updatedAddress)
+            modifiedOrder = order.copy(shippingAddress: updatedAddress.removingEmptyEmail())
             orderFields = [.shippingAddress]
         case .billing where fields.useAsToggle:
-            modifiedOrder = order.copy(billingAddress: updatedAddress, shippingAddress: updatedAddress)
+            modifiedOrder = order.copy(billingAddress: updatedAddress,
+                                       shippingAddress: updatedAddress.copy(email: .some(nil)))
             orderFields = [.billingAddress, .shippingAddress]
         case .billing:
             modifiedOrder = order.copy(billingAddress: updatedAddress)
@@ -197,6 +199,9 @@ final class EditOrderAddressFormViewModel: ObservableObject {
 
             case .failure(let error):
                 DDLogError("⛔️ Error updating order: \(error)")
+                if self.type == .billing, updatedAddress.hasEmailAddress == false {
+                    DDLogError("⛔️ Email is nil in address. It won't work in WC < 5.9.0 (https://git.io/J68Gl)")
+                }
                 self.presentNotice = .error(.unableToUpdateAddress)
                 self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowFailed(subject: self.analyticsFlowType()))
             }
@@ -245,8 +250,18 @@ extension EditOrderAddressFormViewModel {
                 return NSLocalizedString("Unable to fetch country information, please try again later.",
                                          comment: "Error notice when we fail to load country information in the edit address screen.")
             case .unableToUpdateAddress:
-                return NSLocalizedString("Unable to update address, please try again later.",
-                                         comment: "Error notice when we fail to update an address in the edit address screen.")
+                return NSLocalizedString("Unable to update address.",
+                                         comment: "Error notice title when we fail to update an address in the edit address screen.")
+            }
+        }
+
+        var recoverySuggestion: String? {
+            switch self {
+            case .unableToLoadCountries:
+                return nil
+            case .unableToUpdateAddress:
+                return NSLocalizedString("Please make sure you are running the latest version of WooCommerce and try again later.",
+                                         comment: "Error notice recovery suggestion when we fail to update an address in the edit address screen.")
             }
         }
     }
@@ -446,7 +461,7 @@ private extension EditOrderAddressFormViewModel {
 
 private extension Address {
     /// Sets the email value to `nil` when it is empty.
-    /// Needed because core has a validation where a billing address can have a valid email or `nil`.
+    /// Needed because core has a validation where a billing address can only be a valid email or `nil`(instead of empty).
     ///
     func removingEmptyEmail() -> Yosemite.Address {
         guard let email = email, email.isEmpty else {

@@ -28,7 +28,8 @@ private extension InPersonPaymentsMenuViewController {
     func configureRows() {
         rows = [
             .orderCardReader,
-            .manageCardReader
+            .manageCardReader,
+            .bbposChipper2XBTManual
         ]
     }
 
@@ -53,6 +54,8 @@ private extension InPersonPaymentsMenuViewController {
             configureOrderCardReader(cell: cell)
         case let cell as BasicTableViewCell where row == .manageCardReader:
             configureManageCardReader(cell: cell)
+        case let cell as BasicTableViewCell where row == .bbposChipper2XBTManual:
+            configureBBPOSChipper2XBTManual(cell: cell)
         default:
             fatalError()
         }
@@ -68,6 +71,12 @@ private extension InPersonPaymentsMenuViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Manage card reader", comment: "Navigates to Card Reader management screen")
+    }
+
+    func configureBBPOSChipper2XBTManual(cell: UITableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Card reader manual", comment: "Navigates to Card Reader manual")
     }
 }
 
@@ -95,6 +104,10 @@ extension InPersonPaymentsMenuViewController {
         let viewModelsAndViews = CardReaderSettingsViewModelsOrderedList()
         viewController.configure(viewModelsAndViews: viewModelsAndViews)
         show(viewController, sender: self)
+    }
+
+    func bbposChipper2XBTManualWasPressed() {
+        WebviewHelper.launch(Constants.bbposChipper2XBTManualURL, with: self)
     }
 }
 
@@ -129,6 +142,8 @@ extension InPersonPaymentsMenuViewController {
             orderCardReaderWasPressed()
         case .manageCardReader:
             manageCardReaderWasPressed()
+        case .bbposChipper2XBTManual:
+            bbposChipper2XBTManualWasPressed()
         }
     }
 }
@@ -136,11 +151,15 @@ extension InPersonPaymentsMenuViewController {
 private enum Row: CaseIterable {
     case orderCardReader
     case manageCardReader
+    case bbposChipper2XBTManual
+
     var type: UITableViewCell.Type {
         switch self {
         case .orderCardReader:
             return BasicTableViewCell.self
         case .manageCardReader:
+            return BasicTableViewCell.self
+        case .bbposChipper2XBTManual:
             return BasicTableViewCell.self
         }
     }
@@ -152,6 +171,7 @@ private enum Row: CaseIterable {
 
 private enum Constants {
     static let woocommercePurchaseCardReaderURL = URL(string: "https://woocommerce.com/products/bbpos-chipper2xbt-card-reader")!
+    static let bbposChipper2XBTManualURL = URL(string: "https://developer.bbpos.com/quick_start_guide/Chipper%202X%20BT%20Quick%20Start%20Guide.pdf")!
 }
 
 // MARK: - SwiftUI compatibility

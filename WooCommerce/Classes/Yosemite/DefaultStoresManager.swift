@@ -273,7 +273,7 @@ private extension DefaultStoresManager {
     /// Synchronizes the WordPress.com Sites, associated with the current credentials.
     ///
     func synchronizeSites(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let action = AccountAction.synchronizeSites(onCompletion: onCompletion)
+        let action = AccountAction.synchronizeSites(selectedSiteID: sessionManager.defaultStoreID, onCompletion: onCompletion)
         dispatch(action)
     }
 

@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a WordPress.com Site.
 ///
-public struct Site: Decodable, Equatable, GeneratedFakeable {
+public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
 
     /// WordPress.com Site Identifier.
     ///

@@ -4,6 +4,9 @@ import Yosemite
 /// A struct that keeps information about items contained in a package in Shipping Label purchase flow.
 ///
 struct ShippingLabelPackageItem: Equatable {
+    /// Unique ID of the package item
+    let id = UUID().uuidString
+
     /// ID of the product or variation
     let productOrVariationID: Int64
 

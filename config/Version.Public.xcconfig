@@ -1,4 +1,4 @@
-VERSION_SHORT=7.7
+VERSION_SHORT=7.8
 
 // Public long version example: VERSION_LONG=1.2.0.0
 VERSION_LONG=7.9.0.0

@@ -177,6 +177,7 @@ private extension NoticeView {
 
         if let message = notice.message {
             messageLabel.text = message
+            messageLabel.numberOfLines = 0
         } else {
             titleLabel.numberOfLines = 2
         }

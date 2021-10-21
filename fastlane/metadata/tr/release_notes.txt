@@ -1,0 +1,7 @@
+Artık müşterilerinizin siparişlerindeki birkaç temel alanı düzenleyebileceğinizi öğrenmekten heyecan duyacaksınız. Doğrudan uygulama içinden bir siparişi yerine getirmeden önce bu küçük düzeltmeleri yapın!
+
+WooCommerce Payments'ı ABD'de kullanan satıcılar, müşterilerinin teslimatta veya siparişleri alırken şahsen kredi kartıyla yapacakları ödemeleri kabul edebilirler.
+
+WooCommerce Gönderim ve Vergi Uzantısı'nı kullanan satıcılar, kağıt boyutlarında, DHL desteğinde ve ödeme yöntemlerinde çeşitli iyileştirmeler yapıldığını fark edeceklerdir. Mobil cihazınızdan gönderi etiketleri oluşturmak ve yazdırmak artık çok eğlenceli.
+
+Ayrıca bu sürümde, sizden gelen geri bildirimlere göre gerçekleştirilmiş birkaç küçük iyileştirme de yer almaktadır. Herkes için daha iyi bir uygulama oluşturmamıza yardımcı olduğunuz için teşekkür ederiz.

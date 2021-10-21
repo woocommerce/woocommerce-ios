@@ -1,3 +1,4 @@
+import Combine
 import Experiments
 import Foundation
 import Yosemite
@@ -6,27 +7,46 @@ import Yosemite
 ///
 final class SwitchStoreNoticePresenter {
 
-    private let sessionManager: SessionManagerProtocol
+    private let siteID: Int64
+    private let stores: StoresManager
     private let noticePresenter: NoticePresenter
     private let featureFlagService: FeatureFlagService
+    private var cancellables = Set<AnyCancellable>()
 
-    init(sessionManager: SessionManagerProtocol = ServiceLocator.stores.sessionManager,
+    init(siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
-        self.sessionManager = sessionManager
+        self.siteID = siteID
+        self.stores = stores
         self.noticePresenter = noticePresenter
         self.featureFlagService = featureFlagService
     }
 
     /// Present the switch notice to the user, with the new configured store name.
     ///
-    func presentStoreSwitchedNotice(configuration: StorePickerConfiguration?) {
+    func presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: StorePickerConfiguration) {
         guard configuration == .switchingStores else {
             return
         }
-        guard let newStoreName = sessionManager.defaultSite?.name else {
-            return
-        }
+        observeSiteAndPresentWhenSiteNameIsAvailable()
+    }
+}
+
+private extension SwitchStoreNoticePresenter {
+    func observeSiteAndPresentWhenSiteNameIsAvailable() {
+        stores.site.compactMap { $0 }
+            .filter { $0.siteID == self.siteID }
+            .first()
+            .sink { [weak self] site in
+            self?.presentStoreSwitchedNotice(site: site)
+        }.store(in: &cancellables)
+    }
+
+    /// Present the switch notice to the user, with the new configured store name.
+    ///
+    func presentStoreSwitchedNotice(site: Site) {
+        let newStoreName = site.name
 
         let titleFormat = featureFlagService.isFeatureFlagEnabled(.pushNotificationsForAllStores) ?
             Localization.titleFormat: Localization.titleFormatWithPushNotificationsForAllStoresDisabled

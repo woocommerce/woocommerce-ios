@@ -86,6 +86,10 @@ public class MockStoresManager: StoresManager {
         sessionManager.defaultStoreIDPublisher
     }
 
+    public var site: AnyPublisher<Site?, Never> {
+        sessionManager.defaultSitePublisher
+    }
+
     public func dispatch(_ action: Action) {
         // We can choose which actions we want to handle and how we respond.
         switch action {

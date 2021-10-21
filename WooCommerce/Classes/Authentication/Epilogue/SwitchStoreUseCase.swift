@@ -34,7 +34,7 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
         }
     }
 
-    /// Do all the operations to log out from the current selected store, mantaining the Authentication
+    /// Do all the operations to log out from the current selected store, maintaining the Authentication
     ///
     private func logOutOfCurrentStore(onCompletion: @escaping () -> Void) {
         guard stores.sessionManager.defaultStoreID != nil else {

@@ -76,6 +76,10 @@ class DefaultStoresManager: StoresManager {
         sessionManager.defaultStoreIDPublisher
     }
 
+    var site: AnyPublisher<Site?, Never> {
+        sessionManager.defaultSitePublisher
+    }
+
     /// Designated Initializer
     ///
     init(sessionManager: SessionManagerProtocol) {

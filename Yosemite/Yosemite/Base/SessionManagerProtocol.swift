@@ -15,6 +15,10 @@ public protocol SessionManagerProtocol {
     ///
     var defaultSite: Site? { get set }
 
+    /// Publishes default site on change.
+    ///
+    var defaultSitePublisher: AnyPublisher<Site?, Never> { get }
+
     /// Default StoreID.
     ///
     var defaultStoreID: Int64? { get set }

@@ -115,6 +115,12 @@ final class SessionManager: SessionManagerProtocol {
 
     private let defaultStoreIDSubject: CurrentValueSubject<Int64?, Never>
 
+    var defaultSitePublisher: AnyPublisher<Site?, Never> {
+        defaultSiteSubject.eraseToAnyPublisher()
+    }
+
+    private let defaultSiteSubject: CurrentValueSubject<Site?, Never> = .init(nil)
+
     /// Anonymous UserID.
     ///
     var anonymousUserID: String? {
@@ -131,9 +137,11 @@ final class SessionManager: SessionManagerProtocol {
 
     /// Default Store Site
     ///
-    var defaultSite: Yosemite.Site?
-
-    private var defaultStoreIDObserver: NSKeyValueObservation?
+    var defaultSite: Yosemite.Site? {
+        didSet {
+            defaultSiteSubject.send(defaultSite)
+        }
+    }
 
     /// Designated Initializer.
     ///
@@ -142,13 +150,6 @@ final class SessionManager: SessionManagerProtocol {
         self.keychain = Keychain(service: keychainServiceName).accessibility(.afterFirstUnlock)
 
         defaultStoreIDSubject = .init(defaults[.defaultStoreID])
-        defaultStoreIDObserver = defaults.observe(\.defaultStoreID, options: [.initial, .new], changeHandler: { [weak self] _, change in
-            let storeID = change.newValue.flatMap { Int64($0) }
-        })
-    }
-
-    deinit {
-        defaultStoreIDObserver?.invalidate()
     }
 
     /// Nukes all of the known Session's properties.

@@ -49,6 +49,10 @@ public protocol StoresManager {
     ///
     var siteID: AnyPublisher<Int64?, Never> { get }
 
+    /// Observable currently selected site.
+    ///
+    var site: AnyPublisher<Site?, Never> { get }
+
     /// Indicates if we need a Default StoreID, or there's one already set.
     ///
     var needsDefaultStore: Bool { get }

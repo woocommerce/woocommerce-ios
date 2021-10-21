@@ -2,9 +2,8 @@
 
 7.9
 -----
-- [*] Edit Order Address - Enable `Done` button when `Use as {Shipping/Billing} Address` toggle is turned on. [https://github.com/woocommerce/woocommerce-ios/pull/5254]
 - [*] Fix: after disconnecting a site or connecting to a new site, the sites in site picker (Settings > Switch Store) should be updated accordingly. The only exception is when the newly disconnected site is the currently selected site. [https://github.com/woocommerce/woocommerce-ios/pull/5241]
-
+- [*] Edit Order Address - Enable `Done` button when `Use as {Shipping/Billing} Address` toggle is turned on. [https://github.com/woocommerce/woocommerce-ios/pull/5254]
 
 7.8
 -----

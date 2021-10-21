@@ -3,7 +3,7 @@ import Foundation
 import Storage
 import Yosemite
 
-private typealias SitePlugin = Yosemite.SitePlugin
+private typealias SystemPlugin = Yosemite.SystemPlugin
 private typealias PaymentGatewayAccount = Yosemite.PaymentGatewayAccount
 
 final class CardPresentPaymentsOnboardingUseCase: ObservableObject {
@@ -161,21 +161,22 @@ private extension CardPresentPaymentsOnboardingUseCase {
         return Constants.supportedCountryCodes.contains(countryCode)
     }
 
-    func getWCPayPlugin() -> SitePlugin? {
+    func getWCPayPlugin() -> SystemPlugin? {
         guard let siteID = siteID else {
             return nil
         }
         return storageManager.viewStorage
-            .loadPlugin(siteID: siteID, name: Constants.pluginName)?
+            .loadSystemPlugin(siteID: siteID, name: Constants.pluginName)?
             .toReadOnly()
     }
 
-    func isWCPayVersionSupported(plugin: SitePlugin) -> Bool {
+    func isWCPayVersionSupported(plugin: SystemPlugin) -> Bool {
         plugin.version.compare(Constants.supportedWCPayVersion, options: .numeric) != .orderedAscending
     }
 
-    func isWCPayActivated(plugin: SitePlugin) -> Bool {
-        plugin.status.isActive
+    func isWCPayActivated(plugin: SystemPlugin) -> Bool {
+        // TODO hook up active/not if possible (might need to add to entity)
+        return true
     }
 
     func getWCPayAccount() -> PaymentGatewayAccount? {

@@ -1,7 +1,10 @@
 import XCTest
 @testable import WooCommerce
+@testable import Yosemite
 
 final class FilterProductListViewModelTests: XCTestCase {
+    let filterProductCategory = ProductCategory(categoryID: 0, siteID: 0, parentID: 0, name: "", slug: "")
+
     func testCriteriaWithDefaultFilters() {
         // Given
         let filters = FilterProductListViewModel.Filters()
@@ -23,8 +26,8 @@ final class FilterProductListViewModelTests: XCTestCase {
         let filters = FilterProductListViewModel.Filters(stockStatus: .inStock,
                                                          productStatus: .draft,
                                                          productType: .grouped,
-                                                         productCategory: nil,
-                                                         numberOfActiveFilters: 3)
+                                                         productCategory: filterProductCategory,
+                                                         numberOfActiveFilters: 4)
 
         // When
         let viewModel = FilterProductListViewModel(filters: filters)
@@ -39,8 +42,8 @@ final class FilterProductListViewModelTests: XCTestCase {
         let filters = FilterProductListViewModel.Filters(stockStatus: .inStock,
                                                          productStatus: .draft,
                                                          productType: .grouped,
-                                                         productCategory: nil,
-                                                         numberOfActiveFilters: 3)
+                                                         productCategory: filterProductCategory,
+                                                         numberOfActiveFilters: 4)
 
         // When
         let viewModel = FilterProductListViewModel(filters: filters)

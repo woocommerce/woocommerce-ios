@@ -3,13 +3,15 @@ import XCTest
 @testable import Yosemite
 
 final class FilterProductListViewModelProductListFilterTests: XCTestCase {
+    let filterProductCategory = ProductCategory(categoryID: 0, siteID: 0, parentID: 0, name: "", slug: "")
+
     func testCreatingStockStatusFilterTypeViewModel() {
         let filterType = FilterProductListViewModel.ProductListFilter.stockStatus
         let filters = FilterProductListViewModel.Filters(stockStatus: .inStock,
                                                          productStatus: .draft,
                                                          productType: .grouped,
-                                                         productCategory: nil,
-                                                         numberOfActiveFilters: 3)
+                                                         productCategory: filterProductCategory,
+                                                         numberOfActiveFilters: 4)
         let viewModel = filterType.createViewModel(filters: filters)
         XCTAssertEqual(viewModel.selectedValue as? ProductStockStatus, .inStock)
     }
@@ -19,8 +21,8 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
         let filters = FilterProductListViewModel.Filters(stockStatus: .inStock,
                                                          productStatus: .draft,
                                                          productType: .grouped,
-                                                         productCategory: nil,
-                                                         numberOfActiveFilters: 3)
+                                                         productCategory: filterProductCategory,
+                                                         numberOfActiveFilters: 4)
         let viewModel = filterType.createViewModel(filters: filters)
         XCTAssertEqual(viewModel.selectedValue as? ProductStatus, .draft)
     }
@@ -30,9 +32,21 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
         let filters = FilterProductListViewModel.Filters(stockStatus: .inStock,
                                                          productStatus: .draft,
                                                          productType: .grouped,
-                                                         productCategory: nil,
-                                                         numberOfActiveFilters: 3)
+                                                         productCategory: filterProductCategory,
+                                                         numberOfActiveFilters: 4)
         let viewModel = filterType.createViewModel(filters: filters)
         XCTAssertEqual(viewModel.selectedValue as? ProductType, .grouped)
+    }
+
+    func testCreatingProductCategoryFilterTypeViewModel() {
+        let filterType = FilterProductListViewModel.ProductListFilter.productCategory
+
+        let filters = FilterProductListViewModel.Filters(stockStatus: .inStock,
+                                                         productStatus: .draft,
+                                                         productType: .grouped,
+                                                         productCategory: filterProductCategory,
+                                                         numberOfActiveFilters: 4)
+        let viewModel = filterType.createViewModel(filters: filters)
+        XCTAssertEqual(viewModel.selectedValue as? ProductCategory, filterProductCategory)
     }
 }

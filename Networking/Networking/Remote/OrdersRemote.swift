@@ -9,7 +9,9 @@ public class OrdersRemote: Remote {
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch remote orders.
     ///     - status: Filters the Orders by the specified Status, if any.
-    ///     - before: If given, exclude orders created before this date/time. Passing a local date is fine. This
+    ///     - after: If given, limit response to orders published after a given compliant date.  Passing a local date is fine. This
+    ///               method will convert it to UTC ISO 8601 before calling the REST API.
+    ///     - before: If given, limit response to resources published before a given compliant date.. Passing a local date is fine. This
     ///               method will convert it to UTC ISO 8601 before calling the REST API.
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of Orders to be retrieved per page.
@@ -17,6 +19,7 @@ public class OrdersRemote: Remote {
     ///
     public func loadAllOrders(for siteID: Int64,
                               statusKey: String? = nil,
+                              after: Date? = nil,
                               before: Date? = nil,
                               pageNumber: Int = Defaults.pageNumber,
                               pageSize: Int = Defaults.pageSize,
@@ -31,6 +34,9 @@ public class OrdersRemote: Remote {
                 ParameterKeys.fields: ParameterValues.listFieldValues,
             ]
 
+            if let after = after {
+                parameters[ParameterKeys.after] = utcDateFormatter.string(from: after)
+            }
             if let before = before {
                 parameters[ParameterKeys.before] = utcDateFormatter.string(from: before)
             }
@@ -233,6 +239,7 @@ public extension OrdersRemote {
         static let perPage: String          = "per_page"
         static let statusKey: String        = "status"
         static let fields: String           = "_fields"
+        static let after: String            = "after"
         static let before: String           = "before"
     }
 

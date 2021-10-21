@@ -40,16 +40,18 @@ public class OrderStore: Store {
             retrieveOrder(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         case .searchOrders(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
             searchOrders(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case .fetchFilteredAndAllOrders(let siteID, let statusKey, let before, let deleteAllBeforeSaving, let pageSize, let onCompletion):
+        case .fetchFilteredAndAllOrders(let siteID, let statusKey, let after, let before, let deleteAllBeforeSaving, let pageSize, let onCompletion):
             fetchFilteredAndAllOrders(siteID: siteID,
                                       statusKey: statusKey,
+                                      after: after,
                                       before: before,
                                       deleteAllBeforeSaving: deleteAllBeforeSaving,
                                       pageSize: pageSize,
                                       onCompletion: onCompletion)
-        case .synchronizeOrders(let siteID, let statusKey, let before, let pageNumber, let pageSize, let onCompletion):
+        case .synchronizeOrders(let siteID, let statusKey, let after, let before, let pageNumber, let pageSize, let onCompletion):
             synchronizeOrders(siteID: siteID,
                               statusKey: statusKey,
+                              after: after,
                               before: before,
                               pageNumber: pageNumber,
                               pageSize: pageSize,
@@ -111,6 +113,7 @@ private extension OrderStore {
     ///
     func fetchFilteredAndAllOrders(siteID: Int64,
                                    statusKey: String?,
+                                   after: Date?,
                                    before: Date?,
                                    deleteAllBeforeSaving: Bool,
                                    pageSize: Int,
@@ -151,6 +154,7 @@ private extension OrderStore {
             }
             self.remote.loadAllOrders(for: siteID,
                                  statusKey: statusKey,
+                                 after: after,
                                  before: before,
                                  pageNumber: pageNumber,
                                  pageSize: pageSize) { [weak self] result in
@@ -202,6 +206,7 @@ private extension OrderStore {
     ///
     func synchronizeOrders(siteID: Int64,
                            statusKey: String?,
+                           after: Date?,
                            before: Date?,
                            pageNumber: Int,
                            pageSize: Int,
@@ -209,6 +214,7 @@ private extension OrderStore {
         let startTime = Date()
         remote.loadAllOrders(for: siteID,
                              statusKey: statusKey,
+                             after: after,
                              before: before,
                              pageNumber: pageNumber,
                              pageSize: pageSize) { [weak self] result in

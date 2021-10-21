@@ -1122,7 +1122,7 @@ private extension ProductFormViewController {
             return
         }
 
-        let categoryListViewController = ProductCategoryListViewController(product: product.product) { [weak self] (categories) in
+        let categoryListViewController = EditProductCategoryListViewController(product: product.product) { [weak self] (categories) in
             self?.onEditCategoriesCompletion(categories: categories)
         }
         show(categoryListViewController, sender: self)

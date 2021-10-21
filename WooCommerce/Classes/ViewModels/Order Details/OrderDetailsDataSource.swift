@@ -62,7 +62,7 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Whether the option to re-create shipping labels should be visible.
     ///
-    var shouldShowShippingLabelCreationOverflowMenu: Bool {
+    var shouldAllowRecreatingShippingLabels: Bool {
         return isEligibleForShippingLabelCreation && shippingLabels.isNotEmpty &&
             !isEligibleForCardPresentPayment
     }
@@ -79,6 +79,10 @@ final class OrderDetailsDataSource: NSObject {
     /// Closure to be executed when the cell was tapped.
     ///
     var onCellAction: ((CellActionType, IndexPath?) -> Void)?
+
+    /// Closure to be executed when the more menu on Products section is tapped.
+    ///
+    var onProductsMoreMenuTapped: ((_ sourceView: UIView) -> Void)?
 
     /// Closure to be executed when the shipping label more menu is tapped.
     ///
@@ -931,7 +935,21 @@ extension OrderDetailsDataSource {
                 return nil
             }
 
-            return Section(category: .products, title: Localization.pluralizedProducts(count: items.count), rightTitle: nil, rows: rows, headerStyle: .primary)
+            let headerStyle: Section.HeaderStyle
+            if shouldAllowRecreatingShippingLabels {
+                let headerActionConfig = PrimarySectionHeaderView.ActionConfiguration(image: .moreImage) { [weak self] sourceView in
+                    self?.onProductsMoreMenuTapped?(sourceView)
+                }
+                headerStyle = .actionablePrimary(actionConfig: headerActionConfig)
+            } else {
+                headerStyle = .primary
+            }
+
+            return Section(category: .products,
+                           title: Localization.pluralizedProducts(count: items.count),
+                           rightTitle: nil,
+                           rows: rows,
+                           headerStyle: headerStyle)
         }()
 
         let refundedProducts: Section? = {

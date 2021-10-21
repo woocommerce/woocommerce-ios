@@ -327,6 +327,11 @@ private extension EditOrderAddressFormViewModel {
                 guard !performingNetworkRequest else {
                     return .loading
                 }
+
+                guard !fields.useAsToggle else {
+                    return .done(enabled: true)
+                }
+
                 return .done(enabled: originalAddress != fields.toAddress(country: selectedCountry, state: selectedState))
             }
             .assign(to: &$navigationTrailingItem)

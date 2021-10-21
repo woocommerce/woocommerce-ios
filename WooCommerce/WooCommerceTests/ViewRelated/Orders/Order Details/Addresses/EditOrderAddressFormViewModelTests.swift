@@ -104,6 +104,51 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
     }
 
+    func test_turning_on_use_as_toggle_enables_done_button() {
+        // Given
+        let address = sampleAddress()
+        let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: address), type: .shipping, storageManager: testingStorage)
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
+
+        // When
+        viewModel.onLoadTrigger.send()
+        viewModel.fields.useAsToggle = true
+
+        // Then
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: true))
+    }
+
+    func test_turning_off_use_as_toggle_disables_done_button() {
+        // Given
+        let address = sampleAddress()
+        let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: address), type: .shipping, storageManager: testingStorage)
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
+
+        // When
+        viewModel.onLoadTrigger.send()
+        viewModel.fields.useAsToggle = true
+        viewModel.fields.useAsToggle = false
+
+        // Then
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
+    }
+
+    func test_turning_off_use_as_toggle_does_not_disable_done_button_when_address_is_edited() {
+        // Given
+        let address = sampleAddress()
+        let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: address), type: .shipping, storageManager: testingStorage)
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
+
+        // When
+        viewModel.onLoadTrigger.send()
+        viewModel.fields.useAsToggle = true
+        viewModel.fields.firstName = "John"
+        viewModel.fields.useAsToggle = false
+
+        // Then
+        XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: true))
+    }
+
     func test_loading_indicator_gets_enabled_during_network_request() {
         // Given
         let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: sampleAddress()), type: .shipping, storageManager: testingStorage)

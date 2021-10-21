@@ -26,6 +26,12 @@ public extension StorageType {
         return firstObject(ofType: Site.self, matching: predicate)
     }
 
+    /// Retrieves all stored sites.
+    ///
+    func loadAllSites() -> [Site] {
+        allObjects(ofType: Site.self, matching: nil, sortedBy: nil)
+    }
+
     // MARK: - Orders
 
     /// Retrieves the Stored Order.

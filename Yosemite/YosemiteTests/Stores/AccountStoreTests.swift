@@ -1,3 +1,4 @@
+import Fakes
 import XCTest
 @testable import Yosemite
 @testable import Networking
@@ -7,7 +8,7 @@ import XCTest
 
 /// AccountStore Unit Tests
 ///
-class AccountStoreTests: XCTestCase {
+final class AccountStoreTests: XCTestCase {
 
     /// Mock Dispatcher!
     ///
@@ -216,7 +217,7 @@ class AccountStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = AccountAction.synchronizeSites { result in
+            let action = AccountAction.synchronizeSites(selectedSiteID: nil) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -236,7 +237,7 @@ class AccountStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = AccountAction.synchronizeSites { result in
+            let action = AccountAction.synchronizeSites(selectedSiteID: nil) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -245,6 +246,58 @@ class AccountStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 2)
+    }
+
+    /// Verifies that `synchronizeSites` deletes storage sites that do not exist remotely anymore.
+    ///
+    func test_synchronizeSites_deletes_sites_that_do_not_exist_remotely() {
+        // Given
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let siteIDInStorageOnly = Int64(127)
+        storageManager.insertSampleSite(readOnlySite: Site.fake().copy(siteID: siteIDInStorageOnly))
+        network.simulateResponse(requestUrlSuffix: "me/sites", filename: "sites")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 1)
+        XCTAssertNotNil(viewStorage.loadSite(siteID: siteIDInStorageOnly))
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = AccountAction.synchronizeSites(selectedSiteID: nil) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        // `sites.json` contains 2 sites that do not match `siteIDInStorageOnly`.
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 2)
+        XCTAssertNil(viewStorage.loadSite(siteID: siteIDInStorageOnly))
+    }
+
+    /// Verifies that `synchronizeSites` does not delete selected site after syncing and the selected site does not exist remotely anymore.
+    ///
+    func test_synchronizeSites_does_not_delete_selected_site_that_does_not_exist_remotely() {
+        // Given
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let selectedSiteID = Int64(127)
+        storageManager.insertSampleSite(readOnlySite: Site.fake().copy(siteID: selectedSiteID))
+        network.simulateResponse(requestUrlSuffix: "me/sites", filename: "sites")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 1)
+        XCTAssertNotNil(viewStorage.loadSite(siteID: selectedSiteID))
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = AccountAction.synchronizeSites(selectedSiteID: selectedSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        // `sites.json` contains 2 sites that do not match `siteIDInStorageOnly`.
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 3)
+        XCTAssertNotNil(viewStorage.loadSite(siteID: selectedSiteID))
     }
 
     // MARK: - AccountAction.loadAccount

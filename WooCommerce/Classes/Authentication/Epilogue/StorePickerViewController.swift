@@ -47,7 +47,7 @@ enum StorePickerConfiguration {
 
 /// Allows the user to pick which WordPress.com (OR) Jetpack-Connected-Store we should set up as the Main Store.
 ///
-class StorePickerViewController: UIViewController {
+final class StorePickerViewController: UIViewController {
 
     /// StorePickerViewController Delegate
     ///
@@ -243,8 +243,16 @@ private extension StorePickerViewController {
     }
 
     func refreshResults() {
-        try? resultsController.performFetch()
+        refetchSitesAndUpdateState()
         ServiceLocator.analytics.track(.sitePickerStoresShown, withProperties: ["num_of_stores": resultsController.numberOfObjects])
+
+        synchronizeSites { [weak self] _ in
+            self?.refetchSitesAndUpdateState()
+        }
+    }
+
+    func refetchSitesAndUpdateState() {
+        try? resultsController.performFetch()
         state = StorePickerState(sites: resultsController.fetchedObjects)
     }
 
@@ -259,6 +267,15 @@ private extension StorePickerViewController {
 
     func presentHelp() {
         ServiceLocator.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin)
+    }
+}
+
+// MARK: - Syncing
+//
+private extension StorePickerViewController {
+    func synchronizeSites(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let action = AccountAction.synchronizeSites(selectedSiteID: currentlySelectedSite?.siteID, onCompletion: onCompletion)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -587,7 +604,7 @@ extension StorePickerViewController: UITableViewDataSource {
         cell.name = site.name
         cell.url = site.url
         cell.allowsCheckmark = state.multipleStoresAvailable
-        cell.displaysCheckmark = currentlySelectedSite == site
+        cell.displaysCheckmark = currentlySelectedSite?.siteID == site.siteID
 
         return cell
     }

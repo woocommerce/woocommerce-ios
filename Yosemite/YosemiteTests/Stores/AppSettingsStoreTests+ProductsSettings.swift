@@ -42,7 +42,8 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
                                                             sort: ProductsSortOrder.dateAscending.rawValue,
                                                             stockStatusFilter: .outOfStock,
                                                             productStatusFilter: .pending,
-                                                            productTypeFilter: .simple)
+                                                            productTypeFilter: .simple,
+                                                            productCategoryFilter: nil)
 
         // When
         let result: Result<StoredProductSettings.Setting, Error> = waitFor { promise in
@@ -84,12 +85,14 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
                                                              sort: ProductsSortOrder.dateAscending.rawValue,
                                                              stockStatusFilter: .outOfStock,
                                                              productStatusFilter: .pending,
-                                                             productTypeFilter: .simple)
+                                                             productTypeFilter: .simple,
+                                                             productCategoryFilter: nil)
         let productSettings2 = StoredProductSettings.Setting(siteID: siteID2,
                                                              sort: ProductsSortOrder.nameAscending.rawValue,
                                                              stockStatusFilter: .inStock,
                                                              productStatusFilter: .draft,
-                                                             productTypeFilter: .grouped)
+                                                             productTypeFilter: .grouped,
+                                                             productCategoryFilter: nil)
 
         // When
         let writeAction1 = AppSettingsAction.upsertProductsSettings(siteID: siteID1,

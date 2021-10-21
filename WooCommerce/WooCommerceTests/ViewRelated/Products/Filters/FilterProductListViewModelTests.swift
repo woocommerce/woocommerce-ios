@@ -10,13 +10,21 @@ final class FilterProductListViewModelTests: XCTestCase {
         let viewModel = FilterProductListViewModel(filters: filters)
 
         // Then
-        let expectedCriteria = FilterProductListViewModel.Filters(stockStatus: nil, productStatus: nil, productType: nil, numberOfActiveFilters: 0)
+        let expectedCriteria = FilterProductListViewModel.Filters(stockStatus: nil,
+                                                                  productStatus: nil,
+                                                                  productType: nil,
+                                                                  productCategory: nil,
+                                                                  numberOfActiveFilters: 0)
         XCTAssertEqual(viewModel.criteria, expectedCriteria)
     }
 
     func testCriteriaWithNonNilFilters() {
         // Given
-        let filters = FilterProductListViewModel.Filters(stockStatus: .inStock, productStatus: .draft, productType: .grouped, numberOfActiveFilters: 3)
+        let filters = FilterProductListViewModel.Filters(stockStatus: .inStock,
+                                                         productStatus: .draft,
+                                                         productType: .grouped,
+                                                         productCategory: nil,
+                                                         numberOfActiveFilters: 3)
 
         // When
         let viewModel = FilterProductListViewModel(filters: filters)
@@ -28,14 +36,22 @@ final class FilterProductListViewModelTests: XCTestCase {
 
     func testCriteriaAfterClearingAllNonNilFilters() {
         // Given
-        let filters = FilterProductListViewModel.Filters(stockStatus: .inStock, productStatus: .draft, productType: .grouped, numberOfActiveFilters: 3)
+        let filters = FilterProductListViewModel.Filters(stockStatus: .inStock,
+                                                         productStatus: .draft,
+                                                         productType: .grouped,
+                                                         productCategory: nil,
+                                                         numberOfActiveFilters: 3)
 
         // When
         let viewModel = FilterProductListViewModel(filters: filters)
         viewModel.clearAll()
 
         // Then
-        let expectedCriteria = FilterProductListViewModel.Filters(stockStatus: nil, productStatus: nil, productType: nil, numberOfActiveFilters: 0)
+        let expectedCriteria = FilterProductListViewModel.Filters(stockStatus: nil,
+                                                                  productStatus: nil,
+                                                                  productType: nil,
+                                                                  productCategory: nil,
+                                                                  numberOfActiveFilters: 0)
         XCTAssertEqual(viewModel.criteria, expectedCriteria)
     }
 }

@@ -71,6 +71,18 @@ final class OrderListViewModel {
     ///
     var hasErrorLoadingData: Bool = false
 
+    /// Tracks if the store is ready to receive payments.
+    ///
+    private let inPersonPaymentsReadyUseCase = CardPresentPaymentsOnboardingUseCase()
+
+    /// Tracks if the merchant has enabled the Quick Pay experimental feature toggle
+    ///
+    private var isQuickPayEnabled = false
+
+    /// Tracks if the Quick Pay feature is ready to be released to the public
+    ///
+    private let isQuickPayDevelopmentComplete = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.quickPayPrototype)
+
     init(siteID: Int64,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
@@ -230,5 +242,17 @@ extension OrderListViewModel {
     /// Returns the corresponding section title for the given identifier.
     func sectionTitleFor(sectionIdentifier: String) -> String? {
         Age(rawValue: sectionIdentifier)?.description
+    }
+}
+
+// MARK: Definitions
+extension OrderListViewModel {
+    /// Possible top banners this view model can show.
+    ///
+    enum TopBanner {
+        case error
+        case quickPayEnabled
+        case quickPayDisabled
+        case none
     }
 }

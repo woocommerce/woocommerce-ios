@@ -8,7 +8,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
 
         // Given
         let shippingAddress = MockShippingLabelAddress.sampleAddress()
-        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, validationError: nil, countries: [])
+        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, email: nil, validationError: nil, countries: [])
 
         // When
         viewModel.handleAddressValueChanges(row: .name, newValue: "Skylar Ferry")
@@ -37,7 +37,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
 
         // Given
         let shippingAddress = MockShippingLabelAddress.sampleAddress(country: "US", state: "CA")
-        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, validationError: nil, countries: [])
+        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, email: nil, validationError: nil, countries: [])
 
         // When
         viewModel.handleAddressValueChanges(row: .country, newValue: "AU")
@@ -59,7 +59,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
                                                    postcode: "94121-2303")
 
         // When
-        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, validationError: nil, countries: [])
+        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, email: nil, validationError: nil, countries: [])
 
         // Then
         let expectedRows: [ShippingLabelAddressFormViewModel.Row] = [.name, .company, .phone, .address, .address2, .city, .postcode, .state, .country]
@@ -85,6 +85,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         let viewModel = ShippingLabelAddressFormViewModel(siteID: 10,
                                                           type: .origin,
                                                           address: shippingAddress,
+                                                          email: nil,
                                                           stores: stores,
                                                           validationError: nil,
                                                           countries: [])
@@ -124,6 +125,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         let viewModel = ShippingLabelAddressFormViewModel(siteID: 10,
                                                           type: .origin,
                                                           address: shippingAddress,
+                                                          email: nil,
                                                           validationError: nil,
                                                           countries: [])
         viewModel.validateAddress(onlyLocally: true) { _ in }
@@ -160,6 +162,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         let viewModel = ShippingLabelAddressFormViewModel(siteID: 10,
                                                           type: .origin,
                                                           address: shippingAddress,
+                                                          email: nil,
                                                           stores: stores,
                                                           validationError: nil,
                                                           countries: sampleCountries())
@@ -201,6 +204,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         let viewModel = ShippingLabelAddressFormViewModel(siteID: 10,
                                                           type: .origin,
                                                           address: shippingAddress,
+                                                          email: nil,
                                                           stores: stores,
                                                           validationError: nil,
                                                           countries: sampleCountries())
@@ -243,6 +247,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         let viewModel = ShippingLabelAddressFormViewModel(siteID: 10,
                                                           type: .origin,
                                                           address: shippingAddress,
+                                                          email: nil,
                                                           phoneNumberRequired: true,
                                                           stores: stores,
                                                           validationError: nil,
@@ -286,6 +291,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         let viewModel = ShippingLabelAddressFormViewModel(siteID: 10,
                                                           type: .origin,
                                                           address: shippingAddress,
+                                                          email: nil,
                                                           phoneNumberRequired: true,
                                                           stores: stores,
                                                           validationError: nil,
@@ -329,6 +335,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         let viewModel = ShippingLabelAddressFormViewModel(siteID: 10,
                                                           type: .origin,
                                                           address: shippingAddress,
+                                                          email: nil,
                                                           phoneNumberRequired: true,
                                                           stores: stores,
                                                           validationError: nil,
@@ -380,6 +387,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         let viewModel = ShippingLabelAddressFormViewModel(siteID: 10,
                                                           type: .origin,
                                                           address: shippingAddress,
+                                                          email: nil,
                                                           stores: stores,
                                                           validationError: nil,
                                                           countries: [])
@@ -418,6 +426,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         let viewModel = ShippingLabelAddressFormViewModel(siteID: 10,
                                                           type: .origin,
                                                           address: shippingAddress,
+                                                          email: nil,
                                                           stores: stores,
                                                           validationError: nil,
                                                           countries: [])
@@ -456,6 +465,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         let viewModel = ShippingLabelAddressFormViewModel(siteID: 10,
                                                           type: .origin,
                                                           address: shippingAddress,
+                                                          email: nil,
                                                           stores: stores,
                                                           validationError: nil,
                                                           countries: [])
@@ -498,6 +508,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         let viewModel = ShippingLabelAddressFormViewModel(siteID: 10,
                                                           type: .origin,
                                                           address: shippingAddress,
+                                                          email: nil,
                                                           stores: stores,
                                                           validationError: nil,
                                                           countries: [])
@@ -529,6 +540,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         let viewModel = ShippingLabelAddressFormViewModel(siteID: 10,
                                                           type: .origin,
                                                           address: shippingAddress,
+                                                          email: nil,
                                                           stores: stores,
                                                           validationError: nil,
                                                           countries: sampleCountries())
@@ -555,6 +567,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         let viewModel = ShippingLabelAddressFormViewModel(siteID: 10,
                                                           type: .origin,
                                                           address: shippingAddress,
+                                                          email: nil,
                                                           validationError: nil,
                                                           countries: [])
         var rowIndex: Int?

@@ -4,4 +4,4 @@ Los vendedores que utilicen WooCommerce Payments en EE. UU. pueden aceptar pago
 
 Los vendedores que utilicen la extensión WooCommerce Shipping & Tax podrán disfrutar de mejoras con los tamaños de papel, la compatibilidad con DHL y los métodos de pago. Crear e imprimir etiquetas de envío desde tu dispositivo móvil es muy divertido.
 
-En esta versión, también se incluyen algunas mejoras pequeñas establecidas según tus comentarios. Gracias por ayudarnos a hacer una aplicación mejor para todos.
+En esta versión, también se incluyen algunas mejoras pequeñas basadas en tus comentarios. Gracias por ayudarnos a hacer una aplicación mejor para todos.

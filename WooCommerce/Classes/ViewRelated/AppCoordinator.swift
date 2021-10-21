@@ -84,6 +84,7 @@ private extension AppCoordinator {
             guard let (announcement, displayed) = try? result.get(), !displayed else {
                 return DDLogInfo("📣 There are no announcements to show!")
             }
+            ServiceLocator.analytics.track(event: .featureAnnouncementShown(source: .appUpgrade))
             let whatsNewViewController = WhatsNewFactory.whatsNew(announcement) { [weak self] in
                 self?.tabBarController.dismiss(animated: true)
             }

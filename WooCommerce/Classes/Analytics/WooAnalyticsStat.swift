@@ -506,6 +506,10 @@ public enum WooAnalyticsStat: String {
     case removeProductAttributeButtonTapped = "remove_product_attribute_button_tapped"
     case editProductVariationAttributeOptionsRowTapped = "edit_product_variation_attribute_options_row_tapped"
     case editProductVariationAttributeOptionsDoneButtonTapped = "edit_product_variation_attribute_options_done_button_tapped"
+
+    // MARK: What's New Component events
+    //
+    case featureAnnouncementShown = "feature_announcement_shown"
 }
 
 public extension WooAnalyticsStat {

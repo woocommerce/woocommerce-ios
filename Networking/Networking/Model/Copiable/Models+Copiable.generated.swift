@@ -1138,6 +1138,42 @@ extension ShippingLabelPurchase {
     }
 }
 
+extension Site {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        description: CopiableProp<String> = .copy,
+        url: CopiableProp<String> = .copy,
+        plan: CopiableProp<String> = .copy,
+        isWooCommerceActive: CopiableProp<Bool> = .copy,
+        isWordPressStore: CopiableProp<Bool> = .copy,
+        timezone: CopiableProp<String> = .copy,
+        gmtOffset: CopiableProp<Double> = .copy
+    ) -> Site {
+        let siteID = siteID ?? self.siteID
+        let name = name ?? self.name
+        let description = description ?? self.description
+        let url = url ?? self.url
+        let plan = plan ?? self.plan
+        let isWooCommerceActive = isWooCommerceActive ?? self.isWooCommerceActive
+        let isWordPressStore = isWordPressStore ?? self.isWordPressStore
+        let timezone = timezone ?? self.timezone
+        let gmtOffset = gmtOffset ?? self.gmtOffset
+
+        return Site(
+            siteID: siteID,
+            name: name,
+            description: description,
+            url: url,
+            plan: plan,
+            isWooCommerceActive: isWooCommerceActive,
+            isWordPressStore: isWordPressStore,
+            timezone: timezone,
+            gmtOffset: gmtOffset
+        )
+    }
+}
+
 extension SitePlugin {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

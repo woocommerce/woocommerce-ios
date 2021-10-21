@@ -454,6 +454,60 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         XCTAssertNil(billingAddress?.email)
     }
 
+    func test_copying_billing_address_for_shipping_does_not_sends_an_email_field() {
+        // Given
+        let viewModel = EditOrderAddressFormViewModel(order: order(withBillingAddress: sampleAddress()),
+                                                      type: .billing,
+                                                      storageManager: testingStorage,
+                                                      stores: testingStores)
+        viewModel.onLoadTrigger.send()
+        viewModel.fields.useAsToggle = true
+
+        // When
+        let shippingAddress: Address? = waitFor { promise in
+            self.testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateOrder(_, order, _, _):
+                    promise(order.shippingAddress)
+                default:
+                    XCTFail("Unsupported Action")
+                }
+            }
+
+            viewModel.updateRemoteAddress(onFinish: { _ in })
+        }
+
+        // Then
+        XCTAssertNil(shippingAddress?.email)
+    }
+
+    func test_sending_empty_email_billing_address_does_sends_an_empty_email_field() {
+        // Given
+        let viewModel = EditOrderAddressFormViewModel(order: order(withBillingAddress: sampleAddressWithEmptyNullableFields()),
+                                                      type: .billing,
+                                                      storageManager: testingStorage,
+                                                      stores: testingStores)
+        viewModel.onLoadTrigger.send()
+        viewModel.fields.useAsToggle = true
+
+        // When
+        let billingAddress: Address? = waitFor { promise in
+            self.testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateOrder(_, order, _, _):
+                    promise(order.billingAddress)
+                default:
+                    XCTFail("Unsupported Action")
+                }
+            }
+
+            viewModel.updateRemoteAddress(onFinish: { _ in })
+        }
+
+        // Then
+        XCTAssertEqual(billingAddress?.email, "")
+    }
+
     func test_shipping_view_model_does_not_shows_email_field() {
         // Given
         let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping)

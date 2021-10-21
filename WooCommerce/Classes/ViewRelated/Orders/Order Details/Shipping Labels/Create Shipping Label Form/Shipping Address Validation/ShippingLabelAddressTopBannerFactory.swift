@@ -5,29 +5,28 @@ import Yosemite
 ///
 final class ShippingLabelAddressTopBannerFactory {
     static func addressErrorTopBannerView(shipType: ShipType,
-                                          phoneNumber: String?,
+                                          hasContactInfo: Bool,
                                           openMapPressed: @escaping () -> Void,
-                                          contactCustomerPressed: @escaping () -> Void) -> TopBannerView {
+                                          contactCustomerPressed: @escaping (UIView) -> Void) -> TopBannerView {
         // Set banner text and action buttons based on shipping address type (origin or destination),
-        // and whether phone number is missing.
-        let missingPhoneNumber = phoneNumber == nil || phoneNumber?.isEmpty == true
+        // and whether phone number and email address are available.
         let infoText: String = {
             if shipType == .origin {
                 return Localization.infoShipFrom
             }
-            return missingPhoneNumber ? Localization.infoShipToNoContact : Localization.infoShipTo
+            return hasContactInfo ? Localization.infoShipTo : Localization.infoShipToNoContact
         }()
 
-        let openMapAction = TopBannerViewModel.ActionButton(title: Localization.openMapAction) {
+        let openMapAction = TopBannerViewModel.ActionButton(title: Localization.openMapAction) { _ in
             openMapPressed()
         }
 
         let contactCustomerAction: TopBannerViewModel.ActionButton? = {
-            guard !missingPhoneNumber else {
+            guard hasContactInfo else {
                 return nil
             }
-            return .init(title: Localization.contactCustomerAction) {
-                contactCustomerPressed()
+            return .init(title: Localization.contactCustomerAction) { sourceView in
+                contactCustomerPressed(sourceView)
             }
         }()
 

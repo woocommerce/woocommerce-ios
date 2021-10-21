@@ -607,6 +607,7 @@ private extension SettingsViewController {
     }
 
     func whatsNewWasPressed() {
+        ServiceLocator.analytics.track(event: .featureAnnouncementShown(source: .appSettings))
         guard let announcement = announcement else { return }
         let viewController = WhatsNewFactory.whatsNew(announcement) { [weak self] in
             self?.dismiss(animated: true)

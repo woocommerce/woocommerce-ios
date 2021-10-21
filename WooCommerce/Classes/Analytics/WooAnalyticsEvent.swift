@@ -351,3 +351,20 @@ extension WooAnalyticsEvent {
         }
     }
 }
+
+// MARK: - What's New Component
+//
+extension WooAnalyticsEvent {
+    /// Possible sources for the What's New component
+    ///
+    enum Source: String {
+        fileprivate static let key = "source"
+
+        case appUpgrade = "app_upgrade"
+        case appSettings = "app_settings"
+    }
+
+    static func featureAnnouncementShown(source: Source) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .featureAnnouncementShown, properties: [Source.key: source.rawValue])
+    }
+}

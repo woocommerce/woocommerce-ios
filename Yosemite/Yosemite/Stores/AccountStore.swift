@@ -47,8 +47,8 @@ public class AccountStore: Store {
             synchronizeAccount(onCompletion: onCompletion)
         case .synchronizeAccountSettings(let userID, let onCompletion):
             synchronizeAccountSettings(userID: userID, onCompletion: onCompletion)
-        case .synchronizeSites(let onCompletion):
-            synchronizeSites(onCompletion: onCompletion)
+        case .synchronizeSites(let selectedSiteID, let onCompletion):
+            synchronizeSites(selectedSiteID: selectedSiteID, onCompletion: onCompletion)
         case .synchronizeSitePlan(let siteID, let onCompletion):
             synchronizeSitePlan(siteID: siteID, onCompletion: onCompletion)
         case .updateAccountSettings(let userID, let tracksOptOut, let onCompletion):
@@ -90,11 +90,11 @@ private extension AccountStore {
 
     /// Synchronizes the WordPress.com sites associated with the Network's Auth Token.
     ///
-    func synchronizeSites(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func synchronizeSites(selectedSiteID: Int64?, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         remote.loadSites { [weak self] result in
             switch result {
             case .success(let sites):
-                self?.upsertStoredSitesInBackground(readOnlySites: sites) {
+                self?.upsertStoredSitesInBackground(readOnlySites: sites, selectedSiteID: selectedSiteID) {
                     onCompletion(.success(()))
                 }
             case .failure(let error):
@@ -192,9 +192,17 @@ extension AccountStore {
 
     /// Updates (OR Inserts) the specified ReadOnly Site Entities into the Storage Layer.
     ///
-    func upsertStoredSitesInBackground(readOnlySites: [Networking.Site], onCompletion: @escaping () -> Void) {
+    func upsertStoredSitesInBackground(readOnlySites: [Networking.Site], selectedSiteID: Int64? = nil, onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
+            // Deletes sites in storage that are not in `readOnlySites` and not the selected site.
+            let storageSites = derivedStorage.loadAllSites()
+            let readOnlySiteIDs = readOnlySites.map(\.siteID)
+            storageSites.filter { readOnlySiteIDs.contains($0.siteID) == false && $0.siteID != selectedSiteID }
+                .forEach { remotelyDeletedSite in
+                    derivedStorage.deleteObject(remotelyDeletedSite)
+                }
+
             for readOnlySite in readOnlySites {
                 let storageSite = derivedStorage.loadSite(siteID: readOnlySite.siteID) ?? derivedStorage.insertNewObject(ofType: Storage.Site.self)
                 storageSite.update(with: readOnlySite)

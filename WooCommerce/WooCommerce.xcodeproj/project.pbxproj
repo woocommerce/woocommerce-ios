@@ -4235,13 +4235,13 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
-		4546E095271F08CD003836F3 /* Order Filter bar */ = {
+		4546E095271F08CD003836F3 /* Order Filters */ = {
 			isa = PBXGroup;
 			children = (
 				4546E098271F0942003836F3 /* FilteredOrdersHeaderBar.swift */,
 				4546E099271F0942003836F3 /* FilteredOrdersHeaderBar.xib */,
 			);
-			path = "Order Filter bar";
+			path = "Order Filters";
 			sourceTree = "<group>";
 		};
 		455208592582907C001CF873 /* Add Product Variation */ = {
@@ -5785,7 +5785,7 @@
 				57C5FF7925091A350074EC26 /* OrderListSyncActionUseCase.swift */,
 				57C5FF7D250925000074EC26 /* OrderListViewModel.swift */,
 				57A49127250A7EB2000FEF21 /* OrderListViewController.swift */,
-				4546E095271F08CD003836F3 /* Order Filter bar */,
+				4546E095271F08CD003836F3 /* Order Filters */,
 			);
 			path = Orders;
 			sourceTree = "<group>";

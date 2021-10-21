@@ -55,4 +55,32 @@ class GeneralAppSettingsTests: XCTestCase {
         // Then
         XCTAssertEqual(newSettings.feedbacks[.general], newFeedback)
     }
+
+    func test_updating_properties_to_generalAppSettings_does_not_breaks_decoding() throws {
+        // Given
+        let currentDate = Date()
+        let feedbackSettings = [FeedbackType.general: FeedbackSettings(name: .general, status: .pending)]
+        let readers = ["aaaaa", "bbbbbb"]
+        let eligibilityInfo = EligibilityErrorInfo(name: "user", roles: ["admin"])
+        let previousSettings = GeneralAppSettings(installationDate: currentDate,
+                                                  feedbacks: feedbackSettings,
+                                                  isViewAddOnsSwitchEnabled: true,
+                                                  knownCardReaders: readers,
+                                                  lastEligibilityErrorInfo: eligibilityInfo)
+
+        let previousEncodedSettings = try JSONEncoder().encode(previousSettings)
+        var previousSettingsJson = try JSONSerialization.jsonObject(with: previousEncodedSettings, options: .allowFragments) as? [String: Any]
+
+        // When
+        previousSettingsJson?.removeValue(forKey: "isViewAddOnsSwitchEnabled")
+        let newEncodedSettings = try JSONSerialization.data(withJSONObject: previousSettingsJson as Any, options: .fragmentsAllowed)
+        let newSettings = try JSONDecoder().decode(GeneralAppSettings.self, from: newEncodedSettings)
+
+        // Then
+        assertEqual(newSettings.installationDate, currentDate)
+        assertEqual(newSettings.feedbacks, feedbackSettings)
+        assertEqual(newSettings.knownCardReaders, readers)
+        assertEqual(newSettings.lastEligibilityErrorInfo, eligibilityInfo)
+        assertEqual(newSettings.isViewAddOnsSwitchEnabled, false)
+    }
 }

@@ -71,3 +71,20 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         )
     }
 }
+
+//// MARK: Custom Decoding
+extension GeneralAppSettings {
+    /// We need a custom decoding to make sure it doesn't fails when this type is updated (eg: when adding/removing new properties)
+    /// Otherwise we will lose previously stored information.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.installationDate = try container.decodeIfPresent(Date.self, forKey: .installationDate)
+        self.feedbacks = try container.decodeIfPresent([FeedbackType: FeedbackSettings].self, forKey: .feedbacks) ?? [:]
+        self.isViewAddOnsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isViewAddOnsSwitchEnabled) ?? false
+        self.knownCardReaders = try container.decodeIfPresent([String].self, forKey: .knownCardReaders) ?? []
+        self.lastEligibilityErrorInfo = try container.decodeIfPresent(EligibilityErrorInfo.self, forKey: .lastEligibilityErrorInfo)
+
+        // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
+    }
+}

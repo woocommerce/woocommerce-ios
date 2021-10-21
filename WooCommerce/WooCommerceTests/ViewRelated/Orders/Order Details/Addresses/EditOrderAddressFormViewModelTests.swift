@@ -133,7 +133,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.navigationTrailingItem, .done(enabled: false))
     }
 
-    func test_turning_off_use_as_toggle_does_not_disable_done_button_when_address_is_edited() {
+    func test_turning_off_use_as_toggle_when_address_is_edited_does_not_disable_done_button() {
         // Given
         let address = sampleAddress()
         let viewModel = EditOrderAddressFormViewModel(order: order(withShippingAddress: address), type: .shipping, storageManager: testingStorage)

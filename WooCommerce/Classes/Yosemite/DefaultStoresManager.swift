@@ -374,7 +374,7 @@ private extension DefaultStoresManager {
     func synchronizeSystemPlugins(siteID: Int64) {
         let action = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { result in
             if let error = result.failure {
-                DDLogError("⛔️ Failed to sync sytem plugins for siteID: \(siteID). Error: \(error)")
+                DDLogError("⛔️ Failed to sync system plugins for siteID: \(siteID). Error: \(error)")
             }
         }
         dispatch(action)

@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import Experiments
 
 /// `FilterListViewModel` for filtering a list of products.
 final class FilterProductListViewModel: FilterListViewModel {
@@ -50,9 +51,13 @@ final class FilterProductListViewModel: FilterListViewModel {
     private let productTypeFilterViewModel: FilterTypeViewModel
     private let productCategoryFilterViewModel: FilterTypeViewModel
 
+    private let featureFlagService: FeatureFlagService
+
     /// - Parameters:
     ///   - filters: the filters to be applied initially.
-    init(filters: Filters) {
+    init(filters: Filters, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+        self.featureFlagService = featureFlagService
+
         self.stockStatusFilterViewModel = ProductListFilter.stockStatus.createViewModel(filters: filters)
         self.productStatusFilterViewModel = ProductListFilter.productStatus.createViewModel(filters: filters)
         self.productTypeFilterViewModel = ProductListFilter.productType.createViewModel(filters: filters)
@@ -64,7 +69,7 @@ final class FilterProductListViewModel: FilterListViewModel {
             productTypeFilterViewModel
         ]
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.filterProductsByCategory) {
+        if featureFlagService.isFeatureFlagEnabled(.filterProductsByCategory) {
             filterTypeViewModels.append(productCategoryFilterViewModel)
         }
 
@@ -77,7 +82,7 @@ final class FilterProductListViewModel: FilterListViewModel {
         let productType = productTypeFilterViewModel.selectedValue as? ProductType ?? nil
         var productCategory: ProductCategory? = nil
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.filterProductsByCategory),
+        if featureFlagService.isFeatureFlagEnabled(.filterProductsByCategory),
            let selectedProductCategory = productCategoryFilterViewModel.selectedValue as? ProductCategory {
             productCategory = selectedProductCategory
         }
@@ -101,7 +106,7 @@ final class FilterProductListViewModel: FilterListViewModel {
         let clearedProductType: ProductType? = nil
         productTypeFilterViewModel.selectedValue = clearedProductType
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.filterProductsByCategory) {
+        if featureFlagService.isFeatureFlagEnabled(.filterProductsByCategory) {
             let clearedProductCategory: ProductCategory? = nil
             productCategoryFilterViewModel.selectedValue = clearedProductCategory
         }

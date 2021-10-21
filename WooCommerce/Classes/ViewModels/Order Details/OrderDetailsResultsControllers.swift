@@ -7,7 +7,7 @@ import protocol Storage.StorageManagerType
 final class OrderDetailsResultsControllers {
     private let storageManager: StorageManagerType
 
-    private let order: Order
+    private var order: Order
     private let siteID: Int64
 
     /// Shipment Tracking ResultsController.
@@ -32,12 +32,7 @@ final class OrderDetailsResultsControllers {
 
     /// ProductVariation ResultsController.
     ///
-    private lazy var productVariationResultsController: ResultsController<StorageProductVariation> = {
-        let variationIDs = order.items.map(\.variationID).filter { $0 != 0 }
-        let predicate = NSPredicate(format: "siteID == %lld AND productVariationID in %@", siteID, variationIDs)
-
-        return ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [])
-    }()
+    private lazy var productVariationResultsController: ResultsController<StorageProductVariation> = getProductVariationResultsController()
 
     /// Status Results Controller.
     ///
@@ -131,6 +126,10 @@ final class OrderDetailsResultsControllers {
         return addOnGroupResultsController.fetchedObjects
     }
 
+    /// Completion handler for when results controllers reload.
+    ///
+    var onReload: (() -> Void)?
+
     init(order: Order,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.order = order
@@ -139,6 +138,7 @@ final class OrderDetailsResultsControllers {
     }
 
     func configureResultsControllers(onReload: @escaping () -> Void) {
+        self.onReload = onReload
         configureStatusResultsController()
         configureTrackingResultsController(onReload: onReload)
         configureProductResultsController(onReload: onReload)
@@ -148,11 +148,28 @@ final class OrderDetailsResultsControllers {
         configurePaymentGatewayAccountResultsController(onReload: onReload)
         configureAddOnGroupResultsController(onReload: onReload)
     }
+
+    func update(order: Order) {
+        self.order = order
+        // Product variation results controller depends on order items to load variations,
+        // so we need to recreate it whenever receiving an updated order.
+        self.productVariationResultsController = getProductVariationResultsController()
+        if let onReload = onReload {
+            configureProductVariationResultsController(onReload: onReload)
+        }
+    }
 }
 
 // MARK: - Configuring results controllers
 //
 private extension OrderDetailsResultsControllers {
+
+    func getProductVariationResultsController() -> ResultsController<StorageProductVariation> {
+        let variationIDs = order.items.map(\.variationID).filter { $0 != 0 }
+        let predicate = NSPredicate(format: "siteID == %lld AND productVariationID in %@", siteID, variationIDs)
+
+        return ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }
 
     func configureStatusResultsController() {
         try? statusResultsController.performFetch()

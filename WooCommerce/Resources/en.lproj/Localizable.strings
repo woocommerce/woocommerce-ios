@@ -1,4 +1,4 @@
-﻿/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
+/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "#%@ %@" = "#%1$@ %2$@";
 
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
@@ -2465,6 +2465,9 @@
 
 /* Row title for filtering products by product type. */
 "Product Type" = "Product Type";
+
+/* Row title for filtering products by product category. */
+"Product Category" = "Product Category";
 
 /* Title of the Product Type row on Product main screen */
 "Product type" = "Product type";

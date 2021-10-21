@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 import Gridicons
 import WordPressUI
@@ -17,16 +18,7 @@ final class DashboardViewController: UIViewController {
     private var dashboardUI: DashboardUI?
 
     // Used to enable subtitle with store name
-    private var shouldShowStoreNameAsSubtitle: Bool {
-        return ServiceLocator.stores.sessionManager.defaultSite?.name != nil && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles)
-    }
-
-    private var titleName: String {
-        guard !shouldShowStoreNameAsSubtitle else {
-            return Localization.title
-        }
-        return ServiceLocator.stores.sessionManager.defaultSite?.name ?? ""
-    }
+    private var shouldShowStoreNameAsSubtitle: Bool = false
 
     // MARK: Subviews
 
@@ -88,6 +80,8 @@ final class DashboardViewController: UIViewController {
         return view
     }()
 
+    private var cancellables = Set<AnyCancellable>()
+
     // MARK: View Lifecycle
 
     init(siteID: Int64) {
@@ -106,6 +100,7 @@ final class DashboardViewController: UIViewController {
         configureNavigation()
         configureView()
         configureDashboardUIContainer()
+        observeSiteForUIUpdates()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -146,7 +141,7 @@ private extension DashboardViewController {
     }
 
     func configureTitle() {
-        navigationItem.title = titleName
+        navigationItem.title = Localization.title
     }
 
     func configureHeaderStackView() {
@@ -161,9 +156,6 @@ private extension DashboardViewController {
     }
 
     func configureSubtitle() {
-        guard shouldShowStoreNameAsSubtitle else {
-            return
-        }
         storeNameLabel.text = ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.title
         innerStackView.addArrangedSubview(storeNameLabel)
         headerStackView.addArrangedSubview(innerStackView)
@@ -239,6 +231,16 @@ private extension DashboardViewController {
     func hideTopBannerView() {
         topBannerView.isHidden = true
         spacerView.isHidden = true
+    }
+
+    func updateUI(site: Site?) {
+        guard let siteName = site?.name, siteName.isEmpty == false else {
+            shouldShowStoreNameAsSubtitle = false
+            storeNameLabel.text = nil
+            return
+        }
+        shouldShowStoreNameAsSubtitle = true
+        storeNameLabel.text = siteName
     }
 }
 
@@ -336,6 +338,13 @@ private extension DashboardViewController {
         dashboardUI?.reloadData(forced: forced, completion: { [weak self] in
             self?.configureTitle()
         })
+    }
+
+    func observeSiteForUIUpdates() {
+        ServiceLocator.stores.site.sink { [weak self] site in
+            guard let self = self else { return }
+            self.updateUI(site: site)
+        }.store(in: &cancellables)
     }
 }
 

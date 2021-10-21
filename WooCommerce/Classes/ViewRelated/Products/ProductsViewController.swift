@@ -819,7 +819,8 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                                                               sort: sort?.rawValue,
                                                               stockStatusFilter: filters.stockStatus,
                                                               productStatusFilter: filters.productStatus,
-                                                              productTypeFilter: filters.productType) { (error) in
+                                                              productTypeFilter: filters.productType,
+                                                              productCategoryFilter: filters.productCategory) { (error) in
         }
         ServiceLocator.stores.dispatch(action)
     }

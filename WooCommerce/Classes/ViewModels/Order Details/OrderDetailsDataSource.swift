@@ -60,6 +60,13 @@ final class OrderDetailsDataSource: NSObject {
             !isEligibleForCardPresentPayment
     }
 
+    /// Whether the option to re-create shipping labels should be visible.
+    ///
+    var shouldShowShippingLabelCreationOverflowMenu: Bool {
+        return isEligibleForShippingLabelCreation && shippingLabels.isNotEmpty &&
+            !isEligibleForCardPresentPayment
+    }
+
     func cardPresentPaymentGatewayAccounts() -> [PaymentGatewayAccount] {
         resultsControllers.paymentGatewayAccounts.filter { $0.isCardPresentEligible }
     }

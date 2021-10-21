@@ -71,6 +71,10 @@ final class OrderListViewModel {
     ///
     var hasErrorLoadingData: Bool = false
 
+    /// Determines what top banner should be shown
+    ///
+    @Published private(set) var topBanner: TopBanner = .none
+
     /// Tracks if the store is ready to receive payments.
     ///
     private let inPersonPaymentsReadyUseCase = CardPresentPaymentsOnboardingUseCase()

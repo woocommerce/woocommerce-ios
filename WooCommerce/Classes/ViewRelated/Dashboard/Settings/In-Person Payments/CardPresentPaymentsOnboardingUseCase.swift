@@ -9,7 +9,7 @@ private typealias PaymentGatewayAccount = Yosemite.PaymentGatewayAccount
 /// Protocol for `CardPresentPaymentsOnboardingUseCase`.
 /// Right now, only used for testing.
 ///
-protocol IPPOnboardingUseCaseProtocol {
+protocol CardPresentPaymentsOnboardingUseCaseProtocol {
     /// Current store onboarding state.
     ///
     var state: CardPresentPaymentOnboardingState { get set }
@@ -27,7 +27,7 @@ protocol IPPOnboardingUseCaseProtocol {
     func updateState()
 }
 
-final class CardPresentPaymentsOnboardingUseCase: IPPOnboardingUseCaseProtocol, ObservableObject {
+final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol, ObservableObject {
     let storageManager: StorageManagerType
     let stores: StoresManager
 

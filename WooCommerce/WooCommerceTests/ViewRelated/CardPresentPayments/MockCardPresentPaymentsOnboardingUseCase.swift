@@ -2,9 +2,9 @@ import Combine
 @testable import WooCommerce
 @testable import Yosemite
 
-/// Simple mock for `IPPOnboardingUseCaseProtocol`
+/// Simple mock for `CardPresentPaymentsOnboardingUseCaseProtocol`
 ///
-final class MockIPPOnboardingUseCase: IPPOnboardingUseCaseProtocol {
+final class MockCardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol {
     // MARK: Protocol properties
     @Published var state: CardPresentPaymentOnboardingState
     var statePublisher: Published<CardPresentPaymentOnboardingState>.Publisher {

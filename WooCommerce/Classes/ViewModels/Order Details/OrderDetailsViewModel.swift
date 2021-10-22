@@ -4,6 +4,7 @@ import Gridicons
 import Yosemite
 import MessageUI
 import Combine
+import enum Networking.DotcomError
 
 final class OrderDetailsViewModel {
     private let paymentOrchestrator = PaymentCaptureOrchestrator()
@@ -416,7 +417,11 @@ extension OrderDetailsViewModel {
                 onCompletion?(nil)
             case .failure(let error):
                 ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .failed(error: error)))
-                DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
+                if error as? DotcomError == .noRestRoute {
+                    DDLogError("⚠️ Endpoint for synchronizing shipping labels is unreachable. WC Shipping plugin may be missing.")
+                } else {
+                    DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
+                }
                 onCompletion?(error)
             }
         }

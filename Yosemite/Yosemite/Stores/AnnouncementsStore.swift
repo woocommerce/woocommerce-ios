@@ -219,6 +219,6 @@ enum AnnouncementsStorageError: Error {
     case announcementAlreadyExists
 }
 
-enum AnnouncementsError: Error {
+public enum AnnouncementsError: Error {
     case announcementNotFound
 }

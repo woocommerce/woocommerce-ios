@@ -23,6 +23,20 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
     ///
     @IBOutlet private var buttonBarBackgroundView: UIView!
 
+    /// The stack view that will embed the headers (filtered orders bar and tab strip)
+    ///
+    @IBOutlet weak var topStackView: UIStackView!
+
+    /// The top bar for apply filters, that will be embedded inside the stackview, on top of everything.
+    ///
+    private var filteredOrdersBar: FilteredOrdersHeaderBar = {
+        let filteredOrdersBar: FilteredOrdersHeaderBar = FilteredOrdersHeaderBar.instantiateFromNib()
+        filteredOrdersBar.onAction = {
+            // TODO: handle action
+        }
+        return filteredOrdersBar
+    }()
+
     private lazy var analytics = ServiceLocator.analytics
 
     private lazy var viewModel = OrdersTabbedViewModel(siteID: siteID)
@@ -39,6 +53,14 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
     }
 
     override func viewDidLoad() {
+
+        // Display the filtered orders bar
+        // if the feature flag is enabled
+        let isOrderListFiltersEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderListFilters)
+        if isOrderListFiltersEnabled {
+            topStackView.addArrangedSubview(filteredOrdersBar)
+        }
+
         // `configureTabStrip` must be called before `super.viewDidLoad()` or else the selection
         // highlight will be black. ¯\_(ツ)_/¯
         configureTabStrip()

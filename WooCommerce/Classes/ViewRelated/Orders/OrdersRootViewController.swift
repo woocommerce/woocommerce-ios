@@ -56,11 +56,15 @@ final class OrdersRootViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTitle()
-        configureNavigationButtons()
         configureView()
         configureContainerView()
         configureChildViewController()
         observeInPersonPaymentsStoreState()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        // Needed in ViewWillAppear because this View Controller is never recreated.
+        fetchQuickPayExperimentalToggleAndConfigureNavigationButtons()
     }
 
     override func viewDidLayoutSubviews() {
@@ -100,11 +104,13 @@ private extension OrdersRootViewController {
         tabBarItem.accessibilityIdentifier = "tab-bar-orders-item"
     }
 
-    /// For `viewDidLoad` only, set up `navigationItem` buttons.
+    /// Sets navigation buttons.
+    /// Search: Is always present.
+    /// Quick Pay: Depends on the local feature flag, experimental feature toggle and the inPersonPayments state.
     ///
-    func configureNavigationButtons() {
+    func configureNavigationButtons(isQuickPayExperimentalToggleEnabled: Bool) {
         let shouldShowQuickPayButton: Bool = {
-            let isQuickPayEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.quickPayPrototype)
+            let isQuickPayEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.quickPayPrototype) && isQuickPayExperimentalToggleEnabled
             let isInPersonPaymentsConfigured = inPersonPaymentsUseCase.state == .completed
             return isQuickPayEnabled && isInPersonPaymentsConfigured
         }()
@@ -148,10 +154,20 @@ private extension OrdersRootViewController {
         inPersonPaymentsUseCase.$state
             .removeDuplicates()
             .sink { [weak self] _ in
-                self?.configureNavigationButtons()
+                self?.fetchQuickPayExperimentalToggleAndConfigureNavigationButtons()
             }
             .store(in: &subscriptions)
         inPersonPaymentsUseCase.refresh()
+    }
+
+    /// Fetches the latest value of the QuickPay experimental feature toggle and re configures navigation buttons.
+    ///
+    func fetchQuickPayExperimentalToggleAndConfigureNavigationButtons() {
+        let action = AppSettingsAction.loadQuickPaySwitchState { [weak self] result in
+            let isEnabled = (try? result.get()) ?? false
+            self?.configureNavigationButtons(isQuickPayExperimentalToggleEnabled: isEnabled)
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 }
 

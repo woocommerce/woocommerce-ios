@@ -1,7 +1,0 @@
-Ada yang seru, sekarang Anda dapat mengedit beberapa kolom penting pada pesanan pelanggan.  Lakukan perbaikan kecil tersebut sebelum memenuhi pesanan langsung di aplikasi!
-
-Penjual di AS yang menggunakan WooCommerce Payments dapat menerima pembayaran kartu kredit langsung dari pelanggan setelah pengiriman atau penerimaan pesanan.
-
-Penjual yang menggunakan ekstensi WooCommerce Shipping & Tax akan mendapatkan perbaikan ukuran kertas, dukungan DHL, dan metode pembayaran. Membuat dan mencetak label pengiriman dari perangkat seluler sangat praktis!
-
-Dalam rilis ini juga disertakan beberapa perbaikan kecil sesuai feedback Anda. Terima kasih telah membantu kami menyempurnakan aplikasi untuk semua orang.

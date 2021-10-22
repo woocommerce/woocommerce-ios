@@ -23,17 +23,17 @@ struct ReportList: View {
     @Environment(\.horizontalSizeClass) var sizeClass: UserInterfaceSizeClass?
 
     var body: some View {
-        VStack {
-            Spacer(minLength: Layout.topSpaceLength(sizeClass))
+        Spacer(minLength: Layout.topSpaceLength(sizeClass))
+        VStack(spacing: Layout.listTopSpacerLength(sizeClass)) {
             LargeTitle(text: viewModel.title)
-            Spacer(minLength: Layout.listTopSpacerLength(sizeClass))
-            ScrollView {
+            VStack {
                 ForEach(viewModel.items, id: \.id) {
                     IconListItem(title: $0.title,
                                  subtitle: $0.subtitle,
                                  icon: $0.icon)
                 }
             }
+            .scrollVerticallyIfNeeded()
             Spacer()
             Button(viewModel.ctaTitle, action: viewModel.onDismiss)
                 .buttonStyle(PrimaryButtonStyle())

@@ -388,6 +388,106 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let createShippingLabelRow = row(row: .shippingLabelCreateButton, in: productSection)
         XCTAssertNil(createShippingLabelRow)
     }
+
+    func test_more_button_is_visible_in_product_section_for_eligible_order_without_refunded_labels() throws {
+        // Given
+        let order = makeOrder()
+        let shippingLabel = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID)
+        insert(shippingLabel: shippingLabel)
+
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        dataSource.isEligibleForShippingLabelCreation = true
+        dataSource.configureResultsControllers { }
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let productSection = try section(withTitle: Title.products, from: dataSource)
+        guard case .actionablePrimary = productSection.headerStyle else {
+            XCTFail("Product section should show more button on the header for eligible order without refunded labels")
+            return
+        }
+    }
+
+    func test_more_button_is_visible_in_product_section_for_eligible_order_with_refunded_labels() throws {
+        // Given
+        let order = makeOrder()
+        let refundedShippingLabel = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID, refund: ShippingLabelRefund.fake())
+        insert(shippingLabel: refundedShippingLabel)
+
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        dataSource.isEligibleForShippingLabelCreation = true
+        dataSource.configureResultsControllers { }
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let productSection = try section(withTitle: Title.products, from: dataSource)
+        guard case .actionablePrimary = productSection.headerStyle else {
+            XCTFail("Product section should show more button on the header for eligible order with refunded labels")
+            return
+        }
+    }
+
+    func test_more_button_is_not_visible_in_product_section_for_eligible_order_without_shipping_labels() throws {
+        // Given
+        let order = makeOrder()
+
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        dataSource.isEligibleForShippingLabelCreation = true
+        dataSource.configureResultsControllers { }
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let productSection = try section(withTitle: Title.products, from: dataSource)
+        guard case .primary = productSection.headerStyle else {
+            XCTFail("Product section should not show button on the header for eligible order without shipping labels")
+            return
+        }
+    }
+
+    func test_more_button_is_not_visible_in_product_section_for_ineligible_order() throws {
+        // Given
+        let order = makeOrder()
+
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        dataSource.isEligibleForShippingLabelCreation = false
+        dataSource.configureResultsControllers { }
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let productSection = try section(withTitle: Title.products, from: dataSource)
+        guard case .primary = productSection.headerStyle else {
+            XCTFail("Product section should not show button on the header for ineligible order")
+            return
+        }
+    }
+
+    func test_morel_button_is_not_visible_in_product_section_for_cash_on_delivery_order() throws {
+        // Given
+        let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "100", paymentMethodID: "cod")
+        storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        dataSource.isEligibleForShippingLabelCreation = true
+
+        // When
+        dataSource.configureResultsControllers { }
+        dataSource.reloadSections()
+
+        // Then
+        let productSection = try section(withTitle: Title.products, from: dataSource)
+        guard case .primary = productSection.headerStyle else {
+            XCTFail("Product section should not show button on the header for cash on delivery order")
+            return
+        }
+    }
 }
 
 // MARK: - Test Data

@@ -21,7 +21,7 @@ struct SystemStatusMapper: Mapper {
 
         /// For now, we're going to override the networkActivated Bool in each plugin to convey active or inactive -- in order to
         /// avoid a core data change to add a Bool for activated
-        /// This will be undone in #xxxx
+        /// This will be undone in #5269
         let activePlugins = systemStatus.activePlugins.map {
             $0.overrideNetworkActivated(isNetworkActivated: true)
         }

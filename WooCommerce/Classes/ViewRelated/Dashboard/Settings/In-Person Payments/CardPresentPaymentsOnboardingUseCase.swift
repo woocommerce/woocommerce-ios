@@ -59,15 +59,15 @@ private extension CardPresentPaymentsOnboardingUseCase {
         stores.dispatch(settingsAction)
 
         // We need to sync plugins to check if WCPay is installed, up to date, and active
-        let sitePluginsAction = SitePluginAction.synchronizeSitePlugins(siteID: siteID) { result in
+        let systemPluginsAction = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { result in
             if case let .failure(error) = result {
-                DDLogError("[CardPresentPaymentsOnboarding] Error syncing site plugins: \(error)")
+                DDLogError("[CardPresentPaymentsOnboarding] Error syncing system plugins: \(error)")
                 errors.append(error)
             }
             group.leave()
         }
         group.enter()
-        stores.dispatch(sitePluginsAction)
+        stores.dispatch(systemPluginsAction)
 
         // We need to sync payment gateway accounts to see if WCPay is set up correctly
         let paymentGatewayAccountsAction = PaymentGatewayAccountAction.loadAccounts(siteID: siteID) { result in
@@ -175,8 +175,10 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func isWCPayActivated(plugin: SystemPlugin) -> Bool {
-        // TODO hook up active/not if possible (might need to add to entity)
-        return true
+        // For now we are overriding networkActivated in SystemStatusMapper
+        // to convey active / not active for a plugin.
+        // TODO - replace with simply `activated` as part of #5269
+        return plugin.networkActivated
     }
 
     func getWCPayAccount() -> PaymentGatewayAccount? {

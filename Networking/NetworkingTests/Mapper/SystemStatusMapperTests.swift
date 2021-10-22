@@ -22,7 +22,7 @@ class SystemStatusMapperTests: XCTestCase {
         let expectedAuthorName = "Automattic"
         let expectedAuthorUrl = "https://woocommerce.com"
         /// TODO - The mapper is overriding networkActivated to be true for active plugins in general
-        /// When we fix #xxxx this test will need to be updated to properly test the
+        /// When we fix #5269 this test will need to be updated to properly test the
         /// new `activated` attribute that will be added to SystemPlugin instead
         let expectedNetworkActivated = true
 
@@ -58,7 +58,7 @@ class SystemStatusMapperTests: XCTestCase {
         let expectedAuthorName = "Matt Mullenweg"
         let expectedAuthorUrl = "http://ma.tt/"
         /// TODO - The mapper is overriding networkActivated to be true for active plugins in general
-        /// When we fix #xxxx this test will need to be updated to properly test the
+        /// When we fix #5269 this test will need to be updated to properly test the
         /// new `activated` attribute that will be added to SystemPlugin instead
         let expectedNetworkActivated = false
 

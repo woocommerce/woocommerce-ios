@@ -31,9 +31,6 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
     ///
     private var filteredOrdersBar: FilteredOrdersHeaderBar = {
         let filteredOrdersBar: FilteredOrdersHeaderBar = FilteredOrdersHeaderBar.instantiateFromNib()
-        filteredOrdersBar.onAction = {
-            // TODO: handle action
-        }
         return filteredOrdersBar
     }()
 
@@ -68,6 +65,10 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
         super.viewDidLoad()
 
         viewModel.activate()
+
+        filteredOrdersBar.onAction = { [weak self] in
+            self?.filterButtonTapped()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -144,6 +145,11 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
         return makeViewControllers()
     }
 
+    /// Present `FilterListViewController`
+    ///
+    private func filterButtonTapped() {
+        // TODO: open filters
+    }
 }
 
 // MARK: - OrdersViewControllerDelegate

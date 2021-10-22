@@ -8,17 +8,21 @@ final class FilterOrderListViewModel: FilterListViewModel {
     /// Aggregates the filter values that can be updated in the Filter Order UI.
     struct Filters: Equatable {
         let orderStatus: OrderStatusEnum?
+        let dateRange: OrderDateRangeFilterEnum?
 
         let numberOfActiveFilters: Int
 
         init() {
             orderStatus = nil
+            dateRange = nil
             numberOfActiveFilters = 0
         }
 
         init(orderStatus: OrderStatusEnum?,
+             dateRange: OrderDateRangeFilterEnum?,
              numberOfActiveFilters: Int) {
             self.orderStatus = orderStatus
+            self.dateRange = dateRange
             self.numberOfActiveFilters = numberOfActiveFilters
         }
     }
@@ -28,24 +32,32 @@ final class FilterOrderListViewModel: FilterListViewModel {
     let filterTypeViewModels: [FilterTypeViewModel]
 
     private let orderStatusFilterViewModel: FilterTypeViewModel
+    private let dateRangeFilterViewModel: FilterTypeViewModel
 
     /// - Parameters:
     ///   - filters: the filters to be applied initially.
     init(filters: Filters) {
         orderStatusFilterViewModel = OrderListFilter.orderStatus.createViewModel(filters: filters)
+        dateRangeFilterViewModel = OrderListFilter.dateRange.createViewModel(filters: filters)
 
-        filterTypeViewModels = [orderStatusFilterViewModel]
+        filterTypeViewModels = [orderStatusFilterViewModel, dateRangeFilterViewModel]
     }
 
     var criteria: Filters {
         let orderStatus = orderStatusFilterViewModel.selectedValue as? OrderStatusEnum ?? nil
+        let dateRange = dateRangeFilterViewModel.selectedValue as? OrderDateRangeFilterEnum ?? nil
         let numberOfActiveFilters = filterTypeViewModels.numberOfActiveFilters
-        return Filters(orderStatus: orderStatus, numberOfActiveFilters: numberOfActiveFilters)
+        return Filters(orderStatus: orderStatus,
+                       dateRange: dateRange,
+                       numberOfActiveFilters: numberOfActiveFilters)
     }
 
     func clearAll() {
         let clearedOrderStatus: OrderStatusEnum? = nil
         orderStatusFilterViewModel.selectedValue = clearedOrderStatus
+
+        let clearedDateRange: OrderDateRangeFilterEnum? = nil
+        dateRangeFilterViewModel.selectedValue = clearedDateRange
     }
 }
 
@@ -54,6 +66,7 @@ extension FilterOrderListViewModel {
     ///
     enum OrderListFilter {
         case orderStatus
+        case dateRange
     }
 }
 
@@ -62,6 +75,8 @@ private extension FilterOrderListViewModel.OrderListFilter {
         switch self {
         case .orderStatus:
             return NSLocalizedString("Order Status", comment: "Row title for filtering orders by order status.")
+        case .dateRange:
+            return NSLocalizedString("Date range", comment: "Row title for filtering orders by date range.")
         }
     }
 }
@@ -74,6 +89,11 @@ extension FilterOrderListViewModel.OrderListFilter {
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .staticOptions(options: options),
                                        selectedValue: filters.orderStatus)
+        case .dateRange:
+            let options: [OrderDateRangeFilterEnum?] = [nil, .today, .last2Days, .thisWeek, .thisMonth, .custom]
+            return FilterTypeViewModel(title: title,
+                                       listSelectorConfig: .staticOptions(options: options),
+                                       selectedValue: filters.dateRange)
         }
     }
 }
@@ -100,6 +120,30 @@ extension OrderStatusEnum: FilterType {
             return NSLocalizedString("Refunded", comment: "Display label for refunded order status.")
         case .custom(let payload):
             return payload // unable to localize at runtime.
+        }
+    }
+
+    var isActive: Bool {
+        return true
+    }
+}
+
+// MARK: - FilterType conformance
+extension OrderDateRangeFilterEnum: FilterType {
+    /// Returns the localized text version of the Enum
+    ///
+    public var description: String {
+        switch self {
+        case .today:
+            return NSLocalizedString("Today", comment: "Label for one of the filters in order date range")
+        case .last2Days:
+            return NSLocalizedString("Last 2 Days", comment: "Label for one of the filters in order date range")
+        case .thisWeek:
+            return NSLocalizedString("This Week", comment: "Label for one of the filters in order date range")
+        case .thisMonth:
+            return NSLocalizedString("This Month", comment: "Label for one of the filters in order date range")
+        case .custom:
+            return NSLocalizedString("Custom Range", comment: "Label for one of the filters in order date range")
         }
     }
 

@@ -17,8 +17,8 @@ class SystemStatusMapperTests: XCTestCase {
         let expectedPlugin = "woocommerce/woocommerce.php"
         let expectedName = "WooCommerce"
         let expectedUrl = "https://woocommerce.com/"
-        let expectedVersion = "3.0.0-rc.1"
-        let expectedVersionLatest = "2.6.14"
+        let expectedVersion = "5.8.0"
+        let expectedVersionLatest = "5.8.0"
         let expectedAuthorName = "Automattic"
         let expectedAuthorUrl = "https://woocommerce.com"
         let expectedNetworkActivated = false
@@ -27,7 +27,7 @@ class SystemStatusMapperTests: XCTestCase {
         let systemPlugins = try mapLoadSystemStatusResponse()
 
         // Then
-        XCTAssertEqual(systemPlugins.count, 3)
+        XCTAssertEqual(systemPlugins.count, 4)
 
         let systemPlugin = systemPlugins[0]
         XCTAssertNotNil(systemPlugin)

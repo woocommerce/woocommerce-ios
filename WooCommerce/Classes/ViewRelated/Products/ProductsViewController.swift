@@ -875,6 +875,7 @@ private extension ProductsViewController {
             ensureFooterSpinnerIsStopped()
             removePlaceholderProducts()
             showTopBannerViewIfNeeded()
+            showOrHideToolBar()
         case .results:
             break
         }

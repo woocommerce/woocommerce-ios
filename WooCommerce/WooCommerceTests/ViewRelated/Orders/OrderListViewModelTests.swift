@@ -229,8 +229,8 @@ final class OrderListViewModelTests: XCTestCase {
 
     func test_having_no_error_and_no_quick_pay_does_not_show_banner() {
         // Given
-        // TODO: Set onboard state to incomplete
-        let viewModel = OrderListViewModel(siteID: siteID, statusFilter: nil)
+        let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .wcpayNotInstalled)
+        let viewModel = OrderListViewModel(siteID: siteID, statusFilter: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
 
         // When
         viewModel.activate()
@@ -267,7 +267,8 @@ final class OrderListViewModelTests: XCTestCase {
             }
         }
 
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, statusFilter: nil)
+        let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed)
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, statusFilter: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
 
         // When
         viewModel.activate()
@@ -292,8 +293,8 @@ final class OrderListViewModelTests: XCTestCase {
             }
         }
 
-        // TODO: Onboard store explicitly
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, statusFilter: nil)
+        let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed)
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, statusFilter: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
 
         // When
         viewModel.activate()
@@ -317,8 +318,8 @@ final class OrderListViewModelTests: XCTestCase {
             }
         }
 
-        // TODO: Onboard store explicitly
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, statusFilter: nil)
+        let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed)
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, statusFilter: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
 
         // When
         viewModel.activate()
@@ -342,8 +343,8 @@ final class OrderListViewModelTests: XCTestCase {
             }
         }
 
-        // TODO: Set store to not onboarded explicitly
-        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, statusFilter: nil)
+        let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .wcpayNotInstalled)
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, statusFilter: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
 
         // When
         viewModel.activate()

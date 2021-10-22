@@ -79,7 +79,7 @@ final class OrderListViewModel {
 
     /// Tracks if the store is ready to receive payments.
     ///
-    private let inPersonPaymentsReadyUseCase = CardPresentPaymentsOnboardingUseCase()
+    private let inPersonPaymentsReadyUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
 
     /// Tracks if the merchant has enabled the Quick Pay experimental feature toggle
     ///
@@ -94,13 +94,15 @@ final class OrderListViewModel {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
-         statusFilter: OrderStatus?) {
+         statusFilter: OrderStatus?,
+         inPersonPaymentsReadyUseCase: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase()) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
         self.statusFilter = statusFilter
+        self.inPersonPaymentsReadyUseCase = inPersonPaymentsReadyUseCase
     }
 
     deinit {
@@ -240,7 +242,7 @@ extension OrderListViewModel {
     /// Figures out what top banner should be shown based on the view model internal state.
     ///
     private func bindTopBannerState() {
-        let enrolledState = inPersonPaymentsReadyUseCase.$state.removeDuplicates()
+        let enrolledState = inPersonPaymentsReadyUseCase.statePublisher.removeDuplicates()
         let errorState = $hasErrorLoadingData.removeDuplicates()
         let experimentalState = $isQuickPayEnabled.removeDuplicates()
         Publishers.CombineLatest3(enrolledState, errorState, experimentalState)

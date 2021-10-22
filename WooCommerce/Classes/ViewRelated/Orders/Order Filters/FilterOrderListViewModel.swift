@@ -27,7 +27,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
         }
     }
 
-    let filterActionTitle = NSLocalizedString("Show Orders", comment: "Button title for applying filters to a list of orders.")
+    let filterActionTitle = Localization.filterActionTitle
 
     let filterTypeViewModels: [FilterTypeViewModel]
 
@@ -74,9 +74,9 @@ private extension FilterOrderListViewModel.OrderListFilter {
     var title: String {
         switch self {
         case .orderStatus:
-            return NSLocalizedString("Order Status", comment: "Row title for filtering orders by order status.")
+            return Localization.rowTitleOrderStatus
         case .dateRange:
-            return NSLocalizedString("Date range", comment: "Row title for filtering orders by date range.")
+            return Localization.rowTitleDateRange
         }
     }
 }
@@ -102,5 +102,19 @@ extension FilterOrderListViewModel.OrderListFilter {
 extension OrderStatusEnum: FilterType {
     var isActive: Bool {
         return true
+    }
+}
+
+// MARK: - Constants
+private extension FilterOrderListViewModel {
+    enum Localization {
+        static let filterActionTitle = NSLocalizedString("Show Orders", comment: "Button title for applying filters to a list of orders.")
+    }
+}
+
+private extension FilterOrderListViewModel.OrderListFilter {
+    enum Localization {
+        static let rowTitleOrderStatus = NSLocalizedString("Order Status", comment: "Row title for filtering orders by order status.")
+        static let rowTitleDateRange = NSLocalizedString("Date range", comment: "Row title for filtering orders by date range.")
     }
 }

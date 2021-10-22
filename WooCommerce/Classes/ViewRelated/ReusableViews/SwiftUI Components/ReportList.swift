@@ -23,10 +23,11 @@ struct ReportList: View {
     @Environment(\.horizontalSizeClass) var sizeClass: UserInterfaceSizeClass?
 
     var body: some View {
-        Spacer(minLength: Layout.topSpaceLength(sizeClass))
-        VStack(spacing: Layout.listTopSpacerLength(sizeClass)) {
+        VStack {
             LargeTitle(text: viewModel.title)
-            VStack {
+                .padding(.top, Layout.titleTopPadding(sizeClass))
+                .padding(.bottom, Layout.listVerticalPadding(sizeClass))
+            VStack(spacing: Layout.listSpacing) {
                 ForEach(viewModel.items, id: \.id) {
                     IconListItem(title: $0.title,
                                  subtitle: $0.subtitle,
@@ -34,34 +35,28 @@ struct ReportList: View {
                 }
             }
             .scrollVerticallyIfNeeded()
-            Spacer()
+            Spacer(minLength: Layout.listVerticalPadding(sizeClass))
             Button(viewModel.ctaTitle, action: viewModel.onDismiss)
                 .buttonStyle(PrimaryButtonStyle())
-                .padding(.horizontal, Layout.buttonHorizontalPadding(sizeClass))
-                .padding(.bottom, Layout.buttonVerticalPadding(sizeClass))
         }
         .onAppear(perform: viewModel.onAppear)
+        .padding(Layout.padding)
     }
 }
 
 private extension ReportList {
     enum Layout {
 
-        static func topSpaceLength(_ sizeClass: UserInterfaceSizeClass?) -> CGFloat {
-            sizeClass == .regular ? 40 : 75
+        static func titleTopPadding(_ sizeClass: UserInterfaceSizeClass?) -> CGFloat {
+            sizeClass == .regular ? 0 : 35
         }
 
-        static func listTopSpacerLength(_ sizeClass: UserInterfaceSizeClass?) -> CGFloat {
+        static func listVerticalPadding(_ sizeClass: UserInterfaceSizeClass?) -> CGFloat {
             sizeClass == .regular ? 32 : 40
         }
 
-        static func buttonHorizontalPadding(_ sizeClass: UserInterfaceSizeClass?) -> CGFloat {
-            sizeClass == .regular ? 40 : 24
-        }
-
-        static func buttonVerticalPadding(_ sizeClass: UserInterfaceSizeClass?) -> CGFloat {
-            sizeClass == .regular ? 40 : 60
-        }
+        static let padding: CGFloat = 40
+        static let listSpacing: CGFloat = 32
     }
 }
 

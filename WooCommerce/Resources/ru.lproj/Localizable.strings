@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-10-13 13:54:05+0000 */
+/* Translation-Revision-Date: 2021-10-22 17:33:20+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -37,7 +37,7 @@
 "%1$@ refund requested (%2$@)" = "Запрошен возврат %1$@ (%2$@)";
 
 /* Total value for the selected rates in Shipping Labels > Carrier and Rates */
-"%1$@ total" = "Итого: $1$@";
+"%1$@ total" = "Итого: %1$@";
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@ через %2$@";

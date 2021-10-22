@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-10-12 09:54:51+0000 */
+/* Translation-Revision-Date: 2021-10-22 17:32:22+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -37,7 +37,7 @@
 "%1$@ refund requested (%2$@)" = "%1$@ 환불 요청됨(%2$@)";
 
 /* Total value for the selected rates in Shipping Labels > Carrier and Rates */
-"%1$@ total" = "총 $1$@개";
+"%1$@ total" = "총 %1$@개";
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%2$@을(를) 통한 %1$@";

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-10-13 11:54:05+0000 */
+/* Translation-Revision-Date: 2021-10-22 17:32:07+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -37,7 +37,7 @@
 "%1$@ refund requested (%2$@)" = "%1$@ の返金がリクエストされました (%2$@)";
 
 /* Total value for the selected rates in Shipping Labels > Carrier and Rates */
-"%1$@ total" = "合計$1$@";
+"%1$@ total" = "合計%1$@";
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%2$@ 経由 %1$@";

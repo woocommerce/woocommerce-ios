@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-10-12 13:54:04+0000 */
+/* Translation-Revision-Date: 2021-10-22 17:31:15+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -37,7 +37,7 @@
 "%1$@ refund requested (%2$@)" = "נשלחה בקשה עבור החזר כספי %1$@ ‏(%2$@)";
 
 /* Total value for the selected rates in Shipping Labels > Carrier and Rates */
-"%1$@ total" = "סך הכול $1$@";
+"%1$@ total" = "סך הכול %1$@";
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@ באמצעות %2$@";

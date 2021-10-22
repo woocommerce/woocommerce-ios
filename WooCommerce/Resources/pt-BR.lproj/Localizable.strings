@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-10-11 17:54:05+0000 */
+/* Translation-Revision-Date: 2021-10-22 17:33:05+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -37,7 +37,7 @@
 "%1$@ refund requested (%2$@)" = "Reembolso de %1$@ solicitado (%2$@)";
 
 /* Total value for the selected rates in Shipping Labels > Carrier and Rates */
-"%1$@ total" = "$1$@ no total";
+"%1$@ total" = "%1$@ no total";
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@ via %2$@";

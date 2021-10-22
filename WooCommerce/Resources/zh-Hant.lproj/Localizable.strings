@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-10-12 11:54:03+0000 */
+/* Translation-Revision-Date: 2021-10-22 17:34:53+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -37,7 +37,7 @@
 "%1$@ refund requested (%2$@)" = "已提出 %1$@ 退款要求 (%2$@)";
 
 /* Total value for the selected rates in Shipping Labels > Carrier and Rates */
-"%1$@ total" = "總共 $1$@ 個";
+"%1$@ total" = "總共 %1$@ 個";
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "已在 %1$@ 收到 %2$@ 付款";

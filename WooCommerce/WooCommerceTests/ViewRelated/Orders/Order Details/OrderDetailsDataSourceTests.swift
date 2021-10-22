@@ -127,13 +127,35 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(row(row: .markCompleteButton(style: .secondary, showsBottomSpacing: false), in: productsSection))
     }
 
-    func test_collect_payment_button_is_visible_and_primary_style_if_order_is_eligible_for_cash_on_delivery() throws {
+    func test_collect_payment_button_is_visible_and_primary_style_if_order_status_is_processing_and_method_is_cash_on_delivery() throws {
         // Setup
         let account = storageManager.insertCardPresentEligibleAccount()
         storageManager.viewStorage.saveIfNeeded()
 
         // Given
         let order = makeOrder().copy(status: .processing, datePaid: .some(nil), paymentMethodID: "cod")
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        dataSource.configureResultsControllers { }
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        XCTAssertNotNil(row(row: .collectCardPaymentButton, in: paymentSection))
+
+        // Clean up
+        storageManager.viewStorage.deleteObject(account)
+        storageManager.viewStorage.saveIfNeeded()
+    }
+
+    func test_collect_payment_button_is_visible_and_primary_style_if_order_status_is_on_hold_and_method_is_woocommerce_payments() throws {
+        // Setup
+        let account = storageManager.insertCardPresentEligibleAccount()
+        storageManager.viewStorage.saveIfNeeded()
+
+        // Given
+        let order = makeOrder().copy(status: .onHold, datePaid: .some(nil), paymentMethodID: "woocommerce_payments")
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
         dataSource.configureResultsControllers { }
 

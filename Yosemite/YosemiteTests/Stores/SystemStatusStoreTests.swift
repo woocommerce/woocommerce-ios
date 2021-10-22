@@ -37,7 +37,7 @@ class SystemStatusStoreTests: XCTestCase {
 
     func test_synchronizeSystemPlugins_stores_systemPlugins_correctly() {
         // Given
-        network.simulateResponse(requestUrlSuffix: "system_status", filename: "systemPlugins")
+        network.simulateResponse(requestUrlSuffix: "system_status", filename: "systemStatus")
         let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
@@ -61,7 +61,7 @@ class SystemStatusStoreTests: XCTestCase {
         storedStaleSystemPlugin.update(with: staleSystemPlugin)
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageSystemPlugin.self), 1)
 
-        network.simulateResponse(requestUrlSuffix: "system_status", filename: "systemPlugins")
+        network.simulateResponse(requestUrlSuffix: "system_status", filename: "systemStatus")
         let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When

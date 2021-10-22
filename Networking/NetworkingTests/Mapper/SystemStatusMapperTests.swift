@@ -1,9 +1,9 @@
 import XCTest
 @testable import Networking
 
-/// SystemPluginsMapper Unit Tests
+/// SystemStatusMapperTests Unit Tests
 ///
-class SystemPluginsMapperTests: XCTestCase {
+class SystemStatusMapperTests: XCTestCase {
 
     /// Dummy Site ID.
     ///
@@ -24,7 +24,7 @@ class SystemPluginsMapperTests: XCTestCase {
         let expectedNetworkActivated = false
 
         // When
-        let systemPlugins = try mapLoadSystemPluginsResponse()
+        let systemPlugins = try mapLoadSystemStatusResponse()
 
         // Then
         XCTAssertEqual(systemPlugins.count, 3)
@@ -45,21 +45,21 @@ class SystemPluginsMapperTests: XCTestCase {
 
 /// Private Methods.
 ///
-private extension SystemPluginsMapperTests {
+private extension SystemStatusMapperTests {
 
-    /// Returns the SystemPluginsMapper output upon receiving `filename` (Data Encoded)
+    /// Returns the SystemStatusMapper output upon receiving `filename` (Data Encoded)
     ///
     func mapPlugins(from filename: String) throws -> [SystemPlugin] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
 
-        return try SystemPluginsMapper(siteID: dummySiteID).map(response: response)
+        return try SystemStatusMapper(siteID: dummySiteID).map(response: response)
     }
 
-    /// Returns the SystemPluginsMapper output upon receiving `systemPlugins`
+    /// Returns the SystemStatusMapper output upon receiving `systemPlugins`
     ///
-    func mapLoadSystemPluginsResponse() throws -> [SystemPlugin] {
-        return try mapPlugins(from: "systemPlugins")
+    func mapLoadSystemStatusResponse() throws -> [SystemPlugin] {
+        return try mapPlugins(from: "systemStatus")
     }
 }

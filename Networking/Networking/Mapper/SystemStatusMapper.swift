@@ -1,8 +1,8 @@
 import Foundation
 
-/// Mapper: SystemPlugins
+/// Mapper: System Status
 ///
-struct SystemPluginsMapper: Mapper {
+struct SystemStatusMapper: Mapper {
 
     /// Site Identifier associated to the system plugins that will be parsed.
     /// We're injecting this field via `JSONDecoder.userInfo` because the remote endpoints don't return the SiteID in the system plugin endpoint.

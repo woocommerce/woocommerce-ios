@@ -83,7 +83,7 @@ final class OrderListViewModel {
 
     /// Tracks if the merchant has enabled the Quick Pay experimental feature toggle
     ///
-    private var isQuickPayEnabled = false
+    @Published private var isQuickPayEnabled = false
 
     /// Tracks if the Quick Pay feature is ready to be released to the public
     ///
@@ -242,8 +242,9 @@ extension OrderListViewModel {
     private func bindTopBannerState() {
         let enrolledState = inPersonPaymentsReadyUseCase.$state.removeDuplicates()
         let errorState = $hasErrorLoadingData.removeDuplicates()
-        Publishers.CombineLatest(enrolledState, errorState)
-            .map { [weak self] state, hasError -> TopBanner in
+        let experimentalState = $isQuickPayEnabled.removeDuplicates()
+        Publishers.CombineLatest3(enrolledState, errorState, experimentalState)
+            .map { [weak self] enrolledState, hasError, isQuickPayEnabled -> TopBanner in
                 guard let self = self else { return .none }
 
                 guard !hasError else {
@@ -254,7 +255,7 @@ extension OrderListViewModel {
                     return .none
                 }
 
-                switch (state, self.isQuickPayEnabled) {
+                switch (enrolledState, isQuickPayEnabled) {
                 case (.completed, false):
                     return .quickPayDisabled
                 case (.completed, true):

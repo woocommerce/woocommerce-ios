@@ -17,27 +17,19 @@ struct SystemStatusMapper: Mapper {
             .siteID: siteID
         ]
 
-        return try decoder.decode(SystemPluginsEnvelope.self, from: response).data.activePlugins
+        let systemStatus = try decoder.decode(SystemStatusEnvelope.self, from: response).systemStatus
+
+        return systemStatus.activePlugins + systemStatus.inactivePlugins
     }
 }
 
-/// SystemPluginsActivePluginsEnvelope Disposable Entity:
-/// The plugins endpoint returns the document within a `active_plugins` key. This entity
-/// allows us to do parse all the things with JSONDecoder.
+/// System Status endpoint returns the requested account in the `data` key. This entity
+/// allows us to parse it with JSONDecoder.
 ///
-private struct SystemPluginsActivePluginsEnvelope: Decodable {
-
-    let activePlugins: [SystemPlugin]
+private struct SystemStatusEnvelope: Decodable {
+    let systemStatus: SystemStatus
 
     private enum CodingKeys: String, CodingKey {
-        case activePlugins = "active_plugins"
+        case systemStatus = "data"
     }
-}
-
-/// SystemPluginsEnvelope Disposable Entity:
-/// The plugins endpoint returns the document within a `data` key. This entity
-/// allows us to do parse the object `SystemPluginsActivePluginsEnvelope`.
-///
-private struct SystemPluginsEnvelope: Decodable {
-    let data: SystemPluginsActivePluginsEnvelope
 }

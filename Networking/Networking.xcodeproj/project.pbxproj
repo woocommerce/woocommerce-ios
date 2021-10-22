@@ -142,6 +142,7 @@
 		31104E142630DDA700587C1E /* wcpay-account-wrong-json.json in Resources */ = {isa = PBXBuildFile; fileRef = 31104E132630DDA700587C1E /* wcpay-account-wrong-json.json */; };
 		311976E02602BD4B006AC56C /* SitePluginsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311976DF2602BD4B006AC56C /* SitePluginsMapperTests.swift */; };
 		314703082670222500EF253A /* PaymentGatewayAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314703072670222500EF253A /* PaymentGatewayAccount.swift */; };
+		3148977027232982007A86BD /* SystemStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3148976F27232982007A86BD /* SystemStatus.swift */; };
 		3158FE6026129ADD00E566B9 /* wcpay-account-none.json in Resources */ = {isa = PBXBuildFile; fileRef = 3158FE5F26129ADD00E566B9 /* wcpay-account-none.json */; };
 		3158FE6426129B1300E566B9 /* wcpay-account-complete.json in Resources */ = {isa = PBXBuildFile; fileRef = 3158FE6326129B1300E566B9 /* wcpay-account-complete.json */; };
 		3158FE6826129CE200E566B9 /* wcpay-account-rejected-fraud.json in Resources */ = {isa = PBXBuildFile; fileRef = 3158FE6726129CE200E566B9 /* wcpay-account-rejected-fraud.json */; };
@@ -704,6 +705,7 @@
 		31104E132630DDA700587C1E /* wcpay-account-wrong-json.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-wrong-json.json"; sourceTree = "<group>"; };
 		311976DF2602BD4B006AC56C /* SitePluginsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginsMapperTests.swift; sourceTree = "<group>"; };
 		314703072670222500EF253A /* PaymentGatewayAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGatewayAccount.swift; sourceTree = "<group>"; };
+		3148976F27232982007A86BD /* SystemStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatus.swift; sourceTree = "<group>"; };
 		3158FE5F26129ADD00E566B9 /* wcpay-account-none.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-none.json"; sourceTree = "<group>"; };
 		3158FE6326129B1300E566B9 /* wcpay-account-complete.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-complete.json"; sourceTree = "<group>"; };
 		3158FE6726129CE200E566B9 /* wcpay-account-rejected-fraud.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-rejected-fraud.json"; sourceTree = "<group>"; };
@@ -1545,6 +1547,8 @@
 				74046E1C217A6989007DD7BF /* SiteSetting.swift */,
 				74159624224D4045003C21CF /* SiteSettingGroup.swift */,
 				CE50345F21B5799F007573C6 /* SitePlan.swift */,
+				077F39C7269F2C7E00ABEADC /* SystemPlugin.swift */,
+				3148976F27232982007A86BD /* SystemStatus.swift */,
 				450106842399A7CB00E24722 /* TaxClass.swift */,
 				3192F21F260D33BB0067FEF9 /* WCPayAccount.swift */,
 				3192F223260D34C40067FEF9 /* WCPayAccountStatusEnum.swift */,
@@ -1553,7 +1557,6 @@
 				31054705262E278100C5C02B /* WCPayPaymentIntent.swift */,
 				3105470B262E27F000C5C02B /* WCPayPaymentIntentStatusEnum.swift */,
 				FE28F6E126840DED004465C7 /* User.swift */,
-				077F39C7269F2C7E00ABEADC /* SystemPlugin.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -2478,6 +2481,7 @@
 				CE430676234BA7920073CBFF /* RefundListMapper.swift in Sources */,
 				45551F122523E7F1007EF104 /* UserAgent.swift in Sources */,
 				45CDAFAB2434CA9300F83C22 /* ProductCatalogVisibility.swift in Sources */,
+				3148977027232982007A86BD /* SystemStatus.swift in Sources */,
 				B557DA1820979D51005962F4 /* Credentials.swift in Sources */,
 				CE583A0E2109154500D73C1C /* OrderNoteMapper.swift in Sources */,
 				318E8FD526C31F9500F519D7 /* WCPayCustomer.swift in Sources */,

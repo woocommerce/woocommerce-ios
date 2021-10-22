@@ -27,7 +27,7 @@ class SystemStatusMapperTests: XCTestCase {
         let systemPlugins = try mapLoadSystemStatusResponse()
 
         // Then
-        XCTAssertEqual(systemPlugins.count, 4)
+        XCTAssertEqual(systemPlugins.count, 6)
 
         let systemPlugin = systemPlugins[0]
         XCTAssertNotNil(systemPlugin)

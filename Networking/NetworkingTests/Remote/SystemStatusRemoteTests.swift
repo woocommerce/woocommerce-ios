@@ -39,7 +39,7 @@ class SystemStatusRemoteTests: XCTestCase {
         // Then
         switch result {
         case .success(let plugins):
-            XCTAssertEqual(plugins.count, 3)
+            XCTAssertEqual(plugins.count, 6)
         case .failure(let error):
             XCTAssertNil(error)
         }

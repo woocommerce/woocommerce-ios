@@ -6,10 +6,36 @@ import Yosemite
 private typealias SitePlugin = Yosemite.SitePlugin
 private typealias PaymentGatewayAccount = Yosemite.PaymentGatewayAccount
 
-final class CardPresentPaymentsOnboardingUseCase: ObservableObject {
+/// Protocol for `CardPresentPaymentsOnboardingUseCase`.
+/// Right now, only used for testing.
+///
+protocol IPPOnboardingUseCaseProtocol {
+    /// Current store onboarding state.
+    ///
+    var state: CardPresentPaymentOnboardingState { get set }
+
+    /// Store onboarding state publisher.
+    ///
+    var statePublisher: Published<CardPresentPaymentOnboardingState>.Publisher { get }
+
+    /// Resynchronize the onboarding state if needed.
+    ///
+    func refresh()
+
+    /// Update the onboarding state with the latest synced values.
+    ///
+    func updateState()
+}
+
+final class CardPresentPaymentsOnboardingUseCase: IPPOnboardingUseCaseProtocol, ObservableObject {
     let storageManager: StorageManagerType
     let stores: StoresManager
+
     @Published var state: CardPresentPaymentOnboardingState = .loading
+
+    var statePublisher: Published<CardPresentPaymentOnboardingState>.Publisher {
+        $state
+    }
 
     init(
         storageManager: StorageManagerType = ServiceLocator.storageManager,

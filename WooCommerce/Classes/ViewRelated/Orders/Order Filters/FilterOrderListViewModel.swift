@@ -127,27 +127,3 @@ extension OrderStatusEnum: FilterType {
         return true
     }
 }
-
-// MARK: - FilterType conformance
-extension OrderDateRangeFilterEnum: FilterType {
-    /// Returns the localized text version of the Enum
-    ///
-    public var description: String {
-        switch self {
-        case .today:
-            return NSLocalizedString("Today", comment: "Label for one of the filters in order date range")
-        case .last2Days:
-            return NSLocalizedString("Last 2 Days", comment: "Label for one of the filters in order date range")
-        case .thisWeek:
-            return NSLocalizedString("This Week", comment: "Label for one of the filters in order date range")
-        case .thisMonth:
-            return NSLocalizedString("This Month", comment: "Label for one of the filters in order date range")
-        case .custom:
-            return NSLocalizedString("Custom Range", comment: "Label for one of the filters in order date range")
-        }
-    }
-
-    var isActive: Bool {
-        return true
-    }
-}

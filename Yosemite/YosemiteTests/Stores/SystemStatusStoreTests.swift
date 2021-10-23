@@ -50,7 +50,7 @@ class SystemStatusStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        XCTAssertEqual(viewStorage.countObjects(ofType: StorageSystemPlugin.self), 3) // number of systemPlugins in json file
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageSystemPlugin.self), 6) // number of systemPlugins in json file
     }
 
     func test_synchronizeSystemPlugins_removes_stale_systemPlugins_correctly() {
@@ -74,7 +74,7 @@ class SystemStatusStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        XCTAssertEqual(viewStorage.countObjects(ofType: StorageSystemPlugin.self), 3) // number of systemPlugins in json file
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageSystemPlugin.self), 6) // number of systemPlugins in json file
         XCTAssertNil(viewStorage.loadSystemPlugin(siteID: sampleSiteID, name: staleSystemPluginName))
     }
 

@@ -57,15 +57,11 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v7.7-whats-new"
+msgctxt "v7.8-whats-new"
 msgid ""
-"You’ll be excited to learn that you can now edit several essential fields on your customers’ orders. Make those minor fixes before fulfilling an order right in the app!\n"
+"Merchants using WooCommerce Shipping & Tax will find you can now create multiple shipping labels for an order. You can quickly move items between the packages to match how you’ve decided to ship things to your customer. We’ve also addressed some glitches that were reported on the same screens.\n"
 "\n"
-"Merchants using WooCommerce Payments in the USA can accept in-person credit card payments for your customers’ payment upon delivery or pickup orders.\n"
-"\n"
-"Merchants using the WooCommerce Shipping & Tax Extension will find improvements with paper sizes, DHL support, and payment methods. Creating and printing shipping labels from your mobile device is so much fun!\n"
-"\n"
-"Also included in this release are a few minor improvements based on your feedback. Thanks for helping us make a better app for everyone.\n"
+"We also made a few accessibility improvements based on feedback. Thank you!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

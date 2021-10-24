@@ -21,7 +21,7 @@ final class FilterProductListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.criteria, expectedCriteria)
     }
 
-    func testCriteriaWithNonNilFilters() {
+    func test_criteria_with_non_nil_filters_then_it_returns_all_active_filters() {
         // Given
         let filters = FilterProductListViewModel.Filters(stockStatus: .inStock,
                                                          productStatus: .draft,
@@ -38,7 +38,7 @@ final class FilterProductListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.criteria, expectedCriteria)
     }
 
-    func testCriteriaAfterClearingAllNonNilFilters() {
+    func test_criteria_after_clearing_all_non_nil_filters_then_it_returns_no_active_filter() {
         // Given
         let filters = FilterProductListViewModel.Filters(stockStatus: .inStock,
                                                          productStatus: .draft,
@@ -60,7 +60,7 @@ final class FilterProductListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.criteria, expectedCriteria)
     }
 
-    func testCriteriaWithNonNilFiltersAndFilterProductByCategoryIsDisabled() {
+    func test_criteria_with_non_nil_filters_and_isFilterProductsByCategoryOff_then_it_returns_all_active_filters_minus_filterProductCategory() {
         // Given
         let filters = FilterProductListViewModel.Filters(stockStatus: .inStock,
                                                          productStatus: .draft,
@@ -81,7 +81,7 @@ final class FilterProductListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.criteria, expectedCriteria)
     }
 
-    func testViewModelsWhenFilterProductByCategoryIsDisabled() {
+    func test_viewModels_when_isFilterProductsByCategoryOff_then_it_returns_viewModels_except_filterProductCategory() {
         // Given
         let filters = FilterProductListViewModel.Filters(stockStatus: .inStock,
                                                          productStatus: .draft,

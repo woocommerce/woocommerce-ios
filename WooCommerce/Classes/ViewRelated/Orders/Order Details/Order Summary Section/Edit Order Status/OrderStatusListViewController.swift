@@ -9,7 +9,6 @@ final class OrderStatusListViewController: UIViewController {
     /// The index of the status stored in the database when list view is presented
     ///
     private var initialStatus: IndexPath?
-    
     /// The index of (new) order status selected by the user tapping on a table row.
     ///
     private var indexOfSelectedStatus: IndexPath? {

@@ -39,7 +39,7 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
     }
 
     func testCreatingProductCategoryFilterTypeViewModel() {
-        let filterType = FilterProductListViewModel.ProductListFilter.productCategory
+        let filterType = FilterProductListViewModel.ProductListFilter.productCategory(siteID: 0)
 
         let filters = FilterProductListViewModel.Filters(stockStatus: .inStock,
                                                          productStatus: .draft,

@@ -5,7 +5,7 @@ import Foundation
 struct ProductCategoryCellViewModel {
     /// Category ID
     ///
-    let categoryID: Int64
+    let categoryID: Int64?
 
     /// Category name
     ///

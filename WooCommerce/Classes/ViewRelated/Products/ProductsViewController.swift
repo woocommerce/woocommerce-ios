@@ -664,7 +664,7 @@ private extension ProductsViewController {
 
     @objc func filterButtonTapped() {
         ServiceLocator.analytics.track(.productListViewFilterOptionsTapped)
-        let viewModel = FilterProductListViewModel(filters: filters)
+        let viewModel = FilterProductListViewModel(filters: filters, siteID: siteID)
         let filterProductListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
             ServiceLocator.analytics.track(.productFilterListShowProductsButtonTapped, withProperties: ["filters": filters.analyticsDescription])
             self?.filters = filters

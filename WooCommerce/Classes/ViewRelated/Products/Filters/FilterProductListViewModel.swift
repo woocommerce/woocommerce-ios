@@ -55,13 +55,13 @@ final class FilterProductListViewModel: FilterListViewModel {
 
     /// - Parameters:
     ///   - filters: the filters to be applied initially.
-    init(filters: Filters, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+    init(filters: Filters, siteID: Int64, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.featureFlagService = featureFlagService
 
         self.stockStatusFilterViewModel = ProductListFilter.stockStatus.createViewModel(filters: filters)
         self.productStatusFilterViewModel = ProductListFilter.productStatus.createViewModel(filters: filters)
         self.productTypeFilterViewModel = ProductListFilter.productType.createViewModel(filters: filters)
-        self.productCategoryFilterViewModel = ProductListFilter.productCategory.createViewModel(filters: filters)
+        self.productCategoryFilterViewModel = ProductListFilter.productCategory(siteID: siteID).createViewModel(filters: filters)
 
         var filterTypeViewModels = [
             stockStatusFilterViewModel,
@@ -120,7 +120,7 @@ extension FilterProductListViewModel {
         case stockStatus
         case productStatus
         case productType
-        case productCategory
+        case productCategory(siteID: Int64)
     }
 }
 
@@ -157,9 +157,9 @@ extension FilterProductListViewModel.ProductListFilter {
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .staticOptions(options: options),
                                        selectedValue: filters.productType)
-        case .productCategory:
+        case let .productCategory(siteID):
             return FilterTypeViewModel(title: title,
-                                       listSelectorConfig: .productCategories,
+                                       listSelectorConfig: .productCategories(siteID: siteID),
                                        selectedValue: filters.productCategory)
         }
     }

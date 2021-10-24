@@ -13,11 +13,8 @@ final class ProductCategoryListViewController: UIViewController {
 
     let viewModel: ProductCategoryListViewModel
 
-    private let siteID: Int64
-
-    init(siteID: Int64, selectedCategories: [ProductCategory]) {
-        viewModel = ProductCategoryListViewModel(siteID: siteID, selectedCategories: selectedCategories)
-        self.siteID = siteID
+    init(viewModel: ProductCategoryListViewModel) {
+        self.viewModel = viewModel
 
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }

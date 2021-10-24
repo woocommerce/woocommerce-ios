@@ -23,7 +23,10 @@ final class EditProductCategoryListViewController: UIViewController {
 
     init(product: Product, completion: @escaping Completion) {
         self.product = product
-        productCategoryListViewController = ProductCategoryListViewController(siteID: product.siteID, selectedCategories: product.categories)
+
+        let productCategoryListViewModel = ProductCategoryListViewModel(siteID: product.siteID,
+                                                                        selectedCategories: product.categories)
+        productCategoryListViewController = ProductCategoryListViewController(viewModel: productCategoryListViewModel)
         viewModel = EditProductCategoryListViewModel(product: product,
                                                      baseProductCategoryListViewModel: productCategoryListViewController.viewModel,
                                                      completion: completion)

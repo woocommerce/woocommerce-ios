@@ -159,7 +159,7 @@ extension FilterProductListViewModel.ProductListFilter {
                                        selectedValue: filters.productType)
         case .productCategory:
             return FilterTypeViewModel(title: title,
-                                       listSelectorConfig: .categories,
+                                       listSelectorConfig: .productCategories,
                                        selectedValue: filters.productCategory)
         }
     }

@@ -53,7 +53,7 @@ enum FilterListValueSelectorConfig {
     // Standard list selector with fixed options
     case staticOptions(options: [FilterType])
     // Filter list selector for categories, retrieved dynamically
-    case categories
+    case productCategories
 }
 
 /// Contains data for rendering a filter type row.
@@ -226,7 +226,7 @@ private extension FilterListViewController {
                 }
                 let staticListSelector = ListSelectorViewController(command: command, tableViewStyle: .plain) { _ in }
                 self.listSelector.navigationController?.pushViewController(staticListSelector, animated: true)
-            case .categories:
+            case .productCategories:
                 // TODO-5159: Show filter products by category view controller
                 break
             }

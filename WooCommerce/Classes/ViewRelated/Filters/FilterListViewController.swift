@@ -227,7 +227,7 @@ private extension FilterListViewController {
                 let staticListSelector = ListSelectorViewController(command: command, tableViewStyle: .plain) { _ in }
                 self.listSelector.navigationController?.pushViewController(staticListSelector, animated: true)
             case .categories:
-                // WIP https://github.com/woocommerce/woocommerce-ios/issues/5159: Show filter products by category view controller
+                // TODO-5159: Show filter products by category view controller
                 break
             }
         }

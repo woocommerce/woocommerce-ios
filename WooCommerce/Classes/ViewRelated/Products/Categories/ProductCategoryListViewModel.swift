@@ -144,6 +144,8 @@ final class ProductCategoryListViewModel {
         reloadData()
     }
 
+    /// Resets the selected categories. Please note that this method that not trigger any UI reload
+    ///
     func resetSelectedCategories() {
         selectedCategories = []
     }

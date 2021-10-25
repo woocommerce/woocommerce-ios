@@ -41,18 +41,20 @@ final class FilterProductCategoryListViewController: UIViewController {
         attachSubview(productCategoryListViewController.view)
         productCategoryListViewController.didMove(toParent: self)
     }
+}
 
-    private func attachSubview(_ subview: UIView) {
+private extension FilterProductCategoryListViewController {
+    func attachSubview(_ subview: UIView) {
         subview.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(subview)
         view.pinSubviewToAllEdges(subview)
     }
 
-    private func configureNavigationBar() {
+    func configureNavigationBar() {
         configureTitle()
     }
 
-    private func configureTitle() {
-        title = NSLocalizedString("Categories", comment: "Filter product categories screen - Screen title")
+    func configureTitle() {
+        title = viewModel.title
     }
 }

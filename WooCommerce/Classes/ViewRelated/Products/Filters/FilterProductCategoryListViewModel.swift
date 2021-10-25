@@ -12,6 +12,10 @@ fileprivate extension ProductCategoryCellViewModel {
 }
 
 final class FilterProductCategoryListViewModel: ProductCategoryListViewModelEnrichingDataSource, ProductCategoryListViewModelDelegate {
+    /// Title for the view
+    ///
+    let title = Localization.title
+    
     /// Holds a reference to the fixed "Any" category cell selection value so it can be used when enriching category view models
     ///
     private var anyCategoryIsSelected = true
@@ -33,5 +37,11 @@ final class FilterProductCategoryListViewModel: ProductCategoryListViewModelEnri
     func viewModel(_ viewModel: ProductCategoryListViewModel, didSelectRowAt index: Int) {
         viewModel.resetSelectedCategories()
         anyCategoryIsSelected = index == 0
+    }
+}
+
+private extension FilterProductCategoryListViewModel {
+    enum Localization {
+        static let title = NSLocalizedString("Categories", comment: "Filter product categories screen - Screen title")
     }
 }

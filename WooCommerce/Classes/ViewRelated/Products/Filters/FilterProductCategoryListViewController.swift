@@ -15,6 +15,8 @@ final class FilterProductCategoryListViewController: UIViewController {
     init(siteID: Int64) {
         self.siteID = siteID
         self.viewModel = FilterProductCategoryListViewModel()
+
+        // TODO-5159: Initialize selected categories with the stored filter categories
         let productCategoryListViewModel = ProductCategoryListViewModel(siteID: siteID,
                                                                         selectedCategories: [],
                                                                         dataSource: viewModel,

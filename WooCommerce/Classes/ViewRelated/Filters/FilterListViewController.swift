@@ -227,6 +227,7 @@ private extension FilterListViewController {
                 let staticListSelector = ListSelectorViewController(command: command, tableViewStyle: .plain) { _ in }
                 self.listSelector.navigationController?.pushViewController(staticListSelector, animated: true)
             case let .productCategories(siteID):
+                // TODO-5159: Handle product category filter selection
                 let filterProductCategoryListViewController = FilterProductCategoryListViewController(siteID: siteID)
                 self.listSelector.navigationController?.pushViewController(filterProductCategoryListViewController, animated: true)
             }

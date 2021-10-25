@@ -96,7 +96,7 @@ private extension PaymentGatewayAccountStore {
 
                 onCompletion(.success(()))
             case .failure(let error):
-                onCompletion(.failure(error))
+                onCompletion(.failure(PaymentGatewayAccountError(underlyingError: error)))
                 return
             }
         })
@@ -121,5 +121,53 @@ private extension PaymentGatewayAccountStore {
 
         storage.deleteObject(storageAccount)
         storage.saveIfNeeded()
+    }
+}
+
+/// Models errors thrown by the PaymentGatewayAccountStore. Not to be confused with
+/// errors originating from the card readers. Those are defined in CardReaderServiceError.
+///
+public enum PaymentGatewayAccountError: Error, LocalizedError {
+    case orderPaymentCaptureError(message: String?)
+    case otherError(error: AnyError)
+
+    init(underlyingError error: Error) {
+        guard case let DotcomError.unknown(code, message) = error else {
+            self = .otherError(error: error.toAnyError)
+            return
+        }
+
+        /// See if we recognize this DotcomError code
+        ///
+        self = ErrorCode(rawValue: code)?.error(message: message ?? Localizations.defaultMessage) ?? .otherError(error: error.toAnyError)
+    }
+
+    enum ErrorCode: String {
+        case wcpayCaptureError = "wcpay_capture_error"
+
+        func error(message: String) -> PaymentGatewayAccountError {
+            switch self {
+            case .wcpayCaptureError:
+                return .orderPaymentCaptureError(message: message)
+            }
+        }
+    }
+
+    public var errorDescription: String? {
+        switch self {
+        case .orderPaymentCaptureError(let message):
+            /// Return the message directly from the store, e.g. in the case of fractional quantities, which are not allowed
+            /// "Payment capture failed to complete with the following message: Error: Invalid integer: 2.5"
+            return message
+        case .otherError(let error):
+            return error.localizedDescription
+        }
+    }
+
+    enum Localizations {
+        static let defaultMessage = NSLocalizedString(
+            "An unexpected error occurred with the store's payment gateway when capturing payment for the order",
+            comment: "Message presented when an unexpected error occurs with the store's payment gateway."
+        )
     }
 }

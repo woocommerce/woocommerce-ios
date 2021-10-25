@@ -819,7 +819,8 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                                                               sort: sort?.rawValue,
                                                               stockStatusFilter: filters.stockStatus,
                                                               productStatusFilter: filters.productStatus,
-                                                              productTypeFilter: filters.productType) { (error) in
+                                                              productTypeFilter: filters.productType,
+                                                              productCategoryFilter: filters.productCategory) { (error) in
         }
         ServiceLocator.stores.dispatch(action)
     }
@@ -836,6 +837,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                 self?.filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
                                                                    productStatus: settings.productStatusFilter,
                                                                    productType: settings.productTypeFilter,
+                                                                   productCategory: settings.productCategoryFilter,
                                                                    numberOfActiveFilters: settings.numberOfActiveFilters())
             case .failure:
                 break

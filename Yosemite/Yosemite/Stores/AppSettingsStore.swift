@@ -117,12 +117,19 @@ public class AppSettingsStore: Store {
             loadFeedbackVisibility(type: type, onCompletion: onCompletion)
         case .loadProductsSettings(let siteID, let onCompletion):
             loadProductsSettings(siteID: siteID, onCompletion: onCompletion)
-        case .upsertProductsSettings(let siteID, let sort, let stockStatusFilter, let productStatusFilter, let productTypeFilter, let onCompletion):
+        case .upsertProductsSettings(let siteID,
+                                     let sort,
+                                     let stockStatusFilter,
+                                     let productStatusFilter,
+                                     let productTypeFilter,
+                                     let productCategoryFilter,
+                                     let onCompletion):
             upsertProductsSettings(siteID: siteID,
                                    sort: sort,
                                    stockStatusFilter: stockStatusFilter,
                                    productStatusFilter: productStatusFilter,
                                    productTypeFilter: productTypeFilter,
+                                   productCategoryFilter: productCategoryFilter,
                                    onCompletion: onCompletion)
         case .resetProductsSettings:
             resetProductsSettings()
@@ -598,6 +605,7 @@ private extension AppSettingsStore {
                                 stockStatusFilter: ProductStockStatus? = nil,
                                 productStatusFilter: ProductStatus? = nil,
                                 productTypeFilter: ProductType? = nil,
+                                productCategoryFilter: ProductCategory? = nil,
                                 onCompletion: (Error?) -> Void) {
         var existingSettings: [Int64: StoredProductSettings.Setting] = [:]
         if let storedSettings: StoredProductSettings = try? fileStorage.data(for: productsSettingsURL) {
@@ -608,7 +616,8 @@ private extension AppSettingsStore {
                                                        sort: sort,
                                                        stockStatusFilter: stockStatusFilter,
                                                        productStatusFilter: productStatusFilter,
-                                                       productTypeFilter: productTypeFilter)
+                                                       productTypeFilter: productTypeFilter,
+                                                       productCategoryFilter: productCategoryFilter)
         existingSettings[siteID] = newSetting
 
         let newStoredProductSettings = StoredProductSettings(settings: existingSettings)

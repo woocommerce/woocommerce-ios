@@ -1,7 +1,0 @@
-You’ll be excited to learn that you can now edit several essential fields on your customers’ orders. Make those minor fixes before fulfilling an order right in the app!
-
-Merchants using WooCommerce Payments in the USA can accept in-person credit card payments for your customers’ payment upon delivery or pickup orders.
-
-Merchants using the WooCommerce Shipping & Tax Extension will find improvements with paper sizes, DHL support, and payment methods. Creating and printing shipping labels from your mobile device is so much fun!
-
-Also included in this release are a few minor improvements based on your feedback. Thanks for helping us make a better app for everyone.

@@ -185,6 +185,10 @@ private extension OrderDetailsViewController {
         viewModel.onShippingLabelMoreMenuTapped = { [weak self] shippingLabel, sourceView in
             self?.shippingLabelMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
         }
+
+        viewModel.onProductsMoreMenuTapped = { [weak self] sourceView in
+            self?.productsMoreMenuTapped(sourceView: sourceView)
+        }
     }
 
     /// Reloads the tableView's data, assuming the view has been loaded.
@@ -523,18 +527,7 @@ private extension OrderDetailsViewController {
                                                             sourceNavigationController: navigationController)
             coordinator.showPrintUI()
         case .createShippingLabel:
-            let shippingLabelFormVC = ShippingLabelFormViewController(order: viewModel.order)
-            shippingLabelFormVC.onLabelPurchase = { [weak self] isOrderComplete in
-                if isOrderComplete {
-                    self?.markOrderCompleteFromShippingLabels()
-                }
-            }
-            shippingLabelFormVC.onLabelSave = { [weak self] in
-                guard let self = self else { return }
-                self.navigationController?.popToViewController(self, animated: true)
-            }
-            shippingLabelFormVC.hidesBottomBarWhenPushed = true
-            navigationController?.show(shippingLabelFormVC, sender: self)
+            navigateToCreateShippingLabelForm()
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
         case let .viewAddOns(addOns):
@@ -544,6 +537,21 @@ private extension OrderDetailsViewController {
         case .editShippingAddress:
             editShippingAddressTapped()
         }
+    }
+
+    func navigateToCreateShippingLabelForm() {
+        let shippingLabelFormVC = ShippingLabelFormViewController(order: viewModel.order)
+        shippingLabelFormVC.onLabelPurchase = { [weak self] isOrderComplete in
+            if isOrderComplete {
+                self?.markOrderCompleteFromShippingLabels()
+            }
+        }
+        shippingLabelFormVC.onLabelSave = { [weak self] in
+            guard let self = self else { return }
+            self.navigationController?.popToViewController(self, animated: true)
+        }
+        shippingLabelFormVC.hidesBottomBarWhenPushed = true
+        navigationController?.show(shippingLabelFormVC, sender: self)
     }
 
     func markOrderCompleteWasPressed() {
@@ -605,6 +613,21 @@ private extension OrderDetailsViewController {
     func displayWebView(url: URL) {
         let safariViewController = SFSafariViewController(url: url)
         present(safariViewController, animated: true, completion: nil)
+    }
+
+    func productsMoreMenuTapped(sourceView: UIView) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+
+        actionSheet.addCancelActionWithTitle(Localization.ProductsMoreMenu.cancelAction)
+        actionSheet.addDefaultActionWithTitle(Localization.ProductsMoreMenu.createShippingLabelAction) { [weak self] _ in
+            self?.navigateToCreateShippingLabelForm()
+        }
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.sourceView = sourceView
+
+        present(actionSheet, animated: true)
     }
 
     func shippingLabelMoreMenuTapped(shippingLabel: ShippingLabel, sourceView: UIView) {
@@ -1036,6 +1059,13 @@ private extension OrderDetailsViewController {
         enum Generic {
             static let topLoaderBannerDescription = NSLocalizedString("Loading content",
                                                                       comment: "Text of the loading banner in Order Detail when loaded for the first time")
+        }
+
+        enum ProductsMoreMenu {
+            static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the more menu action sheet on Products section")
+            static let createShippingLabelAction = NSLocalizedString("Create Shipping Label",
+                                                                     comment: "Option to create new shipping label from the action " +
+                                                                     "sheet on Products section of Order Details screen")
         }
 
         enum ShippingLabelMoreMenu {

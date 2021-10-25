@@ -1,7 +1,0 @@
-Você ficará feliz em saber que agora pode editar vários campos essenciais nos pedidos dos seus clientes. Faça essas correções antes de concluir um pedido, direto no aplicativo!
-
-Comerciantes que usam o WooCommerce Payments nos EUA podem aceitar pagamentos com cartão de crédito presenciais na entrega ou retirada de pedidos.
-
-Comerciantes que usam a extensão WooCommerce Shipping & Tax verão melhorias nos tamanhos de papel, na compatibilidade com a DHL e nas formas de pagamento. É tão bom criar e imprimir etiquetas de envio pelo seu dispositivo móvel!
-
-Esta versão também inclui algumas pequenas melhorias com base no seu feedback. Obrigado por nos ajudar a criar um aplicativo melhor para todos.

@@ -112,6 +112,14 @@ final class OrderDetailsViewModel {
         }
     }
 
+    /// Closure to be executed when the more menu on Products section is tapped.
+    ///
+    var onProductsMoreMenuTapped: ((_ sourceView: UIView) -> Void)? {
+        didSet {
+            dataSource.onProductsMoreMenuTapped = onProductsMoreMenuTapped
+        }
+    }
+
     /// Closure to be executed when the shipping label more menu is tapped.
     ///
     var onShippingLabelMoreMenuTapped: ((_ shippingLabel: ShippingLabel, _ sourceView: UIView) -> Void)? {

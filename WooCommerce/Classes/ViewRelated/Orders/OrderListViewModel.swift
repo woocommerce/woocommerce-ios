@@ -85,6 +85,11 @@ final class OrderListViewModel {
     ///
     @Published private var isQuickPayEnabled = false
 
+    /// If true, no quick pay banner will be shown as the user has told us that they are not interested in this information.
+    /// Resets with every session.
+    ///
+    @Published var hideQuickPayBanners: Bool = false
+
     /// Tracks if the Quick Pay feature is ready to be released to the public
     ///
     private let isQuickPayDevelopmentComplete = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.quickPayPrototype)
@@ -245,15 +250,15 @@ extension OrderListViewModel {
         let enrolledState = inPersonPaymentsReadyUseCase.statePublisher.removeDuplicates()
         let errorState = $hasErrorLoadingData.removeDuplicates()
         let experimentalState = $isQuickPayEnabled.removeDuplicates()
-        Publishers.CombineLatest3(enrolledState, errorState, experimentalState)
-            .map { [weak self] enrolledState, hasError, isQuickPayEnabled -> TopBanner in
+        Publishers.CombineLatest4(enrolledState, errorState, experimentalState, $hideQuickPayBanners)
+            .map { [weak self] enrolledState, hasError, isQuickPayEnabled, hasDismissedBanners -> TopBanner in
                 guard let self = self else { return .none }
 
                 guard !hasError else {
                     return .error
                 }
 
-                guard self.isQuickPayDevelopmentComplete else {
+                guard self.isQuickPayDevelopmentComplete, !hasDismissedBanners else {
                     return .none
                 }
 

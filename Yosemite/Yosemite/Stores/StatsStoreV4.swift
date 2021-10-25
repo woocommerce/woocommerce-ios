@@ -11,6 +11,8 @@ public final class StatsStoreV4: Store {
     private let orderStatsRemote: OrderStatsRemoteV4
     private let productsRemote: ProductsRemote
 
+    private lazy var sharedDerivedStorage: StorageType = storageManager.writerDerivedStorage
+
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.siteVisitStatsRemote = SiteVisitStatsRemote(network: network)
         self.leaderboardsRemote = LeaderboardsRemote(network: network)
@@ -104,8 +106,7 @@ public extension StatsStoreV4 {
                               quantity: quantity) { [weak self] result in
             switch result {
             case .success(let orderStatsV4):
-                self?.upsertStoredOrderStats(readOnlyStats: orderStatsV4, timeRange: timeRange)
-                onCompletion(.success(()))
+                self?.upsertStoredOrderStatsInBackground(readOnlyStats: orderStatsV4, timeRange: timeRange, onCompletion: onCompletion)
             case .failure(let error):
                 onCompletion(.failure(error))
             }
@@ -129,8 +130,7 @@ public extension StatsStoreV4 {
                                     quantity: quantity) { [weak self] result in
             switch result {
             case .success(let siteVisitStats):
-                self?.upsertStoredSiteVisitStats(readOnlyStats: siteVisitStats, timeRange: timeRange)
-                onCompletion(.success(()))
+                self?.upsertStoredSiteVisitStatsInBackground(readOnlyStats: siteVisitStats, timeRange: timeRange, onCompletion: onCompletion)
             case .failure(let error):
                 onCompletion(.failure(SiteVisitStatsStoreError(error: error)))
             }
@@ -176,8 +176,6 @@ extension StatsStoreV4 {
     /// Updates (OR Inserts) the specified ReadOnly OrderStatsV4 Entity into the Storage Layer.
     ///
     func upsertStoredOrderStats(readOnlyStats: Networking.OrderStatsV4, timeRange: StatsTimeRangeV4) {
-        assert(Thread.isMainThread)
-
         let storage = storageManager.viewStorage
 
         let storageOrderStats = storage.loadOrderStatsV4(siteID: readOnlyStats.siteID, timeRange: timeRange.rawValue) ??
@@ -187,7 +185,21 @@ extension StatsStoreV4 {
         storageOrderStats.totals = storage.insertNewObject(ofType: Storage.OrderStatsV4Totals.self)
         storageOrderStats.update(with: readOnlyStats)
         handleOrderStatsIntervals(readOnlyStats, storageOrderStats, storage)
-        storage.saveIfNeeded()
+    }
+
+    func upsertStoredOrderStatsInBackground(readOnlyStats: Networking.OrderStatsV4,
+                                            timeRange: StatsTimeRangeV4,
+                                            onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            self.upsertStoredOrderStats(readOnlyStats: readOnlyStats, timeRange: timeRange)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async {
+                onCompletion(.success(()))
+            }
+        }
     }
 
     /// Updates the provided StorageOrderStats items using the provided read-only OrderStats items
@@ -234,15 +246,29 @@ extension StatsStoreV4 {
     /// Updates (OR Inserts) the specified ReadOnly SiteVisitStats Entity into the Storage Layer.
     ///
     func upsertStoredSiteVisitStats(readOnlyStats: Networking.SiteVisitStats, timeRange: StatsTimeRangeV4) {
-        assert(Thread.isMainThread)
-
         let storage = storageManager.viewStorage
         let storageSiteVisitStats = storage.loadSiteVisitStats(
             granularity: readOnlyStats.granularity.rawValue, timeRange: timeRange.rawValue) ?? storage.insertNewObject(ofType: Storage.SiteVisitStats.self)
         storageSiteVisitStats.update(with: readOnlyStats)
         storageSiteVisitStats.timeRange = timeRange.rawValue
         handleSiteVisitStatsItems(readOnlyStats, storageSiteVisitStats, storage)
-        storage.saveIfNeeded()
+    }
+
+    /// Updates (OR Inserts) the specified ReadOnly SiteVisitStats Entity into the Storage Layer.
+    ///
+    func upsertStoredSiteVisitStatsInBackground(readOnlyStats: Networking.SiteVisitStats,
+                                                timeRange: StatsTimeRangeV4,
+                                                onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            self.upsertStoredSiteVisitStats(readOnlyStats: readOnlyStats, timeRange: timeRange)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async {
+                onCompletion(.success(()))
+            }
+        }
     }
 
     /// Updates the provided StorageSiteVisitStats items using the provided read-only SiteVisitStats items
@@ -270,15 +296,25 @@ extension StatsStoreV4 {
     /// Updates (OR Inserts) the specified ReadOnly TopEarnerStats Entity into the Storage Layer.
     ///
     func upsertStoredTopEarnerStats(readOnlyStats: Networking.TopEarnerStats) {
-        assert(Thread.isMainThread)
-
         let storage = storageManager.viewStorage
         let storageTopEarnerStats = storage.loadTopEarnerStats(date: readOnlyStats.date,
                                                                granularity: readOnlyStats.granularity.rawValue)
             ?? storage.insertNewObject(ofType: Storage.TopEarnerStats.self)
         storageTopEarnerStats.update(with: readOnlyStats)
         handleTopEarnerStatsItems(readOnlyStats, storageTopEarnerStats, storage)
-        storage.saveIfNeeded()
+    }
+
+    func upsertStoredTopEarnerStatsInBackground(readOnlyStats: Networking.TopEarnerStats, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            self.upsertStoredTopEarnerStats(readOnlyStats: readOnlyStats)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async {
+                onCompletion(.success(()))
+            }
+        }
     }
 
     /// Updates the provided StorageTopEarnerStats items using the provided read-only TopEarnerStats items
@@ -332,8 +368,8 @@ private extension StatsStoreV4 {
                                                                              granularity: granularity,
                                                                              date: date,
                                                                              topProducts: topProducts,
-                                                                             storedProducts: products)
-                onCompletion(.success(()))
+                                                                             storedProducts: products,
+                                                                             onCompletion: onCompletion)
             case .failure(let error):
                 onCompletion(.failure(error))
             }
@@ -383,7 +419,8 @@ private extension StatsStoreV4 {
                                                                  granularity: StatGranularity,
                                                                  date: Date,
                                                                  topProducts: Leaderboard,
-                                                                 storedProducts: [Product]) {
+                                                                 storedProducts: [Product],
+                                                                 onCompletion: @escaping (Result<Void, Error>) -> Void) {
         let statsDate = Self.buildDateString(from: date, with: granularity)
         let statsItems = LeaderboardStatsConverter.topEarnerStatsItems(from: topProducts, using: storedProducts)
         let stats = TopEarnerStats(siteID: siteID,
@@ -393,7 +430,7 @@ private extension StatsStoreV4 {
                                    items: statsItems
         )
 
-        upsertStoredTopEarnerStats(readOnlyStats: stats)
+        upsertStoredTopEarnerStatsInBackground(readOnlyStats: stats, onCompletion: onCompletion)
     }
 }
 

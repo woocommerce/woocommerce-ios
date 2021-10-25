@@ -627,8 +627,9 @@ private extension OrderListViewController {
             self?.tableView.updateHeaderHeight()
         }, onDismissButtonPressed: { [weak self] in
             self?.viewModel.hideQuickPayBanners = true
-        }, onGiveFeedbackButtonPressed: {
-            // TODO: Show feedback survey
+        }, onGiveFeedbackButtonPressed: { [weak self] in
+            let surveyNavigation = SurveyCoordinatingController(survey: .quickPayPrototype)
+            self?.present(surveyNavigation, animated: true, completion: nil)
         })
         showTopBannerView()
     }

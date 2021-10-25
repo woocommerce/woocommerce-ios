@@ -69,11 +69,11 @@
 		02E7FFCF25621C7900C53030 /* shipping-label-print.json in Resources */ = {isa = PBXBuildFile; fileRef = 02E7FFCE25621C7900C53030 /* shipping-label-print.json */; };
 		02F096C22406691100C0C1D5 /* media-library.json in Resources */ = {isa = PBXBuildFile; fileRef = 02F096C12406691100C0C1D5 /* media-library.json */; };
 		077F39C8269F2C7E00ABEADC /* SystemPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39C7269F2C7E00ABEADC /* SystemPlugin.swift */; };
-		077F39D426A58DE700ABEADC /* SystemPluginsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39D326A58DE700ABEADC /* SystemPluginsMapper.swift */; };
-		077F39D626A58E4500ABEADC /* SystemPluginsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39D526A58E4500ABEADC /* SystemPluginsRemote.swift */; };
-		077F39D826A58EB600ABEADC /* systemPlugins.json in Resources */ = {isa = PBXBuildFile; fileRef = 077F39D726A58EB600ABEADC /* systemPlugins.json */; };
-		077F39DA26A58ED700ABEADC /* SystemPluginsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39D926A58ED700ABEADC /* SystemPluginsRemoteTests.swift */; };
-		077F39E626A5D15800ABEADC /* SystemPluginsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39DB26A58F4800ABEADC /* SystemPluginsMapperTests.swift */; };
+		077F39D426A58DE700ABEADC /* SystemStatusMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39D326A58DE700ABEADC /* SystemStatusMapper.swift */; };
+		077F39D626A58E4500ABEADC /* SystemStatusRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39D526A58E4500ABEADC /* SystemStatusRemote.swift */; };
+		077F39D826A58EB600ABEADC /* systemStatus.json in Resources */ = {isa = PBXBuildFile; fileRef = 077F39D726A58EB600ABEADC /* systemStatus.json */; };
+		077F39DA26A58ED700ABEADC /* SystemStatusRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39D926A58ED700ABEADC /* SystemStatusRemoteTests.swift */; };
+		077F39E626A5D15800ABEADC /* SystemStatusMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39DB26A58F4800ABEADC /* SystemStatusMapperTests.swift */; };
 		21DB5B99C4107CF69C0A57EC /* Pods_NetworkingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */; };
 		24F98C522502E79800F49B68 /* FeatureFlagsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C512502E79800F49B68 /* FeatureFlagsRemote.swift */; };
 		24F98C542502E8DD00F49B68 /* Bundle+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C532502E8DD00F49B68 /* Bundle+Woo.swift */; };
@@ -142,6 +142,7 @@
 		31104E142630DDA700587C1E /* wcpay-account-wrong-json.json in Resources */ = {isa = PBXBuildFile; fileRef = 31104E132630DDA700587C1E /* wcpay-account-wrong-json.json */; };
 		311976E02602BD4B006AC56C /* SitePluginsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311976DF2602BD4B006AC56C /* SitePluginsMapperTests.swift */; };
 		314703082670222500EF253A /* PaymentGatewayAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 314703072670222500EF253A /* PaymentGatewayAccount.swift */; };
+		3148977027232982007A86BD /* SystemStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3148976F27232982007A86BD /* SystemStatus.swift */; };
 		3158FE6026129ADD00E566B9 /* wcpay-account-none.json in Resources */ = {isa = PBXBuildFile; fileRef = 3158FE5F26129ADD00E566B9 /* wcpay-account-none.json */; };
 		3158FE6426129B1300E566B9 /* wcpay-account-complete.json in Resources */ = {isa = PBXBuildFile; fileRef = 3158FE6326129B1300E566B9 /* wcpay-account-complete.json */; };
 		3158FE6826129CE200E566B9 /* wcpay-account-rejected-fraud.json in Resources */ = {isa = PBXBuildFile; fileRef = 3158FE6726129CE200E566B9 /* wcpay-account-rejected-fraud.json */; };
@@ -633,11 +634,11 @@
 		02E7FFCE25621C7900C53030 /* shipping-label-print.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-print.json"; sourceTree = "<group>"; };
 		02F096C12406691100C0C1D5 /* media-library.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-library.json"; sourceTree = "<group>"; };
 		077F39C7269F2C7E00ABEADC /* SystemPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPlugin.swift; sourceTree = "<group>"; };
-		077F39D326A58DE700ABEADC /* SystemPluginsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPluginsMapper.swift; sourceTree = "<group>"; };
-		077F39D526A58E4500ABEADC /* SystemPluginsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPluginsRemote.swift; sourceTree = "<group>"; };
-		077F39D726A58EB600ABEADC /* systemPlugins.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = systemPlugins.json; sourceTree = "<group>"; };
-		077F39D926A58ED700ABEADC /* SystemPluginsRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPluginsRemoteTests.swift; sourceTree = "<group>"; };
-		077F39DB26A58F4800ABEADC /* SystemPluginsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPluginsMapperTests.swift; sourceTree = "<group>"; };
+		077F39D326A58DE700ABEADC /* SystemStatusMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusMapper.swift; sourceTree = "<group>"; };
+		077F39D526A58E4500ABEADC /* SystemStatusRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusRemote.swift; sourceTree = "<group>"; };
+		077F39D726A58EB600ABEADC /* systemStatus.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = systemStatus.json; sourceTree = "<group>"; };
+		077F39D926A58ED700ABEADC /* SystemStatusRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusRemoteTests.swift; sourceTree = "<group>"; };
+		077F39DB26A58F4800ABEADC /* SystemStatusMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusMapperTests.swift; sourceTree = "<group>"; };
 		24F98C512502E79800F49B68 /* FeatureFlagsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagsRemote.swift; sourceTree = "<group>"; };
 		24F98C532502E8DD00F49B68 /* Bundle+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Woo.swift"; sourceTree = "<group>"; };
 		24F98C552502EA4800F49B68 /* FeatureFlag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlag.swift; sourceTree = "<group>"; };
@@ -704,6 +705,7 @@
 		31104E132630DDA700587C1E /* wcpay-account-wrong-json.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-wrong-json.json"; sourceTree = "<group>"; };
 		311976DF2602BD4B006AC56C /* SitePluginsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginsMapperTests.swift; sourceTree = "<group>"; };
 		314703072670222500EF253A /* PaymentGatewayAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGatewayAccount.swift; sourceTree = "<group>"; };
+		3148976F27232982007A86BD /* SystemStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatus.swift; sourceTree = "<group>"; };
 		3158FE5F26129ADD00E566B9 /* wcpay-account-none.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-none.json"; sourceTree = "<group>"; };
 		3158FE6326129B1300E566B9 /* wcpay-account-complete.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-complete.json"; sourceTree = "<group>"; };
 		3158FE6726129CE200E566B9 /* wcpay-account-rejected-fraud.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-rejected-fraud.json"; sourceTree = "<group>"; };
@@ -1342,7 +1344,7 @@
 				02E7FFCA256218F600C53030 /* ShippingLabelRemoteTests.swift */,
 				D800DA0925EFEB9C001E13CE /* WCPayRemoteTests.swift */,
 				FE28F6EB268436C9004465C7 /* UserRemoteTests.swift */,
-				077F39D926A58ED700ABEADC /* SystemPluginsRemoteTests.swift */,
+				077F39D926A58ED700ABEADC /* SystemStatusRemoteTests.swift */,
 			);
 			path = Remote;
 			sourceTree = "<group>";
@@ -1467,7 +1469,7 @@
 				029BA4EF255D7282006171FD /* ShippingLabelRemote.swift */,
 				D8EDFE1D25EE87F1003D2213 /* WCPayRemote.swift */,
 				FE28F6E5268429B6004465C7 /* UserRemote.swift */,
-				077F39D526A58E4500ABEADC /* SystemPluginsRemote.swift */,
+				077F39D526A58E4500ABEADC /* SystemStatusRemote.swift */,
 			);
 			path = Remote;
 			sourceTree = "<group>";
@@ -1545,6 +1547,8 @@
 				74046E1C217A6989007DD7BF /* SiteSetting.swift */,
 				74159624224D4045003C21CF /* SiteSettingGroup.swift */,
 				CE50345F21B5799F007573C6 /* SitePlan.swift */,
+				077F39C7269F2C7E00ABEADC /* SystemPlugin.swift */,
+				3148976F27232982007A86BD /* SystemStatus.swift */,
 				450106842399A7CB00E24722 /* TaxClass.swift */,
 				3192F21F260D33BB0067FEF9 /* WCPayAccount.swift */,
 				3192F223260D34C40067FEF9 /* WCPayAccountStatusEnum.swift */,
@@ -1553,7 +1557,6 @@
 				31054705262E278100C5C02B /* WCPayPaymentIntent.swift */,
 				3105470B262E27F000C5C02B /* WCPayPaymentIntentStatusEnum.swift */,
 				FE28F6E126840DED004465C7 /* User.swift */,
-				077F39C7269F2C7E00ABEADC /* SystemPlugin.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1727,7 +1730,7 @@
 				3105472B262E303400C5C02B /* wcpay-payment-intent-unknown-status.json */,
 				31054733262E36AB00C5C02B /* wcpay-payment-intent-error.json */,
 				31B8D6B526583970008E3DB2 /* wcpay-account-implicitly-not-eligible.json */,
-				077F39D726A58EB600ABEADC /* systemPlugins.json */,
+				077F39D726A58EB600ABEADC /* systemStatus.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -1801,7 +1804,7 @@
 				CC0786602677B2DA00BA9AC1 /* ShippingLabelPurchaseMapper.swift */,
 				CC0786C4267BAF0F00BA9AC1 /* ShippingLabelStatusMapper.swift */,
 				FE28F6E326842848004465C7 /* UserMapper.swift */,
-				077F39D326A58DE700ABEADC /* SystemPluginsMapper.swift */,
+				077F39D326A58DE700ABEADC /* SystemStatusMapper.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -1866,7 +1869,7 @@
 			children = (
 				B505F6D220BEE3A500BB1B69 /* AccountMapperTests.swift */,
 				9387A6EF226E3F15001B53D7 /* AccountSettingsMapperTests.swift */,
-				077F39DB26A58F4800ABEADC /* SystemPluginsMapperTests.swift */,
+				077F39DB26A58F4800ABEADC /* SystemStatusMapperTests.swift */,
 				2685C0D9263B551300D9EE97 /* AddOnGroupMapperTests.swift */,
 				74AB0AC921948CE4008220CD /* CommentResultMapperTests.swift */,
 				45150A9F26837357006922EA /* CountryListMapperTests.swift */,
@@ -2108,7 +2111,7 @@
 				31054728262E2FEE00C5C02B /* wcpay-payment-intent-canceled.json in Resources */,
 				24F98C622502EFF600F49B68 /* feature-flags-load-all.json in Resources */,
 				B58D10C82114D21D00107ED4 /* generic_error.json in Resources */,
-				077F39D826A58EB600ABEADC /* systemPlugins.json in Resources */,
+				077F39D826A58EB600ABEADC /* systemStatus.json in Resources */,
 				CE50346721B5DCBE007573C6 /* site-plan.json in Resources */,
 				743E84F322172D0A00FAC9D7 /* shipment_tracking_empty.json in Resources */,
 				B505F6D520BEE4E700BB1B69 /* me.json in Resources */,
@@ -2453,7 +2456,7 @@
 				261CF1B8255AE62D0090D8D3 /* PaymentGatewayRemote.swift in Sources */,
 				CE0A0F1522396BF00075ED8D /* ProductAttribute.swift in Sources */,
 				026CF620237D69D6009563D4 /* ProductVariationsRemote.swift in Sources */,
-				077F39D626A58E4500ABEADC /* SystemPluginsRemote.swift in Sources */,
+				077F39D626A58E4500ABEADC /* SystemStatusRemote.swift in Sources */,
 				4599FC5E24A62AA70056157A /* ProductTagsRemote.swift in Sources */,
 				FE28F6E226840DED004465C7 /* User.swift in Sources */,
 				7426CA0F21AF2C90004E9FFC /* SiteAPI.swift in Sources */,
@@ -2478,6 +2481,7 @@
 				CE430676234BA7920073CBFF /* RefundListMapper.swift in Sources */,
 				45551F122523E7F1007EF104 /* UserAgent.swift in Sources */,
 				45CDAFAB2434CA9300F83C22 /* ProductCatalogVisibility.swift in Sources */,
+				3148977027232982007A86BD /* SystemStatus.swift in Sources */,
 				B557DA1820979D51005962F4 /* Credentials.swift in Sources */,
 				CE583A0E2109154500D73C1C /* OrderNoteMapper.swift in Sources */,
 				318E8FD526C31F9500F519D7 /* WCPayCustomer.swift in Sources */,
@@ -2543,7 +2547,7 @@
 				B557DA0B20975D7E005962F4 /* WooAPIVersion.swift in Sources */,
 				45150A9E26836A57006922EA /* CountryListMapper.swift in Sources */,
 				CE6BFEE82236D133005C79FB /* ProductDimensions.swift in Sources */,
-				077F39D426A58DE700ABEADC /* SystemPluginsMapper.swift in Sources */,
+				077F39D426A58DE700ABEADC /* SystemStatusMapper.swift in Sources */,
 				45152811257A81730076B03C /* ProductAttributeMapper.swift in Sources */,
 				B505F6D120BEE39600BB1B69 /* AccountRemote.swift in Sources */,
 				B567AF2B20A0FA4200AB6C62 /* OrderListMapper.swift in Sources */,
@@ -2602,7 +2606,7 @@
 				B5C6FCC820A32E4800A4F8E4 /* DateFormatterWooTests.swift in Sources */,
 				74C8F06A20EEBC8C00B6EDC9 /* OrderMapperTests.swift in Sources */,
 				45152835257A8F490076B03C /* ProductAttributeListMapperTests.swift in Sources */,
-				077F39DA26A58ED700ABEADC /* SystemPluginsRemoteTests.swift in Sources */,
+				077F39DA26A58ED700ABEADC /* SystemStatusRemoteTests.swift in Sources */,
 				31D27C952602B737002EDB1D /* SitePluginsRemoteTests.swift in Sources */,
 				74AB5B4D21AF354E00859C12 /* SiteAPIMapperTests.swift in Sources */,
 				93D8BC01226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift in Sources */,
@@ -2635,7 +2639,7 @@
 				020C907F24C7D359001E2BEB /* ProductVariationMapperTests.swift in Sources */,
 				74ABA1D5213F26B300FFAD30 /* TopEarnerStatsMapperTests.swift in Sources */,
 				74AB5B5121AF426D00859C12 /* SiteAPIRemoteTests.swift in Sources */,
-				077F39E626A5D15800ABEADC /* SystemPluginsMapperTests.swift in Sources */,
+				077F39E626A5D15800ABEADC /* SystemStatusMapperTests.swift in Sources */,
 				4599FC6624A633A10056157A /* ProductTagsRemoteTests.swift in Sources */,
 				B567AF2F20A0FB8F00AB6C62 /* AuthenticatedRequestTests.swift in Sources */,
 				B5C6FCCD20A34B8300A4F8E4 /* OrderListMapperTests.swift in Sources */,

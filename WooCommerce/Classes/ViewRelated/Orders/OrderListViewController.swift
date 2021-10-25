@@ -205,11 +205,11 @@ private extension OrderListViewController {
                 case .none:
                     self.hideTopBannerView()
                 case .error:
-                    break
+                    self.setErrorTopBanner()
                 case .quickPayEnabled:
-                    break
+                    self.setQuickPayEnabledTopBanner()
                 case .quickPayDisabled:
-                    break
+                    self.setQuickPayDisabledTopBanner()
                 }
             }
             .store(in: &cancellables)
@@ -590,6 +590,49 @@ extension OrderListViewController: IndicatorInfoProvider {
     }
 }
 
+// MARK: Top Banner Factories
+private extension OrderListViewController {
+    /// Sets the `topBannerView` property to an error banner.
+    ///
+    func setErrorTopBanner() {
+        topBannerView = ErrorTopBannerFactory.createTopBanner(isExpanded: false, expandedStateChangeHandler: { [weak self] in
+            self?.tableView.updateHeaderHeight()
+        },
+        onTroubleshootButtonPressed: { [weak self] in
+            let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
+            self?.present(safariViewController, animated: true, completion: nil)
+        },
+        onContactSupportButtonPressed: { [weak self] in
+            guard let self = self else { return }
+            ZendeskManager.shared.showNewRequestIfPossible(from: self, with: nil)
+        })
+        showTopBannerView()
+    }
+
+    /// Sets the `topBannerView` property to a quick pay disabled banner.
+    ///
+    func setQuickPayDisabledTopBanner() {
+        topBannerView = QuickPayTopBannerFactory.createFeatureDisabledBanner(onTopButtonPressed: { [weak self] in
+            self?.tableView.updateHeaderHeight()
+        }, onDismissButtonPressed: {
+            // TODO: Hide top banner
+        })
+        showTopBannerView()
+    }
+
+    /// Sets the `topBannerView` property to a quick pay enabled banner.
+    ///
+    func setQuickPayEnabledTopBanner() {
+        topBannerView = QuickPayTopBannerFactory.createFeatureEnabledBanner(onTopButtonPressed: { [weak self] in
+            self?.tableView.updateHeaderHeight()
+        }, onDismissButtonPressed: {
+            // TODO: Hide top banner
+        }, onGiveFeedbackButtonPressed: {
+            // TODO: Show feedback survey
+        })
+        showTopBannerView()
+    }
+}
 
 // MARK: - Nested Types
 //

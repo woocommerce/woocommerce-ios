@@ -96,22 +96,9 @@ final class OrderListViewController: UIViewController {
 
     private let siteID: Int64
 
-    /// Top banner that shows an error if there is a problem loading orders data
+    /// Current top banner that is displayed.
     ///
-    private lazy var topBannerView: TopBannerView = {
-        ErrorTopBannerFactory.createTopBanner(isExpanded: false,
-                                              expandedStateChangeHandler: { [weak self] in
-                                                self?.tableView.updateHeaderHeight()
-                                              },
-                                              onTroubleshootButtonPressed: { [weak self] in
-                                                let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
-                                                self?.present(safariViewController, animated: true, completion: nil)
-                                              },
-                                              onContactSupportButtonPressed: { [weak self] in
-                                                guard let self = self else { return }
-                                                ZendeskManager.shared.showNewRequestIfPossible(from: self, with: nil)
-                                              })
-    }()
+    private var topBannerView: TopBannerView?
 
     // MARK: - View Lifecycle
 
@@ -345,20 +332,17 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         ServiceLocator.stores.dispatch(action)
     }
 
-    /// Sets `hasErrorLoadingData` in the view model and shows or hides the banner view accordingly
+    /// Sets `hasErrorLoadingData` in the view model.
     ///
     private func setErrorLoadingData(to hasError: Bool) {
         viewModel.hasErrorLoadingData = hasError
-        if hasError {
-            showTopBannerView()
-        } else {
-            hideTopBannerView()
-        }
     }
 
-    /// Display the error banner in the table view header
+    /// Sets the current top banner in the table view header
     ///
     private func showTopBannerView() {
+        guard let topBannerView = topBannerView else { return }
+
         // Configure header container view
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
         headerContainer.addSubview(topBannerView)
@@ -371,7 +355,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
     /// Hide the top banner from the table view header
     ///
     private func hideTopBannerView() {
-        topBannerView.removeFromSuperview()
+        topBannerView?.removeFromSuperview()
         tableView.tableHeaderView = nil
     }
 }

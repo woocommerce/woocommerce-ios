@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 56 (Release 7.9.0.0)
+- @allendav 2021-10-25
+- Added `active` attribute to `SystemPlugin` entity
+
 ## Model 55 (Release 7.5.0.0)
 - @itsmeichigo 2021-08-19
 - Added `commercialInvoiceURL` attribute to `ShippingLabel` entity.

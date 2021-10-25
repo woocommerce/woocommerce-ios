@@ -44,7 +44,6 @@ struct IconListItem: View {
             Spacer()
         }
         .padding(.horizontal, Layout.horizontalPadding)
-        .padding(.vertical, Layout.verticalPadding)
     }
 }
 
@@ -54,7 +53,6 @@ private extension IconListItem {
         static let contentSpacing: CGFloat = 16
         static let innerSpacing: CGFloat = 2
         static let horizontalPadding: CGFloat = 40
-        static let verticalPadding: CGFloat = 16
     }
 }
 

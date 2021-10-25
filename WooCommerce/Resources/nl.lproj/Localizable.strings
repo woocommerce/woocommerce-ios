@@ -1,13 +1,10 @@
-/* Translation-Revision-Date: 2021-10-12 15:54:04+0000 */
+/* Translation-Revision-Date: 2021-10-22 17:32:45+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
 
 /* No comment provided by engineer. */
 "#%@ %@" = "#%1$@ %2$@";
-
-/* Total value for the selected rates in Shipping Labels > Carrier and Rates */
-"$1$@ total" = "$1$@ totaal";
 
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
 "%1$@" = "%1$@";
@@ -38,6 +35,9 @@
 
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
 "%1$@ refund requested (%2$@)" = "%1$@ terugbetaling aangevraagd (%2$@)";
+
+/* Total value for the selected rates in Shipping Labels > Carrier and Rates */
+"%1$@ total" = "%1$@ totaal";
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@ via %2$@";
@@ -179,12 +179,6 @@
 /* Please limit to 3 characters if possible. This is used if there are more than 99 items in a tab, like Orders. */
 "99+" = "99+";
 
-/* A label prompting users to learn more about HS Tariff Number with an embedded hyperlink in Customs screen of Shipping Label flow */
-"<a href=\"https:\/\/docs.woocommerce.com\/document\/woocommerce-shipping-and-tax\/woocommerce-shipping\/#section-29\">Learn more<\/a> about HS Tariff Number" = "<a href=\"https:\/\/docs.woocommerce.com\/document\/woocommerce-shipping-and-tax\/woocommerce-shipping\/#section-29\">Meer informatie<\/a> over het HS Tariff-nummer";
-
-/* A label prompting users to learn more about internal transaction number with an embedded hyperlink */
-"<a href=\"https:\/\/pe.usps.com\/text\/imm\/immc5_010.htm\">Learn more<\/a> about Internal Transaction Number" = "<a href=\"https:\/\/pe.usps.com\/text\/imm\/immc5_010.htm\">Meer informatie<\/a> over het interne transactienummer";
-
 /* Placeholder of the Product Short Description row on Product main screen */
 "A brief excerpt about the product" = "Een korte samenvatting van het product";
 
@@ -262,6 +256,9 @@
    Product Add Category navigation title */
 "Add Category" = "Categorie toevoegen";
 
+/* Title for the button to add the Customer Provided Note in Order Details */
+"Add Customer Note" = "Add Customer Note";
+
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "Downloadbaar bestand toevoegen";
 
@@ -289,6 +286,9 @@
 /* Action to add linked products to a product in the Linked Products List Selector screen
    Add Products button inside the Linked Products screen. - Navigation bar title for selecting multiple products. */
 "Add Products" = "Producten toevoegen";
+
+/* Title for the button to add the Shipping Address in Order Details */
+"Add Shipping Address" = "Add Shipping Address";
 
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
@@ -346,6 +346,9 @@
 
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "De gegevens van downloadbare bestanden van producten op afstand toevoegen";
+
+/* Navigates to a screen to create a quick pay order */
+"Add quick pay order" = "Add quick pay order";
 
 /* Option to add item to new package on Package Details screen of Shipping Label flow. */
 "Add to new package" = "Toevoegen aan nieuw pakket";
@@ -434,6 +437,9 @@
 
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "Een optionele opmerking om naar de klant te sturen na aankoop";
+
+/* Settings > Manage Card Reader > Connected Reader > A prompt to charge a reader running older software */
+"An update is available, but your reader battery is too low to update. Please charge your reader right away to continue accepting payments" = "An update is available, but your reader battery is too low to update. Please charge your reader right away to continue accepting payments";
 
 /* Product variation attribute description where the attribute is set to any value.
    Title when there is no filter set. */
@@ -525,6 +531,9 @@
 /* Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "Terug";
 
+/* Accessibility announcement message when device goes back online */
+"Back online" = "Back online";
+
 /* Button to dismiss modal overlay. Presented to users after a payment has been successfully collected
    Button to dismiss modal overlay. Presented to users after collecting a payment fails */
 "Back to Order" = "Terug naar bestelling";
@@ -589,7 +598,7 @@
 "Can Not Request Link" = "Kan link niet aanvragen";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the quick pay screen */
 "Cancel" = "Annuleren";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -612,6 +621,9 @@
 /* Detailed message shown in the Reviews tab if the list is empty
    Detailed message shown on the Product Reviews screen if the list is empty */
 "Capture high-quality product reviews for your store." = "Ontvang hoogwaardige productbeoordelingen voor je winkel.";
+
+/* Navigates to Card Reader manual */
+"Card reader manual" = "Card reader manual";
 
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "Bezorgservice en tarieven";
@@ -1002,7 +1014,7 @@
 "Don't have an account? _Sign up_" = "Heb je geen account? _Aanmelden_";
 
 /* Action title to select products to add to a grouped product from search results
-   Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen */
+   Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - Title for the button to confirm the amount in the quick pay screen */
 "Done" = "Klaar";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -1132,9 +1144,15 @@
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "Zorg dat je **printerfirmware up-to-date is**. Bekijk de documentatie van je printer voor instructies over bijwerken.";
 
+/* Short instructions label in the quick pay screen */
+"Enter Amount" = "Enter Amount";
+
 /* Action button linking to instructions for enter another store.Presented when logging in with a site address that appears to be invalid.
    Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
 "Enter Another Store" = "Een andere winkel invoeren";
+
+/* Placeholder for the required ITN row in Customs screen of Shipping Label flow */
+"Enter ITN" = "Enter ITN";
 
 /* Placeholder for the ITN row in Customs screen of Shippling Label flow */
 "Enter ITN (Optional)" = "Voer ITN in (optioneel)";
@@ -1656,6 +1674,12 @@
    Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Orders → All Orders tab if the list is empty. - Title of button shown in the Reviews tab if the list is empty - Title of button shown on the Product Reviews screen if the list is empty */
 "Learn more" = "Meer informatie";
 
+/* A label prompting users to learn more about HS Tariff Number in Customs screen of Shipping Label flow */
+"Learn more about HS Tariff Number" = "Learn more about HS Tariff Number";
+
+/* A label prompting users to learn more about internal transaction number */
+"Learn more about Internal Transaction Number" = "Learn more about Internal Transaction Number";
+
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
 "Learn more about Jetpack" = "Meer informatie over Jetpack";
 
@@ -1938,9 +1962,6 @@
 /* Placeholder of the cell text field in Download limit */
 "No limit" = "Geen limiet";
 
-/* Notice that will be displayed after adding a new Shipping Label payment method */
-"No payment method found" = "Geen betaalmethode gevonden";
-
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Geen prijs ingesteld";
 
@@ -1995,7 +2016,8 @@
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "Uit";
 
-/* Message for offline banner */
+/* Accessibility announcement message when device goes offline
+   Message for offline banner */
 "Offline - using cached data" = "Offline - met gecachete gegevens";
 
 /* +2 Days Section Header */
@@ -2051,7 +2073,7 @@
 "Option name" = "Naam van optie";
 
 /* Add Product Category. Placeholder of cell presenting the parent category.
-   Placeholder of the cell text field in Product Inventory Settings > SKU - Text field placeholder in Edit Address Form - Text field placeholder in Shipping Label Address Validation - Text field placeholder in Shipping Label Address Validation when specified country has no state */
+   Name text field placeholder in Shipping Label Address Validation when it's optional - Placeholder of the cell text field in Product Inventory Settings > SKU - Text field placeholder in Edit Address Form - Text field placeholder in Shipping Label Address Validation - Text field placeholder in Shipping Label Address Validation when specified country has no state */
 "Optional" = "Optioneel";
 
 /* No comment provided by engineer. */
@@ -2122,8 +2144,8 @@
 /* Product section title */
 "PRODUCT" = "PRODUCT";
 
-/* Package index in Customs screen of Shipping Label flow
-   Package index in Print Customs Invoice screen of Shipping Label flow if there are more than one invoice - Package term in Shipping Labels. Reads like Package 1 */
+/* Create Shipping Label form -> Package number
+   Package index in Customs screen of Shipping Label flow - Package index in Print Customs Invoice screen of Shipping Label flow if there are more than one invoice - Package term in Shipping Labels. Reads like Package 1 */
 "Package %1$d" = "Pakket %1$d";
 
 /* Name of package to be listed in Move Item action sheet on Package Details screen of Shipping Label flow. */
@@ -2187,6 +2209,9 @@
 
 /* Title of the webview of adding a payment method in Shipping Labels */
 "Payment method" = "Betaalmethode";
+
+/* Notice that will be displayed after adding a new Shipping Label payment method */
+"Payment method added" = "Payment method added";
 
 /* Label informing users that the payment succeeded. Presented to users when a payment is collected */
 "Payment successful" = "Betaling gelukt";
@@ -2627,8 +2652,8 @@
    Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "Een terugbetaling aanvragen";
 
-/* Text field placeholder in Edit Address Form
-   Text field placeholder in Shipping Label Address Validation - Text field placeholder in Shipping Label Address Validation when phone number is required */
+/* Name text field placeholder in Shipping Label Address Validation when it's required
+   Text field placeholder in Edit Address Form - Text field placeholder in Shipping Label Address Validation - Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "Verplicht";
 
 /* Deletes all activity logs except for the marked 'Current'. */
@@ -3148,7 +3173,10 @@
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Winkel wijzigen";
 
-/* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. Parameters: %1$@ - store name */
+/* Message presented after users switch to a new store. Reads like: Switched to {store name}. Parameters: %1$@ - store name */
+"Switched to %1$@." = "Switched to %1$@.";
+
+/* Message presented after users switch to a new store when multi-store push notifications are not supported. Reads like: Switched to {store name}. You will only receive notifications from this store. Parameters: %1$@ - store name */
 "Switched to %1$@. You will only receive notifications from this store." = "Overgeschakeld naar %1$@. Je ontvangt alleen meldingen van deze winkel.";
 
 /* Accessibility Identifier for the H1 Aztec Style */
@@ -3175,6 +3203,9 @@
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
 "Tags" = "Tags";
+
+/* Title for the quick pay screen */
+"Take Payment" = "Take Payment";
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "Een foto maken";
@@ -3410,6 +3441,9 @@
 
 /* The details on the placeholder overlay when there is issue syncing site plugins */
 "There was a problem while trying to load plugins. Check your internet and try again." = "Er is een probleem opgetreden bij het laden van plug-ins. Controleer je internetverbinding en probeer het nog een keer.";
+
+/* Notice text after failing to create a quick pay order. */
+"There was an error creating the order" = "There was an error creating the order";
 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "Er is een fout opgetreden tijdens de terugbetaling";
@@ -4083,7 +4117,7 @@
 "You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "Je kunt nu verzendlabels rechtstreeks vanaf je apparaat aanmaken voor alle fysieke bestellingen met de gratis WooCommerce Shipping-plugin. Tik op 'Verzendlabel aanmaken' om onze bètafunctie te proberen!";
 
 /* Header text in Refund Shipping Label screen */
-"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "Je kan een terugbetaling aanvragen voor een verzendlabel dat niet is gebruikt om een pakket te verzenden.\nHet duurt minimaal 14 dagen voordat dit is verwerkt.";
+"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process." = "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process.";
 
 /* Error message when WooCommerce Payments is not supported in a specific country
    Generic error message when In-Person Payments is unavailable */

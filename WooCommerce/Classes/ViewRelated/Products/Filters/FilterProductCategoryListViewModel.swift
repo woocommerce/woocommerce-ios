@@ -15,7 +15,7 @@ final class FilterProductCategoryListViewModel: ProductCategoryListViewModelEnri
     /// Title for the view
     ///
     let title = Localization.title
-    
+
     /// Holds a reference to the fixed "Any" category cell selection value so it can be used when enriching category view models
     ///
     private var anyCategoryIsSelected = true

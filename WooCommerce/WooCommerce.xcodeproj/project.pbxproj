@@ -843,6 +843,8 @@
 		77E53EC82510FE07003D385F /* ProductDownloadsEditableData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E53EC72510FE07003D385F /* ProductDownloadsEditableData.swift */; };
 		7E6A01972725B811001668D5 /* FilterProductCategoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6A01962725B811001668D5 /* FilterProductCategoryListViewController.swift */; };
 		7E6A019F2725CD76001668D5 /* FilterProductCategoryListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6A019E2725CD76001668D5 /* FilterProductCategoryListViewModel.swift */; };
+		7E6A01A12725DEDE001668D5 /* FilterProductCategoryListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6A01A02725DEDE001668D5 /* FilterProductCategoryListViewModelTests.swift */; };
+		7E6A01A32726C5D3001668D5 /* MockProductCategoryStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E6A01A22726C5D3001668D5 /* MockProductCategoryStoresManager.swift */; };
 		7E7C5F782719A8F800315B61 /* EditProductCategoryListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E7C5F752719A8F800315B61 /* EditProductCategoryListViewController.xib */; };
 		7E7C5F792719A8F900315B61 /* EditProductCategoryListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E7C5F762719A8F800315B61 /* EditProductCategoryListViewModel.swift */; };
 		7E7C5F7A2719A8F900315B61 /* EditProductCategoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E7C5F772719A8F800315B61 /* EditProductCategoryListViewController.swift */; };
@@ -2254,6 +2256,8 @@
 		77E53EC72510FE07003D385F /* ProductDownloadsEditableData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDownloadsEditableData.swift; sourceTree = "<group>"; };
 		7E6A01962725B811001668D5 /* FilterProductCategoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductCategoryListViewController.swift; sourceTree = "<group>"; };
 		7E6A019E2725CD76001668D5 /* FilterProductCategoryListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductCategoryListViewModel.swift; sourceTree = "<group>"; };
+		7E6A01A02725DEDE001668D5 /* FilterProductCategoryListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductCategoryListViewModelTests.swift; sourceTree = "<group>"; };
+		7E6A01A22726C5D3001668D5 /* MockProductCategoryStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductCategoryStoresManager.swift; sourceTree = "<group>"; };
 		7E7C5F752719A8F800315B61 /* EditProductCategoryListViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditProductCategoryListViewController.xib; sourceTree = "<group>"; };
 		7E7C5F762719A8F800315B61 /* EditProductCategoryListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProductCategoryListViewModel.swift; sourceTree = "<group>"; };
 		7E7C5F772719A8F800315B61 /* EditProductCategoryListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProductCategoryListViewController.swift; sourceTree = "<group>"; };
@@ -3266,6 +3270,7 @@
 				02F5F80D246102240000613A /* FilterProductListViewModel+numberOfActiveFiltersTests.swift */,
 				0225C42724768A4C00C5B4F0 /* FilterProductListViewModelTests.swift */,
 				0225C42924768CE900C5B4F0 /* FilterProductListViewModelProductListFilterTests.swift */,
+				7E6A01A02725DEDE001668D5 /* FilterProductCategoryListViewModelTests.swift */,
 			);
 			path = Filters;
 			sourceTree = "<group>";
@@ -4809,6 +4814,7 @@
 				02EA6BFB2435EC3500FFF90A /* MockImageDownloader.swift */,
 				6856D249FD1702FE3864950A /* MockPushNotificationsManager.swift */,
 				57C9A8FD24C23335001E1C2F /* MockNoticePresenter.swift */,
+				7E6A01A22726C5D3001668D5 /* MockProductCategoryStoresManager.swift */,
 				02BC5AA724D2802B00C43326 /* MockProductVariationStoresManager.swift */,
 				023EC2E124DA8BAB0021DA91 /* MockProductSKUValidationStoresManager.swift */,
 				45AF9DAE265CFAB4001EB794 /* MockShippingLabelCarrierRate.swift */,
@@ -8131,6 +8137,7 @@
 				5761298B24589B84007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlusTests.swift in Sources */,
 				2667BFD7252E5DBF008099D4 /* RefundItemViewModelTests.swift in Sources */,
 				7435E59021C0162C00216F0F /* OrderNoteWooTests.swift in Sources */,
+				7E6A01A32726C5D3001668D5 /* MockProductCategoryStoresManager.swift in Sources */,
 				45F5A3C323DF31D2007D40E5 /* ShippingInputFormatterTests.swift in Sources */,
 				02153211242376B5003F2BBD /* ProductPriceSettingsViewModelTests.swift in Sources */,
 				45C8B25D231529410002FA77 /* CustomerInfoTableViewCellTests.swift in Sources */,
@@ -8224,6 +8231,7 @@
 				02691782232605B9002AFC20 /* PaginatedListViewControllerStateCoordinatorTests.swift in Sources */,
 				02564A88246C047C00D6DB2A /* Optional+StringTests.swift in Sources */,
 				0269576D23726401001BA0BF /* KeyboardFrameObserverTests.swift in Sources */,
+				7E6A01A12725DEDE001668D5 /* FilterProductCategoryListViewModelTests.swift in Sources */,
 				E17E3BFB266917E20009D977 /* CardPresentModalBluetoothRequiredTests.swift in Sources */,
 				CCD2E68925DD52C100BD975D /* ProductVariationsViewModelTests.swift in Sources */,
 				26FE09E424DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift in Sources */,

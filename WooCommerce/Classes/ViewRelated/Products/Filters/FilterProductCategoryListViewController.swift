@@ -19,7 +19,7 @@ final class FilterProductCategoryListViewController: UIViewController {
         // TODO-5159: Initialize selected categories with the stored filter categories
         let productCategoryListViewModel = ProductCategoryListViewModel(siteID: siteID,
                                                                         selectedCategories: [],
-                                                                        dataSource: viewModel,
+                                                                        enrichingDataSource: viewModel,
                                                                         delegate: viewModel)
 
         productCategoryListViewController = ProductCategoryListViewController(viewModel: productCategoryListViewModel)
@@ -37,15 +37,15 @@ final class FilterProductCategoryListViewController: UIViewController {
         configureProductCategoryListView()
         configureNavigationBar()
     }
+}
 
+private extension FilterProductCategoryListViewController {
     func configureProductCategoryListView() {
         addChild(productCategoryListViewController)
         attachSubview(productCategoryListViewController.view)
         productCategoryListViewController.didMove(toParent: self)
     }
-}
 
-private extension FilterProductCategoryListViewController {
     func attachSubview(_ subview: UIView) {
         subview.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(subview)

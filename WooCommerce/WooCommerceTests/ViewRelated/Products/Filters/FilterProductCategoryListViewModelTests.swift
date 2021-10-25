@@ -14,7 +14,7 @@ final class FilterProductCategoryListViewModelTests: XCTestCase {
         filterProductCategoryListViewModel = FilterProductCategoryListViewModel()
         productCategoryListViewModel = ProductCategoryListViewModel(storesManager: MockProductCategoryStoresManager(),
                                                                     siteID: 0,
-                                                                    dataSource: filterProductCategoryListViewModel,
+                                                                    enrichingDataSource: filterProductCategoryListViewModel,
                                                                     delegate: filterProductCategoryListViewModel)
     }
 

@@ -1,7 +1,8 @@
 import Foundation
 import Yosemite
 
-/// Classes conforming to this protocol can enrich the UI to be displayed
+/// Classes conforming to this protocol can enrich the Product Category List UI,
+/// e.g by adding extra rows
 ///
 protocol ProductCategoryListViewModelEnrichingDataSource: AnyObject {
     /// This method enriches the passed view models array so the case logic specific view models can be added
@@ -66,7 +67,7 @@ final class ProductCategoryListViewModel {
 
     /// Enriches product category cells view models
     ///
-    private weak var dataSource: ProductCategoryListViewModelEnrichingDataSource?
+    private weak var enrichingDataSource: ProductCategoryListViewModelEnrichingDataSource?
 
     /// Current  category synchronization state
     ///
@@ -89,12 +90,12 @@ final class ProductCategoryListViewModel {
     init(storesManager: StoresManager = ServiceLocator.stores,
          siteID: Int64,
          selectedCategories: [ProductCategory] = [],
-         dataSource: ProductCategoryListViewModelEnrichingDataSource? = nil,
+         enrichingDataSource: ProductCategoryListViewModelEnrichingDataSource? = nil,
          delegate: ProductCategoryListViewModelDelegate? = nil) {
         self.storesManager = storesManager
         self.siteID = siteID
         self.selectedCategories = selectedCategories
-        self.dataSource = dataSource
+        self.enrichingDataSource = enrichingDataSource
         self.delegate = delegate
     }
 
@@ -144,13 +145,13 @@ final class ProductCategoryListViewModel {
         reloadData()
     }
 
-    /// Resets the selected categories. Please note that this method that not trigger any UI reload
+    /// Resets the selected categories. This method does not trigger any UI reload
     ///
     func resetSelectedCategories() {
         selectedCategories = []
     }
 
-    /// Select or Deselect a category
+    /// Select or Deselect a category, notifying the delegate before any other action
     ///
     func selectOrDeselectCategory(index: Int) {
         delegate?.viewModel(self, didSelectRowAt: index)
@@ -170,13 +171,14 @@ final class ProductCategoryListViewModel {
         updateViewModelsArray()
     }
 
-    /// Updates  `categoryViewModels` from  the resultController's fetched objects.
+    /// Updates  `categoryViewModels` from  the resultController's fetched objects,
+    /// letting the enriching data source enrich the view models array if necessary.
     ///
     func updateViewModelsArray() {
         let fetchedCategories = resultController.fetchedObjects
         let baseViewModels = ProductCategoryListViewModel.CellViewModelBuilder.viewModels(from: fetchedCategories, selectedCategories: selectedCategories)
 
-        categoryViewModels = dataSource?.enrichCategoryViewModels( baseViewModels) ?? baseViewModels
+        categoryViewModels = enrichingDataSource?.enrichCategoryViewModels( baseViewModels) ?? baseViewModels
     }
 }
 

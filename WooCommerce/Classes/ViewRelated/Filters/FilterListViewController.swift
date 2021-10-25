@@ -52,7 +52,7 @@ final class FilterTypeViewModel {
 enum FilterListValueSelectorConfig {
     // Standard list selector with fixed options
     case staticOptions(options: [FilterType])
-    // Filter list selector for categories, retrieved dynamically
+    // Filter list selector for categories linked to that site id, retrieved dynamically
     case productCategories(siteID: Int64)
 }
 

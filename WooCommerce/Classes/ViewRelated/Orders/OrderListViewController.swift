@@ -151,6 +151,10 @@ final class OrderListViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        // Needed in `viewWillAppear` because this ViewController is not recreated
+        // and the toggle can be switch in the Settings section that resides in a different tab.
+        viewModel.reloadQuickPayExperimentalFeatureState()
+
         syncingCoordinator.resynchronize(reason: SyncReason.viewWillAppear.rawValue)
 
         // Fix any incomplete animation of the refresh control
@@ -205,6 +209,23 @@ private extension OrderListViewController {
         viewModel.snapshot.sink { [weak self] snapshot in
             self?.dataSource.apply(snapshot)
         }.store(in: &cancellables)
+
+        /// Update the top banner when needed
+        viewModel.$topBanner
+            .sink { [weak self] topBannerType in
+                guard let self = self else { return }
+                switch topBannerType {
+                case .none:
+                    self.hideTopBannerView()
+                case .error:
+                    break
+                case .quickPayEnabled:
+                    break
+                case .quickPayDisabled:
+                    break
+                }
+            }
+            .store(in: &cancellables)
     }
 
     /// Setup: Sync'ing Coordinator
@@ -347,7 +368,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         tableView.updateHeaderHeight()
     }
 
-    /// Hide the error banner from the table view header
+    /// Hide the top banner from the table view header
     ///
     private func hideTopBannerView() {
         topBannerView.removeFromSuperview()

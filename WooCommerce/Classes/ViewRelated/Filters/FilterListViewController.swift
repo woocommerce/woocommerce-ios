@@ -54,6 +54,8 @@ enum FilterListValueSelectorConfig {
     case staticOptions(options: [FilterType])
     // Filter list selector for categories, retrieved dynamically
     case productCategories
+    // Filter list selector for date range, with a cell for a custom range
+    case ordersDateRange
 }
 
 /// Contains data for rendering a filter type row.
@@ -228,6 +230,9 @@ private extension FilterListViewController {
                 self.listSelector.navigationController?.pushViewController(staticListSelector, animated: true)
             case .productCategories:
                 // TODO-5159: Show filter products by category view controller
+                break
+            case .ordersDateRange:
+                // TODO-5243: show the list with the date options
                 break
             }
         }

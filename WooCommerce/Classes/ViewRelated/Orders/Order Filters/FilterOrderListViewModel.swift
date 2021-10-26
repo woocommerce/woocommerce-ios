@@ -115,6 +115,6 @@ private extension FilterOrderListViewModel {
 private extension FilterOrderListViewModel.OrderListFilter {
     enum Localization {
         static let rowTitleOrderStatus = NSLocalizedString("Order Status", comment: "Row title for filtering orders by order status.")
-        static let rowTitleDateRange = NSLocalizedString("Date range", comment: "Row title for filtering orders by date range.")
+        static let rowTitleDateRange = NSLocalizedString("Date Range", comment: "Row title for filtering orders by date range.")
     }
 }

@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 import Yosemite
 
-/// FilterProductCategoryListViewController: Displays the list of ProductCategories associated to the active Account,
+/// Displays the list of ProductCategories associated to the active Account,
 /// and allows the selection of one of them, or any.
 ///
 final class FilterProductCategoryListViewController: UIViewController {

@@ -100,6 +100,12 @@ final class QuickOrderAmountViewModel: ObservableObject {
         }
         stores.dispatch(action)
     }
+
+    /// Track the flow cancel scenario.
+    ///
+    func userDidCancelFlow() {
+        analytics.track(event: WooAnalyticsEvent.QuickOrder.quickOrderFlowCanceled())
+    }
 }
 
 // MARK: Helpers

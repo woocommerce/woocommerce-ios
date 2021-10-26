@@ -2,7 +2,7 @@ import XCTest
 @testable import WooCommerce
 
 final class FilterOrderListViewModelTests: XCTestCase {
-    func test_criteria_With_default_filters() {
+    func test_criteria_with_default_filters() {
         // Given
         let filters = FilterOrderListViewModel.Filters()
 

@@ -234,9 +234,7 @@ private extension FilterListViewController {
                 self.listSelector.navigationController?.pushViewController(filterProductCategoryListViewController, animated: true)
             case .ordersDateRange(let options):
                 self.cancellableSelectedFilterValue?.cancel()
-                let command = FilterListSelectorCommand(navigationBarTitle: selected.title,
-                                                        data: options,
-                                                        selected: selected.selectedValue)
+                let command = OrderDateRangeListSelectorCommand(selected: selected.selectedValue, data: options)
                 self.cancellableSelectedFilterValue = command.onItemSelected.subscribe { [weak self] selectedOption in
                     guard let self = self else {
                         return

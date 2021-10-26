@@ -140,7 +140,7 @@ final class OrderListViewController: UIViewController {
 
         // Needed in `viewWillAppear` because this ViewController is not recreated
         // and the toggle can be switch in the Settings section that resides in a different tab.
-        viewModel.reloadQuickPayExperimentalFeatureState()
+        viewModel.reloadQuickOrderExperimentalFeatureState()
 
         syncingCoordinator.resynchronize(reason: SyncReason.viewWillAppear.rawValue)
 
@@ -206,10 +206,10 @@ private extension OrderListViewController {
                     self.hideTopBannerView()
                 case .error:
                     self.setErrorTopBanner()
-                case .quickPayEnabled:
-                    self.setQuickPayEnabledTopBanner()
-                case .quickPayDisabled:
-                    self.setQuickPayDisabledTopBanner()
+                case .quickOrderEnabled:
+                    self.setQuickOrderEnabledTopBanner()
+                case .quickOrderDisabled:
+                    self.setQuickOrderDisabledTopBanner()
                 }
             }
             .store(in: &cancellables)
@@ -603,26 +603,26 @@ private extension OrderListViewController {
         showTopBannerView()
     }
 
-    /// Sets the `topBannerView` property to a quick pay disabled banner.
+    /// Sets the `topBannerView` property to a quick order disabled banner.
     ///
-    func setQuickPayDisabledTopBanner() {
-        topBannerView = QuickPayTopBannerFactory.createFeatureDisabledBanner(onTopButtonPressed: { [weak self] in
+    func setQuickOrderDisabledTopBanner() {
+        topBannerView = QuickOrderTopBannerFactory.createFeatureDisabledBanner(onTopButtonPressed: { [weak self] in
             self?.tableView.updateHeaderHeight()
         }, onDismissButtonPressed: { [weak self] in
-            self?.viewModel.hideQuickPayBanners = true
+            self?.viewModel.hideQuickOrderBanners = true
         })
         showTopBannerView()
     }
 
-    /// Sets the `topBannerView` property to a quick pay enabled banner.
+    /// Sets the `topBannerView` property to a quick order enabled banner.
     ///
-    func setQuickPayEnabledTopBanner() {
-        topBannerView = QuickPayTopBannerFactory.createFeatureEnabledBanner(onTopButtonPressed: { [weak self] in
+    func setQuickOrderEnabledTopBanner() {
+        topBannerView = QuickOrderTopBannerFactory.createFeatureEnabledBanner(onTopButtonPressed: { [weak self] in
             self?.tableView.updateHeaderHeight()
         }, onDismissButtonPressed: { [weak self] in
-            self?.viewModel.hideQuickPayBanners = true
+            self?.viewModel.hideQuickOrderBanners = true
         }, onGiveFeedbackButtonPressed: { [weak self] in
-            let surveyNavigation = SurveyCoordinatingController(survey: .quickPayPrototype)
+            let surveyNavigation = SurveyCoordinatingController(survey: .quickOrderPrototype)
             self?.present(surveyNavigation, animated: true, completion: nil)
         })
         showTopBannerView()

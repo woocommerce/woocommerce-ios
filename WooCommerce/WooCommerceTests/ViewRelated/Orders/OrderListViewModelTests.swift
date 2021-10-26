@@ -227,7 +227,7 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertFalse(resynchronizeRequested)
     }
 
-    func test_having_no_error_and_no_quick_pay_does_not_show_banner() {
+    func test_having_no_error_and_no_quick_order_does_not_show_banner() {
         // Given
         let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .wcpayNotInstalled)
         let viewModel = OrderListViewModel(siteID: siteID, statusFilter: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
@@ -260,7 +260,7 @@ final class OrderListViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
-            case .loadQuickPaySwitchState(let onCompletion):
+            case .loadQuickOrderSwitchState(let onCompletion):
                 onCompletion(.success(true))
             default:
                 XCTFail("Unsupported action: \(action)")
@@ -272,7 +272,7 @@ final class OrderListViewModelTests: XCTestCase {
 
         // When
         viewModel.activate()
-        viewModel.reloadQuickPayExperimentalFeatureState()
+        viewModel.reloadQuickOrderExperimentalFeatureState()
         viewModel.hasErrorLoadingData = true
 
         // Then
@@ -281,12 +281,12 @@ final class OrderListViewModelTests: XCTestCase {
         }
     }
 
-    func test_having_store_onboarded_and_quick_pay_disabled_shows_disabled_top_banner() {
+    func test_having_store_onboarded_and_quick_order_disabled_shows_disabled_top_banner() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
-            case .loadQuickPaySwitchState(let onCompletion):
+            case .loadQuickOrderSwitchState(let onCompletion):
                 onCompletion(.success(false))
             default:
                 XCTFail("Unsupported action: \(action)")
@@ -298,20 +298,20 @@ final class OrderListViewModelTests: XCTestCase {
 
         // When
         viewModel.activate()
-        viewModel.reloadQuickPayExperimentalFeatureState()
+        viewModel.reloadQuickOrderExperimentalFeatureState()
 
         // Then
         waitUntil {
-            viewModel.topBanner == .quickPayDisabled
+            viewModel.topBanner == .quickOrderDisabled
         }
     }
 
-    func test_having_store_onboarded_and_quick_pay_enabled_shows_enabled_top_banner() {
+    func test_having_store_onboarded_and_quick_order_enabled_shows_enabled_top_banner() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
-            case .loadQuickPaySwitchState(let onCompletion):
+            case .loadQuickOrderSwitchState(let onCompletion):
                 onCompletion(.success(true))
             default:
                 XCTFail("Unsupported action: \(action)")
@@ -323,20 +323,20 @@ final class OrderListViewModelTests: XCTestCase {
 
         // When
         viewModel.activate()
-        viewModel.reloadQuickPayExperimentalFeatureState()
+        viewModel.reloadQuickOrderExperimentalFeatureState()
 
         // Then
         waitUntil {
-            viewModel.topBanner == .quickPayEnabled
+            viewModel.topBanner == .quickOrderEnabled
         }
     }
 
-    func test_having_store_not_onboarded_and_quick_pay_enabled_shows_no_banner() {
+    func test_having_store_not_onboarded_and_quick_order_enabled_shows_no_banner() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
-            case .loadQuickPaySwitchState(let onCompletion):
+            case .loadQuickOrderSwitchState(let onCompletion):
                 onCompletion(.success(true))
             default:
                 XCTFail("Unsupported action: \(action)")
@@ -348,7 +348,7 @@ final class OrderListViewModelTests: XCTestCase {
 
         // When
         viewModel.activate()
-        viewModel.reloadQuickPayExperimentalFeatureState()
+        viewModel.reloadQuickOrderExperimentalFeatureState()
 
         // Then
         waitUntil {
@@ -361,7 +361,7 @@ final class OrderListViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
-            case .loadQuickPaySwitchState(let onCompletion):
+            case .loadQuickOrderSwitchState(let onCompletion):
                 onCompletion(.success(true))
             default:
                 XCTFail("Unsupported action: \(action)")
@@ -373,8 +373,8 @@ final class OrderListViewModelTests: XCTestCase {
 
         // When
         viewModel.activate()
-        viewModel.reloadQuickPayExperimentalFeatureState()
-        viewModel.hideQuickPayBanners = true
+        viewModel.reloadQuickOrderExperimentalFeatureState()
+        viewModel.hideQuickOrderBanners = true
 
         // Then
         waitUntil {
@@ -382,14 +382,14 @@ final class OrderListViewModelTests: XCTestCase {
         }
     }
 
-    func test_hiding_quickPay_banners_still_shows_error_banner() {
+    func test_hiding_quickOrder_banners_still_shows_error_banner() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID, statusFilter: nil)
 
         // When
         viewModel.activate()
         viewModel.hasErrorLoadingData = true
-        viewModel.hideQuickPayBanners = true
+        viewModel.hideQuickOrderBanners = true
 
         // Then
         waitUntil {

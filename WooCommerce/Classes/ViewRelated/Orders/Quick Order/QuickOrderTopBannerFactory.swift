@@ -1,10 +1,10 @@
 import Yosemite
 
-/// Factory for the QuickPay top banners
+/// Factory for the QuickOrder top banners
 ///
-struct QuickPayTopBannerFactory {
+struct QuickOrderTopBannerFactory {
 
-    /// Creates a banner to be shown when the quick pay has not been enabled in the beta features screen
+    /// Creates a banner to be shown when the quick order has not been enabled in the beta features screen
     ///
     static func createFeatureDisabledBanner(onTopButtonPressed: @escaping () -> Void,
                                             onDismissButtonPressed: @escaping () -> Void) -> TopBannerView {
@@ -20,7 +20,7 @@ struct QuickPayTopBannerFactory {
         return topBannerView
     }
 
-    /// Creates a banner to be shown when the quick pay has been enabled in the beta features screen
+    /// Creates a banner to be shown when the quick order has been enabled in the beta features screen
     ///
     static func createFeatureEnabledBanner(onTopButtonPressed: @escaping () -> Void,
                                            onDismissButtonPressed: @escaping () -> Void,
@@ -39,16 +39,16 @@ struct QuickPayTopBannerFactory {
     }
 }
 
-private extension QuickPayTopBannerFactory {
+private extension QuickOrderTopBannerFactory {
     enum Localization {
-        static let title = NSLocalizedString("Take payments from your device!", comment: "Title of the banner notice in the Quick Pay feature")
+        static let title = NSLocalizedString("Take payments from your device!", comment: "Title of the banner notice in the Quick Order feature")
         static let disabledInfo = NSLocalizedString("We are working on making it easier for you to take payments from your device! " +
                                                     "Enable Quick Order in Settings > Experimental Features.",
                                                     comment: "Content of the top banner to announce the quick pay feature.")
         static let enabledInfo = NSLocalizedString("We are working on making it easier for you to take payments from your device! " +
                                                    "For now, tap on the \"+\" button and you’ll be able to create an order with the amount you want to collect",
-                                                   comment: "Content of the banner notice in the Quick Pay view")
-        static let dismiss = NSLocalizedString("Dismiss", comment: "The title of the button to dismiss the QuickPay top banner")
-        static let giveFeedback = NSLocalizedString("Give feedback", comment: "Title of the button to give feedback about the Quick Pay feature")
+                                                   comment: "Content of the banner notice in the Quick Order view")
+        static let dismiss = NSLocalizedString("Dismiss", comment: "The title of the button to dismiss the QuickOrder top banner")
+        static let giveFeedback = NSLocalizedString("Give feedback", comment: "Title of the button to give feedback about the Quick Order feature")
     }
 }

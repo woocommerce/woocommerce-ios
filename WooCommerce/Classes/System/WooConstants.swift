@@ -124,9 +124,9 @@ extension WooConstants {
         case addPaymentMethodWCShip = "https://wordpress.com/me/purchases/add-payment-method"
 
 #if DEBUG
-        case quickPayPrototypeFeedback = "https://automattic.survey.fm/woo-app-quick-order-testing"
+        case quickOrderPrototypeFeedback = "https://automattic.survey.fm/woo-app-quick-order-testing"
 #else
-        case quickPayPrototypeFeedback = "https://automattic.survey.fm/woo-app-quick-order-production"
+        case quickOrderPrototypeFeedback = "https://automattic.survey.fm/woo-app-quick-order-production"
 #endif
 
         /// Returns the URL version of the receiver

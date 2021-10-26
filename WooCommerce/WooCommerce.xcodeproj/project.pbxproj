@@ -380,8 +380,8 @@
 		260C31602524ECA900157BC2 /* IssueRefundViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 260C315F2524ECA900157BC2 /* IssueRefundViewController.swift */; };
 		260C31622524EEB200157BC2 /* IssueRefundViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 260C31612524EEB200157BC2 /* IssueRefundViewController.xib */; };
 		260C32BE2527A2DE00157BC2 /* IssueRefundViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 260C32BD2527A2DE00157BC2 /* IssueRefundViewModel.swift */; };
+		26100B1E2721BAD800473045 /* QuickOrderTopBannerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26100B1D2721BAD800473045 /* QuickOrderTopBannerFactory.swift */; };
 		26100B202722FCAD00473045 /* MockCardPresentPaymentsOnboardingUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26100B1F2722FCAD00473045 /* MockCardPresentPaymentsOnboardingUseCase.swift */; };
-		26100B1E2721BAD800473045 /* QuickPayTopBannerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26100B1D2721BAD800473045 /* QuickPayTopBannerFactory.swift */; };
 		2611EE59243A473300A74490 /* ProductCategoryListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2611EE58243A473300A74490 /* ProductCategoryListViewModelTests.swift */; };
 		2614EB1C24EB611200968D4B /* TopBannerViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2614EB1B24EB611200968D4B /* TopBannerViewTests.swift */; };
 		2619FA2C25C897930006DAFF /* AddAttributeOptionsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2619FA2B25C897930006DAFF /* AddAttributeOptionsViewModelTests.swift */; };
@@ -390,8 +390,8 @@
 		262A0999262908A60033AD20 /* OrderAddOnListI1Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262A0998262908A60033AD20 /* OrderAddOnListI1Tests.swift */; };
 		262A09A5262F65690033AD20 /* OrderAddOnTopBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262A09A4262F65690033AD20 /* OrderAddOnTopBanner.swift */; };
 		262A2C2B2537A3330086C1BE /* MockRefunds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262A2C2A2537A3330086C1BE /* MockRefunds.swift */; };
-		262AF387271114CC00E39AFF /* QuickPayAmountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262AF386271114CC00E39AFF /* QuickPayAmountViewModel.swift */; };
-		262AF38A2713B67600E39AFF /* QuickPayAmountViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262AF3892713B67600E39AFF /* QuickPayAmountViewModelTests.swift */; };
+		262AF387271114CC00E39AFF /* QuickOrderAmountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262AF386271114CC00E39AFF /* QuickOrderAmountViewModel.swift */; };
+		262AF38A2713B67600E39AFF /* QuickOrderAmountViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262AF3892713B67600E39AFF /* QuickOrderAmountViewModelTests.swift */; };
 		262C921F26EEF8B100011F92 /* Binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262C921E26EEF8B100011F92 /* Binding.swift */; };
 		262C922126F1370000011F92 /* StorePickerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262C922026F1370000011F92 /* StorePickerError.swift */; };
 		263E37E12641AD8300260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E37E02641AD8300260D3B /* Codegen */; };
@@ -422,7 +422,7 @@
 		2667BFEB2535FF09008099D4 /* RefundShippingCalculationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFEA2535FF09008099D4 /* RefundShippingCalculationUseCase.swift */; };
 		2667BFED25360681008099D4 /* RefundShippingCalculationUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFEC25360681008099D4 /* RefundShippingCalculationUseCaseTests.swift */; };
 		26771A14256FFA8700EE030E /* IssueRefundCoordinatingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26771A13256FFA8700EE030E /* IssueRefundCoordinatingController.swift */; };
-		2678897C270E6E8B00BD249E /* QuickPayAmount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2678897B270E6E8B00BD249E /* QuickPayAmount.swift */; };
+		2678897C270E6E8B00BD249E /* QuickOrderAmount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2678897B270E6E8B00BD249E /* QuickOrderAmount.swift */; };
 		2687165524D21BC80042F6AE /* SurveySubmittedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2687165324D21BC80042F6AE /* SurveySubmittedViewController.swift */; };
 		2687165624D21BC80042F6AE /* SurveySubmittedViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2687165424D21BC80042F6AE /* SurveySubmittedViewController.xib */; };
 		2687165A24D350C20042F6AE /* SurveyCoordinatingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2687165924D350C20042F6AE /* SurveyCoordinatingController.swift */; };
@@ -1831,8 +1831,8 @@
 		260C315F2524ECA900157BC2 /* IssueRefundViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssueRefundViewController.swift; sourceTree = "<group>"; };
 		260C31612524EEB200157BC2 /* IssueRefundViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IssueRefundViewController.xib; sourceTree = "<group>"; };
 		260C32BD2527A2DE00157BC2 /* IssueRefundViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssueRefundViewModel.swift; sourceTree = "<group>"; };
+		26100B1D2721BAD800473045 /* QuickOrderTopBannerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickOrderTopBannerFactory.swift; sourceTree = "<group>"; };
 		26100B1F2722FCAD00473045 /* MockCardPresentPaymentsOnboardingUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCardPresentPaymentsOnboardingUseCase.swift; sourceTree = "<group>"; };
-		26100B1D2721BAD800473045 /* QuickPayTopBannerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickPayTopBannerFactory.swift; sourceTree = "<group>"; };
 		2611EE58243A473300A74490 /* ProductCategoryListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryListViewModelTests.swift; sourceTree = "<group>"; };
 		2614EB1B24EB611200968D4B /* TopBannerViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBannerViewTests.swift; sourceTree = "<group>"; };
 		2619FA2B25C897930006DAFF /* AddAttributeOptionsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAttributeOptionsViewModelTests.swift; sourceTree = "<group>"; };
@@ -1841,8 +1841,8 @@
 		262A0998262908A60033AD20 /* OrderAddOnListI1Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderAddOnListI1Tests.swift; sourceTree = "<group>"; };
 		262A09A4262F65690033AD20 /* OrderAddOnTopBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderAddOnTopBanner.swift; sourceTree = "<group>"; };
 		262A2C2A2537A3330086C1BE /* MockRefunds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRefunds.swift; sourceTree = "<group>"; };
-		262AF386271114CC00E39AFF /* QuickPayAmountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickPayAmountViewModel.swift; sourceTree = "<group>"; };
-		262AF3892713B67600E39AFF /* QuickPayAmountViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickPayAmountViewModelTests.swift; sourceTree = "<group>"; };
+		262AF386271114CC00E39AFF /* QuickOrderAmountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickOrderAmountViewModel.swift; sourceTree = "<group>"; };
+		262AF3892713B67600E39AFF /* QuickOrderAmountViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickOrderAmountViewModelTests.swift; sourceTree = "<group>"; };
 		262C921E26EEF8B100011F92 /* Binding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Binding.swift; sourceTree = "<group>"; };
 		262C922026F1370000011F92 /* StorePickerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePickerError.swift; sourceTree = "<group>"; };
 		263EB408242C58EA00F3A15F /* ProductFormActionsFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormActionsFactoryTests.swift; sourceTree = "<group>"; };
@@ -1868,7 +1868,7 @@
 		2667BFEA2535FF09008099D4 /* RefundShippingCalculationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundShippingCalculationUseCase.swift; sourceTree = "<group>"; };
 		2667BFEC25360681008099D4 /* RefundShippingCalculationUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundShippingCalculationUseCaseTests.swift; sourceTree = "<group>"; };
 		26771A13256FFA8700EE030E /* IssueRefundCoordinatingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssueRefundCoordinatingController.swift; sourceTree = "<group>"; };
-		2678897B270E6E8B00BD249E /* QuickPayAmount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickPayAmount.swift; sourceTree = "<group>"; };
+		2678897B270E6E8B00BD249E /* QuickOrderAmount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickOrderAmount.swift; sourceTree = "<group>"; };
 		267CFE1824435A5500AF3A13 /* ProductCategoryViewModelBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryViewModelBuilderTests.swift; sourceTree = "<group>"; };
 		2687165324D21BC80042F6AE /* SurveySubmittedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveySubmittedViewController.swift; sourceTree = "<group>"; };
 		2687165424D21BC80042F6AE /* SurveySubmittedViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SurveySubmittedViewController.xib; sourceTree = "<group>"; };
@@ -3877,12 +3877,12 @@
 			path = "View Modifiers";
 			sourceTree = "<group>";
 		};
-		262AF3882713B65700E39AFF /* QuickPay */ = {
+		262AF3882713B65700E39AFF /* QuickOrder */ = {
 			isa = PBXGroup;
 			children = (
-				262AF3892713B67600E39AFF /* QuickPayAmountViewModelTests.swift */,
+				262AF3892713B67600E39AFF /* QuickOrderAmountViewModelTests.swift */,
 			);
-			path = QuickPay;
+			path = QuickOrder;
 			sourceTree = "<group>";
 		};
 		265284002624933B00F91BA1 /* AddOns */ = {
@@ -3951,14 +3951,14 @@
 			path = "Issue Refund";
 			sourceTree = "<group>";
 		};
-		2678897A270E6E3C00BD249E /* QuickPay */ = {
+		2678897A270E6E3C00BD249E /* Quick Order */ = {
 			isa = PBXGroup;
 			children = (
-				2678897B270E6E8B00BD249E /* QuickPayAmount.swift */,
-				262AF386271114CC00E39AFF /* QuickPayAmountViewModel.swift */,
-				26100B1D2721BAD800473045 /* QuickPayTopBannerFactory.swift */,
+				2678897B270E6E8B00BD249E /* QuickOrderAmount.swift */,
+				262AF386271114CC00E39AFF /* QuickOrderAmountViewModel.swift */,
+				26100B1D2721BAD800473045 /* QuickOrderTopBannerFactory.swift */,
 			);
-			path = QuickPay;
+			path = "Quick Order";
 			sourceTree = "<group>";
 		};
 		268EC45D26CEA4E500716F5C /* Customer Note */ = {
@@ -4741,7 +4741,7 @@
 				265284072624ACAF00F91BA1 /* AddOns */,
 				2667BFD5252E5D4C008099D4 /* Issue Refund */,
 				57F2C6C9246DEBB10074063B /* Order Details */,
-				262AF3882713B65700E39AFF /* QuickPay */,
+				262AF3882713B65700E39AFF /* QuickOrder */,
 				570AAB042472FACB00516C0C /* OrderDetailsDataSourceTests.swift */,
 				57C5FF7B25091DE50074EC26 /* OrderListSyncActionUseCaseTests.swift */,
 				5767E93F256D9A4A00CFA652 /* OrderListViewModelTests.swift */,
@@ -5810,7 +5810,7 @@
 			children = (
 				CEE006022077D0F80079161F /* Cells */,
 				CE35F1092343E482007B2A6B /* Order Details */,
-				2678897A270E6E3C00BD249E /* QuickPay */,
+				2678897A270E6E3C00BD249E /* Quick Order */,
 				CEE005F52076C4040079161F /* Orders.storyboard */,
 				57C503DB23E8C70C00EC0790 /* OrdersTabbedViewController.swift */,
 				57C503DD23E8CE0D00EC0790 /* OrdersTabbedViewController.xib */,
@@ -7517,7 +7517,7 @@
 				0286B27D23C7051F003D784B /* ProductImagesViewController.swift in Sources */,
 				4569317F2653E82B009ED69D /* ShippingLabelCarriers.swift in Sources */,
 				024DF30B23742297006658FE /* AztecFormatBarCommand.swift in Sources */,
-				262AF387271114CC00E39AFF /* QuickPayAmountViewModel.swift in Sources */,
+				262AF387271114CC00E39AFF /* QuickOrderAmountViewModel.swift in Sources */,
 				CC254F3426C4113B005F3C82 /* ShippingLabelPackageSelection.swift in Sources */,
 				AECD57D226DFDF7500A3B580 /* EditOrderAddressForm.swift in Sources */,
 				26C6E8EC26E8FF4800C7BB0F /* LazyNavigationLink.swift in Sources */,
@@ -7652,7 +7652,7 @@
 				023D877925EC8BCB00625963 /* UIScrollView+LargeTitleWorkaround.swift in Sources */,
 				2664210326F40FB1001FC5B4 /* View+ScrollModifiers.swift in Sources */,
 				02695770237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift in Sources */,
-				26100B1E2721BAD800473045 /* QuickPayTopBannerFactory.swift in Sources */,
+				26100B1E2721BAD800473045 /* QuickOrderTopBannerFactory.swift in Sources */,
 				26771A14256FFA8700EE030E /* IssueRefundCoordinatingController.swift in Sources */,
 				027A2E162513356100DA6ACB /* AppleIDCredentialChecker.swift in Sources */,
 				4524CD9E242D01FD00B2F20A /* ProductStatusSettingListSelectorCommand.swift in Sources */,
@@ -8002,7 +8002,7 @@
 				318109E825E5B8D600EE0BE7 /* NumberedListItemTableViewCell.swift in Sources */,
 				0282DD96233C960C006A5FDB /* SearchResultCell.swift in Sources */,
 				260C32BE2527A2DE00157BC2 /* IssueRefundViewModel.swift in Sources */,
-				2678897C270E6E8B00BD249E /* QuickPayAmount.swift in Sources */,
+				2678897C270E6E8B00BD249E /* QuickOrderAmount.swift in Sources */,
 				450C2CBA24D3127500D570DD /* ProductReviewsTableViewCell.swift in Sources */,
 				029D444922F13F8A00DEFA8A /* DashboardUIFactory.swift in Sources */,
 				D8C2A28F231BD00500F503E9 /* ReviewsViewModel.swift in Sources */,
@@ -8374,7 +8374,7 @@
 				02A9A496244D84AB00757B99 /* ProductsSortOrderBottomSheetListSelectorCommandTests.swift in Sources */,
 				D83F5935225B3CDD00626E75 /* DatePickerTableViewCellTests.swift in Sources */,
 				314DC4C1268D28B100444C9E /* CardReaderSettingsKnownReadersStorageTests.swift in Sources */,
-				262AF38A2713B67600E39AFF /* QuickPayAmountViewModelTests.swift in Sources */,
+				262AF38A2713B67600E39AFF /* QuickOrderAmountViewModelTests.swift in Sources */,
 				93FA787221CD2A1A00B663E5 /* CurrencySettingsTests.swift in Sources */,
 				45FBDF2D238BF8BF00127F77 /* AddProductImageCollectionViewCellTests.swift in Sources */,
 				578195FC25AD1D7C004A5C12 /* OrderFulfillmentUseCaseTests.swift in Sources */,

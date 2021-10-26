@@ -81,18 +81,18 @@ final class OrderListViewModel {
     ///
     private let inPersonPaymentsReadyUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
 
-    /// Tracks if the merchant has enabled the Quick Pay experimental feature toggle
+    /// Tracks if the merchant has enabled the Quick Order experimental feature toggle
     ///
-    @Published private var isQuickPayEnabled = false
+    @Published private var isQuickOrderEnabled = false
 
-    /// If true, no quick pay banner will be shown as the user has told us that they are not interested in this information.
+    /// If true, no quick order banner will be shown as the user has told us that they are not interested in this information.
     /// Resets with every session.
     ///
-    @Published var hideQuickPayBanners: Bool = false
+    @Published var hideQuickOrderBanners: Bool = false
 
-    /// Tracks if the Quick Pay feature is ready to be released to the public
+    /// Tracks if the Quick Order feature is ready to be released to the public
     ///
-    private let isQuickPayDevelopmentComplete = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.quickPayPrototype)
+    private let isQuickOrderDevelopmentComplete = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.quickOrderPrototype)
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -232,14 +232,14 @@ private extension OrderListViewModel {
     }
 }
 
-// MARK: Quick Pay
+// MARK: Quick Order
 
 extension OrderListViewModel {
-    /// Reloads the state of the Quick Pay experimental feature switch state.
+    /// Reloads the state of the Quick Order experimental feature switch state.
     ///
-    func reloadQuickPayExperimentalFeatureState() {
-        let action = AppSettingsAction.loadQuickPaySwitchState { [weak self] result in
-            self?.isQuickPayEnabled = (try? result.get()) ?? false
+    func reloadQuickOrderExperimentalFeatureState() {
+        let action = AppSettingsAction.loadQuickOrderSwitchState { [weak self] result in
+            self?.isQuickOrderEnabled = (try? result.get()) ?? false
         }
         stores.dispatch(action)
     }
@@ -249,24 +249,24 @@ extension OrderListViewModel {
     private func bindTopBannerState() {
         let enrolledState = inPersonPaymentsReadyUseCase.statePublisher.removeDuplicates()
         let errorState = $hasErrorLoadingData.removeDuplicates()
-        let experimentalState = $isQuickPayEnabled.removeDuplicates()
-        Publishers.CombineLatest4(enrolledState, errorState, experimentalState, $hideQuickPayBanners)
-            .map { [weak self] enrolledState, hasError, isQuickPayEnabled, hasDismissedBanners -> TopBanner in
+        let experimentalState = $isQuickOrderEnabled.removeDuplicates()
+        Publishers.CombineLatest4(enrolledState, errorState, experimentalState, $hideQuickOrderBanners)
+            .map { [weak self] enrolledState, hasError, isQuickOrderEnabled, hasDismissedBanners -> TopBanner in
                 guard let self = self else { return .none }
 
                 guard !hasError else {
                     return .error
                 }
 
-                guard self.isQuickPayDevelopmentComplete, !hasDismissedBanners else {
+                guard self.isQuickOrderDevelopmentComplete, !hasDismissedBanners else {
                     return .none
                 }
 
-                switch (enrolledState, isQuickPayEnabled) {
+                switch (enrolledState, isQuickOrderEnabled) {
                 case (.completed, false):
-                    return .quickPayDisabled
+                    return .quickOrderDisabled
                 case (.completed, true):
-                    return .quickPayEnabled
+                    return .quickOrderEnabled
                 default:
                     return .none
                 }
@@ -311,8 +311,8 @@ extension OrderListViewModel {
     ///
     enum TopBanner {
         case error
-        case quickPayEnabled
-        case quickPayDisabled
+        case quickOrderEnabled
+        case quickOrderDisabled
         case none
     }
 }

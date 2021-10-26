@@ -18,8 +18,9 @@ public class WooAnalytics: Analytics {
     ///
     var userHasOptedIn: Bool {
         get {
+            let isUITesting: Bool = CommandLine.arguments.contains("-ui_testing")
             let optedIn: Bool? = UserDefaults.standard.object(forKey: .userOptedInAnalytics)
-            return optedIn ?? true // analytics tracking on by default
+            return ( optedIn ?? true ) && !isUITesting // analytics tracking on by default, but disabled for UI tests
         }
         set {
             UserDefaults.standard.set(newValue, forKey: .userOptedInAnalytics)

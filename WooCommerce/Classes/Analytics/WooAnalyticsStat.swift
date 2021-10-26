@@ -510,6 +510,13 @@ public enum WooAnalyticsStat: String {
     // MARK: What's New Component events
     //
     case featureAnnouncementShown = "feature_announcement_shown"
+
+    // MARK: Quick Order Prototype events
+    //
+    case quickOrderFlowStarted = "quick_order_flow_started"
+    case quickOrderFlowCompleted = "quick_order_flow_completed"
+    case quickOrderFlowCanceled = "quick_order_flow_canceled"
+    case quickOrderFlowFailed = "quick_order_flow_failed"
 }
 
 public extension WooAnalyticsStat {

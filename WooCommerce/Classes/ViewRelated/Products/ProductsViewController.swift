@@ -65,7 +65,9 @@ final class ProductsViewController: UIViewController {
     ///
     private lazy var resultsController: ResultsController<StorageProduct> = {
         let resultsController = createResultsController(siteID: siteID)
-        configureResultsController(resultsController, onReload: reloadTableAndView)
+        configureResultsController(resultsController, onReload: { [weak self] in
+            self?.reloadTableAndView()
+        })
         return resultsController
     }()
 
@@ -716,7 +718,9 @@ private extension ProductsViewController {
     func removePlaceholderProducts() {
         tableView.removeGhostContent()
         // Assign again the original closure
-        setClosuresToResultController(resultsController, onReload: reloadTableAndView)
+        setClosuresToResultController(resultsController, onReload: { [weak self] in
+            self?.reloadTableAndView()
+        })
         tableView.reloadData()
     }
 

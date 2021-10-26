@@ -356,7 +356,7 @@ final class OrderListViewModelTests: XCTestCase {
         }
     }
 
-    func test__does_not_show_banners() {
+    func test_dismissing_quick_order_banners_does_not_show_banners() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in

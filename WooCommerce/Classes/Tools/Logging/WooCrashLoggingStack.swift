@@ -116,6 +116,10 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
         return BuildConfiguration.current.rawValue
     }
 
+    var shouldEnableAutomaticSessionTracking: Bool {
+        return CrashLoggingSettings.didOptIn
+    }
+
     @objc func updateCrashLoggingSystem(_ notification: Notification) {
         /// Bumping this call to a later run loop is a little bit hack-y, but because the `StoresManager` fires the events
         /// we're interested as part of its initialization, we need to wait for that initalization to be complete before

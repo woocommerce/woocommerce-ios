@@ -718,6 +718,27 @@ final class MigrationTests: XCTestCase {
         XCTAssertNotNil(migratedShippingLabel.entity.attributesByName["commercialInvoiceURL"])
         XCTAssertNil(migratedShippingLabel.value(forKey: "commercialInvoiceURL"))
     }
+
+    func test_migrating_from_55_to_56_adds_new_systemplugin_attribute_active_with_true_value() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 55")
+        let sourceContext = sourceContainer.viewContext
+
+        let systemPlugin = insertSystemPlugin(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(systemPlugin.entity.attributesByName["active"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 56")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedSystemPlugin = try XCTUnwrap(targetContext.first(entityName: "SystemPlugin"))
+
+        XCTAssertNotNil(migratedSystemPlugin.entity.attributesByName["active"])
+        XCTAssertEqual(migratedSystemPlugin.value(forKey: "active") as? Bool, true)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

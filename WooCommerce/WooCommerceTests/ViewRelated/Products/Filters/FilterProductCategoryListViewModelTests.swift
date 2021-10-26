@@ -1,5 +1,5 @@
 import XCTest
-
+import TestKit
 @testable import WooCommerce
 @testable import Yosemite
 @testable import Networking
@@ -72,31 +72,29 @@ final class FilterProductCategoryListViewModelTests: XCTestCase {
     }
 
     func test_select_index_then_productCategoryListViewModel_reset_categories() {
-        // Given
-        let exp = expectation(description: #function)
-
         // When
         productCategoryListViewModel.performFetch()
-        productCategoryListViewModel.observeCategoryListStateChanges { [weak self] state in
-            guard let self = self else {
-                return
-            }
 
-            if state == .synced {
-                self.filterProductCategoryListViewModel.viewModel(self.productCategoryListViewModel, didSelectRowAt: 0)
+        let categoryViewModels: [ProductCategoryCellViewModel] = waitFor { [weak self] promise in
+            self?.productCategoryListViewModel.observeCategoryListStateChanges { [weak self] state in
+                guard let self = self else {
+                    return
+                }
 
-                exp.fulfill()
+                if state == .synced {
+                    self.filterProductCategoryListViewModel.viewModel(self.productCategoryListViewModel, didSelectRowAt: 0)
+
+                    promise(self.productCategoryListViewModel.categoryViewModels)
+                }
             }
         }
-
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
 
         // Then
         let expectedAnyCategoryViewModel = ProductCategoryCellViewModel(categoryID: nil,
                                                                         name: NSLocalizedString("Any", comment: "Title when there is no filter set."),
                                                                         isSelected: true,
                                                                         indentationLevel: 0)
-        XCTAssertEqual(productCategoryListViewModel.categoryViewModels.first, expectedAnyCategoryViewModel)
-        XCTAssertEqual(productCategoryListViewModel.categoryViewModels.count, 1)
+        XCTAssertEqual(categoryViewModels.first, expectedAnyCategoryViewModel)
+        XCTAssertEqual(categoryViewModels.count, 1)
     }
 }

@@ -226,6 +226,135 @@ final class OrderListViewModelTests: XCTestCase {
         // Assert
         XCTAssertFalse(resynchronizeRequested)
     }
+
+    func test_having_no_error_and_no_quick_pay_does_not_show_banner() {
+        // Given
+        let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .wcpayNotInstalled)
+        let viewModel = OrderListViewModel(siteID: siteID, statusFilter: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
+
+        // When
+        viewModel.activate()
+
+        // Then
+        waitUntil {
+            viewModel.topBanner == .none
+        }
+    }
+
+    func test_storing_error_shows_error_banner() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, statusFilter: nil)
+
+        // When
+        viewModel.activate()
+        viewModel.hasErrorLoadingData = true
+
+        // Then
+        waitUntil {
+            viewModel.topBanner == .error
+        }
+    }
+
+    func test_storing_error_shows_error_banner_with_precedence_over_other_state() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case .loadQuickPaySwitchState(let onCompletion):
+                onCompletion(.success(true))
+            default:
+                XCTFail("Unsupported action: \(action)")
+            }
+        }
+
+        let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed)
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, statusFilter: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
+
+        // When
+        viewModel.activate()
+        viewModel.reloadQuickPayExperimentalFeatureState()
+        viewModel.hasErrorLoadingData = true
+
+        // Then
+        waitUntil {
+            viewModel.topBanner == .error
+        }
+    }
+
+    func test_having_store_onboarded_and_quick_pay_disabled_shows_disabled_top_banner() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case .loadQuickPaySwitchState(let onCompletion):
+                onCompletion(.success(false))
+            default:
+                XCTFail("Unsupported action: \(action)")
+            }
+        }
+
+        let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed)
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, statusFilter: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
+
+        // When
+        viewModel.activate()
+        viewModel.reloadQuickPayExperimentalFeatureState()
+
+        // Then
+        waitUntil {
+            viewModel.topBanner == .quickPayDisabled
+        }
+    }
+
+    func test_having_store_onboarded_and_quick_pay_enabled_shows_enabled_top_banner() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case .loadQuickPaySwitchState(let onCompletion):
+                onCompletion(.success(true))
+            default:
+                XCTFail("Unsupported action: \(action)")
+            }
+        }
+
+        let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed)
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, statusFilter: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
+
+        // When
+        viewModel.activate()
+        viewModel.reloadQuickPayExperimentalFeatureState()
+
+        // Then
+        waitUntil {
+            viewModel.topBanner == .quickPayEnabled
+        }
+    }
+
+    func test_having_store_not_onboarded_and_quick_pay_enabled_shows_no_banner() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case .loadQuickPaySwitchState(let onCompletion):
+                onCompletion(.success(true))
+            default:
+                XCTFail("Unsupported action: \(action)")
+            }
+        }
+
+        let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .wcpayNotInstalled)
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, statusFilter: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
+
+        // When
+        viewModel.activate()
+        viewModel.reloadQuickPayExperimentalFeatureState()
+
+        // Then
+        waitUntil {
+            viewModel.topBanner == .none
+        }
+    }
 }
 
 // MARK: - Helpers

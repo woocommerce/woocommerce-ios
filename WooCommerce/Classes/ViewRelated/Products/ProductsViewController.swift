@@ -790,6 +790,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                                  stockStatus: filters.stockStatus,
                                  productStatus: filters.productStatus,
                                  productType: filters.productType,
+                                 productCategory: filters.productCategory,
                                  sortOrder: sortOrder) { [weak self] result in
                                     guard let self = self else {
                                         return

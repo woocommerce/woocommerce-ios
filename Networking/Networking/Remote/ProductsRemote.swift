@@ -16,6 +16,7 @@ public protocol ProductsRemoteProtocol {
                          stockStatus: ProductStockStatus?,
                          productStatus: ProductStatus?,
                          productType: ProductType?,
+                         productCategory: ProductCategory?,
                          orderBy: ProductsRemote.OrderKey,
                          order: ProductsRemote.Order,
                          excludedProductIDs: [Int64],
@@ -104,16 +105,19 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                 stockStatus: ProductStockStatus? = nil,
                                 productStatus: ProductStatus? = nil,
                                 productType: ProductType? = nil,
+                                productCategory: ProductCategory? = nil,
                                 orderBy: OrderKey = .name,
                                 order: Order = .ascending,
                                 excludedProductIDs: [Int64] = [],
                                 completion: @escaping (Result<[Product], Error>) -> Void) {
         let stringOfExcludedProductIDs = excludedProductIDs.map { String($0) }
             .joined(separator: ",")
+
         let filterParameters = [
             ParameterKey.stockStatus: stockStatus?.rawValue ?? "",
             ParameterKey.productStatus: productStatus?.rawValue ?? "",
             ParameterKey.productType: productType?.rawValue ?? "",
+            ParameterKey.category: filterProductCategoryParemeterValue(from: productCategory),
             ParameterKey.exclude: stringOfExcludedProductIDs
             ].filter({ $0.value.isEmpty == false })
 
@@ -130,6 +134,16 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let mapper = ProductListMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Returns the category Id in string format, or empty string if the product category is nil
+    ///
+    private func filterProductCategoryParemeterValue(from productCategory: ProductCategory?) -> String {
+        guard let productCategory = productCategory else {
+            return ""
+        }
+
+        return String(productCategory.categoryID)
     }
 
     /// Retrieves a specific list of `Product`s by `productID`.
@@ -298,6 +312,7 @@ public extension ProductsRemote {
         static let productStatus: String = "status"
         static let productType: String = "type"
         static let stockStatus: String = "stock_status"
+        static let category: String   = "category"
         static let fields: String     = "_fields"
     }
 

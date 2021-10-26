@@ -52,8 +52,8 @@ final class FilterTypeViewModel {
 enum FilterListValueSelectorConfig {
     // Standard list selector with fixed options
     case staticOptions(options: [FilterType])
-    // Filter list selector for categories, retrieved dynamically
-    case productCategories
+    // Filter list selector for categories linked to that site id, retrieved dynamically
+    case productCategories(siteID: Int64)
     // Filter list selector for date range, with a cell for a custom range
     case ordersDateRange(options: [OrderDateRangeFilterEnum])
 }
@@ -228,9 +228,10 @@ private extension FilterListViewController {
                 }
                 let staticListSelector = ListSelectorViewController(command: command, tableViewStyle: .plain) { _ in }
                 self.listSelector.navigationController?.pushViewController(staticListSelector, animated: true)
-            case .productCategories:
-                // TODO-5159: Show filter products by category view controller
-                break
+            case let .productCategories(siteID):
+                // TODO-5159: Handle product category filter selection
+                let filterProductCategoryListViewController = FilterProductCategoryListViewController(siteID: siteID)
+                self.listSelector.navigationController?.pushViewController(filterProductCategoryListViewController, animated: true)
             case .ordersDateRange(let options):
                 self.cancellableSelectedFilterValue?.cancel()
                 let command = FilterListSelectorCommand(navigationBarTitle: selected.title,

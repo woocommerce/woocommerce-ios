@@ -65,7 +65,9 @@ final class ProductsViewController: UIViewController {
     ///
     private lazy var resultsController: ResultsController<StorageProduct> = {
         let resultsController = createResultsController(siteID: siteID)
-        configureResultsController(resultsController, onReload: reloadTableAndView)
+        configureResultsController(resultsController, onReload: { [weak self] in
+            self?.reloadTableAndView()
+        })
         return resultsController
     }()
 
@@ -664,7 +666,7 @@ private extension ProductsViewController {
 
     @objc func filterButtonTapped() {
         ServiceLocator.analytics.track(.productListViewFilterOptionsTapped)
-        let viewModel = FilterProductListViewModel(filters: filters)
+        let viewModel = FilterProductListViewModel(filters: filters, siteID: siteID)
         let filterProductListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
             ServiceLocator.analytics.track(.productFilterListShowProductsButtonTapped, withProperties: ["filters": filters.analyticsDescription])
             self?.filters = filters
@@ -716,7 +718,9 @@ private extension ProductsViewController {
     func removePlaceholderProducts() {
         tableView.removeGhostContent()
         // Assign again the original closure
-        setClosuresToResultController(resultsController, onReload: reloadTableAndView)
+        setClosuresToResultController(resultsController, onReload: { [weak self] in
+            self?.reloadTableAndView()
+        })
         tableView.reloadData()
     }
 
@@ -877,6 +881,7 @@ private extension ProductsViewController {
             ensureFooterSpinnerIsStopped()
             removePlaceholderProducts()
             showTopBannerViewIfNeeded()
+            showOrHideToolBar()
         case .results:
             break
         }

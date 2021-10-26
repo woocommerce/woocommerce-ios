@@ -31,11 +31,19 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
     ///
     private var filteredOrdersBar: FilteredOrdersHeaderBar = {
         let filteredOrdersBar: FilteredOrdersHeaderBar = FilteredOrdersHeaderBar.instantiateFromNib()
-        filteredOrdersBar.onAction = {
-            // TODO: handle action
-        }
         return filteredOrdersBar
     }()
+
+    private var filters: FilterOrderListViewModel.Filters = FilterOrderListViewModel.Filters() {
+        didSet {
+            if filters != oldValue {
+                //TODO-5243: update local order settings
+                //TODO-5243: update filter button title
+                //TODO-5243: ResultsController update predicate if needed
+                //TODO-5243: reload tableview
+            }
+        }
+    }
 
     private lazy var analytics = ServiceLocator.analytics
 
@@ -68,6 +76,10 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
         super.viewDidLoad()
 
         viewModel.activate()
+
+        filteredOrdersBar.onAction = { [weak self] in
+            self?.filterButtonTapped()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -144,6 +156,21 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
         return makeViewControllers()
     }
 
+    /// Present `FilterListViewController`
+    ///
+    private func filterButtonTapped() {
+        //TODO-5243: add event for tracking the filter tapped
+        let viewModel = FilterOrderListViewModel(filters: filters)
+        let filterOrderListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
+            //TODO-5243: add event for tracking filter list show
+            self?.filters = filters
+        }, onClearAction: {
+            //TODO-5243: add event for tracking clear action
+        }, onDismissAction: {
+            //TODO-5243: add event for tracking dismiss action
+        })
+        present(filterOrderListViewController, animated: true, completion: nil)
+    }
 }
 
 // MARK: - OrdersViewControllerDelegate

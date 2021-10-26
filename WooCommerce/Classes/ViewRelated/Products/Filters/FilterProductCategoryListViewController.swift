@@ -34,7 +34,7 @@ final class FilterProductCategoryListViewController: UIViewController {
         super.viewDidLoad()
 
         configureProductCategoryListView()
-        configureNavigationBar()
+        configureTitle()
     }
 }
 
@@ -49,10 +49,6 @@ private extension FilterProductCategoryListViewController {
         subview.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(subview)
         view.pinSubviewToAllEdges(subview)
-    }
-
-    func configureNavigationBar() {
-        configureTitle()
     }
 
     func configureTitle() {

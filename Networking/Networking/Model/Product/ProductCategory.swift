@@ -27,11 +27,11 @@ public struct ProductCategory: Codable, Equatable, GeneratedFakeable {
     /// Public initializer for ProductCategory.
     ///
     public init(from decoder: Decoder) throws {
-        guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        guard let siteID = ProductCategory.siteID(from: decoder, container: container) else {
             throw ProductCategoryDecodingError.missingSiteID
         }
-
-        let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let categoryID = try container.decode(Int64.self, forKey: .categoryID)
         // Some product endpoints don't include the parent category ID
@@ -48,6 +48,7 @@ public struct ProductCategory: Codable, Equatable, GeneratedFakeable {
         try container.encode(categoryID, forKey: .categoryID)
         try container.encode(name, forKey: .name)
         try container.encode(slug, forKey: .slug)
+        try container.encode(siteID, forKey: .siteID)
     }
 }
 
@@ -56,10 +57,25 @@ public struct ProductCategory: Codable, Equatable, GeneratedFakeable {
 ///
 private extension ProductCategory {
     enum CodingKeys: String, CodingKey {
+        case siteID     = "siteID"
         case categoryID = "id"
         case name       = "name"
         case slug       = "slug"
         case parentID   = "parent"
+    }
+}
+
+private extension ProductCategory {
+    private static func siteID(from decoder: Decoder, container: KeyedDecodingContainer<ProductCategory.CodingKeys>) -> Int64? {
+        var siteID: Int64?
+
+        if let userInfoSiteID = decoder.userInfo[.siteID] as? Int64 {
+            siteID = userInfoSiteID
+        } else if let decodedSiteID = try? container.decode(Int64.self, forKey: .siteID) {
+            siteID = decodedSiteID
+        }
+
+        return siteID
     }
 }
 

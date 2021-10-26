@@ -11,7 +11,8 @@ final class FilterProductCategoryListViewController: UIViewController {
     private let productCategoryListViewController: ProductCategoryListViewController
     private let viewModel: FilterProductCategoryListViewModel
 
-    init(siteID: Int64) {
+    init(siteID: Int64,
+         onProductCategorySelection: ProductCategoryListViewModel.ProductCategorySelection? = nil) {
         self.siteID = siteID
         self.viewModel = FilterProductCategoryListViewModel()
 
@@ -19,7 +20,8 @@ final class FilterProductCategoryListViewController: UIViewController {
         let productCategoryListViewModel = ProductCategoryListViewModel(siteID: siteID,
                                                                         selectedCategories: [],
                                                                         enrichingDataSource: viewModel,
-                                                                        delegate: viewModel)
+                                                                        delegate: viewModel,
+                                                                        onProductCategorySelection: onProductCategorySelection)
 
         productCategoryListViewController = ProductCategoryListViewController(viewModel: productCategoryListViewModel)
 

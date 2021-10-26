@@ -69,6 +69,11 @@ final class ProductCategoryListViewModel {
     ///
     private weak var enrichingDataSource: ProductCategoryListViewModelEnrichingDataSource?
 
+    /// Callback when a product category is selected. Passing nil means all categories are deselected
+    ///
+    typealias ProductCategorySelection = (ProductCategory?) -> Void
+    private var onProductCategorySelection: ProductCategorySelection?
+
     /// Current  category synchronization state
     ///
     private var syncCategoriesState: SyncingState = .initialized {
@@ -91,12 +96,14 @@ final class ProductCategoryListViewModel {
          siteID: Int64,
          selectedCategories: [ProductCategory] = [],
          enrichingDataSource: ProductCategoryListViewModelEnrichingDataSource? = nil,
-         delegate: ProductCategoryListViewModelDelegate? = nil) {
+         delegate: ProductCategoryListViewModelDelegate? = nil,
+         onProductCategorySelection: ProductCategorySelection? = nil) {
         self.storesManager = storesManager
         self.siteID = siteID
         self.selectedCategories = selectedCategories
         self.enrichingDataSource = enrichingDataSource
         self.delegate = delegate
+        self.onProductCategorySelection = onProductCategorySelection
     }
 
     /// Load existing categories from storage and fire the synchronize all categories action.
@@ -163,9 +170,14 @@ final class ProductCategoryListViewModel {
         // If the category selected exist, remove it, otherwise, add it to `selectedCategories`.
         if let indexCategory = selectedCategories.firstIndex(where: { $0.categoryID == categoryViewModel.categoryID}) {
             selectedCategories.remove(at: indexCategory)
-        }
-        else if let category = resultController.fetchedObjects.first(where: { $0.categoryID == categoryViewModel.categoryID }) {
-            selectedCategories.append(category)
+        } else {
+            let selectedCategory = resultController.fetchedObjects.first(where: { $0.categoryID == categoryViewModel.categoryID })
+
+            if let selectedCategory = selectedCategory {
+                selectedCategories.append(selectedCategory)
+            }
+
+            onProductCategorySelection?(selectedCategory)
         }
 
         updateViewModelsArray()

@@ -301,7 +301,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         }
 
         transitionToSyncingState()
-        setErrorLoadingData(to: false)
+        viewModel.hasErrorLoadingData = false
 
         let action = viewModel.synchronizationAction(
             siteID: siteID,
@@ -314,7 +314,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
                 if let error = error {
                     DDLogError("⛔️ Error synchronizing orders: \(error)")
-                    self.setErrorLoadingData(to: true)
+                    self.viewModel.hasErrorLoadingData = true
                 } else {
                     if pageNumber == self.syncingCoordinator.pageFirstIndex {
                         // save timestamp of last successful update
@@ -330,12 +330,6 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         }
 
         ServiceLocator.stores.dispatch(action)
-    }
-
-    /// Sets `hasErrorLoadingData` in the view model.
-    ///
-    private func setErrorLoadingData(to hasError: Bool) {
-        viewModel.hasErrorLoadingData = hasError
     }
 
     /// Sets the current top banner in the table view header

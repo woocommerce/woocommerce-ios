@@ -56,29 +56,6 @@ extension OrderStatusEnum: RawRepresentable {
         case .custom(let payload):  return payload
         }
     }
-
-    /// Returns the localized text version of the Enum
-    ///
-    public var description: String {
-        switch self {
-        case .pending:
-            return NSLocalizedString("Pending", comment: "Display label for pending order status.")
-        case .processing:
-            return NSLocalizedString("Processing", comment: "Display label for processing order status.")
-        case .onHold:
-            return NSLocalizedString("On hold", comment: "Display label for on hold order status.")
-        case .failed:
-            return NSLocalizedString("Failed", comment: "Display label for failed order status.")
-        case .cancelled:
-            return NSLocalizedString("Cancelled", comment: "Display label for cancelled order status.")
-        case .completed:
-            return NSLocalizedString("Completed", comment: "Display label for completed order status.")
-        case .refunded:
-            return NSLocalizedString("Refunded", comment: "Display label for refunded order status.")
-        case .custom(let payload):
-            return payload // unable to localize at runtime.
-        }
-    }
 }
 
 

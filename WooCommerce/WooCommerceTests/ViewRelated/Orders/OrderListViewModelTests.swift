@@ -355,6 +355,47 @@ final class OrderListViewModelTests: XCTestCase {
             viewModel.topBanner == .none
         }
     }
+
+    func test_dismissing_quick_order_banners_does_not_show_banners() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case .loadQuickPaySwitchState(let onCompletion):
+                onCompletion(.success(true))
+            default:
+                XCTFail("Unsupported action: \(action)")
+            }
+        }
+
+        let onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed)
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, statusFilter: nil, inPersonPaymentsReadyUseCase: onboardingUseCase)
+
+        // When
+        viewModel.activate()
+        viewModel.reloadQuickPayExperimentalFeatureState()
+        viewModel.hideQuickPayBanners = true
+
+        // Then
+        waitUntil {
+            viewModel.topBanner == .none
+        }
+    }
+
+    func test_hiding_quickPay_banners_still_shows_error_banner() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, statusFilter: nil)
+
+        // When
+        viewModel.activate()
+        viewModel.hasErrorLoadingData = true
+        viewModel.hideQuickPayBanners = true
+
+        // Then
+        waitUntil {
+            viewModel.topBanner == .error
+        }
+    }
 }
 
 // MARK: - Helpers

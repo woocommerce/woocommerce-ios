@@ -608,8 +608,8 @@ private extension OrderListViewController {
     func setQuickPayDisabledTopBanner() {
         topBannerView = QuickPayTopBannerFactory.createFeatureDisabledBanner(onTopButtonPressed: { [weak self] in
             self?.tableView.updateHeaderHeight()
-        }, onDismissButtonPressed: {
-            // TODO: Hide top banner
+        }, onDismissButtonPressed: { [weak self] in
+            self?.viewModel.hideQuickPayBanners = true
         })
         showTopBannerView()
     }
@@ -619,10 +619,11 @@ private extension OrderListViewController {
     func setQuickPayEnabledTopBanner() {
         topBannerView = QuickPayTopBannerFactory.createFeatureEnabledBanner(onTopButtonPressed: { [weak self] in
             self?.tableView.updateHeaderHeight()
-        }, onDismissButtonPressed: {
-            // TODO: Hide top banner
-        }, onGiveFeedbackButtonPressed: {
-            // TODO: Show feedback survey
+        }, onDismissButtonPressed: { [weak self] in
+            self?.viewModel.hideQuickPayBanners = true
+        }, onGiveFeedbackButtonPressed: { [weak self] in
+            let surveyNavigation = SurveyCoordinatingController(survey: .quickPayPrototype)
+            self?.present(surveyNavigation, animated: true, completion: nil)
         })
         showTopBannerView()
     }

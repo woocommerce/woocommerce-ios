@@ -64,8 +64,8 @@ extension WooAnalyticsEvent {
         case shippingLabelsRelease3 = "shipping_labels_m3"
         /// Shown in beta feature banner for order add-ons.
         case addOnsI1 = "add-ons_i1"
-        /// Shown in beta feature banner for quick pay prototype.
-        case quickPayPrototype = "quick_order_prototype"
+        /// Shown in beta feature banner for quick order prototype.
+        case quickOrderPrototype = "quick_order_prototype"
     }
 
     /// The action performed on the survey screen.

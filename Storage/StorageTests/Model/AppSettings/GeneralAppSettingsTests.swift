@@ -9,7 +9,7 @@ class GeneralAppSettingsTests: XCTestCase {
         let settings = GeneralAppSettings(installationDate: nil,
                                           feedbacks: [.general: feedback],
                                           isViewAddOnsSwitchEnabled: false,
-                                          isQuickPaySwitchEnabled: false,
+                                          isQuickOrderSwitchEnabled: false,
                                           knownCardReaders: [])
 
         // When
@@ -24,7 +24,7 @@ class GeneralAppSettingsTests: XCTestCase {
         let settings = GeneralAppSettings(installationDate: nil,
                                           feedbacks: [:],
                                           isViewAddOnsSwitchEnabled: false,
-                                          isQuickPaySwitchEnabled: false,
+                                          isQuickOrderSwitchEnabled: false,
                                           knownCardReaders: [])
 
         // When
@@ -41,7 +41,7 @@ class GeneralAppSettingsTests: XCTestCase {
             installationDate: nil,
             feedbacks: [.general: existingFeedback],
             isViewAddOnsSwitchEnabled: false,
-            isQuickPaySwitchEnabled: false,
+            isQuickOrderSwitchEnabled: false,
             knownCardReaders: []
         )
 
@@ -58,7 +58,7 @@ class GeneralAppSettingsTests: XCTestCase {
         let settings = GeneralAppSettings(installationDate: nil,
                                           feedbacks: [:],
                                           isViewAddOnsSwitchEnabled: false,
-                                          isQuickPaySwitchEnabled: false,
+                                          isQuickOrderSwitchEnabled: false,
                                           knownCardReaders: [])
 
         // When
@@ -78,7 +78,7 @@ class GeneralAppSettingsTests: XCTestCase {
         let previousSettings = GeneralAppSettings(installationDate: currentDate,
                                                   feedbacks: feedbackSettings,
                                                   isViewAddOnsSwitchEnabled: true,
-                                                  isQuickPaySwitchEnabled: true,
+                                                  isQuickOrderSwitchEnabled: true,
                                                   knownCardReaders: readers,
                                                   lastEligibilityErrorInfo: eligibilityInfo)
 
@@ -96,6 +96,6 @@ class GeneralAppSettingsTests: XCTestCase {
         assertEqual(newSettings.knownCardReaders, readers)
         assertEqual(newSettings.lastEligibilityErrorInfo, eligibilityInfo)
         assertEqual(newSettings.isViewAddOnsSwitchEnabled, false)
-        assertEqual(newSettings.isQuickPaySwitchEnabled, true)
+        assertEqual(newSettings.isQuickOrderSwitchEnabled, true)
     }
 }

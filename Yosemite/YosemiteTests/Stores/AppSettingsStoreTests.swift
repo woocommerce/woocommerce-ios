@@ -447,13 +447,13 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(isEnabled)
     }
 
-    func test_loadQuickPaySwitchState_returns_false_on_new_generalAppSettings() throws {
+    func test_loadQuickOrderSwitchState_returns_false_on_new_generalAppSettings() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            let action = AppSettingsAction.loadQuickPaySwitchState { result in
+            let action = AppSettingsAction.loadQuickOrderSwitchState { result in
                 promise(result)
             }
             self.subject?.onAction(action)
@@ -464,15 +464,15 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertFalse(isEnabled)
     }
 
-    func test_loadQuickPaySwitchState_returns_true_after_updating_switch_state_to_true() throws {
+    func test_loadQuickOrderSwitchState_returns_true_after_updating_switch_state_to_true() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-        let updateAction = AppSettingsAction.setQuickPayFeatureSwitchState(isEnabled: true, onCompletion: { _ in })
+        let updateAction = AppSettingsAction.setQuickOrderFeatureSwitchState(isEnabled: true, onCompletion: { _ in })
         subject?.onAction(updateAction)
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            let action = AppSettingsAction.loadQuickPaySwitchState { result in
+            let action = AppSettingsAction.loadQuickOrderSwitchState { result in
                 promise(result)
             }
             self.subject?.onAction(action)
@@ -498,7 +498,7 @@ private extension AppSettingsStoreTests {
             installationDate: installationDate,
             feedbacks: [feedback.name: feedback],
             isViewAddOnsSwitchEnabled: false,
-            isQuickPaySwitchEnabled: false,
+            isQuickOrderSwitchEnabled: false,
             knownCardReaders: []
         )
         return (settings, feedback)

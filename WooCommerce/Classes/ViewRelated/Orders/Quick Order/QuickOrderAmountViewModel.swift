@@ -61,15 +61,21 @@ final class QuickOrderAmountViewModel: ObservableObject {
     ///
     private let storeCurrencySymbol: String
 
+    /// Analytics tracker.
+    ///
+    private let analytics: Analytics
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          locale: Locale = Locale.autoupdatingCurrent,
-         storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+         storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
         self.userLocale = locale
         self.storeCurrencySettings = storeCurrencySettings
         self.storeCurrencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
+        self.analytics = analytics
     }
 
     /// Called when the view taps the done button.
@@ -84,9 +90,11 @@ final class QuickOrderAmountViewModel: ObservableObject {
             switch result {
             case .success(let order):
                 self.onOrderCreated(order)
+                self.analytics.track(event: WooAnalyticsEvent.QuickOrder.quickOrderFlowCompleted(amount: order.total))
 
             case .failure(let error):
                 self.presentNotice = .error
+                self.analytics.track(event: WooAnalyticsEvent.QuickOrder.quickOrderFlowFailed())
                 DDLogError("⛔️ Error creating quick order order: \(error)")
             }
         }

@@ -12,13 +12,18 @@ final class FilterProductCategoryListViewController: UIViewController {
     private let viewModel: FilterProductCategoryListViewModel
 
     init(siteID: Int64,
+         selectedCategory: ProductCategory?,
          onProductCategorySelection: ProductCategoryListViewModel.ProductCategorySelection? = nil) {
         self.siteID = siteID
-        self.viewModel = FilterProductCategoryListViewModel()
+        self.viewModel = FilterProductCategoryListViewModel(anyCategoryIsSelected: selectedCategory == nil)
 
-        // TODO-5159: Initialize selected categories with the stored filter categories
+        var selectedCategories: [ProductCategory] = []
+        if let selectedCategory = selectedCategory {
+            selectedCategories.append(selectedCategory)
+        }
+
         let productCategoryListViewModel = ProductCategoryListViewModel(siteID: siteID,
-                                                                        selectedCategories: [],
+                                                                        selectedCategories: selectedCategories,
                                                                         enrichingDataSource: viewModel,
                                                                         delegate: viewModel,
                                                                         onProductCategorySelection: onProductCategorySelection)

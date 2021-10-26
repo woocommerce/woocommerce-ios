@@ -229,7 +229,9 @@ private extension FilterListViewController {
                 let staticListSelector = ListSelectorViewController(command: command, tableViewStyle: .plain) { _ in }
                 self.listSelector.navigationController?.pushViewController(staticListSelector, animated: true)
             case let .productCategories(siteID):
+                let selectedProductCategory = selected.selectedValue as? ProductCategory
                 let filterProductCategoryListViewController = FilterProductCategoryListViewController(siteID: siteID,
+                                                                                                      selectedCategory: selectedProductCategory,
                                                                                                       onProductCategorySelection: selectedValueAction)
                 self.listSelector.navigationController?.pushViewController(filterProductCategoryListViewController, animated: true)
             }

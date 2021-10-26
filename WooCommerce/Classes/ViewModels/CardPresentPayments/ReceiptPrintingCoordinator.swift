@@ -13,6 +13,7 @@ struct ReceiptPrintingCoordinator {
                 ServiceLocator.analytics.track(.receiptPrintCanceled)
             case .failure(let error):
                 ServiceLocator.analytics.track(.receiptPrintFailed, withError: error)
+                DDLogError("⛔️ Failed to print receipt: \(error.localizedDescription)")
             }
         }
 

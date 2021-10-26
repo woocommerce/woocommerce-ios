@@ -43,7 +43,7 @@ private extension QuickPayTopBannerFactory {
     enum Localization {
         static let title = NSLocalizedString("Take payments from your device!", comment: "Title of the banner notice in the Quick Pay feature")
         static let disabledInfo = NSLocalizedString("We are working on making it easier for you to take payments from your device! " +
-                                                    "Enable it from the Experimental Features section.",
+                                                    "Enable Quick Order in Settings > Experimental Features.",
                                                     comment: "Content of the top banner to announce the quick pay feature.")
         static let enabledInfo = NSLocalizedString("We are working on making it easier for you to take payments from your device! " +
                                                    "For now, tap on the \"+\" button and you’ll be able to create an order with the amount you want to collect",

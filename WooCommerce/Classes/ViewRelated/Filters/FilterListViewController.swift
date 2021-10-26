@@ -55,7 +55,7 @@ enum FilterListValueSelectorConfig {
     // Filter list selector for categories, retrieved dynamically
     case productCategories
     // Filter list selector for date range, with a cell for a custom range
-    case ordersDateRange
+    case ordersDateRange(options: [OrderDateRangeFilterEnum])
 }
 
 /// Contains data for rendering a filter type row.
@@ -231,9 +231,23 @@ private extension FilterListViewController {
             case .productCategories:
                 // TODO-5159: Show filter products by category view controller
                 break
-            case .ordersDateRange:
-                // TODO-5243: show the list with the date options
-                break
+            case .ordersDateRange(let options):
+                self.cancellableSelectedFilterValue?.cancel()
+                let command = FilterListSelectorCommand(navigationBarTitle: selected.title,
+                                                        data: options,
+                                                        selected: selected.selectedValue)
+                self.cancellableSelectedFilterValue = command.onItemSelected.subscribe { [weak self] selectedOption in
+                    guard let self = self else {
+                        return
+                    }
+                    if selectedOption.description != selected.selectedValue.description {
+                        selected.selectedValue = selectedOption
+                        self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
+                        self.listSelector.reloadData()
+                    }
+                }
+                let staticListSelector = ListSelectorViewController(command: command, tableViewStyle: .plain) { _ in }
+                self.listSelector.navigationController?.pushViewController(staticListSelector, animated: true)
             }
         }
     }

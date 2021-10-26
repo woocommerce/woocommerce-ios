@@ -102,13 +102,13 @@ public enum AppSettingsAction: Action {
     ///
     case loadOrderAddOnsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
 
-    /// Loads the most recent state for the Quick Pay beta feature switch
+    /// Loads the most recent state for the Quick Order beta feature switch
     ///
-    case loadQuickPaySwitchState(onCompletion: (Result<Bool, Error>) -> Void)
+    case loadQuickOrderSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
 
-    /// Sets the state for the Quick Pay beta feature switch.
+    /// Sets the state for the Quick Order beta feature switch.
     ///
-    case setQuickPayFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
+    case setQuickOrderFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
 
     /// Remember the given card reader (to support automatic reconnection)
     /// where `cardReaderID` is a String e.g. "CHB204909005931"

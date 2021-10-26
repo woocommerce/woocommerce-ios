@@ -2,10 +2,10 @@ import Foundation
 
 /// Represents a row in the ProductCategoryList screen
 ///
-struct ProductCategoryCellViewModel {
+struct ProductCategoryCellViewModel: Equatable {
     /// Category ID
     ///
-    let categoryID: Int64
+    let categoryID: Int64?
 
     /// Category name
     ///

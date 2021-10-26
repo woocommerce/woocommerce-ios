@@ -10,7 +10,7 @@ final class FilterProductListViewModelTests: XCTestCase {
         let filters = FilterProductListViewModel.Filters()
 
         // When
-        let viewModel = FilterProductListViewModel(filters: filters)
+        let viewModel = FilterProductListViewModel(filters: filters, siteID: 0)
 
         // Then
         let expectedCriteria = FilterProductListViewModel.Filters(stockStatus: nil,
@@ -31,7 +31,7 @@ final class FilterProductListViewModelTests: XCTestCase {
 
         // When
         let featureFlagService = MockFeatureFlagService(isFilterProductsByCategoryOn: true)
-        let viewModel = FilterProductListViewModel(filters: filters, featureFlagService: featureFlagService)
+        let viewModel = FilterProductListViewModel(filters: filters, siteID: 0, featureFlagService: featureFlagService)
 
         // Then
         let expectedCriteria = filters
@@ -48,7 +48,7 @@ final class FilterProductListViewModelTests: XCTestCase {
 
         // When
         let featureFlagService = MockFeatureFlagService(isFilterProductsByCategoryOn: true)
-        let viewModel = FilterProductListViewModel(filters: filters, featureFlagService: featureFlagService)
+        let viewModel = FilterProductListViewModel(filters: filters, siteID: 0, featureFlagService: featureFlagService)
         viewModel.clearAll()
 
         // Then
@@ -70,7 +70,7 @@ final class FilterProductListViewModelTests: XCTestCase {
 
         // When
         let featureFlagService = MockFeatureFlagService(isFilterProductsByCategoryOn: false)
-        let viewModel = FilterProductListViewModel(filters: filters, featureFlagService: featureFlagService)
+        let viewModel = FilterProductListViewModel(filters: filters, siteID: 0, featureFlagService: featureFlagService)
 
         // Then
         let expectedCriteria = FilterProductListViewModel.Filters(stockStatus: filters.stockStatus,
@@ -91,7 +91,7 @@ final class FilterProductListViewModelTests: XCTestCase {
 
         // When
         let featureFlagService = MockFeatureFlagService(isFilterProductsByCategoryOn: false)
-        let viewModel = FilterProductListViewModel(filters: filters, featureFlagService: featureFlagService)
+        let viewModel = FilterProductListViewModel(filters: filters, siteID: 0, featureFlagService: featureFlagService)
 
         // Then
         let productCategoryFilterTypeViewModels = viewModel.filterTypeViewModels.compactMap { $0.selectedValue as? ProductCategory }

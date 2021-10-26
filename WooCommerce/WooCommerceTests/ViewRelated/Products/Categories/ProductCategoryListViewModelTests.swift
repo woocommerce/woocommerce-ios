@@ -21,6 +21,28 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         storesManager = nil
     }
 
+    func test_resetSelectedCategories_then_it_does_not_return_any_view_model() {
+        // Given
+        let exp = expectation(description: #function)
+        let viewModel = ProductCategoryListViewModel(storesManager: storesManager, siteID: 0)
+
+        // When
+        viewModel.performFetch()
+        viewModel.observeCategoryListStateChanges { state in
+            if state == .synced {
+                viewModel.selectOrDeselectCategory(index: 0)
+                viewModel.resetSelectedCategories()
+
+                exp.fulfill()
+            }
+        }
+
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+
+        // Then
+        XCTAssertTrue(viewModel.categoryViewModels.isEmpty)
+    }
+
     func testItTransitionsToSyncedStateAfterSynchronizingCategories() {
         // Given
         let exp = expectation(description: #function)
@@ -77,40 +99,5 @@ final class ProductCategoryListViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(reloadNeededIsCalled)
-    }
-}
-
-
-
-/// Mock Product Category Store Manager
-///
-private final class MockProductCategoryStoresManager: DefaultStoresManager {
-
-    /// Set mock responses to be dispatched upon Product Category Actions.
-    ///
-    var productCategoryResponse: ProductCategoryActionError?
-
-    /// Indicates how many times respones where consumed
-    ///
-    private(set) var numberOfResponsesConsumed = 0
-
-    init() {
-        super.init(sessionManager: SessionManager.testingInstance)
-    }
-
-    override func dispatch(_ action: Action) {
-        if let productCategoryAction = action as? ProductCategoryAction {
-            handleProductCategoryAction(productCategoryAction)
-        }
-    }
-
-    private func handleProductCategoryAction(_ action: ProductCategoryAction) {
-        switch action {
-        case let .synchronizeProductCategories(_, _, onCompletion):
-            numberOfResponsesConsumed = numberOfResponsesConsumed + 1
-            onCompletion(productCategoryResponse)
-        default:
-            return
-        }
     }
 }

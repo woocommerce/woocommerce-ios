@@ -3,6 +3,7 @@ import Yosemite
 import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
 import Observables
+import Combine
 
 /// ViewModel for `OrderListViewController`.
 ///
@@ -20,6 +21,7 @@ import Observables
 /// in here next.
 ///
 final class OrderListViewModel {
+    private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let pushNotificationsManager: PushNotesManager
     private let notificationCenter: NotificationCenter
@@ -69,18 +71,43 @@ final class OrderListViewModel {
 
     /// Set when sync fails, and used to display an error loading data banner
     ///
-    var hasErrorLoadingData: Bool = false
+    @Published var hasErrorLoadingData: Bool = false
+
+    /// Determines what top banner should be shown
+    ///
+    @Published private(set) var topBanner: TopBanner = .none
+
+    /// Tracks if the store is ready to receive payments.
+    ///
+    private let inPersonPaymentsReadyUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
+
+    /// Tracks if the merchant has enabled the Quick Order experimental feature toggle
+    ///
+    @Published private var isQuickOrderEnabled = false
+
+    /// If true, no quick order banner will be shown as the user has told us that they are not interested in this information.
+    /// Resets with every session.
+    ///
+    @Published var hideQuickOrderBanners: Bool = false
+
+    /// Tracks if the Quick Order feature is ready to be released to the public
+    ///
+    private let isQuickOrderDevelopmentComplete = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.quickOrderPrototype)
 
     init(siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
-         statusFilter: OrderStatus?) {
+         statusFilter: OrderStatus?,
+         inPersonPaymentsReadyUseCase: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase()) {
         self.siteID = siteID
+        self.stores = stores
         self.storageManager = storageManager
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
         self.statusFilter = statusFilter
+        self.inPersonPaymentsReadyUseCase = inPersonPaymentsReadyUseCase
     }
 
     deinit {
@@ -102,6 +129,8 @@ final class OrderListViewModel {
                                        name: UIApplication.didBecomeActiveNotification, object: nil)
 
         observeForegroundRemoteNotifications()
+        inPersonPaymentsReadyUseCase.refresh()
+        bindTopBannerState()
     }
 
     /// Starts the snapshotsProvider, logging any errors.
@@ -203,6 +232,49 @@ private extension OrderListViewModel {
     }
 }
 
+// MARK: Quick Order
+
+extension OrderListViewModel {
+    /// Reloads the state of the Quick Order experimental feature switch state.
+    ///
+    func reloadQuickOrderExperimentalFeatureState() {
+        let action = AppSettingsAction.loadQuickOrderSwitchState { [weak self] result in
+            self?.isQuickOrderEnabled = (try? result.get()) ?? false
+        }
+        stores.dispatch(action)
+    }
+
+    /// Figures out what top banner should be shown based on the view model internal state.
+    ///
+    private func bindTopBannerState() {
+        let enrolledState = inPersonPaymentsReadyUseCase.statePublisher.removeDuplicates()
+        let errorState = $hasErrorLoadingData.removeDuplicates()
+        let experimentalState = $isQuickOrderEnabled.removeDuplicates()
+        Publishers.CombineLatest4(enrolledState, errorState, experimentalState, $hideQuickOrderBanners)
+            .map { [weak self] enrolledState, hasError, isQuickOrderEnabled, hasDismissedBanners -> TopBanner in
+                guard let self = self else { return .none }
+
+                guard !hasError else {
+                    return .error
+                }
+
+                guard self.isQuickOrderDevelopmentComplete, !hasDismissedBanners else {
+                    return .none
+                }
+
+                switch (enrolledState, isQuickOrderEnabled) {
+                case (.completed, false):
+                    return .quickOrderDisabled
+                case (.completed, true):
+                    return .quickOrderEnabled
+                default:
+                    return .none
+                }
+            }
+            .assign(to: &$topBanner)
+    }
+}
+
 // MARK: - TableView Support
 
 extension OrderListViewModel {
@@ -230,5 +302,17 @@ extension OrderListViewModel {
     /// Returns the corresponding section title for the given identifier.
     func sectionTitleFor(sectionIdentifier: String) -> String? {
         Age(rawValue: sectionIdentifier)?.description
+    }
+}
+
+// MARK: Definitions
+extension OrderListViewModel {
+    /// Possible top banners this view model can show.
+    ///
+    enum TopBanner {
+        case error
+        case quickOrderEnabled
+        case quickOrderDisabled
+        case none
     }
 }

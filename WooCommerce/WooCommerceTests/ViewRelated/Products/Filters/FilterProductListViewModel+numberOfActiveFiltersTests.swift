@@ -57,7 +57,7 @@ private extension FilterProductListViewModel_numberOfActiveFiltersTests {
             FilterProductListViewModel.ProductListFilter.stockStatus.createViewModel(filters: filters),
             FilterProductListViewModel.ProductListFilter.productStatus.createViewModel(filters: filters),
             FilterProductListViewModel.ProductListFilter.productType.createViewModel(filters: filters),
-            FilterProductListViewModel.ProductListFilter.productCategory.createViewModel(filters: filters)
+            FilterProductListViewModel.ProductListFilter.productCategory(siteID: 0).createViewModel(filters: filters)
         ]
     }
 }

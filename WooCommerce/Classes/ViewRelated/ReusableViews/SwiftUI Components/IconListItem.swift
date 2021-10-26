@@ -35,6 +35,7 @@ struct IconListItem: View {
         HStack(alignment: .center, spacing: Layout.contentSpacing) {
             icon?.getImage()
                 .frame(width: Layout.iconSize.width, height: Layout.iconSize.height)
+                .accessibility(hidden: true)
             VStack(alignment: .leading, spacing: Layout.innerSpacing) {
                 Text(title)
                     .headlineStyle()

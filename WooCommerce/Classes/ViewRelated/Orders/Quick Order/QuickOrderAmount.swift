@@ -43,9 +43,17 @@ final class QuickOrderAmountHostingController: UIHostingController<QuickOrderAmo
                 viewModel.presentNotice = nil
             }
             .store(in: &subscriptions)
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
 
         // Set presentation delegate to track the user dismiss flow event
-        presentationController?.delegate = self
+        if let navigationController = navigationController {
+            navigationController.presentationController?.delegate = self
+        } else {
+            presentationController?.delegate = self
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {

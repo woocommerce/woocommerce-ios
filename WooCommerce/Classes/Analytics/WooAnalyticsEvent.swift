@@ -400,7 +400,7 @@ extension WooAnalyticsEvent {
         }
 
         static func settingsBetaFeaturesQuickOrderToggled(isOn: Bool) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .quickOrderFlowStarted, properties: [Keys.state: isOn ? "on" : "off"])
+            WooAnalyticsEvent(statName: .settingsBetaFeaturesQuickOrderToggled, properties: [Keys.state: isOn ? "on" : "off"])
         }
     }
 }

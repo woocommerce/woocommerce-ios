@@ -62,8 +62,6 @@ private extension AppCoordinator {
     /// Synchronize announcements and present What's New Screen if needed
     ///
     func synchronizeAndShowWhatsNew() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.whatsNewOnWooCommerce) else { return }
-
         stores.dispatch(AnnouncementsAction.synchronizeAnnouncements(onCompletion: { [weak self] result in
             guard let self = self else { return }
             switch result {

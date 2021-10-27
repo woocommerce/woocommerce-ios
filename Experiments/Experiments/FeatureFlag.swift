@@ -38,10 +38,6 @@ public enum FeatureFlag: Int {
     ///
     case shippingLabelsMultiPackage
 
-    /// Display "What's new on WooCommerce" on App Launch and App Settings
-    ///
-    case whatsNewOnWooCommerce
-
     /// Push notifications for all stores
     ///
     case pushNotificationsForAllStores

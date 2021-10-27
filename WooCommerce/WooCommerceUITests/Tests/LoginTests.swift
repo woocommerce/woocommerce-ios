@@ -8,7 +8,7 @@ final class LoginTests: XCTestCase {
 
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
-        app.launchArguments = ["logout-at-launch", "disable-animations", "mocked-wpcom-api"]
+        app.launchArguments = ["logout-at-launch", "disable-animations", "mocked-wpcom-api", "-ui_testing"]
         app.launch()
     }
 

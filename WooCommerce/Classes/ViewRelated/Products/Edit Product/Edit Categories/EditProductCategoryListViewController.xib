@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProductCategoryListViewController" customModule="WooCommerce" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="EditProductCategoryListViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
                 <outlet property="addButton" destination="FeT-Cz-Ejn" id="n2Y-in-VwH"/>
                 <outlet property="addButtonSeparator" destination="cj6-dK-CbB" id="rCK-Gr-Sa2"/>
-                <outlet property="tableView" destination="4pa-Cw-LKR" id="uF3-aL-9kf"/>
+                <outlet property="bottomContainerView" destination="dIz-JV-Btd" id="TiC-xU-Suf"/>
                 <outlet property="view" destination="iN0-l3-epB" id="t1s-Mw-tT3"/>
             </connections>
         </placeholder>
@@ -22,10 +21,6 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="4pa-Cw-LKR">
-                    <rect key="frame" x="0.0" y="106" width="414" height="756"/>
-                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                </tableView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="db8-Tb-7MB" userLabel="Top Container View">
                     <rect key="frame" x="0.0" y="44" width="414" height="62"/>
                     <subviews>
@@ -52,19 +47,23 @@
                         <constraint firstItem="FeT-Cz-Ejn" firstAttribute="centerX" secondItem="db8-Tb-7MB" secondAttribute="centerX" id="ucM-Jh-FDJ"/>
                     </constraints>
                 </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dIz-JV-Btd" userLabel="Category List Container View">
+                    <rect key="frame" x="0.0" y="106" width="414" height="756"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="4pa-Cw-LKR" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="0d8-Xy-4Fp"/>
-                <constraint firstItem="db8-Tb-7MB" firstAttribute="trailing" secondItem="4pa-Cw-LKR" secondAttribute="trailing" id="4L0-xE-z0A"/>
-                <constraint firstItem="4pa-Cw-LKR" firstAttribute="top" secondItem="db8-Tb-7MB" secondAttribute="bottom" id="hxN-Cc-Zs8"/>
-                <constraint firstItem="db8-Tb-7MB" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="iFc-6t-3d8"/>
-                <constraint firstAttribute="trailing" secondItem="4pa-Cw-LKR" secondAttribute="trailing" id="j6T-xA-y2b"/>
-                <constraint firstItem="4pa-Cw-LKR" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="ttj-uA-s0c"/>
+                <constraint firstItem="db8-Tb-7MB" firstAttribute="trailing" secondItem="dIz-JV-Btd" secondAttribute="trailing" id="IET-wN-GZH"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="dIz-JV-Btd" secondAttribute="bottom" id="YT0-Rd-x5y"/>
+                <constraint firstItem="dIz-JV-Btd" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="b8f-m3-tul"/>
+                <constraint firstItem="dIz-JV-Btd" firstAttribute="top" secondItem="db8-Tb-7MB" secondAttribute="bottom" id="jkG-ir-ptn"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="dIz-JV-Btd" secondAttribute="trailing" id="nLt-cD-KYQ"/>
+                <constraint firstItem="db8-Tb-7MB" firstAttribute="leading" secondItem="dIz-JV-Btd" secondAttribute="leading" id="phT-6n-kKv"/>
                 <constraint firstItem="db8-Tb-7MB" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="zYm-K0-76Y"/>
             </constraints>
-            <point key="canvasLocation" x="137.68115942028987" y="128.57142857142856"/>
+            <point key="canvasLocation" x="137.27678571428569" y="127.53623188405798"/>
         </view>
     </objects>
     <resources>

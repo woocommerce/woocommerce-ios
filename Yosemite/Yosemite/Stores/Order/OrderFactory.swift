@@ -4,10 +4,10 @@ import Networking
 /// Factory to create convenience order types.
 ///
 enum OrderFactory {
-    /// Creates an order suitable to be used as a quick pay order.
+    /// Creates an order suitable to be used as a quick order order.
     /// Under the hood it uses a fee line without taxes to create an order with the desired amount.
     ///
-    static func quickPayOrder(amount: String) -> Order {
+    static func quickOrderOrder(amount: String) -> Order {
         Order(siteID: 0,
               orderID: 0,
               parentID: 0,
@@ -33,6 +33,6 @@ enum OrderFactory {
               shippingLines: [],
               coupons: [],
               refunds: [],
-              fees: [.init(feeID: 0, name: "Quick Pay", taxClass: "", taxStatus: .none, total: amount, totalTax: "", taxes: [], attributes: [])])
+              fees: [.init(feeID: 0, name: "Quick Order", taxClass: "", taxStatus: .none, total: amount, totalTax: "", taxes: [], attributes: [])])
     }
 }

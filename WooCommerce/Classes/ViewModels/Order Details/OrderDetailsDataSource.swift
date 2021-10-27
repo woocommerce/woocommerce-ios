@@ -60,6 +60,13 @@ final class OrderDetailsDataSource: NSObject {
             !isEligibleForCardPresentPayment
     }
 
+    /// Whether the option to re-create shipping labels should be visible.
+    ///
+    var shouldAllowRecreatingShippingLabels: Bool {
+        return isEligibleForShippingLabelCreation && shippingLabels.isNotEmpty &&
+            !isEligibleForCardPresentPayment
+    }
+
     func cardPresentPaymentGatewayAccounts() -> [PaymentGatewayAccount] {
         resultsControllers.paymentGatewayAccounts.filter { $0.isCardPresentEligible }
     }
@@ -72,6 +79,10 @@ final class OrderDetailsDataSource: NSObject {
     /// Closure to be executed when the cell was tapped.
     ///
     var onCellAction: ((CellActionType, IndexPath?) -> Void)?
+
+    /// Closure to be executed when the more menu on Products section is tapped.
+    ///
+    var onProductsMoreMenuTapped: ((_ sourceView: UIView) -> Void)?
 
     /// Closure to be executed when the shipping label more menu is tapped.
     ///
@@ -204,6 +215,7 @@ final class OrderDetailsDataSource: NSObject {
 
     func update(order: Order) {
         self.order = order
+        resultsControllers.update(order: order)
     }
 
     func configureResultsControllers(onReload: @escaping () -> Void) {
@@ -923,7 +935,21 @@ extension OrderDetailsDataSource {
                 return nil
             }
 
-            return Section(category: .products, title: Localization.pluralizedProducts(count: items.count), rightTitle: nil, rows: rows, headerStyle: .primary)
+            let headerStyle: Section.HeaderStyle
+            if shouldAllowRecreatingShippingLabels {
+                let headerActionConfig = PrimarySectionHeaderView.ActionConfiguration(image: .moreImage) { [weak self] sourceView in
+                    self?.onProductsMoreMenuTapped?(sourceView)
+                }
+                headerStyle = .actionablePrimary(actionConfig: headerActionConfig)
+            } else {
+                headerStyle = .primary
+            }
+
+            return Section(category: .products,
+                           title: Localization.pluralizedProducts(count: items.count),
+                           rightTitle: nil,
+                           rows: rows,
+                           headerStyle: headerStyle)
         }()
 
         let refundedProducts: Section? = {
@@ -1490,7 +1516,7 @@ private extension OrderDetailsDataSource {
 
     func isOrderPaymentMethodEligibleForCardPayment() -> Bool {
         let paymentMethod = OrderPaymentMethod(rawValue: order.paymentMethodID)
-        return paymentMethod == .cod || paymentMethod == .none
+        return paymentMethod == .cod || paymentMethod == .woocommercePayments || paymentMethod == .none
     }
 
     func hasCardPresentEligiblePaymentGatewayAccount() -> Bool {

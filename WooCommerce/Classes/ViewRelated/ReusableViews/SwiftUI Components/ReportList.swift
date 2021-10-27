@@ -24,34 +24,39 @@ struct ReportList: View {
 
     var body: some View {
         VStack {
-            Spacer(minLength: Layout.topSpaceLength(sizeClass))
             LargeTitle(text: viewModel.title)
-            Spacer(minLength: Layout.listTopSpacerLength(sizeClass))
-            ScrollView {
+                .padding(.bottom, Layout.titleBottomPadding(sizeClass))
+            VStack(spacing: Layout.listSpacing(sizeClass)) {
                 ForEach(viewModel.items, id: \.id) {
                     IconListItem(title: $0.title,
                                  subtitle: $0.subtitle,
                                  icon: $0.icon)
                 }
             }
+            .scrollVerticallyIfNeeded()
             Spacer()
             Button(viewModel.ctaTitle, action: viewModel.onDismiss)
                 .buttonStyle(PrimaryButtonStyle())
                 .padding(.horizontal, Layout.buttonHorizontalPadding(sizeClass))
-                .padding(.bottom, Layout.buttonVerticalPadding(sizeClass))
         }
         .onAppear(perform: viewModel.onAppear)
+        .padding(.top, Layout.topPadding(sizeClass))
+        .padding(.bottom, Layout.bottomPadding(sizeClass))
     }
 }
 
 private extension ReportList {
     enum Layout {
 
-        static func topSpaceLength(_ sizeClass: UserInterfaceSizeClass?) -> CGFloat {
+        static func topPadding(_ sizeClass: UserInterfaceSizeClass?) -> CGFloat {
             sizeClass == .regular ? 40 : 75
         }
 
-        static func listTopSpacerLength(_ sizeClass: UserInterfaceSizeClass?) -> CGFloat {
+        static func bottomPadding(_ sizeClass: UserInterfaceSizeClass?) -> CGFloat {
+            sizeClass == .regular ? 40 : 60
+        }
+
+        static func titleBottomPadding(_ sizeClass: UserInterfaceSizeClass?) -> CGFloat {
             sizeClass == .regular ? 32 : 40
         }
 
@@ -59,8 +64,8 @@ private extension ReportList {
             sizeClass == .regular ? 40 : 24
         }
 
-        static func buttonVerticalPadding(_ sizeClass: UserInterfaceSizeClass?) -> CGFloat {
-            sizeClass == .regular ? 40 : 60
+        static func listSpacing(_ sizeClass: UserInterfaceSizeClass?) -> CGFloat {
+            sizeClass == .regular ? 24 : 32
         }
     }
 }

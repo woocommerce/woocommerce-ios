@@ -162,7 +162,11 @@ private extension ShippingLabelStore {
                 }
                 onCompletion(eligibility.isEligible)
             case .failure(let error):
-                DDLogError("⛔️ Error checking shipping label creation eligibility for order \(orderID): \(error)")
+                if error as? DotcomError == .noRestRoute {
+                    DDLogError("⚠️ Endpoint for shipping label creation eligibility is unreachable for order: \(orderID). WC Shipping plugin may be missing.")
+                } else {
+                    DDLogError("⛔️ Error checking shipping label creation eligibility for order \(orderID): \(error)")
+                }
                 onCompletion(false)
             }
         }

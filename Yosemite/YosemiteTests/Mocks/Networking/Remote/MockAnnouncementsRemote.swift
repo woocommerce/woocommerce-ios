@@ -35,7 +35,7 @@ extension MockAnnouncementsRemote: AnnouncementsRemoteProtocol {
         numberOfTimesGetAnnouncementWasCalled += 1
         requestedAppId = appId
         if let result = self.loadAnnouncementResults[appVersion] {
-            completion(.success((try? result.get()) ?? []))
+            completion(result)
         } else {
             XCTFail("\(String(describing: self)) Could not find Announcement for \(appVersion)")
         }

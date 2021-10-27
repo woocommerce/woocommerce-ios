@@ -2,6 +2,7 @@ import Combine
 import Foundation
 import Yosemite
 import Observables
+import enum Networking.DotcomError
 
 // MARK: - DefaultStoresManager
 //
@@ -367,7 +368,11 @@ private extension DefaultStoresManager {
     func synchronizeAddOnsGroups(siteID: Int64) {
         let action = AddOnGroupAction.synchronizeAddOnGroups(siteID: siteID) { result in
             if let error = result.failure {
-                DDLogError("⛔️ Failed to sync add-on groups for siteID: \(siteID). Error: \(error)")
+                if error as? DotcomError == .noRestRoute {
+                    DDLogError("⚠️ Endpoint for add-on groups is unreachable for siteID: \(siteID). WC Product Add-Ons plugin may be missing.")
+                } else {
+                    DDLogError("⛔️ Failed to sync add-on groups for siteID: \(siteID). Error: \(error)")
+                }
             }
         }
         dispatch(action)
@@ -378,7 +383,7 @@ private extension DefaultStoresManager {
     func synchronizeSystemPlugins(siteID: Int64) {
         let action = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { result in
             if let error = result.failure {
-                DDLogError("⛔️ Failed to sync sytem plugins for siteID: \(siteID). Error: \(error)")
+                DDLogError("⛔️ Failed to sync system plugins for siteID: \(siteID). Error: \(error)")
             }
         }
         dispatch(action)

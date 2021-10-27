@@ -81,10 +81,6 @@ final class SettingsViewController: UIViewController {
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
 
-    /// Flag indicating whether the currently selected store is eligible
-    /// for card present payments
-    private var canCollectPayments: Bool = false
-
     /// Announcement for the current app version
     ///
     private var announcement: Announcement?
@@ -204,21 +200,6 @@ private extension SettingsViewController {
         sites = sitesResultsController.fetchedObjects
     }
 
-    /// Determine if any payment gateway account for this site supports card present payments
-    ///
-    private func checkAvailabilityForPayments() {
-        paymentGatewayAccounts = paymentGatewayAccountsResultsController?.fetchedObjects ?? []
-        canCollectPayments = paymentGatewayAccounts.contains(where: \.isCardPresentEligible)
-    }
-
-    private var storeSettingsRows: [Row] {
-        var result = [Row]()
-        if canCollectPayments {
-            result.append(.inPersonPayments)
-        }
-        return result
-    }
-
     func configureTableViewFooter() {
         // `tableView.tableFooterView` can't handle a footerView that uses autolayout only.
         // Hence the container view with a defined frame.
@@ -239,7 +220,6 @@ private extension SettingsViewController {
 
     func refreshViewContent() {
         updateSites()
-        checkAvailabilityForPayments()
         configureSections()
         tableView.reloadData()
     }
@@ -299,14 +279,12 @@ private extension SettingsViewController {
             sections.append(Section(title: pluginsTitle, rows: [.plugins], footerHeight: UITableView.automaticDimension))
         }
 
-        // Store Settings
-        if storeSettingsRows.isNotEmpty {
-            sections.append(
-                Section(title: storeSettingsTitle,
-                        rows: storeSettingsRows,
-                        footerHeight: UITableView.automaticDimension)
+        sections.append(
+            Section(title: storeSettingsTitle,
+                rows: [.inPersonPayments],
+                footerHeight: UITableView.automaticDimension
             )
-        }
+        )
 
         // Help & Feedback
         if couldShowBetaFeaturesRow() {
@@ -607,6 +585,7 @@ private extension SettingsViewController {
     }
 
     func whatsNewWasPressed() {
+        ServiceLocator.analytics.track(event: .featureAnnouncementShown(source: .appSettings))
         guard let announcement = announcement else { return }
         let viewController = WhatsNewFactory.whatsNew(announcement) { [weak self] in
             self?.dismiss(animated: true)

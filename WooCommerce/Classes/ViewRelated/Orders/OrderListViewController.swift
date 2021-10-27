@@ -96,22 +96,9 @@ final class OrderListViewController: UIViewController {
 
     private let siteID: Int64
 
-    /// Top banner that shows an error if there is a problem loading orders data
+    /// Current top banner that is displayed.
     ///
-    private lazy var topBannerView: TopBannerView = {
-        ErrorTopBannerFactory.createTopBanner(isExpanded: false,
-                                              expandedStateChangeHandler: { [weak self] in
-                                                self?.tableView.updateHeaderHeight()
-                                              },
-                                              onTroubleshootButtonPressed: { [weak self] in
-                                                let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
-                                                self?.present(safariViewController, animated: true, completion: nil)
-                                              },
-                                              onContactSupportButtonPressed: { [weak self] in
-                                                guard let self = self else { return }
-                                                ZendeskManager.shared.showNewRequestIfPossible(from: self, with: nil)
-                                              })
-    }()
+    private var topBannerView: TopBannerView?
 
     // MARK: - View Lifecycle
 
@@ -150,6 +137,10 @@ final class OrderListViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
+        // Needed in `viewWillAppear` because this ViewController is not recreated
+        // and the toggle can be switch in the Settings section that resides in a different tab.
+        viewModel.reloadQuickOrderExperimentalFeatureState()
 
         syncingCoordinator.resynchronize(reason: SyncReason.viewWillAppear.rawValue)
 
@@ -205,6 +196,23 @@ private extension OrderListViewController {
         viewModel.snapshot.sink { [weak self] snapshot in
             self?.dataSource.apply(snapshot)
         }.store(in: &cancellables)
+
+        /// Update the top banner when needed
+        viewModel.$topBanner
+            .sink { [weak self] topBannerType in
+                guard let self = self else { return }
+                switch topBannerType {
+                case .none:
+                    self.hideTopBannerView()
+                case .error:
+                    self.setErrorTopBanner()
+                case .quickOrderEnabled:
+                    self.setQuickOrderEnabledTopBanner()
+                case .quickOrderDisabled:
+                    self.setQuickOrderDisabledTopBanner()
+                }
+            }
+            .store(in: &cancellables)
     }
 
     /// Setup: Sync'ing Coordinator
@@ -293,7 +301,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         }
 
         transitionToSyncingState()
-        setErrorLoadingData(to: false)
+        viewModel.hasErrorLoadingData = false
 
         let action = viewModel.synchronizationAction(
             siteID: siteID,
@@ -306,7 +314,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
                 if let error = error {
                     DDLogError("⛔️ Error synchronizing orders: \(error)")
-                    self.setErrorLoadingData(to: true)
+                    self.viewModel.hasErrorLoadingData = true
                 } else {
                     if pageNumber == self.syncingCoordinator.pageFirstIndex {
                         // save timestamp of last successful update
@@ -324,20 +332,11 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         ServiceLocator.stores.dispatch(action)
     }
 
-    /// Sets `hasErrorLoadingData` in the view model and shows or hides the banner view accordingly
-    ///
-    private func setErrorLoadingData(to hasError: Bool) {
-        viewModel.hasErrorLoadingData = hasError
-        if hasError {
-            showTopBannerView()
-        } else {
-            hideTopBannerView()
-        }
-    }
-
-    /// Display the error banner in the table view header
+    /// Sets the current top banner in the table view header
     ///
     private func showTopBannerView() {
+        guard let topBannerView = topBannerView else { return }
+
         // Configure header container view
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
         headerContainer.addSubview(topBannerView)
@@ -347,10 +346,10 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
         tableView.updateHeaderHeight()
     }
 
-    /// Hide the error banner from the table view header
+    /// Hide the top banner from the table view header
     ///
     private func hideTopBannerView() {
-        topBannerView.removeFromSuperview()
+        topBannerView?.removeFromSuperview()
         tableView.tableHeaderView = nil
     }
 }
@@ -585,6 +584,50 @@ extension OrderListViewController: IndicatorInfoProvider {
     }
 }
 
+// MARK: Top Banner Factories
+private extension OrderListViewController {
+    /// Sets the `topBannerView` property to an error banner.
+    ///
+    func setErrorTopBanner() {
+        topBannerView = ErrorTopBannerFactory.createTopBanner(isExpanded: false, expandedStateChangeHandler: { [weak self] in
+            self?.tableView.updateHeaderHeight()
+        },
+        onTroubleshootButtonPressed: { [weak self] in
+            let safariViewController = SFSafariViewController(url: WooConstants.URLs.troubleshootErrorLoadingData.asURL())
+            self?.present(safariViewController, animated: true, completion: nil)
+        },
+        onContactSupportButtonPressed: { [weak self] in
+            guard let self = self else { return }
+            ZendeskManager.shared.showNewRequestIfPossible(from: self, with: nil)
+        })
+        showTopBannerView()
+    }
+
+    /// Sets the `topBannerView` property to a quick order disabled banner.
+    ///
+    func setQuickOrderDisabledTopBanner() {
+        topBannerView = QuickOrderTopBannerFactory.createFeatureDisabledBanner(onTopButtonPressed: { [weak self] in
+            self?.tableView.updateHeaderHeight()
+        }, onDismissButtonPressed: { [weak self] in
+            self?.viewModel.hideQuickOrderBanners = true
+        })
+        showTopBannerView()
+    }
+
+    /// Sets the `topBannerView` property to a quick order enabled banner.
+    ///
+    func setQuickOrderEnabledTopBanner() {
+        topBannerView = QuickOrderTopBannerFactory.createFeatureEnabledBanner(onTopButtonPressed: { [weak self] in
+            self?.tableView.updateHeaderHeight()
+        }, onDismissButtonPressed: { [weak self] in
+            self?.viewModel.hideQuickOrderBanners = true
+        }, onGiveFeedbackButtonPressed: { [weak self] in
+            let surveyNavigation = SurveyCoordinatingController(survey: .quickOrderPrototype)
+            self?.present(surveyNavigation, animated: true, completion: nil)
+        })
+        showTopBannerView()
+    }
+}
 
 // MARK: - Nested Types
 //

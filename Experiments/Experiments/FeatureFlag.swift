@@ -46,7 +46,15 @@ public enum FeatureFlag: Int {
     ///
     case pushNotificationsForAllStores
 
-    /// Allows to create quick pay orders
+    /// Allows to create quick order orders
     ///
-    case quickPayPrototype
+    case quickOrderPrototype
+
+    /// Display the bar for displaying the filters in the Order List
+    ///
+    case orderListFilters
+
+    /// Allows to filter products by a product category, persisting it so the filter can remain after restarting the app
+    ///
+    case filterProductsByCategory
 }

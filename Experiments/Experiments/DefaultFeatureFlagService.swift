@@ -23,7 +23,11 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .pushNotificationsForAllStores:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .quickPayPrototype:
+        case .quickOrderPrototype:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .orderListFilters:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .filterProductsByCategory:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

@@ -1,9 +1,9 @@
 import Foundation
 import Yosemite
 
-/// View Model for the `QuickPayAmount` view.
+/// View Model for the `QuickOrderAmount` view.
 ///
-final class QuickPayAmountViewModel: ObservableObject {
+final class QuickOrderAmountViewModel: ObservableObject {
 
     /// Stores amount entered by the merchant.
     ///
@@ -73,11 +73,11 @@ final class QuickPayAmountViewModel: ObservableObject {
     }
 
     /// Called when the view taps the done button.
-    /// Creates a quick pay order.
+    /// Creates a quick order order.
     ///
-    func createQuickPayOrder() {
+    func createQuickOrderOrder() {
         loading = true
-        let action = OrderAction.createQuickPayOrder(siteID: siteID, amount: amount) { [weak self] result in
+        let action = OrderAction.createQuickOrderOrder(siteID: siteID, amount: amount) { [weak self] result in
             guard let self = self else { return }
             self.loading = false
 
@@ -87,7 +87,7 @@ final class QuickPayAmountViewModel: ObservableObject {
 
             case .failure(let error):
                 self.presentNotice = .error
-                DDLogError("⛔️ Error creating quick pay order: \(error)")
+                DDLogError("⛔️ Error creating quick order order: \(error)")
             }
         }
         stores.dispatch(action)
@@ -95,7 +95,7 @@ final class QuickPayAmountViewModel: ObservableObject {
 }
 
 // MARK: Helpers
-private extension QuickPayAmountViewModel {
+private extension QuickOrderAmountViewModel {
 
     /// Formats a received value by making sure the `$` symbol is present and trimming content to two decimal places.
     /// TODO: Update to support multiple currencies
@@ -136,7 +136,7 @@ private extension QuickPayAmountViewModel {
 }
 
 // MARK: Definitions
-extension QuickPayAmountViewModel {
+extension QuickOrderAmountViewModel {
     /// Representation of possible notices that can be displayed
     enum Notice: Equatable {
         case error

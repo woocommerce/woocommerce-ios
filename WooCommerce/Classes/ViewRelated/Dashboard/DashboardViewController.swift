@@ -234,7 +234,8 @@ private extension DashboardViewController {
     }
 
     func updateUI(site: Site?) {
-        guard let siteName = site?.name, siteName.isEmpty == false else {
+        guard let siteName = site?.name, siteName.isEmpty == false,
+              ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) else {
             shouldShowStoreNameAsSubtitle = false
             storeNameLabel.text = nil
             return

@@ -1,4 +1,5 @@
 import XCTest
+import TestKit
 @testable import Yosemite
 @testable import Networking
 @testable import Storage
@@ -162,32 +163,34 @@ final class ProductStore_FilterProductsTests: XCTestCase {
     }
 
     func test_synchronizeProducts_with_only_product_category_filter_then_it_sends_product_category_filter_param() {
-        let expectation = self.expectation(description: "Retrieve product list")
         let filterProductCategory = ProductCategory(categoryID: 213, siteID: 0, parentID: 0, name: "", slug: "")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = ProductAction.synchronizeProducts(siteID: sampleSiteID,
-                                                       pageNumber: defaultPageNumber,
-                                                       pageSize: defaultPageSize,
-                                                       stockStatus: nil,
-                                                       productStatus: nil,
-                                                       productType: nil,
-                                                       productCategory: filterProductCategory,
-                                                       sortOrder: .nameAscending) { [weak self] error in
-                                                        guard let self = self else {
-                                                            XCTFail()
-                                                            return
-                                                        }
-                                                        self.assertParamValues(stockStatusValue: nil,
-                                                                               productStatusValue: nil,
-                                                                               productTypeValue: nil,
-                                                                               productCategoryValue: String(filterProductCategory.categoryID))
+        let _: Bool = waitFor { [weak self] promise in
+            guard let self = self else {
+                XCTFail()
+                return
+            }
 
-                                                        expectation.fulfill()
+            let action = ProductAction.synchronizeProducts(siteID: self.sampleSiteID,
+                                                           pageNumber: self.defaultPageNumber,
+                                                           pageSize: self.defaultPageSize,
+                                                           stockStatus: nil,
+                                                           productStatus: nil,
+                                                           productType: nil,
+                                                           productCategory: filterProductCategory,
+                                                           sortOrder: .nameAscending) { _ in
+                                                            promise(true)
+            }
+
+            productStore.onAction(action)
+
         }
 
-        productStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        self.assertParamValues(stockStatusValue: nil,
+                               productStatusValue: nil,
+                               productTypeValue: nil,
+                               productCategoryValue: String(filterProductCategory.categoryID))
     }
 }
 

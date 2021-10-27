@@ -97,8 +97,7 @@ private extension AccountStore {
             synchronizeSites(selectedSiteID: siteID) { [weak self] result in
                 guard let self = self else { return }
                 guard let site = self.storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() else {
-                    onCompletion(.failure(SynchronizeSiteError.unknownSite))
-                    return
+                    return onCompletion(.failure(SynchronizeSiteError.unknownSite))
                 }
                 onCompletion(.success(site))
             }

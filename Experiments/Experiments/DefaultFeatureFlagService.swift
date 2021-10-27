@@ -19,8 +19,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .shippingLabelsMultiPackage:
             return true
-        case .whatsNewOnWooCommerce:
-            return true
         case .pushNotificationsForAllStores:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .quickOrderPrototype:

@@ -467,7 +467,7 @@ private extension SettingsViewController {
     }
 
     func shouldShowWhatsNew() -> Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.whatsNewOnWooCommerce) && announcement != nil
+        announcement != nil
     }
 }
 

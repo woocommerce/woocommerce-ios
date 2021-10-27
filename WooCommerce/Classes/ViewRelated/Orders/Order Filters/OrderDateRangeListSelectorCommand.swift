@@ -26,6 +26,15 @@ final class OrderDateRangeListSelectorCommand: ListSelectorCommand {
     }
 
     func handleSelectedChange(selected: OrderDateRangeFilterEnum, viewController: ViewController) {
+
+        guard selected != .custom else {
+            // TODO: implement view controller displaying start and end date
+//            let datepicker = DatePickerViewController(datePickerMode: .date)
+//            viewController.present(datepicker, animated: true, completion: nil)
+            //viewController.navigationController?.pushViewController(datepicker, animated: true)
+            return
+        }
+
         self.selected = selected
     }
 

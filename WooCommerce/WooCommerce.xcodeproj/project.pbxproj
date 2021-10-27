@@ -725,6 +725,10 @@
 		45F8C43B2680BC3500F1A6EC /* ShippingLabelDiscountInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F8C4392680BC3500F1A6EC /* ShippingLabelDiscountInfoViewController.swift */; };
 		45F8C43C2680BC3500F1A6EC /* ShippingLabelDiscountInfoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45F8C43A2680BC3500F1A6EC /* ShippingLabelDiscountInfoViewController.xib */; };
 		45F931EA27281A950098375D /* OrderDateRangeListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F931E927281A950098375D /* OrderDateRangeListSelectorCommand.swift */; };
+		45F931ED27296E600098375D /* DatePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F931EB27296E600098375D /* DatePickerViewController.swift */; };
+		45F931EE27296E600098375D /* DatePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45F931EC27296E600098375D /* DatePickerViewController.xib */; };
+		45F931F1272987C40098375D /* RangeDatePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F931EF272987C40098375D /* RangeDatePickerViewController.swift */; };
+		45F931F2272987C40098375D /* RangeDatePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45F931F0272987C40098375D /* RangeDatePickerViewController.xib */; };
 		45FBDF2B238BF8A300127F77 /* ProductImageCollectionViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBDF2A238BF8A300127F77 /* ProductImageCollectionViewCellTests.swift */; };
 		45FBDF2D238BF8BF00127F77 /* AddProductImageCollectionViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBDF2C238BF8BF00127F77 /* AddProductImageCollectionViewCellTests.swift */; };
 		45FBDF39238D3F8800127F77 /* ExtendedAddProductImageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45FBDF36238D3C7500127F77 /* ExtendedAddProductImageCollectionViewCell.xib */; };
@@ -2142,6 +2146,10 @@
 		45F8C4392680BC3500F1A6EC /* ShippingLabelDiscountInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelDiscountInfoViewController.swift; sourceTree = "<group>"; };
 		45F8C43A2680BC3500F1A6EC /* ShippingLabelDiscountInfoViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShippingLabelDiscountInfoViewController.xib; sourceTree = "<group>"; };
 		45F931E927281A950098375D /* OrderDateRangeListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDateRangeListSelectorCommand.swift; sourceTree = "<group>"; };
+		45F931EB27296E600098375D /* DatePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerViewController.swift; sourceTree = "<group>"; };
+		45F931EC27296E600098375D /* DatePickerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DatePickerViewController.xib; sourceTree = "<group>"; };
+		45F931EF272987C40098375D /* RangeDatePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RangeDatePickerViewController.swift; sourceTree = "<group>"; };
+		45F931F0272987C40098375D /* RangeDatePickerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RangeDatePickerViewController.xib; sourceTree = "<group>"; };
 		45FBDF2A238BF8A300127F77 /* ProductImageCollectionViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageCollectionViewCellTests.swift; sourceTree = "<group>"; };
 		45FBDF2C238BF8BF00127F77 /* AddProductImageCollectionViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductImageCollectionViewCellTests.swift; sourceTree = "<group>"; };
 		45FBDF35238D3C7500127F77 /* ExtendedAddProductImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedAddProductImageCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -6176,6 +6184,10 @@
 				0286B27E23C70557003D784B /* ColumnFlowLayout.swift */,
 				D83F592E225B269C00626E75 /* DatePickerTableViewCell.swift */,
 				D83F592F225B269C00626E75 /* DatePickerTableViewCell.xib */,
+				45F931EF272987C40098375D /* RangeDatePickerViewController.swift */,
+				45F931F0272987C40098375D /* RangeDatePickerViewController.xib */,
+				45F931EB27296E600098375D /* DatePickerViewController.swift */,
+				45F931EC27296E600098375D /* DatePickerViewController.xib */,
 				D81F2D36225F0D160084BF9C /* EmptyListMessageWithActionView.swift */,
 				D81F2D34225F0CF70084BF9C /* EmptyListMessageWithActionView.xib */,
 				451750B124470CD5004FDA65 /* EnhancedTextView.swift */,
@@ -7112,6 +7124,7 @@
 				CE2A9FC023BFB1BE002BEC1C /* LedgerTableViewCell.xib in Resources */,
 				318109EE25E5B8FF00EE0BE7 /* NumberedListItemTableViewCell.xib in Resources */,
 				D8815AE026383EE700EDAD62 /* CardPresentPaymentsModalViewController.xib in Resources */,
+				45F931F2272987C40098375D /* RangeDatePickerViewController.xib in Resources */,
 				45C8B2592313FA570002FA77 /* CustomerNoteTableViewCell.xib in Resources */,
 				0286B27C23C7051F003D784B /* ProductImagesViewController.xib in Resources */,
 				02F49ADE23BF3A4100FA0BFA /* ErrorSectionHeaderView.xib in Resources */,
@@ -7132,6 +7145,7 @@
 				451A04E72386CE8700E368C9 /* ProductImagesHeaderTableViewCell.xib in Resources */,
 				CE85FD5320F677770080B73E /* Dashboard.storyboard in Resources */,
 				456C7EEC25EE71F10016CBC6 /* ShippingLabelSuggestedAddressViewController.xib in Resources */,
+				45F931EE27296E600098375D /* DatePickerViewController.xib in Resources */,
 				B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */,
 				02C8876E24501FAC00E4470F /* FilterListViewController.xib in Resources */,
 				26AE31B2251E604A004B1BCE /* RefundShippingDetailsTableViewCell.xib in Resources */,
@@ -7486,6 +7500,7 @@
 				02DFECE725EE338F0070F212 /* ShippingLabelCreationInfoViewController.swift in Sources */,
 				02E4FD7A230688BA0049610C /* OrderStatsV4Interval+Chart.swift in Sources */,
 				0245465F24EE9106004F531C /* ProductVariationFormEventLogger.swift in Sources */,
+				45F931ED27296E600098375D /* DatePickerViewController.swift in Sources */,
 				DE19BB1826C3B5C300AB70D9 /* ShippingLabelCustomsFormItemDetails.swift in Sources */,
 				DE1B0310268EB2FB00804330 /* ReviewOrderViewModel.swift in Sources */,
 				02DC2ED2242061BF002F9676 /* ProductPriceSettingsViewModel.swift in Sources */,
@@ -7523,6 +7538,7 @@
 				26C6E8EC26E8FF4800C7BB0F /* LazyNavigationLink.swift in Sources */,
 				45E9A6E724DAE23300A600E8 /* ProductReviewsViewModel.swift in Sources */,
 				028BAC4222F30B05008BB4AF /* StoreStatsV4PeriodViewController.swift in Sources */,
+				45F931F1272987C40098375D /* RangeDatePickerViewController.swift in Sources */,
 				740987B321B87760000E4C80 /* FancyAnimatedButton+Woo.swift in Sources */,
 				45F627B6253603AE00894B86 /* Product+DownloadSettingsViewModels.swift in Sources */,
 				B511ED27218A660E005787DC /* StringDescriptor.swift in Sources */,

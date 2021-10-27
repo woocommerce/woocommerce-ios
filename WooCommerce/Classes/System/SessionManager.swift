@@ -116,10 +116,8 @@ final class SessionManager: SessionManagerProtocol {
     private let defaultStoreIDSubject: CurrentValueSubject<Int64?, Never>
 
     var defaultSitePublisher: AnyPublisher<Site?, Never> {
-        defaultSiteSubject.eraseToAnyPublisher()
+        $defaultSite.eraseToAnyPublisher()
     }
-
-    private let defaultSiteSubject: CurrentValueSubject<Site?, Never> = .init(nil)
 
     /// Anonymous UserID.
     ///
@@ -137,11 +135,7 @@ final class SessionManager: SessionManagerProtocol {
 
     /// Default Store Site
     ///
-    var defaultSite: Yosemite.Site? {
-        didSet {
-            defaultSiteSubject.send(defaultSite)
-        }
-    }
+    @Published var defaultSite: Site?
 
     /// Designated Initializer.
     ///

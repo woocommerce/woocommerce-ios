@@ -43,6 +43,26 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.categoryViewModels.isEmpty)
     }
 
+    func test_select_category_then_it_calls_onProductCategorySelection() {
+        let productCategory = ProductCategory(categoryID: 443, siteID: 123, parentID: 0, name: name, slug: "")
+
+        let passedCategory: ProductCategory? = waitFor { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            let viewModel = ProductCategoryListViewModel(storesManager: self.storesManager, siteID: 0, onProductCategorySelection: { category in
+                promise(category)
+
+            })
+
+            viewModel.addAndSelectNewCategory(category: productCategory)
+
+        }
+
+        XCTAssertEqual(passedCategory, productCategory)
+    }
+
     func testItTransitionsToSyncedStateAfterSynchronizingCategories() {
         // Given
         let exp = expectation(description: #function)

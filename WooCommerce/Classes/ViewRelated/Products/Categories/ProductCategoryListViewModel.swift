@@ -149,6 +149,7 @@ final class ProductCategoryListViewModel {
     func addAndSelectNewCategory(category: ProductCategory) {
         selectedCategories.append(category)
         updateViewModelsArray()
+        onProductCategorySelection?(category)
         reloadData()
     }
 

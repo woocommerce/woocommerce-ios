@@ -67,6 +67,8 @@ private extension ProductCategory {
 }
 
 private extension ProductCategory {
+    /// Provides the siteID, that can be found as a encoded value or in the Decoder user info
+    ///
     private static func siteID(from decoder: Decoder, container: KeyedDecodingContainer<ProductCategory.CodingKeys>) -> Int64? {
         var siteID: Int64?
 

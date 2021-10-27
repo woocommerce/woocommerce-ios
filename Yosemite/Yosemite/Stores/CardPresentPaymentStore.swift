@@ -2,6 +2,7 @@ import Storage
 import Hardware
 import Networking
 import Combine
+import PassKit
 
 /// MARK: CardPresentPaymentStore
 ///
@@ -17,6 +18,8 @@ public final class CardPresentPaymentStore: Store {
 
     /// We need to be able to cancel the process of collecting a payment.
     private var paymentCancellable: AnyCancellable? = nil
+
+    private var walletSuppressionRequestToken: PKSuppressionRequestToken?
 
     public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, cardReaderService: CardReaderService) {
         self.cardReaderService = cardReaderService
@@ -161,12 +164,15 @@ private extension CardPresentPaymentStore {
                         parameters: PaymentParameters,
                         onCardReaderMessage: @escaping (CardReaderEvent) -> Void,
                         onCompletion: @escaping (Result<PaymentIntent, Error>) -> Void) {
+        suppressPassPresentation()
+
         // Observe status events fired by the card reader
         let readerEventsSubscription = cardReaderService.readerEvents.sink { event in
             onCardReaderMessage(event)
         }
 
         paymentCancellable = cardReaderService.capturePayment(parameters).sink { error in
+            self.allowPassPresentation()
             readerEventsSubscription.cancel()
             switch error {
             case .failure(let error):
@@ -185,15 +191,18 @@ private extension CardPresentPaymentStore {
 
         cardReaderService.cancelPaymentIntent()
             .subscribe(Subscribers.Sink(receiveCompletion: { value in
-            switch value {
-            case .failure(let error):
-                onCompletion?(.failure(error))
-            case .finished:
-                break
-            }
-        }, receiveValue: {
-            onCompletion?(.success(()))
-        }))
+                self.allowPassPresentation()
+
+                switch value {
+                case .failure(let error):
+                    onCompletion?(.failure(error))
+                case .finished:
+                    break
+                }
+            }, receiveValue: {
+                onCompletion?(.success(()))
+            })
+        )
     }
 
     func checkForCardReaderUpdate(onCompletion: @escaping (Result<CardReaderSoftwareUpdate?, Error>) -> Void) {
@@ -258,6 +267,42 @@ private extension CardPresentPaymentStore {
     }
 }
 
+private extension CardPresentPaymentStore {
+    /// Supress wallet presentation. This requires a special entitlement from Apple:
+    /// `com.apple.developer.passkit.pass-presentation-suppression`
+    /// See Woo-*.entitlements in WooCommerce/Resources
+    ///
+    /// Note: iPads don't support NFC passes.
+    ///
+    func suppressPassPresentation() {
+        guard UIDevice.current.userInterfaceIdiom != .pad else {
+            return
+        }
+
+        guard !PKPassLibrary.isSuppressingAutomaticPassPresentation() else {
+            return
+        }
+
+        walletSuppressionRequestToken = PKPassLibrary.requestAutomaticPassPresentationSuppression() { result in
+            guard result == .success else {
+                DDLogWarn("Automatic pass presentation suppression request failed. Reason: \(result.rawValue)")
+                return
+            }
+        }
+    }
+
+    func allowPassPresentation() {
+        guard UIDevice.current.userInterfaceIdiom != .pad else {
+            return
+        }
+
+        guard let walletSuppressionRequestToken = walletSuppressionRequestToken, walletSuppressionRequestToken != 0 else {
+            return
+        }
+
+        PKPassLibrary.endAutomaticPassPresentationSuppression(withRequestToken: walletSuppressionRequestToken)
+    }
+}
 
 /// Implementation of the CardReaderNetworkingAdapter
 /// that fetches a token using WCPayRemote

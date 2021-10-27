@@ -90,7 +90,7 @@ private extension BetaFeaturesViewController {
     /// A section is returned only when the store is ready to receive payments
     ///
     func ordersSection() -> Section? {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.quickOrderPrototype), paymentsStoreUseCase.state == .completed else {
+        guard paymentsStoreUseCase.state == .completed else {
             return nil
         }
 

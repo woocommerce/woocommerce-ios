@@ -54,7 +54,7 @@ enum FilterListValueSelectorConfig {
     case staticOptions(options: [FilterType])
     // Filter list selector for categories linked to that site id, retrieved dynamically
     case productCategories(siteID: Int64)
-    // Filter list selector for date range, with a cell for a custom range
+    // Filter list selector for date range
     case ordersDateRange(options: [OrderDateRangeFilterEnum])
 }
 
@@ -234,17 +234,21 @@ private extension FilterListViewController {
                 self.listSelector.navigationController?.pushViewController(filterProductCategoryListViewController, animated: true)
             case .ordersDateRange(let options):
                 self.cancellableSelectedFilterValue?.cancel()
-                let command = OrderDateRangeListSelectorCommand(selected: selected.selectedValue, data: options)
-                self.cancellableSelectedFilterValue = command.onItemSelected.subscribe { [weak self] selectedOption in
-                    guard let self = self else {
-                        return
-                    }
-                    if selectedOption.description != selected.selectedValue.description {
-                        selected.selectedValue = selectedOption
-                        self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
-                        self.listSelector.reloadData()
-                    }
-                }
+                let command = OrderDateRangeListSelectorCommand(data: options, selected: selected.selectedValue as? OrderDateRangeFilterEnum)
+
+                self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
+                self.listSelector.reloadData()
+
+//                self.cancellableSelectedFilterValue = command.onItemSelected.subscribe { [weak self] selectedOption in
+//                    guard let self = self else {
+//                        return
+//                    }
+//                    if selectedOption.description != selected.selectedValue.description {
+//                        selected.selectedValue = selectedOption
+//                        self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
+//                        self.listSelector.reloadData()
+//                    }
+//                }
                 let staticListSelector = ListSelectorViewController(command: command, tableViewStyle: .plain) { _ in }
                 self.listSelector.navigationController?.pushViewController(staticListSelector, animated: true)
             }

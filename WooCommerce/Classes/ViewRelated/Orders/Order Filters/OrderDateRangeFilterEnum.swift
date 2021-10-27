@@ -3,6 +3,7 @@ import Foundation
 /// Represents all of the possible Order Date Ranges in enum form
 ///
 enum OrderDateRangeFilterEnum: Hashable {
+    case any
     case today
     case last2Days
     case thisWeek
@@ -16,6 +17,8 @@ extension OrderDateRangeFilterEnum: FilterType {
     ///
     public var description: String {
         switch self {
+        case .any:
+            return NSLocalizedString("Any", comment: "Label for one of the filters in order date range")
         case .today:
             return NSLocalizedString("Today", comment: "Label for one of the filters in order date range")
         case .last2Days:

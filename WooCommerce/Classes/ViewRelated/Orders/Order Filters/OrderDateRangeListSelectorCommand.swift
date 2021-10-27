@@ -1,5 +1,6 @@
 import Foundation
 import Observables
+import SwiftUI
 
 /// Command to populate the order list date range filter list selector
 ///
@@ -7,21 +8,17 @@ final class OrderDateRangeListSelectorCommand: ListSelectorCommand {
     typealias Cell = BasicTableViewCell
     typealias Model = OrderDateRangeFilterEnum
 
-    let navigationBarTitle: String = Localization.navigationBarTitle
+    let navigationBarTitle: String? = Localization.navigationBarTitle
 
     /// Holds the current selected state
     ///
-    var selected: OrderDateRangeFilterEnum? = nil
+    private(set) var selected: OrderDateRangeFilterEnum? = .any
 
     fileprivate(set) var data: [OrderDateRangeFilterEnum]
 
-    private let onItemSelectedSubject = PublishSubject<OrderDateRangeFilterEnum>()
-    var onItemSelected: Observable<OrderDateRangeFilterEnum> {
-        onItemSelectedSubject
-    }
-
-    init(data: [OrderDateRangeFilterEnum]) {
+    init(data: [OrderDateRangeFilterEnum], selected: OrderDateRangeFilterEnum?) {
         self.data = data
+        self.selected = selected ?? .any
     }
 
     func isSelected(model: OrderDateRangeFilterEnum) -> Bool {
@@ -29,7 +26,7 @@ final class OrderDateRangeListSelectorCommand: ListSelectorCommand {
     }
 
     func handleSelectedChange(selected: OrderDateRangeFilterEnum, viewController: ViewController) {
-        onItemSelectedSubject.send(selected)
+        self.selected = selected
     }
 
     func configureCell(cell: BasicTableViewCell, model: OrderDateRangeFilterEnum) {

@@ -36,7 +36,7 @@ final class OrderDateRangeListSelectorCommand: ListSelectorCommand {
         case .custom:
             cell.accessoryType = .disclosureIndicator
         default:
-            cell.accessoryType = .none
+            cell.accessoryType = isSelected(model: model) ? .checkmark : .none
         }
     }
 }

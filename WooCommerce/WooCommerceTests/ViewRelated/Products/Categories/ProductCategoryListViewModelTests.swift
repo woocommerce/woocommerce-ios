@@ -25,12 +25,13 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         // Given
         let exp = expectation(description: #function)
         let viewModel = ProductCategoryListViewModel(storesManager: storesManager, siteID: 0)
+        let productCategory = ProductCategory(categoryID: 443, siteID: 123, parentID: 0, name: name, slug: "")
 
         // When
         viewModel.performFetch()
         viewModel.observeCategoryListStateChanges { state in
             if state == .synced {
-                viewModel.selectOrDeselectCategory(index: 0)
+                viewModel.addAndSelectNewCategory(category: productCategory)
                 viewModel.resetSelectedCategories()
 
                 exp.fulfill()
@@ -63,7 +64,7 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         XCTAssertEqual(passedCategory, productCategory)
     }
 
-    func testItTransitionsToSyncedStateAfterSynchronizingCategories() {
+    func test_synchronize_categories_then_it_transitions_to_synced_state() {
         // Given
         let exp = expectation(description: #function)
         let siteID: Int64 = 1
@@ -83,7 +84,8 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.numberOfResponsesConsumed, 1)
     }
 
-    func testItTransitionsToFailedStateAfterSynchronizingCategoriesErrors() {
+
+    func test_synchronize_categories_errors_then_it_transitions_to_failed_state() {
         // Given
         let exp = expectation(description: #function)
         let siteID: Int64 = 1
@@ -105,7 +107,7 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.numberOfResponsesConsumed, 1)
     }
 
-    func testItCallsReloadNeededWhenRequested() {
+    func test_reloadData_then_it_calls_reload_needed() {
         // Given
         let siteID: Int64 = 1
         let viewModel = ProductCategoryListViewModel(storesManager: storesManager, siteID: siteID)

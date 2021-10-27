@@ -49,7 +49,7 @@ final class ProductStore_FilterProductsTests: XCTestCase {
 
     // MARK: - ProductAction.synchronizeProducts
 
-    func testSynchronizingProductsWithoutFilters() {
+    func test_synchronizeProducts_when_filters_are_off_then_it_does_not_send_filter_params() {
         let expectation = self.expectation(description: "Retrieve product list")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -67,7 +67,8 @@ final class ProductStore_FilterProductsTests: XCTestCase {
                                                         }
                                                         self.assertParamValues(stockStatusValue: nil,
                                                                                productStatusValue: nil,
-                                                                               productTypeValue: nil)
+                                                                               productTypeValue: nil,
+                                                                               productCategoryValue: nil)
 
                                                         expectation.fulfill()
         }
@@ -76,7 +77,7 @@ final class ProductStore_FilterProductsTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    func testSynchronizingProductsWithOnlyStockStatusFilter() {
+    func test_synchronizeProducts_with_only_stock_status_filter_then_it_sends_stocks_status_filter_param() {
         let expectation = self.expectation(description: "Retrieve product list")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -94,7 +95,8 @@ final class ProductStore_FilterProductsTests: XCTestCase {
                                                         }
                                                         self.assertParamValues(stockStatusValue: ProductStockStatus.inStock.rawValue,
                                                                                productStatusValue: nil,
-                                                                               productTypeValue: nil)
+                                                                               productTypeValue: nil,
+                                                                               productCategoryValue: nil)
 
                                                         expectation.fulfill()
         }
@@ -103,7 +105,7 @@ final class ProductStore_FilterProductsTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    func testSynchronizingProductsWithOnlyProductStatusFilter() {
+    func test_synchronizeProducts_with_only_product_status_filter_then_it_sends_product_status_filter_param() {
         let expectation = self.expectation(description: "Retrieve product list")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -121,7 +123,8 @@ final class ProductStore_FilterProductsTests: XCTestCase {
                                                         }
                                                         self.assertParamValues(stockStatusValue: nil,
                                                                                productStatusValue: ProductStatus.draft.rawValue,
-                                                                               productTypeValue: nil)
+                                                                               productTypeValue: nil,
+                                                                               productCategoryValue: nil)
 
                                                         expectation.fulfill()
         }
@@ -130,7 +133,7 @@ final class ProductStore_FilterProductsTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    func testSynchronizingProductsWithOnlyProductTypeFilter() {
+    func test_synchronizeProducts_with_only_product_type_filter_then_it_sends_product_type_filter_param() {
         let expectation = self.expectation(description: "Retrieve product list")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -148,7 +151,37 @@ final class ProductStore_FilterProductsTests: XCTestCase {
                                                         }
                                                         self.assertParamValues(stockStatusValue: nil,
                                                                                productStatusValue: nil,
-                                                                               productTypeValue: ProductType.variable.rawValue)
+                                                                               productTypeValue: ProductType.variable.rawValue,
+                                                                               productCategoryValue: nil)
+
+                                                        expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func test_synchronizeProducts_with_only_product_category_filter_then_it_sends_product_category_filter_param() {
+        let expectation = self.expectation(description: "Retrieve product list")
+        let filterProductCategory = ProductCategory(categoryID: 213, siteID: 0, parentID: 0, name: "", slug: "")
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = ProductAction.synchronizeProducts(siteID: sampleSiteID,
+                                                       pageNumber: defaultPageNumber,
+                                                       pageSize: defaultPageSize,
+                                                       stockStatus: nil,
+                                                       productStatus: nil,
+                                                       productType: nil,
+                                                       productCategory: filterProductCategory,
+                                                       sortOrder: .nameAscending) { [weak self] error in
+                                                        guard let self = self else {
+                                                            XCTFail()
+                                                            return
+                                                        }
+                                                        self.assertParamValues(stockStatusValue: nil,
+                                                                               productStatusValue: nil,
+                                                                               productTypeValue: nil,
+                                                                               productCategoryValue: String(filterProductCategory.categoryID))
 
                                                         expectation.fulfill()
         }
@@ -159,7 +192,7 @@ final class ProductStore_FilterProductsTests: XCTestCase {
 }
 
 private extension ProductStore_FilterProductsTests {
-    func assertParamValues(stockStatusValue: String?, productStatusValue: String?, productTypeValue: String?) {
+    func assertParamValues(stockStatusValue: String?, productStatusValue: String?, productTypeValue: String?, productCategoryValue: String?) {
         guard let queryParameters = network.queryParameters else {
             XCTFail("Cannot parse query from the API request")
             return
@@ -187,6 +220,14 @@ private extension ProductStore_FilterProductsTests {
             XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
         } else {
             XCTAssertFalse(queryParameters.contains(where: { $0.starts(with: productTypeParameter) }))
+        }
+
+        let productCategoryParameter = "category"
+        if let productCategoryValue = productCategoryValue {
+            let expectedParam = "\(productCategoryParameter)=\(productCategoryValue)"
+            XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
+        } else {
+            XCTAssertFalse(queryParameters.contains(where: { $0.starts(with: productCategoryParameter) }))
         }
     }
 }

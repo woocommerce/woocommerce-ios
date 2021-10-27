@@ -37,6 +37,7 @@ private extension SwitchStoreNoticePresenter {
     func observeSiteAndPresentWhenSiteNameIsAvailable() {
         stores.site.compactMap { $0 }
             .filter { $0.siteID == self.siteID }
+            // Since we only want to show the notice once the site becomes available, we only need the first value here.
             .first()
             .sink { [weak self] site in
             self?.presentStoreSwitchedNotice(site: site)

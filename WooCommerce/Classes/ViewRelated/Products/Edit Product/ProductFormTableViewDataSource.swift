@@ -149,7 +149,6 @@ private extension ProductFormTableViewDataSource {
                                                                    productStatus: productStatus,
                                                                    placeholder: placeholder,
                                                                    textViewMinimumHeight: 10.0,
-                                                                   keyboardType: .default,
                                                                    onNameChange: { [weak self] (newName) in self?.onNameChange?(newName) },
                                                                    style: .headline)
         cell.configure(with: cellViewModel)

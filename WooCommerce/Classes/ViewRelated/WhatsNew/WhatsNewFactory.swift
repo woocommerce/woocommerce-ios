@@ -27,7 +27,7 @@ struct WhatsNewFactory {
     /// Get IconListItem.Icon from a Feature
     private static func icon(for feature: Feature) -> IconListItem.Icon? {
         var icon: IconListItem.Icon?
-        if let base64String = feature.iconBase64,
+        if let base64String = feature.iconBase64?.components(separatedBy: ";base64,")[safe: 1],
            let imageData = Data(base64Encoded: base64String),
            let image = UIImage(data: imageData) {
             icon = .base64(image)

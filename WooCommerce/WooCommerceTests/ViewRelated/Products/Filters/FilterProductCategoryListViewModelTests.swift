@@ -26,7 +26,7 @@ final class FilterProductCategoryListViewModelTests: XCTestCase {
         productCategoryListViewModel = nil
     }
 
-    func test_enrichCategoryViewModels_then_it_adds_the_any_category_view_model() {
+    func test_enrichCategoryViewModels_then_it_adds_the_any_category_view_model_with_the_right_selected_state() {
         // Given
         let categoryViewModel = ProductCategoryCellViewModel(categoryID: 1,
                                                               name: NSLocalizedString("Any", comment: "Title when there is no filter set."),

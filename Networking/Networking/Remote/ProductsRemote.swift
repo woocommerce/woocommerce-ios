@@ -136,16 +136,6 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// Returns the category Id in string format, or empty string if the product category is nil
-    ///
-    private func filterProductCategoryParemeterValue(from productCategory: ProductCategory?) -> String {
-        guard let productCategory = productCategory else {
-            return ""
-        }
-
-        return String(productCategory.categoryID)
-    }
-
     /// Retrieves a specific list of `Product`s by `productID`.
     ///
     /// - Note: this method makes a single request for a list of products.
@@ -318,6 +308,18 @@ public extension ProductsRemote {
 
     private enum ParameterValues {
         static let skuFieldValues: String = "sku"
+    }
+}
+
+private extension ProductsRemote {
+    /// Returns the category Id in string format, or empty string if the product category is nil
+    ///
+    func filterProductCategoryParemeterValue(from productCategory: ProductCategory?) -> String {
+        guard let productCategory = productCategory else {
+            return ""
+        }
+
+        return String(productCategory.categoryID)
     }
 }
 

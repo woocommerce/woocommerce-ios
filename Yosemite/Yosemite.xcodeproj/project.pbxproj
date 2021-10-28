@@ -250,6 +250,7 @@
 		93E7507A226E2D6C00BAF88A /* AccountSettings+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E75079226E2D6C00BAF88A /* AccountSettings+ReadOnlyConvertible.swift */; };
 		AEF945872729760F001DCCFB /* TelemetryAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF945862729760F001DCCFB /* TelemetryAction.swift */; };
 		AEF945892729766D001DCCFB /* TelemetryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF945882729766D001DCCFB /* TelemetryStore.swift */; };
+		AEFB3DC4272AA2FF00550F93 /* TelemetryStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFB3DC3272AA2FF00550F93 /* TelemetryStoreTests.swift */; };
 		B505254C20EE6491008090F5 /* Site+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505254B20EE6491008090F5 /* Site+ReadOnlyConvertible.swift */; };
 		B52E002B2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52E002A2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift */; };
 		B52E002E211A3F5500700FDE /* ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52E002D211A3F5500700FDE /* ReadOnlyType.swift */; };
@@ -627,6 +628,7 @@
 		ABE0D84C5393D9EE2CCF2B7E /* Pods-YosemiteTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.release.xcconfig"; sourceTree = "<group>"; };
 		AEF945862729760F001DCCFB /* TelemetryAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryAction.swift; sourceTree = "<group>"; };
 		AEF945882729766D001DCCFB /* TelemetryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryStore.swift; sourceTree = "<group>"; };
+		AEFB3DC3272AA2FF00550F93 /* TelemetryStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryStoreTests.swift; sourceTree = "<group>"; };
 		B505254B20EE6491008090F5 /* Site+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Site+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		B52E002A2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedObjectsDidChangeNotification.swift; sourceTree = "<group>"; };
 		B52E002D211A3F5500700FDE /* ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadOnlyType.swift; sourceTree = "<group>"; };
@@ -1309,6 +1311,7 @@
 				026D52BF238235930092AE05 /* ProductVariationStoreTests.swift */,
 				025CA2CF238F54E800B05C81 /* ProductShippingClassStoreTests.swift */,
 				45ED4F15239E939A004F1BE3 /* TaxClassStoreTests.swift */,
+				AEFB3DC3272AA2FF00550F93 /* TelemetryStoreTests.swift */,
 				020B2F9523BDE4DD00BD79AD /* ProductStoreTests+Validation.swift */,
 				02FF056623DEB2180058E6E7 /* MediaStoreTests.swift */,
 				0212AC63242C6FC300C51F6C /* ProductStore+ProductsSortOrderTests.swift */,
@@ -1979,6 +1982,7 @@
 				02FF055623D984310058E6E7 /* MockFileManager.swift in Sources */,
 				029B00A7230D64E800B0AE66 /* StatsTimeRangeTests.swift in Sources */,
 				0248B36924590FC300A271A4 /* ProductStore+FilterProductsTests.swift in Sources */,
+				AEFB3DC4272AA2FF00550F93 /* TelemetryStoreTests.swift in Sources */,
 				02A098242480D0D8002F8C7A /* MockCrashLogger.swift in Sources */,
 				02FF055F23D985710058E6E7 /* URL+MediaTests.swift in Sources */,
 				D87F27DB25E7E8EA006EC8C9 /* MockCardReader.swift in Sources */,

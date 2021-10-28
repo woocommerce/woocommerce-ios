@@ -728,6 +728,7 @@
 		45F931ED27296E600098375D /* DatePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F931EB27296E600098375D /* DatePickerViewController.swift */; };
 		45F931EE27296E600098375D /* DatePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45F931EC27296E600098375D /* DatePickerViewController.xib */; };
 		45F931F4272AE5A50098375D /* OrderCustomRangeListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F931F3272AE5A50098375D /* OrderCustomRangeListSelectorCommand.swift */; };
+		45F931F8272AE6D50098375D /* OrderCustomRangeFilterEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F931F7272AE6D50098375D /* OrderCustomRangeFilterEnum.swift */; };
 		45FBDF2B238BF8A300127F77 /* ProductImageCollectionViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBDF2A238BF8A300127F77 /* ProductImageCollectionViewCellTests.swift */; };
 		45FBDF2D238BF8BF00127F77 /* AddProductImageCollectionViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBDF2C238BF8BF00127F77 /* AddProductImageCollectionViewCellTests.swift */; };
 		45FBDF39238D3F8800127F77 /* ExtendedAddProductImageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45FBDF36238D3C7500127F77 /* ExtendedAddProductImageCollectionViewCell.xib */; };
@@ -2148,6 +2149,7 @@
 		45F931EB27296E600098375D /* DatePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerViewController.swift; sourceTree = "<group>"; };
 		45F931EC27296E600098375D /* DatePickerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DatePickerViewController.xib; sourceTree = "<group>"; };
 		45F931F3272AE5A50098375D /* OrderCustomRangeListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCustomRangeListSelectorCommand.swift; sourceTree = "<group>"; };
+		45F931F7272AE6D50098375D /* OrderCustomRangeFilterEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCustomRangeFilterEnum.swift; sourceTree = "<group>"; };
 		45FBDF2A238BF8A300127F77 /* ProductImageCollectionViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageCollectionViewCellTests.swift; sourceTree = "<group>"; };
 		45FBDF2C238BF8BF00127F77 /* AddProductImageCollectionViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductImageCollectionViewCellTests.swift; sourceTree = "<group>"; };
 		45FBDF35238D3C7500127F77 /* ExtendedAddProductImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedAddProductImageCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -4578,6 +4580,7 @@
 		45F931F5272AE6550098375D /* Custom Range Filter */ = {
 			isa = PBXGroup;
 			children = (
+				45F931F7272AE6D50098375D /* OrderCustomRangeFilterEnum.swift */,
 				45F931F3272AE5A50098375D /* OrderCustomRangeListSelectorCommand.swift */,
 			);
 			path = "Custom Range Filter";
@@ -7420,6 +7423,7 @@
 				02CA63DD23D1ADD100BBF148 /* MediaPickingContext.swift in Sources */,
 				31B19B67263B5E580099DAA6 /* CardReaderSettingsSearchingViewModel.swift in Sources */,
 				265284022624937600F91BA1 /* AddOnCrossreferenceUseCase.swift in Sources */,
+				45F931F8272AE6D50098375D /* OrderCustomRangeFilterEnum.swift in Sources */,
 				02CA63DB23D1ADD100BBF148 /* MediaPickingCoordinator.swift in Sources */,
 				028FA466257E021100F88A48 /* RefundShippingLabelViewModel.swift in Sources */,
 				451A9963260E31480059D135 /* ShippingLabelPackageDetailsViewModel.swift in Sources */,

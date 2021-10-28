@@ -13,29 +13,49 @@ final class OrderCustomRangeListSelectorCommand: ListSelectorCommand {
     //
     private let timezone = TimeZone.siteTimezone
 
-    /// Holds the current selected state.
+    /// Holds the current selected state. Unused and implemented just for the conformance to `ListSelectorCommand`.
     ///
     private(set) var selected: OrderCustomRangeFilterEnum? = nil
 
+    // Completion callback
+    //
+    typealias Completion = (_ dateRange: (Date, Date)) -> Void
+    private let onCompletion: Completion
+
+    private var startDate: Date?
+    private var endDate: Date?
+
     fileprivate(set) var data: [OrderCustomRangeFilterEnum]
 
-    init(data: [OrderCustomRangeFilterEnum]) {
+    init(data: [OrderCustomRangeFilterEnum],
+         startDate: Date?,
+         endDate: Date?,
+         completion: @escaping Completion) {
         self.data = data
+        self.startDate = startDate
+        self.endDate = endDate
+        onCompletion = completion
     }
 
     func isSelected(model: OrderCustomRangeFilterEnum) -> Bool {
-        selected == model
+        false
     }
 
     func handleSelectedChange(selected: OrderCustomRangeFilterEnum, viewController: ViewController) {
 
-        self.selected = selected
     }
 
     func configureCell(cell: TitleAndValueTableViewCell, model: OrderCustomRangeFilterEnum) {
+
         cell.selectionStyle = .default
-        cell.updateUI(title: model.description, value: model.value?.toString(dateStyle: .medium, timeStyle: .none, timeZone: timezone))
         cell.accessoryType = .disclosureIndicator
+
+        switch model {
+        case .start:
+            cell.updateUI(title: model.description, value: startDate?.toString(dateStyle: .medium, timeStyle: .none, timeZone: timezone))
+        case .end:
+            cell.updateUI(title: model.description, value: endDate?.toString(dateStyle: .medium, timeStyle: .none, timeZone: timezone))
+        }
     }
 }
 

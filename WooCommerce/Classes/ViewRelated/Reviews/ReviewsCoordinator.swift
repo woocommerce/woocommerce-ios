@@ -92,9 +92,9 @@ final class ReviewsCoordinator: Coordinator {
                     self.pushReviewDetailsViewController(using: parcel)
 
                     if siteChanged {
-                        let presenter = SwitchStoreNoticePresenter(sessionManager: self.storesManager.sessionManager,
+                        let presenter = SwitchStoreNoticePresenter(siteID: Int64(siteID),
                                                                    noticePresenter: self.noticePresenter)
-                        presenter.presentStoreSwitchedNotice(configuration: .switchingStores)
+                        presenter.presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: .switchingStores)
                     }
                 }
             }

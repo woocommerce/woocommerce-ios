@@ -38,11 +38,13 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
     func test_productsSettings_actions_returns_values_after_being_set() throws {
         // Given
         let siteID: Int64 = 134
+        let filterProductCategory = ProductCategory(categoryID: 0, siteID: 0, parentID: 0, name: "", slug: "")
         let productSettings = StoredProductSettings.Setting(siteID: siteID,
                                                             sort: ProductsSortOrder.dateAscending.rawValue,
                                                             stockStatusFilter: .outOfStock,
                                                             productStatusFilter: .pending,
-                                                            productTypeFilter: .simple)
+                                                            productTypeFilter: .simple,
+                                                            productCategoryFilter: filterProductCategory)
 
         // When
         let result: Result<StoredProductSettings.Setting, Error> = waitFor { promise in
@@ -58,7 +60,8 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
                                                                    sort: productSettings.sort,
                                                                    stockStatusFilter: productSettings.stockStatusFilter,
                                                                    productStatusFilter: productSettings.productStatusFilter,
-                                                                   productTypeFilter: productSettings.productTypeFilter) { (error) in
+                                                                   productTypeFilter: productSettings.productTypeFilter,
+                                                                   productCategoryFilter: productSettings.productCategoryFilter) { (error) in
             XCTAssertNil(error)
         }
         subject.onAction(writeAction)
@@ -80,23 +83,30 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
         // Given
         let siteID1: Int64 = 134
         let siteID2: Int64 = 268
+
+        let filterProductCategory1 = ProductCategory(categoryID: 0, siteID: 0, parentID: 0, name: "category1", slug: "")
+        let filterProductCategory2 = ProductCategory(categoryID: 1, siteID: 1, parentID: 1, name: "category2", slug: "")
+
         let productSettings1 = StoredProductSettings.Setting(siteID: siteID1,
                                                              sort: ProductsSortOrder.dateAscending.rawValue,
                                                              stockStatusFilter: .outOfStock,
                                                              productStatusFilter: .pending,
-                                                             productTypeFilter: .simple)
+                                                             productTypeFilter: .simple,
+                                                             productCategoryFilter: filterProductCategory1)
         let productSettings2 = StoredProductSettings.Setting(siteID: siteID2,
                                                              sort: ProductsSortOrder.nameAscending.rawValue,
                                                              stockStatusFilter: .inStock,
                                                              productStatusFilter: .draft,
-                                                             productTypeFilter: .grouped)
+                                                             productTypeFilter: .grouped,
+                                                             productCategoryFilter: filterProductCategory2)
 
         // When
         let writeAction1 = AppSettingsAction.upsertProductsSettings(siteID: siteID1,
                                                                     sort: productSettings1.sort,
                                                                     stockStatusFilter: productSettings1.stockStatusFilter,
                                                                     productStatusFilter: productSettings1.productStatusFilter,
-                                                                    productTypeFilter: productSettings1.productTypeFilter) { (error) in
+                                                                    productTypeFilter: productSettings1.productTypeFilter,
+                                                                    productCategoryFilter: productSettings1.productCategoryFilter) { (error) in
             XCTAssertNil(error)
         }
         subject.onAction(writeAction1)
@@ -105,7 +115,8 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
                                                                     sort: productSettings2.sort,
                                                                     stockStatusFilter: productSettings2.stockStatusFilter,
                                                                     productStatusFilter: productSettings2.productStatusFilter,
-                                                                    productTypeFilter: productSettings2.productTypeFilter) { (error) in
+                                                                    productTypeFilter: productSettings2.productTypeFilter,
+                                                                    productCategoryFilter: productSettings2.productCategoryFilter) { (error) in
             XCTAssertNil(error)
         }
         subject.onAction(writeAction2)

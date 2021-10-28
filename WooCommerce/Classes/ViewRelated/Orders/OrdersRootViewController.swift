@@ -56,11 +56,15 @@ final class OrdersRootViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTitle()
-        configureNavigationButtons()
         configureView()
         configureContainerView()
         configureChildViewController()
         observeInPersonPaymentsStoreState()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        // Needed in ViewWillAppear because this View Controller is never recreated.
+        fetchQuickOrderExperimentalToggleAndConfigureNavigationButtons()
     }
 
     override func viewDidLayoutSubviews() {
@@ -100,17 +104,19 @@ private extension OrdersRootViewController {
         tabBarItem.accessibilityIdentifier = "tab-bar-orders-item"
     }
 
-    /// For `viewDidLoad` only, set up `navigationItem` buttons.
+    /// Sets navigation buttons.
+    /// Search: Is always present.
+    /// Quick Order: Depends on the local feature flag, experimental feature toggle and the inPersonPayments state.
     ///
-    func configureNavigationButtons() {
-        let shouldShowQuickPayButton: Bool = {
-            let isQuickPayEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.quickPayPrototype)
+    func configureNavigationButtons(isQuickOrderExperimentalToggleEnabled: Bool) {
+        let shouldShowQuickOrderButton: Bool = {
+            let isQuickOrderEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.quickOrderPrototype) && isQuickOrderExperimentalToggleEnabled
             let isInPersonPaymentsConfigured = inPersonPaymentsUseCase.state == .completed
-            return isQuickPayEnabled && isInPersonPaymentsConfigured
+            return isQuickOrderEnabled && isInPersonPaymentsConfigured
         }()
         let buttons: [UIBarButtonItem?] = [
             ordersViewController.createSearchBarButtonItem(),
-            shouldShowQuickPayButton ? ordersViewController.createAddQuickPayOrderItem() : nil
+            shouldShowQuickOrderButton ? ordersViewController.createAddQuickOrderOrderItem() : nil
         ]
         navigationItem.rightBarButtonItems = buttons.compactMap { $0 }
     }
@@ -148,10 +154,20 @@ private extension OrdersRootViewController {
         inPersonPaymentsUseCase.$state
             .removeDuplicates()
             .sink { [weak self] _ in
-                self?.configureNavigationButtons()
+                self?.fetchQuickOrderExperimentalToggleAndConfigureNavigationButtons()
             }
             .store(in: &subscriptions)
         inPersonPaymentsUseCase.refresh()
+    }
+
+    /// Fetches the latest value of the QuickOrder experimental feature toggle and re configures navigation buttons.
+    ///
+    func fetchQuickOrderExperimentalToggleAndConfigureNavigationButtons() {
+        let action = AppSettingsAction.loadQuickOrderSwitchState { [weak self] result in
+            let isEnabled = (try? result.get()) ?? false
+            self?.configureNavigationButtons(isQuickOrderExperimentalToggleEnabled: isEnabled)
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 }
 

@@ -40,16 +40,18 @@ public class OrderStore: Store {
             retrieveOrder(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         case .searchOrders(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
             searchOrders(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case .fetchFilteredAndAllOrders(let siteID, let statusKey, let before, let deleteAllBeforeSaving, let pageSize, let onCompletion):
+        case .fetchFilteredAndAllOrders(let siteID, let statusKey, let after, let before, let deleteAllBeforeSaving, let pageSize, let onCompletion):
             fetchFilteredAndAllOrders(siteID: siteID,
                                       statusKey: statusKey,
+                                      after: after,
                                       before: before,
                                       deleteAllBeforeSaving: deleteAllBeforeSaving,
                                       pageSize: pageSize,
                                       onCompletion: onCompletion)
-        case .synchronizeOrders(let siteID, let statusKey, let before, let pageNumber, let pageSize, let onCompletion):
+        case .synchronizeOrders(let siteID, let statusKey, let after, let before, let pageNumber, let pageSize, let onCompletion):
             synchronizeOrders(siteID: siteID,
                               statusKey: statusKey,
+                              after: after,
                               before: before,
                               pageNumber: pageNumber,
                               pageSize: pageSize,
@@ -60,8 +62,8 @@ public class OrderStore: Store {
         case let .updateOrder(siteID, order, fields, onCompletion):
             updateOrder(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
 
-        case let .createQuickPayOrder(siteID, amount, onCompletion):
-            createQuickPayOrder(siteID: siteID, amount: amount, onCompletion: onCompletion)
+        case let .createQuickOrderOrder(siteID, amount, onCompletion):
+            createQuickOrderOrder(siteID: siteID, amount: amount, onCompletion: onCompletion)
         }
     }
 }
@@ -111,6 +113,7 @@ private extension OrderStore {
     ///
     func fetchFilteredAndAllOrders(siteID: Int64,
                                    statusKey: String?,
+                                   after: Date?,
                                    before: Date?,
                                    deleteAllBeforeSaving: Bool,
                                    pageSize: Int,
@@ -151,6 +154,7 @@ private extension OrderStore {
             }
             self.remote.loadAllOrders(for: siteID,
                                  statusKey: statusKey,
+                                 after: after,
                                  before: before,
                                  pageNumber: pageNumber,
                                  pageSize: pageSize) { [weak self] result in
@@ -202,6 +206,7 @@ private extension OrderStore {
     ///
     func synchronizeOrders(siteID: Int64,
                            statusKey: String?,
+                           after: Date?,
                            before: Date?,
                            pageNumber: Int,
                            pageSize: Int,
@@ -209,6 +214,7 @@ private extension OrderStore {
         let startTime = Date()
         remote.loadAllOrders(for: siteID,
                              statusKey: statusKey,
+                             after: after,
                              before: before,
                              pageNumber: pageNumber,
                              pageSize: pageSize) { [weak self] result in
@@ -241,10 +247,10 @@ private extension OrderStore {
         }
     }
 
-    /// Creates a quick pay order with a specific amount value and no tax.
+    /// Creates a quick order order with a specific amount value and no tax.
     ///
-    func createQuickPayOrder(siteID: Int64, amount: String, onCompletion: @escaping (Result<Order, Error>) -> Void) {
-        let order = OrderFactory.quickPayOrder(amount: amount)
+    func createQuickOrderOrder(siteID: Int64, amount: String, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        let order = OrderFactory.quickOrderOrder(amount: amount)
         remote.createOrder(siteID: siteID, order: order, fields: [.feeLines]) { [weak self] result in
             switch result {
             case .success(let order):

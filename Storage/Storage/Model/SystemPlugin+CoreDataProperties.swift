@@ -17,4 +17,5 @@ extension SystemPlugin {
     @NSManaged public var authorName: String
     @NSManaged public var authorUrl: String
     @NSManaged public var networkActivated: Bool
+    @NSManaged public var active: Bool
 }

@@ -23,6 +23,28 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
     ///
     @IBOutlet private var buttonBarBackgroundView: UIView!
 
+    /// The stack view that will embed the headers (filtered orders bar and tab strip)
+    ///
+    @IBOutlet weak var topStackView: UIStackView!
+
+    /// The top bar for apply filters, that will be embedded inside the stackview, on top of everything.
+    ///
+    private var filteredOrdersBar: FilteredOrdersHeaderBar = {
+        let filteredOrdersBar: FilteredOrdersHeaderBar = FilteredOrdersHeaderBar.instantiateFromNib()
+        return filteredOrdersBar
+    }()
+
+    private var filters: FilterOrderListViewModel.Filters = FilterOrderListViewModel.Filters() {
+        didSet {
+            if filters != oldValue {
+                //TODO-5243: update local order settings
+                //TODO-5243: update filter button title
+                //TODO-5243: ResultsController update predicate if needed
+                //TODO-5243: reload tableview
+            }
+        }
+    }
+
     private lazy var analytics = ServiceLocator.analytics
 
     private lazy var viewModel = OrdersTabbedViewModel(siteID: siteID)
@@ -39,6 +61,14 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
     }
 
     override func viewDidLoad() {
+
+        // Display the filtered orders bar
+        // if the feature flag is enabled
+        let isOrderListFiltersEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderListFilters)
+        if isOrderListFiltersEnabled {
+            topStackView.addArrangedSubview(filteredOrdersBar)
+        }
+
         // `configureTabStrip` must be called before `super.viewDidLoad()` or else the selection
         // highlight will be black. ¯\_(ツ)_/¯
         configureTabStrip()
@@ -46,6 +76,10 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
         super.viewDidLoad()
 
         viewModel.activate()
+
+        filteredOrdersBar.onAction = { [weak self] in
+            self?.filterButtonTapped()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -96,10 +130,10 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
         ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID, "status": order.status.rawValue])
     }
 
-    /// Presents `QuickPayAmountHostingController`.
+    /// Presents `QuickOrderAmountHostingController`.
     ///
-    @objc private func presentQuickPayAmountController() {
-        let viewModel = QuickPayAmountViewModel(siteID: siteID)
+    @objc private func presentQuickOrderAmountController() {
+        let viewModel = QuickOrderAmountViewModel(siteID: siteID)
         viewModel.onOrderCreated = { [weak self] order in
             guard let self = self else { return }
 
@@ -109,7 +143,7 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
             }
         }
 
-        let viewController = QuickPayAmountHostingController(viewModel: viewModel)
+        let viewController = QuickOrderAmountHostingController(viewModel: viewModel)
         let navigationController = WooNavigationController(rootViewController: viewController)
         present(navigationController, animated: true)
     }
@@ -122,6 +156,21 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
         return makeViewControllers()
     }
 
+    /// Present `FilterListViewController`
+    ///
+    private func filterButtonTapped() {
+        //TODO-5243: add event for tracking the filter tapped
+        let viewModel = FilterOrderListViewModel(filters: filters)
+        let filterOrderListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
+            //TODO-5243: add event for tracking filter list show
+            self?.filters = filters
+        }, onClearAction: {
+            //TODO-5243: add event for tracking clear action
+        }, onDismissAction: {
+            //TODO-5243: add event for tracking dismiss action
+        })
+        present(filterOrderListViewController, animated: true, completion: nil)
+    }
 }
 
 // MARK: - OrdersViewControllerDelegate
@@ -211,16 +260,16 @@ extension OrdersTabbedViewController {
         return button
     }
 
-    /// Create a `UIBarButtonItem` to be used as a way to create a new quick pay order.
+    /// Create a `UIBarButtonItem` to be used as a way to create a new quick order order.
     ///
-    func createAddQuickPayOrderItem() -> UIBarButtonItem {
+    func createAddQuickOrderOrderItem() -> UIBarButtonItem {
         let button = UIBarButtonItem(image: .plusBarButtonItemImage,
                                      style: .plain,
                                      target: self,
-                                     action: #selector(presentQuickPayAmountController))
+                                     action: #selector(presentQuickOrderAmountController))
         button.accessibilityTraits = .button
-        button.accessibilityLabel = NSLocalizedString("Add quick pay order", comment: "Navigates to a screen to create a quick pay order")
-        button.accessibilityIdentifier = "quick-pay-add-button"
+        button.accessibilityLabel = NSLocalizedString("Add quick order order", comment: "Navigates to a screen to create a quick order order")
+        button.accessibilityIdentifier = "quick-order-add-button"
         return button
     }
 

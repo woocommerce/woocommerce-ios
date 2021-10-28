@@ -24,6 +24,10 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public let isViewAddOnsSwitchEnabled: Bool
 
+    /// The state(`true` or `false`) for the Quick Order feature switch.
+    ///
+    public let isQuickOrderSwitchEnabled: Bool
+
     /// A list (possibly empty) of known card reader IDs - i.e. IDs of card readers that should be reconnected to automatically
     /// e.g. ["CHB204909005931"]
     ///
@@ -36,11 +40,13 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     public init(installationDate: Date?,
                 feedbacks: [FeedbackType: FeedbackSettings],
                 isViewAddOnsSwitchEnabled: Bool,
+                isQuickOrderSwitchEnabled: Bool,
                 knownCardReaders: [String],
                 lastEligibilityErrorInfo: EligibilityErrorInfo? = nil) {
         self.installationDate = installationDate
         self.feedbacks = feedbacks
         self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled
+        self.isQuickOrderSwitchEnabled = isQuickOrderSwitchEnabled
         self.knownCardReaders = knownCardReaders
         self.lastEligibilityErrorInfo = lastEligibilityErrorInfo
     }
@@ -66,8 +72,27 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             installationDate: installationDate,
             feedbacks: updatedFeedbacks,
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
+            isQuickOrderSwitchEnabled: isQuickOrderSwitchEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo
         )
+    }
+}
+
+//// MARK: Custom Decoding
+extension GeneralAppSettings {
+    /// We need a custom decoding to make sure it doesn't fails when this type is updated (eg: when adding/removing new properties)
+    /// Otherwise we will lose previously stored information.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.installationDate = try container.decodeIfPresent(Date.self, forKey: .installationDate)
+        self.feedbacks = try container.decodeIfPresent([FeedbackType: FeedbackSettings].self, forKey: .feedbacks) ?? [:]
+        self.isViewAddOnsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isViewAddOnsSwitchEnabled) ?? false
+        self.isQuickOrderSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isQuickOrderSwitchEnabled) ?? false
+        self.knownCardReaders = try container.decodeIfPresent([String].self, forKey: .knownCardReaders) ?? []
+        self.lastEligibilityErrorInfo = try container.decodeIfPresent(EligibilityErrorInfo.self, forKey: .lastEligibilityErrorInfo)
+
+        // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }
 }

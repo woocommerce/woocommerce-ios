@@ -2,6 +2,7 @@ import Combine
 import Foundation
 import Yosemite
 import Observables
+import enum Networking.DotcomError
 
 // MARK: - DefaultStoresManager
 //
@@ -72,8 +73,12 @@ class DefaultStoresManager: StoresManager {
             .eraseToAnyPublisher()
     }
 
-    var siteID: Observable<Int64?> {
-        sessionManager.siteID
+    var siteID: AnyPublisher<Int64?, Never> {
+        sessionManager.defaultStoreIDPublisher
+    }
+
+    var site: AnyPublisher<Site?, Never> {
+        sessionManager.defaultSitePublisher
     }
 
     /// Designated Initializer
@@ -168,9 +173,14 @@ class DefaultStoresManager: StoresManager {
     }
 
     /// Updates the Default Store as specified.
+    /// After this call, `siteID` is updated while `site` might still be nil when it is a newly connected site.
+    /// In the case of a newly connected site, it synchronizes the site asynchronously and `site` observable is updated.
     ///
     func updateDefaultStore(storeID: Int64) {
         sessionManager.defaultStoreID = storeID
+        // Because `defaultSite` is loaded or synced asynchronously, it is reset here so that any UI that calls this does not show outdated data.
+        // For example, `sessionManager.defaultSite` is used to show site name in various screens in the app.
+        sessionManager.defaultSite = nil
         restoreSessionSiteIfPossible()
         ServiceLocator.pushNotesManager.reloadBadgeCount()
 
@@ -358,7 +368,11 @@ private extension DefaultStoresManager {
     func synchronizeAddOnsGroups(siteID: Int64) {
         let action = AddOnGroupAction.synchronizeAddOnGroups(siteID: siteID) { result in
             if let error = result.failure {
-                DDLogError("⛔️ Failed to sync add-on groups for siteID: \(siteID). Error: \(error)")
+                if error as? DotcomError == .noRestRoute {
+                    DDLogError("⚠️ Endpoint for add-on groups is unreachable for siteID: \(siteID). WC Product Add-Ons plugin may be missing.")
+                } else {
+                    DDLogError("⛔️ Failed to sync add-on groups for siteID: \(siteID). Error: \(error)")
+                }
             }
         }
         dispatch(action)
@@ -369,7 +383,7 @@ private extension DefaultStoresManager {
     func synchronizeSystemPlugins(siteID: Int64) {
         let action = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { result in
             if let error = result.failure {
-                DDLogError("⛔️ Failed to sync sytem plugins for siteID: \(siteID). Error: \(error)")
+                DDLogError("⛔️ Failed to sync system plugins for siteID: \(siteID). Error: \(error)")
             }
         }
         dispatch(action)
@@ -382,7 +396,7 @@ private extension DefaultStoresManager {
             return
         }
 
-        restoreSessionSite(with: siteID)
+        restoreSessionSiteAndSynchronizeIfNeeded(with: siteID)
         synchronizeSettings(with: siteID) {
             ServiceLocator.selectedSiteSettings.refresh()
             ServiceLocator.shippingSettingsService.update(siteID: siteID)
@@ -394,16 +408,16 @@ private extension DefaultStoresManager {
     }
 
     /// Loads the specified siteID into the Session, if possible.
+    /// If the site does not exist in storage, it synchronizes the site asynchronously.
     ///
-    func restoreSessionSite(with siteID: Int64) {
-        let action = AccountAction.loadSite(siteID: siteID) { [weak self] site in
-            guard let `self` = self, let site = site else {
+    func restoreSessionSiteAndSynchronizeIfNeeded(with siteID: Int64) {
+        let action = AccountAction.loadAndSynchronizeSiteIfNeeded(siteID: siteID) { [weak self] result in
+            guard let self = self else { return }
+            guard case .success(let site) = result else {
                 return
             }
-
             self.sessionManager.defaultSite = site
         }
-
         dispatch(action)
     }
 }

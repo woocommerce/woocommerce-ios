@@ -277,7 +277,7 @@ private extension PaymentCaptureOrchestrator {
             return false
         }
 
-        return orderTotal.compare(Constants.minimumAmount) == .orderedDescending
+        return orderTotal as Decimal >= Constants.minimumAmount as Decimal
     }
 
     func minimumAmountError(order: Order, minimumAmount: NSDecimalNumber) -> Error {

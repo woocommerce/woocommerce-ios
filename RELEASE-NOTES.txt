@@ -2,7 +2,10 @@
 
 7.9
 -----
-
+- [*] Fix: after disconnecting a site or connecting to a new site, the sites in site picker (Settings > Switch Store) should be updated accordingly. The only exception is when the newly disconnected site is the currently selected site. [https://github.com/woocommerce/woocommerce-ios/pull/5241]
+- [*] Order Details: Show a button on the "Product" section of Order Details screen to allow recreating shipping labels. [https://github.com/woocommerce/woocommerce-ios/pull/5255]
+- [*] Edit Order Address - Enable `Done` button when `Use as {Shipping/Billing} Address` toggle is turned on. [https://github.com/woocommerce/woocommerce-ios/pull/5254]
+- [*] Add/Edit Product: fix an issue where the product name keyboard is English only. [https://github.com/woocommerce/woocommerce-ios/pull/5288]
 
 7.8
 -----
@@ -14,6 +17,7 @@
 - [*] Shipping Labels: Fix crash when tapping on Learn more rows of customs form. [https://github.com/woocommerce/woocommerce-ios/pull/5207]
 - [*] Shipping Labels: The shipping address now prefills the phone number from the billing address if a shipping phone number is not available. [https://github.com/woocommerce/woocommerce-ios/pull/5177]
 - [*] Shipping Labels: now in Carrier and Rates we always display the discounted rate instead of the retail rate if available. [https://github.com/woocommerce/woocommerce-ios/pull/5188]
+- [*] Shipping Labels: If the shipping address is invalid, there are now options to email, call, or message the customer. [https://github.com/woocommerce/woocommerce-ios/pull/5228]
 - [*] Accessibility: notify when offline mode banner appears or disappears. [https://github.com/woocommerce/woocommerce-ios/pull/5225]
 
 7.7

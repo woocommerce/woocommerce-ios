@@ -2,9 +2,9 @@ import Foundation
 import SwiftUI
 import Combine
 
-/// Hosting controller that wraps an `QuickPayAmount` view.
+/// Hosting controller that wraps an `QuickOrderAmount` view.
 ///
-final class QuickPayAmountHostingController: UIHostingController<QuickPayAmount> {
+final class QuickOrderAmountHostingController: UIHostingController<QuickOrderAmount> {
 
     /// References to keep the Combine subscriptions alive within the lifecycle of the object.
     ///
@@ -18,8 +18,8 @@ final class QuickPayAmountHostingController: UIHostingController<QuickPayAmount>
         return presenter
     }()
 
-    init(viewModel: QuickPayAmountViewModel) {
-        super.init(rootView: QuickPayAmount(viewModel: viewModel))
+    init(viewModel: QuickOrderAmountViewModel) {
+        super.init(rootView: QuickOrderAmount(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismiss = { [weak self] in
@@ -36,7 +36,7 @@ final class QuickPayAmountHostingController: UIHostingController<QuickPayAmount>
 
                 switch notice {
                 case .error:
-                    self?.modalNoticePresenter.enqueue(notice: .init(title: QuickPayAmount.Localization.error, feedbackType: .error))
+                    self?.modalNoticePresenter.enqueue(notice: .init(title: QuickOrderAmount.Localization.error, feedbackType: .error))
                 }
 
                 // Nullify the presentation intent.
@@ -45,14 +45,33 @@ final class QuickPayAmountHostingController: UIHostingController<QuickPayAmount>
             .store(in: &subscriptions)
     }
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        // Set presentation delegate to track the user dismiss flow event
+        if let navigationController = navigationController {
+            navigationController.presentationController?.delegate = self
+        } else {
+            presentationController?.delegate = self
+        }
+    }
+
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
-/// View that receives an arbitrary amount for creating a quick pay order.
+/// Intercepts to the dismiss drag gesture.
 ///
-struct QuickPayAmount: View {
+extension QuickOrderAmountHostingController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        rootView.viewModel.userDidCancelFlow()
+    }
+}
+
+/// View that receives an arbitrary amount for creating a quick order order.
+///
+struct QuickOrderAmount: View {
 
     /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
     ///
@@ -64,7 +83,7 @@ struct QuickPayAmount: View {
 
     /// ViewModel to drive the view content
     ///
-    @ObservedObject private(set) var viewModel: QuickPayAmountViewModel
+    @ObservedObject private(set) var viewModel: QuickOrderAmountViewModel
 
     var body: some View {
         VStack(alignment: .center, spacing: Layout.mainVerticalSpacing) {
@@ -86,7 +105,7 @@ struct QuickPayAmount: View {
 
             // Done button
             Button(Localization.buttonTitle) {
-                viewModel.createQuickPayOrder()
+                viewModel.createQuickOrderOrder()
             }
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.loading))
             .disabled(viewModel.shouldDisableDoneButton)
@@ -97,6 +116,7 @@ struct QuickPayAmount: View {
             ToolbarItem(placement: .cancellationAction) {
                 Button(Localization.cancelTitle, action: {
                     dismiss()
+                    viewModel.userDidCancelFlow()
                 })
             }
         }
@@ -104,13 +124,13 @@ struct QuickPayAmount: View {
 }
 
 // MARK: Constants
-private extension QuickPayAmount {
+private extension QuickOrderAmount {
     enum Localization {
-        static let title = NSLocalizedString("Take Payment", comment: "Title for the quick pay screen")
-        static let instructions = NSLocalizedString("Enter Amount", comment: "Short instructions label in the quick pay screen")
-        static let buttonTitle = NSLocalizedString("Done", comment: "Title for the button to confirm the amount in the quick pay screen")
-        static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the quick pay screen")
-        static let error = NSLocalizedString("There was an error creating the order", comment: "Notice text after failing to create a quick pay order.")
+        static let title = NSLocalizedString("Take Payment", comment: "Title for the quick order screen")
+        static let instructions = NSLocalizedString("Enter Amount", comment: "Short instructions label in the quick order screen")
+        static let buttonTitle = NSLocalizedString("Done", comment: "Title for the button to confirm the amount in the quick order screen")
+        static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the quick order screen")
+        static let error = NSLocalizedString("There was an error creating the order", comment: "Notice text after failing to create a quick order order.")
     }
 
     enum Layout {

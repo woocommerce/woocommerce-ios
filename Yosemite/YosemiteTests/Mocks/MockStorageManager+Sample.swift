@@ -131,6 +131,16 @@ extension MockStorageManager {
         return newOrder
     }
 
+    /// Inserts a new (Sample) site into the specified context.
+    ///
+    @discardableResult
+    func insertSampleSite(readOnlySite: Site) -> StorageSite {
+        let newSite = viewStorage.insertNewObject(ofType: StorageSite.self)
+        newSite.update(with: readOnlySite)
+
+        return newSite
+    }
+
     /// Inserts a new (Sample) SitePlugin into the specified context.
     /// Administrators can fetch installed plugins as SitePlugins. Shop Managers cannot.
     ///

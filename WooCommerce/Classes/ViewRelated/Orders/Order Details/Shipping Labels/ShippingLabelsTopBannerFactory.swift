@@ -72,11 +72,11 @@ private extension ShippingLabelsTopBannerFactory {
         let title = Localization.title
         let icon: UIImage = .megaphoneIcon
         let infoText = Localization.info
-        let giveFeedbackAction = TopBannerViewModel.ActionButton(title: Localization.giveFeedback) {
+        let giveFeedbackAction = TopBannerViewModel.ActionButton(title: Localization.giveFeedback) { _ in
             self.analytics.track(event: .featureFeedbackBanner(context: .shippingLabelsRelease3, action: .gaveFeedback))
             onGiveFeedbackButtonPressed()
         }
-        let dismissAction = TopBannerViewModel.ActionButton(title: Localization.dismiss) {
+        let dismissAction = TopBannerViewModel.ActionButton(title: Localization.dismiss) { _ in
             self.analytics.track(event: .featureFeedbackBanner(context: .shippingLabelsRelease3, action: .dismissed))
             let action = AppSettingsAction.updateFeedbackStatus(type: .shippingLabelsRelease3, status: .dismissed) { result in
                 onDismissButtonPressed()

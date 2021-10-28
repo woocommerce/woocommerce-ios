@@ -62,15 +62,17 @@ private extension AppCoordinator {
     /// Synchronize announcements and present What's New Screen if needed
     ///
     func synchronizeAndShowWhatsNew() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.whatsNewOnWooCommerce) else { return }
-
         stores.dispatch(AnnouncementsAction.synchronizeAnnouncements(onCompletion: { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let announcement):
                 DDLogInfo("📣 Announcements Synced! AppVersion: \(announcement.appVersionName) | AnnouncementVersion: \(announcement.announcementVersion)")
-            case.failure(let error):
-                DDLogError("⛔️ Failed to synchronize announcements: \(error.localizedDescription)")
+            case .failure(let error):
+                if error as? AnnouncementsError == .announcementNotFound {
+                    DDLogInfo("📣 Announcements synced, but nothing received.")
+                } else {
+                    DDLogError("⛔️ Failed to synchronize announcements: \(error.localizedDescription)")
+                }
             }
             self.showWhatsNewIfNeeded()
         }))
@@ -84,6 +86,7 @@ private extension AppCoordinator {
             guard let (announcement, displayed) = try? result.get(), !displayed else {
                 return DDLogInfo("📣 There are no announcements to show!")
             }
+            ServiceLocator.analytics.track(event: .featureAnnouncementShown(source: .appUpgrade))
             let whatsNewViewController = WhatsNewFactory.whatsNew(announcement) { [weak self] in
                 self?.tabBarController.dismiss(animated: true)
             }

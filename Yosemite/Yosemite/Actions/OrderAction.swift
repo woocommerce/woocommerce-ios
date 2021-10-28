@@ -18,12 +18,15 @@ public enum OrderAction: Action {
     ///                  all orders list will be fetched. See `OrderStatusEnum` for possible values.
     ///     - deleteAllBeforeSaving: If true, all the orders in the db will be deleted before any
     ///                  order from the fetch requests will be saved.
+    ///     - after: Only include orders created after this date. The time zone of the `Date`
+    ///               doesn't matter. It will be converted to UTC later.
     ///     - before: Only include orders created before this date. The time zone of the `Date`
     ///               doesn't matter. It will be converted to UTC later.
     ///
     case fetchFilteredAndAllOrders(
         siteID: Int64,
         statusKey: String?,
+        after: Date? = nil,
         before: Date? = nil,
         deleteAllBeforeSaving: Bool,
         pageSize: Int,
@@ -33,11 +36,14 @@ public enum OrderAction: Action {
     /// Synchronizes the Orders matching the specified criteria.
     ///
     /// - Parameters:
+    ///     - after: Only include orders created after this date. The time zone of the `Date`
+    ///               doesn't matter. It will be converted to UTC later.
     ///     - before: Only include orders created before this date. The time zone of the `Date`
     ///               doesn't matter. It will be converted to UTC later.
     ///
     case synchronizeOrders(siteID: Int64,
                            statusKey: String?,
+                           after: Date? = nil,
                            before: Date? = nil,
                            pageNumber: Int,
                            pageSize: Int,
@@ -59,7 +65,7 @@ public enum OrderAction: Action {
     ///
     case updateOrder(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: (Result<Order, Error>) -> Void)
 
-    /// Creates a quick pay order with a specific amount value and no tax.
+    /// Creates a quick order order with a specific amount value and no tax.
     ///
-    case createQuickPayOrder(siteID: Int64, amount: String, onCompletion: (Result<Order, Error>) -> Void)
+    case createQuickOrderOrder(siteID: Int64, amount: String, onCompletion: (Result<Order, Error>) -> Void)
 }

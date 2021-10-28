@@ -117,12 +117,19 @@ public class AppSettingsStore: Store {
             loadFeedbackVisibility(type: type, onCompletion: onCompletion)
         case .loadProductsSettings(let siteID, let onCompletion):
             loadProductsSettings(siteID: siteID, onCompletion: onCompletion)
-        case .upsertProductsSettings(let siteID, let sort, let stockStatusFilter, let productStatusFilter, let productTypeFilter, let onCompletion):
+        case .upsertProductsSettings(let siteID,
+                                     let sort,
+                                     let stockStatusFilter,
+                                     let productStatusFilter,
+                                     let productTypeFilter,
+                                     let productCategoryFilter,
+                                     let onCompletion):
             upsertProductsSettings(siteID: siteID,
                                    sort: sort,
                                    stockStatusFilter: stockStatusFilter,
                                    productStatusFilter: productStatusFilter,
                                    productTypeFilter: productTypeFilter,
+                                   productCategoryFilter: productCategoryFilter,
                                    onCompletion: onCompletion)
         case .resetProductsSettings:
             resetProductsSettings()
@@ -130,6 +137,10 @@ public class AppSettingsStore: Store {
             setOrderAddOnsFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadOrderAddOnsSwitchState(onCompletion: let onCompletion):
             loadOrderAddOnsSwitchState(onCompletion: onCompletion)
+        case .setQuickOrderFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
+            setQuickOrderFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
+        case .loadQuickOrderSwitchState(onCompletion: let onCompletion):
+            loadQuickOrderSwitchState(onCompletion: onCompletion)
         case .rememberCardReader(cardReaderID: let cardReaderID, onCompletion: let onCompletion):
             rememberCardReader(cardReaderID: cardReaderID, onCompletion: onCompletion)
         case .forgetCardReader(onCompletion: let onCompletion):
@@ -217,6 +228,26 @@ private extension AppSettingsStore {
         onCompletion(.success(settings.isViewAddOnsSwitchEnabled))
     }
 
+    /// Loads the current QuickOrder beta feature switch state from `GeneralAppSettings`
+    ///
+    func loadQuickOrderSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
+        let settings = loadOrCreateGeneralAppSettings()
+        onCompletion(.success(settings.isQuickOrderSwitchEnabled))
+    }
+
+    /// Sets the provided QuickOrder beta feature switch state into `GeneralAppSettings`
+    ///
+    func setQuickOrderFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings().copy(isQuickOrderSwitchEnabled: isEnabled)
+            try saveGeneralAppSettings(settings)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+
+    }
+
     /// Loads the last persisted eligibility error information from `GeneralAppSettings`
     ///
     func loadEligibilityErrorInfo(onCompletion: (Result<EligibilityErrorInfo, Error>) -> Void) {
@@ -245,6 +276,7 @@ private extension AppSettingsStore {
             return GeneralAppSettings(installationDate: nil,
                                       feedbacks: [:],
                                       isViewAddOnsSwitchEnabled: false,
+                                      isQuickOrderSwitchEnabled: false,
                                       knownCardReaders: [],
                                       lastEligibilityErrorInfo: nil)
         }
@@ -573,6 +605,7 @@ private extension AppSettingsStore {
                                 stockStatusFilter: ProductStockStatus? = nil,
                                 productStatusFilter: ProductStatus? = nil,
                                 productTypeFilter: ProductType? = nil,
+                                productCategoryFilter: ProductCategory? = nil,
                                 onCompletion: (Error?) -> Void) {
         var existingSettings: [Int64: StoredProductSettings.Setting] = [:]
         if let storedSettings: StoredProductSettings = try? fileStorage.data(for: productsSettingsURL) {
@@ -583,7 +616,8 @@ private extension AppSettingsStore {
                                                        sort: sort,
                                                        stockStatusFilter: stockStatusFilter,
                                                        productStatusFilter: productStatusFilter,
-                                                       productTypeFilter: productTypeFilter)
+                                                       productTypeFilter: productTypeFilter,
+                                                       productCategoryFilter: productCategoryFilter)
         existingSettings[siteID] = newSetting
 
         let newStoredProductSettings = StoredProductSettings(settings: existingSettings)

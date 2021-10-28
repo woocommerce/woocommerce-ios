@@ -41,14 +41,14 @@ public class AccountStore: Store {
         switch action {
         case .loadAccount(let userID, let onCompletion):
             loadAccount(userID: userID, onCompletion: onCompletion)
-        case .loadSite(let siteID, let onCompletion):
-            loadSite(siteID: siteID, onCompletion: onCompletion)
+        case .loadAndSynchronizeSiteIfNeeded(let siteID, let onCompletion):
+            loadAndSynchronizeSiteIfNeeded(siteID: siteID, onCompletion: onCompletion)
         case .synchronizeAccount(let onCompletion):
             synchronizeAccount(onCompletion: onCompletion)
         case .synchronizeAccountSettings(let userID, let onCompletion):
             synchronizeAccountSettings(userID: userID, onCompletion: onCompletion)
-        case .synchronizeSites(let onCompletion):
-            synchronizeSites(onCompletion: onCompletion)
+        case .synchronizeSites(let selectedSiteID, let onCompletion):
+            synchronizeSites(selectedSiteID: selectedSiteID, onCompletion: onCompletion)
         case .synchronizeSitePlan(let siteID, let onCompletion):
             synchronizeSitePlan(siteID: siteID, onCompletion: onCompletion)
         case .updateAccountSettings(let userID, let tracksOptOut, let onCompletion):
@@ -88,13 +88,29 @@ private extension AccountStore {
         }
     }
 
+    /// Returns the site if it exists in storage already. Otherwise, it synchronizes the WordPress.com sites and returns the site if it exists.
+    ///
+    func loadAndSynchronizeSiteIfNeeded(siteID: Int64, onCompletion: @escaping (Result<Site, Error>) -> Void) {
+        if let site = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() {
+            onCompletion(.success(site))
+        } else {
+            synchronizeSites(selectedSiteID: siteID) { [weak self] result in
+                guard let self = self else { return }
+                guard let site = self.storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() else {
+                    return onCompletion(.failure(SynchronizeSiteError.unknownSite))
+                }
+                onCompletion(.success(site))
+            }
+        }
+    }
+
     /// Synchronizes the WordPress.com sites associated with the Network's Auth Token.
     ///
-    func synchronizeSites(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func synchronizeSites(selectedSiteID: Int64?, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         remote.loadSites { [weak self] result in
             switch result {
             case .success(let sites):
-                self?.upsertStoredSitesInBackground(readOnlySites: sites) {
+                self?.upsertStoredSitesInBackground(readOnlySites: sites, selectedSiteID: selectedSiteID) {
                     onCompletion(.success(()))
                 }
             case .failure(let error):
@@ -123,13 +139,6 @@ private extension AccountStore {
     func loadAccount(userID: Int64, onCompletion: @escaping (Account?) -> Void) {
         let account = storageManager.viewStorage.loadAccount(userID: userID)?.toReadOnly()
         onCompletion(account)
-    }
-
-    /// Loads the Site associated with the specified siteID (if any!)
-    ///
-    func loadSite(siteID: Int64, onCompletion: @escaping (Site?) -> Void) {
-        let site = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly()
-        onCompletion(site)
     }
 
     /// Submits the tracks opt-in / opt-out setting to be synced globally. 
@@ -192,9 +201,17 @@ extension AccountStore {
 
     /// Updates (OR Inserts) the specified ReadOnly Site Entities into the Storage Layer.
     ///
-    func upsertStoredSitesInBackground(readOnlySites: [Networking.Site], onCompletion: @escaping () -> Void) {
+    func upsertStoredSitesInBackground(readOnlySites: [Networking.Site], selectedSiteID: Int64? = nil, onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
+            // Deletes sites in storage that are not in `readOnlySites` and not the selected site.
+            let storageSites = derivedStorage.loadAllSites()
+            let readOnlySiteIDs = readOnlySites.map(\.siteID)
+            storageSites.filter { readOnlySiteIDs.contains($0.siteID) == false && $0.siteID != selectedSiteID }
+                .forEach { remotelyDeletedSite in
+                    derivedStorage.deleteObject(remotelyDeletedSite)
+                }
+
             for readOnlySite in readOnlySites {
                 let storageSite = derivedStorage.loadSite(siteID: readOnlySite.siteID) ?? derivedStorage.insertNewObject(ofType: Storage.Site.self)
                 storageSite.update(with: readOnlySite)
@@ -205,4 +222,8 @@ extension AccountStore {
             DispatchQueue.main.async(execute: onCompletion)
         }
     }
+}
+
+enum SynchronizeSiteError: Error, Equatable {
+    case unknownSite
 }

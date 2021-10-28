@@ -28,10 +28,12 @@ final class OrderDateRangeListSelectorCommand: ListSelectorCommand {
     func handleSelectedChange(selected: OrderDateRangeFilterEnum, viewController: ViewController) {
 
         guard selected != .custom else {
-            // TODO: implement view controller displaying start and end date
-//            let datepicker = DatePickerViewController(datePickerMode: .date)
-//            viewController.present(datepicker, animated: true, completion: nil)
-            //viewController.navigationController?.pushViewController(datepicker, animated: true)
+            // Open the list selector for selecting a custom range of dates
+            let command = OrderCustomRangeListSelectorCommand(data: [.start(nil), .end(nil)])
+            let listSelector = ListSelectorViewController(command: command, tableViewStyle: .plain) { [weak self] selectedOptions in
+                //TODO: handle selection
+            }
+            viewController.navigationController?.pushViewController(listSelector, animated: true)
             return
         }
 
@@ -43,7 +45,7 @@ final class OrderDateRangeListSelectorCommand: ListSelectorCommand {
 
         switch model {
         case .custom:
-            cell.accessoryType = .disclosureIndicator
+            cell.accessoryType = selected == .custom ? .checkmark : .disclosureIndicator
         default:
             cell.accessoryType = isSelected(model: model) ? .checkmark : .none
         }

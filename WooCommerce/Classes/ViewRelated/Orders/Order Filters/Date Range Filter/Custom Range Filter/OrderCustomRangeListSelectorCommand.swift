@@ -13,15 +13,14 @@ final class OrderCustomRangeListSelectorCommand: ListSelectorCommand {
     //
     private let timezone = TimeZone.siteTimezone
 
-    /// Holds the current selected state
+    /// Holds the current selected state.
     ///
     private(set) var selected: OrderCustomRangeFilterEnum? = nil
 
     fileprivate(set) var data: [OrderCustomRangeFilterEnum]
 
-    init(data: [OrderCustomRangeFilterEnum], selected: OrderCustomRangeFilterEnum?) {
+    init(data: [OrderCustomRangeFilterEnum]) {
         self.data = data
-        self.selected = selected
     }
 
     func isSelected(model: OrderCustomRangeFilterEnum) -> Bool {

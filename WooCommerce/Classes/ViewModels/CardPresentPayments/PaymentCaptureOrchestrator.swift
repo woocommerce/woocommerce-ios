@@ -20,9 +20,11 @@ final class PaymentCaptureOrchestrator {
                         onClearMessage: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
-        guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total), orderTotal.compare(Constants.minimumAmount) == .orderedDescending else {
-            DDLogError("💳 Error: failed to capture payment for order. Minim")
-            onCompletion(.failure(CardReaderServiceError.intentCreation(underlyingError: .processorAPIError)))
+        /// Bail out if the order amount is below the minimum allowed:
+        /// https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts
+        guard isTotalAmountValid(order: order) else {
+            DDLogError("💳 Error: failed to capture payment for order. Order amount is below minimum")
+            onCompletion(.failure(NotValidAmountError.belowMinimumAmount))
             return
         }
         /// First ask the backend to create/assign a Stripe customer for the order
@@ -264,6 +266,20 @@ private extension PaymentCaptureOrchestrator {
 }
 
 private extension PaymentCaptureOrchestrator {
+    enum Constants {
+        static let minimumAmount = NSDecimalNumber(string: "0.5")
+    }
+
+    func isTotalAmountValid(order: Order) -> Bool {
+        guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
+            return false
+        }
+
+        return orderTotal.compare(Constants.minimumAmount) == .orderedDescending
+    }
+}
+
+private extension PaymentCaptureOrchestrator {
     enum Localization {
         static let receiptDescription = NSLocalizedString("In-Person Payment for Order #%1$@ for %2$@",
                                                           comment: "Message included in emailed receipts. "
@@ -275,7 +291,29 @@ private extension PaymentCaptureOrchestrator {
 }
 
 private extension PaymentCaptureOrchestrator {
-    enum Constants {
-        static let minimumAmount = NSDecimalNumber(string: "0.5")
+    private enum NotValidAmountError: Error, LocalizedError {
+        case belowMinimumAmount
+        case other
+
+        public var errorDescription: String? {
+            switch self {
+            case .belowMinimumAmount:
+                return Localizations.belowMinimumAmount
+            case .other:
+                return Localizations.defaultMessage
+            }
+        }
+
+        enum Localizations {
+            static let defaultMessage = NSLocalizedString(
+                "Unable to process payment. Order Total amount is not valid.",
+                comment: "Error message when the order amount is not valid."
+            )
+
+            static let belowMinimumAmount = NSLocalizedString(
+                "Unable to process payment. Order Total amount is below the minimum amount you can charge.",
+                comment: "Error message when the order amount is below the minimum amount allowed."
+            )
+        }
     }
 }

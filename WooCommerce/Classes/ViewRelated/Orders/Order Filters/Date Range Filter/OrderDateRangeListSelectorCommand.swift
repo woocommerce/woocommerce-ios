@@ -29,9 +29,10 @@ final class OrderDateRangeListSelectorCommand: ListSelectorCommand {
 
         guard selected != .custom else {
             // Open the list selector for selecting a custom range of dates
-            let command = OrderCustomRangeListSelectorCommand(data: [.start(nil), .end(nil)])
-            let listSelector = ListSelectorViewController(command: command, tableViewStyle: .plain) { [weak self] selectedOptions in
+            let command = OrderCustomRangeListSelectorCommand(data: [.start, .end], startDate: nil, endDate: nil) { dateRange in
                 //TODO: handle selection
+            }
+            let listSelector = ListSelectorViewController(command: command, tableViewStyle: .plain) { _ in
             }
             viewController.navigationController?.pushViewController(listSelector, animated: true)
             return

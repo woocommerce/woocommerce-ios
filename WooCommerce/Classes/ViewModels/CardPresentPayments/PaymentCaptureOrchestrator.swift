@@ -22,7 +22,7 @@ final class PaymentCaptureOrchestrator {
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
         guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total), orderTotal.compare(Constants.minimumAmount) == .orderedDescending else {
             DDLogError("💳 Error: failed to capture payment for order. Minim")
-            onCompletion(.failure(CardReaderServiceError.intentCreation(underlyingError: .stripeAPIError)))
+            onCompletion(.failure(CardReaderServiceError.intentCreation(underlyingError: .APIError)))
             return
         }
         /// First ask the backend to create/assign a Stripe customer for the order

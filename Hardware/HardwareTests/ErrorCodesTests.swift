@@ -155,7 +155,7 @@ final class CardReaderServiceErrorTests: XCTestCase {
     }
 
     func test_stripe_error_api_maps_to_stripeAPI() {
-        XCTAssertEqual(.stripeAPIError, domainError(stripeCode: 9020))
+        XCTAssertEqual(.APIError, domainError(stripeCode: 9020))
     }
 
     func test_stripe_catch_all_error() {

@@ -26,15 +26,15 @@ public class TelemetryStore: Store {
         }
 
         switch action {
-        case .postTelemetry(let siteID, let versionString, let onCompletion):
-            postTelemetry(siteID: siteID, versionString: versionString, onCompletion: onCompletion)
+        case .sendTelemetry(let siteID, let versionString, let onCompletion):
+            sendTelemetry(siteID: siteID, versionString: versionString, onCompletion: onCompletion)
         }
     }
 }
 
 private extension TelemetryStore {
 
-    func postTelemetry(siteID: Int64, versionString: String, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        telemetryRemote.postTelemetry(for: siteID, versionString: versionString, completion: onCompletion)
+    func sendTelemetry(siteID: Int64, versionString: String, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        telemetryRemote.sendTelemetry(for: siteID, versionString: versionString, completion: onCompletion)
     }
 }

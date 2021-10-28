@@ -82,7 +82,7 @@ private extension RequirementsChecker {
             switch result {
             case .success(let siteAPI):
                 if siteAPI.telemetryIsAvailable {
-                    postTelemetryIfNeeded(siteID: siteID)
+                    sendTelemetryIfNeeded(siteID: siteID)
                 }
                 if siteAPI.highestWooVersion == .mark3 {
                     onCompletion?(.success(.validWCVersion))
@@ -97,25 +97,25 @@ private extension RequirementsChecker {
         }
     }
 
-    /// Dispatches a `TelemetryAction.postTelemetry` action
+    /// Dispatches a `TelemetryAction.sendTelemetry` action
     ///
-    static func postTelemetryIfNeeded(siteID: Int64) {
+    static func sendTelemetryIfNeeded(siteID: Int64) {
         let minimalIntervalBetweenReports: TimeInterval = 60*60*24
         if let telemetryLastReportedTime = UserDefaults.standard[.telemetryLastReportedTime] as? Date,
            Date().timeIntervalSince(telemetryLastReportedTime) < minimalIntervalBetweenReports,
            siteID == UserDefaults.standard[.telemetryLastReportedStoreID] {
-            // report telemetry for same store only once in 24h
+            // send telemetry for same store only once in 24h
             return
         }
 
-        let action = TelemetryAction.postTelemetry(siteID: siteID, versionString: UserAgent.bundleShortVersion) { result in
+        let action = TelemetryAction.sendTelemetry(siteID: siteID, versionString: UserAgent.bundleShortVersion) { result in
             switch result {
             case .success:
                 UserDefaults.standard[.telemetryLastReportedTime] = Date()
                 UserDefaults.standard[.telemetryLastReportedStoreID] = siteID
-                DDLogInfo("Successfully posted telemetry for siteID: \(siteID).")
+                DDLogInfo("Successfully sent telemetry for siteID: \(siteID).")
             case .failure(let error):
-                DDLogError("⛔️ Failed to post telemetry for siteID: \(siteID). Error: \(error)")
+                DDLogError("⛔️ Failed to send telemetry for siteID: \(siteID). Error: \(error)")
             }
         }
         ServiceLocator.stores.dispatch(action)

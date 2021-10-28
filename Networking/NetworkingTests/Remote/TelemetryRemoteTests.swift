@@ -20,16 +20,16 @@ class TelemetryRemoteTests: XCTestCase {
         network.removeAllSimulatedResponses()
     }
 
-    /// Verifies that postTelemetry properly accepts null response.
+    /// Verifies that sendTelemetry properly accepts null response.
     ///
-    func test_postTelemetry_properly_accepts_null_response() throws {
+    func test_sendTelemetry_properly_accepts_null_response() throws {
         // Given
         let remote = TelemetryRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "tracker", filename: "null-data")
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            remote.postTelemetry(for: self.sampleSiteID, versionString: "1.2") { result in
+            remote.sendTelemetry(for: self.sampleSiteID, versionString: "1.2") { result in
                 promise(result)
             }
         }
@@ -38,16 +38,16 @@ class TelemetryRemoteTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
-    /// Verifies that postTelemetry properly accepts non-null response.
+    /// Verifies that sendTelemetry properly accepts non-null response.
     ///
-    func test_postTelemetry_properly_accepts_non_null_response() throws {
+    func test_sendTelemetry_properly_accepts_non_null_response() throws {
         // Given
         let remote = TelemetryRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "tracker", filename: "generic_success_data")
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            remote.postTelemetry(for: self.sampleSiteID, versionString: "1.2") { result in
+            remote.sendTelemetry(for: self.sampleSiteID, versionString: "1.2") { result in
                 promise(result)
             }
         }
@@ -56,15 +56,15 @@ class TelemetryRemoteTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
-    /// Verifies that postTelemetry properly relays Networking Layer errors.
+    /// Verifies that sendTelemetry properly relays Networking Layer errors.
     ///
-    func test_postTelemetry_properly_relays_networking_errors() {
+    func test_sendTelemetry_properly_relays_networking_errors() {
         // Given
         let remote = TelemetryRemote(network: network)
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            remote.postTelemetry(for: self.sampleSiteID, versionString: "1.2") { result in
+            remote.sendTelemetry(for: self.sampleSiteID, versionString: "1.2") { result in
                 promise(result)
             }
         }

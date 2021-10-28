@@ -3,7 +3,7 @@ import XCTest
 @testable import Networking
 
 
-/// SettingStoreTests Unit Tests
+/// TelemetryStore Unit Tests
 ///
 class TelemetryStoreTests: XCTestCase {
 
@@ -31,16 +31,16 @@ class TelemetryStoreTests: XCTestCase {
         network = MockNetwork()
     }
 
-    // MARK: - TelemetryAction.postTelemetry
+    // MARK: - TelemetryAction.sendTelemetry
 
-    func test_postTelemetry_action_accepts_null_data_response() {
+    func test_sendTelemetry_action_accepts_null_data_response() {
         // Given
         let store = TelemetryStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "tracker", filename: "null-data")
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = TelemetryAction.postTelemetry(siteID: self.sampleSiteID, versionString: "1.2") { result in
+            let action = TelemetryAction.sendTelemetry(siteID: self.sampleSiteID, versionString: "1.2") { result in
                 promise(result)
             }
             store.onAction(action)
@@ -50,13 +50,13 @@ class TelemetryStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
-    func test_postTelemetry_action_properly_relays_errors() {
+    func test_sendTelemetry_action_properly_relays_errors() {
         // Given
         let store = TelemetryStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = TelemetryAction.postTelemetry(siteID: self.sampleSiteID, versionString: "1.2") { result in
+            let action = TelemetryAction.sendTelemetry(siteID: self.sampleSiteID, versionString: "1.2") { result in
                 promise(result)
             }
             store.onAction(action)

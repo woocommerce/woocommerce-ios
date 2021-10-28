@@ -6,7 +6,7 @@ import Networking
 ///
 public enum TelemetryAction: Action {
 
-    /// Posts data to the telemetry endpoint.
+    /// Sends data to the telemetry endpoint.
     ///
-    case postTelemetry(siteID: Int64, versionString: String, onCompletion: (Result<Void, Error>) -> Void)
+    case sendTelemetry(siteID: Int64, versionString: String, onCompletion: (Result<Void, Error>) -> Void)
 }

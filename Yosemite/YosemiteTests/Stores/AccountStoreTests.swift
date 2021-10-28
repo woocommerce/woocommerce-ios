@@ -343,57 +343,100 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertNil(account)
     }
 
-    // MARK: - AccountAction.loadSite
+    // MARK: - AccountAction.loadAndSynchronizeSiteIfNeeded
 
-    func test_loadSite_returns_expected_site() {
+    func test_loadAndSynchronizeSiteIfNeeded_returns_site_already_in_storage_without_making_network_request() throws {
+        // Given
+        let network = MockNetwork()
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
+
         let group = DispatchGroup()
-        let expectation = self.expectation(description: "Load Site Action Success")
-
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 0)
-
         group.enter()
         accountStore.upsertStoredSitesInBackground(readOnlySites: [sampleSitePristine()]) {
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 1)
             group.leave()
         }
 
-        group.notify(queue: .main) {
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 1)
-            let action = AccountAction.loadSite(siteID: 999) { site in
-                XCTAssertNotNil(site)
-                XCTAssertEqual(site!, self.sampleSitePristine())
-                XCTAssertTrue(Thread.isMainThread)
-                expectation.fulfill()
+        // When
+        let result: Result<Yosemite.Site, Error> = waitFor { promise in
+            group.notify(queue: .main) {
+                let action = AccountAction.loadAndSynchronizeSiteIfNeeded(siteID: 999) { result in
+                    XCTAssertTrue(Thread.isMainThread)
+                    promise(result)
+                }
+                accountStore.onAction(action)
             }
-            accountStore.onAction(action)
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        let site = try XCTUnwrap(result.get())
+        XCTAssertEqual(site, sampleSitePristine())
+        XCTAssertEqual(network.requestsForResponseData.count, 0)
     }
 
-    func test_loadSite_returns_nil_for_unknown_site() {
+    func test_loadAndSynchronizeSiteIfNeeded_returns_unknown_site_error_after_syncing_failure() throws {
+        // Given
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let group = DispatchGroup()
-        let expectation = self.expectation(description: "Load Site Action Error")
-
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
         group.enter()
         accountStore.upsertStoredSitesInBackground(readOnlySites: [sampleSitePristine()]) {
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 1)
             group.leave()
         }
 
-        group.notify(queue: .main) {
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 1)
-            let action = AccountAction.loadSite(siteID: 9999) { site in
-                XCTAssertNil(site)
-                XCTAssertTrue(Thread.isMainThread)
-                expectation.fulfill()
+        // When
+        let result: Result<Yosemite.Site, Error> = waitFor { promise in
+            group.notify(queue: .main) {
+                let action = AccountAction.loadAndSynchronizeSiteIfNeeded(siteID: 9999) { result in
+                    XCTAssertTrue(Thread.isMainThread)
+                    promise(result)
+                }
+                accountStore.onAction(action)
             }
-            accountStore.onAction(action)
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? SynchronizeSiteError, .unknownSite)
+        XCTAssertEqual(network.requestsForResponseData.count, 1)
+        XCTAssertTrue(((network.requestsForResponseData.first?.urlRequest?.url?.absoluteString.contains("me/sites")) == true))
+    }
+
+    func test_loadAndSynchronizeSiteIfNeeded_returns_site_after_syncing_success() throws {
+        // Given
+        let network = MockNetwork()
+        network.simulateResponse(requestUrlSuffix: "me/sites", filename: "sites")
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let group = DispatchGroup()
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
+
+        group.enter()
+        accountStore.upsertStoredSitesInBackground(readOnlySites: [sampleSitePristine()]) {
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 1)
+            group.leave()
+        }
+
+        // When
+        // The site ID value is in `sites.json` used in the mock network.
+        let siteIDInSimulatedResponse = Int64(1112233334444555)
+        let result: Result<Yosemite.Site, Error> = waitFor { promise in
+            group.notify(queue: .main) {
+                let action = AccountAction.loadAndSynchronizeSiteIfNeeded(siteID: siteIDInSimulatedResponse) { result in
+                    XCTAssertTrue(Thread.isMainThread)
+                    promise(result)
+                }
+                accountStore.onAction(action)
+            }
+        }
+
+        // Then
+        let site = try XCTUnwrap(result.get())
+        XCTAssertEqual(site.siteID, siteIDInSimulatedResponse)
+        XCTAssertEqual(network.requestsForResponseData.count, 1)
+        XCTAssertTrue(((network.requestsForResponseData.first?.urlRequest?.url?.absoluteString.contains("me/sites")) == true))
     }
 }
 

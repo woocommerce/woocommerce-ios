@@ -31,12 +31,12 @@ class MockNetwork: Network {
     ///
     required init(credentials: Credentials) { }
 
-    /// Dummy convenience initializer. Remember: Real Network wrappers will allways need credentials!
+    /// Dummy convenience initializer. Remember: Real Network wrappers will always need credentials!
     ///
-    /// Note: If the useResponseQueue param is `true`, any repsonses added via `simulateResponse` will stored in a FIFO queue
-    /// and used once for a matching request (then removed from the queue). Subsuquent requests will use the next response in the queue, and so on.
+    /// Note: If the useResponseQueue param is `true`, any responses added via `simulateResponse` will stored in a FIFO queue
+    /// and used once for a matching request (then removed from the queue). Subsequent requests will use the next response in the queue, and so on.
     ///
-    /// If the useResponseQueue param is `false`, any repsonses added via `simulateResponse` will stored in an array and can
+    /// If the useResponseQueue param is `false`, any responses added via `simulateResponse` will stored in an array and can
     /// be reused multiple times.
     ///
     /// - Parameter useResponseQueue: Use the response queue. Default is `false`.

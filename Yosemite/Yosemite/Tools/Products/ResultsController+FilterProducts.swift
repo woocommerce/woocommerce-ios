@@ -5,7 +5,8 @@ extension NSPredicate {
     public static func createProductPredicate(siteID: Int64,
                                               stockStatus: ProductStockStatus? = nil,
                                               productStatus: ProductStatus? = nil,
-                                              productType: ProductType? = nil) -> NSPredicate {
+                                              productType: ProductType? = nil,
+                                              productCategory: ProductCategory? = nil) -> NSPredicate {
         let siteIDPredicate = NSPredicate(format: "siteID == %lld", siteID)
 
         let stockStatusPredicate = stockStatus.flatMap { stockStatus -> NSPredicate? in
@@ -23,14 +24,20 @@ extension NSPredicate {
             return NSPredicate(format: "\(key) == %@", productType.rawValue)
         }
 
-        let subpredicates = [siteIDPredicate, stockStatusPredicate, productStatusPredicate, productTypePredicate].compactMap({ $0 })
+        let productCategoryPredicate = productCategory.flatMap { productCategory -> NSPredicate? in
+            let key = #keyPath(StorageProduct.categories.categoryID)
+
+            return NSPredicate(format: "ANY \(key) == %lld", productCategory.categoryID)
+        }
+
+        let subpredicates = [siteIDPredicate, stockStatusPredicate, productStatusPredicate, productTypePredicate, productCategoryPredicate].compactMap({ $0 })
 
         return NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)
     }
 }
 
 extension ResultsController where T: StorageProduct {
-    public func updatePredicate(siteID: Int64, stockStatus: ProductStockStatus? = nil, productStatus: ProductStatus? = nil, productType: ProductType? = nil) {
-        self.predicate = NSPredicate.createProductPredicate(siteID: siteID, stockStatus: stockStatus, productStatus: productStatus, productType: productType)
+    public func updatePredicate(siteID: Int64, stockStatus: ProductStockStatus? = nil, productStatus: ProductStatus? = nil, productType: ProductType? = nil, productCategory: ProductCategory? = nil) {
+        self.predicate = NSPredicate.createProductPredicate(siteID: siteID, stockStatus: stockStatus, productStatus: productStatus, productType: productType, productCategory: productCategory)
     }
 }

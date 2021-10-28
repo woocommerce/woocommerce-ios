@@ -119,7 +119,8 @@ final class ProductsViewController: UIViewController {
                 resultsController.updatePredicate(siteID: siteID,
                                                   stockStatus: filters.stockStatus,
                                                   productStatus: filters.productStatus,
-                                                  productType: filters.productType)
+                                                  productType: filters.productType,
+                                                  productCategory: filters.productCategory)
 
                 /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
                 tableView.reloadData()
@@ -511,7 +512,8 @@ private extension ProductsViewController {
         let predicate = NSPredicate.createProductPredicate(siteID: siteID,
                                                            stockStatus: filters.stockStatus,
                                                            productStatus: filters.productStatus,
-                                                           productType: filters.productType)
+                                                           productType: filters.productType,
+                                                           productCategory: filters.productCategory)
 
         return ResultsController<StorageProduct>(storageManager: storageManager,
                                                  matching: predicate,

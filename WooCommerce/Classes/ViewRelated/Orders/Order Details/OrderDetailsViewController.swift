@@ -704,14 +704,6 @@ private extension OrderDetailsViewController {
     }
 
     @objc private func collectPayment(at: IndexPath) {
-        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-        guard let orderTotal = currencyFormatter.convertToDecimal(from: viewModel.order.total),
-                orderTotal.compare(Constants.minimumAmount) == .orderedDescending else {
-            DDLogError("💳 Error: failed to capture payment for order. Minim")
-            let error = CardReaderServiceError.intentCreation(underlyingError: .stripeAPIError)
-            paymentAlerts.error(error: error, tryAgain: {})
-            return
-        }
         cardReaderAvailableSubscription = viewModel.cardReaderAvailable()
             .sink(
                 receiveCompletion: { [weak self] result in

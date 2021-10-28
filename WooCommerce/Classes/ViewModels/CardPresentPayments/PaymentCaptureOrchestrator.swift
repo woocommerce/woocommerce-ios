@@ -20,6 +20,11 @@ final class PaymentCaptureOrchestrator {
                         onClearMessage: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
+        guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total), orderTotal.compare(Constants.minimumAmount) == .orderedDescending else {
+            DDLogError("💳 Error: failed to capture payment for order. Minim")
+            onCompletion(.failure(CardReaderServiceError.intentCreation(underlyingError: .stripeAPIError)))
+            return
+        }
         /// First ask the backend to create/assign a Stripe customer for the order
         ///
         var customerID: String?
@@ -266,5 +271,11 @@ private extension PaymentCaptureOrchestrator {
                                                             + "Order @{number} for @{store name} "
                                                             + "Parameters: %1$@ - order number, "
                                                             + "%2$@ - store name")
+    }
+}
+
+private extension PaymentCaptureOrchestrator {
+    enum Constants {
+        static let minimumAmount = NSDecimalNumber(string: "0.5")
     }
 }

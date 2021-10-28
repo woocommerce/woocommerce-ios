@@ -54,7 +54,6 @@ final class ProductCategoryListViewModelTests: XCTestCase {
 
             let viewModel = ProductCategoryListViewModel(storesManager: self.storesManager, siteID: 0, onProductCategorySelection: { category in
                 promise(category)
-
             })
 
             viewModel.addAndSelectNewCategory(category: productCategory)

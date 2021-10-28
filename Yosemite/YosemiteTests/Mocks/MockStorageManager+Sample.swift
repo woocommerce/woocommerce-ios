@@ -47,6 +47,15 @@ extension MockStorageManager {
         let newProduct = viewStorage.insertNewObject(ofType: StorageProduct.self)
         newProduct.update(with: readOnlyProduct)
 
+        let categories: [StorageProductCategory] = readOnlyProduct.categories.compactMap {
+            let productCategory = viewStorage.insertNewObject(ofType: StorageProductCategory.self)
+            productCategory.update(with: $0)
+
+            return productCategory
+        }
+
+        newProduct.categories = Set(categories)
+
         return newProduct
     }
 

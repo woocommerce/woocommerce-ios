@@ -32,7 +32,8 @@ final class ResultsController_FilterProductTests: XCTestCase {
                                 name: "A",
                                 productTypeKey: ProductType.affiliate.rawValue,
                                 statusKey: ProductStatus.draft.rawValue,
-                                stockStatusKey: ProductStockStatus.onBackOrder.rawValue),
+                                stockStatusKey: ProductStockStatus.onBackOrder.rawValue,
+                                categories: [ProductCategory.fake()]),
             Product.fake().copy(siteID: sampleSiteID,
                                 productID: 2,
                                 name: "B",
@@ -52,7 +53,7 @@ final class ResultsController_FilterProductTests: XCTestCase {
         }
 
         // Act
-        let predicate = NSPredicate.createProductPredicate(siteID: sampleSiteID, stockStatus: nil, productStatus: nil, productType: nil)
+        let predicate = NSPredicate.createProductPredicate(siteID: sampleSiteID, stockStatus: nil, productStatus: nil, productType: nil, productCategory: nil)
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: predicate,
                                                                   sortOrder: .nameAscending)
@@ -67,7 +68,11 @@ final class ResultsController_FilterProductTests: XCTestCase {
         let otherProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, stockStatusKey: ProductStockStatus.inStock.rawValue)
 
         let expectedProducts = [
-            Product.fake().copy(siteID: sampleSiteID, productID: 62, name: "A", stockStatusKey: ProductStockStatus.onBackOrder.rawValue),
+            Product.fake().copy(siteID: sampleSiteID,
+                                productID: 62,
+                                name: "A",
+                                stockStatusKey: ProductStockStatus.onBackOrder.rawValue,
+                                categories: [ProductCategory.fake()]),
             Product.fake().copy(siteID: sampleSiteID, productID: 2, name: "B", stockStatusKey: ProductStockStatus.onBackOrder.rawValue),
         ]
 
@@ -76,7 +81,11 @@ final class ResultsController_FilterProductTests: XCTestCase {
         }
 
         // Act
-        let predicate = NSPredicate.createProductPredicate(siteID: sampleSiteID, stockStatus: .onBackOrder, productStatus: nil, productType: nil)
+        let predicate = NSPredicate.createProductPredicate(siteID: sampleSiteID,
+                                                           stockStatus: .onBackOrder,
+                                                           productStatus: nil,
+                                                           productType: nil,
+                                                           productCategory: nil)
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: predicate,
                                                                   sortOrder: .nameAscending)
@@ -93,7 +102,7 @@ final class ResultsController_FilterProductTests: XCTestCase {
 
         let expectedProducts = [
             Product.fake().copy(siteID: sampleSiteID, productID: 62, name: "A", statusKey: ProductStatus.draft.rawValue),
-            Product.fake().copy(siteID: sampleSiteID, productID: 2, name: "B", statusKey: ProductStatus.draft.rawValue),
+            Product.fake().copy(siteID: sampleSiteID, productID: 2, name: "B", statusKey: ProductStatus.draft.rawValue, categories: [ProductCategory.fake()]),
         ]
 
         ([otherProduct] + expectedProducts).forEach { product in
@@ -101,7 +110,11 @@ final class ResultsController_FilterProductTests: XCTestCase {
         }
 
         // Act
-        let predicate = NSPredicate.createProductPredicate(siteID: sampleSiteID, stockStatus: nil, productStatus: .draft, productType: nil)
+        let predicate = NSPredicate.createProductPredicate(siteID: sampleSiteID,
+                                                           stockStatus: nil,
+                                                           productStatus: .draft,
+                                                           productType: nil,
+                                                           productCategory: nil)
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: predicate,
                                                                   sortOrder: .nameAscending)
@@ -117,7 +130,11 @@ final class ResultsController_FilterProductTests: XCTestCase {
         let otherProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, productTypeKey: ProductType.affiliate.rawValue)
 
         let expectedProducts = [
-            Product.fake().copy(siteID: sampleSiteID, productID: 62, name: "A", productTypeKey: ProductType.variable.rawValue),
+            Product.fake().copy(siteID: sampleSiteID,
+                                productID: 62,
+                                name: "A",
+                                productTypeKey: ProductType.variable.rawValue,
+                                categories: [ProductCategory.fake()]),
             Product.fake().copy(siteID: sampleSiteID, productID: 2, name: "B", productTypeKey: ProductType.variable.rawValue),
         ]
 
@@ -126,7 +143,51 @@ final class ResultsController_FilterProductTests: XCTestCase {
         }
 
         // Act
-        let predicate = NSPredicate.createProductPredicate(siteID: sampleSiteID, stockStatus: nil, productStatus: nil, productType: .variable)
+        let predicate = NSPredicate.createProductPredicate(siteID: sampleSiteID,
+                                                           stockStatus: nil,
+                                                           productStatus: nil,
+                                                           productType: .variable,
+                                                           productCategory: nil)
+        let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
+                                                                  matching: predicate,
+                                                                  sortOrder: .nameAscending)
+        try? resultsController.performFetch()
+
+        // Assert
+        XCTAssertFalse(resultsController.fetchedObjects.contains(otherProduct))
+        XCTAssertEqual(resultsController.fetchedObjects, expectedProducts)
+    }
+
+    func testPredicateWithNonNilProductCategory() {
+        // Arrange
+        let filterCategoryID: Int64 = 2
+        let otherCategoryID: Int64 = 1
+        let otherProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, categories: [ProductCategory.fake().copy(categoryID: otherCategoryID)])
+
+        let expectedProducts = [
+            Product.fake().copy(siteID: sampleSiteID,
+                                productID: 62,
+                                name: "A",
+                                productTypeKey: ProductType.variable.rawValue,
+                                categories: [ProductCategory.fake().copy(categoryID: otherCategoryID),
+                                             ProductCategory.fake().copy(categoryID: filterCategoryID)]),
+            Product.fake().copy(siteID: sampleSiteID,
+                                productID: filterCategoryID,
+                                name: "B",
+                                productTypeKey: ProductType.variable.rawValue,
+                                categories: [ProductCategory.fake().copy(categoryID: filterCategoryID)]),
+        ]
+
+        ([otherProduct] + expectedProducts).forEach { product in
+            storageManager.insertSampleProduct(readOnlyProduct: product)
+        }
+
+        // Act
+        let predicate = NSPredicate.createProductPredicate(siteID: sampleSiteID,
+                                                           stockStatus: nil,
+                                                           productStatus: nil,
+                                                           productType: nil,
+                                                           productCategory: ProductCategory.fake().copy(categoryID: 2))
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: predicate,
                                                                   sortOrder: .nameAscending)

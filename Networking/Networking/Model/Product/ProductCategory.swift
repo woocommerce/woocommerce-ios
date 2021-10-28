@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a ProductCategory entity.
 ///
-public struct ProductCategory: Codable, Equatable, GeneratedFakeable {
+public struct ProductCategory: Codable, Equatable, GeneratedFakeable, GeneratedCopiable {
     public let categoryID: Int64
     public let siteID: Int64
     public let parentID: Int64

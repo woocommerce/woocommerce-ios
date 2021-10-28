@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 import Yosemite
 import WordPressUI
+import class Networking.UserAgent
 
 
 /// Result Enum for the RequirementsChecker
@@ -80,6 +81,9 @@ private extension RequirementsChecker {
         return SettingAction.retrieveSiteAPI(siteID: siteID) { result in
             switch result {
             case .success(let siteAPI):
+                if siteAPI.telemetryIsAvailable {
+                    postTelemetryIfNeeded(siteID: siteID)
+                }
                 if siteAPI.highestWooVersion == .mark3 {
                     onCompletion?(.success(.validWCVersion))
                 } else {
@@ -91,5 +95,29 @@ private extension RequirementsChecker {
                 onCompletion?(.failure(error))
             }
         }
+    }
+
+    /// Dispatches a `TelemetryAction.postTelemetry` action
+    ///
+    static func postTelemetryIfNeeded(siteID: Int64) {
+        let minimalIntervalBetweenReports: TimeInterval = 60*60*24
+        if let telemetryLastReportedTime = UserDefaults.standard[.telemetryLastReportedTime] as? Date,
+           Date().timeIntervalSince(telemetryLastReportedTime) < minimalIntervalBetweenReports,
+           siteID == UserDefaults.standard[.telemetryLastReportedStoreID] {
+            // report telemetry for same store only once in 24h
+            return
+        }
+
+        let action = TelemetryAction.postTelemetry(siteID: siteID, versionString: UserAgent.bundleShortVersion) { result in
+            switch result {
+            case .success:
+                UserDefaults.standard[.telemetryLastReportedTime] = Date()
+                UserDefaults.standard[.telemetryLastReportedStoreID] = siteID
+                DDLogInfo("Successfully posted telemetry for siteID: \(siteID).")
+            case .failure(let error):
+                DDLogError("⛔️ Failed to post telemetry for siteID: \(siteID). Error: \(error)")
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 }

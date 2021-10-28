@@ -20,6 +20,8 @@ extension UserDefaults {
         case analyticsUsername
         case notificationsLastSeenTime
         case notificationsMarkAsReadCount
+        case telemetryLastReportedStoreID
+        case telemetryLastReportedTime
     }
 }
 

@@ -66,6 +66,7 @@ final class ProductListMultiSelectorDataSource: PaginatedListSelectorDataSource 
                                  stockStatus: nil,
                                  productStatus: nil,
                                  productType: nil,
+                                 productCategory: nil,
                                  sortOrder: .nameAscending,
                                  excludedProductIDs: excludedProductIDs,
                                  shouldDeleteStoredProductsOnFirstPage: false) { result in

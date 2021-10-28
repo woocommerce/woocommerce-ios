@@ -7,11 +7,12 @@ import TestKit
 final class FilterProductCategoryListViewModelTests: XCTestCase {
     private var filterProductCategoryListViewModel: FilterProductCategoryListViewModel!
     private var productCategoryListViewModel: ProductCategoryListViewModel!
+    private let anyCategoryIsSelectedDefaultValue = false
 
     override func setUp() {
         super.setUp()
 
-        filterProductCategoryListViewModel = FilterProductCategoryListViewModel()
+        filterProductCategoryListViewModel = FilterProductCategoryListViewModel(anyCategoryIsSelected: anyCategoryIsSelectedDefaultValue)
         productCategoryListViewModel = ProductCategoryListViewModel(storesManager: MockProductCategoryStoresManager(),
                                                                     siteID: 0,
                                                                     enrichingDataSource: filterProductCategoryListViewModel,
@@ -25,7 +26,7 @@ final class FilterProductCategoryListViewModelTests: XCTestCase {
         productCategoryListViewModel = nil
     }
 
-    func test_enrichCategoryViewModels_then_it_adds_the_any_category_view_model() {
+    func test_enrichCategoryViewModels_then_it_adds_the_any_category_view_model_with_the_right_selected_state() {
         // Given
         let categoryViewModel = ProductCategoryCellViewModel(categoryID: 1,
                                                               name: NSLocalizedString("Any", comment: "Title when there is no filter set."),
@@ -38,7 +39,7 @@ final class FilterProductCategoryListViewModelTests: XCTestCase {
         // Then
         let expectedAnyCategoryViewModel = ProductCategoryCellViewModel(categoryID: nil,
                                                                         name: NSLocalizedString("Any", comment: "Title when there is no filter set."),
-                                                                        isSelected: true,
+                                                                        isSelected: anyCategoryIsSelectedDefaultValue,
                                                                         indentationLevel: 0)
         XCTAssertEqual(enrichedViewModels.count, 2)
         XCTAssertEqual(enrichedViewModels.first, expectedAnyCategoryViewModel)
@@ -52,7 +53,7 @@ final class FilterProductCategoryListViewModelTests: XCTestCase {
         // Then
         let expectedAnyCategoryViewModel = ProductCategoryCellViewModel(categoryID: nil,
                                                                         name: NSLocalizedString("Any", comment: "Title when there is no filter set."),
-                                                                        isSelected: false,
+                                                                        isSelected: anyCategoryIsSelectedDefaultValue,
                                                                         indentationLevel: 0)
         let enrichedViewModels = filterProductCategoryListViewModel.enrichCategoryViewModels([])
         XCTAssertEqual(enrichedViewModels.first, expectedAnyCategoryViewModel)
@@ -92,7 +93,7 @@ final class FilterProductCategoryListViewModelTests: XCTestCase {
         // Then
         let expectedAnyCategoryViewModel = ProductCategoryCellViewModel(categoryID: nil,
                                                                         name: NSLocalizedString("Any", comment: "Title when there is no filter set."),
-                                                                        isSelected: true,
+                                                                        isSelected: anyCategoryIsSelectedDefaultValue,
                                                                         indentationLevel: 0)
         XCTAssertEqual(categoryViewModels.first, expectedAnyCategoryViewModel)
         XCTAssertEqual(categoryViewModels.count, 1)

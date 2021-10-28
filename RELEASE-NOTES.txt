@@ -5,6 +5,7 @@
 - [*] Fix: after disconnecting a site or connecting to a new site, the sites in site picker (Settings > Switch Store) should be updated accordingly. The only exception is when the newly disconnected site is the currently selected site. [https://github.com/woocommerce/woocommerce-ios/pull/5241]
 - [*] Order Details: Show a button on the "Product" section of Order Details screen to allow recreating shipping labels. [https://github.com/woocommerce/woocommerce-ios/pull/5255]
 - [*] Edit Order Address - Enable `Done` button when `Use as {Shipping/Billing} Address` toggle is turned on. [https://github.com/woocommerce/woocommerce-ios/pull/5254]
+- [*] Add/Edit Product: fix an issue where the product name keyboard is English only. [https://github.com/woocommerce/woocommerce-ios/pull/5288]
 
 7.8
 -----

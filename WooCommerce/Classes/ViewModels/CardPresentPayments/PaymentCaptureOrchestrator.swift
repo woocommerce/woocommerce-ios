@@ -24,7 +24,7 @@ final class PaymentCaptureOrchestrator {
         /// https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts
         guard isTotalAmountValid(order: order) else {
             DDLogError("💳 Error: failed to capture payment for order. Order amount is below minimum")
-            onCompletion(.failure(NotValidAmountError.belowMinimumAmount))
+            onCompletion(.failure(minimumAmountError(order: order, minimumAmount: Constants.minimumAmount)))
             return
         }
         /// First ask the backend to create/assign a Stripe customer for the order
@@ -277,6 +277,14 @@ private extension PaymentCaptureOrchestrator {
 
         return orderTotal.compare(Constants.minimumAmount) == .orderedDescending
     }
+
+    func minimumAmountError(order: Order, minimumAmount: NSDecimalNumber) -> Error {
+        guard let minimum = currencyFormatter.formatAmount(minimumAmount, with: order.currency) else {
+            return NotValidAmountError.other
+        }
+
+        return NotValidAmountError.belowMinimumAmount(amount: minimum)
+    }
 }
 
 private extension PaymentCaptureOrchestrator {
@@ -292,13 +300,13 @@ private extension PaymentCaptureOrchestrator {
 
 private extension PaymentCaptureOrchestrator {
     private enum NotValidAmountError: Error, LocalizedError {
-        case belowMinimumAmount
+        case belowMinimumAmount(amount: String)
         case other
 
         public var errorDescription: String? {
             switch self {
-            case .belowMinimumAmount:
-                return Localizations.belowMinimumAmount
+            case .belowMinimumAmount(let amount):
+                return String.localizedStringWithFormat(Localizations.belowMinimumAmount, amount)
             case .other:
                 return Localizations.defaultMessage
             }
@@ -306,12 +314,12 @@ private extension PaymentCaptureOrchestrator {
 
         enum Localizations {
             static let defaultMessage = NSLocalizedString(
-                "Unable to process payment. Order Total amount is not valid.",
+                "Unable to process payment. Order total amount is not valid.",
                 comment: "Error message when the order amount is not valid."
             )
 
             static let belowMinimumAmount = NSLocalizedString(
-                "Unable to process payment. Order Total amount is below the minimum amount you can charge.",
+                "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@",
                 comment: "Error message when the order amount is below the minimum amount allowed."
             )
         }

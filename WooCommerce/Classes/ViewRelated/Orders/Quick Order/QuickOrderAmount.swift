@@ -45,8 +45,27 @@ final class QuickOrderAmountHostingController: UIHostingController<QuickOrderAmo
             .store(in: &subscriptions)
     }
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        // Set presentation delegate to track the user dismiss flow event
+        if let navigationController = navigationController {
+            navigationController.presentationController?.delegate = self
+        } else {
+            presentationController?.delegate = self
+        }
+    }
+
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+/// Intercepts to the dismiss drag gesture.
+///
+extension QuickOrderAmountHostingController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        rootView.viewModel.userDidCancelFlow()
     }
 }
 
@@ -97,6 +116,7 @@ struct QuickOrderAmount: View {
             ToolbarItem(placement: .cancellationAction) {
                 Button(Localization.cancelTitle, action: {
                     dismiss()
+                    viewModel.userDidCancelFlow()
                 })
             }
         }

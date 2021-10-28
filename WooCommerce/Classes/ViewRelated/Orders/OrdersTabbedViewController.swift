@@ -146,6 +146,8 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
         let viewController = QuickOrderAmountHostingController(viewModel: viewModel)
         let navigationController = WooNavigationController(rootViewController: viewController)
         present(navigationController, animated: true)
+
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.QuickOrder.quickOrderFlowStarted())
     }
 
     // MARK: - ButtonBarPagerTabStripViewController Conformance

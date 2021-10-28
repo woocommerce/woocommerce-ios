@@ -110,9 +110,8 @@ private extension OrdersRootViewController {
     ///
     func configureNavigationButtons(isQuickOrderExperimentalToggleEnabled: Bool) {
         let shouldShowQuickOrderButton: Bool = {
-            let isQuickOrderEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.quickOrderPrototype) && isQuickOrderExperimentalToggleEnabled
             let isInPersonPaymentsConfigured = inPersonPaymentsUseCase.state == .completed
-            return isQuickOrderEnabled && isInPersonPaymentsConfigured
+            return isQuickOrderExperimentalToggleEnabled && isInPersonPaymentsConfigured
         }()
         let buttons: [UIBarButtonItem?] = [
             ordersViewController.createSearchBarButtonItem(),

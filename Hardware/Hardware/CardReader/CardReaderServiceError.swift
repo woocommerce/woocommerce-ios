@@ -187,7 +187,7 @@ public enum UnderlyingError: Error {
     case readerSessionExpired
 
     /// The underlying request returned an API error.
-    case APIError
+    case processorAPIError
 
     /// Catch-all error case. Indicates there is something wrong with the
     /// internal state of the CardReaderService.
@@ -308,7 +308,7 @@ updating the application or using a different reader
         case .readerSessionExpired:
             return NSLocalizedString("The card reader session has expired - please disconnect and reconnect the card reader and then try again",
                                      comment: "Error message when the card reader session has timed out.")
-        case .APIError:
+        case .processorAPIError:
             return NSLocalizedString("Unable to process payment. Order Total amount is below the minimum amount you can charge.",
                                      comment: "Error message when the order amount is below the minimum amount allowed.")
         case .internalServiceError:

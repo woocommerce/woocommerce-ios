@@ -80,7 +80,7 @@ extension UnderlyingError {
         case ErrorCode.Code.sessionExpired.rawValue:
             self = .readerSessionExpired
         case ErrorCode.Code.stripeAPIError.rawValue:
-            self = .APIError
+            self = .processorAPIError
         default:
             self = .internalServiceError
         }

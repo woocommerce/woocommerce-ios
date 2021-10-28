@@ -267,6 +267,8 @@ private extension PaymentCaptureOrchestrator {
 
 private extension PaymentCaptureOrchestrator {
     enum Constants {
+        /// Minimum order amount in USD:
+        /// https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts
         static let minimumAmount = NSDecimalNumber(string: "0.5")
     }
 

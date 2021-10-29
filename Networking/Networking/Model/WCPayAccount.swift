@@ -4,6 +4,13 @@ public struct WCPayAccount: Decodable {
     public static let gatewayID = "woocommerce-payments"
 
     public let status: WCPayAccountStatusEnum
+    /// Indicates whether the payment gateway is a live account that can accept actual payments, or just a test/developer account.
+    /// Not to be confused with "test mode" which is a separate concept (see `isInTestMode`)
+    ///
+    public let isLiveAccount: Bool
+    /// Indicates whether the payment gateway is currently in "Test" or "Debug" mode
+    ///
+    public let isInTestMode: Bool
     public let hasPendingRequirements: Bool
     public let hasOverdueRequirements: Bool
     public let currentDeadline: Date?
@@ -22,6 +29,8 @@ public struct WCPayAccount: Decodable {
 
     public init(
         status: WCPayAccountStatusEnum,
+        isLiveAccount: Bool,
+        isInTestMode: Bool,
         hasPendingRequirements: Bool,
         hasOverdueRequirements: Bool,
         currentDeadline: Date?,
@@ -32,6 +41,8 @@ public struct WCPayAccount: Decodable {
         isCardPresentEligible: Bool
     ) {
         self.status = status
+        self.isLiveAccount = isLiveAccount
+        self.isInTestMode = isInTestMode
         self.hasPendingRequirements = hasPendingRequirements
         self.hasOverdueRequirements = hasOverdueRequirements
         self.currentDeadline = currentDeadline
@@ -47,6 +58,8 @@ public struct WCPayAccount: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let status = try container.decode(WCPayAccountStatusEnum.self, forKey: .status)
+        let isLiveAccount = try container.decode(Bool.self, forKey: .isLive)
+        let isInTestMode = try container.decode(Bool.self, forKey: .testMode)
         let hasPendingRequirements = try container.decode(Bool.self, forKey: .hasPendingRequirements)
         let hasOverdueRequirements = try container.decode(Bool.self, forKey: .hasOverdueRequirements)
         let currentDeadline = try container.decodeIfPresent(Date.self, forKey: .currentDeadline)
@@ -60,6 +73,8 @@ public struct WCPayAccount: Decodable {
 
         self.init(
             status: status,
+            isLiveAccount: isLiveAccount,
+            isInTestMode: isInTestMode,
             hasPendingRequirements: hasPendingRequirements,
             hasOverdueRequirements: hasOverdueRequirements,
             currentDeadline: currentDeadline,
@@ -75,6 +90,8 @@ public struct WCPayAccount: Decodable {
 public extension WCPayAccount {
     static let noAccount = WCPayAccount(
         status: .noAccount,
+        isLiveAccount: false,
+        isInTestMode: false,
         hasPendingRequirements: false,
         hasOverdueRequirements: false,
         currentDeadline: nil,
@@ -89,17 +106,19 @@ public extension WCPayAccount {
 private extension WCPayAccount {
     enum CodingKeys: String, CodingKey {
         case status = "status"
+        case isLive = "is_live"
+        case testMode = "test_mode"
         case hasPendingRequirements = "has_pending_requirements"
         case hasOverdueRequirements = "has_overdue_requirements"
         case currentDeadline = "current_deadline"
         case statementDescriptor = "statement_descriptor"
         case storeCurrencies = "store_currencies"
-        case country = "country"
+        case country
         case cardPresentEligible = "card_present_eligible"
     }
 
     enum CurrencyCodingKeys: String, CodingKey {
         case defaultCurrency = "default"
-        case supported = "supported"
+        case supported
     }
 }

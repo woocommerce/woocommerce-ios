@@ -36,6 +36,18 @@ final class OrdersRemoteTests: XCTestCase {
         network.removeAllSimulatedResponses()
     }
 
+    /// Verifies that the parameter `_fields` in single order and order list requests do not contain whitespace.
+    ///
+    func test_order_fields_parameter_values_do_not_contain_whitespace() throws {
+        // When
+        let orderListFieldsValue = OrdersRemote.ParameterValues.listFieldValues
+        let orderFieldsValue = OrdersRemote.ParameterValues.singleOrderFieldValues
+
+        // Then
+        XCTAssertFalse(orderListFieldsValue.contains(" "))
+        XCTAssertFalse(orderFieldsValue.contains(" "))
+    }
+
     // MARK: - Load All Orders Tests
 
     /// Verifies that loadAllOrders properly parses the `orders-load-all` sample response.

@@ -53,6 +53,7 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
+                                                       productCategory: nil,
                                                        sortOrder: .nameAscending) { [weak self] error in
                                                         guard let self = self else {
                                                             XCTFail()
@@ -77,6 +78,7 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
+                                                       productCategory: nil,
                                                        sortOrder: .nameDescending) { [weak self] error in
                                                         guard let self = self else {
                                                             XCTFail()
@@ -101,6 +103,7 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
+                                                       productCategory: nil,
                                                        sortOrder: .dateAscending) { [weak self] error in
                                                         guard let self = self else {
                                                             XCTFail()
@@ -125,6 +128,7 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
+                                                       productCategory: nil,
                                                        sortOrder: .dateDescending) { [weak self] error in
                                                         guard let self = self else {
                                                             XCTFail()

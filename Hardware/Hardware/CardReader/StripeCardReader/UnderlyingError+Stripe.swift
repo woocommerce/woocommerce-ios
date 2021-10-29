@@ -79,6 +79,8 @@ extension UnderlyingError {
             self = .requestTimedOut
         case ErrorCode.Code.sessionExpired.rawValue:
             self = .readerSessionExpired
+        case ErrorCode.Code.stripeAPIError.rawValue:
+            self = .processorAPIError
         default:
             self = .internalServiceError
         }

@@ -154,6 +154,10 @@ final class CardReaderServiceErrorTests: XCTestCase {
         XCTAssertEqual(.readerSessionExpired, domainError(stripeCode: 9060))
     }
 
+    func test_stripe_error_api_maps_to_stripeAPI() {
+        XCTAssertEqual(.processorAPIError, domainError(stripeCode: 9020))
+    }
+
     func test_stripe_catch_all_error() {
         // Any error code not mapped to an specific error will be
         // mapped to `internalServiceError`

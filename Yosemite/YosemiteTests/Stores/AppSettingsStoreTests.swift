@@ -606,6 +606,25 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertFalse(data.isAvailable)
         XCTAssertNil(data.telemetryLastReportedTime)
     }
+
+    func test_resetGeneralStoreSettings_resets_all_settings() throws {
+        // Given
+        let siteID: Int64 = 1234
+        let initialTime = Date(timeIntervalSince1970: 100)
+
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings(isTelemetryAvailable: true,
+                                                                                                             telemetryLastReportedTime: initialTime)])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.resetGeneralStoreSettings
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertEqual(true, fileStorage?.deleteIsHit)
+        let savedSettings: GeneralStoreSettingsBySite? = try fileStorage?.data(for: expectedGeneralStoreSettingsFileURL)
+        XCTAssertNil(savedSettings)
+    }
 }
 
 // MARK: - Utils

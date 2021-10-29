@@ -26,7 +26,6 @@ extension NSPredicate {
 
         let productCategoryPredicate = productCategory.flatMap { productCategory -> NSPredicate? in
             let key = #keyPath(StorageProduct.categories.categoryID)
-
             return NSPredicate(format: "ANY \(key) == %lld", productCategory.categoryID)
         }
 

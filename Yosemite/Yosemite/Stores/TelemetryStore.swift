@@ -6,6 +6,8 @@ import Storage
 public class TelemetryStore: Store {
     private let telemetryRemote: TelemetryRemote
 
+    private let minimalIntervalBetweenReports: TimeInterval = 60*60*24
+
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.telemetryRemote = TelemetryRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -26,15 +28,25 @@ public class TelemetryStore: Store {
         }
 
         switch action {
-        case .sendTelemetry(let siteID, let versionString, let onCompletion):
-            sendTelemetry(siteID: siteID, versionString: versionString, onCompletion: onCompletion)
+        case .sendTelemetry(let siteID, let versionString, let telemetryLastReportedTime, let onCompletion):
+            sendTelemetry(siteID: siteID, versionString: versionString, telemetryLastReportedTime: telemetryLastReportedTime, onCompletion: onCompletion)
         }
     }
 }
 
 private extension TelemetryStore {
 
-    func sendTelemetry(siteID: Int64, versionString: String, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func sendTelemetry(siteID: Int64, versionString: String, telemetryLastReportedTime: Date?, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        if let telemetryLastReportedTime = telemetryLastReportedTime,
+           Date().timeIntervalSince(telemetryLastReportedTime) < minimalIntervalBetweenReports {
+            // send telemetry for same store only after timeout
+            onCompletion(.failure(TelemetryError.requestThrottled))
+            return
+        }
         telemetryRemote.sendTelemetry(for: siteID, versionString: versionString, completion: onCompletion)
     }
+}
+
+public enum TelemetryError: Error {
+    case requestThrottled
 }

@@ -100,15 +100,10 @@ private extension RequirementsChecker {
     /// Dispatches a `TelemetryAction.sendTelemetry` action
     ///
     static func sendTelemetryIfNeeded(siteID: Int64) {
-        let minimalIntervalBetweenReports: TimeInterval = 60*60*24
-        if let telemetryLastReportedTime = UserDefaults.standard[.telemetryLastReportedTime] as? Date,
-           Date().timeIntervalSince(telemetryLastReportedTime) < minimalIntervalBetweenReports,
-           siteID == UserDefaults.standard[.telemetryLastReportedStoreID] {
-            // send telemetry for same store only once in 24h
-            return
-        }
-
-        let action = TelemetryAction.sendTelemetry(siteID: siteID, versionString: UserAgent.bundleShortVersion) { result in
+        let telemetryLastReportedTime = UserDefaults.standard[.telemetryLastReportedTime] as? Date
+        let action = TelemetryAction.sendTelemetry(siteID: siteID,
+                                                   versionString: UserAgent.bundleShortVersion,
+                                                   telemetryLastReportedTime: telemetryLastReportedTime) { result in
             switch result {
             case .success:
                 UserDefaults.standard[.telemetryLastReportedTime] = Date()

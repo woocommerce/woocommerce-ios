@@ -8,5 +8,5 @@ public enum TelemetryAction: Action {
 
     /// Sends data to the telemetry endpoint.
     ///
-    case sendTelemetry(siteID: Int64, versionString: String, onCompletion: (Result<Void, Error>) -> Void)
+    case sendTelemetry(siteID: Int64, versionString: String, telemetryLastReportedTime: Date?, onCompletion: (Result<Void, Error>) -> Void)
 }

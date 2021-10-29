@@ -1,9 +1,9 @@
-/* Translation-Revision-Date: 2021-10-22 17:30:44+0000 */
+/* Translation-Revision-Date: 2021-10-26 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
 
-/* No comment provided by engineer. */
+/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "#%@ %@" = "#%1$@ %2$@";
 
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
@@ -257,7 +257,7 @@
 "Add Category" = "Ajouter une catégorie";
 
 /* Title for the button to add the Customer Provided Note in Order Details */
-"Add Customer Note" = "Add Customer Note";
+"Add Customer Note" = "Ajouter une note client";
 
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "Ajouter un fichier téléchargeable";
@@ -288,7 +288,7 @@
 "Add Products" = "Ajouter des produits";
 
 /* Title for the button to add the Shipping Address in Order Details */
-"Add Shipping Address" = "Add Shipping Address";
+"Add Shipping Address" = "Ajouter l’adresse de livraison";
 
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
@@ -347,8 +347,8 @@
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "Ajouter à distance les informations « fichiers téléchargeables » des produits";
 
-/* Navigates to a screen to create a quick pay order */
-"Add quick pay order" = "Add quick pay order";
+/* Navigates to a screen to create a quick order order */
+"Add quick order order" = "Add quick order order";
 
 /* Option to add item to new package on Package Details screen of Shipping Label flow. */
 "Add to new package" = "Ajouter au nouveau colis";
@@ -439,7 +439,7 @@
 "An optional note to send the customer after purchase" = "Note facultative à envoyer au client après l’achat";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to charge a reader running older software */
-"An update is available, but your reader battery is too low to update. Please charge your reader right away to continue accepting payments" = "An update is available, but your reader battery is too low to update. Please charge your reader right away to continue accepting payments";
+"An update is available, but your reader battery is too low to update. Please charge your reader right away to continue accepting payments" = "Une mise à jour est disponible, mais la batterie de votre lecteur est trop faible pour effectuer la mise à jour. Veuillez charger votre lecteur immédiatement pour continuer à accepter les paiements";
 
 /* Product variation attribute description where the attribute is set to any value.
    Title when there is no filter set. */
@@ -532,7 +532,7 @@
 "Back" = "Retour";
 
 /* Accessibility announcement message when device goes back online */
-"Back online" = "Back online";
+"Back online" = "De nouveau en ligne";
 
 /* Button to dismiss modal overlay. Presented to users after a payment has been successfully collected
    Button to dismiss modal overlay. Presented to users after collecting a payment fails */
@@ -598,7 +598,7 @@
 "Can Not Request Link" = "Impossible de faire une requête sur le lien";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the quick pay screen */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the quick order screen */
 "Cancel" = "Annuler";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -623,7 +623,7 @@
 "Capture high-quality product reviews for your store." = "Obtenez des avis qualitatifs concernant votre produits pour votre boutique";
 
 /* Navigates to Card Reader manual */
-"Card reader manual" = "Card reader manual";
+"Card reader manual" = "Manuel du lecteur de carte";
 
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "Transporteur et frais de port";
@@ -1014,7 +1014,7 @@
 "Don't have an account? _Sign up_" = "Vous n'avez pas encore de compte ? _S'inscrire_";
 
 /* Action title to select products to add to a grouped product from search results
-   Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - Title for the button to confirm the amount in the quick pay screen */
+   Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - Title for the button to confirm the amount in the quick order screen */
 "Done" = "Terminé";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -1144,15 +1144,15 @@
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "Vérifiez que le **micrologiciel de l’imprimante est à jour**. Consultez la documentation de votre imprimante pour obtenir des instructions sur la mise à jour.";
 
-/* Short instructions label in the quick pay screen */
-"Enter Amount" = "Enter Amount";
+/* Short instructions label in the quick order screen */
+"Enter Amount" = "Saisir le montant";
 
 /* Action button linking to instructions for enter another store.Presented when logging in with a site address that appears to be invalid.
    Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
 "Enter Another Store" = "Entrer une autre boutique";
 
 /* Placeholder for the required ITN row in Customs screen of Shipping Label flow */
-"Enter ITN" = "Enter ITN";
+"Enter ITN" = "Saisir le NTI";
 
 /* Placeholder for the ITN row in Customs screen of Shippling Label flow */
 "Enter ITN (Optional)" = "Saisir un NTI (facultatif)";
@@ -1675,10 +1675,10 @@
 "Learn more" = "En apprendre plus";
 
 /* A label prompting users to learn more about HS Tariff Number in Customs screen of Shipping Label flow */
-"Learn more about HS Tariff Number" = "Learn more about HS Tariff Number";
+"Learn more about HS Tariff Number" = "En savoir plus à propos du numéro de tarif du SH";
 
 /* A label prompting users to learn more about internal transaction number */
-"Learn more about Internal Transaction Number" = "Learn more about Internal Transaction Number";
+"Learn more about Internal Transaction Number" = "En savoir plus à propos du numéro de transaction interne";
 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
 "Learn more about Jetpack" = "En savoir plus sur Jetpack";
@@ -2211,7 +2211,7 @@
 "Payment method" = "Moyen de paiement";
 
 /* Notice that will be displayed after adding a new Shipping Label payment method */
-"Payment method added" = "Payment method added";
+"Payment method added" = "Moyen de paiement ajouté";
 
 /* Label informing users that the payment succeeded. Presented to users when a payment is collected */
 "Payment successful" = "Paiement réussi";
@@ -3174,7 +3174,7 @@
 "Switch Store" = "Changer de boutique";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. Parameters: %1$@ - store name */
-"Switched to %1$@." = "Switched to %1$@.";
+"Switched to %1$@." = "Basculé vers %1$@.";
 
 /* Message presented after users switch to a new store when multi-store push notifications are not supported. Reads like: Switched to {store name}. You will only receive notifications from this store. Parameters: %1$@ - store name */
 "Switched to %1$@. You will only receive notifications from this store." = "Basculé vers %1$@. Vous recevrez uniquement des notifications de cette boutique.";
@@ -3204,8 +3204,8 @@
    Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
 "Tags" = "Étiquettes";
 
-/* Title for the quick pay screen */
-"Take Payment" = "Take Payment";
+/* Title for the quick order screen */
+"Take Payment" = "Accepter le paiement";
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "Prendre une photo";
@@ -3442,8 +3442,8 @@
 /* The details on the placeholder overlay when there is issue syncing site plugins */
 "There was a problem while trying to load plugins. Check your internet and try again." = "Un problème est survenu lors de la tentative de chargement des extensions. Vérifiez votre connexion internet et réessayez.";
 
-/* Notice text after failing to create a quick pay order. */
-"There was an error creating the order" = "There was an error creating the order";
+/* Notice text after failing to create a quick order order. */
+"There was an error creating the order" = "Une erreur s’est produite lors de la création de la commande";
 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "Une erreur est survenue lors de l’émission du remboursement";
@@ -4117,7 +4117,7 @@
 "You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "Vous pouvez désormais créer des étiquettes d’expédition pour les commandes physiques directement depuis votre appareil grâce à l’extension gratuite WooCommerce Shipping. Appuyez sur Créer une étiquette d’expédition pour essayer notre fonctionnalité bêta !";
 
 /* Header text in Refund Shipping Label screen */
-"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process." = "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process.";
+"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process." = "Vous pouvez demander le remboursement d’une étiquette d’expédition qui n’a pas été utilisée pour expédier un colis.\nCela prendra au moins 14 jours.";
 
 /* Error message when WooCommerce Payments is not supported in a specific country
    Generic error message when In-Person Payments is unavailable */

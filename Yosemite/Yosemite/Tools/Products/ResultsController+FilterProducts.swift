@@ -36,7 +36,15 @@ extension NSPredicate {
 }
 
 extension ResultsController where T: StorageProduct {
-    public func updatePredicate(siteID: Int64, stockStatus: ProductStockStatus? = nil, productStatus: ProductStatus? = nil, productType: ProductType? = nil, productCategory: ProductCategory? = nil) {
-        self.predicate = NSPredicate.createProductPredicate(siteID: siteID, stockStatus: stockStatus, productStatus: productStatus, productType: productType, productCategory: productCategory)
+    public func updatePredicate(siteID: Int64,
+                                stockStatus: ProductStockStatus? = nil,
+                                productStatus: ProductStatus? = nil,
+                                productType: ProductType? = nil,
+                                productCategory: ProductCategory? = nil) {
+        self.predicate = NSPredicate.createProductPredicate(siteID: siteID,
+                                                            stockStatus: stockStatus,
+                                                            productStatus: productStatus,
+                                                            productType: productType,
+                                                            productCategory: productCategory)
     }
 }

@@ -5,7 +5,7 @@ import Hardware
 
 @testable import WooCommerce
 
-class ReceiptPrintingCoordinatorTests: XCTestCase {
+class ReceiptActionCoordinatorTests: XCTestCase {
     func test_printReceipt_logs_receiptPrintTapped_analyticEvent() {
         // Given
         ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: MockAnalyticsProvider()))
@@ -13,7 +13,7 @@ class ReceiptPrintingCoordinatorTests: XCTestCase {
         let params = CardPresentReceiptParameters.makeParams()
 
         // When
-        ReceiptPrintingCoordinator.printReceipt(for: order, params: params)
+        ReceiptActionCoordinator.printReceipt(for: order, params: params)
 
         // Then
         let analytics = ServiceLocator.analytics.analyticsProvider as! MockAnalyticsProvider
@@ -35,7 +35,7 @@ class ReceiptPrintingCoordinatorTests: XCTestCase {
         assertEmpty(storesManager.receivedActions)
 
         // When
-        ReceiptPrintingCoordinator.printReceipt(for: order, params: params)
+        ReceiptActionCoordinator.printReceipt(for: order, params: params)
 
         //Then
         XCTAssertEqual(storesManager.receivedActions.count, 1)
@@ -64,7 +64,7 @@ class ReceiptPrintingCoordinatorTests: XCTestCase {
     }
 }
 
-extension ReceiptPrintingCoordinatorTests {
+extension ReceiptActionCoordinatorTests {
     func assertAnalyticLogged(_ analytic: WooAnalyticsStat, for printingResult: PrintingResult) throws {
         // Given
         let order = MockOrders().makeOrder()
@@ -75,7 +75,7 @@ extension ReceiptPrintingCoordinatorTests {
         ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: MockAnalyticsProvider()))
 
         // When
-        ReceiptPrintingCoordinator.printReceipt(for: order, params: params)
+        ReceiptActionCoordinator.printReceipt(for: order, params: params)
 
         //Then
         let action = try XCTUnwrap(storesManager.receivedActions.first as? ReceiptAction)

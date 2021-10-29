@@ -29,6 +29,6 @@ final class ReceiptViewModel {
 
     /// Prints the receipt
     func printReceipt() {
-        ReceiptPrintingCoordinator.printReceipt(for: order, params: receipt)
+        ReceiptActionCoordinator.printReceipt(for: order, params: receipt)
     }
 }

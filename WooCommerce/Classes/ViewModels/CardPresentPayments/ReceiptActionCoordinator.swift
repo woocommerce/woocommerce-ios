@@ -1,7 +1,7 @@
 import Foundation
 import Yosemite
 
-struct ReceiptPrintingCoordinator {
+struct ReceiptActionCoordinator {
     static func printReceipt(for order: Order, params: CardPresentReceiptParameters) {
         ServiceLocator.analytics.track(.receiptPrintTapped)
 

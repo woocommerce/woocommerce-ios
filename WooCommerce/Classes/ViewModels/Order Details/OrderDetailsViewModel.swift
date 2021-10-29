@@ -550,7 +550,7 @@ extension OrderDetailsViewModel {
     }
 
     func printReceipt(params: CardPresentReceiptParameters) {
-        ReceiptPrintingCoordinator.printReceipt(for: order, params: params)
+        ReceiptActionCoordinator.printReceipt(for: order, params: params)
     }
 
     func emailReceipt(params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {

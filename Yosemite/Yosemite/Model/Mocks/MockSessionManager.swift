@@ -22,6 +22,10 @@ public struct MockSessionManager: SessionManagerProtocol {
 
     public var defaultSite: Site?
 
+    public var defaultSitePublisher: AnyPublisher<Site?, Never> {
+        Just(defaultSite).eraseToAnyPublisher()
+    }
+
     public var defaultStoreID: Int64?
 
     public var defaultRoles: [User.Role] = []

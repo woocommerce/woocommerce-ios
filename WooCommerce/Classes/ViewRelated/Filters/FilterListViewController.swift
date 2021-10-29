@@ -210,27 +210,31 @@ private extension FilterListViewController {
                 return
             }
 
+            let selectedValueAction: (FilterType) -> Void = { [weak self] selectedOption in
+                guard let self = self else {
+                    return
+                }
+                if selectedOption.description != selected.selectedValue.description {
+                    selected.selectedValue = selectedOption
+                    self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
+                    self.listSelector.reloadData()
+                }
+            }
+
             switch selected.listSelectorConfig {
             case .staticOptions(let options):
                 self.cancellableSelectedFilterValue?.cancel()
                 let command = StaticListSelectorCommand(navigationBarTitle: selected.title,
                                                         data: options,
                                                         selected: selected.selectedValue)
-                self.cancellableSelectedFilterValue = command.onItemSelected.subscribe { [weak self] selectedOption in
-                    guard let self = self else {
-                        return
-                    }
-                    if selectedOption.description != selected.selectedValue.description {
-                        selected.selectedValue = selectedOption
-                        self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
-                        self.listSelector.reloadData()
-                    }
-                }
+                self.cancellableSelectedFilterValue = command.onItemSelected.subscribe (selectedValueAction)
                 let staticListSelector = ListSelectorViewController(command: command, tableViewStyle: .plain) { _ in }
                 self.listSelector.navigationController?.pushViewController(staticListSelector, animated: true)
             case let .productCategories(siteID):
-                // TODO-5159: Handle product category filter selection
-                let filterProductCategoryListViewController = FilterProductCategoryListViewController(siteID: siteID)
+                let selectedProductCategory = selected.selectedValue as? ProductCategory
+                let filterProductCategoryListViewController = FilterProductCategoryListViewController(siteID: siteID,
+                                                                                                      selectedCategory: selectedProductCategory,
+                                                                                                      onProductCategorySelection: selectedValueAction)
                 self.listSelector.navigationController?.pushViewController(filterProductCategoryListViewController, animated: true)
             case .ordersDateRange(let options):
                 let command = OrderDateRangeListSelectorCommand(data: options, selected: selected.selectedValue as? OrderDateRangeFilterEnum)

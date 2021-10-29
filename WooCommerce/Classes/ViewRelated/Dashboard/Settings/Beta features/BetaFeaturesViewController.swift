@@ -90,12 +90,12 @@ private extension BetaFeaturesViewController {
     /// A section is returned only when the store is ready to receive payments
     ///
     func ordersSection() -> Section? {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.quickPayPrototype), paymentsStoreUseCase.state == .completed else {
+        guard paymentsStoreUseCase.state == .completed else {
             return nil
         }
 
-        return Section(rows: [.quickPay,
-                              .quickPayDescription])
+        return Section(rows: [.quickOrder,
+                              .quickOrderDescription])
     }
 
     /// Register table cells.
@@ -121,10 +121,10 @@ private extension BetaFeaturesViewController {
         case let cell as BasicTableViewCell where row == .orderAddOnsDescription:
             configureOrderAddOnsDescription(cell: cell)
         // Orders
-        case let cell as SwitchTableViewCell where row == .quickPay:
-            configureQuickPaySwitch(cell: cell)
-        case let cell as BasicTableViewCell where row == .quickPayDescription:
-            configureQuickPayDescription(cell: cell)
+        case let cell as SwitchTableViewCell where row == .quickOrder:
+            configureQuickOrderSwitch(cell: cell)
+        case let cell as BasicTableViewCell where row == .quickOrderDescription:
+            configureQuickOrderDescription(cell: cell)
         default:
             fatalError()
         }
@@ -165,12 +165,12 @@ private extension BetaFeaturesViewController {
         cell.textLabel?.text = Localization.orderAddOnsDescription
     }
 
-    func configureQuickPaySwitch(cell: SwitchTableViewCell) {
+    func configureQuickOrderSwitch(cell: SwitchTableViewCell) {
         configureCommonStylesForSwitchCell(cell)
-        cell.title = Localization.quickPayTitle
+        cell.title = Localization.quickOrderTitle
 
         // Fetch switch's state stored value.
-        let action = AppSettingsAction.loadQuickPaySwitchState() { result in
+        let action = AppSettingsAction.loadQuickOrderSwitchState() { result in
             guard let isEnabled = try? result.get() else {
                 return cell.isOn = false
             }
@@ -180,9 +180,9 @@ private extension BetaFeaturesViewController {
 
         // Change switch's state stored value
         cell.onChange = { isSwitchOn in
-            // TODO: Add analytics
+            ServiceLocator.analytics.track(event: WooAnalyticsEvent.QuickOrder.settingsBetaFeaturesQuickOrderToggled(isOn: isSwitchOn))
 
-            let action = AppSettingsAction.setQuickPayFeatureSwitchState(isEnabled: isSwitchOn, onCompletion: { result in
+            let action = AppSettingsAction.setQuickOrderFeatureSwitchState(isEnabled: isSwitchOn, onCompletion: { result in
                 // Roll back toggle if an error occurred
                 if result.isFailure {
                     cell.isOn.toggle()
@@ -190,12 +190,12 @@ private extension BetaFeaturesViewController {
             })
             ServiceLocator.stores.dispatch(action)
         }
-        cell.accessibilityIdentifier = "beta-features-order-quick-pay-cell"
+        cell.accessibilityIdentifier = "beta-features-order-quick-order-cell"
     }
 
-    func configureQuickPayDescription(cell: BasicTableViewCell) {
+    func configureQuickOrderDescription(cell: BasicTableViewCell) {
         configureCommonStylesForDescriptionCell(cell)
-        cell.textLabel?.text = Localization.quickPayDescription
+        cell.textLabel?.text = Localization.quickOrderDescription
     }
 }
 
@@ -262,14 +262,14 @@ private enum Row: CaseIterable {
     case orderAddOnsDescription
 
     // Orders.
-    case quickPay
-    case quickPayDescription
+    case quickOrder
+    case quickOrderDescription
 
     var type: UITableViewCell.Type {
         switch self {
-        case .orderAddOns, .quickPay:
+        case .orderAddOns, .quickOrder:
             return SwitchTableViewCell.self
-        case .orderAddOnsDescription, .quickPayDescription:
+        case .orderAddOnsDescription, .quickOrderDescription:
             return BasicTableViewCell.self
         }
     }
@@ -285,8 +285,8 @@ private extension BetaFeaturesViewController {
         static let orderAddOnsDescription = NSLocalizedString("Test out viewing Order Add-Ons as we get ready to launch",
                                                               comment: "Cell description on the beta features screen to enable the order add-ons feature")
 
-        static let quickPayTitle = NSLocalizedString("Quick Order", comment: "Cell title on the beta features screen to enable the Quick Pay feature")
-        static let quickPayDescription = NSLocalizedString("Test out creating orders with minimal information as we get ready to launch",
-                                                              comment: "Cell description on the beta features screen to enable the Quick Pay feature")
+        static let quickOrderTitle = NSLocalizedString("Quick Order", comment: "Cell title on the beta features screen to enable the Quick Order feature")
+        static let quickOrderDescription = NSLocalizedString("Test out creating orders with minimal information as we get ready to launch",
+                                                              comment: "Cell description on the beta features screen to enable the Quick Order feature")
     }
 }

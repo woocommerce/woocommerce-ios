@@ -25,6 +25,7 @@ public enum ProductAction: Action {
         stockStatus: ProductStockStatus?,
         productStatus: ProductStatus?,
         productType: ProductType?,
+        productCategory: ProductCategory?,
         sortOrder: ProductsSortOrder,
         excludedProductIDs: [Int64] = [],
         shouldDeleteStoredProductsOnFirstPage: Bool = true,

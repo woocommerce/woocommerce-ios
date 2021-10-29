@@ -1,9 +1,9 @@
 import Foundation
 import Yosemite
 
-/// View Model for the `QuickPayAmount` view.
+/// View Model for the `QuickOrderAmount` view.
 ///
-final class QuickPayAmountViewModel: ObservableObject {
+final class QuickOrderAmountViewModel: ObservableObject {
 
     /// Stores amount entered by the merchant.
     ///
@@ -61,41 +61,55 @@ final class QuickPayAmountViewModel: ObservableObject {
     ///
     private let storeCurrencySymbol: String
 
+    /// Analytics tracker.
+    ///
+    private let analytics: Analytics
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          locale: Locale = Locale.autoupdatingCurrent,
-         storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+         storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
         self.userLocale = locale
         self.storeCurrencySettings = storeCurrencySettings
         self.storeCurrencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
+        self.analytics = analytics
     }
 
     /// Called when the view taps the done button.
-    /// Creates a quick pay order.
+    /// Creates a quick order order.
     ///
-    func createQuickPayOrder() {
+    func createQuickOrderOrder() {
         loading = true
-        let action = OrderAction.createQuickPayOrder(siteID: siteID, amount: amount) { [weak self] result in
+        let action = OrderAction.createQuickOrderOrder(siteID: siteID, amount: amount) { [weak self] result in
             guard let self = self else { return }
             self.loading = false
 
             switch result {
             case .success(let order):
                 self.onOrderCreated(order)
+                self.analytics.track(event: WooAnalyticsEvent.QuickOrder.quickOrderFlowCompleted(amount: order.total))
 
             case .failure(let error):
                 self.presentNotice = .error
-                DDLogError("⛔️ Error creating quick pay order: \(error)")
+                self.analytics.track(event: WooAnalyticsEvent.QuickOrder.quickOrderFlowFailed())
+                DDLogError("⛔️ Error creating quick order order: \(error)")
             }
         }
         stores.dispatch(action)
     }
+
+    /// Track the flow cancel scenario.
+    ///
+    func userDidCancelFlow() {
+        analytics.track(event: WooAnalyticsEvent.QuickOrder.quickOrderFlowCanceled())
+    }
 }
 
 // MARK: Helpers
-private extension QuickPayAmountViewModel {
+private extension QuickOrderAmountViewModel {
 
     /// Formats a received value by making sure the `$` symbol is present and trimming content to two decimal places.
     /// TODO: Update to support multiple currencies
@@ -136,7 +150,7 @@ private extension QuickPayAmountViewModel {
 }
 
 // MARK: Definitions
-extension QuickPayAmountViewModel {
+extension QuickOrderAmountViewModel {
     /// Representation of possible notices that can be displayed
     enum Notice: Equatable {
         case error

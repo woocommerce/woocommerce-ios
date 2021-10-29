@@ -5,10 +5,10 @@ import Storage
 /// Implements `SystemStatusActions` actions
 ///
 public final class SystemStatusStore: Store {
-    private let remote: SystemPluginsRemote
+    private let remote: SystemStatusRemote
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
-        self.remote = SystemPluginsRemote(network: network)
+        self.remote = SystemStatusRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 

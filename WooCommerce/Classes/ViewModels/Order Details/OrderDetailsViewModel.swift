@@ -549,8 +549,10 @@ extension OrderDetailsViewModel {
             DDLogWarn("Expected one card present gateway account. Got something else.")
         }
 
+        let statementDescriptor = cardPresentPaymentGatewayAccounts.first?.statementDescriptor
+
         paymentOrchestrator.collectPayment(for: self.order,
-                                           paymentsAccount: self.cardPresentPaymentGatewayAccounts.first,
+                                           statementDescriptor: statementDescriptor,
                                            onPresentMessage: onPresentMessage,
                                            onClearMessage: onClearMessage,
                                            onProcessingMessage: onProcessingMessage,

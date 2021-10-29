@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-10-26 09:54:04+0000 */
+/* Translation-Revision-Date: 2021-10-29 17:15:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -347,8 +347,8 @@
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "Añade la información de los archivos descargables de los productos a distancia";
 
-/* Navigates to a screen to create a quick order order */
-"Add quick order order" = "Add quick order order";
+/* Navigates to a screen to create a quick pay order */
+"Add quick pay order" = "Add quick pay order";
 
 /* Option to add item to new package on Package Details screen of Shipping Label flow. */
 "Add to new package" = "Añadir a un nuevo paquete";

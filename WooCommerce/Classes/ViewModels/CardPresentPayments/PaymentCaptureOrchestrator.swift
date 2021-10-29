@@ -20,6 +20,13 @@ final class PaymentCaptureOrchestrator {
                         onProcessingMessage: @escaping () -> Void,
                         onDisplayMessage: @escaping (String) -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
+        /// Bail out if the order amount is below the minimum allowed:
+        /// https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts
+        guard isTotalAmountValid(order: order) else {
+            DDLogError("💳 Error: failed to capture payment for order. Order amount is below minimum")
+            onCompletion(.failure(minimumAmountError(order: order, minimumAmount: Constants.minimumAmount)))
+            return
+        }
         /// First ask the backend to create/assign a Stripe customer for the order
         ///
         var customerID: String?
@@ -257,6 +264,30 @@ private extension PaymentCaptureOrchestrator {
 }
 
 private extension PaymentCaptureOrchestrator {
+    enum Constants {
+        /// Minimum order amount in USD:
+        /// https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts
+        static let minimumAmount = NSDecimalNumber(string: "0.5")
+    }
+
+    func isTotalAmountValid(order: Order) -> Bool {
+        guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
+            return false
+        }
+
+        return orderTotal as Decimal >= Constants.minimumAmount as Decimal
+    }
+
+    func minimumAmountError(order: Order, minimumAmount: NSDecimalNumber) -> Error {
+        guard let minimum = currencyFormatter.formatAmount(minimumAmount, with: order.currency) else {
+            return NotValidAmountError.other
+        }
+
+        return NotValidAmountError.belowMinimumAmount(amount: minimum)
+    }
+}
+
+private extension PaymentCaptureOrchestrator {
     enum Localization {
         static let receiptDescription = NSLocalizedString("In-Person Payment for Order #%1$@ for %2$@",
                                                           comment: "Message included in emailed receipts. "
@@ -264,5 +295,33 @@ private extension PaymentCaptureOrchestrator {
                                                             + "Order @{number} for @{store name} "
                                                             + "Parameters: %1$@ - order number, "
                                                             + "%2$@ - store name")
+    }
+}
+
+private extension PaymentCaptureOrchestrator {
+    private enum NotValidAmountError: Error, LocalizedError {
+        case belowMinimumAmount(amount: String)
+        case other
+
+        public var errorDescription: String? {
+            switch self {
+            case .belowMinimumAmount(let amount):
+                return String.localizedStringWithFormat(Localizations.belowMinimumAmount, amount)
+            case .other:
+                return Localizations.defaultMessage
+            }
+        }
+
+        enum Localizations {
+            static let defaultMessage = NSLocalizedString(
+                "Unable to process payment. Order total amount is not valid.",
+                comment: "Error message when the order amount is not valid."
+            )
+
+            static let belowMinimumAmount = NSLocalizedString(
+                "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@",
+                comment: "Error message when the order amount is below the minimum amount allowed."
+            )
+        }
     }
 }

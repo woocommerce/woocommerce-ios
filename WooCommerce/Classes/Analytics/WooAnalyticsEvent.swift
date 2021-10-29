@@ -370,3 +370,37 @@ extension WooAnalyticsEvent {
         WooAnalyticsEvent(statName: .featureAnnouncementShown, properties: [Source.key: source.rawValue])
     }
 }
+
+// MARK: - Quick Order
+//
+extension WooAnalyticsEvent {
+    // Namespace
+    enum QuickOrder {
+        /// Common event keys
+        ///
+        private enum Keys {
+            static let state = "state"
+            static let amount = "amount"
+        }
+
+        static func quickOrderFlowStarted() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .quickOrderFlowStarted, properties: [:])
+        }
+
+        static func quickOrderFlowCompleted(amount: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .quickOrderFlowCompleted, properties: [Keys.amount: amount])
+        }
+
+        static func quickOrderFlowCanceled() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .quickOrderFlowCanceled, properties: [:])
+        }
+
+        static func quickOrderFlowFailed() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .quickOrderFlowFailed, properties: [:])
+        }
+
+        static func settingsBetaFeaturesQuickOrderToggled(isOn: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .settingsBetaFeaturesQuickOrderToggled, properties: [Keys.state: isOn ? "on" : "off"])
+        }
+    }
+}

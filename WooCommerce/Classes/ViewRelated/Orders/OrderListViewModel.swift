@@ -90,10 +90,6 @@ final class OrderListViewModel {
     ///
     @Published var hideQuickOrderBanners: Bool = false
 
-    /// Tracks if the Quick Order feature is ready to be released to the public
-    ///
-    private let isQuickOrderDevelopmentComplete = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.quickOrderPrototype)
-
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -251,14 +247,13 @@ extension OrderListViewModel {
         let errorState = $hasErrorLoadingData.removeDuplicates()
         let experimentalState = $isQuickOrderEnabled.removeDuplicates()
         Publishers.CombineLatest4(enrolledState, errorState, experimentalState, $hideQuickOrderBanners)
-            .map { [weak self] enrolledState, hasError, isQuickOrderEnabled, hasDismissedBanners -> TopBanner in
-                guard let self = self else { return .none }
+            .map { enrolledState, hasError, isQuickOrderEnabled, hasDismissedBanners -> TopBanner in
 
                 guard !hasError else {
                     return .error
                 }
 
-                guard self.isQuickOrderDevelopmentComplete, !hasDismissedBanners else {
+                guard !hasDismissedBanners else {
                     return .none
                 }
 

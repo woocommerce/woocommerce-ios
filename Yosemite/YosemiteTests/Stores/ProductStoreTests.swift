@@ -247,6 +247,7 @@ final class ProductStoreTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
+                                                       productCategory: nil,
                                                        sortOrder: .nameAscending) { result in
                                                         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 10)
                                                         XCTAssertTrue(result.isSuccess)
@@ -274,6 +275,7 @@ final class ProductStoreTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
+                                                       productCategory: nil,
                                                        sortOrder: .nameAscending) { result in
             XCTAssertTrue(result.isSuccess)
 
@@ -306,6 +308,7 @@ final class ProductStoreTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
+                                                       productCategory: nil,
                                                        sortOrder: .nameAscending) { error in
             expectation.fulfill()
         }
@@ -341,6 +344,7 @@ final class ProductStoreTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
+                                                       productCategory: nil,
                                                        sortOrder: .nameAscending) { result in
             XCTAssertTrue(result.isSuccess)
 
@@ -383,6 +387,7 @@ final class ProductStoreTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
+                                                       productCategory: nil,
                                                        sortOrder: .nameAscending) { result in
             XCTAssertTrue(result.isSuccess)
 
@@ -422,6 +427,7 @@ final class ProductStoreTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
+                                                       productCategory: nil,
                                                        sortOrder: .nameAscending) { result in
             XCTAssertTrue(result.isFailure)
 
@@ -452,6 +458,7 @@ final class ProductStoreTests: XCTestCase {
                                                            stockStatus: nil,
                                                            productStatus: nil,
                                                            productType: nil,
+                                                           productCategory: nil,
                                                            sortOrder: .nameAscending) { aResult in
                 result = aResult
                 expectation.fulfill()
@@ -477,6 +484,7 @@ final class ProductStoreTests: XCTestCase {
                                                            stockStatus: nil,
                                                            productStatus: nil,
                                                            productType: nil,
+                                                           productCategory: nil,
                                                            sortOrder: .nameAscending) { aResult in
                 result = aResult
                 expectation.fulfill()
@@ -501,6 +509,7 @@ final class ProductStoreTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
+                                                       productCategory: nil,
                                                        sortOrder: .nameAscending) { result in
             XCTAssertTrue(result.isFailure)
             expectation.fulfill()
@@ -522,6 +531,7 @@ final class ProductStoreTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
+                                                       productCategory: nil,
                                                        sortOrder: .nameAscending) { result in
             XCTAssertTrue(result.isFailure)
             expectation.fulfill()

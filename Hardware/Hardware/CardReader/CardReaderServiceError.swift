@@ -186,6 +186,9 @@ public enum UnderlyingError: Error {
     /// The SDK will attempt to auto-disconnect for you and you should instruct your user to reconnect it.
     case readerSessionExpired
 
+    /// The underlying request returned an API error.
+    case processorAPIError
+
     /// Catch-all error case. Indicates there is something wrong with the
     /// internal state of the CardReaderService.
     case internalServiceError
@@ -322,6 +325,9 @@ updating the application or using a different reader
         case .readerSessionExpired:
             return NSLocalizedString("The card reader session has expired - please disconnect and reconnect the card reader and then try again",
                                      comment: "Error message when the card reader session has timed out.")
+        case .processorAPIError:
+            return NSLocalizedString("The payment can not be processed by the payment processor.",
+                                     comment: "Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.)")
         case .internalServiceError:
             return NSLocalizedString("Sorry, this payment couldn’t be processed",
                                      comment: "Error message when the card reader service experiences an unexpected internal service error.")

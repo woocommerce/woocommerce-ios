@@ -4,8 +4,8 @@
         "has_pending_requirements": false,
         "has_overdue_requirements": false,
         "current_deadline": null,
-        "status": "rejected.other",
-        "statement_descriptor": "REJECTED.OTHER.STORE",
+        "status": "complete",
+        "statement_descriptor": "MY.FANCY.US.STORE",
         "store_currencies": {
             "default": "usd",
             "supported": [
@@ -13,6 +13,7 @@
             ]
         },
         "country": "US",
-        "test_mode": false
+        "card_present_eligible": true,
+        "test_mode": true
     }
 }

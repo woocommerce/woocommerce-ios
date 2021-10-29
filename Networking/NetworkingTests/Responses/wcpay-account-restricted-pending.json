@@ -1,5 +1,6 @@
 {
     "data": {
+        "is_live": true,
         "has_pending_requirements": true,
         "has_overdue_requirements": false,
         "current_deadline": 1897351200,
@@ -11,6 +12,7 @@
                 "usd"
             ]
         },
-        "country": "US"
+        "country": "US",
+        "test_mode": false
     }
 }

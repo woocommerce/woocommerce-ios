@@ -310,6 +310,63 @@ final class WCPayRemoteTests: XCTestCase {
         XCTAssertTrue(error is DecodingError)
     }
 
+    /// Properly decodes live account in live mode wcpay-account-live-live
+    ///
+    func test_loadAccount_properly_handles_live_account_in_live_mode() throws {
+        let remote = WCPayRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "payments/accounts", filename: "wcpay-account-live-live")
+
+        let result: Result<WCPayAccount, Error> = waitFor { promise in
+            remote.loadAccount(for: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(result.isSuccess)
+        let account = try result.get()
+        XCTAssertEqual(account.isLiveAccount, true)
+        XCTAssertEqual(account.isInTestMode, false)
+    }
+
+    /// Properly decodes live account in test mode wcpay-account-live-test
+    ///
+    func test_loadAccount_properly_handles_live_account_in_test_mode() throws {
+        let remote = WCPayRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "payments/accounts", filename: "wcpay-account-live-test")
+
+        let result: Result<WCPayAccount, Error> = waitFor { promise in
+            remote.loadAccount(for: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(result.isSuccess)
+        let account = try result.get()
+        XCTAssertEqual(account.isLiveAccount, true)
+        XCTAssertEqual(account.isInTestMode, true)
+    }
+
+    /// Properly decodes developer account in test mode wcpay-account-dev-test
+    ///
+    func test_loadAccount_properly_handles_dev_account_in_test_mode() throws {
+        let remote = WCPayRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "payments/accounts", filename: "wcpay-account-dev-test")
+
+        let result: Result<WCPayAccount, Error> = waitFor { promise in
+            remote.loadAccount(for: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        XCTAssertTrue(result.isSuccess)
+        let account = try result.get()
+        XCTAssertEqual(account.isLiveAccount, false)
+        XCTAssertEqual(account.isInTestMode, true)
+    }
+
     /// Verifies that loadAccount properly handles networking errors
     ///
     func test_loadAccount_properly_handles_networking_errors() throws {

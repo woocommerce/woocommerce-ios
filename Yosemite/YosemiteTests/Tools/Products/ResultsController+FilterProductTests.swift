@@ -187,7 +187,7 @@ final class ResultsController_FilterProductTests: XCTestCase {
                                                            stockStatus: nil,
                                                            productStatus: nil,
                                                            productType: nil,
-                                                           productCategory: ProductCategory.fake().copy(categoryID: 2))
+                                                           productCategory: ProductCategory.fake().copy(categoryID: filterCategoryID))
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: predicate,
                                                                   sortOrder: .nameAscending)

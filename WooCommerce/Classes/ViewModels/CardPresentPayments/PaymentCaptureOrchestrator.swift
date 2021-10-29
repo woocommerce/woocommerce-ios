@@ -77,7 +77,10 @@ final class PaymentCaptureOrchestrator {
     }
 
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let action = CardPresentPaymentAction.cancelPayment(onCompletion: onCompletion)
+        let action = CardPresentPaymentAction.cancelPayment() { [weak self] result in
+            self?.allowPassPresentation()
+            onCompletion(result)
+        }
         ServiceLocator.stores.dispatch(action)
     }
 

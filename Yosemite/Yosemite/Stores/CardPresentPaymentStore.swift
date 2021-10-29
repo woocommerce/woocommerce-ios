@@ -185,16 +185,15 @@ private extension CardPresentPaymentStore {
 
         cardReaderService.cancelPaymentIntent()
             .subscribe(Subscribers.Sink(receiveCompletion: { value in
-                switch value {
-                case .failure(let error):
-                    onCompletion?(.failure(error))
-                case .finished:
-                    break
-                }
-            }, receiveValue: {
-                onCompletion?(.success(()))
-            })
-        )
+            switch value {
+            case .failure(let error):
+                onCompletion?(.failure(error))
+            case .finished:
+                break
+            }
+        }, receiveValue: {
+            onCompletion?(.success(()))
+        }))
     }
 
     func checkForCardReaderUpdate(onCompletion: @escaping (Result<CardReaderSoftwareUpdate?, Error>) -> Void) {
@@ -258,6 +257,7 @@ private extension CardPresentPaymentStore {
         onCompletion(publisher)
     }
 }
+
 
 /// Implementation of the CardReaderNetworkingAdapter
 /// that fetches a token using WCPayRemote

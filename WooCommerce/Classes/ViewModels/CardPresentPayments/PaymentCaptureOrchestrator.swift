@@ -60,8 +60,8 @@ final class PaymentCaptureOrchestrator {
                     }
                 },
                 onCompletion: { [weak self] result in
-                    onProcessingMessage()
                     self?.allowPassPresentation()
+                    onProcessingMessage()
                     self?.completePaymentIntentCapture(
                         order: order,
                         captureResult: result,

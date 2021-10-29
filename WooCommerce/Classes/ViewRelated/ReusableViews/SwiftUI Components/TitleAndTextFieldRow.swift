@@ -25,12 +25,11 @@ struct TitleAndTextFieldRow: View {
     }
 
     var body: some View {
-        HStack {
+        AdaptiveStack(horizontalAlignment: .leading) {
             Text(title)
                 .bodyStyle()
                 .lineLimit(1)
                 .fixedSize()
-            Spacer()
             TextField(placeholder, text: $text, onEditingChanged: onEditingChanged ?? { _ in })
                 .multilineTextAlignment(.trailing)
                 .font(.body)
@@ -40,7 +39,7 @@ struct TitleAndTextFieldRow: View {
                     .bodyStyle()
             }
         }
-        .frame(height: Constants.height)
+        .frame(minHeight: Constants.height)
         .padding([.leading, .trailing], Constants.padding)
     }
 }

@@ -23,7 +23,7 @@ final class ResultsController_FilterProductTests: XCTestCase {
         super.tearDown()
     }
 
-    func testPredicateWithAllNilFilters() {
+    func test_predicate_with_all_nil_filters_then_it_returns_all_products() {
         // Arrange
         // Creates different combinations of products.
         let expectedProducts = [
@@ -63,7 +63,7 @@ final class ResultsController_FilterProductTests: XCTestCase {
         XCTAssertEqual(resultsController.fetchedObjects, expectedProducts)
     }
 
-    func testPredicateWithNonNilStockStatusFilter() {
+    func test_predicate_with_non_nil_StockStatus_then_it_filters_by_stock_status() {
         // Arrange
         let otherProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, stockStatusKey: ProductStockStatus.inStock.rawValue)
 
@@ -96,7 +96,7 @@ final class ResultsController_FilterProductTests: XCTestCase {
         XCTAssertEqual(resultsController.fetchedObjects, expectedProducts)
     }
 
-    func testPredicateWithNonNilProductStatus() {
+    func test_predicate_with_non_nil_ProductStatus_then_it_filters_by_status() {
         // Arrange
         let otherProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, statusKey: ProductStatus.publish.rawValue)
 
@@ -125,7 +125,7 @@ final class ResultsController_FilterProductTests: XCTestCase {
         XCTAssertEqual(resultsController.fetchedObjects, expectedProducts)
     }
 
-    func testPredicateWithNonNilProductType() {
+    func test_predicate_with_non_nil_ProductType_then_it_filters_by_type() {
         // Arrange
         let otherProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, productTypeKey: ProductType.affiliate.rawValue)
 
@@ -158,7 +158,7 @@ final class ResultsController_FilterProductTests: XCTestCase {
         XCTAssertEqual(resultsController.fetchedObjects, expectedProducts)
     }
 
-    func testPredicateWithNonNilProductCategory() {
+    func test_predicate_with_non_nil_ProductCategory_then_it_filters_by_category() {
         // Arrange
         let filterCategoryID: Int64 = 2
         let otherCategoryID: Int64 = 1

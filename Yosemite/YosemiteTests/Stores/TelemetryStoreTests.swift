@@ -40,7 +40,7 @@ class TelemetryStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = TelemetryAction.sendTelemetry(siteID: self.sampleSiteID, versionString: "1.2") { result in
+            let action = TelemetryAction.sendTelemetry(siteID: self.sampleSiteID, versionString: "1.2", telemetryLastReportedTime: nil) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -50,13 +50,31 @@ class TelemetryStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    func test_sendTelemetry_action_throttles_request_within_timeout() {
+        // Given
+        let store = TelemetryStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let time = Date() - 12*60*60 // half of default timeout
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = TelemetryAction.sendTelemetry(siteID: self.sampleSiteID, versionString: "1.2", telemetryLastReportedTime: time) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? TelemetryError, TelemetryError.requestThrottled)
+    }
+
     func test_sendTelemetry_action_properly_relays_errors() {
         // Given
         let store = TelemetryStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = TelemetryAction.sendTelemetry(siteID: self.sampleSiteID, versionString: "1.2") { result in
+            let action = TelemetryAction.sendTelemetry(siteID: self.sampleSiteID, versionString: "1.2", telemetryLastReportedTime: nil) { result in
                 promise(result)
             }
             store.onAction(action)

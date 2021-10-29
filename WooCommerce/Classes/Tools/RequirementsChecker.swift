@@ -2,7 +2,6 @@ import Foundation
 import UIKit
 import Yosemite
 import WordPressUI
-import class Networking.UserAgent
 
 
 /// Result Enum for the RequirementsChecker
@@ -81,9 +80,9 @@ private extension RequirementsChecker {
         return SettingAction.retrieveSiteAPI(siteID: siteID) { result in
             switch result {
             case .success(let siteAPI):
-                if siteAPI.telemetryIsAvailable {
-                    sendTelemetryIfNeeded(siteID: siteID)
-                }
+                let saveTelemetryAvailabilityAction = AppSettingsAction.setTelemetryAvailability(siteID: siteID, isAvailable: siteAPI.telemetryIsAvailable)
+                ServiceLocator.stores.dispatch(saveTelemetryAvailabilityAction)
+
                 if siteAPI.highestWooVersion == .mark3 {
                     onCompletion?(.success(.validWCVersion))
                 } else {
@@ -95,24 +94,5 @@ private extension RequirementsChecker {
                 onCompletion?(.failure(error))
             }
         }
-    }
-
-    /// Dispatches a `TelemetryAction.sendTelemetry` action
-    ///
-    static func sendTelemetryIfNeeded(siteID: Int64) {
-        let telemetryLastReportedTime = UserDefaults.standard[.telemetryLastReportedTime] as? Date
-        let action = TelemetryAction.sendTelemetry(siteID: siteID,
-                                                   versionString: UserAgent.bundleShortVersion,
-                                                   telemetryLastReportedTime: telemetryLastReportedTime) { result in
-            switch result {
-            case .success:
-                UserDefaults.standard[.telemetryLastReportedTime] = Date()
-                UserDefaults.standard[.telemetryLastReportedStoreID] = siteID
-                DDLogInfo("Successfully sent telemetry for siteID: \(siteID).")
-            case .failure(let error):
-                DDLogError("⛔️ Failed to send telemetry for siteID: \(siteID). Error: \(error)")
-            }
-        }
-        ServiceLocator.stores.dispatch(action)
     }
 }

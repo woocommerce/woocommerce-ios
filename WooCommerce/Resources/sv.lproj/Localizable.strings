@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-10-22 17:33:42+0000 */
+/* Translation-Revision-Date: 2021-10-23 13:42:55+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -288,7 +288,7 @@
 "Add Products" = "Lägg till produkter";
 
 /* Title for the button to add the Shipping Address in Order Details */
-"Add Shipping Address" = "Add Shipping Address";
+"Add Shipping Address" = "Lägg till leveransadress";
 
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */

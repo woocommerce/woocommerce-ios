@@ -18,7 +18,11 @@ final class FilterProductCategoryListViewModel: ProductCategoryListViewModelEnri
 
     /// Holds a reference to the fixed "Any" category cell selection value so it can be used when enriching category view models
     ///
-    private var anyCategoryIsSelected = true
+    private var anyCategoryIsSelected: Bool
+
+    init(anyCategoryIsSelected: Bool) {
+        self.anyCategoryIsSelected = anyCategoryIsSelected
+    }
 
     /// Enriches the category view models by adding the "Any" category row view model on top
     ///

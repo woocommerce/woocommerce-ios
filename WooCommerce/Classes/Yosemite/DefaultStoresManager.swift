@@ -74,8 +74,12 @@ class DefaultStoresManager: StoresManager {
             .eraseToAnyPublisher()
     }
 
-    var siteID: Observable<Int64?> {
-        sessionManager.siteID
+    var siteID: AnyPublisher<Int64?, Never> {
+        sessionManager.defaultStoreIDPublisher
+    }
+
+    var site: AnyPublisher<Site?, Never> {
+        sessionManager.defaultSitePublisher
     }
 
     /// Designated Initializer
@@ -170,9 +174,14 @@ class DefaultStoresManager: StoresManager {
     }
 
     /// Updates the Default Store as specified.
+    /// After this call, `siteID` is updated while `site` might still be nil when it is a newly connected site.
+    /// In the case of a newly connected site, it synchronizes the site asynchronously and `site` observable is updated.
     ///
     func updateDefaultStore(storeID: Int64) {
         sessionManager.defaultStoreID = storeID
+        // Because `defaultSite` is loaded or synced asynchronously, it is reset here so that any UI that calls this does not show outdated data.
+        // For example, `sessionManager.defaultSite` is used to show site name in various screens in the app.
+        sessionManager.defaultSite = nil
         restoreSessionSiteIfPossible()
         ServiceLocator.pushNotesManager.reloadBadgeCount()
 
@@ -423,7 +432,7 @@ private extension DefaultStoresManager {
             return
         }
 
-        restoreSessionSite(with: siteID)
+        restoreSessionSiteAndSynchronizeIfNeeded(with: siteID)
         synchronizeSettings(with: siteID) {
             ServiceLocator.selectedSiteSettings.refresh()
             ServiceLocator.shippingSettingsService.update(siteID: siteID)
@@ -437,16 +446,16 @@ private extension DefaultStoresManager {
     }
 
     /// Loads the specified siteID into the Session, if possible.
+    /// If the site does not exist in storage, it synchronizes the site asynchronously.
     ///
-    func restoreSessionSite(with siteID: Int64) {
-        let action = AccountAction.loadSite(siteID: siteID) { [weak self] site in
-            guard let `self` = self, let site = site else {
+    func restoreSessionSiteAndSynchronizeIfNeeded(with siteID: Int64) {
+        let action = AccountAction.loadAndSynchronizeSiteIfNeeded(siteID: siteID) { [weak self] result in
+            guard let self = self else { return }
+            guard case .success(let site) = result else {
                 return
             }
-
             self.sessionManager.defaultSite = site
         }
-
         dispatch(action)
     }
 }

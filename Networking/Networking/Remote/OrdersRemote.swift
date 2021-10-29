@@ -245,16 +245,16 @@ public extension OrdersRemote {
 
     enum ParameterValues {
         // Same as singleOrderFieldValues except we exclude the line_items and shipping fields
-        static let listFieldValues: String = """
-            id,parent_id,number,status,currency,customer_id,customer_note,date_created_gmt,date_modified_gmt,date_paid_gmt,\
-            discount_total,discount_tax,shipping_total,shipping_tax,total,total_tax,payment_method,payment_method_title,\
-            billing,coupon_lines,shipping_lines,refunds,fee_lines
-            """
-        static let singleOrderFieldValues: String = """
-            id,parent_id,number,status,currency,customer_id,customer_note,date_created_gmt,date_modified_gmt,date_paid_gmt,\
-            discount_total,discount_tax,shipping_total,shipping_tax,total,total_tax,payment_method,payment_method_title,shipping,\
-            billing,coupon_lines,shipping_lines,refunds,fee_lines,line_items
-        """
+        static let listFieldValues: String = commonOrderFieldValues.joined(separator: ",")
+        static let singleOrderFieldValues: String = (commonOrderFieldValues + singleOrderExtraFieldValues).joined(separator: ",")
+        private static let commonOrderFieldValues = [
+            "id", "parent_id", "number", "status", "currency", "customer_id", "customer_note", "date_created_gmt", "date_modified_gmt", "date_paid_gmt",
+            "discount_total", "discount_tax", "shipping_total", "shipping_tax", "total", "total_tax", "payment_method", "payment_method_title",
+            "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines"
+        ]
+        private static let singleOrderExtraFieldValues = [
+            "line_items", "shipping"
+        ]
     }
 
     /// Order fields supported for update

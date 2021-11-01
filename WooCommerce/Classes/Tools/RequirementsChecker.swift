@@ -80,6 +80,9 @@ private extension RequirementsChecker {
         return SettingAction.retrieveSiteAPI(siteID: siteID) { result in
             switch result {
             case .success(let siteAPI):
+                let saveTelemetryAvailabilityAction = AppSettingsAction.setTelemetryAvailability(siteID: siteID, isAvailable: siteAPI.telemetryIsAvailable)
+                ServiceLocator.stores.dispatch(saveTelemetryAvailabilityAction)
+
                 if siteAPI.highestWooVersion == .mark3 {
                     onCompletion?(.success(.validWCVersion))
                 } else {

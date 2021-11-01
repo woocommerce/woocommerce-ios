@@ -1,0 +1,3 @@
+Penjual yang menggunakan WooCommerce Shipping & Tax sekarang dapat membuat beberapa label pengiriman untuk sebuah pesanan. Anda dapat memindahkan item antarpaket dengan cepat agar sesuai dengan cara Anda untuk mengirimkan produk ke pelanggan. Kami juga telah mengatasi sejumlah gangguan yang dilaporkan untuk halaman yang sama.
+
+Kami juga meningkatkan aksesibilitas berdasarkan feedback. Terima kasih!

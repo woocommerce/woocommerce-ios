@@ -1,0 +1,3 @@
+Händler, die WooCommerce Shipping & Tax verwenden, werden feststellen, dass sie jetzt für eine Bestellung mehrere Versandetiketten erstellen können. Du kannst Artikel jetzt schnell zwischen den Paketen austauschen, um sie entsprechend deinen Anforderungen zu versenden. Außerdem haben wir ein paar Fehler behoben, die auf diesen Bildschirmen gemeldet wurden.
+
+Und wir haben auf Basis von Feedback ein paar Verbesserungen in puncto Zugänglichkeit vorgenommen. Danke schön!

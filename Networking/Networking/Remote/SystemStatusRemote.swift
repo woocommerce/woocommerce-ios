@@ -1,8 +1,8 @@
 import Foundation
 
-/// SystemPlugins: Remote Endpoints
+/// System Status: Remote Endpoint
 ///
-public class SystemPluginsRemote: Remote {
+public class SystemStatusRemote: Remote {
 
     /// Retrieves all of the `SystemPlugin`s for a given site.
     ///
@@ -12,12 +12,12 @@ public class SystemPluginsRemote: Remote {
     ///
     public func loadSystemPlugins(for siteID: Int64,
                             completion: @escaping (Result<[SystemPlugin], Error>) -> Void) {
-        let path = Constants.systemPluginsPath
+        let path = Constants.systemStatusPath
         let parameters = [
-            ParameterKeys.fields: ParameterValues.activeFieldValues
+            ParameterKeys.fields: [ParameterValues.activePlugins, ParameterValues.inactivePlugins]
         ]
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
-        let mapper = SystemPluginsMapper(siteID: siteID)
+        let mapper = SystemStatusMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -25,13 +25,14 @@ public class SystemPluginsRemote: Remote {
 
 // MARK: - Constants!
 //
-private extension SystemPluginsRemote {
+private extension SystemStatusRemote {
     enum Constants {
-        static let systemPluginsPath: String = "system_status"
+        static let systemStatusPath: String = "system_status"
     }
 
     enum ParameterValues {
-        static let activeFieldValues: String = "active_plugins"
+        static let activePlugins: String = "active_plugins"
+        static let inactivePlugins: String = "inactive_plugins"
     }
 
     enum ParameterKeys {

@@ -1,0 +1,3 @@
+Verkopers die gebruikmaken van WooCommerce Shipping en Tax kunnen nu meerdere verzendlabels aanmaken voor een bestelling. Je kunt artikelen snel verplaatsen tussen verpakkingen om te zien hoe de verpakkingen overeenkomen. We hebben ook wat fouten op dezelfde schermen opgelost.
+
+We hebben ook wat verbeteringen aan de toegankelijkheid doorgevoerd op basis van feedback. Bedankt!

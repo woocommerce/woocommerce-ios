@@ -79,7 +79,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     }
 }
 
-//// MARK: Custom Decoding
+// MARK: Custom Decoding
 extension GeneralAppSettings {
     /// We need a custom decoding to make sure it doesn't fails when this type is updated (eg: when adding/removing new properties)
     /// Otherwise we will lose previously stored information.

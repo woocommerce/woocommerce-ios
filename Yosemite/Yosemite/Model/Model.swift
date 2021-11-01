@@ -116,6 +116,7 @@ public typealias SiteVisitStats = Networking.SiteVisitStats
 public typealias SiteVisitStatsItem = Networking.SiteVisitStatsItem
 public typealias StateOfACountry = Networking.StateOfACountry
 public typealias SystemPlugin = Networking.SystemPlugin
+public typealias SystemStatus = Networking.SystemStatus
 public typealias TaxClass = Networking.TaxClass
 public typealias TopEarnerStats = Networking.TopEarnerStats
 public typealias TopEarnerStatsItem = Networking.TopEarnerStatsItem

@@ -1,9 +1,9 @@
-/* Translation-Revision-Date: 2021-10-22 17:29:43+0000 */
+/* Translation-Revision-Date: 2021-10-29 16:40:54+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
 
-/* No comment provided by engineer. */
+/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "#%@ %@" = "#%1$@ %2$@";
 
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
@@ -257,7 +257,7 @@
 "Add Category" = "إضافة فئة";
 
 /* Title for the button to add the Customer Provided Note in Order Details */
-"Add Customer Note" = "Add Customer Note";
+"Add Customer Note" = "إضافة ملحوظة العميل";
 
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "إضافة ملف قابل للتنزيل";
@@ -288,7 +288,7 @@
 "Add Products" = "إضافة المنتجات";
 
 /* Title for the button to add the Shipping Address in Order Details */
-"Add Shipping Address" = "Add Shipping Address";
+"Add Shipping Address" = "إضافة عنوان الشحن";
 
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
@@ -439,7 +439,7 @@
 "An optional note to send the customer after purchase" = "ملحوظة اختيارية يتم إرسالها إلى العميل بعد الشراء";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to charge a reader running older software */
-"An update is available, but your reader battery is too low to update. Please charge your reader right away to continue accepting payments" = "An update is available, but your reader battery is too low to update. Please charge your reader right away to continue accepting payments";
+"An update is available, but your reader battery is too low to update. Please charge your reader right away to continue accepting payments" = "يتوافر تحديث، ولكن بطارية قارئك منخفضة للغاية لدرجة أنه لا يمكن التحديث. يرجى شحن قارئك على الفور لمتابعة قبول المدفوعات";
 
 /* Product variation attribute description where the attribute is set to any value.
    Title when there is no filter set. */
@@ -532,7 +532,7 @@
 "Back" = "رجوع";
 
 /* Accessibility announcement message when device goes back online */
-"Back online" = "Back online";
+"Back online" = "الاتصال بالإنترنت مرة أخرى";
 
 /* Button to dismiss modal overlay. Presented to users after a payment has been successfully collected
    Button to dismiss modal overlay. Presented to users after collecting a payment fails */
@@ -598,7 +598,7 @@
 "Can Not Request Link" = "يتعذر طلب رابط";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the quick pay screen */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the quick order screen */
 "Cancel" = "إلغاء";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -623,7 +623,7 @@
 "Capture high-quality product reviews for your store." = "احصل على مراجعات منتج ذات جودة عالية لمخزنك.";
 
 /* Navigates to Card Reader manual */
-"Card reader manual" = "Card reader manual";
+"Card reader manual" = "دليل قارئ البطاقة";
 
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "شركة النقل وأسعارها";
@@ -1014,7 +1014,7 @@
 "Don't have an account? _Sign up_" = "أليس لديك حساب؟ _Sign up_";
 
 /* Action title to select products to add to a grouped product from search results
-   Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - Title for the button to confirm the amount in the quick pay screen */
+   Done navigation button in selection list screens - Done navigation button in Shipping Label add payment webview - Done navigation button in shipping label carrier and rates screen - Done navigation button in the Add New Package screen in Shipping Label flow - Done navigation button in the Customs screen in Shipping Label flow - Done navigation button in the Package Details screen in Shipping Label flow - Done navigation button in the Shipping Label Payment Method screen - Done navigation button under the Package Selected screen in Shipping Label flow - Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files - Text for the done button in the Edit Address Form - Text for the done button in the edit customer provided note screen - Title for the button to confirm the amount in the quick order screen */
 "Done" = "تم";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -1144,15 +1144,15 @@
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "تأكَّد من **تحديث البرنامج الثابت لطابعتك**. اطلع على مستندات طابعتك للحصول على إرشادات حول التحديث.";
 
-/* Short instructions label in the quick pay screen */
-"Enter Amount" = "Enter Amount";
+/* Short instructions label in the quick order screen */
+"Enter Amount" = "إدخال المبلغ";
 
 /* Action button linking to instructions for enter another store.Presented when logging in with a site address that appears to be invalid.
    Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
 "Enter Another Store" = "إدخال متجر آخر";
 
 /* Placeholder for the required ITN row in Customs screen of Shipping Label flow */
-"Enter ITN" = "Enter ITN";
+"Enter ITN" = "إدخال رقم المعاملة الداخلي (ITN)";
 
 /* Placeholder for the ITN row in Customs screen of Shippling Label flow */
 "Enter ITN (Optional)" = "إدخال رقم المعاملة الدخلي (اختياري)";
@@ -1675,10 +1675,10 @@
 "Learn more" = "تعرف على المزيد";
 
 /* A label prompting users to learn more about HS Tariff Number in Customs screen of Shipping Label flow */
-"Learn more about HS Tariff Number" = "Learn more about HS Tariff Number";
+"Learn more about HS Tariff Number" = "معرفة المزيد حول رقم تعريفة النظام المنسق";
 
 /* A label prompting users to learn more about internal transaction number */
-"Learn more about Internal Transaction Number" = "Learn more about Internal Transaction Number";
+"Learn more about Internal Transaction Number" = "معرفة المزيد حول رقم المعاملة الداخلي";
 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
 "Learn more about Jetpack" = "معرفة المزيد عن Jetpack";
@@ -2211,7 +2211,7 @@
 "Payment method" = "طريقة الدفع";
 
 /* Notice that will be displayed after adding a new Shipping Label payment method */
-"Payment method added" = "Payment method added";
+"Payment method added" = "تمت إضافة طريقة الدفع";
 
 /* Label informing users that the payment succeeded. Presented to users when a payment is collected */
 "Payment successful" = "تمت عملية الدفع بنجاح";
@@ -3174,7 +3174,7 @@
 "Switch Store" = "تحويل المتجر";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. Parameters: %1$@ - store name */
-"Switched to %1$@." = "Switched to %1$@.";
+"Switched to %1$@." = "تم التبديل إلى %1$@.";
 
 /* Message presented after users switch to a new store when multi-store push notifications are not supported. Reads like: Switched to {store name}. You will only receive notifications from this store. Parameters: %1$@ - store name */
 "Switched to %1$@. You will only receive notifications from this store." = "تم التبديل إلى %1$@. لن تتلقى سوى التنبيهات من هذا المتجر.";
@@ -3204,8 +3204,8 @@
    Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
 "Tags" = "وسوم";
 
-/* Title for the quick pay screen */
-"Take Payment" = "Take Payment";
+/* Title for the quick order screen */
+"Take Payment" = "تحصيل الدفع";
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "التقاط صورة";
@@ -3442,8 +3442,8 @@
 /* The details on the placeholder overlay when there is issue syncing site plugins */
 "There was a problem while trying to load plugins. Check your internet and try again." = "حدثت مشكلة في أثناء محاولة تحميل الإضافات. تحقَّق من الإنترنت الخاص بك، وحاول مرة أخرى.";
 
-/* Notice text after failing to create a quick pay order. */
-"There was an error creating the order" = "There was an error creating the order";
+/* Notice text after failing to create a quick order order. */
+"There was an error creating the order" = "حدث خطأ في أثناء إنشاء الطلب";
 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "حدث خطأ في أثناء إصدار أمر استرداد الأموال";
@@ -4117,7 +4117,7 @@
 "You can now create shipping labels for all physical orders directly from your device with the free WooCommerce Shipping plugin. Tap on Create Shipping Label to try our beta feature!" = "يمكنك الآن إنشاء ملصقات شحن لجميع الطلبات المادية مباشرةً من جهازك باستخدام إضافة الشحن المجانية عبر WooCommerce. اضغط على \"إنشاء ملصق شحن\" لتجربة ميزة بيتا الخاصة بنا في المستقبل!";
 
 /* Header text in Refund Shipping Label screen */
-"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process." = "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process.";
+"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process." = "يمكنك طلب استرداد أموال بطاقة الشحن التي لم يتم استخدامها لشحن طرد.\nستستغرق المعالجة 14 يومًا على الأقل.";
 
 /* Error message when WooCommerce Payments is not supported in a specific country
    Generic error message when In-Person Payments is unavailable */

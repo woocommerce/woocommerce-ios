@@ -3,6 +3,7 @@ import Foundation
 import Yosemite
 import Observables
 import enum Networking.DotcomError
+import class Networking.UserAgent
 
 // MARK: - DefaultStoresManager
 //
@@ -389,6 +390,41 @@ private extension DefaultStoresManager {
         dispatch(action)
     }
 
+    /// Sends telemetry data after availability check
+    ///
+    func sendTelemetryIfNeeded(siteID: Int64) {
+        let checkAvailabilityAction = AppSettingsAction.getTelemetryInfo(siteID: siteID) { [weak self] isAvailable, telemetryLastReportedTime in
+            guard let self = self else { return }
+
+            if isAvailable {
+                self.sendTelemetry(siteID: siteID, telemetryLastReportedTime: telemetryLastReportedTime)
+            }
+        }
+        dispatch(checkAvailabilityAction)
+    }
+
+    /// Sends telemetry data
+    ///
+    func sendTelemetry(siteID: Int64, telemetryLastReportedTime: Date?) {
+        let action = TelemetryAction.sendTelemetry(siteID: siteID,
+                                                   versionString: UserAgent.bundleShortVersion,
+                                                   telemetryLastReportedTime: telemetryLastReportedTime) { [weak self] result in
+            guard let self = self else { return }
+
+            switch result {
+            case .success:
+                let saveTimestampAction = AppSettingsAction.setTelemetryLastReportedTime(siteID: siteID, time: Date())
+                self.dispatch(saveTimestampAction)
+                DDLogInfo("Successfully sent telemetry for siteID: \(siteID).")
+            case .failure(let error):
+                if error as? TelemetryError != .requestThrottled {
+                    DDLogError("⛔️ Failed to send telemetry for siteID: \(siteID). Error: \(error)")
+                }
+            }
+        }
+        dispatch(action)
+    }
+
     /// Loads the Default Site into the current Session, if possible.
     ///
     func restoreSessionSiteIfPossible() {
@@ -405,6 +441,8 @@ private extension DefaultStoresManager {
         synchronizePaymentGateways(siteID: siteID)
         synchronizeAddOnsGroups(siteID: siteID)
         synchronizeSystemPlugins(siteID: siteID)
+
+        sendTelemetryIfNeeded(siteID: siteID)
     }
 
     /// Loads the specified siteID into the Session, if possible.

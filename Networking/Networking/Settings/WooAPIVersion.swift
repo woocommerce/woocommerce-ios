@@ -38,6 +38,11 @@ public enum WooAPIVersion: String {
     ///
     case addOnsV1 = "wc-product-add-ons/v1"
 
+    /// WooCommerce Telemetry.
+    /// Only works on WC 5.9.0 and up.
+    ///
+    case wcTelemetry = "wc-telemetry"
+
     /// Returns the path for the current API Version
     ///
     var path: String {

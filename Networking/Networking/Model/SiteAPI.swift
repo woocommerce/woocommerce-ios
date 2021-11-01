@@ -27,6 +27,12 @@ public struct SiteAPI: Decodable, Equatable, GeneratedFakeable {
         return .none
     }
 
+    /// Check if telemetry reporting namespace is available
+    ///
+    public var telemetryIsAvailable: Bool {
+        return namespaces.contains(WooAPIVersion.wcTelemetry.rawValue)
+    }
+
     /// Decodable Conformance.
     ///
     public init(from decoder: Decoder) throws {

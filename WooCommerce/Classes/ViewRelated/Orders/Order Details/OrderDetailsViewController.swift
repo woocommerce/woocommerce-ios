@@ -728,7 +728,11 @@ private extension OrderDetailsViewController {
 
         ServiceLocator.analytics.track(.collectPaymentTapped)
         viewModel.collectPayment { [weak self] readerEventMessage in
-            self?.paymentAlerts.tapOrInsertCard()
+            self?.paymentAlerts.tapOrInsertCard(onCancel: {
+                self?.viewModel.cancelPayment(onCompletion: { _ in
+                    ServiceLocator.analytics.track(.collectPaymentCanceled)
+                })
+            })
         } onClearMessage: { [weak self] in
             self?.paymentAlerts.removeCard()
         } onProcessingMessage: { [weak self] in

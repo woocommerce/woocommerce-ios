@@ -6,6 +6,7 @@
 - [*] Order Details: Show a button on the "Product" section of Order Details screen to allow recreating shipping labels. [https://github.com/woocommerce/woocommerce-ios/pull/5255]
 - [*] Edit Order Address - Enable `Done` button when `Use as {Shipping/Billing} Address` toggle is turned on. [https://github.com/woocommerce/woocommerce-ios/pull/5254]
 - [*] Add/Edit Product: fix an issue where the product name keyboard is English only. [https://github.com/woocommerce/woocommerce-ios/pull/5288]
+- [*] Order Details: some sites cannot parse order requests where the fields parameter has spaces, and the products section cannot load as a result. The spaces are now removed. [https://github.com/woocommerce/woocommerce-ios/pull/5298]
 
 7.8
 -----

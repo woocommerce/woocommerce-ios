@@ -88,6 +88,22 @@ public struct SystemPlugin: Decodable, GeneratedFakeable, GeneratedCopiable {
     }
 }
 
+extension SystemPlugin {
+    func overrideNetworkActivated(isNetworkActivated: Bool) -> SystemPlugin {
+        SystemPlugin(
+            siteID: self.siteID,
+            plugin: self.plugin,
+            name: self.name,
+            version: self.version,
+            versionLatest: self.versionLatest,
+            url: self.url,
+            authorName: self.authorName,
+            authorUrl: self.authorUrl,
+            networkActivated: isNetworkActivated
+        )
+    }
+}
+
 /// Defines all of the SystemPlugin CodingKeys.
 ///
 private extension SystemPlugin {

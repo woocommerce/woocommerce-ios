@@ -90,7 +90,7 @@ private extension BetaFeaturesViewController {
     /// A section is returned only when the store is ready to receive payments
     ///
     func ordersSection() -> Section? {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.quickOrderPrototype), paymentsStoreUseCase.state == .completed else {
+        guard paymentsStoreUseCase.state == .completed else {
             return nil
         }
 
@@ -180,7 +180,7 @@ private extension BetaFeaturesViewController {
 
         // Change switch's state stored value
         cell.onChange = { isSwitchOn in
-            // TODO: Add analytics
+            ServiceLocator.analytics.track(event: WooAnalyticsEvent.QuickOrder.settingsBetaFeaturesQuickOrderToggled(isOn: isSwitchOn))
 
             let action = AppSettingsAction.setQuickOrderFeatureSwitchState(isEnabled: isSwitchOn, onCompletion: { result in
                 // Roll back toggle if an error occurred

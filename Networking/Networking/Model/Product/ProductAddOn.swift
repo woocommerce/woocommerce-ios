@@ -101,6 +101,28 @@ public struct ProductAddOn: Codable, Equatable, GeneratedCopiable, GeneratedFake
         self.max = max
         self.options = options
     }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.type = try container.decode(AddOnType.self, forKey: .type)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.description = try container.decode(String.self, forKey: .description)
+        self.display = try container.decodeIfPresent(AddOnDisplay.self, forKey: .display) ?? .none
+        self.titleFormat = try container.decodeIfPresent(AddOnTitleFormat.self, forKey: .titleFormat) ?? .none
+        self.restrictionsType = try container.decodeIfPresent(AddOnRestrictionsType.self, forKey: .restrictionsType) ?? .none
+        self.priceType = try container.decodeIfPresent(AddOnPriceType.self, forKey: .priceType) ?? .none
+        self.price = try container.decodeIfPresent(String.self, forKey: .price) ?? ""
+        self.options = try container.decodeIfPresent([ProductAddOnOption].self, forKey: .options) ?? []
+
+        // Heading type, returns these fields as empty strings instead of ints, so we need to fail-safe decode them.
+        self.descriptionEnabled = container.failsafeDecodeIfPresent(Int.self, forKey: .descriptionEnabled) ?? 0
+        self.required = container.failsafeDecodeIfPresent(Int.self, forKey: .required) ?? 0
+        self.position = container.failsafeDecodeIfPresent(Int.self, forKey: .position) ?? 0
+        self.restrictions = container.failsafeDecodeIfPresent(Int.self, forKey: .restrictions) ?? 0
+        self.adjustPrice = container.failsafeDecodeIfPresent(Int.self, forKey: .adjustPrice) ?? 0
+        self.min = container.failsafeDecodeIfPresent(Int.self, forKey: .min) ?? 0
+        self.max = container.failsafeDecodeIfPresent(Int.self, forKey: .max) ?? 0
+    }
 }
 
 // MARK: Coding Keys
@@ -145,6 +167,7 @@ public enum AddOnDisplay: String, Codable, GeneratedFakeable {
     case dropdown = "select"
     case radioButton = "radiobutton"
     case images
+    case none = ""
 }
 
 /// Represents all possible Add-On title formats.
@@ -153,6 +176,7 @@ public enum AddOnTitleFormat: String, Codable, GeneratedFakeable {
     case label
     case heading
     case hide
+    case none = ""
 }
 
 /// Represents all possible Add-On restrictions types.
@@ -163,6 +187,7 @@ public enum AddOnRestrictionsType: String, Codable, GeneratedFakeable {
     case onlyNumbers = "only_numbers"
     case onlyLettersNumbers = "only_letters_numbers"
     case email
+    case none = ""
 }
 
 /// Represents all possible Add-On pricing types.
@@ -171,4 +196,5 @@ public enum AddOnPriceType: String, Codable, GeneratedFakeable {
     case flatFee = "flat_fee"
     case quantityBased = "quantity_based"
     case percentageBased = "percentage_based"
+    case none = ""
 }

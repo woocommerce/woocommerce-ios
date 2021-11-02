@@ -28,6 +28,26 @@ public struct CardPresentTransactionDetails: Codable, Equatable {
 
     /// (Only applicable to EMV payments) The authorization data from the card issuer.
     public let emvAuthData: String?
+
+    public init(last4: String,
+                expMonth: Int,
+                expYear: Int,
+                cardholderName: String?,
+                brand: CardBrand,
+                fingerprint: String,
+                generatedCard: String?,
+                receipt: ReceiptDetails?,
+                emvAuthData: String?) {
+        self.last4 = last4
+        self.expMonth = expMonth
+        self.expYear = expYear
+        self.cardholderName = cardholderName
+        self.brand = brand
+        self.fingerprint = fingerprint
+        self.generatedCard = generatedCard
+        self.receipt = receipt
+        self.emvAuthData = emvAuthData
+    }
 }
 
 extension CardPresentTransactionDetails {

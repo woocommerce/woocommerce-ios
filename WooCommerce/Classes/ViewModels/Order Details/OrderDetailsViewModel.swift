@@ -565,8 +565,7 @@ extension OrderDetailsViewModel {
     }
 
     func printReceipt(params: CardPresentReceiptParameters) {
-        ServiceLocator.analytics.track(.receiptPrintTapped)
-        paymentOrchestrator.printReceipt(for: order, params: params)
+        ReceiptActionCoordinator.printReceipt(for: order, params: params)
     }
 
     func emailReceipt(params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {

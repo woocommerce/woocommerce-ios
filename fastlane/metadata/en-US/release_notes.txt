@@ -1,0 +1,3 @@
+Merchants using WooCommerce Shipping & Tax will find you can now create multiple shipping labels for an order. You can quickly move items between the packages to match how you’ve decided to ship things to your customer. We’ve also addressed some glitches that were reported on the same screens.
+
+We also made a few accessibility improvements based on feedback. Thank you!

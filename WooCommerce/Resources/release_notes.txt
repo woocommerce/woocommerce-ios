@@ -1,7 +1,6 @@
-You’ll be excited to learn that you can now edit several essential fields on your customers’ orders. Make those minor fixes before fulfilling an order right in the app!
+- [*] Fix: after disconnecting a site or connecting to a new site, the sites in site picker (Settings > Switch Store) should be updated accordingly. The only exception is when the newly disconnected site is the currently selected site. [https://github.com/woocommerce/woocommerce-ios/pull/5241]
+- [*] Order Details: Show a button on the "Product" section of Order Details screen to allow recreating shipping labels. [https://github.com/woocommerce/woocommerce-ios/pull/5255]
+- [*] Edit Order Address - Enable `Done` button when `Use as {Shipping/Billing} Address` toggle is turned on. [https://github.com/woocommerce/woocommerce-ios/pull/5254]
+- [*] Add/Edit Product: fix an issue where the product name keyboard is English only. [https://github.com/woocommerce/woocommerce-ios/pull/5288]
+- [*] Order Details: some sites cannot parse order requests where the fields parameter has spaces, and the products section cannot load as a result. The spaces are now removed. [https://github.com/woocommerce/woocommerce-ios/pull/5298]
 
-Merchants using WooCommerce Payments in the USA can accept in-person credit card payments for your customers’ payment upon delivery or pickup orders.
-
-Merchants using the WooCommerce Shipping & Tax Extension will find improvements with paper sizes, DHL support, and payment methods. Creating and printing shipping labels from your mobile device is so much fun!
-
-Also included in this release are a few minor improvements based on your feedback. Thanks for helping us make a better app for everyone.

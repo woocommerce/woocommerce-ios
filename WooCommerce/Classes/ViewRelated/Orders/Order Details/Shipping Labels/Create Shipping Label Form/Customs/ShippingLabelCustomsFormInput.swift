@@ -133,7 +133,9 @@ struct ShippingLabelCustomsFormInput: View {
     private var itnRows: some View {
         VStack(spacing: 0) {
             TitleAndTextFieldRow(title: Localization.itnTitle,
-                                 placeholder: Localization.itnPlaceholder,
+                                 placeholder: viewModel.missingITNForDestination || viewModel.missingITNForClassesAbove2500usd
+                                    ? Localization.itnRequiredPlaceholder
+                                    : Localization.itnPlaceholder,
                                  text: $viewModel.itn)
             Divider()
                 .padding(.leading, Constants.horizontalPadding)
@@ -196,6 +198,8 @@ private extension ShippingLabelCustomsFormInput {
                                                 comment: "Title for the ITN row in Customs screen of Shipping Label flow")
         static let itnPlaceholder = NSLocalizedString("Enter ITN (Optional)",
                                                       comment: "Placeholder for the ITN row in Customs screen of Shippling Label flow")
+        static let itnRequiredPlaceholder = NSLocalizedString("Enter ITN",
+                                                              comment: "Placeholder for the required ITN row in Customs screen of Shipping Label flow")
         static let itnMissingForDestination = NSLocalizedString("ITN is required for shipments to %1$@",
                                                                 comment: "Error message for missing ITN for destination country in" +
                                                                     "Customs screen of Shipping Label flow. The placeholder is the destination country.")

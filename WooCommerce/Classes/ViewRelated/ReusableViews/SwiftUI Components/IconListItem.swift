@@ -35,6 +35,7 @@ struct IconListItem: View {
         HStack(alignment: .center, spacing: Layout.contentSpacing) {
             icon?.getImage()
                 .frame(width: Layout.iconSize.width, height: Layout.iconSize.height)
+                .accessibility(hidden: true)
             VStack(alignment: .leading, spacing: Layout.innerSpacing) {
                 Text(title)
                     .headlineStyle()
@@ -44,7 +45,6 @@ struct IconListItem: View {
             Spacer()
         }
         .padding(.horizontal, Layout.horizontalPadding)
-        .padding(.vertical, Layout.verticalPadding)
     }
 }
 
@@ -54,7 +54,6 @@ private extension IconListItem {
         static let contentSpacing: CGFloat = 16
         static let innerSpacing: CGFloat = 2
         static let horizontalPadding: CGFloat = 40
-        static let verticalPadding: CGFloat = 16
     }
 }
 

@@ -44,11 +44,11 @@ struct ProductsTopBannerFactory {
         let title = type.title
         let infoText = type.info
         let icon: UIImage = .megaphoneIcon
-        let giveFeedbackAction = TopBannerViewModel.ActionButton(title: Localization.giveFeedback) {
+        let giveFeedbackAction = TopBannerViewModel.ActionButton(title: Localization.giveFeedback) { _ in
             analytics.track(event: .featureFeedbackBanner(context: type.feedbackContext, action: .gaveFeedback))
             onGiveFeedbackButtonPressed()
         }
-        let dismissAction = TopBannerViewModel.ActionButton(title: Localization.dismiss) {
+        let dismissAction = TopBannerViewModel.ActionButton(title: Localization.dismiss) { _ in
             analytics.track(event: .featureFeedbackBanner(context: type.feedbackContext, action: .dismissed))
             onDismissButtonPressed()
         }

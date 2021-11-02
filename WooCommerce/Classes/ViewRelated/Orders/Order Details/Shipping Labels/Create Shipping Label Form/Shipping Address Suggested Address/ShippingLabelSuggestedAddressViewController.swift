@@ -28,6 +28,7 @@ final class ShippingLabelSuggestedAddressViewController: UIViewController {
     private let type: ShipType
     private let address: ShippingLabelAddress?
     private let suggestedAddress: ShippingLabelAddress?
+    private let email: String?
     private let sections: [Section] = [Section(rows: [.addressEntered, .addressSuggested])]
 
     /// Completion callback
@@ -50,12 +51,14 @@ final class ShippingLabelSuggestedAddressViewController: UIViewController {
          type: ShipType,
          address: ShippingLabelAddress?,
          suggestedAddress: ShippingLabelAddress?,
+         email: String?,
          countries: [Country],
          completion: @escaping Completion) {
         self.siteID = siteID
         self.type = type
         self.address = address
         self.suggestedAddress = suggestedAddress
+        self.email = email
         self.countries = countries
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
@@ -159,19 +162,20 @@ private extension ShippingLabelSuggestedAddressViewController {
         switch selectedAddress {
         case .entered:
             ServiceLocator.analytics.track(.shippingLabelAddressSuggestionsEditSelectedAddressButtonTapped, withProperties: ["type": "original"])
-            displayEditAddressFormVC(address: address, type: type)
+            displayEditAddressFormVC(address: address, email: email, type: type)
         case .suggested:
             ServiceLocator.analytics.track(.shippingLabelAddressSuggestionsEditSelectedAddressButtonTapped, withProperties: ["type": "suggested"])
-            displayEditAddressFormVC(address: suggestedAddress, type: type)
+            displayEditAddressFormVC(address: suggestedAddress, email: email, type: type)
         }
 
     }
 
-    func displayEditAddressFormVC(address: ShippingLabelAddress?, type: ShipType) {
+    func displayEditAddressFormVC(address: ShippingLabelAddress?, email: String?, type: ShipType) {
         let shippingAddressVC = ShippingLabelAddressFormViewController(
             siteID: siteID,
             type: type,
             address: address,
+            email: email,
             validationError: nil,
             countries: countries,
             completion: { [weak self] (newShippingLabelAddress) in

@@ -88,15 +88,15 @@ final class AnnouncementsStoreTests: XCTestCase {
         remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .failure(error))
 
         // Act
-        let resultError: AnnouncementsError? = waitFor { [weak self] promise in
+        let resultError: NSError? = waitFor { [weak self] promise in
             let action = AnnouncementsAction.synchronizeAnnouncements { result in
-                promise(result.failure as? AnnouncementsError)
+                promise(result.failure as NSError?)
             }
             self?.subject?.onAction(action)
         }
 
         // Assert
-        XCTAssertEqual(resultError, .announcementNotFound)
+        XCTAssertEqual(resultError, error)
     }
 
     func test_load_saved_announcement_without_saved_data_returns_error() {

@@ -1,0 +1,3 @@
+Les marchands utilisant WooCommerce Shipping & Tax pourront désormais créer plusieurs étiquettes d’expédition pour une commande. Vous pouvez déplacer rapidement des articles entre les colis pour adapter les envois à votre client. Nous avons également corrigé certains problèmes techniques signalés sur les mêmes écrans.
+
+Nous avons également apporté quelques améliorations à l’accessibilité en fonction des commentaires. Merci !

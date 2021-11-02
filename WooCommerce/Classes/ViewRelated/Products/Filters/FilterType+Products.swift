@@ -28,3 +28,13 @@ extension ProductType: FilterType {
         return true
     }
 }
+
+extension ProductCategory: FilterType {
+    var description: String {
+        return name
+    }
+
+    var isActive: Bool {
+        return true
+    }
+}

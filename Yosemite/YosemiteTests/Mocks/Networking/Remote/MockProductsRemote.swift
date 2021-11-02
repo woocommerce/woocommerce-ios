@@ -126,6 +126,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                          stockStatus: ProductStockStatus?,
                          productStatus: ProductStatus?,
                          productType: ProductType?,
+                         productCategory: ProductCategory?,
                          orderBy: ProductsRemote.OrderKey,
                          order: ProductsRemote.Order,
                          excludedProductIDs: [Int64],

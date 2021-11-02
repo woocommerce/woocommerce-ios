@@ -159,9 +159,12 @@ extension ShippingLabelFormViewController: UITableViewDelegate {
         let row = viewModel.state.sections[indexPath.section].rows[indexPath.row]
         switch row {
         case Row(type: .shipFrom, dataState: .validated, displayMode: .editable):
-            displayEditAddressFormVC(address: viewModel.originAddress, validationError: nil, type: .origin)
+            displayEditAddressFormVC(address: viewModel.originAddress, email: nil, validationError: nil, type: .origin)
         case Row(type: .shipTo, dataState: .validated, displayMode: .editable):
-            displayEditAddressFormVC(address: viewModel.destinationAddress, validationError: nil, type: .destination)
+            displayEditAddressFormVC(address: viewModel.destinationAddress,
+                                     email: viewModel.order.billingAddress?.email,
+                                     validationError: nil,
+                                     type: .destination)
         case Row(type: .packageDetails, dataState: .validated, displayMode: .editable):
             displayPackageDetailsVC(inputPackages: viewModel.selectedPackagesDetails)
         case Row(type: .customs, dataState: .validated, displayMode: .editable):
@@ -215,7 +218,7 @@ private extension ShippingLabelFormViewController {
             if self.viewModel.customsFormRequired,
                let originAddress = self.viewModel.originAddress,
                originAddress.phone.isEmpty {
-                return self.displayEditAddressFormVC(address: originAddress, validationError: nil, type: .origin)
+                return self.displayEditAddressFormVC(address: originAddress, email: nil, validationError: nil, type: .origin)
             }
             self.viewModel.validateAddress(type: .origin) { [weak self] (validationState, response) in
                 guard let self = self else { return }
@@ -225,9 +228,9 @@ private extension ShippingLabelFormViewController {
                     self.viewModel.handleOriginAddressValueChanges(address: response?.address,
                                                                    validated: true)
                 case .suggestedAddress:
-                    self.displaySuggestedAddressVC(address: shippingLabelAddress, suggestedAddress: response?.address, type: .origin)
+                    self.displaySuggestedAddressVC(address: shippingLabelAddress, email: nil, suggestedAddress: response?.address, type: .origin)
                 default:
-                    self.displayEditAddressFormVC(address: shippingLabelAddress, validationError: nil, type: .origin)
+                    self.displayEditAddressFormVC(address: shippingLabelAddress, email: nil, validationError: nil, type: .origin)
                 }
             }
         }
@@ -249,7 +252,10 @@ private extension ShippingLabelFormViewController {
             if self.viewModel.customsFormRequired,
                let destinationAddress = self.viewModel.destinationAddress,
                destinationAddress.phone.isEmpty {
-                return self.displayEditAddressFormVC(address: destinationAddress, validationError: nil, type: .destination)
+                return self.displayEditAddressFormVC(address: destinationAddress,
+                                                     email: self.viewModel.order.billingAddress?.email,
+                                                     validationError: nil,
+                                                     type: .destination)
             }
 
             self.viewModel.validateAddress(type: .destination) { [weak self] (validationState, response) in
@@ -260,12 +266,21 @@ private extension ShippingLabelFormViewController {
                     self.viewModel.handleDestinationAddressValueChanges(address: response?.address,
                                                                         validated: true)
                 case .suggestedAddress:
-                    self.displaySuggestedAddressVC(address: shippingLabelAddress, suggestedAddress: response?.address, type: .destination)
+                    self.displaySuggestedAddressVC(address: shippingLabelAddress,
+                                                   email: self.viewModel.order.billingAddress?.email,
+                                                   suggestedAddress: response?.address,
+                                                   type: .destination)
                 case .validationError(let validationError):
-                    self.displayEditAddressFormVC(address: shippingLabelAddress, validationError: validationError, type: .destination)
+                    self.displayEditAddressFormVC(address: shippingLabelAddress,
+                                                  email: self.viewModel.order.billingAddress?.email,
+                                                  validationError: validationError,
+                                                  type: .destination)
                 case .genericError(let error):
                     let validationError = ShippingLabelAddressValidationError(addressError: nil, generalError: error.localizedDescription)
-                    self.displayEditAddressFormVC(address: shippingLabelAddress, validationError: validationError, type: .destination)
+                    self.displayEditAddressFormVC(address: shippingLabelAddress,
+                                                  email: self.viewModel.order.billingAddress?.email,
+                                                  validationError: validationError,
+                                                  type: .destination)
                 }
             }
         }
@@ -362,7 +377,7 @@ private extension ShippingLabelFormViewController {
 // MARK: - Actions
 //
 private extension ShippingLabelFormViewController {
-    func displayEditAddressFormVC(address: ShippingLabelAddress?, validationError: ShippingLabelAddressValidationError?, type: ShipType) {
+    func displayEditAddressFormVC(address: ShippingLabelAddress?, email: String?, validationError: ShippingLabelAddressValidationError?, type: ShipType) {
         guard viewModel.countries.isNotEmpty else {
             let notice = Notice(title: Localization.noticeUnableToFetchCountries, feedbackType: .error, actionTitle: Localization.noticeRetryAction) {
                 [weak self] in
@@ -376,6 +391,7 @@ private extension ShippingLabelFormViewController {
             siteID: viewModel.siteID,
             type: type,
             address: address,
+            email: email,
             phoneNumberRequired: isPhoneNumberRequired,
             validationError: validationError,
             countries: viewModel.filteredCountries(for: type),
@@ -393,7 +409,7 @@ private extension ShippingLabelFormViewController {
         navigationController?.pushViewController(shippingAddressVC, animated: true)
     }
 
-    func displaySuggestedAddressVC(address: ShippingLabelAddress?, suggestedAddress: ShippingLabelAddress?, type: ShipType) {
+    func displaySuggestedAddressVC(address: ShippingLabelAddress?, email: String?, suggestedAddress: ShippingLabelAddress?, type: ShipType) {
         guard viewModel.countries.isNotEmpty else {
             let notice = Notice(title: Localization.noticeUnableToFetchCountries, feedbackType: .error, actionTitle: Localization.noticeRetryAction) {
                 [weak self] in
@@ -405,7 +421,7 @@ private extension ShippingLabelFormViewController {
         let vc = ShippingLabelSuggestedAddressViewController(siteID: viewModel.siteID,
                                                              type: type,
                                                              address: address,
-                                                             suggestedAddress: suggestedAddress,
+                                                             suggestedAddress: suggestedAddress, email: email,
                                                              countries: viewModel.countries) { [weak self] (newShippingLabelAddress) in
             switch type {
             case .origin:

@@ -633,20 +633,20 @@ final class OrderStoreTests: XCTestCase {
     }
 
 
-    func test_create_quick_pay_order_properly_sends_values_as_fees() throws {
+    func test_create_quick_order_order_properly_sends_values_as_fees() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "orders", filename: "order")
 
         // When
-        let action = OrderAction.createQuickPayOrder(siteID: self.sampleSiteID, amount: "125.50") { _ in }
+        let action = OrderAction.createQuickOrderOrder(siteID: self.sampleSiteID, amount: "125.50") { _ in }
         store.onAction(action)
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
         let received = try XCTUnwrap(request.parameters["fee_lines"] as? [[String: String]]).first
         let expected = [
-            "name": "Quick Pay",
+            "name": "Quick Order",
             "tax_status": "none",
             "tax_class": "",
             "total": "125.50"
@@ -654,14 +654,14 @@ final class OrderStoreTests: XCTestCase {
         assertEqual(received, expected)
     }
 
-    func test_create_quick_pay_order_stores_orders_correctly() throws {
+    func test_create_quick_order_order_stores_orders_correctly() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "orders", filename: "order")
 
         // When
         let storedOrder: Yosemite.Order? = waitFor { promise in
-            let action = OrderAction.createQuickPayOrder(siteID: self.sampleSiteID, amount: "125.50") { _ in
+            let action = OrderAction.createQuickOrderOrder(siteID: self.sampleSiteID, amount: "125.50") { _ in
                 let order = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)?.toReadOnly()
                 promise(order)
             }

@@ -65,7 +65,9 @@ final class ProductsViewController: UIViewController {
     ///
     private lazy var resultsController: ResultsController<StorageProduct> = {
         let resultsController = createResultsController(siteID: siteID)
-        configureResultsController(resultsController, onReload: reloadTableAndView)
+        configureResultsController(resultsController, onReload: { [weak self] in
+            self?.reloadTableAndView()
+        })
         return resultsController
     }()
 
@@ -664,7 +666,7 @@ private extension ProductsViewController {
 
     @objc func filterButtonTapped() {
         ServiceLocator.analytics.track(.productListViewFilterOptionsTapped)
-        let viewModel = FilterProductListViewModel(filters: filters)
+        let viewModel = FilterProductListViewModel(filters: filters, siteID: siteID)
         let filterProductListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
             ServiceLocator.analytics.track(.productFilterListShowProductsButtonTapped, withProperties: ["filters": filters.analyticsDescription])
             self?.filters = filters
@@ -716,7 +718,9 @@ private extension ProductsViewController {
     func removePlaceholderProducts() {
         tableView.removeGhostContent()
         // Assign again the original closure
-        setClosuresToResultController(resultsController, onReload: reloadTableAndView)
+        setClosuresToResultController(resultsController, onReload: { [weak self] in
+            self?.reloadTableAndView()
+        })
         tableView.reloadData()
     }
 
@@ -790,6 +794,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                                  stockStatus: filters.stockStatus,
                                  productStatus: filters.productStatus,
                                  productType: filters.productType,
+                                 productCategory: filters.productCategory,
                                  sortOrder: sortOrder) { [weak self] result in
                                     guard let self = self else {
                                         return
@@ -819,7 +824,8 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                                                               sort: sort?.rawValue,
                                                               stockStatusFilter: filters.stockStatus,
                                                               productStatusFilter: filters.productStatus,
-                                                              productTypeFilter: filters.productType) { (error) in
+                                                              productTypeFilter: filters.productType,
+                                                              productCategoryFilter: filters.productCategory) { (error) in
         }
         ServiceLocator.stores.dispatch(action)
     }
@@ -836,6 +842,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                 self?.filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
                                                                    productStatus: settings.productStatusFilter,
                                                                    productType: settings.productTypeFilter,
+                                                                   productCategory: settings.productCategoryFilter,
                                                                    numberOfActiveFilters: settings.numberOfActiveFilters())
             case .failure:
                 break
@@ -875,6 +882,7 @@ private extension ProductsViewController {
             ensureFooterSpinnerIsStopped()
             removePlaceholderProducts()
             showTopBannerViewIfNeeded()
+            showOrHideToolBar()
         case .results:
             break
         }

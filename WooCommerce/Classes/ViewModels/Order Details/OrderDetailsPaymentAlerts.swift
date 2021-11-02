@@ -48,8 +48,8 @@ final class OrderDetailsPaymentAlerts {
         presentViewModel(viewModel: viewModel)
     }
 
-    func tapOrInsertCard() {
-        let viewModel = tapOrInsert()
+    func tapOrInsertCard(onCancel: @escaping () -> Void) {
+        let viewModel = tapOrInsert(onCancel: onCancel)
         presentViewModel(viewModel: viewModel)
     }
 
@@ -89,8 +89,8 @@ private extension OrderDetailsPaymentAlerts {
         CardPresentModalReaderIsReady(name: name, amount: amount)
     }
 
-    func tapOrInsert() -> CardPresentPaymentsModalViewModel {
-        CardPresentModalTapCard(name: name, amount: amount)
+    func tapOrInsert(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalTapCard(name: name, amount: amount, onCancel: onCancel)
     }
 
     func remove() -> CardPresentPaymentsModalViewModel {

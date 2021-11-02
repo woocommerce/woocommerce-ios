@@ -15,11 +15,18 @@ final class PaymentCaptureOrchestrator {
     private var walletSuppressionRequestToken: PKSuppressionRequestToken?
 
     func collectPayment(for order: Order,
-                        paymentsAccount: PaymentGatewayAccount?,
+                        statementDescriptor: String?,
                         onPresentMessage: @escaping (String) -> Void,
                         onClearMessage: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
+        /// Bail out if the order amount is below the minimum allowed:
+        /// https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts
+        guard isTotalAmountValid(order: order) else {
+            DDLogError("💳 Error: failed to capture payment for order. Order amount is below minimum")
+            onCompletion(.failure(minimumAmountError(order: order, minimumAmount: Constants.minimumAmount)))
+            return
+        }
         /// First ask the backend to create/assign a Stripe customer for the order
         ///
         var customerID: String?
@@ -32,7 +39,11 @@ final class PaymentCaptureOrchestrator {
                 DDLogWarn("Warning: failed to fetch customer ID for an order")
             }
 
-            guard let parameters = paymentParameters(order: order, account: paymentsAccount, customerID: customerID) else {
+            guard let parameters = paymentParameters(
+                    order: order,
+                    statementDescriptor: statementDescriptor,
+                    customerID: customerID
+            ) else {
                 DDLogError("Error: failed to create payment parameters for an order")
                 onCompletion(.failure(CardReaderServiceError.paymentCapture()))
                 return
@@ -77,7 +88,10 @@ final class PaymentCaptureOrchestrator {
     }
 
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let action = CardPresentPaymentAction.cancelPayment(onCompletion: onCompletion)
+        let action = CardPresentPaymentAction.cancelPayment() { [weak self] result in
+            self?.allowPassPresentation()
+            onCompletion(result)
+        }
         ServiceLocator.stores.dispatch(action)
     }
 
@@ -190,7 +204,7 @@ private extension PaymentCaptureOrchestrator {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func paymentParameters(order: Order, account: PaymentGatewayAccount?, customerID: String?) -> PaymentParameters? {
+    func paymentParameters(order: Order, statementDescriptor: String?, customerID: String?) -> PaymentParameters? {
         guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
             DDLogError("Error: attempted to collect payment for an order without a valid total.")
             return nil
@@ -222,7 +236,7 @@ private extension PaymentCaptureOrchestrator {
         return PaymentParameters(amount: orderTotal as Decimal,
                                  currency: order.currency,
                                  receiptDescription: receiptDescription(orderNumber: order.number),
-                                 statementDescription: account?.statementDescriptor,
+                                 statementDescription: statementDescriptor,
                                  receiptEmail: order.billingAddress?.email,
                                  metadata: metadata,
                                  customerID: customerID)
@@ -244,6 +258,30 @@ private extension PaymentCaptureOrchestrator {
 }
 
 private extension PaymentCaptureOrchestrator {
+    enum Constants {
+        /// Minimum order amount in USD:
+        /// https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts
+        static let minimumAmount = NSDecimalNumber(string: "0.5")
+    }
+
+    func isTotalAmountValid(order: Order) -> Bool {
+        guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
+            return false
+        }
+
+        return orderTotal as Decimal >= Constants.minimumAmount as Decimal
+    }
+
+    func minimumAmountError(order: Order, minimumAmount: NSDecimalNumber) -> Error {
+        guard let minimum = currencyFormatter.formatAmount(minimumAmount, with: order.currency) else {
+            return NotValidAmountError.other
+        }
+
+        return NotValidAmountError.belowMinimumAmount(amount: minimum)
+    }
+}
+
+private extension PaymentCaptureOrchestrator {
     enum Localization {
         static let receiptDescription = NSLocalizedString("In-Person Payment for Order #%1$@ for %2$@",
                                                           comment: "Message included in emailed receipts. "
@@ -251,5 +289,33 @@ private extension PaymentCaptureOrchestrator {
                                                             + "Order @{number} for @{store name} "
                                                             + "Parameters: %1$@ - order number, "
                                                             + "%2$@ - store name")
+    }
+}
+
+private extension PaymentCaptureOrchestrator {
+    private enum NotValidAmountError: Error, LocalizedError {
+        case belowMinimumAmount(amount: String)
+        case other
+
+        public var errorDescription: String? {
+            switch self {
+            case .belowMinimumAmount(let amount):
+                return String.localizedStringWithFormat(Localizations.belowMinimumAmount, amount)
+            case .other:
+                return Localizations.defaultMessage
+            }
+        }
+
+        enum Localizations {
+            static let defaultMessage = NSLocalizedString(
+                "Unable to process payment. Order total amount is not valid.",
+                comment: "Error message when the order amount is not valid."
+            )
+
+            static let belowMinimumAmount = NSLocalizedString(
+                "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@",
+                comment: "Error message when the order amount is below the minimum amount allowed."
+            )
+        }
     }
 }

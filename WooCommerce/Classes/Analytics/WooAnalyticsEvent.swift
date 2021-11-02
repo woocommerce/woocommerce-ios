@@ -64,6 +64,8 @@ extension WooAnalyticsEvent {
         case shippingLabelsRelease3 = "shipping_labels_m3"
         /// Shown in beta feature banner for order add-ons.
         case addOnsI1 = "add-ons_i1"
+        /// Shown in beta feature banner for quick order prototype.
+        case quickOrderPrototype = "quick_order_prototype"
     }
 
     /// The action performed on the survey screen.
@@ -348,6 +350,57 @@ extension WooAnalyticsEvent {
 
         static func orderDetailEditFlowCanceled(subject: Subject) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderDetailEditFlowCanceled, properties: [Subject.key: subject.rawValue])
+        }
+    }
+}
+
+// MARK: - What's New Component
+//
+extension WooAnalyticsEvent {
+    /// Possible sources for the What's New component
+    ///
+    enum Source: String {
+        fileprivate static let key = "source"
+
+        case appUpgrade = "app_upgrade"
+        case appSettings = "app_settings"
+    }
+
+    static func featureAnnouncementShown(source: Source) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .featureAnnouncementShown, properties: [Source.key: source.rawValue])
+    }
+}
+
+// MARK: - Quick Order
+//
+extension WooAnalyticsEvent {
+    // Namespace
+    enum QuickOrder {
+        /// Common event keys
+        ///
+        private enum Keys {
+            static let state = "state"
+            static let amount = "amount"
+        }
+
+        static func quickOrderFlowStarted() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .quickOrderFlowStarted, properties: [:])
+        }
+
+        static func quickOrderFlowCompleted(amount: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .quickOrderFlowCompleted, properties: [Keys.amount: amount])
+        }
+
+        static func quickOrderFlowCanceled() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .quickOrderFlowCanceled, properties: [:])
+        }
+
+        static func quickOrderFlowFailed() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .quickOrderFlowFailed, properties: [:])
+        }
+
+        static func settingsBetaFeaturesQuickOrderToggled(isOn: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .settingsBetaFeaturesQuickOrderToggled, properties: [Keys.state: isOn ? "on" : "off"])
         }
     }
 }

@@ -50,7 +50,7 @@ target 'WooCommerce' do
 
   aztec
 
-  pod 'WPMediaPicker', '~> 1.7.3-beta.1'
+  pod 'WPMediaPicker', '~> 1.7.3'
 
   # External Libraries
   # ==================

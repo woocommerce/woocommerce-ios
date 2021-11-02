@@ -1,0 +1,3 @@
+Handlare som använder WooCommerce Shipping & Tax kommer att märka att det nu är möjligt att skapa flera fraktetiketter för en beställning. Du kan snabbt flytta artiklar mellan paket för att få det att stämma överens med hur du har bestämt att varorna ska levereras till din kund. Vi har även åtgärdat några problem som har rapporterats på dessa skärmar.
+
+Dessutom har vi genomfört ett antal tillgänglighetsförbättringar baserat på er feedback. Tack!

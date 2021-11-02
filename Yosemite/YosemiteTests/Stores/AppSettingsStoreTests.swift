@@ -482,6 +482,149 @@ final class AppSettingsStoreTests: XCTestCase {
         let isEnabled = try result.get()
         XCTAssertTrue(isEnabled)
     }
+
+    // MARK: - General Store Settings
+
+    func test_saving_isTelemetryAvailable_works_correctly() throws {
+        // Given
+        let siteID: Int64 = 1234
+        let initialTime = Date(timeIntervalSince1970: 100)
+
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings(isTelemetryAvailable: true,
+                                                                                                             telemetryLastReportedTime: initialTime)])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setTelemetryAvailability(siteID: siteID, isAvailable: false)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[siteID]
+
+        XCTAssertEqual(false, settingsForSite?.isTelemetryAvailable)
+
+        // The other properties should be kept
+        XCTAssertEqual(initialTime, settingsForSite?.telemetryLastReportedTime)
+    }
+
+    func test_saving_isTelemetryAvailable_works_correctly_when_the_settings_file_does_not_exist() throws {
+        // Given
+        let siteID: Int64 = 1234
+
+        try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setTelemetryAvailability(siteID: siteID, isAvailable: true)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[siteID]
+
+        XCTAssertEqual(true, settingsForSite?.isTelemetryAvailable)
+    }
+
+    func test_saving_telemetryLastReportedTime_works_correctly() throws {
+        // Given
+        let siteID: Int64 = 1234
+        let initialTime = Date(timeIntervalSince1970: 100)
+        let newTime = Date(timeIntervalSince1970: 500)
+
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings(isTelemetryAvailable: true,
+                                                                                                             telemetryLastReportedTime: initialTime)])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setTelemetryLastReportedTime(siteID: siteID, time: newTime)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[siteID]
+
+        XCTAssertEqual(newTime, settingsForSite?.telemetryLastReportedTime)
+
+        // The other properties should be kept
+        XCTAssertEqual(true, settingsForSite?.isTelemetryAvailable)
+    }
+
+    func test_saving_telemetryLastReportedTime_works_correctly_when_the_settings_file_does_not_exist() throws {
+        // Given
+        let siteID: Int64 = 1234
+        let newTime = Date(timeIntervalSince1970: 500)
+
+        try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setTelemetryLastReportedTime(siteID: siteID, time: newTime)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[siteID]
+
+        XCTAssertEqual(newTime, settingsForSite?.telemetryLastReportedTime)
+    }
+
+    func test_getTelemetryInfo_returns_correct_saved_data() throws {
+        // Given
+        let siteID: Int64 = 1234
+        let initialTime = Date(timeIntervalSince1970: 100)
+
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings(isTelemetryAvailable: true,
+                                                                                                             telemetryLastReportedTime: initialTime)])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let data: (isAvailable: Bool, telemetryLastReportedTime: Date?) = waitFor { promise in
+            let action = AppSettingsAction.getTelemetryInfo(siteID: siteID) { isAvailable, telemetryLastReportedTime in
+                promise((isAvailable, telemetryLastReportedTime))
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(data.isAvailable)
+        XCTAssertEqual(initialTime, data.telemetryLastReportedTime)
+    }
+
+    func test_getTelemetryInfo_returns_correct_default_data() throws {
+        // Given
+        let siteID: Int64 = 1234
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let data: (isAvailable: Bool, telemetryLastReportedTime: Date?) = waitFor { promise in
+            let action = AppSettingsAction.getTelemetryInfo(siteID: siteID) { isAvailable, telemetryLastReportedTime in
+                promise((isAvailable, telemetryLastReportedTime))
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertFalse(data.isAvailable)
+        XCTAssertNil(data.telemetryLastReportedTime)
+    }
+
+    func test_resetGeneralStoreSettings_resets_all_settings() throws {
+        // Given
+        let siteID: Int64 = 1234
+        let initialTime = Date(timeIntervalSince1970: 100)
+
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings(isTelemetryAvailable: true,
+                                                                                                             telemetryLastReportedTime: initialTime)])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.resetGeneralStoreSettings
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertEqual(true, fileStorage?.deleteIsHit)
+        let savedSettings: GeneralStoreSettingsBySite? = try fileStorage?.data(for: expectedGeneralStoreSettingsFileURL)
+        XCTAssertNil(savedSettings)
+    }
 }
 
 // MARK: - Utils
@@ -502,5 +645,10 @@ private extension AppSettingsStoreTests {
             knownCardReaders: []
         )
         return (settings, feedback)
+    }
+
+    var expectedGeneralStoreSettingsFileURL: URL {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent("general-store-settings.plist")
     }
 }

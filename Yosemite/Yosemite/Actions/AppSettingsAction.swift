@@ -136,4 +136,22 @@ public enum AppSettingsAction: Action {
     /// Clears the persisted eligibility error information.
     ///
     case resetEligibilityErrorInfo
+
+    // MARK: - General Store Settings
+
+    /// Sets telemetry availability status information.
+    ///
+    case setTelemetryAvailability(siteID: Int64, isAvailable: Bool)
+
+    /// Sets telemetry last reported time information.
+    ///
+    case setTelemetryLastReportedTime(siteID: Int64, time: Date)
+
+    /// Loads telemetry information - availability status and last reported time.
+    ///
+    case getTelemetryInfo(siteID: Int64, onCompletion: (Bool, Date?) -> Void)
+
+    /// Clears all the products settings
+    ///
+    case resetGeneralStoreSettings
 }

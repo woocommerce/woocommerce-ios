@@ -58,6 +58,7 @@ class AuthenticatedState: StoresManagerState {
             StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             TaxClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            TelemetryStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             UserStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CardPresentPaymentStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
@@ -137,6 +138,7 @@ private extension AuthenticatedState {
         let resetStoredProviders = AppSettingsAction.resetStoredProviders(onCompletion: nil)
         let resetStoredStatsVersionStates = AppSettingsAction.resetStatsVersionStates
         let resetProductsSettings = AppSettingsAction.resetProductsSettings
-        ServiceLocator.stores.dispatch([resetStoredProviders, resetStoredStatsVersionStates, resetProductsSettings])
+        let resetGeneralStoreSettings = AppSettingsAction.resetGeneralStoreSettings
+        ServiceLocator.stores.dispatch([resetStoredProviders, resetStoredStatsVersionStates, resetProductsSettings, resetGeneralStoreSettings])
     }
 }

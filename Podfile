@@ -64,7 +64,7 @@ target 'WooCommerce' do
   pod 'ZendeskSupportSDK', '~> 5.0'
   pod 'Kingfisher', '~> 6.0.0'
   pod 'StripeTerminal', '~> 1.4.0'
-  pod 'Wormholy', '~> 1.6.4', configurations: ['Debug']
+  pod 'Wormholy', '~> 1.6.5', configurations: ['Debug']
 
   # Unit Tests
   # ==========

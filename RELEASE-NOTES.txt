@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+8.0
+-----
+
+
 7.9
 -----
 - [*] Fix: after disconnecting a site or connecting to a new site, the sites in site picker (Settings > Switch Store) should be updated accordingly. The only exception is when the newly disconnected site is the currently selected site. [https://github.com/woocommerce/woocommerce-ios/pull/5241]

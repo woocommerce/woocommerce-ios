@@ -15,10 +15,10 @@ final class PaymentCaptureOrchestrator {
     private var walletSuppressionRequestToken: PKSuppressionRequestToken?
 
     func collectPayment(for order: Order,
-                        paymentsAccount: PaymentGatewayAccount?,
-                        onPresentMessage: @escaping (String) -> Void,
-                        onClearMessage: @escaping () -> Void,
+                        statementDescriptor: String?,
+                        onWaitingForInput: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
+                        onDisplayMessage: @escaping (String) -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
         /// Bail out if the order amount is below the minimum allowed:
         /// https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts
@@ -39,7 +39,11 @@ final class PaymentCaptureOrchestrator {
                 DDLogWarn("Warning: failed to fetch customer ID for an order")
             }
 
-            guard let parameters = paymentParameters(order: order, account: paymentsAccount, customerID: customerID) else {
+            guard let parameters = paymentParameters(
+                    order: order,
+                    statementDescriptor: statementDescriptor,
+                    customerID: customerID
+            ) else {
                 DDLogError("Error: failed to create payment parameters for an order")
                 onCompletion(.failure(CardReaderServiceError.paymentCapture()))
                 return
@@ -56,12 +60,10 @@ final class PaymentCaptureOrchestrator {
                 parameters: parameters,
                 onCardReaderMessage: { (event) in
                     switch event {
-                    case .displayMessage (let message):
-                        onPresentMessage(message)
-                    case .waitingForInput (let message):
-                        onPresentMessage(message)
-                    case .cardRemoved:
-                        onClearMessage()
+                    case .waitingForInput:
+                        onWaitingForInput()
+                    case .displayMessage(let message):
+                        onDisplayMessage(message)
                     default:
                         break
                     }
@@ -84,22 +86,10 @@ final class PaymentCaptureOrchestrator {
     }
 
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let action = CardPresentPaymentAction.cancelPayment(onCompletion: onCompletion)
-        ServiceLocator.stores.dispatch(action)
-    }
-
-    func printReceipt(for order: Order, params: CardPresentReceiptParameters) {
-        let action = ReceiptAction.print(order: order, parameters: params) { (result) in
-            switch result {
-            case .success:
-                ServiceLocator.analytics.track(.receiptPrintSuccess)
-            case .cancel:
-                ServiceLocator.analytics.track(.receiptPrintCanceled)
-            case .failure(let error):
-                ServiceLocator.analytics.track(.receiptPrintFailed, withError: error)
-            }
+        let action = CardPresentPaymentAction.cancelPayment() { [weak self] result in
+            self?.allowPassPresentation()
+            onCompletion(result)
         }
-
         ServiceLocator.stores.dispatch(action)
     }
 
@@ -200,7 +190,7 @@ private extension PaymentCaptureOrchestrator {
 
             switch result {
             case .success:
-                self?.celebrate()
+                self?.celebrate() // plays a sound, haptic
                 self?.saveReceipt(for: order, params: receiptParameters)
                 onCompletion(.success(receiptParameters))
             case .failure(let error):
@@ -212,7 +202,7 @@ private extension PaymentCaptureOrchestrator {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func paymentParameters(order: Order, account: PaymentGatewayAccount?, customerID: String?) -> PaymentParameters? {
+    func paymentParameters(order: Order, statementDescriptor: String?, customerID: String?) -> PaymentParameters? {
         guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
             DDLogError("Error: attempted to collect payment for an order without a valid total.")
             return nil
@@ -244,7 +234,7 @@ private extension PaymentCaptureOrchestrator {
         return PaymentParameters(amount: orderTotal as Decimal,
                                  currency: order.currency,
                                  receiptDescription: receiptDescription(orderNumber: order.number),
-                                 statementDescription: account?.statementDescriptor,
+                                 statementDescription: statementDescriptor,
                                  receiptEmail: order.billingAddress?.email,
                                  metadata: metadata,
                                  customerID: customerID)

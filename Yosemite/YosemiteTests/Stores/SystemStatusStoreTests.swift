@@ -37,7 +37,7 @@ class SystemStatusStoreTests: XCTestCase {
 
     func test_synchronizeSystemPlugins_stores_systemPlugins_correctly() {
         // Given
-        network.simulateResponse(requestUrlSuffix: "system_status", filename: "systemPlugins")
+        network.simulateResponse(requestUrlSuffix: "system_status", filename: "systemStatus")
         let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
@@ -50,7 +50,7 @@ class SystemStatusStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        XCTAssertEqual(viewStorage.countObjects(ofType: StorageSystemPlugin.self), 3) // number of systemPlugins in json file
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageSystemPlugin.self), 6) // number of systemPlugins in json file
     }
 
     func test_synchronizeSystemPlugins_removes_stale_systemPlugins_correctly() {
@@ -61,7 +61,7 @@ class SystemStatusStoreTests: XCTestCase {
         storedStaleSystemPlugin.update(with: staleSystemPlugin)
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageSystemPlugin.self), 1)
 
-        network.simulateResponse(requestUrlSuffix: "system_status", filename: "systemPlugins")
+        network.simulateResponse(requestUrlSuffix: "system_status", filename: "systemStatus")
         let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
@@ -74,7 +74,7 @@ class SystemStatusStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        XCTAssertEqual(viewStorage.countObjects(ofType: StorageSystemPlugin.self), 3) // number of systemPlugins in json file
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageSystemPlugin.self), 6) // number of systemPlugins in json file
         XCTAssertNil(viewStorage.loadSystemPlugin(siteID: sampleSiteID, name: staleSystemPluginName))
     }
 

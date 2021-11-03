@@ -30,3 +30,18 @@ extension GeneralAppSettings {
         )
     }
 }
+
+extension GeneralStoreSettings {
+    public func copy(
+        isTelemetryAvailable: CopiableProp<Bool> = .copy,
+        telemetryLastReportedTime: NullableCopiableProp<Date> = .copy
+    ) -> GeneralStoreSettings {
+        let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
+        let telemetryLastReportedTime = telemetryLastReportedTime ?? self.telemetryLastReportedTime
+
+        return GeneralStoreSettings(
+            isTelemetryAvailable: isTelemetryAvailable,
+            telemetryLastReportedTime: telemetryLastReportedTime
+        )
+    }
+}

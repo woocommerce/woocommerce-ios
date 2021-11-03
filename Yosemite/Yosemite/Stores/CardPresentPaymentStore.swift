@@ -57,10 +57,10 @@ public final class CardPresentPaymentStore: Store {
                            onCompletion: completion)
         case .cancelPayment(let completion):
             cancelPayment(onCompletion: completion)
-        case .checkForCardReaderUpdate(onCompletion: let completion):
-            checkForCardReaderUpdate(onCompletion: completion)
-        case .startCardReaderUpdate(onProgress: let progress, onCompletion: let completion):
-            startCardReaderUpdate(onProgress: progress, onCompletion: completion)
+        case .observeCardReaderUpdateState(onCompletion: let completion):
+            observeCardReaderUpdateState(onCompletion: completion)
+        case .startCardReaderUpdate:
+            startCardReaderUpdate()
         case .reset:
             reset()
         case .checkCardReaderConnected(onCompletion: let completion):
@@ -94,7 +94,7 @@ private extension CardPresentPaymentStore {
                     }
                 },
                 receiveValue: { readers in
-                    let supportedReaders = readers.filter({$0.readerType != .notSupported})
+                    let supportedReaders = readers.filter({$0.readerType == .chipper || $0.readerType == .stripeM2})
                     onReaderDiscovered(supportedReaders)
                 }
             ))
@@ -196,40 +196,12 @@ private extension CardPresentPaymentStore {
         }))
     }
 
-    func checkForCardReaderUpdate(onCompletion: @escaping (Result<CardReaderSoftwareUpdate?, Error>) -> Void) {
-        cardReaderService.checkForUpdate()
-            .sink(
-                // If the future is a failure, it will only fire receiveCompletion
-                receiveCompletion: { value in
-                    if case .failure(let error) = value {
-                        onCompletion(.failure(error))
-                    }
-
-                },
-                // If the future is a success, it will fire receiveValue and receiveCompletion
-                receiveValue: { softwareUpdate in
-                    onCompletion(.success(softwareUpdate))
-                })
-            // Note: We don't need to explicitly call cancel on this subscription since
-            // when the publisher completes, cancel will be called for us, and a Future
-            // completes after fulfilling its promise.
-            .store(in: &cancellables)
+    func observeCardReaderUpdateState(onCompletion: (AnyPublisher<CardReaderSoftwareUpdateState, Never>) -> Void) {
+        onCompletion(cardReaderService.softwareUpdateEvents)
     }
 
-    func startCardReaderUpdate(onProgress: @escaping (Float) -> Void,
-                        onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func startCardReaderUpdate() {
         cardReaderService.installUpdate()
-            .subscribe(Subscribers.Sink(
-                receiveCompletion: { value in
-                    switch value {
-                    case .failure(let error):
-                        onCompletion(.failure(error))
-                    case .finished:
-                        onCompletion(.success(()))
-                    }
-                },
-                receiveValue: onProgress
-            ))
     }
 
     func reset() {
@@ -273,6 +245,18 @@ private final class WCPayTokenProvider: CardReaderConfigProvider {
     func fetchToken(completion: @escaping(String?, Error?) -> Void) {
         remote.loadConnectionToken(for: siteID) { token, error in
             completion(token?.token, error)
+        }
+    }
+
+    func fetchDefaultLocationID(completion: @escaping(String?, Error?) -> Void) {
+        remote.loadDefaultReaderLocation(for: siteID) { result in
+            switch result {
+            case .success(let wcpayReaderLocation):
+                let readerLocation = wcpayReaderLocation.toReaderLocation(siteID: self.siteID)
+                completion(readerLocation.id, nil)
+            case .failure(let error):
+                completion(nil, error)
+            }
         }
     }
 }

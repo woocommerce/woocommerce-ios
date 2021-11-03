@@ -1,9 +1,9 @@
 import XCTest
 @testable import Networking
 
-/// SystemPluginsRemote Unit Tests
+/// SystemStatusRemote Unit Tests
 ///
-class SystemPluginsRemoteTests: XCTestCase {
+class SystemStatusRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
@@ -25,9 +25,9 @@ class SystemPluginsRemoteTests: XCTestCase {
     /// Verifies that loadSystemPlugins properly parses the sample response.
     ///
     func test_loadSystemPlugins_properly_returns_systemPlugins() {
-        let remote = SystemPluginsRemote(network: network)
+        let remote = SystemStatusRemote(network: network)
 
-        network.simulateResponse(requestUrlSuffix: "system_status", filename: "systemPlugins")
+        network.simulateResponse(requestUrlSuffix: "system_status", filename: "systemStatus")
 
         // When
         let result: Result<[SystemPlugin], Error> = waitFor { promise in
@@ -39,7 +39,7 @@ class SystemPluginsRemoteTests: XCTestCase {
         // Then
         switch result {
         case .success(let plugins):
-            XCTAssertEqual(plugins.count, 3)
+            XCTAssertEqual(plugins.count, 6)
         case .failure(let error):
             XCTAssertNil(error)
         }
@@ -48,7 +48,7 @@ class SystemPluginsRemoteTests: XCTestCase {
     /// Verifies that loadSystemPlugins properly relays Networking Layer errors.
     ///
     func test_loadSystemPlugins_properly_relays_netwoking_errors() {
-        let remote = SystemPluginsRemote(network: network)
+        let remote = SystemStatusRemote(network: network)
 
         // When
         let result: Result<[SystemPlugin], Error> = waitFor { promise in

@@ -48,13 +48,13 @@ final class OrderDetailsPaymentAlerts {
         presentViewModel(viewModel: viewModel)
     }
 
-    func tapOrInsertCard() {
-        let viewModel = tapOrInsert()
+    func tapOrInsertCard(onCancel: @escaping () -> Void) {
+        let viewModel = tapOrInsert(onCancel: onCancel)
         presentViewModel(viewModel: viewModel)
     }
 
-    func removeCard() {
-        let viewModel = remove()
+    func displayReaderMessage(message: String) {
+        let viewModel = displayMessage(message: message)
         presentViewModel(viewModel: viewModel)
     }
 
@@ -89,12 +89,12 @@ private extension OrderDetailsPaymentAlerts {
         CardPresentModalReaderIsReady(name: name, amount: amount)
     }
 
-    func tapOrInsert() -> CardPresentPaymentsModalViewModel {
-        CardPresentModalTapCard(name: name, amount: amount)
+    func tapOrInsert(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalTapCard(name: name, amount: amount, onCancel: onCancel)
     }
 
-    func remove() -> CardPresentPaymentsModalViewModel {
-        CardPresentModalRemoveCard(name: name, amount: amount)
+    func displayMessage(message: String) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalDisplayMessage(name: name, amount: amount, message: message)
     }
 
     func processing() -> CardPresentPaymentsModalViewModel {

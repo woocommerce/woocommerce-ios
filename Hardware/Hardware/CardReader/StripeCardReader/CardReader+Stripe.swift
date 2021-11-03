@@ -16,6 +16,8 @@ extension CardReader {
         self.batteryLevel = reader.batteryLevel?.floatValue
 
         self.readerType = CardReaderType.with(readerType: reader.deviceType)
+
+        self.locationId = reader.locationId
     }
 }
 
@@ -33,6 +35,7 @@ protocol StripeCardReader {
     var deviceSoftwareVersion: String? { get }
     var batteryLevel: NSNumber? { get }
     var deviceType: DeviceType { get }
+    var locationId: String? { get }
 }
 
 

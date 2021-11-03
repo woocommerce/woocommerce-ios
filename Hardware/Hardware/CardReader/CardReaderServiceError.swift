@@ -28,7 +28,7 @@ public enum CardReaderServiceError: Error {
     case paymentCancellation(underlyingError: UnderlyingError = .internalServiceError)
 
     /// Error thrown while updating the reader firmware
-    case softwareUpdate(underlyingError: UnderlyingError = .internalServiceError)
+    case softwareUpdate(underlyingError: UnderlyingError = .internalServiceError, batteryLevel: Double?)
 
     /// The user has denied the app permission to use Bluetooth
     case bluetoothDenied
@@ -51,7 +51,7 @@ extension CardReaderServiceError: LocalizedError {
             return underlyingError.errorDescription
         case .paymentCancellation(let underlyingError):
             return underlyingError.errorDescription
-        case .softwareUpdate(let underlyingError):
+        case .softwareUpdate(let underlyingError, _):
             return underlyingError.errorDescription
         case .bluetoothDenied:
             return NSLocalizedString(
@@ -192,6 +192,23 @@ public enum UnderlyingError: Error {
     /// Catch-all error case. Indicates there is something wrong with the
     /// internal state of the CardReaderService.
     case internalServiceError
+}
+
+extension UnderlyingError {
+    /// Returns true if the error is related to card reader software updates
+    ///
+    public var isSoftwareUpdateError: Bool {
+        switch self {
+        case .readerSoftwareUpdateFailed,
+             .readerSoftwareUpdateFailedReader,
+             .readerSoftwareUpdateFailedServer,
+             .readerSoftwareUpdateFailedInterrupted,
+             .readerSoftwareUpdateFailedBatteryLow:
+            return true
+        default:
+            return false
+        }
+    }
 }
 
 extension UnderlyingError: LocalizedError {

@@ -49,13 +49,20 @@ final class CardReaderTests: XCTestCase {
         let mockReader = MockStripeCardReader.bbposChipper2XBT()
         let cardReader = CardReader(reader: mockReader)
 
-        XCTAssertEqual(cardReader.readerType, .mobile)
+        XCTAssertEqual(cardReader.readerType, .chipper)
+    }
+
+    func test_card_reader_maps_reader_type_for_m2() {
+        let mockReader = MockStripeCardReader.stripeM2()
+        let cardReader = CardReader(reader: mockReader)
+
+        XCTAssertEqual(cardReader.readerType, .stripeM2)
     }
 
     func test_card_reader_maps_reader_type_for_verifone() {
         let mockReader = MockStripeCardReader.verifoneP400()
         let cardReader = CardReader(reader: mockReader)
 
-        XCTAssertEqual(cardReader.readerType, .counterTop)
+        XCTAssertEqual(cardReader.readerType, .other)
     }
 }

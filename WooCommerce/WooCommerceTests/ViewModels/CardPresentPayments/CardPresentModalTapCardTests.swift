@@ -5,14 +5,21 @@ import TestKit
 
 final class CardPresentModalTapCardTests: XCTestCase {
     private var viewModel: CardPresentModalTapCard!
+    private var closures: Closures!
 
     override func setUp() {
         super.setUp()
-        viewModel = CardPresentModalTapCard(name: Expectations.name, amount: Expectations.amount)
+        closures = Closures()
+        viewModel = CardPresentModalTapCard(
+            name: Expectations.name,
+            amount: Expectations.amount,
+            onCancel: closures.onCancel()
+        )
     }
 
     override func tearDown() {
         viewModel = nil
+        closures = nil
         super.tearDown()
     }
 
@@ -48,33 +55,26 @@ final class CardPresentModalTapCardTests: XCTestCase {
         XCTAssertNotNil(viewModel.bottomSubtitle)
     }
 
-    func test_secondary_button_dispatched_cancel_action() throws {
-        let storesManager = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
-        storesManager.reset()
-
-        ServiceLocator.setStores(storesManager)
-
-        assertEmpty(storesManager.receivedActions)
-
-        viewModel.didTapSecondaryButton(in: nil)
-
-        XCTAssertEqual(storesManager.receivedActions.count, 1)
-
-        let action = try XCTUnwrap(storesManager.receivedActions.first as? CardPresentPaymentAction)
-        switch action {
-        case .cancelPayment(onCompletion: _):
-            XCTAssertTrue(true)
-        default:
-            XCTFail("Primary button failed to dispatch .cancelPayment action")
-        }
+    func test_secondary_button_calls_closure() throws {
+        viewModel.didTapSecondaryButton(in: UIViewController())
+        XCTAssertTrue(closures.didTapCancel)
     }
 }
-
 
 private extension CardPresentModalTapCardTests {
     enum Expectations {
         static var name = "name"
         static var amount = "amount"
         static var image = UIImage.cardPresentImage
+    }
+}
+
+private final class Closures {
+    var didTapCancel = false
+
+    func onCancel() -> () -> Void {
+        return { [weak self] in
+            self?.didTapCancel = true
+        }
     }
 }

@@ -25,6 +25,14 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         setViewModelAndPresent(from: from, viewModel: connectingFailed(continueSearch: continueSearch, cancelSearch: cancelSearch))
     }
 
+    func updatingFailedLowBattery(from: UIViewController, batteryLevel: Double?, close: @escaping () -> Void) {
+        setViewModelAndPresent(from: from, viewModel: updatingFailedLowBattery(from: from, batteryLevel: batteryLevel, close: close))
+    }
+
+    func updatingFailed(from: UIViewController, tryAgain: (() -> Void)?, close: @escaping () -> Void) {
+        setViewModelAndPresent(from: from, viewModel: updatingFailed(from: from, tryAgain: tryAgain, close: close))
+    }
+
     func foundReader(from: UIViewController,
                      name: String,
                      connect: @escaping () -> Void,
@@ -62,6 +70,19 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
     ///
     func updateSeveralReadersList(readerIDs: [String]) {
         severalFoundController?.updateReaderIDs(readerIDs: readerIDs)
+    }
+
+    /// Shows progress when a software update is being installed
+    ///
+    func updateProgress(from: UIViewController, requiredUpdate: Bool, progress: Float, cancel: (() -> Void)?) {
+        setViewModelAndPresent(
+            from: from,
+            viewModel: CardPresentModalUpdateProgress(
+                requiredUpdate: requiredUpdate,
+                progress: progress,
+                cancel: cancel
+            )
+        )
     }
 
     func dismiss() {
@@ -137,6 +158,18 @@ private extension CardReaderSettingsAlerts {
 
     func connectingFailed(continueSearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalConnectingFailed(continueSearch: continueSearch, cancelSearch: cancelSearch)
+    }
+
+    func updatingFailedLowBattery(from: UIViewController, batteryLevel: Double?, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalUpdateFailedLowBattery(batteryLevel: batteryLevel, close: close)
+    }
+
+    func updatingFailed(from: UIViewController, tryAgain: (() -> Void)?, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        if let tryAgain = tryAgain {
+            return CardPresentModalUpdateFailed(tryAgain: tryAgain, close: close)
+        } else {
+            return CardPresentModalUpdateFailedNonRetryable(close: close)
+        }
     }
 
     func foundReader(name: String, connect: @escaping () -> Void, continueSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {

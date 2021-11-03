@@ -21,10 +21,8 @@ class SystemStatusMapperTests: XCTestCase {
         let expectedVersionLatest = "5.8.0"
         let expectedAuthorName = "Automattic"
         let expectedAuthorUrl = "https://woocommerce.com"
-        /// TODO - The mapper is overriding networkActivated to be true for active plugins in general
-        /// When we fix #5269 this test will need to be updated to properly test the
-        /// new `activated` attribute that will be added to SystemPlugin instead
-        let expectedNetworkActivated = true
+        let expectedNetworkActivated = false
+        let expectedActive = true
 
         // When
         let systemPlugins = try mapLoadSystemStatusResponse()
@@ -43,6 +41,7 @@ class SystemStatusMapperTests: XCTestCase {
         XCTAssertEqual(systemPlugin.authorName, expectedAuthorName)
         XCTAssertEqual(systemPlugin.authorUrl, expectedAuthorUrl)
         XCTAssertEqual(systemPlugin.networkActivated, expectedNetworkActivated)
+        XCTAssertEqual(systemPlugin.active, expectedActive)
     }
 
     /// Verifies the SystemPlugin fields are parsed correctly for an inactive plugin
@@ -57,10 +56,8 @@ class SystemStatusMapperTests: XCTestCase {
         let expectedVersionLatest = "1.7.2"
         let expectedAuthorName = "Matt Mullenweg"
         let expectedAuthorUrl = "http://ma.tt/"
-        /// TODO - The mapper is overriding networkActivated to be true for active plugins in general
-        /// When we fix #5269 this test will need to be updated to properly test the
-        /// new `activated` attribute that will be added to SystemPlugin instead
         let expectedNetworkActivated = false
+        let expectedActive = false
 
         // When
         let systemPlugins = try mapLoadSystemStatusResponse()
@@ -79,6 +76,7 @@ class SystemStatusMapperTests: XCTestCase {
         XCTAssertEqual(systemPlugin.authorName, expectedAuthorName)
         XCTAssertEqual(systemPlugin.authorUrl, expectedAuthorUrl)
         XCTAssertEqual(systemPlugin.networkActivated, expectedNetworkActivated)
+        XCTAssertEqual(systemPlugin.active, expectedActive)
     }
 }
 

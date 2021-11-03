@@ -538,10 +538,10 @@ extension OrderDetailsViewModel {
     /// When we implement persistance, the receipt metadata would be persisted
     /// to Storage, associated to an order. We would not need to propagate
     /// that object outside of Yosemite.
-    func collectPayment(onPresentMessage: @escaping (String) -> Void,
-                        onClearMessage: @escaping () -> Void,
-                        onProcessingMessage: @escaping () -> Void,
-                        onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
+    func collectPayment(onWaitingForInput: @escaping () -> Void, // i.e. waiting for buyer to swipe/insert/tap card
+                        onProcessingMessage: @escaping () -> Void, // i.e. payment is processing
+                        onDisplayMessage: @escaping (String) -> Void, // e.g. "Remove Card"
+                        onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) { // used to tell user payment completed (or not)
         /// We don't have a concept of priority yet, so use the first paymentGatewayAccount for now
         /// since we can't yet have multiple accounts
         ///
@@ -553,9 +553,9 @@ extension OrderDetailsViewModel {
 
         paymentOrchestrator.collectPayment(for: self.order,
                                            statementDescriptor: statementDescriptor,
-                                           onPresentMessage: onPresentMessage,
-                                           onClearMessage: onClearMessage,
+                                           onWaitingForInput: onWaitingForInput,
                                            onProcessingMessage: onProcessingMessage,
+                                           onDisplayMessage: onDisplayMessage,
                                            onCompletion: onCompletion)
 
     }
@@ -565,8 +565,7 @@ extension OrderDetailsViewModel {
     }
 
     func printReceipt(params: CardPresentReceiptParameters) {
-        ServiceLocator.analytics.track(.receiptPrintTapped)
-        paymentOrchestrator.printReceipt(for: order, params: params)
+        ReceiptActionCoordinator.printReceipt(for: order, params: params)
     }
 
     func emailReceipt(params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {

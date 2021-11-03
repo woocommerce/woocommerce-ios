@@ -295,6 +295,12 @@ extension UIColor {
     static var searchBarBackground: UIColor {
         .secondarySystemFill
     }
+
+    /// Fill color for the software update progress animation.
+    ///
+    static var softwareUpdateProgressFill: UIColor {
+        return UIColor(red: 0.498, green: 0.329, blue: 0.702, alpha: 1)
+    }
 }
 
 // MARK: - UI elements.

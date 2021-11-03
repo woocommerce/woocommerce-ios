@@ -1,12 +1,12 @@
 import XCTest
 @testable import WooCommerce
 
-final class CardPresentModalRemoveCardTests: XCTestCase {
-    private var viewModel: CardPresentModalRemoveCard!
+final class CardPresentModalDisplayMessageTests: XCTestCase {
+    private var viewModel: CardPresentModalDisplayMessage!
 
     override func setUp() {
         super.setUp()
-        viewModel = CardPresentModalRemoveCard(name: Expectations.name, amount: Expectations.amount)
+        viewModel = CardPresentModalDisplayMessage(name: Expectations.name, amount: Expectations.amount, message: Expectations.message)
     }
 
     override func tearDown() {
@@ -38,8 +38,8 @@ final class CardPresentModalRemoveCardTests: XCTestCase {
         XCTAssertNil(viewModel.auxiliaryButtonTitle)
     }
 
-    func test_bottom_title_is_not_nil() {
-        XCTAssertNotNil(viewModel.bottomTitle)
+    func test_bottom_title_provides_expected_message() {
+        XCTAssertEqual(viewModel.bottomTitle, Expectations.message)
     }
 
     func test_bottom_subTitle_is_nil() {
@@ -48,10 +48,11 @@ final class CardPresentModalRemoveCardTests: XCTestCase {
 }
 
 
-private extension CardPresentModalRemoveCardTests {
+private extension CardPresentModalDisplayMessageTests {
     enum Expectations {
         static var name = "name"
         static var amount = "amount"
         static var image = UIImage.cardPresentImage
+        static var message = "message"
     }
 }

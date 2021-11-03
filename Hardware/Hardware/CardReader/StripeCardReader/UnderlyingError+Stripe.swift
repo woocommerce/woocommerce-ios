@@ -69,9 +69,9 @@ extension UnderlyingError {
             self = .connectFailedReaderIsInUse
         case ErrorCode.Code.unexpectedSdkError.rawValue:
             self = .unexpectedSDKError
-        case ErrorCode.Code.paymentDeclinedByStripeAPI.rawValue:
+        case ErrorCode.Code.declinedByStripeAPI.rawValue:
             self = .paymentDeclinedByPaymentProcessorAPI
-        case ErrorCode.Code.paymentDeclinedByReader.rawValue:
+        case ErrorCode.Code.declinedByReader.rawValue:
             self = .paymentDeclinedByCardReader
         case ErrorCode.Code.notConnectedToInternet.rawValue:
             self = .notConnectedToInternet

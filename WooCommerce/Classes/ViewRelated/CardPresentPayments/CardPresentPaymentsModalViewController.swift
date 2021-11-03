@@ -46,6 +46,7 @@ final class CardPresentPaymentsModalViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        initializeContent()
         setBackgroundColor()
         setButtonsActions()
         styleContent()
@@ -160,6 +161,13 @@ private extension CardPresentPaymentsModalViewController {
         auxiliaryButton.applyLinkButtonStyle()
         auxiliaryButton.titleLabel?.adjustsFontSizeToFitWidth = true
         auxiliaryButton.titleLabel?.minimumScaleFactor = 0.5
+    }
+
+    func initializeContent() {
+        topTitleLabel.text = ""
+        topSubtitleLabel.text = ""
+        bottomTitleLabel.text = ""
+        bottomSubtitleLabel.text = ""
     }
 
     func populateContent() {

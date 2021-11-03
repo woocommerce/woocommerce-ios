@@ -10,7 +10,7 @@ struct MockStripePaymentIntent {
     let amount: UInt
     let currency: String
     let metadata: [AnyHashable: Any]?
-    let charges: [SCPCharge]
+    let charges: [StripeTerminal.Charge]
 }
 
 extension MockStripePaymentIntent: StripePaymentIntent {}

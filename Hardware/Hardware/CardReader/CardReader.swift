@@ -24,6 +24,9 @@ public struct CardReader {
 
     /// The type of card reader
     public let readerType: CardReaderType
+
+    /// The CardReader location id
+    public let locationId: String?
 }
 
 

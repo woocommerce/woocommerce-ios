@@ -268,6 +268,6 @@ private extension PaymentGatewayAccount {
 
 private enum Constants {
     static let pluginName = "WooCommerce Payments"
-    static let supportedWCPayVersion = "2.9"
+    static let supportedWCPayVersion = "3.1"
     static let supportedCountryCodes = ["US"]
 }

@@ -115,6 +115,10 @@ private final class MockTokenProvider: CardReaderConfigProvider {
     func fetchToken(completion: @escaping(String?, Error?) -> Void) {
         completion("a token", nil)
     }
+
+    func fetchDefaultLocationID(completion: @escaping(String?, Error?) -> Void) {
+        completion("a location ID", nil)
+    }
 }
 
 private extension Publisher {

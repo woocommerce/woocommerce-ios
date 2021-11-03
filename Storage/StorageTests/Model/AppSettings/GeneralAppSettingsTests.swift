@@ -6,7 +6,11 @@ class GeneralAppSettingsTests: XCTestCase {
     func test_it_returns_the_correct_status_of_a_stored_feedback() {
         // Given
         let feedback = FeedbackSettings(name: .general, status: .dismissed)
-        let settings = GeneralAppSettings(installationDate: nil, feedbacks: [.general: feedback], isViewAddOnsSwitchEnabled: false, knownCardReaders: [])
+        let settings = GeneralAppSettings(installationDate: nil,
+                                          feedbacks: [.general: feedback],
+                                          isViewAddOnsSwitchEnabled: false,
+                                          isQuickOrderSwitchEnabled: false,
+                                          knownCardReaders: [])
 
         // When
         let loadedStatus = settings.feedbackStatus(of: .general)
@@ -17,7 +21,11 @@ class GeneralAppSettingsTests: XCTestCase {
 
     func test_it_returns_pending_status_of_a_non_stored_feedback() {
         // Given
-        let settings = GeneralAppSettings(installationDate: nil, feedbacks: [:], isViewAddOnsSwitchEnabled: false, knownCardReaders: [])
+        let settings = GeneralAppSettings(installationDate: nil,
+                                          feedbacks: [:],
+                                          isViewAddOnsSwitchEnabled: false,
+                                          isQuickOrderSwitchEnabled: false,
+                                          knownCardReaders: [])
 
         // When
         let loadedStatus = settings.feedbackStatus(of: .general)
@@ -33,6 +41,7 @@ class GeneralAppSettingsTests: XCTestCase {
             installationDate: nil,
             feedbacks: [.general: existingFeedback],
             isViewAddOnsSwitchEnabled: false,
+            isQuickOrderSwitchEnabled: false,
             knownCardReaders: []
         )
 
@@ -46,7 +55,11 @@ class GeneralAppSettingsTests: XCTestCase {
 
     func test_it_adds_new_feedback_when_replacing_empty_feedback_store() {
         // Given
-        let settings = GeneralAppSettings(installationDate: nil, feedbacks: [:], isViewAddOnsSwitchEnabled: false, knownCardReaders: [])
+        let settings = GeneralAppSettings(installationDate: nil,
+                                          feedbacks: [:],
+                                          isViewAddOnsSwitchEnabled: false,
+                                          isQuickOrderSwitchEnabled: false,
+                                          knownCardReaders: [])
 
         // When
         let newFeedback = FeedbackSettings(name: .general, status: .given(Date()))
@@ -65,6 +78,7 @@ class GeneralAppSettingsTests: XCTestCase {
         let previousSettings = GeneralAppSettings(installationDate: currentDate,
                                                   feedbacks: feedbackSettings,
                                                   isViewAddOnsSwitchEnabled: true,
+                                                  isQuickOrderSwitchEnabled: true,
                                                   knownCardReaders: readers,
                                                   lastEligibilityErrorInfo: eligibilityInfo)
 
@@ -82,5 +96,6 @@ class GeneralAppSettingsTests: XCTestCase {
         assertEqual(newSettings.knownCardReaders, readers)
         assertEqual(newSettings.lastEligibilityErrorInfo, eligibilityInfo)
         assertEqual(newSettings.isViewAddOnsSwitchEnabled, false)
+        assertEqual(newSettings.isQuickOrderSwitchEnabled, true)
     }
 }

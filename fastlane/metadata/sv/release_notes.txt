@@ -1,7 +1,3 @@
-Du kommer att bli glad att höra att du nu kan redigera flera viktiga fält på dina kunders beställningar. Gör mindre korrigeringar innan du fullföljer en beställning direkt i appen!
+Handlare som använder WooCommerce Shipping & Tax kommer att märka att det nu är möjligt att skapa flera fraktetiketter för en beställning. Du kan snabbt flytta artiklar mellan paket för att få det att stämma överens med hur du har bestämt att varorna ska levereras till din kund. Vi har även åtgärdat några problem som har rapporterats på dessa skärmar.
 
-Handlare som använder WooCommerce Payments i USA kan ta emot personliga betalningar via kreditkort för kundbetalningar vid leverans eller upphämtning.
-
-Handlare som använder utökningen WooCommerce Shipping & Tax kommer att hitta förbättringar rörande pappersstorlek, DHL-stöd och betalningsmetoder. Det är roligt att skapa och skriva ut fraktetiketter från din mobila enhet!
-
-I den här versionen ingår dessutom ett antal mindre förbättringar som är baserade på er feedback. Tack för att ni hjälper oss att skapa en bättre app för alla.
+Dessutom har vi genomfört ett antal tillgänglighetsförbättringar baserat på er feedback. Tack!

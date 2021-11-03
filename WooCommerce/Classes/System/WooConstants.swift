@@ -123,6 +123,12 @@ extension WooConstants {
         ///
         case addPaymentMethodWCShip = "https://wordpress.com/me/purchases/add-payment-method"
 
+#if DEBUG
+        case quickOrderPrototypeFeedback = "https://automattic.survey.fm/woo-app-quick-order-testing"
+#else
+        case quickOrderPrototypeFeedback = "https://automattic.survey.fm/woo-app-quick-order-production"
+#endif
+
         /// Returns the URL version of the receiver
         ///
         func asURL() -> URL {

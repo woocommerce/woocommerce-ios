@@ -31,11 +31,19 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
     ///
     private var filteredOrdersBar: FilteredOrdersHeaderBar = {
         let filteredOrdersBar: FilteredOrdersHeaderBar = FilteredOrdersHeaderBar.instantiateFromNib()
-        filteredOrdersBar.onAction = {
-            // TODO: handle action
-        }
         return filteredOrdersBar
     }()
+
+    private var filters: FilterOrderListViewModel.Filters = FilterOrderListViewModel.Filters() {
+        didSet {
+            if filters != oldValue {
+                //TODO-5243: update local order settings
+                //TODO-5243: update filter button title
+                //TODO-5243: ResultsController update predicate if needed
+                //TODO-5243: reload tableview
+            }
+        }
+    }
 
     private lazy var analytics = ServiceLocator.analytics
 
@@ -68,6 +76,10 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
         super.viewDidLoad()
 
         viewModel.activate()
+
+        filteredOrdersBar.onAction = { [weak self] in
+            self?.filterButtonTapped()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -118,10 +130,10 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
         ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID, "status": order.status.rawValue])
     }
 
-    /// Presents `QuickPayAmountHostingController`.
+    /// Presents `QuickOrderAmountHostingController`.
     ///
-    @objc private func presentQuickPayAmountController() {
-        let viewModel = QuickPayAmountViewModel(siteID: siteID)
+    @objc private func presentQuickOrderAmountController() {
+        let viewModel = QuickOrderAmountViewModel(siteID: siteID)
         viewModel.onOrderCreated = { [weak self] order in
             guard let self = self else { return }
 
@@ -131,9 +143,11 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
             }
         }
 
-        let viewController = QuickPayAmountHostingController(viewModel: viewModel)
+        let viewController = QuickOrderAmountHostingController(viewModel: viewModel)
         let navigationController = WooNavigationController(rootViewController: viewController)
         present(navigationController, animated: true)
+
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.QuickOrder.quickOrderFlowStarted())
     }
 
     // MARK: - ButtonBarPagerTabStripViewController Conformance
@@ -144,6 +158,21 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
         return makeViewControllers()
     }
 
+    /// Present `FilterListViewController`
+    ///
+    private func filterButtonTapped() {
+        //TODO-5243: add event for tracking the filter tapped
+        let viewModel = FilterOrderListViewModel(filters: filters)
+        let filterOrderListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
+            //TODO-5243: add event for tracking filter list show
+            self?.filters = filters
+        }, onClearAction: {
+            //TODO-5243: add event for tracking clear action
+        }, onDismissAction: {
+            //TODO-5243: add event for tracking dismiss action
+        })
+        present(filterOrderListViewController, animated: true, completion: nil)
+    }
 }
 
 // MARK: - OrdersViewControllerDelegate
@@ -233,16 +262,16 @@ extension OrdersTabbedViewController {
         return button
     }
 
-    /// Create a `UIBarButtonItem` to be used as a way to create a new quick pay order.
+    /// Create a `UIBarButtonItem` to be used as a way to create a new quick order order.
     ///
-    func createAddQuickPayOrderItem() -> UIBarButtonItem {
+    func createAddQuickOrderOrderItem() -> UIBarButtonItem {
         let button = UIBarButtonItem(image: .plusBarButtonItemImage,
                                      style: .plain,
                                      target: self,
-                                     action: #selector(presentQuickPayAmountController))
+                                     action: #selector(presentQuickOrderAmountController))
         button.accessibilityTraits = .button
-        button.accessibilityLabel = NSLocalizedString("Add quick pay order", comment: "Navigates to a screen to create a quick pay order")
-        button.accessibilityIdentifier = "quick-pay-add-button"
+        button.accessibilityLabel = NSLocalizedString("Add quick order order", comment: "Navigates to a screen to create a quick order order")
+        button.accessibilityIdentifier = "quick-order-add-button"
         return button
     }
 

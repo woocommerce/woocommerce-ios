@@ -56,6 +56,11 @@ public class AppSettingsStore: Store {
         return documents!.appendingPathComponent(Constants.generalAppSettingsFileName)
     }()
 
+    private lazy var generalStoreSettingsFileURL: URL! = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.generalStoreSettingsFileName)
+    }()
+
     /// URL to the plist file that we use to determine the settings applied in Products
     ///
     private lazy var productsSettingsURL: URL = {
@@ -137,6 +142,10 @@ public class AppSettingsStore: Store {
             setOrderAddOnsFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadOrderAddOnsSwitchState(onCompletion: let onCompletion):
             loadOrderAddOnsSwitchState(onCompletion: onCompletion)
+        case .setQuickOrderFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
+            setQuickOrderFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
+        case .loadQuickOrderSwitchState(onCompletion: let onCompletion):
+            loadQuickOrderSwitchState(onCompletion: onCompletion)
         case .rememberCardReader(cardReaderID: let cardReaderID, onCompletion: let onCompletion):
             rememberCardReader(cardReaderID: cardReaderID, onCompletion: onCompletion)
         case .forgetCardReader(onCompletion: let onCompletion):
@@ -149,6 +158,14 @@ public class AppSettingsStore: Store {
             setEligibilityErrorInfo(errorInfo: errorInfo, onCompletion: onCompletion)
         case .resetEligibilityErrorInfo:
             setEligibilityErrorInfo(errorInfo: nil)
+        case .setTelemetryAvailability(siteID: let siteID, isAvailable: let isAvailable):
+            setTelemetryAvailability(siteID: siteID, isAvailable: isAvailable)
+        case .setTelemetryLastReportedTime(siteID: let siteID, time: let time):
+            setTelemetryLastReportedTime(siteID: siteID, time: time)
+        case .getTelemetryInfo(siteID: let siteID, onCompletion: let onCompletion):
+            getTelemetryInfo(siteID: siteID, onCompletion: onCompletion)
+        case .resetGeneralStoreSettings:
+            resetGeneralStoreSettings()
         }
     }
 }
@@ -224,6 +241,26 @@ private extension AppSettingsStore {
         onCompletion(.success(settings.isViewAddOnsSwitchEnabled))
     }
 
+    /// Loads the current QuickOrder beta feature switch state from `GeneralAppSettings`
+    ///
+    func loadQuickOrderSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
+        let settings = loadOrCreateGeneralAppSettings()
+        onCompletion(.success(settings.isQuickOrderSwitchEnabled))
+    }
+
+    /// Sets the provided QuickOrder beta feature switch state into `GeneralAppSettings`
+    ///
+    func setQuickOrderFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings().copy(isQuickOrderSwitchEnabled: isEnabled)
+            try saveGeneralAppSettings(settings)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+
+    }
+
     /// Loads the last persisted eligibility error information from `GeneralAppSettings`
     ///
     func loadEligibilityErrorInfo(onCompletion: (Result<EligibilityErrorInfo, Error>) -> Void) {
@@ -252,6 +289,7 @@ private extension AppSettingsStore {
             return GeneralAppSettings(installationDate: nil,
                                       feedbacks: [:],
                                       isViewAddOnsSwitchEnabled: false,
+                                      isQuickOrderSwitchEnabled: false,
                                       knownCardReaders: [],
                                       lastEligibilityErrorInfo: nil)
         }
@@ -613,6 +651,63 @@ private extension AppSettingsStore {
     }
 }
 
+// MARK: - Store settings
+//
+private extension AppSettingsStore {
+
+    func getStoreSettings(for siteID: Int64) -> GeneralStoreSettings {
+        guard let existingData: GeneralStoreSettingsBySite = try? fileStorage.data(for: generalStoreSettingsFileURL),
+              let storeSettings = existingData.storeSettingsBySite[siteID] else {
+            return GeneralStoreSettings()
+        }
+
+        return storeSettings
+    }
+
+    func setStoreSettings(settings: GeneralStoreSettings, for siteID: Int64, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
+        var storeSettingsBySite: [Int64: GeneralStoreSettings] = [:]
+        if let existingData: GeneralStoreSettingsBySite = try? fileStorage.data(for: generalStoreSettingsFileURL) {
+            storeSettingsBySite = existingData.storeSettingsBySite
+        }
+
+        storeSettingsBySite[siteID] = settings
+
+        do {
+            try fileStorage.write(GeneralStoreSettingsBySite(storeSettingsBySite: storeSettingsBySite), to: generalStoreSettingsFileURL)
+            onCompletion?(.success(()))
+        } catch {
+            onCompletion?(.failure(error))
+            DDLogError("⛔️ Saving store settings to file failed. Error: \(error)")
+        }
+    }
+
+    // Telemetry data
+
+    func setTelemetryAvailability(siteID: Int64, isAvailable: Bool, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(isTelemetryAvailable: isAvailable)
+        setStoreSettings(settings: updatedSettings, for: siteID, onCompletion: onCompletion)
+    }
+
+    func setTelemetryLastReportedTime(siteID: Int64, time: Date, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(telemetryLastReportedTime: time)
+        setStoreSettings(settings: updatedSettings, for: siteID, onCompletion: onCompletion)
+    }
+
+    func getTelemetryInfo(siteID: Int64, onCompletion: (Bool, Date?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        onCompletion(storeSettings.isTelemetryAvailable, storeSettings.telemetryLastReportedTime)
+    }
+
+    func resetGeneralStoreSettings() {
+        do {
+            try fileStorage.deleteFile(at: generalStoreSettingsFileURL)
+        } catch {
+            DDLogError("⛔️ Deleting store settings file failed. Error: \(error)")
+        }
+    }
+}
 
 // MARK: - Errors
 
@@ -644,5 +739,6 @@ private enum Constants {
     static let statsVersionBannerVisibilityFileName = "stats-version-banner-visibility.plist"
     static let statsVersionLastShownFileName = "stats-version-last-shown.plist"
     static let generalAppSettingsFileName = "general-app-settings.plist"
+    static let generalStoreSettingsFileName = "general-store-settings.plist"
     static let productsSettings = "products-settings.plist"
 }

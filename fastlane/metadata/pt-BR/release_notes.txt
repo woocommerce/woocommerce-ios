@@ -1,7 +1,3 @@
-Você ficará feliz em saber que agora pode editar vários campos essenciais nos pedidos dos seus clientes. Faça essas correções antes de concluir um pedido, direto no aplicativo!
+Os comerciantes que usam o WooCommerce Shipping & Tax verão que agora é possível criar várias etiquetas de envio para um pedido. Você pode rapidamente mover itens entre os pacotes para organizar os produtos conforme você decidiu enviá-los ao cliente. Além disso, corrigimos algumas falhas que foram reportadas nas mesmas telas.
 
-Comerciantes que usam o WooCommerce Payments nos EUA podem aceitar pagamentos com cartão de crédito presenciais na entrega ou retirada de pedidos.
-
-Comerciantes que usam a extensão WooCommerce Shipping & Tax verão melhorias nos tamanhos de papel, na compatibilidade com a DHL e nas formas de pagamento. É tão bom criar e imprimir etiquetas de envio pelo seu dispositivo móvel!
-
-Esta versão também inclui algumas pequenas melhorias com base no seu feedback. Obrigado por nos ajudar a criar um aplicativo melhor para todos.
+Também fizemos algumas melhorias na acessibilidade com base no feedback. Obrigado!

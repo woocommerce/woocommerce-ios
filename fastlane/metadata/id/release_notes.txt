@@ -1,7 +1,3 @@
-Ada yang seru, sekarang Anda dapat mengedit beberapa kolom penting pada pesanan pelanggan.  Lakukan perbaikan kecil tersebut sebelum memenuhi pesanan langsung di aplikasi!
+Penjual yang menggunakan WooCommerce Shipping & Tax sekarang dapat membuat beberapa label pengiriman untuk sebuah pesanan. Anda dapat memindahkan item antarpaket dengan cepat agar sesuai dengan cara Anda untuk mengirimkan produk ke pelanggan. Kami juga telah mengatasi sejumlah gangguan yang dilaporkan untuk halaman yang sama.
 
-Penjual di AS yang menggunakan WooCommerce Payments dapat menerima pembayaran kartu kredit langsung dari pelanggan setelah pengiriman atau penerimaan pesanan.
-
-Penjual yang menggunakan ekstensi WooCommerce Shipping & Tax akan mendapatkan perbaikan ukuran kertas, dukungan DHL, dan metode pembayaran. Membuat dan mencetak label pengiriman dari perangkat seluler sangat praktis!
-
-Dalam rilis ini juga disertakan beberapa perbaikan kecil sesuai feedback Anda. Terima kasih telah membantu kami menyempurnakan aplikasi untuk semua orang.
+Kami juga meningkatkan aksesibilitas berdasarkan feedback. Terima kasih!

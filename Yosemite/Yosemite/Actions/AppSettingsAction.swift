@@ -102,6 +102,14 @@ public enum AppSettingsAction: Action {
     ///
     case loadOrderAddOnsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
 
+    /// Loads the most recent state for the Quick Order beta feature switch
+    ///
+    case loadQuickOrderSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Sets the state for the Quick Order beta feature switch.
+    ///
+    case setQuickOrderFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
+
     /// Remember the given card reader (to support automatic reconnection)
     /// where `cardReaderID` is a String e.g. "CHB204909005931"
     ///
@@ -128,4 +136,22 @@ public enum AppSettingsAction: Action {
     /// Clears the persisted eligibility error information.
     ///
     case resetEligibilityErrorInfo
+
+    // MARK: - General Store Settings
+
+    /// Sets telemetry availability status information.
+    ///
+    case setTelemetryAvailability(siteID: Int64, isAvailable: Bool)
+
+    /// Sets telemetry last reported time information.
+    ///
+    case setTelemetryLastReportedTime(siteID: Int64, time: Date)
+
+    /// Loads telemetry information - availability status and last reported time.
+    ///
+    case getTelemetryInfo(siteID: Int64, onCompletion: (Bool, Date?) -> Void)
+
+    /// Clears all the products settings
+    ///
+    case resetGeneralStoreSettings
 }

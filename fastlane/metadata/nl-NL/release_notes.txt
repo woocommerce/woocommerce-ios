@@ -1,7 +1,3 @@
-Dit gaan jullie tof vinden: je kunt nu verschillende belangrijke velden op de bestellingen van je klanten bewerken. Voer rechtstreeks vanuit de app die kleine verbeteringen door voordat een bestelling wordt afgehandeld!
+Verkopers die gebruikmaken van WooCommerce Shipping en Tax kunnen nu meerdere verzendlabels aanmaken voor een bestelling. Je kunt artikelen snel verplaatsen tussen verpakkingen om te zien hoe de verpakkingen overeenkomen. We hebben ook wat fouten op dezelfde schermen opgelost.
 
-Verkopers in de VS die gebruikmaken van WooCommerce Payments kunnen fysieke creditcardbetalingen aannemen voor de betalingen van je klanten bij levering of ophaalbestellingen.
-
-Verkopers die gebruikmaken van de extensie WooCommerce Shipping en Tax ervaren verbeteringen aan papierformaten, DHL-ondersteuning en betaalmethoden. Het is echt leuk om verzendlabels vanaf je mobiele apparaat te maken en te printen!
-
-In deze versie zijn tevens een aantal kleine verbeteringen doorgevoerd, op basis van jullie feedback. Bedankt voor de hulp, zo kunnen we voor iedereen een betere app maken.
+We hebben ook wat verbeteringen aan de toegankelijkheid doorgevoerd op basis van feedback. Bedankt!

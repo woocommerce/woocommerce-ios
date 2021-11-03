@@ -739,6 +739,30 @@ final class MigrationTests: XCTestCase {
         XCTAssertNotNil(migratedSystemPlugin.entity.attributesByName["active"])
         XCTAssertEqual(migratedSystemPlugin.value(forKey: "active") as? Bool, true)
     }
+
+    func test_migrating_from_56_to_57_adds_new_paymentgatewayaccount_attributes() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 56")
+        let sourceContext = sourceContainer.viewContext
+
+        let paymentGatewayAccount = insertPaymentGatewayAccount(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(paymentGatewayAccount.entity.attributesByName["isLive"])
+        XCTAssertNil(paymentGatewayAccount.entity.attributesByName["isInTestMode"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 57")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedPaymentGatewayAccount = try XCTUnwrap(targetContext.first(entityName: "PaymentGatewayAccount"))
+
+        XCTAssertNotNil(migratedPaymentGatewayAccount.entity.attributesByName["isLive"])
+        XCTAssertEqual(migratedPaymentGatewayAccount.value(forKey: "isLive") as? Bool, true)
+        XCTAssertNotNil(migratedPaymentGatewayAccount.entity.attributesByName["isInTestMode"])
+        XCTAssertEqual(migratedPaymentGatewayAccount.value(forKey: "isInTestMode") as? Bool, false)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

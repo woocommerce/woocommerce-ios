@@ -45,12 +45,16 @@ final class OrderCustomRangeListSelectorCommand: ListSelectorCommand {
         var picker: DatePickerViewController
         switch selected {
         case .start:
-            picker = DatePickerViewController(date: startDate, datePickerMode: .date, minimumDate: nil, maximumDate: endDate)
+            picker = DatePickerViewController(date: startDate, datePickerMode: .date, minimumDate: nil, maximumDate: endDate) { date in
+                print("Date ", date)
+            }
         case .end:
-            picker = DatePickerViewController(date: endDate, datePickerMode: .date, minimumDate: startDate, maximumDate: nil)
+            picker = DatePickerViewController(date: endDate, datePickerMode: .date, minimumDate: startDate, maximumDate: nil) { date in
+
+            }
+            let navigationController = WooNavigationController(rootViewController: picker)
+            viewController.present(navigationController, animated: true, completion: nil)
         }
-        let navigationController = WooNavigationController(rootViewController: picker)
-        viewController.present(navigationController, animated: true, completion: nil)
     }
 
     func configureCell(cell: TitleAndValueTableViewCell, model: OrderCustomRangeFilterEnum) {

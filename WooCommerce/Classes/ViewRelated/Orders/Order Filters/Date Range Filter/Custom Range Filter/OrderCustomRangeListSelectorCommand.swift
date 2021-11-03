@@ -47,13 +47,14 @@ final class OrderCustomRangeListSelectorCommand: ListSelectorCommand {
         case .start:
             picker = DatePickerViewController(date: startDate, datePickerMode: .date, minimumDate: nil, maximumDate: endDate) { [weak self] date in
                 self?.startDate = date
+                picker.dismiss(animated: true)
             }
         case .end:
             picker = DatePickerViewController(date: endDate, datePickerMode: .date, minimumDate: startDate, maximumDate: nil) { [weak self] date in
                 self?.endDate = date
+                picker.dismiss(animated: true)
             }
-            let navigationController = UINavigationController(rootViewController: picker)
-            viewController.present(navigationController, animated: true)
+            viewController.present(picker, animated: true)
         }
     }
 

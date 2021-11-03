@@ -69,7 +69,6 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     }
 
-    // TODO: Unskip in #5269
     func test_onboarding_returns_wcpay_not_activated_when_wcpay_installed_but_not_active() {
         // Given
         setupCountry(country: .us)

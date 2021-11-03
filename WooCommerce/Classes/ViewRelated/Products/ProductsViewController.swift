@@ -560,6 +560,7 @@ private extension ProductsViewController {
 
     /// We sync the local product settings for configuring local sorting and filtering.
     /// If there are some info stored when this screen is loaded, the data will be updated using the stored sort/filters.
+    /// If any of the filters has to be synchronize remotely, it is done so after the filters are loaded, and the data updated if necessary.
     /// If no info are stored (so there is a failure), we resynchronize the syncingCoordinator for updating the screen using the default sort/filters.
     ///
     func syncProductsSettings() {
@@ -859,7 +860,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
     }
 
     /// Syncs the Product Category filter of settings remotely. This is necessary in case the category information was updated
-    /// or the category itself removed, thus clearing that filter.
+    /// or the category itself removed, thus clearing that filter, and updating the shown data.
     ///
     private func syncProductCategoryFilterRemotely(from settings: StoredProductSettings.Setting) {
         guard let productCategory = settings.productCategoryFilter else {

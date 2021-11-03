@@ -1457,7 +1457,8 @@ extension SystemPlugin {
             url: .fake(),
             authorName: .fake(),
             authorUrl: .fake(),
-            networkActivated: .fake()
+            networkActivated: .fake(),
+            active: .fake()
         )
     }
 }

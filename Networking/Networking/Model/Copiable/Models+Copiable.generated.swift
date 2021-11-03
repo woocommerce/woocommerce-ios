@@ -1262,7 +1262,8 @@ extension SystemPlugin {
         url: CopiableProp<String> = .copy,
         authorName: CopiableProp<String> = .copy,
         authorUrl: CopiableProp<String> = .copy,
-        networkActivated: CopiableProp<Bool> = .copy
+        networkActivated: CopiableProp<Bool> = .copy,
+        active: CopiableProp<Bool> = .copy
     ) -> SystemPlugin {
         let siteID = siteID ?? self.siteID
         let plugin = plugin ?? self.plugin
@@ -1273,6 +1274,7 @@ extension SystemPlugin {
         let authorName = authorName ?? self.authorName
         let authorUrl = authorUrl ?? self.authorUrl
         let networkActivated = networkActivated ?? self.networkActivated
+        let active = active ?? self.active
 
         return SystemPlugin(
             siteID: siteID,
@@ -1283,7 +1285,8 @@ extension SystemPlugin {
             url: url,
             authorName: authorName,
             authorUrl: authorUrl,
-            networkActivated: networkActivated
+            networkActivated: networkActivated,
+            active: active
         )
     }
 }

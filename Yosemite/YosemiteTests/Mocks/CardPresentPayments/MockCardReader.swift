@@ -8,7 +8,8 @@ struct MockCardReader {
                    status: .init(connected: false, remembered: false),
                    softwareVersion: "1.00.03.34-SZZZ_Generic_v45-300001",
                    batteryLevel: 0.5,
-                   readerType: .mobile)
+                   readerType: .chipper,
+                   locationId: "st_simulated")
     }
 
     static func verifoneP400() -> CardReader {
@@ -18,6 +19,7 @@ struct MockCardReader {
                    status: .init(connected: false, remembered: false),
                    softwareVersion: "3.0.1.17",
                    batteryLevel: 1.0,
-                   readerType: .counterTop)
+                   readerType: .other,
+                   locationId: "st_simulated")
     }
 }

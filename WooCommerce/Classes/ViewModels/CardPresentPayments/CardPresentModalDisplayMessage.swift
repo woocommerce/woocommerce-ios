@@ -1,14 +1,17 @@
 import UIKit
 import Yosemite
 
-/// Modal presented when the card reader requests customers to remove the card
-final class CardPresentModalRemoveCard: CardPresentPaymentsModalViewModel {
+/// Modal presented when a (headless) card reader requests we display a message to the customer
+final class CardPresentModalDisplayMessage: CardPresentPaymentsModalViewModel {
 
     /// Customer name
     private let name: String
 
     /// Charge amount
     private let amount: String
+
+    /// Message from reader to display
+    private let message: String
 
     let textMode: PaymentsModalTextMode = .reducedBottomInfo
     let actionsMode: PaymentsModalActionsMode = .none
@@ -29,13 +32,16 @@ final class CardPresentModalRemoveCard: CardPresentPaymentsModalViewModel {
 
     let auxiliaryButtonTitle: String? = nil
 
-    let bottomTitle: String? = Localization.removeCard
+    var bottomTitle: String? {
+        message
+    }
 
     let bottomSubtitle: String? = nil
 
-    init(name: String, amount: String) {
+    init(name: String, amount: String, message: String) {
         self.name = name
         self.amount = amount
+        self.message = message
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
@@ -48,14 +54,5 @@ final class CardPresentModalRemoveCard: CardPresentPaymentsModalViewModel {
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
         //
-    }
-}
-
-private extension CardPresentModalRemoveCard {
-    enum Localization {
-        static let removeCard = NSLocalizedString(
-            "Please remove card",
-            comment: "Label asking users to remove card. Presented to users when a payment is in the process of being collected"
-        )
     }
 }

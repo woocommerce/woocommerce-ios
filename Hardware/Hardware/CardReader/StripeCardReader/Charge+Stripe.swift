@@ -27,8 +27,8 @@ protocol StripeCharge {
     var status: StripeTerminal.ChargeStatus { get }
     var stripeDescription: String? { get }
     var metadata: [AnyHashable: Any] { get }
-    var paymentMethodDetails: StripeTerminal.SCPPaymentMethodDetails? { get }
+    var paymentMethodDetails: StripeTerminal.PaymentMethodDetails? { get }
 }
 
 
-extension SCPCharge: StripeCharge { }
+extension StripeTerminal.Charge: StripeCharge { }

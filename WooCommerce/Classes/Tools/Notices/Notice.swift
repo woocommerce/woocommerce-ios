@@ -7,15 +7,15 @@ import UIKit
 ///
 struct Notice {
 
-    /// The title of the notice
+    /// The title that contains the reason for the notice
     ///
     let title: String
 
-    /// An optional subtitle for the notice
+    /// An optional subtitle that contains a secondary description of the reason for the notice
     ///
     let subtitle: String?
 
-    /// An optional subtitle for the notice
+    /// An optional message that contains any details for the notice
     ///
     let message: String?
 

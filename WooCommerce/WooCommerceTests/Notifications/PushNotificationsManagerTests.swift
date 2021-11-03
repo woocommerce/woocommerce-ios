@@ -515,7 +515,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Then
         XCTAssertEqual(emittedNotifications.count, 1)
 
-        let emittedNotification = emittedNotifications.first!
+        let emittedNotification = try XCTUnwrap(emittedNotifications.first)
         XCTAssertEqual(emittedNotification.kind, .storeOrder)
         XCTAssertEqual(emittedNotification.noteID, 9_981)
         XCTAssertEqual(emittedNotification.title, Sample.defaultTitle)

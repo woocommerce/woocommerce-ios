@@ -302,14 +302,14 @@ extension UIColor {
     /// Stats chart data bar color.
     ///
     static var chartDataBar: UIColor {
-        return .accent
+        return .brand
     }
 
     /// Stats chart data bar highlighted color.
     ///
     static var chartDataBarHighlighted: UIColor {
-        return UIColor(light: .withColorStudio(.pink, shade: .shade70),
-                       dark: .withColorStudio(.pink, shade: .shade10))
+        return UIColor(light: .withColorStudio(.pink, shade: .shade50),
+                       dark: .withColorStudio(.pink, shade: .shade30))
     }
 }
 

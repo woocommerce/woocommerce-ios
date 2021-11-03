@@ -2,9 +2,30 @@ import Charts
 import UIKit
 import Yosemite
 
+/// Circle marker to be shown on the highlighted point.
+/// Ref: https://stackoverflow.com/questions/62438099/showing-circle-only-for-selected-highlighted-value
+/// TODO: add border and shadow for design.
+final class CircleMarker: MarkerImage {
+    @objc var color: UIColor
+    @objc var radius: CGFloat = 4
+
+    @objc public init(color: UIColor) {
+        self.color = color
+        super.init()
+    }
+
+    override func draw(context: CGContext, point: CGPoint) {
+        let circleRect = CGRect(x: point.x - radius, y: point.y - radius, width: radius * 2, height: radius * 2)
+        context.setFillColor(color.cgColor)
+        context.fillEllipse(in: circleRect)
+
+        context.restoreGState()
+    }
+}
+
 /// Shows the store stats with v4 API for a time range.
 ///
-class StoreStatsV4PeriodViewController: UIViewController {
+final class StoreStatsV4PeriodViewController: UIViewController {
 
     // MARK: - Public Properties
 
@@ -60,7 +81,7 @@ class StoreStatsV4PeriodViewController: UIViewController {
     @IBOutlet private weak var ordersData: UILabel!
     @IBOutlet private weak var revenueTitle: UILabel!
     @IBOutlet private weak var revenueData: UILabel!
-    @IBOutlet private weak var barChartView: BarChartView!
+    @IBOutlet private weak var barChartView: LineChartView!
     @IBOutlet private weak var lastUpdated: UILabel!
     @IBOutlet private weak var yAxisAccessibilityView: UIView!
     @IBOutlet private weak var xAxisAccessibilityView: UIView!
@@ -324,13 +345,13 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func configureBarChart() {
+        barChartView.marker = CircleMarker(color: .chartDataBarHighlighted)
         barChartView.chartDescription?.enabled = false
         barChartView.dragEnabled = true
         barChartView.setScaleEnabled(false)
         barChartView.pinchZoomEnabled = false
         barChartView.rightAxis.enabled = false
         barChartView.legend.enabled = false
-        barChartView.drawValueAboveBarEnabled = true
         barChartView.noDataText = NSLocalizedString("No data available", comment: "Text displayed when no data is available for revenue chart.")
         barChartView.noDataFont = StyleManager.chartLabelFont
         barChartView.noDataTextColor = .textSubtle
@@ -570,7 +591,7 @@ private extension StoreStatsV4PeriodViewController {
 
 
     func chartSummaryString() -> String {
-        guard let dataSet = barChartView.barData?.dataSets.first as? BarChartDataSet, dataSet.count > 0 else {
+        guard let dataSet = barChartView.lineData?.dataSets.first as? LineChartDataSet, dataSet.count > 0 else {
             return barChartView.noDataText
         }
 
@@ -701,7 +722,6 @@ private extension StoreStatsV4PeriodViewController {
             return
         }
         barChartView.data = generateBarDataSet()
-        barChartView.fitBars = true
         barChartView.notifyDataSetChanged()
         if animateChart {
             barChartView.animate(yAxisDuration: Constants.chartAnimationDuration)
@@ -719,17 +739,17 @@ private extension StoreStatsV4PeriodViewController {
         if lastUpdated != nil { lastUpdated.text = summaryDateUpdated }
     }
 
-    func generateBarDataSet() -> BarChartData? {
+    func generateBarDataSet() -> LineChartData? {
         guard !orderStatsIntervals.isEmpty else {
             return nil
         }
 
         var barCount = 0
         var barColors: [UIColor] = []
-        var dataEntries: [BarChartDataEntry] = []
+        var dataEntries: [ChartDataEntry] = []
         let currencyCode = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
         orderStatsIntervals.forEach { (item) in
-            let entry = BarChartDataEntry(x: Double(barCount), y: (item.revenueValue as NSDecimalNumber).doubleValue)
+            let entry = ChartDataEntry(x: Double(barCount), y: (item.revenueValue as NSDecimalNumber).doubleValue)
             let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
             let formattedAmount = currencyFormatter.formatHumanReadableAmount(String("\(item.revenueValue)"),
                                                                                 with: currencyCode,
@@ -740,13 +760,34 @@ private extension StoreStatsV4PeriodViewController {
             barCount += 1
         }
 
-        let dataSet = BarChartDataSet(entries: dataEntries, label: "Data")
+        let dataSet = LineChartDataSet(entries: dataEntries, label: "Data")
+        dataSet.drawCirclesEnabled = false
         dataSet.colors = barColors
         dataSet.highlightEnabled = true
         dataSet.highlightColor = .chartDataBarHighlighted
-        dataSet.highlightAlpha = Constants.chartHighlightAlpha
+        dataSet.highlightLineWidth = 1.5
         dataSet.drawValuesEnabled = false // Do not draw value labels on the top of the bars
-        return BarChartData(dataSet: dataSet)
+        dataSet.drawHorizontalHighlightIndicatorEnabled = false
+        dataSet.lineWidth = 2
+
+        // Light:
+        // background: linear-gradient(180deg, rgba(127, 84, 179, 0.1) 16.15%, rgba(196, 196, 196, 0) 100%);
+        // Dark:
+        // background: linear-gradient(180deg, rgba(204, 204, 204, 0.3) 0%, rgba(83, 53, 130, 0) 100%);
+        let topColor = UIColor(light: UIColor(red: 127.0/256, green: 84.0/256, blue: 179.0/256, alpha: 0.3),
+                               dark: UIColor(red: 204.0/256, green: 204.0/256, blue: 204.0/256, alpha: 0.3))
+        let bottomColor = UIColor(light: UIColor(red: 1, green: 1, blue: 1, alpha: 0.0),
+                                  dark: UIColor(red: 1, green: 1, blue: 1, alpha: 0.0))
+        let colors = [bottomColor.cgColor, topColor.cgColor] as CFArray
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        // TODO: tweak gradient locations if needed.
+        let locations: [CGFloat] = [0.5, 1.0]
+        if let gradient = CGGradient(colorsSpace: colorSpace, colors: colors, locations: locations) {
+            dataSet.fill = .init(linearGradient: gradient, angle: 90.0)
+            dataSet.fillAlpha = 1.0
+            dataSet.drawFilledEnabled = true
+        }
+        return LineChartData(dataSet: dataSet)
     }
 
     func formattedAxisPeriodString(for item: OrderStatsV4Interval) -> String {

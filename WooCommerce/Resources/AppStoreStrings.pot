@@ -57,11 +57,11 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v7.8-whats-new"
+msgctxt "v7.9-whats-new"
 msgid ""
-"Merchants using WooCommerce Shipping & Tax will find you can now create multiple shipping labels for an order. You can quickly move items between the packages to match how you’ve decided to ship things to your customer. We’ve also addressed some glitches that were reported on the same screens.\n"
+"Some merchants had problems loading order details because of a technical issue with how field names in the REST API are ordered. We’ve made a correction that should address that for you if you were experiencing it.\n"
 "\n"
-"We also made a few accessibility improvements based on feedback. Thank you!\n"
+"This release contains several other fixes based on your feedback. Please continue to send us feedback – we are listening!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

@@ -109,7 +109,6 @@ private extension ProductCategoryStore {
             case .failure(let error):
                 onCompletion(.failure(error))
             }
-
         }
     }
 

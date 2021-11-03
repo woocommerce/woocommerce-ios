@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -11,6 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DatePickerViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
+                <outlet property="button" destination="ipd-6U-9uX" id="ZnS-H4-oYO"/>
                 <outlet property="datePicker" destination="SG6-4F-59o" id="9Jd-Fn-Qvs"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -21,16 +22,29 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="SG6-4F-59o">
-                    <rect key="frame" x="0.0" y="44" width="414" height="818"/>
+                    <rect key="frame" x="0.0" y="44" width="414" height="216"/>
                 </datePicker>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ipd-6U-9uX" customClass="ButtonActivityIndicator" customModule="WooCommerce" customModuleProvider="target">
+                    <rect key="frame" x="16" y="276" width="382" height="44"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="44" id="eNa-2u-uNp"/>
+                    </constraints>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                    <connections>
+                        <action selector="buttonPressed:" destination="-1" eventType="touchUpInside" id="KLm-q5-eGZ"/>
+                    </connections>
+                </button>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="SG6-4F-59o" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="0mh-mj-kj3"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="SG6-4F-59o" secondAttribute="bottom" id="1AF-DG-20a"/>
                 <constraint firstItem="SG6-4F-59o" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="IIR-c6-DqH"/>
+                <constraint firstItem="ipd-6U-9uX" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="NkK-ue-ZL4"/>
                 <constraint firstItem="SG6-4F-59o" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="Vtq-0z-qQV"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="ipd-6U-9uX" secondAttribute="trailing" constant="16" id="k3q-QJ-VJL"/>
+                <constraint firstItem="ipd-6U-9uX" firstAttribute="top" secondItem="SG6-4F-59o" secondAttribute="bottom" constant="16" id="urU-u0-Bhs"/>
             </constraints>
             <point key="canvasLocation" x="139" y="80"/>
         </view>

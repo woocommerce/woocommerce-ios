@@ -15,6 +15,7 @@ final class DatePickerViewController: UIViewController {
     private let onCompletion: Completion
 
     @IBOutlet private weak var datePicker: UIDatePicker!
+    @IBOutlet weak var button: ButtonActivityIndicator!
 
     init(date: Date? = nil,
          datePickerMode: UIDatePicker.Mode = .dateAndTime,
@@ -28,12 +29,6 @@ final class DatePickerViewController: UIViewController {
         self.onCompletion = onCompletion
 
         super.init(nibName: Self.nibName, bundle: nil)
-        
-        // If available, add a right bar button item in the navigation bar for confirming the selected date
-        navigationController?.navigationItem.rightBarButtonItem = UIBarButtonItem(title: Localization.doneButton,
-                                                           style: .plain,
-                                                           target: self,
-                                                           action: #selector(doneButtonPressed))
     }
 
     required init?(coder: NSCoder) {
@@ -42,15 +37,8 @@ final class DatePickerViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        datePicker.preferredDatePickerStyle = .inline
-        datePicker.datePickerMode = datePickerMode
-        datePicker.minimumDate = minimumDate
-        datePicker.maximumDate = maximumDate
-
-        guard let date = date else {
-            return
-        }
-        datePicker.setDate(date, animated: false)        
+        configureDatePicker()
+        configureButton()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -58,8 +46,27 @@ final class DatePickerViewController: UIViewController {
         datePicker.becomeFirstResponder()
     }
 
-    @objc private func doneButtonPressed() {
+    @IBAction func buttonPressed(_ sender: Any) {
         onCompletion(datePicker.date)
+    }
+}
+
+// MARK: - Configuration
+private extension DatePickerViewController {
+    func configureDatePicker() {
+        datePicker.preferredDatePickerStyle = .inline
+                datePicker.datePickerMode = datePickerMode
+                datePicker.minimumDate = minimumDate
+                datePicker.maximumDate = maximumDate
+        guard let date = date else {
+            return
+        }
+        datePicker.setDate(date, animated: false)
+    }
+
+    func configureButton() {
+        button.setTitle(Localization.doneButton, for: .normal)
+        button.applySecondaryButtonStyle()
     }
 }
 

@@ -45,15 +45,15 @@ final class OrderCustomRangeListSelectorCommand: ListSelectorCommand {
         var picker: DatePickerViewController
         switch selected {
         case .start:
-            picker = DatePickerViewController(date: startDate, datePickerMode: .date, minimumDate: nil, maximumDate: endDate) { date in
-                print("Date ", date)
+            picker = DatePickerViewController(date: startDate, datePickerMode: .date, minimumDate: nil, maximumDate: endDate) { [weak self] date in
+                self?.startDate = date
             }
         case .end:
-            picker = DatePickerViewController(date: endDate, datePickerMode: .date, minimumDate: startDate, maximumDate: nil) { date in
-
+            picker = DatePickerViewController(date: endDate, datePickerMode: .date, minimumDate: startDate, maximumDate: nil) { [weak self] date in
+                self?.endDate = date
             }
-            let navigationController = WooNavigationController(rootViewController: picker)
-            viewController.present(navigationController, animated: true, completion: nil)
+            let navigationController = UINavigationController(rootViewController: picker)
+            viewController.present(navigationController, animated: true)
         }
     }
 

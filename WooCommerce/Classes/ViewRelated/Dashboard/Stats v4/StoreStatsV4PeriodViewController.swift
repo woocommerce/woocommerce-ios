@@ -770,6 +770,8 @@ private extension StoreStatsV4PeriodViewController {
         dataSet.drawHorizontalHighlightIndicatorEnabled = false
         dataSet.lineWidth = 2
 
+        // TODO: tweak gradient configuration.
+        //
         // Light:
         // background: linear-gradient(180deg, rgba(127, 84, 179, 0.1) 16.15%, rgba(196, 196, 196, 0) 100%);
         // Dark:
@@ -780,7 +782,6 @@ private extension StoreStatsV4PeriodViewController {
                                   dark: UIColor(red: 1, green: 1, blue: 1, alpha: 0.0))
         let colors = [bottomColor.cgColor, topColor.cgColor] as CFArray
         let colorSpace = CGColorSpaceCreateDeviceRGB()
-        // TODO: tweak gradient locations if needed.
         let locations: [CGFloat] = [0.5, 1.0]
         if let gradient = CGGradient(colorsSpace: colorSpace, colors: colors, locations: locations) {
             dataSet.fill = .init(linearGradient: gradient, angle: 90.0)

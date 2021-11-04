@@ -17,12 +17,14 @@ struct TitleAndValueRow: View {
             action()
         }, label: {
             HStack {
-                Text(title)
-                    .bodyStyle()
-                Spacer()
-                Text(value.text)
-                    .style(for: value)
-                    .padding(.vertical, Constants.verticalPadding)
+                AdaptiveStack(horizontalAlignment: .leading) {
+                    Text(title)
+                        .bodyStyle()
+                    Text(value.text)
+                        .style(for: value)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .padding(.vertical, Constants.verticalPadding)
+                }
 
                 Image(uiImage: .chevronImage)
                     .flipsForRightToLeftLayoutDirection(true)
@@ -96,5 +98,10 @@ struct TitleAndValueRow_Previews: PreviewProvider {
         TitleAndValueRow(title: "Package selected", value: .placeholder("Small package 2"), selectable: false, action: { })
             .previewLayout(.fixed(width: 375, height: 100))
             .previewDisplayName("Row Not Selectable")
+
+        TitleAndValueRow(title: "Package selected", value: .placeholder("Small"), selectable: true, action: { })
+            .environment(\.sizeCategory, .accessibilityExtraLarge)
+            .previewLayout(.fixed(width: 375, height: 150))
+            .previewDisplayName("Dynamic Type: Large Font Size")
     }
 }

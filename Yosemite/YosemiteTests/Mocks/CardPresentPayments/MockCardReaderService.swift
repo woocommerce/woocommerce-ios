@@ -28,8 +28,8 @@ final class MockCardReaderService: CardReaderService {
         PassthroughSubject<CardReaderEvent, Never>().eraseToAnyPublisher()
     }
 
-    var softwareUpdateEvents: AnyPublisher<Float, Never> {
-        CurrentValueSubject<Float, Never>(0).eraseToAnyPublisher()
+    var softwareUpdateEvents: AnyPublisher<CardReaderSoftwareUpdateState, Never> {
+        CurrentValueSubject<CardReaderSoftwareUpdateState, Never>(.none).eraseToAnyPublisher()
     }
 
     /// Boolean flag Indicates that clients have called the start method
@@ -82,7 +82,7 @@ final class MockCardReaderService: CardReaderService {
         }
     }
 
-    func connect(_ reader: Hardware.CardReader) -> Future<Hardware.CardReader, Error> {
+    func connect(_ reader: Hardware.CardReader) -> AnyPublisher<CardReader, Error> {
         Future() { promise in
             /// Delaying the effect of this method so that unit tests are actually async
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {[weak self] in
@@ -90,7 +90,7 @@ final class MockCardReaderService: CardReaderService {
                 promise(Result.success(connectedReader))
                 self?.connectedReadersSubject.send([connectedReader])
             }
-        }
+        }.eraseToAnyPublisher()
     }
 
     func disconnect() -> Future<Void, Error> {
@@ -119,39 +119,12 @@ final class MockCardReaderService: CardReaderService {
         }
     }
 
-    func checkForUpdate() -> Future<CardReaderSoftwareUpdate?, Error> {
-        Future() { [weak self] promise in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                guard let self = self else {
-                    return
-                }
-                if self.shouldFailReaderUpdateCheck {
-                    promise(Result.failure(MockErrors.readerUpdateCheckFailure))
-                } else if self.hasReaderUpdate {
-                    promise(Result.success(self.mockUpdate()))
-                } else {
-                    promise(Result.success(nil))
-                }
-            }
-        }
-    }
-
-    func installUpdate() -> AnyPublisher<Float, Error> {
-        Empty<Float, Error>().eraseToAnyPublisher()
+    func installUpdate() -> Void {
     }
 }
 
 private extension MockCardReaderService {
     enum MockErrors: Error {
         case readerUpdateCheckFailure
-    }
-}
-
-private extension MockCardReaderService {
-    func mockUpdate() -> CardReaderSoftwareUpdate {
-        CardReaderSoftwareUpdate(
-            estimatedUpdateTime: .betweenFiveAndFifteenMinutes,
-            deviceSoftwareVersion: "MOCKVERSION"
-        )
     }
 }

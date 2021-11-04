@@ -37,12 +37,11 @@ public enum CardPresentPaymentAction: Action {
     /// Cancels an active attempt to collect a payment.
     case cancelPayment(onCompletion: ((Result<Void, Error>) -> Void)?)
 
-    /// Check whether there is a software update available.
-    case checkForCardReaderUpdate(onCompletion: (Result<CardReaderSoftwareUpdate?, Error>) -> Void)
+    /// Check the state of available software updates.
+    case observeCardReaderUpdateState(onCompletion: (AnyPublisher<CardReaderSoftwareUpdateState, Never>) -> Void)
 
     /// Update card reader firmware.
-    case startCardReaderUpdate(onProgress: (Float) -> Void,
-                        onCompletion: (Result<Void, Error>) -> Void)
+    case startCardReaderUpdate
 
     /// Restarts the card present payments system
     /// This might imply, but not be limited to:

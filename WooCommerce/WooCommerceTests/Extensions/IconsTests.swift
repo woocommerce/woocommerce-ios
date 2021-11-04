@@ -242,6 +242,22 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.cardReaderConnecting)
     }
 
+    func test_payment_card_reader_update_progress_background() {
+        XCTAssertNotNil(UIImage.cardReaderUpdateProgressBackground)
+    }
+
+    func test_payment_card_reader_update_progress_arrow() {
+        XCTAssertNotNil(UIImage.cardReaderUpdateProgressArrow)
+    }
+
+    func test_payment_card_reader_update_progress_checkmark() {
+        XCTAssertNotNil(UIImage.cardReaderUpdateProgressCheckmark)
+    }
+
+    func test_payment_card_reader_low_battery() {
+        XCTAssertNotNil(UIImage.cardReaderLowBattery)
+    }
+
     func test_payment_card_image() {
         XCTAssertNotNil(UIImage.cardPresentImage)
     }

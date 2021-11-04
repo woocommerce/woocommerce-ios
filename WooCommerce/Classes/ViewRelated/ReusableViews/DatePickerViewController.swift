@@ -48,6 +48,7 @@ final class DatePickerViewController: UIViewController {
 
     @IBAction func buttonPressed(_ sender: Any) {
         onCompletion(datePicker.date)
+        dismiss(animated: true)
     }
 }
 

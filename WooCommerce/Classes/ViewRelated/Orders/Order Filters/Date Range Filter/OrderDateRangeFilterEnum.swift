@@ -8,7 +8,7 @@ enum OrderDateRangeFilterEnum: Hashable {
     case last2Days
     case thisWeek
     case thisMonth
-    case custom
+    case custom(_ start: Date?, _ end: Date?)
 }
 
 // MARK: - FilterType conformance

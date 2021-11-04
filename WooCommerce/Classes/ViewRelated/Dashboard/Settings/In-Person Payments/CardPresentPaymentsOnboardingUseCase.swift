@@ -201,10 +201,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func isWCPayActivated(plugin: SystemPlugin) -> Bool {
-        // For now we are overriding networkActivated in SystemStatusMapper
-        // to convey active / not active for a plugin.
-        // TODO - replace with simply `activated` as part of #5269
-        return plugin.networkActivated
+        return plugin.active
     }
 
     func getWCPayAccount() -> PaymentGatewayAccount? {

@@ -27,7 +27,6 @@
   "testTargets" : [
     {
       "skippedTests" : [
-        "CardPresentPaymentsOnboardingUseCaseTests\/test_onboarding_returns_wcpay_not_activated_when_wcpay_installed_but_not_active()",
         "StripeCardReaderIntegrationTests"
       ],
       "target" : {

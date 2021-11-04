@@ -69,7 +69,6 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     }
 
-    // TODO: Unskip in #5269
     func test_onboarding_returns_wcpay_not_activated_when_wcpay_installed_but_not_active() {
         // Given
         setupCountry(country: .us)
@@ -359,15 +358,17 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
 // MARK: - Plugin helpers
 private extension CardPresentPaymentsOnboardingUseCaseTests {
     func setupPlugin(status: SitePluginStatusEnum, version: PluginVersion) {
+        let active = status == .active || status == .networkActive
+        let networkActivated = status == .networkActive
         let plugin = SystemPlugin
             .fake()
             .copy(
                 siteID: sampleSiteID,
                 plugin: "woocommerce-payments",
-                // status: status, // TODO fix in #5269
                 name: "WooCommerce Payments",
                 version: version.rawValue,
-                networkActivated: true // TODO remove in #5269
+                networkActivated: networkActivated,
+                active: active
             )
         storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
     }

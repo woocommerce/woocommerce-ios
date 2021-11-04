@@ -1,5 +1,10 @@
 #!/usr/bin/env bash -euo pipefail
 
+if [[ $ACTION == 'indexbuild' ]]; then
+  echo "ℹ️: Skipping code generation in 'indexbuild' build. See https://github.com/mac-cain13/R.swift/issues/719#issuecomment-937733804 for more info."
+  exit 0
+fi
+
 DERIVED_PATH=${SOURCE_ROOT}/DerivedSources
 SCRIPT_PATH=${SOURCE_ROOT}/Credentials/replace_secrets.rb
 

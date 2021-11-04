@@ -86,3 +86,21 @@ extension MockCardPresentPaymentsStoresManager {
         case connectionFailure
     }
 }
+
+extension MockCardPresentPaymentsStoresManager {
+    func simulateSuccessfulUpdate() {
+        softwareUpdateSubject.send(.completed)
+    }
+
+    func simulateFailedUpdate(error: Error) {
+        softwareUpdateSubject.send(.failed(error: error))
+    }
+
+    func simulateCancelableUpdate(onCancel: @escaping () -> Void) {
+        softwareUpdateSubject.send(.started(cancelable: MockFallibleCancelable(onCancel: onCancel)))
+    }
+
+    func simulateUpdateStarted() {
+        softwareUpdateSubject.send(.started(cancelable: nil))
+    }
+}

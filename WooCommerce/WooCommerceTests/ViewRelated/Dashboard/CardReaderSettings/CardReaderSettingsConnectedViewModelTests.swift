@@ -3,7 +3,6 @@ import XCTest
 @testable import WooCommerce
 
 final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
-
     func test_did_change_should_show_returns_false_if_no_connected_readers() {
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [],
@@ -159,5 +158,133 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
 
         // Then
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func test_startCardReaderUpdate_ViewModel_LogsTracksEvent_cardReaderSoftwareUpdateTapped() {
+        // Given
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [MockCardReader.bbposChipper2XBT()],
+            discoveredReaders: [],
+            sessionManager: SessionManager.testingInstance
+        )
+        ServiceLocator.setStores(mockStoresManager)
+
+        let analytics = MockAnalyticsProvider()
+        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analytics))
+        let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+
+        // When
+        viewModel.startCardReaderUpdate()
+
+        // Then
+        XCTAssert(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateTapped.rawValue))
+    }
+
+    func test_startCardReaderUpdate_ViewModel_LogsTracksEvent_cardReaderSoftwareUpdateStarted() {
+        // Given
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [MockCardReader.bbposChipper2XBT()],
+            discoveredReaders: [],
+            sessionManager: SessionManager.testingInstance
+        )
+        ServiceLocator.setStores(mockStoresManager)
+
+        let analytics = MockAnalyticsProvider()
+        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analytics))
+        let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+
+        // When
+        mockStoresManager.simulateUpdateStarted()
+
+        // Then
+        XCTAssert(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateStarted.rawValue))
+    }
+
+    func test_WhenStoreSendsUpdateComplete_ViewModel_LogsTracksEvent_cardReaderSoftwareUpdateSuccess() {
+        // Given
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [MockCardReader.bbposChipper2XBT()],
+            discoveredReaders: [],
+            sessionManager: SessionManager.testingInstance
+        )
+        ServiceLocator.setStores(mockStoresManager)
+
+        let analytics = MockAnalyticsProvider()
+        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analytics))
+        let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+
+        // When
+        mockStoresManager.simulateSuccessfulUpdate()
+
+        // Then
+        XCTAssert(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateSuccess.rawValue))
+    }
+
+    func test_WhenStoreSendsUpdateFailed_ViewModel_LogsTracksEvent_cardReaderSoftwareUpdateFailed() {
+        // Given
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [MockCardReader.bbposChipper2XBT()],
+            discoveredReaders: [],
+            sessionManager: SessionManager.testingInstance
+        )
+        ServiceLocator.setStores(mockStoresManager)
+
+        let analytics = MockAnalyticsProvider()
+        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analytics))
+        let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+
+        // When
+        let expectedError = CardReaderServiceError.softwareUpdate(underlyingError: .readerSoftwareUpdateFailedBatteryLow,
+                                                                  batteryLevel: 0.4)
+        mockStoresManager.simulateFailedUpdate(error: expectedError)
+
+        // Then
+        XCTAssert(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateFailed.rawValue))
+    }
+
+    func test_WhenUserCancelsUpdate_ViewModel_LogsTracksEvent_cardReaderSoftwareUpdateCancelTapped() {
+        // Given
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [MockCardReader.bbposChipper2XBT()],
+            discoveredReaders: [],
+            sessionManager: SessionManager.testingInstance
+        )
+        ServiceLocator.setStores(mockStoresManager)
+
+        let analytics = MockAnalyticsProvider()
+        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analytics))
+        let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+
+        // When
+        viewModel.cancelCardReaderUpdate()
+
+        // Then
+        XCTAssert(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateCancelTapped.rawValue))
+    }
+
+    func test_WhenUpdateIsSuccessfullyCanceled_ViewModel_LogsTracksEvent_cardReaderSoftwareUpdateCanceled() {
+        // Given
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [MockCardReader.bbposChipper2XBT()],
+            discoveredReaders: [],
+            sessionManager: SessionManager.testingInstance
+        )
+        ServiceLocator.setStores(mockStoresManager)
+
+        let analytics = MockAnalyticsProvider()
+        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analytics))
+        let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+        let expectation = self.expectation(description: #function)
+
+        mockStoresManager.simulateCancelableUpdate {
+            expectation.fulfill()
+        }
+
+        // When
+        viewModel.cancelCardReaderUpdate()
+
+        // Then
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        XCTAssert(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateCanceled.rawValue))
     }
 }

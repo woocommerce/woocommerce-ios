@@ -155,6 +155,15 @@ public enum WooAnalyticsStat: String {
     case cardReaderConnectionSuccess = "card_reader_connection_success"
     case cardReaderDisconnectTapped = "card_reader_disconnect_tapped"
 
+    // MARK: Card Reader Software Update Events
+    //
+    case cardReaderSoftwareUpdateTapped = "card_reader_software_update_tapped"
+    case cardReaderSoftwareUpdateStarted = "card_reader_software_update_started"
+    case cardReaderSoftwareUpdateSuccess = "card_reader_software_update_success"
+    case cardReaderSoftwareUpdateFailed = "card_reader_software_update_failed"
+    case cardReaderSoftwareUpdateCancelTapped = "card_reader_software_update_cancel_tapped"
+    case cardReaderSoftwareUpdateCanceled = "card_reader_software_update_canceled"
+
     // MARK: Card-Present Payments Onboarding
     case cardPresentOnboardingLearnMoreTapped = "card_present_onboarding_learn_more_tapped"
     case cardPresentOnboardingNotCompleted = "card_present_onboarding_not_completed"

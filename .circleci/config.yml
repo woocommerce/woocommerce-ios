@@ -38,7 +38,7 @@ commands:
               echo "Manually added `/usr/local/bin` to the $PATH:"
               echo $PATH
             fi
-            chruby ruby-2.7.4
+            chruby ruby-$(cat .ruby-version)
             gem install bundler
 
             # Add support for fetching SPM packages from GitHub

@@ -36,6 +36,8 @@ extension Storage.PaymentGatewayAccount: ReadOnlyConvertible {
                                      defaultCurrency: defaultCurrency,
                                      supportedCurrencies: supportedCurrencies,
                                      country: country,
-                                     isCardPresentEligible: isCardPresentEligible)
+                                     isCardPresentEligible: isCardPresentEligible,
+                                     isLive: isLive,
+                                     isInTestMode: isInTestMode)
     }
 }

@@ -740,7 +740,7 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(migratedSystemPlugin.value(forKey: "active") as? Bool, true)
     }
 
-    func test_migrating_from_56_to_57_adds_new_paymentgatewayaccount_attributes() throws {
+    func test_migrating_from_56_to_57_adds_new_PaymentGatewayAccount_attributes() throws {
         // Given
         let sourceContainer = try startPersistentContainer("Model 56")
         let sourceContext = sourceContainer.viewContext

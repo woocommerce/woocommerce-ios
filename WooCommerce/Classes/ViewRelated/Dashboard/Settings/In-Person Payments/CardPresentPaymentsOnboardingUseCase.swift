@@ -197,6 +197,10 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func isWCPayVersionSupported(plugin: SystemPlugin) -> Bool {
+        /// NOTE: It does feel a bit risky to be using .numeric here since Apple documentation say it treats
+        /// the string as a number, so decimal numbers with extra decimals (like versions with patches M.m.p)
+        /// wouldn't necessarily be expected to be compared correctly, but it does seem to work.
+        /// TODO: Implement / source a comparator that explicitly supports version strings with patches.
         plugin.version.compare(Constants.supportedWCPayVersion, options: .numeric) != .orderedAscending
     }
 
@@ -265,6 +269,6 @@ private extension PaymentGatewayAccount {
 
 private enum Constants {
     static let pluginName = "WooCommerce Payments"
-    static let supportedWCPayVersion = "3.1"
+    static let supportedWCPayVersion = "3.2.1"
     static let supportedCountryCodes = ["US"]
 }

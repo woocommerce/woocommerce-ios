@@ -2,6 +2,11 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 57 (Release 8.0.0.0)
+- @allendav 2021-11-03
+- Added `isLive` attribute to `PaymentGatewayAccount` entity
+- Added `isInTestMode` attribute to `PaymentGatewayAccount` entity
+
 ## Model 56 (Release 7.9.0.0)
 - @allendav 2021-10-25
 - Added `active` attribute to `SystemPlugin` entity

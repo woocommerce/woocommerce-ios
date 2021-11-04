@@ -42,17 +42,11 @@ final class OrderCustomRangeListSelectorCommand: ListSelectorCommand {
     }
 
     func handleSelectedChange(selected: OrderCustomRangeFilterEnum, viewController: ViewController) {
-        var picker: DatePickerViewController
         switch selected {
         case .start:
-            picker = DatePickerViewController(date: startDate, datePickerMode: .date, minimumDate: nil, maximumDate: endDate) { [weak self] date in
-                self?.startDate = date
-            }
+            startDate = Date().startOfMonth(timezone: timezone)
         case .end:
-            picker = DatePickerViewController(date: endDate, datePickerMode: .date, minimumDate: startDate, maximumDate: nil) { [weak self] date in
-                self?.endDate = date
-            }
-            viewController.present(picker, animated: true)
+            endDate = Date().endOfMonth(timezone: timezone)
         }
     }
 

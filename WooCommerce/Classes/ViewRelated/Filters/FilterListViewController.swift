@@ -55,7 +55,7 @@ enum FilterListValueSelectorConfig {
     // Filter list selector for categories linked to that site id, retrieved dynamically
     case productCategories(siteID: Int64)
     // Filter list selector for date range
-    case ordersDateRange(options: [OrderDateRangeFilterEnum])
+    case ordersDateRange(options: [OrderDateRangeFilter])
 }
 
 /// Contains data for rendering a filter type row.
@@ -237,7 +237,7 @@ private extension FilterListViewController {
                                                                                                       onProductCategorySelection: selectedValueAction)
                 self.listSelector.navigationController?.pushViewController(filterProductCategoryListViewController, animated: true)
             case .ordersDateRange(let options):
-                let command = OrderDateRangeListSelectorCommand(data: options, selected: selected.selectedValue as? OrderDateRangeFilterEnum)
+                let command = OrderDateRangeListSelectorCommand(data: options, selected: selected.selectedValue as? OrderDateRangeFilter)
                 let listSelector = ListSelectorViewController(command: command, tableViewStyle: .plain) { selectedOptions in
                     if selectedOptions.description != selected.selectedValue.description {
                         selected.selectedValue = selectedOptions

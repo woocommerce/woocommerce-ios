@@ -6,33 +6,32 @@ import SwiftUI
 ///
 final class OrderDateRangeListSelectorCommand: ListSelectorCommand {
     typealias Cell = BasicTableViewCell
-    typealias Model = OrderDateRangeFilterEnum
+    typealias Model = OrderDateRangeFilter
 
     let navigationBarTitle: String? = Localization.navigationBarTitle
 
     /// Holds the current selected state
     ///
-    private(set) var selected: OrderDateRangeFilterEnum? = .any
+    private(set) var selected: OrderDateRangeFilter? = OrderDateRangeFilter(filter: .any)
 
-    fileprivate(set) var data: [OrderDateRangeFilterEnum]
+    fileprivate(set) var data: [OrderDateRangeFilter]
 
-    init(data: [OrderDateRangeFilterEnum], selected: OrderDateRangeFilterEnum?) {
+    init(data: [OrderDateRangeFilter], selected: OrderDateRangeFilter?) {
         self.data = data
-        self.selected = selected ?? .any
+        self.selected = selected ?? OrderDateRangeFilter(filter: .any)
     }
 
-    func isSelected(model: OrderDateRangeFilterEnum) -> Bool {
-        selected == model
+    func isSelected(model: OrderDateRangeFilter) -> Bool {
+        selected?.filter == model.filter && selected?.filter != OrderDateRangeFilter(filter: .custom).filter
     }
 
-    func handleSelectedChange(selected: OrderDateRangeFilterEnum, viewController: ViewController) {
-
-        switch selected {
-        case .custom(let start, let end):
+    func handleSelectedChange(selected: OrderDateRangeFilter, viewController: ViewController) {
+        switch selected.filter {
+        case .custom:
             // Open the View Controller for selecting a custom range of dates
             //
-            let dateRangeFilterVC = DateRangeFilterViewController(startDate: start, endDate: end) { (startDate, endDate) in
-                self.selected = .custom(start: startDate, end: endDate)
+            let dateRangeFilterVC = DateRangeFilterViewController(startDate: selected.startDate, endDate: selected.endDate) { (startDate, endDate) in
+                self.selected = OrderDateRangeFilter(filter: .custom, startDate: startDate, endDate: endDate)
             }
             viewController.navigationController?.pushViewController(dateRangeFilterVC, animated: true)
         default:
@@ -40,10 +39,10 @@ final class OrderDateRangeListSelectorCommand: ListSelectorCommand {
         }
     }
 
-    func configureCell(cell: BasicTableViewCell, model: OrderDateRangeFilterEnum) {
+    func configureCell(cell: BasicTableViewCell, model: OrderDateRangeFilter) {
         cell.textLabel?.text = model.description
 
-        switch model {
+        switch model.filter {
         case .custom:
             cell.accessoryType = isSelected(model: model) ? .checkmark : .disclosureIndicator
         default:

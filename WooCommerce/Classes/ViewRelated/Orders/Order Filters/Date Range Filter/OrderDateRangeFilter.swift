@@ -1,22 +1,19 @@
 import Foundation
 
-/// Represents all of the possible Order Date Ranges in enum form
+/// Represents all of the possible Order Date Ranges in enum form + start and end date in case of custom dates
 ///
-enum OrderDateRangeFilterEnum: Hashable {
-    case any
-    case today
-    case last2Days
-    case thisWeek
-    case thisMonth
-    case custom(start: Date?, end: Date?)
+struct OrderDateRangeFilter: Equatable {
+    var filter: OrderDateRangeFilterEnum
+    var startDate: Date?
+    var endDate: Date?
 }
 
 // MARK: - FilterType conformance
-extension OrderDateRangeFilterEnum: FilterType {
+extension OrderDateRangeFilter: FilterType {
     /// Returns the localized text version of the Enum
     ///
     public var description: String {
-        switch self {
+        switch filter {
         case .any:
             return NSLocalizedString("Any", comment: "Label for one of the filters in order date range")
         case .today:
@@ -35,4 +32,15 @@ extension OrderDateRangeFilterEnum: FilterType {
     var isActive: Bool {
         return true
     }
+}
+
+/// Represents all of the possible Order Date Ranges in enum form
+///
+enum OrderDateRangeFilterEnum: Hashable {
+    case any
+    case today
+    case last2Days
+    case thisWeek
+    case thisMonth
+    case custom
 }

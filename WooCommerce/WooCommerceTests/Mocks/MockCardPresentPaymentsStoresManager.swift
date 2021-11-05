@@ -97,7 +97,15 @@ extension MockCardPresentPaymentsStoresManager {
     }
 
     func simulateCancelableUpdate(onCancel: @escaping () -> Void) {
-        softwareUpdateSubject.send(.started(cancelable: MockFallibleCancelable(onCancel: onCancel)))
+        softwareUpdateSubject.send(.started(cancelable: MockFallibleCancelable(onCancel: {
+            onCancel()
+            self.softwareUpdateSubject.send(
+                .failed(error: CardReaderServiceError.softwareUpdate(
+                    underlyingError: .readerSoftwareUpdateFailedInterrupted,
+                    batteryLevel: 0.86
+                ))
+            )
+        })))
     }
 
     func simulateUpdateStarted() {

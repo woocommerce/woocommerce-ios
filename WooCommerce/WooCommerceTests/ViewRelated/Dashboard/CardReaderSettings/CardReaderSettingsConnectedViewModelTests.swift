@@ -216,4 +216,20 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
         XCTAssert(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateCanceled.rawValue))
     }
+
+    func test_WhenUpdateIsSuccessfullyCanceled_ViewModel_DoesNotLogTracksEvent_cardReaderSoftwareUpdateFailed() {
+        // Given
+        let expectation = self.expectation(description: #function)
+
+        mockStoresManager.simulateCancelableUpdate {
+            expectation.fulfill()
+        }
+
+        // When
+        viewModel.cancelCardReaderUpdate()
+
+        // Then
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        XCTAssertFalse(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateFailed.rawValue))
+    }
 }

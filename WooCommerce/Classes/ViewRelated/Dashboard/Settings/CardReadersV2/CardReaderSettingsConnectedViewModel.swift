@@ -63,6 +63,11 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
                     case .installing(progress: let progress):
                         self.readerUpdateProgress = progress
                     case .failed(error: let error):
+                        if case CardReaderServiceError.softwareUpdate(underlyingError: let underlyingError, batteryLevel: _) = error,
+                           underlyingError == .readerSoftwareUpdateFailedInterrupted {
+                            // Update was cancelled, don't treat this as an error
+                            break
+                        }
                         self.readerUpdateError = error
                         self.completeCardReaderUpdate(success: false)
                         ServiceLocator.analytics.track(.cardReaderSoftwareUpdateFailed)

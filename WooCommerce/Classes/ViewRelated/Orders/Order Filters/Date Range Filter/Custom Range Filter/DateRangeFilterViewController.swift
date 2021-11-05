@@ -172,6 +172,7 @@ private extension DateRangeFilterViewController {
             self.tableView.reloadData()
             self.onCompletion(self.startDate, self.endDate)
         }
+        cell.selectionStyle = .none
     }
 
     func configureEndDateTitle(cell: TitleAndValueTableViewCell) {
@@ -193,6 +194,7 @@ private extension DateRangeFilterViewController {
             self.tableView.reloadData()
             self.onCompletion(self.startDate, self.endDate)
         }
+        cell.selectionStyle = .none
     }
 }
 

@@ -29,13 +29,12 @@ final class OrderDateRangeListSelectorCommand: ListSelectorCommand {
 
         switch selected {
         case .custom(let start, let end):
-            // Open the list selector for selecting a custom range of dates
-            let command = OrderCustomRangeListSelectorCommand(data: [.start, .end], startDate: start, endDate: end) { dateRange in
-                self.selected = .custom(dateRange.0, dateRange.1)
+            // Open the View Controller for selecting a custom range of dates
+            //
+            let dateRangeFilterVC = DateRangeFilterViewController(startDate: start, endDate: end) { (startDate, endDate) in
+                self.selected = .custom(start: startDate, end: endDate)
             }
-            let listSelector = ListSelectorViewController(command: command, tableViewStyle: .plain) { _ in
-            }
-            viewController.navigationController?.pushViewController(listSelector, animated: true)
+            viewController.navigationController?.pushViewController(dateRangeFilterVC, animated: true)
         default:
             self.selected = selected
         }

@@ -6,73 +6,102 @@ struct QuickOrderSummary: View {
     var body: some View {
         VStack {
             ScrollView {
-                VStack(spacing: 10) {
+                VStack(spacing: 0) {
 
-                    HStack {
-                        Rectangle()
-                            .fill()
-                            .foregroundColor(.gray)
-                            .frame(width: 48, height: 48)
+                    Group {
 
-                        Text("Custom Amount")
+                        Divider()
 
-                        Spacer()
+                        HStack {
+                            Rectangle()
+                                .fill()
+                                .foregroundColor(.gray)
+                                .frame(width: 48, height: 48)
 
-                        Text("$40.00")
-                    }
-                    .background(Color.white)
+                            Text("Custom Amount")
 
+                            Spacer()
 
-                    TitleAndTextFieldRow(title: "Email", placeholder: "Enter Email", text: .constant(""))
+                            Text("$40.00")
+                        }
+                        .padding()
                         .background(Color.white)
 
-                    VStack(alignment: .leading) {
-                        Text("Payment")
-
-                        TitleAndValueRow(title: "Subtotal", value: .content("$40.0"), selectable: false) {}
-
-                        TitleAndToggleRow(title: "Charge Taxes", isOn: .constant(false))
-
-                        TitleAndValueRow(title: "Subtotal", value: .content("$40.0"), selectable: false) {}
+                        Divider()
+                        Spacer(minLength: 16)
                     }
-                    .background(Color.white)
 
-                    VStack(alignment: .leading) {
-                        Text("Order Note")
-
-                        Button(action: {
-                            print("Tapped add note")
-                        }, label: {
-                            HStack {
-                                Rectangle()
-                                    .fill()
-                                    .frame(width: 24, height: 24)
-
-                                Text("Add Note")
-
-                                Spacer()
-                            }
-                            .foregroundColor(Color(.accent))
-                        })
-                        .frame(maxWidth: .infinity)
-
-
+                    Group {
+                        Divider()
+                        TitleAndTextFieldRow(title: "Email", placeholder: "Enter Email", text: .constant(""))
+                            .background(Color.white)
+                        Divider()
+                        Spacer(minLength: 16)
                     }
-                    .background(Color.white)
+
+                    Group {
+                        Divider()
+                        VStack(alignment: .leading) {
+
+                            Text("Payment")
+                                .padding([.horizontal, .top])
+
+                            TitleAndValueRow(title: "Subtotal", value: .content("$40.0"), selectable: false) {}
+
+                            TitleAndToggleRow(title: "Charge Taxes", isOn: .constant(false))
+                                .padding([.leading, .trailing])
+
+                            TitleAndValueRow(title: "Subtotal", value: .content("$40.0"), selectable: false) {}
+                        }
+                        .background(Color.white)
+
+                        Divider()
+                        Spacer(minLength: 16)
+                    }
+
+                    Group {
+                        Divider()
+
+                        VStack(alignment: .leading) {
+                            Text("Order Note")
+
+                            Button(action: {
+                                print("Tapped add note")
+                            }, label: {
+                                HStack {
+                                    Rectangle()
+                                        .fill()
+                                        .frame(width: 24, height: 24)
+
+                                    Text("Add Note")
+
+                                    Spacer()
+                                }
+                                .foregroundColor(Color(.accent))
+                            })
+                            .frame(maxWidth: .infinity)
+                        }
+                        .padding()
+                        .background(Color.white)
+
+                        Divider()
+                    }
 
                 }
-                .background(Color(.listBackground))
             }
 
             VStack {
                 Divider()
 
                 Button("Take Payment ($40.0)", action: {
-
+                    print("Take payment pressed")
                 })
                 .buttonStyle(PrimaryButtonStyle())
+                .padding()
+
             }
         }
+        .background(Color(.listBackground))
     }
 }
 

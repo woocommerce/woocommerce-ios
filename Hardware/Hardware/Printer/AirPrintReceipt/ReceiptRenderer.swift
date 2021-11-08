@@ -3,9 +3,7 @@ import UIKit
 /// Renders a receipt in an AirPrint enabled printer.
 ///
 public final class ReceiptRenderer: UIPrintPageRenderer {
-    private let lines: [ReceiptLineItem]
-    private let parameters: CardPresentReceiptParameters
-    private let cartTotals: [ReceiptTotalLine]
+    private let content: ReceiptContent
 
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -17,9 +15,7 @@ public final class ReceiptRenderer: UIPrintPageRenderer {
     }()
 
     public init(content: ReceiptContent) {
-        self.lines = content.lineItems
-        self.parameters = content.parameters
-        self.cartTotals = content.cartTotals
+        self.content = content
 
         super.init()
 
@@ -77,15 +73,15 @@ public extension ReceiptRenderer {
                         <h1>\(receiptTitle)</h1>
                         <h3>\(Localization.amountPaidSectionTitle.uppercased())</h3>
                         <p>
-                            \(parameters.formattedAmount) \(parameters.currency.uppercased())
+                            \(content.parameters.formattedAmount) \(content.parameters.currency.uppercased())
                         </p>
                         <h3>\(Localization.datePaidSectionTitle.uppercased())</h3>
                         <p>
-                            \(dateFormatter.string(from: parameters.date))
+                            \(dateFormatter.string(from: content.parameters.date))
                         </p>
                         <h3>\(Localization.paymentMethodSectionTitle.uppercased())</h3>
                         <p>
-                            <span class="card-icon \(parameters.cardDetails.brand.iconName)-icon"></span> - \(parameters.cardDetails.last4)
+                            <span class="card-icon \(content.parameters.cardDetails.brand.iconName)-icon"></span> - \(content.parameters.cardDetails.last4)
                         </p>
                     </header>
                     <h3>\(summarySectionTitle.uppercased())</h3>
@@ -112,8 +108,8 @@ private extension ReceiptRenderer {
 
     private func summaryTable() -> String {
         var summaryContent = "<table>"
-        for line in lines {
-            summaryContent += "<tr><td>\(line.title) × \(line.quantity)</td><td>\(line.amount) \(parameters.currency.uppercased())</td></tr>"
+        for line in content.lineItems {
+            summaryContent += "<tr><td>\(line.title) × \(line.quantity)</td><td>\(line.amount) \(content.parameters.currency.uppercased())</td></tr>"
         }
         summaryContent += totalRows()
         summaryContent += "</table>"
@@ -123,7 +119,7 @@ private extension ReceiptRenderer {
 
     private func totalRows() -> String {
         var rows = ""
-        for total in cartTotals {
+        for total in content.cartTotals {
             rows += summaryRow(title: total.description, amount: total.amount)
         }
         return rows
@@ -136,14 +132,14 @@ private extension ReceiptRenderer {
                     \(title)
                 </td>
                 <td>
-                    \(amount) \(parameters.currency.uppercased())
+                    \(amount) \(content.parameters.currency.uppercased())
                 </td>
             </tr>
         """
     }
 
     private func requiredItems() -> String {
-        guard let emv = parameters.cardDetails.receipt else {
+        guard let emv = content.parameters.cardDetails.receipt else {
             return "<br/>"
         }
 
@@ -163,7 +159,7 @@ private extension ReceiptRenderer {
     }
 
     private var receiptTitle: String {
-        guard let storeName = parameters.storeName else {
+        guard let storeName = content.parameters.storeName else {
             return Localization.receiptTitle
         }
 
@@ -171,7 +167,7 @@ private extension ReceiptRenderer {
     }
 
     private var summarySectionTitle: String {
-        guard let orderID = parameters.orderID else {
+        guard let orderID = content.parameters.orderID else {
             return Localization.summarySectionTitle
         }
         return String(format: Localization.summarySectionTitleWithOrderFormat, String(orderID))

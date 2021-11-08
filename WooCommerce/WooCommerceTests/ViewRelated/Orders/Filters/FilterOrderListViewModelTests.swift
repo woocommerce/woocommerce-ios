@@ -28,7 +28,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
 
     func test_criteria_after_clearing_all_non_nil_filters() {
         // Given
-        let filters = FilterOrderListViewModel.Filters(orderStatus: .completed, dateRange: OrderDateRangeFilter(filter: .thisWeek), numberOfActiveFilters: 2)
+        let filters = FilterOrderListViewModel.Filters(orderStatus: .completed, dateRange: OrderDateRangeFilter(filter: .last7Days), numberOfActiveFilters: 2)
 
         // When
         let viewModel = FilterOrderListViewModel(filters: filters)

@@ -330,6 +330,7 @@ public enum WooAnalyticsStat: String {
     case productListSearched = "product_list_searched"
     case productListMenuSearchTapped = "product_list_menu_search_tapped"
     case productListAddProductTapped = "product_list_add_product_button_tapped"
+    case productListClearFiltersTapped = "product_list_clear_filters_button_tapped"
 
     // MARK: Add Product Events
     //

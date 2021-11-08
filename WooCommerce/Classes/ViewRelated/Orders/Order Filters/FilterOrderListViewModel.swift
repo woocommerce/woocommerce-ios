@@ -90,16 +90,8 @@ extension FilterOrderListViewModel.OrderListFilter {
                                        listSelectorConfig: .staticOptions(options: options),
                                        selectedValue: filters.orderStatus)
         case .dateRange:
-            let options: [OrderDateRangeFilter] = [OrderDateRangeFilter(filter: .any),
-                                                   OrderDateRangeFilter(filter: .today),
-                                                   OrderDateRangeFilter(filter: .last2Days),
-                                                   OrderDateRangeFilter(filter: .thisWeek),
-                                                   OrderDateRangeFilter(filter: .thisMonth),
-                                                   OrderDateRangeFilter(filter: .custom,
-                                                                        startDate: filters.dateRange?.startDate,
-                                                                        endDate: filters.dateRange?.endDate)]
             return FilterTypeViewModel(title: title,
-                                       listSelectorConfig: .ordersDateRange(options: options),
+                                       listSelectorConfig: .ordersDateRange,
                                        selectedValue: filters.dateRange)
         }
     }

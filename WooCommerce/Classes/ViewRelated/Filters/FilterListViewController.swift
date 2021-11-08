@@ -55,7 +55,7 @@ enum FilterListValueSelectorConfig {
     // Filter list selector for categories linked to that site id, retrieved dynamically
     case productCategories(siteID: Int64)
     // Filter list selector for date range
-    case ordersDateRange(options: [OrderDateRangeFilter])
+    case ordersDateRange
 }
 
 /// Contains data for rendering a filter type row.
@@ -236,16 +236,14 @@ private extension FilterListViewController {
                                                                                                       selectedCategory: selectedProductCategory,
                                                                                                       onProductCategorySelection: selectedValueAction)
                 self.listSelector.navigationController?.pushViewController(filterProductCategoryListViewController, animated: true)
-            case .ordersDateRange(let options):
-                let command = OrderDateRangeListSelectorCommand(data: options, selected: selected.selectedValue as? OrderDateRangeFilter)
-                let listSelector = ListSelectorViewController(command: command, tableViewStyle: .plain) { selectedOptions in
-                    if selectedOptions.description != selected.selectedValue.description {
-                        selected.selectedValue = selectedOptions
-                        self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
-                        self.listSelector.reloadData()
-                    }
+            case .ordersDateRange:
+                let selectedOrderFilter = selected.selectedValue as? OrderDateRangeFilter
+                let datesFilterVC = OrderDatesFilterViewController(selected: selectedOrderFilter) { dateRangeFilter in
+                    selected.selectedValue = dateRangeFilter
+                    self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
+                    self.listSelector.reloadData()
                 }
-                self.listSelector.navigationController?.pushViewController(listSelector, animated: true)
+                self.listSelector.navigationController?.pushViewController(datesFilterVC, animated: true)
             }
         }
     }

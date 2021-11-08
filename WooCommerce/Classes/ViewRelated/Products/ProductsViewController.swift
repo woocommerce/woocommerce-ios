@@ -255,6 +255,7 @@ private extension ProductsViewController {
     }
 
     func clearFilter(sourceBarButtonItem: UIBarButtonItem? = nil, sourceView: UIView? = nil) {
+        ServiceLocator.analytics.track(.productListClearFiltersTapped)
         self.filters = FilterProductListViewModel.Filters(stockStatus: nil,
                                                           productStatus: nil,
                                                           productType: nil,

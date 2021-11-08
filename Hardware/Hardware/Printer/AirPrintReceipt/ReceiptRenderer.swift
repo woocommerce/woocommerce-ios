@@ -86,6 +86,7 @@ public extension ReceiptRenderer {
                     </header>
                     <h3>\(summarySectionTitle.uppercased())</h3>
                     \(summaryTable())
+                    \(orderNoteSection())
                     <footer>
                         <p>
                             \(requiredItems())
@@ -135,6 +136,16 @@ private extension ReceiptRenderer {
                     \(amount) \(content.parameters.currency.uppercased())
                 </td>
             </tr>
+        """
+    }
+
+    private func orderNoteSection() -> String {
+        guard let orderNote = content.orderNote else {
+            return ""
+        }
+        return """
+        <h3>\(Localization.orderNoteSectionTitle.uppercased())</h3>
+        <p>\(orderNote)
         """
     }
 
@@ -213,6 +224,10 @@ private extension ReceiptRenderer {
             "Summary",
             comment: "Title of 'Summary' section in the receipt when the order number is unknown"
         )
+
+        static let orderNoteSectionTitle = NSLocalizedString(
+            "Notes",
+            comment: "Title of order note section in the receipt, commonly used for Quick Orders.")
 
         static let summarySectionTitleWithOrderFormat = NSLocalizedString(
             "Summary: Order #%1$@",

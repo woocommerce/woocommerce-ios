@@ -4,11 +4,16 @@ public struct ReceiptContent: Codable {
     public let lineItems: [ReceiptLineItem]
     public let parameters: CardPresentReceiptParameters
     public let cartTotals: [ReceiptTotalLine]
+    public let orderNote: String?
 
-    public init(parameters: CardPresentReceiptParameters, lineItems: [ReceiptLineItem], cartTotals: [ReceiptTotalLine]) {
+    public init(parameters: CardPresentReceiptParameters,
+                lineItems: [ReceiptLineItem],
+                cartTotals: [ReceiptTotalLine],
+                orderNote: String?) {
         self.lineItems = lineItems
         self.parameters = parameters
         self.cartTotals = cartTotals
+        self.orderNote = orderNote
     }
 }
 
@@ -17,6 +22,7 @@ extension ReceiptContent {
         case lineItems = "line_items"
         case parameters = "parameters"
         case cartTotals = "cart_totals"
+        case orderNote = "order_note"
     }
 }
 

@@ -14,19 +14,23 @@ public final class StripeCardReaderService: NSObject {
     private let discoveryStatusSubject = CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle)
     private let paymentStatusSubject = CurrentValueSubject<PaymentStatus, Never>(.notReady)
     private let readerEventsSubject = PassthroughSubject<CardReaderEvent, Never>()
-    private let softwareUpdateSubject = CurrentValueSubject<Float, Never>(0)
+    private let softwareUpdateSubject = CurrentValueSubject<CardReaderSoftwareUpdateState, Never>(.none)
 
     /// Volatile, in-memory cache of discovered readers. It has to be cleared after we connect to a reader
     /// see
     ///  https://stripe.dev/stripe-terminal-ios/docs/Protocols/SCPDiscoveryDelegate.html#/c:objc(pl)SCPDiscoveryDelegate(im)terminal:didUpdateDiscoveredReaders:
     private let discoveredStripeReadersCache = StripeCardReaderDiscoveryCache()
 
-    private var pendingSoftwareUpdate: ReaderSoftwareUpdate?
-
     private var activePaymentIntent: StripeTerminal.PaymentIntent? = nil
 
     /// A lock to ensure that the service only initiates or cancels a discovery process at the same time
     private let discoveryLock = NSLock()
+
+    private var readerLocationProvider: ReaderLocationProvider?
+
+    /// Keeps track of whether a chip card needs to be removed
+    private var timerCancellable: Cancellable?
+    private var isChipCardInserted: Bool = false
 }
 
 
@@ -60,7 +64,7 @@ extension StripeCardReaderService: CardReaderService {
         readerEventsSubject.eraseToAnyPublisher()
     }
 
-    public var softwareUpdateEvents: AnyPublisher<Float, Never> {
+    public var softwareUpdateEvents: AnyPublisher<CardReaderSoftwareUpdateState, Never> {
         softwareUpdateSubject.eraseToAnyPublisher()
     }
 
@@ -225,6 +229,8 @@ extension StripeCardReaderService: CardReaderService {
             .flatMap { intent in
                 self.collectPaymentMethod(intent: intent)
             }.flatMap { intent in
+                self.waitForInsertedCardToBeRemoved(intent: intent)
+            }.flatMap { intent in
                 self.processPayment(intent: intent)
             }.eraseToAnyPublisher()
     }
@@ -264,22 +270,56 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
-    public func connect(_ reader: CardReader) -> Future <CardReader, Error> {
+    public func connect(_ reader: CardReader) -> AnyPublisher<CardReader, Error> {
+        guard let stripeReader = self.discoveredStripeReadersCache.reader(matching: reader) as? Reader else {
+            return Future() { promise in
+                promise(.failure(CardReaderServiceError.connection()))
+            }.eraseToAnyPublisher()
+        }
+
+        return getBluetoothConfiguration(stripeReader).flatMap { configuration in
+            self.connect(stripeReader, configuration: configuration)
+        }.eraseToAnyPublisher()
+    }
+
+    private func getBluetoothConfiguration(_ reader: StripeTerminal.Reader) -> Future<BluetoothConnectionConfiguration, Error> {
         return Future() { [weak self] promise in
+            guard let self = self else {
+                promise(.failure(CardReaderServiceError.connection()))
+                return
+            }
+
+            // TODO - If we've recently connected to this reader, use the cached locationId from the
+            // Terminal SDK instead of making this fetch. See #5116 and #5087
+            self.readerLocationProvider?.fetchDefaultLocationID { (locationId, error) in
+                if let error = error {
+                    let underlyingError = UnderlyingError(with: error)
+                    return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
+                }
+
+                if let locationId = locationId {
+                    return promise(.success(BluetoothConnectionConfiguration(locationId: locationId)))
+                }
+
+                promise(.failure(CardReaderServiceError.connection()))
+            }
+        }
+    }
+
+    public func connect(_ reader: StripeTerminal.Reader, configuration: BluetoothConnectionConfiguration) -> Future <CardReader, Error> {
+        // Keep a copy of the battery level in case the connection fails due to low battery
+        // If that happens, the reader object won't be accessible anymore, and we want to show
+        // the current charge percentage if possible
+        let batteryLevel = reader.batteryLevel?.doubleValue
+
+        return Future { [weak self] promise in
 
             guard let self = self else {
                 promise(.failure(CardReaderServiceError.connection()))
                 return
             }
 
-            // Find a cached reader that matches.
-            // If this fails, that means that we are in an internal state that we do not expect.
-            guard let stripeReader = self.discoveredStripeReadersCache.reader(matching: reader) as? Reader else {
-                promise(.failure(CardReaderServiceError.connection()))
-                return
-            }
-
-            Terminal.shared.connectReader(stripeReader) { [weak self] (reader, error) in
+            Terminal.shared.connectBluetoothReader(reader, delegate: self, connectionConfig: configuration) { [weak self] (reader, error) in
                 guard let self = self else {
                     promise(.failure(CardReaderServiceError.connection()))
                     return
@@ -290,7 +330,12 @@ extension StripeCardReaderService: CardReaderService {
 
                 if let error = error {
                     let underlyingError = UnderlyingError(with: error)
-                    promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
+                    // Starting with StripeTerminal 2.0, required software updates happen transparently on connection
+                    // Any error related to that will be reported here, but we don't want to treat it as a connection error
+                    let serviceError: CardReaderServiceError = underlyingError.isSoftwareUpdateError ?
+                        .softwareUpdate(underlyingError: underlyingError, batteryLevel: batteryLevel) :
+                        .connection(underlyingError: underlyingError)
+                    promise(.failure(serviceError))
                 }
 
                 if let reader = reader {
@@ -302,77 +347,8 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
-    public func checkForUpdate() -> Future<CardReaderSoftwareUpdate?, Error> {
-        return Future() { promise in
-            Terminal.shared.checkForUpdate { [weak self] (softwareUpdate, error) in
-                guard let self = self else {
-                    promise(.failure(CardReaderServiceError.softwareUpdate()))
-                    return
-                }
-
-                if let error = error {
-                    let underlyingError = UnderlyingError(with: error)
-                    promise(.failure(CardReaderServiceError.softwareUpdate(underlyingError: underlyingError)))
-                }
-
-                if let softwareUpdate = softwareUpdate {
-                    self.pendingSoftwareUpdate = softwareUpdate
-                    let update = CardReaderSoftwareUpdate(update: softwareUpdate)
-                    promise(.success(update))
-                } else {
-                    // There is no software update available
-                    self.pendingSoftwareUpdate = nil
-                    promise(.success(nil))
-                }
-            }
-        }
-    }
-
-    public func installUpdate() -> AnyPublisher<Float, Error> {
-        // Before we do anything, make sure there is a pending software update
-        guard let pendingUpdate = self.pendingSoftwareUpdate else {
-            return Fail(outputType: Float.self, failure: CardReaderServiceError.softwareUpdate()).eraseToAnyPublisher()
-        }
-
-        // We create a future for the asynchronous call to installUpdate.
-        // Since Combine doesn't offer enough options to combine values and completion events,
-        // this publishes a true value when the update is completed.
-        let installFuture = Future<Bool, Error> { promise in
-            // If the update succeeds the completion block is called with nil
-            // https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)installUpdate:delegate:completion:
-            Terminal.shared.installUpdate(pendingUpdate, delegate: self) { [weak self] error in
-                if error == nil {
-                    self?.pendingSoftwareUpdate = nil
-                    promise(.success(true))
-                }
-
-                if let error = error {
-                    let underlyingError = UnderlyingError(with: error)
-                    promise(.failure(CardReaderServiceError.softwareUpdate(underlyingError: underlyingError)))
-                }
-            }
-        }
-
-        // We want to combine the completion from the previous future with the progress events
-        // coming from the delegate through softwareUpdateSubject.
-        // To do this, we prepend an initial false value for `updateFinished`, and while that
-        // is the latest value, we will republish progress events from softwareUpdateSubject.
-        // Once we get a true value from the `installFuture` completion, we'll transform that
-        // into an empty sequence so our publisher can finish.
-        return installFuture
-            .prepend(false)
-            .map { [softwareUpdateSubject] updateFinished -> AnyPublisher<Float, Error> in
-                if updateFinished {
-                    return Empty()
-                        .eraseToAnyPublisher()
-                } else {
-                    return softwareUpdateSubject
-                        .setFailureType(to: Error.self)
-                        .eraseToAnyPublisher()
-                }
-            }
-            .switchToLatest()
-            .eraseToAnyPublisher()
+    public func installUpdate() -> Void {
+        Terminal.shared.installAvailableUpdate()
     }
 }
 
@@ -422,10 +398,8 @@ private extension StripeCardReaderService {
             /// Collect Payment method returns a cancellable
             /// Because we are chaining promises, we need to retain a reference
             /// to this cancellable if we want to cancel 
-            self?.paymentCancellable = Terminal.shared.collectPaymentMethod(intent, delegate: self) { (intent, error) in
+            self?.paymentCancellable = Terminal.shared.collectPaymentMethod(intent) { (intent, error) in
                 self?.paymentCancellable = nil
-                // Notify clients that the card, no matter if tapped or inserted, is not needed anymore.
-                self?.sendReaderEvent(.cardRemoved)
 
                 if let error = error {
                     let underlyingError = UnderlyingError(with: error)
@@ -448,6 +422,29 @@ private extension StripeCardReaderService {
                     promise(.success(intent))
                 }
             }
+        }
+    }
+
+    func waitForInsertedCardToBeRemoved(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {
+        return Future() { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            // If there is no chip card inserted, it is ok to immediatedly return. The payment method may have been swipe or tap.
+            if !self.isChipCardInserted {
+                return promise(.success(intent))
+            }
+
+            self.timerCancellable = Timer.publish(every: 1, tolerance: 0.1, on: .main, in: .default)
+                .autoconnect()
+                .receive(on: DispatchQueue.main)
+                .sink(receiveValue: { _ in
+                    if !self.isChipCardInserted {
+                        self.timerCancellable?.cancel()
+                        return promise(.success(intent))
+                    }
+                })
         }
     }
 
@@ -485,32 +482,65 @@ extension StripeCardReaderService: DiscoveryDelegate {
 
 
 // MARK: - ReaderDisplayDelegate.
-extension StripeCardReaderService: ReaderDisplayDelegate {
+extension StripeCardReaderService: BluetoothReaderDelegate {
+    public func reader(_ reader: Reader, didReportAvailableUpdate update: ReaderSoftwareUpdate) {
+        softwareUpdateSubject.send(.available)
+    }
+
+    public func reader(_ reader: Reader, didStartInstallingUpdate update: ReaderSoftwareUpdate, cancelable: StripeTerminal.Cancelable?) {
+        print("==== started software update")
+        softwareUpdateSubject.send(.started(cancelable: cancelable.map(StripeCancelable.init(cancelable:))))
+    }
+
+    public func reader(_ reader: Reader, didReportReaderSoftwareUpdateProgress progress: Float) {
+        print("==== did repost software update progress ", progress)
+        softwareUpdateSubject.send(.installing(progress: progress))
+    }
+
+    public func reader(_ reader: Reader, didFinishInstallingUpdate update: ReaderSoftwareUpdate?, error: Error?) {
+        if let error = error {
+            let underlyingError = UnderlyingError(with: error)
+            if underlyingError != .commandCancelled {
+                softwareUpdateSubject.send(.failed(error: error))
+            }
+            softwareUpdateSubject.send(.available)
+        } else {
+            softwareUpdateSubject.send(.completed)
+            softwareUpdateSubject.send(.none)
+        }
+    }
+
     /// This method is called by the Stripe Terminal SDK when it wants client apps
     /// to request users to tap / insert / swipe a card.
-    public func terminal(_ terminal: Terminal, didRequestReaderInput inputOptions: ReaderInputOptions = []) {
+    public func reader(_ reader: Reader, didRequestReaderInput inputOptions: ReaderInputOptions = []) {
         sendReaderEvent(CardReaderEvent.make(readerInputOptions: inputOptions))
     }
 
     /// In this case the Stripe Terminal SDK wants us to present a string on screen
-    public func terminal(_ terminal: Terminal, didRequestReaderDisplayMessage displayMessage: ReaderDisplayMessage) {
+    public func reader(_ reader: Reader, didRequestReaderDisplayMessage displayMessage: ReaderDisplayMessage) {
         sendReaderEvent(CardReaderEvent.make(displayMessage: displayMessage))
     }
-}
 
-
-// MARK: - Software update delegate.
-extension StripeCardReaderService: ReaderSoftwareUpdateDelegate {
-    public func terminal(_ terminal: Terminal, didReportReaderSoftwareUpdateProgress progress: Float) {
-        softwareUpdateSubject.send(progress)
+    /// Monitor and forward chip card insertion/removal events from the Terminal SDK
+    /// So we can make sure inserted cards are removed during the collection of payment
+    ///
+    public func reader(_ reader: Reader, didReportReaderEvent event: ReaderEvent, info: [AnyHashable: Any]?) {
+        switch event {
+        case .cardInserted:
+            isChipCardInserted = true
+            sendReaderEvent(.cardInserted)
+        case .cardRemoved:
+            isChipCardInserted = false
+            sendReaderEvent(.cardRemoved)
+        default:
+            break
+        }
     }
 }
-
 
 // MARK: - Terminal delegate
 extension StripeCardReaderService: TerminalDelegate {
     public func terminal(_ terminal: Terminal, didReportUnexpectedReaderDisconnect reader: Reader) {
-        print("==== didReportUnexpectedReaderDisconnect ===")
         connectedReadersSubject.send([])
     }
 }
@@ -524,6 +554,8 @@ private extension StripeCardReaderService {
 
 private extension StripeCardReaderService {
     private func setConfigProvider(_ configProvider: CardReaderConfigProvider) {
+        readerLocationProvider = configProvider
+
         let tokenProvider = DefaultConnectionTokenProvider(provider: configProvider)
 
         if !Terminal.hasTokenProvider() {

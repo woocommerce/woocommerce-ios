@@ -53,6 +53,10 @@ final class MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         }
     }
 
+    func updateProgress(from: UIViewController, requiredUpdate: Bool, progress: Float, cancel: (() -> Void)?) {
+        // GNDN
+    }
+
     func connectingToReader(from: UIViewController) {
         // GNDN
     }
@@ -77,6 +81,14 @@ final class MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         if mode == .cancelSearchingAfterConnectionFailure {
             cancelSearch()
         }
+    }
+
+    func updatingFailedLowBattery(from: UIViewController, batteryLevel: Double?, close: @escaping () -> Void) {
+        close()
+    }
+
+    func updatingFailed(from: UIViewController, tryAgain: (() -> Void)?, close: @escaping () -> Void) {
+        close()
     }
 
     func updateSeveralReadersList(readerIDs: [String]) {

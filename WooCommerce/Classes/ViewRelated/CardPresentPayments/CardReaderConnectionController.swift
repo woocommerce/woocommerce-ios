@@ -42,6 +42,10 @@ final class CardReaderConnectionController {
         ///
         case connectingFailed(Error)
 
+        /// A mandatory update is being installed
+        ///
+        case updating(progress: Float)
+
         /// User cancelled search/connecting to a card reader. The completion passed to `searchAndConnect`
         /// will be called with a `success` `Bool` `False` result. The view controller passed to `searchAndConnect` will be
         /// dereferenced and the state set to `idle`
@@ -87,6 +91,8 @@ final class CardReaderConnectionController {
     /// already switched to list format for this discovery flow, so that stay in list mode
     /// even if the number of found readers drops to less than 2
     private var showSeveralFoundReaders: Bool = false
+
+    private var softwareUpdateCancelable: FallibleCancelable? = nil
 
     private var subscriptions = Set<AnyCancellable>()
 
@@ -144,6 +150,8 @@ private extension CardReaderConnectionController {
             onConnectingFailed(error: error)
         case .discoveryFailed(let error):
             onDiscoveryFailed(error: error)
+        case .updating(progress: let progress):
+            onUpdateProgress(progress: progress)
         }
     }
 
@@ -389,6 +397,30 @@ private extension CardReaderConnectionController {
         )
     }
 
+    /// A mandatory update is being installed
+    ///
+    func onUpdateProgress(progress: Float) {
+        guard let from = fromController else {
+            return
+        }
+
+        let cancel = softwareUpdateCancelable.map { cancelable in
+            return { [weak self] in
+                self?.state = .cancel
+                cancelable.cancel { result in
+                    if case .failure(let error) = result {
+                        print("=== error canceling software update: \(error)")
+                    }
+                }
+            }
+        }
+
+        alerts.updateProgress(from: from,
+                              requiredUpdate: true,
+                              progress: progress,
+                              cancel: cancel)
+    }
+
     /// End the search for a card reader
     ///
     func onCancel() {
@@ -410,6 +442,27 @@ private extension CardReaderConnectionController {
             return
         }
 
+        let softwareUpdateAction = CardPresentPaymentAction.observeCardReaderUpdateState { [weak self] softwareUpdateEvents in
+            guard let self = self else { return }
+
+            softwareUpdateEvents.sink { event in
+                switch event {
+                case .started(cancelable: let cancelable):
+                    self.softwareUpdateCancelable = cancelable
+                    self.state = .updating(progress: 0)
+                case .installing(progress: let progress):
+                    self.state = .updating(progress: progress)
+                case .completed:
+                    self.softwareUpdateCancelable = nil
+                    self.state = .updating(progress: 1)
+                default:
+                    break
+                }
+            }
+            .store(in: &self.subscriptions)
+        }
+        ServiceLocator.stores.dispatch(softwareUpdateAction)
+
         let action = CardPresentPaymentAction.connect(reader: candidateReader) { result in
             switch result {
             case .success(let reader):
@@ -418,7 +471,15 @@ private extension CardReaderConnectionController {
                 let properties = reader.batteryLevel
                     .map { ["battery_level": $0] }
                 ServiceLocator.analytics.track(.cardReaderConnectionSuccess, withProperties: properties)
-                self.returnSuccess(connected: true)
+                // If we were installing a software update, introduce a small delay so the user can
+                // actually see a success message showing the installation was complete
+                if case .updating(progress: 1) = self.state {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+                        self.returnSuccess(connected: true)
+                    }
+                } else {
+                    self.returnSuccess(connected: true)
+                }
             case .failure(let error):
                 ServiceLocator.analytics.track(.cardReaderConnectionFailed, withError: error)
                 self.state = .connectingFailed(error)
@@ -442,6 +503,11 @@ private extension CardReaderConnectionController {
         ///
         self.foundReaders = []
 
+        if case CardReaderServiceError.softwareUpdate(underlyingError: let underlyingError, batteryLevel: _) = error,
+           underlyingError.isSoftwareUpdateError {
+            return onUpdateFailed(error: error)
+        }
+
         alerts.connectingFailed(
             from: from,
             continueSearch: {
@@ -450,6 +516,30 @@ private extension CardReaderConnectionController {
                 self.state = .cancel
             }
         )
+    }
+
+    private func onUpdateFailed(error: Error) {
+        guard let from = fromController,
+              case CardReaderServiceError.softwareUpdate(underlyingError: let underlyingError, batteryLevel: let batteryLevel) = error else {
+            return
+        }
+
+        if underlyingError == .readerSoftwareUpdateFailedBatteryLow {
+            alerts.updatingFailedLowBattery(
+                from: from,
+                batteryLevel: batteryLevel,
+                close: {
+                    self.state = .searching
+                }
+            )
+        } else {
+            alerts.updatingFailed(
+                from: from,
+                tryAgain: nil,
+                close: {
+                    self.state = .searching
+                })
+        }
     }
 
     /// An error occurred during discovery

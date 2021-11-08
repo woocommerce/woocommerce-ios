@@ -7,11 +7,11 @@ extension CardReaderType {
     static func with(readerType: DeviceType) -> CardReaderType {
         switch readerType {
         case .chipper2X:
-            return .mobile
-        case .verifoneP400:
-            return .counterTop
+            return .chipper
+        case .stripeM2:
+            return .stripeM2
         default:
-            return .notSupported
+            return .other
         }
     }
 }

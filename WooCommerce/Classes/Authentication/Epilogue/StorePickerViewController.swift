@@ -214,7 +214,7 @@ private extension StorePickerViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: dismissLiteral,
                                                            style: .plain,
                                                            target: self,
-                                                           action: #selector(cleanupAndDismiss))
+                                                           action: #selector(dismissStorePicker))
     }
 
     func setupNavigationForListOfConnectedStores() {
@@ -365,12 +365,7 @@ private extension StorePickerViewController {
 
     /// Dismiss this VC
     ///
-    @objc func cleanupAndDismiss() {
-        if let siteID = currentlySelectedSite?.siteID {
-            delegate?.didSelectStore(with: siteID, onCompletion: {
-            })
-        }
-
+    @objc func dismissStorePicker() {
         dismiss()
     }
 

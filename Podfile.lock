@@ -43,7 +43,7 @@ PODS:
   - Sentry/Core (6.2.1)
   - Sodium (0.9.1)
   - Sourcery (1.0.3)
-  - StripeTerminal (1.4.0)
+  - StripeTerminal (2.3.0)
   - SVProgressHUD (2.2.5)
   - UIDeviceIdentifier (1.7.1)
   - WordPress-Aztec-iOS (1.11.0)
@@ -72,7 +72,7 @@ PODS:
     - CocoaLumberjack (~> 3.4)
     - FormatterKit/TimeIntervalFormatter (~> 1.8)
   - WordPressUI (1.12.1)
-  - Wormholy (1.6.4)
+  - Wormholy (1.6.5)
   - WPMediaPicker (1.7.3)
   - wpxmlrpc (0.9.0)
   - XLPagerTabStrip (9.0.0)
@@ -100,13 +100,13 @@ DEPENDENCIES:
   - KeychainAccess (~> 3.2)
   - Kingfisher (~> 6.0.0)
   - Sourcery (~> 1.0.3)
-  - StripeTerminal (~> 1.4.0)
+  - StripeTerminal (~> 2.3)
   - WordPress-Editor-iOS (~> 1.11.0)
   - WordPressAuthenticator (~> 1.42.0)
   - WordPressKit (~> 4.40.0)
   - WordPressShared (~> 1.15)
   - WordPressUI (~> 1.12.1)
-  - Wormholy (~> 1.6.4)
+  - Wormholy (~> 1.6.5)
   - WPMediaPicker (~> 1.7.3)
   - XLPagerTabStrip (~> 9.0)
   - ZendeskSupportSDK (~> 5.0)
@@ -176,7 +176,7 @@ SPEC CHECKSUMS:
   Sentry: 9b922b396b0e0bca8516a10e36b0ea3ebea5faf7
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
   Sourcery: 70a6048014bd4f37ea80e6bd4354d47bf3b760e1
-  StripeTerminal: be33ec308dba387ce707bf08aafa90debf29ea7f
+  StripeTerminal: c53f6bc71c11b11867992478b1806a7c6ec16c0f
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: d0fee204f467dacf8808b7ac14ce43affeb271a5
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
@@ -185,7 +185,7 @@ SPEC CHECKSUMS:
   WordPressKit: 062e4f57ce871e2217b632a1f3cb0bbd54b5df6d
   WordPressShared: 5477f179c7fe03b5d574f91adda66f67d131827e
   WordPressUI: 414bf3a7d007618f94a1c7969d6e849779877d5d
-  Wormholy: 2e70f64227e010d363f8d33268369f77faf12471
+  Wormholy: 3252bc3e55a1847ef9a0976c1377bd77bf3635fa
   WPMediaPicker: 4af3fdfba06541ada2613178f8c01175671c38a8
   wpxmlrpc: bf55a43a7e710bd2a4fb8c02dfe83b1246f14f13
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
@@ -197,6 +197,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: 30d1d85f4fae2e2129a3fa6db6272e741601317c
+PODFILE CHECKSUM: 1905144529d4d224bebb1e178da8509f9934af25
 
 COCOAPODS: 1.11.2

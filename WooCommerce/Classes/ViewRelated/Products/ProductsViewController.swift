@@ -113,7 +113,8 @@ final class ProductsViewController: UIViewController {
 
     private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
         didSet {
-            if filters != oldValue {
+            if filters != oldValue ||
+                syncingCoordinator.highestPageBeingSynced ?? 0 == 0 {
                 updateLocalProductSettings(sort: sortOrder,
                                            filters: filters)
                 updateFilterButtonTitle(filters: filters)
@@ -565,10 +566,7 @@ private extension ProductsViewController {
     ///
     func syncProductsSettings() {
         syncLocalProductsSettings { [weak self] (result) in
-            switch result {
-            case .success(let settings):
-                self?.syncProductCategoryFilterRemotely(from: settings)
-            case .failure(_):
+            if result.isFailure {
                 self?.syncingCoordinator.resynchronize()
             }
         }
@@ -843,14 +841,18 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
         let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] (result) in
             switch result {
             case .success(let settings):
-                if let sort = settings.sort {
-                    self?.sortOrder = ProductsSortOrder(rawValue: sort) ?? .default
+                self?.syncProductCategoryFilterRemotely(from: settings) { settings in
+                    if let sort = settings.sort {
+                        self?.sortOrder = ProductsSortOrder(rawValue: sort) ?? .default
+                    }
+
+                    self?.filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
+                                                                       productStatus: settings.productStatusFilter,
+                                                                       productType: settings.productTypeFilter,
+                                                                       productCategory: settings.productCategoryFilter,
+                                                                       numberOfActiveFilters: settings.numberOfActiveFilters())
+
                 }
-                self?.filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
-                                                                   productStatus: settings.productStatusFilter,
-                                                                   productType: settings.productTypeFilter,
-                                                                   productCategory: settings.productCategoryFilter,
-                                                                   numberOfActiveFilters: settings.numberOfActiveFilters())
             case .failure:
                 break
             }
@@ -860,16 +862,17 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
     }
 
     /// Syncs the Product Category filter of settings remotely. This is necessary in case the category information was updated
-    /// or the category itself removed, thus clearing that filter, and updating the shown data.
+    /// or the category itself removed.
     ///
-    private func syncProductCategoryFilterRemotely(from settings: StoredProductSettings.Setting) {
+    private func syncProductCategoryFilterRemotely(from settings: StoredProductSettings.Setting,
+                                                   onCompletion: @escaping (StoredProductSettings.Setting) -> Void) {
         guard let productCategory = settings.productCategoryFilter else {
+            onCompletion(settings)
             return
         }
 
-        let action = ProductCategoryAction.synchronizeProductCategory(siteID: siteID, categoryID: productCategory.categoryID) { [weak self] result in
+        let action = ProductCategoryAction.synchronizeProductCategory(siteID: siteID, categoryID: productCategory.categoryID) { result in
             var updatingProductCategory: ProductCategory? = productCategory
-            var numberOfActiveFilters = settings.numberOfActiveFilters()
 
             switch result {
             case .success(let productCategory):
@@ -877,17 +880,22 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
             case .failure(let error):
                 if let error = error as? ProductCategoryActionError,
                    case .categoryDoesNotExistRemotely = error {
-                    // The product category was removed, we remove the filter and decrease the number of active filters
+                    // The product category was removed
                     updatingProductCategory = nil
-                    numberOfActiveFilters -= 1
                 }
             }
 
-            self?.filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
-                                                               productStatus: settings.productStatusFilter,
-                                                               productType: settings.productTypeFilter,
-                                                               productCategory: updatingProductCategory,
-                                                               numberOfActiveFilters: numberOfActiveFilters)
+            var completionSettings = settings
+            if updatingProductCategory != productCategory {
+                completionSettings = StoredProductSettings.Setting(siteID: settings.siteID,
+                                                                sort: settings.sort,
+                                                                stockStatusFilter: settings.stockStatusFilter,
+                                                                productStatusFilter: settings.productStatusFilter,
+                                                                productTypeFilter: settings.productTypeFilter,
+                                                                productCategoryFilter: updatingProductCategory)
+            }
+
+            onCompletion(completionSettings)
         }
 
         ServiceLocator.stores.dispatch(action)

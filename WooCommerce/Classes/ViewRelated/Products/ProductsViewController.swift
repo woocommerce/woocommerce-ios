@@ -769,7 +769,7 @@ private extension ProductsViewController {
         return EmptyStateViewController.Config.withButton(
             message: .init(string: message),
             image: .emptyProductsTabImage,
-            details: nil,
+            details: "",
             buttonTitle: buttonTitle) { [weak self] button in
                 self?.clearFilter(sourceView: button)
         }

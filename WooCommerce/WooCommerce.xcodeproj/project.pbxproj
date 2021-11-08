@@ -730,7 +730,6 @@
 		45F627B9253603AE00894B86 /* ProductDownloadSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F627B5253603AE00894B86 /* ProductDownloadSettingsViewModel.swift */; };
 		45F8C43B2680BC3500F1A6EC /* ShippingLabelDiscountInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F8C4392680BC3500F1A6EC /* ShippingLabelDiscountInfoViewController.swift */; };
 		45F8C43C2680BC3500F1A6EC /* ShippingLabelDiscountInfoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45F8C43A2680BC3500F1A6EC /* ShippingLabelDiscountInfoViewController.xib */; };
-		45F931EA27281A950098375D /* OrderDateRangeListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F931E927281A950098375D /* OrderDateRangeListSelectorCommand.swift */; };
 		45FBDF2B238BF8A300127F77 /* ProductImageCollectionViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBDF2A238BF8A300127F77 /* ProductImageCollectionViewCellTests.swift */; };
 		45FBDF2D238BF8BF00127F77 /* AddProductImageCollectionViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBDF2C238BF8BF00127F77 /* AddProductImageCollectionViewCellTests.swift */; };
 		45FBDF39238D3F8800127F77 /* ExtendedAddProductImageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45FBDF36238D3C7500127F77 /* ExtendedAddProductImageCollectionViewCell.xib */; };
@@ -2160,7 +2159,6 @@
 		45F627B5253603AE00894B86 /* ProductDownloadSettingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductDownloadSettingsViewModel.swift; sourceTree = "<group>"; };
 		45F8C4392680BC3500F1A6EC /* ShippingLabelDiscountInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelDiscountInfoViewController.swift; sourceTree = "<group>"; };
 		45F8C43A2680BC3500F1A6EC /* ShippingLabelDiscountInfoViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShippingLabelDiscountInfoViewController.xib; sourceTree = "<group>"; };
-		45F931E927281A950098375D /* OrderDateRangeListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDateRangeListSelectorCommand.swift; sourceTree = "<group>"; };
 		45FBDF2A238BF8A300127F77 /* ProductImageCollectionViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageCollectionViewCellTests.swift; sourceTree = "<group>"; };
 		45FBDF2C238BF8BF00127F77 /* AddProductImageCollectionViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductImageCollectionViewCellTests.swift; sourceTree = "<group>"; };
 		45FBDF35238D3C7500127F77 /* ExtendedAddProductImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedAddProductImageCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -4603,7 +4601,6 @@
 				455DC3A127393C7E00D4644C /* OrderDatesFilterViewController.swift */,
 				455DC3A227393C7E00D4644C /* OrderDatesFilterViewController.xib */,
 				4520A15D2722BA3E001FA573 /* OrderDateRangeFilter.swift */,
-				45F931E927281A950098375D /* OrderDateRangeListSelectorCommand.swift */,
 				45F931F5272AE6550098375D /* Custom Range Filter */,
 			);
 			path = "Date Range Filter";
@@ -7589,7 +7586,6 @@
 				D8C2A28823190B2300F503E9 /* StorageProductReview+Woo.swift in Sources */,
 				2664210126F3E1BB001FC5B4 /* ModalHostingPresentationController.swift in Sources */,
 				D8B4D5F026C2C7EC00F34E94 /* InPersonPaymentsStripeAccountPendingView.swift in Sources */,
-				45F931EA27281A950098375D /* OrderDateRangeListSelectorCommand.swift in Sources */,
 				02784A03238B8BC800BDD6A8 /* UIView+Border.swift in Sources */,
 				CE1CCB402056F21C000EE3AC /* Style.swift in Sources */,
 				45EF7984244F26BB00B22BA2 /* Array+IndexPath.swift in Sources */,

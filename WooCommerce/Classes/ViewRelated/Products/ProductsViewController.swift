@@ -253,15 +253,6 @@ private extension ProductsViewController {
         }
         coordinatingController.start()
     }
-
-    func clearFilter(sourceBarButtonItem: UIBarButtonItem? = nil, sourceView: UIView? = nil) {
-        ServiceLocator.analytics.track(.productListClearFiltersTapped)
-        self.filters = FilterProductListViewModel.Filters(stockStatus: nil,
-                                                          productStatus: nil,
-                                                          productType: nil,
-                                                          productCategory: nil,
-                                                          numberOfActiveFilters: 0)
-    }
 }
 
 // MARK: - View Configuration
@@ -685,6 +676,11 @@ private extension ProductsViewController {
             ServiceLocator.analytics.track(.productFilterListDismissButtonTapped)
         })
         present(filterProductListViewController, animated: true, completion: nil)
+    }
+
+    func clearFilter(sourceBarButtonItem: UIBarButtonItem? = nil, sourceView: UIView? = nil) {
+        ServiceLocator.analytics.track(.productListClearFiltersTapped)
+        self.filters = FilterProductListViewModel.Filters()
     }
 
     /// Presents products survey

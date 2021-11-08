@@ -733,9 +733,17 @@ private extension ProductsViewController {
     ///
     func displayNoResultsOverlay() {
         let emptyStateViewController = EmptyStateViewController(style: .list)
-        let config = filters.numberOfActiveFilters == 0 ? createNoProductsConfig() : createNoProductsMatchFilterConfig()
+        let config = createFilterConfig()
         displayEmptyStateViewController(emptyStateViewController)
         emptyStateViewController.configure(config)
+    }
+
+    func createFilterConfig() ->  EmptyStateViewController.Config {
+        if filters.numberOfActiveFilters == 0 {
+            return createNoProductsConfig()
+        } else {
+            return createNoProductsMatchFilterConfig()
+        }
     }
 
     /// Creates EmptyStateViewController.Config for no products empty view

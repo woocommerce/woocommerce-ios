@@ -45,7 +45,7 @@ public extension ReceiptRenderer {
                         background-color:#F5F5F5;
                         width:100%;
                         color: #707070;
-                        margin: \(Constants.margin / 2)pt 0 0 0;
+                        margin: \(Constants.margin / 2)pt 0;
                         padding: \(Constants.margin / 2)pt;
                     }
                     table td:last-child { width: 30%; text-align: right; }

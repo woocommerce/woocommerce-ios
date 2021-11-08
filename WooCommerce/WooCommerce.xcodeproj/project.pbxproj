@@ -621,6 +621,8 @@
 		4556ED38270645A6005CBC0D /* ShippingLabelCarrierSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4556ED37270645A5005CBC0D /* ShippingLabelCarrierSectionHeader.swift */; };
 		455800CC24C6F83F00A8D117 /* ProductSettingsSectionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455800CB24C6F83F00A8D117 /* ProductSettingsSectionsTests.swift */; };
 		455A2FDB246B1349000CA72C /* ProductVisibilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455A2FDA246B1349000CA72C /* ProductVisibilityTests.swift */; };
+		455DC3A327393C7E00D4644C /* OrderDatesFilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455DC3A127393C7E00D4644C /* OrderDatesFilterViewController.swift */; };
+		455DC3A427393C7E00D4644C /* OrderDatesFilterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 455DC3A227393C7E00D4644C /* OrderDatesFilterViewController.xib */; };
 		456396A725C81C9A001F1A26 /* ShippingLabelFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456396A525C81C9A001F1A26 /* ShippingLabelFormViewController.swift */; };
 		456396A825C81C9A001F1A26 /* ShippingLabelFormViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 456396A625C81C9A001F1A26 /* ShippingLabelFormViewController.xib */; };
 		456396AE25C81D81001F1A26 /* ShippingLabelFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456396AD25C81D81001F1A26 /* ShippingLabelFormViewModel.swift */; };
@@ -2049,6 +2051,8 @@
 		4556ED37270645A5005CBC0D /* ShippingLabelCarrierSectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCarrierSectionHeader.swift; sourceTree = "<group>"; };
 		455800CB24C6F83F00A8D117 /* ProductSettingsSectionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsSectionsTests.swift; sourceTree = "<group>"; };
 		455A2FDA246B1349000CA72C /* ProductVisibilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVisibilityTests.swift; sourceTree = "<group>"; };
+		455DC3A127393C7E00D4644C /* OrderDatesFilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDatesFilterViewController.swift; sourceTree = "<group>"; };
+		455DC3A227393C7E00D4644C /* OrderDatesFilterViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderDatesFilterViewController.xib; sourceTree = "<group>"; };
 		456396A525C81C9A001F1A26 /* ShippingLabelFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelFormViewController.swift; sourceTree = "<group>"; };
 		456396A625C81C9A001F1A26 /* ShippingLabelFormViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShippingLabelFormViewController.xib; sourceTree = "<group>"; };
 		456396AD25C81D81001F1A26 /* ShippingLabelFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelFormViewModel.swift; sourceTree = "<group>"; };
@@ -4596,6 +4600,8 @@
 		45F931F6272AE6690098375D /* Date Range Filter */ = {
 			isa = PBXGroup;
 			children = (
+				455DC3A127393C7E00D4644C /* OrderDatesFilterViewController.swift */,
+				455DC3A227393C7E00D4644C /* OrderDatesFilterViewController.xib */,
 				4520A15D2722BA3E001FA573 /* OrderDateRangeFilter.swift */,
 				45F931E927281A950098375D /* OrderDateRangeListSelectorCommand.swift */,
 				45F931F5272AE6550098375D /* Custom Range Filter */,
@@ -7078,6 +7084,7 @@
 				B57C744C20F564B400EEFC87 /* EmptyStoresTableViewCell.xib in Resources */,
 				028296ED237D28B600E84012 /* TextViewViewController.xib in Resources */,
 				451A04F52386F7C900E368C9 /* AddProductImageCollectionViewCell.xib in Resources */,
+				455DC3A427393C7E00D4644C /* OrderDatesFilterViewController.xib in Resources */,
 				0211254225778BDF0075AD2A /* ShippingLabelDetailsViewController.xib in Resources */,
 				456396B725C82691001F1A26 /* ShippingLabelFormStepTableViewCell.xib in Resources */,
 				450C2CBB24D3127500D570DD /* ProductReviewsTableViewCell.xib in Resources */,
@@ -7564,6 +7571,7 @@
 				AECD57D226DFDF7500A3B580 /* EditOrderAddressForm.swift in Sources */,
 				26C6E8EC26E8FF4800C7BB0F /* LazyNavigationLink.swift in Sources */,
 				45E9A6E724DAE23300A600E8 /* ProductReviewsViewModel.swift in Sources */,
+				455DC3A327393C7E00D4644C /* OrderDatesFilterViewController.swift in Sources */,
 				028BAC4222F30B05008BB4AF /* StoreStatsV4PeriodViewController.swift in Sources */,
 				740987B321B87760000E4C80 /* FancyAnimatedButton+Woo.swift in Sources */,
 				45F627B6253603AE00894B86 /* Product+DownloadSettingsViewModels.swift in Sources */,

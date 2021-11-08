@@ -12,7 +12,7 @@ final class OrderDateRangeListSelectorCommand: ListSelectorCommand {
 
     /// Holds the current selected state
     ///
-    private(set) var selected: OrderDateRangeFilter? = OrderDateRangeFilter(filter: .any)
+    private(set) var selected: OrderDateRangeFilter?
 
     fileprivate(set) var data: [OrderDateRangeFilter]
 

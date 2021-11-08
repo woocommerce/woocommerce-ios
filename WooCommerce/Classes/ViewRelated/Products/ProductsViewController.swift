@@ -253,7 +253,7 @@ private extension ProductsViewController {
         }
         coordinatingController.start()
     }
-    
+
     func clearFilter(sourceBarButtonItem: UIBarButtonItem? = nil, sourceView: UIView? = nil) {
         self.filters = FilterProductListViewModel.Filters(stockStatus: nil,
                                                           productStatus: nil,

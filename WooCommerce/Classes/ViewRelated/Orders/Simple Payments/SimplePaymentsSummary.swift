@@ -1,8 +1,8 @@
 import SwiftUI
 
-/// View to summarize the quick order to be created
+/// View to summarize the Simple Payments order to be created
 ///
-struct QuickOrderSummary: View {
+struct SimplePaymentsSummary: View {
     var body: some View {
         VStack {
             ScrollView {
@@ -107,9 +107,9 @@ struct QuickOrderSummary: View {
 
 // MARK: Previews
 
-struct QuickOrderSummary_Preview: PreviewProvider {
+struct SimplePaymentsSummary_Preview: PreviewProvider {
     static var previews: some View {
-        QuickOrderSummary()
+        SimplePaymentsSummary()
             .previewDevice(PreviewDevice(rawValue: "iPhone 12"))
             .previewDisplayName("iPhone 12")
     }

@@ -253,6 +253,14 @@ private extension ProductsViewController {
         }
         coordinatingController.start()
     }
+    
+    func clearFilter(sourceBarButtonItem: UIBarButtonItem? = nil, sourceView: UIView? = nil) {
+        self.filters = FilterProductListViewModel.Filters(stockStatus: nil,
+                                                          productStatus: nil,
+                                                          productType: nil,
+                                                          productCategory: nil,
+                                                          numberOfActiveFilters: 0)
+    }
 }
 
 // MARK: - View Configuration
@@ -728,11 +736,13 @@ private extension ProductsViewController {
     ///
     func displayNoResultsOverlay() {
         let emptyStateViewController = EmptyStateViewController(style: .list)
-        let config = createNoProductsConfig()
+        let config = filters.numberOfActiveFilters == 0 ? createNoProductsConfig() : createNoProductsMatchFilterConfig()
         displayEmptyStateViewController(emptyStateViewController)
         emptyStateViewController.configure(config)
     }
 
+    /// Creates EmptyStateViewController.Config for no products empty view
+    ///
     func createNoProductsConfig() ->  EmptyStateViewController.Config {
         let message = NSLocalizedString("No products yet",
                                         comment: "The text on the placeholder overlay when there are no products on the Products tab")
@@ -746,6 +756,24 @@ private extension ProductsViewController {
             details: details,
             buttonTitle: buttonTitle) { [weak self] button in
             self?.addProduct(sourceView: button)
+        }
+    }
+
+    /// Creates EmptyStateViewController.Config for no products match the filter empty view
+    ///
+    func createNoProductsMatchFilterConfig() ->  EmptyStateViewController.Config {
+        let message = NSLocalizedString("No matching products found",
+                                        comment: "The text on the placeholder overlay when no products match the filter on the Products tab")
+        let details = NSLocalizedString("Try adjusting the filters",
+                                        comment: "The details on the placeholder overlay when no products match the filter on the Products tab")
+        let buttonTitle = NSLocalizedString("Clear Filters",
+                                            comment: "Action to add product on the placeholder overlay when no products match the filter on the Products tab")
+        return EmptyStateViewController.Config.withButton(
+            message: .init(string: message),
+            image: .emptyProductsTabImage,
+            details: details,
+            buttonTitle: buttonTitle) { [weak self] button in
+                self?.clearFilter(sourceView: button)
         }
     }
 

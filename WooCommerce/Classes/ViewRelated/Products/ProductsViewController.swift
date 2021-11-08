@@ -680,7 +680,7 @@ private extension ProductsViewController {
 
     func clearFilter(sourceBarButtonItem: UIBarButtonItem? = nil, sourceView: UIView? = nil) {
         ServiceLocator.analytics.track(.productListClearFiltersTapped)
-        self.filters = FilterProductListViewModel.Filters()
+        filters = FilterProductListViewModel.Filters()
     }
 
     /// Presents products survey

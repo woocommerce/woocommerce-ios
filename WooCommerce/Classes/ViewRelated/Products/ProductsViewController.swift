@@ -764,14 +764,12 @@ private extension ProductsViewController {
     func createNoProductsMatchFilterConfig() ->  EmptyStateViewController.Config {
         let message = NSLocalizedString("No matching products found",
                                         comment: "The text on the placeholder overlay when no products match the filter on the Products tab")
-        let details = NSLocalizedString("Try adjusting the filters",
-                                        comment: "The details on the placeholder overlay when no products match the filter on the Products tab")
         let buttonTitle = NSLocalizedString("Clear Filters",
                                             comment: "Action to add product on the placeholder overlay when no products match the filter on the Products tab")
         return EmptyStateViewController.Config.withButton(
             message: .init(string: message),
             image: .emptyProductsTabImage,
-            details: details,
+            details: nil,
             buttonTitle: buttonTitle) { [weak self] button in
                 self?.clearFilter(sourceView: button)
         }

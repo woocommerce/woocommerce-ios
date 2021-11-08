@@ -113,8 +113,9 @@ final class ProductsViewController: UIViewController {
 
     private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
         didSet {
+            let contentIsNotSyncedYet = syncingCoordinator.highestPageBeingSynced ?? 0 == 0
             if filters != oldValue ||
-                syncingCoordinator.highestPageBeingSynced ?? 0 == 0 {
+                contentIsNotSyncedYet {
                 updateLocalProductSettings(sort: sortOrder,
                                            filters: filters)
                 updateFilterButtonTitle(filters: filters)

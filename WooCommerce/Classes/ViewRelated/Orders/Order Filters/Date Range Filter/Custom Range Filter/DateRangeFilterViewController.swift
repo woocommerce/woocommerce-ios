@@ -1,11 +1,11 @@
 import UIKit
 
 // MARK: - DateRangeFilterViewController
+// Allow to filter the orders by a range of dates
 //
 final class DateRangeFilterViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
-
 
     // Completion callback
     //
@@ -44,7 +44,6 @@ final class DateRangeFilterViewController: UIViewController {
         configureRows()
         configureTableView()
     }
-
 }
 
 // MARK: - View Configuration

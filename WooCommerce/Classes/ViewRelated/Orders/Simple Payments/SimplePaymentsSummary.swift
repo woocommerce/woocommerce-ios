@@ -55,9 +55,8 @@ struct SimplePaymentsSummary: View {
                             TitleAndToggleRow(title: Localization.chargeTaxes, isOn: .constant(false))
                                 .padding([.leading, .trailing])
 
-                            // TODO: Update this to be able to inject proper style values
                             // Temporary data
-                            TitleAndValueRow(title: Localization.total, value: .content("$40.0"), selectable: false) {}
+                            TitleAndValueRow(title: Localization.total, value: .content("$40.0"), bold: true, selectable: false) {}
                         }
                         .background(Color(.listForeground))
 

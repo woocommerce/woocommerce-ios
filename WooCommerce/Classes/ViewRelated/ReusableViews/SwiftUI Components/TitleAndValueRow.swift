@@ -6,6 +6,7 @@ struct TitleAndValueRow: View {
 
     let title: String
     let value: Value
+    var bold: Bool = false
     let selectable: Bool
     var action: () -> Void
 
@@ -19,9 +20,9 @@ struct TitleAndValueRow: View {
             HStack {
                 AdaptiveStack(horizontalAlignment: .leading) {
                     Text(title)
-                        .bodyStyle()
+                        .style(bold: bold)
                     Text(value.text)
-                        .style(for: value)
+                        .style(for: value, bold: bold)
                         .frame(maxWidth: .infinity, alignment: .trailing)
                         .padding(.vertical, Constants.verticalPadding)
                 }
@@ -69,11 +70,13 @@ extension TitleAndValueRow {
 private extension Text {
     /// Styles the text based on the type of content.
     ///
-    @ViewBuilder func style(for value: TitleAndValueRow.Value) -> some View {
-        switch value {
-        case .placeholder:
+    @ViewBuilder func style(for value: TitleAndValueRow.Value = .content(""), bold: Bool) -> some View {
+        switch (value, bold) {
+        case (.placeholder, _):
             self.modifier(SecondaryBodyStyle())
-        case .content:
+        case (.content, true):
+            self.modifier(HeadlineStyle())
+        case (.content, false):
             self.modifier(BodyStyle(isEnabled: true))
         }
     }

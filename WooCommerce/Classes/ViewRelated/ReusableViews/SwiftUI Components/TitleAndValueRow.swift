@@ -12,9 +12,6 @@ struct TitleAndValueRow: View {
 
     var body: some View {
         Button(action: {
-            guard selectable else {
-                return
-            }
             action()
         }, label: {
             HStack {
@@ -35,6 +32,7 @@ struct TitleAndValueRow: View {
             }
             .contentShape(Rectangle())
         })
+        .disabled(!selectable)
         .frame(minHeight: Constants.minHeight)
         .padding(.horizontal, Constants.horizontalPadding)
     }

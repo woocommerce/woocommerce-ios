@@ -147,7 +147,6 @@ private extension DateRangeFilterViewController {
             break
         default:
             fatalError()
-            break
         }
     }
 

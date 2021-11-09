@@ -74,7 +74,7 @@ private struct EmailSection: View {
 
             TitleAndTextFieldRow(title: SimplePaymentsSummary.Localization.email,
                                  placeholder: SimplePaymentsSummary.Localization.emailPlaceHolder,
-                                 text: .constant(""))
+                                 text: .constant("")) // Temporary data
                 .background(Color(.listForeground))
 
             Divider()

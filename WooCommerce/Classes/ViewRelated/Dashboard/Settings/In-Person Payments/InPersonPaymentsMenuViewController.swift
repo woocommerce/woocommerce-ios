@@ -170,7 +170,7 @@ private enum Row: CaseIterable {
 }
 
 private enum Constants {
-    static let woocommercePurchaseCardReaderURL = URL(string: "https://woocommerce.com/products/bbpos-chipper2xbt-card-reader")!
+    static let woocommercePurchaseCardReaderURL = URL(string: "https://woocommerce.com/in-person-payments/")!
     static let bbposChipper2XBTManualURL = URL(string: "https://developer.bbpos.com/quick_start_guide/Chipper%202X%20BT%20Quick%20Start%20Guide.pdf")!
 }
 

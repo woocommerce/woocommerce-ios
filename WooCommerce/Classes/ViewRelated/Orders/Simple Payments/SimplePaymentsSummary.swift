@@ -3,6 +3,11 @@ import SwiftUI
 /// View to summarize the Simple Payments order to be created
 ///
 struct SimplePaymentsSummary: View {
+
+    /// Order note content
+    ///
+    let noteContent: String?
+
     var body: some View {
         VStack {
             ScrollView {
@@ -20,7 +25,7 @@ struct SimplePaymentsSummary: View {
 
                     Spacer(minLength: Layout.spacerHeight)
 
-                    NoteSection()
+                    NoteSection(content: noteContent)
                 }
             }
 
@@ -110,32 +115,63 @@ private struct PaymentsSection: View {
 /// Represents the Order note section
 ///
 private struct NoteSection: View {
+
+    /// Order note content
+    ///
+    let content: String?
+
     var body: some View {
         Group {
             Divider()
 
             VStack(alignment: .leading, spacing: SimplePaymentsSummary.Layout.verticalNoteSpacing) {
-                Text(SimplePaymentsSummary.Localization.orderNote)
-                    .headlineStyle()
 
-                Button(action: {
-                    print("Tapped add note")
-                }, label: {
-                    HStack() {
-                        Image(uiImage: .plusImage)
+                HStack {
+                    Text(SimplePaymentsSummary.Localization.orderNote)
+                        .headlineStyle()
+                        .frame(maxWidth: .infinity, alignment: .leading)
 
-                        Text(SimplePaymentsSummary.Localization.addNote)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                    Button(SimplePaymentsSummary.Localization.editNote) {
+                        print("Tapped on Edit")
                     }
                     .foregroundColor(Color(.accent))
                     .bodyStyle()
-                })
-                .frame(maxWidth: .infinity)
+                    .renderedIf(content != nil)
+                }
+
+                noteContent()
+
             }
             .padding()
             .background(Color(.listForeground))
 
             Divider()
+        }
+    }
+
+    /// Builds a button to add a note if no note is present. If there is a note present only displays it
+    ///
+    @ViewBuilder private func noteContent() -> some View {
+        if let content = content {
+
+            Text(content)
+                .bodyStyle()
+
+        } else {
+
+            Button(action: {
+                print("Tapped add note")
+            }, label: {
+                HStack() {
+                    Image(uiImage: .plusImage)
+
+                    Text(SimplePaymentsSummary.Localization.addNote)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .foregroundColor(Color(.accent))
+                .bodyStyle()
+            })
+            .frame(maxWidth: .infinity)
         }
     }
 }
@@ -188,6 +224,8 @@ private extension SimplePaymentsSummary {
                                                comment: "Title text of the row that holds the order note when creating a simple payment")
         static let addNote = NSLocalizedString("Add Note",
                                                comment: "Title text of the button that adds a note when creating a simple payment")
+        static let editNote = NSLocalizedString("Edit",
+                                               comment: "Title text of the button that edits a note when creating a simple payment")
 
         static func takePayment(total: String) -> String {
             NSLocalizedString("Take Payment (\(total))",
@@ -199,15 +237,19 @@ private extension SimplePaymentsSummary {
 // MARK: Previews
 struct SimplePaymentsSummary_Preview: PreviewProvider {
     static var previews: some View {
-        SimplePaymentsSummary()
+        SimplePaymentsSummary(noteContent: nil)
             .environment(\.colorScheme, .light)
             .previewDisplayName("Light")
 
-        SimplePaymentsSummary()
+        SimplePaymentsSummary(noteContent: "Dispatch by tomorrow morning at Fake Street 123, via the boulevard.")
+            .environment(\.colorScheme, .light)
+            .previewDisplayName("Light Content")
+
+        SimplePaymentsSummary(noteContent: nil)
             .environment(\.colorScheme, .dark)
             .previewDisplayName("Dark")
 
-        SimplePaymentsSummary()
+        SimplePaymentsSummary(noteContent: nil)
             .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
             .previewDisplayName("Accessibility")
     }

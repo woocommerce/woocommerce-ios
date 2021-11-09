@@ -8,108 +8,154 @@ struct SimplePaymentsSummary: View {
             ScrollView {
                 VStack(spacing: Layout.noSpacing) {
 
-                    Group {
+                    CustomAmountSection()
 
-                        Divider()
+                    Spacer(minLength: Layout.spacerHeight)
 
-                        AdaptiveStack(horizontalAlignment: .leading, spacing: Layout.horizontalStackSpacing) {
-                            Image(uiImage: .priceImage)
-                                .padding()
-                                .foregroundColor(Color(.systemGray))
-                                .background(Color(.listBackground))
+                    EmailSection()
 
-                            Text(Localization.customAmount)
-                                .headlineStyle()
+                    Spacer(minLength: Layout.spacerHeight)
 
-                            // Temporary data
-                            Text("$40.00")
-                                .headlineStyle()
-                                .frame(maxWidth: .infinity, alignment: .trailing)
-                        }
-                        .bodyStyle()
-                        .padding()
-                        .background(Color(.listForeground))
+                    PaymentsSection()
 
-                        Divider()
-                        Spacer(minLength: Layout.spacerHeight)
-                    }
+                    Spacer(minLength: Layout.spacerHeight)
 
-                    Group {
-                        Divider()
-                        TitleAndTextFieldRow(title: Localization.email, placeholder: Localization.emailPlaceHolder, text: .constant(""))
-                            .background(Color(.listForeground))
-                        Divider()
-                        Spacer(minLength: Layout.spacerHeight)
-                    }
-
-                    Group {
-                        Divider()
-                        VStack(alignment: .leading, spacing: Layout.verticalSummarySpacing) {
-
-                            Text(Localization.payment)
-                                .headlineStyle()
-                                .padding([.horizontal, .top])
-
-                            // Temporary data
-                            TitleAndValueRow(title: Localization.subtotal, value: .content("$40.0"), selectable: false) {}
-
-                            // Temporary data
-                            TitleAndToggleRow(title: Localization.chargeTaxes, isOn: .constant(false))
-                                .padding([.leading, .trailing])
-
-                            // Temporary data
-                            TitleAndValueRow(title: Localization.total, value: .content("$40.0"), bold: true, selectable: false) {}
-                        }
-                        .background(Color(.listForeground))
-
-                        Divider()
-                        Spacer(minLength: Layout.spacerHeight)
-                    }
-
-                    Group {
-                        Divider()
-
-                        VStack(alignment: .leading, spacing: Layout.verticalNoteSpacing) {
-                            Text(Localization.orderNote)
-                                .headlineStyle()
-
-                            Button(action: {
-                                print("Tapped add note")
-                            }, label: {
-                                HStack() {
-                                    Image(uiImage: .plusImage)
-
-                                    Text(Localization.addNote)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                }
-                                .foregroundColor(Color(.accent))
-                                .bodyStyle()
-                            })
-                            .frame(maxWidth: .infinity)
-                        }
-                        .padding()
-                        .background(Color(.listForeground))
-
-                        Divider()
-                    }
-
+                    NoteSection()
                 }
             }
 
-            VStack {
-                Divider()
-
-                // Temporary data
-                Button(Localization.takePayment(total: "$40.0"), action: {
-                    print("Take payment pressed")
-                })
-                .buttonStyle(PrimaryButtonStyle())
-                .padding()
-
-            }
-            .background(Color(.listForeground))
+            TakePaymentSection()
         }
         .background(Color(.listBackground))
+    }
+}
+
+/// Represents the Custom amount section
+///
+private struct CustomAmountSection: View {
+    var body: some View {
+        Group {
+            Divider()
+
+            AdaptiveStack(horizontalAlignment: .leading, spacing: SimplePaymentsSummary.Layout.horizontalStackSpacing) {
+                Image(uiImage: .priceImage)
+                    .padding()
+                    .foregroundColor(Color(.systemGray))
+                    .background(Color(.listBackground))
+
+                Text(SimplePaymentsSummary.Localization.customAmount)
+                    .headlineStyle()
+
+                // Temporary data
+                Text("$40.00")
+                    .headlineStyle()
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+            }
+            .bodyStyle()
+            .padding()
+            .background(Color(.listForeground))
+
+            Divider()
+        }
+    }
+}
+
+/// Represents the email section
+///
+private struct EmailSection: View {
+    var body: some View {
+        Group {
+            Divider()
+
+            TitleAndTextFieldRow(title: SimplePaymentsSummary.Localization.email,
+                                 placeholder: SimplePaymentsSummary.Localization.emailPlaceHolder,
+                                 text: .constant(""))
+                .background(Color(.listForeground))
+
+            Divider()
+        }
+    }
+}
+
+/// Represents the Payments Section
+///
+private struct PaymentsSection: View {
+    var body: some View {
+        Group {
+            Divider()
+
+            VStack(alignment: .leading, spacing: SimplePaymentsSummary.Layout.verticalSummarySpacing) {
+
+                Text(SimplePaymentsSummary.Localization.payment)
+                    .headlineStyle()
+                    .padding([.horizontal, .top])
+
+                // Temporary data
+                TitleAndValueRow(title: SimplePaymentsSummary.Localization.subtotal, value: .content("$40.0"), selectable: false) {}
+
+                // Temporary data
+                TitleAndToggleRow(title: SimplePaymentsSummary.Localization.chargeTaxes, isOn: .constant(false))
+                    .padding([.leading, .trailing])
+
+                // Temporary data
+                TitleAndValueRow(title: SimplePaymentsSummary.Localization.total, value: .content("$40.0"), bold: true, selectable: false) {}
+            }
+            .background(Color(.listForeground))
+
+            Divider()
+        }
+    }
+}
+
+/// Represents the Order note section
+///
+private struct NoteSection: View {
+    var body: some View {
+        Group {
+            Divider()
+
+            VStack(alignment: .leading, spacing: SimplePaymentsSummary.Layout.verticalNoteSpacing) {
+                Text(SimplePaymentsSummary.Localization.orderNote)
+                    .headlineStyle()
+
+                Button(action: {
+                    print("Tapped add note")
+                }, label: {
+                    HStack() {
+                        Image(uiImage: .plusImage)
+
+                        Text(SimplePaymentsSummary.Localization.addNote)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .foregroundColor(Color(.accent))
+                    .bodyStyle()
+                })
+                .frame(maxWidth: .infinity)
+            }
+            .padding()
+            .background(Color(.listForeground))
+
+            Divider()
+        }
+    }
+}
+
+/// Represents the bottom take payment button
+///
+private struct TakePaymentSection: View {
+    var body: some View {
+        VStack {
+            Divider()
+
+            // Temporary data
+            Button(SimplePaymentsSummary.Localization.takePayment(total: "$40.0"), action: {
+                print("Take payment pressed")
+            })
+            .buttonStyle(PrimaryButtonStyle())
+            .padding()
+
+        }
+        .background(Color(.listForeground))
     }
 }
 

@@ -13,10 +13,10 @@ struct SimplePaymentsSummary: View {
                         Divider()
 
                         HStack(spacing: 16) {
-                            Rectangle()
-                                .fill()
-                                .foregroundColor(.gray)
-                                .frame(width: 48, height: 48)
+                            Image(uiImage: .priceImage)
+                                .padding()
+                                .foregroundColor(Color(.systemGray))
+                                .background(Color(.listBackground))
 
                             Text("Custom Amount")
 
@@ -65,22 +65,22 @@ struct SimplePaymentsSummary: View {
                     Group {
                         Divider()
 
-                        VStack(alignment: .leading) {
+                        VStack(alignment: .leading, spacing: 22) {
                             Text("Order Note")
+                                .headlineStyle()
 
                             Button(action: {
                                 print("Tapped add note")
                             }, label: {
-                                HStack {
-                                    Rectangle()
-                                        .fill()
-                                        .frame(width: 24, height: 24)
+                                HStack() {
+                                    Image(uiImage: .plusImage)
 
                                     Text("Add Note")
 
                                     Spacer()
                                 }
                                 .foregroundColor(Color(.accent))
+                                .bodyStyle()
                             })
                             .frame(maxWidth: .infinity)
                         }

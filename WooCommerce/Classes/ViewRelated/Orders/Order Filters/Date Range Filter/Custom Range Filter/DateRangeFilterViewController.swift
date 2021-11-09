@@ -109,11 +109,11 @@ extension DateRangeFilterViewController: UITableViewDelegate {
 
         switch rows[indexPath.row] {
         case .startDateTitle:
-            startDateExpanded = !startDateExpanded
+            startDateExpanded.toggle()
             updateRows()
             tableView.reloadData()
         case .endDateTitle:
-            endDateExpanded = !endDateExpanded
+            endDateExpanded.toggle()
             updateRows()
             tableView.reloadData()
         default:

@@ -68,4 +68,32 @@ extension String {
     var isNotEmpty: Bool {
         return !isEmpty
     }
+
+    /// Compares two strings as versions.
+    ///
+    /// Returns `orderedAscending` if the argument represents a newer version
+    /// Returns `orderedSame` if the argument represents the same version
+    /// Returns `orderedDescending` if the argument represents an older version
+    ///
+    func compareAsVersion(to: String) -> ComparisonResult {
+        let leftComponents = self.components(separatedBy: .punctuationCharacters)
+        let rightComponents = to.components(separatedBy: .punctuationCharacters)
+
+        let maxComponents = max(leftComponents.count, rightComponents.count)
+
+        for index in 0...maxComponents - 1 {
+            let leftInt = index < leftComponents.count ? Int(leftComponents[index]) ?? 0 : 0
+            let rightInt = index < rightComponents.count ? Int(rightComponents[index]) ?? 0 : 0
+
+            if leftInt < rightInt {
+                return .orderedAscending
+            }
+
+            if leftInt > rightInt {
+                return .orderedDescending
+            }
+        }
+
+        return .orderedSame
+    }
 }

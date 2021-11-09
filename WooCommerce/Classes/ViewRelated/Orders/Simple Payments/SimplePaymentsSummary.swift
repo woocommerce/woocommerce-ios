@@ -18,10 +18,11 @@ struct SimplePaymentsSummary: View {
                                 .foregroundColor(Color(.systemGray))
                                 .background(Color(.listBackground))
 
-                            Text("Custom Amount")
+                            Text(Localization.customAmount)
 
                             Spacer()
 
+                            // Temporary data
                             Text("$40.00")
                         }
                         .bodyStyle()
@@ -34,7 +35,7 @@ struct SimplePaymentsSummary: View {
 
                     Group {
                         Divider()
-                        TitleAndTextFieldRow(title: "Email", placeholder: "Enter Email", text: .constant(""))
+                        TitleAndTextFieldRow(title: Localization.email, placeholder: Localization.emailPlaceHolder, text: .constant(""))
                             .background(Color(.listForeground))
                         Divider()
                         Spacer(minLength: Layout.spacerHeight)
@@ -44,17 +45,20 @@ struct SimplePaymentsSummary: View {
                         Divider()
                         VStack(alignment: .leading, spacing: Layout.verticalSummarySpacing) {
 
-                            Text("Payment")
+                            Text(Localization.payment)
                                 .headlineStyle()
                                 .padding([.horizontal, .top])
 
-                            TitleAndValueRow(title: "Subtotal", value: .content("$40.0"), selectable: false) {}
+                            // Temporary data
+                            TitleAndValueRow(title: Localization.subtotal, value: .content("$40.0"), selectable: false) {}
 
-                            TitleAndToggleRow(title: "Charge Taxes", isOn: .constant(false))
+                            // Temporary data
+                            TitleAndToggleRow(title: Localization.chargeTaxes, isOn: .constant(false))
                                 .padding([.leading, .trailing])
 
                             // TODO: Update this to be able to inject proper style values
-                            TitleAndValueRow(title: "Order Total", value: .content("$40.0"), selectable: false) {}
+                            // Temporary data
+                            TitleAndValueRow(title: Localization.total, value: .content("$40.0"), selectable: false) {}
                         }
                         .background(Color(.listForeground))
 
@@ -66,7 +70,7 @@ struct SimplePaymentsSummary: View {
                         Divider()
 
                         VStack(alignment: .leading, spacing: Layout.verticalNoteSpacing) {
-                            Text("Order Note")
+                            Text(Localization.orderNote)
                                 .headlineStyle()
 
                             Button(action: {
@@ -75,7 +79,7 @@ struct SimplePaymentsSummary: View {
                                 HStack() {
                                     Image(uiImage: .plusImage)
 
-                                    Text("Add Note")
+                                    Text(Localization.addNote)
 
                                     Spacer()
                                 }
@@ -96,7 +100,8 @@ struct SimplePaymentsSummary: View {
             VStack {
                 Divider()
 
-                Button("Take Payment ($40.0)", action: {
+                // Temporary data
+                Button(Localization.takePayment(total: "$40.0"), action: {
                     print("Take payment pressed")
                 })
                 .buttonStyle(PrimaryButtonStyle())
@@ -117,6 +122,31 @@ private extension SimplePaymentsSummary {
         static let verticalSummarySpacing: CGFloat = 8.0
         static let verticalNoteSpacing: CGFloat = 22.0
         static let noSpacing: CGFloat = 0.0
+    }
+
+    enum Localization {
+        static let customAmount = NSLocalizedString("Custom Amount",
+                                                    comment: "Title text of the row that shows the provided amount when creating a simple payment")
+        static let email = NSLocalizedString("Email",
+                                             comment: "Title text of the row that holds the provided email when creating a simple payment")
+        static let emailPlaceHolder = NSLocalizedString("Enter Email",
+                                                        comment: "Placeholder of the row that holds the provided email when creating a simple payment")
+        static let payment = NSLocalizedString("Payment",
+                                               comment: "Title text of the row that shows that list the payment when creating a simple payment")
+        static let subtotal = NSLocalizedString("Subtotal",
+                                               comment: "Title text of the row that shows the subtotal when creating a simple payment")
+        static let chargeTaxes = NSLocalizedString("Charge Taxes",
+                                               comment: "Title text of the row that has a switch when creating a simple payment")
+        static let total = NSLocalizedString("Order Total",
+                                               comment: "Title text of the row that shows the total to charge when creating a simple payment")
+        static let orderNote = NSLocalizedString("Order Note",
+                                               comment: "Title text of the row that holds the order note when creating a simple payment")
+        static let addNote = NSLocalizedString("Add Note",
+                                               comment: "Title text of the button that adds a note when creating a simple payment")
+
+        static func takePayment(total: String) -> String {
+            NSLocalizedString("Take Payment (\(total))", comment: "Text of the button that creates a simple payment order. Contains the total amount to collect")
+        }
     }
 }
 

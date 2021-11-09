@@ -9,7 +9,7 @@ final class DateRangeFilterViewController: UIViewController {
 
     // Completion callback
     //
-    typealias Completion = (Date?, Date?) -> Void
+    typealias Completion = (_ startDate: Date?, _ endDate: Date?) -> Void
     private let onCompletion: Completion
 
     private var startDate: Date?

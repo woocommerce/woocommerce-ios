@@ -6,13 +6,13 @@ struct SimplePaymentsSummary: View {
     var body: some View {
         VStack {
             ScrollView {
-                VStack(spacing: 0) {
+                VStack(spacing: Layout.noSpacing) {
 
                     Group {
 
                         Divider()
 
-                        HStack(spacing: 16) {
+                        HStack(spacing: Layout.horizontalStackSpacing) {
                             Image(uiImage: .priceImage)
                                 .padding()
                                 .foregroundColor(Color(.systemGray))
@@ -29,7 +29,7 @@ struct SimplePaymentsSummary: View {
                         .background(Color(.listForeground))
 
                         Divider()
-                        Spacer(minLength: 16)
+                        Spacer(minLength: Layout.spacerHeight)
                     }
 
                     Group {
@@ -37,12 +37,12 @@ struct SimplePaymentsSummary: View {
                         TitleAndTextFieldRow(title: "Email", placeholder: "Enter Email", text: .constant(""))
                             .background(Color(.listForeground))
                         Divider()
-                        Spacer(minLength: 16)
+                        Spacer(minLength: Layout.spacerHeight)
                     }
 
                     Group {
                         Divider()
-                        VStack(alignment: .leading, spacing: 8) {
+                        VStack(alignment: .leading, spacing: Layout.verticalSummarySpacing) {
 
                             Text("Payment")
                                 .headlineStyle()
@@ -59,13 +59,13 @@ struct SimplePaymentsSummary: View {
                         .background(Color(.listForeground))
 
                         Divider()
-                        Spacer(minLength: 16)
+                        Spacer(minLength: Layout.spacerHeight)
                     }
 
                     Group {
                         Divider()
 
-                        VStack(alignment: .leading, spacing: 22) {
+                        VStack(alignment: .leading, spacing: Layout.verticalNoteSpacing) {
                             Text("Order Note")
                                 .headlineStyle()
 
@@ -109,8 +109,18 @@ struct SimplePaymentsSummary: View {
     }
 }
 
-// MARK: Previews
+// MARK: Constants
+private extension SimplePaymentsSummary {
+    enum Layout {
+        static let spacerHeight: CGFloat = 16.0
+        static let horizontalStackSpacing: CGFloat = 16.0
+        static let verticalSummarySpacing: CGFloat = 8.0
+        static let verticalNoteSpacing: CGFloat = 22.0
+        static let noSpacing: CGFloat = 0.0
+    }
+}
 
+// MARK: Previews
 struct SimplePaymentsSummary_Preview: PreviewProvider {
     static var previews: some View {
         SimplePaymentsSummary()

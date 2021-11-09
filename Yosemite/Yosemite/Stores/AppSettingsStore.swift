@@ -142,10 +142,10 @@ public class AppSettingsStore: Store {
             setOrderAddOnsFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadOrderAddOnsSwitchState(onCompletion: let onCompletion):
             loadOrderAddOnsSwitchState(onCompletion: onCompletion)
-        case .setQuickOrderFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
-            setQuickOrderFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
-        case .loadQuickOrderSwitchState(onCompletion: let onCompletion):
-            loadQuickOrderSwitchState(onCompletion: onCompletion)
+        case .setSimplePaymentsFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
+            setSimplePaymentsFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
+        case .loadSimplePaymentsSwitchState(onCompletion: let onCompletion):
+            loadSimplePaymentsSwitchState(onCompletion: onCompletion)
         case .rememberCardReader(cardReaderID: let cardReaderID, onCompletion: let onCompletion):
             rememberCardReader(cardReaderID: cardReaderID, onCompletion: onCompletion)
         case .forgetCardReader(onCompletion: let onCompletion):
@@ -241,18 +241,18 @@ private extension AppSettingsStore {
         onCompletion(.success(settings.isViewAddOnsSwitchEnabled))
     }
 
-    /// Loads the current QuickOrder beta feature switch state from `GeneralAppSettings`
+    /// Loads the current SimplePayments beta feature switch state from `GeneralAppSettings`
     ///
-    func loadQuickOrderSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
+    func loadSimplePaymentsSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
         let settings = loadOrCreateGeneralAppSettings()
-        onCompletion(.success(settings.isQuickOrderSwitchEnabled))
+        onCompletion(.success(settings.isSimplePaymentsSwitchEnabled))
     }
 
-    /// Sets the provided QuickOrder beta feature switch state into `GeneralAppSettings`
+    /// Sets the provided SimplePayments beta feature switch state into `GeneralAppSettings`
     ///
-    func setQuickOrderFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
+    func setSimplePaymentsFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
         do {
-            let settings = loadOrCreateGeneralAppSettings().copy(isQuickOrderSwitchEnabled: isEnabled)
+            let settings = loadOrCreateGeneralAppSettings().copy(isSimplePaymentsSwitchEnabled: isEnabled)
             try saveGeneralAppSettings(settings)
             onCompletion(.success(()))
         } catch {
@@ -289,7 +289,7 @@ private extension AppSettingsStore {
             return GeneralAppSettings(installationDate: nil,
                                       feedbacks: [:],
                                       isViewAddOnsSwitchEnabled: false,
-                                      isQuickOrderSwitchEnabled: false,
+                                      isSimplePaymentsSwitchEnabled: false,
                                       knownCardReaders: [],
                                       lastEligibilityErrorInfo: nil)
         }

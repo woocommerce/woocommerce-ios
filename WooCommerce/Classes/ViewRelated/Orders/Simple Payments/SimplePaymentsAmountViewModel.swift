@@ -1,9 +1,9 @@
 import Foundation
 import Yosemite
 
-/// View Model for the `QuickOrderAmount` view.
+/// View Model for the `SimplePaymentsAmount` view.
 ///
-final class QuickOrderAmountViewModel: ObservableObject {
+final class SimplePaymentsAmountViewModel: ObservableObject {
 
     /// Stores amount entered by the merchant.
     ///
@@ -79,23 +79,23 @@ final class QuickOrderAmountViewModel: ObservableObject {
     }
 
     /// Called when the view taps the done button.
-    /// Creates a quick order order.
+    /// Creates a simple payments order.
     ///
-    func createQuickOrderOrder() {
+    func createSimplePaymentsOrder() {
         loading = true
-        let action = OrderAction.createQuickOrderOrder(siteID: siteID, amount: amount) { [weak self] result in
+        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, amount: amount) { [weak self] result in
             guard let self = self else { return }
             self.loading = false
 
             switch result {
             case .success(let order):
                 self.onOrderCreated(order)
-                self.analytics.track(event: WooAnalyticsEvent.QuickOrder.quickOrderFlowCompleted(amount: order.total))
+                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCompleted(amount: order.total))
 
             case .failure(let error):
                 self.presentNotice = .error
-                self.analytics.track(event: WooAnalyticsEvent.QuickOrder.quickOrderFlowFailed())
-                DDLogError("⛔️ Error creating quick order order: \(error)")
+                self.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowFailed())
+                DDLogError("⛔️ Error creating simple payments order: \(error)")
             }
         }
         stores.dispatch(action)
@@ -104,12 +104,12 @@ final class QuickOrderAmountViewModel: ObservableObject {
     /// Track the flow cancel scenario.
     ///
     func userDidCancelFlow() {
-        analytics.track(event: WooAnalyticsEvent.QuickOrder.quickOrderFlowCanceled())
+        analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowCanceled())
     }
 }
 
 // MARK: Helpers
-private extension QuickOrderAmountViewModel {
+private extension SimplePaymentsAmountViewModel {
 
     /// Formats a received value by making sure the `$` symbol is present and trimming content to two decimal places.
     /// TODO: Update to support multiple currencies
@@ -150,7 +150,7 @@ private extension QuickOrderAmountViewModel {
 }
 
 // MARK: Definitions
-extension QuickOrderAmountViewModel {
+extension SimplePaymentsAmountViewModel {
     /// Representation of possible notices that can be displayed
     enum Notice: Equatable {
         case error

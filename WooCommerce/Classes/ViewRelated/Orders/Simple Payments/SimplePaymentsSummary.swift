@@ -19,9 +19,11 @@ struct SimplePaymentsSummary: View {
                                 .background(Color(.listBackground))
 
                             Text(Localization.customAmount)
+                                .headlineStyle()
 
                             // Temporary data
                             Text("$40.00")
+                                .headlineStyle()
                                 .frame(maxWidth: .infinity, alignment: .trailing)
                         }
                         .bodyStyle()

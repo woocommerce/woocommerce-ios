@@ -1,7 +1,7 @@
 import UIKit
 
 // MARK: - DateRangeFilterViewController
-// Allow to filter the orders by a range of dates
+// Allow to choose a range of dates (eg. used in Order Filters Date Range)
 //
 final class DateRangeFilterViewController: UIViewController {
 

@@ -678,6 +678,11 @@ private extension ProductsViewController {
         present(filterProductListViewController, animated: true, completion: nil)
     }
 
+    func clearFilter(sourceBarButtonItem: UIBarButtonItem? = nil, sourceView: UIView? = nil) {
+        ServiceLocator.analytics.track(.productListClearFiltersTapped)
+        filters = FilterProductListViewModel.Filters()
+    }
+
     /// Presents products survey
     ///
     func presentProductsFeedback() {
@@ -728,21 +733,51 @@ private extension ProductsViewController {
     ///
     func displayNoResultsOverlay() {
         let emptyStateViewController = EmptyStateViewController(style: .list)
+        let config = createFilterConfig()
+        displayEmptyStateViewController(emptyStateViewController)
+        emptyStateViewController.configure(config)
+    }
+
+    func createFilterConfig() ->  EmptyStateViewController.Config {
+        if filters.numberOfActiveFilters == 0 {
+            return createNoProductsConfig()
+        } else {
+            return createNoProductsMatchFilterConfig()
+        }
+    }
+
+    /// Creates EmptyStateViewController.Config for no products empty view
+    ///
+    func createNoProductsConfig() ->  EmptyStateViewController.Config {
         let message = NSLocalizedString("No products yet",
                                         comment: "The text on the placeholder overlay when there are no products on the Products tab")
         let details = NSLocalizedString("Start selling today by adding your first product to the store.",
                                         comment: "The details on the placeholder overlay when there are no products on the Products tab")
         let buttonTitle = NSLocalizedString("Add Product",
                                             comment: "Action to add product on the placeholder overlay when there are no products on the Products tab")
-        let config = EmptyStateViewController.Config.withButton(
+        return EmptyStateViewController.Config.withButton(
             message: .init(string: message),
             image: .emptyProductsTabImage,
             details: details,
             buttonTitle: buttonTitle) { [weak self] button in
             self?.addProduct(sourceView: button)
         }
-        displayEmptyStateViewController(emptyStateViewController)
-        emptyStateViewController.configure(config)
+    }
+
+    /// Creates EmptyStateViewController.Config for no products match the filter empty view
+    ///
+    func createNoProductsMatchFilterConfig() ->  EmptyStateViewController.Config {
+        let message = NSLocalizedString("No matching products found",
+                                        comment: "The text on the placeholder overlay when no products match the filter on the Products tab")
+        let buttonTitle = NSLocalizedString("Clear Filters",
+                                            comment: "Action to add product on the placeholder overlay when no products match the filter on the Products tab")
+        return EmptyStateViewController.Config.withButton(
+            message: .init(string: message),
+            image: .emptyProductsTabImage,
+            details: "",
+            buttonTitle: buttonTitle) { [weak self] button in
+                self?.clearFilter(sourceView: button)
+        }
     }
 
     /// Shows the EmptyStateViewController as a child view controller.

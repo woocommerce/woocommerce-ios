@@ -56,14 +56,12 @@ struct JetpackBenefitsBanner: View {
             }
             .padding(insets: Layout.padding)
         }
-        .gesture(
-            TapGesture()
-                .onEnded { _ in
-                    self.tapAction()
-                }
-        )
         .background(Color(.jetpackBenefitsBackground))
         .fixedSize(horizontal: false, vertical: true)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            self.tapAction()
+        }
     }
 }
 

@@ -26,7 +26,7 @@ struct SimplePaymentsSummary: View {
                         }
                         .bodyStyle()
                         .padding()
-                        .background(Color.white)
+                        .background(Color(.listForeground))
 
                         Divider()
                         Spacer(minLength: 16)
@@ -35,7 +35,7 @@ struct SimplePaymentsSummary: View {
                     Group {
                         Divider()
                         TitleAndTextFieldRow(title: "Email", placeholder: "Enter Email", text: .constant(""))
-                            .background(Color.white)
+                            .background(Color(.listForeground))
                         Divider()
                         Spacer(minLength: 16)
                     }
@@ -56,7 +56,7 @@ struct SimplePaymentsSummary: View {
                             // TODO: Update this to be able to inject proper style values
                             TitleAndValueRow(title: "Order Total", value: .content("$40.0"), selectable: false) {}
                         }
-                        .background(Color.white)
+                        .background(Color(.listForeground))
 
                         Divider()
                         Spacer(minLength: 16)
@@ -85,7 +85,7 @@ struct SimplePaymentsSummary: View {
                             .frame(maxWidth: .infinity)
                         }
                         .padding()
-                        .background(Color.white)
+                        .background(Color(.listForeground))
 
                         Divider()
                     }
@@ -103,7 +103,7 @@ struct SimplePaymentsSummary: View {
                 .padding()
 
             }
-            .background(Color.white)
+            .background(Color(.listForeground))
         }
         .background(Color(.listBackground))
     }
@@ -114,7 +114,15 @@ struct SimplePaymentsSummary: View {
 struct SimplePaymentsSummary_Preview: PreviewProvider {
     static var previews: some View {
         SimplePaymentsSummary()
-            .previewDevice(PreviewDevice(rawValue: "iPhone 12"))
-            .previewDisplayName("iPhone 12")
+            .environment(\.colorScheme, .light)
+            .previewDisplayName("Light")
+
+        SimplePaymentsSummary()
+            .environment(\.colorScheme, .dark)
+            .previewDisplayName("Dark")
+
+        SimplePaymentsSummary()
+            .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
+            .previewDisplayName("Accessibility")
     }
 }

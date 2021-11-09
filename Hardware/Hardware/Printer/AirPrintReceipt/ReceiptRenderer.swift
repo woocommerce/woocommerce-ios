@@ -145,7 +145,7 @@ private extension ReceiptRenderer {
         }
         return """
         <h3>\(Localization.orderNoteSectionTitle.uppercased())</h3>
-        <p>\(orderNote)
+        <p>\(orderNote)</p>
         """
     }
 

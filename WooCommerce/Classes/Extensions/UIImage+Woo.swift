@@ -13,12 +13,6 @@ extension UIImage {
         return UIImage.gridicon(.addOutline)
     }
 
-    /// Alarm Bell Ring Image
-    ///
-    static var alarmBellRingImage: UIImage {
-        return UIImage(named: "icon-alarm-bell-ring")!
-    }
-
     /// Arrow Up Icon
     ///
     static var arrowUp: UIImage {
@@ -29,12 +23,6 @@ extension UIImage {
     ///
     static var alignJustifyImage: UIImage {
         return UIImage.gridicon(.alignJustify)
-    }
-
-    /// Analytics Image
-    ///
-    static var analyticsImage: UIImage {
-        return UIImage(named: "icon-analytics")!
     }
 
     /// Notice Icon
@@ -742,12 +730,6 @@ extension UIImage {
     ///
     static var megaphoneIcon: UIImage {
         return UIImage(imageLiteralResourceName: "megaphone").imageFlippedForRightToLeftLayoutDirection()
-    }
-
-    /// Multiple Users Image
-    ///
-    static var multipleUsersImage: UIImage {
-        return UIImage(named: "icon-multiple-users")!
     }
 
     /// Error image

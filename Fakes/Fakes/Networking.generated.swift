@@ -489,7 +489,9 @@ extension PaymentGatewayAccount {
             defaultCurrency: .fake(),
             supportedCurrencies: .fake(),
             country: .fake(),
-            isCardPresentEligible: .fake()
+            isCardPresentEligible: .fake(),
+            isLive: .fake(),
+            isInTestMode: .fake()
         )
     }
 }

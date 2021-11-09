@@ -85,9 +85,19 @@ struct JetpackBenefitsBanner_Previews: PreviewProvider {
     static var previews: some View {
         JetpackBenefitsBanner()
             .preferredColorScheme(.dark)
-            .environment(\.sizeCategory, .extraExtraLarge)
+            .environment(\.sizeCategory, .extraSmall)
+            .previewLayout(.sizeThatFits)
         JetpackBenefitsBanner()
             .preferredColorScheme(.light)
+            .environment(\.sizeCategory, .medium)
+            .previewLayout(.sizeThatFits)
+        JetpackBenefitsBanner()
+            .preferredColorScheme(.dark)
             .environment(\.sizeCategory, .extraExtraLarge)
+            .previewLayout(.sizeThatFits)
+        JetpackBenefitsBanner()
+            .preferredColorScheme(.light)
+            .environment(\.sizeCategory, .extraExtraExtraLarge)
+            .previewLayout(.sizeThatFits)
     }
 }

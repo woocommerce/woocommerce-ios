@@ -305,14 +305,13 @@ extension UIColor {
     /// Jetpack benefits banner background color.
     ///
     static var jetpackBenefitsBackground: UIColor {
-        return UIColor(red: 11.0/255, green: 38.0/255, blue: 33.0/255, alpha: 1)
+        UIColor(red: 11.0/255, green: 38.0/255, blue: 33.0/255, alpha: 1)
     }
 
     /// Jetpack logo color.
     ///
     static var jetpackGreen: UIColor {
-        return UIColor(light: .withColorStudio(.jetpackGreen, shade: .shade30),
-                       dark: .withColorStudio(.jetpackGreen, shade: .shade30))
+        .withColorStudio(.jetpackGreen, shade: .shade20)
     }
 }
 

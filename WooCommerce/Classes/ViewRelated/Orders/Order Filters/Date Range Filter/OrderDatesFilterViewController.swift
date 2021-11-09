@@ -66,11 +66,11 @@ private extension OrderDatesFilterViewController {
 
     func configureRows() {
         rows = [.init(filter: .any),
-                    .init(filter: .today),
-                    .init(filter: .last2Days),
-                    .init(filter: .last7Days),
-                    .init(filter: .last30Days),
-                    .init(filter: .custom, startDate: selected?.startDate, endDate: selected?.endDate)]
+                .init(filter: .today),
+                .init(filter: .last2Days),
+                .init(filter: .last7Days),
+                .init(filter: .last30Days),
+                .init(filter: .custom, startDate: selected?.startDate, endDate: selected?.endDate)]
     }
 }
 

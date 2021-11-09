@@ -41,7 +41,7 @@ final class DateRangeFilterViewController: UIViewController {
         super.viewDidLoad()
         configureNavigationBar()
         configureMainView()
-        configureRows()
+        updateRows()
         configureTableView()
     }
 }
@@ -72,7 +72,7 @@ private extension DateRangeFilterViewController {
         tableView.removeLastCellSeparator()
     }
 
-    func configureRows() {
+    func updateRows() {
         var tempRows: [Row] = [.startDateTitle]
         if startDateExpanded {
             tempRows.append(.startDatePicker)
@@ -110,11 +110,11 @@ extension DateRangeFilterViewController: UITableViewDelegate {
         switch rows[indexPath.row] {
         case .startDateTitle:
             startDateExpanded = !startDateExpanded
-            configureRows()
+            updateRows()
             tableView.reloadData()
         case .endDateTitle:
             endDateExpanded = !endDateExpanded
-            configureRows()
+            updateRows()
             tableView.reloadData()
         default:
             return

@@ -71,6 +71,11 @@ final class DashboardViewController: UIViewController {
                                               })
     }()
 
+    private lazy var bottomJetpackBenefitsBannerController = JetpackBenefitsBannerHostingController()
+    private var bottomJetpackBenefitsBannerHeightConstraint: NSLayoutConstraint?
+    private var contentBottomToJetpackBenefitsBannerConstraint: NSLayoutConstraint?
+    private var contentBottomToContainerConstraint: NSLayoutConstraint?
+
     /// A spacer view to add a margin below the top banner (between the banner and dashboard UI)
     ///
     private lazy var spacerView: UIView = {
@@ -100,6 +105,7 @@ final class DashboardViewController: UIViewController {
         configureNavigation()
         configureView()
         configureDashboardUIContainer()
+        configureBottomJetpackBenefitsBanner()
         observeSiteForUIUpdates()
     }
 
@@ -113,6 +119,12 @@ final class DashboardViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         dashboardUI?.view.frame = containerView.bounds
+
+        // Recalculates the height for Jetpack benefits bottom banner whenever the frame changes.
+        if isJetpackBenefitsBannerShown() {
+            let size = bottomJetpackBenefitsBannerController.sizeThatFits(in: containerView.bounds.size)
+            bottomJetpackBenefitsBannerHeightConstraint?.constant = size.height
+        }
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -174,8 +186,8 @@ private extension DashboardViewController {
             contentView.topAnchor.constraint(equalTo: headerStackView.bottomAnchor),
             contentView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
         ])
+        contentBottomToContainerConstraint = contentView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
     }
 
     private func configureNavigationItem() {
@@ -208,6 +220,22 @@ private extension DashboardViewController {
         view.addSubview(containerView)
         containerView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToSafeArea(containerView)
+    }
+
+    func configureBottomJetpackBenefitsBanner() {
+        bottomJetpackBenefitsBannerController.setActions { [weak self] in
+            guard let self = self else { return }
+            let benefitsController = JetpackBenefitsHostingController()
+            benefitsController.setActions {
+                // TODO: 5370 - Navigate to install Jetpack
+            } dismissAction: { [weak self] in
+                self?.dismiss(animated: true, completion: nil)
+            }
+            self.present(benefitsController, animated: true, completion: nil)
+        } dismissAction: {
+            // TODO: 5362 - Persist dismiss state per site
+            self.hideJetpackBenefitsBanner()
+        }
     }
 
     func reloadDashboardUIStatsVersion(forced: Bool) {
@@ -303,6 +331,58 @@ private extension DashboardViewController {
         updatedDashboardUI.displaySyncingError = { [weak self] in
             self?.showTopBannerView()
         }
+
+        // Bottom banner
+        // TODO: 5362 & 5368 - Display banner for JCP sites and if the banner has not been dismissed before.
+        let shouldShowJetpackBenefitsBanner = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.jetpackConnectionPackageSupport)
+        if shouldShowJetpackBenefitsBanner {
+            showJetpackBenefitsBanner(contentView: contentView)
+        } else {
+            hideJetpackBenefitsBanner()
+        }
+    }
+
+    func showJetpackBenefitsBanner(contentView: UIView) {
+        hideJetpackBenefitsBanner()
+        guard let banner = bottomJetpackBenefitsBannerController.view else {
+            return
+        }
+        contentBottomToContainerConstraint?.isActive = false
+
+        addChild(bottomJetpackBenefitsBannerController)
+        containerView.addSubview(banner)
+        bottomJetpackBenefitsBannerController.didMove(toParent: self)
+
+        banner.translatesAutoresizingMaskIntoConstraints = false
+
+        // The banner height is calculated in `viewDidLayoutSubviews` to support rotation.
+        let bottomJetpackBenefitsBannerHeight = banner.heightAnchor.constraint(equalToConstant: 0)
+        self.bottomJetpackBenefitsBannerHeightConstraint = bottomJetpackBenefitsBannerHeight
+
+        let contentBottomToJetpackBenefitsBannerConstraint = banner.topAnchor.constraint(equalTo: contentView.bottomAnchor)
+        self.contentBottomToJetpackBenefitsBannerConstraint = contentBottomToJetpackBenefitsBannerConstraint
+
+        NSLayoutConstraint.activate([
+            contentBottomToJetpackBenefitsBannerConstraint,
+            banner.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            banner.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            // Pins from the safe area layout bottom to accommodate offline banner.
+            banner.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            bottomJetpackBenefitsBannerHeight
+        ])
+    }
+
+    func hideJetpackBenefitsBanner() {
+        contentBottomToJetpackBenefitsBannerConstraint?.isActive = false
+        contentBottomToContainerConstraint?.isActive = true
+        if isJetpackBenefitsBannerShown() {
+            bottomJetpackBenefitsBannerController.view?.removeFromSuperview()
+            remove(bottomJetpackBenefitsBannerController)
+        }
+    }
+
+    func isJetpackBenefitsBannerShown() -> Bool {
+        bottomJetpackBenefitsBannerController.view?.superview != nil
     }
 }
 

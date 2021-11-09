@@ -141,7 +141,6 @@ private extension OrderDatesFilterViewController {
             configureCustomDateRangeFilter(cell: cell, row: row)
         default:
             fatalError()
-            break
         }
     }
 

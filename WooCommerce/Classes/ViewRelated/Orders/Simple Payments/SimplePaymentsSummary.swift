@@ -213,7 +213,7 @@ private extension SimplePaymentsSummary {
         static let emailPlaceHolder = NSLocalizedString("Enter Email",
                                                         comment: "Placeholder of the row that holds the provided email when creating a simple payment")
         static let payment = NSLocalizedString("Payment",
-                                               comment: "Title text of the row that shows that list the payment when creating a simple payment")
+                                               comment: "Title text of the row that shows the payment headline when creating a simple payment")
         static let subtotal = NSLocalizedString("Subtotal",
                                                comment: "Title text of the row that shows the subtotal when creating a simple payment")
         static let chargeTaxes = NSLocalizedString("Charge Taxes",

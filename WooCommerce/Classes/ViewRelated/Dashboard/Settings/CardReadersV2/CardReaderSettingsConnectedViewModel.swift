@@ -59,14 +59,22 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
                         self.readerUpdateError = nil
                         self.softwareUpdateCancelable = cancelable
                         self.readerUpdateProgress = 0
+                        ServiceLocator.analytics.track(.cardReaderSoftwareUpdateStarted)
                     case .installing(progress: let progress):
                         self.readerUpdateProgress = progress
                     case .failed(error: let error):
+                        if case CardReaderServiceError.softwareUpdate(underlyingError: let underlyingError, batteryLevel: _) = error,
+                           underlyingError == .readerSoftwareUpdateFailedInterrupted {
+                            // Update was cancelled, don't treat this as an error
+                            break
+                        }
                         self.readerUpdateError = error
                         self.completeCardReaderUpdate(success: false)
+                        ServiceLocator.analytics.track(.cardReaderSoftwareUpdateFailed)
                     case .completed:
                         self.readerUpdateProgress = 1
                         self.softwareUpdateCancelable = nil
+                        ServiceLocator.analytics.track(.cardReaderSoftwareUpdateSuccess)
                         // If we were installing a software update, introduce a small delay so the user can
                         // actually see a success message showing the installation was complete
                         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) { [weak self] in
@@ -117,16 +125,19 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     /// Allows the view controller to kick off a card reader update
     ///
     func startCardReaderUpdate() {
+        ServiceLocator.analytics.track(.cardReaderSoftwareUpdateTapped)
         let action = CardPresentPaymentAction.startCardReaderUpdate
         ServiceLocator.stores.dispatch(action)
     }
 
     func cancelCardReaderUpdate() {
+        ServiceLocator.analytics.track(.cardReaderSoftwareUpdateCancelTapped)
         softwareUpdateCancelable?.cancel(completion: { [weak self] result in
             if case .failure(let error) = result {
                 print("=== error canceling software update: \(error)")
             } else {
                 self?.completeCardReaderUpdate(success: false)
+                ServiceLocator.analytics.track(.cardReaderSoftwareUpdateCanceled)
             }
         })
     }

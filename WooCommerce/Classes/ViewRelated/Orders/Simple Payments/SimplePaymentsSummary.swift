@@ -12,7 +12,7 @@ struct SimplePaymentsSummary: View {
 
                         Divider()
 
-                        HStack {
+                        HStack(spacing: 16) {
                             Rectangle()
                                 .fill()
                                 .foregroundColor(.gray)
@@ -24,6 +24,7 @@ struct SimplePaymentsSummary: View {
 
                             Text("$40.00")
                         }
+                        .bodyStyle()
                         .padding()
                         .background(Color.white)
 
@@ -41,9 +42,10 @@ struct SimplePaymentsSummary: View {
 
                     Group {
                         Divider()
-                        VStack(alignment: .leading) {
+                        VStack(alignment: .leading, spacing: 8) {
 
                             Text("Payment")
+                                .headlineStyle()
                                 .padding([.horizontal, .top])
 
                             TitleAndValueRow(title: "Subtotal", value: .content("$40.0"), selectable: false) {}
@@ -51,7 +53,8 @@ struct SimplePaymentsSummary: View {
                             TitleAndToggleRow(title: "Charge Taxes", isOn: .constant(false))
                                 .padding([.leading, .trailing])
 
-                            TitleAndValueRow(title: "Subtotal", value: .content("$40.0"), selectable: false) {}
+                            // TODO: Update this to be able to inject proper style values
+                            TitleAndValueRow(title: "Order Total", value: .content("$40.0"), selectable: false) {}
                         }
                         .background(Color.white)
 
@@ -100,6 +103,7 @@ struct SimplePaymentsSummary: View {
                 .padding()
 
             }
+            .background(Color.white)
         }
         .background(Color(.listBackground))
     }

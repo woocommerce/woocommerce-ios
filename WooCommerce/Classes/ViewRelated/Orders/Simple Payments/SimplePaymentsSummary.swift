@@ -12,7 +12,7 @@ struct SimplePaymentsSummary: View {
 
                         Divider()
 
-                        HStack(spacing: Layout.horizontalStackSpacing) {
+                        AdaptiveStack(horizontalAlignment: .leading, spacing: Layout.horizontalStackSpacing) {
                             Image(uiImage: .priceImage)
                                 .padding()
                                 .foregroundColor(Color(.systemGray))
@@ -20,10 +20,9 @@ struct SimplePaymentsSummary: View {
 
                             Text(Localization.customAmount)
 
-                            Spacer()
-
                             // Temporary data
                             Text("$40.00")
+                                .frame(maxWidth: .infinity, alignment: .trailing)
                         }
                         .bodyStyle()
                         .padding()
@@ -80,8 +79,7 @@ struct SimplePaymentsSummary: View {
                                     Image(uiImage: .plusImage)
 
                                     Text(Localization.addNote)
-
-                                    Spacer()
+                                        .frame(maxWidth: .infinity, alignment: .leading)
                                 }
                                 .foregroundColor(Color(.accent))
                                 .bodyStyle()
@@ -145,7 +143,8 @@ private extension SimplePaymentsSummary {
                                                comment: "Title text of the button that adds a note when creating a simple payment")
 
         static func takePayment(total: String) -> String {
-            NSLocalizedString("Take Payment (\(total))", comment: "Text of the button that creates a simple payment order. Contains the total amount to collect")
+            NSLocalizedString("Take Payment (\(total))",
+                              comment: "Text of the button that creates a simple payment order. Contains the total amount to collect")
         }
     }
 }

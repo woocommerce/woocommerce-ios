@@ -98,7 +98,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
     func test_onboarding_returns_wcpay_in_test_mode_with_live_stripe_account_when_live_account_in_test_mode() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .active, version: .minimumSupportedVersionWithPatch)
+        setupPlugin(status: .active, version: .minimumSupportedVersion)
         setupPaymentGatewayAccount(status: .complete, isLive: true, isInTestMode: true)
 
         // When
@@ -167,7 +167,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
     func test_onboarding_returns_complete_when_active() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .active, version: .minimumSupportedVersionWithPatch)
+        setupPlugin(status: .active, version: .minimumSupportedVersion)
         setupPaymentGatewayAccount(status: .complete)
 
         // When

@@ -51,41 +51,27 @@ final class FilterProductListViewModel: FilterListViewModel {
     private let productTypeFilterViewModel: FilterTypeViewModel
     private let productCategoryFilterViewModel: FilterTypeViewModel
 
-    private let featureFlagService: FeatureFlagService
-
     /// - Parameters:
     ///   - filters: the filters to be applied initially.
-    init(filters: Filters, siteID: Int64, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
-        self.featureFlagService = featureFlagService
-
+    init(filters: Filters, siteID: Int64) {
         self.stockStatusFilterViewModel = ProductListFilter.stockStatus.createViewModel(filters: filters)
         self.productStatusFilterViewModel = ProductListFilter.productStatus.createViewModel(filters: filters)
         self.productTypeFilterViewModel = ProductListFilter.productType.createViewModel(filters: filters)
         self.productCategoryFilterViewModel = ProductListFilter.productCategory(siteID: siteID).createViewModel(filters: filters)
 
-        var filterTypeViewModels = [
+        self.filterTypeViewModels = [
             stockStatusFilterViewModel,
             productStatusFilterViewModel,
-            productTypeFilterViewModel
+            productTypeFilterViewModel,
+            productCategoryFilterViewModel
         ]
-
-        if featureFlagService.isFeatureFlagEnabled(.filterProductsByCategory) {
-            filterTypeViewModels.append(productCategoryFilterViewModel)
-        }
-
-        self.filterTypeViewModels = filterTypeViewModels
     }
 
     var criteria: Filters {
         let stockStatus = stockStatusFilterViewModel.selectedValue as? ProductStockStatus ?? nil
         let productStatus = productStatusFilterViewModel.selectedValue as? ProductStatus ?? nil
         let productType = productTypeFilterViewModel.selectedValue as? ProductType ?? nil
-        var productCategory: ProductCategory? = nil
-
-        if featureFlagService.isFeatureFlagEnabled(.filterProductsByCategory),
-           let selectedProductCategory = productCategoryFilterViewModel.selectedValue as? ProductCategory {
-            productCategory = selectedProductCategory
-        }
+        let productCategory = productCategoryFilterViewModel.selectedValue as? ProductCategory ?? nil
 
         let numberOfActiveFilters = filterTypeViewModels.numberOfActiveFilters
 
@@ -106,10 +92,8 @@ final class FilterProductListViewModel: FilterListViewModel {
         let clearedProductType: ProductType? = nil
         productTypeFilterViewModel.selectedValue = clearedProductType
 
-        if featureFlagService.isFeatureFlagEnabled(.filterProductsByCategory) {
-            let clearedProductCategory: ProductCategory? = nil
-            productCategoryFilterViewModel.selectedValue = clearedProductCategory
-        }
+        let clearedProductCategory: ProductCategory? = nil
+        productCategoryFilterViewModel.selectedValue = clearedProductCategory
     }
 }
 

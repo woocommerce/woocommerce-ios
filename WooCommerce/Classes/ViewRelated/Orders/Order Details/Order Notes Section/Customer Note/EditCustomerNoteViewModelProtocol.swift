@@ -23,7 +23,7 @@ protocol EditCustomerNoteViewModelProtocol: ObservableObject {
 
     /// Update when you need to update the note (remotely or locally) and invoke a completion block when finished
     ///
-    func updateNote(onFinish: (Bool) -> Void)
+    func updateNote(onFinish: @escaping (Bool) -> Void)
 
     /// Call it when the user cancels the flow.
     ///

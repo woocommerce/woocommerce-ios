@@ -4,7 +4,7 @@ import Combine
 
 /// View Model for the Edit Customer Note screen
 ///
-final class EditCustomerNoteViewModel: ObservableObject {
+final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
 
     /// Binding property modified at the view level.
     ///
@@ -17,6 +17,12 @@ final class EditCustomerNoteViewModel: ObservableObject {
     /// Defaults to `nil`.
     ///
     @Published var presentNotice: EditCustomerNoteNotice?
+
+    /// Publisher accessor for `presentNotice`. Needed for the protocol conformance.
+    ///
+    var presentNoticePublisher: Published<EditCustomerNoteNotice?>.Publisher {
+        $presentNotice
+    }
 
     /// Order to be edited.
     ///

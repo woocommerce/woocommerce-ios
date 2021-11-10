@@ -6,20 +6,17 @@ import Combine
 ///
 final class EditCustomerNoteViewModel: ObservableObject {
 
-    /// New content to submit.
     /// Binding property modified at the view level.
     ///
     @Published var newNote: String
 
-    /// Active navigation bar trailing item.
     /// Defaults to a disabled done button.
     ///
-    @Published private(set) var navigationTrailingItem: NavigationItem = .done(enabled: false)
+    @Published private(set) var navigationTrailingItem: EditCustomerNoteNavigationItem = .done(enabled: false)
 
-    /// Defines the current notice that should be shown.
     /// Defaults to `nil`.
     ///
-    @Published var presentNotice: Notice?
+    @Published var presentNotice: EditCustomerNoteNotice?
 
     /// Order to be edited.
     ///
@@ -77,29 +74,13 @@ final class EditCustomerNoteViewModel: ObservableObject {
     }
 }
 
-// MARK: Definitions
-extension EditCustomerNoteViewModel {
-    /// Representation of possible navigation bar trailing buttons
-    ///
-    enum NavigationItem: Equatable {
-        case done(enabled: Bool)
-        case loading
-    }
-
-    /// Representation of possible notices that can be displayed
-    enum Notice: Equatable {
-        case success
-        case error
-    }
-}
-
 // MARK: Helper Methods
 private extension EditCustomerNoteViewModel {
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
     private func bindNavigationTrailingItemPublisher() {
         Publishers.CombineLatest($newNote, performingNetworkRequest)
-            .map { [order] newNote, performingNetworkRequest -> NavigationItem in
+            .map { [order] newNote, performingNetworkRequest -> EditCustomerNoteNavigationItem in
                 guard !performingNetworkRequest else {
                     return .loading
                 }

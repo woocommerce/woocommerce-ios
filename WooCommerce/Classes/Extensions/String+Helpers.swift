@@ -76,21 +76,139 @@ extension String {
     /// Returns `orderedDescending` if the argument represents an older version
     ///
     func compareAsVersion(to: String) -> ComparisonResult {
-        let leftComponents = self.components(separatedBy: .punctuationCharacters)
-        let rightComponents = to.components(separatedBy: .punctuationCharacters)
+
+        /// Replace _ - and + with a .
+        ///
+        func replaceUnderscoreDashAndPlusWithDot(inString: String) -> String {
+            var outString = inString
+            let replaceTargets = ["_", "-", "+"]
+            for replaceTarget in replaceTargets {
+                outString = outString.replacingOccurrences(of: replaceTarget, with: ".")
+            }
+            return outString
+        }
+
+        /// Insert a . before and after any non number
+        ///
+        func insertDotsBeforeAndAfterAnyNonNumber(inString: String) -> String {
+            guard inString.count > 1 else {
+                return inString
+            }
+
+            /// Initialize our output with the first character of the input string
+            var outString = String(inString[inString.index(inString.startIndex, offsetBy: 0)])
+
+            /// Loop over the remaining characters in the string, inserting . as needed
+            for index in 1...inString.count - 1 {
+                let characterAtIndex = inString[inString.index(inString.startIndex, offsetBy: index)]
+                let characterBefore = inString[inString.index(inString.startIndex, offsetBy: index - 1)]
+
+                let characterAtIndexIsNumberOrDot = characterAtIndex.isNumber || characterAtIndex == "."
+                let characterBeforeIsNumberOrDot = characterBefore.isNumber || characterBefore == "."
+
+                if !characterAtIndexIsNumberOrDot && characterBefore.isNumber {
+                    outString += "."
+                }
+
+                if characterAtIndex.isNumber && !characterBeforeIsNumberOrDot {
+                    outString += "."
+                }
+
+                outString += String(characterAtIndex)
+            }
+
+            return outString
+        }
+
+        /// Ranked per https://www.php.net/manual/en/function.version-compare.php
+        ///
+        enum ComponentScore: Comparable {
+            case other
+            case dev
+            case alpha
+            case beta
+            case RC
+            case number
+            case patch
+        }
+
+        /// Score each component
+        ///
+        func scoreComponent(stringComponent: String) -> ComponentScore {
+            if stringComponent == "dev" {
+                return .dev
+            }
+            if stringComponent == "alpha" || stringComponent == "a" {
+                return .alpha
+            }
+            if stringComponent == "beta" || stringComponent == "b" {
+                return .beta
+            }
+            if stringComponent == "RC" || stringComponent == "rc" {
+                return .RC
+            }
+            let componentCharacterSet = CharacterSet(charactersIn: stringComponent)
+            if componentCharacterSet.isSubset(of: .decimalDigits) {
+                return .number
+            }
+
+            if stringComponent == "pl" || stringComponent == "p" {
+                return .patch
+            }
+
+            return .other
+        }
+
+        /// Score and compare two string components
+        ///
+        func compareStringComponent(stringComponent1: String, stringComponent2: String) -> ComparisonResult {
+            /// Score each component
+            let stringComponent1Score = scoreComponent(stringComponent: stringComponent1)
+            let stringComponent2Score = scoreComponent(stringComponent: stringComponent2)
+
+            if stringComponent1Score < stringComponent2Score {
+                return .orderedAscending
+            }
+
+            if stringComponent1Score > stringComponent2Score {
+                return .orderedDescending
+            }
+
+            if stringComponent1Score == .number && stringComponent2Score == .number {
+                let component1Int = Int(stringComponent1) ?? 0
+                let component2Int = Int(stringComponent2) ?? 0
+
+                if component1Int < component2Int {
+                    return .orderedAscending
+                }
+
+                if component1Int > component2Int {
+                    return .orderedDescending
+                }
+            }
+
+            return .orderedSame
+        }
+
+        var leftHandString = replaceUnderscoreDashAndPlusWithDot(inString: self)
+        leftHandString = insertDotsBeforeAndAfterAnyNonNumber(inString: leftHandString)
+
+        var rightHandString = replaceUnderscoreDashAndPlusWithDot(inString: to)
+        rightHandString = insertDotsBeforeAndAfterAnyNonNumber(inString: rightHandString)
+
+        let leftComponents = leftHandString.components(separatedBy: ".")
+        let rightComponents = rightHandString.components(separatedBy: ".")
 
         let maxComponents = max(leftComponents.count, rightComponents.count)
 
         for index in 0...maxComponents - 1 {
-            let leftInt = index < leftComponents.count ? Int(leftComponents[index]) ?? 0 : 0
-            let rightInt = index < rightComponents.count ? Int(rightComponents[index]) ?? 0 : 0
+            /// Treat missing components (e.g. 1.2 being compared to 1.1.3 as "0", i.e. 1.2.0
+            let leftComponent = index < leftComponents.count ? leftComponents[index] : "0"
+            let rightComponent = index < rightComponents.count ? rightComponents[index] : "0"
 
-            if leftInt < rightInt {
-                return .orderedAscending
-            }
-
-            if leftInt > rightInt {
-                return .orderedDescending
+            let comparisonResult = compareStringComponent(stringComponent1: leftComponent, stringComponent2: rightComponent)
+            if comparisonResult != .orderedSame {
+                return comparisonResult
             }
         }
 

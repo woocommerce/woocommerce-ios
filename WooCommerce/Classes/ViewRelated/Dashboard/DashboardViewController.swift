@@ -320,7 +320,7 @@ extension DashboardViewController {
 private extension DashboardViewController {
 
     @objc func settingsTapped() {
-        let settingsViewController = SettingsViewController(nibName: nil, bundle: nil)
+        let settingsViewController = SettingsFactory.settings()
         ServiceLocator.analytics.track(.settingsTapped)
         show(settingsViewController, sender: self)
     }

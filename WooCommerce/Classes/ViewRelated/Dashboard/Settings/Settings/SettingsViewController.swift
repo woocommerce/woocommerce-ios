@@ -1,107 +1,47 @@
 import UIKit
-import Yosemite
 import MessageUI
 import Gridicons
 import SafariServices
-import WordPressAuthenticator
-import class Networking.UserAgent
 
+protocol SettingsViewPresenter: AnyObject {
+    func refreshViewContent()
+}
 
 // MARK: - SettingsViewController
 //
 final class SettingsViewController: UIViewController {
+    typealias ViewModel = SettingsViewModelOutput & SettingsViewModelActionsHandler & SettingsViewModelInput
+
+    private let viewModel: ViewModel
 
     /// Main TableView
     ///
     @IBOutlet private weak var tableView: UITableView!
 
-    /// Table Sections to be rendered
-    ///
-    private var sections = [Section]()
-
-    /// Main Account's displayName
-    ///
-    private var accountName: String {
-        return ServiceLocator.stores.sessionManager.defaultAccount?.displayName ?? String()
-    }
-
-    /// Main Site's Name
-    ///
-    private var siteName: String {
-        let nameAsString = ServiceLocator.stores.sessionManager.defaultSite?.name as String?
-        return nameAsString ?? String()
-    }
-
-    /// Main Site's ID
-    ///
-    private var siteID: Int64? {
-        ServiceLocator.stores.sessionManager.defaultSite?.siteID
-    }
-
-    /// Main Site's URL
-    ///
-    private var siteUrl: String {
-        let urlAsString = ServiceLocator.stores.sessionManager.defaultSite?.url as NSString?
-        return urlAsString?.hostname() ?? String()
-    }
-
-    /// SitesResultsController: Loads Sites from the Storage Layer.
-    ///
-    private let sitesResultsController: ResultsController<StorageSite> = {
-        let storageManager = ServiceLocator.storageManager
-        let predicate = NSPredicate(format: "isWooCommerceActive == YES")
-        let descriptor = NSSortDescriptor(key: "name", ascending: true)
-
-        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
-
-    /// Sites pulled from the results controlelr
-    ///
-    private var sites = [Yosemite.Site]()
-
-    /// Payment Gateway Accounts Results Controller: Loads Payment Gateway Accounts from the Storage Layer
-    /// e.g. WooCommerce Payments, but eventually other in-person payment accounts too
-    ///
-    private var paymentGatewayAccountsResultsController: ResultsController<StoragePaymentGatewayAccount>? = {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            return nil
-        }
-
-        let storageManager = ServiceLocator.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
-
-        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [])
-    }()
-
-    /// Accounts pulled from the results controller
-    ///
-    private var paymentGatewayAccounts = [PaymentGatewayAccount]()
-
     /// Store Picker Coordinator
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
 
-    /// Announcement for the current app version
-    ///
-    private var announcement: Announcement?
+    init(viewModel: ViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     // MARK: - Overridden Methods
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureResultsControllers(onReload: { [weak self] in
-            self?.refreshViewContent()
-        })
-
-        loadPaymentGatewayAccounts()
-        loadWhatsNewOnWooCommerce()
         configureNavigation()
         configureMainView()
         configureTableView()
         configureTableViewFooter()
         registerTableViewCells()
-        refreshViewContent()
+        viewModel.onViewDidLoad()
     }
 
     override func viewDidLayoutSubviews() {
@@ -109,7 +49,6 @@ final class SettingsViewController: UIViewController {
         tableView.updateFooterHeight()
     }
 }
-
 
 // MARK: - View Configuration
 //
@@ -132,74 +71,6 @@ private extension SettingsViewController {
         tableView.delegate = self
     }
 
-    /// Set up observation of the results controllers, so that when new data arrives
-    /// the view can be refreshed, and then perform the initial fetch from storage.
-    ///
-    private func configureResultsControllers(onReload: @escaping () -> Void) {
-        sitesResultsController.onDidChangeContent = {
-            onReload()
-        }
-
-        sitesResultsController.onDidResetContent = { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            self.refetchAllResultsControllers()
-            onReload()
-        }
-
-        try? sitesResultsController.performFetch()
-
-        guard paymentGatewayAccountsResultsController != nil else {
-            return
-        }
-
-        paymentGatewayAccountsResultsController?.onDidChangeContent = {
-            onReload()
-        }
-
-        paymentGatewayAccountsResultsController?.onDidResetContent = { [weak self] in
-            guard let self = self else {
-                return
-            }
-            self.refetchAllResultsControllers()
-            onReload()
-        }
-
-        try? paymentGatewayAccountsResultsController?.performFetch()
-    }
-
-    /// Refetching all the results controllers is necessary after a storage reset in `onDidResetContent` callback and before reloading UI that
-    /// involves more than one results controller.
-    ///
-    private func refetchAllResultsControllers() {
-        try? sitesResultsController.performFetch()
-        guard paymentGatewayAccountsResultsController != nil else {
-            return
-        }
-        try? paymentGatewayAccountsResultsController?.performFetch()
-    }
-
-    /// Ask the PaymentGatewayAccountStore to loadAccounts from the network and update storage
-    ///
-    private func loadPaymentGatewayAccounts() {
-        guard let siteID = self.siteID else {
-            return
-        }
-
-        /// No need for a completion here. We will be notified of storage changes in `onDidChangeContent`
-        ///
-        let action = PaymentGatewayAccountAction.loadAccounts(siteID: siteID) {_ in}
-        ServiceLocator.stores.dispatch(action)
-    }
-
-    /// Update our list of sites from the sitesResultsController
-    ///
-    private func updateSites() {
-        sites = sitesResultsController.fetchedObjects
-    }
-
     func configureTableViewFooter() {
         // `tableView.tableFooterView` can't handle a footerView that uses autolayout only.
         // Hence the container view with a defined frame.
@@ -218,101 +89,6 @@ private extension SettingsViewController {
         footerContainer.pinSubviewToAllEdges(footerView)
     }
 
-    func refreshViewContent() {
-        updateSites()
-        configureSections()
-        tableView.reloadData()
-    }
-
-    func loadWhatsNewOnWooCommerce() {
-        ServiceLocator.stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
-            guard let self = self else { return }
-            guard let (announcement, _) = try? result.get(), announcement.appVersionName == UserAgent.bundleShortVersion else {
-                return DDLogInfo("📣 There are no announcements to show!")
-            }
-
-            self.announcement = announcement
-        }))
-    }
-
-    func configureSections() {
-        let selectedStoreTitle = NSLocalizedString(
-            "Selected Store",
-            comment: "My Store > Settings > Selected Store information section. " +
-            "This is the heading listed above the information row that displays the store website and their username."
-        ).uppercased()
-        let pluginsTitle = NSLocalizedString(
-            "Plugins",
-            comment: "My Store > Settings > Plugins section title"
-        ).uppercased()
-        let storeSettingsTitle = NSLocalizedString(
-            "Store Settings",
-            comment: "My Store > Settings > Store Settings section title"
-        ).uppercased()
-        let helpAndFeedbackTitle = NSLocalizedString(
-            "Help & Feedback",
-            comment: "My Store > Settings > Help and Feedback settings section title"
-        ).uppercased()
-        let appSettingsTitle = NSLocalizedString(
-            "App Settings",
-            comment: "My Store > Settings > App (Application) settings section title"
-        ).uppercased()
-        let aboutTheAppTitle = NSLocalizedString(
-            "About the App",
-            comment: "My Store > Settings > About the App (Application) section title"
-        ).uppercased()
-        let otherTitle = NSLocalizedString(
-            "Other",
-            comment: "My Store > Settings > Other app section"
-        ).uppercased()
-
-        let storeRows: [Row] = sites.count > 1 ?
-            [.selectedStore, .switchStore] : [.selectedStore]
-
-        // Selected Store
-        sections = [
-            Section(title: selectedStoreTitle, rows: storeRows, footerHeight: UITableView.automaticDimension),
-        ]
-
-        // Plugins
-        if shouldShowPluginsSection() {
-            sections.append(Section(title: pluginsTitle, rows: [.plugins], footerHeight: UITableView.automaticDimension))
-        }
-
-        sections.append(
-            Section(title: storeSettingsTitle,
-                rows: [.inPersonPayments],
-                footerHeight: UITableView.automaticDimension
-            )
-        )
-
-        // Help & Feedback
-        if couldShowBetaFeaturesRow() {
-            sections.append(Section(title: helpAndFeedbackTitle, rows: [.support, .betaFeatures, .sendFeedback], footerHeight: UITableView.automaticDimension))
-        } else {
-            sections.append(Section(title: helpAndFeedbackTitle, rows: [.support, .sendFeedback], footerHeight: UITableView.automaticDimension))
-        }
-
-        // App Settings
-        sections.append(Section(title: appSettingsTitle, rows: [.privacy], footerHeight: UITableView.automaticDimension))
-
-        // About the App
-        if shouldShowWhatsNew() {
-            sections.append(Section(title: aboutTheAppTitle, rows: [.about, .whatsNew, .licenses], footerHeight: UITableView.automaticDimension))
-        } else {
-            sections.append(Section(title: aboutTheAppTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension))
-        }
-
-        // Other
-        #if DEBUG
-        sections.append(Section(title: otherTitle, rows: [.deviceSettings, .wormholy], footerHeight: CGFloat.leastNonzeroMagnitude))
-        #else
-        sections.append(Section(title: otherTitle, rows: [.deviceSettings], footerHeight: CGFloat.leastNonzeroMagnitude))
-        #endif
-
-        sections.append(Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude))
-    }
-
     func registerTableViewCells() {
         for row in Row.allCases {
             tableView.registerNib(for: row.type)
@@ -321,7 +97,7 @@ private extension SettingsViewController {
 
     /// Cells currently configured in the order they appear on screen
     ///
-    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+    func configure(_ cell: UITableViewCell, for row: Row) {
         switch cell {
         case let cell as HeadlineLabelTableViewCell where row == .selectedStore:
             configureSelectedStore(cell: cell)
@@ -357,7 +133,7 @@ private extension SettingsViewController {
     }
 
     func configureSelectedStore(cell: HeadlineLabelTableViewCell) {
-        cell.update(headline: siteName, body: siteUrl)
+        cell.update(headline: viewModel.siteName, body: viewModel.siteUrl)
         cell.selectionStyle = .none
     }
 
@@ -452,22 +228,7 @@ private extension SettingsViewController {
 private extension SettingsViewController {
 
     func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
-        return sections[indexPath.section].rows[indexPath.row]
-    }
-
-    /// Returns `true` for the add-ons workaround.
-    func couldShowBetaFeaturesRow() -> Bool {
-        true
-    }
-
-    /// Returns `true` if the user has an `admin` role for the default store site.
-    ///
-    func shouldShowPluginsSection() -> Bool {
-        ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)
-    }
-
-    func shouldShowWhatsNew() -> Bool {
-        announcement != nil
+        viewModel.sections[indexPath.section].rows[indexPath.row]
     }
 }
 
@@ -482,7 +243,7 @@ private extension SettingsViewController {
             "Are you sure you want to log out of the account %@?",
             comment: "Alert message to confirm a user meant to log out."
         )
-        let messageFormatted = String(format: messageUnformatted, accountName)
+        let messageFormatted = String(format: messageUnformatted, viewModel.accountName)
         let alertController = UIAlertController(title: "", message: messageFormatted, preferredStyle: .alert)
 
         let cancelText = NSLocalizedString("Back", comment: "Alert button title - dismisses alert, which cancels the log out attempt")
@@ -508,7 +269,7 @@ private extension SettingsViewController {
                 guard let self = self else {
                     return
                 }
-                self.refreshViewContent()
+                self.viewModel.onStorePickerDismiss()
             }
         }
     }
@@ -586,7 +347,7 @@ private extension SettingsViewController {
 
     func whatsNewWasPressed() {
         ServiceLocator.analytics.track(event: .featureAnnouncementShown(source: .appSettings))
-        guard let announcement = announcement else { return }
+        guard let announcement = viewModel.announcement else { return }
         let viewController = WhatsNewFactory.whatsNew(announcement) { [weak self] in
             self?.dismiss(animated: true)
         }
@@ -636,34 +397,33 @@ extension SettingsViewController: MFMailComposeViewControllerDelegate {
 extension SettingsViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return sections.count
+        viewModel.sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sections[section].rows.count
+        viewModel.sections[section].rows.count
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return UITableView.automaticDimension
+        UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return sections[section].footerHeight
+        viewModel.sections[section].footerHeight
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = rowAtIndexPath(indexPath)
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
-        configure(cell, for: row, at: indexPath)
+        configure(cell, for: row)
 
         return cell
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return sections[section].title
+        viewModel.sections[section].title
     }
 }
-
 
 // MARK: - UITableViewDelegate Conformance
 //
@@ -714,66 +474,6 @@ private struct Constants {
     static let footerHeight = 90
 }
 
-private struct Section {
-    let title: String?
-    let rows: [Row]
-    let footerHeight: CGFloat
-}
-
-private enum Row: CaseIterable {
-    case selectedStore
-    case switchStore
-    case plugins
-    case support
-    case inPersonPayments
-    case logout
-    case privacy
-    case betaFeatures
-    case sendFeedback
-    case about
-    case licenses
-    case deviceSettings
-    case wormholy
-    case whatsNew
-
-    var type: UITableViewCell.Type {
-        switch self {
-        case .selectedStore:
-            return HeadlineLabelTableViewCell.self
-        case .switchStore:
-            return BasicTableViewCell.self
-        case .plugins:
-            return BasicTableViewCell.self
-        case .support:
-            return BasicTableViewCell.self
-        case .inPersonPayments:
-            return BasicTableViewCell.self
-        case .logout:
-            return BasicTableViewCell.self
-        case .privacy:
-            return BasicTableViewCell.self
-        case .betaFeatures:
-            return BasicTableViewCell.self
-        case .sendFeedback:
-            return BasicTableViewCell.self
-        case .about:
-            return BasicTableViewCell.self
-        case .licenses:
-            return BasicTableViewCell.self
-        case .deviceSettings:
-            return BasicTableViewCell.self
-        case .wormholy:
-            return BasicTableViewCell.self
-        case .whatsNew:
-            return BasicTableViewCell.self
-        }
-    }
-
-    var reuseIdentifier: String {
-        return type.reuseIdentifier
-    }
-}
-
 // MARK: - Footer
 //
 private extension SettingsViewController {
@@ -796,5 +496,77 @@ private extension SettingsViewController {
         hiringAttrText.addAttributes(hiringAttributes, range: range)
 
         return hiringAttrText
+    }
+}
+
+extension SettingsViewController {
+
+    struct Section {
+        let title: String?
+        let rows: [Row]
+        let footerHeight: CGFloat
+    }
+
+    enum Row: CaseIterable {
+        case selectedStore
+        case switchStore
+        case plugins
+        case support
+        case inPersonPayments
+        case logout
+        case privacy
+        case betaFeatures
+        case sendFeedback
+        case about
+        case licenses
+        case deviceSettings
+        case wormholy
+        case whatsNew
+
+        fileprivate var type: UITableViewCell.Type {
+            switch self {
+            case .selectedStore:
+                return HeadlineLabelTableViewCell.self
+            case .switchStore:
+                return BasicTableViewCell.self
+            case .plugins:
+                return BasicTableViewCell.self
+            case .support:
+                return BasicTableViewCell.self
+            case .inPersonPayments:
+                return BasicTableViewCell.self
+            case .logout:
+                return BasicTableViewCell.self
+            case .privacy:
+                return BasicTableViewCell.self
+            case .betaFeatures:
+                return BasicTableViewCell.self
+            case .sendFeedback:
+                return BasicTableViewCell.self
+            case .about:
+                return BasicTableViewCell.self
+            case .licenses:
+                return BasicTableViewCell.self
+            case .deviceSettings:
+                return BasicTableViewCell.self
+            case .wormholy:
+                return BasicTableViewCell.self
+            case .whatsNew:
+                return BasicTableViewCell.self
+            }
+        }
+
+        fileprivate var reuseIdentifier: String {
+            return type.reuseIdentifier
+        }
+    }
+}
+
+// MARK: - SettingsViewPresenter Conformance
+//
+extension SettingsViewController: SettingsViewPresenter {
+
+    func refreshViewContent() {
+        tableView.reloadData()
     }
 }

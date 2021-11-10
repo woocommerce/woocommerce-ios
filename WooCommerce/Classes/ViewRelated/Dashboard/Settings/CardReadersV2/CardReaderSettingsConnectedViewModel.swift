@@ -11,7 +11,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     private var connectedReaders = [CardReader]()
     private let knownReaderProvider: CardReaderSettingsKnownReaderProvider?
 
-    private(set) var readerUpdateAvailable: Bool = false
+    private(set) var optionalReaderUpdateAvailable: Bool = false
     var readerUpdateInProgress: Bool {
         readerUpdateProgress != nil
     }
@@ -81,9 +81,9 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
                             self?.completeCardReaderUpdate(success: true)
                         }
                     case .available:
-                        self.readerUpdateAvailable = true
+                        self.optionalReaderUpdateAvailable = true
                     case .none:
-                        self.readerUpdateAvailable = false
+                        self.optionalReaderUpdateAvailable = false
                     }
                     self.didUpdate?()
                 }
@@ -148,7 +148,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     }
 
     private func completeCardReaderUpdate(success: Bool) {
-        readerUpdateAvailable = !success
+        optionalReaderUpdateAvailable = !success
         readerUpdateProgress = nil
         didUpdate?()
     }

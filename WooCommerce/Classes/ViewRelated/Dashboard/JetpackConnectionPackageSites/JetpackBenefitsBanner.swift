@@ -35,7 +35,7 @@ struct JetpackBenefitsBanner: View {
     var body: some View {
         Group {
             HStack(spacing: Layout.horizontalSpacing) {
-                Image("icon-jetpack-gray")
+                Image(uiImage: .jetpackLogoImage)
                     .resizable()
                     .renderingMode(.template)
                     .foregroundColor(Color(.jetpackGreen))

@@ -19,6 +19,8 @@ extension Storage.PaymentGatewayAccount: ReadOnlyConvertible {
         supportedCurrencies = paymentGatewayAccount.supportedCurrencies
         country = paymentGatewayAccount.country
         isCardPresentEligible = paymentGatewayAccount.isCardPresentEligible
+        isLive = paymentGatewayAccount.isLive
+        isInTestMode = paymentGatewayAccount.isInTestMode
     }
 
     /// Returns a ReadOnly version for Yosemite.
@@ -36,6 +38,8 @@ extension Storage.PaymentGatewayAccount: ReadOnlyConvertible {
                                      defaultCurrency: defaultCurrency,
                                      supportedCurrencies: supportedCurrencies,
                                      country: country,
-                                     isCardPresentEligible: isCardPresentEligible)
+                                     isCardPresentEligible: isCardPresentEligible,
+                                     isLive: isLive,
+                                     isInTestMode: isInTestMode)
     }
 }

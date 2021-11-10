@@ -64,7 +64,7 @@ final class OrdersRootViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         // Needed in ViewWillAppear because this View Controller is never recreated.
-        fetchQuickOrderExperimentalToggleAndConfigureNavigationButtons()
+        fetchSimplePaymentsExperimentalToggleAndConfigureNavigationButtons()
     }
 
     override func viewDidLayoutSubviews() {
@@ -106,16 +106,16 @@ private extension OrdersRootViewController {
 
     /// Sets navigation buttons.
     /// Search: Is always present.
-    /// Quick Order: Depends on the local feature flag, experimental feature toggle and the inPersonPayments state.
+    /// Simple Payments: Depends on the local feature flag, experimental feature toggle and the inPersonPayments state.
     ///
-    func configureNavigationButtons(isQuickOrderExperimentalToggleEnabled: Bool) {
-        let shouldShowQuickOrderButton: Bool = {
+    func configureNavigationButtons(isSimplePaymentsExperimentalToggleEnabled: Bool) {
+        let shouldShowSimplePaymentsButton: Bool = {
             let isInPersonPaymentsConfigured = inPersonPaymentsUseCase.state == .completed
-            return isQuickOrderExperimentalToggleEnabled && isInPersonPaymentsConfigured
+            return isSimplePaymentsExperimentalToggleEnabled && isInPersonPaymentsConfigured
         }()
         let buttons: [UIBarButtonItem?] = [
             ordersViewController.createSearchBarButtonItem(),
-            shouldShowQuickOrderButton ? ordersViewController.createAddQuickOrderOrderItem() : nil
+            shouldShowSimplePaymentsButton ? ordersViewController.createAddSimplePaymentsOrderItem() : nil
         ]
         navigationItem.rightBarButtonItems = buttons.compactMap { $0 }
     }
@@ -153,18 +153,18 @@ private extension OrdersRootViewController {
         inPersonPaymentsUseCase.$state
             .removeDuplicates()
             .sink { [weak self] _ in
-                self?.fetchQuickOrderExperimentalToggleAndConfigureNavigationButtons()
+                self?.fetchSimplePaymentsExperimentalToggleAndConfigureNavigationButtons()
             }
             .store(in: &subscriptions)
         inPersonPaymentsUseCase.refresh()
     }
 
-    /// Fetches the latest value of the QuickOrder experimental feature toggle and re configures navigation buttons.
+    /// Fetches the latest value of the SimplePayments experimental feature toggle and re configures navigation buttons.
     ///
-    func fetchQuickOrderExperimentalToggleAndConfigureNavigationButtons() {
-        let action = AppSettingsAction.loadQuickOrderSwitchState { [weak self] result in
+    func fetchSimplePaymentsExperimentalToggleAndConfigureNavigationButtons() {
+        let action = AppSettingsAction.loadSimplePaymentsSwitchState { [weak self] result in
             let isEnabled = (try? result.get()) ?? false
-            self?.configureNavigationButtons(isQuickOrderExperimentalToggleEnabled: isEnabled)
+            self?.configureNavigationButtons(isSimplePaymentsExperimentalToggleEnabled: isEnabled)
         }
         ServiceLocator.stores.dispatch(action)
     }

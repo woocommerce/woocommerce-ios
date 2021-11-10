@@ -31,7 +31,8 @@ struct SimplePaymentsSummary: View {
 
             TakePaymentSection()
         }
-        .background(Color(.listBackground))
+        .background(Color(.listBackground).ignoresSafeArea())
+        .navigationTitle(Localization.title)
     }
 }
 
@@ -191,7 +192,7 @@ private struct TakePaymentSection: View {
             .padding()
 
         }
-        .background(Color(.listForeground))
+        .background(Color(.listForeground).ignoresSafeArea())
     }
 }
 
@@ -206,6 +207,7 @@ private extension SimplePaymentsSummary {
     }
 
     enum Localization {
+        static let title = NSLocalizedString("Take Payment", comment: "Title for the simple payments screen")
         static let customAmount = NSLocalizedString("Custom Amount",
                                                     comment: "Title text of the row that shows the provided amount when creating a simple payment")
         static let email = NSLocalizedString("Email",

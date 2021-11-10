@@ -423,10 +423,17 @@ extension ProductVariationsViewController: UITableViewDelegate {
             let updatedProduct = self.product.copy(variations: variationsUpdated)
             self.product = updatedProduct
         }
+
+        // Passing title to set as ProductFormViewController navigation title
+        let titleFormat = NSLocalizedString("Variation #%1$@",
+                                            comment: "Variation title. Parameters: %1$@ - Product variation ID")
+        let titleString = String.localizedStringWithFormat(titleFormat, "\(viewModel.productModel.productVariation.productVariationID)")
+
         let viewController = ProductFormViewController(viewModel: viewModel,
                                                        eventLogger: ProductVariationFormEventLogger(),
                                                        productImageActionHandler: productImageActionHandler,
                                                        currency: currency,
+                                                       titleString: titleString,
                                                        presentationStyle: .navigationStack)
         navigationController?.pushViewController(viewController, animated: true)
     }

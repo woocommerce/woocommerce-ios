@@ -4209,3 +4209,5 @@
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "החזר כספי עבור 🎉 מוצרים בוצע בהצלחה";
 
+/* Format for the variation title with variation number. Reads, `Variation #1422` */
+"Variation #%1$@" = "#%1$@ סוג";

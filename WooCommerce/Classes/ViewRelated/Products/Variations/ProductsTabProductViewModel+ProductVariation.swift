@@ -5,7 +5,13 @@ extension ProductsTabProductViewModel {
     init(productVariationModel: EditableProductVariationModel,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         imageUrl = productVariationModel.productVariation.image?.src
-        name = productVariationModel.name
+
+        // Variation number added to variation list.
+        // Here productVariationID concatenated with name
+        // See https://github.com/woocommerce/woocommerce-ios/issues/4846 for more details
+        let number = NSLocalizedString("#%1$@", comment: "Variation number. Parameters: %1$@ - Product variation ID")
+        let variationNumber = String.localizedStringWithFormat(number, "\(productVariationModel.productVariation.productVariationID)")
+        name = "\(variationNumber)\n\(productVariationModel.name)"
         detailsAttributedString = productVariationModel.createDetailsAttributedString(currencySettings: currencySettings)
 
         imageService = ServiceLocator.imageService

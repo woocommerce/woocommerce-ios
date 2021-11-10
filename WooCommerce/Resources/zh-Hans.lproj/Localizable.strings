@@ -4209,3 +4209,5 @@
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 产品已成功退款";
 
+/* Format for the variation title with variation number. Reads, `Variation #1422` */
+"Variation #%1$@" = "个变体 #%1$@";

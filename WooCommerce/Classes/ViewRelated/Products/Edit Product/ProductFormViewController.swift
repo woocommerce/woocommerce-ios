@@ -39,6 +39,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private let productUIImageLoader: ProductUIImageLoader
 
     private let currency: String
+    private let titleString: String // Navigation title
 
     private lazy var exitForm: () -> Void = {
         presentationStyle.createExitForm(viewController: self)
@@ -58,10 +59,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
          eventLogger: ProductFormEventLoggerProtocol,
          productImageActionHandler: ProductImageActionHandler,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
+         titleString: String = String(),
          presentationStyle: ProductFormPresentationStyle) {
         self.viewModel = viewModel
         self.eventLogger = eventLogger
         self.currency = currency
+        self.titleString = titleString
         self.presentationStyle = presentationStyle
         self.productImageActionHandler = productImageActionHandler
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
@@ -410,6 +413,9 @@ private extension ProductFormViewController {
     func configureNavigationBar() {
         updateNavigationBar()
         updateBackButtonTitle()
+        if titleString.isNotEmpty {
+            self.title = titleString
+        }
     }
 
     func configureMainView() {

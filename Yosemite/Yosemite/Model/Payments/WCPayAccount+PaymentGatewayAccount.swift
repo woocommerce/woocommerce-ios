@@ -15,7 +15,9 @@ public extension WCPayAccount {
             defaultCurrency: defaultCurrency,
             supportedCurrencies: supportedCurrencies,
             country: country,
-            isCardPresentEligible: isCardPresentEligible
+            isCardPresentEligible: isCardPresentEligible,
+            isLive: isLiveAccount,
+            isInTestMode: isInTestMode
         )
     }
 }

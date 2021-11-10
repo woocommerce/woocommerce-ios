@@ -65,7 +65,7 @@ public enum OrderAction: Action {
     ///
     case updateOrder(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: (Result<Order, Error>) -> Void)
 
-    /// Creates a quick order order with a specific amount value and no tax.
+    /// Creates a simple payments order with a specific amount value and no tax.
     ///
-    case createQuickOrderOrder(siteID: Int64, amount: String, onCompletion: (Result<Order, Error>) -> Void)
+    case createSimplePaymentsOrder(siteID: Int64, amount: String, onCompletion: (Result<Order, Error>) -> Void)
 }

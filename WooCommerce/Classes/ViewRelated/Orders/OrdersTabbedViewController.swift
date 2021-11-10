@@ -130,10 +130,10 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
         ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID, "status": order.status.rawValue])
     }
 
-    /// Presents `QuickOrderAmountHostingController`.
+    /// Presents `SimplePaymentsAmountHostingController`.
     ///
-    @objc private func presentQuickOrderAmountController() {
-        let viewModel = QuickOrderAmountViewModel(siteID: siteID)
+    @objc private func presentSimplePaymentsAmountController() {
+        let viewModel = SimplePaymentsAmountViewModel(siteID: siteID)
         viewModel.onOrderCreated = { [weak self] order in
             guard let self = self else { return }
 
@@ -143,11 +143,11 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
             }
         }
 
-        let viewController = QuickOrderAmountHostingController(viewModel: viewModel)
+        let viewController = SimplePaymentsAmountHostingController(viewModel: viewModel)
         let navigationController = WooNavigationController(rootViewController: viewController)
         present(navigationController, animated: true)
 
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.QuickOrder.quickOrderFlowStarted())
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
     }
 
     // MARK: - ButtonBarPagerTabStripViewController Conformance
@@ -262,16 +262,16 @@ extension OrdersTabbedViewController {
         return button
     }
 
-    /// Create a `UIBarButtonItem` to be used as a way to create a new quick order order.
+    /// Create a `UIBarButtonItem` to be used as a way to create a new simple payments order.
     ///
-    func createAddQuickOrderOrderItem() -> UIBarButtonItem {
+    func createAddSimplePaymentsOrderItem() -> UIBarButtonItem {
         let button = UIBarButtonItem(image: .plusBarButtonItemImage,
                                      style: .plain,
                                      target: self,
-                                     action: #selector(presentQuickOrderAmountController))
+                                     action: #selector(presentSimplePaymentsAmountController))
         button.accessibilityTraits = .button
-        button.accessibilityLabel = NSLocalizedString("Add quick order order", comment: "Navigates to a screen to create a quick order order")
-        button.accessibilityIdentifier = "quick-order-add-button"
+        button.accessibilityLabel = NSLocalizedString("Add simple payments order", comment: "Navigates to a screen to create a simple payments order")
+        button.accessibilityIdentifier = "simple-payments-add-button"
         return button
     }
 

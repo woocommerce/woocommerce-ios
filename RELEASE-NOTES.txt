@@ -2,7 +2,8 @@
 
 8.0
 -----
-
+- [***] Push notifications are now supported for all connected stores. [https://github.com/woocommerce/woocommerce-ios/pull/5299]
+- [*] Fix: in Settings > Switch Store, tapping "Dismiss" after selecting a different store does not switch stores anymore. [https://github.com/woocommerce/woocommerce-ios/pull/5359]
 
 7.9
 -----

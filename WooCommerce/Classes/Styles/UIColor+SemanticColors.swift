@@ -301,6 +301,18 @@ extension UIColor {
     static var softwareUpdateProgressFill: UIColor {
         return UIColor(red: 0.498, green: 0.329, blue: 0.702, alpha: 1)
     }
+
+    /// Jetpack benefits banner background color.
+    ///
+    static var jetpackBenefitsBackground: UIColor {
+        UIColor(red: 11.0/255, green: 38.0/255, blue: 33.0/255, alpha: 1)
+    }
+
+    /// Jetpack logo color.
+    ///
+    static var jetpackGreen: UIColor {
+        .withColorStudio(.jetpackGreen, shade: .shade20)
+    }
 }
 
 // MARK: - UI elements.

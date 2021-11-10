@@ -39,6 +39,10 @@ public struct SystemPlugin: Decodable, GeneratedFakeable, GeneratedCopiable {
     ///
     public let networkActivated: Bool
 
+    /// Is the plugin active, i.e. false | true
+    ///
+    public let active: Bool
+
     /// Struct initializer.
     ///
     public init(siteID: Int64,
@@ -49,7 +53,8 @@ public struct SystemPlugin: Decodable, GeneratedFakeable, GeneratedCopiable {
                 url: String,
                 authorName: String,
                 authorUrl: String,
-                networkActivated: Bool) {
+                networkActivated: Bool,
+                active: Bool) {
         self.siteID = siteID
         self.plugin = plugin
         self.name = name
@@ -59,6 +64,7 @@ public struct SystemPlugin: Decodable, GeneratedFakeable, GeneratedCopiable {
         self.authorName = authorName
         self.authorUrl = authorUrl
         self.networkActivated = networkActivated
+        self.active = active
     }
     /// The public initializer for SystemPlugin.
     ///
@@ -76,6 +82,12 @@ public struct SystemPlugin: Decodable, GeneratedFakeable, GeneratedCopiable {
         let authorUrl = try container.decode(String.self, forKey: .authorUrl)
         let networkActivated = try container.decode(Bool.self, forKey: .networkActivated)
 
+        /// Active and in-active plugins share identical structure, but are stored in separate parts of the remote response
+        /// (and without an active attribute in the response). So... we use the same decoder for active and in-active plugins
+        /// and in SystemStatusMapper we apply the correct value for active (which here is defaulted to true)
+        ///
+        let active = true
+
         self.init(siteID: siteID,
                   plugin: plugin,
                   name: name,
@@ -84,23 +96,8 @@ public struct SystemPlugin: Decodable, GeneratedFakeable, GeneratedCopiable {
                   url: url,
                   authorName: authorName,
                   authorUrl: authorUrl,
-                  networkActivated: networkActivated)
-    }
-}
-
-extension SystemPlugin {
-    func overrideNetworkActivated(isNetworkActivated: Bool) -> SystemPlugin {
-        SystemPlugin(
-            siteID: self.siteID,
-            plugin: self.plugin,
-            name: self.name,
-            version: self.version,
-            versionLatest: self.versionLatest,
-            url: self.url,
-            authorName: self.authorName,
-            authorUrl: self.authorUrl,
-            networkActivated: isNetworkActivated
-        )
+                  networkActivated: networkActivated,
+                  active: active)
     }
 }
 

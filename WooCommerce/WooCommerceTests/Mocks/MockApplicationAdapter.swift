@@ -5,7 +5,7 @@ import UIKit
 
 /// MockApplicationAdapter: UIApplication Mock!
 ///
-class MockApplicationAdapter: ApplicationAdapter {
+final class MockApplicationAdapter: ApplicationAdapter {
 
     /// Badge Count
     ///
@@ -19,9 +19,9 @@ class MockApplicationAdapter: ApplicationAdapter {
     ///
     var registerWasCalled = false
 
-    /// Messages received via the `presentInAppNotification` method.
+    /// Title, subtitle, and message tuples received via the `presentInAppNotification` method.
     ///
-    var presentInAppMessages = [String]()
+    var presentInAppMessages = [(title: String, subtitle: String?, message: String?)]()
 
     /// Notification Identifiers received via the `presentNotificationDetails` method.
     ///
@@ -37,8 +37,8 @@ class MockApplicationAdapter: ApplicationAdapter {
 
     /// Innocuous `presentInAppNotification`
     ///
-    func presentInAppNotification(message: String) {
-        presentInAppMessages.append(message)
+    func presentInAppNotification(title: String, subtitle: String?, message: String?) {
+        presentInAppMessages.append((title: title, subtitle: subtitle, message: message))
     }
 
     /// Innocuous `displayNotificationDetails`

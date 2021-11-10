@@ -197,13 +197,13 @@ extension EnvironmentValues {
 
 private extension EnvironmentValues {
     var foregroundColor: Color? {
-        get { self[ForegroundColorKey] }
-        set { self[ForegroundColorKey] = newValue }
+        get { self[ForegroundColorKey.self] }
+        set { self[ForegroundColorKey.self] = newValue }
     }
 
     var linkColor: Color? {
-        get { self[LinkColorKey] }
-        set { self[LinkColorKey] = newValue }
+        get { self[LinkColorKey.self] }
+        set { self[LinkColorKey.self] = newValue }
     }
 }
 

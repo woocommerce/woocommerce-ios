@@ -6,23 +6,23 @@ struct TitleAndValueRow: View {
 
     let title: String
     let value: Value
+    var bold: Bool = false
     let selectable: Bool
     var action: () -> Void
 
     var body: some View {
         Button(action: {
-            guard selectable else {
-                return
-            }
             action()
         }, label: {
             HStack {
-                Text(title)
-                    .bodyStyle()
-                Spacer()
-                Text(value.text)
-                    .style(for: value)
-                    .padding(.vertical, Constants.verticalPadding)
+                AdaptiveStack(horizontalAlignment: .leading) {
+                    Text(title)
+                        .style(bold: bold)
+                    Text(value.text)
+                        .style(for: value, bold: bold)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .padding(.vertical, Constants.verticalPadding)
+                }
 
                 Image(uiImage: .chevronImage)
                     .flipsForRightToLeftLayoutDirection(true)
@@ -32,6 +32,7 @@ struct TitleAndValueRow: View {
             }
             .contentShape(Rectangle())
         })
+        .disabled(!selectable)
         .frame(minHeight: Constants.minHeight)
         .padding(.horizontal, Constants.horizontalPadding)
     }
@@ -67,11 +68,13 @@ extension TitleAndValueRow {
 private extension Text {
     /// Styles the text based on the type of content.
     ///
-    @ViewBuilder func style(for value: TitleAndValueRow.Value) -> some View {
-        switch value {
-        case .placeholder:
+    @ViewBuilder func style(for value: TitleAndValueRow.Value = .content(""), bold: Bool) -> some View {
+        switch (value, bold) {
+        case (.placeholder, _):
             self.modifier(SecondaryBodyStyle())
-        case .content:
+        case (.content, true):
+            self.modifier(HeadlineStyle())
+        case (.content, false):
             self.modifier(BodyStyle(isEnabled: true))
         }
     }
@@ -96,5 +99,10 @@ struct TitleAndValueRow_Previews: PreviewProvider {
         TitleAndValueRow(title: "Package selected", value: .placeholder("Small package 2"), selectable: false, action: { })
             .previewLayout(.fixed(width: 375, height: 100))
             .previewDisplayName("Row Not Selectable")
+
+        TitleAndValueRow(title: "Package selected", value: .placeholder("Small"), selectable: true, action: { })
+            .environment(\.sizeCategory, .accessibilityExtraLarge)
+            .previewLayout(.fixed(width: 375, height: 150))
+            .previewDisplayName("Dynamic Type: Large Font Size")
     }
 }

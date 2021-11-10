@@ -352,11 +352,54 @@ final class ReceiptStoreTests: XCTestCase {
         }
         XCTAssertEqual("30.00", lineItemsTotalLine?.amount)
     }
+
+    func test_generateContent_callsGenerate_passingUnmodified_customerNote() throws {
+        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        let expectedNote = "<a href=\"https://example.com\">This note has a link</a>"
+        let mockOrder = makeOrder(customerNote: expectedNote)
+        let expectation = expectation(description: #function)
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        let action = ReceiptAction.generateContent(
+            order: mockOrder,
+            parameters: mockParameters,
+            onContent: { content in
+                XCTAssert(content.contains(expectedNote))
+                expectation.fulfill()
+        })
+
+        receiptStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func test_print_callsPrint_passingHTMLStripped_customerNote() throws {
+        let mockParameters = try XCTUnwrap(MockPaymentIntent.mock().receiptParameters())
+        let mockOrder = makeOrder(customerNote: "<a href=\"https://example.com\">This note has a link</a>")
+
+        let receiptStore = ReceiptStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        receiptPrinterService: receiptPrinterService,
+                                        fileStorage: MockInMemoryStorage())
+
+        let action = ReceiptAction.print(order: mockOrder, parameters: mockParameters, completion: { _ in })
+
+        receiptStore.onAction(action)
+
+        XCTAssertEqual(receiptPrinterService.contentProvided?.orderNote, "This note has a link")
+    }
 }
 
 
 private extension ReceiptStoreTests {
-    func makeOrder(discountTotal: String = "",
+    func makeOrder(customerNote: String? = nil,
+                   discountTotal: String = "",
                    discountTax: String = "",
                    shippingTotal: String = "",
                    shippingTax: String = "",
@@ -371,7 +414,7 @@ private extension ReceiptStoreTests {
               number: "",
               status: .custom(""),
               currency: "usd",
-              customerNote: nil,
+              customerNote: customerNote,
               dateCreated: Date(),
               dateModified: Date(),
               datePaid: nil,

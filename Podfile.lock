@@ -72,7 +72,7 @@ PODS:
     - CocoaLumberjack (~> 3.4)
     - FormatterKit/TimeIntervalFormatter (~> 1.8)
   - WordPressUI (1.12.1)
-  - Wormholy (1.6.4)
+  - Wormholy (1.6.5)
   - WPMediaPicker (1.7.3)
   - wpxmlrpc (0.9.0)
   - XLPagerTabStrip (9.0.0)
@@ -106,7 +106,7 @@ DEPENDENCIES:
   - WordPressKit (~> 4.40.0)
   - WordPressShared (~> 1.15)
   - WordPressUI (~> 1.12.1)
-  - Wormholy (~> 1.6.4)
+  - Wormholy (~> 1.6.5)
   - WPMediaPicker (~> 1.7.3)
   - XLPagerTabStrip (~> 9.0)
   - ZendeskSupportSDK (~> 5.0)
@@ -185,7 +185,7 @@ SPEC CHECKSUMS:
   WordPressKit: 062e4f57ce871e2217b632a1f3cb0bbd54b5df6d
   WordPressShared: 5477f179c7fe03b5d574f91adda66f67d131827e
   WordPressUI: 414bf3a7d007618f94a1c7969d6e849779877d5d
-  Wormholy: 2e70f64227e010d363f8d33268369f77faf12471
+  Wormholy: 3252bc3e55a1847ef9a0976c1377bd77bf3635fa
   WPMediaPicker: 4af3fdfba06541ada2613178f8c01175671c38a8
   wpxmlrpc: bf55a43a7e710bd2a4fb8c02dfe83b1246f14f13
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
@@ -197,6 +197,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2bdf8544f7cd0fd4c002546f5704b813845beb2a
   ZendeskSupportSDK: 3a8e508ab1d9dd22dc038df6c694466414e037ba
 
-PODFILE CHECKSUM: e2390cd9575ca564887732526a4daf7f03484171
+PODFILE CHECKSUM: 1905144529d4d224bebb1e178da8509f9934af25
 
 COCOAPODS: 1.11.2

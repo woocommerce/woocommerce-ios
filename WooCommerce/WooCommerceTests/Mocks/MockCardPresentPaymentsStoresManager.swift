@@ -111,4 +111,8 @@ extension MockCardPresentPaymentsStoresManager {
     func simulateUpdateStarted() {
         softwareUpdateSubject.send(.started(cancelable: nil))
     }
+
+    func simulateOptionalUpdateAvailable() {
+        softwareUpdateSubject.send(.available)
+    }
 }

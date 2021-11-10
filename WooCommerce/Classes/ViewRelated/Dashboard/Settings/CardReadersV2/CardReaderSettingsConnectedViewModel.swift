@@ -27,6 +27,8 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     var connectedReaderBatteryLevel: String?
     var connectedReaderSoftwareVersion: String?
 
+    var delayToShowUpdateSuccessMessage: DispatchTimeInterval = .seconds(1)
+
     init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?, knownReaderProvider: CardReaderSettingsKnownReaderProvider? = nil) {
         self.didChangeShouldShow = didChangeShouldShow
         self.knownReaderProvider = knownReaderProvider
@@ -77,7 +79,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
                         ServiceLocator.analytics.track(.cardReaderSoftwareUpdateSuccess)
                         // If we were installing a software update, introduce a small delay so the user can
                         // actually see a success message showing the installation was complete
-                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) { [weak self] in
+                        DispatchQueue.main.asyncAfter(deadline: .now() + self.delayToShowUpdateSuccessMessage) { [weak self] in
                             self?.completeCardReaderUpdate(success: true)
                         }
                     case .available:
@@ -148,7 +150,8 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     }
 
     private func completeCardReaderUpdate(success: Bool) {
-        optionalReaderUpdateAvailable = !success
+        //Avoids a failed mandatory reader update being shown as optional
+        optionalReaderUpdateAvailable = optionalReaderUpdateAvailable && !success
         readerUpdateProgress = nil
         didUpdate?()
     }

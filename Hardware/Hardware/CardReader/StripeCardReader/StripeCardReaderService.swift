@@ -503,7 +503,12 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
                 error: CardReaderServiceError.softwareUpdate(underlyingError: UnderlyingError(with: error),
                                                              batteryLevel: reader.batteryLevel?.doubleValue))
             )
-            softwareUpdateSubject.send(.available)
+            if let requiredDate = update?.requiredAt,
+               requiredDate > Date() {
+                softwareUpdateSubject.send(.available)
+            } else {
+                softwareUpdateSubject.send(.none)
+            }
         } else {
             softwareUpdateSubject.send(.completed)
             softwareUpdateSubject.send(.none)

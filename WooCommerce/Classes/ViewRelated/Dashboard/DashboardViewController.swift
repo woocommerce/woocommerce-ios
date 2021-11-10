@@ -72,7 +72,6 @@ final class DashboardViewController: UIViewController {
     }()
 
     private lazy var bottomJetpackBenefitsBannerController = JetpackBenefitsBannerHostingController()
-    private var bottomJetpackBenefitsBannerHeightConstraint: NSLayoutConstraint?
     private var contentBottomToJetpackBenefitsBannerConstraint: NSLayoutConstraint?
     private var contentBottomToContainerConstraint: NSLayoutConstraint?
 
@@ -119,12 +118,6 @@ final class DashboardViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         dashboardUI?.view.frame = containerView.bounds
-
-        // Recalculates the height for Jetpack benefits bottom banner whenever the frame changes.
-        if isJetpackBenefitsBannerShown() {
-            let size = bottomJetpackBenefitsBannerController.sizeThatFits(in: containerView.bounds.size)
-            bottomJetpackBenefitsBannerHeightConstraint?.constant = size.height
-        }
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -356,9 +349,6 @@ private extension DashboardViewController {
         banner.translatesAutoresizingMaskIntoConstraints = false
 
         // The banner height is calculated in `viewDidLayoutSubviews` to support rotation.
-        let bottomJetpackBenefitsBannerHeight = banner.heightAnchor.constraint(equalToConstant: 0)
-        self.bottomJetpackBenefitsBannerHeightConstraint = bottomJetpackBenefitsBannerHeight
-
         let contentBottomToJetpackBenefitsBannerConstraint = banner.topAnchor.constraint(equalTo: contentView.bottomAnchor)
         self.contentBottomToJetpackBenefitsBannerConstraint = contentBottomToJetpackBenefitsBannerConstraint
 
@@ -368,7 +358,6 @@ private extension DashboardViewController {
             banner.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             // Pins from the safe area layout bottom to accommodate offline banner.
             banner.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
-            bottomJetpackBenefitsBannerHeight
         ])
     }
 

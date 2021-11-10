@@ -8,7 +8,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
     /// Aggregates the filter values that can be updated in the Filter Order UI.
     struct Filters: Equatable {
         let orderStatus: OrderStatusEnum?
-        let dateRange: OrderDateRangeFilterEnum?
+        let dateRange: OrderDateRangeFilter?
 
         let numberOfActiveFilters: Int
 
@@ -19,7 +19,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
         }
 
         init(orderStatus: OrderStatusEnum?,
-             dateRange: OrderDateRangeFilterEnum?,
+             dateRange: OrderDateRangeFilter?,
              numberOfActiveFilters: Int) {
             self.orderStatus = orderStatus
             self.dateRange = dateRange
@@ -45,7 +45,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
 
     var criteria: Filters {
         let orderStatus = orderStatusFilterViewModel.selectedValue as? OrderStatusEnum ?? nil
-        let dateRange = dateRangeFilterViewModel.selectedValue as? OrderDateRangeFilterEnum ?? nil
+        let dateRange = dateRangeFilterViewModel.selectedValue as? OrderDateRangeFilter ?? nil
         let numberOfActiveFilters = filterTypeViewModels.numberOfActiveFilters
         return Filters(orderStatus: orderStatus,
                        dateRange: dateRange,
@@ -56,7 +56,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
         let clearedOrderStatus: OrderStatusEnum? = nil
         orderStatusFilterViewModel.selectedValue = clearedOrderStatus
 
-        let clearedDateRange: OrderDateRangeFilterEnum? = nil
+        let clearedDateRange: OrderDateRangeFilter? = nil
         dateRangeFilterViewModel.selectedValue = clearedDateRange
     }
 }
@@ -90,9 +90,8 @@ extension FilterOrderListViewModel.OrderListFilter {
                                        listSelectorConfig: .staticOptions(options: options),
                                        selectedValue: filters.orderStatus)
         case .dateRange:
-            let options: [OrderDateRangeFilterEnum?] = [nil, .today, .last2Days, .thisWeek, .thisMonth, .custom]
             return FilterTypeViewModel(title: title,
-                                       listSelectorConfig: .staticOptions(options: options),
+                                       listSelectorConfig: .ordersDateRange,
                                        selectedValue: filters.dateRange)
         }
     }

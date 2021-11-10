@@ -81,14 +81,14 @@ final class OrderListViewModel {
     ///
     private let inPersonPaymentsReadyUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
 
-    /// Tracks if the merchant has enabled the Quick Order experimental feature toggle
+    /// Tracks if the merchant has enabled the Simple Payments experimental feature toggle
     ///
-    @Published private var isQuickOrderEnabled = false
+    @Published private var isSimplePaymentsEnabled = false
 
-    /// If true, no quick order banner will be shown as the user has told us that they are not interested in this information.
+    /// If true, no simple payments banner will be shown as the user has told us that they are not interested in this information.
     /// Resets with every session.
     ///
-    @Published var hideQuickOrderBanners: Bool = false
+    @Published var hideSimplePaymentsBanners: Bool = false
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -228,14 +228,14 @@ private extension OrderListViewModel {
     }
 }
 
-// MARK: Quick Order
+// MARK: Simple Payments
 
 extension OrderListViewModel {
-    /// Reloads the state of the Quick Order experimental feature switch state.
+    /// Reloads the state of the Simple Payments experimental feature switch state.
     ///
-    func reloadQuickOrderExperimentalFeatureState() {
-        let action = AppSettingsAction.loadQuickOrderSwitchState { [weak self] result in
-            self?.isQuickOrderEnabled = (try? result.get()) ?? false
+    func reloadSimplePaymentsExperimentalFeatureState() {
+        let action = AppSettingsAction.loadSimplePaymentsSwitchState { [weak self] result in
+            self?.isSimplePaymentsEnabled = (try? result.get()) ?? false
         }
         stores.dispatch(action)
     }
@@ -245,9 +245,9 @@ extension OrderListViewModel {
     private func bindTopBannerState() {
         let enrolledState = inPersonPaymentsReadyUseCase.statePublisher.removeDuplicates()
         let errorState = $hasErrorLoadingData.removeDuplicates()
-        let experimentalState = $isQuickOrderEnabled.removeDuplicates()
-        Publishers.CombineLatest4(enrolledState, errorState, experimentalState, $hideQuickOrderBanners)
-            .map { enrolledState, hasError, isQuickOrderEnabled, hasDismissedBanners -> TopBanner in
+        let experimentalState = $isSimplePaymentsEnabled.removeDuplicates()
+        Publishers.CombineLatest4(enrolledState, errorState, experimentalState, $hideSimplePaymentsBanners)
+            .map { enrolledState, hasError, isSimplePaymentsEnabled, hasDismissedBanners -> TopBanner in
 
                 guard !hasError else {
                     return .error
@@ -257,11 +257,11 @@ extension OrderListViewModel {
                     return .none
                 }
 
-                switch (enrolledState, isQuickOrderEnabled) {
+                switch (enrolledState, isSimplePaymentsEnabled) {
                 case (.completed, false):
-                    return .quickOrderDisabled
+                    return .simplePaymentsDisabled
                 case (.completed, true):
-                    return .quickOrderEnabled
+                    return .simplePaymentsEnabled
                 default:
                     return .none
                 }
@@ -306,8 +306,8 @@ extension OrderListViewModel {
     ///
     enum TopBanner {
         case error
-        case quickOrderEnabled
-        case quickOrderDisabled
+        case simplePaymentsEnabled
+        case simplePaymentsDisabled
         case none
     }
 }

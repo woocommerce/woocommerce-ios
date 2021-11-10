@@ -19,7 +19,8 @@ extension PaymentGatewayAccount {
     @NSManaged public var statementDescriptor: String
     @NSManaged public var status: String
     @NSManaged public var supportedCurrencies: [String]
-
+    @NSManaged public var isLive: Bool
+    @NSManaged public var isInTestMode: Bool
 }
 
 extension PaymentGatewayAccount: Identifiable {

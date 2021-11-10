@@ -21,11 +21,13 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .pushNotificationsForAllStores:
             return true
-        case .quickOrderPrototype:
+        case .simplePaymentsPrototype:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .orderListFilters:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .filterProductsByCategory:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .jetpackConnectionPackageSupport:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

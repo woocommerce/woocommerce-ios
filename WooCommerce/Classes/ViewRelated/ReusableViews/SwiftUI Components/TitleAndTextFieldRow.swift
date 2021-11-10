@@ -25,22 +25,23 @@ struct TitleAndTextFieldRow: View {
     }
 
     var body: some View {
-        HStack {
+        AdaptiveStack(horizontalAlignment: .leading) {
             Text(title)
                 .bodyStyle()
                 .lineLimit(1)
                 .fixedSize()
-            Spacer()
-            TextField(placeholder, text: $text, onEditingChanged: onEditingChanged ?? { _ in })
-                .multilineTextAlignment(.trailing)
-                .font(.body)
-                .keyboardType(keyboardType)
-            if let symbol = symbol {
-                Text(symbol)
-                    .bodyStyle()
+            HStack {
+                TextField(placeholder, text: $text, onEditingChanged: onEditingChanged ?? { _ in })
+                    .multilineTextAlignment(.trailing)
+                    .font(.body)
+                    .keyboardType(keyboardType)
+                if let symbol = symbol {
+                    Text(symbol)
+                        .bodyStyle()
+                }
             }
         }
-        .frame(height: Constants.height)
+        .frame(minHeight: Constants.height)
         .padding([.leading, .trailing], Constants.padding)
     }
 }
@@ -77,5 +78,23 @@ struct TitleAndTextFieldRow_Previews: PreviewProvider {
                              keyboardType: .default)
             .previewLayout(.fixed(width: 375, height: 100))
             .previewDisplayName("With symbol")
+
+        TitleAndTextFieldRow(title: "Add your text",
+                             placeholder: "Start typing",
+                             text: .constant("Hello"),
+                             symbol: nil,
+                             keyboardType: .default)
+            .environment(\.sizeCategory, .accessibilityExtraLarge)
+            .previewLayout(.fixed(width: 375, height: 150))
+            .previewDisplayName("Dynamic Type: Large Font Size")
+
+        TitleAndTextFieldRow(title: "Total package weight",
+                             placeholder: "Value",
+                             text: .constant(""),
+                             symbol: "oz",
+                             keyboardType: .default)
+            .environment(\.sizeCategory, .accessibilityExtraLarge)
+            .previewLayout(.fixed(width: 375, height: 150))
+            .previewDisplayName("Dynamic Type: Large Font Size with symbol")
     }
 }

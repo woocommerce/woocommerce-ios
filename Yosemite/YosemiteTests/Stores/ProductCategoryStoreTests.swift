@@ -58,65 +58,75 @@ final class ProductCategoryStoreTests: XCTestCase {
         super.tearDown()
     }
 
-    func testSynchronizeProductCategoriesReturnsCategoriesUponSuccessfulResponse() throws {
+    func test_synchronizeProductCategories_then_it_returns_categories_upon_successful_response() throws {
         // Given a stubed product-categories network response
-        let expectation = self.expectation(description: #function)
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-all")
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-empty")
         XCTAssertEqual(storedProductCategoriesCount, 0)
 
         // When dispatching a `synchronizeProductCategories` action
-        var errorResponse: ProductCategoryActionError?
-        let action = ProductCategoryAction.synchronizeProductCategories(siteID: sampleSiteID, fromPageNumber: defaultPageNumber) { error in
-            errorResponse = error
-            expectation.fulfill()
+        let errorResponse: ProductCategoryActionError? = waitFor { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            let action = ProductCategoryAction.synchronizeProductCategories(siteID: self.sampleSiteID, fromPageNumber: self.defaultPageNumber) { error in
+                promise(error)
+            }
+
+            self.store.onAction(action)
         }
-        store.onAction(action)
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
 
         // Then a valid set of categories should be stored
         XCTAssertEqual(storedProductCategoriesCount, 2)
         XCTAssertNil(errorResponse)
     }
 
-    func testSynchronizeProductCategoriesReturnsCategoriesUponPaginatedResponse() throws {
+    func test_synchronizeProductCategories_then_it_returns_categories_upon_paginated_response() throws {
         // Given a stubed product-categories network response
-        let expectation = self.expectation(description: #function)
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-all")
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-extra")
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-empty")
         XCTAssertEqual(storedProductCategoriesCount, 0)
 
         // When dispatching a `synchronizeProductCategories` action
-        var errorResponse: ProductCategoryActionError?
-        let action = ProductCategoryAction.synchronizeProductCategories(siteID: sampleSiteID, fromPageNumber: defaultPageNumber) { error in
-            errorResponse = error
-            expectation.fulfill()
+        let errorResponse: ProductCategoryActionError? = waitFor { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            let action = ProductCategoryAction.synchronizeProductCategories(siteID: self.sampleSiteID, fromPageNumber: self.defaultPageNumber) { error in
+                promise(error)
+            }
+
+            self.store.onAction(action)
         }
-        store.onAction(action)
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
 
         // Then a the combined set of categories should be stored
         XCTAssertEqual(storedProductCategoriesCount, 3)
         XCTAssertNil(errorResponse)
     }
 
-    func testSynchronizeProductCategoriesUpdatesStoredCategoriesSuccessfulResponse() {
+    func test_synchronizeProductCategories_then_it_updates_stored_categories_upon_succesful_response() {
         // Given an initial stored category and a stubed product-categories network response
-        let expectation = self.expectation(description: #function)
         let initialCategory = sampleCategory(categoryID: 20)
         storageManager.insertSampleProductCategory(readOnlyProductCategory: initialCategory)
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-all")
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-empty")
 
         // When dispatching a `synchronizeProductCategories` action
-        var errorResponse: ProductCategoryActionError?
-        let action = ProductCategoryAction.synchronizeProductCategories(siteID: sampleSiteID, fromPageNumber: defaultPageNumber) { error in
-            errorResponse = error
-            expectation.fulfill()
+        let errorResponse: ProductCategoryActionError? = waitFor { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            let action = ProductCategoryAction.synchronizeProductCategories(siteID: self.sampleSiteID, fromPageNumber: self.defaultPageNumber) { error in
+                promise(error)
+            }
+
+            self.store.onAction(action)
         }
-        store.onAction(action)
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+
 
         // Then the initial category should have it's values updated
         let updatedCategory = viewStorage.loadProductCategory(siteID: sampleSiteID, categoryID: initialCategory.categoryID)
@@ -126,21 +136,24 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertNil(errorResponse)
     }
 
-    func testSynchronizeProductCategoriesReturnsErrorUponPaginatedReponseError() {
+    func test_synchronizeProductCategories_then_it_returns_error_upon_paginated_response_error() {
         // Given a stubed first page category response and second page generic-error network response
-        let expectation = self.expectation(description: #function)
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-all")
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "generic_error")
         XCTAssertEqual(storedProductCategoriesCount, 0)
 
         // When dispatching a `synchronizeProductCategories` action
-        var errorResponse: ProductCategoryActionError?
-        let action = ProductCategoryAction.synchronizeProductCategories(siteID: sampleSiteID, fromPageNumber: defaultPageNumber) { error in
-            errorResponse = error
-            expectation.fulfill()
+        let errorResponse: ProductCategoryActionError? = waitFor { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            let action = ProductCategoryAction.synchronizeProductCategories(siteID: self.sampleSiteID, fromPageNumber: self.defaultPageNumber) { error in
+                promise(error)
+            }
+
+            self.store.onAction(action)
         }
-        store.onAction(action)
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
 
         // Then first page of categories should be stored
         XCTAssertEqual(storedProductCategoriesCount, 2)
@@ -151,49 +164,55 @@ final class ProductCategoryStoreTests: XCTestCase {
             XCTAssertEqual(pageNumber, 2)
         case .none:
             XCTFail("errorResponse should not be nil")
+        default:
+            break
         }
     }
 
-    func testSynchronizeProductCategoriesReturnsErrorUponReponseError() {
+    func test_synchronizeProductCategories_then_it_returns_error_upon_response_error() {
         // Given a stubed generic-error network response
-        let expectation = self.expectation(description: #function)
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "generic_error")
         XCTAssertEqual(storedProductCategoriesCount, 0)
 
         // When dispatching a `synchronizeProductCategories` action
-        var errorResponse: ProductCategoryActionError?
-        let action = ProductCategoryAction.synchronizeProductCategories(siteID: sampleSiteID, fromPageNumber: defaultPageNumber) { error in
-            errorResponse = error
-            expectation.fulfill()
+        let errorResponse: ProductCategoryActionError? = waitFor { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            let action = ProductCategoryAction.synchronizeProductCategories(siteID: self.sampleSiteID, fromPageNumber: self.defaultPageNumber) { error in
+               promise(error)
+            }
+            self.store.onAction(action)
         }
-        store.onAction(action)
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
 
         // Then no categories should be stored
         XCTAssertEqual(storedProductCategoriesCount, 0)
         XCTAssertNotNil(errorResponse)
     }
 
-    func testSynchronizeProductCategoriesReturnsErrorUponEmptyResponse() {
+    func test_synchronizeProductCategories_then_it_returns_error_upon_empty_response() {
         // Given a an empty network response
-        let expectation = self.expectation(description: #function)
         XCTAssertEqual(storedProductCategoriesCount, 0)
 
         // When dispatching a `synchronizeProductCategories` action
-        var errorResponse: ProductCategoryActionError?
-        let action = ProductCategoryAction.synchronizeProductCategories(siteID: sampleSiteID, fromPageNumber: defaultPageNumber) { error in
-            errorResponse = error
-            expectation.fulfill()
+        let errorResponse: ProductCategoryActionError? = waitFor { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            let action = ProductCategoryAction.synchronizeProductCategories(siteID: self.sampleSiteID, fromPageNumber: self.defaultPageNumber) { error in
+                promise(error)
+            }
+            self.store.onAction(action)
         }
-        store.onAction(action)
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
 
         // Then no categories should be stored
         XCTAssertEqual(storedProductCategoriesCount, 0)
         XCTAssertNotNil(errorResponse)
     }
 
-    func testAddProductCategoryAddsStoredCategorySuccessfulResponse() {
+    func test_addProductCategory_then_it_adds_storedCategory_when_a_successful_response() {
         // Given a stubed product category network response
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "category")
 
@@ -211,15 +230,11 @@ final class ProductCategoryStoreTests: XCTestCase {
         // Then the category should be added
         let addedCategory = viewStorage.loadProductCategory(siteID: sampleSiteID, categoryID: 104)
         XCTAssertNotNil(addedCategory)
-        XCTAssertEqual(addedCategory?.categoryID, 104)
-        XCTAssertEqual(addedCategory?.parentID, 0)
-        XCTAssertEqual(addedCategory?.siteID, sampleSiteID)
-        XCTAssertEqual(addedCategory?.name, "Dress")
-        XCTAssertEqual(addedCategory?.slug, "Shirt")
+        assertAddedCategoryTookDataFromMockedNetworkData(addedCategory)
         XCTAssertNil(result?.failure)
     }
 
-    func testAddProductCategoryReturnsErrorUponReponseError() {
+    func test_addProductCategory_then_it_returns_error_upon_response_error() {
         // Given a stubed generic-error network response
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "generic_error")
         XCTAssertEqual(storedProductCategoriesCount, 0)
@@ -240,7 +255,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertNotNil(result?.failure)
     }
 
-    func testAddProductCategoryReturnsErrorUponEmptyResponse() {
+    func test_addProductCategory_then_it_returns_error_upon_empty_error() {
         // Given a an empty network response
         XCTAssertEqual(storedProductCategoriesCount, 0)
 
@@ -259,9 +274,8 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertNotNil(result?.failure)
     }
 
-    func testSynchronizeProductCategoriesDeletesUnusedCategories() {
+    func test_synchronizeProductCategories_then_it_deletes_unused_categories() {
         // Given some stored product categories without product relationships
-        let expectation = self.expectation(description: #function)
         let sampleCategories = (1...5).map { id in
             return sampleCategory(categoryID: id)
         }
@@ -273,19 +287,100 @@ final class ProductCategoryStoreTests: XCTestCase {
         // When dispatching a `synchronizeProductCategories` action
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-all")
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-empty")
-        let action = ProductCategoryAction.synchronizeProductCategories(siteID: sampleSiteID, fromPageNumber: defaultPageNumber) { _ in
-            expectation.fulfill()
+
+        let _: Bool = waitFor { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            let action = ProductCategoryAction.synchronizeProductCategories(siteID: self.sampleSiteID, fromPageNumber: self.defaultPageNumber) { _ in
+                promise(true)
+            }
+            self.store.onAction(action)
         }
-        store.onAction(action)
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
 
         // Then new categories should be stored and old categories should be deleted
         XCTAssertEqual(storedProductCategoriesCount, 2)
+    }
+
+    func test_synchronizeProductCategory_successfully_then_it_stores_the_requested_category() {
+        let categoryID: Int64 = 123
+        network.simulateResponse(requestUrlSuffix: "products/categories/\(categoryID)", filename: "category")
+
+        let addedCategory: Storage.ProductCategory? = waitFor { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            let action = ProductCategoryAction.synchronizeProductCategory(siteID: self.sampleSiteID, categoryID: categoryID) { result in
+                promise(self.viewStorage.loadProductCategory(siteID: self.sampleSiteID, categoryID: 104))
+            }
+
+            self.store.onAction(action)
+        }
+
+        assertAddedCategoryTookDataFromMockedNetworkData(addedCategory)
+    }
+
+    func test_synchronizeProductCategory_successfully_then_it_provides_the_requested_category() {
+        let categoryID: Int64 = 123
+        network.simulateResponse(requestUrlSuffix: "products/categories/\(categoryID)", filename: "category")
+
+        let result: Result<Networking.ProductCategory, Error>? = waitFor { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            let action = ProductCategoryAction.synchronizeProductCategory(siteID: self.sampleSiteID, categoryID: categoryID) { result in
+                promise(result)
+            }
+
+            self.store.onAction(action)
+        }
+
+        XCTAssertEqual(try result?.get().name, "Dress")
+    }
+
+    func test_synchronizeProductCategory_fails_with_resourceDoesNotExist_then_it_provides_right_error() {
+        let categoryID: Int64 = 123
+        network.simulateError(requestUrlSuffix: "products/categories/\(categoryID)", error: DotcomError.resourceDoesNotExist)
+
+        let retrievedError: Error? = waitFor { [weak self] promise in
+            guard let self = self else {
+                return
+            }
+
+            let action = ProductCategoryAction.synchronizeProductCategory(siteID: self.sampleSiteID, categoryID: categoryID) { result in
+                switch result {
+                case .failure(let error):
+                    promise(error)
+                default:
+                    break
+                }
+            }
+
+            self.store.onAction(action)
+        }
+
+        guard let error = retrievedError as? ProductCategoryActionError,
+              case .categoryDoesNotExistRemotely = error else {
+            XCTFail()
+            return
+        }
     }
 }
 
 private extension ProductCategoryStoreTests {
     func sampleCategory(categoryID: Int64) -> Networking.ProductCategory {
         return Networking.ProductCategory(categoryID: categoryID, siteID: sampleSiteID, parentID: 0, name: "Sample", slug: "Sample")
+    }
+
+    func assertAddedCategoryTookDataFromMockedNetworkData(_ productCategory: Storage.ProductCategory?) {
+        XCTAssertNotNil(productCategory)
+        XCTAssertEqual(productCategory?.categoryID, 104)
+        XCTAssertEqual(productCategory?.parentID, 0)
+        XCTAssertEqual(productCategory?.siteID, sampleSiteID)
+        XCTAssertEqual(productCategory?.name, "Dress")
+        XCTAssertEqual(productCategory?.slug, "Shirt")
     }
 }

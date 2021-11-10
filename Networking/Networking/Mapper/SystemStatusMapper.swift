@@ -19,14 +19,16 @@ struct SystemStatusMapper: Mapper {
 
         let systemStatus = try decoder.decode(SystemStatusEnvelope.self, from: response).systemStatus
 
-        /// For now, we're going to override the networkActivated Bool in each plugin to convey active or inactive -- in order to
-        /// avoid a core data change to add a Bool for activated
-        /// This will be undone in #5269
+        /// Active and in-active plugins share identical structure, but are stored in separate parts of the remote response
+        /// (and without an active attribute in the response). So... we use the same decoder for active and in-active plugins
+        /// and here we apply the correct value for active (or not)
+        ///
         let activePlugins = systemStatus.activePlugins.map {
-            $0.overrideNetworkActivated(isNetworkActivated: true)
+            $0.copy(active: true)
         }
+
         let inactivePlugins = systemStatus.inactivePlugins.map {
-            $0.overrideNetworkActivated(isNetworkActivated: false)
+            $0.copy(active: false)
         }
 
         return activePlugins + inactivePlugins

@@ -31,7 +31,7 @@ struct SimplePaymentsSummary: View {
 
             TakePaymentSection()
         }
-        .background(Color(.listBackground))
+        .background(Color(.listBackground).ignoresSafeArea())
         .navigationTitle(Localization.title)
     }
 }

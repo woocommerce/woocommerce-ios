@@ -681,6 +681,7 @@
 		45AF9DA5265CEA89001EB794 /* ShippingLabelCarriersViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AF9DA4265CEA89001EB794 /* ShippingLabelCarriersViewModelTests.swift */; };
 		45AF9DAA265CEAA3001EB794 /* ShippingLabelCarrierRowViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AF9DA9265CEAA3001EB794 /* ShippingLabelCarrierRowViewModelTests.swift */; };
 		45AF9DAF265CFAB4001EB794 /* MockShippingLabelCarrierRate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AF9DAE265CFAB4001EB794 /* MockShippingLabelCarrierRate.swift */; };
+		45B0DF3B273C20120026DC61 /* OrdersRootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45B0DF39273C20120026DC61 /* OrdersRootViewController.xib */; };
 		45B98E1F25DECC1C00A1232B /* ShippingLabelAddressFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B98E1E25DECC1C00A1232B /* ShippingLabelAddressFormViewModelTests.swift */; };
 		45B9C63E23A8E50D007FC4C5 /* ProductPriceSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B9C63C23A8E50D007FC4C5 /* ProductPriceSettingsViewController.swift */; };
 		45B9C63F23A8E50D007FC4C5 /* ProductPriceSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45B9C63D23A8E50D007FC4C5 /* ProductPriceSettingsViewController.xib */; };
@@ -2111,6 +2112,7 @@
 		45AF9DA4265CEA89001EB794 /* ShippingLabelCarriersViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCarriersViewModelTests.swift; sourceTree = "<group>"; };
 		45AF9DA9265CEAA3001EB794 /* ShippingLabelCarrierRowViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCarrierRowViewModelTests.swift; sourceTree = "<group>"; };
 		45AF9DAE265CFAB4001EB794 /* MockShippingLabelCarrierRate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockShippingLabelCarrierRate.swift; sourceTree = "<group>"; };
+		45B0DF39273C20120026DC61 /* OrdersRootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrdersRootViewController.xib; sourceTree = "<group>"; };
 		45B98E1E25DECC1C00A1232B /* ShippingLabelAddressFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddressFormViewModelTests.swift; sourceTree = "<group>"; };
 		45B9C63C23A8E50D007FC4C5 /* ProductPriceSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPriceSettingsViewController.swift; sourceTree = "<group>"; };
 		45B9C63D23A8E50D007FC4C5 /* ProductPriceSettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductPriceSettingsViewController.xib; sourceTree = "<group>"; };
@@ -5852,6 +5854,7 @@
 				CE35F1092343E482007B2A6B /* Order Details */,
 				2678897A270E6E3C00BD249E /* Simple Payments */,
 				0206483923FA4160008441BB /* OrdersRootViewController.swift */,
+				45B0DF39273C20120026DC61 /* OrdersRootViewController.xib */,
 				CEE005F52076C4040079161F /* Orders.storyboard */,
 				57C503DB23E8C70C00EC0790 /* OrdersTabbedViewController.swift */,
 				57C503DD23E8CE0D00EC0790 /* OrdersTabbedViewController.xib */,
@@ -7145,6 +7148,7 @@
 				4512055324655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.xib in Resources */,
 				B59D1EE821908A08009D1978 /* Noticons.ttf in Resources */,
 				D81F2D35225F0CF70084BF9C /* EmptyListMessageWithActionView.xib in Resources */,
+				45B0DF3B273C20120026DC61 /* OrdersRootViewController.xib in Resources */,
 				022F7A0424A05F6400012601 /* LinkedProductsListSelectorViewController.xib in Resources */,
 				456CB50E2444BFAC00992A05 /* ProductPurchaseNoteViewController.xib in Resources */,
 				023A059B24135F2600E3FC99 /* ReviewsViewController.xib in Resources */,

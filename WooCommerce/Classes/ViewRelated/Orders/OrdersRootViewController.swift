@@ -2,22 +2,11 @@ import UIKit
 import Yosemite
 import Combine
 
-/// The root tab controller for Orders.
-///
-/// This is really just a container for `OrdersTabbedViewController` with subtle fixes for the
-/// XLPagerTabStrip bug in landscape. See PR#1851 (https://git.io/Jvzg8) for more information
-/// about the bug.
-///
-/// If we eventually get XLPagerTabStrip replaced, we can merge this class with
-/// `OrdersTabbedViewController`.
-///
-/// If you need to add additional logic, probably consider adding it to `OrdersTabbedViewController`
-/// instead if possible.
+/// The root tab controller for Orders, which contains the `OrderListViewController` .
 ///
 final class OrdersRootViewController: UIViewController {
 
     // MARK: Child view controller
-
     private lazy var ordersViewController = OrderListViewController(
         siteID: siteID,
         title: Localization.defaultOrderListTitle,
@@ -55,6 +44,7 @@ final class OrdersRootViewController: UIViewController {
         self.siteID = siteID
         super.init(nibName: nil, bundle: nil)
 
+        ordersViewController.delegate = self
         configureTitle()
         configureTabBarItem()
     }
@@ -75,12 +65,6 @@ final class OrdersRootViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         // Needed in ViewWillAppear because this View Controller is never recreated.
         fetchSimplePaymentsExperimentalToggleAndConfigureNavigationButtons()
-    }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        // The magical fix for XLPagerTabStrip landscape issue. h/t @jaclync https://git.io/JvzgK
-        ordersViewController.view.frame = containerView.bounds
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -196,7 +180,11 @@ private extension OrdersRootViewController {
     }
 }
 
-extension OrdersRootViewController: OrdersTabbedViewControllerScrollDelegate {
+extension OrdersRootViewController: OrderListViewControllerDelegate {
+    func orderListViewControllerWillSynchronizeOrders(_ viewController: UIViewController) {
+        // Do nothing here
+    }
+
     func orderListScrollViewDidScroll(_ scrollView: UIScrollView) {
         hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
     }

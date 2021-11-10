@@ -15,6 +15,10 @@ public enum ProductCategoryAction: Action {
     ///
     case addProductCategory(siteID: Int64, name: String, parentID: Int64?, onCompletion: (Result<ProductCategory, Error>) -> Void)
 
+    /// Synchronizes the ProductCategory matching the specified categoryID.
+    /// `onCompletion` will be invoked when the sync operation finishes. `error` will be nill if the operation succeed.
+    ///
+    case synchronizeProductCategory(siteID: Int64, categoryID: Int64, onCompletion: (Result<ProductCategory, Error>) -> Void)
 }
 
 /// Defines all errors that a `ProductCategoryAction` can return
@@ -23,4 +27,8 @@ public enum ProductCategoryActionError: Error {
     /// Represents a product category synchronization failed state
     ///
     case categoriesSynchronization(pageNumber: Int, rawError: Error)
+
+    /// The requested category cannot be found remotely
+    ///
+    case categoryDoesNotExistRemotely
 }

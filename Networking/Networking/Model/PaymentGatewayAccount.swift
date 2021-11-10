@@ -30,6 +30,14 @@ public struct PaymentGatewayAccount: GeneratedCopiable, GeneratedFakeable {
     /// A boolean flag indicating if this Account is eligible for card present payments
     public let isCardPresentEligible: Bool
 
+    /// Indicates if the account is live (i.e. can accept actual payments)
+    public let isLive: Bool
+
+    /// Indicates if the gateway is set for test mode. This is NOT the same as
+    /// whether the account is live or not. You can have a live account set for
+    /// test mode, although we cannot accept in-person payments in that situation.
+    public let isInTestMode: Bool
+
     /// Struct initializer
     ///
     public init(siteID: Int64,
@@ -42,7 +50,9 @@ public struct PaymentGatewayAccount: GeneratedCopiable, GeneratedFakeable {
                 defaultCurrency: String,
                 supportedCurrencies: [String],
                 country: String,
-                isCardPresentEligible: Bool
+                isCardPresentEligible: Bool,
+                isLive: Bool,
+                isInTestMode: Bool
         ) {
         self.siteID = siteID
         self.gatewayID = gatewayID
@@ -55,5 +65,7 @@ public struct PaymentGatewayAccount: GeneratedCopiable, GeneratedFakeable {
         self.supportedCurrencies = supportedCurrencies
         self.country = country
         self.isCardPresentEligible = isCardPresentEligible
+        self.isLive = isLive
+        self.isInTestMode = isInTestMode
     }
 }

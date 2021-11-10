@@ -225,6 +225,8 @@ private extension ProductCategoryListViewModel {
             let retryToken = RetryToken(fromPageNumber: pageNumber)
             syncCategoriesState = .failed(retryToken)
             DDLogError("⛔️ Error fetching product categories: \(rawError.localizedDescription)")
+        default:
+            break
         }
     }
 }

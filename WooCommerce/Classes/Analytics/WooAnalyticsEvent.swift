@@ -64,8 +64,8 @@ extension WooAnalyticsEvent {
         case shippingLabelsRelease3 = "shipping_labels_m3"
         /// Shown in beta feature banner for order add-ons.
         case addOnsI1 = "add-ons_i1"
-        /// Shown in beta feature banner for quick order prototype.
-        case quickOrderPrototype = "quick_order_prototype"
+        /// Shown in beta feature banner for simple payments prototype.
+        case simplePaymentsPrototype = "simple_payments_prototype"
     }
 
     /// The action performed on the survey screen.
@@ -371,11 +371,11 @@ extension WooAnalyticsEvent {
     }
 }
 
-// MARK: - Quick Order
+// MARK: - Simple Payments
 //
 extension WooAnalyticsEvent {
     // Namespace
-    enum QuickOrder {
+    enum SimplePayments {
         /// Common event keys
         ///
         private enum Keys {
@@ -383,24 +383,24 @@ extension WooAnalyticsEvent {
             static let amount = "amount"
         }
 
-        static func quickOrderFlowStarted() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .quickOrderFlowStarted, properties: [:])
+        static func simplePaymentsFlowStarted() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .simplePaymentsFlowStarted, properties: [:])
         }
 
-        static func quickOrderFlowCompleted(amount: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .quickOrderFlowCompleted, properties: [Keys.amount: amount])
+        static func simplePaymentsFlowCompleted(amount: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .simplePaymentsFlowCompleted, properties: [Keys.amount: amount])
         }
 
-        static func quickOrderFlowCanceled() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .quickOrderFlowCanceled, properties: [:])
+        static func simplePaymentsFlowCanceled() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .simplePaymentsFlowCanceled, properties: [:])
         }
 
-        static func quickOrderFlowFailed() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .quickOrderFlowFailed, properties: [:])
+        static func simplePaymentsFlowFailed() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .simplePaymentsFlowFailed, properties: [:])
         }
 
-        static func settingsBetaFeaturesQuickOrderToggled(isOn: Bool) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .settingsBetaFeaturesQuickOrderToggled, properties: [Keys.state: isOn ? "on" : "off"])
+        static func settingsBetaFeaturesSimplePaymentsToggled(isOn: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .settingsBetaFeaturesSimplePaymentsToggled, properties: [Keys.state: isOn ? "on" : "off"])
         }
     }
 }

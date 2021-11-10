@@ -2,9 +2,9 @@ import Foundation
 import SwiftUI
 import Combine
 
-/// Hosting controller that wraps an `QuickOrderAmount` view.
+/// Hosting controller that wraps an `SimplePaymentsAmount` view.
 ///
-final class QuickOrderAmountHostingController: UIHostingController<QuickOrderAmount> {
+final class SimplePaymentsAmountHostingController: UIHostingController<SimplePaymentsAmount> {
 
     /// References to keep the Combine subscriptions alive within the lifecycle of the object.
     ///
@@ -18,8 +18,8 @@ final class QuickOrderAmountHostingController: UIHostingController<QuickOrderAmo
         return presenter
     }()
 
-    init(viewModel: QuickOrderAmountViewModel) {
-        super.init(rootView: QuickOrderAmount(viewModel: viewModel))
+    init(viewModel: SimplePaymentsAmountViewModel) {
+        super.init(rootView: SimplePaymentsAmount(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismiss = { [weak self] in
@@ -36,7 +36,7 @@ final class QuickOrderAmountHostingController: UIHostingController<QuickOrderAmo
 
                 switch notice {
                 case .error:
-                    self?.modalNoticePresenter.enqueue(notice: .init(title: QuickOrderAmount.Localization.error, feedbackType: .error))
+                    self?.modalNoticePresenter.enqueue(notice: .init(title: SimplePaymentsAmount.Localization.error, feedbackType: .error))
                 }
 
                 // Nullify the presentation intent.
@@ -63,15 +63,15 @@ final class QuickOrderAmountHostingController: UIHostingController<QuickOrderAmo
 
 /// Intercepts to the dismiss drag gesture.
 ///
-extension QuickOrderAmountHostingController: UIAdaptivePresentationControllerDelegate {
+extension SimplePaymentsAmountHostingController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         rootView.viewModel.userDidCancelFlow()
     }
 }
 
-/// View that receives an arbitrary amount for creating a quick order order.
+/// View that receives an arbitrary amount for creating a simple payments order.
 ///
-struct QuickOrderAmount: View {
+struct SimplePaymentsAmount: View {
 
     /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
     ///
@@ -83,7 +83,11 @@ struct QuickOrderAmount: View {
 
     /// ViewModel to drive the view content
     ///
-    @ObservedObject private(set) var viewModel: QuickOrderAmountViewModel
+    @ObservedObject private(set) var viewModel: SimplePaymentsAmountViewModel
+
+    /// Tracks if the summary view should be presented.
+    ///
+    @State private var showSummaryView: Bool = false
 
     var body: some View {
         VStack(alignment: .center, spacing: Layout.mainVerticalSpacing) {
@@ -104,11 +108,19 @@ struct QuickOrderAmount: View {
             Spacer()
 
             // Done button
-            Button(Localization.buttonTitle) {
-                viewModel.createQuickOrderOrder()
+            Button(Localization.buttonTitle()) {
+                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplePaymentsPrototype) {
+                    showSummaryView.toggle()
+                } else {
+                    viewModel.createSimplePaymentsOrder()
+                }
             }
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.loading))
             .disabled(viewModel.shouldDisableDoneButton)
+
+            LazyNavigationLink(destination: SimplePaymentsSummary(noteContent: nil), isActive: $showSummaryView) {
+                EmptyView()
+            }
         }
         .padding()
         .navigationTitle(Localization.title)
@@ -124,13 +136,20 @@ struct QuickOrderAmount: View {
 }
 
 // MARK: Constants
-private extension QuickOrderAmount {
+private extension SimplePaymentsAmount {
     enum Localization {
-        static let title = NSLocalizedString("Take Payment", comment: "Title for the quick order screen")
-        static let instructions = NSLocalizedString("Enter Amount", comment: "Short instructions label in the quick order screen")
-        static let buttonTitle = NSLocalizedString("Done", comment: "Title for the button to confirm the amount in the quick order screen")
-        static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the quick order screen")
-        static let error = NSLocalizedString("There was an error creating the order", comment: "Notice text after failing to create a quick order order.")
+        static let title = NSLocalizedString("Take Payment", comment: "Title for the simple payments screen")
+        static let instructions = NSLocalizedString("Enter Amount", comment: "Short instructions label in the simple payments screen")
+        static let cancelTitle = NSLocalizedString("Cancel", comment: "Title for the button to cancel the simple payments screen")
+        static let error = NSLocalizedString("There was an error creating the order", comment: "Notice text after failing to create a simple payments order.")
+
+        static func buttonTitle() -> String {
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.simplePaymentsPrototype) {
+                return NSLocalizedString("Next", comment: "Title for the button to confirm the amount in the simple payments screen")
+            } else {
+                return NSLocalizedString("Done", comment: "Title for the button to confirm the amount in the simple payments screen")
+            }
+        }
     }
 
     enum Layout {

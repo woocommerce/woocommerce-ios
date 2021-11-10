@@ -219,8 +219,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func isWCPayInTestModeWithLiveStripeAccount(account: PaymentGatewayAccount) -> Bool {
-        // TODO: not implemented yet
-        return false
+        account.isLive && account.isInTestMode
     }
 
     func isStripeAccountUnderReview(account: PaymentGatewayAccount) -> Bool {

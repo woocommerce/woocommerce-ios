@@ -95,6 +95,20 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .wcpayUnsupportedVersion)
     }
 
+    func test_onboarding_returns_wcpay_in_test_mode_with_live_stripe_account_when_live_account_in_test_mode() {
+        // Given
+        setupCountry(country: .us)
+        setupPlugin(status: .active, version: .minimumSupportedVersionWithPatch)
+        setupPaymentGatewayAccount(status: .complete, isLive: true, isInTestMode: true)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager, stores: stores)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .wcpayInTestModeWithLiveStripeAccount)
+    }
+
     func test_onboarding_returns_wcpay_unsupported_version_when_patched_wcpay_outdated() {
         // Given
         setupCountry(country: .us)
@@ -153,7 +167,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
     func test_onboarding_returns_complete_when_active() {
         // Given
         setupCountry(country: .us)
-        setupPlugin(status: .networkActive, version: .minimumSupportedVersion)
+        setupPlugin(status: .active, version: .minimumSupportedVersionWithPatch)
         setupPaymentGatewayAccount(status: .complete)
 
         // When
@@ -429,6 +443,8 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
         status: WCPayAccountStatusEnum,
         hasPendingRequirements: Bool = false,
         hasOverdueRequirements: Bool = false,
+        isLive: Bool = false,
+        isInTestMode: Bool = false,
         isCardPresentEligible: Bool = true
     ) {
         let paymentGatewayAccount = PaymentGatewayAccount
@@ -439,7 +455,9 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
                 status: status.rawValue,
                 hasPendingRequirements: hasPendingRequirements,
                 hasOverdueRequirements: hasOverdueRequirements,
-                isCardPresentEligible: isCardPresentEligible
+                isCardPresentEligible: isCardPresentEligible,
+                isLive: isLive,
+                isInTestMode: isInTestMode
             )
         storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
     }

@@ -286,7 +286,9 @@ extension PaymentGatewayAccount {
         defaultCurrency: CopiableProp<String> = .copy,
         supportedCurrencies: CopiableProp<[String]> = .copy,
         country: CopiableProp<String> = .copy,
-        isCardPresentEligible: CopiableProp<Bool> = .copy
+        isCardPresentEligible: CopiableProp<Bool> = .copy,
+        isLive: CopiableProp<Bool> = .copy,
+        isInTestMode: CopiableProp<Bool> = .copy
     ) -> PaymentGatewayAccount {
         let siteID = siteID ?? self.siteID
         let gatewayID = gatewayID ?? self.gatewayID
@@ -299,6 +301,8 @@ extension PaymentGatewayAccount {
         let supportedCurrencies = supportedCurrencies ?? self.supportedCurrencies
         let country = country ?? self.country
         let isCardPresentEligible = isCardPresentEligible ?? self.isCardPresentEligible
+        let isLive = isLive ?? self.isLive
+        let isInTestMode = isInTestMode ?? self.isInTestMode
 
         return PaymentGatewayAccount(
             siteID: siteID,
@@ -311,7 +315,9 @@ extension PaymentGatewayAccount {
             defaultCurrency: defaultCurrency,
             supportedCurrencies: supportedCurrencies,
             country: country,
-            isCardPresentEligible: isCardPresentEligible
+            isCardPresentEligible: isCardPresentEligible,
+            isLive: isLive,
+            isInTestMode: isInTestMode
         )
     }
 }

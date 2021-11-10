@@ -449,6 +449,7 @@
 		26B119C224D1CD3500FED5C7 /* WooConstantsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B119C124D1CD3500FED5C7 /* WooConstantsTests.swift */; };
 		26B3D8A0252235C50054C319 /* RefundShippingDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B3D89F252235C50054C319 /* RefundShippingDetailsViewModel.swift */; };
 		26B98758273C5BE30090E8CA /* EditCustomerNoteViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B98757273C5BE30090E8CA /* EditCustomerNoteViewModelProtocol.swift */; };
+		26B9875D273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B9875C273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift */; };
 		26C6E8E026E2B7BD00C7BB0F /* CountrySelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C6E8DF26E2B7BD00C7BB0F /* CountrySelectorViewModel.swift */; };
 		26C6E8E426E2D87C00C7BB0F /* CountrySelectorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C6E8E326E2D87C00C7BB0F /* CountrySelectorViewModelTests.swift */; };
 		26C6E8E626E6B5F500C7BB0F /* StateSelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C6E8E526E6B5F500C7BB0F /* StateSelectorViewModel.swift */; };
@@ -1912,6 +1913,7 @@
 		26B119C124D1CD3500FED5C7 /* WooConstantsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooConstantsTests.swift; sourceTree = "<group>"; };
 		26B3D89F252235C50054C319 /* RefundShippingDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundShippingDetailsViewModel.swift; sourceTree = "<group>"; };
 		26B98757273C5BE30090E8CA /* EditCustomerNoteViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCustomerNoteViewModelProtocol.swift; sourceTree = "<group>"; };
+		26B9875C273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsNoteViewModel.swift; sourceTree = "<group>"; };
 		26C6E8DF26E2B7BD00C7BB0F /* CountrySelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountrySelectorViewModel.swift; sourceTree = "<group>"; };
 		26C6E8E326E2D87C00C7BB0F /* CountrySelectorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountrySelectorViewModelTests.swift; sourceTree = "<group>"; };
 		26C6E8E526E6B5F500C7BB0F /* StateSelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateSelectorViewModel.swift; sourceTree = "<group>"; };
@@ -3994,10 +3996,9 @@
 		2678897A270E6E3C00BD249E /* Simple Payments */ = {
 			isa = PBXGroup;
 			children = (
-				2678897B270E6E8B00BD249E /* SimplePaymentsAmount.swift */,
-				262AF386271114CC00E39AFF /* SimplePaymentsAmountViewModel.swift */,
 				26100B1D2721BAD800473045 /* SimplePaymentsTopBannerFactory.swift */,
-				26CFDB2627357E8000AB940B /* SimplePaymentsSummary.swift */,
+				26B9875A273C6A520090E8CA /* Amount */,
+				26B9875B273C6A670090E8CA /* Summary */,
 			);
 			path = "Simple Payments";
 			sourceTree = "<group>";
@@ -4053,6 +4054,24 @@
 				B63AAF4A254AD2C6000B28A2 /* URL+SurveyViewControllerTests.swift */,
 			);
 			path = Survey;
+			sourceTree = "<group>";
+		};
+		26B9875A273C6A520090E8CA /* Amount */ = {
+			isa = PBXGroup;
+			children = (
+				2678897B270E6E8B00BD249E /* SimplePaymentsAmount.swift */,
+				262AF386271114CC00E39AFF /* SimplePaymentsAmountViewModel.swift */,
+			);
+			path = Amount;
+			sourceTree = "<group>";
+		};
+		26B9875B273C6A670090E8CA /* Summary */ = {
+			isa = PBXGroup;
+			children = (
+				26CFDB2627357E8000AB940B /* SimplePaymentsSummary.swift */,
+				26B9875C273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift */,
+			);
+			path = Summary;
 			sourceTree = "<group>";
 		};
 		26C6E8E126E2D85300C7BB0F /* Addresses */ = {
@@ -8188,6 +8207,7 @@
 				0282DD98233CA093006A5FDB /* OrderSearchUICommand.swift in Sources */,
 				B541B21A2189F3A2008FE7C1 /* StringFormatter.swift in Sources */,
 				0279F0DF252DC12D0098D7DE /* ProductLoaderViewControllerModel+Init.swift in Sources */,
+				26B9875D273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift in Sources */,
 				45A0E4CB2566B56000D4E8C3 /* NumberOfLinkedProductsTableViewCell.swift in Sources */,
 				E16715CB26663B0B00326230 /* CardPresentModalSuccessWithoutEmail.swift in Sources */,
 				311F827426CD897900DF5BAD /* CardReaderSettingsAlertsProvider.swift in Sources */,

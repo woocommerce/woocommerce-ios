@@ -192,7 +192,7 @@ private struct TakePaymentSection: View {
             .padding()
 
         }
-        .background(Color(.listForeground))
+        .background(Color(.listForeground).ignoresSafeArea())
     }
 }
 
@@ -243,11 +243,15 @@ struct SimplePaymentsSummary_Preview: PreviewProvider {
             .environment(\.colorScheme, .light)
             .previewDisplayName("Light")
 
+        NavigationView {
         SimplePaymentsSummary(noteContent: "Dispatch by tomorrow morning at Fake Street 123, via the boulevard.")
+        }
             .environment(\.colorScheme, .light)
             .previewDisplayName("Light Content")
 
+        NavigationView {
         SimplePaymentsSummary(noteContent: nil)
+        }
             .environment(\.colorScheme, .dark)
             .previewDisplayName("Dark")
 

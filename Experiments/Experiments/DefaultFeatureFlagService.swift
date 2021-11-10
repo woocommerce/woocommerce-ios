@@ -21,7 +21,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .pushNotificationsForAllStores:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .quickOrderPrototype:
+        case .simplePaymentsPrototype:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .orderListFilters:
             return buildConfig == .localDeveloper || buildConfig == .alpha

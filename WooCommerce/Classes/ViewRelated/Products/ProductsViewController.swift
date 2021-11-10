@@ -113,7 +113,9 @@ final class ProductsViewController: UIViewController {
 
     private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
         didSet {
-            if filters != oldValue {
+            let contentIsNotSyncedYet = syncingCoordinator.highestPageBeingSynced ?? 0 == 0
+            if filters != oldValue ||
+                contentIsNotSyncedYet {
                 updateLocalProductSettings(sort: sortOrder,
                                            filters: filters)
                 updateFilterButtonTitle(filters: filters)
@@ -169,16 +171,7 @@ final class ProductsViewController: UIViewController {
         registerTableViewCells()
 
         showTopBannerViewIfNeeded()
-
-        /// We sync the local product settings for configuring local sorting and filtering.
-        /// If there are some info stored when this screen is loaded, the data will be updated using the stored sort/filters.
-        /// If no info are stored (so there is a failure), we resynchronize the syncingCoordinator for updating the screen using the default sort/filters.
-        ///
-        syncLocalProductsSettings { [weak self] (result) in
-            if result.isFailure {
-                self?.syncingCoordinator.resynchronize()
-            }
-        }
+        syncProductsSettings()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -566,6 +559,19 @@ private extension ProductsViewController {
         }
         displayNoResultsOverlay()
     }
+
+    /// We sync the local product settings for configuring local sorting and filtering.
+    /// If there are some info stored when this screen is loaded, the data will be updated using the stored sort/filters.
+    /// If any of the filters has to be synchronize remotely, it is done so after the filters are loaded, and the data updated if necessary.
+    /// If no info are stored (so there is a failure), we resynchronize the syncingCoordinator for updating the screen using the default sort/filters.
+    ///
+    func syncProductsSettings() {
+        syncLocalProductsSettings { [weak self] (result) in
+            if result.isFailure {
+                self?.syncingCoordinator.resynchronize()
+            }
+        }
+    }
 }
 
 // MARK: - UITableViewDataSource Conformance
@@ -678,6 +684,11 @@ private extension ProductsViewController {
         present(filterProductListViewController, animated: true, completion: nil)
     }
 
+    func clearFilter(sourceBarButtonItem: UIBarButtonItem? = nil, sourceView: UIView? = nil) {
+        ServiceLocator.analytics.track(.productListClearFiltersTapped)
+        filters = FilterProductListViewModel.Filters()
+    }
+
     /// Presents products survey
     ///
     func presentProductsFeedback() {
@@ -728,21 +739,51 @@ private extension ProductsViewController {
     ///
     func displayNoResultsOverlay() {
         let emptyStateViewController = EmptyStateViewController(style: .list)
+        let config = createFilterConfig()
+        displayEmptyStateViewController(emptyStateViewController)
+        emptyStateViewController.configure(config)
+    }
+
+    func createFilterConfig() ->  EmptyStateViewController.Config {
+        if filters.numberOfActiveFilters == 0 {
+            return createNoProductsConfig()
+        } else {
+            return createNoProductsMatchFilterConfig()
+        }
+    }
+
+    /// Creates EmptyStateViewController.Config for no products empty view
+    ///
+    func createNoProductsConfig() ->  EmptyStateViewController.Config {
         let message = NSLocalizedString("No products yet",
                                         comment: "The text on the placeholder overlay when there are no products on the Products tab")
         let details = NSLocalizedString("Start selling today by adding your first product to the store.",
                                         comment: "The details on the placeholder overlay when there are no products on the Products tab")
         let buttonTitle = NSLocalizedString("Add Product",
                                             comment: "Action to add product on the placeholder overlay when there are no products on the Products tab")
-        let config = EmptyStateViewController.Config.withButton(
+        return EmptyStateViewController.Config.withButton(
             message: .init(string: message),
             image: .emptyProductsTabImage,
             details: details,
             buttonTitle: buttonTitle) { [weak self] button in
             self?.addProduct(sourceView: button)
         }
-        displayEmptyStateViewController(emptyStateViewController)
-        emptyStateViewController.configure(config)
+    }
+
+    /// Creates EmptyStateViewController.Config for no products match the filter empty view
+    ///
+    func createNoProductsMatchFilterConfig() ->  EmptyStateViewController.Config {
+        let message = NSLocalizedString("No matching products found",
+                                        comment: "The text on the placeholder overlay when no products match the filter on the Products tab")
+        let buttonTitle = NSLocalizedString("Clear Filters",
+                                            comment: "Action to add product on the placeholder overlay when no products match the filter on the Products tab")
+        return EmptyStateViewController.Config.withButton(
+            message: .init(string: message),
+            image: .emptyProductsTabImage,
+            details: "",
+            buttonTitle: buttonTitle) { [weak self] button in
+                self?.clearFilter(sourceView: button)
+        }
     }
 
     /// Shows the EmptyStateViewController as a child view controller.
@@ -836,19 +877,63 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
         let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] (result) in
             switch result {
             case .success(let settings):
-                if let sort = settings.sort {
-                    self?.sortOrder = ProductsSortOrder(rawValue: sort) ?? .default
+                self?.syncProductCategoryFilterRemotely(from: settings) { settings in
+                    if let sort = settings.sort {
+                        self?.sortOrder = ProductsSortOrder(rawValue: sort) ?? .default
+                    }
+
+                    self?.filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
+                                                                       productStatus: settings.productStatusFilter,
+                                                                       productType: settings.productTypeFilter,
+                                                                       productCategory: settings.productCategoryFilter,
+                                                                       numberOfActiveFilters: settings.numberOfActiveFilters())
+
                 }
-                self?.filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
-                                                                   productStatus: settings.productStatusFilter,
-                                                                   productType: settings.productTypeFilter,
-                                                                   productCategory: settings.productCategoryFilter,
-                                                                   numberOfActiveFilters: settings.numberOfActiveFilters())
             case .failure:
                 break
             }
             onCompletion(result)
         }
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    /// Syncs the Product Category filter of settings remotely. This is necessary in case the category information was updated
+    /// or the category itself removed.
+    ///
+    private func syncProductCategoryFilterRemotely(from settings: StoredProductSettings.Setting,
+                                                   onCompletion: @escaping (StoredProductSettings.Setting) -> Void) {
+        guard let productCategory = settings.productCategoryFilter else {
+            onCompletion(settings)
+            return
+        }
+
+        let action = ProductCategoryAction.synchronizeProductCategory(siteID: siteID, categoryID: productCategory.categoryID) { result in
+            var updatingProductCategory: ProductCategory? = productCategory
+
+            switch result {
+            case .success(let productCategory):
+                updatingProductCategory = productCategory
+            case .failure(let error):
+                if let error = error as? ProductCategoryActionError,
+                   case .categoryDoesNotExistRemotely = error {
+                    // The product category was removed
+                    updatingProductCategory = nil
+                }
+            }
+
+            var completionSettings = settings
+            if updatingProductCategory != productCategory {
+                completionSettings = StoredProductSettings.Setting(siteID: settings.siteID,
+                                                                sort: settings.sort,
+                                                                stockStatusFilter: settings.stockStatusFilter,
+                                                                productStatusFilter: settings.productStatusFilter,
+                                                                productTypeFilter: settings.productTypeFilter,
+                                                                productCategoryFilter: updatingProductCategory)
+            }
+
+            onCompletion(completionSettings)
+        }
+
         ServiceLocator.stores.dispatch(action)
     }
 }

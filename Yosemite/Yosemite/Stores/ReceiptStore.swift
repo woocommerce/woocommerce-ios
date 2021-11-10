@@ -59,7 +59,7 @@ public class ReceiptStore: Store {
 
 private extension ReceiptStore {
     func print(order: Order, parameters: CardPresentReceiptParameters, completion: @escaping (PrintingResult) -> Void) {
-        let content = generateReceiptContent(order: order, parameters: parameters)
+        let content = generateReceiptContent(order: order, parameters: parameters, removingHtml: true)
         receiptPrinterService.printReceipt(content: content, completion: completion)
     }
 
@@ -69,11 +69,27 @@ private extension ReceiptStore {
         onContent(renderer.htmlContent())
     }
 
-    func generateReceiptContent(order: Order, parameters: CardPresentReceiptParameters) -> ReceiptContent {
+    func generateReceiptContent(order: Order, parameters: CardPresentReceiptParameters, removingHtml: Bool = false) -> ReceiptContent {
         let lineItems = generateLineItems(order: order)
         let cartTotals = generateCartTotals(order: order, parameters: parameters)
+        let note = receiptOrderNote(order: order, removingHtml: removingHtml)
 
-        return ReceiptContent(parameters: parameters, lineItems: lineItems, cartTotals: cartTotals)
+        return ReceiptContent(parameters: parameters,
+                              lineItems: lineItems,
+                              cartTotals: cartTotals,
+                              orderNote: note)
+    }
+
+    private func receiptOrderNote(order: Order, removingHtml: Bool) -> String? {
+        guard let orderNote = order.customerNote else {
+            return nil
+        }
+        if removingHtml {
+            // TODO: move this logic to the WooCommerce target, and then use String.removedHTMLTags extension function
+            return orderNote.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression, range: nil)
+        } else {
+            return orderNote
+        }
     }
 
     func generateLineItems(order: Order) -> [ReceiptLineItem] {

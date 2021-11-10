@@ -447,13 +447,13 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(isEnabled)
     }
 
-    func test_loadQuickOrderSwitchState_returns_false_on_new_generalAppSettings() throws {
+    func test_loadSimplePaymentsSwitchState_returns_false_on_new_generalAppSettings() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            let action = AppSettingsAction.loadQuickOrderSwitchState { result in
+            let action = AppSettingsAction.loadSimplePaymentsSwitchState { result in
                 promise(result)
             }
             self.subject?.onAction(action)
@@ -464,15 +464,15 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertFalse(isEnabled)
     }
 
-    func test_loadQuickOrderSwitchState_returns_true_after_updating_switch_state_to_true() throws {
+    func test_loadSimplePaymentsSwitchState_returns_true_after_updating_switch_state_to_true() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-        let updateAction = AppSettingsAction.setQuickOrderFeatureSwitchState(isEnabled: true, onCompletion: { _ in })
+        let updateAction = AppSettingsAction.setSimplePaymentsFeatureSwitchState(isEnabled: true, onCompletion: { _ in })
         subject?.onAction(updateAction)
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            let action = AppSettingsAction.loadQuickOrderSwitchState { result in
+            let action = AppSettingsAction.loadSimplePaymentsSwitchState { result in
                 promise(result)
             }
             self.subject?.onAction(action)
@@ -641,7 +641,7 @@ private extension AppSettingsStoreTests {
             installationDate: installationDate,
             feedbacks: [feedback.name: feedback],
             isViewAddOnsSwitchEnabled: false,
-            isQuickOrderSwitchEnabled: false,
+            isSimplePaymentsSwitchEnabled: false,
             knownCardReaders: []
         )
         return (settings, feedback)

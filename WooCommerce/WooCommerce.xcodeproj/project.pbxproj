@@ -5857,8 +5857,8 @@
 				57C503DD23E8CE0D00EC0790 /* OrdersTabbedViewController.xib */,
 				57C503DF23E8D4D600EC0790 /* OrdersTabbedViewModel.swift */,
 				57C5FF7925091A350074EC26 /* OrderListSyncActionUseCase.swift */,
-				57C5FF7D250925000074EC26 /* OrderListViewModel.swift */,
 				57A49127250A7EB2000FEF21 /* OrderListViewController.swift */,
+				57C5FF7D250925000074EC26 /* OrderListViewModel.swift */,
 				4546E095271F08CD003836F3 /* Order Filters */,
 			);
 			path = Orders;

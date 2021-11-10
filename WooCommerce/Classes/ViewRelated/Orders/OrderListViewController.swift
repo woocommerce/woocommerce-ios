@@ -142,6 +142,8 @@ final class OrderListViewController: UIViewController {
         // and the toggle can be switch in the Settings section that resides in a different tab.
         viewModel.reloadSimplePaymentsExperimentalFeatureState()
 
+        viewModel.syncOrderStatuses()
+
         syncingCoordinator.resynchronize(reason: SyncReason.viewWillAppear.rawValue)
 
         // Fix any incomplete animation of the refresh control
@@ -278,6 +280,7 @@ extension OrderListViewController {
     @objc func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.ordersListPulledToRefresh)
         delegate?.orderListViewControllerWillSynchronizeOrders(self)
+        viewModel.syncOrderStatuses()
         syncingCoordinator.resynchronize(reason: SyncReason.pullToRefresh.rawValue) {
             sender.endRefreshing()
         }

@@ -407,9 +407,13 @@ private extension CardReaderConnectionController {
         let cancel = softwareUpdateCancelable.map { cancelable in
             return { [weak self] in
                 self?.state = .cancel
+                let analyticsProperties = ["software_update_type": "Required"]
+                ServiceLocator.analytics.track(.cardReaderSoftwareUpdateCancelTapped, withProperties: analyticsProperties)
                 cancelable.cancel { result in
                     if case .failure(let error) = result {
                         print("=== error canceling software update: \(error)")
+                    } else {
+                        ServiceLocator.analytics.track(.cardReaderSoftwareUpdateCanceled, withProperties: analyticsProperties)
                     }
                 }
             }

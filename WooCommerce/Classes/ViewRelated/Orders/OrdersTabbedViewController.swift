@@ -37,8 +37,8 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
     private var filters: FilterOrderListViewModel.Filters = FilterOrderListViewModel.Filters() {
         didSet {
             if filters != oldValue {
+                filteredOrdersBar.setNumberOfFilters(filters.numberOfActiveFilters)
                 //TODO-5243: update local order settings
-                //TODO-5243: update filter button title
                 //TODO-5243: ResultsController update predicate if needed
                 //TODO-5243: reload tableview
             }

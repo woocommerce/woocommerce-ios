@@ -3,7 +3,7 @@ import XCTest
 
 /// String+Helpers: Unit Tests
 ///
-class StringHelpersTests: XCTestCase {
+final class StringHelpersTests: XCTestCase {
     func test_compare_as_version() {
         let tests = [
             VersionTestCase(foundVersion: "2.8", requiredMinimumVersion: "2", meetsMinimum: true),

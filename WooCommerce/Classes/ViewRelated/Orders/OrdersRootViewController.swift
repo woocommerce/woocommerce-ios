@@ -73,7 +73,6 @@ final class OrdersRootViewController: UIViewController {
         configureTitle()
         configureView()
         configureFiltersBar()
-        configureContainerView()
         configureChildViewController()
         observeInPersonPaymentsStoreState()
     }
@@ -179,7 +178,6 @@ private extension OrdersRootViewController {
     }
 
     func configureChildViewController() {
-        
         // Configure large title using the `hiddenScrollView` trick.
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) {
             hiddenScrollView.configureForLargeTitleWorkaround()
@@ -190,7 +188,7 @@ private extension OrdersRootViewController {
             view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
             ordersViewController.delegate = self
         }
-        
+
         // Add contentView to stackview
         let contentView = ordersViewController.view!
         stackView.addArrangedSubview(contentView)

@@ -36,7 +36,7 @@ protocol Analytics {
     ///   - properties: a collection of properties related to the event
     ///   - error: the error to track
     ///
-    func track(_ stat: WooAnalyticsStat, properties: [AnyHashable: Any]?, withError error: Error?)
+    func track(_ stat: WooAnalyticsStat, properties: [AnyHashable: Any]?, error: Error?)
 
     /// Refresh the tracking metadata for the currently logged-in or anonymous user.
     /// It's good to call this function after a user logs in or out of the app.

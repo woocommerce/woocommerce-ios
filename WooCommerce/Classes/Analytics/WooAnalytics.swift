@@ -80,7 +80,7 @@ public extension WooAnalytics {
     ///   - properties: a collection of properties related to the event
     ///
     func track(_ stat: WooAnalyticsStat, withProperties properties: [AnyHashable: Any]?) {
-        track(stat, properties: properties, withError: nil)
+        track(stat, properties: properties, error: nil)
     }
 
     /// Track a specific event with an associated error (that is translated to properties)
@@ -90,7 +90,7 @@ public extension WooAnalytics {
     ///   - error: the error to track
     ///
     func track(_ stat: WooAnalyticsStat, withError error: Error) {
-        track(stat, properties: nil, withError: error)
+        track(stat, properties: nil, error: error)
     }
 
     /// Track a specific event with associated properties and an associated error (that is translated to properties)
@@ -100,7 +100,7 @@ public extension WooAnalytics {
     ///   - properties: a collection of properties related to the event
     ///   - error: the error to track
     ///
-    func track(_ stat: WooAnalyticsStat, properties passedProperties: [AnyHashable: Any]?, withError error: Error?) {
+    func track(_ stat: WooAnalyticsStat, properties passedProperties: [AnyHashable: Any]?, error: Error?) {
         guard userHasOptedIn == true else {
             return
         }

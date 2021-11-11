@@ -92,9 +92,14 @@ class WooAnalyticsTests: XCTestCase {
 
     /// Verifies an event with an error and properties is received by the AnalyticsProvider
     ///
-    func testEventsWithPropertiesAndErrorReceived() {
+    func test_events_with_properties_and_error_include_combined_properties() {
+        // Given
         let testError = NSError(domain: Constants.testErrorDomain, code: Constants.testErrorCode, userInfo: Constants.testErrorUserInfo)
-        analytics.track(.applicationOpened, properties: Constants.testProperty1, withError: testError)
+
+        // When
+        analytics.track(.applicationOpened, properties: Constants.testProperty1, error: testError)
+
+        // Then
         XCTAssertEqual(testingProvider?.receivedEvents.count, 1)
         XCTAssertEqual(testingProvider?.receivedProperties.count, 1)
         XCTAssertEqual(testingProvider?.receivedEvents.first, WooAnalyticsStat.applicationOpened.rawValue)
@@ -112,7 +117,7 @@ class WooAnalyticsTests: XCTestCase {
         }
 
         /// Second note: the error's userInfo, as a string, is getting swizzled. We'll ensure the expected payload is there,
-        /// but the exact position isn't guarranteed!
+        /// but the exact position isn't guaranteed!
         ///
         let descriptionIncludingUserInfo = receivedProperty1[Constants.testErrorDescriptionKey]
         for (_, descriptionSubstring) in Constants.testErrorUserInfo {

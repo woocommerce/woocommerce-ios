@@ -85,6 +85,7 @@ struct EditCustomerNote<ViewModel: EditCustomerNoteViewModelProtocol>: View {
                 .padding()
                 .navigationTitle(Localization.title)
                 .navigationBarTitleDisplayMode(.inline)
+                .navigationViewStyle(StackNavigationViewStyle())
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button(Localization.cancel, action: {
@@ -97,7 +98,6 @@ struct EditCustomerNote<ViewModel: EditCustomerNoteViewModelProtocol>: View {
                     }
                 }
         }
-        .navigationViewStyle(StackNavigationViewStyle())
         .wooNavigationBarStyle()
     }
 

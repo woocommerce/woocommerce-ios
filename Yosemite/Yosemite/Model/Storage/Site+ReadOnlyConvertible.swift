@@ -28,6 +28,8 @@ extension Storage.Site: ReadOnlyConvertible {
                     description: tagline ?? "",
                     url: url ?? "",
                     plan: plan ?? "",
+                    isJetpackThePluginInstalled: true, // TODO: 5364 - persist in storage
+                    isJetpackConnected: true, // TODO: 5364 - persist in storage
                     isWooCommerceActive: isWooCommerceActive?.boolValue ?? false,
                     isWordPressStore: isWordPressStore?.boolValue ?? false,
                     timezone: timezone ?? "",

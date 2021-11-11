@@ -150,7 +150,9 @@ public class Remote {
                 case .failure(let error):
                     return .failure(error)
                 }
-            }.eraseToAnyPublisher()
+            }
+            .share() // The API request is only executed once no matter how many subscribers the publisher has.
+            .eraseToAnyPublisher()
 
         publisher.compactMap { $0.failure as? DotcomError }
         .sink { [weak self] dotcomError in

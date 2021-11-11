@@ -54,7 +54,7 @@ public class AccountRemote: Remote {
     public func loadSites() -> AnyPublisher<Result<[Site], Error>, Never> {
         let path = "me/sites"
         let parameters = [
-            "fields": "ID,name,description,URL,options",
+            "fields": "ID,name,description,URL,options,jetpack,jetpack_connection",
             "options": "timezone,is_wpcom_store,woocommerce_is_active,gmt_offset"
         ]
 

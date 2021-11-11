@@ -25,6 +25,14 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
     ///
     public let plan: String
 
+    /// Whether the site has Jetpack-the-plugin installed.
+    ///
+    public let isJetpackThePluginInstalled: Bool
+
+    /// Whether the site is connected to Jetpack, either through Jetpack-the-plugin or other plugins that include Jetpack Connection Package.
+    ///
+    public let isJetpackConnected: Bool
+
     ///  Indicates if there is a WooCommerce Store Active.
     ///
     public let isWooCommerceActive: Bool
@@ -50,6 +58,8 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         let name = try siteContainer.decode(String.self, forKey: .name)
         let description = try siteContainer.decode(String.self, forKey: .description)
         let url = try siteContainer.decode(String.self, forKey: .url)
+        let isJetpackThePluginInstalled = try siteContainer.decode(Bool.self, forKey: .isJetpackThePluginInstalled)
+        let isJetpackConnected = try siteContainer.decode(Bool.self, forKey: .isJetpackConnected)
 
         let optionsContainer = try siteContainer.nestedContainer(keyedBy: OptionKeys.self, forKey: .options)
         let isWordPressStore = try optionsContainer.decode(Bool.self, forKey: .isWordPressStore)
@@ -62,6 +72,8 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
                   description: description,
                   url: url,
                   plan: String(), // Not created on init. Added in supplementary API request.
+                  isJetpackThePluginInstalled: isJetpackThePluginInstalled,
+                  isJetpackConnected: isJetpackConnected,
                   isWooCommerceActive: isWooCommerceActive,
                   isWordPressStore: isWordPressStore,
                   timezone: timezone,
@@ -75,6 +87,8 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
                 description: String,
                 url: String,
                 plan: String,
+                isJetpackThePluginInstalled: Bool,
+                isJetpackConnected: Bool,
                 isWooCommerceActive: Bool,
                 isWordPressStore: Bool,
                 timezone: String,
@@ -84,6 +98,8 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         self.description = description
         self.url = url
         self.plan = plan
+        self.isJetpackThePluginInstalled = isJetpackThePluginInstalled
+        self.isJetpackConnected = isJetpackConnected
         self.isWordPressStore = isWordPressStore
         self.isWooCommerceActive = isWooCommerceActive
         self.timezone = timezone
@@ -91,18 +107,27 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
     }
 }
 
+public extension Site {
+    /// Whether the site is connected to Jetpack with Jetpack Connection Package, and not with Jetpack-the-plugin.
+    ///
+    var isJetpackCPConnected: Bool {
+        isJetpackConnected && !isJetpackThePluginInstalled
+    }
+}
 
 /// Defines all of the Site CodingKeys.
 ///
 private extension Site {
 
     enum SiteKeys: String, CodingKey {
-        case siteID         = "ID"
-        case name           = "name"
-        case description    = "description"
-        case url            = "URL"
-        case options        = "options"
-        case plan           = "plan"
+        case siteID                      = "ID"
+        case name                        = "name"
+        case description                 = "description"
+        case url                         = "URL"
+        case options                     = "options"
+        case plan                        = "plan"
+        case isJetpackThePluginInstalled = "jetpack"
+        case isJetpackConnected          = "jetpack_connection"
     }
 
     enum OptionKeys: String, CodingKey {

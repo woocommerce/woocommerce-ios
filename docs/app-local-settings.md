@@ -1,6 +1,6 @@
 # App Local Settings
 
-Small amount of data is currently stored in plist files.
+A small amount of data is currently stored in plist files.
 Initial goals were:
 
 - prevent complexity overhead of Core Data
@@ -8,8 +8,8 @@ Initial goals were:
 - make data typed
 - inject storage layer as dependency.
 
-Retreiving and storing the data is done via [`AppSettingsAction`](https://github.com/woocommerce/woocommerce-ios/blob/develop/Yosemite/Yosemite/Actions/AppSettingsAction.swift) and most of logic happens in [`AppSettingsStore`](https://github.com/woocommerce/woocommerce-ios/blob/develop/Yosemite/Yosemite/Stores/AppSettingsStore.swift).
-There are few data models + plist files separated for specific features and use cases.
+Retrieving and storing the data is done via [`AppSettingsAction`](https://github.com/woocommerce/woocommerce-ios/blob/develop/Yosemite/Yosemite/Actions/AppSettingsAction.swift) and most of the logic happens in [`AppSettingsStore`](https://github.com/woocommerce/woocommerce-ios/blob/develop/Yosemite/Yosemite/Stores/AppSettingsStore.swift).
+There are a few data models + plist files separated for specific features and use cases.
 
 ## General use cases
 

@@ -70,6 +70,7 @@ public class AlamofireNetwork: Network {
     }
 
     /// Executes the specified Network Request. Upon completion, the payload or error will be emitted to the publisher.
+    /// Only one value will be emitted and the request cannot be retried.
     ///
     /// - Important:
     ///     - Authentication Headers will be injected, based on the Network's Credentials.
@@ -80,9 +81,10 @@ public class AlamofireNetwork: Network {
         let authenticated = AuthenticatedRequest(credentials: credentials, request: request)
         let subject = PassthroughSubject<Swift.Result<Data, Error>, Never>()
 
-        Alamofire.request(authenticated).responseData { response in
+        Alamofire.request(authenticated).responseData { [weak subject] response in
             let result = response.result.toSwiftResult()
-            subject.send(result)
+            subject?.send(result)
+            subject?.send(completion: .finished)
         }
         return subject.eraseToAnyPublisher()
     }

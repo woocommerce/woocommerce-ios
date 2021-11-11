@@ -130,16 +130,25 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
         ServiceLocator.stores.dispatch(action)
     }
 
-    func cancelCardReaderUpdate() {
-        ServiceLocator.analytics.track(.cardReaderSoftwareUpdateCancelTapped)
-        softwareUpdateCancelable?.cancel(completion: { [weak self] result in
-            if case .failure(let error) = result {
-                print("=== error canceling software update: \(error)")
-            } else {
-                self?.completeCardReaderUpdate(success: false)
-                ServiceLocator.analytics.track(.cardReaderSoftwareUpdateCanceled)
+    var cancelCardReaderUpdate: (() -> ())? {
+        guard let progress = readerUpdateProgress,
+              progress < 0.995 else {
+            return nil
+        }
+        return { [weak self] in
+            guard let self = self else {
+                return
             }
-        })
+            ServiceLocator.analytics.track(.cardReaderSoftwareUpdateCancelTapped)
+            self.softwareUpdateCancelable?.cancel(completion: { [weak self] result in
+                if case .failure(let error) = result {
+                    print("=== error canceling software update: \(error)")
+                } else {
+                    self?.completeCardReaderUpdate(success: false)
+                    ServiceLocator.analytics.track(.cardReaderSoftwareUpdateCanceled)
+                }
+            })
+        }
     }
 
     func dismissReaderUpdateError() {

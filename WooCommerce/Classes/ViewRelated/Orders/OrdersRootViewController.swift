@@ -178,10 +178,6 @@ private extension OrdersRootViewController {
         }
     }
 
-    func configureContainerView() {
-    
-    }
-
     func configureChildViewController() {
         
         // Configure large title using the `hiddenScrollView` trick.

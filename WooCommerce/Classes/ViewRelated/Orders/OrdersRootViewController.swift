@@ -191,7 +191,9 @@ private extension OrdersRootViewController {
 
         // Add contentView to stackview
         let contentView = ordersViewController.view!
+        addChild(ordersViewController)
         stackView.addArrangedSubview(contentView)
+        ordersViewController.didMove(toParent: self)
     }
 
     /// Observes the store `InPersonPayments` state and reconfigure navigation buttons appropriately.

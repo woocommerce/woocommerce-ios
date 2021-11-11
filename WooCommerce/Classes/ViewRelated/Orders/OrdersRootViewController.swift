@@ -6,6 +6,9 @@ import Combine
 ///
 final class OrdersRootViewController: UIViewController {
 
+    // The stack view which will contain the top bar filters and the order list.
+    @IBOutlet private weak var stackView: UIStackView!
+
     // MARK: Child view controller
     private lazy var ordersViewController = OrderListViewController(
         siteID: siteID,
@@ -16,12 +19,6 @@ final class OrdersRootViewController: UIViewController {
             image: .waitingForCustomersImage
         )
     )
-
-    // MARK: Subviews
-
-    private lazy var containerView: UIView = {
-        return UIView(frame: .zero)
-    }()
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
     private let hiddenScrollView = UIScrollView()
@@ -38,13 +35,31 @@ final class OrdersRootViewController: UIViewController {
     ///
     private var subscriptions = Set<AnyCancellable>()
 
+    /// The top bar for apply filters, that will be embedded inside the stackview, on top of everything.
+    ///
+    private var filtersBar: FilteredOrdersHeaderBar = {
+        let filteredOrdersBar: FilteredOrdersHeaderBar = FilteredOrdersHeaderBar.instantiateFromNib()
+        filteredOrdersBar.backgroundColor = .listForeground
+        return filteredOrdersBar
+    }()
+
+    private var filters: FilterOrderListViewModel.Filters = FilterOrderListViewModel.Filters() {
+        didSet {
+            if filters != oldValue {
+                filtersBar.setNumberOfFilters(filters.numberOfActiveFilters)
+                //TODO-5243: update local order settings
+                //TODO-5243: ResultsController update predicate if needed
+                //TODO-5243: reload tableview
+            }
+        }
+    }
+
     // MARK: View Lifecycle
 
     init(siteID: Int64) {
         self.siteID = siteID
-        super.init(nibName: nil, bundle: nil)
+        super.init(nibName: Self.nibName, bundle: nil)
 
-        ordersViewController.delegate = self
         configureTitle()
         configureTabBarItem()
     }
@@ -57,6 +72,7 @@ final class OrdersRootViewController: UIViewController {
         super.viewDidLoad()
         configureTitle()
         configureView()
+        configureFiltersBar()
         configureContainerView()
         configureChildViewController()
         observeInPersonPaymentsStoreState()
@@ -96,6 +112,22 @@ final class OrdersRootViewController: UIViewController {
         let loaderViewController = OrderLoaderViewController(note: note, orderID: Int64(orderID), siteID: Int64(siteID))
         navigationController?.pushViewController(loaderViewController, animated: true)
     }
+
+    /// Present `FilterListViewController`
+    ///
+    private func filterButtonTapped() {
+        //TODO-5243: add event for tracking the filter tapped
+        let viewModel = FilterOrderListViewModel(filters: filters)
+        let filterOrderListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
+            //TODO-5243: add event for tracking filter list show
+            self?.filters = filters
+        }, onClearAction: {
+            //TODO-5243: add event for tracking clear action
+        }, onDismissAction: {
+            //TODO-5243: add event for tracking dismiss action
+        })
+        present(filterOrderListViewController, animated: true, completion: nil)
+    }
 }
 
 // MARK: - Configuration
@@ -134,27 +166,38 @@ private extension OrdersRootViewController {
         navigationItem.rightBarButtonItems = buttons.compactMap { $0 }
     }
 
+    func configureFiltersBar() {
+        // Display the filtered orders bar
+        // if the feature flag is enabled
+        let isOrderListFiltersEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderListFilters)
+        if isOrderListFiltersEnabled {
+            stackView.insertArrangedSubview(filtersBar, at: 0)
+        }
+        filtersBar.onAction = { [weak self] in
+            self?.filterButtonTapped()
+        }
+    }
+
     func configureContainerView() {
+    
+    }
+
+    func configureChildViewController() {
+        
+        // Configure large title using the `hiddenScrollView` trick.
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) {
             hiddenScrollView.configureForLargeTitleWorkaround()
             // Adds the "hidden" scroll view to the root of the UIViewController for large title workaround.
             view.addSubview(hiddenScrollView)
+            view.sendSubviewToBack(hiddenScrollView)
             hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
             view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
+            ordersViewController.delegate = self
         }
-
-        // A container view is pinned to all edges of the view controller.
-        // to keep the consistent edge-to-edge look across app.
-        view.addSubview(containerView)
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToAllEdges(containerView)
-    }
-
-    func configureChildViewController() {
+        
+        // Add contentView to stackview
         let contentView = ordersViewController.view!
-        addChild(ordersViewController)
-        containerView.addSubview(contentView)
-        ordersViewController.didMove(toParent: self)
+        stackView.addArrangedSubview(contentView)
     }
 
     /// Observes the store `InPersonPayments` state and reconfigure navigation buttons appropriately.

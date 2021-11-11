@@ -11,6 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="OrdersRootViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
+                <outlet property="stackView" destination="bmb-Ce-s8B" id="NWs-gs-wdo"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -18,8 +19,19 @@
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="bmb-Ce-s8B">
+                    <rect key="frame" x="0.0" y="44" width="414" height="818"/>
+                </stackView>
+            </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="bmb-Ce-s8B" secondAttribute="bottom" id="KJe-Ml-k33"/>
+                <constraint firstItem="bmb-Ce-s8B" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="hba-lC-L9V"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="bmb-Ce-s8B" secondAttribute="trailing" id="hoU-dT-lmE"/>
+                <constraint firstItem="bmb-Ce-s8B" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="pqT-wY-UUY"/>
+            </constraints>
             <point key="canvasLocation" x="131.8840579710145" y="70.982142857142847"/>
         </view>
     </objects>

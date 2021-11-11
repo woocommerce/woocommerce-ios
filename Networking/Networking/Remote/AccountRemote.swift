@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 
 /// Account: Remote Endpoints
@@ -50,7 +51,7 @@ public class AccountRemote: Remote {
 
     /// Loads the Sites collection associated with the WordPress.com User.
     ///
-    public func loadSites(completion: @escaping (Result<[Site], Error>) -> Void) {
+    public func loadSites() -> AnyPublisher<Result<[Site], Error>, Never> {
         let path = "me/sites"
         let parameters = [
             "fields": "ID,name,description,URL,options",
@@ -60,7 +61,7 @@ public class AccountRemote: Remote {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
         let mapper = SiteListMapper()
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return enqueuePublisher(request, mapper: mapper)
     }
 
     /// Loads the site plan for the default site associated with the WordPress.com user.

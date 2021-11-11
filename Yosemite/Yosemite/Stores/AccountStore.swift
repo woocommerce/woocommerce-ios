@@ -109,16 +109,54 @@ private extension AccountStore {
     /// Synchronizes the WordPress.com sites associated with the Network's Auth Token.
     ///
     func synchronizeSites(selectedSiteID: Int64?, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        remote.loadSites().sink { [weak self] result in
-            switch result {
-            case .success(let sites):
-                self?.upsertStoredSitesInBackground(readOnlySites: sites, selectedSiteID: selectedSiteID) {
-                    onCompletion(.success(()))
+        remote.loadSites()
+            .flatMap { result -> AnyPublisher<Result<[Site], Error>, Never> in
+                switch result {
+                case .success(let sites):
+                    return sites.publisher.flatMap { [weak self] site -> AnyPublisher<Site, Never> in
+                        let sitePublisher = Just<Site>(site).eraseToAnyPublisher()
+                        guard let self = self else {
+                            return sitePublisher
+                        }
+
+                        // If a site is connected to Jetpack via Jetpack Connection Package, some information about the site is not available or accurate
+                        // in `me/sites` endpoint made by `AccountRemote.loadSites()`.
+                        // As a workaround, we need to make 2 other API requests:
+                        // - Check if WooCommerce plugin is active via `wc/v3/settings` endpoint
+                        // - Fetch site metadata like the site name, description, and URL via `wp/v2/settings` endpoint
+                        if site.isJetpackCPConnected {
+                            let wcAvailabilityPublisher = self.remote.checkIfWooCommerceIsActive(for: site.siteID)
+                            let wpSiteSettingsPublisher = self.remote.fetchWPSiteSettings(for: site.siteID)
+                            return Publishers.Zip3(sitePublisher, wcAvailabilityPublisher, wpSiteSettingsPublisher)
+                                .map {
+                                    (site, isWooCommerceActiveResult, wpSiteSettingsResult) -> Site in
+                                    var site = site
+                                    if case let .success(isWooCommerceActive) = isWooCommerceActiveResult {
+                                        site = site.copy(isWooCommerceActive: isWooCommerceActive)
+                                    }
+                                    if case let .success(wpSiteSettings) = wpSiteSettingsResult {
+                                        site = site.copy(name: wpSiteSettings.name, description: wpSiteSettings.description, url: wpSiteSettings.url)
+                                    }
+                                    return site
+                                }.eraseToAnyPublisher()
+                        } else {
+                            return sitePublisher
+                        }
+                    }.collect().map { .success($0) }.eraseToAnyPublisher()
+                case .failure:
+                    return Just<Result<[Site], Error>>(result).eraseToAnyPublisher()
                 }
-            case .failure(let error):
-                onCompletion(.failure(error))
             }
-        }.store(in: &cancellables)
+            .sink { [weak self] result in
+                switch result {
+                case .success(let sites):
+                    self?.upsertStoredSitesInBackground(readOnlySites: sites, selectedSiteID: selectedSiteID) {
+                        onCompletion(.success(()))
+                    }
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                }
+            }.store(in: &cancellables)
     }
 
     /// Loads the site plan for the default site.

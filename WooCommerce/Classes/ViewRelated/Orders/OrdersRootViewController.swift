@@ -170,7 +170,7 @@ private extension OrdersRootViewController {
         // if the feature flag is enabled
         let isOrderListFiltersEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderListFilters)
         if isOrderListFiltersEnabled {
-            stackView.insertArrangedSubview(filtersBar, at: 0)
+            stackView.addArrangedSubview(filtersBar)
         }
         filtersBar.onAction = { [weak self] in
             self?.filterButtonTapped()

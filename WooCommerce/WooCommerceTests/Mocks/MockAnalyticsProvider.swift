@@ -65,7 +65,7 @@ public extension MockAnalyticsProvider {
 }
 
 // MARK: - Convenience Keys
-public extension MockAnalyticsProvider {
+extension MockAnalyticsProvider {
     /// WooAnalyticsKeys
     /// Canonically defined in WooAnalytics.swift
     enum WooAnalyticsKeys {

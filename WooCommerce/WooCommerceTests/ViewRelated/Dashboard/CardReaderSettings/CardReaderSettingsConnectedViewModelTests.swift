@@ -176,7 +176,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         // Then
         XCTAssert(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateStarted.rawValue))
         XCTAssert(analytics.receivedProperties.contains(where: {
-            $0["software_update_type"] as! String == "Required"
+            $0["software_update_type"] as? String == "Required"
         }))
     }
 
@@ -190,7 +190,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         // Then
         XCTAssert(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateStarted.rawValue))
         XCTAssert(analytics.receivedProperties.contains(where: {
-            $0["software_update_type"] as! String == "Optional"
+            $0["software_update_type"] as? String == "Optional"
         }))
     }
 
@@ -218,10 +218,10 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
             "Hardware.UnderlyingError.readerSoftwareUpdateFailedBatteryLow, batteryLevel: Optional(0.4))"
         XCTAssert(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateFailed.rawValue))
         XCTAssert(analytics.receivedProperties.contains(where: {
-            $0["software_update_type"] as! String == "Required"
+            $0["software_update_type"] as? String == "Required"
         }))
         XCTAssert(analytics.receivedProperties.contains(where: {
-            $0[MockAnalyticsProvider.WooAnalyticsKeys.errorKeyDescription] as! String == expectedErrorDescription
+            $0[MockAnalyticsProvider.WooAnalyticsKeys.errorKeyDescription] as? String == expectedErrorDescription
         }))
     }
 

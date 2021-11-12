@@ -130,11 +130,12 @@ extension WooAnalyticsEvent {
         }
     }
 
-    static func ordersListLoaded(totalDuration: TimeInterval, pageNumber: Int, status: OrderStatus?) -> WooAnalyticsEvent {
+    static func ordersListLoaded(totalDuration: TimeInterval, pageNumber: Int, filters: FilterOrderListViewModel.Filters?) -> WooAnalyticsEvent {
         WooAnalyticsEvent(statName: .ordersListLoaded, properties: [
-            "status": status?.slug ?? String(),
+            "status": filters?.orderStatus?.rawValue ?? String(),
             "page_number": Int64(pageNumber),
-            "total_duration": Double(totalDuration)
+            "total_duration": Double(totalDuration),
+            "date_range": filters?.dateRange?.analyticsDescription ?? String()
         ])
     }
 }

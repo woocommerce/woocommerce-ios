@@ -91,33 +91,7 @@ extension String {
         /// Insert a . before and after any non number
         ///
         func insertDotsBeforeAndAfterAnyNonNumber(inString: String) -> String {
-            guard inString.count > 1 else {
-                return inString
-            }
-
-            /// Initialize our output with the first character of the input string
-            var outString = String(inString[inString.index(inString.startIndex, offsetBy: 0)])
-
-            /// Loop over the remaining characters in the string, inserting . as needed
-            for index in 1...inString.count - 1 {
-                let characterAtIndex = inString[inString.index(inString.startIndex, offsetBy: index)]
-                let characterBefore = inString[inString.index(inString.startIndex, offsetBy: index - 1)]
-
-                let characterAtIndexIsNumberOrDot = characterAtIndex.isNumber || characterAtIndex == "."
-                let characterBeforeIsNumberOrDot = characterBefore.isNumber || characterBefore == "."
-
-                if !characterAtIndexIsNumberOrDot && characterBefore.isNumber {
-                    outString += "."
-                }
-
-                if characterAtIndex.isNumber && !characterBeforeIsNumberOrDot {
-                    outString += "."
-                }
-
-                outString += String(characterAtIndex)
-            }
-
-            return outString
+            inString.replacingOccurrences(of: "([^0-9.]+)", with: ".$1.", options: .regularExpression)
         }
 
         /// Score and compare two string components

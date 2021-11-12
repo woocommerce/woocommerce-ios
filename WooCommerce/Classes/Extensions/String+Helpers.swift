@@ -190,14 +190,16 @@ extension String {
             return .orderedSame
         }
 
-        var leftHandString = replaceUnderscoreDashAndPlusWithDot(inString: self)
-        leftHandString = insertDotsBeforeAndAfterAnyNonNumber(inString: leftHandString)
+        /// Process the given string into version components
+        ///
+        func versionComponents(of string: String) -> [String] {
+            var stringToComponentize = replaceUnderscoreDashAndPlusWithDot(inString: string)
+            stringToComponentize = insertDotsBeforeAndAfterAnyNonNumber(inString: stringToComponentize)
+            return stringToComponentize.components(separatedBy: ".")
+        }
 
-        var rightHandString = replaceUnderscoreDashAndPlusWithDot(inString: to)
-        rightHandString = insertDotsBeforeAndAfterAnyNonNumber(inString: rightHandString)
-
-        let leftComponents = leftHandString.components(separatedBy: ".")
-        let rightComponents = rightHandString.components(separatedBy: ".")
+        let leftComponents = versionComponents(of: self)
+        let rightComponents = versionComponents(of: to)
 
         let maxComponents = max(leftComponents.count, rightComponents.count)
 

@@ -325,7 +325,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
                     }
                     ServiceLocator.analytics.track(event: .ordersListLoaded(totalDuration: totalDuration,
                                                                             pageNumber: pageNumber,
-                                                                            status: self.viewModel.statusFilter))
+                                                                            filters: self.viewModel.filters))
                 }
 
                 self.transitionToResultsUpdatedState()

@@ -227,9 +227,10 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
 
     func test_when_user_cancels_update_viewModel_logs_tracks_event_cardReaderSoftwareUpdateCancelTapped() {
         // Given
+        mockStoresManager.simulateCancelableUpdate(onCancel: {})
 
         // When
-        viewModel.cancelCardReaderUpdate()
+        viewModel.cancelCardReaderUpdate?()
 
         // Then
         XCTAssert(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateCancelTapped.rawValue))
@@ -244,7 +245,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.cancelCardReaderUpdate()
+        viewModel.cancelCardReaderUpdate?()
 
         // Then
         wait(for: [expectation], timeout: Constants.expectationTimeout)
@@ -260,11 +261,58 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.cancelCardReaderUpdate()
+        viewModel.cancelCardReaderUpdate?()
 
         // Then
         wait(for: [expectation], timeout: Constants.expectationTimeout)
         XCTAssertFalse(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateFailed.rawValue))
+    }
+
+    func test_when_update_reaches_100_percent_viewModel_does_not_provide_cancel_handler_so_cancel_button_is_not_shown() {
+        // Given
+        mockStoresManager.simulateCancelableUpdate(onCancel: {})
+        mockStoresManager.simulateUpdateProgress(1)
+
+        // When
+        let handler: ()? = viewModel.cancelCardReaderUpdate?()
+
+        // Then
+        XCTAssertNil(handler)
+    }
+
+    func test_When_update_progress_is_displayed_rounded_to_100_percent_viewModel_does_not_provide_cancel_handler_so_cancel_button_is_not_shown() {
+        // Given
+        mockStoresManager.simulateCancelableUpdate(onCancel: {})
+        mockStoresManager.simulateUpdateProgress(0.995)
+
+        // When
+        let handler: ()? = viewModel.cancelCardReaderUpdate?()
+
+        // Then
+        XCTAssertNil(handler)
+    }
+
+    func test_when_update_reaches_99_percent_viewModel_provides_cancel_handler_so_cancel_button_is_shown() {
+        // Given
+        mockStoresManager.simulateCancelableUpdate(onCancel: {})
+        mockStoresManager.simulateUpdateProgress(0.994)
+
+        // When
+        let handler: ()? = viewModel.cancelCardReaderUpdate?()
+
+        // Then
+        XCTAssertNotNil(handler)
+    }
+
+    func test_when_update_starts_viewModel_test_when_update_reaches_100_percent_viewModel_does_not_provide_cancel_handler_so_cancel_button_is_not_shown() {
+        // Given
+        mockStoresManager.simulateCancelableUpdate(onCancel: {})
+
+        // When
+        let handler: ()? = viewModel.cancelCardReaderUpdate?()
+
+        // Then
+        XCTAssertNotNil(handler)
     }
 
     func test_when_a_mandatory_update_succeeds_optional_updates_are_not_available() {

@@ -127,9 +127,10 @@ private extension CardReaderSettingsConnectedViewController {
             }
         } else if let readerUpdateProgress = viewModel.readerUpdateProgress {
             // If we are updating a reader, show the progress alert
-            settingsAlerts.updateProgress(from: self, requiredUpdate: false, progress: readerUpdateProgress, cancel: { [weak self] in
-                self?.viewModel?.cancelCardReaderUpdate()
-            })
+            settingsAlerts.updateProgress(from: self,
+                                          requiredUpdate: false,
+                                          progress: readerUpdateProgress,
+                                          cancel: viewModel.cancelCardReaderUpdate)
         } else {
             // If we are not updating a reader, dismiss any progress alert
             settingsAlerts.dismiss()
@@ -188,8 +189,8 @@ private extension CardReaderSettingsConnectedViewController {
 
     private func configureUpdateButton(cell: ButtonTableViewCell) {
         let style: ButtonTableViewCell.Style = isReaderUpdateAvailable() ? .primary : .secondary
-        cell.configure(style: style, title: Localization.updateButtonTitle, bottomSpacing: 0) {
-            self.viewModel?.startCardReaderUpdate()
+        cell.configure(style: style, title: Localization.updateButtonTitle, bottomSpacing: 0) { [weak self] in
+            self?.viewModel?.startCardReaderUpdate()
         }
 
         let readerDisconnectInProgress = viewModel?.readerDisconnectInProgress ?? false

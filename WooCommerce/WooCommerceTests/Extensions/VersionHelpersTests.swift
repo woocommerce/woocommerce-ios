@@ -3,7 +3,7 @@ import XCTest
 
 /// String+Helpers: Unit Tests
 ///
-final class StringHelpersTests: XCTestCase {
+final class VersionHelpersTests: XCTestCase {
     func test_compare_as_version() {
         let tests = [
             VersionTestCase(foundVersion: "2.8", requiredMinimumVersion: "2", meetsMinimum: true),
@@ -44,7 +44,7 @@ final class StringHelpersTests: XCTestCase {
         ]
 
         for test in tests {
-            let meetsMinimum = test.foundVersion.compareAsVersion(to: test.requiredMinimumVersion) != .orderedAscending
+            let meetsMinimum = VersionHelpers.compare(test.foundVersion, test.requiredMinimumVersion) != .orderedAscending
             XCTAssertEqual(test.meetsMinimum, meetsMinimum)
         }
     }

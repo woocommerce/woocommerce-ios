@@ -197,7 +197,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func isWCPayVersionSupported(plugin: SystemPlugin) -> Bool {
-        plugin.version.compareAsVersion(to: Constants.minimumSupportedWCPayVersion) != .orderedAscending
+        VersionHelpers.compare(plugin.version, Constants.minimumSupportedWCPayVersion) != .orderedAscending
     }
 
     func isWCPayActivated(plugin: SystemPlugin) -> Bool {

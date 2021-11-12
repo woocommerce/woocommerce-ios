@@ -408,6 +408,14 @@ extension UIImage {
         return UIImage(named: "card-reader-low-battery")!
     }
 
+    /// Shopping cart
+    ///
+    static var shoppingCartIcon: UIImage {
+        return UIImage(named: "icon-shopping-cart")!
+            .withRenderingMode(.alwaysTemplate)
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Files Download Icon
     ///
     static var cloudImage: UIImage {

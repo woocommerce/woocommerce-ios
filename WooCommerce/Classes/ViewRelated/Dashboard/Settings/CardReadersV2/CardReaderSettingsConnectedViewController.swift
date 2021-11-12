@@ -189,8 +189,8 @@ private extension CardReaderSettingsConnectedViewController {
 
     private func configureUpdateButton(cell: ButtonTableViewCell) {
         let style: ButtonTableViewCell.Style = isReaderUpdateAvailable() ? .primary : .secondary
-        cell.configure(style: style, title: Localization.updateButtonTitle, bottomSpacing: 0) {
-            self.viewModel?.startCardReaderUpdate()
+        cell.configure(style: style, title: Localization.updateButtonTitle, bottomSpacing: 0) { [weak self] in
+            self?.viewModel?.startCardReaderUpdate()
         }
 
         let readerDisconnectInProgress = viewModel?.readerDisconnectInProgress ?? false

@@ -19,7 +19,8 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         analytics = MockAnalyticsProvider()
         ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analytics))
 
-        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
+                                                         delayToShowUpdateSuccessMessage: .milliseconds(1))
     }
 
     func test_did_change_should_show_returns_false_if_no_connected_readers() {
@@ -34,7 +35,8 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         let _ = CardReaderSettingsConnectedViewModel(didChangeShouldShow: { shouldShow in
             XCTAssertTrue(shouldShow == .isFalse)
             expectation.fulfill()
-        } )
+        },
+                                                     delayToShowUpdateSuccessMessage: .milliseconds(1))
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
@@ -45,7 +47,8 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: { shouldShow in
             XCTAssertTrue(shouldShow == .isTrue)
             expectation.fulfill()
-        } )
+        },
+                                                         delayToShowUpdateSuccessMessage: .milliseconds(1))
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
@@ -63,12 +66,14 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         )
         ServiceLocator.setStores(mockStoresManager)
 
-        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
+                                                         delayToShowUpdateSuccessMessage: .milliseconds(1))
         XCTAssertEqual(viewModel.connectedReaderBatteryLevel, "Unknown Battery Level")
     }
 
     func test_view_model_correctly_formats_connected_card_reader_software_version() {
-        let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+        let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
+                                                             delayToShowUpdateSuccessMessage: .milliseconds(1))
         XCTAssertEqual(viewModel.connectedReaderSoftwareVersion, "Version: 1.00.03.34-SZZZ_Generic_v45-300001")
     }
 
@@ -80,7 +85,8 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         )
         ServiceLocator.setStores(mockStoresManager)
 
-        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
+                                                         delayToShowUpdateSuccessMessage: .milliseconds(1))
         XCTAssertEqual(viewModel.connectedReaderSoftwareVersion, "Unknown Software Version")
     }
 
@@ -124,7 +130,8 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         )
         ServiceLocator.setStores(mockStoresManager)
 
-        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
+                                                         delayToShowUpdateSuccessMessage: .milliseconds(1))
 
         var updateDidBegin = false
 
@@ -149,7 +156,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    func test_startCardReaderUpdate_ViewModel_LogsTracksEvent_cardReaderSoftwareUpdateTapped() {
+    func test_startCardReaderUpdate_viewModel_logs_tracks_event_cardReaderSoftwareUpdateTapped() {
         // Given
 
         // When
@@ -159,17 +166,35 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssert(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateTapped.rawValue))
     }
 
-    func test_startCardReaderUpdate_ViewModel_LogsTracksEvent_cardReaderSoftwareUpdateStarted() {
+    func test_card_reader_update_starts_viewModel_logs_tracks_event_cardReaderSoftwareUpdateStarted() {
         // Given
+        // .available not sent
 
         // When
         mockStoresManager.simulateUpdateStarted()
 
         // Then
         XCTAssert(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateStarted.rawValue))
+        XCTAssert(analytics.receivedProperties.contains(where: {
+            $0["software_update_type"] as? String == "Required"
+        }))
     }
 
-    func test_WhenStoreSendsUpdateComplete_ViewModel_LogsTracksEvent_cardReaderSoftwareUpdateSuccess() {
+    func test_optional_card_reader_update_starts_viewModel_logs_tracks_event_cardReaderSoftwareUpdateStarted_with_optional() {
+        // Given
+        mockStoresManager.simulateOptionalUpdateAvailable()
+
+        // When
+        mockStoresManager.simulateUpdateStarted()
+
+        // Then
+        XCTAssert(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateStarted.rawValue))
+        XCTAssert(analytics.receivedProperties.contains(where: {
+            $0["software_update_type"] as? String == "Optional"
+        }))
+    }
+
+    func test_when_store_sends_update_complete_viewModel_logs_tracks_event_cardReaderSoftwareUpdateSuccess() {
         // Given
 
         // When
@@ -179,8 +204,9 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssert(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateSuccess.rawValue))
     }
 
-    func test_WhenStoreSendsUpdateFailed_ViewModel_LogsTracksEvent_cardReaderSoftwareUpdateFailed() {
+    func test_when_store_sends_update_failed_viewModel_logs_tracks_event_cardReaderSoftwareUpdateFailed() {
         // Given
+        // .available not sent
 
         // When
         let expectedError = CardReaderServiceError.softwareUpdate(underlyingError: .readerSoftwareUpdateFailedBatteryLow,
@@ -188,10 +214,18 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         mockStoresManager.simulateFailedUpdate(error: expectedError)
 
         // Then
+        let expectedErrorDescription = "Hardware.CardReaderServiceError.softwareUpdate(underlyingError: " +
+            "Hardware.UnderlyingError.readerSoftwareUpdateFailedBatteryLow, batteryLevel: Optional(0.4))"
         XCTAssert(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateFailed.rawValue))
+        XCTAssert(analytics.receivedProperties.contains(where: {
+            $0["software_update_type"] as? String == "Required"
+        }))
+        XCTAssert(analytics.receivedProperties.contains(where: {
+            $0[MockAnalyticsProvider.WooAnalyticsKeys.errorKeyDescription] as? String == expectedErrorDescription
+        }))
     }
 
-    func test_WhenUserCancelsUpdate_ViewModel_LogsTracksEvent_cardReaderSoftwareUpdateCancelTapped() {
+    func test_when_user_cancels_update_viewModel_logs_tracks_event_cardReaderSoftwareUpdateCancelTapped() {
         // Given
         mockStoresManager.simulateCancelableUpdate(onCancel: {})
 
@@ -202,7 +236,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssert(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateCancelTapped.rawValue))
     }
 
-    func test_WhenUpdateIsSuccessfullyCanceled_ViewModel_LogsTracksEvent_cardReaderSoftwareUpdateCanceled() {
+    func test_when_update_is_successfully_canceled_viewModel_logs_tracks_event_cardReaderSoftwareUpdateCanceled() {
         // Given
         let expectation = self.expectation(description: #function)
 
@@ -218,7 +252,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssert(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateCanceled.rawValue))
     }
 
-    func test_WhenUpdateIsSuccessfullyCanceled_ViewModel_DoesNotLogTracksEvent_cardReaderSoftwareUpdateFailed() {
+    func test_when_update_is_successfully_canceled_viewModel_does_not_log_tracks_event_cardReaderSoftwareUpdateFailed() {
         // Given
         let expectation = self.expectation(description: #function)
 
@@ -279,5 +313,67 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(handler)
+    }
+
+    func test_when_a_mandatory_update_succeeds_optional_updates_are_not_available() {
+        // Given
+        // .available is not sent
+        mockStoresManager.simulateUpdateStarted()
+        let expectation = self.expectation(description: #function)
+        viewModel.didUpdate = { [weak self] in
+            if self?.viewModel.readerUpdateProgress == nil { //ensures that we wait until completeCardReaderUpdate()
+                expectation.fulfill()
+            }
+        }
+
+        // When
+        mockStoresManager.simulateSuccessfulUpdate()
+
+        // Then
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        XCTAssertFalse(viewModel.optionalReaderUpdateAvailable)
+    }
+
+    func test_when_an_optional_update_succeeds_optional_updates_are_not_available() {
+        // Given
+        mockStoresManager.simulateOptionalUpdateAvailable()
+        mockStoresManager.simulateUpdateStarted()
+        let expectation = self.expectation(description: #function)
+        viewModel.didUpdate = { [weak self] in
+            if self?.viewModel.readerUpdateProgress == nil { //ensures that we wait until completeCardReaderUpdate()
+                expectation.fulfill()
+            }
+        }
+
+        // When
+        mockStoresManager.simulateSuccessfulUpdate()
+
+        // Then
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        XCTAssertFalse(viewModel.optionalReaderUpdateAvailable)
+    }
+
+    func test_when_a_mandatory_update_fails_optional_updates_are_not_available() {
+        // Given
+        // .available is not sent
+        mockStoresManager.simulateUpdateStarted()
+
+        // When
+        mockStoresManager.simulateFailedUpdate(error: CardReaderServiceError.bluetoothDenied)
+
+        // Then
+        XCTAssertFalse(viewModel.optionalReaderUpdateAvailable)
+    }
+
+    func test_when_an_optional_update_fails_optional_updates_are_available() {
+        // Given
+        mockStoresManager.simulateOptionalUpdateAvailable()
+        mockStoresManager.simulateUpdateStarted()
+
+        // When
+        mockStoresManager.simulateFailedUpdate(error: CardReaderServiceError.bluetoothDenied)
+
+        // Then
+        XCTAssertTrue(viewModel.optionalReaderUpdateAvailable)
     }
 }

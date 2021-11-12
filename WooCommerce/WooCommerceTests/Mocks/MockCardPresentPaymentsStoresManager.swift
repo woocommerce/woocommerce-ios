@@ -115,4 +115,8 @@ extension MockCardPresentPaymentsStoresManager {
     func simulateUpdateProgress(_ progress: Float) {
         softwareUpdateSubject.send(.installing(progress: progress))
     }
+
+    func simulateOptionalUpdateAvailable() {
+        softwareUpdateSubject.send(.available)
+    }
 }

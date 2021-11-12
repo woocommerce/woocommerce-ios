@@ -11,7 +11,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     private var connectedReaders = [CardReader]()
     private let knownReaderProvider: CardReaderSettingsKnownReaderProvider?
 
-    private(set) var readerUpdateAvailable: Bool = false
+    private(set) var optionalReaderUpdateAvailable: Bool = false
     var readerUpdateInProgress: Bool {
         readerUpdateProgress != nil
     }
@@ -27,9 +27,14 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     var connectedReaderBatteryLevel: String?
     var connectedReaderSoftwareVersion: String?
 
-    init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?, knownReaderProvider: CardReaderSettingsKnownReaderProvider? = nil) {
+    let delayToShowUpdateSuccessMessage: DispatchTimeInterval
+
+    init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?,
+         knownReaderProvider: CardReaderSettingsKnownReaderProvider? = nil,
+         delayToShowUpdateSuccessMessage: DispatchTimeInterval = .seconds(1)) {
         self.didChangeShouldShow = didChangeShouldShow
         self.knownReaderProvider = knownReaderProvider
+        self.delayToShowUpdateSuccessMessage = delayToShowUpdateSuccessMessage
         beginObservation()
     }
 
@@ -59,7 +64,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
                         self.readerUpdateError = nil
                         self.softwareUpdateCancelable = cancelable
                         self.readerUpdateProgress = 0
-                        ServiceLocator.analytics.track(.cardReaderSoftwareUpdateStarted)
+                        self.track(.cardReaderSoftwareUpdateStarted)
                     case .installing(progress: let progress):
                         self.readerUpdateProgress = progress
                     case .failed(error: let error):
@@ -69,21 +74,21 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
                             break
                         }
                         self.readerUpdateError = error
+                        self.track(.cardReaderSoftwareUpdateFailed, error: error)
                         self.completeCardReaderUpdate(success: false)
-                        ServiceLocator.analytics.track(.cardReaderSoftwareUpdateFailed)
                     case .completed:
                         self.readerUpdateProgress = 1
                         self.softwareUpdateCancelable = nil
-                        ServiceLocator.analytics.track(.cardReaderSoftwareUpdateSuccess)
+                        self.track(.cardReaderSoftwareUpdateSuccess)
                         // If we were installing a software update, introduce a small delay so the user can
                         // actually see a success message showing the installation was complete
-                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) { [weak self] in
+                        DispatchQueue.main.asyncAfter(deadline: .now() + self.delayToShowUpdateSuccessMessage) { [weak self] in
                             self?.completeCardReaderUpdate(success: true)
                         }
                     case .available:
-                        self.readerUpdateAvailable = true
+                        self.optionalReaderUpdateAvailable = true
                     case .none:
-                        self.readerUpdateAvailable = false
+                        self.optionalReaderUpdateAvailable = false
                     }
                     self.didUpdate?()
                 }
@@ -125,7 +130,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     /// Allows the view controller to kick off a card reader update
     ///
     func startCardReaderUpdate() {
-        ServiceLocator.analytics.track(.cardReaderSoftwareUpdateTapped)
+        track(.cardReaderSoftwareUpdateTapped)
         let action = CardPresentPaymentAction.startCardReaderUpdate
         ServiceLocator.stores.dispatch(action)
     }
@@ -139,13 +144,13 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
             guard let self = self else {
                 return
             }
-            ServiceLocator.analytics.track(.cardReaderSoftwareUpdateCancelTapped)
+            self.track(.cardReaderSoftwareUpdateCancelTapped)
             self.softwareUpdateCancelable?.cancel(completion: { [weak self] result in
                 if case .failure(let error) = result {
                     print("=== error canceling software update: \(error)")
                 } else {
+                    self?.track(.cardReaderSoftwareUpdateCanceled)
                     self?.completeCardReaderUpdate(success: false)
-                    ServiceLocator.analytics.track(.cardReaderSoftwareUpdateCanceled)
                 }
             })
         }
@@ -157,7 +162,8 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     }
 
     private func completeCardReaderUpdate(success: Bool) {
-        readerUpdateAvailable = !success
+        //Avoids a failed mandatory reader update being shown as optional
+        optionalReaderUpdateAvailable = optionalReaderUpdateAvailable && !success
         readerUpdateProgress = nil
         didUpdate?()
     }
@@ -165,7 +171,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     /// Dispatch a request to disconnect from a reader
     ///
     func disconnectReader() {
-        ServiceLocator.analytics.track(.cardReaderDisconnectTapped)
+        track(.cardReaderDisconnectTapped)
 
         self.readerDisconnectInProgress = true
         self.didUpdate?()
@@ -205,6 +211,11 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
         if didChange {
             didChangeShouldShow?(shouldShow)
         }
+    }
+
+    private func track(_ stat: WooAnalyticsStat, error: Error? = nil) {
+        let updateType = optionalReaderUpdateAvailable ? SoftwareUpdateTypeProperty.optional : SoftwareUpdateTypeProperty.required
+        ServiceLocator.analytics.track(stat, properties: [SoftwareUpdateTypeProperty.name: updateType.rawValue], error: error)
     }
 }
 

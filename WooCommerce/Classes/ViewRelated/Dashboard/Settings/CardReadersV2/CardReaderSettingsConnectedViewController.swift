@@ -68,7 +68,7 @@ private extension CardReaderSettingsConnectedViewController {
         guard let viewModel = viewModel else {
             return false
         }
-        return viewModel.readerUpdateAvailable == true
+        return viewModel.optionalReaderUpdateAvailable == true
     }
 
     /// Set the title and back button.

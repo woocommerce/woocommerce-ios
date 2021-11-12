@@ -79,19 +79,14 @@ extension String {
 
         /// Replace _ - and + with a .
         ///
-        func replaceUnderscoreDashAndPlusWithDot(inString: String) -> String {
-            var outString = inString
-            let replaceTargets = ["_", "-", "+"]
-            for replaceTarget in replaceTargets {
-                outString = outString.replacingOccurrences(of: replaceTarget, with: ".")
-            }
-            return outString
+        func replaceUnderscoreDashAndPlusWithDot(_ string: String) -> String {
+            string.replacingOccurrences(of: "([_\\-+]+)", with: ".", options: .regularExpression)
         }
 
         /// Insert a . before and after any non number
         ///
-        func insertDotsBeforeAndAfterAnyNonNumber(inString: String) -> String {
-            inString.replacingOccurrences(of: "([^0-9.]+)", with: ".$1.", options: .regularExpression)
+        func insertDotsBeforeAndAfterAnyNonNumber(_ string: String) -> String {
+            string.replacingOccurrences(of: "([^0-9.]+)", with: ".$1.", options: .regularExpression)
         }
 
         /// Score and compare two string components
@@ -125,8 +120,8 @@ extension String {
         /// Process the given string into version components
         ///
         func versionComponents(of string: String) -> [String] {
-            var stringToComponentize = replaceUnderscoreDashAndPlusWithDot(inString: string)
-            stringToComponentize = insertDotsBeforeAndAfterAnyNonNumber(inString: stringToComponentize)
+            var stringToComponentize = replaceUnderscoreDashAndPlusWithDot(string)
+            stringToComponentize = insertDotsBeforeAndAfterAnyNonNumber(stringToComponentize)
             return stringToComponentize.components(separatedBy: ".")
         }
 

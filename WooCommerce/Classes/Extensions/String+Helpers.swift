@@ -175,15 +175,12 @@ extension String {
             }
 
             if stringComponent1Score == .number && stringComponent2Score == .number {
-                let component1Int = Int(stringComponent1) ?? 0
-                let component2Int = Int(stringComponent2) ?? 0
+                let component1 = NSNumber(value: Int(stringComponent1) ?? 0)
+                let component2 = NSNumber(value: Int(stringComponent2) ?? 0)
 
-                if component1Int < component2Int {
-                    return .orderedAscending
-                }
-
-                if component1Int > component2Int {
-                    return .orderedDescending
+                let comparisonResult = component1.compare(component2)
+                if comparisonResult != .orderedSame {
+                    return comparisonResult
                 }
             }
 

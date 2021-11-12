@@ -62,18 +62,24 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func configureOrderCardReader(cell: UITableViewCell) {
+        cell.imageView?.image = .shoppingCartIcon
+        cell.imageView?.tintColor = .text
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Order card reader", comment: "Navigates to Card Reader ordering screen")
     }
 
     func configureManageCardReader(cell: UITableViewCell) {
+        cell.imageView?.image = .creditCardIcon
+        cell.imageView?.tintColor = .text
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Manage card reader", comment: "Navigates to Card Reader management screen")
     }
 
     func configureBBPOSChipper2XBTManual(cell: UITableViewCell) {
+        cell.imageView?.image = .cardReaderManualIcon
+        cell.imageView?.tintColor = .text
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Card reader manual", comment: "Navigates to Card Reader manual")

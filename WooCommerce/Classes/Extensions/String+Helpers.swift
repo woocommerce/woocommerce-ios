@@ -120,51 +120,12 @@ extension String {
             return outString
         }
 
-        /// Ranked per https://www.php.net/manual/en/function.version-compare.php
-        ///
-        enum ComponentScore: Comparable {
-            case other
-            case dev
-            case alpha
-            case beta
-            case RC
-            case number
-            case patch
-        }
-
-        /// Score each component
-        ///
-        func scoreComponent(stringComponent: String) -> ComponentScore {
-            if stringComponent == "dev" {
-                return .dev
-            }
-            if stringComponent == "alpha" || stringComponent == "a" {
-                return .alpha
-            }
-            if stringComponent == "beta" || stringComponent == "b" {
-                return .beta
-            }
-            if stringComponent == "RC" || stringComponent == "rc" {
-                return .RC
-            }
-            let componentCharacterSet = CharacterSet(charactersIn: stringComponent)
-            if componentCharacterSet.isSubset(of: .decimalDigits) {
-                return .number
-            }
-
-            if stringComponent == "pl" || stringComponent == "p" {
-                return .patch
-            }
-
-            return .other
-        }
-
         /// Score and compare two string components
         ///
         func compareStringComponents(_ lhs: String, _ rhs: String) -> ComparisonResult {
             /// Score each component
-            let lhsScore = scoreComponent(stringComponent: lhs)
-            let rhsScore = scoreComponent(stringComponent: rhs)
+            let lhsScore = VersionComponentScore(from: lhs)
+            let rhsScore = VersionComponentScore(from: rhs)
 
             if lhsScore < rhsScore {
                 return .orderedAscending
@@ -212,5 +173,57 @@ extension String {
         }
 
         return .orderedSame
+    }
+}
+
+/// Defines the score (rank) of a component string within a version string.
+/// e.g. the "3" in 3.0.0beta3 should be treated as `.number`
+/// and the "beta" should be scored (ranked) lower as `.beta`.
+///
+/// The scores of components of version strings are used when comparing complete version strings
+/// to decide if one version is older, equal or newer than another.
+///
+/// Ranked per https://www.php.net/manual/en/function.version-compare.php
+///
+fileprivate enum VersionComponentScore: Comparable {
+    case other
+    case dev
+    case alpha
+    case beta
+    case RC
+    case number
+    case patch
+}
+
+extension VersionComponentScore {
+    init(from: String) {
+        if from == "dev" {
+            self = .dev
+            return
+        }
+        if from == "alpha" || from == "a" {
+            self = .alpha
+            return
+        }
+        if from == "beta" || from == "b" {
+            self = .beta
+            return
+        }
+        if from == "RC" || from == "rc" {
+            self = .RC
+            return
+        }
+        let componentCharacterSet = CharacterSet(charactersIn: from)
+        if componentCharacterSet.isSubset(of: .decimalDigits) {
+            self = .number
+            return
+        }
+
+        if from == "pl" || from == "p" {
+            self = .patch
+            return
+        }
+
+        self = .other
     }
 }

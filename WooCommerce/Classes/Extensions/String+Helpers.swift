@@ -161,24 +161,24 @@ extension String {
 
         /// Score and compare two string components
         ///
-        func compareStringComponent(stringComponent1: String, stringComponent2: String) -> ComparisonResult {
+        func compareStringComponents(_ lhs: String, _ rhs: String) -> ComparisonResult {
             /// Score each component
-            let stringComponent1Score = scoreComponent(stringComponent: stringComponent1)
-            let stringComponent2Score = scoreComponent(stringComponent: stringComponent2)
+            let lhsScore = scoreComponent(stringComponent: lhs)
+            let rhsScore = scoreComponent(stringComponent: rhs)
 
-            if stringComponent1Score < stringComponent2Score {
+            if lhsScore < rhsScore {
                 return .orderedAscending
             }
 
-            if stringComponent1Score > stringComponent2Score {
+            if lhsScore > rhsScore {
                 return .orderedDescending
             }
 
-            if stringComponent1Score == .number && stringComponent2Score == .number {
-                let component1 = NSNumber(value: Int(stringComponent1) ?? 0)
-                let component2 = NSNumber(value: Int(stringComponent2) ?? 0)
+            if lhsScore == .number && rhsScore == .number {
+                let lhsAsNumber = NSNumber(value: Int(lhs) ?? 0)
+                let rhsAsNumber = NSNumber(value: Int(rhs) ?? 0)
 
-                let comparisonResult = component1.compare(component2)
+                let comparisonResult = lhsAsNumber.compare(rhsAsNumber)
                 if comparisonResult != .orderedSame {
                     return comparisonResult
                 }
@@ -205,7 +205,7 @@ extension String {
             let leftComponent = index < leftComponents.count ? leftComponents[index] : "0"
             let rightComponent = index < rightComponents.count ? rightComponents[index] : "0"
 
-            let comparisonResult = compareStringComponent(stringComponent1: leftComponent, stringComponent2: rightComponent)
+            let comparisonResult = compareStringComponents(leftComponent, rightComponent)
             if comparisonResult != .orderedSame {
                 return comparisonResult
             }

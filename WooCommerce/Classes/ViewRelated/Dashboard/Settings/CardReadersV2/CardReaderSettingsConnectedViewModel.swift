@@ -51,7 +51,6 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
             self.didGetConnectedReaders = true
             self.connectedReaders = readers
             self.updateProperties()
-
             self.reevaluateShouldShow()
         }
         ServiceLocator.stores.dispatch(action)

@@ -63,3 +63,17 @@ public extension MockAnalyticsProvider {
         // no op
     }
 }
+
+// MARK: - Convenience Keys
+extension MockAnalyticsProvider {
+    /// WooAnalyticsKeys
+    /// Canonically defined in WooAnalytics.swift
+    enum WooAnalyticsKeys {
+        static let errorKeyCode = "error_code"
+        static let errorKeyDomain = "error_domain"
+        static let errorKeyDescription = "error_description"
+        static let propertyKeyTimeInApp = "time_in_app"
+        static let blogIDKey = "blog_id"
+        static let wpcomStoreKey = "is_wpcom_store"
+    }
+}

@@ -156,7 +156,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    func test_startCardReaderUpdate_ViewModel_LogsTracksEvent_cardReaderSoftwareUpdateTapped() {
+    func test_startCardReaderUpdate_viewModel_logs_tracks_event_cardReaderSoftwareUpdateTapped() {
         // Given
 
         // When
@@ -166,17 +166,35 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssert(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateTapped.rawValue))
     }
 
-    func test_startCardReaderUpdate_ViewModel_LogsTracksEvent_cardReaderSoftwareUpdateStarted() {
+    func test_card_reader_update_starts_viewModel_logs_tracks_event_cardReaderSoftwareUpdateStarted() {
         // Given
+        // .available not sent
 
         // When
         mockStoresManager.simulateUpdateStarted()
 
         // Then
         XCTAssert(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateStarted.rawValue))
+        XCTAssert(analytics.receivedProperties.contains(where: {
+            $0["software_update_type"] as? String == "Required"
+        }))
     }
 
-    func test_WhenStoreSendsUpdateComplete_ViewModel_LogsTracksEvent_cardReaderSoftwareUpdateSuccess() {
+    func test_optional_card_reader_update_starts_viewModel_logs_tracks_event_cardReaderSoftwareUpdateStarted_with_optional() {
+        // Given
+        mockStoresManager.simulateOptionalUpdateAvailable()
+
+        // When
+        mockStoresManager.simulateUpdateStarted()
+
+        // Then
+        XCTAssert(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateStarted.rawValue))
+        XCTAssert(analytics.receivedProperties.contains(where: {
+            $0["software_update_type"] as? String == "Optional"
+        }))
+    }
+
+    func test_when_store_sends_update_complete_viewModel_logs_tracks_event_cardReaderSoftwareUpdateSuccess() {
         // Given
 
         // When
@@ -186,8 +204,9 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssert(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateSuccess.rawValue))
     }
 
-    func test_WhenStoreSendsUpdateFailed_ViewModel_LogsTracksEvent_cardReaderSoftwareUpdateFailed() {
+    func test_when_store_sends_update_failed_viewModel_logs_tracks_event_cardReaderSoftwareUpdateFailed() {
         // Given
+        // .available not sent
 
         // When
         let expectedError = CardReaderServiceError.softwareUpdate(underlyingError: .readerSoftwareUpdateFailedBatteryLow,
@@ -195,10 +214,18 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         mockStoresManager.simulateFailedUpdate(error: expectedError)
 
         // Then
+        let expectedErrorDescription = "Hardware.CardReaderServiceError.softwareUpdate(underlyingError: " +
+            "Hardware.UnderlyingError.readerSoftwareUpdateFailedBatteryLow, batteryLevel: Optional(0.4))"
         XCTAssert(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateFailed.rawValue))
+        XCTAssert(analytics.receivedProperties.contains(where: {
+            $0["software_update_type"] as? String == "Required"
+        }))
+        XCTAssert(analytics.receivedProperties.contains(where: {
+            $0[MockAnalyticsProvider.WooAnalyticsKeys.errorKeyDescription] as? String == expectedErrorDescription
+        }))
     }
 
-    func test_WhenUserCancelsUpdate_ViewModel_LogsTracksEvent_cardReaderSoftwareUpdateCancelTapped() {
+    func test_when_user_cancels_update_viewModel_logs_tracks_event_cardReaderSoftwareUpdateCancelTapped() {
         // Given
 
         // When
@@ -208,7 +235,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssert(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateCancelTapped.rawValue))
     }
 
-    func test_WhenUpdateIsSuccessfullyCanceled_ViewModel_LogsTracksEvent_cardReaderSoftwareUpdateCanceled() {
+    func test_when_update_is_successfully_canceled_viewModel_logs_tracks_event_cardReaderSoftwareUpdateCanceled() {
         // Given
         let expectation = self.expectation(description: #function)
 
@@ -224,7 +251,7 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssert(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateCanceled.rawValue))
     }
 
-    func test_WhenUpdateIsSuccessfullyCanceled_ViewModel_DoesNotLogTracksEvent_cardReaderSoftwareUpdateFailed() {
+    func test_when_update_is_successfully_canceled_viewModel_does_not_log_tracks_event_cardReaderSoftwareUpdateFailed() {
         // Given
         let expectation = self.expectation(description: #function)
 

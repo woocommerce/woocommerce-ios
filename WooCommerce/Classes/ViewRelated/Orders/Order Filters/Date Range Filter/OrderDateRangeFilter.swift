@@ -33,6 +33,23 @@ struct OrderDateRangeFilter: Equatable {
             return nil
         }
     }
+
+    var analyticsDescription: String {
+        switch filter {
+        case .today:
+            return "today"
+        case .last2Days:
+            return "last_2_days"
+        case .last7Days:
+            return "last_7_days"
+        case .last30Days:
+            return "last_30_days"
+        case .custom:
+            return "custom_range"
+        default:
+            return ""
+        }
+    }
 }
 
 // MARK: - FilterType conformance

@@ -71,9 +71,13 @@ final class DashboardViewController: UIViewController {
                                               })
     }()
 
+    /// Bottom Jetpack benefits banner, shown when the site is connected to Jetpack without Jetpack-the-plugin.
     private lazy var bottomJetpackBenefitsBannerController = JetpackBenefitsBannerHostingController()
     private var contentBottomToJetpackBenefitsBannerConstraint: NSLayoutConstraint?
     private var contentBottomToContainerConstraint: NSLayoutConstraint?
+    private var isJetpackBenefitsBannerShown: Bool {
+        bottomJetpackBenefitsBannerController.view?.superview != nil
+    }
 
     /// A spacer view to add a margin below the top banner (between the banner and dashboard UI)
     ///
@@ -225,9 +229,9 @@ private extension DashboardViewController {
                 self?.dismiss(animated: true, completion: nil)
             }
             self.present(benefitsController, animated: true, completion: nil)
-        } dismissAction: {
+        } dismissAction: { [weak self] in
             // TODO: 5362 - Persist dismiss state per site
-            self.hideJetpackBenefitsBanner()
+            self?.hideJetpackBenefitsBanner()
         }
     }
 
@@ -364,14 +368,10 @@ private extension DashboardViewController {
     func hideJetpackBenefitsBanner() {
         contentBottomToJetpackBenefitsBannerConstraint?.isActive = false
         contentBottomToContainerConstraint?.isActive = true
-        if isJetpackBenefitsBannerShown() {
+        if isJetpackBenefitsBannerShown {
             bottomJetpackBenefitsBannerController.view?.removeFromSuperview()
             remove(bottomJetpackBenefitsBannerController)
         }
-    }
-
-    func isJetpackBenefitsBannerShown() -> Bool {
-        bottomJetpackBenefitsBannerController.view?.superview != nil
     }
 }
 

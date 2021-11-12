@@ -10,10 +10,12 @@ final class OrdersRootViewController: UIViewController {
     @IBOutlet private weak var stackView: UIStackView!
 
     // MARK: Child view controller
+    private lazy var orderListViewModel = OrderListViewModel(siteID: siteID, filters: filters)
+
     private lazy var ordersViewController = OrderListViewController(
         siteID: siteID,
         title: Localization.defaultOrderListTitle,
-        viewModel: OrderListViewModel(siteID: siteID, statusFilter: nil),
+        viewModel: orderListViewModel,
         emptyStateConfig: .simple(
             message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
             image: .waitingForCustomersImage
@@ -47,9 +49,7 @@ final class OrdersRootViewController: UIViewController {
         didSet {
             if filters != oldValue {
                 filtersBar.setNumberOfFilters(filters.numberOfActiveFilters)
-                //TODO-5243: update local order settings
-                //TODO-5243: ResultsController update predicate if needed
-                //TODO-5243: reload tableview
+                orderListViewModel.updateFilters(filters: filters)
             }
         }
     }

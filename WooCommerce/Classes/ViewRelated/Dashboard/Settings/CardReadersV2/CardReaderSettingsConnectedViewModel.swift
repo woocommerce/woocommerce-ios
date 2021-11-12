@@ -27,11 +27,14 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     var connectedReaderBatteryLevel: String?
     var connectedReaderSoftwareVersion: String?
 
-    var delayToShowUpdateSuccessMessage: DispatchTimeInterval = .seconds(1)
+    let delayToShowUpdateSuccessMessage: DispatchTimeInterval
 
-    init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?, knownReaderProvider: CardReaderSettingsKnownReaderProvider? = nil) {
+    init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?,
+         knownReaderProvider: CardReaderSettingsKnownReaderProvider? = nil,
+         delayToShowUpdateSuccessMessage: DispatchTimeInterval = .seconds(1)) {
         self.didChangeShouldShow = didChangeShouldShow
         self.knownReaderProvider = knownReaderProvider
+        self.delayToShowUpdateSuccessMessage = delayToShowUpdateSuccessMessage
         beginObservation()
     }
 

@@ -19,8 +19,8 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         analytics = MockAnalyticsProvider()
         ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analytics))
 
-        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
-        viewModel.delayToShowUpdateSuccessMessage = .milliseconds(1)
+        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
+                                                         delayToShowUpdateSuccessMessage: .milliseconds(1))
     }
 
     func test_did_change_should_show_returns_false_if_no_connected_readers() {
@@ -35,7 +35,8 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         let _ = CardReaderSettingsConnectedViewModel(didChangeShouldShow: { shouldShow in
             XCTAssertTrue(shouldShow == .isFalse)
             expectation.fulfill()
-        } )
+        },
+                                                     delayToShowUpdateSuccessMessage: .milliseconds(1))
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
@@ -46,7 +47,8 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: { shouldShow in
             XCTAssertTrue(shouldShow == .isTrue)
             expectation.fulfill()
-        } )
+        },
+                                                         delayToShowUpdateSuccessMessage: .milliseconds(1))
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
@@ -64,12 +66,14 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         )
         ServiceLocator.setStores(mockStoresManager)
 
-        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
+                                                         delayToShowUpdateSuccessMessage: .milliseconds(1))
         XCTAssertEqual(viewModel.connectedReaderBatteryLevel, "Unknown Battery Level")
     }
 
     func test_view_model_correctly_formats_connected_card_reader_software_version() {
-        let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+        let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
+                                                             delayToShowUpdateSuccessMessage: .milliseconds(1))
         XCTAssertEqual(viewModel.connectedReaderSoftwareVersion, "Version: 1.00.03.34-SZZZ_Generic_v45-300001")
     }
 
@@ -81,7 +85,8 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         )
         ServiceLocator.setStores(mockStoresManager)
 
-        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
+                                                         delayToShowUpdateSuccessMessage: .milliseconds(1))
         XCTAssertEqual(viewModel.connectedReaderSoftwareVersion, "Unknown Software Version")
     }
 
@@ -125,7 +130,8 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         )
         ServiceLocator.setStores(mockStoresManager)
 
-        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
+                                                         delayToShowUpdateSuccessMessage: .milliseconds(1))
 
         var updateDidBegin = false
 

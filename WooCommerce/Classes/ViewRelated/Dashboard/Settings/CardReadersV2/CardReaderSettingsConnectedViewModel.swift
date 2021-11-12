@@ -205,8 +205,8 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     }
 
     private func track(_ stat: WooAnalyticsStat, error: Error? = nil) {
-        let properties = ["software_update_type": optionalReaderUpdateAvailable ? "Optional" : "Required"]
-        ServiceLocator.analytics.track(stat, properties: properties, error: error)
+        let updateType = optionalReaderUpdateAvailable ? SoftwareUpdateTypeProperty.optional : SoftwareUpdateTypeProperty.required
+        ServiceLocator.analytics.track(stat, properties: [SoftwareUpdateTypeProperty.name: updateType.rawValue], error: error)
     }
 }
 

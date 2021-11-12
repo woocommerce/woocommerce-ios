@@ -19,7 +19,8 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         analytics = MockAnalyticsProvider()
         ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analytics))
 
-        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
+                                                         delayToShowUpdateSuccessMessage: .milliseconds(1))
     }
 
     func test_did_change_should_show_returns_false_if_no_connected_readers() {
@@ -34,7 +35,8 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         let _ = CardReaderSettingsConnectedViewModel(didChangeShouldShow: { shouldShow in
             XCTAssertTrue(shouldShow == .isFalse)
             expectation.fulfill()
-        } )
+        },
+                                                     delayToShowUpdateSuccessMessage: .milliseconds(1))
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
@@ -45,7 +47,8 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: { shouldShow in
             XCTAssertTrue(shouldShow == .isTrue)
             expectation.fulfill()
-        } )
+        },
+                                                         delayToShowUpdateSuccessMessage: .milliseconds(1))
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
@@ -63,12 +66,14 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         )
         ServiceLocator.setStores(mockStoresManager)
 
-        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
+                                                         delayToShowUpdateSuccessMessage: .milliseconds(1))
         XCTAssertEqual(viewModel.connectedReaderBatteryLevel, "Unknown Battery Level")
     }
 
     func test_view_model_correctly_formats_connected_card_reader_software_version() {
-        let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+        let viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
+                                                             delayToShowUpdateSuccessMessage: .milliseconds(1))
         XCTAssertEqual(viewModel.connectedReaderSoftwareVersion, "Version: 1.00.03.34-SZZZ_Generic_v45-300001")
     }
 
@@ -80,7 +85,8 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         )
         ServiceLocator.setStores(mockStoresManager)
 
-        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
+                                                         delayToShowUpdateSuccessMessage: .milliseconds(1))
         XCTAssertEqual(viewModel.connectedReaderSoftwareVersion, "Unknown Software Version")
     }
 
@@ -124,7 +130,8 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         )
         ServiceLocator.setStores(mockStoresManager)
 
-        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil)
+        viewModel = CardReaderSettingsConnectedViewModel(didChangeShouldShow: nil,
+                                                         delayToShowUpdateSuccessMessage: .milliseconds(1))
 
         var updateDidBegin = false
 
@@ -231,5 +238,67 @@ final class CardReaderSettingsConnectedViewModelTests: XCTestCase {
         // Then
         wait(for: [expectation], timeout: Constants.expectationTimeout)
         XCTAssertFalse(analytics.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateFailed.rawValue))
+    }
+
+    func test_when_a_mandatory_update_succeeds_optional_updates_are_not_available() {
+        // Given
+        // .available is not sent
+        mockStoresManager.simulateUpdateStarted()
+        let expectation = self.expectation(description: #function)
+        viewModel.didUpdate = { [weak self] in
+            if self?.viewModel.readerUpdateProgress == nil { //ensures that we wait until completeCardReaderUpdate()
+                expectation.fulfill()
+            }
+        }
+
+        // When
+        mockStoresManager.simulateSuccessfulUpdate()
+
+        // Then
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        XCTAssertFalse(viewModel.optionalReaderUpdateAvailable)
+    }
+
+    func test_when_an_optional_update_succeeds_optional_updates_are_not_available() {
+        // Given
+        mockStoresManager.simulateOptionalUpdateAvailable()
+        mockStoresManager.simulateUpdateStarted()
+        let expectation = self.expectation(description: #function)
+        viewModel.didUpdate = { [weak self] in
+            if self?.viewModel.readerUpdateProgress == nil { //ensures that we wait until completeCardReaderUpdate()
+                expectation.fulfill()
+            }
+        }
+
+        // When
+        mockStoresManager.simulateSuccessfulUpdate()
+
+        // Then
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        XCTAssertFalse(viewModel.optionalReaderUpdateAvailable)
+    }
+
+    func test_when_a_mandatory_update_fails_optional_updates_are_not_available() {
+        // Given
+        // .available is not sent
+        mockStoresManager.simulateUpdateStarted()
+
+        // When
+        mockStoresManager.simulateFailedUpdate(error: CardReaderServiceError.bluetoothDenied)
+
+        // Then
+        XCTAssertFalse(viewModel.optionalReaderUpdateAvailable)
+    }
+
+    func test_when_an_optional_update_fails_optional_updates_are_available() {
+        // Given
+        mockStoresManager.simulateOptionalUpdateAvailable()
+        mockStoresManager.simulateUpdateStarted()
+
+        // When
+        mockStoresManager.simulateFailedUpdate(error: CardReaderServiceError.bluetoothDenied)
+
+        // Then
+        XCTAssertTrue(viewModel.optionalReaderUpdateAvailable)
     }
 }

@@ -11,7 +11,7 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     private var connectedReaders = [CardReader]()
     private let knownReaderProvider: CardReaderSettingsKnownReaderProvider?
 
-    private(set) var readerUpdateAvailable: Bool = false
+    private(set) var optionalReaderUpdateAvailable: Bool = false
     var readerUpdateInProgress: Bool {
         readerUpdateProgress != nil
     }
@@ -27,9 +27,14 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     var connectedReaderBatteryLevel: String?
     var connectedReaderSoftwareVersion: String?
 
-    init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?, knownReaderProvider: CardReaderSettingsKnownReaderProvider? = nil) {
+    let delayToShowUpdateSuccessMessage: DispatchTimeInterval
+
+    init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?,
+         knownReaderProvider: CardReaderSettingsKnownReaderProvider? = nil,
+         delayToShowUpdateSuccessMessage: DispatchTimeInterval = .seconds(1)) {
         self.didChangeShouldShow = didChangeShouldShow
         self.knownReaderProvider = knownReaderProvider
+        self.delayToShowUpdateSuccessMessage = delayToShowUpdateSuccessMessage
         beginObservation()
     }
 
@@ -77,13 +82,13 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
                         ServiceLocator.analytics.track(.cardReaderSoftwareUpdateSuccess)
                         // If we were installing a software update, introduce a small delay so the user can
                         // actually see a success message showing the installation was complete
-                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) { [weak self] in
+                        DispatchQueue.main.asyncAfter(deadline: .now() + self.delayToShowUpdateSuccessMessage) { [weak self] in
                             self?.completeCardReaderUpdate(success: true)
                         }
                     case .available:
-                        self.readerUpdateAvailable = true
+                        self.optionalReaderUpdateAvailable = true
                     case .none:
-                        self.readerUpdateAvailable = false
+                        self.optionalReaderUpdateAvailable = false
                     }
                     self.didUpdate?()
                 }
@@ -148,7 +153,8 @@ final class CardReaderSettingsConnectedViewModel: CardReaderSettingsPresentedVie
     }
 
     private func completeCardReaderUpdate(success: Bool) {
-        readerUpdateAvailable = !success
+        //Avoids a failed mandatory reader update being shown as optional
+        optionalReaderUpdateAvailable = optionalReaderUpdateAvailable && !success
         readerUpdateProgress = nil
         didUpdate?()
     }

@@ -201,7 +201,7 @@ extension String {
 
         let maxComponents = max(leftComponents.count, rightComponents.count)
 
-        for index in 0...maxComponents - 1 {
+        for index in 0..<maxComponents {
             /// Treat missing components (e.g. 1.2 being compared to 1.1.3 as "0", i.e. 1.2.0
             let leftComponent = index < leftComponents.count ? leftComponents[index] : "0"
             let rightComponent = index < rightComponents.count ? rightComponents[index] : "0"

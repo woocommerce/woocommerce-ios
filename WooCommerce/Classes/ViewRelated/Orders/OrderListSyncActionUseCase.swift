@@ -81,15 +81,17 @@ struct OrderListSyncActionUseCase {
     }
 
     let siteID: Int64
-    /// The current filter mode of the Order List.
-    let statusFilter: OrderStatus?
+    /// The current filters applied to the Order List
+    let filters: FilterOrderListViewModel.Filters?
 
     /// Returns the action to use when synchronizing.
     func actionFor(pageNumber: Int,
                    pageSize: Int,
                    reason: SyncReason?,
                    completionHandler: @escaping (TimeInterval, Error?) -> Void) -> OrderAction {
-        let statusKey = statusFilter?.slug
+        let statusKey = filters?.orderStatus?.rawValue
+        let startDate = filters?.dateRange?.computedStartDate
+        let endDate = filters?.dateRange?.computedEndDate
 
         if pageNumber == Defaults.pageFirstIndex {
             let deleteAllBeforeSaving = reason == SyncReason.pullToRefresh
@@ -97,7 +99,8 @@ struct OrderListSyncActionUseCase {
             return OrderAction.fetchFilteredAndAllOrders(
                 siteID: siteID,
                 statusKey: statusKey,
-                before: nil,
+                after: startDate,
+                before: endDate,
                 deleteAllBeforeSaving: deleteAllBeforeSaving,
                 pageSize: pageSize,
                 onCompletion: completionHandler
@@ -107,7 +110,8 @@ struct OrderListSyncActionUseCase {
         return OrderAction.synchronizeOrders(
             siteID: siteID,
             statusKey: statusKey,
-            before: nil,
+            after: startDate,
+            before: endDate,
             pageNumber: pageNumber,
             pageSize: pageSize,
             onCompletion: completionHandler

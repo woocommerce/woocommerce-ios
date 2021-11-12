@@ -90,6 +90,41 @@ class WooAnalyticsTests: XCTestCase {
         }
     }
 
+    /// Verifies an event with an error and properties is received by the AnalyticsProvider
+    ///
+    func test_events_with_properties_and_error_include_combined_properties() {
+        // Given
+        let testError = NSError(domain: Constants.testErrorDomain, code: Constants.testErrorCode, userInfo: Constants.testErrorUserInfo)
+
+        // When
+        analytics.track(.applicationOpened, properties: Constants.testProperty1, error: testError)
+
+        // Then
+        XCTAssertEqual(testingProvider?.receivedEvents.count, 1)
+        XCTAssertEqual(testingProvider?.receivedProperties.count, 1)
+        XCTAssertEqual(testingProvider?.receivedEvents.first, WooAnalyticsStat.applicationOpened.rawValue)
+
+        guard let receivedProperty1 = testingProvider?.receivedProperties[0] as? [String: String] else {
+            XCTFail()
+            return
+        }
+
+        /// Note: iOS 12 is shuffling several dictionaries (especially when it comes to serializing [:] > URL Parameters).
+        /// For that reason, we'll proceed with a bit of a more lengthy but robust check.
+        ///
+        for (key, value) in Constants.testErrorAndPropertyReceivedProperty {
+            XCTAssertEqual(value, receivedProperty1[key])
+        }
+
+        /// Second note: the error's userInfo, as a string, is getting swizzled. We'll ensure the expected payload is there,
+        /// but the exact position isn't guaranteed!
+        ///
+        let descriptionIncludingUserInfo = receivedProperty1[Constants.testErrorDescriptionKey]
+        for (_, descriptionSubstring) in Constants.testErrorUserInfo {
+            XCTAssert(descriptionIncludingUserInfo?.contains(descriptionSubstring) == true)
+        }
+    }
+
     /// Test user opted out
     ///
     func testUserOptedOut() {
@@ -119,5 +154,7 @@ private extension WooAnalyticsTests {
         static let testErrorDescriptionKey                      = "error_description"
         static let testErrorUserInfo: [String: String]          = ["userinfo-key1": "Here is the value!", "userinfo-key2": "Here is the second value!"]
         static let testErrorReceivedProperty: [String: String]  = ["error_code": "999", "error_domain": "domain"]
+
+        static let testErrorAndPropertyReceivedProperty: [String: String]  = ["error_code": "999", "error_domain": "domain", "prop-key1": "prop-value1"]
     }
 }

@@ -6,19 +6,21 @@ struct JetpackBenefitItem: View {
     let subtitle: String
     let icon: UIImage
 
+    // Tracks the scale of the view due to accessibility changes
+    @ScaledMetric private var scale: CGFloat = 1.0
+
     var body: some View {
         HStack(spacing: Layout.horizontalSpacing) {
             Circle()
-                .frame(width: Layout.circleDimension, height: Layout.circleDimension, alignment: .center)
+                .frame(width: Layout.circleDimension * scale, height: Layout.circleDimension * scale, alignment: .center)
                 .foregroundColor(Color(.gray(.shade0)))
                 .overlay(
                     Image(uiImage: icon)
                         .resizable()
                         .frame(width: Layout.iconDimension, height: Layout.iconDimension, alignment: .center)
                 )
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: Layout.verticalTextSpacing) {
                 Text(title).headlineStyle()
-                Spacer().frame(height: Layout.verticalTextSpacing)
                 Text(subtitle).subheadlineStyle()
             }
             Spacer()

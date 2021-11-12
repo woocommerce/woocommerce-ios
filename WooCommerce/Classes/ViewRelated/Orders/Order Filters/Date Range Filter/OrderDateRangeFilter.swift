@@ -7,6 +7,32 @@ struct OrderDateRangeFilter: Equatable {
     var filter: OrderDateRangeFilterEnum
     var startDate: Date?
     var endDate: Date?
+
+    var computedStartDate: Date? {
+        switch filter {
+        case .today:
+            return Date().startOfDay(timezone: TimeZone.siteTimezone)
+        case .last2Days:
+            return Calendar.current.date(byAdding: .day, value: -2, to: Date())?.startOfDay(timezone: TimeZone.siteTimezone)
+        case .last7Days:
+            return Calendar.current.date(byAdding: .day, value: -7, to: Date())?.startOfDay(timezone: TimeZone.siteTimezone)
+        case .last30Days:
+            return Calendar.current.date(byAdding: .day, value: -30, to: Date())?.startOfDay(timezone: TimeZone.siteTimezone)
+        case .custom:
+            return startDate?.startOfDay(timezone: TimeZone.siteTimezone)
+        default:
+            return nil
+        }
+    }
+
+    var computedEndDate: Date? {
+        switch filter {
+        case .custom:
+            return endDate?.endOfDay(timezone: TimeZone.siteTimezone)
+        default:
+            return nil
+        }
+    }
 }
 
 // MARK: - FilterType conformance

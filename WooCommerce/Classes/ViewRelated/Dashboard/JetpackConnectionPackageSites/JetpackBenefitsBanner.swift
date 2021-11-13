@@ -1,8 +1,11 @@
 import SwiftUI
 
-/// Hosting controller wrapper for `JetpackBenefitsBanner`
+/// Hosting controller wrapper for `JetpackBenefitsBanner` to show the banner in UIKit.
+/// Because the banner is not shown as fullscreen, the height is automatically adjusted to fit its content on frame changes.
 ///
 final class JetpackBenefitsBannerHostingController: UIHostingController<JetpackBenefitsBanner> {
+    private var heightConstraint: NSLayoutConstraint?
+
     init() {
         super.init(rootView: JetpackBenefitsBanner())
     }
@@ -11,11 +14,36 @@ final class JetpackBenefitsBannerHostingController: UIHostingController<JetpackB
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        configureHeightConstraint()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        // Recalculates the height of Jetpack benefits bottom banner whenever the frame changes.
+        let size = sizeThatFits(in: view.bounds.size)
+        heightConstraint?.constant = size.height
+    }
+
     /// Actions are set in a separate function because most of the time, they will require to access `self` to be able to present new view controllers.
     ///
     func setActions(tapAction: @escaping () -> Void, dismissAction: @escaping () -> Void) {
         rootView.tapAction = tapAction
         rootView.dismissAction = dismissAction
+    }
+}
+
+private extension JetpackBenefitsBannerHostingController {
+    func configureHeightConstraint() {
+        view.translatesAutoresizingMaskIntoConstraints = false
+        let heightConstraint = view.heightAnchor.constraint(equalToConstant: 0)
+        self.heightConstraint = heightConstraint
+        NSLayoutConstraint.activate([
+            heightConstraint
+        ])
     }
 }
 

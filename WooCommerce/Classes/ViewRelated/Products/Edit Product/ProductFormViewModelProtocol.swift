@@ -153,6 +153,7 @@ extension ProductFormViewModelProtocol {
 
     /// Returns `.publish` when the product does not exists remotely and it's gonna be published for the first time.
     /// Returns `.publish` when the product is going to be published from a different status (eg: from draft).
+    /// Returns `.saveVariation` when saving a variation
     /// Returns `.save` for any other case.
     ///
     func saveMessageType(for productStatus: ProductStatus) -> SaveMessageType {

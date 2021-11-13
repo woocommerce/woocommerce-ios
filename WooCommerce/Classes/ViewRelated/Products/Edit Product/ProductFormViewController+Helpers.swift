@@ -84,6 +84,7 @@ extension ProductFormViewController {
     // MARK: - Progress
 
     /// Progress view for save action.
+    ///
     func showSavingProgress(_ messageType: SaveMessageType) {
         switch messageType {
         case .publish:

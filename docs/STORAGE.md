@@ -24,6 +24,8 @@ The Storage module also exposes a protocol, called [`FileStorage`](../Storage/St
 
 The default implementation of this protocol, [`PListFileStorage`](../Storage/Storage/Tools/PListFileStorage.swift) provides support for `.plist` files.  
 
+File storage is used mostly for [local app settings](app-local-settings.md).
+
 ## Model objects
 This module also provides extensions to make the model objects declared in the `Networking` module coredata-compliant.  
 

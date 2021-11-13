@@ -166,16 +166,9 @@ private extension SettingsViewModel {
     func configureSections() {
         // Selected Store
         let selectedStoreSection: Section = {
-            let selectedStoreTitle = NSLocalizedString(
-                "Selected Store",
-                comment: "My Store > Settings > Selected Store information section. " +
-                    "This is the heading listed above the information row that displays the store website and their username."
-            ).uppercased()
-
             let storeRows: [Row] = sites.count > 1 ?
                 [.selectedStore, .switchStore] : [.selectedStore]
-
-            return Section(title: selectedStoreTitle,
+            return Section(title: Localization.selectedStoreTitle,
                            rows: storeRows,
                            footerHeight: UITableView.automaticDimension)
         }()
@@ -188,62 +181,36 @@ private extension SettingsViewModel {
                 return nil
             }
 
-            let pluginsTitle = NSLocalizedString(
-                "Plugins",
-                comment: "My Store > Settings > Plugins section title"
-            ).uppercased()
-            return Section(title: pluginsTitle,
+            return Section(title: Localization.pluginsTitle,
                            rows: [.plugins],
                            footerHeight: UITableView.automaticDimension)
         }()
 
         // Store settings
-        let storeSettingsSection: Section = {
-            let storeSettingsTitle = NSLocalizedString(
-                "Store Settings",
-                comment: "My Store > Settings > Store Settings section title"
-            ).uppercased()
-            return Section(title: storeSettingsTitle,
-                           rows: [.inPersonPayments],
-                           footerHeight: UITableView.automaticDimension)
-        }()
+        let storeSettingsSection = Section(title: Localization.storeSettingsTitle,
+                                           rows: [.inPersonPayments],
+                                           footerHeight: UITableView.automaticDimension)
 
         // Help & Feedback
         let helpAndFeedbackSection: Section = {
-            let helpAndFeedbackTitle = NSLocalizedString(
-                "Help & Feedback",
-                comment: "My Store > Settings > Help and Feedback settings section title"
-            ).uppercased()
-
             let rows: [Row]
             if couldShowBetaFeaturesRow {
                 rows = [.support, .betaFeatures, .sendFeedback]
             } else {
                 rows = [.support, .sendFeedback]
             }
-            return Section(title: helpAndFeedbackTitle,
+            return Section(title: Localization.helpAndFeedbackTitle,
                            rows: rows,
                            footerHeight: UITableView.automaticDimension)
         }()
 
         // App Settings
-        let appSettingsSection: Section = {
-            let appSettingsTitle = NSLocalizedString(
-                "App Settings",
-                comment: "My Store > Settings > App (Application) settings section title"
-            ).uppercased()
-            return Section(title: appSettingsTitle,
-                           rows: [.privacy],
-                           footerHeight: UITableView.automaticDimension)
-        }()
+        let appSettingsSection = Section(title: Localization.appSettingsTitle,
+                                         rows: [.privacy],
+                                         footerHeight: UITableView.automaticDimension)
 
         // About the App
         let aboutTheAppSection: Section = {
-            let aboutTheAppTitle = NSLocalizedString(
-                "About the App",
-                comment: "My Store > Settings > About the App (Application) section title"
-            ).uppercased()
-
             let rows: [Row]
             // Show the whats new row only there is a non-nil announcement available.
             if announcement != nil {
@@ -251,25 +218,20 @@ private extension SettingsViewModel {
             } else {
                 rows = [.about, .licenses]
             }
-            return Section(title: aboutTheAppTitle,
+            return Section(title: Localization.aboutTheAppTitle,
                            rows: rows,
                            footerHeight: UITableView.automaticDimension)
         }()
 
         // Other
         let otherSection: Section = {
-            let otherTitle = NSLocalizedString(
-                "Other",
-                comment: "My Store > Settings > Other app section"
-            ).uppercased()
-
             let rows: [Row]
             #if DEBUG
             rows = [.deviceSettings, .wormholy]
             #else
             rows = [.deviceSettings]
             #endif
-            return Section(title: otherTitle,
+            return Section(title: Localization.otherTitle,
                            rows: rows,
                            footerHeight: CGFloat.leastNonzeroMagnitude)
         }()
@@ -342,5 +304,47 @@ private extension SettingsViewModel {
     /// Returns `true` for the add-ons workaround.
     var couldShowBetaFeaturesRow: Bool {
         true
+    }
+}
+
+// MARK: - Localizations
+//
+private extension SettingsViewModel {
+    enum Localization {
+        static let selectedStoreTitle = NSLocalizedString(
+            "Selected Store",
+            comment: "My Store > Settings > Selected Store information section. " +
+                "This is the heading listed above the information row that displays the store website and their username."
+        ).uppercased()
+
+        static let pluginsTitle = NSLocalizedString(
+            "Plugins",
+            comment: "My Store > Settings > Plugins section title"
+        ).uppercased()
+
+        static let storeSettingsTitle = NSLocalizedString(
+            "Store Settings",
+            comment: "My Store > Settings > Store Settings section title"
+        ).uppercased()
+
+        static let helpAndFeedbackTitle = NSLocalizedString(
+            "Help & Feedback",
+            comment: "My Store > Settings > Help and Feedback settings section title"
+        ).uppercased()
+
+        static let appSettingsTitle = NSLocalizedString(
+            "App Settings",
+            comment: "My Store > Settings > App (Application) settings section title"
+        ).uppercased()
+
+        static let aboutTheAppTitle = NSLocalizedString(
+            "About the App",
+            comment: "My Store > Settings > About the App (Application) section title"
+        ).uppercased()
+
+        static let otherTitle = NSLocalizedString(
+            "Other",
+            comment: "My Store > Settings > Other app section"
+        ).uppercased()
     }
 }

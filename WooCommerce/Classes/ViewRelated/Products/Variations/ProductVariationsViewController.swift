@@ -368,7 +368,6 @@ extension ProductVariationsViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
-
         let productVariation = resultsController.object(at: indexPath)
         let model = EditableProductVariationModel(productVariation: productVariation,
                                                   allAttributes: allAttributes,
@@ -377,7 +376,6 @@ extension ProductVariationsViewController: UITableViewDataSource {
         cell.update(viewModel: viewModel, imageService: imageService)
         cell.selectionStyle = .none
         cell.accessoryType = .disclosureIndicator
-
         return cell
     }
 }

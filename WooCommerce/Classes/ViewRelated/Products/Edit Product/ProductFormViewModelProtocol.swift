@@ -58,10 +58,8 @@ protocol ProductFormViewModelProtocol {
     /// The action buttons that should be rendered in the navigation bar.
     var actionButtons: [ActionButtonType] { get }
 
-//    //TODO: #update
-//    var isVariation: Bool { get }
-
-    func getProductVariationID() -> Int64?
+    /// The product variation ID
+    var productionVariationID: Int64? { get }
 
     // Unsaved changes
 

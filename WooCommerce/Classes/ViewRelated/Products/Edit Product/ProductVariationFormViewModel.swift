@@ -6,11 +6,6 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
 
     typealias ProductModel = EditableProductVariationModel
 
-    //TODO: #update
-    func getProductVariationID() -> Int64? {
-        return productVariation.productVariation.productVariationID
-    }
-
     /// Emits product variation on change.
     var observableProduct: Observable<EditableProductVariationModel> {
         productVariationSubject
@@ -29,6 +24,11 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     /// Emits a boolean of whether the product variation has unsaved changes for remote update.
     var isUpdateEnabled: Observable<Bool> {
         isUpdateEnabledSubject
+    }
+
+    /// The product variation ID
+    var productionVariationID: Int64? {
+        productVariation.productVariation.productVariationID
     }
 
     /// Emits a void value informing when there is a new variation price state available
@@ -98,7 +98,6 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     private let productImageActionHandler: ProductImageActionHandler
     private let storesManager: StoresManager
     private var cancellable: ObservationToken?
-
 
     init(productVariation: EditableProductVariationModel,
          allAttributes: [ProductAttribute],
@@ -282,6 +281,10 @@ extension ProductVariationFormViewModel {
     func updateProductVariations(from product: Product) {
         //no-op
     }
+
+//    func getProductVariationID() -> Int64? {
+//        return productVariation.productVariation.productVariationID
+//    }
 }
 
 // MARK: Remote actions

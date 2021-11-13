@@ -65,10 +65,10 @@ extension ProductsTabProductTableViewCell: SearchResultCell {
 extension ProductsTabProductTableViewCell {
     func update(viewModel: ProductsTabProductViewModel, imageService: ImageService) {
 
-        // TODO: #update Documentation here...
-        // TODO: Add Localization
         if let variationID = viewModel.productVariation?.productVariationID {
-            nameLabel.text = "#\(variationID)\n\(viewModel.name)"
+            // Add product variation ID with name
+            // See more: https://github.com/woocommerce/woocommerce-ios/issues/4846
+            nameLabel.text = "\(Localization.variationID(variationID: "\(variationID)"))\n\(viewModel.name)"
         }
         else {
             nameLabel.text = viewModel.name
@@ -163,7 +163,7 @@ private extension ProductsTabProductTableViewCell {
 
     func configureNameLabel() {
         nameLabel.applyBodyStyle()
-        nameLabel.numberOfLines = 2
+        nameLabel.numberOfLines = 3
     }
 
     func configureDetailsLabel() {
@@ -235,6 +235,13 @@ private extension ProductsTabProductTableViewCell {
         static let imageBorderColor = UIColor.border
         static let imagePlaceholderTintColor = UIColor.systemColor(.systemGray2)
         static let imageBackgroundColor = UIColor.listForeground
+    }
+}
+
+private enum Localization {
+    static func variationID(variationID: String) -> String {
+        let titleFormat = NSLocalizedString("#%1$@", comment: "Variation ID. Parameters: %1$@ - Product variation ID")
+        return String.localizedStringWithFormat(titleFormat, variationID)
     }
 }
 

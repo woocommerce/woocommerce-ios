@@ -23,13 +23,13 @@
       location = "group:Fakes/Fakes.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:CodeGeneration">
+      location = "group:Observables">
    </FileRef>
    <FileRef
       location = "group:TestKit">
    </FileRef>
    <FileRef
-      location = "group:Observables">
+      location = "group:CodeGeneration">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">

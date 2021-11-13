@@ -60,7 +60,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          presentationStyle: ProductFormPresentationStyle) {
         self.viewModel = viewModel
-
         self.eventLogger = eventLogger
         self.currency = currency
         self.presentationStyle = presentationStyle
@@ -98,9 +97,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     override func viewDidLoad() {
         super.viewDidLoad()
         configurePresentationStyle()
-        // TODO: #update
-        if let variationID = self.viewModel.getProductVariationID() {
-            configureNavigationBar(title: "Variation #\(variationID)")
+
+        // If the page opens from product variation,
+        // product variation ID will show on navigation bar title along with text `Variation`
+        // See more: https://github.com/woocommerce/woocommerce-ios/issues/4846
+        if let variationID = self.viewModel.productionVariationID {
+            configureNavigationBar(title: Localization.variationViewTitle(variationID: "\(variationID)"))
         }
         else {
             configureNavigationBar()
@@ -172,7 +174,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     @objc func saveProductAndLogEvent() {
         eventLogger.logUpdateButtonTapped()
-        saveProduct(status: self.viewModel.getProductVariationID() != nil ? .custom("variation") : nil)
+        saveProduct()
     }
 
     @objc func publishProduct() {
@@ -1453,6 +1455,11 @@ private enum Localization {
                                                             comment: "Navigation bar title for editing linked products for a grouped product")
     static let unnamedProduct = NSLocalizedString("Unnamed product",
                                                   comment: "Back button title when the product doesn't have a name")
+
+    static func variationViewTitle(variationID: String) -> String {
+        let titleFormat = NSLocalizedString("Variation #%1$@", comment: "Navigation bar title for variation. Parameters: %1$@ - Product variation ID")
+        return String.localizedStringWithFormat(titleFormat, variationID)
+    }
 }
 
 private enum ActionSheetStrings {

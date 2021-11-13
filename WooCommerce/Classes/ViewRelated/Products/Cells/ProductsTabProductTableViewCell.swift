@@ -64,7 +64,15 @@ extension ProductsTabProductTableViewCell: SearchResultCell {
 
 extension ProductsTabProductTableViewCell {
     func update(viewModel: ProductsTabProductViewModel, imageService: ImageService) {
-        nameLabel.text = viewModel.name
+
+        // TODO: #update Documentation here...
+        // TODO: Add Localization
+        if let variationID = viewModel.productVariation?.productVariationID {
+            nameLabel.text = "#\(variationID)\n\(viewModel.name)"
+        }
+        else {
+            nameLabel.text = viewModel.name
+        }
 
         detailsLabel.attributedText = viewModel.detailsAttributedString
 

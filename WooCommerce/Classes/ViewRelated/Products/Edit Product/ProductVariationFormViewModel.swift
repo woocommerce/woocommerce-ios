@@ -6,6 +6,11 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
 
     typealias ProductModel = EditableProductVariationModel
 
+    //TODO: #update
+    func getProductVariationID() -> Int64? {
+        return productVariation.productVariation.productVariationID
+    }
+
     /// Emits product variation on change.
     var observableProduct: Observable<EditableProductVariationModel> {
         productVariationSubject
@@ -93,6 +98,7 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     private let productImageActionHandler: ProductImageActionHandler
     private let storesManager: StoresManager
     private var cancellable: ObservationToken?
+
 
     init(productVariation: EditableProductVariationModel,
          allAttributes: [ProductAttribute],

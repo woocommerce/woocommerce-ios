@@ -19,6 +19,7 @@ private extension ProductStatus {
 struct ProductsTabProductViewModel {
     let imageUrl: String?
     let name: String
+    let productVariation: ProductVariation?
     let detailsAttributedString: NSAttributedString
     let isSelected: Bool
     let isDraggable: Bool
@@ -26,9 +27,15 @@ struct ProductsTabProductViewModel {
     // Dependency for configuring the view.
     let imageService: ImageService
 
-    init(product: Product, isSelected: Bool = false, isDraggable: Bool = false, imageService: ImageService = ServiceLocator.imageService) {
+    init(product: Product,
+         productVariation: ProductVariation? = nil,
+         isSelected: Bool = false,
+         isDraggable: Bool = false,
+         imageService: ImageService = ServiceLocator.imageService) {
+
         imageUrl = product.images.first?.src
         name = product.name.isEmpty ? Localization.noTitle : product.name
+        self.productVariation = productVariation
         self.isSelected = isSelected
         self.isDraggable = isDraggable
         detailsAttributedString = EditableProductModel(product: product).createDetailsAttributedString()

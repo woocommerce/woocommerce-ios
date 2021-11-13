@@ -5,7 +5,13 @@ import protocol Storage.StorageManagerType
 
 /// Provides data for product form UI, and handles product editing actions.
 final class ProductFormViewModel: ProductFormViewModelProtocol {
+
     typealias ProductModel = EditableProductModel
+
+    // TODO: #update
+    func getProductVariationID() -> Int64? {
+        return nil
+    }
 
     /// Emits product on change, except when the product name is the only change (`productName` is emitted for this case).
     var observableProduct: Observable<EditableProductModel> {
@@ -36,6 +42,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     var originalProductModel: EditableProductModel {
         originalProduct
     }
+
+    var isVariation: Bool = false
 
     /// The form type could change from .add to .edit after creation.
     private(set) var formType: ProductFormType

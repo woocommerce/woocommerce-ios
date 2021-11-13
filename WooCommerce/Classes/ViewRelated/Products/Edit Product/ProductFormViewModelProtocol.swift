@@ -19,7 +19,9 @@ enum ActionButtonType {
 enum SaveMessageType {
     case publish
     case save
+    case saveVariation
 }
+
 
 /// A view model for `ProductFormViewController` to add/edit a generic product model (e.g. `Product` or `ProductVariation`).
 ///
@@ -55,6 +57,11 @@ protocol ProductFormViewModelProtocol {
 
     /// The action buttons that should be rendered in the navigation bar.
     var actionButtons: [ActionButtonType] { get }
+
+//    //TODO: #update
+//    var isVariation: Bool { get }
+
+    func getProductVariationID() -> Int64?
 
     // Unsaved changes
 
@@ -154,6 +161,8 @@ extension ProductFormViewModelProtocol {
         switch productStatus {
         case .publish where !productModel.existsRemotely || originalProductModel.status != .publish:
             return .publish
+        case .custom("variation"):
+            return .saveVariation
         default:
             return .save
         }

@@ -373,7 +373,6 @@ extension ProductVariationsViewController: UITableViewDataSource {
         let model = EditableProductVariationModel(productVariation: productVariation,
                                                   allAttributes: allAttributes,
                                                   parentProductSKU: parentProductSKU)
-
         let viewModel = ProductsTabProductViewModel(productVariationModel: model)
         cell.update(viewModel: viewModel, imageService: imageService)
         cell.selectionStyle = .none
@@ -410,6 +409,7 @@ extension ProductVariationsViewController: UITableViewDelegate {
         let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
         let productImageActionHandler = ProductImageActionHandler(siteID: productVariation.siteID,
                                                                   product: model)
+
         let viewModel = ProductVariationFormViewModel(productVariation: model,
                                                       allAttributes: allAttributes,
                                                       parentProductSKU: parentProductSKU,

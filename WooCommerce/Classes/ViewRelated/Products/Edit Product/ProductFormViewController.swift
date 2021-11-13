@@ -60,6 +60,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          presentationStyle: ProductFormPresentationStyle) {
         self.viewModel = viewModel
+
         self.eventLogger = eventLogger
         self.currency = currency
         self.presentationStyle = presentationStyle
@@ -96,9 +97,15 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         configurePresentationStyle()
-        configureNavigationBar()
+        // TODO: #update
+        if let variationID = self.viewModel.getProductVariationID() {
+            configureNavigationBar(title: "Variation #\(variationID)")
+        }
+        else {
+            configureNavigationBar()
+        }
+
         configureMainView()
         configureTableView()
         configureMoreDetailsContainerView()
@@ -165,7 +172,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     @objc func saveProductAndLogEvent() {
         eventLogger.logUpdateButtonTapped()
-        saveProduct()
+        saveProduct(status: self.viewModel.getProductVariationID() != nil ? .custom("variation") : nil)
     }
 
     @objc func publishProduct() {
@@ -407,9 +414,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 //
 private extension ProductFormViewController {
 
-    func configureNavigationBar() {
+    /// Configure navigation bar with the title
+    ///
+    func configureNavigationBar(title: String = String()) {
         updateNavigationBar()
         updateBackButtonTitle()
+        updateNavigationBarTitle(title: title)
     }
 
     func configureMainView() {
@@ -801,7 +811,15 @@ private extension ProductFormViewController {
         navigationItem.backButtonTitle = viewModel.productModel.name.isNotEmpty ? viewModel.productModel.name : Localization.unnamedProduct
     }
 
+    func updateNavigationBarTitle(title: String) {
+        // Update navigation bar title with variation ID
+        self.title = title
+    }
+
     func updateNavigationBar() {
+
+
+
         // Create action buttons based on view model
         let rightBarButtonItems: [UIBarButtonItem] = viewModel.actionButtons.reversed().map { buttonType in
             switch buttonType {

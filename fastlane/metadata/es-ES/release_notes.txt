@@ -1,3 +1,3 @@
-Los vendedores que utilicen WooCommerce Shipping & Tax podrán crear varias etiquetas de envío para un pedido. Puedes mover de forma rápida los elementos entre los paquetes para organizarlos como quieras y enviárselos a tu cliente. También hemos solucionado un par de problemas que había en esas pantallas.
+Algunos vendedores tenían problemas al cargar los datos del pedido debido a un problema técnico relacionado con la forma en que se ordenan los nombres de los campos en la API de REST. Hemos implementado una corrección que debería solucionar este problema (si este es tu caso).
 
-Además, hemos aplicado unas cuantas mejoras de accesibilidad gracias a los comentarios que nos habéis enviado. ¡Gracias!
+Esta versión tiene más correcciones que se han basado en vuestros comentarios. Sigue enviando tus comentarios: ¡te escuchamos!

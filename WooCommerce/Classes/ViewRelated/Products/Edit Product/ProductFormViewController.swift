@@ -827,9 +827,6 @@ private extension ProductFormViewController {
     }
 
     func updateNavigationBar() {
-
-
-
         // Create action buttons based on view model
         let rightBarButtonItems: [UIBarButtonItem] = viewModel.actionButtons.reversed().map { buttonType in
             switch buttonType {

@@ -64,7 +64,6 @@ extension ProductsTabProductTableViewCell: SearchResultCell {
 
 extension ProductsTabProductTableViewCell {
     func update(viewModel: ProductsTabProductViewModel, imageService: ImageService) {
-
         if let variationID = viewModel.productVariation?.productVariationID {
             // Add product variation ID with name
             // See more: https://github.com/woocommerce/woocommerce-ios/issues/4846

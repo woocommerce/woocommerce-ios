@@ -281,10 +281,6 @@ extension ProductVariationFormViewModel {
     func updateProductVariations(from product: Product) {
         //no-op
     }
-
-//    func getProductVariationID() -> Int64? {
-//        return productVariation.productVariation.productVariationID
-//    }
 }
 
 // MARK: Remote actions

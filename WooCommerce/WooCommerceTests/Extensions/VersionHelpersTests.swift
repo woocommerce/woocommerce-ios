@@ -1,7 +1,7 @@
 import XCTest
 @testable import WooCommerce
 
-/// String+Helpers: Unit Tests
+/// VersionHelpers Unit Tests
 ///
 final class VersionHelpersTests: XCTestCase {
     func test_compare_as_version() {
@@ -50,8 +50,8 @@ final class VersionHelpersTests: XCTestCase {
     }
 
     struct VersionTestCase {
-        var foundVersion: String
-        var requiredMinimumVersion: String
-        var meetsMinimum: Bool
+        let foundVersion: String
+        let requiredMinimumVersion: String
+        let meetsMinimum: Bool
     }
 }

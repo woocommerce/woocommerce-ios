@@ -1,3 +1,3 @@
-WooCommerce Gönderim ve Vergi özelliğini kullanan satıcılar artık bir sipariş için birden fazla kargo etiketi oluşturabilirler. Müşterinize bir şeyler gönderirken paketler arasında öğeleri hızla taşıyabilirsiniz. Aynı ekranlarda olduğu bildirilen bazı aksaklıkları da giderdik.
+Bazı satıcılar, REST API'deki alan adlarının sıralanmasıyla ilgili teknik bir sorundan dolayı sipariş ayrıntılarını yüklemede sorun yaşıyordu. Siz de böyle bir durum yaşıyorsanız bunu giderecek bir düzeltme yaptık.
 
-Ayrıca geri bildirimlere dayalı olarak birkaç erişilebilirlik iyileştirmesi yaptık. Teşekkür ederiz!
+Bu sürümde, geri bildirimlerinizi dikkate alarak bazı düzeltmeler gerçekleştirdik. Lütfen bize geri bildirim göndermeye devam edin, sizi dinliyoruz.

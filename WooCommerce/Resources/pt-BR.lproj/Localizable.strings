@@ -1,9 +1,9 @@
-/* Translation-Revision-Date: 2021-10-29 17:14:26+0000 */
+/* Translation-Revision-Date: 2021-11-08 15:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
 
-/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
+/* No comment provided by engineer. */
 "#%@ %@" = "#%1$@ %2$@";
 
 /* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
@@ -347,8 +347,8 @@
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "Adicione as informações de arquivos para download referentes a produtos remotamente";
 
-/* Navigates to a screen to create a quick pay order */
-"Add quick pay order" = "Add quick pay order";
+/* Navigates to a screen to create a quick order order */
+"Add quick order order" = "Add quick order order";
 
 /* Option to add item to new package on Package Details screen of Shipping Label flow. */
 "Add to new package" = "Adicionar ao novo pacote";
@@ -393,7 +393,8 @@
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
 
-/* Title for the second page in the Orders tab. */
+/* Header bar label on top of order list when no filters are applied
+   Title for the second page in the Orders tab. */
 "All Orders" = "Todos os pedidos";
 
 /* Message displayed when there are no packages to display in the Add New Service Package screen in Shipping Label flow */
@@ -598,8 +599,11 @@
 "Can Not Request Link" = "Não pode requisitar link";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the quick order screen */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Button to allow the user to close the modal without connecting. - Button to cancel (not try again). Presented to users after a failure occurs - Button to cancel a payment - Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the more menu action sheet on Products section - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Close the action sheet - Dismiss button on the alert when the user taps to delete a Product image - Label for a cancel button - Option to cancel the email app selection when logging in with magic links - Text for the cancel button in the edit customer provided note screen - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. - Title for the button to cancel the quick order screen */
 "Cancel" = "Cancelar";
+
+/* Display label for cancelled order status. */
+"Cancelled" = "Cancelado";
 
 /* Title of the alert when there is an error creating a new product category */
 "Cannot Add Category" = "Não foi possível adicionar categoria";
@@ -639,7 +643,7 @@
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "Acompanhe seus sites favoritos e junte-se à conversa de qualquer lugar, a qualquer hora.";
 
 /* Edit product categories screen - Screen title
-   Title of the Categories row on Product main screen - Title of the product form bottom sheet action for editing categories. */
+   Filter product categories screen - Screen title - Title of the Categories row on Product main screen - Title of the product form bottom sheet action for editing categories. */
 "Categories" = "Categorias";
 
 /* Popup title for wrong SSL certificate. */
@@ -703,6 +707,9 @@
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
 "Company" = "Empresa";
+
+/* Display label for completed order status. */
+"Completed" = "Operação concluída";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "Escreve uma nova nota para o pedido.";
@@ -855,7 +862,7 @@
 "Create Account" = "Criar conta";
 
 /* Create Shipping Label form navigation title
-   Text on the button that starts shipping label creation */
+   Option to create new shipping label from the action sheet on Products section of Order Details screen - Text on the button that starts shipping label creation */
 "Create Shipping Label" = "Criar etiqueta de envio";
 
 /* Button to create a new package in Shipping Label Package screen */
@@ -899,6 +906,9 @@
 /* Custom Package menu in Shipping Label Add New Package flow */
 "Custom Package" = "Pacote personalizado";
 
+/* Label for one of the filters in order date range */
+"Custom Range" = "Período personalizado";
+
 /* Error shown in Shipping Label Origin Address validation for phone number when the it doesn't have expected length for international shipment. */
 "Custom forms require a 10-digit phone number" = "As declarações aduaneiras exigem um número de telefone de 10 dígitos";
 
@@ -931,6 +941,9 @@
 
 /* Details section title in the Edit Address Form */
 "DETAILS" = "DETALHES";
+
+/* Row title for filtering orders by date range. */
+"Date Range" = "Período";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "Data do envio";
@@ -995,7 +1008,7 @@
 "Discount" = "Desconto";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Button to dismiss the alert presented when finding a reader to connect to fails - Button to dismiss. Presented to users after collecting a payment fails - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - Title of the button to dismiss the banner notice in the add-ons view */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Button to dismiss the alert presented when finding a reader to connect to fails - Button to dismiss. Presented to users after collecting a payment fails - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab - The title of the button to dismiss the QuickOrder top banner - Title of the button to dismiss the banner notice in the add-ons view */
 "Dismiss" = "Dispensar";
 
 /* Display label for the product's inventory backorders setting option */
@@ -1101,7 +1114,7 @@
 "Eligible for free pickup" = "Elegível para retirada gratuita";
 
 /* Email address text field placeholder
-   Text field email in Edit Address Form - Title of Email accessibility action, opens a compose view */
+   Email button title - Text field email in Edit Address Form - Title of Email accessibility action, opens a compose view */
 "Email" = "E-mail";
 
 /* Accessibility label for the email address text field.
@@ -1245,6 +1258,9 @@
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "Externo\/vinculado";
 
+/* Display label for failed order status. */
+"Failed" = "Falhou";
+
 /* An error message shown when failing to retrieve information to present a view for a review push notification. */
 "Failed to retrieve the review notification details." = "Falha ao recuperar os detalhes da notificação de avaliação.";
 
@@ -1280,11 +1296,12 @@
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "Preencher com o gerenciador de senha";
 
-/* Title of the toolbar button to filter products by different attributes.
-   Title of the toolbar button to filter products without any filters applied. */
+/* Title of the toolbar button to filter orders without filters applied.
+   Title of the toolbar button to filter products by different attributes. - Title of the toolbar button to filter products without any filters applied. */
 "Filter" = "Filtrar";
 
-/* Title of the toolbar button to filter products with filters applied. */
+/* Title of the toolbar button to filter orders with filters applied.
+   Title of the toolbar button to filter products with filters applied. */
 "Filter (%ld)" = "Filtro (%ld)";
 
 /* Placeholder on the search field to search for a specific country */
@@ -1293,7 +1310,11 @@
 /* Placeholder on the search field to search for a specific state */
 "Filter States" = "Filtrar estados";
 
-/* Navigation bar title format for filtering a list of products without filters applied. */
+/* Header bar label on top of order list when filters are applied */
+"Filtered Orders" = "Pedidos filtrados";
+
+/* Filters button text on header bar on top of order list
+   Navigation bar title format for filtering a list of products without filters applied. */
 "Filters" = "Filtros";
 
 /* Navigation bar title format for filtering a list of products with filters applied. */
@@ -1364,7 +1385,7 @@
 "Gift" = "Presente";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
-   The title of the button to give feedback about shipping labels features on the banner in order details - Title of the button to give feedback about the add-ons feature - Title on the navigation bar for the products feedback survey */
+   The title of the button to give feedback about shipping labels features on the banner in order details - Title of the button to give feedback about the add-ons feature - Title of the button to give feedback about the Quick Order feature - Title on the navigation bar for the products feedback survey */
 "Give feedback" = "Dê sua opinião";
 
 /* Option to select the Gmail app when logging in with magic links */
@@ -1657,6 +1678,9 @@
 
 /* Navigation bar title of shipping label paper size options screen */
 "Label Format Options" = "Opções de formato da etiqueta";
+
+/* Label for one of the filters in order date range */
+"Last 2 Days" = "Últimos 2 dias";
 
 /* Last 24 hours section header */
 "Last 24 hours" = "Últimas 24 horas";
@@ -2038,6 +2062,9 @@
 /* Display label for the product's inventory stock status */
 "On back order" = "pedido em espera";
 
+/* Display label for on hold order status. */
+"On hold" = "Em espera";
+
 /* Accessibility label for 1 password button */
 "One Password button" = "Botão 1Password";
 
@@ -2099,7 +2126,7 @@
 "Order Notes" = "Observações do pedido";
 
 /* Change order status screen - Screen title
-   The section title for the list of Order statuses in the Order Search. */
+   Row title for filtering orders by order status. - The section title for the list of Order statuses in the Order Search. */
 "Order Status" = "Status do pedido";
 
 /* Create Shipping Label form -> Order Total label
@@ -2216,7 +2243,8 @@
 /* Label informing users that the payment succeeded. Presented to users when a payment is collected */
 "Payment successful" = "Pagamento realizado com êxito";
 
-/* Display label for the review's pending status */
+/* Display label for pending order status.
+   Display label for the review's pending status */
 "Pending" = "Pendente";
 
 /* A unit test string, appended before the title of a review.
@@ -2298,6 +2326,9 @@
 
 /* Error message when an image captured by camera cannot be saved to the device Photos library */
 "Please make sure the app can access Photos in device settings" = "Certifique-se que o aplicativo tem acesso às Fotos nas configurações do dispositivo";
+
+/* Error notice recovery suggestion when we fail to update an address in the edit address screen. */
+"Please make sure you are running the latest version of WooCommerce and try again later." = "Confirme se você está usando a versão mais recente do WooCommerce e tente novamente mais tarde.";
 
 /* Label asking users to remove card. Presented to users when a payment is in the process of being collected */
 "Please remove card" = "Remova o cartão";
@@ -2416,7 +2447,8 @@
 /* Display label for the product's private status */
 "Privately published" = "Publicado de maneira privada";
 
-/* Title for the first page in the Orders tab. */
+/* Display label for processing order status.
+   Title for the first page in the Orders tab. */
 "Processing" = "Processando";
 
 /* Indicates that a payment is being processed */
@@ -2429,6 +2461,9 @@
 /* The title on the navigation bar when viewing an order item add-ons
    Title for Add-ons row in the product form screen. - Title for the product add-ons screen */
 "Product Add-ons" = "Complementos do produto";
+
+/* Row title for filtering products by product category. */
+"Product Category" = "Categoria de produto";
 
 /* Edit Product External Link navigation title */
 "Product Link" = "Link do produto";
@@ -2528,6 +2563,9 @@
 /* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
 "Quarantine" = "Quarentena";
 
+/* Cell title on the beta features screen to enable the Quick Order feature */
+"Quick Order" = "Pedido rápido";
+
 /* Subtitle for Contact WooCommerce Payments Support */
 "Reach our happiness engineers who can help answer payments related questions" = "Fale com nossa equipe de suporte para tirar dúvidas relacionadas a pagamento";
 
@@ -2589,7 +2627,8 @@
 /* The title of the section containing information about how the refund will be processed. */
 "Refund Via" = "Reembolsar via";
 
-/* The title for the refunded amount cell */
+/* Display label for refunded order status.
+   The title for the refunded amount cell */
 "Refunded" = "Reembolsado";
 
 /* Order > Order Details > 'N Items' cell tapped > Refunded Products title
@@ -2968,6 +3007,9 @@
    Title of the product form bottom sheet action for editing short description. - Title of the Short Description row on Product main screen */
 "Short description" = "Breve descrição";
 
+/* Button title for applying filters to a list of orders. */
+"Show Orders" = "Mostrar pedidos";
+
 /* Button title for applying filters to a list of products. */
 "Show Products" = "Mostrar produtos";
 
@@ -3210,6 +3252,9 @@
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "Tirar uma foto";
 
+/* Title of the banner notice in the Quick Order feature */
+"Take payments from your device!" = "Receba pagamentos no seu dispositivo!";
+
 /* Accessibility hint for the More button on formatting toolbar. */
 "Tap for more formatting options" = "Toque para mais opções de formatação";
 
@@ -3311,6 +3356,9 @@
 
 /* Opens the Terms of Service web page */
 "Terms of Service" = "Termos de serviço";
+
+/* Cell description on the beta features screen to enable the Quick Order feature */
+"Test out creating orders with minimal information as we get ready to launch" = "Experimente criar pedidos com as informações básicas conforme nos preparamos para lançar";
 
 /* Cell description on the beta features screen to enable the order add-ons feature */
 "Test out viewing Order Add-Ons as we get ready to launch" = "Teste a visualização dos Complementos de pedidos enquanto nos preparamos para lançar";
@@ -3451,15 +3499,15 @@
 /* Notice text after failing to update the order successfully */
 "There was an error updating the order" = "Ocorreu um erro ao atualizar o pedido";
 
-/* Tab selector title that shows the statistics for this month
-   Top Performers section title - this month */
+/* Label for one of the filters in order date range
+   Tab selector title that shows the statistics for this month - Top Performers section title - this month */
 "This Month" = "Este mês";
 
 /* The message of the alert when there is an error updating the product SKU */
 "This SKU is used on another product or is invalid." = "O SKU foi usado em outro produto ou é inválido.";
 
-/* Tab selector title that shows the statistics for this week
-   Top Performers section title - this week */
+/* Label for one of the filters in order date range
+   Tab selector title that shows the statistics for this week - Top Performers section title - this week */
 "This Week" = "Esta semana";
 
 /* Tab selector title that shows the statistics for this year
@@ -3552,8 +3600,8 @@
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "Para usar esse aplicativo para %@, é necessário ter o plugin do Jetpack conectado à sua loja.";
 
-/* Tab selector title that shows the statistics for today
-   Today Section Header - Top Performers section title - today */
+/* Label for one of the filters in order date range
+   Tab selector title that shows the statistics for today - Today Section Header - Top Performers section title - today */
 "Today" = "Hoje";
 
 /* Accessibility Identifier for the Aztec Ordered List Style. */
@@ -3688,6 +3736,12 @@
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "Não foi possível marcar a avaliação como %@";
 
+/* Error message when the order amount is below the minimum amount allowed. */
+"Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "Não é possível processar o pagamento. O valor total do pedido está abaixo do valor mínimo que você pode cobrar, %1$@.";
+
+/* Error message when the order amount is not valid. */
+"Unable to process payment. Order total amount is not valid." = "Não é possível processar o pagamento. O valor total do pedido não é válido.";
+
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "Não foi possível encontrar um site WordPress na URL. Toque em 'Precisa de ajuda?' para exibir as perguntas frequentes.";
 
@@ -3700,8 +3754,8 @@
 /* Content of error presented when Update Shipping Label Account Settings Action Failed. It reads: Unable to save changes to the payment method. */
 "Unable to save changes to the payment method" = "Não é possível salvar alterações da forma de pagamento";
 
-/* Error notice when we fail to update an address in the edit address screen. */
-"Unable to update address, please try again later." = "Não é possível atualizar o endereço. Tente novamente mais tarde.";
+/* Error notice title when we fail to update an address in the edit address screen. */
+"Unable to update address." = "Não é possível atualizar o endereço.";
 
 /* Title for the error screen when In-Person Payments is unavailable */
 "Unable to verify In-Person Payments for this store" = "Não foi possível verificar os pagamentos presenciais para esta loja";
@@ -3952,6 +4006,12 @@
 
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "Estamos trabalhando para facilitar a visualização de complementos de produtos diretamente no seu dispositivo! Por enquanto, você poderá ver os complementos dos seus pedidos. É possível criar e editar esses complementos no seu painel da Web.";
+
+/* Content of the top banner to announce the quick pay feature. */
+"We are working on making it easier for you to take payments from your device! Enable Quick Order in Settings > Experimental Features." = "Estamos trabalhando para que você possa receber pagamentos no seu dispositivo com maior facilidade! Ative a opção de pedido rápido em Configurações > Funcionalidades experimentais.";
+
+/* Content of the banner notice in the Quick Order view */
+"We are working on making it easier for you to take payments from your device! For now, tap on the \"+\" button and you’ll be able to create an order with the amount you want to collect" = "Estamos trabalhando para que você possa receber pagamentos no seu dispositivo com maior facilidade! Por enquanto, toque no botão \"+\" para criar um pedido com o valor que você quer receber.";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "Não é possível exibir a análise da sua loja";

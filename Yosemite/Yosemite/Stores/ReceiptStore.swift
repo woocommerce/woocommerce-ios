@@ -208,12 +208,12 @@ private extension ReceiptStore {
 
 private extension ReceiptStore {
     func fileURL(order: Order) throws -> URL {
-        return try FileManager.default.url(for: .documentDirectory,
-                                                           in: .userDomainMask,
-                                                           appropriateFor: nil,
-                                                           create: false)
+        try FileManager.default.url(for: .documentDirectory,
+                in: .userDomainMask,
+                appropriateFor: nil,
+                create: false)
             .appendingPathComponent(fileName(order: order))
-                .appendingPathExtension("plist")
+            .appendingPathExtension("plist")
     }
 
     func fileName(order: Order) -> String {

@@ -110,7 +110,7 @@ private extension ReceiptRenderer {
     private func summaryTable() -> String {
         var summaryContent = "<table>"
         for line in content.lineItems {
-            summaryContent += "<tr><td>\(line.title) × \(line.quantity)</td><td>\(line.amount) \(content.parameters.currency.uppercased())</td></tr>"
+            summaryContent += "<tr><td>\(line.title.encodeHtml()) × \(line.quantity)</td><td>\(line.amount) \(content.parameters.currency.uppercased())</td></tr>"
         }
         summaryContent += totalRows()
         summaryContent += "</table>"
@@ -158,9 +158,9 @@ private extension ReceiptRenderer {
         /// are required in the US.
         /// https://stripe.com/docs/terminal/checkout/receipts#custom
         return """
-            \(Localization.applicationName): \(emv.applicationPreferredName)<br/>
-            \(Localization.aid): \(emv.dedicatedFileName)
-        """
+               \(Localization.applicationName): \(emv.applicationPreferredName.encodeHtml())<br/>
+               \(Localization.aid): \(emv.dedicatedFileName.encodeHtml())
+               """
     }
 
     private func cardIconCSS() -> String {
@@ -248,5 +248,21 @@ private extension ReceiptRenderer {
             "Account Type",
             comment: "Reads as 'Account Type'. Part of the mandatory data in receipts"
         )
+    }
+}
+
+private extension String {
+    func encodeHtml() -> String {
+        let data = Data(utf8)
+        do {
+            return try NSAttributedString(
+                data: data,
+                options: [.documentType: NSAttributedString.DocumentType.html],
+                documentAttributes: nil
+            ).string
+        } catch {
+            print(error)
+            return self
+        }
     }
 }

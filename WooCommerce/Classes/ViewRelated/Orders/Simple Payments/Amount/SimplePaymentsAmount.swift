@@ -48,6 +48,9 @@ final class SimplePaymentsAmountHostingController: UIHostingController<SimplePay
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Disables interactive dismiss action.
+        isModalInPresentation = true
+
         // Set presentation delegate to track the user dismiss flow event
         if let navigationController = navigationController {
             navigationController.presentationController?.delegate = self
@@ -126,10 +129,12 @@ struct SimplePaymentsAmount: View {
         .navigationTitle(Localization.title)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
+                // Cancel button set to disabled state until get the result from `createSimplePaymentsOrder`
                 Button(Localization.cancelTitle, action: {
                     dismiss()
                     viewModel.userDidCancelFlow()
                 })
+                    .disabled(viewModel.loading)
             }
         }
     }

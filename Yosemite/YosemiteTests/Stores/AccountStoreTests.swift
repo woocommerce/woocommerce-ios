@@ -232,7 +232,7 @@ final class AccountStoreTests: XCTestCase {
     func test_synchronizeSites_effectively_persists_retrieved_sites() {
         // Given
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        network.simulateResponse(requestUrlSuffix: "me/sites", filename: "sites")
+        network.simulateResponse(requestUrlSuffix: "me/sites", filename: "me-sites-all-jetpack-sites")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
         // When
@@ -255,7 +255,7 @@ final class AccountStoreTests: XCTestCase {
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let siteIDInStorageOnly = Int64(127)
         storageManager.insertSampleSite(readOnlySite: Site.fake().copy(siteID: siteIDInStorageOnly))
-        network.simulateResponse(requestUrlSuffix: "me/sites", filename: "sites")
+        network.simulateResponse(requestUrlSuffix: "me/sites", filename: "me-sites-one-jcp-site")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 1)
         XCTAssertNotNil(viewStorage.loadSite(siteID: siteIDInStorageOnly))
 
@@ -281,7 +281,7 @@ final class AccountStoreTests: XCTestCase {
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let selectedSiteID = Int64(127)
         storageManager.insertSampleSite(readOnlySite: Site.fake().copy(siteID: selectedSiteID))
-        network.simulateResponse(requestUrlSuffix: "me/sites", filename: "sites")
+        network.simulateResponse(requestUrlSuffix: "me/sites", filename: "me-sites-one-jcp-site")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 1)
         XCTAssertNotNil(viewStorage.loadSite(siteID: selectedSiteID))
 
@@ -408,7 +408,7 @@ final class AccountStoreTests: XCTestCase {
     func test_loadAndSynchronizeSiteIfNeeded_returns_site_after_syncing_success() throws {
         // Given
         let network = MockNetwork()
-        network.simulateResponse(requestUrlSuffix: "me/sites", filename: "sites")
+        network.simulateResponse(requestUrlSuffix: "me/sites", filename: "me-sites-all-jetpack-sites")
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let group = DispatchGroup()
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
@@ -420,8 +420,8 @@ final class AccountStoreTests: XCTestCase {
         }
 
         // When
-        // The site ID value is in `sites.json` used in the mock network.
-        let siteIDInSimulatedResponse = Int64(1112233334444555)
+        // The site ID value is in `me-sites-all-jetpack-sites.json` used in the mock network.
+        let siteIDInSimulatedResponse = Int64(888888)
         let result: Result<Yosemite.Site, Error> = waitFor { promise in
             group.notify(queue: .main) {
                 let action = AccountAction.loadAndSynchronizeSiteIfNeeded(siteID: siteIDInSimulatedResponse) { result in
@@ -490,6 +490,8 @@ private extension AccountStoreTests {
                     description: "Best description ever!",
                     url: "automattic.com",
                     plan: String(),
+                    isJetpackThePluginInstalled: true,
+                    isJetpackConnected: true,
                     isWooCommerceActive: true,
                     isWordPressStore: false,
                     timezone: "Asia/Taipei",

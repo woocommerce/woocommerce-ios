@@ -255,7 +255,7 @@ private extension OrdersRootViewController {
                                      target: self,
                                      action: #selector(presentSimplePaymentsAmountController))
         button.accessibilityTraits = .button
-        button.accessibilityLabel = NSLocalizedString("Add simple payments order", comment: "Navigates to a screen to create a simple payments order")
+        button.accessibilityLabel = Localization.accessibilityLabelAddSimplePayment
         button.accessibilityIdentifier = "simple-payments-add-button"
         return button
     }
@@ -302,5 +302,7 @@ private extension OrdersRootViewController {
             "Retrieves a list of orders that contain a given keyword.",
             comment: "VoiceOver accessibility hint, informing the user the button can be used to search orders."
         )
+        static let accessibilityLabelAddSimplePayment = NSLocalizedString("Add simple payments order",
+                                                                          comment: "Navigates to a screen to create a simple payments order")
     }
 }

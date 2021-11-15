@@ -110,7 +110,8 @@ private extension ReceiptRenderer {
     private func summaryTable() -> String {
         var summaryContent = "<table>"
         for line in content.lineItems {
-            summaryContent += "<tr><td>\(line.title.encodeHtml()) × \(line.quantity)</td><td>\(line.amount) \(content.parameters.currency.uppercased())</td></tr>"
+            let stripedTitle = line.title.stripHtml()
+            summaryContent += "<tr><td>\(stripedTitle) × \(line.quantity)</td><td>\(line.amount) \(content.parameters.currency.uppercased())</td></tr>"
         }
         summaryContent += totalRows()
         summaryContent += "</table>"
@@ -158,8 +159,8 @@ private extension ReceiptRenderer {
         /// are required in the US.
         /// https://stripe.com/docs/terminal/checkout/receipts#custom
         return """
-               \(Localization.applicationName): \(emv.applicationPreferredName.encodeHtml())<br/>
-               \(Localization.aid): \(emv.dedicatedFileName.encodeHtml())
+               \(Localization.applicationName): \(emv.applicationPreferredName.stripHtml())<br/>
+               \(Localization.aid): \(emv.dedicatedFileName.stripHtml())
                """
     }
 
@@ -252,7 +253,7 @@ private extension ReceiptRenderer {
 }
 
 private extension String {
-    func encodeHtml() -> String {
+    func stripHtml() -> String {
         let data = Data(utf8)
         do {
             return try NSAttributedString(

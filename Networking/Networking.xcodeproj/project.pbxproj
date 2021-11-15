@@ -56,6 +56,7 @@
 		02BDB83723EA9C4D00BCC63E /* String+HTMLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BDB83623EA9C4D00BCC63E /* String+HTMLTests.swift */; };
 		02C1127127423ABB00F4F0B4 /* me-sites-all-jetpack-sites.json in Resources */ = {isa = PBXBuildFile; fileRef = 02C1126F27423ABB00F4F0B4 /* me-sites-all-jetpack-sites.json */; };
 		02C1127227423ABB00F4F0B4 /* me-sites-one-jcp-site.json in Resources */ = {isa = PBXBuildFile; fileRef = 02C1127027423ABB00F4F0B4 /* me-sites-one-jcp-site.json */; };
+		02C1127427426FCD00F4F0B4 /* sites.json in Resources */ = {isa = PBXBuildFile; fileRef = 02C1127327426FCC00F4F0B4 /* sites.json */; };
 		02C1CEF424C6A02B00703EBA /* ProductVariationMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C1CEF324C6A02B00703EBA /* ProductVariationMapper.swift */; };
 		02C2548425635BD000A04423 /* ShippingLabelPaperSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C2548325635BD000A04423 /* ShippingLabelPaperSize.swift */; };
 		02C2549A25636E1500A04423 /* ShippingLabelAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C2549925636E1500A04423 /* ShippingLabelAddress.swift */; };
@@ -639,6 +640,7 @@
 		02BDB83623EA9C4D00BCC63E /* String+HTMLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+HTMLTests.swift"; sourceTree = "<group>"; };
 		02C1126F27423ABB00F4F0B4 /* me-sites-all-jetpack-sites.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "me-sites-all-jetpack-sites.json"; sourceTree = "<group>"; };
 		02C1127027423ABB00F4F0B4 /* me-sites-one-jcp-site.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "me-sites-one-jcp-site.json"; sourceTree = "<group>"; };
+		02C1127327426FCC00F4F0B4 /* sites.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sites.json; sourceTree = "<group>"; };
 		02C1CEF324C6A02B00703EBA /* ProductVariationMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationMapper.swift; sourceTree = "<group>"; };
 		02C2548325635BD000A04423 /* ShippingLabelPaperSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPaperSize.swift; sourceTree = "<group>"; };
 		02C2549925636E1500A04423 /* ShippingLabelAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddress.swift; sourceTree = "<group>"; };
@@ -1726,6 +1728,7 @@
 				456930AC2652AF00009ED69D /* shipping-label-carriers-and-rates-success.json */,
 				CC0786622678F79500BA9AC1 /* shipping-label-purchase-success.json */,
 				CC0786C6267BB10700BA9AC1 /* shipping-label-status-success.json */,
+				02C1127327426FCC00F4F0B4 /* sites.json */,
 				2670C3FD270F4E6A002FE931 /* sites-malformed.json */,
 				7426CA1221AF34A3004E9FFC /* site-api.json */,
 				74AB5B4E21AF3F0D00859C12 /* site-api-no-woo.json */,
@@ -2141,6 +2144,7 @@
 				31054734262E36AB00C5C02B /* wcpay-payment-intent-error.json in Resources */,
 				02C1127227423ABB00F4F0B4 /* me-sites-one-jcp-site.json in Resources */,
 				45ED4F12239E8C57004F1BE3 /* taxes-classes.json in Resources */,
+				02C1127427426FCD00F4F0B4 /* sites.json in Resources */,
 				B5A2417B217F98FC00595DEF /* broken-notifications.json in Resources */,
 				3158A4A32729F42500C3CFA8 /* wcpay-account-dev-test.json in Resources */,
 				31104E142630DDA700587C1E /* wcpay-account-wrong-json.json in Resources */,

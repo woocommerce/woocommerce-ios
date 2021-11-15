@@ -351,9 +351,12 @@ final class AccountStoreTests: XCTestCase {
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
 
+        let siteID = Int64(999)
+        // TODO: 5364 - remove `isJetpackThePluginInstalled` and `isJetpackConnected` once they are updated in `Site+ReadOnlyConvertible`
+        let sampleSite = sampleSitePristine().copy(siteID: siteID, isJetpackThePluginInstalled: true, isJetpackConnected: true)
         let group = DispatchGroup()
         group.enter()
-        accountStore.upsertStoredSitesInBackground(readOnlySites: [sampleSitePristine()]) {
+        accountStore.upsertStoredSitesInBackground(readOnlySites: [sampleSite]) {
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Site.self), 1)
             group.leave()
         }
@@ -361,7 +364,7 @@ final class AccountStoreTests: XCTestCase {
         // When
         let result: Result<Yosemite.Site, Error> = waitFor { promise in
             group.notify(queue: .main) {
-                let action = AccountAction.loadAndSynchronizeSiteIfNeeded(siteID: 999) { result in
+                let action = AccountAction.loadAndSynchronizeSiteIfNeeded(siteID: siteID) { result in
                     XCTAssertTrue(Thread.isMainThread)
                     promise(result)
                 }
@@ -371,7 +374,7 @@ final class AccountStoreTests: XCTestCase {
 
         // Then
         let site = try XCTUnwrap(result.get())
-        XCTAssertEqual(site, sampleSitePristine())
+        XCTAssertEqual(site, sampleSite)
         XCTAssertEqual(network.requestsForResponseData.count, 0)
     }
 
@@ -485,16 +488,6 @@ private extension AccountStoreTests {
     /// Sample Site
     ///
     func sampleSitePristine() -> Networking.Site {
-        return Site(siteID: 999,
-                    name: "Awesome Test Site",
-                    description: "Best description ever!",
-                    url: "automattic.com",
-                    plan: String(),
-                    isJetpackThePluginInstalled: true,
-                    isJetpackConnected: true,
-                    isWooCommerceActive: true,
-                    isWordPressStore: false,
-                    timezone: "Asia/Taipei",
-                    gmtOffset: 0)
+        return Site.fake()
     }
 }

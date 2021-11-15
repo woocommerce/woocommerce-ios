@@ -14,6 +14,8 @@ extension Storage.Site: ReadOnlyConvertible {
         tagline = site.description
         url = site.url
 //        plan = site.plan // We're not assigning the plan here because it's not sent on the intial API request.
+        // TODO: 5364 - update `isJetpackThePluginInstalled`
+        // TODO: 5364 - update `isJetpackConnected`
         isWooCommerceActive = NSNumber(booleanLiteral: site.isWooCommerceActive)
         isWordPressStore = NSNumber(booleanLiteral: site.isWordPressStore)
         timezone = site.timezone

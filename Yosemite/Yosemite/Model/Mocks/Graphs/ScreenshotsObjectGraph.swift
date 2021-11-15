@@ -36,6 +36,8 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         description: "",
         url: i18n.DefaultSite.url,
         plan: "",
+        isJetpackThePluginInstalled: true,
+        isJetpackConnected: true,
         isWooCommerceActive: true,
         isWordPressStore: true,
         timezone: "UTC",

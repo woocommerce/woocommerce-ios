@@ -25,7 +25,7 @@ final class OrdersRootViewController: UIViewController {
 
     private let siteID: Int64
 
-    private lazy var analytics = ServiceLocator.analytics
+    private let analytics = ServiceLocator.analytics
 
     /// Lets us know if the store is ready to receive in person payments
     ///

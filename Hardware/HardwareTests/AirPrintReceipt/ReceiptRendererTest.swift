@@ -6,7 +6,7 @@ import CryptoKit
 
 final class ReceiptRendererTest: XCTestCase {
     func test_TextWithoutHtmlSymbols() {
-        let expectedResultWithoutHtmlSymbolsMd5Description = "MD5 digest: 0a08fa3ac67c8a06fa460834ca876a7a"
+        let expectedResultWithoutHtmlSymbolsMd5Description = "MD5 digest: 532a92e85527596a692b4b9ee7c978a5"
         let content = generateReceiptContent()
 
         let renderer = ReceiptRenderer(content: content)
@@ -18,11 +18,13 @@ final class ReceiptRendererTest: XCTestCase {
     }
 
     func test_TextWithHtmlSymbols() {
-        let expectedResultWithHtmlSymbolsMd5Description = "MD5 digest: d5494adfe0b653b28ed43a5444565593"
+        let expectedResultWithHtmlSymbolsMd5Description = "MD5 digest: 034ae681824b18c473c9ca9ad69a06bb"
         let stringWithHtml = "<tt><table></table></footer>"
         let content = generateReceiptContent(stringToAppend: stringWithHtml)
 
         let renderer = ReceiptRenderer(content: content)
+
+        print(renderer.htmlContent())
 
         XCTAssertEqual(
             Insecure.MD5.hash(data: renderer.htmlContent().data(using: .utf8)!).description,
@@ -49,8 +51,8 @@ private extension ReceiptRendererTest {
                     fingerprint: "fpr*****",
                     generatedCard: "pm_******",
                     receipt: .init(
-                        applicationPreferredName: "Stripe Credit \(stringToAppend)",
-                        dedicatedFileName: "A00000000000000 \(stringToAppend)",
+                        applicationPreferredName: "Stripe Credit\(stringToAppend)",
+                        dedicatedFileName: "A00000000000000\(stringToAppend)",
                         authorizationResponseCode: "0000",
                         applicationCryptogram: "XXXXXXXXXXXX",
                         terminalVerificationResults: "101010101010101010",
@@ -60,7 +62,7 @@ private extension ReceiptRendererTest {
                     emvAuthData: "AD*******"),
                 orderID: 9201
             ),
-            lineItems: [ReceiptLineItem(title: "Sample product #1 \(stringToAppend)", quantity: "2", amount: "25")],
+            lineItems: [ReceiptLineItem(title: "Sample product #1\(stringToAppend)", quantity: "2", amount: "25")],
             cartTotals: [ReceiptTotalLine(description: "description", amount: "13")],
             orderNote: nil
         )

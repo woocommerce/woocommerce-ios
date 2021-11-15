@@ -240,11 +240,8 @@ private extension OrdersRootViewController {
                                      target: self,
                                      action: #selector(displaySearchOrders))
         button.accessibilityTraits = .button
-        button.accessibilityLabel = NSLocalizedString("Search orders", comment: "Search Orders")
-        button.accessibilityHint = NSLocalizedString(
-            "Retrieves a list of orders that contain a given keyword.",
-            comment: "VoiceOver accessibility hint, informing the user the button can be used to search orders."
-        )
+        button.accessibilityLabel = Localization.accessibilityLabelSearchOrders
+        button.accessibilityHint = Localization.accessibilityHintSearchOrders
         button.accessibilityIdentifier = "order-search-button"
 
         return button
@@ -300,5 +297,10 @@ private extension OrdersRootViewController {
         static let allOrdersEmptyStateMessage =
         NSLocalizedString("Waiting for your first order",
                           comment: "The message shown in the Orders → All Orders tab if the list is empty.")
+        static let accessibilityLabelSearchOrders = NSLocalizedString("Search orders", comment: "Search Orders")
+        static let accessibilityHintSearchOrders = NSLocalizedString(
+            "Retrieves a list of orders that contain a given keyword.",
+            comment: "VoiceOver accessibility hint, informing the user the button can be used to search orders."
+        )
     }
 }

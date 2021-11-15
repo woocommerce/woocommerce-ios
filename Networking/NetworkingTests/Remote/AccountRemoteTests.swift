@@ -1,19 +1,24 @@
+import Combine
 import XCTest
 @testable import Networking
 
 
 /// AccountRemote Unit Tests
 ///
-class AccountRemoteTests: XCTestCase {
+final class AccountRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
-    let network = MockNetwork()
+    private let network = MockNetwork()
+
+    private var cancellables = Set<AnyCancellable>()
 
     /// Repeat always!
     ///
     override func setUp() {
+        super.setUp()
         network.removeAllSimulatedResponses()
+        cancellables = []
     }
 
 
@@ -51,5 +56,89 @@ class AccountRemoteTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
+    }
+
+    // MARK: - `loadSites`
+
+    func test_loadSites_emits_sites_in_response() throws {
+        // Given
+        let remote = AccountRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "me/sites", filename: "me-sites-one-jcp-site")
+
+        // When
+        let result = waitFor { promise in
+            remote.loadSites().sink { result in
+                promise(result)
+            }.store(in: &self.cancellables)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let sites = try XCTUnwrap(result.get())
+        let jcpSites = sites.filter { $0.isJetpackCPConnected }
+        let nonJCPSites = sites.filter { $0.isJetpackCPConnected == false }
+        XCTAssertEqual(jcpSites.count, 1)
+        XCTAssertEqual(nonJCPSites.count, 1)
+    }
+
+    // MARK: - `checkIfWooCommerceIsActive`
+
+    func test_checkIfWooCommerceIsActive_emits_true_when_response_is_valid() throws {
+        // Given
+        let siteID = Int64(277)
+        let remote = AccountRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "settings", filename: "wc-site-settings-partial")
+
+        // When
+        let result = waitFor { promise in
+            remote.checkIfWooCommerceIsActive(for: siteID).sink { result in
+                promise(result)
+            }.store(in: &self.cancellables)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let isWooCommerceActive = try XCTUnwrap(result.get())
+        XCTAssertTrue(isWooCommerceActive)
+    }
+
+    func test_checkIfWooCommerceIsActive_emits_false_when_error_is_returned() throws {
+        // Given
+        let siteID = Int64(277)
+        let remote = AccountRemote(network: network)
+        network.simulateError(requestUrlSuffix: "settings", error: NetworkError.notFound)
+
+        // When
+        let result = waitFor { promise in
+            remote.checkIfWooCommerceIsActive(for: siteID).sink { result in
+                promise(result)
+            }.store(in: &self.cancellables)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let error = try XCTUnwrap(result.failure as? NetworkError)
+        XCTAssertEqual(error, .notFound)
+    }
+
+    // MARK: - `fetchWordPressSiteSettings`
+
+    func test_fetchWordPressSiteSettings_emits_settings_in_response() throws {
+        // Given
+        let siteID = Int64(277)
+        let remote = AccountRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "sites/\(siteID)/settings", filename: "wp-site-settings")
+
+        // When
+        let result = waitFor { promise in
+            remote.fetchWordPressSiteSettings(for: siteID).sink { result in
+                promise(result)
+            }.store(in: &self.cancellables)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let siteSettings = try XCTUnwrap(result.get())
+        XCTAssertEqual(siteSettings.name, "Zucchini recipes")
     }
 }

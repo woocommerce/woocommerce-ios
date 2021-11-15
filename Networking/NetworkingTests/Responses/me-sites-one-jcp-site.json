@@ -1,0 +1,73 @@
+{
+    "sites": [
+        {
+            "ID": 888888,
+            "name": "FUN SHOP",
+            "description": "Just another fun shop",
+            "URL": "https://fun.shop",
+            "jetpack": true,
+            "jetpack_connection": true,
+            "options": {
+                "timezone": "",
+                "gmt_offset": 0,
+                "is_wpcom_store": false,
+                "woocommerce_is_active": true,
+                "jetpack_version": "10.4-a.3",
+                "main_network_site": "https://fun.shop",
+                "active_modules": [
+                    "sso",
+                    "contact-form",
+                    "enhanced-distribution",
+                    "json-api",
+                    "notes",
+                    "protect",
+                    "stats",
+                    "verification-tools",
+                    "photon-cdn",
+                    "woocommerce-analytics",
+                    "custom-css",
+                    "tiled-gallery"
+                ],
+                "software_version": "5.8.1",
+                "max_upload_size": false,
+                "wp_memory_limit": "536870912",
+                "wp_max_memory_limit": "536870912",
+                "is_multi_network": false,
+                "is_multi_site": false,
+                "file_mod_disabled": [
+                    "wp_auto_update_core_disabled"
+                ],
+                "jetpack_connection_active_plugins": [
+                    "jetpack",
+                    "woocommerce-payments"
+                ]
+            }
+        },
+        {
+            "ID": 19999,
+            "name": "Ninja school",
+            "description": "",
+            "URL": "https://nin.ja",
+            "jetpack": false,
+            "jetpack_connection": true,
+            "options": {
+                "timezone": "",
+                "gmt_offset": 0,
+                "is_wpcom_store": false,
+                "woocommerce_is_active": false,
+                "jetpack_version": "",
+                "software_version": "5.8.1",
+                "max_upload_size": false,
+                "wp_memory_limit": false,
+                "wp_max_memory_limit": false,
+                "is_multi_network": false,
+                "is_multi_site": false,
+                "file_mod_disabled": [
+                    "wp_auto_update_core_disabled",
+                    "has_no_file_system_write_access"
+                ],
+                "jetpack_connection_active_plugins": []
+            }
+        }
+    ]
+}

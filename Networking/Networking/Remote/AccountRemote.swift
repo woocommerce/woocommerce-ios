@@ -66,6 +66,7 @@ public class AccountRemote: Remote {
 
     /// Checks the WooCommerce site settings endpoint to confirm if the WooCommerce plugin is available or not.
     /// We pass an empty `_fields` just to reduce the response payload size, as we don't care about the contents.
+    /// The current use case is for a workaround for Jetpack Connection Package sites.
     /// - Parameter siteID: Site for which we will fetch the site settings.
     /// - Returns: A publisher that emits a boolean which indicates if WooCommerce plugin is active.
     public func checkIfWooCommerceIsActive(for siteID: Int64) -> AnyPublisher<Result<Bool, Error>, Never> {
@@ -76,9 +77,10 @@ public class AccountRemote: Remote {
     }
 
     /// Fetches WordPress site settings for site metadata (e.g. name, description, URL).
+    /// The current use case is for a workaround for Jetpack Connection Package sites.
     /// - Parameter siteID: Site for which we will fetch the site settings.
     /// - Returns: A publisher that emits the WordPress site settings.
-    public func fetchWPSiteSettings(for siteID: Int64) -> AnyPublisher<Result<WordPressSiteSettings, Error>, Never> {
+    public func fetchWordPressSiteSettings(for siteID: Int64) -> AnyPublisher<Result<WordPressSiteSettings, Error>, Never> {
         let path = "sites/\(siteID)/settings"
         let request = DotcomRequest(wordpressApiVersion: .wpMark2, method: .get, path: path, parameters: nil)
         let mapper = WordPressSiteSettingsMapper()

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="18154" systemVersion="20G165" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19206" systemVersion="20E241" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -590,6 +590,8 @@
     </entity>
     <entity name="Site" representedClassName="Site" syncable="YES">
         <attribute name="gmtOffset" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="isJetpackConnected" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="isJetpackThePluginInstalled" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="isWooCommerceActive" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="isWordPressStore" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
@@ -725,7 +727,7 @@
         <element name="ShippingLabelSettings" positionX="-666" positionY="63" width="128" height="103"/>
         <element name="ShippingLine" positionX="-247.203125" positionY="907.53125" width="128" height="149"/>
         <element name="ShippingLineTax" positionX="-693" positionY="36" width="128" height="103"/>
-        <element name="Site" positionX="-203.6875" positionY="208.0703125" width="128" height="178"/>
+        <element name="Site" positionX="-203.6875" positionY="208.0703125" width="128" height="194"/>
         <element name="SitePlugin" positionX="-675" positionY="63" width="128" height="239"/>
         <element name="SiteSetting" positionX="-360.41015625" positionY="214.8515625" width="128" height="133"/>
         <element name="SiteVisitStats" positionX="134.515625" positionY="224.62109375" width="128" height="118"/>

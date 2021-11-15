@@ -78,7 +78,8 @@ private extension BetaFeaturesViewController {
     func configureSections() {
         self.sections = [
             productsSection(),
-            ordersSection()
+            ordersSection(),
+            orderCreationSection()
         ].compactMap { $0 }
     }
 
@@ -96,6 +97,15 @@ private extension BetaFeaturesViewController {
 
         return Section(rows: [.simplePayments,
                               .simplePaymentsDescription])
+    }
+
+    func orderCreationSection() -> Section? {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation) else {
+            return nil
+        }
+
+        return Section(rows: [.orderCreation,
+                              .orderCreationDescription])
     }
 
     /// Register table cells.
@@ -125,6 +135,10 @@ private extension BetaFeaturesViewController {
             configureSimplePaymentsSwitch(cell: cell)
         case let cell as BasicTableViewCell where row == .simplePaymentsDescription:
             configureSimplePaymentsDescription(cell: cell)
+        case let cell as SwitchTableViewCell where row == .orderCreation:
+            configureOrderCreationSwitch(cell: cell)
+        case let cell as BasicTableViewCell where row == .orderCreationDescription:
+            configureOrderCreationDescription(cell: cell)
         default:
             fatalError()
         }
@@ -196,6 +210,17 @@ private extension BetaFeaturesViewController {
     func configureSimplePaymentsDescription(cell: BasicTableViewCell) {
         configureCommonStylesForDescriptionCell(cell)
         cell.textLabel?.text = Localization.simplePaymentsDescription
+    }
+
+    func configureOrderCreationSwitch(cell: SwitchTableViewCell) {
+        configureCommonStylesForSwitchCell(cell)
+        cell.title = Localization.orderCreationTitle
+        cell.accessibilityIdentifier = "beta-features-order-order-creation-cell"
+    }
+
+    func configureOrderCreationDescription(cell: BasicTableViewCell) {
+        configureCommonStylesForDescriptionCell(cell)
+        cell.textLabel?.text = Localization.orderCreationDescription
     }
 }
 
